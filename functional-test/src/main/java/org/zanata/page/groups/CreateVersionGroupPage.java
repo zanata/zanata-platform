@@ -42,7 +42,7 @@ public class CreateVersionGroupPage extends BasePage {
             "letters, numbers, periods, underscores and hyphens.";
 
     private By groupIdField = By.id("group-form:slugField:slug");
-    private By groupNameField = By.id("group-form:nameField:name");
+    public By groupNameField = By.id("group-form:nameField:name");
     private By groupDescriptionField = By.id("group-form:descriptionField:description");
     private By saveButton = By.id("group-form:group-create-new");
     private By createNewButton = By.id("group-form:group-create-new");
