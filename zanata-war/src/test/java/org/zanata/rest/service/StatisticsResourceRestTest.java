@@ -23,7 +23,6 @@ package org.zanata.rest.service;
 import org.dbunit.operation.DatabaseOperation;
 import org.zanata.ZanataRestTest;
 import org.zanata.seam.SeamAutowire;
-import org.zanata.service.impl.StatisticsServiceImpl;
 
 /**
  * TODO This method doesn't have tests yet. It is a placeholder for when a

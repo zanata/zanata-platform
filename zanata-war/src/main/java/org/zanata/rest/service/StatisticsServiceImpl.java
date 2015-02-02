@@ -18,7 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.service.impl;
+package org.zanata.rest.service;
 
 import java.math.BigDecimal;
 import java.net.URI;
@@ -58,9 +58,8 @@ import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.rest.dto.stats.contribution.BaseContributionStatistic;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
 import org.zanata.rest.dto.stats.contribution.LocaleStatistics;
-import org.zanata.rest.service.StatisticsResource;
-import org.zanata.rest.service.ZPathService;
 import org.zanata.service.TranslationStateCache;
+import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.util.DateUtil;
 import org.zanata.util.StatisticsUtil;
 import org.zanata.webtrans.shared.model.DocumentStatus;

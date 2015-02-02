@@ -9,7 +9,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.service.TranslationStateCache;
-import org.zanata.service.impl.StatisticsServiceImpl;
+import org.zanata.rest.service.StatisticsServiceImpl;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
