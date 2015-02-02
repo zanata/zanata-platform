@@ -975,6 +975,81 @@
     </profile>
 
     <profile>
+      <id>skipArqTests</id>
+      <activation>
+        <property>
+          <name>skipArqTests</name>
+        </property>
+      </activation>
+      <properties>
+        <skipITs>true</skipITs>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>run-arq-tests</id>
+      <activation>
+        <property>
+          <name>!skipArqTests</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>init-no-appserver</id>
+                <phase>initialize</phase>
+              </execution>
+              <execution>
+                <id>preIT-no-appserver</id>
+                <phase>prepare-package</phase>
+                <goals><goal>run</goal></goals>
+                <configuration>
+                  <target unless="skipArqTests">
+                    <fail message="'appserver' property must be set to run integration tests (or else use -DskipArqTests)"
+                      unless="appserver" />
+                    <fail message="'cargo.installation' property must be set to run integration tests (or else use -DskipArqTests)"
+                      unless="cargo.installation"/>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.cargo</groupId>
+            <artifactId>cargo-maven2-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>cargo-install</id>
+                <phase>prepare-package</phase>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <includes>
+                <include>**/*ITCase.java</include>
+              </includes>
+              <forkCount>1</forkCount>
+              <reuseForks>true</reuseForks>
+              <redirectTestOutputToFile>false</redirectTestOutputToFile>
+              <runOrder>alphabetical</runOrder>
+              <systemPropertyVariables>
+                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                <jboss.home>${appserver.home}</jboss.home>
+              </systemPropertyVariables>
+              <testNGArtifactName>none:none</testNGArtifactName>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
       <id>jbosseap6</id>
       <activation>
         <property>
@@ -987,19 +1062,18 @@
           <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
+              <!-- Install arquillian-customised version of standalone.xml -->
               <execution>
                 <id>prepare-arquillian-container</id>
-                <phase>pre-integration-test</phase>
+                <phase>package</phase>
                 <goals>
                   <goal>run</goal>
                 </goals>
                 <configuration>
-                  <target>
-                    <fail message="'arquillian.jboss.home' property must be set to run integration tests in this profile"
-                      unless="arquillian.jboss.home"/>
+                  <target unless="skipArqTests">
                     <copy overwrite="true"
                       file="${project.basedir}/src/test/resources/arquillian/standalone-arquillian.xml"
-                      tofile="${arquillian.jboss.home}/standalone/configuration/standalone-arquillian.xml" />
+                      tofile="${appserver.home}/standalone/configuration/standalone-arquillian.xml" />
                   </target>
                 </configuration>
               </execution>
@@ -1019,31 +1093,14 @@
             </configuration>
           </plugin>
 
-          <!-- Configure Failsafe to run in integration-test/verify phase -->
           <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
-            <executions>
-              <!-- Container (Arquillian tests) -->
-              <execution>
-                <id>container-tests</id>
-                <goals>
-                  <goal>integration-test</goal>
-                  <goal>verify</goal>
-                </goals>
-                <configuration>
-                  <includes>
-                    <include>**/*ITCase.java</include>
-                  </includes>
-                  <testNGArtifactName>none:none</testNGArtifactName>
-                  <runOrder>alphabetical</runOrder>
-                  <forkCount>1</forkCount>
-                  <reuseForks>true</reuseForks>
-                  <systemPropertyVariables>
-                    <arquillian.launch>jbossas-managed</arquillian.launch>
-                  </systemPropertyVariables>
-                </configuration>
-              </execution>
-            </executions>
+            <configuration>
+              <systemPropertyVariables>
+                <!-- NB this is a container qualifier in arquillian.xml -->
+                <arquillian.launch>jbossas-managed</arquillian.launch>
+              </systemPropertyVariables>
+            </configuration>
           </plugin>
 
         </plugins>
@@ -1100,36 +1157,10 @@
           <value>wildfly8</value>
         </property>
       </activation>
-      <properties>
-        <wildfly.home>${project.build.directory}/wildfly/wildfly-${wildfly.version}</wildfly.home>
-      </properties>
       <build>
         <plugins>
           <plugin>
-            <!-- NB: This plugin needs to be before antrun, because it
-                 creates the wildfly directory for the unzip tasks. -->
             <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>unpack</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <configuration>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>org.wildfly</groupId>
-                      <artifactId>wildfly-dist</artifactId>
-                      <version>${wildfly.version}</version>
-                      <type>zip</type>
-                      <overWrite>false</overWrite>
-                      <outputDirectory>${project.build.directory}/wildfly</outputDirectory>
-                    </artifactItem>
-                  </artifactItems>
-                </configuration>
-              </execution>
-            </executions>
             <configuration>
               <usedDependencies combine.children="append">
                 <!-- used for arquillian tests -->
@@ -1144,77 +1175,41 @@
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
               <execution>
+                <id>install-wildfly-modules</id>
+                <phase>package</phase>
+              </execution>
+
+              <!-- Install arquillian-customised version of standalone.xml -->
+              <execution>
                 <id>prepare-arquillian-container</id>
-                <phase>pre-integration-test</phase>
+                <phase>package</phase>
                 <goals>
                   <goal>run</goal>
                 </goals>
                 <configuration>
-                  <target>
+                  <target unless="skipArqTests">
                     <copy
                       overwrite="true"
                       file="${project.basedir}/src/test/resources/arquillian/standalone-arquillian-wildfly.xml"
-                      tofile="${wildfly.home}/standalone/configuration/standalone.xml" />
-                    <mkdir dir="${project.build.directory}/downloads/" />
-                    <get
-                      src="http://sourceforge.net/projects/zanata/files/wildfly/wildfly-8.1.0.Final-module-mojarra-2.1.28.zip/download"
-                      dest="${project.build.directory}/downloads/wildfly-8.1.0.Final-module-mojarra-2.1.28.zip"
-                      usetimestamp="true" />
-                    <get
-                      src="http://sourceforge.net/projects/zanata/files/wildfly/wildfly-8.1.0.Final-module-hibernate-main-4.2.15.Final.zip/download"
-                      dest="${project.build.directory}/downloads/wildfly-8.1.0.Final-module-hibernate-main-4.2.15.Final.zip"
-                      usetimestamp="true" />
-                    <unzip
-                      src="${project.build.directory}/downloads/wildfly-8.1.0.Final-module-mojarra-2.1.28.zip"
-                      dest="${wildfly.home}" />
-                    <unzip
-                      src="${project.build.directory}/downloads/wildfly-8.1.0.Final-module-hibernate-main-4.2.15.Final.zip"
-                      dest="${wildfly.home}" />
+                      tofile="${appserver.home}/standalone/configuration/standalone.xml" />
                   </target>
                 </configuration>
               </execution>
             </executions>
           </plugin>
 
-          <!-- Configure Failsafe to run in integration-test/verify phase -->
           <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
-            <executions>
-              <!-- Container (Arquillian tests) -->
-              <execution>
-                <id>container-tests</id>
-                <goals>
-                  <goal>integration-test</goal>
-                  <goal>verify</goal>
-                </goals>
-                <configuration>
-                  <includes>
-                    <include>**/*ITCase.java</include>
-                  </includes>
-                  <testNGArtifactName>none:none</testNGArtifactName>
-                  <runOrder>alphabetical</runOrder>
-                  <forkCount>1</forkCount>
-                  <reuseForks>true</reuseForks>
-                  <systemPropertyVariables>
-                    <arquillian.launch>wildfly81</arquillian.launch>
-                    <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-                    <!-- the maven dependency plugin will have already downloaded the server on /target -->
-                    <jboss.home>${wildfly.home}</jboss.home>
-                  </systemPropertyVariables>
-                  <redirectTestOutputToFile>false</redirectTestOutputToFile>
-                </configuration>
-              </execution>
-            </executions>
+            <configuration>
+              <systemPropertyVariables>
+                <!-- NB this is a container qualifier in arquillian.xml -->
+                <arquillian.launch>wildfly81</arquillian.launch>
+              </systemPropertyVariables>
+            </configuration>
           </plugin>
         </plugins>
       </build>
       <dependencies>
-        <dependency>
-          <groupId>io.undertow</groupId>
-          <artifactId>undertow-core</artifactId>
-          <version>1.0.15.Final</version>
-          <scope>provided</scope>
-        </dependency>
         <dependency>
           <groupId>org.wildfly</groupId>
           <artifactId>wildfly-arquillian-container-managed</artifactId>
