@@ -25,8 +25,13 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,6 +40,10 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -44,14 +53,15 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetHistoryDAO;
-import org.zanata.exception.InvalidDateParamException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.UserTranslationMatrix;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.Link;
+import org.zanata.rest.dto.matrix.UserWorkMatrix;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
@@ -63,6 +73,7 @@ import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.util.DateUtil;
 import org.zanata.util.StatisticsUtil;
 import org.zanata.webtrans.shared.model.DocumentStatus;
+import com.google.common.base.Optional;
 
 /**
  * Default implementation for the
@@ -98,8 +109,6 @@ public class StatisticsServiceImpl implements StatisticsResource {
     @In
     private TranslationStateCache translationStateCacheImpl;
 
-    private static final int MAX_STATS_DAYS = 365;
-
     // TODO Need to refactor this method to get Message statistic by default.
     // This is to be consistance with UI which uses message stats, and for
     // calculating remaining hours.
@@ -113,7 +122,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
         if (locales.length == 0) {
             List<HLocale> iterationLocales =
                     localeServiceImpl.getSupportedLanguageByProjectIteration(
-                        projectSlug, iterationSlug);
+                            projectSlug, iterationSlug);
             localeIds = new LocaleId[iterationLocales.size()];
             for (int i = 0, iterationLocalesSize = iterationLocales.size(); i < iterationLocalesSize; i++) {
                 HLocale loc = iterationLocales.get(i);
@@ -221,7 +230,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
         if (locales.length == 0) {
             List<HLocale> iterationLocales =
                     localeServiceImpl.getSupportedLanguageByProjectIteration(
-                        projectSlug, iterationSlug);
+                            projectSlug, iterationSlug);
             localeIds = new LocaleId[iterationLocales.size()];
             for (int i = 0, iterationLocalesSize = iterationLocales.size(); i < iterationLocalesSize; i++) {
                 HLocale loc = iterationLocales.get(i);
@@ -319,38 +328,17 @@ public class StatisticsServiceImpl implements StatisticsResource {
             throw new NoSuchEntityException(projectSlug + "/" + versionSlug);
         }
 
-        HPerson person = personDAO.findByUsername(username);
-        if (person == null) {
-            throw new NoSuchEntityException(username);
-        }
+        HPerson person = findPersonOrExceptionOnNotFound(username);
 
-        String[] dateRange = dateRangeParam.split("\\.\\.");
-        if (dateRange.length != 2) {
-            throw new InvalidDateParamException(dateRangeParam);
-        }
-
-        Date fromDate, toDate;
-
-        try {
-            fromDate = DateUtil.getDate(dateRange[0], DATE_FORMAT);
-            toDate = DateUtil.getDate(dateRange[1], DATE_FORMAT);
-
-            fromDate = DateUtil.getStartOfDay(fromDate);
-            toDate = DateUtil.getEndOfTheDay(toDate);
-
-            if (fromDate.after(toDate) || !DateUtil.isDatesInRange(fromDate,
-                    toDate, MAX_STATS_DAYS)) {
-                throw new InvalidDateParamException(dateRangeParam);
-            }
-        } catch (IllegalArgumentException e) {
-            throw new InvalidDateParamException(dateRangeParam);
-        }
+        DateRange dateRange = DateRange.from(dateRangeParam);
 
         LocaleStatistics localeStatistics = new LocaleStatistics();
 
         List<Object[]> data =
                 textFlowTargetHistoryDAO.getUserContributionStatisticInVersion(
-                        version.getId(), person.getId(), fromDate, toDate);
+                        version.getId(), person.getId(),
+                        dateRange.getFromDate().toDate(),
+                        dateRange.getToDate().toDate());
 
         for (Object[] entry : data) {
             int count = ((BigDecimal) entry[0]).intValue();
@@ -371,6 +359,14 @@ public class StatisticsServiceImpl implements StatisticsResource {
         result.put(username, localeStatistics);
 
         return result;
+    }
+
+    private HPerson findPersonOrExceptionOnNotFound(String username) {
+        HPerson person = personDAO.findByUsername(username);
+        if (person == null) {
+            throw new NoSuchEntityException(username);
+        }
+        return person;
     }
 
     private TranslationStatistics getWordsStats(TransUnitWords wordCount,
@@ -423,6 +419,68 @@ public class StatisticsServiceImpl implements StatisticsResource {
                 result.getStats(localeId.getId(), StatUnit.MESSAGE);
         msgStatistics.setRemainingHours(StatisticsUtil
                 .getRemainingHours(wordStatistics));
+
+        return result;
+    }
+
+    /**
+     * Get translation work statistics for a user in given date range.
+     *
+     * Throws NoSuchEntityException if: - user not found
+     *
+     * Throws InvalidDateParamException if: - dateRangeParam is in wrong format,
+     * - date range is over MAX_STATS_DAYS
+     *
+     * @param username
+     *            username of contributor
+     * @param dateRangeParam
+     *            from..to (yyyy-mm-dd..yyyy-mm-dd), date range maximum: 365
+     *            days
+     * @param userTimeZoneID
+     *            optional user time zone ID. Will use system default in absence
+     *            or GMT zone if provided time zone ID can not be understood.
+     */
+    @Path("user/{username}/{dateRangeParam}")
+    @GET
+    @Produces({"application/json"})
+    public UserWorkMatrix getUserWorkMatrix(
+            @PathParam("username") final String username,
+            @PathParam("dateRangeParam") String dateRangeParam,
+            @QueryParam("userTimeZone") String userTimeZoneID) {
+        HPerson person =
+                findPersonOrExceptionOnNotFound(username);
+        DateRange dateRange = DateRange.from(dateRangeParam, userTimeZoneID);
+        DateTime fromDate = dateRange.getFromDate();
+        DateTime toDate = dateRange.getToDate();
+
+        DateTimeZone userZone = dateRange.getTimeZone();
+        DateTimeFormatter dateFormatter =
+                DateTimeFormat.forPattern(DATE_FORMAT + " ZZZ")
+                        .withZone(userZone);
+
+        // TODO system time zone should be persisted in database
+        DateTimeZone systemZone = DateTimeZone.getDefault();
+
+        if (userZone.getOffset(0) != systemZone.getOffset(0)) {
+            fromDate = fromDate.toDateTime(systemZone);
+            toDate = toDate.toDateTime(systemZone);
+        }
+
+        // TODO pahuang restrict toDate to yesterday (with timezone)
+//        if (toDate.isAfter(new DateTime().withTimeAtStartOfDay())) {
+//            toDate = new DateTime().withTimeAtStartOfDay();
+//        }
+        List<UserTranslationMatrix> databaseRecords =
+                textFlowTargetHistoryDAO.getUserTranslationMatrix(person,
+                        fromDate, toDate);
+
+        UserWorkMatrix result = new UserWorkMatrix();
+
+        for (UserTranslationMatrix matrixRecord : databaseRecords) {
+            String dateString = dateFormatter.print(
+                    matrixRecord.getSavedDate().getTime());
+            result.putOrCreateIfAbsent(dateString, matrixRecord);
+        }
 
         return result;
     }
