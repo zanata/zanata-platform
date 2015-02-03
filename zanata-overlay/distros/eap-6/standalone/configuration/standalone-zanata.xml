@@ -207,6 +207,10 @@
             </thread-pools>
             <default-security-domain value="other"/>
             <default-missing-method-permissions-deny-access value="true"/>
+            <mdb>
+                <resource-adapter-ref resource-adapter-name="hornetq-ra"/>
+                <bean-instance-pool-ref pool-name="mdb-strict-max-pool"/>
+            </mdb>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:infinispan:1.5">
             <cache-container name="web" aliases="standard-session-cache" default-cache="local-web" module="org.jboss.as.clustering.web.infinispan" statistics-enabled="true">
@@ -269,7 +273,9 @@
         <subsystem xmlns="urn:jboss:domain:messaging:1.4">
             <hornetq-server>
                 <persistence-enabled>true</persistence-enabled>
+                <security-enabled>false</security-enabled>
                 <journal-type>NIO</journal-type>
+                <journal-file-size>102400</journal-file-size>
                 <journal-min-files>2</journal-min-files>
 
                 <connectors>
@@ -302,10 +308,11 @@
                     <address-setting match="#">
                         <dead-letter-address>jms.queue.DLQ</dead-letter-address>
                         <expiry-address>jms.queue.ExpiryQueue</expiry-address>
-                        <redelivery-delay>0</redelivery-delay>
+                        <redelivery-delay>5000</redelivery-delay>
+                        <max-delivery-attempts>2</max-delivery-attempts>
                         <max-size-bytes>10485760</max-size-bytes>
                         <page-size-bytes>2097152</page-size-bytes>
-                        <address-full-policy>PAGE</address-full-policy>
+                        <address-full-policy>BLOCK</address-full-policy>
                         <message-counter-history-day-limit>10</message-counter-history-day-limit>
                     </address-setting>
                 </address-settings>
@@ -339,8 +346,17 @@
                 </jms-connection-factories>
 
                 <jms-destinations>
-                    <jms-queue name="testQueue">
-                        <entry name="queue/test"/>
+                    <jms-queue name="MailsQueue">
+                        <entry name="jms/queue/MailsQueue"/>
+                        <durable>true</durable>
+                    </jms-queue>
+                    <jms-queue name="ExpiryQueue">
+                        <entry name="jms/queue/ExpiryQueue"/>
+                        <durable>true</durable>
+                    </jms-queue>
+                    <jms-queue name="DLQ">
+                        <entry name="jms/queue/DLQ"/>
+                        <durable>true</durable>
                     </jms-queue>
                 </jms-destinations>
             </hornetq-server>
@@ -349,7 +365,7 @@
             <bindings>
                 <simple name="java:global/zanata/security/auth-policy-names/internal" value="zanata.internal"/>
                 <simple name="java:global/zanata/security/auth-policy-names/openid" value="zanata.openid"/>
-                <simple name="java:global/zanata/security/admin-users" value=""/>
+                <!--<simple name="java:global/zanata/security/admin-users" value=""/>-->
                 <simple name="java:global/zanata/files/document-storage-directory" value="${user.home}/zanata/files"/>
                 <simple name="java:global/zanata/email/default-from-address" value="no-reply@zanata.org"/>
             </bindings>
