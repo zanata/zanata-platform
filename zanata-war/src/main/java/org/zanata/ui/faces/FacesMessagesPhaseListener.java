@@ -46,8 +46,8 @@ public class FacesMessagesPhaseListener implements PhaseListener {
 
     @Override
     public void beforePhase(PhaseEvent event) {
-        if ( event.getPhaseId() == RENDER_RESPONSE ) {
-            if(!event.getFacesContext().getResponseComplete()) {
+        if (event.getPhaseId() == RENDER_RESPONSE) {
+            if (!event.getFacesContext().getResponseComplete()) {
                 ServiceLocator.instance().getInstance(FacesMessages.class)
                         .beforeRenderResponse();
             }
