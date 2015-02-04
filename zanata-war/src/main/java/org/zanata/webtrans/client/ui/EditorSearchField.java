@@ -29,6 +29,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.*;
+import org.zanata.util.CoverageIgnore;
 
 
 /**
@@ -65,6 +66,7 @@ public class EditorSearchField extends Composite {
         listener.onSearchFieldValueChange(newValue);
     }
 
+    @CoverageIgnore("JSNI")
     private native void initTextBox(Element wrapper, EditorSearchFieldListener listener)/*-{
         var valueChangeCallback = this.@org.zanata.webtrans.client.ui.EditorSearchField::onValueChanged(Ljava/lang/String;Lorg/zanata/webtrans/client/ui/EditorSearchFieldListener;);
         $wnd.searchSuggestions.init(wrapper, function (newValue) {

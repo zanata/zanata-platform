@@ -20,6 +20,8 @@
  */
 package org.zanata.webtrans.client.util;
 
+import org.zanata.util.CoverageIgnore;
+
 /**
  * Utilities for dealing with javascript native code.
  *
@@ -33,6 +35,7 @@ public class JavascriptUtil {
      * @param varName Variable name.
      * @return The value (as a string) assigned to varName.
      */
+    @CoverageIgnore
     public static native String getJavascriptValue(String varName) /*-{
         return $wnd[varName];
     }-*/;

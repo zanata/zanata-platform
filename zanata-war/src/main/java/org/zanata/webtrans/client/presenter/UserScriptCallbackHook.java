@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import org.zanata.util.CoverageIgnore;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 
@@ -36,6 +37,7 @@ public class UserScriptCallbackHook implements TransUnitUpdatedEventHandler {
         attachCallbackMapToWindow();
     }
 
+    @CoverageIgnore("JSNI")
     private static native void attachCallbackMapToWindow()/*-{
     $wnd.zanataEvent = {
       description : "Add callback functions to the arrays for the available event types.\n"
@@ -54,6 +56,7 @@ public class UserScriptCallbackHook implements TransUnitUpdatedEventHandler {
         triggerAllTransUnitUpdatedCallbacksWith(event);
     }
 
+    @CoverageIgnore("JSNI")
     private static native void triggerAllTransUnitUpdatedCallbacksWith(
             TransUnitUpdatedEvent event)/*-{
     callbacks = $wnd.zanataEvent.events.transUnitUpdated.callbacks;
