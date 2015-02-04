@@ -24,34 +24,17 @@ import org.zanata.service.LanguageTeamService;
 @Name("languageTeamServiceImpl")
 @Scope(ScopeType.STATELESS)
 public class LanguageTeamServiceImpl implements LanguageTeamService {
+    @In
     private PersonDAO personDAO;
 
+    @In
     private LocaleDAO localeDAO;
 
+    @In
     private LocaleMemberDAO localeMemberDAO;
 
+    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION)
     private HAccount authenticatedAccount;
-
-    @In
-    public void setPersonDAO(PersonDAO personDAO) {
-        this.personDAO = personDAO;
-    }
-
-    @In
-    public void setLocaleDAO(LocaleDAO localeDAO) {
-        this.localeDAO = localeDAO;
-    }
-
-    @In
-    public void setLocaleMemberDAO(LocaleMemberDAO localeMemberDAO) {
-        this.localeMemberDAO = localeMemberDAO;
-    }
-
-    @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION)
-    public void setAuthenticatedAccount(HAccount authenticatedAccount) {
-        this.authenticatedAccount = authenticatedAccount;
-    }
-
 
     public List<HLocale> getLanguageMemberships(String userName) {
         return personDAO.getLanguageMembershipByUsername(userName);
