@@ -28,10 +28,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.StringDescription;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.zanata.util.ShortString;
 import org.zanata.util.WebElementUtil;
 
 import com.google.common.base.Function;
@@ -77,6 +79,10 @@ public class AbstractPage {
         return driver.getCurrentUrl();
     }
 
+    protected void logWaiting(String msg) {
+        log.info("Waiting for {}", msg);
+    }
+
     public FluentWait<WebDriver> waitForAMoment() {
         return ajaxWaitForSec;
     }
@@ -93,7 +99,7 @@ public class AbstractPage {
     }
 
     public Alert switchToAlert() {
-        return waitForAMoment().until(new Function<WebDriver, Alert>() {
+        return waitForAMoment().withMessage("alert").until(new Function<WebDriver, Alert>() {
             @Override
             public Alert apply(WebDriver driver) {
                 try {
@@ -105,16 +111,50 @@ public class AbstractPage {
         });
     }
 
+    /**
+     * @deprecated Use the overload which includes a message
+     */
+    @Deprecated
     protected <P extends AbstractPage> P refreshPageUntil(P currentPage,
             Predicate<WebDriver> predicate) {
-        waitForAMoment().until(predicate);
+        return refreshPageUntil(currentPage, predicate, null);
+    }
+
+    /**
+     * @param currentPage
+     * @param predicate
+     * @param message description of predicate
+     * @param <P>
+     * @return
+     */
+    protected <P extends AbstractPage> P refreshPageUntil(P currentPage,
+            Predicate<WebDriver> predicate, String message) {
+        waitForAMoment().withMessage(message).until(predicate);
         PageFactory.initElements(driver, currentPage);
         return currentPage;
     }
 
+    /**
+     * @deprecated Use the overload which includes a message
+     */
+    @Deprecated
     protected <P extends AbstractPage, T> T refreshPageUntil(P currentPage,
             Function<WebDriver, T> function) {
-        T done = waitForAMoment().until(function);
+        return refreshPageUntil(currentPage, function, null);
+    }
+
+    /**
+     *
+     * @param currentPage
+     * @param function
+     * @param message description of function
+     * @param <P>
+     * @param <T>
+     * @return
+     */
+    protected <P extends AbstractPage, T> T refreshPageUntil(P currentPage,
+            Function<WebDriver, T> function, String message) {
+        T done = waitForAMoment().withMessage(message).until(function);
         PageFactory.initElements(driver, currentPage);
         return done;
     }
@@ -130,56 +170,61 @@ public class AbstractPage {
      */
     public <T> void
             waitFor(final Callable<T> callable, final Matcher<T> matcher) {
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                try {
-                    T result = callable.call();
-                    if (!matcher.matches(result)) {
-                        matcher.describeMismatch(result,
-                                new Description.NullDescription());
+        waitForAMoment().withMessage(StringDescription.toString(matcher)).until(
+                new Predicate<WebDriver>() {
+                    @Override
+                    public boolean apply(WebDriver input) {
+                        try {
+                            T result = callable.call();
+                            if (!matcher.matches(result)) {
+                                matcher.describeMismatch(result,
+                                        new Description.NullDescription());
+                            }
+                            return matcher.matches(result);
+                        } catch (Exception e) {
+                            log.warn("exception", e);
+                            return false;
+                        }
                     }
-                    return matcher.matches(result);
-                } catch (Exception e) {
-                    log.warn("exception", e);
-                    return false;
-                }
-            }
-        });
+                });
     }
 
     /**
-     * Wait for jQuery and Ajax calls to be 0
-     * If either are not defined, they can be assumed to be 0.
+     * Normally a page has no outstanding ajax requests when it has
+     * finished an operation, but some pages use long polling to
+     * "push" changes to the user, eg for the editor's event service.
+     * @return
+     */
+    protected int getExpectedBackgroundRequests() {
+        return 0;
+    }
+
+    /**
+     * Wait for any AJAX calls to return.
      */
     public void waitForPageSilence() {
-        // Wait for jQuery calls to be 0
-        waitForAMoment().until(new Predicate<WebDriver>() {
+        // Wait for AJAX calls to be 0
+        waitForAMoment().withMessage("page silence").until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                int ajaxCalls;
-                int jQueryCalls;
-                try {
-                    jQueryCalls = Integer.parseInt(
-                            ((JavascriptExecutor) getDriver())
-                                    .executeScript("return jQuery.active")
-                                    .toString()
-                    );
-                } catch (WebDriverException jCall) {
-                    jQueryCalls = 0;
+                Long ajaxCalls = (Long) ((JavascriptExecutor) getDriver())
+                        .executeScript(
+                                "return XMLHttpRequest.active");
+                if (ajaxCalls == null) {
+                    if (log.isWarnEnabled()) {
+                        String url = getDriver().getCurrentUrl();
+                        String pageSource = ShortString.shorten(getDriver().getPageSource(), 2000);
+                        log.warn("XMLHttpRequest.active is null.  URL: {}\nPartial page source follows:\n{}", url, pageSource);
+                    }
+                    return true;
                 }
-
-                try {
-                    ajaxCalls = Integer.parseInt(
-                            ((JavascriptExecutor) getDriver())
-                                    .executeScript(
-                                            "return Ajax.activeRequestCount")
-                                    .toString()
-                    );
-                } catch (WebDriverException jCall) {
-                    ajaxCalls = 0;
+                if (ajaxCalls < 0) {
+                    throw new RuntimeException("XMLHttpRequest.active " +
+                            "is negative.  Please ensure that " +
+                            "AjaxCounterBean's script is run before " +
+                            "any AJAX requests.");
                 }
-                return ajaxCalls + jQueryCalls == 0;
+                return ajaxCalls <= getExpectedBackgroundRequests();
             }
         });
     }
@@ -190,13 +235,15 @@ public class AbstractPage {
      * @return target WebElement
      */
     public WebElement waitForWebElement(final By elementBy) {
+        String msg = "element ready " + elementBy;
+        logWaiting(msg);
         waitForPageSilence();
-        return waitForAMoment().until(new Function<WebDriver, WebElement>() {
+        return waitForAMoment().withMessage(msg).until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver input) {
-                WebElement targetElement = waitForElementExists(elementBy);
+                WebElement targetElement = getDriver().findElement(elementBy);
                 if (!elementIsReady(targetElement)) {
-                    throw new NoSuchElementException("Waiting for element");
+                    return null;
                 }
                 return targetElement;
             }
@@ -211,14 +258,15 @@ public class AbstractPage {
      */
     public WebElement waitForWebElement(final WebElement parentElement,
                                         final By elementBy) {
+        String msg = "element ready " + elementBy;
+        logWaiting(msg);
         waitForPageSilence();
-        return waitForAMoment().until(new Function<WebDriver, WebElement>() {
+        return waitForAMoment().withMessage(msg).until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver input) {
-                WebElement targetElement = waitForElementExists(parentElement,
-                        elementBy);
+                WebElement targetElement = parentElement.findElement(elementBy);
                 if (!elementIsReady(targetElement)) {
-                    throw new NoSuchElementException("Waiting for element");
+                    return null;
                 }
                 return targetElement;
             }
@@ -233,8 +281,11 @@ public class AbstractPage {
      * @return target WebElement
      */
     public WebElement waitForElementExists(final By elementBy) {
+        String msg = "element exists " + elementBy;
+        logWaiting(msg);
         waitForPageSilence();
-        return waitForAMoment().until(new Function<WebDriver, WebElement>() {
+        return waitForAMoment().withMessage(msg).until(
+                new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver input) {
                 return getDriver().findElement(elementBy);
@@ -251,8 +302,10 @@ public class AbstractPage {
      */
     public WebElement waitForElementExists(final WebElement parentElement,
                                            final By elementBy) {
+        String msg = "element exists " + elementBy;
+        logWaiting(msg);
         waitForPageSilence();
-        return waitForAMoment().until(new Function<WebDriver, WebElement>() {
+        return waitForAMoment().withMessage(msg).until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver input) {
                 return parentElement.findElement(elementBy);

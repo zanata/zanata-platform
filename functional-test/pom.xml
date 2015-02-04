@@ -15,17 +15,14 @@
     <selenium.version>2.39.0</selenium.version>
 
     <!--Cargo Settings -->
-    <cargo.wait>false</cargo.wait>
     <cargo.host>localhost</cargo.host>
-    <cargo.container>jboss72x</cargo.container>
     <!--jboss port offset -->
     <cargo.port.offset>0</cargo.port.offset>
     <!-- This may be changed by the JBOSS_HTTP_PORT profile -->
+    <!-- This needs to agree with the http socket-binding in standalone.xml -->
     <cargo.servlet.port>8180</cargo.servlet.port>
-    <cargo.installation>http://downloads.sourceforge.net/project/zanata/server/zanata-server.zip</cargo.installation>
     <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
     <cargo.container.home>${project.build.directory}/jboss/container</cargo.container.home>
-    <cargo.install.relative.to.container.home>../../cargo/installs/zanata-server</cargo.install.relative.to.container.home>
     <context.path>zanata</context.path>
 
     <!--data source-->
@@ -61,7 +58,8 @@
       -Xnoagent -Djava.compiler=NONE
     </cargo.debug.jvm.args>
     <!-- this property can be used to control what test needs to be run by failsafe -->
-    <include.test.patterns>**/AggregateTestSuite.java</include.test.patterns>
+    <default.test.patterns>**/BasicAcceptanceTestSuite.java</default.test.patterns>
+    <include.test.patterns>${default.test.patterns}</include.test.patterns>
     <hibernate.search.default.indexBase>${project.build.directory}/zanataindex</hibernate.search.default.indexBase>
     <javamelody.storage-directory>${project.build.directory}/zanatastats</javamelody.storage-directory>
     <!-- This may be changed by the SMTP_PORT profile -->
@@ -336,8 +334,6 @@
         </property>
       </activation>
       <properties>
-        <cargo.container>wildfly8x</cargo.container>
-        <cargo.installation>http://download.jboss.org/wildfly/${wildfly.version}/wildfly-${wildfly.version}.zip</cargo.installation>
         <standalone.xml.file>standalone_wildfly.xml</standalone.xml.file>
         <jndi-remote-client.groupId>org.wildfly</jndi-remote-client.groupId>
         <jndi-remote-client.artifactId>wildfly-ejb-client-bom</jndi-remote-client.artifactId>
@@ -346,43 +342,22 @@
       <build>
         <plugins>
           <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>install-wildfly-modules</id>
+                <phase>package</phase>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
             <artifactId>maven-dependency-plugin</artifactId>
             <configuration>
               <usedDependencies>
                 <usedDependency>org.wildfly:wildfly-ejb-client-bom</usedDependency>
               </usedDependencies>
             </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.cargo</groupId>
-            <artifactId>cargo-maven2-plugin</artifactId>
-            <configuration combine.self="append">
-            </configuration>
-            <executions>
-              <execution>
-                <id>cargo-install</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>install</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.gmaven</groupId>
-            <artifactId>gmaven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>unpack-wildfly-modules</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>execute</goal>
-                </goals>
-                <configuration>
-                  <source>${pom.basedir}/src/etc/wildflyModules.groovy</source>
-                </configuration>
-              </execution>
-            </executions>
           </plugin>
         </plugins>
       </build>
@@ -403,11 +378,63 @@
         </dependencies>
       </dependencyManagement>
     </profile>
+
+    <profile>
+      <id>skipFuncTests</id>
+      <activation>
+        <property>
+          <name>skipFuncTests</name>
+        </property>
+      </activation>
+      <properties>
+        <skipITs>true</skipITs>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>allFuncTests</id>
+      <activation>
+        <property>
+          <name>allFuncTests</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <include.test.patterns>**/DetailedTestSuite.java</include.test.patterns>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>check-tests-enabled</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target xmlns:if="ant:if">
+                    <echo if:set="skipFuncTests"
+                      message="WARNING: -DskipFuncTests takes precedence over -DallFuncTests" />
+                    <echo if:set="skipITs"
+                      message="WARNING: -DskipITs takes precedence over -DallFuncTests" />
+                    <echo if:set="skipTests"
+                      message="WARNING: -DskipTests takes precedence over -DallFuncTests" />
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
     <profile>
       <id>run-functional-test</id>
       <activation>
         <property>
-          <name>functional-test</name>
+          <name>!skipFuncTests</name>
         </property>
       </activation>
       <build>
@@ -517,14 +544,6 @@
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
             <configuration combine.self="append">
-              <container>
-                <!--if install from url-->
-                <zipUrlInstaller>
-                  <url>${cargo.installation}</url>
-                  <downloadDir>${user.home}/Downloads</downloadDir>
-                  <extractDir>${cargo.extract.dir}</extractDir>
-                </zipUrlInstaller>
-              </container>
               <configuration>
                 <properties>
                   <cargo.servlet.port>${cargo.servlet.port}</cargo.servlet.port>
@@ -545,6 +564,10 @@
             </configuration>
             <executions>
               <execution>
+                <id>cargo-install</id>
+                <phase>prepare-package</phase>
+              </execution>
+              <execution>
                 <id>cargo-start</id>
                 <phase>pre-integration-test</phase>
                 <goals>
@@ -563,21 +586,6 @@
 
           <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
-            <version>2.11</version>
-            <executions>
-              <execution>
-                <id>integration-test</id>
-                <goals>
-                  <goal>integration-test</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>verify</id>
-                <goals>
-                  <goal>verify</goal>
-                </goals>
-              </execution>
-            </executions>
             <configuration>
               <redirectTestOutputToFile>false</redirectTestOutputToFile>
               <printSummary>true</printSummary>
@@ -585,13 +593,11 @@
               <!--<forkMode>always</forkMode>-->
               <includes>
                 <include>${include.test.patterns}</include>
-                <!--index page-->
-                <include>**/FeatureTest.java</include>
               </includes>
               <properties>
                 <property>
                   <name>listener</name>
-                  <value>org.zanata.util.ScreenshotEnabledTestRunListener,org.zanata.util.FeatureInventoryRecorder</value>
+                  <value>org.zanata.util.ScreenshotEnabledTestRunListener,org.zanata.util.FeatureInventoryRecorder,org.zanata.util.TestLogger</value>
                 </property>
               </properties>
               <systemPropertyVariables>
@@ -725,6 +731,10 @@
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
           <execution>
+            <id>init-no-appserver</id>
+            <phase>initialize</phase>
+          </execution>
+          <execution>
             <phase>generate-resources</phase>
             <goals>
               <goal>run</goal>
@@ -732,23 +742,47 @@
             <configuration>
               <target>
                 <echo>===== Properties that can be set for functional test =====</echo>
-                <echo>-Dfunctional-test : to activate functional test run</echo>
+                <echo>-DskipFuncTests : to skip running functional tests, and/or:</echo>
+                <echo>-DskipArqTests : to skip Arquillian integration tests (if building zanata-war)</echo>
+                <echo/>
+                <echo>Unless skipping tests, you must choose an appserver:</echo>
+                <echo>-Dappserver=jbosseap6 -Dcargo.installation=http://example.com/jbosseap632.zip -Dcargo.basename=jbosseap632</echo>
+                <echo>or -Dappserver=wildfly8</echo>
+                <echo>NB: cargo.basename needs to match the basename of the file given in cargo.installation.</echo>
+                <echo>For example, if cargo.installation is http://example.com/download/jboss-6.3.2.zip, cargo.basename should be jboss-6.3.2.</echo>
+                <echo/>
+                <echo>-DallFuncTests to enable all functional tests (defaults to smoke tests)</echo>
+                <echo/>
+                <echo>-Dcargo.debug.jvm.args : If not set by default will listen to port 8787. Need to set to empty on jenkins</echo>
+                <echo/>
                 <echo>-Dzanata.target.version=version of zanata to deploy. Default is: ${project.parent.version}</echo>
                 <echo>-Dzanata.instance.url=http://${cargo.host}:${cargo.servlet.port}/${context.path}</echo>
                 <echo>-Dzanata.apikey=b6d7044e9ee3b2447c28fb7c50d86d98</echo>
                 <!--<echo>-Dzanata.client.version=maven client version to use. Currently: ${zanata.client.version}</echo>-->
                 <echo>-Dzanata.sample.projects.basedir=${project.build.testOutputDirectory}/sample-projects</echo>
-                <echo>-Dcargo.debug.jvm.args : If not set by default will listen to port 8787. Need to set to empty on jenkins</echo>
-                <echo>-Dinclude.test.patterns=test filter pattern. Can be used to control what test to run. Default is **/*AggregateTestSuite.java.</echo>
+                <echo>-Dinclude.test.patterns=test filter pattern. Can be used to control what test to run. Default is ${default.test.patterns}</echo>
                 <echo>-Dwebdriver.type=run tests in htmlUnit, chrome or firefox. For chrome, see also webdriver.chrome.* Default is chrome.</echo>
                 <echo>-Dwebdriver.display=display to run test browser in, for Xnest or otherwise. Default is :0.</echo>
                 <echo>-Dwebdriver.chrome.bin=full path to chrome binary.</echo>
                 <echo>-Dwebdriver.chrome.driver=full path to chromedriver binary.</echo>
                 <echo>-Dwebdriver.wait=global wait time in seconds for element searches. Default is 10.</echo>
                 <echo>==========================================================</echo>
-                <echo>to ask cargo to start up then wait so that tests can be run manually: mvn clean package cargo:run -Dfunctional-test -Dmysql.port=13306</echo>
+                <echo>to ask cargo to start up then wait so that tests can be run manually: mvn clean package cargo:run -Dappserver=wildfly8 -Dmysql.port=13306</echo>
                 <!-- placeholder. Actual content should be populated by running server/etc/scripts/functional-test-db-snapshot.sh -->
                 <touch file="${project.build.directory}/database.sql"/>
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>preIT-no-appserver</id>
+            <phase>prepare-package</phase>
+            <goals><goal>run</goal></goals>
+            <configuration>
+              <target unless="skipFuncTests">
+                <fail message="'appserver' property must be set to run integration tests (or else use -DskipFuncTests)"
+                  unless="appserver" />
+                <fail message="'cargo.installation' property must be set to run integration tests (or else use -DskipFuncTests)"
+                  unless="cargo.installation"/>
               </target>
             </configuration>
           </execution>
@@ -797,7 +831,6 @@
         <!-- this plugin configuration is shared by two profiles: functional-test and wildfly -->
         <configuration>
           <container>
-            <containerId>${cargo.container}</containerId>
             <type>installed</type>
 
             <output>${project.build.directory}/container.log</output>

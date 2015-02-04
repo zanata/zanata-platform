@@ -35,6 +35,11 @@ public class DashboardBasePage extends BasePage {
     private By activityTab = By.id("activity_tab");
     private By projectsTab = By.id("projects_tab");
     private By settingsTab = By.id("settings_tab");
+
+    private By activityTabBody = By.id("activity");
+    private By projectsTabBody = By.id("projects");
+    private By settingsTabBody = By.id("settings");
+
     private By settingsAccountTab = By.id("account_tab");
     private By settingsProfileTab = By.id("profile_tab");
     private By settingsClientTab = By.id("client_tab");
@@ -62,6 +67,7 @@ public class DashboardBasePage extends BasePage {
 
     public DashboardActivityTab gotoActivityTab() {
         log.info("Click Activity tab");
+        waitForElementExists(activityTabBody);
         clickWhenTabEnabled(waitForWebElement(activityTab));
         return new DashboardActivityTab(getDriver());
     }
@@ -75,12 +81,14 @@ public class DashboardBasePage extends BasePage {
 
     public DashboardProjectsTab gotoProjectsTab() {
         log.info("Click Projects tab");
+        waitForElementExists(projectsTabBody);
         clickWhenTabEnabled(waitForWebElement(projectsTab));
         return new DashboardProjectsTab(getDriver());
     }
 
     public DashboardBasePage goToSettingsTab() {
         log.info("Click Settings tab");
+        waitForElementExists(settingsTabBody);
         clickWhenTabEnabled(waitForWebElement(settingsTab));
         return new DashboardBasePage(getDriver());
     }

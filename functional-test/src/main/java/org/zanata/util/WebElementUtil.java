@@ -149,6 +149,7 @@ public class WebElementUtil {
                 .withTimeout(durationInSec, SECONDS)
                 .pollingEvery(1, SECONDS)
                 .ignoring(NoSuchElementException.class,
+                        // TODO is ignoring this safe?
                         StaleElementReferenceException.class);
     }
 

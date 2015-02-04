@@ -104,14 +104,16 @@ public class BasePage extends CorePage {
             getDriver().findElement(By.id("nav-main"))
                     .findElement(By.tagName("a")).click();
         }
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return menuItem.isDisplayed();
-            }
-        });
+        waitForAMoment().withMessage("displayed: " + menuItem).until(
+                new Predicate<WebDriver>() {
+                    @Override
+                    public boolean apply(WebDriver input) {
+                        return menuItem.isDisplayed();
+                    }
+                });
         // The notifications can sometimes get in the way
-        waitForAMoment().until(ExpectedConditions.elementToBeClickable(menuItem));
+        waitForAMoment().withMessage("clickable: " + menuItem).until(
+                ExpectedConditions.elementToBeClickable(menuItem));
         menuItem.click();
     }
 
@@ -263,8 +265,9 @@ public class BasePage extends CorePage {
     }
 
     public BasePage waitForSearchListContains(final String expected) {
-        log.info("Wait for Project search list contains {}", expected);
-        waitForAMoment().until(new Predicate<WebDriver>() {
+        String msg = "Project search list contains " + expected;
+        logWaiting(msg);
+        waitForAMoment().withMessage(msg).until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getProjectSearchAutocompleteItems().contains(expected);
@@ -281,29 +284,34 @@ public class BasePage extends CorePage {
 
     public ProjectVersionsPage clickSearchEntry(final String searchEntry) {
         log.info("Click Projects search result {}", searchEntry);
+        String msg = "search result " + searchEntry;
         WebElement searchItem =
-                waitForAMoment().until(new Function<WebDriver, WebElement>() {
-                    @Override
-                    public WebElement apply(WebDriver driver) {
-                        List<WebElement> items =
-                                WebElementUtil.getSearchAutocompleteResults(
-                                        driver, "general-search-form",
-                                        "projectAutocomplete");
+                waitForAMoment().withMessage(msg).until(
+                        new Function<WebDriver, WebElement>() {
+                            @Override
+                            public WebElement apply(WebDriver driver) {
+                                List<WebElement> items =
+                                        WebElementUtil
+                                                .getSearchAutocompleteResults(
+                                                        driver,
+                                                        "general-search-form",
+                                                        "projectAutocomplete");
 
-                        for (WebElement item : items) {
-                            if (item.getText().equals(searchEntry)) {
-                                return item;
+                                for (WebElement item : items) {
+                                    if (item.getText().equals(searchEntry)) {
+                                        return item;
+                                    }
+                                }
+                                return null;
                             }
-                        }
-                        return null;
-                    }
-                });
+                        });
         searchItem.click();
         return new ProjectVersionsPage(getDriver());
     }
 
     public void clickWhenTabEnabled(final WebElement tab) {
-        waitForAMoment().until(new Predicate<WebDriver>() {
+        String msg = "Clickable tab: " + tab;
+        waitForAMoment().withMessage(msg).until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 waitForPageSilence();

@@ -53,7 +53,7 @@ public class RegisterPage extends CorePage {
 
     private By nameField = By.id("loginForm:name");
     private By emailField = By.id("loginForm:emailField:email");
-    private By usernameField = By.id("loginForm:usernameField:username");
+    public By usernameField = By.id("loginForm:usernameField:username");
     private By passwordField = By.id("loginForm:passwordField:password");
     private By signUpButton = By.xpath("//input[@value='Sign Up']");
     private By showHideToggleButton = By.className("js-form-password-toggle");

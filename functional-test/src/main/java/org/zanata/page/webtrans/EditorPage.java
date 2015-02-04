@@ -95,6 +95,16 @@ public class EditorPage extends BasePage {
     }
 
     /**
+     * There is usually a long poll waiting for GWTEventService events
+     * from the server.
+     * @return
+     */
+    @Override
+    protected int getExpectedBackgroundRequests() {
+        return 1;
+    }
+
+    /**
      * First row is header: SourceTerm, TargetTerm, Action, Details.
      *
      * @return a table representing the searchResultTable
