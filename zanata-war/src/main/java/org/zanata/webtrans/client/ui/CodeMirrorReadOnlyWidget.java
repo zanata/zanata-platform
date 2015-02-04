@@ -9,6 +9,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.zanata.util.CoverageIgnore;
 
 public class CodeMirrorReadOnlyWidget extends Composite implements
         SourceContentWrapper {
@@ -26,6 +27,7 @@ public class CodeMirrorReadOnlyWidget extends Composite implements
     }
 
     // see http://codemirror.net/doc/manual.html#usage
+    @CoverageIgnore("JSNI")
     private native JavaScriptObject initCodeMirror(Element element) /*-{
     var self = this;
     var codeMirrorEditor = $wnd.CodeMirror.fromTextArea(element, {
@@ -53,6 +55,7 @@ public class CodeMirrorReadOnlyWidget extends Composite implements
         content = text;
     }
 
+    @CoverageIgnore("JSNI")
     public native void refresh() /*-{
     var codeMirror = this.@org.zanata.webtrans.client.ui.CodeMirrorReadOnlyWidget::codeMirror;
     if (codeMirror) {
@@ -66,6 +69,7 @@ public class CodeMirrorReadOnlyWidget extends Composite implements
         }
     }
 
+    @CoverageIgnore("JSNI")
     private native void codeMirrorHighlight(String term) /*-{
     var codeMirror = this.@org.zanata.webtrans.client.ui.CodeMirrorReadOnlyWidget::codeMirror;
     var searchCursor = codeMirror.getSearchCursor(term, {

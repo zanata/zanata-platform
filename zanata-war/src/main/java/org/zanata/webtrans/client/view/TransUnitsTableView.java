@@ -3,6 +3,7 @@ package org.zanata.webtrans.client.view;
 import java.util.List;
 
 import com.google.gwt.user.client.Element;
+import org.zanata.util.CoverageIgnore;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
 import org.zanata.webtrans.client.ui.LoadingPanel;
@@ -181,6 +182,7 @@ public class TransUnitsTableView extends Composite implements
         scrollToElement(root.getElement(), transUnitRow.getElement());
     }
 
+    @CoverageIgnore("JSNI")
     private native void scrollToElement(Element scroll, Element item) /*-{
       if (!item || !scroll)  {
         return;

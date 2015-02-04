@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.client.view;
 
+import org.zanata.util.CoverageIgnore;
 import org.zanata.webtrans.client.presenter.UserConfigHolder.ConfigurationState;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.EditorSearchField;
@@ -186,6 +187,7 @@ public class TransFilterView extends Composite implements TransFilterDisplay {
         setElementIndeterminate(checkbox.getElement(), partiallyChecked);
     }
 
+    @CoverageIgnore("JSNI")
     private static native void setElementIndeterminate(Element elem,
             boolean indeterminate)/*-{
     elem.getElementsByTagName('input')[0].indeterminate = indeterminate;

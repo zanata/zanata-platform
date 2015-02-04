@@ -1059,6 +1059,12 @@
             <formats>
               <format>xml</format>
             </formats>
+            <instrumentation>
+              <ignoreMethodAnnotations>
+                <ignoreMethodAnnotation>org.zanata.util.CoverageIgnore</ignoreMethodAnnotation>
+              </ignoreMethodAnnotations>
+              <ignoreTrivial>true</ignoreTrivial>
+            </instrumentation>
           </configuration>
         </plugin>
         <!-- change maven-release-plugin back to defaults (instead of oss-parent's settings)  -->
