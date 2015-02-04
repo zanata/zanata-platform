@@ -35,7 +35,7 @@ public class JavascriptUtil {
      * @param varName Variable name.
      * @return The value (as a string) assigned to varName.
      */
-    @CoverageIgnore
+    @CoverageIgnore("JSNI")
     public static native String getJavascriptValue(String varName) /*-{
         return $wnd[varName];
     }-*/;
