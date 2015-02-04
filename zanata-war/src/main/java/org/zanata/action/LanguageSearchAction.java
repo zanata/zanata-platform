@@ -34,14 +34,18 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
+import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.events.LanguageDisabled;
 import org.zanata.events.LanguageEnabled;
-import org.zanata.util.Event;
+import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.service.LanguageTeamService;
 import org.zanata.service.LocaleService;
 import org.zanata.ui.InMemoryListFilter;
+import org.zanata.util.Event;
 
 @Name("languageSearchAction")
 @Scope(ScopeType.PAGE)
@@ -52,7 +56,13 @@ public class LanguageSearchAction extends InMemoryListFilter<HLocale> implements
     private LocaleService localeServiceImpl;
 
     @In
+    private LanguageTeamService languageTeamServiceImpl;
+
+    @In
     private LocaleDAO localeDAO;
+
+    @In
+    private ZanataIdentity identity;
 
     private List<HLocale> allLanguages;
 
@@ -67,14 +77,11 @@ public class LanguageSearchAction extends InMemoryListFilter<HLocale> implements
     @Getter
     private SortingType LanguageSortingList = new SortingType(
             Lists.newArrayList(SortingType.SortOption.ALPHABETICAL,
-                    SortingType.SortOption.LOCALE_ID));
+                    SortingType.SortOption.LOCALE_ID,
+                    SortingType.SortOption.MEMBERS));
 
     private final LanguageComparator languageComparator =
             new LanguageComparator(getLanguageSortingList());
-
-    public String manageMembers(String locale) {
-        return "";
-    }
 
     @Restrict("#{s:hasRole('admin')}")
     public void enable(HLocale locale) {
@@ -108,6 +115,15 @@ public class LanguageSearchAction extends InMemoryListFilter<HLocale> implements
         localeDAO.flush();
     }
 
+    public boolean isUserTeamMember(HLocale locale) {
+        if(identity != null) {
+            return languageTeamServiceImpl
+                    .getLanguageMemberships(identity.getAccountUsername()).contains(locale);
+        }
+        return false;
+
+    }
+
     /**
      * Sort language list
      */
@@ -119,7 +135,12 @@ public class LanguageSearchAction extends InMemoryListFilter<HLocale> implements
     @Override
     protected List<HLocale> fetchAll() {
         if (allLanguages == null) {
-            allLanguages = localeServiceImpl.getAllLocales();
+            if(identity != null
+                    && identity.hasRole("admin")) {
+                allLanguages = localeServiceImpl.getAllLocales();
+            } else {
+                allLanguages = localeServiceImpl.getSupportedLocales();
+            }
         }
         return allLanguages;
     }
@@ -154,9 +175,12 @@ public class LanguageSearchAction extends InMemoryListFilter<HLocale> implements
             if (selectedSortOption.equals(SortingType.SortOption.ALPHABETICAL)) {
                 return o1.retrieveDisplayName().compareTo(
                         o2.retrieveDisplayName());
-            } else {
+            } else if (selectedSortOption
+                    .equals(SortingType.SortOption.LOCALE_ID)) {
                 return o1.getLocaleId().getId().compareTo(
                         o2.getLocaleId().getId());
+            } else {
+                return o1.getMembers().size() - o2.getMembers().size();
             }
         }
     }

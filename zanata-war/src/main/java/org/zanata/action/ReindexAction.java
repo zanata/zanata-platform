@@ -39,11 +39,29 @@ public class ReindexAction implements Serializable {
         return searchIndexManager.getReindexOptions();
     }
 
-    public void selectAll(boolean selected) {
+    public boolean isAnyOptionSelected() {
         for (ReindexClassOptions opts : searchIndexManager.getReindexOptions()) {
-            opts.setPurge(selected);
-            opts.setReindex(selected);
-            opts.setOptimize(selected);
+            if(opts.isOptimize() || opts.isPurge() || opts.isReindex()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isSelectAll() {
+        for (ReindexClassOptions opts : searchIndexManager.getReindexOptions()) {
+            if(!opts.isOptimize() || !opts.isPurge() || !opts.isReindex()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void setSelectAll(boolean selectAll) {
+        for (ReindexClassOptions opts : searchIndexManager.getReindexOptions()) {
+            opts.setPurge(selectAll);
+            opts.setReindex(selectAll);
+            opts.setOptimize(selectAll);
         }
     }
 

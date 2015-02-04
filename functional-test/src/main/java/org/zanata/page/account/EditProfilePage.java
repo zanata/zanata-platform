@@ -47,7 +47,7 @@ public class EditProfilePage extends BasePage {
         log.info("Enter name {}", name);
         waitForWebElement(nameField).clear();
         waitForWebElement(nameField).sendKeys(name);
-        defocus();
+        defocus(nameField);
         return new EditProfilePage(getDriver());
     }
 
@@ -62,7 +62,7 @@ public class EditProfilePage extends BasePage {
         log.info("Enter email {}", email);
         waitForWebElement(emailField).clear();
         waitForWebElement(emailField).sendKeys(email);
-        defocus();
+        defocus(emailField);
         return new EditProfilePage(getDriver());
     }
 

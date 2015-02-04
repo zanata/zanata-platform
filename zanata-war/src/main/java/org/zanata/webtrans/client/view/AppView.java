@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.view;
 
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
+import org.zanata.util.CoverageIgnore;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.presenter.KeyShortcutPresenter;
@@ -399,9 +400,11 @@ public class AppView extends Composite implements AppDisplay,
     }
 
     // @formatter:off
+    @CoverageIgnore("JSNI")
     private static native void activateNotification(Element element)/*-{
       $wnd.zanata.messages.activate(element);
     }-*/;
+    @CoverageIgnore("JSNI")
     private static native void deactivateNotification(Element element)/*-{
       $wnd.zanata.messages.deactivate(element);
     }-*/;

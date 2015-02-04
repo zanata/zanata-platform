@@ -5,6 +5,7 @@ import java.util.List;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.LocaleId;
+import org.zanata.util.CoverageIgnore;
 import org.zanata.webtrans.client.EventProcessor.StartCallback;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
@@ -286,6 +287,7 @@ public class Application implements EntryPoint {
         return GWT.getModuleBaseURL() + "files/upload";
     }
 
+    @CoverageIgnore("JSNI")
     public static native void redirectToUrl(String url)/*-{
     $wnd.location = url;
     }-*/;

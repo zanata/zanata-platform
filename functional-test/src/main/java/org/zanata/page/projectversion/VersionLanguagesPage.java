@@ -58,8 +58,8 @@ public class VersionLanguagesPage extends VersionBasePage {
 
     private List<WebElement> getLanguageTabDocumentList() {
         log.info("Query documents list");
-        return waitForWebElement(languageDocumentList)
-                .findElement(By.className("list--stats"))
+        return waitForWebElement(waitForElementExists(languageDocumentList),
+                By.className("list--stats"))
                 .findElements(documentListItem);
     }
 

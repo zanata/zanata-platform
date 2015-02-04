@@ -26,6 +26,7 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.openqa.selenium.By;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
@@ -214,8 +215,9 @@ public class VersionGroupTest extends ZanataTestCase {
         CreateVersionGroupPage groupPage = versionGroupsPageBase
                 .createNewGroup()
                 .inputGroupId(inputText)
-                .inputGroupName(inputText)
-                .saveGroupFailure();
+                .inputGroupName(inputText);
+        groupPage.defocus(groupPage.groupNameField);
+        groupPage.saveGroupFailure();
 
         assertThat(groupPage.expectError(
                     CreateVersionGroupPage.VALIDATION_ERROR))

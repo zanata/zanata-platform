@@ -16,6 +16,7 @@
   <html class="no-js new-zanata">
   <!--<![endif]-->
   <h:head>
+    <h:outputText value="#{ajaxCounter.ajaxCounterScript}" escape="false" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 
@@ -42,8 +43,22 @@
     <title>#{msgs['jsf.Zanata']}: <ui:insert name="page_title"/></title>
     <link type="text/css" rel="stylesheet"
       href="#{request.contextPath}/resources/fontello/css/fontello.css"/>
-    <link type="text/css" rel="stylesheet"
-      href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,400italic"/>
+    <!-- Async Google Fonts -->
+    <script type="text/javascript">
+      WebFontConfig = {
+        google: { families: [ 'Source+Sans+Pro:300,400,600,700,400italic:latin,latin-ext' ] }
+      };
+      (function() {
+        var wf = document.createElement('script');
+        wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+          '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+        wf.type = 'text/javascript';
+        wf.async = 'true';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(wf, s);
+      })();
+    </script>
+
     <ui:insert name="head"/>
   </h:head>
 

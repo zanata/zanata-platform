@@ -12,7 +12,7 @@
   <container qualifier="jbossas-managed">
     <configuration>
       <!-- We can use the JBOSS_HOME env variable instead of this -->
-      <property name="jbossHome">${arquillian.jboss.home}</property>
+      <property name="jbossHome">${jboss.home}</property>
       <!-- We can use the JAVA_HOME env variable instead of this -->
       <!--             <property name="javaHome">/usr/lib/jvm/jre-1.6.0-openjdk.x86_64</property> -->
       <!--

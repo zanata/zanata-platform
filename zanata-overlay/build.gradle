@@ -6,7 +6,7 @@ repositories {
 }
 
 dependencies {
-    runtime "mysql:mysql-connector-java:5.1.34"
+    runtime "mysql:mysql-connector-java:5.1.29"
     runtime "org.codehaus.groovy:groovy-all:2.1.5"
 }
 

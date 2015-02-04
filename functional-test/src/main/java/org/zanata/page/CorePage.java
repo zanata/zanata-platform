@@ -81,7 +81,7 @@ public class CorePage extends AbstractPage {
             public boolean apply(WebDriver input) {
                 return getErrors().size() > 0;
             }
-        });
+        }, "errors > 0");
     }
 
     public List<String> getErrors() {
@@ -115,7 +115,7 @@ public class CorePage extends AbstractPage {
             public boolean apply(WebDriver input) {
                 return getErrors().size() == expectedNumber;
             }
-        });
+        }, "errors = " + expectedNumber);
         return getErrors();
     }
 
@@ -126,8 +126,9 @@ public class CorePage extends AbstractPage {
      * @return The full list of visible errors
      */
     public List<String> expectError(final String expected) {
-        log.info("Expect error {}", expected);
-        waitForAMoment().until(new Predicate<WebDriver>() {
+        String msg = "expected error: " + expected;
+        logWaiting(msg);
+        waitForAMoment().withMessage(msg).until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getErrors().contains(expected);
@@ -144,20 +145,22 @@ public class CorePage extends AbstractPage {
     }
 
     public boolean expectNotification(final String notification) {
-        log.info("Wait for notification {}", notification);
-        return waitForAMoment().until(new Function<WebDriver, Boolean>() {
-            @Override
-            public Boolean apply(WebDriver driver) {
-                List<WebElement> messages = getDriver()
-                        .findElement(By.id("messages"))
-                        .findElements(By.tagName("li"));
-                List<String> notifications = new ArrayList<String>();
-                for (WebElement message : messages) {
-                    notifications.add(message.getText().trim());
-                }
-                return notifications.contains(notification);
-            }
-        });
+        String msg = "notification " + notification;
+        logWaiting(msg);
+        return waitForAMoment().withMessage(msg).until(
+                new Function<WebDriver, Boolean>() {
+                    @Override
+                    public Boolean apply(WebDriver driver) {
+                        List<WebElement> messages = getDriver()
+                                .findElement(By.id("messages"))
+                                .findElements(By.tagName("li"));
+                        List<String> notifications = new ArrayList<String>();
+                        for (WebElement message : messages) {
+                            notifications.add(message.getText().trim());
+                        }
+                        return notifications.contains(notification);
+                    }
+                });
     }
 
     public void assertNoCriticalErrors() {
@@ -191,6 +194,15 @@ public class CorePage extends AbstractPage {
         } else {
             log.warn("Unable to focus page container");
         }
+    }
+
+    /**
+     * Force the blur 'unfocus' process on a given element
+     */
+    public void defocus(By elementBy) {
+        log.info("Force unfocus");
+        WebElement element = getDriver().findElement(elementBy);
+        ((JavascriptExecutor) getDriver()).executeScript("arguments[0].blur()", element);
     }
 
     /* The system sometimes moves too fast for the Ajax pages, so provide a

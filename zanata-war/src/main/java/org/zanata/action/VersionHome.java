@@ -156,8 +156,10 @@ public class VersionHome extends SlugHome<HProjectIteration> {
             this.copyFromVersionSlug =
                     otherVersions.get(0).getVersion().getSlug();
 
+            copyFromVersion = true;
+        } else {
+            copyFromVersion = false;
         }
-        copyFromVersion = true;
     }
 
     public void init(boolean isNewInstance) {
