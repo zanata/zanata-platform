@@ -23,6 +23,7 @@ package org.zanata.feature.projectversion;
 
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -137,9 +138,8 @@ public class CreateProjectVersionTest extends ZanataTestCase {
     @Feature(summary = "The system updates the project version counter " +
             "when a project version is created",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION,
-            // remove when rhbz1168447 is fixed:
-            expected = org.openqa.selenium.TimeoutException.class)
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    @Ignore("intermittently failing; see rhbz1168447")
     public void versionCounterIsUpdated() throws Exception {
         String projectName = "version nums";
         assertThat(new ProjectWorkFlow()
