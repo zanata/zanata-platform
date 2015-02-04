@@ -71,6 +71,11 @@
     <jdbc.version>5.1.26</jdbc.version>
 
     <resteasy.scope>compile</resteasy.scope>
+
+    <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
+    <!-- This URL must be set by a profile (wildfly), settings.xml or mvn command line -->
+    <!-- <cargo.installation></cargo.installation> -->
+
   </properties>
 
   <dependencyManagement>
@@ -946,12 +951,94 @@
           </rules>
         </configuration>
       </plugin>
+
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.8</version>
+        <executions>
+          <execution>
+            <id>init-no-appserver</id>
+            <!-- submodules should use 'initialize' to activate this -->
+            <phase>none</phase>
+            <goals><goal>run</goal></goals>
+            <configuration combine.self="override">
+              <target unless="skipITs" xmlns:unless="ant:unless">
+                <echo message="appserver: ${appserver} cargo.installation: ${cargo.installation} appserver.home: ${appserver.home}" />
+                <echo message="WARNING: 'appserver' property must be set unless skippping integration tests"
+                  unless:set="appserver" />
+                <echo message="WARNING: 'cargo.installation' property (and possibly cargo.basename) must be set unless skipping integration tests"
+                  unless:set="cargo.installation" />
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
+
     <pluginManagement>
       <plugins>
+        <!--
+        This is how the Maven lifecycle phases install and configure the appserver:
+
+        prepare-package: download and extract appserver using cargo:install
+        package: download and extract modules using antrun [wildfly only]
+        pre-integration-test: cargo:start [functional tests only]
+        post-integration-test: cargo:stop [functional tests only]
+
+        If 'appserver` is not set, the build will fail in phase
+        'prepare-package'.
+         -->
+        <plugin>
+          <groupId>org.codehaus.cargo</groupId>
+          <artifactId>cargo-maven2-plugin</artifactId>
+          <version>1.4.5</version>
+          <configuration combine.self="append">
+            <container>
+              <containerId>${cargo.container}</containerId>
+              <!--if install from url-->
+              <zipUrlInstaller>
+                <url>${cargo.installation}</url>
+                <downloadDir>${user.home}/Downloads</downloadDir>
+                <extractDir>${cargo.extract.dir}</extractDir>
+              </zipUrlInstaller>
+            </container>
+          </configuration>
+          <executions>
+            <!-- Download and extract app server under target/ -->
+            <!-- NB: This execution needs to be before antrun, because it
+                 creates the wildfly directory for the unzip tasks. -->
+            <!-- TODO use antrun to download and extract appserver? -->
+            <execution>
+              <id>cargo-install</id>
+              <!-- submodules should use 'prepare-package' to activate this -->
+              <phase>none</phase>
+              <goals>
+                <goal>install</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
         <plugin>
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>2.12</version>
+          <configuration>
+            <failIfNoTests>true</failIfNoTests>
+          </configuration>
+          <executions>
+            <execution>
+              <id>integration-test</id>
+              <goals>
+                <goal>integration-test</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>verify</id>
+              <goals>
+                <goal>verify</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -1081,16 +1168,92 @@
     </profile>
 
     <profile>
+      <id>jbosseap6</id>
+      <activation>
+        <property>
+          <name>appserver</name>
+          <value>jbosseap6</value>
+        </property>
+      </activation>
+      <properties>
+        <cargo.container>jboss72x</cargo.container>
+        <!-- name of the top-level dir within the appserver zip -->
+        <appserver.dir.name>jboss-eap-6.3</appserver.dir.name>
+        <!-- where the appserver will be installed -->
+        <appserver.home>${cargo.extract.dir}/${cargo.basename}/${appserver.dir.name}</appserver.home>
+      </properties>
+    </profile>
+
+    <profile>
       <id>wildfly8</id>
       <activation>
+        <activeByDefault>true</activeByDefault>
         <property>
           <name>appserver</name>
           <value>wildfly8</value>
         </property>
       </activation>
       <properties>
+        <cargo.container>wildfly8x</cargo.container>
+        <!-- used in the wildfly8 profile in zanata-war -->
         <wildfly.version>8.1.0.Final</wildfly.version>
+        <!-- In case this profile was activated by default: -->
+        <appserver>wildfly8</appserver>
+        <cargo.installation>http://download.jboss.org/wildfly/${wildfly.version}/wildfly-${wildfly.version}.zip</cargo.installation>
+        <!-- name of the top-level dir within the appserver zip -->
+        <appserver.dir.name>wildfly-${wildfly.version}</appserver.dir.name>
+        <!-- where the appserver will be installed -->
+        <appserver.home>${cargo.extract.dir}/${appserver.dir.name}/${appserver.dir.name}</appserver.home>
+
+        <module.wildfly.version>8.1.0.Final</module.wildfly.version>
+        <mojarra.module.version>2.1.28</mojarra.module.version>
+        <mojarra.module.name>wildfly-${module.wildfly.version}-module-mojarra-${mojarra.module.version}.zip</mojarra.module.name>
+        <hibernate.module.version>4.2.15.Final</hibernate.module.version>
+        <hibernate.module.name>wildfly-${module.wildfly.version}-module-hibernate-main-${hibernate.module.version}.zip</hibernate.module.name>
+        <module.download.dir>${project.build.directory}/downloads</module.download.dir>
       </properties>
+
+      <build>
+        <plugins>
+          <!--
+          Download wildfly modules from sf.net and extract under appserver.home
+          -->
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>install-wildfly-modules</id>
+                <!-- submodules should use 'package' to activate this -->
+                <phase>none</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target unless="skipITs">
+                    <!-- TODO put these zips under ${user.home}/Downloads too -->
+                    <mkdir dir="${module.download.dir}" />
+                    <get
+                      src="http://sourceforge.net/projects/zanata/files/wildfly/${mojarra.module.name}/download"
+                      dest="${module.download.dir}/${mojarra.module.name}"
+                      usetimestamp="true" />
+                    <get
+                      src="http://sourceforge.net/projects/zanata/files/wildfly/${hibernate.module.name}/download"
+                      dest="${module.download.dir}/${hibernate.module.name}"
+                      usetimestamp="true" />
+                    <unzip
+                      src="${module.download.dir}/${mojarra.module.name}"
+                      dest="${appserver.home}" />
+                    <unzip
+                      src="${module.download.dir}/${hibernate.module.name}"
+                      dest="${appserver.home}" />
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+
       <!-- These override the older versions forced by jboss-as-parent 7.2.0 -->
       <dependencyManagement>
         <dependencies>

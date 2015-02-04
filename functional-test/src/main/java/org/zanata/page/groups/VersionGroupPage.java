@@ -57,6 +57,12 @@ public class VersionGroupPage extends BasePage {
     private By projectsTab = By.id("projects_tab");
     private By maintainersTab = By.id("maintainers_tab");
     private By settingsTab = By.id("settings_tab");
+
+    private By languagesTabBody = By.id("languages");
+    private By projectsTabBody = By.id("projects");
+    private By maintainersTabBody = By.id("maintainers");
+    private By settingsTabBody = By.id("settings");
+
     private By settingsLanguagesTab = By.id("settings-languages_tab");
 
     public VersionGroupPage(final WebDriver driver) {
@@ -146,10 +152,6 @@ public class VersionGroupPage extends BasePage {
         return new VersionLanguagesPage(getDriver());
     }
 
-    public void clickOnTab(String tabId) {
-        waitForWebElement(By.id(tabId)).click();
-    }
-
     public VersionGroupPage clickAddProjectVersionsButton() {
         log.info("Click Add Project Version");
         // parent
@@ -160,24 +162,28 @@ public class VersionGroupPage extends BasePage {
 
     public VersionGroupPage clickLanguagesTab() {
         log.info("Click Languages tab");
+        waitForElementExists(languagesTabBody);
         clickWhenTabEnabled(waitForWebElement(languagesTab));
         return new VersionGroupPage(getDriver());
     }
 
     public VersionGroupPage clickProjectsTab() {
         log.info("Click Projects tab");
+        waitForElementExists(projectsTabBody);
         clickWhenTabEnabled(waitForWebElement(projectsTab));
         return new VersionGroupPage(getDriver());
     }
 
     public VersionGroupPage clickMaintainersTab() {
         log.info("Click Maintainers tab");
+        waitForElementExists(maintainersTabBody);
         clickWhenTabEnabled(waitForWebElement(maintainersTab));
         return new VersionGroupPage(getDriver());
     }
 
     public VersionGroupPage clickSettingsTab() {
         log.info("Click Settings tab");
+        waitForElementExists(settingsTabBody);
         clickWhenTabEnabled(waitForWebElement(settingsTab));
         return new VersionGroupPage(getDriver());
     }

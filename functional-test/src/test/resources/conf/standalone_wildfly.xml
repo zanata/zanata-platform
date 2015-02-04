@@ -27,6 +27,7 @@
     <extension module="org.wildfly.extension.undertow"/>
   </extensions>
   <system-properties>
+    <property name="zanata.countAjax" value="true" />
   </system-properties>
   <management>
     <security-realms>

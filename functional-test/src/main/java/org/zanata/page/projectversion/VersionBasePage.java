@@ -33,13 +33,18 @@ import org.zanata.page.projectversion.versionsettings.VersionTranslationTab;
 @Slf4j
 public class VersionBasePage extends BasePage {
 
-    private By settingsTab = By.id("settings_tab");
     private By settingsGeneralTab = By.id("settings-general_tab");
     private By settingsLanguagesTab = By.id("settings-languages_tab");
     private By settingsDocumentsTab = By.id("settings-documents_tab");
     private By settingsTranslationTab = By.id("settings-translation_tab");
-    private By documentsTab = By.id("documents");
-    private By languageTab = By.id("languages");
+    private By documentsTab = By.id("documents_tab");
+    private By languageTab = By.id("languages_tab");
+    private By settingsTab = By.id("settings_tab");
+
+    private By documentsTabBody = By.id("documents");
+    private By languageTabBody = By.id("languages");
+    private By settingsTabBody = By.id("settings");
+
     private By versionInfo = By.id("version-info");
     private By versionPage = By.id("version-page");
 
@@ -63,14 +68,16 @@ public class VersionBasePage extends BasePage {
 
     public VersionDocumentsPage gotoDocumentTab() {
         log.info("Click Documents tab");
-        clickWhenTabEnabled(waitForWebElement(By.id("documents_tab")));
+        waitForElementExists(documentsTabBody);
+        clickWhenTabEnabled(waitForWebElement(documentsTab));
         waitForWebElement(By.id("documents"));
         return new VersionDocumentsPage(getDriver());
     }
 
     public VersionLanguagesPage gotoLanguageTab() {
         log.info("Click Languages tab");
-        clickWhenTabEnabled(waitForWebElement(By.id("languages_tab")));
+        waitForElementExists(languageTabBody);
+        clickWhenTabEnabled(waitForWebElement(languageTab));
         waitForWebElement(By.id("languages"));
         return new VersionLanguagesPage(getDriver());
     }
@@ -78,9 +85,9 @@ public class VersionBasePage extends BasePage {
     public VersionBasePage gotoSettingsTab() {
         log.info("Click Settings tab");
         slightPause();
-        waitForElementExists(By.id("settings"));
-        clickWhenTabEnabled(waitForWebElement(By.id("settings_tab")));
-        waitForWebElement(By.id("settings"));
+        waitForElementExists(settingsTabBody);
+        clickWhenTabEnabled(waitForWebElement(settingsTab));
+        waitForWebElement(settingsTabBody);
         return new VersionBasePage(getDriver());
     }
 
