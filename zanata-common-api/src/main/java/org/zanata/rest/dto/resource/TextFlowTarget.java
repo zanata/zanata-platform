@@ -50,6 +50,14 @@ public class TextFlowTarget extends TextContainer implements Serializable,
         return translator;
     }
 
+    @Deprecated
+    /**
+     * Zanata server will ignore this field if set,
+     * If uploader wants to take credit for translations, use isMyTranslations
+     * flag.
+     *
+     * @see org.zanata.rest.service.AsynchronousProcessResource#startTranslatedDocCreationOrUpdate
+     */
     public void setTranslator(Person translator) {
         this.translator = translator;
     }
