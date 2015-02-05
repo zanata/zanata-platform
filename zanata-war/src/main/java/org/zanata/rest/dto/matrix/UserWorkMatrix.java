@@ -1,5 +1,6 @@
 package org.zanata.rest.dto.matrix;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlRootElement;
@@ -11,39 +12,13 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.model.UserTranslationMatrix;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
- * This will help us to build a nested map structure. e.g.
+ * This will help us to build a nested map structure.
  *
- * <pre>
- *  {
- *      "2015-01-03": {
- *          "plurals": {
- *              "master": {
- *                  "pl": [
- *                      { "contentState": "Translated", "wordCount": 7 }
- *                   ]
- *              }
- *          }
- *      },
- *      "2015-02-01": {
- *          "plurals": {
- *              "master": {
- *                  "pl": [
- *                      { "contentState": "Translated", "wordCount": 13 },
- *                      { "contentState": "NeedReview", "wordCount": 7 }
- *                   ]
- *              }
- *          }
- *      }
- *  }
- * </pre>
- *
- * @see org.zanata.rest.dto.matrix.PerProjectMatrix
- * @see org.zanata.rest.dto.matrix.PerProjectVersionMatrix
- * @see org.zanata.rest.dto.matrix.PerLocaleMatrix
- * @see org.zanata.rest.dto.matrix.ContentStateToWordCount
+ * @see org.zanata.rest.dto.matrix.DetailMatrix
  *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -51,22 +26,23 @@ import com.google.common.collect.Maps;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @XmlRootElement
-public class UserWorkMatrix implements Map<String, PerProjectMatrix>,
-        MatrixMap<String> {
+public class UserWorkMatrix implements Map<String, List<DetailMatrix>> {
     @Delegate
-    private Map<String, PerProjectMatrix> dateToProjects = Maps.newHashMap();
+    private Map<String, List<DetailMatrix>> dateToProjects = Maps.newHashMap();
 
     @JsonIgnore
-    @Override
     public void putOrCreateIfAbsent(String date,
             UserTranslationMatrix matrixRecord) {
+        DetailMatrix detailMatrix = new DetailMatrix(
+                matrixRecord.getProjectIteration().getProject().getSlug(),
+                matrixRecord.getProjectIteration().getSlug(),
+                matrixRecord.getLocale().getLocaleId(),
+                matrixRecord.getSavedState(), matrixRecord.getWordCount());
         if (containsKey(date)) {
-            PerProjectMatrix perProjectMatrix = get(date);
-            perProjectMatrix.putOrCreateIfAbsent(
-                    matrixRecord.getProjectIteration().getProject().getSlug(),
-                    matrixRecord);
+            List<DetailMatrix> matrixList = get(date);
+            matrixList.add(detailMatrix);
         } else {
-            put(date, new PerProjectMatrix(matrixRecord));
+            put(date, Lists.newArrayList(detailMatrix));
         }
     }
 }
