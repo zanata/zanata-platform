@@ -212,8 +212,8 @@ public class PushCommandTest {
                                     anyString(), anyString(),
                                     eq(expectedLocale),
                                     any(TranslationsResource.class),
-                                    eq(extensionSet), eq("auto"))).thenReturn(
-                    mockStatus);
+                                    eq(extensionSet), eq("auto"), eq(false))).
+                                    thenReturn(mockStatus);
             // when(mockTranslationResources.putTranslations(eq("RPM"),
             // eq(expectedLocale), (TranslationsResource) notNull(),
             // eq(extensionSet), eq("auto")))

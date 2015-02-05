@@ -59,7 +59,7 @@ public class MockAsynchronousProcessResource implements
     public ProcessStatus startTranslatedDocCreationOrUpdate(String idNoSlash,
             String projectSlug, String iterationSlug, LocaleId locale,
             TranslationsResource translatedDoc, Set<String> extensions,
-            String merge) {
+            String merge, @DefaultValue("false") boolean myTrans) {
         ProcessStatus processStatus = new ProcessStatus();
         processStatus.setStatusCode(ProcessStatus.ProcessStatusCode.Running);
         processStatus.setPercentageComplete(50);

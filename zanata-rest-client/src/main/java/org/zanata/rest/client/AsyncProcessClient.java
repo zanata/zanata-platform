@@ -78,7 +78,7 @@ public class AsyncProcessClient implements AsynchronousProcessResource {
     public ProcessStatus startTranslatedDocCreationOrUpdate(String idNoSlash,
             String projectSlug, String iterationSlug, LocaleId locale,
             TranslationsResource translatedDoc, Set<String> extensions,
-            String merge) {
+            String merge, @DefaultValue("false") boolean myTrans) {
         Client client = factory.getClient();
         CacheResponseFilter filter = new CacheResponseFilter();
         client.addFilter(filter);
@@ -91,6 +91,7 @@ public class AsyncProcessClient implements AsynchronousProcessResource {
         webResource
                 .queryParams(ClientUtil.asMultivaluedMap("ext", extensions))
                 .queryParam("merge", merge)
+                .queryParam("assignCreditToUploader", String.valueOf(myTrans))
                 .put(translatedDoc);
         client.removeFilter(filter);
         return filter.getEntity(ProcessStatus.class);

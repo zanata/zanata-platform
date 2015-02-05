@@ -654,7 +654,8 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                             docUri, getOpts().getProj(), getOpts()
                                     .getProjectVersion(),
                             new LocaleId(locale.getLocale()), targetDoc,
-                            extensions, getOpts().getMergeType());
+                            extensions, getOpts().getMergeType(),
+                            getOpts().isMyTrans());
 
             boolean waitForCompletion = true;
 
@@ -687,8 +688,9 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                                             getOpts().getProj(), getOpts()
                                                     .getProjectVersion(),
                                             new LocaleId(locale.getLocale()),
-                                            targetDoc, extensions, getOpts()
-                                                    .getMergeType());
+                                            targetDoc, extensions,
+                                            getOpts().getMergeType(),
+                                            getOpts().isMyTrans());
                     ConsoleUtils
                             .setProgressFeedbackMessage("Waiting for other clients ...");
                     break;

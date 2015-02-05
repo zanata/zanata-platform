@@ -146,6 +146,14 @@ public abstract class AbstractPushMojo extends
      */
     private String validate = "content";
 
+    /**
+     * Indicates if all uploaded translations were translated by you.
+     *
+     * @parameter expression="${zanata.myTrans}"
+     *            default-value="false"
+     */
+    private boolean myTrans = false;
+
     @Override
     public String getSourceLang() {
         return sourceLang;
@@ -207,4 +215,8 @@ public abstract class AbstractPushMojo extends
         return validate;
     }
 
+    @Override
+    public boolean isMyTrans() {
+        return myTrans;
+    }
 }

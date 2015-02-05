@@ -1,4 +1,4 @@
-package org.zanata.client.integraion;
+package org.zanata.client.integration;
 
 import java.io.File;
 import java.util.Set;

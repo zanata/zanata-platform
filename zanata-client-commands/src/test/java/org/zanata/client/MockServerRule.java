@@ -184,7 +184,8 @@ public class MockServerRule extends ExternalResource {
                         docIdCaptor.capture(), eq(pushOpts.getProj()),
                         eq(pushOpts.getProjectVersion()), localeIdCaptor.capture(),
                         transResourceCaptor.capture(),
-                        extensionCaptor.capture(), eq(pushOpts.getMergeType())))
+                        extensionCaptor.capture(), eq(pushOpts.getMergeType()),
+                        eq(pushOpts.isMyTrans())))
                 .thenReturn(running);
         when(asyncClient.getProcessStatus(mockProcessId))
                 .thenReturn(finished);
@@ -229,7 +230,7 @@ public class MockServerRule extends ExternalResource {
                 docIdCaptor.capture(), eq(pushOpts.getProj()),
                 eq(pushOpts.getProjectVersion()), localeIdCaptor.capture(),
                 transResourceCaptor.capture(), extensionCaptor.capture(),
-                eq(pushOpts.getMergeType()));
+                eq(pushOpts.getMergeType()), eq(pushOpts.isMyTrans()));
     }
 
     public PullOptionsImpl getPullOpts() {

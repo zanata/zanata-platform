@@ -19,7 +19,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.zanata.client.integraion;
+package org.zanata.client.integration;
 
 import java.io.File;
 import java.io.InputStream;
