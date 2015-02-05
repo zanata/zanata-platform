@@ -134,7 +134,7 @@
       <id>run-functional-test</id>
       <activation>
         <property>
-          <name>functional-test</name>
+          <name>!skipFuncTests</name>
         </property>
       </activation>
       <build>
