@@ -8,37 +8,20 @@
   xmlns:rich="http://richfaces.org/rich">
 
 <script type="text/javascript">
-  function downloadAllFilesClick() {
-    if (confirm("#{msgs['jsf.iteration.files.ConfirmDownloadAllFiles']}")) {
-      #{rich:component('downloadProgressPanel')}
-    .
-      show();
-      return true;
-    }
-    else {
-      return false;
-    }
+  function prepareUploadDialog(msg, docId) {
+    jQuery('#uploadPanelMsg').html(msg);
+    #{rich:element('uploadDocId')}.value = docId;
   }
 
-  function openUploadPanel(docId) {
-    #{rich:element('uploadPanelHeader')}
-  .
-    innerHTML = '#{msgs['jsf.iteration.files.UpdateDocument']}: ' + docId;
-    #{rich:element('uploadDocId')}
-  .
-    value = docId;
-    #{rich:component('uploadPanel')}
-  .
-    show();
+  function prepareDownloadDialog(msg) {
+    jQuery('#downloadDialogMsg').html(msg);
   }
 
-  function hideUploadPanel() {
-    #{rich:component('uploadPanel')}
-  .
-    hide();
-    return false;
-  }
 </script>
+
+  <a4j:jsFunction name="downloadZip"
+    action="#{projectIterationZipFileAction.prepareIterationZipFile(versionHomeAction.poProject, versionHomeAction.projectSlug, versionHomeAction.versionSlug, versionHomeAction.selectedLocale.localeId)}"
+    render="download-progress"/>
 
 <div class="panels--2">
 <div class="panels__panel panel">
@@ -63,7 +46,7 @@
             aria-labelledby="dropdownContent">
             <li>
               <a href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/settings/languages"
-                onclick="changeBrowserUrl(this.href, true);return false;">
+                onclick="changeBrowserUrl(this.href, true);return false;" class="i__item--right">
                 #{msgs['jsf.ManageLanguage']} <i
                 class="i i--settings i__item__icon"></i>
               </a>
@@ -198,11 +181,11 @@
           <s:fragment
             rendered="#{versionHomeAction.zipFileDownloadAllowed}">
             <li>
-              <a4j:commandLink execute="@this"
-                action="#{projectIterationZipFileAction.prepareIterationZipFile(versionHomeAction.poProject, versionHomeAction.projectSlug, versionHomeAction.versionSlug, versionHomeAction.selectedLocale.localeId)}"
-                onclick="if(!downloadAllFilesClick()){ return false; }"
-                render="downloadProgressBar" styleClass="i__item--right"
-                title="#{versionHomeAction.zipFileDownloadTitle}">
+              <a href="#" class="i__item--right"
+                title="#{versionHomeAction.zipFileDownloadTitle}"
+                onclick="prepareDownloadDialog('#{msgs.format('jsf.iteration.files.DownloadAllMsg', versionHomeAction.selectedLocale.localeId)}')"
+                data-toggle="modal"
+                data-target="#zipDownloadProgressDialog">
                 <s:fragment
                   rendered="#{versionHomeAction.poProject}">
                   #{msgs['jsf.iteration.files.DownloadAll']}
@@ -212,7 +195,7 @@
                   #{msgs['jsf.iteration.files.DownloadAllOfflinePo']}
                 </s:fragment>
                 <i class="i i--export i__item__icon"></i>
-              </a4j:commandLink>
+              </a>
             </li>
           </s:fragment>
 
@@ -383,11 +366,11 @@
                   <s:fragment
                     rendered="#{versionHomeAction.isFileUploadAllowed(versionHomeAction.selectedLocale) and versionHomeAction.isUserAllowedToTranslateOrReview(versionHomeAction.selectedLocale)}">
                     <li>
-                      <a href="#"
-                        onclick="openUploadPanel('#{document.docId}'); return false;"
-                        class="i__item--right">
-                        #{msgs['jsf.Upload.Label']} <i
-                        class="i i--import i__item__icon"></i>
+                      <a href="#" class="i__item--right"
+                        data-toggle="modal" onclick="prepareUploadDialog('#{msgs.format('jsf.iteration.files.UpdateTranslationDocument', document.docId, versionHomeAction.selectedLocale.localeId)}','#{document.docId}');return false;"
+                        data-target="#uploadTranslationDialog">
+                        #{msgs['jsf.Upload.Label']}
+                        <i class="i i--import i__item__icon"></i>
                       </a>
                     </li>
                   </s:fragment>
@@ -461,81 +444,10 @@
   id="languageTabDocumentSearchBottom" bottomPanel="true"
   actionBean="#{versionHomeAction.languageTabDocumentFilter}"/>
 
-
 </div>
 </div>
 
-<rich:popupPanel id="downloadProgressPanel"
-  moveable="#{false}"
-  resizeable="#{false}"
-  autosized="#{true}">
-
-  <f:facet name="header">
-    <h:outputText value="#{msgs['jsf.iteration.files.ProcessDlgTitle']}"/>
-  </f:facet>
-  <h:form>
-    <rich:progressBar id="downloadProgressBar"
-      value="#{projectIterationZipFileAction.zipFilePrepHandle.currentProgress}"
-      interval="500"
-      label="#{msgs.format('jsf.generatezip.ProgressLabel',
-        projectIterationZipFileAction.zipFilePrepHandle.currentProgress,
-        projectIterationZipFileAction.zipFilePrepHandle.maxProgress)}"
-      minValue="-1"
-      maxValue="#{projectIterationZipFileAction.zipFilePrepHandle.maxProgress - 1}"
-      enabled="#{not projectIterationZipFileAction.zipFilePrepHandle.done}"
-      ignoreDupResponses="true"
-      reRenderAfterComplete="downloadProgressBar">
-      <f:facet name="finish">
-        <script type="text/javascript">
-          #{rich:component('downloadProgressPanel')}.hide();
-          window.location =
-            "#{facesContext.externalContext.requestContextPath}/rest/file/download/#{projectIterationZipFileAction.zipFilePrepHandle.getResult()}";
-        </script>
-      </f:facet>
-    </rich:progressBar>
-
-    <div>
-      <a4j:commandButton id="closeProgressPanelButton"
-        action="#{projectIterationZipFileAction.cancelFileDownload}"
-        value="#{msgs['jsf.Cancel']}"
-        render="downloadProgressBar">
-        <rich:componentControl for="downloadProgressPanel" operation="hide"
-          event="onclick"/>
-      </a4j:commandButton>
-    </div>
-  </h:form>
-</rich:popupPanel>
-
-
-<rich:popupPanel id="uploadPanel"
-  moveable="#{false}"
-  resizeable="#{false}"
-  autosized="#{true}">
-  <f:facet name="header">
-    <h:outputText id="uploadPanelHeader"/>
-  </f:facet>
-  <h:form id="uploadForm" enctype="multipart/form-data">
-    <!-- Could add warning for non-po documents,
-         to note that po files must be offline-po format -->
-    <s:fileUpload accept="*"
-      data="#{versionHomeAction.translationFileUpload.fileContents}"
-      fileName="#{versionHomeAction.translationFileUpload.fileName}"/>
-    <br/>
-    <h:outputText value="#{msgs['jsf.iteration.files.Merge']}?"
-      title="#{msgs['jsf.iteration.files.Merge.title']}"/>
-    <h:inputHidden id="uploadDocId"
-      value="#{versionHomeAction.translationFileUpload.docId}"/>
-    <h:selectBooleanCheckbox
-      value="#{versionHomeAction.translationFileUpload.mergeTranslations}"
-      title="#{msgs['jsf.iteration.files.MergeCheckbox.Title']}"/>
-
-    <div align="right">
-      <h:commandButton value="#{msgs['jsf.Upload']}"
-        action="#{versionHomeAction.uploadTranslationFile(versionHomeAction.selectedLocale)}"/>
-      <h:commandButton value="#{msgs['jsf.Cancel']}"
-        onclick="return hideUploadPanel();"/>
-    </div>
-  </h:form>
-</rich:popupPanel>
+  <ui:include src="zip_download_progress_modal.xhtml"/>
+  <ui:include src="upload_translation_modal.xhtml"/>
 
 </ui:composition>

@@ -120,10 +120,14 @@ public class FileService implements FileResource {
     public Response uploadTranslationFile(String projectSlug,
             String iterationSlug, String localeId, String docId, String merge,
             DocumentFileUploadForm uploadForm) {
+
+        //assignCreditToUploader is not supported from here
+        boolean assignCreditToUploader = false;
+
         GlobalDocumentId id =
                 new GlobalDocumentId(projectSlug, iterationSlug, docId);
         return translationUploader.tryUploadTranslationFile(id, localeId,
-                merge, uploadForm);
+                merge, assignCreditToUploader , uploadForm);
     }
 
     @Override

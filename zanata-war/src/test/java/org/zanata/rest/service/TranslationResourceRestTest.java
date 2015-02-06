@@ -911,16 +911,6 @@ public class TranslationResourceRestTest extends ZanataRestTest {
                         PoTargetHeader.class);
         assertThat(header, notNullValue());
         assertThat(header.getEntries().size(), greaterThan(0));
-
-        // Make sure the headers have the correct value
-        for (HeaderEntry entry : header.getEntries()) {
-            if (entry.getKey().equals(HeaderFields.KEY_LastTranslator)) {
-                assertThat(entry.getValue().trim(),
-                        is("Administrator <root@localhost>"));
-            } else if (entry.getKey().equals(HeaderFields.KEY_PoRevisionDate)) {
-                assertThat(entry.getValue().trim().length(), greaterThan(0));
-            }
-        }
     }
 
     // TODO This test is randomly failing. It should be replaced with an

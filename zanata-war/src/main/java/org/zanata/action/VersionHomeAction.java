@@ -930,16 +930,17 @@ public class VersionHomeAction extends AbstractSortAction implements
                 extensions = Collections.<String> emptySet();
             }
             List<String> warnings =
-                    translationServiceImpl
-                            .translateAllInDoc(
-                                    projectSlug,
-                                    versionSlug,
-                                    translationFileUpload.getDocId(),
-                                    hLocale.getLocaleId(),
-                                    transRes,
-                                    extensions,
-                                    translationFileUpload.isMergeTranslations() ? MergeType.AUTO
-                                            : MergeType.IMPORT);
+                    translationServiceImpl.translateAllInDoc(
+                            projectSlug,
+                            versionSlug,
+                            translationFileUpload.getDocId(),
+                            hLocale.getLocaleId(),
+                            transRes,
+                            extensions,
+                            translationFileUpload.isMergeTranslations() ?
+                                    MergeType.AUTO
+                                    : MergeType.IMPORT,
+                            translationFileUpload.isAssignCreditToUploader());
 
             StringBuilder infoMsg =
                     new StringBuilder("File ").append(
@@ -1146,5 +1147,7 @@ public class VersionHomeAction extends AbstractSortAction implements
         private String fileName;
 
         private boolean mergeTranslations = true; // Merge by default
+
+        private boolean assignCreditToUploader = false;
     }
 }

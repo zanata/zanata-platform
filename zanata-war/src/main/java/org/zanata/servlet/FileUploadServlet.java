@@ -149,12 +149,15 @@ public class FileUploadServlet extends HttpServlet {
                 MergeType mergeType =
                         Boolean.parseBoolean(params.get("merge").getString()) ? MergeType.AUTO
                                 : MergeType.IMPORT;
+
+                boolean assignCreditToUploader = Boolean.parseBoolean(
+                        params.get("assignCreditToUploader").getString());
                 List<String> warnings =
                         translationServiceImpl.translateAllInDoc(projectSlug,
                                 versionSlug, docId,
                                 new LocaleId(params.get("targetLocale")
                                         .getString()), transRes, extensions,
-                                mergeType);
+                                mergeType, assignCreditToUploader);
 
                 StringBuilder response = new StringBuilder();
                 response.append("Status code: ");

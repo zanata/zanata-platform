@@ -63,14 +63,6 @@
   })
   //]]>
 
-
-  function openUploadSourceDocPanel() {
-    #{rich:component('uploadSourceDocPanel')}
-  .
-    show();
-    checkIfGeneralFileSelected()
-  }
-
   function openUploadSourcePanel(docId) {
     #{rich:element('uploadSourcePanelHeader')}
   .
@@ -90,29 +82,6 @@
   .
     hide();
     return false;
-  }
-
-  function hideSourceDocUploadPanel() {
-    #{rich:component('uploadSourceDocPanel')}
-  .
-    hide();
-    return false;
-  }
-
-  function checkIfGeneralFileSelected() {
-    var fileInput = #{rich:element('generalDocFileUpload')};
-    var submitButton = #{rich:element('generalDocSubmitUploadButton')};
-    var errorMessage = document.getElementById('invalidFilenameError');
-    checkIfFileSelected(fileInput, submitButton);
-    var fileName = fileInput.value;
-    var hasSemicolon = fileName !== undefined &amp;&amp;
-      fileName.lastIndexOf(';') !== -1;
-    if (hasSemicolon) {
-      errorMessage.style.display = '';
-      submitButton.disabled = true;
-    } else {
-      errorMessage.style.display = 'none';
-    }
   }
 
   function checkIfSpecificFileSelected() {
@@ -545,73 +514,6 @@
   </h:form>
 </rich:popupPanel>
 
-
-<rich:popupPanel id="uploadSourceDocPanel"
-  moveable="#{false}"
-  resizeable="#{false}"
-  autosized="#{true}">
-  <f:facet name="header">
-    <h:outputText
-      value="#{msgs['jsf.iteration.files.UploadNewSourceDocument']}"/>
-  </f:facet>
-  <h:form id="uploadDocForm" enctype="multipart/form-data">
-    <s:fileUpload id="generalDocFileUpload"
-      accept="*"
-      onchange="checkIfGeneralFileSelected();"
-      data="#{versionHomeAction.sourceFileUpload.fileContents}"
-      fileName="#{versionHomeAction.sourceFileUpload.fileName}"/>
-
-    <div id="invalidFilenameError" style="display: none;
-                                                      color: red;
-                                                      padding: 5px;
-                                                      margin-bottom: 5px;">
-      #{msgs['jsf.iteration.files.FilenameWithSemicolonNotSupported']}
-    </div>
-    <div>
-      <h:outputLabel for="docPath"
-        value="#{msgs['jsf.iteration.files.DocumentPath']}"/>
-      <h:inputText id="docPath"
-        value="#{versionHomeAction.sourceFileUpload.documentPath}">
-      </h:inputText>
-    </div>
-    <div>
-      <h:selectOneMenu
-        value="#{versionHomeAction.sourceFileUpload.sourceLang}">
-        <s:selectItems
-          value="#{versionHomeAction.availableSourceLocales}"
-          var="locale"
-          label="#{locale.retrieveNativeName()}"
-          itemValue="#{locale.localeId.toString()}"
-          escape="true"/>
-        <h:outputLabel value="#{msgs['jsf.SourceLanguage']}"/>
-      </h:selectOneMenu>
-    </div>
-    <rich:collapsiblePanel
-      header="#{msgs['jsf.iteration.files.CustomParams']}"
-      switchType="client"
-      expanded="false">
-      <h:outputLabel for="adapterParams"
-        value="#{msgs['jsf.iteration.files.CustomParams.description']}"/>
-      <br/>
-      <h:inputTextarea id="adapterParams"
-        value="#{versionHomeAction.sourceFileUpload.adapterParams}"/>
-      <br/>
-      <a target="_blank"
-        href="https://github.com/zanata/zanata-server/wiki/Custom-document-parameters">
-        #{msgs['jsf.iteration.files.CustomParams.linkText']}
-      </a>
-    </rich:collapsiblePanel>
-
-    <div style="text-align:right">
-      <h:commandButton id="generalDocSubmitUploadButton"
-        value="#{msgs['jsf.Upload']}"
-        action="#{versionHomeAction.uploadSourceFile}"/>
-      <h:commandButton id="generalDocCancelUploadButton"
-        value="#{msgs['jsf.Cancel']}"
-        onclick="return hideSourceDocUploadPanel();"/>
-    </div>
-  </h:form>
-</rich:popupPanel>
 </ui:define>
 
 </ui:composition>
