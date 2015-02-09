@@ -11,6 +11,7 @@ import org.testng.annotations.Test;
 import org.zanata.ZanataJpaTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
+import org.zanata.dao.TextFlowTargetHistoryDAO.UserTranslationMatrix;
 import org.zanata.model.HAccount;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -20,7 +21,6 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowBuilder;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
-import org.zanata.model.UserTranslationMatrix;
 
 import com.github.huangp.entityunit.entity.EntityMakerBuilder;
 import com.github.huangp.entityunit.maker.FixedValueMaker;

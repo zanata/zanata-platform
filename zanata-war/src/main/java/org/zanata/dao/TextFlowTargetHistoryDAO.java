@@ -38,12 +38,11 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
-import org.zanata.model.UserTranslationMatrix;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
-import static org.zanata.model.UserTranslationMatrix.TIMEZONE_OFFSET_INSTANCE;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Name("textFlowTargetHistoryDAO")
 @AutoCreate
@@ -205,7 +204,8 @@ public class TextFlowTargetHistoryDAO extends
                 "    join HDocument doc on doc.id = tf.document_id " +
                 "    join HProjectIteration iter on iter.id = doc.project_iteration_id " +
                 "  where history.lastChanged >= :fromDate and history.lastChanged <= :toDate " +
-                "    and history.last_modified_by_id = :user and (history.translated_by_id is not null or history.reviewed_by_id is not null)";
+                "    and history.last_modified_by_id = :user and (history.translated_by_id is not null or history.reviewed_by_id is not null)" +
+                "    and history.state <> 0";
 
         String queryTarget = "select tft.id, iter.id as iteration, tft.locale as locale, tf.wordCount as wordCount, tft.state as state, tft.lastChanged as lastChanged " +
                 "  from HTextFlowTarget tft " +
@@ -213,7 +213,8 @@ public class TextFlowTargetHistoryDAO extends
                 "    join HDocument doc on doc.id = tf.document_id " +
                 "    join HProjectIteration iter on iter.id = doc.project_iteration_id " +
                 "  where tft.lastChanged >= :fromDate and tft.lastChanged <= :toDate " +
-                "    and tft.last_modified_by_id = :user and (tft.translated_by_id is not null or tft.reviewed_by_id is not null)";
+                "    and tft.last_modified_by_id = :user and (tft.translated_by_id is not null or tft.reviewed_by_id is not null)" +
+                "    and tft.state <> 0";
         // @formatter:on
         String dateOfLastChanged = stripTimeFromDateTimeFunction("lastChanged");
         String queryString =
@@ -240,8 +241,8 @@ public class TextFlowTargetHistoryDAO extends
             long wordCount =
                     ((BigDecimal) objects[4]).toBigInteger().longValue();
             UserTranslationMatrix matrix =
-                    new UserTranslationMatrix(user, iteration, locale,
-                            savedState, wordCount, savedDate);
+                    new UserTranslationMatrix(savedDate, iteration, locale,
+                            savedState, wordCount);
             builder.add(matrix);
         }
         return builder.build();
@@ -256,5 +257,15 @@ public class TextFlowTargetHistoryDAO extends
     private <T> T loadById(Object object, Class<T> entityClass) {
         return (T) getSession().byId(entityClass).load(
                 ((BigInteger) object).longValue());
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public static class UserTranslationMatrix {
+        private final Date savedDate;
+        private final HProjectIteration projectIteration;
+        private final HLocale locale;
+        private final ContentState savedState;
+        private final long wordCount;
     }
 }

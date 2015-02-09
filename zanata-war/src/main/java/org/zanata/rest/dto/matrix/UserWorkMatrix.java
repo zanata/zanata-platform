@@ -10,7 +10,7 @@ import lombok.Delegate;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.zanata.model.UserTranslationMatrix;
+import org.zanata.dao.TextFlowTargetHistoryDAO;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -32,7 +32,7 @@ public class UserWorkMatrix implements Map<String, List<DetailMatrix>> {
 
     @JsonIgnore
     public void putOrCreateIfAbsent(String date,
-            UserTranslationMatrix matrixRecord) {
+            TextFlowTargetHistoryDAO.UserTranslationMatrix matrixRecord) {
         DetailMatrix detailMatrix = new DetailMatrix(
                 matrixRecord.getProjectIteration().getProject().getSlug(),
                 matrixRecord.getProjectIteration().getSlug(),
