@@ -65,8 +65,8 @@
     <!-- This may be changed by the SMTP_PORT profile -->
     <smtp.port>2552</smtp.port>
     <jndi-remote-client.groupId>org.jboss.as</jndi-remote-client.groupId>
-    <jndi-remote-client.artifactId>jboss-as-ejb-client-bom</jndi-remote-client.artifactId>
-    <jndi-remote-client.version>7.1.1.Final</jndi-remote-client.version>
+    <jndi-remote-client.artifactId>jboss-as-controller-client</jndi-remote-client.artifactId>
+    <jndi-remote-client.version>7.2.0.Final</jndi-remote-client.version>
     <standalone.xml.file>standalone.xml</standalone.xml.file>
   </properties>
 
@@ -219,6 +219,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>jaxrs-api</artifactId>
+      <scope>${resteasy.scope}</scope>
     </dependency>
 
     <!-- to use rest client in test -->
@@ -248,17 +249,33 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxb-provider</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.xml.bind</groupId>
+          <artifactId>jaxb-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.logging</groupId>
+          <artifactId>jboss-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
 
     <dependency>
       <groupId>org.zanata</groupId>
       <artifactId>zanata-adapter-po</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.xml.bind</groupId>
+          <artifactId>jaxb-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
+      <groupId>org.jboss.spec.javax.xml.bind</groupId>
+      <artifactId>jboss-jaxb-api_2.2_spec</artifactId>
     </dependency>
 
     <dependency>
@@ -274,13 +291,25 @@
       <groupId>${jndi-remote-client.groupId}</groupId>
       <artifactId>${jndi-remote-client.artifactId}</artifactId>
       <version>${jndi-remote-client.version}</version>
-      <type>pom</type>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.xml.bind</groupId>
+          <artifactId>jaxb-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jboss</groupId>
       <artifactId>jboss-remote-naming</artifactId>
+      <version>2.0.1.Final</version>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.remoting</groupId>
+          <artifactId>jboss-remoting</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -336,7 +365,7 @@
       <properties>
         <standalone.xml.file>standalone_wildfly.xml</standalone.xml.file>
         <jndi-remote-client.groupId>org.wildfly</jndi-remote-client.groupId>
-        <jndi-remote-client.artifactId>wildfly-ejb-client-bom</jndi-remote-client.artifactId>
+        <jndi-remote-client.artifactId>wildfly-controller-client</jndi-remote-client.artifactId>
         <jndi-remote-client.version>${wildfly.version}</jndi-remote-client.version>
       </properties>
       <build>

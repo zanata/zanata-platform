@@ -29,7 +29,6 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.apicompat.common.ContentState;
 import org.zanata.common.ActivityType;
 import org.zanata.model.Activity;
 import org.zanata.model.type.EntityType;

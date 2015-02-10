@@ -34,7 +34,6 @@
         <configuration>
           <usedDependencies combine.children="append">
             <usedDependency>org.projectlombok:lombok</usedDependency>
-            <usedDependency>org.hibernate:hibernate-search</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>
@@ -190,15 +189,11 @@
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-core</artifactId>
-      <!-- okapi-lib-search would otherwise use lucene 3.0.0 -->
-      <version>${lucene.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-analyzers</artifactId>
-      <!-- okapi-lib-search would otherwise use lucene 3.0.0 -->
-      <version>${lucene.version}</version>
     </dependency>
 
     <!-- Solr -->
@@ -253,7 +248,7 @@
 
     <dependency>
       <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-search</artifactId>
+      <artifactId>hibernate-search-orm</artifactId>
     </dependency>
 
     <dependency>

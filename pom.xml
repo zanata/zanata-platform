@@ -29,6 +29,7 @@
     <icu4j.version>50.1.1</icu4j.version>
     <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
     <lucene.version>3.6.2</lucene.version>
+    <solr.version>${lucene.version}</solr.version>
     <seam.version>2.3.1.Final</seam.version>
     <gwteventservice.version>1.2.1</gwteventservice.version>
     <okapi.version>0.22</okapi.version>
@@ -41,29 +42,29 @@
 
     <richfaces.version>4.5.0.Final</richfaces.version>
 
+    <arquillian.version>1.1.5.Final</arquillian.version>
+    <shrinkwrap.api.version>1.2.2</shrinkwrap.api.version>
+    <shrinkwrap.resolver.version>2.0.0</shrinkwrap.resolver.version>
     <shrinkwrap.desc.version>2.0.0-alpha-5</shrinkwrap.desc.version>
 
     <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
     <!-- see also the jboss7 profile below -->
     <hibernate.scope>provided</hibernate.scope>
-    <!--
-         TODO include Hibernate in war (or deploy as JBoss modules).
-         NB: JBoss EAP 6.2.3 only has 4.2.7.SP4
-    -->
-    <hibernate.version>4.2.8.Final</hibernate.version>
+    <hibernate.version>4.2.17.Final</hibernate.version>
     <hibernate.search.scope>compile</hibernate.search.scope>
     <!-- Hibernate Search 4.4.x is for Hibernate Core 4.2.x:
      http://in.relation.to/Bloggers/HibernateSearchWeekendReleasesFromBothMaintenanceBranches
      -->
-    <hibernate.search.version>4.4.2.Final</hibernate.search.version>
+    <!-- 4.4.5.Final is not in Central -->
+    <hibernate.search.version>4.4.4.Final</hibernate.search.version>
     <hibernate.entitymanager.version>${hibernate.version}</hibernate.entitymanager.version>
     <war_bundles_jsf_impl>false</war_bundles_jsf_impl>
-    <hibernate.validator.version>4.3.1.Final</hibernate.validator.version>
+    <hibernate.validator.version>4.3.2.Final</hibernate.validator.version>
 
     <!-- controls concordion output location-->
     <concordion.output.dir>${project.build.directory}/concordion</concordion.output.dir>
 
-    <!-- JBoss version for dependencies (arquillian, jboss-as-parent) -->
+    <!-- JBoss version for Arquillian dependencies -->
     <jboss.as.version>7.2.0.Final</jboss.as.version>
 
     <jdbc.groupId>mysql</jdbc.groupId>
@@ -71,6 +72,7 @@
     <jdbc.version>5.1.26</jdbc.version>
 
     <resteasy.scope>compile</resteasy.scope>
+    <resteasy.version>2.3.7.Final</resteasy.version>
 
     <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
     <!-- This URL must be set by a profile (wildfly), settings.xml or mvn command line -->
@@ -81,37 +83,22 @@
   <dependencyManagement>
     <dependencies>
 
-      <!-- arquillian and shrinkwrap boms must precede other boms -->
       <dependency>
         <groupId>org.jboss.shrinkwrap</groupId>
-        <artifactId>shrinkwrap-bom</artifactId>
-        <version>1.2.2</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
-
-      <!-- Override dependency resolver with latest version.
-      This must go *BEFORE* the Arquillian BOM. -->
-      <dependency>
-        <groupId>org.jboss.shrinkwrap.resolver</groupId>
-        <artifactId>shrinkwrap-resolver-bom</artifactId>
-        <version>2.0.0</version>
-        <scope>import</scope>
-        <type>pom</type>
+        <artifactId>shrinkwrap-api</artifactId>
+        <version>${shrinkwrap.api.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.jboss.arquillian</groupId>
-        <artifactId>arquillian-bom</artifactId>
-        <version>1.1.5.Final</version>
-        <scope>import</scope>
-        <type>pom</type>
+        <groupId>org.jboss.shrinkwrap</groupId>
+        <artifactId>shrinkwrap-impl-base</artifactId>
+        <version>${shrinkwrap.api.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.jboss.spec.javax.servlet</groupId>
-        <artifactId>jboss-servlet-api_3.0_spec</artifactId>
-        <version>1.0.1.Final</version>
+        <groupId>org.jboss.shrinkwrap</groupId>
+        <artifactId>shrinkwrap-spi</artifactId>
+        <version>${shrinkwrap.api.version}</version>
       </dependency>
 
       <dependency>
@@ -120,43 +107,96 @@
         <version>1.13</version>
       </dependency>
 
-      <!-- repeat resteasy version to make sure the seam bom doesn't downgrade it -->
-      <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>resteasy-bom</artifactId>
-        <version>${resteasy.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <!-- make sure the richfaces version is not provided by the seam bom -->
       <dependency>
         <groupId>org.richfaces</groupId>
         <artifactId>richfaces</artifactId>
         <version>${richfaces.version}</version>
       </dependency>
 
-
-      <!--
-        TODO remove this, OR when we remove the org.jboss.seam bom, move this
-        to the jbosseap6 profile
-      -->
       <dependency>
-        <groupId>org.jboss.as</groupId>
-        <artifactId>jboss-as-parent</artifactId>
-        <version>${jboss.as.version}</version>
+        <groupId>org.jboss.spec</groupId>
+        <artifactId>jboss-javaee-6.0</artifactId>
+        <version>3.0.2.Final</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
 
-      <!-- Seam bom goes last because it uses outdated dependencies,
-           and isn't being updated -->
+      <dependency>
+        <groupId>antlr</groupId>
+        <artifactId>antlr</artifactId>
+        <version>2.7.7</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>1.9</version>
+      </dependency>
+
+      <dependency>
+        <groupId>dom4j</groupId>
+        <artifactId>dom4j</artifactId>
+        <version>1.6.1</version>
+        <scope>provided</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>com.sun.faces</groupId>
+        <artifactId>jsf-impl</artifactId>
+        <version>2.1.28</version>
+        <scope>provided</scope>
+      </dependency>
+
       <dependency>
         <groupId>org.jboss.seam</groupId>
-        <artifactId>bom</artifactId>
+        <artifactId>jboss-seam</artifactId>
+        <type>ejb</type>
         <version>${seam.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.el</groupId>
+            <artifactId>el-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.seam</groupId>
+        <artifactId>jboss-seam-debug</artifactId>
+        <version>${seam.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.seam</groupId>
+        <artifactId>jboss-seam-mail</artifactId>
+        <version>${seam.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.seam</groupId>
+        <artifactId>jboss-seam-ui</artifactId>
+        <version>${seam.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.security</groupId>
+        <artifactId>jboss-negotiation-common</artifactId>
+        <version>2.3.6.Final</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.web</groupId>
+        <artifactId>jbossweb</artifactId>
+        <version>7.5.4.Final</version>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -173,8 +213,14 @@
 
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>4.4</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpcore</artifactId>
-        <version>4.2.3</version>
+        <version>4.4</version>
       </dependency>
 
       <dependency>
@@ -299,12 +345,50 @@
         <version>${zanata.api.version}</version>
         <exclusions>
           <exclusion>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+          </exclusion>
+          <exclusion>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
           </exclusion>
           <exclusion>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxb-provider</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-multipart-provider</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-common-api</artifactId>
+        <version>${zanata.api.compat.version}</version>
+        <classifier>compat</classifier>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
             <groupId>javax.annotation</groupId>
             <artifactId>jsr250-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -569,13 +653,6 @@
 
       <dependency>
         <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-search</artifactId>
-        <version>${hibernate.search.version}</version>
-        <scope>${hibernate.search.scope}</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.hibernate</groupId>
         <artifactId>hibernate-search-orm</artifactId>
         <version>${hibernate.search.version}</version>
         <scope>${hibernate.search.scope}</scope>
@@ -586,6 +663,12 @@
         <artifactId>hibernate-search-engine</artifactId>
         <version>${hibernate.search.version}</version>
         <scope>${hibernate.search.scope}</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
@@ -599,18 +682,31 @@
         <groupId>org.hibernate.common</groupId>
         <artifactId>hibernate-commons-annotations</artifactId>
         <version>4.0.4.Final</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-core</artifactId>
         <version>${hibernate.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-ehcache</artifactId>
         <version>${hibernate.version}</version>
+        <!--<version>${hibernate.version}</version>-->
       </dependency>
 
       <dependency>
@@ -629,6 +725,12 @@
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-validator</artifactId>
         <version>${hibernate.validator.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
@@ -641,12 +743,6 @@
         <groupId>org.javassist</groupId>
         <artifactId>javassist</artifactId>
         <version>3.18.2-GA</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.el</groupId>
-        <artifactId>jboss-el</artifactId>
-        <version>1.0_02.CR6</version>
       </dependency>
 
       <dependency>
@@ -686,11 +782,47 @@
         </exclusions>
       </dependency>
 
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-core</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-analyzers</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-facet</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-phonetic</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-smartcn</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-stempel</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+
       <!-- Solr dependencies -->
       <dependency>
         <groupId>org.apache.solr</groupId>
         <artifactId>solr-core</artifactId>
-        <version>3.6.2</version>
+        <version>${solr.version}</version>
         <exclusions>
           <exclusion>
             <groupId>commons-httpclient</groupId>
@@ -726,7 +858,7 @@
       <dependency>
         <groupId>org.apache.solr</groupId>
         <artifactId>solr-solrj</artifactId>
-        <version>3.6.2</version>
+        <version>${solr.version}</version>
         <exclusions>
           <exclusion>
             <groupId>commons-httpclient</groupId>
@@ -738,7 +870,11 @@
           </exclusion>
         </exclusions>
       </dependency>
-
+      <dependency>
+        <groupId>org.apache.solr</groupId>
+        <artifactId>solr-analysis-extras</artifactId>
+        <version>${solr.version}</version>
+      </dependency>
       <dependency>
         <groupId>net.customware.gwt.presenter</groupId>
         <artifactId>gwt-presenter</artifactId>
@@ -757,13 +893,6 @@
             <artifactId>jsr305</artifactId>
           </exclusion>
         </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.validation</groupId>
-        <artifactId>validation-api</artifactId>
-        <version>1.0.0.GA</version>
-        <scope>compile</scope>
       </dependency>
 
       <dependency>
@@ -930,6 +1059,18 @@
           <rules>
             <bannedDependencies>
               <excludes combine.children="append">
+                <!-- Use org.jboss.spec.javax.annotation:jboss-annotations-api_1.1_spec -->
+                <exclude>javax.annotation:jsr250-api</exclude>
+
+                <!-- Use org.jboss.spec.javax.el:jboss-el-api_2.2_spec -->
+                <exclude>javax.el:el-api</exclude>
+
+                <!-- Use org.jboss.spec.javax.xml.bind:jboss-jaxb-api_2.2_spec -->
+                <exclude>javax.xml.bind:jaxb-api</exclude>
+
+                <!-- Use org.jboss.resteasy:jaxrs-api (since we package resteasy) -->
+                <exclude>org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_1.1_spec</exclude>
+
                 <!-- use org.jboss.spec.javax.servlet:jboss-servlet-api_3.0_spec -->
                 <exclude>org.jboss.spec.javax.servlet:jboss-servlet-api_3.1_spec</exclude>
 
