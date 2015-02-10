@@ -108,29 +108,9 @@ public enum WebDriverFactory {
     }
 
     private WebDriver configureChromeDriver() {
-        // TODO can we use this? it will use less code, but it will use DISPLAY rather than webdriver.display
-//        System.setProperty(ChromeDriverService.CHROME_DRIVER_EXE_PROPERTY,
-//                getChromeDriver().getAbsolutePath()));
-//        System.setProperty(ChromeDriverService.CHROME_DRIVER_LOG_PROPERTY,
-//                PropertiesHolder.getProperty("webdriver.log"));
-//        driverService = ChromeDriverService.createDefaultService();
-
-        @SuppressWarnings("deprecation")
-        File chromeDriver = getChromeDriver();
-        driverService =
-                new ChromeDriverService.Builder()
-                        .usingDriverExecutable(
-                                chromeDriver)
-                        .usingAnyFreePort()
-                        .withEnvironment(
-                                ImmutableMap
-                                        .of("DISPLAY",
-                                                PropertiesHolder.properties
-                                                        .getProperty("webdriver.display")))
-                        .withLogFile(
-                                new File(PropertiesHolder.properties
-                                        .getProperty("webdriver.log"))).build();
-
+        System.setProperty(ChromeDriverService.CHROME_DRIVER_LOG_PROPERTY,
+                PropertiesHolder.getProperty("webdriver.log"));
+        driverService = ChromeDriverService.createDefaultService();
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
         capabilities
                 .setCapability("chrome.binary", PropertiesHolder.properties
@@ -144,32 +124,6 @@ public enum WebDriverFactory {
                 new Augmenter().augment(new RemoteWebDriver(driverService
                         .getUrl(),
                                 capabilities)));
-    }
-
-    /**
-     * Returns a File pointing to a chromedriver binary, searching the PATH
-     * if necessary. If the property 'webdriver.chrome.driver' points to an
-     * executable, uses that.  Otherwise, searches PATH for the specified
-     * executable.  Searches for 'chromedriver' if the property is null or
-     * empty.
-     * @return a File pointing to the executable
-     * @deprecated use ChromeDriverService.createDefaultService() if you can
-     */
-    @Deprecated
-    private File getChromeDriver() {
-        String exeName = PropertiesHolder.getProperty("webdriver.chrome.driver");
-        if (exeName == null || exeName.isEmpty()) {
-            exeName = CommandLine.find("chromedriver");
-        } else if (!new File(exeName).canExecute()) {
-            exeName = CommandLine.find(exeName);
-        }
-        if (exeName == null) {
-            throw new RuntimeException("Please ensure chromedriver is on " +
-                    "your system PATH or specified by the property " +
-                    "'webdriver.chrome.driver'.  Get it here: " +
-                    "http://chromedriver.storage.googleapis.com/index.html");
-        }
-        return new File(exeName);
     }
 
     private WebDriver configureFirefoxDriver() {
@@ -187,8 +141,6 @@ public enum WebDriverFactory {
          * TODO: Evaluate current timeout Timeout the connection in 30 seconds
          * firefoxBinary.setTimeout(TimeUnit.SECONDS.toMillis(30));
          */
-        firefoxBinary.setEnvironmentProperty("DISPLAY",
-                PropertiesHolder.properties.getProperty("webdriver.display"));
         return new FirefoxDriver(firefoxBinary, makeFirefoxProfile());
     }
 

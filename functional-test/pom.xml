@@ -47,7 +47,6 @@
     <webdriver.chrome.bin>/opt/google/chrome/google-chrome</webdriver.chrome.bin>
     <!-- this decides what web driver type we intended to use-->
     <webdriver.type>chrome</webdriver.type>
-    <webdriver.display>:0</webdriver.display>
     <webdriver.log>${project.build.directory}/webdriver.log</webdriver.log>
     <webdriver.screenshot.dir>${project.build.directory}/screenshots</webdriver.screenshot.dir>
     <webdriver.wait>10</webdriver.wait>
@@ -779,6 +778,7 @@
                 <echo>or -Dappserver=wildfly8</echo>
                 <echo>NB: cargo.basename needs to match the basename of the file given in cargo.installation.</echo>
                 <echo>For example, if cargo.installation is http://example.com/download/jboss-6.3.2.zip, cargo.basename should be jboss-6.3.2.</echo>
+                <echo>appserver.dir.name is top-level dir inside zip.  For jbosseap6, default is jboss-eap-6.3.  Override for later versions.</echo>
                 <echo/>
                 <echo>-DallFuncTests to enable all functional tests (defaults to smoke tests)</echo>
                 <echo/>
@@ -791,10 +791,10 @@
                 <echo>-Dzanata.sample.projects.basedir=${project.build.testOutputDirectory}/sample-projects</echo>
                 <echo>-Dinclude.test.patterns=test filter pattern. Can be used to control what test to run. Default is ${default.test.patterns}</echo>
                 <echo>-Dwebdriver.type=run tests in htmlUnit, chrome or firefox. For chrome, see also webdriver.chrome.* Default is chrome.</echo>
-                <echo>-Dwebdriver.display=display to run test browser in, for Xnest or otherwise. Default is :0.</echo>
                 <echo>-Dwebdriver.chrome.bin=full path to chrome binary.</echo>
-                <echo>-Dwebdriver.chrome.driver=full path to chromedriver binary.</echo>
+                <echo>-Dwebdriver.chrome.driver=full path to chromedriver binary. Default is chromedriver on $PATH</echo>
                 <echo>-Dwebdriver.wait=global wait time in seconds for element searches. Default is 10.</echo>
+                <echo>NB: set env var DISPLAY to run test browser in alternative display, for Xnest/Xvfb/Xvnc. eg: xvfb-run -e mvn verify -Dappserver=wildfly8</echo>
                 <echo>==========================================================</echo>
                 <echo>to ask cargo to start up then wait so that tests can be run manually: mvn clean package cargo:run -Dappserver=wildfly8 -Dmysql.port=13306</echo>
                 <!-- placeholder. Actual content should be populated by running server/etc/scripts/functional-test-db-snapshot.sh -->
