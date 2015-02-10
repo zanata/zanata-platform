@@ -339,19 +339,6 @@
           <value>jbosseap6</value>
         </property>
       </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <configuration>
-              <usedDependencies>
-                <usedDependency>org.jboss.as:jboss-as-ejb-client-bom</usedDependency>
-              </usedDependencies>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-
     </profile>
     <profile>
       <id>wildfly8</id>
@@ -377,15 +364,6 @@
                 <phase>package</phase>
               </execution>
             </executions>
-          </plugin>
-
-          <plugin>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <configuration>
-              <usedDependencies>
-                <usedDependency>org.wildfly:wildfly-ejb-client-bom</usedDependency>
-              </usedDependencies>
-            </configuration>
           </plugin>
         </plugins>
       </build>
