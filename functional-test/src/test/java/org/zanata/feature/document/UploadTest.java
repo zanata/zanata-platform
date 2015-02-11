@@ -90,45 +90,6 @@ public class UploadTest extends ZanataTestCase {
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Category(BasicAcceptanceTest.class)
-    public void uploadedDocumentIsInFilesystem() {
-        File originalFile =
-                testFileGenerator.generateTestFileWithContent(
-                        "uploadedDocumentIsInFilesystem", ".txt",
-                        "This is a test file");
-        String testFileName = originalFile.getName();
-
-        VersionDocumentsTab versionDocumentsTab = new ProjectWorkFlow()
-                .goToProjectByName("uploadtest")
-                .gotoVersion("txt-upload")
-                .gotoSettingsTab()
-                .gotoSettingsDocumentsTab()
-                .pressUploadFileButton()
-                .enterFilePath(originalFile.getAbsolutePath())
-                .submitUpload()
-                .clickUploadDone();
-
-        assertThat(new File(documentStorageDirectory).list().length)
-                .isEqualTo(1)
-                .as("There is only one uploaded source file");
-
-        File newlyCreatedFile = new File(documentStorageDirectory,
-                testFileGenerator
-                        .getFirstFileNameInDirectory(documentStorageDirectory));
-
-        assertThat(testFileGenerator.getTestFileContent(newlyCreatedFile))
-                .isEqualTo("This is a test file")
-                .as("The contents of the file were also uploaded");
-        VersionDocumentsPage versionDocumentsPage = versionDocumentsTab
-                .gotoDocumentTab()
-                .waitForSourceDocsContains(testFileName);
-
-        assertThat(versionDocumentsPage.sourceDocumentsContains(testFileName))
-                .isTrue()
-                .as("Document shows in table");
-    }
-
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void cancelFileUpload() {
         File cancelUploadFile =
                 testFileGenerator.generateTestFileWithContent(
