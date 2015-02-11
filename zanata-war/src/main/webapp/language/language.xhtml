@@ -1,23 +1,133 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:a4j="http://richfaces.org/a4j"
   template="../WEB-INF/template/template.xhtml">
 
   <ui:define name="page_title">#{msgs.format('jsf.LanguageTeamTitle',
-    languageTeamAction.locale.retrieveDisplayName())}</ui:define>
+    languageAction.locale.retrieveDisplayName())}</ui:define>
 
   <ui:define name="center_content">
-    <div class="g--centered">
-      <div class="g__item w--1-s w--2-3 l--push-bottom-half">
+    <script type="text/javascript">
+      //<![CDATA[
+      jQuery(function () {
+        crossroads.addRoute(':pre*:/language/view/{localeId}/:section:',
+          function (pre, localeId, section) {
+            section = section || 'members';
+            section = validateTab('#' + section + "_tab", section, "members");
+            zanata.tabs.activate(jQuery('#' + section + "_tab"))
+          });
+
+        updateStateFromUrl();
+      });
+      //]]>
+    </script>
+
+    <h:form styleClass="l--push-bottom-0">
+      <a4j:jsFunction name="refreshMembersForm" action="#{languageAction.reset}"
+        render="members-more-action-form, members-size, members-form"/>
+    </h:form>
+
+    <div class="g" id="language-page">
+      <div class="g__item w--1-m w--3-8-l w--1-3 l--push-bottom-half">
         <p class="txt--meta l--push-all-0">
           <s:link view="/language/home.xhtml" propagation="none"
             value="#{msgs['jsf.Languages']}"/>
         </p>
 
-        <ui:include src="../WEB-INF/layout/language/language_view.xhtml"/>
+        <s:div styleClass="l--push-bottom-half" id="language-info">
+          <h1 class="l--push-all-0 #{not languageAction.locale.active or not languageAction.locale.enabledByDefault ? 'txt--neutral' : ''}">
+            <i class="i i--language"></i> #{languageAction.locale.retrieveDisplayName()}
+          </h1>
+          <p class="txt--understated">
+            #{languageAction.locale.localeId}<span class="l--push-left-quarter">#{languageAction.locale.retrieveNativeName()}</span>
+          </p>
+          <s:div rendered="#{not languageAction.locale.active or not languageAction.locale.enabledByDefault}">
+            <s:span styleClass="label" rendered="#{not languageAction.locale.active}"
+              title="#{msgs['jsf.Disabled']}">
+              #{msgs['jsf.Disabled']}
+            </s:span>
+            <s:span styleClass="label" rendered="#{not languageAction.locale.enabledByDefault}"
+              title="#{msgs['jsf.language.disableByDefault']}">
+              #{msgs['jsf.language.disableByDefault']}
+            </s:span>
+          </s:div>
 
+        </s:div>
+      </div>
+
+      <div class="g__item w--1-m w--5-8-l w--2-3">
+        <div class="tabs--lined js-tabs">
+          <ul class="tabs__nav js-tabs-nav">
+            <ui:param name="languageURL" value="#{request.contextPath.concat('/language/view/').concat(languageAction.locale.localeId)}"/>
+            <li>
+              <a id="members_tab" href="#{languageURL}/members"
+                class="js-url-mod" data-content="#members">
+                <i class="i i--users"></i>
+              <span class="is-hidden--s i__text--right">
+                #{msgs['jsf.Members']}
+                <s:span styleClass="txt--neutral" id="members-size">
+                  #{languageAction.localeMembers.size}
+                </s:span>
+              </span>
+              </a>
+            </li>
+
+            <s:fragment rendered="#{identity.loggedIn}">
+              <li class="tab__end">
+                <s:div styleClass="dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown"
+                  id="language-more-actions">
+                  <a class="dropdown__toggle js-dropdown__toggle"
+                    title="#{msgs['jsf.tooltip.MoreActions']}" href="#">
+                    <i class="i i--ellipsis"></i>
+                  </a>
+                  <ul class="dropdown__content js-dropdown__content"
+                    role="content" aria-labelledby="dropdownContent">
+                    <li>
+                      <a href="#" class="i__item--right"
+                        data-toggle="modal" onclick="return false;"
+                        data-target="#contactCoordinatorDialog">
+                        #{msgs['jsf.contactLanguageTeamCoordinator']}
+                        <i class="i i--plus i__item__icon"></i>
+                      </a>
+                    </li>
+                  </ul>
+                </s:div>
+                <ui:include src="../WEB-INF/layout/language/contact_coordinator_modal.xhtml">
+                  <ui:param name="emailType" value="contact_coordinator" />
+                  <ui:param name="id" value="#{languageAction.language}" />
+                </ui:include>
+              </li>
+            </s:fragment>
+
+            <s:fragment rendered="#{s:hasPermission(languageAction.locale, 'manage-language-team')}">
+              <li class="tab__end">
+                <a id="settings_tab" href="#{languageURL}/settings"
+                  class="js-url-mod" data-content="#settings">
+                <span class="is-hidden--s i__text--left">
+                  #{msgs['jsf.Settings']}
+                </span>
+                  <i class="i i--settings"></i>
+                </a>
+              </li>
+            </s:fragment>
+          </ul>
+
+          <ul class="tabs__content panels__container js-tabs-content l--push-top-1">
+            <li id="members">
+              <ui:include src="../WEB-INF/layout/language/members-tab.xhtml"/>
+            </li>
+
+            <s:fragment rendered="#{s:hasPermission(languageAction.locale, 'manage-language-team')}">
+              <li id="settings">
+                <ui:include src="../WEB-INF/layout/language/settings-tab.xhtml"/>
+              </li>
+            </s:fragment>
+          </ul>
+        </div>
       </div>
     </div>
   </ui:define>

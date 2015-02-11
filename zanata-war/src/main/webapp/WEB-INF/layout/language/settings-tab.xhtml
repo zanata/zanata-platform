@@ -1,0 +1,116 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  xmlns:rich="http://richfaces.org/rich">
+
+  <a4j:jsFunction name="saveSettings"
+    onbegin="jQuery('#save-button').addClass('is-hidden')"
+    oncomplete="jQuery('#save-button').removeClass('is-hidden')"
+    status="settingsTab-savingLoader"
+    action="#{languageAction.saveSettings()}"
+    render="language-info"/>
+
+  <a4j:jsFunction name="bindPluralForms" action="#{languageAction.locale.setPluralForms(pluralForms)}">
+    <a4j:param name="val1" assignTo="#{pluralForms}"/>
+  </a4j:jsFunction>
+
+  <a4j:jsFunction name="bindEnableByDefault">
+    <a4j:param name="val1" assignTo="#{key}"/>
+    <a4j:param name="val2" assignTo="#{languageAction.locale.enabledByDefault}"/>
+  </a4j:jsFunction>
+
+  <a4j:jsFunction name="bindActivateLanguage">
+    <a4j:param name="val1" assignTo="#{key}"/>
+    <a4j:param name="val2" assignTo="#{languageAction.locale.active}"/>
+  </a4j:jsFunction>
+
+  <div class="panel">
+    <div class="panel__header">
+      <h2 class="panel__heading">#{msgs['jsf.Settings']}</h2>
+    </div>
+
+    <h:form styleClass="l--push-bottom-0" id="settings-general_form">
+      <div class="l--pad-all-half">
+        <div class="l--push-top-quarter form__item">
+          <label>#{msgs['jsf.Name']}</label>
+          <span class="l--push-h-quarter txt--understated">
+            #{languageAction.locale.retrieveDisplayName()}
+          </span>
+        </div>
+
+        <div class="l--push-top-quarter form__item">
+          <label>#{msgs['jsf.LanguageCode']}</label>
+          <span class="l--push-h-quarter txt--understated">
+            #{languageAction.locale.asULocale().language eq '' ? msgs['jsf.notAvailable'] : languageAction.locale.asULocale().language}
+          </span>
+        </div>
+
+        <div class="quarter form__item">
+          <label>#{msgs['jsf.NativeName']}</label>
+          <span class="l--push-h-quarter txt--understated">
+            #{languageAction.locale.retrieveNativeName() eq '' ? msgs['jsf.notAvailable'] : languageAction.locale.retrieveNativeName()}
+          </span>
+        </div>
+
+        <div class="l--push-top-quarter form__item">
+          <label>#{msgs['jsf.CountryCode']}</label>
+          <span class="l--push-h-quarter txt--understated">
+            #{languageAction.locale.asULocale().country eq '' ? msgs['jsf.notAvailable'] : languageAction.locale.asULocale().country}
+          </span>
+        </div>
+
+        <div class="l--push-top-quarter form__item">
+          <label>#{msgs['jsf.Variant']}</label>
+          <span class="l--push-h-quarter txt--understated">
+            #{languageAction.locale.asULocale().variant eq '' ? msgs['jsf.notAvailable'] : languageAction.locale.asULocale().variant}
+          </span>
+        </div>
+
+        <div class="l--push-top-quarter form__item">
+          <h:outputLabel for="pluralForms">#{msgs['jsf.language.plurals']}</h:outputLabel>
+          <a href="http://docs.translatehouse.org/projects/localization-guide/en/latest/l10n/pluralforms.html?id=l10n/pluralforms"
+            title="#{msgs['jsf.language.plurals.help']}" target="_blank">
+            <i class="i i--help"></i>
+          </a>
+          <s:decorate id="pluralFormsField" template="../field.xhtml" enclose="true">
+            <h:inputText id="pluralForms" placeholder="#{languageAction.pluralsPlaceholder}"
+              maxlength="100" value="#{languageAction.locale.pluralForms}"
+              valueChangeListener="#{languageAction.validatePluralForms}">
+              <rich:placeholder value="#{languageAction.pluralsPlaceholder}" styleClass="txt--neutral"/>
+              <a4j:ajax event="blur" render="pluralFormsField" execute="@this" limitRender="true"/>
+            </h:inputText>
+          </s:decorate>
+        </div>
+
+        <div class="l--push-top-quarter form__item">
+          <zanata:checkbox label="#{msgs['jsf.language.enableByDefault']}" id="enable-by-default"
+            checked="#{languageAction.locale.enabledByDefault}" onValueChanged="bindEnableByDefault"
+            value="enableByDefault"/>
+        </div>
+
+        <div class="l--push-top-quarter form__item">
+          <zanata:checkbox label="#{msgs['jsf.language.enable']}" id="activate"
+            checked="#{languageAction.locale.active}" onValueChanged="bindActivateLanguage"
+            value="active"/>
+        </div>
+
+        <div class="l--push-top-1">
+          <button id="save-button" onclick="saveSettings();return false;" class="button button--primary">
+            #{msgs['jsf.Save']}
+          </button>
+
+          <a4j:status name="settingsTab-savingLoader">
+            <f:facet name="start">
+              <zanata:loader layout="inline"/>
+            </f:facet>
+          </a4j:status>
+        </div>
+
+      </div>
+    </h:form>
+  </div>
+</ui:composition>

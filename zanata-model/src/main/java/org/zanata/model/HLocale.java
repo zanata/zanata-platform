@@ -34,6 +34,7 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -66,6 +67,9 @@ public class HLocale extends ModelEntityBase implements Serializable {
     private Set<HProject> supportedProjects;
     private Set<HProjectIteration> supportedIterations;
     private Set<HLocaleMember> members;
+
+    @Getter
+    private String pluralForms;
 
     public HLocale(@Nonnull LocaleId localeId) {
         this.localeId = localeId;

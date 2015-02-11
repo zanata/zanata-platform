@@ -106,6 +106,7 @@ public class LanguageManagerAction extends AbstractAutocomplete<HLocale>
         }
     }
 
+    @Restrict("#{s:hasRole('admin')}")
     public String save() {
         if (!isLanguageNameValid()) {
             return null; // not success
@@ -148,7 +149,7 @@ public class LanguageManagerAction extends AbstractAutocomplete<HLocale>
         }
 
         // Check for plural forms
-        if (resourceUtils.getPluralForms(localeId, false) == null) {
+        if (resourceUtils.getPluralForms(localeId, true, false) == null) {
             languageNameWarningMessage =
                     msgs.get("jsf.language.validation.UnknownPluralForm");
         }

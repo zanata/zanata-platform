@@ -35,7 +35,7 @@
     <lombok.lib>${org.projectlombok:lombok:jar}</lombok.lib>
 
     <groovy.version>2.1.5</groovy.version>
-    <zanata.web.assets.version>6</zanata.web.assets.version>
+    <zanata.web.assets.version>7</zanata.web.assets.version>
   </properties>
 
   <build>

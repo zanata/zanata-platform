@@ -1,0 +1,251 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  xmlns:a4j="http://richfaces.org/a4j">
+
+  <style type="text/css">
+    input[type=checkbox] {
+      width: 1em;
+      height: 1em;
+      vertical-align: middle;
+    }
+  </style>
+
+  <div class="panel">
+    <div class="panel__header">
+      <div class="panel__header__actions">
+        <s:div rendered="#{identity.loggedIn}"
+          styleClass="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown">
+          <a id="members-more-actions" class="dropdown__toggle js-dropdown__toggle" href="#"
+            title="#{msgs['jsf.tooltip.MoreActions']}"><i
+            class="i i--ellipsis"></i></a>
+          <h:form id="members-more-action-form" styleClass="l--push-bottom-0">
+            <ul class="dropdown__content js-dropdown__content" role="content"
+              aria-labelledby="dropdownContent">
+              <s:fragment
+                rendered="#{not languageAction.isUserInTeam() and s:hasRole('admin')}">
+                <li>
+                  <a4j:commandLink id="Join"
+                    action="#{languageAction.joinLanguageTeam}"
+                    styleClass="i__item--right"
+                    oncomplete="refreshMembersForm()"
+                    value=" #{msgs['jsf.JoinLanguageTeam']}">
+                    <i class="i i--plus i__item__icon"></i>
+                    <s:conversationId name="id"
+                      value="#{languageAction.language}"/>
+                  </a4j:commandLink>
+                </li>
+              </s:fragment>
+
+              <s:fragment rendered="#{languageAction.isUserInTeam()}">
+                <li>
+                  <a4j:commandLink id="Leave"
+                    styleClass="txt--danger i__item--right"
+                    action="#{languageAction.leaveLanguageTeam}"
+                    oncomplete="refreshMembersForm()"
+                    value="#{msgs['jsf.LeaveLanguageTeam']}">
+                    <i class="i i--remove i__item__icon"></i>
+                    <s:conversationId name="id"
+                      value="#{languageAction.language}"/>
+                  </a4j:commandLink>
+                </li>
+              </s:fragment>
+
+              <s:fragment
+                rendered="#{identity.loggedIn and not languageAction.isUserInTeam()}">
+                <li>
+                  <s:link value="#{msgs['jsf.RequestToJoinLanguageTeam']}"
+                    view="/language/request_to_join_update_role.xhtml"
+                    styleClass="i__item--right">
+                    <f:param name="emailType" value="request_join_language"/>
+                    <f:param name="id" value="#{languageAction.language}"/>
+                    <i class="i i--plus i__item__icon"></i>
+                  </s:link>
+                </li>
+              </s:fragment>
+
+              <s:fragment
+                rendered="#{identity.loggedIn and languageAction.isUserInTeam() and !(s:hasPermission(languageAction.locale, 'manage-language-team'))}">
+                <li>
+                  <s:link value="#{msgs['jsf.RequestUpdateRoleLanguageTeam']}"
+                    view="/language/request_to_join_update_role.xhtml"
+                    styleClass="i__item--right">
+                    <f:param name="emailType" value="request_role_language"/>
+                    <f:param name="id" value="#{languageAction.language}"/>
+                    <i class="i i--plus i__item__icon"></i>
+                  </s:link>
+                </li>
+              </s:fragment>
+
+              <s:fragment
+                rendered="#{s:hasPermission(languageAction.locale, 'manage-language-team')}">
+                <li>
+                  <a id="addTeamMemberLink" href="#" class="i__item--right"
+                    data-toggle="modal" onclick="return false;"
+                    data-target="#searchUserDialog">
+                    #{msgs['jsf.AddTeamMember']}
+                    <i class="i i--plus i__item__icon"></i>
+                  </a>
+                </li>
+              </s:fragment>
+            </ul>
+          </h:form>
+        </s:div>
+      </div>
+      <h2 class="panel__heading">#{msgs['jsf.Members']}</h2>
+    </div>
+
+    <div class="panel__sub-header js-reveal">
+      <zanata:list-filter status="membersTab-membersLoader"
+        listId="members-form"
+        render="members-form, membersSearchBottom-pager, membersSearchBottom-page-info"
+        id="membersSearch" iconClass="i--users"
+        placeholder="#{msgs['jsf.language.members.search.placeholder']}"
+        actionBean="#{languageAction.membersFilter}"/>
+    </div>
+
+    <a4j:status name="membersTab-membersLoader">
+      <f:facet name="start">
+        <zanata:loader/>
+      </f:facet>
+    </a4j:status>
+
+    <h:form id="members-form" styleClass="l--push-bottom-1">
+      <s:div styleClass="l--pad-all-half"
+        rendered="#{empty languageAction.localeMembers}">
+        <p class="txt--meta">#{msgs['jsf.language.members.empty']}</p>
+        <s:fragment
+          rendered="#{s:hasPermission(languageAction.locale, 'manage-language-team')}">
+          <p>
+            <a id="addTeamMemberLink2" href="#" class="button--primary"
+              data-toggle="modal" onclick="return false;"
+              data-target="#searchUserDialog">
+              #{msgs['jsf.AddTeamMember']}
+              <i class="i i--plus i__item__icon"></i>
+            </a>
+          </p>
+        </s:fragment>
+      </s:div>
+
+      <s:div styleClass="l--pad-all-half"
+        rendered="#{not empty languageAction.localeMembers and empty languageAction.membersFilter.currentPage}">
+        <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
+      </s:div>
+
+
+      <s:fragment rendered="#{not empty languageAction.membersFilter.currentPage}">
+        <ul class="list--stats">
+          <ui:repeat value="#{languageAction.membersFilter.currentPage}" var="member">
+            <li
+              class="#{s:hasPermission(languageAction.locale, 'manage-language-team') ? 'list__item--actionable' : 'l--pad-all-quarter'}">
+              <s:div styleClass="list__item__action"
+                rendered="#{s:hasPermission(languageAction.locale, 'manage-language-team')}">
+                <div
+                  class="dropdown dropdown--small dropdown--inline dropdown--single list__item__dropdown js-dropdown">
+                  <a href="#" title="Options"
+                    class="dropdown__toggle js-dropdown__toggle txt--meta">
+                    <span class="is-invisible">Options</span>
+                  </a>
+                  <ul class="dropdown__content js-dropdown__content">
+                    <li>
+                      <a4j:commandLink value="#{msgs['jsf.Remove']}"
+                        action="#{languageAction.removeMembership(member)}"
+                        execute="@this" oncomplete="refreshMembersForm()"
+                        styleClass="i__item--right txt--danger">
+                        <i class="i i--remove i__item__icon"></i>
+                      </a4j:commandLink>
+                    </li>
+                  </ul>
+                </div>
+              </s:div>
+
+              <div class="list__item__content">
+                <div class="list__item__info">
+                  <h3 class="list__title">
+                    #{member.person.name}
+                  </h3>
+              <span class="list__item__meta">
+                #{member.person.account.username}<s:span rendered="#{identity.loggedIn}"> [#{member.person.email}] </s:span>
+              </span>
+                </div>
+                <div class="list__item__actions">
+                  <ul class="list--horizontal txt--meta">
+                    <li>
+                      #{msgs['jsf.Translator']}
+                      <h:selectBooleanCheckbox value="#{member.translator}"
+                        rendered="#{s:hasPermission(languageAction.locale, 'manage-language-team')}">
+                        <a4j:ajax event="change" execute="@this"
+                          listener="#{languageAction.saveTeamTranslator(member)}"/>
+                      </h:selectBooleanCheckbox>
+                      <s:fragment
+                        rendered="#{not s:hasPermission(languageAction.locale, 'manage-language-team')}">
+                        <s:fragment rendered="#{member.translator}">
+                          <i class="i i--checkmark"></i>
+                        </s:fragment>
+                        <s:fragment rendered="#{not member.translator}">
+                          <i class="i i--cancel"></i>
+                        </s:fragment>
+                      </s:fragment>
+                    </li>
+                    <li>
+                      #{msgs['jsf.Reviewer']}
+                      <h:selectBooleanCheckbox value="#{member.reviewer}"
+                        rendered="#{s:hasPermission(languageAction.locale, 'manage-language-team')}">
+                        <a4j:ajax event="change" execute="@this"
+                          listener="#{languageAction.saveTeamReviewer(member)}"/>
+                      </h:selectBooleanCheckbox>
+                      <s:fragment
+                        rendered="#{not s:hasPermission(languageAction.locale, 'manage-language-team')}">
+                        <s:fragment rendered="#{member.reviewer}">
+                          <i class="i i--checkmark"></i>
+                        </s:fragment>
+                        <s:fragment rendered="#{not member.reviewer}">
+                          <i class="i i--cancel"></i>
+                        </s:fragment>
+                      </s:fragment>
+                    </li>
+
+                    <li>
+                      #{msgs['jsf.Coordinator']}
+                      <h:selectBooleanCheckbox value="#{member.coordinator}"
+                        rendered="#{s:hasPermission(languageAction.locale, 'manage-language-team')}">
+                        <a4j:ajax event="change" execute="@this"
+                          listener="#{languageAction.saveTeamCoordinator(member)}"/>
+                      </h:selectBooleanCheckbox>
+                      <s:fragment
+                        rendered="#{not s:hasPermission(languageAction.locale, 'manage-language-team')}">
+                        <s:fragment rendered="#{member.coordinator}">
+                          <i class="i i--checkmark"></i>
+                        </s:fragment>
+                        <s:fragment rendered="#{not member.coordinator}">
+                          <i class="i i--cancel"></i>
+                        </s:fragment>
+                      </s:fragment>
+                    </li>
+                  </ul>
+                </div>
+                <div class="txt--align-right"></div>
+              </div>
+            </li>
+          </ui:repeat>
+        </ul>
+      </s:fragment>
+    </h:form>
+
+    <zanata:list-filter listId="members-form"
+      render="members-form, membersSearch-pager, membersSearch-page-info"
+      id="membersSearchBottom" iconClass="i--users" bottomPanel="true"
+      placeholder="#{msgs['jsf.language.members.search.placeholder']}"
+      actionBean="#{languageAction.membersFilter}"/>
+
+  </div>
+
+  <s:fragment
+    rendered="#{s:hasPermission(languageAction.locale, 'manage-language-team')}">
+    <ui:include src="search_user_modal.xhtml"/>
+  </s:fragment>
+
+</ui:composition>

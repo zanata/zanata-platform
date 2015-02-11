@@ -244,21 +244,10 @@
   </page>
 
   <page view-id="/admin/languagemanager.xhtml">
-    <navigation
-      from-action="#{languageSearchAction.manageMembers(language.localeId.id)}">
-      <redirect view-id="/admin/language.xhtml">
-        <param name="id" value="#{language.localeId.id}" />
-      </redirect>
-    </navigation>
     <navigation from-action="#{languageManagerAction.save}">
       <redirect view-id="/admin/languagemanager.xhtml"/>
     </navigation>
   </page>
-
-  <page view-id="/admin/language.xhtml">
-    <param name="id" value="#{languageTeamAction.language}" />
-  </page>
-
 
   <page view-id="/admin/rolerules.xhtml">
     <navigation from-action="#{roleAssignmentRuleAction.edit(rule)}">
@@ -481,7 +470,7 @@
   </page>
 
   <page view-id="/language/language.xhtml">
-    <param name="id" value="#{languageTeamAction.language}" />
+    <param name="id" value="#{languageAction.language}" />
 
     <navigation from-action="#{sendEmail.send}">
       <redirect view-id="/language/language.xhtml">

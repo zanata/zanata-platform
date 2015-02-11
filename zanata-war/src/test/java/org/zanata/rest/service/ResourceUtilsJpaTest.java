@@ -39,7 +39,9 @@ public class ResourceUtilsJpaTest extends ZanataJpaTest {
     public void setUp() {
         deleteAllTables();
         resourceUtils =
-                seam.reset().use("entityManager", getEm())
+                seam.reset()
+                    .use("session", getSession())
+                    .use("entityManager", getEm())
                         .autowire(ResourceUtils.class);
     }
 
