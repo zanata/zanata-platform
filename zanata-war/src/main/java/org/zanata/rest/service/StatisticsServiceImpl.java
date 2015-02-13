@@ -461,9 +461,11 @@ public class StatisticsServiceImpl implements StatisticsResource {
         // TODO system time zone should be persisted in database
         DateTimeZone systemZone = DateTimeZone.getDefault();
 
-        if (userZone.getOffset(0) != systemZone.getOffset(0)) {
-            fromDate = fromDate.toDateTime(systemZone);
-            toDate = toDate.toDateTime(systemZone);
+        Optional<DateTimeZone> userZoneOpt;
+        if (userZone.getStandardOffset(0) != systemZone.getStandardOffset(0)) {
+            userZoneOpt = Optional.of(userZone);
+        } else {
+            userZoneOpt = Optional.absent();
         }
 
         // TODO pahuang restrict toDate to yesterday (with timezone)
@@ -472,7 +474,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
 //        }
         List<UserTranslationMatrix> databaseRecords =
                 textFlowTargetHistoryDAO.getUserTranslationMatrix(person,
-                        fromDate, toDate);
+                        fromDate, toDate, userZoneOpt, systemZone);
 
         UserWorkMatrix result = new UserWorkMatrix();
 

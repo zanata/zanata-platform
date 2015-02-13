@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -32,6 +33,7 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.zanata.common.ContentState;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
@@ -39,6 +41,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
 import lombok.Getter;
@@ -190,12 +193,18 @@ public class TextFlowTargetHistoryDAO extends
      * @param toDate
      *            date to
      *
+     * @param userZoneOpt
+     *            optional DateTimeZone of the user. Only present if it's
+     *            different from system time zone
+     * @param systemZone
+     *            current system time zone
      * @return a list of UserTranslationMatrix object
      */
     @NativeQuery("need to use union")
     @DatabaseSpecific("uses mysql date() function. In test we can override stripTimeFromDateTimeFunction(String) below to workaround it.")
     public List<UserTranslationMatrix> getUserTranslationMatrix(
-            HPerson user, DateTime fromDate, DateTime toDate) {
+            HPerson user, DateTime fromDate, DateTime toDate,
+            Optional<DateTimeZone> userZoneOpt, DateTimeZone systemZone) {
         // @formatter:off
         String queryHistory = "select history.id, iter.id as iteration, tft.locale as locale, tf.wordCount as wordCount, history.state as state, history.lastChanged as lastChanged " +
                 "  from HTextFlowTargetHistory history " +
@@ -215,8 +224,11 @@ public class TextFlowTargetHistoryDAO extends
                 "  where tft.lastChanged >= :fromDate and tft.lastChanged <= :toDate " +
                 "    and tft.last_modified_by_id = :user and (tft.translated_by_id is not null or tft.reviewed_by_id is not null)" +
                 "    and tft.state <> 0";
+
+        String convertedLastChanged = convertTimeZoneFunction("lastChanged",
+                userZoneOpt, systemZone);
         // @formatter:on
-        String dateOfLastChanged = stripTimeFromDateTimeFunction("lastChanged");
+        String dateOfLastChanged = stripTimeFromDateTimeFunction(convertedLastChanged);
         String queryString =
                 "select " + dateOfLastChanged + ", iteration, locale, state, sum(wordCount)" +
                         "  from (" +
@@ -248,15 +260,41 @@ public class TextFlowTargetHistoryDAO extends
         return builder.build();
     }
 
+    @VisibleForTesting
+    @DatabaseSpecific("uses mysql function")
+    protected String convertTimeZoneFunction(String columnName,
+            Optional<DateTimeZone> userZoneOpt, DateTimeZone systemZone) {
+        if (userZoneOpt.isPresent()) {
+            String userOffset = getOffsetAsString(userZoneOpt.get());
+            String systemOffset = getOffsetAsString(systemZone);
+            return String.format("CONVERT_TZ(%s, '%s', '%s')", columnName, systemOffset, userOffset);
+        }
+        // no need to convert timezone
+        return columnName;
+    }
+
     // This is so we can override it in test and be able to test it against h2
     @VisibleForTesting
+    @DatabaseSpecific("uses mysql function")
     protected String stripTimeFromDateTimeFunction(String columnName) {
         return "date(" + columnName + ")";
     }
 
+    @SuppressWarnings("unchecked")
     private <T> T loadById(Object object, Class<T> entityClass) {
         return (T) getSession().byId(entityClass).load(
                 ((BigInteger) object).longValue());
+    }
+
+    private static String getOffsetAsString(DateTimeZone zone) {
+        int standardOffset = zone.getStandardOffset(0);
+        String prefix = "";
+        if (standardOffset < 0) {
+            prefix = "-";
+            standardOffset = -standardOffset;
+        }
+        return String.format("%s%02d:00", prefix,
+                TimeUnit.MILLISECONDS.toHours(standardOffset));
     }
 
     @Getter

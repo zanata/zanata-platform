@@ -1,9 +1,7 @@
 package org.zanata.dao;
 
 import java.util.List;
-import java.util.TimeZone;
 
-import org.assertj.core.api.Assertions;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.testng.annotations.BeforeMethod;
@@ -131,7 +129,9 @@ public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
                 historyDAO
                         .getUserTranslationMatrix(user,
                                 twoDaysAgo.withTimeAtStartOfDay(),
-                                today.withTimeAtStartOfDay());
+                                today.withTimeAtStartOfDay(),
+                                Optional.<DateTimeZone> absent(),
+                                DateTimeZone.getDefault());
 
         assertThat(result).hasSize(4);
         final SavedDatePredicate yesterdayPredicate =
@@ -208,8 +208,19 @@ public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
         List<UserTranslationMatrix> result = historyDAO
                 .getUserTranslationMatrix(user,
                         new DateTime(2015, 2, 1, 1, 1, zone),
-                        new DateTime(zone));
+                        new DateTime(zone), Optional.<DateTimeZone> absent(),
+                        DateTimeZone.getDefault());
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void canConvertTimeZoneIfUSerSuppliedDifferentZone() {
+        String result = historyDAO.convertTimeZoneFunction("lastChanged",
+                Optional.of(DateTimeZone.forID("Australia/Brisbane")),
+                DateTimeZone.forID("America/Chicago"));
+
+        assertThat(result).isEqualToIgnoringCase(
+                "convert_tz(lastChanged, '-06:00', '10:00')");
     }
 
     @RequiredArgsConstructor
