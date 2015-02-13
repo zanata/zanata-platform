@@ -46,13 +46,11 @@ import com.google.common.base.Predicate;
 @Slf4j
 public class AbstractPage {
     private final WebDriver driver;
-    private final FluentWait<WebDriver> ajaxWaitForSec;
 
     public AbstractPage(final WebDriver driver) {
         PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10),
                 this);
         this.driver = driver;
-        ajaxWaitForSec = WebElementUtil.waitForAMoment(driver);
         waitForPageSilence();
     }
 
@@ -75,6 +73,10 @@ public class AbstractPage {
         return driver;
     }
 
+    public JavascriptExecutor getExecutor() {
+        return (JavascriptExecutor) getDriver();
+    }
+
     public String getUrl() {
         return driver.getCurrentUrl();
     }
@@ -84,7 +86,7 @@ public class AbstractPage {
     }
 
     public FluentWait<WebDriver> waitForAMoment() {
-        return ajaxWaitForSec;
+        return WebElementUtil.waitForAMoment(driver);
     }
 
     /**
@@ -200,16 +202,15 @@ public class AbstractPage {
     }
 
     /**
-     * Wait for any AJAX calls to return.
+     * Wait for any AJAX/timeout calls to return.
      */
     public void waitForPageSilence() {
-        // Wait for AJAX calls to be 0
+        // Wait for AJAX/timeout calls to be 0
         waitForAMoment().withMessage("page silence").until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                Long ajaxCalls = (Long) ((JavascriptExecutor) getDriver())
-                        .executeScript(
-                                "return XMLHttpRequest.active");
+                Long ajaxCalls = (Long) getExecutor().executeScript(
+                                "return XMLHttpRequest.active + window.timeoutCounter");
                 if (ajaxCalls == null) {
                     if (log.isWarnEnabled()) {
                         String url = getDriver().getCurrentUrl();

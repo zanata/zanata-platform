@@ -202,7 +202,7 @@ public class CorePage extends AbstractPage {
     public void defocus(By elementBy) {
         log.info("Force unfocus");
         WebElement element = getDriver().findElement(elementBy);
-        ((JavascriptExecutor) getDriver()).executeScript("arguments[0].blur()", element);
+        getExecutor().executeScript("arguments[0].blur()", element);
     }
 
     /* The system sometimes moves too fast for the Ajax pages, so provide a
@@ -217,11 +217,11 @@ public class CorePage extends AbstractPage {
     }
 
     public void scrollIntoView(WebElement targetElement) {
-        ((JavascriptExecutor) getDriver()).executeScript(
+        getExecutor().executeScript(
                 "arguments[0].scrollIntoView(true);", targetElement);
     }
 
     public void scrollToTop() {
-        ((JavascriptExecutor) getDriver()).executeScript("scroll(0, 0);");
+        getExecutor().executeScript("scroll(0, 0);");
     }
 }

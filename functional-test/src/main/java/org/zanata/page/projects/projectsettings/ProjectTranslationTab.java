@@ -65,8 +65,7 @@ public class ProjectTranslationTab extends ProjectBasePage {
                 waitForElementExists(validationsList),
                 By.id(optionElementID));
 
-        ((JavascriptExecutor) getDriver())
-                .executeScript("arguments[0].click();", option);
+        getExecutor().executeScript("arguments[0].click();", option);
         slightPause();
         return new ProjectTranslationTab(getDriver());
     }

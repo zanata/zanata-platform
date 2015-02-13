@@ -52,8 +52,20 @@ public class AjaxCounterBean {
             "        };\n" +
             "        this._send.apply(this, arguments);\n" +
             "    }\n" +
+            "    window.timeoutCounter = 0;\n" +
+            "    window.originalSetTimeout = window.setTimeout;\n" +
+            "    window.setTimeout = function(func, delay, params) {\n" +
+            "        window.timeoutCounter++;\n" +
+            "        window.originalSetTimeout(window.timeoutCallback, delay, [func, params]);\n" +
+            "    }\n" +
+            "    window.timeoutCallback = function(funcAndParams) {\n" +
+            "        window.timeoutCounter--;\n" +
+            "        func = funcAndParams[0];\n" +
+            "        params = funcAndParams[1];\n" +
+            "        func(params);\n" +
+            "    }\n" +
             "  }\n" +
-            "})(XMLHttpRequest)" +
+            "})(XMLHttpRequest)\n" +
             "</script>\n";
     public String getAjaxCounterScript() {
         String propName = "zanata.countAjax";
