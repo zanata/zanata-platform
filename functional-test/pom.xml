@@ -21,6 +21,8 @@
     <!-- This may be changed by the JBOSS_HTTP_PORT profile -->
     <!-- This needs to agree with the http socket-binding in standalone.xml -->
     <cargo.servlet.port>8180</cargo.servlet.port>
+    <cargo.jboss.management-http.port>10090</cargo.jboss.management-http.port>
+    <cargo.jboss.management-native.port>10099</cargo.jboss.management-native.port>
     <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
     <cargo.container.home>${project.build.directory}/jboss/container</cargo.container.home>
     <context.path>zanata</context.path>
@@ -553,6 +555,8 @@
               <configuration>
                 <properties>
                   <cargo.servlet.port>${cargo.servlet.port}</cargo.servlet.port>
+                  <cargo.jboss.management-http.port>${cargo.jboss.management-http.port}</cargo.jboss.management-http.port>
+                  <cargo.jboss.management-native.port>${cargo.jboss.management-native.port}</cargo.jboss.management-native.port>
                 </properties>
               </configuration>
               <deployables>
@@ -624,6 +628,30 @@
       </activation>
       <properties>
         <cargo.servlet.port>${env.JBOSS_HTTP_PORT}</cargo.servlet.port>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>JBOSS_MANAGEMENT_HTTP_PORT</id>
+      <activation>
+        <property>
+          <name>env.JBOSS_MANAGEMENT_HTTP_PORT</name>
+        </property>
+      </activation>
+      <properties>
+        <cargo.jboss.management-http.port>${env.JBOSS_MANAGEMENT_HTTP_PORT}</cargo.jboss.management-http.port>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>JBOSS_MANAGEMENT_NATIVE_PORT</id>
+      <activation>
+        <property>
+          <name>env.JBOSS_MANAGEMENT_NATIVE_PORT</name>
+        </property>
+      </activation>
+      <properties>
+        <cargo.jboss.management-native.port>${env.JBOSS_MANAGEMENT_NATIVE_PORT}</cargo.jboss.management-native.port>
       </properties>
     </profile>
 
