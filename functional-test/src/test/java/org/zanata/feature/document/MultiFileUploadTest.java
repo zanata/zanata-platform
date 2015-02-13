@@ -30,7 +30,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.testharness.ZanataTestCase;
-import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projectversion.VersionDocumentsPage;
 import org.zanata.page.projectversion.versionsettings.VersionDocumentsTab;
@@ -101,6 +100,7 @@ public class MultiFileUploadTest extends ZanataTestCase {
                 .enterFilePath(keptUploadFile.getAbsolutePath())
                 .enterFilePath("/tmp/fakefile.txt");
 
+        versionDocumentsTab.expectSomeUploadItems();
         assertThat(versionDocumentsTab.getUploadList())
                 .contains(keptUploadFile.getName())
                 .contains("fakefile.txt")
