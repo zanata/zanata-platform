@@ -12,7 +12,7 @@
   <name>functional-test</name>
 
   <properties>
-    <selenium.version>2.39.0</selenium.version>
+    <selenium.version>2.44.0</selenium.version>
 
     <!--Cargo Settings -->
     <cargo.host>localhost</cargo.host>
@@ -74,7 +74,7 @@
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
-        <version>4.3.3</version>
+        <version>4.3.4</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
@@ -840,10 +840,6 @@
           <container>
             <type>installed</type>
 
-            <output>${project.build.directory}/container.log</output>
-            <append>false</append>
-            <log>${project.build.directory}/cargo.log</log>
-
             <systemProperties>
               <ehcache.disk.store.dir>${project.build.directory}/ehcache</ehcache.disk.store.dir>
               <jboss.server.log.threshold>WARN</jboss.server.log.threshold>
@@ -852,7 +848,7 @@
               <jboss.socket.binding.port-offset>${cargo.port.offset}</jboss.socket.binding.port-offset>
             </systemProperties>
 
-            <timeout>0</timeout>
+            <timeout>120000</timeout>
           </container>
 
           <configuration>
