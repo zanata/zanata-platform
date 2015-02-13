@@ -84,7 +84,7 @@
       <console-handler name="CONSOLE">
         <level name="INFO"/>
         <formatter>
-          <named-formatter name="COLOR-PATTERN"/>
+          <named-formatter name="PATTERN"/>
         </formatter>
       </console-handler>
       <periodic-rotating-file-handler name="FILE" autoflush="true">
@@ -121,10 +121,10 @@
         </handlers>
       </root-logger>
       <formatter name="PATTERN">
-        <pattern-formatter pattern="%d{HH:mm:ss,SSS}Z %-5p [%c] (%t) %s%E%n"/>
+        <pattern-formatter pattern="%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%E%n"/>
       </formatter>
       <formatter name="COLOR-PATTERN">
-        <pattern-formatter pattern="%K{level}%z{utc}%d{yyyy-MM-dd}T%d{HH:mm:ss,SSS}Z %-5p [%c] (%t) %s%E%n"/>
+        <pattern-formatter pattern="%K{level}%d{yyyy-MM-dd}T%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%E%n"/>
       </formatter>
     </subsystem>
     <subsystem xmlns="urn:jboss:domain:batch:1.0">
