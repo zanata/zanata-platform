@@ -34,6 +34,9 @@
   <composite:attribute name="placeholder" type="java.lang.String"
     shortDescription="placeholder text for input field" default=""/>
 
+  <composite:attribute name="activePlaceholder" type="java.lang.String"
+    shortDescription="placeholder text for input filed when it is active" default=""/>
+
   <composite:attribute name="onSelectItem" default="null"
     shortDescription="The client-side script method to be called when an item has been click on enter (param - clicked jQuery(li))"/>
 
@@ -54,6 +57,7 @@
 
   <composite:attribute name="displayText"
     shortDescription="Text to display in input field." default=""/>
+
 
 </composite:interface>
 
@@ -97,6 +101,18 @@
         delay: 400
       });
     });
+
+
+    <s:fragment rendered="#{not empty cc.attrs.activePlaceholder}">
+      jQuery(function() {
+        jQuery('#' + '#{cc.attrs.id}-autocomplete__input').on('focus', function() {
+          $(this).attr('placeholder', '#{cc.attrs.activePlaceholder}');
+        });
+        jQuery('#' + '#{cc.attrs.id}-autocomplete__input').on('blur', function() {
+          $(this).attr('placeholder', '#{cc.attrs.placeholder}');
+        });
+      });
+    </s:fragment>
   </script>
 
   <s:fragment rendered="#{cc.attrs.onSelectItem == 'null'}">
@@ -122,7 +138,7 @@
       class="js-autocomplete__input autocomplete__input js-tabs-nav-focus-input #{cc.attrs.inputClass}"
       onfocus="onInputFocus(this, #{cc.attrs.id}RenderResult)"
       id="#{cc.attrs.id}-autocomplete__input"
-      placeholder="#{cc.attrs.placeholder}"/>
+      placeholder="#{cc.attrs.placeholder}" />
 
     <input type="hidden" value="#{cc.attrs.minlength}"/>
     <input type="hidden" value="#{cc.attrs.searchWhenFocus}"/>

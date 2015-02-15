@@ -459,7 +459,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
 
         DateTimeZone userZone = dateRange.getTimeZone();
         DateTimeFormatter dateFormatter =
-                DateTimeFormat.forPattern(DATE_FORMAT + " ZZZ")
+                DateTimeFormat.forPattern(DATE_FORMAT)
                         .withZone(userZone);
 
         // TODO system time zone should be persisted in database

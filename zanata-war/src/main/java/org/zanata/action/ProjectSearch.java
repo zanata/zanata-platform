@@ -17,7 +17,9 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectDAO;
+import org.zanata.model.HAccount;
 import org.zanata.model.HProject;
 import org.zanata.security.ZanataIdentity;
 
@@ -58,8 +60,14 @@ public class ProjectSearch implements Serializable {
         @Getter
         private HProject project;
 
+        @Getter
+        private HAccount account;
+
         public boolean isProjectNull() {
             return project == null;
+        }
+        public boolean isUserNull() {
+            return account == null;
         }
     }
 
@@ -68,6 +76,9 @@ public class ProjectSearch implements Serializable {
 
         private ProjectDAO projectDAO =
                 ServiceLocator.instance().getInstance(ProjectDAO.class);
+
+        private AccountDAO accountDAO = ServiceLocator.instance().getInstance(
+                AccountDAO.class);
 
         /**
          * Return results on search
@@ -79,22 +90,28 @@ public class ProjectSearch implements Serializable {
                 return result;
             }
             try {
+                String searchQuery = getQuery().trim();
                 List<HProject> searchResult =
                         projectDAO.searchProjects(
-                                getQuery().trim(),
+                                searchQuery,
                                 INITIAL_RESULT_COUNT,
                                 0,
                                 ZanataIdentity.instance().hasPermission(
                                         "HProject", "view-obsolete"));
 
                 for (HProject project : searchResult) {
-                    result.add(new SearchResult(project));
+                    result.add(new SearchResult(project, null));
+                }
+                List<HAccount> hAccounts = accountDAO.searchQuery(searchQuery);
+                for (HAccount hAccount : hAccounts) {
+                    result.add(new SearchResult(null, hAccount));
                 }
                 result.add(new SearchResult());
                 return result;
             } catch (ParseException pe) {
                 return result;
             }
+
         }
 
         /**

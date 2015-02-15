@@ -34,6 +34,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.zanata.common.ContentState;
 import org.zanata.model.HPerson;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
@@ -210,7 +211,7 @@ public class TextFlowTargetHistoryDAO extends
                 "    join HProjectIteration iter on iter.id = doc.project_iteration_id " +
                 "  where history.lastChanged >= :fromDate and history.lastChanged <= :toDate " +
                 "    and history.last_modified_by_id = :user and (history.translated_by_id is not null or history.reviewed_by_id is not null)" +
-                "    and history.state <> 0";
+                "    and history.state <> :untranslated and history.state <> :rejected";
 
         String queryTarget = "select tft.id, iter.id as iteration, tft.locale as locale, tf.wordCount as wordCount, tft.state as state, tft.lastChanged as lastChanged " +
                 "  from HTextFlowTarget tft " +
@@ -219,7 +220,7 @@ public class TextFlowTargetHistoryDAO extends
                 "    join HProjectIteration iter on iter.id = doc.project_iteration_id " +
                 "  where tft.lastChanged >= :fromDate and tft.lastChanged <= :toDate " +
                 "    and tft.last_modified_by_id = :user and (tft.translated_by_id is not null or tft.reviewed_by_id is not null)" +
-                "    and tft.state <> 0";
+                "    and tft.state <> :untranslated and tft.state <> :rejected";
 
         String convertedLastChanged = convertTimeZoneFunction("lastChanged",
                 userZoneOpt, systemZone);
@@ -234,6 +235,8 @@ public class TextFlowTargetHistoryDAO extends
                         "  order by lastChanged, iteration, locale, state";
         Query query = getSession().createSQLQuery(queryString)
                 .setParameter("user", user.getId())
+                .setInteger("untranslated", ContentState.New.ordinal())
+                .setInteger("rejected", ContentState.Rejected.ordinal())
                 .setTimestamp("fromDate", fromDate.toDate())
                 .setTimestamp("toDate", toDate.toDate())
                 .setResultTransformer(resultTransformer);

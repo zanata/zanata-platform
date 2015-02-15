@@ -3,6 +3,7 @@ package org.zanata.rest.service;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.jboss.resteasy.spi.BadRequestException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
@@ -38,8 +39,17 @@ class DateRange {
             throw new InvalidDateParamException(dateRangeParam);
         }
         // here we use java util timezone first because it supports more short IDs
-        DateTimeZone zone = (fromTimezoneId == null ? DateTimeZone.getDefault() :
-                DateTimeZone.forTimeZone(TimeZone.getTimeZone(fromTimezoneId)));
+        DateTimeZone zone;
+        if (fromTimezoneId == null) {
+            zone = DateTimeZone.getDefault();
+        } else {
+            try {
+                zone =
+                        DateTimeZone.forTimeZone(TimeZone.getTimeZone(fromTimezoneId));
+            } catch (IllegalArgumentException e) {
+                throw new BadRequestException("Invalid timezone ID:" + fromTimezoneId);
+            }
+        }
 
         DateTime fromDate;
         DateTime toDate;
