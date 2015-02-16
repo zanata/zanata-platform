@@ -131,7 +131,8 @@ public class CorePage extends AbstractPage {
         waitForAMoment().withMessage(msg).until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return getErrors().contains(expected);
+                List<String> errors = getErrors();
+                return errors.contains(expected);
             }
         });
         return getErrors();
@@ -139,8 +140,8 @@ public class CorePage extends AbstractPage {
 
     public String getNotificationMessage() {
         log.info("Query notification message");
-        List<WebElement> messages = waitForElementExists(By.id("messages"))
-                        .findElements(By.tagName("li"));
+        List<WebElement>messages = (List<WebElement>) getExecutor()
+                .executeScript("return $('#messages li')");
         return messages.size() > 0 ? messages.get(0).getText() : "";
     }
 
