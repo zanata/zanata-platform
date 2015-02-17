@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Red Hat, Inc. and individual contributors
+ * Copyright 2015, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -21,31 +21,31 @@
 
 package org.zanata.rest.service;
 
+import org.codehaus.enunciate.jaxrs.TypeHint;
+import org.zanata.rest.MediaTypes;
+import org.zanata.rest.dto.LocaleDetails;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.enunciate.jaxrs.TypeHint;
-import org.zanata.rest.MediaTypes;
-import org.zanata.rest.dto.LocaleDetails;
-
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-public interface ProjectLocalesResource {
-    public static final String SERVICE_PATH = ProjectResource.SERVICE_PATH
+public interface ProjectIterationLocalesResource {
+    public static final String SERVICE_PATH = ProjectIterationResource.SERVICE_PATH
             + "/locales";
 
     /**
-     * Returns list of active locales for a single project.
+     * Returns list of active locales for a single project-version.
      *
-     * This may be the list of locales inherited from the server.
+     * This may be the list of locales inherited from the project.
      *
      * @return
      *    OK 200 containing the list of LocaleDetails
-     *    NOT FOUND 404 if the project does not exist
+     *    NOT FOUND 404 if the project-version does not exist
      */
     @GET
-    // workaround for enunciate, see note in ProjectsResource
+    // workaround for enunciate, see note in org.zanata.rest.service.ProjectResource
     @TypeHint(LocaleDetails[].class)
     @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECT_LOCALES_XML,
             MediaTypes.APPLICATION_ZANATA_PROJECT_LOCALES_JSON,

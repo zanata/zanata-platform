@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Red Hat, Inc. and individual contributors
+ * Copyright 2015, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -19,37 +19,14 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.zanata.rest.service;
+package org.zanata.rest.enunciate;
 
-import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
-import org.codehaus.enunciate.jaxrs.TypeHint;
-import org.zanata.rest.MediaTypes;
-import org.zanata.rest.dto.LocaleDetails;
-
+@Path(ProjectIterationLocalesResource.SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-public interface ProjectLocalesResource {
-    public static final String SERVICE_PATH = ProjectResource.SERVICE_PATH
-            + "/locales";
-
-    /**
-     * Returns list of active locales for a single project.
-     *
-     * This may be the list of locales inherited from the server.
-     *
-     * @return
-     *    OK 200 containing the list of LocaleDetails
-     *    NOT FOUND 404 if the project does not exist
-     */
-    @GET
-    // workaround for enunciate, see note in ProjectsResource
-    @TypeHint(LocaleDetails[].class)
-    @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECT_LOCALES_XML,
-            MediaTypes.APPLICATION_ZANATA_PROJECT_LOCALES_JSON,
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    public Response get();
-
+interface ProjectIterationLocalesResource extends
+        org.zanata.rest.service.ProjectIterationLocalesResource {
 }
