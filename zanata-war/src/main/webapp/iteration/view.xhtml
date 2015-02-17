@@ -25,8 +25,8 @@
         zanata.tabs.activate(jQuery('#languages_tab'));
         var clickEle = jQuery('a.' + lang);
         if (lang && clickEle.length != 0) {
-          updateActiveRow(jQuery('a.' + lang))
-          toggleColumn('languages')
+          updateActiveRow(jQuery('a.' + lang));
+          toggleColumn('languages');
           reloadLocale(lang)
         }
       });
@@ -54,13 +54,13 @@
 
     crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/:section:',
       function (pre, projectSlug, versionSlug, section) {
-        section = section || 'languages'
+        section = section || 'languages';
         section = validateTab('#' + section + "_tab", section, "languages");
         zanata.tabs.activate(jQuery('#' + section + "_tab"))
       });
 
     renderStatistics();
-  })
+  });
   //]]>
 
 
@@ -134,42 +134,44 @@
   }
 </script>
 
-<a4j:jsFunction name="reloadLocale" status="languageTab-documentsLoader"
-  onbegin="clearHTML('#{rich:clientId('languages-document_list')}');clearHTML('#{rich:clientId('language-label')}');zanata.loader.activate('#languagesTab-language-label-loader')"
-  oncomplete="zanata.loader.deactivate('#languagesTab-language-label-loader')"
-  render="languages-document_list, language-label, languages-export_options, languageTabDocumentSearch-pager, languageTabDocumentSearch-page-info, languageTabDocumentSearchBottom-pager, languageTabDocumentSearchBottom-page-info">
-  <a4j:param name="val1" assignTo="#{versionHomeAction.selectedLocaleId}"/>
-</a4j:jsFunction>
+  <h:form styleClass="l--push-bottom-0">
+    <a4j:jsFunction name="reloadLocale" status="languageTab-documentsLoader"
+      onbegin="clearHTML('#{rich:clientId('languages-document_list')}');clearHTML('#{rich:clientId('language-label')}');zanata.loader.activate('#languagesTab-language-label-loader')"
+      oncomplete="zanata.loader.deactivate('#languagesTab-language-label-loader')"
+      render="languages-document_list, language-label, languages-export_options, languageTabDocumentSearch-pager, languageTabDocumentSearch-page-info, languageTabDocumentSearchBottom-pager, languageTabDocumentSearchBottom-page-info">
+      <a4j:param name="val1" assignTo="#{versionHomeAction.selectedLocaleId}"/>
+    </a4j:jsFunction>
 
-<a4j:jsFunction name="reloadDocument" status="documentsTab-languagesLoader"
-  onbegin="clearHTML('#{rich:clientId('documents-language_list')}');clearHTML('#{rich:clientId('document-label')}');zanata.loader.activate('#documentsTab-document-label-loader')"
-  oncomplete="zanata.loader.deactivate('#documentsTab-document-label-loader')"
-  render="documents-language_list, document-label, documents-language-size, documentsTabLanguageSearch-pager, documentsTabLanguageSearch-page-info, documentsTabLanguageSearchBottom-pager, documentsTabLanguageSearchBottom-page-info"
-  action="#{versionHomeAction.setSelectedDocumentId(projSlug, verSlug, docId)}">
-  <a4j:param name="val1" assignTo="#{projSlug}"/>
-  <a4j:param name="val2" assignTo="#{verSlug}"/>
-  <a4j:param name="val3" assignTo="#{docId}"/>
-</a4j:jsFunction>
+    <a4j:jsFunction name="reloadDocument" status="documentsTab-languagesLoader"
+      onbegin="clearHTML('#{rich:clientId('documents-language_list')}');clearHTML('#{rich:clientId('document-label')}');zanata.loader.activate('#documentsTab-document-label-loader')"
+      oncomplete="zanata.loader.deactivate('#documentsTab-document-label-loader')"
+      render="documents-language_list, document-label, documents-language-size, documentsTabLanguageSearch-pager, documentsTabLanguageSearch-page-info, documentsTabLanguageSearchBottom-pager, documentsTabLanguageSearchBottom-page-info"
+      action="#{versionHomeAction.setSelectedDocumentId(projSlug, verSlug, docId)}">
+      <a4j:param name="val1" assignTo="#{projSlug}"/>
+      <a4j:param name="val2" assignTo="#{verSlug}"/>
+      <a4j:param name="val3" assignTo="#{docId}"/>
+    </a4j:jsFunction>
 
-<a4j:jsFunction name="refreshStatistics" status="statistic-loader"
-  oncomplete="refreshTooltip('version-page')" limitRender="true"
-  render="overall_statistic, languages-language_form, languages-document_list, documents-document_form, documents-language_list, settings-document_form, languages-size, documents-size, language-label, document-label"
-  action="#{versionHomeAction.resetPageData}"/>
+    <a4j:jsFunction name="refreshStatistics" status="statistic-loader"
+      oncomplete="refreshTooltip('version-page')" limitRender="true"
+      render="overall_statistic, languages-language_form, languages-document_list, documents-document_form, documents-language_list, settings-document_form, languages-size, documents-size, language-label, document-label"
+      action="#{versionHomeAction.resetPageData}"/>
 
-<a4j:jsFunction name="renderStatistics" status="statistic-loader"
-  oncomplete="refreshTooltip('version-page');updateStateFromUrl()"
-  render="overall_statistic, languages-language_form, documents-document_form, settings-document_form"
-  action="#{versionHomeAction.setPageRendered(true)}"/>
+    <a4j:jsFunction name="renderStatistics" status="statistic-loader"
+      oncomplete="refreshTooltip('version-page');updateStateFromUrl()"
+      render="overall_statistic, languages-language_form, documents-document_form, settings-document_form"
+      action="#{versionHomeAction.setPageRendered(true)}"/>
 
-<a4j:jsFunction name="runCopyTrans" action="#{copyTransAction.startCopyTrans}"
-  render="copy-trans, copy-trans-buttons"/>
+    <a4j:jsFunction name="runCopyTrans" action="#{copyTransAction.startCopyTrans}"
+      render="copy-trans, copy-trans-buttons"/>
 
-<a4j:jsFunction name="cancelCopyTrans" action="#{copyTransAction.cancel}"
-  render="copy-trans, copy-trans-buttons"/>
+    <a4j:jsFunction name="cancelCopyTrans" action="#{copyTransAction.cancel}"
+      render="copy-trans, copy-trans-buttons"/>
 
-<a4j:jsFunction name="cancelCopyVersion" limitRender="true"
-  action="#{versionHomeAction.cancelCopyVersion()}"
-  render="version-info, version-more-actions, version-settings, copy-version, messages"/>
+    <a4j:jsFunction name="cancelCopyVersion" limitRender="true"
+      action="#{versionHomeAction.cancelCopyVersion()}"
+      render="version-info, version-more-actions, version-settings, copy-version, messages"/>
+  </h:form>
 
 
 <div class="g" id="version-page">
