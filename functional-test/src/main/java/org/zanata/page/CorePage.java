@@ -120,21 +120,21 @@ public class CorePage extends AbstractPage {
     }
 
     /**
-     * Wait until an expected error is visible
+     * Wait until at least one error is visible
      *
-     * @param expected The expected error string
      * @return The full list of visible errors
      */
-    public List<String> expectError(final String expected) {
-        String msg = "expected error: " + expected;
+    public List<String> expectErrors() {
+        waitForPageSilence();
+        String msg = "an error message";
         logWaiting(msg);
-        waitForAMoment().withMessage(msg).until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                List<String> errors = getErrors();
-                return errors.contains(expected);
-            }
-        });
+//        waitForAMoment().withMessage(msg).until(new Predicate<WebDriver>() {
+//            @Override
+//            public boolean apply(WebDriver input) {
+//                List<String> errors = getErrors();
+//                return !errors.isEmpty();
+//            }
+//        });
         return getErrors();
     }
 

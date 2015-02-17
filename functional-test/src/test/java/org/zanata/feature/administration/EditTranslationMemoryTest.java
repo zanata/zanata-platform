@@ -106,8 +106,7 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
                 .enterMemoryDescription("Meh")
                 .clickSaveAndExpectFailure();
 
-        assertThat(translationMemoryEditPage.expectError(
-                    TranslationMemoryPage.ID_UNAVAILABLE))
+        assertThat(translationMemoryEditPage.expectErrors())
                 .contains(TranslationMemoryPage.ID_UNAVAILABLE)
                 .as("The Id Is Not Available error is displayed");
 
@@ -117,8 +116,7 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
         // RHBZ-1010771
         translationMemoryEditPage.assertNoCriticalErrors();
 
-        assertThat(translationMemoryEditPage.expectError(
-                    TranslationMemoryPage.ID_UNAVAILABLE))
+        assertThat(translationMemoryEditPage.expectErrors())
                 .contains(TranslationMemoryPage.ID_UNAVAILABLE)
                 .as("The Id Is Not Available error is displayed");
     }

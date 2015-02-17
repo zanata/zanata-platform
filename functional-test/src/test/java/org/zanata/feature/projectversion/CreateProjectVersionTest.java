@@ -104,16 +104,14 @@ public class CreateProjectVersionTest extends ZanataTestCase {
                 .inputVersionId("-A");
         createVersionPage.defocus(createVersionPage.projectVersionID);
 
-        assertThat(createVersionPage.expectError(
-                    CreateVersionPage.VALIDATION_ERROR))
+        assertThat(createVersionPage.expectErrors())
                 .contains(CreateVersionPage.VALIDATION_ERROR)
                 .as("The input is rejected");
 
         createVersionPage = createVersionPage.inputVersionId("B-");
         createVersionPage.defocus(createVersionPage.projectVersionID);
 
-        assertThat(createVersionPage.expectError(
-                    CreateVersionPage.VALIDATION_ERROR))
+        assertThat(createVersionPage.expectErrors())
                 .contains(CreateVersionPage.VALIDATION_ERROR)
                 .as("The input is rejected");
 
@@ -121,8 +119,7 @@ public class CreateProjectVersionTest extends ZanataTestCase {
         createVersionPage.defocus(createVersionPage.projectVersionID);
         createVersionPage = createVersionPage.waitForNumErrors(1);
 
-        assertThat(createVersionPage.expectError(
-                    CreateVersionPage.VALIDATION_ERROR))
+        assertThat(createVersionPage.expectErrors())
                 .contains(CreateVersionPage.VALIDATION_ERROR)
                 .as("The input is rejected");
 
