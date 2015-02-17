@@ -12,6 +12,6 @@
  * </p>
  */
 @edu.umd.cs.findbugs.annotations.SuppressWarnings(
-    value="NM_SAME_SIMPLE_NAME_AS_INTERFACE",
-    justification="Package-private, with nice names for documentation")
+    value = "NM_SAME_SIMPLE_NAME_AS_INTERFACE",
+    justification = "Package-private, with nice names for documentation")
 package org.zanata.rest.enunciate;

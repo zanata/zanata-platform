@@ -167,6 +167,9 @@ public interface AsynchronousProcessResource {
      *            Auto will check the history of your translations and will not
      *            overwrite any translations for which it detects a previous
      *            value is being pushed.
+     * @param assignCreditToUploader
+     *            The translator field for all uploaded translations will
+     *            be set to the user who performs the upload.
      * @return The following response status codes will be returned from this
      *         operation:<br>
      *         OK(200) - The contents of the response will indicate the process
@@ -187,7 +190,8 @@ public interface AsynchronousProcessResource {
                     @PathParam("locale") LocaleId locale,
                     TranslationsResource translatedDoc,
                     @QueryParam("ext") Set<String> extensions,
-                    @QueryParam("merge") String merge);
+                    @QueryParam("merge") String merge,
+                    @QueryParam("assignCreditToUploader") @DefaultValue("false") boolean assignCreditToUploader);
 
     /**
      * Obtains the status of a previously started process.
