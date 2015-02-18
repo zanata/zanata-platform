@@ -56,8 +56,8 @@ public class ResetPasswordPage extends BasePage {
     public ResetPasswordPage clearFields() {
         log.info("Clear fields");
         waitForWebElement(usernameField).clear();
-        waitForWebElement(emailField).clear();
         defocus(usernameField);
+        waitForWebElement(emailField).clear();
         defocus(emailField);
         waitForPageSilence();
         return new ResetPasswordPage(getDriver());
