@@ -587,6 +587,33 @@
                 <goals>
                   <goal>start</goal>
                 </goals>
+                <configuration>
+                  <configuration>
+                    <properties>
+                      <cargo.jvmargs>
+                        <!-- NB: JDom parser doesn't like comments starting with '-' -->
+                        -XX:PermSize=512m -XX:MaxPermSize=1024
+                        -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled
+                        ${cargo.debug.jvm.args}
+                      </cargo.jvmargs>
+                    </properties>
+                  </configuration>
+                </configuration>
+              </execution>
+              <execution>
+                <id>default-cli</id>
+                <configuration>
+                  <configuration>
+                    <properties>
+                      <cargo.jvmargs>
+                        <!-- NB: JDom parser doesn't like comments starting with '-' -->
+                        -XX:PermSize=512m -XX:MaxPermSize=1024
+                        -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled
+                        ${cargo.debug.jvm.args}
+                      </cargo.jvmargs>
+                    </properties>
+                  </configuration>
+                </configuration>
               </execution>
               <execution>
                 <id>cargo-stop</id>
@@ -912,12 +939,6 @@
 
             <properties>
               <cargo.jboss.configuration>standalone</cargo.jboss.configuration>
-              <cargo.jvmargs>
-                <!-- NB: JDom parser doesn't like comments starting with '-' -->
-                -XX:PermSize=512m -XX:MaxPermSize=1024
-                -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled
-                ${cargo.debug.jvm.args}
-              </cargo.jvmargs>
               <cargo.port.offset>${cargo.port.offset}</cargo.port.offset>
               <cargo.jboss.ajp.port>8109</cargo.jboss.ajp.port>
             </properties>
