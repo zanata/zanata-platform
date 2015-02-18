@@ -57,6 +57,9 @@ public class ResetPasswordPage extends BasePage {
         log.info("Clear fields");
         waitForWebElement(usernameField).clear();
         waitForWebElement(emailField).clear();
+        defocus(usernameField);
+        defocus(emailField);
+        waitForPageSilence();
         return new ResetPasswordPage(getDriver());
     }
 
@@ -64,6 +67,7 @@ public class ResetPasswordPage extends BasePage {
         log.info("Click Submit");
         defocus(usernameField);
         defocus(emailField);
+        waitForPageSilence();
         waitForWebElement(submitButton).click();
         return new HomePage(getDriver());
     }
@@ -72,6 +76,7 @@ public class ResetPasswordPage extends BasePage {
         log.info("Click Submit");
         defocus(usernameField);
         defocus(emailField);
+        waitForPageSilence();
         waitForWebElement(submitButton).click();
         return new ResetPasswordPage(getDriver());
     }
