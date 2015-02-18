@@ -1,8 +1,6 @@
 package org.zanata.service.impl;
 
-import com.google.common.annotations.VisibleForTesting;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
@@ -11,11 +9,9 @@ import org.jboss.seam.core.Events;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.events.DocumentStatisticUpdatedEvent;
 import org.zanata.events.TextFlowTargetStateEvent;
-import org.zanata.service.DocumentService;
 import org.zanata.service.TranslationStateCache;
-import org.zanata.ui.model.statistic.WordStatistic;
-import org.zanata.util.StatisticsUtil;
 
+import com.google.common.annotations.VisibleForTesting;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -51,21 +47,14 @@ public class TranslationUpdatedManager {
     // Fire asynchronous event
     public void publishAsyncEvent(TextFlowTargetStateEvent event) {
         if (Events.exists()) {
-            WordStatistic stats =
-                    translationStateCacheImpl.getDocumentStatistics(
-                            event.getDocumentId(), event.getLocaleId());
-
             int wordCount = textFlowDAO.getWordCount(event.getTextFlowId());
-
-            WordStatistic oldStats = StatisticsUtil.copyWordStatistic(stats);
-            oldStats.decrement(event.getNewState(), wordCount);
-            oldStats.increment(event.getPreviousState(), wordCount);
 
             Events.instance().raiseAsynchronousEvent(
                     DocumentStatisticUpdatedEvent.EVENT_NAME,
-                    new DocumentStatisticUpdatedEvent(oldStats, stats,
+                    new DocumentStatisticUpdatedEvent(
                             event.getProjectIterationId(),
                             event.getDocumentId(), event.getLocaleId(),
+                            wordCount,
                             event.getPreviousState(), event.getNewState()));
         }
     }
