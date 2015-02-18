@@ -25,6 +25,10 @@
     <cobertura.halt.failure>false</cobertura.halt.failure>
     <delombok.dir>${project.build.directory}/delombok/org/zanata</delombok.dir>
     <failsafe.rerunFailingTestsCount>3</failsafe.rerunFailingTestsCount>
+    <failsafe.useFile>false</failsafe.useFile>
+    <surefire.useFile>false</surefire.useFile>
+    <!-- Applies to surefire and failsafe (if enabled) -->
+    <failIfNoTests>true</failIfNoTests>
 
     <guava.version>18.0</guava.version>
     <gwt.version>2.6.1</gwt.version>
@@ -1168,9 +1172,6 @@
         <plugin>
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>2.18.1</version>
-          <configuration>
-            <failIfNoTests>true</failIfNoTests>
-          </configuration>
           <executions>
             <execution>
               <id>integration-test</id>
@@ -1260,6 +1261,28 @@
   </build>
 
   <profiles>
+
+    <profile>
+      <!-- This profile runs a single integration test with
+        -Dit.test=<integration-test-name>, skipping unit tests. -->
+      <id>it.test</id>
+      <activation>
+        <property>
+          <name>it.test</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <failIfNoSpecifiedTests>false</failIfNoSpecifiedTests>
+              <failIfNoTests>false</failIfNoTests>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
 
     <profile>
       <!--this is used to run GWT in dev mode. Adjust your IDE to include the delombok -->
