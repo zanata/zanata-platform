@@ -8,6 +8,7 @@
   <html class="new-zanata-html">
 
   <h:head>
+    <!-- This needs to appear before all other JavaScript, for accurate testing -->
     <h:outputText value="#{ajaxCounter.ajaxCounterScript}" escape="false" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>#{msgs['jsf.Zanata']}: <ui:insert name="page_title"/></title>
@@ -77,6 +78,8 @@
     </div>
 
     <ui:include src="scripts.xhtml"/>
+    <!-- This needs to appear after all other JavaScript, for accurate testing -->
+    <h:outputText value="#{ajaxCounter.javascriptFinishedScript}" escape="false" />
   </h:body>
   </html>
 </f:view>

@@ -65,12 +65,26 @@ public class AjaxCounterBean {
             "        func(params);\n" +
             "    }\n" +
             "  }\n" +
-            "})(XMLHttpRequest)\n" +
+            "})(XMLHttpRequest);\n" +
             "</script>\n";
+
+    // TODO for better accuracy, use an external script with 'defer'
+    private static final String JAVASCRIPT_FINISHED_SCRIPT = "<script type=\"application/javascript\">" +
+            "window.javascriptFinished = true;\n" +
+            "</script>\n";
+
     public String getAjaxCounterScript() {
         String propName = "zanata.countAjax";
         if (Boolean.getBoolean(propName)) {
             return AJAX_COUNTER_SCRIPT;
+        }
+        return "";
+    }
+
+    public String getJavascriptFinishedScript() {
+        String propName = "zanata.countAjax";
+        if (Boolean.getBoolean(propName)) {
+            return JAVASCRIPT_FINISHED_SCRIPT;
         }
         return "";
     }

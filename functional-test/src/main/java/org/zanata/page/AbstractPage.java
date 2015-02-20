@@ -216,13 +216,21 @@ public class AbstractPage {
                     @Override
                     public boolean apply(WebDriver input) {
                         try {
+                            // ignore result
                             oldPage.getAttribute("class");
+                            // if we get here, the old page is still there
                             return false;
                         } catch (StaleElementReferenceException e) {
+                            // This exception means the new page has loaded
+                            // (or started to).
+                            String script = "return document.readyState === " +
+                                    "'complete' && window.javascriptFinished";
                             Boolean documentComplete =
-                                    (Boolean) getExecutor().executeScript("return document.readyState === 'complete'");
+                                    (Boolean) getExecutor().executeScript(
+                                            script);
                             // TODO wait for ajax?
-                            return documentComplete;
+                            // NB documentComplete might be null/undefined
+                            return documentComplete == Boolean.TRUE;
                         }
                     }
                 });
