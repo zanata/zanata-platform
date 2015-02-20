@@ -23,6 +23,8 @@ package org.zanata.service.impl;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.Query;
@@ -73,9 +75,8 @@ public class UserAccountServiceImpl implements UserAccountService {
     }
 
     @Override
-    public HAccountResetPasswordKey requestPasswordReset(HAccount account) {
-        if (account == null || !account.isEnabled()
-                || account.getPerson() == null) {
+    public HAccountResetPasswordKey requestPasswordReset(@Nonnull HAccount account) {
+        if (account.getPerson() == null) {
             return null;
         }
 

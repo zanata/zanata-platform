@@ -1,13 +1,10 @@
 package org.zanata.action;
 
-import java.io.Serializable;
-
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.End;
@@ -15,11 +12,19 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
+import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.dao.AccountDAO;
+import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
+import org.zanata.model.HAccountActivationKey;
 import org.zanata.model.HAccountResetPasswordKey;
 import org.zanata.service.EmailService;
 import org.zanata.service.UserAccountService;
+
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.Date;
 
 @Name("passwordResetRequest")
 @NoArgsConstructor
@@ -30,67 +35,93 @@ public class PasswordResetRequestAction implements Serializable {
 
     @In
     private AccountDAO accountDAO;
+
     @In
     private EmailService emailServiceImpl;
+
     @In
     private UserAccountService userAccountServiceImpl;
 
+    @In
+    private Messages msgs;
+
+    @In
+    private AccountActivationKeyDAO accountActivationKeyDAO;
+
+    @Setter
+    @Getter
+    @NotEmpty
+    @Size(min = 3, max = 20)
+    @Pattern(regexp = "^[a-z\\d_]{3,20}$",
+        message = "{validation.username.constraints}")
     private String username;
+
+    @Setter
+    @Getter
+    @NotEmpty
+    @Email
     private String email;
+
+    @Setter
+    @Getter
     private String activationKey;
 
     private HAccount account;
 
-    public HAccount getAccount() {
-        return account;
-    }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    @NotEmpty
-    @Size(min = 3, max = 20)
-    @Pattern(regexp = "^[a-z\\d_]{3,20}$")
-    public String getUsername() {
-        return username;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    @org.hibernate.validator.constraints.Email
-    @NotEmpty
-    public String getEmail() {
-        return email;
+    public String requestReset() {
+        if(getAccount() == null) {
+            FacesMessages.instance().add(msgs.get("jsf.account.notFound"));
+            return null;
+        } else if(isAccountWaitingForActivation()) {
+            FacesMessages.instance().add(msgs.get("jsf.account.notActivated"));
+            return null;
+        }
+        String message =
+                emailServiceImpl.sendPasswordResetEmail(
+                    getAccount().getPerson(),
+                    account.getAccountActivationKey().getKeyHash());
+        FacesMessages.instance().add(message);
+        return "home";
     }
 
     @End
-    public String requestReset() {
-        account = accountDAO.getByUsernameAndEmail(username, email);
-        HAccountResetPasswordKey key =
-                userAccountServiceImpl.requestPasswordReset(account);
+    public String sendActivationEmail(String username, String email) {
+        HAccount account = accountDAO.getByUsernameAndEmail(username, email);
+        if(account != null) {
+            HAccountActivationKey key = account.getAccountActivationKey();
+            if(key != null) {
+                key.setCreationDate(new Date());
 
-        if (key == null) {
-            FacesMessages.instance().add("No such account found");
-            return null;
-        } else {
-            String message =
-                    emailServiceImpl.sendPasswordResetEmail(account.getPerson(),
-                            key.getKeyHash());
-            FacesMessages.instance().add(message);
-            return "/home.xhtml";
+                accountActivationKeyDAO.makePersistent(key);
+                accountActivationKeyDAO.flush();
+
+                String message =
+                    emailServiceImpl.sendActivationEmail(
+                        account.getPerson().getName(),
+                        account.getPerson().getEmail(),
+                        account.getAccountActivationKey().getKeyHash());
+                FacesMessages.instance().add(message);
+            }
         }
-
+        return "/home.xhtml";
     }
 
-    public String getActivationKey() {
-        return activationKey;
+    public boolean isAccountWaitingForActivation() {
+        HAccount account = getAccount();
+        if (account == null) {
+            return false;
+        }
+        if (account.getAccountActivationKey() == null) {
+            return false;
+        }
+        return true;
     }
 
-    public void setActivationKey(String activationKey) {
-        this.activationKey = activationKey;
+    public HAccount getAccount() {
+        if(account == null) {
+            account = accountDAO.getByUsernameAndEmail(username, email);
+        }
+        return account;
     }
-
 }

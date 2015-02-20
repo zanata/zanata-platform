@@ -152,9 +152,15 @@
     <restrict>#{applicationConfiguration.internalAuth}</restrict>
     <param name="key" value="#{passwordReset.activationKey}" />
     <action execute="#{passwordReset.validateActivationKey}" />
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', msgs['jsf.ResetPassword'])}" />
+  </page>
+
+  <page view-id="/account/password_reset_request.xhtml">
+    <navigation from-action="#{passwordResetRequest.requestReset}">
+      <rule if-outcome="home">
+        <end-conversation />
+        <redirect view-id="/home.xhtml" />
+      </rule>
+    </navigation>
   </page>
 
   <page view-id="/account/register.xhtml">
@@ -168,10 +174,6 @@
 
   <page view-id="/account/inactive_account.xhtml">
     <restrict>#{authenticationManager.isAuthenticatedAccountWaitingForActivation()}</restrict>
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', msgs['jsf.InactiveAccount'])}" />
-    <action execute="#{inactiveAccountAction.init}" />
     <navigation from-action="#{inactiveAccountAction.sendActivationEmail}">
       <end-conversation />
       <redirect view-id="/home.xhtml" />
@@ -194,12 +196,6 @@
 
   <page view-id="/admin/*" login-required="true">
     <restrict>#{s:hasRole('admin')}</restrict>
-  </page>
-
-  <page view-id="/admin/home.xhtml">
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', msgs['jsf.Administration'])}" />
   </page>
 
   <page view-id="/admin/roledetail.xhtml">
@@ -264,14 +260,6 @@
       <end-conversation />
       <redirect view-id="/admin/rolerules.xhtml" />
     </navigation>
-  </page>
-
-  <page view-id="/admin/processmanager.xhtml">
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/admin/home.xhtml', msgs['jsf.Administration'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/admin/processmanager.xhtml', msgs['jsf.ProcessManager'])}" />
   </page>
 
   <!-- Version Group -->

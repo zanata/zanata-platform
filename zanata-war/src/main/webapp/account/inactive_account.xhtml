@@ -4,28 +4,35 @@
   xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:s="http://jboss.org/schema/seam/taglib"
-  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
-  template="../WEB-INF/template/template.xhtml">
+  template="../WEB-INF/template/template_nobanner.xhtml">
 
   <ui:define name="page_title">#{msgs['jsf.InactiveAccount']}</ui:define>
 
   <ui:define name="center_content">
-    <div class="g--centered">
-      <div class="g__item w--2-3 l--push-bottom-half">
-        <div class="panel l--push-top-1">
-          <div class="panel__header">
-            <h2 class="panel__heading">#{msgs['jsf.InactiveAccount']}</h2>
-          </div>
-          <div class="l--pad-all-half">
-            <h:form styleClass="inactiveAccountForm">
-              <h:outputText value="#{msgs['jsf.InactiveAccount.PleaseSelectOne']}"/>
+    <a4j:jsFunction name="sendActivationEmail"
+      action="#{inactiveAccountAction.sendActivationEmail}"/>
 
-              <a4j:commandLink id="resendEmail" styleClass="l--push-top-quarter loader txt--align-left"
-                action="#{inactiveAccountAction.sendActivationEmail}">
+
+    <div class="header__logo-only">
+      <s:link view="/home.xhtml" propagation="none" id="home" tabindex="1">
+        <img src="#{applicationConfiguration.webAssetsUrl}/logo.svg"
+          alt="Zanata"/>
+      </s:link>
+    </div>
+
+    <div class="g--centered">
+      <div class="g__item l--constrain-medium">
+        <div class="l--push-v-1">
+          <div class="l--push-top-half g__item">
+            <h2 class="gamma heading--sub">#{msgs['jsf.InactiveAccount']}</h2>
+            <h:form id="inactiveAccountForm" styleClass="l--push-top-half l--pad-all-1 bg--pop-higher">
+
+              <button id="resendEmail" class="button button--full button--primary loader"
+                onclick="sendActivationEmail()">
                 <span class="loader__label">
                   #{msgs['jsf.ResendActivationEmail']}
                 </span>
-              </a4j:commandLink>
+              </button>
 
               <h:outputText value="#{msgs['jsf.or']}"/>
 
