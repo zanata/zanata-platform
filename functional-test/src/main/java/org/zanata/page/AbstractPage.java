@@ -85,6 +85,10 @@ public class AbstractPage {
         log.info("Waiting for {}", msg);
     }
 
+    protected void logFinished(String msg) {
+        log.debug("Finished {}", msg);
+    }
+
     public FluentWait<WebDriver> waitForAMoment() {
         return WebElementUtil.waitForAMoment(driver);
     }
@@ -199,6 +203,30 @@ public class AbstractPage {
      */
     protected int getExpectedBackgroundRequests() {
         return 0;
+    }
+
+
+    public void execAndWaitForNewPage(Runnable runnable) {
+        final WebElement oldPage = driver.findElement(By.tagName("html"));
+        runnable.run();
+        String msg = "new page load";
+        logWaiting(msg);
+        waitForAMoment().withMessage(msg).until(
+                new Predicate<WebDriver>() {
+                    @Override
+                    public boolean apply(WebDriver input) {
+                        try {
+                            oldPage.getAttribute("class");
+                            return false;
+                        } catch (StaleElementReferenceException e) {
+                            Boolean documentComplete =
+                                    (Boolean) getExecutor().executeScript("return document.readyState === 'complete'");
+                            // TODO wait for ajax?
+                            return documentComplete;
+                        }
+                    }
+                });
+        logFinished(msg);
     }
 
     /**
