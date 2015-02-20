@@ -68,10 +68,7 @@ public class AjaxCounterBean {
             "})(XMLHttpRequest);\n" +
             "</script>\n";
 
-    // TODO for better accuracy, use an external script with 'defer'
-    private static final String JAVASCRIPT_FINISHED_SCRIPT = "<script type=\"application/javascript\">" +
-            "window.javascriptFinished = true;\n" +
-            "</script>\n";
+    private static final String JAVASCRIPT_FINISHED_SCRIPT = "<script defer type=\"application/javascript\" src=\"javax.faces.resource/finished.js.seam?ln=script\"/>";
 
     public String getAjaxCounterScript() {
         String propName = "zanata.countAjax";

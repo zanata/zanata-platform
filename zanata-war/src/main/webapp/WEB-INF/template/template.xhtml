@@ -15,7 +15,9 @@
   <html class="no-js new-zanata">
   <!--<![endif]-->
   <h:head>
-    <!-- This needs to appear before all other JavaScript, for accurate testing -->
+    <ui:remove>
+      <!-- This needs to appear before all other JavaScript, for accurate testing -->
+    </ui:remove>
     <h:outputText value="#{ajaxCounter.ajaxCounterScript}" escape="false" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
@@ -153,7 +155,9 @@
     </footer>
 
     <ui:include src="scripts.xhtml"/>
-    <!-- This needs to appear after all other JavaScript, for accurate testing -->
+    <ui:remove>
+      <!-- This needs to appear after all other JavaScript, for accurate testing -->
+    </ui:remove>
     <h:outputText value="#{ajaxCounter.javascriptFinishedScript}" escape="false" />
   </h:body>
   </html>
