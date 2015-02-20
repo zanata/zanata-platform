@@ -104,6 +104,8 @@ public class ResourceUtils {
     private static final String CONTENT_TYPE_HDR = HeaderFields.KEY_ContentType;
     private static final String PLURAL_FORMS_HDR = "Plural-Forms";
 
+    private static final Pattern PLURAL_FORM_PATTERN =
+        Pattern.compile("nplurals=[0-9]+;\\s?plural=*");
     private static final Pattern NPLURALS_TAG_PATTERN = Pattern
             .compile("nplurals=");
     private static final Pattern NPLURALS_PATTERN = Pattern
@@ -1126,6 +1128,11 @@ public class ResourceUtils {
      * @param pluralForms
      */
     public boolean isValidPluralForms(@Nonnull String pluralForms) {
+
+        if(!PLURAL_FORM_PATTERN.matcher(pluralForms).find()) {
+            return false;
+        }
+
         Matcher nPluralsMatcher = NPLURALS_PATTERN.matcher(pluralForms);
         String nPluralsString = "";
         while (nPluralsMatcher.find()) {

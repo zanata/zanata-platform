@@ -425,10 +425,10 @@ public class ResourceUtilsTest {
         invalidPluralForms = "nplurals=0";
         assertThat(resourceUtils.isValidPluralForms(invalidPluralForms), is(false));
 
-        invalidPluralForms = "nplurals=1";
+        invalidPluralForms = "nplurals=1;plural=0";
         assertThat(resourceUtils.isValidPluralForms(invalidPluralForms), is(true));
 
-        invalidPluralForms = "nplurals=" + resourceUtils.MAX_TARGET_CONTENTS;
+        invalidPluralForms = "nplurals=5; plural=10" + resourceUtils.MAX_TARGET_CONTENTS;
         assertThat(resourceUtils.isValidPluralForms(invalidPluralForms), is(true));
     }
 }

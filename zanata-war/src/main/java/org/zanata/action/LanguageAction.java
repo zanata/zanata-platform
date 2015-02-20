@@ -161,6 +161,11 @@ public class LanguageAction implements Serializable {
         return msgs.format("jsf.language.plurals.placeholder", pluralForms);
     }
 
+    public String getExamplePluralForms() {
+        String pluralForms = resourceUtils.getPluralForms(new LocaleId(language), false, true);
+        return msgs.format("jsf.language.plurals.example", pluralForms);
+    }
+
     public boolean isValidPluralForms(String pluralForms, String componentId) {
         if(StringUtils.isEmpty(pluralForms)) {
             return true;
@@ -178,13 +183,17 @@ public class LanguageAction implements Serializable {
         isValidPluralForms((String) e.getNewValue(), e.getComponent().getId());
     }
 
-    @Restrict("#{s:hasPermission(languageAction.locale, 'manage-language-team')}")
+    @Restrict("#{s:hasRole('admin')}")
     public void saveSettings() {
-        if(isValidPluralForms(getLocale().getPluralForms(), "pluralForms")) {
-            localeDAO.makePersistent(getLocale());
-            FacesMessages.instance()
-                .add(msgs.format("jsf.language.updated", getLocale().getLocaleId()));
+        HLocale hLocale = getLocale();
+        if(!isValidPluralForms(hLocale.getPluralForms(), "pluralForms")) {
+            return;
         }
+        hLocale.setDisplayName(hLocale.getDisplayName().trim());
+        hLocale.setNativeName(hLocale.getNativeName().trim());
+        localeDAO.makePersistent(getLocale());
+        FacesMessages.instance()
+            .add(msgs.format("jsf.language.updated", getLocale().getLocaleId()));
     }
 
     public HLocale getLocale() {

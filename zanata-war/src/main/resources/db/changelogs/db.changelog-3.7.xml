@@ -13,4 +13,18 @@
     </addColumn>
   </changeSet>
 
+  <changeSet id="2" author="aeng@redhat.com">
+    <comment>Add displayName, nativeName column to HLocale</comment>
+    <addColumn tableName="HLocale">
+      <column name="displayName" type="varchar(100)">
+        <constraints nullable="true" />
+      </column>
+    </addColumn>
+    <addColumn tableName="HLocale">
+      <column name="nativeName" type="varchar(100)">
+        <constraints nullable="true" />
+      </column>
+    </addColumn>
+  </changeSet>
+
 </databaseChangeLog>

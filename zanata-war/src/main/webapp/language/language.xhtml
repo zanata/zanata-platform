@@ -42,9 +42,20 @@
           <h1 class="l--push-all-0 #{not languageAction.locale.active or not languageAction.locale.enabledByDefault ? 'txt--neutral' : ''}">
             <i class="i i--language"></i> #{languageAction.locale.retrieveDisplayName()}
           </h1>
-          <p class="txt--understated">
-            #{languageAction.locale.localeId}<span class="l--push-left-quarter">#{languageAction.locale.retrieveNativeName()}</span>
-          </p>
+          <div class="txt--understated l--push-top-quarter">
+            <div>
+              #{msgs['jsf.LanguageCode']}<span class="l--push-left-quarter label">#{languageAction.locale.localeId}</span>
+            </div>
+            <div>
+              #{msgs['jsf.NativeName']}<span class="l--push-left-quarter label">#{languageAction.locale.retrieveNativeName()}</span>
+            </div>
+            <s:div rendered="#{languageAction.locale.asULocale().country ne ''}">
+              #{msgs['jsf.CountryCode']}<span class="l--push-left-quarter label">#{languageAction.locale.asULocale().country}</span>
+            </s:div>
+            <s:div rendered="#{languageAction.locale.asULocale().variant ne ''}">
+              #{msgs['jsf.Variant']}<span class="l--push-left-quarter label">#{languageAction.locale.asULocale().variant}</span>
+            </s:div>
+          </div>
           <s:div rendered="#{not languageAction.locale.active or not languageAction.locale.enabledByDefault}">
             <s:span styleClass="label" rendered="#{not languageAction.locale.active}"
               title="#{msgs['jsf.Disabled']}">
@@ -103,7 +114,7 @@
               </li>
             </s:fragment>
 
-            <s:fragment rendered="#{s:hasPermission(languageAction.locale, 'manage-language-team')}">
+            <s:fragment rendered="#{s:hasRole('admin')}">
               <li class="tab__end">
                 <a id="settings_tab" href="#{languageURL}/settings"
                   class="js-url-mod" data-content="#settings">
@@ -121,7 +132,7 @@
               <ui:include src="../WEB-INF/layout/language/members-tab.xhtml"/>
             </li>
 
-            <s:fragment rendered="#{s:hasPermission(languageAction.locale, 'manage-language-team')}">
+            <s:fragment rendered="#{s:hasRole('admin')}">
               <li id="settings">
                 <ui:include src="../WEB-INF/layout/language/settings-tab.xhtml"/>
               </li>
