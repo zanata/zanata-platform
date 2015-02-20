@@ -251,9 +251,7 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
 
     @Option(
             name = "--my-trans",
-            handler = BooleanValueHandler.class,
-            usage = "Indicates if all uploaded translations were translated by you " +
-                    "(default: " + DEF_MY_TRANS + ")")
+            usage = "Indicates all uploaded translations were translated by you ")
     public void setMyTrans(boolean myTrans) {
         this.myTrans = myTrans;
     }

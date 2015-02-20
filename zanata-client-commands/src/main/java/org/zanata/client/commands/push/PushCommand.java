@@ -156,12 +156,15 @@ public class PushCommand extends PushPullCommand<PushOptions> {
             logger.info("Pushing source and target documents");
             logger.info("Locales to push: {}", opts.getLocaleMapList());
         }
+
         logger.info("Current directory: {}", System.getProperty("user.dir"));
         logger.info("Source directory (originals): {}", opts.getSrcDir());
         if (opts.getPushType() == PushPullType.Both
                 || opts.getPushType() == PushPullType.Trans) {
             logger.info("Target base directory (translations): {}",
                     opts.getTransDir());
+
+            logger.info("Is my translations: {}", opts.isMyTrans());
         }
         if (opts.getFromDoc() != null) {
             logger.info("From document: {}", opts.getFromDoc());
