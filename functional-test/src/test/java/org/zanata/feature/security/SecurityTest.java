@@ -161,16 +161,9 @@ public class SecurityTest extends ZanataTestCase {
                 .clearFields()
                 .resetFailure();
 
-        assertThat(resetPasswordPage.expectError("may not be empty"))
-                .contains("may not be empty")
-                .as("Empty email error is displayed");
-
-        // All are valid, but may show at random
-        String error = resetPasswordPage.getErrors().get(0);
-        assertThat(error.equals("size must be between 3 and 20") ||
-                error.equals("may not be empty") ||
-                error.equals("must match ^[a-z\\d_]{3,20}$"))
-                .as("The regex match for the reset password field has failed");
+        assertThat(resetPasswordPage.expectError("value is required"))
+                .contains("value is required")
+                .as("value is required error is displayed");
     }
 
 }
