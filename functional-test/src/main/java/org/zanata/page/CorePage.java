@@ -137,11 +137,15 @@ public class CorePage extends AbstractPage {
         return getErrors();
     }
 
-    public String getNotificationMessage() {
+    public String getNotificationMessage(By elementBy) {
         log.info("Query notification message");
-        List<WebElement> messages = waitForElementExists(By.id("messages"))
-                        .findElements(By.tagName("li"));
+        List<WebElement> messages = waitForElementExists(elementBy)
+            .findElements(By.tagName("li"));
         return messages.size() > 0 ? messages.get(0).getText() : "";
+    }
+
+    public String getNotificationMessage() {
+        return getNotificationMessage(By.id("messages"));
     }
 
     public boolean expectNotification(final String notification) {
