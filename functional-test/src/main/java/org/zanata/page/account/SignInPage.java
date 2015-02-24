@@ -32,6 +32,8 @@ import org.zanata.page.googleaccount.GoogleAccountPage;
 public class SignInPage extends CorePage {
 
     public static final String LOGIN_FAILED_ERROR = "Login failed";
+    public static final String ACTIVATION_SUCCESS = "Your account was " +
+            "successfully activated. You can now sign in.";
 
     private By usernameField = By.id("loginForm:username");
     private By passwordField = By.id("loginForm:password");
@@ -67,6 +69,12 @@ public class SignInPage extends CorePage {
         log.info("Click Sign In");
         waitForWebElement(signInButton).click();
         return new SignInPage(getDriver());
+    }
+
+    public InactiveAccountPage clickSignInExpectInactive() {
+        log.info("Click Sign In");
+        waitForWebElement(signInButton).click();
+        return new InactiveAccountPage(getDriver());
     }
 
     public GoogleAccountPage selectGoogleOpenID() {

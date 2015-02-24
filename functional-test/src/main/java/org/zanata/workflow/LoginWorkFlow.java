@@ -29,6 +29,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.zanata.page.AbstractPage;
 import org.zanata.page.BasePage;
+import org.zanata.page.account.InactiveAccountPage;
 import org.zanata.page.account.SignInPage;
 import org.zanata.page.dashboard.DashboardBasePage;
 
@@ -66,6 +67,15 @@ public class LoginWorkFlow extends AbstractWebWorkFlow {
             .enterUsername(username)
             .enterPassword(password)
             .clickSignInExpectError();
+    }
+
+    public InactiveAccountPage signInInactive(String username, String password) {
+        log.info("log in as username: {}", username);
+        return new BasePage(driver)
+            .clickSignInLink()
+            .enterUsername(username)
+            .enterPassword(password)
+            .clickSignInExpectInactive();
     }
 
     private void doSignIn(String username, String password) {
