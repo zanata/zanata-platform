@@ -141,12 +141,13 @@ public class SecurityTest extends ZanataTestCase {
                 .contains("not a well-formed email address")
                 .as("Invalid email error is displayed");
 
-        String error = resetPasswordPage.getErrors().get(0);
         // Both are valid, but show seemingly at random
-        assertThat(error.equals("size must be between 3 and 20") ||
-                error.equals("must match ^[a-z\\d_]{3,20}$"))
-                .isTrue()
-                .as("Invalid email error is displayed");
+        assertThat(resetPasswordPage.getErrors().get(0))
+                .isIn("Between 3 and 20 lowercase letters, numbers and " +
+                            "underscores only",
+                        "size must be between 3 and 20",
+                        "must match ^[a-z\\d_]{3,20}$")
+                .as("Invalid username error is displayed");
     }
 
     @Feature(summary = "The user must enter both an account name and email " +
