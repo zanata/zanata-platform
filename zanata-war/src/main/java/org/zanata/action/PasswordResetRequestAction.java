@@ -71,18 +71,30 @@ public class PasswordResetRequestAction implements Serializable {
 
     public String requestReset() {
         if(getAccount() == null) {
-            FacesMessages.instance().add(msgs.get("jsf.account.notFound"));
-            return null;
-        } else if(isAccountWaitingForActivation()) {
+            return getAccountNoFoundMessage();
+        }
+
+        HAccountResetPasswordKey key =
+            userAccountServiceImpl.requestPasswordReset(getAccount());
+
+        if(key == null) {
+            return getAccountNoFoundMessage();
+        }
+
+        if(isAccountWaitingForActivation()) {
             FacesMessages.instance().add(msgs.get("jsf.account.notActivated"));
             return null;
         }
-        String message =
-                emailServiceImpl.sendPasswordResetEmail(
-                    getAccount().getPerson(),
-                    account.getAccountActivationKey().getKeyHash());
+
+        String message = emailServiceImpl.sendPasswordResetEmail(
+            getAccount().getPerson(), key.getKeyHash());
         FacesMessages.instance().add(message);
         return "home";
+    }
+
+    private String getAccountNoFoundMessage() {
+        FacesMessages.instance().add(msgs.get("jsf.account.notFound"));
+        return null;
     }
 
     @End
@@ -112,10 +124,7 @@ public class PasswordResetRequestAction implements Serializable {
         if (account == null) {
             return false;
         }
-        if (account.getAccountActivationKey() == null) {
-            return false;
-        }
-        return true;
+        return account.getAccountActivationKey() != null;
     }
 
     public HAccount getAccount() {
