@@ -28,17 +28,15 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.faces.context.ExternalContext;
-import javax.mail.internet.InternetAddress;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Size;
 
-import com.googlecode.totallylazy.collections.PersistentMap;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.seam.ScopeType;
@@ -55,7 +53,6 @@ import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.CredentialsDAO;
 import org.zanata.dao.PersonDAO;
-import org.zanata.email.EmailStrategy;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
@@ -305,6 +302,14 @@ public class UserSettingsAction {
             return "";
         }
         return serverName.replace(".", "_");
+    }
+
+    /**
+     * return javascript safe message
+     */
+    public String getRegenerateAPiKeyMsg() {
+        String msg = msgs.get("jsf.apikey.ConfirmGenerate");
+        return StringEscapeUtils.escapeJavaScript(msg);
     }
 
     public void regenerateApiKey() {

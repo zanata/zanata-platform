@@ -24,8 +24,8 @@
         zanata.tabs.activate(jQuery('#languages_tab'));
         var clickEle = jQuery('a.' + lang);
         if (lang && clickEle.length != 0) {
-          updateActiveRow(clickEle)
-          toggleColumn('languages')
+          updateActiveRow(clickEle);
+          toggleColumn('languages');
           reloadLocale(lang)
         }
       });
@@ -33,7 +33,7 @@
     crossroads.addRoute(':pre*:/version-group/view/{slug}/projects/{proj}/{ver}',
       function (pre, slug, proj, ver) {
         zanata.tabs.activate(jQuery('#projects_tab'));
-        var clickEle = jQuery('#' + jqSelector(proj + "[" + ver + "]") + " a")
+        var clickEle = jQuery('#' + jqSelector(proj + "[" + ver + "]") + " a");
         if (clickEle.length != 0) {
           updateActiveRow(clickEle);
           toggleColumn('projects');
@@ -53,46 +53,48 @@
 
     crossroads.addRoute(':pre*:/version-group/view/{slug}/:section:',
       function (pre, slug, section) {
-        section = section || 'languages'
+        section = section || 'languages';
         section = validateTab('#' + section + "_tab", section, "languages");
         zanata.tabs.activate(jQuery('#' + section + "_tab"))
       });
 
     renderStatistics();
-  })
+  });
   //]]>
 </script>
 
-<a4j:jsFunction name="reloadLocale" status="languageTab-projectsLoader"
-  onbegin="clearHTML('#{rich:clientId('languages-project_list')}');clearHTML('#{rich:clientId('language-label')}');zanata.loader.activate('#languagesTab-language-label-loader')"
-  oncomplete="zanata.loader.deactivate('#languagesTab-language-label-loader')"
-  render="languages-project_list, language-label, languageTabVersionFilter-pager, languageTabVersionFilter-page-info, languageTabVersionFilterBottom-pager, languageTabVersionFilterBottom-page-info">
-  <a4j:param name="val1" assignTo="#{versionGroupHomeAction.selectedLocaleId}"/>
-</a4j:jsFunction>
+  <h:outputScript>
+    function refreshStatistics() {
+      setTimeout(refreshStatisticsData, 0);
+    }
+  </h:outputScript>
 
-<a4j:jsFunction name="reloadVersion" status="projectsTab-languagesLoader"
-  onbegin="clearHTML('#{rich:clientId('projects-language_list')}');clearHTML('#{rich:clientId('project-label')}');zanata.loader.activate('#projectsTab-project-label-loader')"
-  oncomplete="zanata.loader.deactivate('#projectsTab-project-label-loader')"
-  render="projects-language_list, project-label, projectTabLanguageFilter-pager, projectTabLanguageFilter-page-info, projectTabLanguageFilterBottom-pager, projectTabLanguageFilterBottom-page-info"
-  action="#{versionGroupHomeAction.setSelectedVersionSlug(projSlug, verSlug)}">
-  <a4j:param name="val1" assignTo="#{projSlug}"/>
-  <a4j:param name="val2" assignTo="#{verSlug}"/>
-</a4j:jsFunction>
+  <h:form styleClass="l--push-bottom-0">
+    <a4j:jsFunction name="reloadLocale" status="languageTab-projectsLoader"
+      onbegin="clearHTML('#{rich:clientId('languages-project_list')}');clearHTML('#{rich:clientId('language-label')}');zanata.loader.activate('#languagesTab-language-label-loader')"
+      oncomplete="zanata.loader.deactivate('#languagesTab-language-label-loader')"
+      render="languages-project_list, language-label, languageTabVersionFilter-pager, languageTabVersionFilter-page-info, languageTabVersionFilterBottom-pager, languageTabVersionFilterBottom-page-info">
+      <a4j:param name="val1" assignTo="#{versionGroupHomeAction.selectedLocaleId}"/>
+    </a4j:jsFunction>
 
-<h:outputScript>
-  function refreshStatistics() {
-    setTimeout(refreshStatisticsData, 0);
-  }
-</h:outputScript>
+    <a4j:jsFunction name="reloadVersion" status="projectsTab-languagesLoader"
+      onbegin="clearHTML('#{rich:clientId('projects-language_list')}');clearHTML('#{rich:clientId('project-label')}');zanata.loader.activate('#projectsTab-project-label-loader')"
+      oncomplete="zanata.loader.deactivate('#projectsTab-project-label-loader')"
+      render="projects-language_list, project-label, projectTabLanguageFilter-pager, projectTabLanguageFilter-page-info, projectTabLanguageFilterBottom-pager, projectTabLanguageFilterBottom-page-info"
+      action="#{versionGroupHomeAction.setSelectedVersionSlug(projSlug, verSlug)}">
+      <a4j:param name="val1" assignTo="#{projSlug}"/>
+      <a4j:param name="val2" assignTo="#{verSlug}"/>
+    </a4j:jsFunction>
 
-<a4j:jsFunction name="refreshStatisticsData" status="statistic-loader"
-  action="#{versionGroupHomeAction.resetPageData}"
-  render="overall_statistic,languages-language_form,languages-project_list,language-label,projects-project_form,projects-language_list,project-label,languages-size,projects-size"/>
+    <a4j:jsFunction name="refreshStatisticsData" status="statistic-loader"
+      action="#{versionGroupHomeAction.resetPageData}"
+      render="overall_statistic,languages-language_form,languages-project_list,language-label,projects-project_form,projects-language_list,project-label,languages-size,projects-size"/>
 
-<a4j:jsFunction name="renderStatistics" status="statistic-loader"
-  render="overall_statistic, languages-language_form, projects-project_form"
-  action="#{versionGroupHomeAction.setPageRendered(true)}"
-  oncomplete="updateStateFromUrl()"/>
+    <a4j:jsFunction name="renderStatistics" status="statistic-loader"
+      render="overall_statistic, languages-language_form, projects-project_form"
+      action="#{versionGroupHomeAction.setPageRendered(true)}"
+      oncomplete="updateStateFromUrl()"/>
+  </h:form>
 
 <div class="g">
   <div class="g__item w--1-m w--3-8-l w--1-3 l--push-bottom-half">
