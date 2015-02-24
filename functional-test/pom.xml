@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>3.6.0-SNAPSHOT</version>
+    <version>3.6.0</version>
   </parent>
   <artifactId>functional-test</artifactId>
   <!--if we want to use pom packaging, we need to explicitly enable some plugins and various things-->
@@ -415,12 +415,9 @@
                 </goals>
                 <configuration>
                   <target xmlns:if="ant:if">
-                    <echo if:set="skipFuncTests"
-                      message="WARNING: -DskipFuncTests takes precedence over -DallFuncTests" />
-                    <echo if:set="skipITs"
-                      message="WARNING: -DskipITs takes precedence over -DallFuncTests" />
-                    <echo if:set="skipTests"
-                      message="WARNING: -DskipTests takes precedence over -DallFuncTests" />
+                    <echo if:set="skipFuncTests" message="WARNING: -DskipFuncTests takes precedence over -DallFuncTests" />
+                    <echo if:set="skipITs" message="WARNING: -DskipITs takes precedence over -DallFuncTests" />
+                    <echo if:set="skipTests" message="WARNING: -DskipTests takes precedence over -DallFuncTests" />
                   </target>
                 </configuration>
               </execution>
@@ -744,17 +741,17 @@
                 <echo>===== Properties that can be set for functional test =====</echo>
                 <echo>-DskipFuncTests : to skip running functional tests, and/or:</echo>
                 <echo>-DskipArqTests : to skip Arquillian integration tests (if building zanata-war)</echo>
-                <echo/>
+                <echo />
                 <echo>Unless skipping tests, you must choose an appserver:</echo>
                 <echo>-Dappserver=jbosseap6 -Dcargo.installation=http://example.com/jbosseap632.zip -Dcargo.basename=jbosseap632</echo>
                 <echo>or -Dappserver=wildfly8</echo>
                 <echo>NB: cargo.basename needs to match the basename of the file given in cargo.installation.</echo>
                 <echo>For example, if cargo.installation is http://example.com/download/jboss-6.3.2.zip, cargo.basename should be jboss-6.3.2.</echo>
-                <echo/>
+                <echo />
                 <echo>-DallFuncTests to enable all functional tests (defaults to smoke tests)</echo>
-                <echo/>
+                <echo />
                 <echo>-Dcargo.debug.jvm.args : If not set by default will listen to port 8787. Need to set to empty on jenkins</echo>
-                <echo/>
+                <echo />
                 <echo>-Dzanata.target.version=version of zanata to deploy. Default is: ${project.parent.version}</echo>
                 <echo>-Dzanata.instance.url=http://${cargo.host}:${cargo.servlet.port}/${context.path}</echo>
                 <echo>-Dzanata.apikey=b6d7044e9ee3b2447c28fb7c50d86d98</echo>
@@ -769,7 +766,7 @@
                 <echo>==========================================================</echo>
                 <echo>to ask cargo to start up then wait so that tests can be run manually: mvn clean package cargo:run -Dappserver=wildfly8 -Dmysql.port=13306</echo>
                 <!-- placeholder. Actual content should be populated by running server/etc/scripts/functional-test-db-snapshot.sh -->
-                <touch file="${project.build.directory}/database.sql"/>
+                <touch file="${project.build.directory}/database.sql" />
               </target>
             </configuration>
           </execution>
@@ -779,10 +776,8 @@
             <goals><goal>run</goal></goals>
             <configuration>
               <target unless="skipFuncTests">
-                <fail message="'appserver' property must be set to run integration tests (or else use -DskipFuncTests)"
-                  unless="appserver" />
-                <fail message="'cargo.installation' property must be set to run integration tests (or else use -DskipFuncTests)"
-                  unless="cargo.installation"/>
+                <fail message="'appserver' property must be set to run integration tests (or else use -DskipFuncTests)" unless="appserver" />
+                <fail message="'cargo.installation' property must be set to run integration tests (or else use -DskipFuncTests)" unless="cargo.installation" />
               </target>
             </configuration>
           </execution>

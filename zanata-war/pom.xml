@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>3.6.0-SNAPSHOT</version>
+    <version>3.6.0</version>
   </parent>
   <artifactId>zanata-war</artifactId>
   <packaging>war</packaging>
@@ -15,6 +15,7 @@
     <connection>scm:git:git://github.com/zanata/zanata.git</connection>
     <developerConnection>scm:git:git@github.com:zanata/zanata.git</developerConnection>
     <url>https://github.com/zanata/zanata</url>
+    <tag>server-3.6.0</tag>
   </scm>
 
   <properties>
@@ -1008,10 +1009,8 @@
                 <goals><goal>run</goal></goals>
                 <configuration>
                   <target unless="skipArqTests">
-                    <fail message="'appserver' property must be set to run integration tests (or else use -DskipArqTests)"
-                      unless="appserver" />
-                    <fail message="'cargo.installation' property must be set to run integration tests (or else use -DskipArqTests)"
-                      unless="cargo.installation"/>
+                    <fail message="'appserver' property must be set to run integration tests (or else use -DskipArqTests)" unless="appserver" />
+                    <fail message="'cargo.installation' property must be set to run integration tests (or else use -DskipArqTests)" unless="cargo.installation" />
                   </target>
                 </configuration>
               </execution>
@@ -1071,9 +1070,7 @@
                 </goals>
                 <configuration>
                   <target unless="skipArqTests">
-                    <copy overwrite="true"
-                      file="${project.basedir}/src/test/resources/arquillian/standalone-arquillian.xml"
-                      tofile="${appserver.home}/standalone/configuration/standalone-arquillian.xml" />
+                    <copy overwrite="true" file="${project.basedir}/src/test/resources/arquillian/standalone-arquillian.xml" tofile="${appserver.home}/standalone/configuration/standalone-arquillian.xml" />
                   </target>
                 </configuration>
               </execution>
@@ -1188,10 +1185,7 @@
                 </goals>
                 <configuration>
                   <target unless="skipArqTests">
-                    <copy
-                      overwrite="true"
-                      file="${project.basedir}/src/test/resources/arquillian/standalone-arquillian-wildfly.xml"
-                      tofile="${appserver.home}/standalone/configuration/standalone.xml" />
+                    <copy overwrite="true" file="${project.basedir}/src/test/resources/arquillian/standalone-arquillian-wildfly.xml" tofile="${appserver.home}/standalone/configuration/standalone.xml" />
                   </target>
                 </configuration>
               </execution>
