@@ -2,13 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>server</artifactId>
-  <version>3.6.0</version>
+  <version>3.6.0-SNAPSHOT</version>
   <name>Zanata server modules</name>
   <packaging>pom</packaging>
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>21</version>
+    <version>21-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -16,7 +16,6 @@
     <connection>scm:git:git://github.com/zanata/zanata-server.git</connection>
     <developerConnection>scm:git:git@github.com:zanata/zanata-server.git</developerConnection>
     <url>https://github.com/zanata/zanata-server</url>
-    <tag>server-3.6.0</tag>
   </scm>
 
   <properties>
@@ -34,7 +33,7 @@
     <gwteventservice.version>1.2.1</gwteventservice.version>
     <okapi.version>0.22</okapi.version>
 
-    <zanata.api.version>3.6.0</zanata.api.version>
+    <zanata.api.version>3.6.0-SNAPSHOT</zanata.api.version>
     <!-- This should always be the previous version of the used api version above (but only 3.0.1 or later will work) -->
     <zanata.api.compat.version>3.3.1</zanata.api.compat.version>
     <zanata.client.version>3.3.1</zanata.client.version>
@@ -297,7 +296,7 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-common-api</artifactId>
-        <version>3.6.0</version>
+        <version>${zanata.api.version}</version>
         <exclusions>
           <exclusion>
             <groupId>javax.servlet</groupId>
@@ -963,10 +962,12 @@
             <phase>none</phase>
             <goals><goal>run</goal></goals>
             <configuration combine.self="override">
-              <target xmlns:unless="ant:unless" unless="skipITs">
+              <target unless="skipITs" xmlns:unless="ant:unless">
                 <echo message="appserver: ${appserver} cargo.installation: ${cargo.installation} appserver.home: ${appserver.home}" />
-                <echo message="WARNING: 'appserver' property must be set unless skippping integration tests" unless:set="appserver" />
-                <echo message="WARNING: 'cargo.installation' property (and possibly cargo.basename) must be set unless skipping integration tests" unless:set="cargo.installation" />
+                <echo message="WARNING: 'appserver' property must be set unless skippping integration tests"
+                  unless:set="appserver" />
+                <echo message="WARNING: 'cargo.installation' property (and possibly cargo.basename) must be set unless skipping integration tests"
+                  unless:set="cargo.installation" />
               </target>
             </configuration>
           </execution>
@@ -1231,10 +1232,20 @@
                   <target unless="skipITs">
                     <!-- TODO put these zips under ${user.home}/Downloads too -->
                     <mkdir dir="${module.download.dir}" />
-                    <get src="http://sourceforge.net/projects/zanata/files/wildfly/${mojarra.module.name}/download" dest="${module.download.dir}/${mojarra.module.name}" usetimestamp="true" />
-                    <get src="http://sourceforge.net/projects/zanata/files/wildfly/${hibernate.module.name}/download" dest="${module.download.dir}/${hibernate.module.name}" usetimestamp="true" />
-                    <unzip src="${module.download.dir}/${mojarra.module.name}" dest="${appserver.home}" />
-                    <unzip src="${module.download.dir}/${hibernate.module.name}" dest="${appserver.home}" />
+                    <get
+                      src="http://sourceforge.net/projects/zanata/files/wildfly/${mojarra.module.name}/download"
+                      dest="${module.download.dir}/${mojarra.module.name}"
+                      usetimestamp="true" />
+                    <get
+                      src="http://sourceforge.net/projects/zanata/files/wildfly/${hibernate.module.name}/download"
+                      dest="${module.download.dir}/${hibernate.module.name}"
+                      usetimestamp="true" />
+                    <unzip
+                      src="${module.download.dir}/${mojarra.module.name}"
+                      dest="${appserver.home}" />
+                    <unzip
+                      src="${module.download.dir}/${hibernate.module.name}"
+                      dest="${appserver.home}" />
                   </target>
                 </configuration>
               </execution>
