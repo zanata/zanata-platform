@@ -137,6 +137,9 @@ public class MultiFileUploadTest extends ZanataTestCase {
                 .enterFilePath(keptUploadFile.getAbsolutePath())
                 .enterFilePath("/tmp/fakefile.txt");
 
+        versionDocumentsTab.waitForPageSilence();
+        // TODO try to eliminate this:
+        versionDocumentsTab.expectSomeUploadItems();
         assertThat(versionDocumentsTab.getUploadList())
                 .contains(keptUploadFile.getName())
                 .contains("fakefile.txt")
@@ -144,6 +147,7 @@ public class MultiFileUploadTest extends ZanataTestCase {
 
         versionDocumentsTab = versionDocumentsTab.clickRemoveOn("fakefile.txt");
 
+        versionDocumentsTab.waitForPageSilence();
         assertThat(versionDocumentsTab.getUploadList())
                 .contains(keptUploadFile.getName())
                 .doesNotContain("fakefile.txt")
