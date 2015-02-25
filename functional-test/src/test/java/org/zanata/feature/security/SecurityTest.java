@@ -20,9 +20,11 @@
  */
 package org.zanata.feature.security;
 
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.openqa.selenium.By;
 import org.subethamail.wiser.WiserMessage;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
@@ -119,8 +121,10 @@ public class SecurityTest extends ZanataTestCase {
                 .enterEmail("nosuchuser@nosuchdomain.com")
                 .resetFailure();
 
-        assertThat(resetPasswordPage.getNotificationMessage())
-                .isEqualTo("No such account found")
+        assertThat(
+                resetPasswordPage.getNotificationMessage(By
+                        .id("passwordResetRequestForm:messages")))
+                .isEqualTo("No account found.")
                 .as("A no such account message is displayed");
     }
 
