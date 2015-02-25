@@ -8,15 +8,15 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>21-SNAPSHOT</version>
-    <relativePath>../parent</relativePath>
+    <version>21</version>
+    <relativePath>../zanata-parent</relativePath>
   </parent>
 
   <scm>
     <connection>scm:git:git://github.com/zanata/zanata-api.git</connection>
     <developerConnection>scm:git:git@github.com:zanata/zanata-api.git</developerConnection>
     <url>https://github.com/zanata/zanata-api</url>
-    <tag>HEAD</tag>
+    <tag>api-3.6.0</tag>
   </scm>
 
   <!-- This is needed for bootstrapping with a zanata-parent SNAPSHOT  -->
