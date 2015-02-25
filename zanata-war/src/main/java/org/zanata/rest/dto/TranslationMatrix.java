@@ -1,9 +1,10 @@
-package org.zanata.rest.dto.matrix;
+package org.zanata.rest.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
 /**
  * @author Patrick Huang
@@ -11,10 +12,13 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class DetailMatrix {
+public class TranslationMatrix {
+    private String savedDate;
     private String projectSlug;
+    private String projectName;
     private String versionSlug;
     private LocaleId localeId;
+    private String localeDisplayName;
     private ContentState savedState;
     private long wordCount;
 }

@@ -20,7 +20,6 @@
  */
 package org.zanata.dao;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
@@ -28,24 +27,19 @@ import java.util.concurrent.TimeUnit;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.transform.ResultTransformer;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.zanata.common.ContentState;
-import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
-import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Name("textFlowTargetHistoryDAO")
 @AutoCreate
@@ -198,13 +192,15 @@ public class TextFlowTargetHistoryDAO extends
      *            different from system time zone
      * @param systemZone
      *            current system time zone
-     * @return a list of UserTranslationMatrix object
+     * @param resultTransformer
+     *            result transformer to transform query results
+     * @return a list of transformed object
      */
-    @NativeQuery("need to use union")
-    @DatabaseSpecific("uses mysql date() function. In test we can override stripTimeFromDateTimeFunction(String) below to workaround it.")
-    public List<UserTranslationMatrix> getUserTranslationMatrix(
+    @NativeQuery(value = "need to use union", specificTo = "mysql due to usage of date() and convert_tz() functions.")
+    public <T> List<T> getUserTranslationMatrix(
             HPerson user, DateTime fromDate, DateTime toDate,
-            Optional<DateTimeZone> userZoneOpt, DateTimeZone systemZone) {
+            Optional<DateTimeZone> userZoneOpt, DateTimeZone systemZone,
+            ResultTransformer resultTransformer) {
         // @formatter:off
         String queryHistory = "select history.id, iter.id as iteration, tft.locale as locale, tf.wordCount as wordCount, history.state as state, history.lastChanged as lastChanged " +
                 "  from HTextFlowTargetHistory history " +
@@ -239,29 +235,12 @@ public class TextFlowTargetHistoryDAO extends
         Query query = getSession().createSQLQuery(queryString)
                 .setParameter("user", user.getId())
                 .setTimestamp("fromDate", fromDate.toDate())
-                .setTimestamp("toDate", toDate.toDate());
-        @SuppressWarnings("unchecked")
-        List<Object[]> result = query.list();
-        ImmutableList.Builder<UserTranslationMatrix> builder =
-                ImmutableList.builder();
-        for (Object[] objects : result) {
-            Date savedDate = new DateTime(objects[0]).toDate();
-            HProjectIteration iteration =
-                    loadById(objects[1], HProjectIteration.class);
-            HLocale locale = loadById(objects[2], HLocale.class);
-            ContentState savedState = ContentState.values()[(int) objects[3]];
-            long wordCount =
-                    ((BigDecimal) objects[4]).toBigInteger().longValue();
-            UserTranslationMatrix matrix =
-                    new UserTranslationMatrix(savedDate, iteration, locale,
-                            savedState, wordCount);
-            builder.add(matrix);
-        }
-        return builder.build();
+                .setTimestamp("toDate", toDate.toDate())
+                .setResultTransformer(resultTransformer);
+        return query.list();
     }
 
     @VisibleForTesting
-    @DatabaseSpecific("uses mysql function")
     protected String convertTimeZoneFunction(String columnName,
             Optional<DateTimeZone> userZoneOpt, DateTimeZone systemZone) {
         if (userZoneOpt.isPresent()) {
@@ -275,7 +254,6 @@ public class TextFlowTargetHistoryDAO extends
 
     // This is so we can override it in test and be able to test it against h2
     @VisibleForTesting
-    @DatabaseSpecific("uses mysql function")
     protected String stripTimeFromDateTimeFunction(String columnName) {
         return "date(" + columnName + ")";
     }
@@ -297,13 +275,4 @@ public class TextFlowTargetHistoryDAO extends
                 TimeUnit.MILLISECONDS.toHours(standardOffset));
     }
 
-    @Getter
-    @RequiredArgsConstructor
-    public static class UserTranslationMatrix {
-        private final Date savedDate;
-        private final HProjectIteration projectIteration;
-        private final HLocale locale;
-        private final ContentState savedState;
-        private final long wordCount;
-    }
 }

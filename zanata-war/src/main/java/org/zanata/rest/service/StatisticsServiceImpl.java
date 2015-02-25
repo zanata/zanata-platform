@@ -21,21 +21,25 @@
 package org.zanata.rest.service;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
+import javax.persistence.EntityManager;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.transform.ResultTransformer;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -53,7 +57,6 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetHistoryDAO;
-import org.zanata.dao.TextFlowTargetHistoryDAO.UserTranslationMatrix;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
@@ -61,7 +64,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.Link;
-import org.zanata.rest.dto.matrix.UserWorkMatrix;
+import org.zanata.rest.dto.TranslationMatrix;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
@@ -105,6 +108,9 @@ public class StatisticsServiceImpl implements StatisticsResource {
 
     @In
     private PersonDAO personDAO;
+
+    @In
+    private EntityManager entityManager;
 
     @In
     private TranslationStateCache translationStateCacheImpl;
@@ -299,12 +305,10 @@ public class StatisticsServiceImpl implements StatisticsResource {
      * Get contribution statistic (translations) from project-version within
      * given date range.
      *
-     * Throws NoSuchEntityException if:
-     * - project/version not found or is obsolete,
-     * - user not found
+     * Throws NoSuchEntityException if: - project/version not found or is
+     * obsolete, - user not found
      *
-     * Throws InvalidDateParamException if:
-     * - dateRangeParam is in wrong format,
+     * Throws InvalidDateParamException if: - dateRangeParam is in wrong format,
      * - date range is over MAX_STATS_DAYS
      *
      * @param projectSlug
@@ -314,8 +318,8 @@ public class StatisticsServiceImpl implements StatisticsResource {
      * @param username
      *            username of contributor
      * @param dateRangeParam
-     *            from..to (yyyy-mm-dd..yyyy-mm-dd),
-     *            date range maximum: 365 days
+     *            from..to (yyyy-mm-dd..yyyy-mm-dd), date range maximum: 365
+     *            days
      */
     @Override
     public ContributionStatistics getContributionStatistics(String projectSlug,
@@ -443,7 +447,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
     @Path("user/{username}/{dateRangeParam}")
     @GET
     @Produces({"application/json"})
-    public UserWorkMatrix getUserWorkMatrix(
+    public List<TranslationMatrix> getUserWorkMatrix(
             @PathParam("username") final String username,
             @PathParam("dateRangeParam") String dateRangeParam,
             @QueryParam("userTimeZone") String userTimeZoneID) {
@@ -468,22 +472,60 @@ public class StatisticsServiceImpl implements StatisticsResource {
             userZoneOpt = Optional.absent();
         }
 
-        // TODO pahuang restrict toDate to yesterday (with timezone)
-//        if (toDate.isAfter(new DateTime().withTimeAtStartOfDay())) {
-//            toDate = new DateTime().withTimeAtStartOfDay();
-//        }
-        List<UserTranslationMatrix> databaseRecords =
+        List<TranslationMatrix> translationMatrixList =
                 textFlowTargetHistoryDAO.getUserTranslationMatrix(person,
-                        fromDate, toDate, userZoneOpt, systemZone);
+                        fromDate, toDate, userZoneOpt, systemZone,
+                        new UserMatrixResultTransformer(entityManager, dateFormatter));
 
-        UserWorkMatrix result = new UserWorkMatrix();
+        return translationMatrixList;
+    }
 
-        for (UserTranslationMatrix matrixRecord : databaseRecords) {
-            String dateString = dateFormatter.print(
-                    matrixRecord.getSavedDate().getTime());
-            result.putOrCreateIfAbsent(dateString, matrixRecord);
+    @RequiredArgsConstructor
+    public static class UserMatrixResultTransformer implements
+            ResultTransformer {
+        private static final long serialVersionUID = 1L;
+        private final EntityManager entityManager;
+        private final DateTimeFormatter dateFormater;
+
+        @Override
+        public Object transformTuple(Object[] tuple, String[] aliases) {
+            String savedDate = dateFormater.print(
+                    new DateTime(tuple[0]).toDate().getTime());
+            HProjectIteration iteration =
+                    entityManager.find(HProjectIteration.class,
+                            ((BigInteger) tuple[1]).longValue());
+            String projectSlug = iteration.getProject().getSlug();
+            String projectName = iteration.getProject().getName();
+            String versionSlug = iteration.getSlug();
+
+            HLocale locale =
+                    entityManager.find(HLocale.class,
+                            ((BigInteger) tuple[2]).longValue());
+            String localeDisplayName = locale.retrieveDisplayName();
+            LocaleId localeId = locale.getLocaleId();
+
+            ContentState savedState = ContentState.values()[(int) tuple[3]];
+            long wordCount =
+                    ((BigDecimal) tuple[4]).toBigInteger().longValue();
+
+            return new TranslationMatrix(savedDate, projectSlug, projectName,
+                    versionSlug, localeId, localeDisplayName,
+                    savedState, wordCount);
         }
 
-        return result;
+        @Override
+        public List transformList(List collection) {
+            return collection;
+        }
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public static class UserTranslationMatrix {
+        private final Date savedDate;
+        private final HProjectIteration projectIteration;
+        private final HLocale locale;
+        private final ContentState savedState;
+        private final long wordCount;
     }
 }

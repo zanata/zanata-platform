@@ -15,4 +15,9 @@ public @interface NativeQuery {
      * Reason why it has to be native query.
      */
     String value() default "";
+
+    /**
+     * If the query is specific to certain database due to built-in function etc.
+     */
+    String specificTo() default "";
 }
