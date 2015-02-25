@@ -62,6 +62,7 @@ import org.zanata.service.LockManagerService;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.service.VersionStateCache;
 import org.zanata.ui.model.statistic.WordStatistic;
+import org.zanata.util.StatisticsUtil;
 
 import com.google.common.annotations.VisibleForTesting;
 import lombok.extern.slf4j.Slf4j;
@@ -244,23 +245,32 @@ public class DocumentServiceImpl implements DocumentService {
             Collection<ContentState> contentStates, String message,
             int percentMilestone) {
 
-        boolean shouldPublish =
-                hasContentStateReachedMilestone(event.getOldStats(),
-                        event.getNewStats(), contentStates, percentMilestone);
+        HProjectIteration version =
+            projectIterationDAO.findById(event.getProjectIterationId());
+        HProject project = version.getProject();
 
-        if (shouldPublish) {
-            HProjectIteration version =
-                    projectIterationDAO.findById(event.getProjectIterationId());
-            HProject project = version.getProject();
+        if (!project.getWebHooks().isEmpty()) {
+            WordStatistic stats =
+                translationStateCacheImpl.getDocumentStatistics(
+                    event.getDocumentId(), event.getLocaleId());
 
-            if (!project.getWebHooks().isEmpty()) {
-                HDocument document = documentDAO.getById(event.getDocumentId());
-                DocumentMilestoneEvent milestoneEvent =
-                        new DocumentMilestoneEvent(project.getSlug(),
-                                version.getSlug(), document.getDocId(),
-                                event.getLocaleId(), message);
-                for (WebHook webHook : project.getWebHooks()) {
-                    publishDocumentMilestoneEvent(webHook, milestoneEvent);
+            WordStatistic oldStats = StatisticsUtil.copyWordStatistic(stats);
+            if(oldStats != null) {
+                oldStats.decrement(event.getNewState(), event.getWordCount());
+                oldStats.increment(event.getPreviousState(), event.getWordCount());
+
+                boolean shouldPublish = hasContentStateReachedMilestone(oldStats, stats,
+                    contentStates, percentMilestone);
+
+                if (shouldPublish) {
+                    HDocument document = documentDAO.getById(event.getDocumentId());
+                    DocumentMilestoneEvent milestoneEvent =
+                            new DocumentMilestoneEvent(project.getSlug(),
+                                    version.getSlug(), document.getDocId(),
+                                    event.getLocaleId(), message);
+                    for (WebHook webHook : project.getWebHooks()) {
+                        publishDocumentMilestoneEvent(webHook, milestoneEvent);
+                    }
                 }
             }
         }
@@ -321,9 +331,11 @@ public class DocumentServiceImpl implements DocumentService {
 
     @VisibleForTesting
     public void init(ProjectIterationDAO projectIterationDAO,
-            DocumentDAO documentDAO, Messages msgs) {
+            DocumentDAO documentDAO,
+        TranslationStateCache translationStateCacheImpl, Messages msgs) {
         this.projectIterationDAO = projectIterationDAO;
         this.documentDAO = documentDAO;
+        this.translationStateCacheImpl = translationStateCacheImpl;
         this.msgs = msgs;
     }
 }

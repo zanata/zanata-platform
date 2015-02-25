@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Red Hat, Inc. and individual contributors
+ * Copyright 2015, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -21,12 +21,13 @@
 package org.zanata.page.utility;
 
 import com.google.common.base.Predicate;
+import org.openqa.selenium.WebDriver;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public abstract class NamedPredicate<T> implements
-        Predicate<T> {
+public abstract class NamedPredicate implements
+        Predicate<WebDriver> {
     private final String name;
 
     public NamedPredicate(String name) {

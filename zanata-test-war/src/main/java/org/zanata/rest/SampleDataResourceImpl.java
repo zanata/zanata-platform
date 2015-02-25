@@ -57,7 +57,7 @@ public class SampleDataResourceImpl implements SampleDataResource {
         new RunAsOperation() {
             @Override
             public void execute() {
-                sampleProjectProfile.makeLanguage(new LocaleId(localeId));
+                sampleProjectProfile.makeLanguage(true, new LocaleId(localeId));
             }
         }.addRole("admin").run();
         return Response.ok().build();

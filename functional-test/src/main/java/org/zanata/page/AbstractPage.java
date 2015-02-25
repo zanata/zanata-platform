@@ -51,6 +51,7 @@ public class AbstractPage {
         PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10),
                 this);
         this.driver = driver;
+        assert driver instanceof JavascriptExecutor;
         waitForPageSilence();
     }
 

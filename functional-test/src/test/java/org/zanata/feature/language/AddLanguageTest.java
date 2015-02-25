@@ -33,7 +33,7 @@ import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.administration.AddLanguagePage;
-import org.zanata.page.administration.ManageLanguagePage;
+import org.zanata.page.languages.LanguagesPage;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.BasicWorkFlow;
@@ -65,34 +65,33 @@ public class AddLanguageTest extends ZanataTestCase {
     @Feature(summary = "The administrator can add a language to Zanata",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 181709)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void addLanguageAsEnabled() throws Exception {
+    public void addLanguageAsEnabledByDefault() throws Exception {
         String language = "Goa'uld";
         String languageDisplayName = "goa'uld[Goa'uld]";
-        ManageLanguagePage manageLanguagePage = new BasicWorkFlow()
-                .goToHome()
-                .goToAdministration()
-                .goToManageLanguagePage();
+        LanguagesPage languagesPage = new BasicWorkFlow()
+            .goToHome()
+            .goToLanguages();
 
-        assertThat(manageLanguagePage.getLanguageLocales())
+        assertThat(languagesPage.getLanguageLocales())
                 .doesNotContain(language)
                 .as("The language is not listed");
 
-        manageLanguagePage = manageLanguagePage
+        languagesPage = languagesPage
                 .clickMoreActions()
                 .addNewLanguage()
                 .enterSearchLanguage(language)
                 .waitForPluralsWarning()
                 .saveLanguage();
 
-        assertThat(manageLanguagePage.getLanguageLocales())
+        assertThat(languagesPage.getLanguageLocales())
                 .contains(language)
                 .as("The language is listed");
 
-        assertThat(manageLanguagePage.languageIsEnabled(language))
+        assertThat(languagesPage.languageIsEnabledByDefault(language))
                 .isTrue()
                 .as("The language is enabled by default");
 
-        List<String> enabledLocaleList = manageLanguagePage
+        List<String> enabledLocaleList = languagesPage
                 .goToHomePage()
                 .goToProjects()
                 .goToProject("about fedora")
@@ -109,35 +108,34 @@ public class AddLanguageTest extends ZanataTestCase {
     @Feature(summary = "The administrator can add a disabled language to Zanata",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 181709)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void addLanguageAsDisabled() throws Exception {
+    public void addLanguageAsDisabledByDefault() throws Exception {
         String language = "Klingon";
         String languageDisplayName = "klingon[Klingon]";
-        ManageLanguagePage manageLanguagePage = new BasicWorkFlow()
+        LanguagesPage languagesPage = new BasicWorkFlow()
                 .goToHome()
                 .goToHomePage()
-                .goToAdministration()
-                .goToManageLanguagePage();
+                .goToLanguages();
 
-        assertThat(manageLanguagePage.getLanguageLocales())
+        assertThat(languagesPage.getLanguageLocales())
                 .doesNotContain(language)
                 .as("The language is not listed");
 
-        manageLanguagePage = manageLanguagePage
+        languagesPage = languagesPage
                 .clickMoreActions()
                 .addNewLanguage()
                 .enterSearchLanguage(language)
                 .waitForPluralsWarning()
-                .disableLanguageByDefault()
+                .enableLanguageByDefault(false)
                 .saveLanguage();
 
-        assertThat(manageLanguagePage.getLanguageLocales())
+        assertThat(languagesPage.getLanguageLocales())
                 .contains(language)
                 .as("The language is listed");
-        assertThat(manageLanguagePage.languageIsEnabled(language))
+        assertThat(languagesPage.languageIsEnabledByDefault(language))
                 .isFalse()
                 .as("The language is disabled by default");
 
-        List<String> enabledLocaleList = manageLanguagePage.goToHomePage()
+        List<String> enabledLocaleList = languagesPage.goToHomePage()
                 .goToProjects()
                 .goToProject("about fedora")
                 .gotoSettingsTab()
@@ -155,16 +153,15 @@ public class AddLanguageTest extends ZanataTestCase {
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addKnownLanguage() throws Exception {
         String language = "ru-RU";
-        ManageLanguagePage manageLanguagePage = new BasicWorkFlow()
+        LanguagesPage languagesPage = new BasicWorkFlow()
                 .goToHome()
-                .goToAdministration()
-                .goToManageLanguagePage();
+                .goToLanguages();
 
-        assertThat(manageLanguagePage.getLanguageLocales())
+        assertThat(languagesPage.getLanguageLocales())
                 .doesNotContain(language)
                 .as("The language is not listed");
 
-        AddLanguagePage addLanguagePage = manageLanguagePage
+        AddLanguagePage addLanguagePage = languagesPage
                 .clickMoreActions()
                 .addNewLanguage()
                 .enterSearchLanguage("ru-RU")

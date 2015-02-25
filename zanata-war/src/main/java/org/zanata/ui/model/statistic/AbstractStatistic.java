@@ -29,15 +29,15 @@ public abstract class AbstractStatistic implements Serializable {
         this.rejected = rejected;
     }
 
-    public void increment(ContentState state, int count) {
+    public synchronized void increment(ContentState state, int count) {
         set(state, get(state) + count);
     }
 
-    public void decrement(ContentState state, int count) {
+    public synchronized void decrement(ContentState state, int count) {
         set(state, get(state) - count);
     }
 
-    public void set(ContentState state, int value) {
+    public synchronized void set(ContentState state, int value) {
         switch (state) {
         case Translated:
             translated = value;
@@ -60,7 +60,7 @@ public abstract class AbstractStatistic implements Serializable {
         }
     }
 
-    public int get(ContentState state) {
+    public synchronized int get(ContentState state) {
         switch (state) {
         case Translated:
             return translated;
@@ -78,7 +78,7 @@ public abstract class AbstractStatistic implements Serializable {
         }
     }
 
-    public void add(AbstractStatistic other) {
+    public synchronized void add(AbstractStatistic other) {
         this.approved += other.approved;
         this.needReview += other.needReview;
         this.untranslated += other.untranslated;
@@ -94,31 +94,31 @@ public abstract class AbstractStatistic implements Serializable {
         this.rejected = other.rejected;
     }
 
-    public int getTotal() {
+    public synchronized int getTotal() {
         return approved + needReview + untranslated + translated + rejected;
     }
 
-    public int getApproved() {
+    public synchronized int getApproved() {
         return approved;
     }
 
-    public int getNeedReview() {
+    public synchronized int getNeedReview() {
         return needReview;
     }
 
-    public int getUntranslated() {
+    public synchronized int getUntranslated() {
         return untranslated;
     }
 
-    public int getTranslated() {
+    public synchronized int getTranslated() {
         return translated;
     }
 
-    public int getRejected() {
+    public synchronized int getRejected() {
         return rejected;
     }
 
-    public double getPercentage(ContentState contentState) {
+    public synchronized double getPercentage(ContentState contentState) {
         switch (contentState) {
             case Translated:
                 return getPercentTranslated();
@@ -136,23 +136,23 @@ public abstract class AbstractStatistic implements Serializable {
         }
     }
 
-    public double getPercentTranslated() {
+    public synchronized double getPercentTranslated() {
         return getPercentage(getTranslated());
     }
 
-    public double getPercentFuzzy() {
+    public synchronized double getPercentFuzzy() {
         return getPercentage(getNeedReview());
     }
 
-    public double getPercentRejected() {
+    public synchronized double getPercentRejected() {
         return getPercentage(getRejected());
     }
 
-    public double getPercentApproved() {
+    public synchronized double getPercentApproved() {
         return getPercentage(getApproved());
     }
 
-    public double getPercentUntranslated() {
+    public synchronized double getPercentUntranslated() {
         return getPercentage(getUntranslated());
     }
 
@@ -166,7 +166,7 @@ public abstract class AbstractStatistic implements Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public synchronized boolean equals(Object obj) {
         if (obj == this)
             return true;
         if (obj == null)

@@ -34,6 +34,7 @@ import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -61,11 +62,24 @@ public class HLocale extends ModelEntityBase implements Serializable {
     private static final long serialVersionUID = 1L;
     private @Nonnull
     LocaleId localeId;
+
+    @Getter
     private boolean active;
+
+    @Getter
     private boolean enabledByDefault;
     private Set<HProject> supportedProjects;
     private Set<HProjectIteration> supportedIterations;
     private Set<HLocaleMember> members;
+
+    @Getter
+    private String pluralForms;
+
+    @Getter
+    private String displayName;
+
+    @Getter
+    private String nativeName;
 
     public HLocale(@Nonnull LocaleId localeId) {
         this.localeId = localeId;
@@ -86,18 +100,6 @@ public class HLocale extends ModelEntityBase implements Serializable {
     public @Nonnull
     LocaleId getLocaleId() {
         return localeId;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public boolean isEnabledByDefault() {
-        return enabledByDefault;
-    }
-
-    public void setEnabledByDefault(boolean enabledByDefault) {
-        this.enabledByDefault = enabledByDefault;
     }
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "id.supportedLanguage")
@@ -130,10 +132,24 @@ public class HLocale extends ModelEntityBase implements Serializable {
     }
 
     public String retrieveNativeName() {
-        return asULocale().getDisplayName(asULocale());
+        if (nativeName == null || nativeName.equals("")) {
+            return retrieveDefaultNativeName();
+        }
+        return nativeName;
     }
 
     public String retrieveDisplayName() {
+        if (displayName == null || displayName.equals("")) {
+            return retrieveDefaultDisplayName();
+        }
+        return displayName;
+    }
+
+    public String retrieveDefaultNativeName() {
+        return asULocale().getDisplayName(asULocale());
+    }
+
+    public String retrieveDefaultDisplayName() {
         return asULocale().getDisplayName();
     }
 

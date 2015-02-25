@@ -1,17 +1,14 @@
 package org.zanata.ui.model.statistic;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
+ *
+ * TODO: make this class immutable
  */
 public class WordStatistic extends AbstractStatistic {
 
     private static final long serialVersionUID = -8807499518683834883L;
 
-    @Getter
-    @Setter
     private double remainingHours;
 
     public WordStatistic() {
@@ -23,7 +20,7 @@ public class WordStatistic extends AbstractStatistic {
         super(approved, needReview, untranslated, translated, rejected);
     }
 
-    public String toString() {
+    public synchronized String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(getClass().getName());
         sb.append("\ntranslated-" + getTranslated());
@@ -33,5 +30,13 @@ public class WordStatistic extends AbstractStatistic {
         sb.append("\nremainingHours-" + getRemainingHours());
 
         return sb.toString();
+    }
+
+    public synchronized double getRemainingHours() {
+        return remainingHours;
+    }
+
+    public synchronized void setRemainingHours(double remainingHours) {
+        this.remainingHours = remainingHours;
     }
 }

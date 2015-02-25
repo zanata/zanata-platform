@@ -29,7 +29,7 @@ import org.subethamail.wiser.WiserMessage;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
-import org.zanata.page.administration.ManageLanguageTeamMemberPage;
+import org.zanata.page.languages.LanguagePage;
 import org.zanata.util.HasEmailRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
@@ -54,18 +54,17 @@ public class JoinLanguageTeamTest extends ZanataTestCase {
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 181703)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void translatorJoinsLanguageTeam() throws Exception {
-        ManageLanguageTeamMemberPage manageTeamMemberPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToAdministration()
-                .goToManageLanguagePage()
-                .manageTeamMembersFor("pl")
-                .clickMoreActions()
+        LanguagePage languagePage = new LoginWorkFlow()
+                .signIn("admin", "admin").goToLanguages()
+                .gotoLanguagePage("pl")
+                .gotoMembersTab()
+                .clickMembersTabMoreActions()
                 .clickAddTeamMember()
                 .searchPersonAndAddToTeam("translator",
-                        ManageLanguageTeamMemberPage.TeamPermission.Translator,
-                        ManageLanguageTeamMemberPage.TeamPermission.Reviewer);
+                        LanguagePage.TeamPermission.Translator,
+                        LanguagePage.TeamPermission.Reviewer);
 
-        assertThat(manageTeamMemberPage.getMemberUsernames())
+        assertThat(languagePage.getMemberUsernames())
                 .contains("translator")
                 .as("Translator is a listed member of the pl team");
         assertThat(hasEmailRule.emailsArrivedWithinTimeout(1, 5,

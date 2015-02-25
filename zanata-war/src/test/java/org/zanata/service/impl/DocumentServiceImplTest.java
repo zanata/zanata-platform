@@ -46,6 +46,7 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.WebHook;
 import org.zanata.service.DocumentService;
+import org.zanata.service.TranslationStateCache;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.StatisticsUtil;
 
@@ -62,6 +63,9 @@ public class DocumentServiceImplTest {
 
     @Mock
     private DocumentDAO documentDAO;
+
+    @Mock
+    private TranslationStateCache translationStateCacheImpl;
 
     @Mock
     private Messages msgs;
@@ -82,7 +86,8 @@ public class DocumentServiceImplTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         documentService = new DocumentServiceImpl();
-        documentService.init(projectIterationDAO, documentDAO, msgs);
+        documentService.init(projectIterationDAO, documentDAO,
+            translationStateCacheImpl, msgs);
 
         HProjectIteration version = Mockito.mock(HProjectIteration.class);
         HProject project = Mockito.mock(HProject.class);
@@ -108,6 +113,8 @@ public class DocumentServiceImplTest {
         DocumentServiceImpl spyService = Mockito.spy(documentService);
 
         WordStatistic stats = new WordStatistic(0, 0, 0, 10, 0);
+        when(translationStateCacheImpl.getDocumentStatistics(docId, localeId))
+            .thenReturn(stats);
         runDocumentStatisticUpdatedTest(spyService, ContentState.New,
                 ContentState.Translated, stats);
 
@@ -128,6 +135,8 @@ public class DocumentServiceImplTest {
         DocumentServiceImpl spyService = Mockito.spy(documentService);
 
         WordStatistic stats = new WordStatistic(0, 1, 0, 9, 0);
+        when(translationStateCacheImpl.getDocumentStatistics(docId, localeId))
+            .thenReturn(stats);
         runDocumentStatisticUpdatedTest(spyService, ContentState.New,
                 ContentState.Translated, stats);
 
@@ -148,6 +157,8 @@ public class DocumentServiceImplTest {
         DocumentServiceImpl spyService = Mockito.spy(documentService);
 
         WordStatistic stats = new WordStatistic(10, 0, 0, 0, 0);
+        when(translationStateCacheImpl.getDocumentStatistics(docId, localeId))
+            .thenReturn(stats);
         runDocumentStatisticUpdatedTest(spyService, ContentState.Translated,
                 ContentState.Approved, stats);
 
@@ -167,6 +178,8 @@ public class DocumentServiceImplTest {
         DocumentServiceImpl spyService = Mockito.spy(documentService);
 
         WordStatistic stats = new WordStatistic(9, 0, 0, 1, 0);
+        when(translationStateCacheImpl.getDocumentStatistics(docId, localeId))
+            .thenReturn(stats);
         runDocumentStatisticUpdatedTest(spyService, ContentState.Translated,
                 ContentState.Approved, stats);
 
@@ -186,6 +199,8 @@ public class DocumentServiceImplTest {
     public void documentMilestoneEventSameStateTest1() {
         DocumentServiceImpl spyService = Mockito.spy(documentService);
         WordStatistic stats = new WordStatistic(10, 0, 0, 0, 0);
+        when(translationStateCacheImpl.getDocumentStatistics(docId, localeId))
+            .thenReturn(stats);
 
         runDocumentStatisticUpdatedTest(spyService, ContentState.Approved,
                 ContentState.Approved, stats);
@@ -206,8 +221,11 @@ public class DocumentServiceImplTest {
         DocumentServiceImpl spyService = Mockito.spy(documentService);
         WordStatistic stats = new WordStatistic(0, 0, 0, 10, 0);
 
+        when(translationStateCacheImpl.getDocumentStatistics(docId, localeId))
+            .thenReturn(stats);
+
         runDocumentStatisticUpdatedTest(spyService, ContentState.Translated,
-                ContentState.Translated, stats);
+            ContentState.Translated, stats);
 
         DocumentMilestoneEvent milestoneEvent =
                 new DocumentMilestoneEvent(projectSlug, versionSlug,
@@ -225,13 +243,10 @@ public class DocumentServiceImplTest {
             ContentState oldState, ContentState newState, WordStatistic stats) {
 
         int wordCount = 10;
-        WordStatistic oldStats = StatisticsUtil.copyWordStatistic(stats);
-        oldStats.decrement(newState, wordCount);
-        oldStats.increment(oldState, wordCount);
 
         DocumentStatisticUpdatedEvent event =
-                new DocumentStatisticUpdatedEvent(oldStats, stats, versionId,
-                        docId, localeId, oldState, newState);
+                new DocumentStatisticUpdatedEvent(versionId,
+                        docId, localeId, wordCount, oldState, newState);
 
         spyService.documentStatisticUpdated(event);
     }

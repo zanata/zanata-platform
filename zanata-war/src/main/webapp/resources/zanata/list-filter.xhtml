@@ -67,7 +67,7 @@
         onkeyup="filterList(this, #{cc.attrs.id}FilterList)"
         class="form--search__input js-reveal__target__input"/>
       <button class="button--link panel__search__cancel js-reveal__cancel"
-        onclick="#{cc.attrs.id}FilterList('')"
+        onclick="if(jQuery(#{cc.attrs.id}__input).val().length != 0) {#{cc.attrs.id}FilterList('')}"
         data-target="##{cc.attrs.id}">#{msgs['jsf.Cancel']}
       </button>
     </div>

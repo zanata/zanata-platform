@@ -25,6 +25,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.model.HAccount;
 import org.zanata.model.HAccountActivationKey;
 
 @Name("accountActivationKeyDAO")
@@ -39,6 +40,15 @@ public class AccountActivationKeyDAO extends
 
     public AccountActivationKeyDAO(Session session) {
         super(HAccountActivationKey.class, session);
+    }
+
+    public HAccountActivationKey findByAccountIdAndKeyHash(Long accountId, String keyHash) {
+        return (HAccountActivationKey) getSession()
+            .createQuery(
+                "from HAccountActivationKey key where key.account.id = :accountId and key.keyHash= :keyHash")
+            .setLong("accountId", accountId)
+            .setString("keyHash", keyHash)
+            .setComment("AccountDAO.getByUsernameAndEmail").uniqueResult();
     }
 
 }

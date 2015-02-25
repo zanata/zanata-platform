@@ -161,7 +161,7 @@ public class VersionDocumentsTab extends VersionBasePage {
     }
 
     public void expectSomeUploadItems() {
-        waitForAMoment().until(new NamedPredicate<WebDriver>("expectUploadItem") {
+        waitForAMoment().until(new NamedPredicate("expectUploadItem") {
             @Override
             public boolean apply(WebDriver input) {
                 return !getUploadListElements().isEmpty();
@@ -170,7 +170,8 @@ public class VersionDocumentsTab extends VersionBasePage {
     }
 
     private List<WebElement> getUploadListElements() {
-        List<WebElement>liElements = (List<WebElement>) getExecutor()
+        @SuppressWarnings("unchecked")
+        List<WebElement> liElements = (List<WebElement>) getExecutor()
                 .executeScript(
                         "return $('div.js-files-panel ul li')");
         return liElements;

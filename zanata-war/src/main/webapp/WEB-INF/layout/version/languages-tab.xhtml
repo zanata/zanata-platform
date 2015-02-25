@@ -21,7 +21,7 @@
 
   <a4j:jsFunction name="downloadZip"
     action="#{projectIterationZipFileAction.prepareIterationZipFile(versionHomeAction.poProject, versionHomeAction.projectSlug, versionHomeAction.versionSlug, versionHomeAction.selectedLocale.localeId)}"
-    render="download-progress"/>
+    render="download-progress" limitRender="true"/>
 
 <div class="panels--2">
 <div class="panels__panel panel">

@@ -138,11 +138,14 @@ public class CorePage extends AbstractPage {
         return getErrors();
     }
 
-    public String getNotificationMessage() {
-        log.info("Query notification message");
-        WebElement message = waitForElementExists(
-                By.cssSelector("#messages li"));
+    public String getNotificationMessage(By elementBy) {
+        log.info("Query notification message: " + elementBy);
+        WebElement message = waitForElementExists(elementBy);
         return message.getText();
+    }
+
+    public String getNotificationMessage() {
+        return getNotificationMessage(By.cssSelector("#messages li"));
     }
 
     public boolean expectNotification(final String notification) {
