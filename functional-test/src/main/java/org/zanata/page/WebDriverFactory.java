@@ -23,21 +23,29 @@ package org.zanata.page;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.os.CommandLine;
+import org.openqa.selenium.logging.LogEntries;
+import org.openqa.selenium.logging.LogEntry;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.Augmenter;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.util.PropertiesHolder;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
 import org.zanata.util.ScreenshotDirForTest;
 import org.zanata.util.TestEventForScreenshotListener;
@@ -56,18 +64,64 @@ public enum WebDriverFactory {
     private DriverService driverService;
     private TestEventForScreenshotListener eventListener;
     private int webdriverWait;
-
     public WebDriver getDriver() {
         return driver;
     }
 
-    public WebDriver createDriver() {
+    private WebDriver createDriver() {
         WebDriver driver = createPlainDriver();
         webdriverWait = Integer.parseInt(PropertiesHolder
                 .getProperty(webDriverWait.value()));
         driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
         return driver;
+    }
+
+    private String[] getLogTypes() {
+        return new String[]{
+                LogType.BROWSER,
+                // CLIENT doesn't seem to log anything
+//                LogType.CLIENT,
+                // useful, but verbose:
+//                LogType.DRIVER,
+//                LogType.PERFORMANCE,
+                // PROFILER and SERVER don't seem to work
+//                LogType.PROFILER,
+//                LogType.SERVER
+        };
+    }
+
+    public LogEntries getLogs(String type) {
+        JavascriptExecutor exec = (JavascriptExecutor) getDriver();
+        exec.executeScript("console.log('Hello');");
+        Logs logs = getDriver().manage().logs();
+        LogEntries logEntries = logs.get(type);
+        return logEntries;
+    }
+
+    public void logLogs(String type) {
+        String logName = WebDriverFactory.class.getName() + "." + type;
+        Logger log = LoggerFactory.getLogger(logName);
+        int logCount = 0;
+        for (LogEntry logEntry : getLogs(type)) {
+            ++logCount;
+            if (logEntry.getLevel().intValue() >= Level.SEVERE.intValue()) {
+                log.error(logEntry.toString());
+            } else if (logEntry.getLevel().intValue() >= Level.WARNING.intValue()) {
+                log.warn(logEntry.toString());
+            } else {
+                log.info(logEntry.toString());
+            }
+        }
+        if (logCount == 0) {
+            log.info("no messages found for LogType.{}", type);
+        }
+    }
+
+    public void logLogs() {
+        for (String type : getLogTypes()) {
+            logLogs(type);
+        }
     }
 
     public String getHostUrl() {
@@ -115,6 +169,8 @@ public enum WebDriverFactory {
         capabilities
                 .setCapability("chrome.binary", PropertiesHolder.properties
                         .getProperty("webdriver.chrome.bin"));
+        enableLogging(capabilities);
+
         try {
             driverService.start();
         } catch (IOException e) {
@@ -137,11 +193,22 @@ public enum WebDriverFactory {
         } else {
             firefoxBinary = new FirefoxBinary();
         }
+        DesiredCapabilities capabilities = DesiredCapabilities.firefox();
+        enableLogging(capabilities);
+
         /*
          * TODO: Evaluate current timeout Timeout the connection in 30 seconds
          * firefoxBinary.setTimeout(TimeUnit.SECONDS.toMillis(30));
          */
-        return new FirefoxDriver(firefoxBinary, makeFirefoxProfile());
+        return new FirefoxDriver(firefoxBinary, makeFirefoxProfile(), capabilities);
+    }
+
+    private void enableLogging(DesiredCapabilities capabilities) {
+        LoggingPreferences logs = new LoggingPreferences();
+        for (String type : getLogTypes()) {
+            logs.enable(type, Level.INFO);
+        }
+        capabilities.setCapability(CapabilityType.LOGGING_PREFS, logs);
     }
 
     private FirefoxProfile makeFirefoxProfile() {
