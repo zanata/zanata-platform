@@ -87,8 +87,8 @@ public class AjaxCounterBean {
         // http://127.0.0.1:8180/zanata/javax.faces.resource/signals.min.js.seam?ln=script
         String scriptUrl = httpRequest.getContextPath() + "/javax.faces.resource/finished.js.seam?ln=script";
         if (Boolean.getBoolean(propName)) {
-            return "<script defer type=\"application/javascript\" src=\"" +
-                    scriptUrl + "\"/>";
+            return "<script defer=\"defer\" type=\"application/javascript\" src=\"" +
+                    scriptUrl + "\"></script>";
         }
         return "";
     }
