@@ -568,7 +568,7 @@
                   <type>war</type>
                   <location>${project.basedir}/../zanata-test-war/target/${zanata.test.war.name}.war</location>
                   <pingURL>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</pingURL>
-                  <pingTimeout>300000</pingTimeout>
+                  <pingTimeout>600000</pingTimeout>
                   <properties>
                     <context>${context.path}</context>
                   </properties>

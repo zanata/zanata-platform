@@ -22,7 +22,10 @@ package org.zanata.action;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -68,7 +71,8 @@ public class AjaxCounterBean {
             "})(XMLHttpRequest);\n" +
             "</script>\n";
 
-    private static final String JAVASCRIPT_FINISHED_SCRIPT = "<script defer type=\"application/javascript\" src=\"javax.faces.resource/finished.js.seam?ln=script\"/>";
+    @In
+    private HttpServletRequest httpRequest;
 
     public String getAjaxCounterScript() {
         String propName = "zanata.countAjax";
@@ -80,8 +84,11 @@ public class AjaxCounterBean {
 
     public String getJavascriptFinishedScript() {
         String propName = "zanata.countAjax";
+        // http://127.0.0.1:8180/zanata/javax.faces.resource/signals.min.js.seam?ln=script
+        String scriptUrl = httpRequest.getContextPath() + "/javax.faces.resource/finished.js.seam?ln=script";
         if (Boolean.getBoolean(propName)) {
-            return JAVASCRIPT_FINISHED_SCRIPT;
+            return "<script defer type=\"application/javascript\" src=\"" +
+                    scriptUrl + "\"/>";
         }
         return "";
     }

@@ -108,6 +108,9 @@
   <web:redirect-filter disabled="true" />
   <!-- Messes up into-conversation-redirect and is not needed -->
 
+  <factory name="httpRequest"
+    value="#{facesContext.externalContext.request}"
+    auto-create="true"/>
   <factory name="session" value="#{entityManager.delegate}" scope="STATELESS"
     auto-create="true" />
 
