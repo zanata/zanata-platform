@@ -222,6 +222,8 @@ public class AbstractPage {
                             // if we get here, the old page is still there
                             return false;
                         } catch (StaleElementReferenceException e) {
+                            // http://www.obeythetestinggoat.com/how-to-get-selenium-to-wait-for-page-load-after-a-click.html
+                            //
                             // This exception means the new page has loaded
                             // (or started to).
                             String script = "return document.readyState === " +

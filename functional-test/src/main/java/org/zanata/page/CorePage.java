@@ -126,15 +126,6 @@ public class CorePage extends AbstractPage {
      */
     public List<String> expectErrors() {
         waitForPageSilence();
-        String msg = "an error message";
-        logWaiting(msg);
-//        waitForAMoment().withMessage(msg).until(new Predicate<WebDriver>() {
-//            @Override
-//            public boolean apply(WebDriver input) {
-//                List<String> errors = getErrors();
-//                return !errors.isEmpty();
-//            }
-//        });
         return getErrors();
     }
 

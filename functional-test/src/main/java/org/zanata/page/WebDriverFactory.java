@@ -91,14 +91,22 @@ public enum WebDriverFactory {
         };
     }
 
+    /**
+     * Retrieves all the outstanding WebDriver logs of the specified type.
+     * @param type a log type from org.openqa.selenium.logging.LogType
+     *             (but they don't all seem to work)
+     */
     public LogEntries getLogs(String type) {
-        JavascriptExecutor exec = (JavascriptExecutor) getDriver();
-        exec.executeScript("console.log('Hello');");
         Logs logs = getDriver().manage().logs();
         LogEntries logEntries = logs.get(type);
         return logEntries;
     }
 
+    /**
+     * Logs all the outstanding WebDriver logs of the specified type.
+     * @param type a log type from org.openqa.selenium.logging.LogType
+     *             (but they don't all seem to work)
+     */
     public void logLogs(String type) {
         String logName = WebDriverFactory.class.getName() + "." + type;
         Logger log = LoggerFactory.getLogger(logName);
