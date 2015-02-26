@@ -649,6 +649,12 @@
         <groupId>org.jboss.el</groupId>
         <artifactId>jboss-el</artifactId>
         <version>1.0_02.CR6</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.el</groupId>
+            <artifactId>el-api</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
@@ -1267,7 +1273,16 @@
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
             <version>1.1</version>
-            <scope>test</scope>
+            <exclusions>
+              <exclusion>
+                <groupId>javax.annotation</groupId>
+                <artifactId>jsr250-api</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>javax.el</groupId>
+                <artifactId>el-api</artifactId>
+              </exclusion>
+            </exclusions>
           </dependency>
           <dependency>
             <groupId>org.fusesource.jansi</groupId>
