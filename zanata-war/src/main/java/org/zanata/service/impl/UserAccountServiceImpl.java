@@ -23,16 +23,18 @@ package org.zanata.service.impl;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.dao.AccountDAO;
+import org.zanata.dao.AccountResetPasswordKeyDAO;
 import org.zanata.dao.RoleAssignmentRuleDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountResetPasswordKey;
@@ -56,26 +58,25 @@ public class UserAccountServiceImpl implements UserAccountService {
     private AccountDAO accountDAO;
 
     @In
+    private AccountResetPasswordKeyDAO accountResetPasswordKeyDAO;
+
+    @In
     private RoleAssignmentRuleDAO roleAssignmentRuleDAO;
 
     @Override
     public void clearPasswordResetRequests(HAccount account) {
-        // TODO This should be done in a DAO
         HAccountResetPasswordKey key =
-                (HAccountResetPasswordKey) session
-                        .createCriteria(HAccountResetPasswordKey.class)
-                        .add(Restrictions.eq("account", account))
-                        .uniqueResult();
-        if (key != null) {
-            session.delete(key);
-            session.flush();
+                accountResetPasswordKeyDAO.findByAccount(account.getId());
+        if(key != null) {
+            accountResetPasswordKeyDAO.makeTransient(key);
+            accountResetPasswordKeyDAO.flush();
         }
     }
 
     @Override
-    public HAccountResetPasswordKey requestPasswordReset(HAccount account) {
-        if (account == null || !account.isEnabled()
-                || account.getPerson() == null) {
+    public HAccountResetPasswordKey requestPasswordReset(
+            @Nonnull HAccount account) {
+        if (account.getPerson() == null) {
             return null;
         }
 
@@ -84,9 +85,11 @@ public class UserAccountServiceImpl implements UserAccountService {
         HAccountResetPasswordKey key = new HAccountResetPasswordKey();
         key.setAccount(account);
         key.setKeyHash(HashUtil.generateHash(account.getUsername()
-                + account.getPasswordHash() + account.getPerson().getEmail()
-                + account.getPerson().getName() + System.currentTimeMillis()));
-        session.persist(key);
+            + account.getPasswordHash() + account.getPerson().getEmail()
+            + account.getPerson().getName() + System.currentTimeMillis()));
+
+        account.setAccountResetPasswordKey(key);
+        accountResetPasswordKeyDAO.makePersistent(key);
 
         log.info("Sent password reset key to {} ({})", account.getPerson()
                 .getName(), account.getUsername());

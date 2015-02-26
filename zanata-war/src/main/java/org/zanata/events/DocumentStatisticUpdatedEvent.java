@@ -24,19 +24,17 @@ package org.zanata.events;
 import lombok.Value;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
-import org.zanata.ui.model.statistic.WordStatistic;
 
 @Value
 public final class DocumentStatisticUpdatedEvent {
     public static final String EVENT_NAME =
             "org.zanata.events.DocumentStatisticUpdatedEvent";
 
-    private final WordStatistic oldStats;
-    private final WordStatistic newStats;
-
     private final Long projectIterationId;
     private final Long documentId;
     private final LocaleId localeId;
+
+    private final int wordCount;
 
     private final ContentState previousState;
     private final ContentState newState;

@@ -33,6 +33,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.seam.ScopeType;
@@ -304,6 +305,14 @@ public class UserSettingsAction {
             return "";
         }
         return serverName.replace(".", "_");
+    }
+
+    /**
+     * return javascript safe message
+     */
+    public String getRegenerateAPiKeyMsg() {
+        String msg = msgs.get("jsf.apikey.ConfirmGenerate");
+        return StringEscapeUtils.escapeJavaScript(msg);
     }
 
     public void regenerateApiKey() {

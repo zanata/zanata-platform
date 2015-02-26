@@ -5,6 +5,8 @@ import java.io.Serializable;
 import javax.persistence.EntityManager;
 import javax.validation.constraints.Size;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
@@ -17,6 +19,7 @@ import org.jboss.seam.security.NotLoggedInException;
 import org.jboss.seam.security.RunAsOperation;
 import org.jboss.seam.security.management.IdentityManager;
 import org.zanata.exception.KeyNotFoundException;
+import org.zanata.i18n.Messages;
 import org.zanata.model.HAccountResetPasswordKey;
 import org.zanata.ui.faces.FacesMessages;
 
@@ -35,33 +38,28 @@ public class PasswordResetAction implements Serializable {
     @In("jsfMessages")
     private FacesMessages facesMessages;
 
+    @In
+    private Messages msgs;
+
+    @Getter
     private String activationKey;
 
-    private String password;
-    private String passwordConfirm;
-
-    private HAccountResetPasswordKey key;
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
+    @Getter
+    @Setter
     @NotEmpty
     @Size(min = 6, max = 20)
-    // @Pattern(regex="(?=^.{6,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$",
-    // message="Password is not secure enough!")
-            public
-            String getPassword() {
-        return password;
-    }
+    private String password;
+
+    @Getter
+    private String passwordConfirm;
+
+    @Getter
+    private HAccountResetPasswordKey key;
+
 
     public void setPasswordConfirm(String passwordConfirm) {
         this.passwordConfirm = passwordConfirm;
         validatePasswordsMatch();
-    }
-
-    public String getPasswordConfirm() {
-        return passwordConfirm;
     }
 
     public boolean validatePasswordsMatch() {
@@ -73,19 +71,11 @@ public class PasswordResetAction implements Serializable {
         return true;
     }
 
-    public String getActivationKey() {
-        return activationKey;
-    }
-
     public void setActivationKey(String activationKey) {
         this.activationKey = activationKey;
         key =
                 entityManager.find(HAccountResetPasswordKey.class,
                         getActivationKey());
-    }
-
-    private HAccountResetPasswordKey getKey() {
-        return key;
     }
 
     @Begin(join = true)
@@ -132,13 +122,11 @@ public class PasswordResetAction implements Serializable {
 
         if (passwordChanged) {
             facesMessages
-                    .addGlobal(
-                            "Your password has been successfully changed. Please sign in with your new password.");
+                    .addGlobal(msgs.get("jsf.password.change.success"));
             return "/account/login.xhtml";
         } else {
             facesMessages
-                    .addGlobal(
-                    "There was a problem changing the password. Please try again.");
+                    .addGlobal(msgs.get("jsf.password.change.failed"));
             return null;
         }
 

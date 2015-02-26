@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Red Hat, Inc. and individual contributors
+ * Copyright 2015, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,18 +18,24 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.events;
+package org.zanata.page.utility;
 
-import lombok.Value;
-import org.zanata.common.LocaleId;
+import com.google.common.base.Predicate;
+import org.openqa.selenium.WebDriver;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Value
-public class LanguageDisabled {
-    // TODO remove constant after switching to CDI
-    // NB must be a constant string equal to class name
-    public static final String EVENT_NAME = "org.zanata.events.LanguageDisabled";
-    LocaleId localeId;
+public abstract class NamedPredicate implements
+        Predicate<WebDriver> {
+    private final String name;
+
+    public NamedPredicate(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "predicate: " + name;
+    }
 }

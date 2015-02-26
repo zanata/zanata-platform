@@ -6,10 +6,6 @@
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
-  <a4j:jsFunction name="regenerateApiKey"
-    action="#{userSettingsAction.regenerateApiKey}"
-    render="apiKeyForm" status="client-loader"/>
-
   <h1>#{msgs['jsf.dashboard.settings.title']}</h1>
   <div class="tabs--vertical js-tabs">
     <ul class="tabs__nav js-tabs-nav">
@@ -273,6 +269,11 @@
           #{msgs['jsf.dashboard.settings.clientSettings.label']}
         </h2>
         <h:form id="apiKeyForm">
+          <a4j:jsFunction name="regenerateApiKey"
+            action="#{userSettingsAction.regenerateApiKey}"
+            render="apiKeyForm" status="client-loader"
+            limitRender="true"/>
+
           <p class="txt--meta">
             <h:outputText value="#{msgs['jsf.dashboard.settings.apiKeyNeeded.message']}"/>
             <a href="http://zanata.org/help/cli/cli-configuration/"
@@ -301,8 +302,15 @@
               </p>
             </s:fragment>
           </div>
+          <script>
+            function confirmGenerateApiKey() {
+              if (confirm("#{userSettingsAction.regenerateAPiKeyMsg}")) {
+                regenerateApiKey();
+              }
+            }
+          </script>
           <button id="generateKeyButton" class="button"
-            onclick="if (confirm('#{msgs['jsf.apikey.ConfirmGenerate']}')) {regenerateApiKey();} return false;">
+            onclick="confirmGenerateApiKey();return false;">
             #{msgs['jsf.dashboard.settings.generateNewApiKey.label']}
           </button>
           <div class="form__item l--push-top-1">

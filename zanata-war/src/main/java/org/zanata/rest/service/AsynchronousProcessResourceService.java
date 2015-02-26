@@ -161,7 +161,8 @@ public class AsynchronousProcessResourceService implements
             final String idNoSlash, final String projectSlug,
             final String iterationSlug, final LocaleId locale,
             final TranslationsResource translatedDoc,
-            final Set<String> extensions, final String merge) {
+            final Set<String> extensions, final String merge,
+            final boolean assignCreditToUploader) {
         // check security (cannot be on @Restrict as it refers to method
         // parameters)
         identity.checkPermission("modify-translation", this.localeServiceImpl
@@ -182,12 +183,11 @@ public class AsynchronousProcessResourceService implements
         final String id = URIHelper.convertFromDocumentURIId(idNoSlash);
         final MergeType finalMergeType = mergeType;
 
-        String name = "TranslatedDocCreationOrUpdate: "+projectSlug+"-"+iterationSlug+"-"+idNoSlash+"-"+locale;
         AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
         Serializable taskId = asyncTaskHandleManager.registerTaskHandle(handle);
         translationServiceImpl.translateAllInDocAsync(projectSlug,
                 iterationSlug, id, locale, translatedDoc, extensions,
-                finalMergeType, true, handle);
+                finalMergeType, assignCreditToUploader, true, handle);
 
         return this.getProcessStatus(taskId.toString());
     }

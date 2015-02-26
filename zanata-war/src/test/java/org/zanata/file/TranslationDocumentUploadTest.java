@@ -63,7 +63,7 @@ public class TranslationDocumentUploadTest extends DocumentUploadTest {
                 conf.uploadForm);
         response =
                 transUpload.tryUploadTranslationFile(conf.id, ANY_LOCALE,
-                        ANY_MERGETYPE, conf.uploadForm);
+                        ANY_MERGETYPE, false, conf.uploadForm);
         assertResponseHasStatus(NOT_ACCEPTABLE);
         assertResponseHasErrorMessage("Test message");
         assertUploadTerminated();

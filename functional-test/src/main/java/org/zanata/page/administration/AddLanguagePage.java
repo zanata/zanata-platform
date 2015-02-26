@@ -26,6 +26,8 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
+import org.zanata.page.languages.LanguagesPage;
+import org.zanata.util.Checkbox;
 import org.zanata.util.WebElementUtil;
 
 import java.util.HashMap;
@@ -84,19 +86,16 @@ public class AddLanguagePage extends BasePage {
         return new AddLanguagePage(getDriver());
     }
 
-    public AddLanguagePage enableLanguageByDefault() {
-        log.info("Click Enable by default");
-        if (!waitForWebElement(enabledByDefaultCheckbox).isSelected()) {
-            waitForWebElement(enabledByDefaultCheckbox).click();
-        }
-        return new AddLanguagePage(getDriver());
-    }
+    public AddLanguagePage enableLanguageByDefault(boolean enable) {
+        log.info("Click Enable by default to:" + enable);
+        Checkbox enabledByDefault = Checkbox.of(waitForWebElement(enabledByDefaultCheckbox));
 
-    public AddLanguagePage disableLanguageByDefault() {
-        log.info("Click Disable by default");
-        if (waitForWebElement(enabledByDefaultCheckbox).isSelected()) {
-            waitForWebElement(enabledByDefaultCheckbox).click();
+        if (enable) {
+            enabledByDefault.check();
+        } else {
+            enabledByDefault.uncheck();
         }
+
         return new AddLanguagePage(getDriver());
     }
 
@@ -125,9 +124,9 @@ public class AddLanguagePage extends BasePage {
         return map;
     }
 
-    public ManageLanguagePage saveLanguage() {
+    public LanguagesPage saveLanguage() {
         log.info("Click Save");
         clickAndCheckErrors(waitForWebElement(saveButton));
-        return new ManageLanguagePage(getDriver());
+        return new LanguagesPage(getDriver());
     }
 }

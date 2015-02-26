@@ -71,7 +71,7 @@ public class CopyTransTest {
         }
         restCaller.asyncPushSource(projectSlug, iterationSlug, sourceResource, false);
         restCaller.asyncPushTarget(projectSlug, iterationSlug, docId,
-                new LocaleId("pl"), transResource, "import");
+                new LocaleId("pl"), transResource, "import", false);
 
         assertThat(true, Matchers.is(true));
 
@@ -79,7 +79,7 @@ public class CopyTransTest {
         restCaller.createProjectAndVersion(projectSlug, "2", projectType);
         restCaller.asyncPushSource(projectSlug, "2", sourceResource, false);
         restCaller.asyncPushTarget(projectSlug, "2", docId, new LocaleId("pl"),
-                transResource, "import");
+                transResource, "import", false);
 
         // push to old version again
         restCaller.asyncPushSource(projectSlug, iterationSlug, sourceResource,
@@ -114,7 +114,7 @@ public class CopyTransTest {
                 false);
         LocaleId localeId = new LocaleId("pl");
         restCaller.asyncPushTarget(projectSlug, iterationSlug, docId,
-                localeId, transResource, "auto");
+                localeId, transResource, "auto", false);
         restCaller.runCopyTrans(projectSlug, iterationSlug, docId);
 
         assertThat(true, Matchers.is(true));
@@ -131,10 +131,10 @@ public class CopyTransTest {
 
         // push updated source (same resId different content)
         restCaller.asyncPushSource(projectSlug, iterationSlug, updatedSource, false);
-        restCaller.asyncPushTarget(projectSlug, iterationSlug, docId, localeId, updatedTransResource, "auto");
+        restCaller.asyncPushTarget(projectSlug, iterationSlug, docId, localeId, updatedTransResource, "auto", false);
 
         // push again
         restCaller.asyncPushSource(projectSlug, iterationSlug, updatedSource, false);
-        restCaller.asyncPushTarget(projectSlug, iterationSlug, docId, localeId, updatedTransResource, "auto");
+        restCaller.asyncPushTarget(projectSlug, iterationSlug, docId, localeId, updatedTransResource, "auto", false);
     }
 }

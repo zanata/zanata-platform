@@ -264,11 +264,14 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
             return response.build();
         }
 
+        //assignCreditToUploader is not supported from here
+        boolean assignCreditToUploader = false;
+
         // Translate
         List<String> warnings =
                 this.translationServiceImpl.translateAllInDoc(projectSlug,
                         iterationSlug, id, locale, messageBody, extensions,
-                        mergeType);
+                        mergeType, assignCreditToUploader);
 
         // Regenerate etag in case it has changed
         etag =

@@ -25,31 +25,23 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.google.common.collect.Lists;
-import lombok.Getter;
-
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.security.management.JpaIdentityStore;
-import org.zanata.dao.LocaleDAO;
-import org.zanata.events.LanguageDisabled;
-import org.zanata.events.LanguageEnabled;
-import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
-import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LanguageTeamService;
 import org.zanata.service.LocaleService;
 import org.zanata.ui.InMemoryListFilter;
-import org.zanata.util.Event;
 
-@Name("languageSearchAction")
+import com.google.common.collect.Lists;
+import lombok.Getter;
+
+@Name("languagesAction")
 @Scope(ScopeType.PAGE)
-public class LanguageSearchAction extends InMemoryListFilter<HLocale> implements
+public class LanguagesAction extends InMemoryListFilter<HLocale> implements
         Serializable {
     private static final long serialVersionUID = 1L;
     @In
@@ -59,20 +51,9 @@ public class LanguageSearchAction extends InMemoryListFilter<HLocale> implements
     private LanguageTeamService languageTeamServiceImpl;
 
     @In
-    private LocaleDAO localeDAO;
-
-    @In
     private ZanataIdentity identity;
 
     private List<HLocale> allLanguages;
-
-    @In("event")
-    private Event<LanguageEnabled> languageEnabledEvent;
-
-    @In("event")
-    private Event<LanguageDisabled> languageDisabledEvent;
-
-
 
     @Getter
     private SortingType LanguageSortingList = new SortingType(
@@ -82,38 +63,6 @@ public class LanguageSearchAction extends InMemoryListFilter<HLocale> implements
 
     private final LanguageComparator languageComparator =
             new LanguageComparator(getLanguageSortingList());
-
-    @Restrict("#{s:hasRole('admin')}")
-    public void enable(HLocale locale) {
-        locale.setActive(true);
-        localeDAO.makePersistent(locale);
-        localeDAO.flush();
-
-        languageEnabledEvent.fire(new LanguageEnabled(locale.getLocaleId()));
-    }
-
-    @Restrict("#{s:hasRole('admin')}")
-    public void disable(HLocale locale) {
-        locale.setActive(false);
-        localeDAO.makePersistent(locale);
-        localeDAO.flush();
-
-        languageDisabledEvent.fire(new LanguageDisabled(locale.getLocaleId()));
-    }
-
-    @Restrict("#{s:hasRole('admin')}")
-    public void enableByDefault(HLocale locale) {
-        locale.setEnabledByDefault(true);
-        localeDAO.makePersistent(locale);
-        localeDAO.flush();
-    }
-
-    @Restrict("#{s:hasRole('admin')}")
-    public void disableByDefault(HLocale locale) {
-        locale.setEnabledByDefault(false);
-        localeDAO.makePersistent(locale);
-        localeDAO.flush();
-    }
 
     public boolean isUserTeamMember(HLocale locale) {
         if(identity != null) {

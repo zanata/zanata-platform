@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class FileUploadDialog extends DialogBox {
     private final FileUpload upload;
     private final CheckBox merge;
+    private final CheckBox myTranslations;
     private final Button cancelButton;
     private final Button uploadButton;
     private final Image loadingIcon;
@@ -36,6 +37,7 @@ public class FileUploadDialog extends DialogBox {
     private final Hidden fileName;
     private final Hidden targetLocale;
     private final Hidden mergeTranslation;
+    private final Hidden assignCreditToUploader;
 
     public FileUploadDialog(Resources resources) {
         setText("File upload");
@@ -55,6 +57,9 @@ public class FileUploadDialog extends DialogBox {
         merge = new CheckBox("Merge?");
         merge.setValue(true);
 
+        myTranslations = new CheckBox("My translations?");
+        myTranslations.setValue(false);
+
         cancelButton = new Button("Cancel");
         uploadButton = new Button("Upload");
 
@@ -66,6 +71,7 @@ public class FileUploadDialog extends DialogBox {
 
         panel.add(new ListItemWidget(upload));
         panel.add(new ListItemWidget(merge));
+        panel.add(new ListItemWidget(myTranslations));
         panel.add(new ListItemWidget(buttonPanel));
 
         projectSlug = new Hidden("projectSlug");
@@ -74,6 +80,7 @@ public class FileUploadDialog extends DialogBox {
         fileName = new Hidden("fileName");
         targetLocale = new Hidden("targetLocale");
         mergeTranslation = new Hidden("merge");
+        assignCreditToUploader = new Hidden("assignCreditToUploader");
 
         panel.add(projectSlug);
         panel.add(versionSlug);
@@ -81,6 +88,7 @@ public class FileUploadDialog extends DialogBox {
         panel.add(fileName);
         panel.add(targetLocale);
         panel.add(mergeTranslation);
+        panel.add(assignCreditToUploader);
 
         // Because we're going to add a FileUpload widget, we'll need to set
         // the
@@ -122,6 +130,7 @@ public class FileUploadDialog extends DialogBox {
     public void submitForm() {
         fileName.setValue(getUploadFileName());
         mergeTranslation.setValue(merge.getValue().toString());
+        assignCreditToUploader.setValue(myTranslations.getValue().toString());
         loadingIcon.setVisible(true);
         form.submit();
     }

@@ -120,7 +120,7 @@ public class TranslationServiceImplJpaTest extends ZanataJpaTest {
         log.info("==== start translateAllInDoc");
         service.translateAllInDoc(projectSlug, versionSlug, document.getDocId(),
                 transLocale.getLocaleId(), translations,
-                extensions, MergeType.AUTO);
+                extensions, MergeType.AUTO, false);
         log.info("==== stop translateAllInDoc: {}", mon.stop());
         getEm().getTransaction().commit();
         getEm().getTransaction().begin();

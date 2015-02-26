@@ -83,7 +83,7 @@ import org.zanata.util.VersionUtility;
 @Slf4j
 public class ZanataInit {
     private static final DefaultArtifactVersion MIN_EAP_VERSION =
-            new DefaultArtifactVersion("6.3.2");
+            new DefaultArtifactVersion("6.3.3");
     private static final DefaultArtifactVersion MIN_WILDFLY_VERSION =
             new DefaultArtifactVersion("8.1.0");
 

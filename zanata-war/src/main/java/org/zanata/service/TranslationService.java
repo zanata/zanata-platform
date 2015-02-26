@@ -91,6 +91,9 @@ public interface TranslationService {
      *            Indicates how to handle the translations. AUTO will merge the
      *            new translations with the provided ones. IMPORT will overwrite
      *            all existing translations with the new ones.
+     * @param assignCreditToUploader
+     *           The translator field for all uploaded translations will be
+     *           set to the user who performs the upload.
      * @param lock
      *            If true, no other caller will be allowed to translate All for
      *            the same project, iteration, document and locale.
@@ -102,7 +105,7 @@ public interface TranslationService {
     public Future<List<String>> translateAllInDocAsync(String projectSlug,
             String iterationSlug, String docId, LocaleId locale,
             TranslationsResource translations, Set<String> extensions,
-            MergeType mergeType, boolean lock,
+            MergeType mergeType, boolean assignCreditToUploader, boolean lock,
             AsyncTaskHandle handle);
 
     /**
@@ -124,17 +127,22 @@ public interface TranslationService {
      *            Indicates how to handle the translations. AUTO will merge the
      *            new translations with the provided ones. IMPORT will overwrite
      *            all existing translations with the new ones.
+     * @param assignCreditToUploader
+     *           The translator field for all uploaded translations will be
+     *           set to the user who performs the upload.
      * @return A list of warnings about text flow targets that (a) could not be
      *         matched to any text flows in the source document or (b) whose
      *         states don't match their contents.
      */
     List<String> translateAllInDoc(String projectSlug, String iterationSlug,
             String docId, LocaleId locale, TranslationsResource translations,
-            Set<String> extensions, MergeType mergeType, AsyncTaskHandle handle);
+            Set<String> extensions, MergeType mergeType,
+            boolean assignCreditToUploader, AsyncTaskHandle handle);
 
     List<String> translateAllInDoc(String projectSlug, String iterationSlug,
             String docId, LocaleId locale, TranslationsResource translations,
-            Set<String> extensions, MergeType mergeType);
+            Set<String> extensions, MergeType mergeType,
+            boolean assignCreditToUploader);
 
     public interface TranslationResult {
         boolean isTranslationSuccessful();

@@ -78,7 +78,6 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.service.ActivityService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.LockManagerService;
 import org.zanata.service.TranslationMergeService;
@@ -508,7 +507,7 @@ public class TranslationServiceImpl implements TranslationService {
     Future<List<String>> translateAllInDocAsync(String projectSlug,
             String iterationSlug, String docId, LocaleId locale,
             TranslationsResource translations, Set<String> extensions,
-            MergeType mergeType, boolean lock,
+            MergeType mergeType, boolean assignCreditToUploader, boolean lock,
             AsyncTaskHandle handle) {
         // Lock this document for push
         Lock transLock = null;
@@ -522,7 +521,8 @@ public class TranslationServiceImpl implements TranslationService {
         try {
             messages =
                     this.translateAllInDoc(projectSlug, iterationSlug, docId,
-                            locale, translations, extensions, mergeType, handle);
+                            locale, translations, extensions, mergeType,
+                            assignCreditToUploader, handle);
         } finally {
             if (lock) {
                 lockManagerServiceImpl.release(transLock);
@@ -570,9 +570,11 @@ public class TranslationServiceImpl implements TranslationService {
     public List<String> translateAllInDoc(final String projectSlug,
             final String iterationSlug, final String docId,
             final LocaleId locale, final TranslationsResource translations,
-            final Set<String> extensions, final MergeType mergeType) {
+            final Set<String> extensions, final MergeType mergeType,
+            final boolean assignCreditToUploader) {
         return translateAllInDoc(projectSlug, iterationSlug, docId, locale,
-                translations, extensions, mergeType, null);
+                translations, extensions, mergeType, assignCreditToUploader,
+                null);
     }
 
     @Override
@@ -580,7 +582,7 @@ public class TranslationServiceImpl implements TranslationService {
             final String iterationSlug, final String docId,
             final LocaleId locale, final TranslationsResource translations,
             final Set<String> extensions, final MergeType mergeType,
-            AsyncTaskHandle handle) {
+            final boolean assignCreditToUploader, AsyncTaskHandle handle) {
         final HProjectIteration hProjectIteration =
                 projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 
@@ -667,6 +669,7 @@ public class TranslationServiceImpl implements TranslationService {
                 work.setHandleOp(handleOp);
                 work.setProjectIterationId(hProjectIteration.getId());
                 work.setBatch(batch);
+                work.setAssignCreditToUploader(assignCreditToUploader);
                 changed |= work.workInTransaction();
             } catch (Exception e) {
                 throw new ZanataServiceException("Error during translation.",
@@ -732,6 +735,7 @@ public class TranslationServiceImpl implements TranslationService {
         private Optional<AsyncTaskHandle> handleOp;
         private Long projectIterationId;
         private List<TextFlowTarget> batch;
+        private boolean assignCreditToUploader;
 
         @Override
         protected Boolean work() throws Exception {
@@ -828,17 +832,8 @@ public class TranslationServiceImpl implements TranslationService {
 
                         changed = true;
                         Long actorId;
-                        if (incomingTarget.getTranslator() != null) {
-                            String email =
-                                    incomingTarget.getTranslator().getEmail();
-                            HPerson hPerson = personDAO.findByEmail(email);
-                            if (hPerson == null) {
-                                hPerson = new HPerson();
-                                hPerson.setEmail(email);
-                                hPerson.setName(incomingTarget.getTranslator()
-                                        .getName());
-                                personDAO.makePersistent(hPerson);
-                            }
+                        if(assignCreditToUploader){
+                            HPerson hPerson = authenticatedAccount.getPerson();
                             hTarget.setTranslator(hPerson);
                             hTarget.setLastModifiedBy(hPerson);
                             actorId = hPerson.getId();

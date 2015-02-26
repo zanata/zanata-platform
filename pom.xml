@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>21-SNAPSHOT</version>
+    <version>21</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -33,7 +33,7 @@
     <gwteventservice.version>1.2.1</gwteventservice.version>
     <okapi.version>0.22</okapi.version>
 
-    <zanata.api.version>3.6.0-SNAPSHOT</zanata.api.version>
+    <zanata.api.version>3.7.0-SNAPSHOT</zanata.api.version>
     <!-- This should always be the previous version of the used api version above (but only 3.0.1 or later will work) -->
     <zanata.api.compat.version>3.3.1</zanata.api.compat.version>
     <zanata.client.version>3.3.1</zanata.client.version>
@@ -75,6 +75,8 @@
     <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
     <!-- This URL must be set by a profile (wildfly), settings.xml or mvn command line -->
     <!-- <cargo.installation></cargo.installation> -->
+
+    <download.dir>${user.home}/Downloads</download.dir>
 
   </properties>
 
@@ -999,7 +1001,7 @@
               <!--if install from url-->
               <zipUrlInstaller>
                 <url>${cargo.installation}</url>
-                <downloadDir>${user.home}/Downloads</downloadDir>
+                <downloadDir>${download.dir}</downloadDir>
                 <extractDir>${cargo.extract.dir}</extractDir>
               </zipUrlInstaller>
             </container>
@@ -1216,7 +1218,6 @@
         <mojarra.module.name>wildfly-${module.wildfly.version}-module-mojarra-${mojarra.module.version}.zip</mojarra.module.name>
         <hibernate.module.version>4.2.15.Final</hibernate.module.version>
         <hibernate.module.name>wildfly-${module.wildfly.version}-module-hibernate-main-${hibernate.module.version}.zip</hibernate.module.name>
-        <module.download.dir>${project.build.directory}/downloads</module.download.dir>
       </properties>
 
       <build>
@@ -1236,21 +1237,20 @@
                 </goals>
                 <configuration>
                   <target unless="skipITs">
-                    <!-- TODO put these zips under ${user.home}/Downloads too -->
-                    <mkdir dir="${module.download.dir}" />
+                    <mkdir dir="${download.dir}" />
                     <get
                       src="http://sourceforge.net/projects/zanata/files/wildfly/${mojarra.module.name}/download"
-                      dest="${module.download.dir}/${mojarra.module.name}"
-                      usetimestamp="true" />
+                      dest="${download.dir}/${mojarra.module.name}"
+                      skipexisting="true" />
                     <get
                       src="http://sourceforge.net/projects/zanata/files/wildfly/${hibernate.module.name}/download"
-                      dest="${module.download.dir}/${hibernate.module.name}"
-                      usetimestamp="true" />
+                      dest="${download.dir}/${hibernate.module.name}"
+                      skipexisting="true" />
                     <unzip
-                      src="${module.download.dir}/${mojarra.module.name}"
+                      src="${download.dir}/${mojarra.module.name}"
                       dest="${appserver.home}" />
                     <unzip
-                      src="${module.download.dir}/${hibernate.module.name}"
+                      src="${download.dir}/${hibernate.module.name}"
                       dest="${appserver.home}" />
                   </target>
                 </configuration>

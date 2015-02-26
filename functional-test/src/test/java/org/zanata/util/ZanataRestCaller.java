@@ -285,13 +285,14 @@ public class ZanataRestCaller {
 
     public void asyncPushTarget(String projectSlug, String iterationSlug,
             String docId, LocaleId localeId, TranslationsResource transResource,
-            String mergeType) {
+            String mergeType, boolean assignCreditToUploader) {
         IAsynchronousProcessResource resource =
                 zanataProxyFactory.getAsynchronousProcessResource();
         ProcessStatus processStatus =
                 resource.startTranslatedDocCreationOrUpdate(docId, projectSlug,
                         iterationSlug, localeId, transResource,
-                        Collections.<String>emptySet(), mergeType);
+                        Collections.<String>emptySet(), mergeType,
+                        assignCreditToUploader);
         processStatus = waitUntilFinished(resource, processStatus);
         log.info("finished async translation({}-{}) push: {}", projectSlug,
                 iterationSlug, processStatus.getStatusCode());
