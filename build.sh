@@ -2,4 +2,4 @@
 
 set -a # make sure the env vars are exported
 source <(etc/scripts/allocate-jboss-ports)
-exec mvn "$@"
+exec xvfb-run -a mvn "$@"

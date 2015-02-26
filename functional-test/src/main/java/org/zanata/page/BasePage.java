@@ -232,14 +232,12 @@ public class BasePage extends CorePage {
      * @param locator
      */
     public void clickLinkAfterAnimation(By locator) {
-        JavascriptExecutor executor = (JavascriptExecutor) getDriver();
-        executor.executeScript("arguments[0].click();", getDriver()
+        getExecutor().executeScript("arguments[0].click();", getDriver()
                 .findElement(locator));
     }
 
     public void clickLinkAfterAnimation(WebElement element) {
-        JavascriptExecutor executor = (JavascriptExecutor) getDriver();
-        executor.executeScript("arguments[0].click();", element);
+        getExecutor().executeScript("arguments[0].click();", element);
     }
 
     public HelpPage goToHelp() {
@@ -331,7 +329,7 @@ public class BasePage extends CorePage {
     }
 
     public String getHtmlSource(WebElement webElement) {
-        return (String) ((JavascriptExecutor) getDriver()).executeScript(
+        return (String) getExecutor().executeScript(
                 "return arguments[0].innerHTML;", webElement);
     }
 

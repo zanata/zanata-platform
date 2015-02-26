@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.BasePage;
+import org.zanata.page.utility.HomePage;
 
 /**
  * @author Damian Jansen <a
@@ -55,18 +56,27 @@ public class ResetPasswordPage extends BasePage {
     public ResetPasswordPage clearFields() {
         log.info("Clear fields");
         waitForWebElement(usernameField).clear();
+        defocus(usernameField);
         waitForWebElement(emailField).clear();
+        defocus(emailField);
+        waitForPageSilence();
         return new ResetPasswordPage(getDriver());
     }
 
-    public ResetPasswordPage resetPassword() {
+    public HomePage resetPassword() {
         log.info("Click Submit");
+        defocus(usernameField);
+        defocus(emailField);
+        waitForPageSilence();
         waitForWebElement(submitButton).click();
-        return new ResetPasswordPage(getDriver());
+        return new HomePage(getDriver());
     }
 
     public ResetPasswordPage resetFailure() {
         log.info("Click Submit");
+        defocus(usernameField);
+        defocus(emailField);
+        waitForPageSilence();
         waitForWebElement(submitButton).click();
         return new ResetPasswordPage(getDriver());
     }

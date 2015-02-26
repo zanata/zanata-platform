@@ -132,8 +132,7 @@ public class RegisterTest extends ZanataTestCase {
                 .enterUserName("admin");
         registerPage.defocus(registerPage.usernameField);
 
-        assertThat(registerPage.expectError(
-                    RegisterPage.USERNAME_UNAVAILABLE_ERROR))
+        assertThat(registerPage.expectErrors())
                 .contains(RegisterPage.USERNAME_UNAVAILABLE_ERROR)
                 .as("Username not available message is shown");
     }

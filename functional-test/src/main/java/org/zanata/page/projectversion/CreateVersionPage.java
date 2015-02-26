@@ -77,8 +77,7 @@ public class CreateVersionPage extends BasePage {
     }
 
     private void clickCopyFromCheckbox() {
-        ((JavascriptExecutor) getDriver())
-                .executeScript("arguments[0].click();",
+        getExecutor().executeScript("arguments[0].click();",
                 waitForWebElement(copyFromPreviousVersionChk)
                         .findElement(By.tagName("span")));
 

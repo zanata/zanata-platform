@@ -89,7 +89,7 @@ public class VersionDocumentsTab extends VersionBasePage {
     public VersionDocumentsTab enterFilePath(String filePath) {
         log.info("Enter file path {}", filePath);
         // Make the hidden input element slightly not hidden
-        ((JavascriptExecutor) getDriver())
+        getExecutor()
                 .executeScript("arguments[0].style.visibility = 'visible'; " +
                         "arguments[0].style.height = '1px'; " +
                         "arguments[0].style.width = '1px'; " +

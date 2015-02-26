@@ -30,7 +30,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.testharness.ZanataTestCase;
-import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projectversion.VersionDocumentsPage;
 import org.zanata.page.projectversion.versionsettings.VersionDocumentsTab;
@@ -88,42 +87,6 @@ public class MultiFileUploadTest extends ZanataTestCase {
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Category(BasicAcceptanceTest.class)
-    public void uploadedDocumentsAreInFilesystem() {
-        File firstFile = testFileGenerator.generateTestFileWithContent(
-                "multiuploadInFilesystem", ".txt",
-                "This is a test file");
-        File secondFile = testFileGenerator.generateTestFileWithContent(
-                "multiuploadInFilesystem2", ".txt",
-                "This is another test file");
-        String testFileName = firstFile.getName();
-
-        VersionDocumentsTab versionDocumentsTab = new ProjectWorkFlow()
-                .goToProjectByName("multi-upload")
-                .gotoVersion("multi-upload")
-                .gotoSettingsTab()
-                .gotoSettingsDocumentsTab()
-                .pressUploadFileButton()
-                .enterFilePath(firstFile.getAbsolutePath())
-                .enterFilePath(secondFile.getAbsolutePath())
-                .submitUpload()
-                .clickUploadDone();
-
-        assertThat(new File(documentStorageDirectory).list().length)
-                .isEqualTo(2)
-                .as("There are two uploaded source files");
-
-        VersionDocumentsPage versionDocumentsPage = versionDocumentsTab
-                .gotoDocumentTab()
-                .waitForSourceDocsContains(testFileName);
-
-        assertThat(versionDocumentsPage.getSourceDocumentNames())
-                .contains(firstFile.getName())
-                .contains(secondFile.getName())
-                .as("The documents were uploaded");
-    }
-
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void removeFileFromUploadList() {
         File keptUploadFile = testFileGenerator.generateTestFileWithContent(
                 "removeFileFromUploadList", ".txt", "Remove File Upload Test");
@@ -163,4 +126,5 @@ public class MultiFileUploadTest extends ZanataTestCase {
                 .doesNotContain("fakefile.txt")
                 .as("Only the intended file was uploaded");
     }
+
 }

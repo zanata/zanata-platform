@@ -21,9 +21,7 @@
 package org.zanata.util;
 
 import org.junit.rules.ExternalResource;
-import org.zanata.common.LocaleId;
 import com.google.common.base.Throwables;
-import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 
 import static org.zanata.util.SampleDataResourceClient.deleteExceptEssentialData;
@@ -38,6 +36,8 @@ import static org.zanata.util.SampleDataResourceClient.userJoinsLanguageTeam;
 @Slf4j
 public class AddUsersRule extends ExternalResource {
 
+    public static final int MAX_ERRORS = 3;
+
     @Override
     protected void before() throws Exception {
         deleteExceptEssentialData();
@@ -48,10 +48,18 @@ public class AddUsersRule extends ExternalResource {
 
     @Override
     protected void after() {
-        try {
-            deleteExceptEssentialData();
-        } catch (Exception e) {
-            throw Throwables.propagate(e);
+        for (int i = 0; ; i++) {
+            try {
+                deleteExceptEssentialData();
+                break;
+            } catch (Exception e) {
+                if (i >= MAX_ERRORS) {
+                    throw Throwables.propagate(e);
+                } else {
+//                    log.warn("exception cleaning up (enable DEBUG for stack trace)", e.toString());
+                    log.warn("exception cleaning up", e);
+                }
+            }
         }
     }
 }

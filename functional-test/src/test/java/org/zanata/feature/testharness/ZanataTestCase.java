@@ -30,7 +30,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
-import org.zanata.util.RetryRule;
+import org.zanata.page.WebDriverFactory;
 
 /**
  * Global application of rules to Zanata functional tests
@@ -83,5 +83,7 @@ public class ZanataTestCase {
                 .appendSuffix("ms")
                 .toFormatter();
         log.info(periodFormatter.print(duration.toPeriod()));
+        WebDriverFactory.INSTANCE.logLogs();
     }
+
 }

@@ -120,32 +120,23 @@ public class CorePage extends AbstractPage {
     }
 
     /**
-     * Wait until an expected error is visible
+     * Wait until at least one error is visible
      *
-     * @param expected The expected error string
      * @return The full list of visible errors
      */
-    public List<String> expectError(final String expected) {
-        String msg = "expected error: " + expected;
-        logWaiting(msg);
-        waitForAMoment().withMessage(msg).until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getErrors().contains(expected);
-            }
-        });
+    public List<String> expectErrors() {
+        waitForPageSilence();
         return getErrors();
     }
 
     public String getNotificationMessage(By elementBy) {
-        log.info("Query notification message");
-        List<WebElement> messages = waitForElementExists(elementBy)
-            .findElements(By.tagName("li"));
-        return messages.size() > 0 ? messages.get(0).getText() : "";
+        log.info("Query notification message: " + elementBy);
+        WebElement message = waitForElementExists(elementBy);
+        return message.getText();
     }
 
     public String getNotificationMessage() {
-        return getNotificationMessage(By.id("messages"));
+        return getNotificationMessage(By.cssSelector("#messages li"));
     }
 
     public boolean expectNotification(final String notification) {
@@ -206,7 +197,7 @@ public class CorePage extends AbstractPage {
     public void defocus(By elementBy) {
         log.info("Force unfocus");
         WebElement element = getDriver().findElement(elementBy);
-        ((JavascriptExecutor) getDriver()).executeScript("arguments[0].blur()", element);
+        getExecutor().executeScript("arguments[0].blur()", element);
     }
 
     /* The system sometimes moves too fast for the Ajax pages, so provide a
@@ -221,11 +212,11 @@ public class CorePage extends AbstractPage {
     }
 
     public void scrollIntoView(WebElement targetElement) {
-        ((JavascriptExecutor) getDriver()).executeScript(
+        getExecutor().executeScript(
                 "arguments[0].scrollIntoView(true);", targetElement);
     }
 
     public void scrollToTop() {
-        ((JavascriptExecutor) getDriver()).executeScript("scroll(0, 0);");
+        getExecutor().executeScript("scroll(0, 0);");
     }
 }
