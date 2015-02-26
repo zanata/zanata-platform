@@ -80,10 +80,11 @@
     </div>
 
     <ui:include src="scripts.xhtml"/>
-    <ui:remove>
-      <!-- This needs to appear after all other JavaScript, for accurate testing -->
-    </ui:remove>
   </h:body>
+  <ui:remove>
+    <!-- The javascriptFinished script needs to appear after all other
+            JavaScript, for accurate testing: -->
+  </ui:remove>
   <h:outputText value="#{ajaxCounter.javascriptFinishedScript}" escape="false" />
   </html>
 </f:view>

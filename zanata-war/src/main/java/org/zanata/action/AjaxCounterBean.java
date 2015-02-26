@@ -84,11 +84,11 @@ public class AjaxCounterBean {
 
     public String getJavascriptFinishedScript() {
         String propName = "zanata.countAjax";
-        // http://127.0.0.1:8180/zanata/javax.faces.resource/signals.min.js.seam?ln=script
-        String scriptUrl = httpRequest.getContextPath() + "/javax.faces.resource/finished.js.seam?ln=script";
+        String scriptUrl = httpRequest.getContextPath() +
+                "/javax.faces.resource/test/finished.js.seam?ln=script";
         if (Boolean.getBoolean(propName)) {
-            return "<script defer=\"defer\" type=\"application/javascript\" src=\"" +
-                    scriptUrl + "\"></script>";
+            return "<script defer=\"defer\" type=\"application/javascript\" " +
+                    "src=\"" + scriptUrl + "\"></script>";
         }
         return "";
     }
