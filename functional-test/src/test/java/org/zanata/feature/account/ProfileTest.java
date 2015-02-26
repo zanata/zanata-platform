@@ -129,8 +129,7 @@ public class ProfileTest extends ZanataTestCase {
                 .typeNewAccountEmailAddress("admin@example.com")
                 .clickUpdateEmailButton();
 
-        assertThat(dashboardAccountTab.expectError(
-                    DashboardAccountTab.EMAIL_TAKEN_ERROR))
+        assertThat(dashboardAccountTab.expectErrors())
                 .contains(DashboardAccountTab.EMAIL_TAKEN_ERROR)
                 .as("The email is rejected, being already taken");
 
@@ -141,8 +140,7 @@ public class ProfileTest extends ZanataTestCase {
                 .typeNewAccountEmailAddress("test @example.com")
                 .clickUpdateEmailButton();
 
-        assertThat(dashboardAccountTab.expectError(
-                    RegisterPage.MALFORMED_EMAIL_ERROR))
+        assertThat(dashboardAccountTab.expectErrors())
                 .contains(RegisterPage.MALFORMED_EMAIL_ERROR)
                 .as("The email is rejected, being of invalid format");
     }

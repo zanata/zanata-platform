@@ -22,7 +22,10 @@ package org.zanata.action;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -52,13 +55,40 @@ public class AjaxCounterBean {
             "        };\n" +
             "        this._send.apply(this, arguments);\n" +
             "    }\n" +
+            "    window.timeoutCounter = 0;\n" +
+            "    window.originalSetTimeout = window.setTimeout;\n" +
+            "    window.setTimeout = function(func, delay, params) {\n" +
+            "        window.timeoutCounter++;\n" +
+            "        window.originalSetTimeout(window.timeoutCallback, delay, [func, params]);\n" +
+            "    }\n" +
+            "    window.timeoutCallback = function(funcAndParams) {\n" +
+            "        window.timeoutCounter--;\n" +
+            "        func = funcAndParams[0];\n" +
+            "        params = funcAndParams[1];\n" +
+            "        func(params);\n" +
+            "    }\n" +
             "  }\n" +
-            "})(XMLHttpRequest)" +
+            "})(XMLHttpRequest);\n" +
             "</script>\n";
+
+    @In
+    private HttpServletRequest httpRequest;
+
     public String getAjaxCounterScript() {
         String propName = "zanata.countAjax";
         if (Boolean.getBoolean(propName)) {
             return AJAX_COUNTER_SCRIPT;
+        }
+        return "";
+    }
+
+    public String getJavascriptFinishedScript() {
+        String propName = "zanata.countAjax";
+        String scriptUrl = httpRequest.getContextPath() +
+                "/javax.faces.resource/test/finished.js.seam?ln=script";
+        if (Boolean.getBoolean(propName)) {
+            return "<script defer=\"defer\" type=\"application/javascript\" " +
+                    "src=\"" + scriptUrl + "\"></script>";
         }
         return "";
     }

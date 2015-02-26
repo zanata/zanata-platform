@@ -86,6 +86,10 @@ public class AbstractPage {
         log.info("Waiting for {}", msg);
     }
 
+    protected void logFinished(String msg) {
+        log.debug("Finished {}", msg);
+    }
+
     public FluentWait<WebDriver> waitForAMoment() {
         return WebElementUtil.waitForAMoment(driver);
     }
@@ -202,32 +206,91 @@ public class AbstractPage {
         return 0;
     }
 
+
+    public void execAndWaitForNewPage(Runnable runnable) {
+        final WebElement oldPage = driver.findElement(By.tagName("html"));
+        runnable.run();
+        String msg = "new page load";
+        logWaiting(msg);
+        waitForAMoment().withMessage(msg).until(
+                new Predicate<WebDriver>() {
+                    @Override
+                    public boolean apply(WebDriver input) {
+                        try {
+                            // ignore result
+                            oldPage.getAttribute("class");
+                            // if we get here, the old page is still there
+                            return false;
+                        } catch (StaleElementReferenceException e) {
+                            // http://www.obeythetestinggoat.com/how-to-get-selenium-to-wait-for-page-load-after-a-click.html
+                            //
+                            // This exception means the new page has loaded
+                            // (or started to).
+                            String script = "return document.readyState === " +
+                                    "'complete' && window.javascriptFinished";
+                            Boolean documentComplete =
+                                    (Boolean) getExecutor().executeScript(
+                                            script);
+                            // TODO wait for ajax?
+                            // NB documentComplete might be null/undefined
+                            return documentComplete == Boolean.TRUE;
+                        }
+                    }
+                });
+        logFinished(msg);
+    }
+
     /**
-     * Wait for any AJAX calls to return.
+     * Wait for any AJAX and timeout requests to return.
+     */
+    public void waitForAbsolutePageSilence() {
+        waitForPageSilence(true);
+    }
+
+    /**
+     * Wait for any AJAX (but not timeout) requests to return.
      */
     public void waitForPageSilence() {
-        // Wait for AJAX calls to be 0
+        waitForPageSilence(false);
+    }
+
+    /**
+     * Wait for any AJAX/timeout requests to return.
+     */
+    private void waitForPageSilence(boolean includingTimeouts) {
+        final String script;
+        if (includingTimeouts) {
+            script = "return XMLHttpRequest.active + window.timeoutCounter";
+        } else {
+            script = "return XMLHttpRequest.active";
+        }
+        // Wait for AJAX/timeout requests to be 0
         waitForAMoment().withMessage("page silence").until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                Long ajaxCalls = (Long) ((JavascriptExecutor) getDriver())
-                        .executeScript(
-                                "return XMLHttpRequest.active");
-                if (ajaxCalls == null) {
+                Long outstanding = (Long) getExecutor().executeScript(script);
+                if (outstanding == null) {
                     if (log.isWarnEnabled()) {
                         String url = getDriver().getCurrentUrl();
                         String pageSource = ShortString.shorten(getDriver().getPageSource(), 2000);
-                        log.warn("XMLHttpRequest.active is null.  URL: {}\nPartial page source follows:\n{}", url, pageSource);
+                        log.warn("XMLHttpRequest.active is null. Is AjaxCounterBean missing? URL: {}\nPartial page source follows:\n{}", url, pageSource);
                     }
                     return true;
                 }
-                if (ajaxCalls < 0) {
+                if (outstanding < 0) {
                     throw new RuntimeException("XMLHttpRequest.active " +
+                            "and/or window.timeoutCounter " +
                             "is negative.  Please ensure that " +
                             "AjaxCounterBean's script is run before " +
-                            "any AJAX requests.");
+                            "any other JavaScript in the page.");
                 }
-                return ajaxCalls <= getExpectedBackgroundRequests();
+                int expected = getExpectedBackgroundRequests();
+                if (outstanding < expected) {
+                    log.warn("Expected at least {} background requests, but actual count is {}", expected, outstanding, new Throwable());
+                } else {
+                    log.debug("Waiting: outstanding = {}, expected = {}", outstanding, expected);
+                }
+                return outstanding <= expected;
             }
         });
     }

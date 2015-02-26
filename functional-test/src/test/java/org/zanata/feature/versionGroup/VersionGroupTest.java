@@ -26,12 +26,10 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.openqa.selenium.By;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
-import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.page.groups.VersionGroupPage;
 import org.zanata.page.groups.VersionGroupsPage;
@@ -219,8 +217,7 @@ public class VersionGroupTest extends ZanataTestCase {
         groupPage.defocus(groupPage.groupNameField);
         groupPage.saveGroupFailure();
 
-        assertThat(groupPage.expectError(
-                    CreateVersionGroupPage.VALIDATION_ERROR))
+        assertThat(groupPage.expectErrors())
                 .contains(CreateVersionGroupPage.VALIDATION_ERROR)
                 .as("Validation error is displayed for " + inputText);
     }

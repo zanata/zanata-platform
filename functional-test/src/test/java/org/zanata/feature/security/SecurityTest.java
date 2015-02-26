@@ -31,6 +31,7 @@ import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.account.ResetPasswordPage;
+import org.zanata.page.utility.HomePage;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.EnsureLogoutRule;
 import org.zanata.util.HasEmailRule;
@@ -75,7 +76,7 @@ public class SecurityTest extends ZanataTestCase {
     public void signInFailure() {
         assertThat(new LoginWorkFlow()
                 .signInFailure("nosuchuser", "password")
-                .expectError("Login failed"))
+                .expectErrors())
                 .contains("Login failed")
                 .as("Log in error message is shown");
     }
@@ -89,10 +90,10 @@ public class SecurityTest extends ZanataTestCase {
                 .clickSignInLink()
                 .goToResetPassword()
                 .enterUserName("admin")
-                .enterEmail("admin@example.com")
-                .resetPassword();
+                .enterEmail("admin@example.com");
+        HomePage homePage = resetPasswordPage.resetPassword();
 
-        assertThat(resetPasswordPage.getNotificationMessage())
+        assertThat(homePage.getNotificationMessage())
                 .isEqualTo("You will soon receive an email with a link to " +
                         "reset your password.");
 
@@ -141,7 +142,7 @@ public class SecurityTest extends ZanataTestCase {
                 .enterEmail("b")
                 .resetFailure();
 
-        assertThat(resetPasswordPage.expectError("not a well-formed email address"))
+        assertThat(resetPasswordPage.expectErrors())
                 .contains("not a well-formed email address")
                 .as("Invalid email error is displayed");
 
@@ -166,7 +167,7 @@ public class SecurityTest extends ZanataTestCase {
                 .clearFields()
                 .resetFailure();
 
-        assertThat(resetPasswordPage.expectError("value is required"))
+        assertThat(resetPasswordPage.expectErrors())
                 .contains("value is required")
                 .as("value is required error is displayed");
     }

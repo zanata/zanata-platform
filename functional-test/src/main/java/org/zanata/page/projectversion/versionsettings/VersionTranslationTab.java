@@ -22,7 +22,6 @@ package org.zanata.page.projectversion.versionsettings;
 
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.projectversion.VersionBasePage;
@@ -62,8 +61,7 @@ public class VersionTranslationTab extends VersionBasePage {
                 By.id("settings-translation-validation-form"))
                 .findElement(By.id(optionElementID));
 
-        ((JavascriptExecutor) getDriver())
-                .executeScript("arguments[0].click();", option);
+        getExecutor().executeScript("arguments[0].click();", option);
         try {
             Thread.sleep(500);
         } catch (InterruptedException ie) {

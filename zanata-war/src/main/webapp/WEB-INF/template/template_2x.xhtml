@@ -8,6 +8,9 @@
   <html class="new-zanata-html">
 
   <h:head>
+    <ui:remove>
+      <!-- This needs to appear before all other JavaScript, for accurate testing -->
+    </ui:remove>
     <h:outputText value="#{ajaxCounter.ajaxCounterScript}" escape="false" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>#{msgs['jsf.Zanata']}: <ui:insert name="page_title"/></title>
@@ -78,5 +81,10 @@
 
     <ui:include src="scripts.xhtml"/>
   </h:body>
+  <ui:remove>
+    <!-- The javascriptFinished script needs to appear after all other
+            JavaScript, for accurate testing: -->
+  </ui:remove>
+  <h:outputText value="#{ajaxCounter.javascriptFinishedScript}" escape="false" />
   </html>
 </f:view>
