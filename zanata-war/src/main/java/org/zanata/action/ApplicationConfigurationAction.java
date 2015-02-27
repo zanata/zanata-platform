@@ -20,6 +20,7 @@
  */
 package org.zanata.action;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -56,5 +57,19 @@ public class ApplicationConfigurationAction {
     public boolean isSingleOpenId() {
         return applicationConfiguration.isOpenIdAuth()
                 && applicationConfiguration.isSingleOpenIdProvider();
+    }
+
+    public String getHelpUrl() {
+        if(!StringUtils.isEmpty(applicationConfiguration.getHelpUrl())) {
+            return applicationConfiguration.getHelpUrl();
+        }
+        return ServerConfigurationBean.DEFAULT_HELP_URL;
+    }
+
+    public String getTermOfUseUrl() {
+        if(!StringUtils.isEmpty(applicationConfiguration.getTermsOfUseUrl())) {
+            return applicationConfiguration.getTermsOfUseUrl();
+        }
+        return ServerConfigurationBean.DEFAULT_TERM_OF_USE_URL;
     }
 }

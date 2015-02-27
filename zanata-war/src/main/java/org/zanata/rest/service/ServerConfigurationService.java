@@ -64,8 +64,9 @@ public class ServerConfigurationService {
     @In
     private ApplicationConfigurationDAO applicationConfigurationDAO;
 
+    // TODO: is it possible to inject static event?
     @In("event")
-    private Event<ConfigurationChanged> zanataConfigurationChangedEvent;
+    private static Event<ConfigurationChanged> zanataConfigurationChangedEvent;
 
     /**
      * Retrieves all existing server configurations.
@@ -165,7 +166,7 @@ public class ServerConfigurationService {
      * @param applicationConfigurationDAO
      *            dao
      */
-    public void persistApplicationConfig(String key,
+    public static void persistApplicationConfig(String key,
             @Nullable HApplicationConfiguration appConfig, String newValue,
             ApplicationConfigurationDAO applicationConfigurationDAO) {
         if (appConfig != null) {

@@ -108,51 +108,7 @@
       </div>
     </main>
 
-    <footer role="contentinfo" class="l--push--v-2">
-      <div class="l__wrapper">
-        <div class="l--pad-v-1 d--top">
-          <div class="g">
-            <div class="g__item w--1-2 l--push-bottom-quarter">
-              <ul class="list--horizontal txt--meta">
-                <li><a href="http://zanata.org/terms"
-                  target="_blank">Terms</a></li>
-                <li><a href="http://zanata.org/about"
-                  target="_blank">#{msgs['jsf.About']}</a></li>
-                <li><a href="http://zanata.org/blog"
-                  target="_blank">#{msgs['jsf.Blog']}</a></li>
-                <li><a href="http://zanata.org/help"
-                  target="_blank">#{msgs['jsf.Help']}</a></li>
-                <li><a
-                  href="https://bugzilla.redhat.com/enter_bug.cgi?format=guided&amp;product=Zanata"
-                  target="_blank">#{msgs['jsf.ReportAProblem']}</a>
-                </li>
-                <li>
-                  <h:form id="localeSelector_form">
-                    <h:selectOneMenu id="Select"
-                      value="#{localeSelector.localeString}"
-                      valueChangeListener="#{localeSelector.select}"
-                      onchange="submit()">
-                      <f:selectItems
-                        value="#{localeSelector.supportedLocales}"/>
-                    </h:selectOneMenu>
-                  </h:form>
-                </li>
-              </ul>
-            </div>
-            <div class="g__item w--1-2 txt--align-right">
-              <p class="txt--meta">
-                <h:outputText
-                  value="#{msgs.format('jsf.RunningVersionInfo',
-                  msgs['jsf.Zanata'], applicationConfiguration.version,
-                  applicationConfiguration.scmDescribe)}
-                  | #{msgs['jsf.CopyrightNotice']}"
-                  escape="false"/>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </footer>
+    <ui:include src="footer.xhtml"/>
 
     <ui:include src="scripts.xhtml"/>
   </h:body>

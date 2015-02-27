@@ -80,6 +80,7 @@ import org.zanata.feature.versionGroup.*;
          * translation memory sets
          */
         AutoRoleAssignmentTest.class,
+        HelpPageTest.class,
         EditHomePageTest.class,
         EditTranslationMemoryTest.class,
         ManageSearchTest.class,

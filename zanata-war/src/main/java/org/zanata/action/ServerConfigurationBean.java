@@ -61,14 +61,15 @@ public class ServerConfigurationBean implements Serializable {
     @In("jsfMessages")
     private FacesMessages facesMessages;
 
+    public static final String DEFAULT_HELP_URL = "http://zanata.org/help";
+
+    public static final String DEFAULT_TERM_OF_USE_URL = "http://zanata.org/term";
+
     @In
     private ApplicationConfigurationDAO applicationConfigurationDAO;
 
     @In
     private ApplicationConfiguration applicationConfiguration;
-
-    @In
-    private ServerConfigurationService serverConfigurationResource;
 
     @Url(canEndInSlash = true)
     @Getter
@@ -132,6 +133,11 @@ public class ServerConfigurationBean implements Serializable {
     @Setter
     private String termsOfUseUrl;
 
+    @Url(canEndInSlash = true)
+    @Getter
+    @Setter
+    private String helpUrl;
+
     @Pattern(regexp = "\\d{0,5}")
     @Getter
     @Setter
@@ -157,6 +163,7 @@ public class ServerConfigurationBean implements Serializable {
             new PropertyWithKey<String>("piwikUrl", KEY_PIWIK_URL),
             new PropertyWithKey<String>("piwikIdSite", KEY_PIWIK_IDSITE),
             new PropertyWithKey<String>("termsOfUseUrl", KEY_TERMS_CONDITIONS_URL),
+            new PropertyWithKey<String>("helpUrl", KEY_HELP_URL),
             new PropertyWithKey<String>("maxConcurrentRequestsPerApiKey", KEY_MAX_CONCURRENT_REQ_PER_API_KEY),
             new PropertyWithKey<String>("maxActiveRequestsPerApiKey", KEY_MAX_ACTIVE_REQ_PER_API_KEY),
             new PropertyWithKey<String>("maxFilesPerUpload", KEY_MAX_FILES_PER_UPLOAD),
@@ -170,15 +177,6 @@ public class ServerConfigurationBean implements Serializable {
 
         facesMessages.addGlobal("Home content was successfully updated.");
         return "/home.xhtml";
-    }
-
-    public String updateHelpContent() {
-        persistPropertyToDatabase(helpContentProperty);
-        applicationConfigurationDAO.flush();
-
-        facesMessages.addGlobal(
-                "Help page content was successfully updated.");
-        return "/help/view.xhtml";
     }
 
     @Create
@@ -256,7 +254,7 @@ public class ServerConfigurationBean implements Serializable {
         HApplicationConfiguration value = applicationConfigurationDAO
                         .findByKey(property.getKey());
         try {
-            serverConfigurationResource.persistApplicationConfig(
+            ServerConfigurationService.persistApplicationConfig(
                     property.getKey(), value, property.get(),
                     applicationConfigurationDAO);
         } catch (IllegalAccessException e) {
@@ -287,5 +285,13 @@ public class ServerConfigurationBean implements Serializable {
         public T get() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
             return (T) BeanUtils.getProperty(ServerConfigurationBean.this, propertyName);
         }
+    }
+
+    public String getDefaultTermOfUseUrl() {
+        return DEFAULT_TERM_OF_USE_URL;
+    }
+
+    public String getDefaultHelpUrl() {
+        return DEFAULT_HELP_URL;
     }
 }

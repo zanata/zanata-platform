@@ -124,6 +124,10 @@ public class DatabaseBackedConfig implements Serializable {
         return getConfigValue(HApplicationConfiguration.KEY_HELP_CONTENT);
     }
 
+    public String getHelpUrl() {
+        return getConfigValue(HApplicationConfiguration.KEY_HELP_URL);
+    }
+
     // invalidate key will force reload of that value from db
     public void invalidateHomeContent() {
         configurationValues.remove(HApplicationConfiguration.KEY_HOME_CONTENT);
