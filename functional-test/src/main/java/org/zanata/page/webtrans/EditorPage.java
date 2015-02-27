@@ -95,6 +95,16 @@ public class EditorPage extends BasePage {
     }
 
     /**
+     * There is usually a long poll waiting for GWTEventService events
+     * from the server.
+     * @return
+     */
+    @Override
+    protected int getExpectedBackgroundRequests() {
+        return 1;
+    }
+
+    /**
      * First row is header: SourceTerm, TargetTerm, Action, Details.
      *
      * @return a table representing the searchResultTable
@@ -401,10 +411,9 @@ public class EditorPage extends BasePage {
      */
     public boolean isValidationOptionSelected(Validations validation) {
         log.info("Query is validation option {} selected", validation);
-        return waitForWebElement(By.xpath("//*[@title='" +
-                        getValidationTitle(validation) + "']"))
-                .findElement(By.tagName("input"))
-                .isSelected();
+        return waitForElementExists(waitForElementExists(By.xpath("//*[@title='" +
+                        getValidationTitle(validation) + "']")),
+                By.tagName("input")).isSelected();
     }
 
     /**
@@ -415,10 +424,9 @@ public class EditorPage extends BasePage {
      */
     public EditorPage clickValidationCheckbox(Validations validation) {
         log.info("Click validation checkbox {}", validation);
-        waitForElementExists(By.xpath("//*[@title='" +
-                getValidationTitle(validation) + "']"))
-                .findElement(By.tagName("input"))
-                .click();
+        waitForWebElement(waitForElementExists(By.xpath("//*[@title='" +
+                getValidationTitle(validation) + "']")),
+                By.tagName("input")).click();
         return new EditorPage(getDriver());
     }
 
@@ -461,7 +469,8 @@ public class EditorPage extends BasePage {
     private WebElement getTranslationTargetColumn() {
         return waitForWebElement(By.className("selected"))
                 .findElements(By.className("transUnitCol"))
-                .get(1); // Right column
+                // Right column
+                .get(1);
     }
 
     // Find the validation messages / errors box
@@ -514,7 +523,7 @@ public class EditorPage extends BasePage {
                     return getTranslationHistoryList().get(entry)
                             .findElement(By.linkText("Compare"))
                             .isDisplayed();
-                } catch(IndexOutOfBoundsException ioobe) {
+                } catch (IndexOutOfBoundsException ioobe) {
                     return false;
                 }
             }
@@ -583,7 +592,8 @@ public class EditorPage extends BasePage {
     private List<WebElement> getCompareTabEntries() {
         return getTranslationHistoryBox()
                 .findElements(By.className("gwt-TabLayoutPanelContent"))
-                .get(1) // Second tab
+                // Second tab
+                .get(1)
                 .findElements(By.className("textFlowEntry"));
     }
 

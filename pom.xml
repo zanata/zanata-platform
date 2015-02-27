@@ -2,13 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>server</artifactId>
-  <version>3.6.0-SNAPSHOT</version>
+  <version>3.7.0-SNAPSHOT</version>
   <name>Zanata server modules</name>
   <packaging>pom</packaging>
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>21-SNAPSHOT</version>
+    <version>21</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -24,16 +24,23 @@
     <cobertura.total-branch-rate>30</cobertura.total-branch-rate>
     <cobertura.halt.failure>false</cobertura.halt.failure>
     <delombok.dir>${project.build.directory}/delombok/org/zanata</delombok.dir>
+    <failsafe.rerunFailingTestsCount>3</failsafe.rerunFailingTestsCount>
+    <failsafe.useFile>false</failsafe.useFile>
+    <surefire.useFile>false</surefire.useFile>
+    <!-- Applies to surefire and failsafe (if enabled) -->
+    <failIfNoTests>true</failIfNoTests>
+
     <guava.version>18.0</guava.version>
     <gwt.version>2.6.1</gwt.version>
     <icu4j.version>50.1.1</icu4j.version>
     <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
     <lucene.version>3.6.2</lucene.version>
+    <solr.version>${lucene.version}</solr.version>
     <seam.version>2.3.1.Final</seam.version>
     <gwteventservice.version>1.2.1</gwteventservice.version>
     <okapi.version>0.22</okapi.version>
 
-    <zanata.api.version>3.6.0-SNAPSHOT</zanata.api.version>
+    <zanata.api.version>3.7.0-SNAPSHOT</zanata.api.version>
     <!-- This should always be the previous version of the used api version above (but only 3.0.1 or later will work) -->
     <zanata.api.compat.version>3.3.1</zanata.api.compat.version>
     <zanata.client.version>3.3.1</zanata.client.version>
@@ -41,29 +48,29 @@
 
     <richfaces.version>4.5.0.Final</richfaces.version>
 
+    <arquillian.version>1.1.5.Final</arquillian.version>
+    <shrinkwrap.api.version>1.2.2</shrinkwrap.api.version>
+    <shrinkwrap.resolver.version>2.0.0</shrinkwrap.resolver.version>
     <shrinkwrap.desc.version>2.0.0-alpha-5</shrinkwrap.desc.version>
 
     <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
     <!-- see also the jboss7 profile below -->
     <hibernate.scope>provided</hibernate.scope>
-    <!--
-         TODO include Hibernate in war (or deploy as JBoss modules).
-         NB: JBoss EAP 6.2.3 only has 4.2.7.SP4
-    -->
-    <hibernate.version>4.2.8.Final</hibernate.version>
+    <hibernate.version>4.2.17.Final</hibernate.version>
     <hibernate.search.scope>compile</hibernate.search.scope>
     <!-- Hibernate Search 4.4.x is for Hibernate Core 4.2.x:
      http://in.relation.to/Bloggers/HibernateSearchWeekendReleasesFromBothMaintenanceBranches
      -->
+    <!-- 4.4.5.Final is not in Central -->
     <hibernate.search.version>4.4.4.Final</hibernate.search.version>
     <hibernate.entitymanager.version>${hibernate.version}</hibernate.entitymanager.version>
     <war_bundles_jsf_impl>false</war_bundles_jsf_impl>
-    <hibernate.validator.version>4.3.1.Final</hibernate.validator.version>
+    <hibernate.validator.version>4.3.2.Final</hibernate.validator.version>
 
     <!-- controls concordion output location-->
     <concordion.output.dir>${project.build.directory}/concordion</concordion.output.dir>
 
-    <!-- JBoss version for dependencies (arquillian, jboss-as-parent) -->
+    <!-- JBoss version for Arquillian dependencies -->
     <jboss.as.version>7.2.0.Final</jboss.as.version>
 
     <jdbc.groupId>mysql</jdbc.groupId>
@@ -71,42 +78,35 @@
     <jdbc.version>5.1.26</jdbc.version>
 
     <resteasy.scope>compile</resteasy.scope>
+    <resteasy.version>2.3.7.Final</resteasy.version>
+
+    <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
+    <!-- This URL must be set by a profile (wildfly), settings.xml or mvn command line -->
+    <!-- <cargo.installation></cargo.installation> -->
+
+    <download.dir>${user.home}/Downloads</download.dir>
+
   </properties>
 
   <dependencyManagement>
     <dependencies>
 
-      <!-- arquillian and shrinkwrap boms must precede other boms -->
       <dependency>
         <groupId>org.jboss.shrinkwrap</groupId>
-        <artifactId>shrinkwrap-bom</artifactId>
-        <version>1.2.2</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
-
-      <!-- Override dependency resolver with latest version.
-      This must go *BEFORE* the Arquillian BOM. -->
-      <dependency>
-        <groupId>org.jboss.shrinkwrap.resolver</groupId>
-        <artifactId>shrinkwrap-resolver-bom</artifactId>
-        <version>2.0.0</version>
-        <scope>import</scope>
-        <type>pom</type>
+        <artifactId>shrinkwrap-api</artifactId>
+        <version>${shrinkwrap.api.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.jboss.arquillian</groupId>
-        <artifactId>arquillian-bom</artifactId>
-        <version>1.1.5.Final</version>
-        <scope>import</scope>
-        <type>pom</type>
+        <groupId>org.jboss.shrinkwrap</groupId>
+        <artifactId>shrinkwrap-impl-base</artifactId>
+        <version>${shrinkwrap.api.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>org.jboss.spec.javax.servlet</groupId>
-        <artifactId>jboss-servlet-api_3.0_spec</artifactId>
-        <version>1.0.1.Final</version>
+        <groupId>org.jboss.shrinkwrap</groupId>
+        <artifactId>shrinkwrap-spi</artifactId>
+        <version>${shrinkwrap.api.version}</version>
       </dependency>
 
       <dependency>
@@ -115,43 +115,96 @@
         <version>1.13</version>
       </dependency>
 
-      <!-- repeat resteasy version to make sure the seam bom doesn't downgrade it -->
-      <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>resteasy-bom</artifactId>
-        <version>${resteasy.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <!-- make sure the richfaces version is not provided by the seam bom -->
       <dependency>
         <groupId>org.richfaces</groupId>
         <artifactId>richfaces</artifactId>
         <version>${richfaces.version}</version>
       </dependency>
 
-
-      <!--
-        TODO remove this, OR when we remove the org.jboss.seam bom, move this
-        to the jbosseap6 profile
-      -->
       <dependency>
-        <groupId>org.jboss.as</groupId>
-        <artifactId>jboss-as-parent</artifactId>
-        <version>${jboss.as.version}</version>
+        <groupId>org.jboss.spec</groupId>
+        <artifactId>jboss-javaee-6.0</artifactId>
+        <version>3.0.2.Final</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
 
-      <!-- Seam bom goes last because it uses outdated dependencies,
-           and isn't being updated -->
+      <dependency>
+        <groupId>antlr</groupId>
+        <artifactId>antlr</artifactId>
+        <version>2.7.7</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>1.9</version>
+      </dependency>
+
+      <dependency>
+        <groupId>dom4j</groupId>
+        <artifactId>dom4j</artifactId>
+        <version>1.6.1</version>
+        <scope>provided</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>com.sun.faces</groupId>
+        <artifactId>jsf-impl</artifactId>
+        <version>2.1.28</version>
+        <scope>provided</scope>
+      </dependency>
+
       <dependency>
         <groupId>org.jboss.seam</groupId>
-        <artifactId>bom</artifactId>
+        <artifactId>jboss-seam</artifactId>
+        <type>ejb</type>
         <version>${seam.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.el</groupId>
+            <artifactId>el-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.seam</groupId>
+        <artifactId>jboss-seam-debug</artifactId>
+        <version>${seam.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.seam</groupId>
+        <artifactId>jboss-seam-mail</artifactId>
+        <version>${seam.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.seam</groupId>
+        <artifactId>jboss-seam-ui</artifactId>
+        <version>${seam.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.security</groupId>
+        <artifactId>jboss-negotiation-common</artifactId>
+        <version>2.3.6.Final</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.web</groupId>
+        <artifactId>jbossweb</artifactId>
+        <version>7.5.4.Final</version>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -168,8 +221,14 @@
 
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>4.4</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpcore</artifactId>
-        <version>4.2.3</version>
+        <version>4.4</version>
       </dependency>
 
       <dependency>
@@ -294,12 +353,50 @@
         <version>${zanata.api.version}</version>
         <exclusions>
           <exclusion>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+          </exclusion>
+          <exclusion>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
           </exclusion>
           <exclusion>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxb-provider</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-multipart-provider</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-common-api</artifactId>
+        <version>${zanata.api.compat.version}</version>
+        <classifier>compat</classifier>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
             <groupId>javax.annotation</groupId>
             <artifactId>jsr250-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -564,13 +661,6 @@
 
       <dependency>
         <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-search</artifactId>
-        <version>${hibernate.search.version}</version>
-        <scope>${hibernate.search.scope}</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.hibernate</groupId>
         <artifactId>hibernate-search-orm</artifactId>
         <version>${hibernate.search.version}</version>
         <scope>${hibernate.search.scope}</scope>
@@ -581,6 +671,12 @@
         <artifactId>hibernate-search-engine</artifactId>
         <version>${hibernate.search.version}</version>
         <scope>${hibernate.search.scope}</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
@@ -608,12 +704,25 @@
         <groupId>org.hibernate.common</groupId>
         <artifactId>hibernate-commons-annotations</artifactId>
         <version>4.0.4.Final</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-core</artifactId>
         <version>${hibernate.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+          </exclusion>
+        </exclusions>
+        <!--<version>${hibernate.version}</version>-->
       </dependency>
 
       <dependency>
@@ -632,6 +741,12 @@
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-validator</artifactId>
         <version>${hibernate.validator.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
@@ -644,12 +759,6 @@
         <groupId>org.javassist</groupId>
         <artifactId>javassist</artifactId>
         <version>3.18.2-GA</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.el</groupId>
-        <artifactId>jboss-el</artifactId>
-        <version>1.0_02.CR6</version>
       </dependency>
 
       <dependency>
@@ -689,11 +798,47 @@
         </exclusions>
       </dependency>
 
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-core</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-analyzers</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-facet</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-phonetic</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-smartcn</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-stempel</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+
       <!-- Solr dependencies -->
       <dependency>
         <groupId>org.apache.solr</groupId>
         <artifactId>solr-core</artifactId>
-        <version>3.6.2</version>
+        <version>${solr.version}</version>
         <exclusions>
           <exclusion>
             <groupId>commons-httpclient</groupId>
@@ -729,7 +874,7 @@
       <dependency>
         <groupId>org.apache.solr</groupId>
         <artifactId>solr-solrj</artifactId>
-        <version>3.6.2</version>
+        <version>${solr.version}</version>
         <exclusions>
           <exclusion>
             <groupId>commons-httpclient</groupId>
@@ -741,7 +886,11 @@
           </exclusion>
         </exclusions>
       </dependency>
-
+      <dependency>
+        <groupId>org.apache.solr</groupId>
+        <artifactId>solr-analysis-extras</artifactId>
+        <version>${solr.version}</version>
+      </dependency>
       <dependency>
         <groupId>net.customware.gwt.presenter</groupId>
         <artifactId>gwt-presenter</artifactId>
@@ -760,13 +909,6 @@
             <artifactId>jsr305</artifactId>
           </exclusion>
         </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>javax.validation</groupId>
-        <artifactId>validation-api</artifactId>
-        <version>1.0.0.GA</version>
-        <scope>compile</scope>
       </dependency>
 
       <dependency>
@@ -933,6 +1075,18 @@
           <rules>
             <bannedDependencies>
               <excludes combine.children="append">
+                <!-- Use org.jboss.spec.javax.annotation:jboss-annotations-api_1.1_spec -->
+                <exclude>javax.annotation:jsr250-api</exclude>
+
+                <!-- Use org.jboss.spec.javax.el:jboss-el-api_2.2_spec -->
+                <exclude>javax.el:el-api</exclude>
+
+                <!-- Use org.jboss.spec.javax.xml.bind:jboss-jaxb-api_2.2_spec -->
+                <exclude>javax.xml.bind:jaxb-api</exclude>
+
+                <!-- Use org.jboss.resteasy:jaxrs-api (since we package resteasy) -->
+                <exclude>org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_1.1_spec</exclude>
+
                 <!-- use org.jboss.spec.javax.servlet:jboss-servlet-api_3.0_spec -->
                 <exclude>org.jboss.spec.javax.servlet:jboss-servlet-api_3.1_spec</exclude>
 
@@ -954,12 +1108,94 @@
           </rules>
         </configuration>
       </plugin>
+
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.8</version>
+        <executions>
+          <execution>
+            <id>init-no-appserver</id>
+            <!-- submodules should use 'initialize' to activate this -->
+            <phase>none</phase>
+            <goals><goal>run</goal></goals>
+            <configuration combine.self="override">
+              <target unless="skipITs" xmlns:unless="ant:unless">
+                <echo message="appserver=${appserver}" />
+                <echo message="cargo.installation=${cargo.installation}" />
+                <echo message="appserver.home=${appserver.home}" />
+                <echo message="DISPLAY=${env.DISPLAY}" />
+                <echo message="WARNING: 'appserver' property must be set unless skippping integration tests"
+                  unless:set="appserver" />
+                <echo message="WARNING: 'cargo.installation' property (and possibly cargo.basename) must be set unless skipping integration tests"
+                  unless:set="cargo.installation" />
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
+
     <pluginManagement>
       <plugins>
+        <!--
+        This is how the Maven lifecycle phases install and configure the appserver:
+
+        prepare-package: download and extract appserver using cargo:install
+        package: download and extract modules using antrun [wildfly only]
+        pre-integration-test: cargo:start [functional tests only]
+        post-integration-test: cargo:stop [functional tests only]
+
+        If 'appserver` is not set, the build will fail in phase
+        'prepare-package'.
+         -->
+        <plugin>
+          <groupId>org.codehaus.cargo</groupId>
+          <artifactId>cargo-maven2-plugin</artifactId>
+          <version>1.4.5</version>
+          <configuration combine.self="append">
+            <container>
+              <containerId>${cargo.container}</containerId>
+              <!--if install from url-->
+              <zipUrlInstaller>
+                <url>${cargo.installation}</url>
+                <downloadDir>${download.dir}</downloadDir>
+                <extractDir>${cargo.extract.dir}</extractDir>
+              </zipUrlInstaller>
+            </container>
+          </configuration>
+          <executions>
+            <!-- Download and extract app server under target/ -->
+            <!-- NB: This execution needs to be before antrun, because it
+                 creates the wildfly directory for the unzip tasks. -->
+            <!-- TODO use antrun to download and extract appserver? -->
+            <execution>
+              <id>cargo-install</id>
+              <!-- submodules should use 'prepare-package' to activate this -->
+              <phase>none</phase>
+              <goals>
+                <goal>install</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
         <plugin>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>2.12</version>
+          <version>2.18.1</version>
+          <executions>
+            <execution>
+              <id>integration-test</id>
+              <goals>
+                <goal>integration-test</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>verify</id>
+              <goals>
+                <goal>verify</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -980,6 +1216,12 @@
             <formats>
               <format>xml</format>
             </formats>
+            <instrumentation>
+              <ignoreMethodAnnotations>
+                <ignoreMethodAnnotation>org.zanata.util.CoverageIgnore</ignoreMethodAnnotation>
+              </ignoreMethodAnnotations>
+              <ignoreTrivial>true</ignoreTrivial>
+            </instrumentation>
           </configuration>
         </plugin>
         <!-- change maven-release-plugin back to defaults (instead of oss-parent's settings)  -->
@@ -1014,7 +1256,7 @@
         <plugin>
           <groupId>com.jcabi</groupId>
           <artifactId>jcabi-mysql-maven-plugin</artifactId>
-          <version>0.4</version>
+          <version>0.9</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.gmaven</groupId>
@@ -1029,6 +1271,28 @@
   </build>
 
   <profiles>
+
+    <profile>
+      <!-- This profile runs a single integration test with
+        -Dit.test=<integration-test-name>, skipping unit tests. -->
+      <id>it.test</id>
+      <activation>
+        <property>
+          <name>it.test</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <failIfNoSpecifiedTests>false</failIfNoSpecifiedTests>
+              <failIfNoTests>false</failIfNoTests>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
 
     <profile>
       <!--this is used to run GWT in dev mode. Adjust your IDE to include the delombok -->
@@ -1089,16 +1353,90 @@
     </profile>
 
     <profile>
+      <id>jbosseap6</id>
+      <activation>
+        <property>
+          <name>appserver</name>
+          <value>jbosseap6</value>
+        </property>
+      </activation>
+      <properties>
+        <cargo.container>jboss72x</cargo.container>
+        <!-- name of the top-level dir within the appserver zip -->
+        <appserver.dir.name>jboss-eap-6.3</appserver.dir.name>
+        <!-- where the appserver will be installed -->
+        <appserver.home>${cargo.extract.dir}/${cargo.basename}/${appserver.dir.name}</appserver.home>
+      </properties>
+    </profile>
+
+    <profile>
       <id>wildfly8</id>
       <activation>
+        <activeByDefault>true</activeByDefault>
         <property>
           <name>appserver</name>
           <value>wildfly8</value>
         </property>
       </activation>
       <properties>
+        <cargo.container>wildfly8x</cargo.container>
+        <!-- used in the wildfly8 profile in zanata-war -->
         <wildfly.version>8.1.0.Final</wildfly.version>
+        <!-- In case this profile was activated by default: -->
+        <appserver>wildfly8</appserver>
+        <cargo.installation>http://download.jboss.org/wildfly/${wildfly.version}/wildfly-${wildfly.version}.zip</cargo.installation>
+        <!-- name of the top-level dir within the appserver zip -->
+        <appserver.dir.name>wildfly-${wildfly.version}</appserver.dir.name>
+        <!-- where the appserver will be installed -->
+        <appserver.home>${cargo.extract.dir}/${appserver.dir.name}/${appserver.dir.name}</appserver.home>
+
+        <module.wildfly.version>8.1.0.Final</module.wildfly.version>
+        <mojarra.module.version>2.1.28</mojarra.module.version>
+        <mojarra.module.name>wildfly-${module.wildfly.version}-module-mojarra-${mojarra.module.version}.zip</mojarra.module.name>
+        <hibernate.module.version>4.2.15.Final</hibernate.module.version>
+        <hibernate.module.name>wildfly-${module.wildfly.version}-module-hibernate-main-${hibernate.module.version}.zip</hibernate.module.name>
       </properties>
+
+      <build>
+        <plugins>
+          <!--
+          Download wildfly modules from sf.net and extract under appserver.home
+          -->
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>install-wildfly-modules</id>
+                <!-- submodules should use 'package' to activate this -->
+                <phase>none</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target unless="skipITs">
+                    <mkdir dir="${download.dir}" />
+                    <get
+                      src="http://sourceforge.net/projects/zanata/files/wildfly/${mojarra.module.name}/download"
+                      dest="${download.dir}/${mojarra.module.name}"
+                      skipexisting="true" />
+                    <get
+                      src="http://sourceforge.net/projects/zanata/files/wildfly/${hibernate.module.name}/download"
+                      dest="${download.dir}/${hibernate.module.name}"
+                      skipexisting="true" />
+                    <unzip
+                      src="${download.dir}/${mojarra.module.name}"
+                      dest="${appserver.home}" />
+                    <unzip
+                      src="${download.dir}/${hibernate.module.name}"
+                      dest="${appserver.home}" />
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+
       <!-- These override the older versions forced by jboss-as-parent 7.2.0 -->
       <dependencyManagement>
         <dependencies>

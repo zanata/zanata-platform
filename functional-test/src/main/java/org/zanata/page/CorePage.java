@@ -81,7 +81,7 @@ public class CorePage extends AbstractPage {
             public boolean apply(WebDriver input) {
                 return getErrors().size() > 0;
             }
-        });
+        }, "errors > 0");
     }
 
     public List<String> getErrors() {
@@ -115,49 +115,47 @@ public class CorePage extends AbstractPage {
             public boolean apply(WebDriver input) {
                 return getErrors().size() == expectedNumber;
             }
-        });
+        }, "errors = " + expectedNumber);
         return getErrors();
     }
 
     /**
-     * Wait until an expected error is visible
+     * Wait until at least one error is visible
      *
-     * @param expected The expected error string
      * @return The full list of visible errors
      */
-    public List<String> expectError(final String expected) {
-        log.info("Expect error {}", expected);
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getErrors().contains(expected);
-            }
-        });
+    public List<String> expectErrors() {
+        waitForPageSilence();
         return getErrors();
     }
 
+    public String getNotificationMessage(By elementBy) {
+        log.info("Query notification message: " + elementBy);
+        WebElement message = waitForElementExists(elementBy);
+        return message.getText();
+    }
+
     public String getNotificationMessage() {
-        log.info("Query notification message");
-        List<WebElement> messages = waitForElementExists(By.id("messages"))
-                        .findElements(By.tagName("li"));
-        return messages.size() > 0 ? messages.get(0).getText() : "";
+        return getNotificationMessage(By.cssSelector("#messages li"));
     }
 
     public boolean expectNotification(final String notification) {
-        log.info("Wait for notification {}", notification);
-        return waitForAMoment().until(new Function<WebDriver, Boolean>() {
-            @Override
-            public Boolean apply(WebDriver driver) {
-                List<WebElement> messages = getDriver()
-                        .findElement(By.id("messages"))
-                        .findElements(By.tagName("li"));
-                List<String> notifications = new ArrayList<String>();
-                for (WebElement message : messages) {
-                    notifications.add(message.getText().trim());
-                }
-                return notifications.contains(notification);
-            }
-        });
+        String msg = "notification " + notification;
+        logWaiting(msg);
+        return waitForAMoment().withMessage(msg).until(
+                new Function<WebDriver, Boolean>() {
+                    @Override
+                    public Boolean apply(WebDriver driver) {
+                        List<WebElement> messages = getDriver()
+                                .findElement(By.id("messages"))
+                                .findElements(By.tagName("li"));
+                        List<String> notifications = new ArrayList<String>();
+                        for (WebElement message : messages) {
+                            notifications.add(message.getText().trim());
+                        }
+                        return notifications.contains(notification);
+                    }
+                });
     }
 
     public void assertNoCriticalErrors() {
@@ -193,6 +191,15 @@ public class CorePage extends AbstractPage {
         }
     }
 
+    /**
+     * Force the blur 'unfocus' process on a given element
+     */
+    public void defocus(By elementBy) {
+        log.info("Force unfocus");
+        WebElement element = getDriver().findElement(elementBy);
+        getExecutor().executeScript("arguments[0].blur()", element);
+    }
+
     /* The system sometimes moves too fast for the Ajax pages, so provide a
      * pause
      */
@@ -205,11 +212,11 @@ public class CorePage extends AbstractPage {
     }
 
     public void scrollIntoView(WebElement targetElement) {
-        ((JavascriptExecutor) getDriver()).executeScript(
+        getExecutor().executeScript(
                 "arguments[0].scrollIntoView(true);", targetElement);
     }
 
     public void scrollToTop() {
-        ((JavascriptExecutor) getDriver()).executeScript("scroll(0, 0);");
+        getExecutor().executeScript("scroll(0, 0);");
     }
 }

@@ -4,145 +4,126 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
-  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-  xmlns:s="http://jboss.org/schema/seam/taglib">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
-<ui:composition template="../WEB-INF/template/template_2x.xhtml">
-  <!-- disabled since it doesn't create the HPerson to go with the HAccount
-      <ui:define name="right_content">
-          <s:link action="#{userAction.createUser}"
-            rendered="#{s:hasPermission('seam.account', 'create')}"
-            value="#{msgs['jsf.CreateNewUser']}"/>
-      </ui:define>
-   -->
-
+<ui:composition template="../WEB-INF/template/template.xhtml">
   <ui:define name="page_title">#{msgs['jsf.ManageUsers']}</ui:define>
   <ui:define name="center_content">
-    <script type="text/javascript">
-      function confirmDelete() {
-        return confirm("#{msgs['jsf.AreYouSureYouWishToDeleteThisUserThisActionCannotBeUndone']}");
-      }
-    </script>
     <a4j:jsFunction name="editUser" action="#{userAction.editUser(username)}">
       <a4j:param name="val1" assignTo="#{username}"/>
     </a4j:jsFunction>
-    <a4j:jsFunction name="deleteUser" action="#{userAction.deleteUser(username)}" render="usermanagerForm">
+
+    <a4j:jsFunction name="deleteUser"
+      action="#{userAction.deleteUser(username)}" render="usermanagerForm,
+      userSearch-pager, userSearch-page-info, userSearchBottom-pager, userSearchBottom-page-info">
       <a4j:param name="val1" assignTo="#{username}"/>
     </a4j:jsFunction>
 
-    <h:form id="usermanagerForm">
-      <s:token allowMultiplePosts="true"/>
+    <div class="g--centered">
+      <div class="g__item w--2-3 l--push-bottom-half">
+        <p class="txt--meta l--push-all-0">
+          <s:link view="/admin/home.xhtml" propagation="none"
+            value="#{msgs['jsf.Administration']}"/>
+        </p>
 
-      <rich:dataTable id="userList" cellspacing="0" styleClass="fullwidth"
-        value="#{userAction.userPagedListDataModel}" var="user"
-        rows="#{userAction.userPagedListDataModel.pageSize}"
-        columnClasses="centered,centered,centered,centered">
-        <f:facet name="header">
-            <rich:dataScroller renderIfSinglePage="false" maxPages="25"
-              id="scroller" fastControls="hide" reRender="scroller,scroller2" >
-              <f:facet name="first">
-                <h:outputText value="" styleClass="icon-to-start"/>
-              </f:facet>
-              <f:facet name="previous">
-                <h:outputText value="" styleClass="icon-left-open"/>
-              </f:facet>
-              <f:facet name="next">
-                <h:outputText value="" styleClass="icon-right-open-1"/>
-              </f:facet>
-              <f:facet name="last">
-                <h:outputText value="" styleClass="icon-to-end"/>
-              </f:facet>
-              <f:facet name="first_disabled">
-                <h:outputText value="" styleClass="icon-to-start"/>
-              </f:facet>
-              <f:facet name="previous_disabled">
-                <h:outputText value="" styleClass="icon-left-open"/>
-              </f:facet>
-              <f:facet name="next_disabled">
-                <h:outputText value="" styleClass="icon-right-open-1"/>
-              </f:facet>
-              <f:facet name="last_disabled">
-                <h:outputText value="" styleClass="icon-to-end"/>
-              </f:facet>
-            </rich:dataScroller>
-        </f:facet>
-        <rich:column width="auto">
-          <f:facet name="header">
-            <h:panelGroup>
-              <h:outputText value="#{msgs['jsf.Username']}"/>
-              <br/>
-              <h:inputText id="username_filter_input"
-                onkeydown="if(event.keyCode == 13) {return false}"
-                value="#{userAction.userPagedListDataModel.filter}"
-                styleClass="filter_input">
-                <a4j:ajax event="keyup" render="userList@body">
-                  <a4j:attachQueue ignoreDupResponses="true"
-                    requestDelay="700"/>
-                </a4j:ajax>
-              </h:inputText>
-            </h:panelGroup>
-          </f:facet>
-          #{user}
-        </rich:column>
-        <h:column width="auto">
-          <f:facet name="header">#{msgs['jsf.Email']}</f:facet>
-          #{userAction.getEmail(user)}
-        </h:column>
-        <h:column width="auto">
-          <f:facet name="header">#{msgs['jsf.MemberOf']}</f:facet>
-          #{userSearch.getUserRoles(user)}
-        </h:column>
-        <h:column width="auto">
-          <f:facet name="header">#{msgs['jsf.Enabled']}</f:facet>
-          <span
-            class="#{identityManager.isUserEnabled(user) ? 'icon-ok checkmark' : 'icon-remove cross'}"/>
-        </h:column>
-        <h:column width="100px">
-          <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
-          <s:fragment rendered="#{s:hasPermission('seam.user', 'update')}">
-            <button onclick="editUser('#{user}');return false">
-              #{msgs['jsf.Edit']}
-            </button>
-          </s:fragment>
-          <s:fragment rendered="#{s:hasPermission('seam.user', 'delete')}">
-            <button onclick="if(confirmDelete()){deleteUser('#{user}')};return false;">
-              #{msgs['jsf.Delete']}
-            </button>
-          </s:fragment>
-        </h:column>
-        <f:facet name="footer">
-            <rich:dataScroller renderIfSinglePage="false" fastControls="hide"
-              maxPages="25" id="scroller2" reRender="scroller,scroller2">
-              <f:facet name="first">
-                <h:outputText value="" styleClass="icon-to-start"/>
-              </f:facet>
-              <f:facet name="previous">
-                <h:outputText value="" styleClass="icon-left-open"/>
-              </f:facet>
-              <f:facet name="next">
-                <h:outputText value="" styleClass="icon-right-open-1"/>
-              </f:facet>
-              <f:facet name="last">
-                <h:outputText value="" styleClass="icon-to-end"/>
-              </f:facet>
-              <f:facet name="first_disabled">
-                <h:outputText value="" styleClass="icon-to-start"/>
-              </f:facet>
-              <f:facet name="previous_disabled">
-                <h:outputText value="" styleClass="icon-left-open"/>
-              </f:facet>
-              <f:facet name="next_disabled">
-                <h:outputText value="" styleClass="icon-right-open-1"/>
-              </f:facet>
-              <f:facet name="last_disabled">
-                <h:outputText value="" styleClass="icon-to-end"/>
-              </f:facet>
-            </rich:dataScroller>
-        </f:facet>
-      </rich:dataTable>
-    </h:form>
+        <h1 class="l--push-all-0">#{msgs['jsf.ManageUsers']}</h1>
+
+
+        <div class="panel l--push-top-1">
+          <div class="panel__header">
+            <h2 class="panel__heading">#{msgs['jsf.admin.manageuser.header']}</h2>
+          </div>
+          <div class="panel__sub-header js-reveal">
+            <zanata:list-filter status="userLoader"
+              listId="usermanagerForm"
+              render="usermanagerForm, userSearchBottom-pager, userSearchBottom-page-info"
+              id="userSearch" iconClass="i--users"
+              placeholder="#{msgs['jsf.SearchUsers']}"
+              actionBean="#{userAction.userFilter}"/>
+          </div>
+
+          <a4j:status name="userLoader">
+            <f:facet name="start">
+              <zanata:loader/>
+            </f:facet>
+          </a4j:status>
+
+          <h:form id="usermanagerForm" styleClass="l--push-bottom-0">
+
+            <script type="text/javascript">
+              function confirmDelete() {
+                return confirm("#{msgs['jsf.AreYouSureYouWishToDeleteThisUserThisActionCannotBeUndone']}");
+              }
+            </script>
+
+            <ul class="list--stats">
+              <ui:repeat value="#{userAction.userFilter.currentPage}"
+                var="user">
+                <li class="list__item--actionable">
+                  <div class="list__item__action">
+                    <div
+                      class="dropdown dropdown--small dropdown--inline dropdown--single list__item__dropdown js-dropdown">
+                      <a href="#" title="Options"
+                        class="dropdown__toggle js-dropdown__toggle txt--meta">
+                        <span class="is-invisible">Options</span>
+                      </a>
+                      <ul class="dropdown__content js-dropdown__content">
+                        <s:fragment
+                          rendered="#{s:hasPermission('seam.user', 'delete')}">
+                          <li>
+                            <a onclick="if(confirmDelete()){deleteUser('#{user}')};return false;"
+                              class="i__item--right txt--danger">
+                              #{msgs['jsf.Delete']}
+                              <i class="i i--remove i__item__icon"></i>
+                            </a>
+                          </li>
+                        </s:fragment>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <h:commandLink onclick="editUser('#{user}');return false"
+                    disabled="#{not s:hasPermission('seam.user', 'update')}">
+                    <div class="list__item__content">
+                      <div class="list__item__info">
+                        <h3 class="list__title">
+                          <span
+                            class="#{identityManager.isUserEnabled(user) ? '' : 'txt--danger'}">
+                            <s:fragment
+                              rendered="#{not identityManager.isUserEnabled(user)}">
+                              <i class="i i--lock"></i>
+                            </s:fragment>
+                            #{user}
+                          </span>
+                          <s:span styleClass="txt--meta l--push-h-quarter"
+                            rendered="#{not userSearch.getUserRoles(user).isEmpty()}">
+                            [#{userSearch.getUserRoles(user)}]
+                          </s:span>
+                        </h3>
+                        <span class="list__item__meta">
+                          #{userAction.getEmail(user)}
+                        </span>
+                      </div>
+                    </div>
+                  </h:commandLink>
+                </li>
+              </ui:repeat>
+            </ul>
+          </h:form>
+        </div>
+
+        <div class="panel__sub-header js-reveal">
+          <zanata:list-filter status="userLoader"
+            listId="usermanagerForm"
+            render="usermanagerForm, userSearch-pager, userSearch-page-info"
+            id="userSearchBottom" iconClass="i--users"
+            placeholder="#{msgs['jsf.SearchUsers']}"
+            actionBean="#{userAction.userFilter}"/>
+        </div>
+      </div>
+    </div>
   </ui:define>
 
 </ui:composition>

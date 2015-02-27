@@ -44,7 +44,6 @@ import org.zanata.util.AddUsersRule;
 import org.zanata.util.Constants;
 import org.zanata.util.PropertiesHolder;
 import org.zanata.util.ZanataRestCaller;
-import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import com.google.common.base.Function;
 import com.google.common.base.Throwables;

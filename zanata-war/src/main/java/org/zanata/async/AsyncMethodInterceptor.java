@@ -42,7 +42,7 @@ public class AsyncMethodInterceptor implements OptimizedInterceptor {
 
     @Override
     public Object aroundInvoke(final InvocationContext ctx) throws Exception {
-        if( ctx.getMethod().getAnnotation(Async.class) == null ) {
+        if (ctx.getMethod().getAnnotation(Async.class) == null) {
             return ctx.proceed();
         }
 
@@ -74,7 +74,7 @@ public class AsyncMethodInterceptor implements OptimizedInterceptor {
                 public Object call() throws Throwable {
                     interceptorRan.set(true);
                     try {
-                        if( handle.isPresent() ) {
+                        if (handle.isPresent()) {
                             handle.get().startTiming();
                         }
                         Object target =
@@ -86,8 +86,7 @@ public class AsyncMethodInterceptor implements OptimizedInterceptor {
                     } catch (InvocationTargetException itex) {
                         // exception thrown from the invoked method
                         throw itex.getCause();
-                    }
-                    finally {
+                    } finally {
                         interceptorRan.remove();
                         if (handle.isPresent()) {
                             handle.get().finishTiming();
@@ -99,7 +98,7 @@ public class AsyncMethodInterceptor implements OptimizedInterceptor {
 
             ListenableFuture<Object> futureResult =
                     taskManager.startTask(asyncTask);
-            if( handle.isPresent() ) {
+            if (handle.isPresent()) {
                 handle.get().setFutureResult(futureResult);
             }
             return futureResult;

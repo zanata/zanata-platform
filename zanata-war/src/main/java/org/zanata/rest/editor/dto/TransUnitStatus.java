@@ -1,6 +1,8 @@
 package org.zanata.rest.editor.dto;
 
-import java.io.Serializable;import java.lang.Long;import java.lang.String;
+import java.io.Serializable;
+import java.lang.Long;
+import java.lang.String;
 
 import javax.validation.constraints.NotNull;
 
@@ -8,7 +10,6 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.ContentState;
-import org.zanata.common.LocaleId;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({ "id", "resId", "status"})

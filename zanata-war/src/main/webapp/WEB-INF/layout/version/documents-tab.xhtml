@@ -30,13 +30,15 @@
           aria-labelledby="dropdownContent">
           <s:fragment rendered="#{versionHomeAction.documentUploadAllowed}">
             <li>
-              <a href="#" class="i__item--right"
-                id="button--upload-new-document"
-                title="#{msgs['jsf.SupportedUploadFormats']}"
-                onclick="openUploadSourceDocPanel()">
+              <zanata:multi-file-upload styleClass="i__item--right"
+                id="doc-tab-file-upload-component"
+                title="#{msgs['jsf.iteration.files.UploadNewSourceDocument']}"
+                accepted="#{versionHome.acceptedSourceFileTypes}"
+                url="#{request.contextPath}/files/upload?p=#{versionHome.projectSlug}&amp;v=#{versionHome.slug}"
+                maxfiles="#{applicationConfiguration.maxFilesPerUpload}">
                 #{msgs['jsf.iteration.files.UploadNewSourceDocument']}
                 <i class="i i--import i__item__icon"></i>
-              </a>
+              </zanata:multi-file-upload>
             </li>
           </s:fragment>
 
@@ -44,7 +46,7 @@
             rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
             <li>
               <a href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/settings/documents"
-                onclick="changeBrowserUrl(this.href, true);return false;">
+                onclick="changeBrowserUrl(this.href, true);return false;" class="i__item--right">
                 #{msgs['jsf.ManageDocuments']} <i
                 class="i i--settings i__item__icon"></i>
               </a>
@@ -78,9 +80,8 @@
     <s:fragment
       rendered="#{versionHomeAction.documentUploadAllowed}">
       <p>
-        <a href="#" class="button--primary"
-          title="#{msgs['jsf.SupportedUploadFormats']}"
-          onclick="openUploadSourceDocPanel()">
+        <a href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/settings/documents"
+          onclick="changeBrowserUrl(this.href, true);return false;" class="button--primary">
           #{msgs['jsf.iteration.files.UploadNewSourceDocument']}
         </a>
       </p>
@@ -255,7 +256,7 @@
             aria-labelledby="dropdownContent">
             <li>
               <a href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/settings/languages"
-                onclick="changeBrowserUrl(this.href, true);return false;">
+                onclick="changeBrowserUrl(this.href, true);return false;" class="i__item--right">
                 #{msgs['jsf.ManageLanguage']} <i
                 class="i i--settings i__item__icon"></i>
               </a>

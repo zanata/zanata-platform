@@ -11,6 +11,7 @@
   xmlns:bpm="http://jboss.org/schema/seam/bpm"
   xmlns:mail="http://jboss.org/schema/seam/mail"
   xmlns:framework="http://jboss.org/schema/seam/framework"
+  xmlns:jms="http://jboss.org/schema/seam/jms"
   xmlns:resteasy="http://jboss.org/schema/seam/resteasy"
   xsi:schemaLocation=
     "http://jboss.org/schema/seam/core http://jboss.org/schema/seam/core-2.3.xsd
@@ -23,6 +24,7 @@
            http://jboss.org/schema/seam/bpm http://jboss.org/schema/seam/bpm-2.3.xsd
            http://jboss.org/schema/seam/mail http://jboss.org/schema/seam/mail-2.3.xsd
            http://jboss.org/schema/seam/framework http://jboss.org/schema/seam/framework-2.3.xsd
+           http://jboss.org/schema/seam/jms http://jboss.org/schema/seam/jms-2.3.xsd
            http://jboss.org/schema/seam/resteasy http://jboss.org/schema/seam/resteasy-2.3.xsd
            http://jboss.org/schema/seam/components http://jboss.org/schema/seam/components-2.3.xsd">
   <!--      xmlns:async="http://jboss.org/seam/async" -->
@@ -48,6 +50,10 @@
   <web:multipart-filter create-temp-files="false"
     max-request-size="5200000"
     url-pattern="/*" />
+
+  <!-- Jms queue-->
+  <jms:queue-connection auto-create="true" queue-connection-factory-jndi-name="JmsXA" />
+  <jms:managed-queue-sender name="mailQueueSender" auto-create="true" queue-jndi-name="jms/queue/MailsQueue" />
 
   <!-- Login and security -->
   <security:identity jaas-config-name="zanata" />
@@ -102,6 +108,9 @@
   <web:redirect-filter disabled="true" />
   <!-- Messes up into-conversation-redirect and is not needed -->
 
+  <factory name="httpRequest"
+    value="#{facesContext.externalContext.request}"
+    auto-create="true"/>
   <factory name="session" value="#{entityManager.delegate}" scope="STATELESS"
     auto-create="true" />
 

@@ -34,11 +34,13 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.Lifecycle;
 import org.jboss.seam.security.RunAsOperation;
 import org.zanata.action.AuthenticationEvents;
+import org.zanata.config.AsyncConfig;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.security.ZanataIdentity;
@@ -59,9 +61,13 @@ public class AsyncTaskManager {
 
     private ExecutorService scheduler;
 
+    @In
+    private AsyncConfig asyncConfig;
+
     @Create
     public void init() {
-        scheduler = Executors.newFixedThreadPool(3);
+        scheduler =
+                Executors.newFixedThreadPool(asyncConfig.getThreadPoolSize());
     }
 
     @Destroy
@@ -95,7 +101,7 @@ public class AsyncTaskManager {
                     taskFuture.set(returnValue);
                 } catch (Throwable t) {
                     taskFuture.setException(t);
-                    log.error(
+                    log.warn(
                             "Exception when executing an asynchronous task.", t);
                 }
             }

@@ -31,6 +31,7 @@ import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -45,6 +46,8 @@ public class TransHistoryItemLine extends Composite {
             .create(TransHistoryItemLineUiBinder.class);
     private static TransHistoryItemTemplate template = GWT
             .create(TransHistoryItemTemplate.class);
+    private static WebTransMessages messages = GWT
+            .create(WebTransMessages.class);
     private final TransHistoryItem item;
     private final TranslationHistoryDisplay.Listener listener;
 
@@ -61,8 +64,6 @@ public class TransHistoryItemLine extends Composite {
     @UiField
     Anchor copyIntoEditor;
     @UiField
-    WebTransMessages messages;
-    @UiField
     SpanElement icon;
 
     public TransHistoryItemLine(TransHistoryItem item,
@@ -70,10 +71,13 @@ public class TransHistoryItemLine extends Composite {
             ContentStateRenderer stateRenderer) {
         this.item = item;
         this.listener = listener;
-        // modified by person can be empty if translation is pushed from client
-        String person =
-                item.getModifiedBy().isEmpty() ? "(Someone offline)" : item
-                        .getModifiedBy();
+        // before rhbz1149968 modified by person can be empty if translation is
+        // pushed from client
+        SafeHtml anonymous = template.anonymousUser(messages.anonymousUser());
+        SafeHtml person =
+                item.getModifiedBy().isEmpty() ?
+                        anonymous : new SafeHtmlBuilder()
+                        .appendHtmlConstant(item.getModifiedBy()).toSafeHtml();
         heading =
                 new InlineHTML(template.heading(person,
                         ContentStateToStyleUtil.stateToStyle(item.getStatus()),
@@ -119,11 +123,14 @@ public class TransHistoryItemLine extends Composite {
         SafeHtml targetContent(SafeHtml message);
 
         @Template("<div class='txt--meta'>{0} created a <strong class='{1}'>{2}</strong> revision</div>")
-                SafeHtml heading(String person, String contentStateStyle,
+                SafeHtml heading(SafeHtml person, String contentStateStyle,
                         String contentState);
 
         @Template("<span class='txt--important'>Revision {0} </span><span class=\"label\">{1}</span>")
                 SafeHtml
                 targetRevision(String versionNum, String optionalLabel);
+
+        @Template("<span class='txt--neutral'>{0}</span>")
+        SafeHtml anonymousUser(String anonymous);
     }
 }

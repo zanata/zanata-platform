@@ -3,69 +3,104 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
-  template="../WEB-INF/template/template_2x.xhtml">
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  template="../WEB-INF/template/template.xhtml">
 
   <ui:define name="page_title">#{msgs['jsf.ProcessManager']}</ui:define>
-  <ui:define name="right_content">
-    <rich:panel id="statsPanel">
-      <f:facet name="header">#{msgs['jsf.Statistics']}</f:facet>
-
-      <p>
-        <h:outputText
-          value="#{msgs['jsf.processmanager.TotalRunning']}: #{processManagerAction.runningCount}"/>
-      </p>
-
-      <p>
-        <h:outputText
-          value="#{msgs['jsf.processmanager.TotalFinished']}: #{processManagerAction.stoppedCount}"/>
-      </p>
-    </rich:panel>
-  </ui:define>
 
   <ui:define name="center_content">
     <a4j:region>
       <h:form>
-        <a4j:poll interval="2000" render="processTable,statsPanel"/>
+        <a4j:poll interval="2000" render="process_form,progress"/>
       </h:form>
     </a4j:region>
-    <h:form>
-      <rich:dataTable id="processTable"
-        value="#{processManagerAction.runningProcesses}" var="handle">
-        <rich:column>
-          <f:facet
-            name="header">#{msgs['jsf.processmanager.Type']}</f:facet>
-          #{handle.toString()}
-        </rich:column>
-        <rich:column>
-          <f:facet name="header">#{msgs['jsf.Status']}</f:facet>
-          <s:span styleClass="icon-stop" style="font-size:20px; color:red;"
-            rendered="#{handle.done}"
-            title="#{msgs['jsf.processmanager.status.Stopped']}"></s:span>
-          <s:span styleClass="icon-play" style="font-size:20px; color:green;"
-            rendered="#{not handle.done}"
-            title="#{msgs['jsf.processmanager.status.Running']}"></s:span>
-        </rich:column>
-        <rich:column>
-          <f:facet
-            name="header">#{msgs['jsf.processmanager.Progress']}</f:facet>
-          <rich:progressBar style="width:100px;"
-            value="#{handle.currentProgress}" minValue="#{handle.minProgress}"
-            maxValue="#{handle.maxProgress}"
-            rendered="#{not handle.done}" enabled="false"/>
-          <h:outputText value="Stopped" rendered="#{handle.done}"/>
-        </rich:column>
-        <rich:column>
-          <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
-          <a4j:commandButton action="#{processManagerAction.cancel(handle)}"
-            value="#{msgs['jsf.Cancel']}"
-            rendered="#{not handle.done}"/>
-        </rich:column>
-      </rich:dataTable>
-    </h:form>
+
+    <div class="g">
+      <div class="g__item w--1-m w--3-8-l w--1-3 l--push-bottom-half">
+        <p class="txt--meta l--push-all-0">
+          <s:link view="/admin/home.xhtml" propagation="none"
+            value="#{msgs['jsf.Administration']}"/>
+        </p>
+
+        <div class="l--push-bottom-half">
+          <h1 class="l--push-all-0">
+            <i class="i--small i--clock txt--neutral i--left"></i>
+            #{msgs['jsf.ProcessManager']}
+          </h1>
+        </div>
+
+        <s:div styleClass="panel l--push-top-1" id="progress">
+          <div class="panel__header">
+            <h2 class="panel__heading--small">
+            #{msgs['jsf.processmanager.currentStates']}
+            </h2>
+          </div>
+          <div class="l--pad-all-half txt--meta l--push-top-quarter">
+              #{msgs['jsf.processmanager.TotalRunning']}<span class="l--push-left-quarter l--push-right-half badge badge--highlight">
+              #{processManagerAction.runningCount}</span>
+
+              #{msgs['jsf.processmanager.TotalFinished']}<span class="l--push-left-quarter badge">
+              #{processManagerAction.stoppedCount}</span>
+          </div>
+        </s:div>
+      </div>
+
+      <div class="g__item w--1-m w--5-8-l w--2-3 l--push-top-1">
+        <div class="panel">
+
+          <h:form id="process_form" styleClass="l--push-bottom-0">
+            <s:div styleClass="l--pad-all-half"
+              rendered="#{empty processManagerAction.runningProcesses}">
+              <p class="txt--meta">#{msgs['jsf.processmanager.process.empty']}</p>
+            </s:div>
+
+            <s:fragment rendered="#{not empty processManagerAction.runningProcesses}">
+              <ul class="list--stats">
+                <ui:repeat value="#{processManagerAction.runningProcesses}" var="handle">
+                  <li
+                    title="#{handle.done ? msgs['jsf.processmanager.status.Finished'] : msgs['jsf.processmanager.status.Running']}">
+                    <div class="list__item__content">
+                      <div class="list__item__info">
+                        <span class="zeta #{handle.done ? 'txt--understated' : 'txt--highlight'}">
+                          #{handle.toString()}
+                        </span>
+                        <a4j:commandButton action="#{processManagerAction.cancel(handle)}"
+                          value="#{msgs['jsf.Cancel']}"
+                          rendered="#{not handle.done}" styleClass="button button--danger l--push-left-half l--push-bottom-quarter"/>
+
+                        <span class="list__item__meta txt--warning">
+                          <s:fragment rendered="#{handle.done}">
+                            #{msgs['jsf.processmanager.status.Finished']}
+                          </s:fragment>
+                          <s:fragment rendered="#{not handle.done}">
+                            #{msgs.format('jsf.processmanager.progress', handle.currentProgress, handle.maxProgress)}
+                          </s:fragment>
+                        </span>
+                      </div>
+                      <div class="list__item__stats">
+                        <s:fragment rendered="#{not handle.done}">
+                          <zanata:loader type="loader--small" layout="inline"/>
+                        </s:fragment>
+
+                        <s:span styleClass="txt--understated" rendered="#{handle.done}">
+                          <span
+                            class="txt--hero">#{handle.executingTime}</span>
+                          <span class="stats__unit txt--lowercase">
+                            #{msgs['jsf.processmanager.miliseconds']}
+                          </span>
+                        </s:span>
+                      </div>
+                    </div>
+                  </li>
+                </ui:repeat>
+              </ul>
+            </s:fragment>
+          </h:form>
+        </div>
+      </div>
+    </div>
   </ui:define>
 
 </ui:composition>

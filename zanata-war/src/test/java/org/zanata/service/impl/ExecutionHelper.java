@@ -43,9 +43,8 @@ class ExecutionHelper {
                 product.add(new Object[] { elem });
             }
             return product;
-        }
-        // Recursive case
-        else {
+        } else {
+            // Recursive case
             Iterable<?> lastSet = colls[colls.length - 1];
             Set<Object[]> subProduct =
                     cartesianProduct(Arrays.copyOfRange(colls, 0,

@@ -1,6 +1,7 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 
 import lombok.Getter;
 
@@ -57,14 +58,27 @@ public class ProjectIterationZipFileAction implements Serializable {
             translationArchiveServiceImpl.startBuildingTranslationFileArchive(
                     projectSlug, versionSlug, localeId, Identity.instance()
                             .getCredentials().getUsername(), zipFilePrepHandle);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     @End
     public void cancelFileDownload() {
-        zipFilePrepHandle.cancel(true);
+        if(zipFilePrepHandle != null) {
+            zipFilePrepHandle.cancel(true);
+        }
+    }
+    final DecimalFormat PERCENT_FORMAT = new DecimalFormat("###.##");
+
+    public String getCompletedPercentage() {
+        if(zipFilePrepHandle != null) {
+            double completedPercent =
+                (double) zipFilePrepHandle.getCurrentProgress() / (double) zipFilePrepHandle
+                    .getMaxProgress() * 100;
+
+            return PERCENT_FORMAT.format(completedPercent) + "%";
+        }
+        return "0%";
     }
 }

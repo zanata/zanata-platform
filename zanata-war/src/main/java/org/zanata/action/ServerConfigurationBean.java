@@ -248,13 +248,12 @@ public class ServerConfigurationBean implements Serializable {
     }
 
     private void persistPropertyToDatabase(PropertyWithKey<String> property) {
-        HApplicationConfiguration registerUrlValue =
-                applicationConfigurationDAO
+        HApplicationConfiguration value = applicationConfigurationDAO
                         .findByKey(property.getKey());
         try {
             ServerConfigurationService.persistApplicationConfig(
-                    property.getKey(),
-                    registerUrlValue, property.get(), applicationConfigurationDAO);
+                    property.getKey(), value, property.get(),
+                    applicationConfigurationDAO);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (NoSuchMethodException e) {

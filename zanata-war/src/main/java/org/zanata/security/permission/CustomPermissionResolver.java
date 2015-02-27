@@ -57,8 +57,7 @@ public class CustomPermissionResolver implements PermissionResolver,
         Object[] targetArray;
         if (target instanceof MultiTargetList) {
             targetArray = ((MultiTargetList) target).toArray();
-        }
-        else {
+        } else {
             targetArray = new Object[] { target };
         }
 

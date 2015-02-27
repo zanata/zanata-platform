@@ -39,6 +39,7 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.zanata.page.WebDriverFactory;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -145,10 +146,8 @@ public class WebElementUtil {
 
     public static FluentWait<WebDriver> waitForSeconds(WebDriver webDriver,
             int durationInSec) {
-        return new FluentWait<WebDriver>(webDriver)
-                .withTimeout(durationInSec, SECONDS)
-                .pollingEvery(1, SECONDS)
-                .ignoring(NoSuchElementException.class,
+        return new WebDriverWait(webDriver, durationInSec).ignoring(
+                        // TODO is ignoring this safe?
                         StaleElementReferenceException.class);
     }
 
@@ -168,8 +167,7 @@ public class WebElementUtil {
                         WebElement table;
                         try {
                             table = input.findElement(by);
-                        }
-                        catch (NoSuchElementException noElement) {
+                        } catch (NoSuchElementException noElement) {
                             // Some pages don't show a table, if there's no
                             // items to show
                             return Collections.emptyList();

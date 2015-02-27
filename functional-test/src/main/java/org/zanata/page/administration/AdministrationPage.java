@@ -53,12 +53,6 @@ public class AdministrationPage extends BasePage {
         return new ServerConfigurationPage(getDriver());
     }
 
-    public ManageLanguagePage goToManageLanguagePage() {
-        log.info("Click Manage Languages");
-        clickLinkAfterAnimation(MANAGE_LANGUAGE_LINK);
-        return new ManageLanguagePage(getDriver());
-    }
-
     public ManageUserPage goToManageUserPage() {
         log.info("Click Manage Users");
         clickLinkAfterAnimation(MANAGE_USER_LINK);

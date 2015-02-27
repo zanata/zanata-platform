@@ -72,13 +72,13 @@ public class AsyncTaskHandleManager {
         return autoGenKey;
     }
 
-    void taskFinished( AsyncTaskHandle taskHandle ) {
+    void taskFinished(AsyncTaskHandle taskHandle) {
         synchronized (handlesByKey) {
             // TODO This operation is O(n). Maybe we can do better?
             for (Map.Entry<Serializable, AsyncTaskHandle> entry : handlesByKey
                     .entrySet()) {
-                if( entry.getValue().equals( taskHandle ) ) {
-                    handlesByKey.remove( entry.getKey() );
+                if (entry.getValue().equals(taskHandle)) {
+                    handlesByKey.remove(entry.getKey());
                     finishedTasks.put(entry.getKey(), entry.getValue());
                 }
             }
@@ -86,7 +86,7 @@ public class AsyncTaskHandleManager {
     }
 
     public AsyncTaskHandle getHandleByKey(Serializable key) {
-        if( handlesByKey.containsKey(key) ) {
+        if (handlesByKey.containsKey(key)) {
             return handlesByKey.get(key);
         }
         return finishedTasks.getIfPresent(key);

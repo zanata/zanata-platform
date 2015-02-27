@@ -46,9 +46,8 @@ class MethodComponentAccessor extends ComponentAccessor {
             getter = method;
             methodPrefix = "set";
             parameterTypes = new Class[] { method.getReturnType() };
-        }
-        // setter
-        else if (method.getName().startsWith("set")) {
+        } else if (method.getName().startsWith("set")) {
+            // setter
             setter = method;
             methodPrefix = "get";
         } else {

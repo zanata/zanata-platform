@@ -41,4 +41,11 @@ public class AccountResetPasswordKeyDAO extends
         super(HAccountResetPasswordKey.class, session);
     }
 
+    public HAccountResetPasswordKey findByAccount(Long accountId) {
+        return (HAccountResetPasswordKey) getSession()
+            .createQuery(
+                "from HAccountResetPasswordKey key where key.account.id = :accountId")
+            .setLong("accountId", accountId)
+            .setComment("AccountResetPasswordKeyDAO.findByAccount").uniqueResult();
+    }
 }

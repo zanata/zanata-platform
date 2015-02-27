@@ -24,14 +24,16 @@ import java.io.File;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.testharness.ZanataTestCase;
-import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projectversion.VersionDocumentsPage;
 import org.zanata.page.projectversion.versionsettings.VersionDocumentsTab;
+import org.zanata.util.AddUsersRule;
 import org.zanata.util.CleanDocumentStorageRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
@@ -50,6 +52,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 public class MultiFileUploadTest extends ZanataTestCase {
 
+    @ClassRule
+    public static AddUsersRule addUsersRule = new AddUsersRule();
+
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
@@ -57,16 +62,19 @@ public class MultiFileUploadTest extends ZanataTestCase {
     public CleanDocumentStorageRule documentStorageRule =
             new CleanDocumentStorageRule();
 
-    private ZanataRestCaller zanataRestCaller;
     private TestFileGenerator testFileGenerator = new TestFileGenerator();
     private String documentStorageDirectory;
 
+    @BeforeClass
+    public static void beforeClass() {
+        new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
+        new LoginWorkFlow().signIn("admin", "admin");
+    }
+
     @Before
     public void before() {
-        new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
-        zanataRestCaller = new ZanataRestCaller();
-        zanataRestCaller.createProjectAndVersion("multi-upload", "multi-upload",
-            "file");
+        new ZanataRestCaller().createProjectAndVersion("multi-upload",
+                "multi-upload", "file");
         documentStorageDirectory = CleanDocumentStorageRule
                 .getDocumentStoragePath()
                 .concat(File.separator)
@@ -76,43 +84,6 @@ public class MultiFileUploadTest extends ZanataTestCase {
         if (new File(documentStorageDirectory).exists()) {
             log.warn("Document storage directory exists (cleanup incomplete)");
         }
-        new LoginWorkFlow().signIn("admin", "admin");
-    }
-
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Category(BasicAcceptanceTest.class)
-    public void uploadedDocumentsAreInFilesystem() {
-        File firstFile = testFileGenerator.generateTestFileWithContent(
-                "multiuploadInFilesystem", ".txt",
-                "This is a test file");
-        File secondFile = testFileGenerator.generateTestFileWithContent(
-                "multiuploadInFilesystem2", ".txt",
-                "This is another test file");
-        String testFileName = firstFile.getName();
-
-        VersionDocumentsTab versionDocumentsTab = new ProjectWorkFlow()
-                .goToProjectByName("multi-upload")
-                .gotoVersion("multi-upload")
-                .gotoSettingsTab()
-                .gotoSettingsDocumentsTab()
-                .pressUploadFileButton()
-                .enterFilePath(firstFile.getAbsolutePath())
-                .enterFilePath(secondFile.getAbsolutePath())
-                .submitUpload()
-                .clickUploadDone();
-
-        assertThat(new File(documentStorageDirectory).list().length)
-                .isEqualTo(2)
-                .as("There are two uploaded source files");
-
-        VersionDocumentsPage versionDocumentsPage = versionDocumentsTab
-                .gotoDocumentTab()
-                .waitForSourceDocsContains(testFileName);
-
-        assertThat(versionDocumentsPage.getSourceDocumentNames())
-                .contains(firstFile.getName())
-                .contains(secondFile.getName())
-                .as("The documents were uploaded");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -129,6 +100,9 @@ public class MultiFileUploadTest extends ZanataTestCase {
                 .enterFilePath(keptUploadFile.getAbsolutePath())
                 .enterFilePath("/tmp/fakefile.txt");
 
+        versionDocumentsTab.waitForPageSilence();
+        // TODO try to eliminate this:
+        versionDocumentsTab.expectSomeUploadItems();
         assertThat(versionDocumentsTab.getUploadList())
                 .contains(keptUploadFile.getName())
                 .contains("fakefile.txt")
@@ -136,6 +110,7 @@ public class MultiFileUploadTest extends ZanataTestCase {
 
         versionDocumentsTab = versionDocumentsTab.clickRemoveOn("fakefile.txt");
 
+        versionDocumentsTab.waitForPageSilence();
         assertThat(versionDocumentsTab.getUploadList())
                 .contains(keptUploadFile.getName())
                 .doesNotContain("fakefile.txt")
@@ -151,4 +126,5 @@ public class MultiFileUploadTest extends ZanataTestCase {
                 .doesNotContain("fakefile.txt")
                 .as("Only the intended file was uploaded");
     }
+
 }

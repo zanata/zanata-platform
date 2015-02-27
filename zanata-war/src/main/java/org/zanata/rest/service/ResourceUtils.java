@@ -23,6 +23,7 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.ws.rs.WebApplicationException;
@@ -44,6 +45,7 @@ import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.common.ResourceType;
+import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
@@ -102,6 +104,8 @@ public class ResourceUtils {
     private static final String CONTENT_TYPE_HDR = HeaderFields.KEY_ContentType;
     private static final String PLURAL_FORMS_HDR = "Plural-Forms";
 
+    private static final Pattern PLURAL_FORM_PATTERN =
+        Pattern.compile("nplurals=[0-9]+;\\s?plural=*");
     private static final Pattern NPLURALS_TAG_PATTERN = Pattern
             .compile("nplurals=");
     private static final Pattern NPLURALS_PATTERN = Pattern
@@ -109,12 +113,15 @@ public class ResourceUtils {
     private static final String PLURALS_FILE = "pluralforms.properties";
     private static final String DEFAULT_PLURAL_FORM = "nplurals=1; plural=0";
 
-    // private static int MAX_TARGET_CONTENTS = 6;
+    public static final int MAX_TARGET_CONTENTS = 6;
 
     private static Properties pluralForms;
 
     @In
     private EntityManager entityManager;
+
+    @In
+    private LocaleDAO localeDAO;
 
     @PostConstruct
     public void create() {
@@ -846,7 +853,7 @@ public class ResourceUtils {
         HTextFlowTarget lastTranslated = null;
 
         for (HTextFlowTarget trans : translations) {
-            if (trans.getLastModifiedBy() != null
+            if (trans.getTranslator() != null
                     && trans.getLastChanged().after(lastUpdate)) {
                 lastTranslated = trans;
                 lastUpdate = trans.getLastChanged();
@@ -872,21 +879,21 @@ public class ResourceUtils {
         String lastTranslator = this.getHeaderLastTranslator(headerEntries);
 
         if (lastTranslated != null) {
-            HPerson lastModifiedBy = lastTranslated.getLastModifiedBy();
+            HPerson lastTranslatedBy = lastTranslated.getTranslator();
             Date lastModifiedDate = lastTranslated.getLastChanged();
 
             // Last translated target is more recent than the Revision Date on
             // the
             // Header
-            if (lastModifiedBy != null && lastModifiedDate != null
+            if (lastTranslatedBy != null && lastModifiedDate != null
                     && lastModifiedDate.after(headerRevisionDate)) {
                 lastTranslator =
-                        lastModifiedBy.getName() + " <"
-                                + lastModifiedBy.getEmail() + ">";
-            } else if (lastModifiedBy != null && lastModifiedDate == null) {
+                        lastTranslatedBy.getName() + " <"
+                                + lastTranslatedBy.getEmail() + ">";
+            } else if (lastTranslatedBy != null && lastModifiedDate == null) {
                 lastTranslator =
-                        lastModifiedBy.getName() + " <"
-                                + lastModifiedBy.getEmail() + ">";
+                        lastTranslatedBy.getName() + " <"
+                                + lastTranslatedBy.getEmail() + ">";
             }
         }
 
@@ -954,18 +961,28 @@ public class ResourceUtils {
      * default value if there is no plural form information for the provided
      * locale id.
      *
-     * @see {@link ResourceUtils#getPluralForms(org.zanata.common.LocaleId, boolean)}
+     * @see {@link ResourceUtils#getPluralForms(org.zanata.common.LocaleId, boolean, boolean)}
      */
     public String getPluralForms(LocaleId localeId) {
-        return getPluralForms(localeId, true);
+        return getPluralForms(localeId, true, true);
     }
 
     /**
      * Returns the appropriate plural from for a given locale Id.
      *
+     * From HLocale.plurals if available,
+     * else from pluralforms.properties
+     *
      * @return A default value if useDefault is True. Otherwise, null.
      */
-    public String getPluralForms(LocaleId localeId, boolean useDefault) {
+    public String getPluralForms(LocaleId localeId, boolean checkDB, boolean useDefault) {
+        if(checkDB) {
+            String dbPluralForms = getPluralFormsFromDB(localeId);
+            if (StringUtils.isNotEmpty(dbPluralForms)) {
+                return dbPluralForms;
+            }
+        }
+
         final char[] alternateSeparators = { '.', '@' };
 
         String javaLocale = localeId.toJavaName().toLowerCase();
@@ -1007,48 +1024,133 @@ public class ResourceUtils {
         return getNPluralForms(entries, targetLocale.getLocaleId());
     }
 
+    /**
+     * return plural count info from
+     * 1) Header entry if available, else
+     * 2) HLocale.plurals if available, else
+     * 3) pluralforms.properties
+     *
+     * @param entries - HPoTargetHeader.entries
+     * @param localeId - locale identifier
+     *
+     */
     int getNPluralForms(String entries, LocaleId localeId) {
-        int nPlurals = 1;
-
+        String pluralForms;
         try {
-            Properties headerList = new Properties();
-            String pluralForms;
-            if (entries != null && !entries.isEmpty()) {
-                headerList.load(new StringReader(entries));
-                if (headerList.containsKey(PLURAL_FORMS_HDR)) {
-                    pluralForms = headerList.getProperty(PLURAL_FORMS_HDR);
-                } else {
-                    pluralForms = getPluralForms(localeId);
-                }
-            } else {
-                pluralForms = getPluralForms(localeId);
+            if (entries == null || entries.isEmpty()) {
+                pluralForms = getPluralFormsFromDB(localeId);
+                return StringUtils.isEmpty(pluralForms) ?
+                    getNPluralForms(localeId) :
+                    getNPluralForms(pluralForms);
             }
-            if (pluralForms == null) {
+
+            Properties headerList = new Properties();
+            headerList.load(new StringReader(entries));
+
+            if (!headerList.containsKey(PLURAL_FORMS_HDR)) {
+                pluralForms = getPluralFormsFromDB(localeId);
+                return StringUtils.isEmpty(pluralForms) ?
+                    getNPluralForms(localeId) :
+                    getNPluralForms(pluralForms);
+            }
+
+            pluralForms = headerList.getProperty(PLURAL_FORMS_HDR);
+
+            if (StringUtils.isEmpty(pluralForms)) {
                 log.error("No plural forms for locale {} found in {}",
                         localeId, PLURALS_FILE);
                 throw new RuntimeException(
                         "No plural forms found; contact admin. Locale: "
                                 + localeId);
             }
-            Matcher nPluralsMatcher = NPLURALS_PATTERN.matcher(pluralForms);
-            String nPluralsString = "";
-            while (nPluralsMatcher.find()) {
-                nPluralsString = nPluralsMatcher.group();
-                Matcher nPluralsValueMatcher =
-                        NPLURALS_TAG_PATTERN.matcher(nPluralsString);
-                nPluralsString = nPluralsValueMatcher.replaceAll("");
-                break;
-            }
-            if (nPluralsString != null && !nPluralsString.isEmpty()) {
-                nPlurals = Integer.parseInt(nPluralsString);
-            }
+            return getNPluralForms(pluralForms);
         } catch (Exception e) {
             log.error("Error getting nPlurals:" + entries);
         }
+        return 1;
+    }
 
-        // nPlurals = (nPlurals > MAX_TARGET_CONTENTS || nPlurals < 1) ? 1 :
-        // nPlurals;
+    /**
+     * @return plural forms from HLocale, null if not found
+     */
+    String getPluralFormsFromDB(LocaleId localeId) {
+        HLocale hLocale = localeDAO.findByLocaleId(localeId);
+        if(hLocale != null && StringUtils.isNotEmpty(hLocale.getPluralForms())) {
+            return hLocale.getPluralForms();
+        }
+        return null;
+    }
+
+    /**
+     * Get plurals count from pluralforms.properties
+     *
+     * @param localeId
+     */
+    int getNPluralForms(@Nonnull LocaleId localeId) {
+        String pluralForms = getPluralForms(localeId);
+
+        if (pluralForms == null) {
+            log.error("No plural forms for locale {} found in {}",
+                    localeId, PLURALS_FILE);
+            throw new RuntimeException(
+                    "No plural forms found; contact admin. Locale: "
+                            + localeId);
+        }
+        return getNPluralForms(pluralForms);
+    }
+
+    /**
+     * Process pluralforms string and return plural count.
+     *
+     * @param pluralForms
+     */
+    int getNPluralForms(@Nonnull String pluralForms) {
+        int nPlurals = 1;
+
+        Matcher nPluralsMatcher = NPLURALS_PATTERN.matcher(pluralForms);
+        String nPluralsString = "";
+        while (nPluralsMatcher.find()) {
+            nPluralsString = nPluralsMatcher.group();
+            Matcher nPluralsValueMatcher =
+                    NPLURALS_TAG_PATTERN.matcher(nPluralsString);
+            nPluralsString = nPluralsValueMatcher.replaceAll("");
+            break;
+        }
+        if (StringUtils.isNotEmpty(nPluralsString)) {
+            nPlurals = Integer.parseInt(nPluralsString);
+        }
         return nPlurals;
+    }
+
+    /**
+     * Return if pluralForms is valid (positive value)
+     *
+     * @param pluralForms
+     */
+    public boolean isValidPluralForms(@Nonnull String pluralForms) {
+
+        if(!PLURAL_FORM_PATTERN.matcher(pluralForms).find()) {
+            return false;
+        }
+
+        Matcher nPluralsMatcher = NPLURALS_PATTERN.matcher(pluralForms);
+        String nPluralsString = "";
+        while (nPluralsMatcher.find()) {
+            nPluralsString = nPluralsMatcher.group();
+            Matcher nPluralsValueMatcher =
+                NPLURALS_TAG_PATTERN.matcher(nPluralsString);
+            nPluralsString = nPluralsValueMatcher.replaceAll("");
+            break;
+        }
+        try {
+            if (StringUtils.isNotEmpty(nPluralsString)) {
+                int count = Integer.parseInt(nPluralsString);
+                return count >= 1 && count <= MAX_TARGET_CONTENTS;
+            }
+        } catch (Exception e) {
+            //invalid string for integer
+        }
+        return false;
     }
 
     /**
@@ -1265,7 +1367,7 @@ public class ResourceUtils {
         to.setState(mapContentState(apiVersion, from.getState()));
         to.setRevision(from.getVersionNum());
         to.setTextFlowRevision(from.getTextFlowRevision());
-        HPerson translator = from.getLastModifiedBy();
+        HPerson translator = from.getTranslator();
         if (translator != null) {
             to.setTranslator(new Person(translator.getEmail(), translator
                     .getName()));

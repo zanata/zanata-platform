@@ -52,7 +52,7 @@ public class LocaleMemberDAO extends
         Query query =
                 getSession()
                         .createQuery(
-                                "from HLocaleMember as m where m.id.supportedLanguage.localeId = :localeId");
+                                "from HLocaleMember as m where m.id.supportedLanguage.localeId = :localeId order by lower(m.id.person.name)");
         query.setParameter("localeId", localeId);
         query.setComment("LocaleMemberDAO.findAllByLocale");
         return query.list();

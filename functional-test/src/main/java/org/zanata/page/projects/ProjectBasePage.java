@@ -44,6 +44,12 @@ public class ProjectBasePage extends BasePage {
     private By maintainersTab = By.id("maintainers_tab");
     private By aboutTab = By.id("about_tab");
     private By settingsTab = By.id("settings_tab");
+
+    private By versionsTabBody = By.id("versions");
+    private By maintainersTabBody = By.id("maintainers");
+    private By aboutTabBody = By.id("about");
+    private By settingsTabBody = By.id("settings");
+
     private By settingsGeneralTab = By.id("settings-general_tab");
     private By settingsPermissionTab = By.id("settings-permissions_tab");
     private By settingsTranslationTab = By.id("settings-translation_tab");
@@ -65,6 +71,7 @@ public class ProjectBasePage extends BasePage {
 
     public ProjectVersionsPage gotoVersionsTab() {
         log.info("Click Versions tab");
+        waitForElementExists(versionsTabBody);
         clickWhenTabEnabled(waitForWebElement(versionsTab));
         waitForWebElement(By.id("versions"));
         return new ProjectVersionsPage(getDriver());
@@ -72,6 +79,7 @@ public class ProjectBasePage extends BasePage {
 
     public ProjectMaintainersPage gotoMaintainersTab() {
         log.info("Click Maintainers tab");
+        waitForElementExists(maintainersTabBody);
         clickWhenTabEnabled(waitForWebElement(maintainersTab));
         waitForWebElement(By.id("maintainers"));
         return new ProjectMaintainersPage(getDriver());
@@ -79,6 +87,7 @@ public class ProjectBasePage extends BasePage {
 
     public ProjectAboutPage gotoAboutTab() {
         log.info("Click About tab");
+        waitForElementExists(aboutTabBody);
         clickWhenTabEnabled(waitForWebElement(aboutTab));
         waitForWebElement(By.id("about"));
         return new ProjectAboutPage(getDriver());
@@ -91,6 +100,7 @@ public class ProjectBasePage extends BasePage {
 
     public ProjectBasePage gotoSettingsTab() {
         log.info("Click Settings tab");
+        waitForElementExists(settingsTabBody);
         clickWhenTabEnabled(waitForWebElement(settingsTab));
         waitForWebElement(settingsTab);
         return new ProjectBasePage(getDriver());

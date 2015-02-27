@@ -31,6 +31,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.projectversion.VersionBasePage;
+import org.zanata.page.utility.NamedPredicate;
 
 /**
  * @author Damian Jansen <a
@@ -75,7 +76,7 @@ public class VersionDocumentsTab extends VersionBasePage {
         waitForWebElement(cancelUploadButton).click();
         waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
-            public boolean apply( WebDriver input) {
+            public boolean apply(WebDriver input) {
                 return !getDriver().findElement(By.id("file-upload-component"))
                         .isDisplayed();
             }
@@ -88,7 +89,7 @@ public class VersionDocumentsTab extends VersionBasePage {
     public VersionDocumentsTab enterFilePath(String filePath) {
         log.info("Enter file path {}", filePath);
         // Make the hidden input element slightly not hidden
-        ((JavascriptExecutor)getDriver())
+        getExecutor()
                 .executeScript("arguments[0].style.visibility = 'visible'; " +
                         "arguments[0].style.height = '1px'; " +
                         "arguments[0].style.width = '1px'; " +
@@ -113,7 +114,7 @@ public class VersionDocumentsTab extends VersionBasePage {
 
     public boolean sourceDocumentsContains(String document) {
         log.info("Query source documents contain {}", document);
-        for(String documentLabel : waitForAMoment()
+        for (String documentLabel : waitForAMoment()
                 .until(new Function<WebDriver, List<String>>() {
                     @Override
                     public List<String> apply(WebDriver input) {
@@ -159,9 +160,21 @@ public class VersionDocumentsTab extends VersionBasePage {
         return new VersionDocumentsTab(getDriver());
     }
 
+    public void expectSomeUploadItems() {
+        waitForAMoment().until(new NamedPredicate("expectUploadItem") {
+            @Override
+            public boolean apply(WebDriver input) {
+                return !getUploadListElements().isEmpty();
+            }
+        });
+    }
+
     private List<WebElement> getUploadListElements() {
-        return waitForWebElement(filesListPanel).findElement(By.tagName("ul"))
-                .findElements(By.tagName("li"));
+        @SuppressWarnings("unchecked")
+        List<WebElement> liElements = (List<WebElement>) getExecutor()
+                .executeScript(
+                        "return $('div.js-files-panel ul li')");
+        return liElements;
     }
 
     public String getUploadError() {

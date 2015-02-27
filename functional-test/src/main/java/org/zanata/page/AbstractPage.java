@@ -28,10 +28,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.StringDescription;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.zanata.util.ShortString;
 import org.zanata.util.WebElementUtil;
 
 import com.google.common.base.Function;
@@ -44,13 +46,12 @@ import com.google.common.base.Predicate;
 @Slf4j
 public class AbstractPage {
     private final WebDriver driver;
-    private final FluentWait<WebDriver> ajaxWaitForSec;
 
     public AbstractPage(final WebDriver driver) {
         PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10),
                 this);
         this.driver = driver;
-        ajaxWaitForSec = WebElementUtil.waitForAMoment(driver);
+        assert driver instanceof JavascriptExecutor;
         waitForPageSilence();
     }
 
@@ -73,12 +74,24 @@ public class AbstractPage {
         return driver;
     }
 
+    public JavascriptExecutor getExecutor() {
+        return (JavascriptExecutor) getDriver();
+    }
+
     public String getUrl() {
         return driver.getCurrentUrl();
     }
 
+    protected void logWaiting(String msg) {
+        log.info("Waiting for {}", msg);
+    }
+
+    protected void logFinished(String msg) {
+        log.debug("Finished {}", msg);
+    }
+
     public FluentWait<WebDriver> waitForAMoment() {
-        return ajaxWaitForSec;
+        return WebElementUtil.waitForAMoment(driver);
     }
 
     /**
@@ -93,29 +106,62 @@ public class AbstractPage {
     }
 
     public Alert switchToAlert() {
-        return waitForAMoment().until(new Function<WebDriver, Alert>() {
+        return waitForAMoment().withMessage("alert").until(new Function<WebDriver, Alert>() {
             @Override
             public Alert apply(WebDriver driver) {
                 try {
                     return getDriver().switchTo().alert();
-                }
-                catch (NoAlertPresentException noAlertPresent) {
+                } catch (NoAlertPresentException noAlertPresent) {
                     return null;
                 }
             }
         });
     }
 
+    /**
+     * @deprecated Use the overload which includes a message
+     */
+    @Deprecated
     protected <P extends AbstractPage> P refreshPageUntil(P currentPage,
             Predicate<WebDriver> predicate) {
-        waitForAMoment().until(predicate);
+        return refreshPageUntil(currentPage, predicate, null);
+    }
+
+    /**
+     * @param currentPage
+     * @param predicate
+     * @param message description of predicate
+     * @param <P>
+     * @return
+     */
+    protected <P extends AbstractPage> P refreshPageUntil(P currentPage,
+            Predicate<WebDriver> predicate, String message) {
+        waitForAMoment().withMessage(message).until(predicate);
         PageFactory.initElements(driver, currentPage);
         return currentPage;
     }
 
+    /**
+     * @deprecated Use the overload which includes a message
+     */
+    @Deprecated
     protected <P extends AbstractPage, T> T refreshPageUntil(P currentPage,
             Function<WebDriver, T> function) {
-        T done = waitForAMoment().until(function);
+        return refreshPageUntil(currentPage, function, null);
+    }
+
+    /**
+     *
+     * @param currentPage
+     * @param function
+     * @param message description of function
+     * @param <P>
+     * @param <T>
+     * @return
+     */
+    protected <P extends AbstractPage, T> T refreshPageUntil(P currentPage,
+            Function<WebDriver, T> function, String message) {
+        T done = waitForAMoment().withMessage(message).until(function);
         PageFactory.initElements(driver, currentPage);
         return done;
     }
@@ -131,59 +177,120 @@ public class AbstractPage {
      */
     public <T> void
             waitFor(final Callable<T> callable, final Matcher<T> matcher) {
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                try {
-                    T result = callable.call();
-                    if (!matcher.matches(result)) {
-                        matcher.describeMismatch(result,
-                                new Description.NullDescription());
+        waitForAMoment().withMessage(StringDescription.toString(matcher)).until(
+                new Predicate<WebDriver>() {
+                    @Override
+                    public boolean apply(WebDriver input) {
+                        try {
+                            T result = callable.call();
+                            if (!matcher.matches(result)) {
+                                matcher.describeMismatch(result,
+                                        new Description.NullDescription());
+                            }
+                            return matcher.matches(result);
+                        } catch (Exception e) {
+                            log.warn("exception", e);
+                            return false;
+                        }
                     }
-                    return matcher.matches(result);
-                }
-                catch (Exception e) {
-                    log.warn("exception", e);
-                    return false;
-                }
-            }
-        });
+                });
     }
 
     /**
-     * Wait for jQuery and Ajax calls to be 0
-     * If either are not defined, they can be assumed to be 0.
+     * Normally a page has no outstanding ajax requests when it has
+     * finished an operation, but some pages use long polling to
+     * "push" changes to the user, eg for the editor's event service.
+     * @return
+     */
+    protected int getExpectedBackgroundRequests() {
+        return 0;
+    }
+
+
+    public void execAndWaitForNewPage(Runnable runnable) {
+        final WebElement oldPage = driver.findElement(By.tagName("html"));
+        runnable.run();
+        String msg = "new page load";
+        logWaiting(msg);
+        waitForAMoment().withMessage(msg).until(
+                new Predicate<WebDriver>() {
+                    @Override
+                    public boolean apply(WebDriver input) {
+                        try {
+                            // ignore result
+                            oldPage.getAttribute("class");
+                            // if we get here, the old page is still there
+                            return false;
+                        } catch (StaleElementReferenceException e) {
+                            // http://www.obeythetestinggoat.com/how-to-get-selenium-to-wait-for-page-load-after-a-click.html
+                            //
+                            // This exception means the new page has loaded
+                            // (or started to).
+                            String script = "return document.readyState === " +
+                                    "'complete' && window.javascriptFinished";
+                            Boolean documentComplete =
+                                    (Boolean) getExecutor().executeScript(
+                                            script);
+                            // TODO wait for ajax?
+                            // NB documentComplete might be null/undefined
+                            return documentComplete == Boolean.TRUE;
+                        }
+                    }
+                });
+        logFinished(msg);
+    }
+
+    /**
+     * Wait for any AJAX and timeout requests to return.
+     */
+    public void waitForAbsolutePageSilence() {
+        waitForPageSilence(true);
+    }
+
+    /**
+     * Wait for any AJAX (but not timeout) requests to return.
      */
     public void waitForPageSilence() {
-        // Wait for jQuery calls to be 0
-        waitForAMoment().until(new Predicate<WebDriver>() {
+        waitForPageSilence(false);
+    }
+
+    /**
+     * Wait for any AJAX/timeout requests to return.
+     */
+    private void waitForPageSilence(boolean includingTimeouts) {
+        final String script;
+        if (includingTimeouts) {
+            script = "return XMLHttpRequest.active + window.timeoutCounter";
+        } else {
+            script = "return XMLHttpRequest.active";
+        }
+        // Wait for AJAX/timeout requests to be 0
+        waitForAMoment().withMessage("page silence").until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                int ajaxCalls;
-                int jQueryCalls;
-                try {
-                    jQueryCalls = Integer.parseInt(
-                            ((JavascriptExecutor) getDriver())
-                                    .executeScript("return jQuery.active")
-                                    .toString()
-                    );
+                Long outstanding = (Long) getExecutor().executeScript(script);
+                if (outstanding == null) {
+                    if (log.isWarnEnabled()) {
+                        String url = getDriver().getCurrentUrl();
+                        String pageSource = ShortString.shorten(getDriver().getPageSource(), 2000);
+                        log.warn("XMLHttpRequest.active is null. Is AjaxCounterBean missing? URL: {}\nPartial page source follows:\n{}", url, pageSource);
+                    }
+                    return true;
                 }
-                catch (WebDriverException jCall) {
-                    jQueryCalls = 0;
+                if (outstanding < 0) {
+                    throw new RuntimeException("XMLHttpRequest.active " +
+                            "and/or window.timeoutCounter " +
+                            "is negative.  Please ensure that " +
+                            "AjaxCounterBean's script is run before " +
+                            "any other JavaScript in the page.");
                 }
-
-                try {
-                    ajaxCalls = Integer.parseInt(
-                            ((JavascriptExecutor) getDriver())
-                                    .executeScript(
-                                            "return Ajax.activeRequestCount")
-                                    .toString()
-                    );
+                int expected = getExpectedBackgroundRequests();
+                if (outstanding < expected) {
+                    log.warn("Expected at least {} background requests, but actual count is {}", expected, outstanding, new Throwable());
+                } else {
+                    log.debug("Waiting: outstanding = {}, expected = {}", outstanding, expected);
                 }
-                catch (WebDriverException jCall) {
-                    ajaxCalls = 0;
-                }
-                return ajaxCalls + jQueryCalls == 0;
+                return outstanding <= expected;
             }
         });
     }
@@ -194,13 +301,15 @@ public class AbstractPage {
      * @return target WebElement
      */
     public WebElement waitForWebElement(final By elementBy) {
+        String msg = "element ready " + elementBy;
+        logWaiting(msg);
         waitForPageSilence();
-        return waitForAMoment().until(new Function<WebDriver, WebElement>() {
+        return waitForAMoment().withMessage(msg).until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver input) {
-                WebElement targetElement = waitForElementExists(elementBy);
+                WebElement targetElement = getDriver().findElement(elementBy);
                 if (!elementIsReady(targetElement)) {
-                    throw new NoSuchElementException("Waiting for element");
+                    return null;
                 }
                 return targetElement;
             }
@@ -215,14 +324,15 @@ public class AbstractPage {
      */
     public WebElement waitForWebElement(final WebElement parentElement,
                                         final By elementBy) {
+        String msg = "element ready " + elementBy;
+        logWaiting(msg);
         waitForPageSilence();
-        return waitForAMoment().until(new Function<WebDriver, WebElement>() {
+        return waitForAMoment().withMessage(msg).until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver input) {
-                WebElement targetElement = waitForElementExists(parentElement,
-                        elementBy);
+                WebElement targetElement = parentElement.findElement(elementBy);
                 if (!elementIsReady(targetElement)) {
-                    throw new NoSuchElementException("Waiting for element");
+                    return null;
                 }
                 return targetElement;
             }
@@ -237,8 +347,11 @@ public class AbstractPage {
      * @return target WebElement
      */
     public WebElement waitForElementExists(final By elementBy) {
+        String msg = "element exists " + elementBy;
+        logWaiting(msg);
         waitForPageSilence();
-        return waitForAMoment().until(new Function<WebDriver, WebElement>() {
+        return waitForAMoment().withMessage(msg).until(
+                new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver input) {
                 return getDriver().findElement(elementBy);
@@ -255,8 +368,10 @@ public class AbstractPage {
      */
     public WebElement waitForElementExists(final WebElement parentElement,
                                            final By elementBy) {
+        String msg = "element exists " + elementBy;
+        logWaiting(msg);
         waitForPageSilence();
-        return waitForAMoment().until(new Function<WebDriver, WebElement>() {
+        return waitForAMoment().withMessage(msg).until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver input) {
                 return parentElement.findElement(elementBy);

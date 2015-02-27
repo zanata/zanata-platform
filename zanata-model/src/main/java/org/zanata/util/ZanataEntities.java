@@ -25,6 +25,7 @@ import java.util.List;
 import org.zanata.model.Activity;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountActivationKey;
+import org.zanata.model.HAccountResetPasswordKey;
 import org.zanata.model.HDocument;
 import org.zanata.model.HDocumentHistory;
 import org.zanata.model.HGlossaryEntry;
@@ -33,6 +34,7 @@ import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
+import org.zanata.model.HPersonEmailValidationKey;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTermComment;
@@ -41,6 +43,7 @@ import org.zanata.model.HTextFlowHistory;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
 import org.zanata.model.HTextFlowTargetReviewComment;
+import org.zanata.model.WebHook;
 import org.zanata.model.po.HPoHeader;
 import org.zanata.model.po.HPoTargetHeader;
 import org.zanata.model.po.HPotEntryData;
@@ -90,10 +93,12 @@ public class ZanataEntities {
         builder.add(HLocaleMember.class, HLocale.class);
         builder.add(HIterationGroup.class);
         // project
-        builder.add(HProjectIteration.class, HProject.class);
+        builder.add(HProjectIteration.class, WebHook.class, HProject.class);
         // account
         builder.add(HAccountActivationKey.class, HCredentials.class,
+                HPersonEmailValidationKey.class,
                 HPerson.class,
+                HAccountResetPasswordKey.class,
                 HAccount.class);
 
         entitiesForDelete = builder.build();

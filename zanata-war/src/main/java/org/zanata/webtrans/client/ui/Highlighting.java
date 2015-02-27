@@ -22,15 +22,18 @@ package org.zanata.webtrans.client.ui;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.dom.client.Element;
+import org.zanata.util.CoverageIgnore;
 
 public class Highlighting {
 
+    @CoverageIgnore("JSNI")
     public static native void syntaxHighlight(String text, Element elem)/*-{
     elem.innerHTML = '';
     $wnd.CodeMirror.runMode(text, "visibleSpace", elem);
     }-*/;
 
     // From JavaScript on http://www.nsftools.com/misc/SearchAndHighlight.htm
+    @CoverageIgnore("JSNI")
     public static native void searchHighlight(String searchTerm, Element elem)/*-{
     // the highlightStartTag and highlightEndTag parameters are optional
     var bodyText = elem.innerHTML;
@@ -76,6 +79,7 @@ public class Highlighting {
         return diffsToHtml(diffs);
     }
 
+    @CoverageIgnore("JSNI")
     private static native JavaScriptObject diff(String text1, String text2,
             boolean cleanupSemantic)/*-{
     if (!$wnd.diffMatchPatch) {
@@ -92,6 +96,7 @@ public class Highlighting {
     }-*/;
 
     // modified diff_prettyHtml() from diff_match_patch.js
+    @CoverageIgnore("JSNI")
     private static native String diffsToHtml(JavaScriptObject diffs)/*-{
     var html = [];
     var pattern_amp = /&/g;
@@ -125,6 +130,7 @@ public class Highlighting {
 
     // DIFF_DELETE text is hidden, DIFF_EQUAL text is highlighted, and
     // DIFF_INSERT text is shown plain
+    @CoverageIgnore("JSNI")
     private static native String diffsHighlight(JavaScriptObject diffs)/*-{
     var html = [];
     var pattern_amp = /&/g;

@@ -80,8 +80,7 @@ public class DownloadAllFilesHandler extends
                         action.getProjectSlug(), action.getVersionSlug(),
                         action.getLocaleId(), Identity.instance().getCredentials()
                                 .getUsername(), handle);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw new ActionException(e);
             }
 

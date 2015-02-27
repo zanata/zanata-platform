@@ -22,34 +22,41 @@ package org.zanata.workflow;
 
 import java.util.List;
 
-import org.zanata.page.administration.ManageLanguagePage;
-import org.zanata.page.administration.ManageLanguageTeamMemberPage;
+import org.zanata.page.languages.LanguagePage;
+import org.zanata.page.languages.LanguagesPage;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class LanguageWorkFlow extends AbstractWebWorkFlow {
 
-    public ManageLanguageTeamMemberPage addLanguageAndJoin(String localeId) {
-        ManageLanguageTeamMemberPage teamMemberPage = addLanguage(localeId)
-                .manageTeamMembersFor(localeId);
-        if (teamMemberPage.getMemberUsernames().contains("admin")) {
+    public LanguagePage addLanguageAndJoin(String localeId) {
+
+        LanguagePage languagePage = goToHome().goToLanguages().gotoLanguagePage(
+            localeId).gotoMembersTab();
+
+        if (languagePage.getMemberUsernames().contains("admin")) {
             log.warn("admin has already joined the language [{}]", localeId);
-            return teamMemberPage;
+            return languagePage;
         }
-        return teamMemberPage.joinLanguageTeam();
+        return languagePage.joinLanguageTeam();
     }
 
-    public ManageLanguagePage addLanguage(String localeId) {
-        ManageLanguagePage manageLanguagePage =
-                goToHome().goToAdministration().goToManageLanguagePage();
-        List<String> locales = manageLanguagePage.getLanguageLocales();
+    public LanguagesPage addLanguage(String localeId) {
+        LanguagesPage languagesPage = goToHome().goToLanguages();
+        List<String> locales = languagesPage.getLanguageLocales();
         if (locales.contains(localeId)) {
-            log.warn("{} has already been added, enabling by default", localeId);
-            return manageLanguagePage.enableLanguageByDefault(localeId);
+            log.warn("{} has already been added, enabling by default",
+                localeId);
+            languagesPage.gotoLanguagePage(localeId).gotoSettingsTab()
+                .enableLanguageByDefault(true).saveSettings();
+            return goToHome().goToLanguages();
         }
         // continue to add the new language
-        return manageLanguagePage.addNewLanguage().enableLanguageByDefault()
-                .inputLanguage(localeId).saveLanguage();
+        return languagesPage.clickMoreActions()
+            .addNewLanguage()
+            .enableLanguageByDefault(true)
+            .enterSearchLanguage(localeId)
+            .saveLanguage();
     }
 }

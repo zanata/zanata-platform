@@ -37,7 +37,9 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.LocaleSelector;
+import org.jboss.seam.security.NotLoggedInException;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.jboss.seam.web.ServletContexts;
 import org.zanata.common.LocaleId;
 import org.zanata.email.EmailStrategy;
 import org.zanata.model.HAccount;
@@ -45,12 +47,14 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
 import org.zanata.seam.scope.ConversationScopeMessages;
+import org.zanata.security.UserRedirectBean;
 import org.zanata.service.EmailService;
 import org.zanata.service.LocaleService;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 
 import org.zanata.email.ContactAdminEmailStrategy;
@@ -96,7 +100,7 @@ public class SendEmailAction implements Serializable {
     @In
     private EmailService emailServiceImpl;
 
-    @In(required = true, value = JpaIdentityStore.AUTHENTICATED_USER)
+    @In(value = JpaIdentityStore.AUTHENTICATED_USER, required = false)
     private HAccount authenticatedAccount;
 
     @In
@@ -139,6 +143,12 @@ public class SendEmailAction implements Serializable {
     @In
     private ConversationScopeMessages conversationScopeMessages;
 
+    @In
+    private UrlUtil urlUtil;
+
+    @In
+    private UserRedirectBean userRedirect;
+
     private List<HPerson> groupMaintainers;
 
     public static final String SUCCESS = "success";
@@ -147,8 +157,11 @@ public class SendEmailAction implements Serializable {
     @Create
     public void onCreate() {
         if (authenticatedAccount == null) {
-            log.error("SendEmailAction failed to load authenticated account");
-            return;
+            log.warn("accessing SendEmailAction without authenticated account");
+            String encodedLocalUrl = urlUtil.getEncodedLocalUrl(
+                    ServletContexts.instance().getRequest());
+            userRedirect.setUrl(UrlUtil.decodeString(encodedLocalUrl));
+            throw new NotLoggedInException();
         }
         fromName = authenticatedAccount.getPerson().getName();
         fromLoginName = authenticatedAccount.getUsername();
@@ -175,92 +188,111 @@ public class SendEmailAction implements Serializable {
         localeSelector.setLocale(new Locale("en"));
 
         try {
-            if (emailType.equals(EMAIL_TYPE_CONTACT_ADMIN)) {
-                EmailStrategy strategy = new ContactAdminEmailStrategy(
-                        fromLoginName, fromName, replyEmail,
-                        subject, htmlMessage);
+            switch (emailType) {
+                case EMAIL_TYPE_CONTACT_ADMIN: {
+                    EmailStrategy strategy = new ContactAdminEmailStrategy(
+                            fromLoginName, fromName, replyEmail,
+                            subject, htmlMessage);
 
-                String msg = emailServiceImpl.sendToAdmins(strategy);
+                    String msg = emailServiceImpl.sendToAdmins(strategy);
 
-                FacesMessages.instance().add(msg);
-                conversationScopeMessages.setMessage(
-                    FacesMessage.SEVERITY_INFO, msg);
-                return SUCCESS;
-            } else if (emailType.equals(EMAIL_TYPE_CONTACT_COORDINATOR)) {
-                String localeNativeName = locale.retrieveNativeName();
-
-                EmailStrategy strategy = new ContactLanguageCoordinatorEmailStrategy(
-                        fromLoginName, fromName, replyEmail, subject,
-                        locale.getLocaleId().getId(),
-                        localeNativeName, htmlMessage);
-                String msg = emailServiceImpl.sendToLanguageCoordinators(
-                        locale, strategy);
-
-                FacesMessages.instance().add(msg);
-                conversationScopeMessages.setMessage(
-                    FacesMessage.SEVERITY_INFO, msg);
-                return SUCCESS;
-            } else if (emailType.equals(EMAIL_TYPE_REQUEST_JOIN)) {
-                String localeNativeName = locale.retrieveNativeName();
-
-                EmailStrategy strategy = new RequestToJoinLanguageEmailStrategy(
-                        fromLoginName, fromName, replyEmail,
-                        locale.getLocaleId().getId(),
-                        localeNativeName, htmlMessage,
-                        languageJoinUpdateRoleAction.getRequestAsTranslator(),
-                        languageJoinUpdateRoleAction.getRequestAsReviewer(),
-                        languageJoinUpdateRoleAction.getRequestAsCoordinator());
-                String msg = emailServiceImpl.sendToLanguageCoordinators(
-                        locale, strategy);
-                FacesMessages.instance().add(msg);
-                conversationScopeMessages.setMessage(
-                    FacesMessage.SEVERITY_INFO, msg);
-                return SUCCESS;
-            } else if (emailType.equals(EMAIL_TYPE_REQUEST_ROLE)) {
-                String localeNativeName = locale.retrieveNativeName();
-
-                EmailStrategy strategy = new RequestRoleLanguageEmailStrategy(
-                        fromLoginName, fromName, replyEmail,
-                        locale.getLocaleId().getId(),
-                        localeNativeName, htmlMessage,
-                        languageJoinUpdateRoleAction.requestingTranslator(),
-                        languageJoinUpdateRoleAction.requestingReviewer(),
-                        languageJoinUpdateRoleAction.requestingCoordinator());
-                String msg = emailServiceImpl.sendToLanguageCoordinators(
-                        locale, strategy);
-                FacesMessages.instance().add(msg);
-                conversationScopeMessages.setMessage(
-                    FacesMessage.SEVERITY_INFO, msg);
-                return SUCCESS;
-            } else if (emailType.equals(EMAIL_TYPE_REQUEST_TO_JOIN_GROUP)) {
-                String groupSlug = versionGroupJoinAction.getSlug();
-                String groupName = versionGroupJoinAction.getGroupName();
-                Collection<ProjectIterationId> projectIterIds = Lists.newArrayList();
-
-                for (VersionGroupJoinAction.SelectableProject version : versionGroupJoinAction.getProjectVersions()) {
-                    if (version.isSelected()) {
-                        HProjectIteration projIter =
-                                version.getProjectIteration();
-                        projectIterIds.add(new ProjectIterationId(
-                                projIter.getProject().getSlug(),
-                                projIter.getSlug(),
-                                projIter.getProjectType()));
-                    }
+                    FacesMessages.instance().add(msg);
+                    conversationScopeMessages.setMessage(
+                            FacesMessage.SEVERITY_INFO, msg);
+                    return SUCCESS;
                 }
+                case EMAIL_TYPE_CONTACT_COORDINATOR: {
+                    String localeNativeName = locale.retrieveNativeName();
 
-                EmailStrategy strategy = new RequestToJoinVersionGroupEmailStrategy(
-                        fromLoginName, fromName, replyEmail,
-                        groupName, groupSlug,
-                        projectIterIds, htmlMessage);
-                String msg =
-                        emailServiceImpl
-                                .sendToVersionGroupMaintainers(
-                                        groupMaintainers, strategy);
-                conversationScopeMessages.setMessage(
-                    FacesMessage.SEVERITY_INFO, msg);
-                return SUCCESS;
-            } else {
-                throw new Exception("Invalid email type: " + emailType);
+                    EmailStrategy strategy =
+                            new ContactLanguageCoordinatorEmailStrategy(
+                                    fromLoginName, fromName, replyEmail,
+                                    subject,
+                                    locale.getLocaleId().getId(),
+                                    localeNativeName, htmlMessage);
+                    String msg = emailServiceImpl.sendToLanguageCoordinators(
+                            locale, strategy);
+
+                    FacesMessages.instance().add(msg);
+                    conversationScopeMessages.setMessage(
+                            FacesMessage.SEVERITY_INFO, msg);
+                    return SUCCESS;
+                }
+                case EMAIL_TYPE_REQUEST_JOIN: {
+                    String localeNativeName = locale.retrieveNativeName();
+
+                    EmailStrategy strategy =
+                            new RequestToJoinLanguageEmailStrategy(
+                                    fromLoginName, fromName, replyEmail,
+                                    locale.getLocaleId().getId(),
+                                    localeNativeName, htmlMessage,
+                                    languageJoinUpdateRoleAction
+                                            .getRequestAsTranslator(),
+                                    languageJoinUpdateRoleAction
+                                            .getRequestAsReviewer(),
+                                    languageJoinUpdateRoleAction
+                                            .getRequestAsCoordinator());
+                    String msg = emailServiceImpl.sendToLanguageCoordinators(
+                            locale, strategy);
+                    FacesMessages.instance().add(msg);
+                    conversationScopeMessages.setMessage(
+                            FacesMessage.SEVERITY_INFO, msg);
+                    return SUCCESS;
+                }
+                case EMAIL_TYPE_REQUEST_ROLE: {
+                    String localeNativeName = locale.retrieveNativeName();
+
+                    EmailStrategy strategy =
+                            new RequestRoleLanguageEmailStrategy(
+                                    fromLoginName, fromName, replyEmail,
+                                    locale.getLocaleId().getId(),
+                                    localeNativeName, htmlMessage,
+                                    languageJoinUpdateRoleAction
+                                            .requestingTranslator(),
+                                    languageJoinUpdateRoleAction
+                                            .requestingReviewer(),
+                                    languageJoinUpdateRoleAction
+                                            .requestingCoordinator());
+                    String msg = emailServiceImpl.sendToLanguageCoordinators(
+                            locale, strategy);
+                    FacesMessages.instance().add(msg);
+                    conversationScopeMessages.setMessage(
+                            FacesMessage.SEVERITY_INFO, msg);
+                    return SUCCESS;
+                }
+                case EMAIL_TYPE_REQUEST_TO_JOIN_GROUP: {
+                    String groupSlug = versionGroupJoinAction.getSlug();
+                    String groupName = versionGroupJoinAction.getGroupName();
+                    Collection<ProjectIterationId> projectIterIds =
+                            Lists.newArrayList();
+
+                    for (VersionGroupJoinAction.SelectableProject version : versionGroupJoinAction
+                            .getProjectVersions()) {
+                        if (version.isSelected()) {
+                            HProjectIteration projIter =
+                                    version.getProjectIteration();
+                            projectIterIds.add(new ProjectIterationId(
+                                    projIter.getProject().getSlug(),
+                                    projIter.getSlug(),
+                                    projIter.getProjectType()));
+                        }
+                    }
+
+                    EmailStrategy strategy =
+                            new RequestToJoinVersionGroupEmailStrategy(
+                                    fromLoginName, fromName, replyEmail,
+                                    groupName, groupSlug,
+                                    projectIterIds, htmlMessage);
+                    String msg =
+                            emailServiceImpl
+                                    .sendToVersionGroupMaintainers(
+                                            groupMaintainers, strategy);
+                    conversationScopeMessages.setMessage(
+                            FacesMessage.SEVERITY_INFO, msg);
+                    return SUCCESS;
+                }
+                default:
+                    throw new Exception("Invalid email type: " + emailType);
             }
         } catch (Exception e) {
             FacesMessages.instance().add(
@@ -276,9 +308,6 @@ public class SendEmailAction implements Serializable {
         }
     }
 
-    /**
-     * @return string 'canceled'
-     */
     public void cancel() {
         log.info(
                 "Canceled sending email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}'",

@@ -21,12 +21,17 @@
 package org.zanata.page.languages;
 
 import lombok.extern.slf4j.Slf4j;
+
+import org.apache.commons.codec.language.bm.Languages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
+import org.zanata.page.administration.AddLanguagePage;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,7 +40,11 @@ import java.util.List;
 @Slf4j
 public class LanguagesPage extends BasePage {
 
-    private By languagesList = By.id("tribesForm:latestTribes");
+    private By moreActions = By.id("more-actions");
+
+    private By addLanguageLink = By.linkText("Add New Language");
+
+    private By enabledByDefaultLabel = By.className("label");
 
     public LanguagesPage(WebDriver driver) {
         super(driver);
@@ -43,19 +52,70 @@ public class LanguagesPage extends BasePage {
 
     public LanguagePage selectLanguage(String language) {
         log.info("Select {} from the language list", language);
-        List<TableRow> tableRowList = WebElementUtil
-                .getTableRows(getDriver(), waitForWebElement(languagesList));
-        boolean clicked = false;
-        for (TableRow tableRow : tableRowList) {
-            if (tableRow.getCells().get(0).getText().equals(language)) {
-                tableRow.getCells().get(0).findElement(By.tagName("a")).click();
-                clicked = true;
-                break;
-            }
-        }
-        if (!clicked) {
-            throw new RuntimeException(language + " not found");
-        }
+        findRowByLocale(language).click();
         return new LanguagePage(getDriver());
     }
+
+    private WebElement findRowByLocale(final String localeId) {
+        for (WebElement row : getRows()) {
+            if (getShortLocale(row).equals(localeId)) {
+                return row;
+            }
+        }
+        throw new RuntimeException("Did not find locale " + localeId);
+    }
+
+    private String getShortLocale(WebElement row) {
+        String locale = getListEntryLocale(row);
+        return locale.substring(0, locale.indexOf('[')).trim();
+    }
+
+    private List<WebElement> getRows() {
+        return waitForWebElement(waitForElementExists(By.id("languageForm")),
+                By.className("list--stats"))
+                .findElements(By.tagName("li"));
+    }
+
+    private String getListEntryLocale(WebElement listElement) {
+        return listElement.findElement(By.className("list__item__meta")).getText().trim();
+    }
+
+    public List<String> getLanguageLocales() {
+        log.info("Query list of languages");
+        List<String> names = new ArrayList<>();
+        for (WebElement listItem : getRows()) {
+            names.add(getShortLocale(listItem));
+        }
+        return names;
+    }
+
+    public LanguagesPage clickMoreActions() {
+        log.info("Click More Actions dropdown");
+        waitForWebElement(moreActions).click();
+        return new LanguagesPage(getDriver());
+    }
+
+    public AddLanguagePage addNewLanguage() {
+        log.info("Click Add New Language");
+        waitForWebElement(addLanguageLink).click();
+        return new AddLanguagePage(getDriver());
+    }
+
+    public LanguagePage gotoLanguagePage(String localeId) {
+        log.info("Click language {}", localeId);
+        findRowByLocale(localeId).click();
+        return new LanguagePage(getDriver());
+    }
+
+    public boolean languageIsEnabledByDefault(String localeId) {
+        log.info("Query is language enabled by default {}", localeId);
+        // Search for enabledByDefaultLabel label
+        for (WebElement label: findRowByLocale(localeId).findElements(enabledByDefaultLabel)) {
+            if (label.getText().trim().equals("Default")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

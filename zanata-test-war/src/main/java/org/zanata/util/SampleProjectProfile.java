@@ -50,6 +50,7 @@ import com.github.huangp.entityunit.maker.FixedValueMaker;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.ibm.icu.util.ULocale;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -74,33 +75,11 @@ public class SampleProjectProfile {
     private HPerson admin;
 
     public void deleteExceptEssentialData() {
-        EntityCleaner.deleteAll(entityManager, Lists.<Class>newArrayList(
-                TransMemoryUnitVariant.class, TransMemoryUnit.class,
-                TransMemory.class,
-                Activity.class,
-                // glossary
-                HTermComment.class, HGlossaryTerm.class, HGlossaryEntry.class,
-                // tex flows and targets
-                HPoTargetHeader.class, HTextFlowTargetHistory.class,
-                HTextFlowTarget.class, HTextFlow.class,
-                // documents
-                HDocumentHistory.class, HDocument.class,
-                // locales
-                HLocaleMember.class, HLocale.class,
-                // version group
-                HIterationGroup.class,
-                // project
-                HProjectIteration.class, HProject.class,
-                // account
-                HAccountActivationKey.class, HPersonEmailValidationKey.class,
-                HAccountResetPasswordKey.class, HCredentials.class,
-                HPerson.class, HAccount.class,
-                // account role
-                HRoleAssignmentRule.class
-        ));
-        enUSLocale =
-                forLocale(false, LocaleId.EN_US).makeAndPersist(entityManager,
-                        HLocale.class);
+        EntityCleaner.deleteAll(entityManager, ZanataEntities
+                .entitiesForRemoval());
+
+        ULocale uLocale = new ULocale(LocaleId.EN_US.getId());
+        enUSLocale = makeLanguage(false, LocaleId.EN_US);
 
         List<HApplicationConfiguration> configurations = entityManager
                 .createQuery("from HApplicationConfiguration",
@@ -147,28 +126,41 @@ public class SampleProjectProfile {
     }
 
     public void makeSampleLanguages() {
-        makeLanguage(LocaleId.FR);
+        makeLanguage(true, LocaleId.FR);
 
-        makeLanguage(new LocaleId("hi"));
+        makeLanguage(true, new LocaleId("hi"));
 
-        makeLanguage(new LocaleId("pl"));
+        makeLanguage(true, new LocaleId("pl"));
     }
 
-    public void makeLanguage(LocaleId localeId) {
-        forLocale(true, localeId).makeAndPersist(entityManager,
-                HLocale.class);
+    public HLocale makeLanguage(boolean enabledByDefault, LocaleId localeId,
+            String displayName, String nativeName) {
+        return forLocale(enabledByDefault, localeId, displayName, nativeName)
+                .makeAndPersist(entityManager,
+                    HLocale.class);
+    }
+
+    public HLocale makeLanguage(boolean enabledByDefault, LocaleId localeId) {
+        ULocale uLocale = new ULocale(localeId.getId());
+        return forLocale(enabledByDefault, localeId, uLocale.getDisplayName(),
+            uLocale.getDisplayName(uLocale)).makeAndPersist(entityManager,
+            HLocale.class);
     }
 
     private static EntityMaker forLocale(boolean enabledByDefault,
-            LocaleId localeId) {
+            LocaleId localeId, String displayName, String nativeName) {
         return EntityMakerBuilder
                 .builder()
                 .addFieldOrPropertyMaker(HLocale.class, "active",
-                        FixedValueMaker.ALWAYS_TRUE_MAKER)
+                    FixedValueMaker.ALWAYS_TRUE_MAKER)
+                .addFieldOrPropertyMaker(HLocale.class, "displayName",
+                    FixedValueMaker.fix(displayName))
+                .addFieldOrPropertyMaker(HLocale.class, "nativeName",
+                    FixedValueMaker.fix(nativeName))
                 .addFieldOrPropertyMaker(HLocale.class, "enabledByDefault",
-                        FixedValueMaker.fix(enabledByDefault))
+                    FixedValueMaker.fix(enabledByDefault))
                 .addConstructorParameterMaker(HLocale.class, 0,
-                        FixedValueMaker.fix(localeId)).build();
+                    FixedValueMaker.fix(localeId)).build();
     }
 
     public void makeSampleUsers() {

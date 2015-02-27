@@ -1,0 +1,112 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  class="modal" id="zipDownloadProgressDialog" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
+
+  <script>
+    $(document).ready(function() {
+      enableDownload(true);
+    });
+
+    function enableDownload(enable) {
+      if(enable) {
+        jQuery('#download-button').removeClass('is-hidden');
+        zanata.loader.deactivate('#zip-download-loader');
+      } else {
+        jQuery('#download-button').addClass('is-hidden');
+        zanata.loader.activate('#zip-download-loader');
+
+      }
+    }
+  </script>
+
+  <s:div id="zip-download-dialog">
+    <a4j:jsFunction name="cancelDownload" oncomplete="enableDownload(true)"
+      action="#{projectIterationZipFileAction.cancelFileDownload}"
+      render="download-progress" limitRender="true"/>
+
+    <div class="modal__dialog l--constrain-medium">
+      <header class="modal__header">
+        <h2 class="modal__title">
+          #{msgs['jsf.iteration.files.DownloadAllHeader']}
+        </h2>
+        <button type="button"
+          class="modal__close button--link"
+          data-dismiss="modal" onclick="cancelDownload();return false;">
+          <i class="i i--huge i--cancel"></i>
+        </button>
+      </header>
+
+      <h:form styleClass="l--push-bottom-0" id="zipDownloadForm">
+        <div class="modal__content l--pad-all-quarter l--push-h-half">
+
+          <div class="l--pad-top-half form__item txt--understated"
+            id="downloadDialogMsg"></div>
+
+          <s:div styleClass="l--pad-top-half form__item" id="download-progress">
+            <s:fragment
+              rendered="#{projectIterationZipFileAction.zipFilePrepHandle ne null and not projectIterationZipFileAction.zipFilePrepHandle.done}">
+              <a4j:poll render="download-progress" interval="500"
+                enabled="#{projectIterationZipFileAction.zipFilePrepHandle ne null and not projectIterationZipFileAction.zipFilePrepHandle.done}"/>
+
+              <ul class="list--panel bg--higher">
+                <li>
+                  <div class="list__item__content">
+                    <div class="list__item__info">
+                      <span class="list__title">
+                        #{msgs.format('jsf.generatezip.ProgressLabel',
+                          projectIterationZipFileAction.zipFilePrepHandle.currentProgress,
+                          projectIterationZipFileAction.zipFilePrepHandle.maxProgress)}
+                      </span>
+                    </div>
+                    <div class="list__item__actions">
+                      <span class="txt--meta">#{projectIterationZipFileAction.completedPercentage}</span>
+                    </div>
+                  </div>
+                  <div class="progress-bar">
+                    <span class="progress-bar__item"></span>
+                    <span class="progress-bar__success" style="width:#{projectIterationZipFileAction.completedPercentage}"></span>
+                  </div>
+                </li>
+              </ul>
+            </s:fragment>
+
+            <s:fragment
+              rendered="#{projectIterationZipFileAction.zipFilePrepHandle.done}">
+              <script type="text/javascript">
+                window.location =
+                  "#{facesContext.externalContext.requestContextPath}/rest/file/download/#{projectIterationZipFileAction.zipFilePrepHandle.getResult()}";
+                enableDownload(true);
+                zanata.modal.hide('#zipDownloadProgressDialog');
+              </script>
+            </s:fragment>
+          </s:div>
+        </div>
+
+        <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
+          <div class="g--tight">
+            <div class="g__item w--2-3"/>
+            <div class="g__item w--1-3 txt--align-right">
+              <button id="cancel" onclick="cancelDownload();return false;"
+                class="cancel button--link l--push-right-half"
+                data-dismiss="modal">
+                #{msgs['jsf.Cancel']}
+              </button>
+
+              <button id="download-button" class="button button--primary" onclick="enableDownload(false);downloadZip();return false">
+                #{msgs['jsf.iteration.files.Download']}
+              </button>
+
+              <zanata:loader layout="inline" jsHandle="true"
+                type="loader--small" id="zip-download-loader"/>
+
+            </div>
+          </div>
+        </footer>
+      </h:form>
+    </div>
+  </s:div>
+</div>

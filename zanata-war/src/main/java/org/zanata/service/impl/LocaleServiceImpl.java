@@ -120,8 +120,10 @@ public class LocaleServiceImpl implements LocaleService {
 
     public List<HLocale> getAllLocales() {
         List<HLocale> hSupportedLanguages = localeDAO.findAll();
-        if (hSupportedLanguages == null)
-            return new ArrayList<HLocale>();
+        if (hSupportedLanguages == null) {
+            return Collections.EMPTY_LIST;
+        }
+        Collections.sort(hSupportedLanguages, ComparatorUtil.LOCALE_COMPARATOR);
         return hSupportedLanguages;
     }
 

@@ -93,16 +93,14 @@
                   <span class="is-hidden--s i__text--right">#{msgs['jsf.dashboard.activity.title']}</span>
                 </a>
               </li>
-              <s:fragment rendered="#{dashboardAction.getUserMaintainedProjectsCount() > 0}">
-                <li>
-                  <a id="projects_tab"
-                    href="#{request.contextPath}/dashboard/projects"
-                    class="js-url-mod" data-content="#projects">
-                    <i class="i i--project"></i>
-                    <span class="is-hidden--s i__text--right">#{msgs['jsf.dashboard.projects.title']}</span>
-                  </a>
-                </li>
-              </s:fragment>
+              <li>
+                <a id="projects_tab"
+                  href="#{request.contextPath}/dashboard/projects"
+                  class="js-url-mod" data-content="#projects">
+                  <i class="i i--project"></i>
+                  <span class="is-hidden--s i__text--right">#{msgs['jsf.dashboard.projects.title']}</span>
+                </a>
+              </li>
               <li class="tab__end">
                 <a href="#{request.contextPath}/dashboard/settings"
                   id="settings_tab" class="js-url-mod" title="Account Settings"

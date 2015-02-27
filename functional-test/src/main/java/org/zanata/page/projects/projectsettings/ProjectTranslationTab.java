@@ -50,7 +50,9 @@ public class ProjectTranslationTab extends ProjectBasePage {
         log.info("Query is {} validation level {}", optionName, level);
         final String optionElementID = validationNames
                 .get(optionName).toString().concat(level);
-        WebElement option = waitForElementExists(By.id(optionElementID));
+        WebElement option = waitForElementExists(
+                waitForElementExists(validationsList),
+                By.id(optionElementID));
         return option.getAttribute("checked").equals("true");
     }
 
@@ -59,17 +61,12 @@ public class ProjectTranslationTab extends ProjectBasePage {
         log.info("Click {} validation level {}", optionName, level);
         final String optionElementID = validationNames
                 .get(optionName).toString().concat(level);
+        WebElement option =  waitForElementExists(
+                waitForElementExists(validationsList),
+                By.id(optionElementID));
 
-        WebElement option =  waitForWebElement(validationsList)
-                .findElement(By.id(optionElementID));
-
-        ((JavascriptExecutor) getDriver())
-                .executeScript("arguments[0].click();", option);
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException ie) {
-            // Wait for half a second before continuing
-        }
+        getExecutor().executeScript("arguments[0].click();", option);
+        slightPause();
         return new ProjectTranslationTab(getDriver());
     }
 

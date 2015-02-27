@@ -14,6 +14,7 @@
     <extension module="org.jboss.as.jsf" />
     <extension module="org.jboss.as.logging" />
     <extension module="org.jboss.as.mail" />
+    <extension module="org.jboss.as.messaging"/>
     <extension module="org.jboss.as.naming" />
     <extension module="org.jboss.as.pojo" />
     <extension module="org.jboss.as.remoting" />
@@ -26,6 +27,7 @@
     <!--<extension module="org.jboss.as.weld" />-->
   </extensions>
   <system-properties>
+    <property name="zanata.countAjax" value="true" />
   </system-properties>
   <management>
     <security-realms>
@@ -63,7 +65,7 @@
         <level name="INFO" />
         <formatter>
           <pattern-formatter
-            pattern="%K{level}%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%E%n" />
+            pattern="%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%E%n" />
         </formatter>
       </console-handler>
       <periodic-rotating-file-handler name="FILE" autoflush="true">
@@ -134,6 +136,10 @@
         <stateful default-access-timeout="5000" cache-ref="simple" />
         <singleton default-access-timeout="5000" />
       </session-bean>
+      <mdb>
+          <resource-adapter-ref resource-adapter-name="hornetq-ra"/>
+          <bean-instance-pool-ref pool-name="mdb-strict-max-pool"/>
+      </mdb>
       <pools>
         <bean-instance-pools>
           <strict-max-pool name="slsb-strict-max-pool" max-pool-size="20"
@@ -251,6 +257,75 @@
       <mail-session jndi-name="java:jboss/mail/Default">
         <smtp-server outbound-socket-binding-ref="mail-smtp" />
       </mail-session>
+    </subsystem>
+    <subsystem xmlns="urn:jboss:domain:messaging:1.2">
+      <hornetq-server>
+        <persistence-enabled>true</persistence-enabled>
+        <security-enabled>false</security-enabled>
+        <journal-type>NIO</journal-type>
+        <journal-file-size>102400</journal-file-size>
+        <journal-min-files>2</journal-min-files>
+        <connectors>
+          <in-vm-connector name="in-vm" server-id="0"/>
+        </connectors>
+        <acceptors>
+          <in-vm-acceptor name="in-vm" server-id="0"/>
+        </acceptors>
+        <security-settings>
+          <security-setting match="#">
+            <permission type="send" roles="guest"/>
+            <permission type="consume" roles="guest"/>
+            <permission type="createNonDurableQueue" roles="guest"/>
+            <permission type="deleteNonDurableQueue" roles="guest"/>
+          </security-setting>
+        </security-settings>
+        <address-settings>
+          <!--default for catch all-->
+          <address-setting match="#">
+            <dead-letter-address>jms.queue.DLQ</dead-letter-address>
+            <expiry-address>jms.queue.ExpiryQueue</expiry-address>
+            <redelivery-delay>5000</redelivery-delay>
+            <max-delivery-attempts>2</max-delivery-attempts>
+            <max-size-bytes>10485760</max-size-bytes>
+            <address-full-policy>BLOCK</address-full-policy>
+            <message-counter-history-day-limit>10</message-counter-history-day-limit>
+          </address-setting>
+        </address-settings>
+        <jms-connection-factories>
+          <connection-factory name="InVmConnectionFactory">
+            <connectors>
+              <connector-ref connector-name="in-vm"/>
+            </connectors>
+            <entries>
+              <entry name="java:/ConnectionFactory"/>
+            </entries>
+          </connection-factory>
+          <pooled-connection-factory name="hornetq-ra">
+            <transaction mode="xa"/>
+            <connectors>
+              <connector-ref connector-name="in-vm"/>
+            </connectors>
+            <entries>
+              <entry name="java:/JmsXA"/>
+            </entries>
+          </pooled-connection-factory>
+        </jms-connection-factories>
+
+        <jms-destinations>
+          <jms-queue name="MailsQueue">
+            <entry name="jms/queue/MailsQueue"/>
+            <durable>true</durable>
+          </jms-queue>
+          <jms-queue name="ExpiryQueue">
+            <entry name="jms/queue/ExpiryQueue"/>
+            <durable>true</durable>
+          </jms-queue>
+          <jms-queue name="DLQ">
+            <entry name="jms/queue/DLQ"/>
+            <durable>true</durable>
+          </jms-queue>
+        </jms-destinations>
+      </hornetq-server>
     </subsystem>
     <subsystem xmlns="urn:jboss:domain:naming:1.2">
       <bindings>

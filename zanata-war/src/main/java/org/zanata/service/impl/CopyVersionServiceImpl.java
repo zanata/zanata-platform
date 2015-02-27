@@ -98,7 +98,7 @@ public class CopyVersionServiceImpl implements CopyVersionService {
             return;
         }
 
-        if( taskHandleOpt.isPresent() ) {
+        if (taskHandleOpt.isPresent()) {
             prepareCopyVersionHandle(version, taskHandleOpt.get());
         }
 
@@ -362,7 +362,7 @@ public class CopyVersionServiceImpl implements CopyVersionService {
         for (HTextFlowTargetHistory history : tft.getHistory().values()) {
             HTextFlowTargetHistory newHistory =
                     JPACopier.<HTextFlowTargetHistory> copyBean(history,
-                            "textFlowTarget");
+                            "textFlowTarget", "content");
             newHistory.setTextFlowTarget(copy);
             copy.getHistory().put(newHistory.getVersionNum(), newHistory);
         }

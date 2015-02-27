@@ -157,6 +157,7 @@
     tf_id="2"
     tf_revision="1"
     last_modified_by_id="2"
+    translated_by_id="2"
     comment_id="1"
     content0="mssgTrans1"
     />
@@ -170,6 +171,7 @@
     tf_id="3"
     tf_revision="1"
     last_modified_by_id="2"
+    translated_by_id="2"
     comment_id="2"
     content0="mssgTrans2"
     />
@@ -183,6 +185,7 @@
     tf_id="4"
     tf_revision="1"
     last_modified_by_id="2"
+    translated_by_id="2"
     comment_id="3"
     content0="mssgTrans3"
     />

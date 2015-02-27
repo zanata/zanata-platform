@@ -21,14 +21,8 @@
 package org.zanata.feature.account;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
-import org.junit.Rule;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.junit.experimental.theories.DataPoint;
-import org.junit.experimental.theories.Theories;
-import org.junit.experimental.theories.Theory;
-import org.junit.rules.Timeout;
-import org.junit.runner.RunWith;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
@@ -42,85 +36,21 @@ import static org.assertj.core.api.Assertions.assertThat;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Slf4j
-@RunWith(Theories.class)
 @Category(DetailedTest.class)
 public class UsernameValidationTest extends ZanataTestCase {
-
-    @Rule
-    public Timeout timeout = new Timeout(ZanataTestCase.MAX_LONG_TEST_DURATION);
-
-    @DataPoint
-    public static String INVALID_PIPE = "user|name";
-    @DataPoint
-    public static String INVALID_SLASH = "user/name";
-    @DataPoint
-    public static String INVALID_BACKSLASH = "user\\name";
-    @DataPoint
-    public static String INVALID_PLUS = "user+name";
-    @DataPoint
-    public static String INVALID_ASTERISK = "user*name";
-    @DataPoint
-    public static String INVALID_LEFT_PARENTHESES = "user(name";
-    @DataPoint
-    public static String INVALID_RIGHT_PARENTHESES = "user)name";
-    @DataPoint
-    public static String INVALID_DOLLAR = "user$name";
-    @DataPoint
-    public static String INVALID_LEFT_BRACKET = "user[name";
-    @DataPoint
-    public static String INVALID_RIGHT_BRACKET = "user]name";
-    @DataPoint
-    public static String INVALID_COLON = "user:name";
-    @DataPoint
-    public static String INVALID_SEMICOLON = "user;name";
-    @DataPoint
-    public static String INVALID_APOSTROPHE = "user'name";
-    @DataPoint
-    public static String INVALID_COMMA = "user,name";
-    @DataPoint
-    public static String INVALID_QUESTION_MARK = "user?name";
-    @DataPoint
-    public static String INVALID_EXCLAMATION_MARK = "user!name";
-    @DataPoint
-    public static String INVALID_AMPERSAT = "user@name";
-    @DataPoint
-    public static String INVALID_HASH = "user#name";
-    @DataPoint
-    public static String INVALID_PERCENT = "user%name";
-    @DataPoint
-    public static String INVALID_CARAT = "user^name";
-    @DataPoint
-    public static String INVALID_EQUALS = "user=name";
-    @DataPoint
-    public static String INVALID_PERIOD = "user.name";
-    @DataPoint
-    public static String INVALID_LEFT_BRACE = "user{name";
-    @DataPoint
-    public static String INVALID_RIGHT_BRACE = "user}name";
-    @DataPoint
-    public static String INVALID_CAPITAL_A = "userAname";
-    @DataPoint
-    public static String INVALID_CAPITAL_Z = "userZname";
-
-    @Before
-    public void setUp() {
-        new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
-    }
 
     @Feature(summary = "The user must enter acceptable username characters" +
             "to register",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
-    @Theory
-    public void usernameCharacterValidation(String username) throws Exception {
-        log.info(testName.getMethodName() + " : " + username);
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    public void usernameCharacterValidation() throws Exception {
         RegisterPage registerPage = new BasicWorkFlow()
                 .goToHome()
                 .goToRegistration()
-                .enterUserName(username);
-        registerPage.defocus();
+                .enterUserName("user|name");
+        registerPage.defocus(registerPage.usernameField);
 
-        assertThat(registerPage.expectError(
-                    RegisterPage.USERNAME_VALIDATION_ERROR))
+        assertThat(registerPage.expectErrors())
                 .contains(RegisterPage.USERNAME_VALIDATION_ERROR)
                 .as("Username validation errors are shown");
     }

@@ -51,7 +51,7 @@ public abstract class AbstractListFilter<T> {
     private long totalRecords = -1L;
 
     public List<T> getCurrentPage() {
-        if( currentPageData == null ) {
+        if (currentPageData == null) {
             currentPageData = fetchRecords(getPageStartIdx(),
                     pageSize, filter);
         }
@@ -59,7 +59,7 @@ public abstract class AbstractListFilter<T> {
     }
 
     public long getTotalRecords() {
-        if( totalRecords < 0 ) {
+        if (totalRecords < 0) {
             totalRecords = fetchTotalRecords(filter);
         }
         return totalRecords;
@@ -101,7 +101,7 @@ public abstract class AbstractListFilter<T> {
     }
 
     public int getPageEndIdx() {
-        return Math.min(getPageStartIdx() + pageSize, (int)getTotalRecords()) - 1;
+        return Math.min(getPageStartIdx() + pageSize, (int) getTotalRecords()) - 1;
     }
 
     public void reset() {

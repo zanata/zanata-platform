@@ -20,10 +20,23 @@
  */
 package org.zanata.page.languages;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.Nullable;
+
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
+import org.zanata.util.Checkbox;
+
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Sets;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
@@ -33,9 +46,38 @@ public class LanguagePage extends BasePage {
 
     private By contactCoordinatorsButton =
             By.linkText("Contact Team Coordinators");
+    private By saveButton = By.id("save-button");
+    private By moreActions = By.className("dropdown__toggle");
+    private By membersTabMoreActions = By.id("members-more-actions");
+    private By enableByDefault = By.id("enable-by-default");
+    private By membersTab = By.id("members_tab");
+    private By settingsTab = By.id("settings_tab");
+    private By joinLanguageTeamButton = By.linkText("Join Language Team");
+    private By addTeamMemberLink = By.id("addTeamMemberLink");
+    private By addUserSearchInput = By.id("searchForm:searchField");
+    private By addUserSearchButton = By.id("searchForm:searchBtn");
+    private By personTable = By.id("resultForm:searchResults");
+    private By addSelectedButton = By.id("addSelectedBtn");
+
+    public static final int IS_TRANSLATOR_COLUMN = 0;
+    public static final int IS_REVIEWER_COLUMN = 1;
+    public static final int IS_COORDINATOR_COLUMN = 2;
+
 
     public LanguagePage(WebDriver driver) {
         super(driver);
+    }
+
+    public LanguagePage clickMoreActions() {
+        log.info("Click More Actions");
+        waitForWebElement(moreActions).click();
+        return new LanguagePage(getDriver());
+    }
+
+    public LanguagePage clickMembersTabMoreActions() {
+        log.info("Click Members tab More Actions");
+        waitForWebElement(membersTabMoreActions).click();
+        return new LanguagePage(getDriver());
     }
 
     public ContactTeamPage clickContactCoordinatorsButton() {
@@ -43,5 +85,176 @@ public class LanguagePage extends BasePage {
         waitForWebElement(contactCoordinatorsButton).click();
         return new ContactTeamPage(getDriver());
     }
+
+    public LanguagePage gotoSettingsTab() {
+        waitForWebElement(settingsTab).click();
+        return new LanguagePage(getDriver());
+    }
+
+    public LanguagePage gotoMembersTab() {
+        waitForWebElement(membersTab).click();
+        return new LanguagePage(getDriver());
+    }
+
+    public LanguagePage enableLanguageByDefault(boolean enable) {
+        Checkbox checkbox = Checkbox.of(waitForWebElement(enableByDefault));
+        if (enable) {
+            checkbox.check();
+        } else {
+            checkbox.uncheck();
+        }
+        return new LanguagePage(getDriver());
+    }
+
+    public LanguagePage saveSettings() {
+        waitForWebElement(saveButton).click();
+        return new LanguagePage(getDriver());
+    }
+
+    public List<String> getMemberUsernames() {
+        log.info("Query username list");
+        if (getMemberCount().equals("0")) {
+            log.info("No members yet for this language");
+            return Collections.emptyList();
+        }
+        List<String> names = new ArrayList<>();
+        for (WebElement listEntry : waitForWebElement(By.id("members-form"))
+            .findElements(By.className("list__item--actionable"))) {
+            names.add(listEntry.findElement(By.tagName("h3")).getText().trim());
+        }
+        return names;
+    }
+
+    private String getMemberCount() {
+        log.info("Query members info");
+        return waitForWebElement(By.id("members-size")).getText().trim();
+    }
+
+    public LanguagePage joinLanguageTeam() {
+        log.info("Click Join");
+        waitForWebElement(joinLanguageTeamButton).click();
+        // we need to wait for this join to finish before returning the page
+        waitForAMoment().until(new Function<WebDriver, Boolean>() {
+            @Override
+            public Boolean apply(WebDriver driver) {
+                return driver.findElements(joinLanguageTeamButton).isEmpty();
+            }
+        });
+        return new LanguagePage(getDriver());
+    }
+
+    public LanguagePage clickAddTeamMember() {
+        log.info("Click Add Team Member");
+        waitForWebElement(addTeamMemberLink).click();
+        return this;
+    }
+
+    /*
+     * Convenience function for adding a language team member
+     */
+    public LanguagePage searchPersonAndAddToTeam(
+        final String personName, TeamPermission... permissions) {
+        // Convenience!
+        enterUsername(personName);
+        clickSearch();
+        clickAddUserRoles(personName, permissions);
+        clickAddSelectedButton();
+        return confirmAdded(personName);
+    }
+
+    private LanguagePage enterUsername(String username) {
+        log.info("Enter username search {}", username);
+        waitForWebElement(addUserSearchInput).sendKeys(username);
+        return new LanguagePage(getDriver());
+    }
+
+    private LanguagePage clickSearch() {
+        log.info("Click Search");
+        waitForWebElement(addUserSearchButton).click();
+        return new LanguagePage(getDriver());
+    }
+
+    private LanguagePage clickAddUserRoles(final String username, TeamPermission... permissions) {
+        log.info("Click user permissions");
+        // if permissions is empty, default add as translator
+        Set<TeamPermission> permissionToAdd = Sets.newHashSet(permissions);
+        permissionToAdd.add(TeamPermission.Translator);
+
+        for (final TeamPermission permission : permissionToAdd) {
+            log.info("Set checked as {}", permission.name());
+            waitForAMoment().until(new Predicate<WebDriver>() {
+                @Override
+                public boolean apply(@Nullable WebDriver webDriver) {
+                    WebElement input = getSearchedForUser(username)
+                        .findElement(By.className("list--horizontal"))
+                        .findElements(By.tagName("li"))
+                        .get(permission.columnIndex)
+                        .findElement(By.tagName("input"));
+                    Checkbox checkbox = Checkbox.of(input);
+                    checkbox.check();
+                    return checkbox.checked();
+                }
+            });
+        }
+        return new LanguagePage(getDriver());
+    }
+
+    private LanguagePage confirmAdded(final String personUsername) {
+        // we need to wait for the page to refresh
+        refreshPageUntil(this, new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver driver) {
+                return getMemberUsernames().contains(personUsername);
+            }
+        });
+        return new LanguagePage(getDriver());
+    }
+
+
+    private WebElement getSearchedForUser(final String username) {
+        return waitForAMoment().until(new Function<WebDriver, WebElement>() {
+            @Override
+            public WebElement apply(WebDriver input) {
+                WebElement list = waitForWebElement(personTable)
+                    .findElement(By.className("list--slat"));
+                List<WebElement> rows = list
+                    .findElements(By.className("txt--meta"));
+                rows.addAll(list
+                    .findElements(By.className("txt--mini")));
+                for (WebElement row : rows) {
+                    if (getListItemUsername(row).equals(username)) {
+                        return row;
+                    }
+                }
+                return null;
+            }
+        });
+    }
+
+    private String getListItemUsername(WebElement listItem) {
+        String fullname = listItem.findElements(
+            By.className("bx--inline-block"))
+            .get(0).getText();
+        return fullname.substring(fullname.indexOf('[') + 1, fullname.indexOf(']'));
+    }
+
+    public LanguagePage clickAddSelectedButton() {
+        log.info("Click Add Selected");
+        waitForWebElement(addSelectedButton).click();
+        return new LanguagePage(getDriver());
+    }
+
+
+    public static enum TeamPermission {
+        Translator(IS_TRANSLATOR_COLUMN), Reviewer(IS_REVIEWER_COLUMN), Coordinator(IS_COORDINATOR_COLUMN);
+        private final int columnIndex;
+
+        TeamPermission(int columnIndex) {
+            this.columnIndex = columnIndex;
+        }
+
+    }
+
+
 
 }

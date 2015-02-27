@@ -22,6 +22,8 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -47,22 +49,26 @@ public class AdminStatsAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @In
-    ProjectDAO projectDAO;
+    private ProjectDAO projectDAO;
 
     @In
-    ProjectIterationDAO projectIterationDAO;
+    private ProjectIterationDAO projectIterationDAO;
 
     @In
-    PersonDAO personDAO;
+    private PersonDAO personDAO;
 
     @In
-    TextFlowDAO textFlowDAO;
+    private TextFlowDAO textFlowDAO;
 
     @In
-    TextFlowTargetDAO textFlowTargetDAO;
+    private TextFlowTargetDAO textFlowTargetDAO;
 
     @In
-    DocumentDAO documentDAO;
+    private DocumentDAO documentDAO;
+
+    @Getter
+    @Setter
+    private boolean documentReady;
 
     public int getTotalProjectCount() {
         return projectDAO.getTotalProjectCount();

@@ -57,6 +57,12 @@ public class VersionGroupPage extends BasePage {
     private By projectsTab = By.id("projects_tab");
     private By maintainersTab = By.id("maintainers_tab");
     private By settingsTab = By.id("settings_tab");
+
+    private By languagesTabBody = By.id("languages");
+    private By projectsTabBody = By.id("projects");
+    private By maintainersTabBody = By.id("maintainers");
+    private By settingsTabBody = By.id("settings");
+
     private By settingsLanguagesTab = By.id("settings-languages_tab");
 
     public VersionGroupPage(final WebDriver driver) {
@@ -146,37 +152,38 @@ public class VersionGroupPage extends BasePage {
         return new VersionLanguagesPage(getDriver());
     }
 
-    public void clickOnTab(String tabId) {
-        waitForWebElement(By.id(tabId)).click();
-    }
-
     public VersionGroupPage clickAddProjectVersionsButton() {
         log.info("Click Add Project Version");
-        waitForWebElement(waitForElementExists(projectForm), //parent
+        // parent
+        waitForWebElement(waitForElementExists(projectForm),
                 By.className("button--primary")).click();
         return new VersionGroupPage(getDriver());
     }
 
     public VersionGroupPage clickLanguagesTab() {
         log.info("Click Languages tab");
+        waitForElementExists(languagesTabBody);
         clickWhenTabEnabled(waitForWebElement(languagesTab));
         return new VersionGroupPage(getDriver());
     }
 
     public VersionGroupPage clickProjectsTab() {
         log.info("Click Projects tab");
+        waitForElementExists(projectsTabBody);
         clickWhenTabEnabled(waitForWebElement(projectsTab));
         return new VersionGroupPage(getDriver());
     }
 
     public VersionGroupPage clickMaintainersTab() {
         log.info("Click Maintainers tab");
+        waitForElementExists(maintainersTabBody);
         clickWhenTabEnabled(waitForWebElement(maintainersTab));
         return new VersionGroupPage(getDriver());
     }
 
     public VersionGroupPage clickSettingsTab() {
         log.info("Click Settings tab");
+        waitForElementExists(settingsTabBody);
         clickWhenTabEnabled(waitForWebElement(settingsTab));
         return new VersionGroupPage(getDriver());
     }
@@ -190,23 +197,23 @@ public class VersionGroupPage extends BasePage {
     public Boolean isLanguagesTabActive() {
         log.info("Query is languages tab displayed");
         final WebElement languagesTab = waitForWebElement(By.id("languages"));
-        waitForAMoment().until( new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver webDriver) {
                 return languagesTab.getAttribute("class").contains("is-active");
             }
-        } );
+        });
         return languagesTab.getAttribute("class").contains("is-active");
     }
 
     public Boolean isProjectsTabActive() {
         final WebElement languagesTab = waitForElementExists(By.id("projects"));
-        waitForAMoment().until( new Predicate<WebDriver>() {
+        waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver webDriver) {
                 return languagesTab.getAttribute("class").contains("is-active");
             }
-        } );
+        });
         return languagesTab.getAttribute("class").contains("is-active");
     }
 

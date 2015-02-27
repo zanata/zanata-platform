@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>3.6.0-SNAPSHOT</version>
+    <version>3.7.0-SNAPSHOT</version>
   </parent>
   <artifactId>zanata-war</artifactId>
   <packaging>war</packaging>
@@ -35,7 +35,7 @@
     <lombok.lib>${org.projectlombok:lombok:jar}</lombok.lib>
 
     <groovy.version>2.1.5</groovy.version>
-    <zanata.web.assets.version>6</zanata.web.assets.version>
+    <zanata.web.assets.version>7</zanata.web.assets.version>
   </properties>
 
   <build>
@@ -102,7 +102,7 @@
         </executions>
         <configuration>
           <usedDependencies combine.children="append">
-            <usedDependency>javax.xml.bind:jaxb-api</usedDependency>
+            <usedDependency>org.jboss.spec.javax.xml.bind:jboss-jaxb-api_2.2_spec</usedDependency>
             <!-- runtime dep for liquibase logging -->
             <usedDependency>com.mattbertolini:liquibase-slf4j</usedDependency>
             <usedDependency>org.opensymphony.quartz:quartz</usedDependency>
@@ -110,8 +110,6 @@
             <usedDependency>org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api</usedDependency>
             <!-- used by REST API interfaces -->
             <usedDependency>org.jboss.resteasy:resteasy-multipart-provider</usedDependency>
-            <!-- used indirectly by drools -->
-            <usedDependency>com.google.protobuf:protobuf-java</usedDependency>
             <!-- Used by javamelody for email/pdf support -->
             <usedDependency>com.lowagie:itext</usedDependency>
             <!--used to log sql and parameters when debugging Hibernate -->
@@ -121,21 +119,18 @@
             <!-- required for guava in gwt -->
             <usedDependency>com.google.guava:guava-gwt</usedDependency>
             <!-- Used for StringUtils lib -->
-            <!-- Needed by ui rendering on runtime -->
-            <usedDependency>javax.el:el-api</usedDependency>
+            <!-- Needed by ui rendering at runtime -->
+            <usedDependency>org.jboss.spec.javax.el:jboss-el-api_2.2_spec</usedDependency>
             <usedDependency>javax.servlet.jsp:jsp-api</usedDependency>
             <usedDependency>com.sun.faces:jsf-impl</usedDependency>
             <!-- Used for different content analyzers based on langugage for search. -->
             <usedDependency>org.apache.solr:solr-core</usedDependency>
             <usedDependency>org.apache.solr:solr-solrj</usedDependency>
-            <!-- Used for security.drl -->
-            <usedDependency>org.drools:drools-compiler</usedDependency>
             <usedDependency>org.antlr:antlr</usedDependency>
             <!-- Used by lucene search -->
             <usedDependency>org.hibernate.common:hibernate-commons-annotations</usedDependency>
             <!-- Used by hibernate -->
             <usedDependency>org.hibernate:hibernate-search-analyzers</usedDependency>
-            <usedDependency>org.hibernate:hibernate-search</usedDependency>
             <!-- used for arquillian deployment (org.zanata.Deployments) -->
             <usedDependency>org.hibernate:hibernate-testing</usedDependency>
             <usedDependency>org.jboss.arquillian.junit:arquillian-junit-container</usedDependency>
@@ -161,7 +156,9 @@
         </configuration>
       </plugin>
 
-
+      <!--<plugin>-->
+        <!--<artifactId>maven-enforcer-plugin</artifactId>-->
+      <!--</plugin>-->
 
       <plugin>
         <groupId>com.ning.maven.plugins</groupId>
@@ -174,32 +171,16 @@
             </dependency>
           </ignoredDependencies>
           <ignoredResources>
+            <!-- many, many jars -->
+            <ignoredResource>META-INF/.*</ignoredResource>
             <!-- iText and JavaMelody -->
             <ignoredResource>com/lowagie/text/pdf/fonts/cmap_info.txt</ignoredResource>
-            <!-- Seam -->
-            <ignoredResource>META-INF/components.xml</ignoredResource>
-            <!-- Seam and RichFaces -->
-            <ignoredResource>META-INF/faces-config.xml</ignoredResource>
-            <!-- any mail provider will need this -->
-            <ignoredResource>META-INF/javamail.providers</ignoredResource>
-            <!-- RichFaces 4.3 -->
-            <ignoredResource>META-INF/richfaces/resource-mappings.properties</ignoredResource>
-            <!-- Seam -->
-            <ignoredResource>META-INF/seam-deployment.properties</ignoredResource>
             <!-- drools and quartz -->
             <ignoredResource>build.properties</ignoredResource>
             <!-- Seam -->
             <ignoredResource>seam.properties</ignoredResource>
           </ignoredResources>
         </configuration>
-        <executions>
-          <execution>
-            <phase>validate</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
 
       <plugin>
@@ -974,6 +955,81 @@
     </profile>
 
     <profile>
+      <id>skipArqTests</id>
+      <activation>
+        <property>
+          <name>skipArqTests</name>
+        </property>
+      </activation>
+      <properties>
+        <skipITs>true</skipITs>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>run-arq-tests</id>
+      <activation>
+        <property>
+          <name>!skipArqTests</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>init-no-appserver</id>
+                <phase>initialize</phase>
+              </execution>
+              <execution>
+                <id>preIT-no-appserver</id>
+                <phase>prepare-package</phase>
+                <goals><goal>run</goal></goals>
+                <configuration>
+                  <target unless="skipArqTests">
+                    <fail message="'appserver' property must be set to run integration tests (or else use -DskipArqTests)"
+                      unless="appserver" />
+                    <fail message="'cargo.installation' property must be set to run integration tests (or else use -DskipArqTests)"
+                      unless="cargo.installation"/>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.cargo</groupId>
+            <artifactId>cargo-maven2-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>cargo-install</id>
+                <phase>prepare-package</phase>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <includes>
+                <include>**/*ITCase.java</include>
+              </includes>
+              <forkCount>1</forkCount>
+              <reuseForks>true</reuseForks>
+              <redirectTestOutputToFile>false</redirectTestOutputToFile>
+              <runOrder>alphabetical</runOrder>
+              <systemPropertyVariables>
+                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                <jboss.home>${appserver.home}</jboss.home>
+              </systemPropertyVariables>
+              <testNGArtifactName>none:none</testNGArtifactName>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
       <id>jbosseap6</id>
       <activation>
         <property>
@@ -986,19 +1042,18 @@
           <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
+              <!-- Install arquillian-customised version of standalone.xml -->
               <execution>
                 <id>prepare-arquillian-container</id>
-                <phase>pre-integration-test</phase>
+                <phase>package</phase>
                 <goals>
                   <goal>run</goal>
                 </goals>
                 <configuration>
-                  <target>
-                    <fail message="'arquillian.jboss.home' property must be set to run integration tests in this profile"
-                      unless="arquillian.jboss.home"/>
+                  <target unless="skipArqTests">
                     <copy overwrite="true"
                       file="${project.basedir}/src/test/resources/arquillian/standalone-arquillian.xml"
-                      tofile="${arquillian.jboss.home}/standalone/configuration/standalone-arquillian.xml" />
+                      tofile="${appserver.home}/standalone/configuration/standalone-arquillian.xml" />
                   </target>
                 </configuration>
               </execution>
@@ -1018,31 +1073,14 @@
             </configuration>
           </plugin>
 
-          <!-- Configure Failsafe to run in integration-test/verify phase -->
           <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
-            <executions>
-              <!-- Container (Arquillian tests) -->
-              <execution>
-                <id>container-tests</id>
-                <goals>
-                  <goal>integration-test</goal>
-                  <goal>verify</goal>
-                </goals>
-                <configuration>
-                  <includes>
-                    <include>**/*ITCase.java</include>
-                  </includes>
-                  <testNGArtifactName>none:none</testNGArtifactName>
-                  <runOrder>alphabetical</runOrder>
-                  <forkCount>1</forkCount>
-                  <reuseForks>true</reuseForks>
-                  <systemPropertyVariables>
-                    <arquillian.launch>jbossas-managed</arquillian.launch>
-                  </systemPropertyVariables>
-                </configuration>
-              </execution>
-            </executions>
+            <configuration>
+              <systemPropertyVariables>
+                <!-- NB this is a container qualifier in arquillian.xml -->
+                <arquillian.launch>jbossas-managed</arquillian.launch>
+              </systemPropertyVariables>
+            </configuration>
           </plugin>
 
         </plugins>
@@ -1052,6 +1090,7 @@
         <dependency>
           <groupId>org.jboss.as</groupId>
           <artifactId>jboss-as-arquillian-common</artifactId>
+          <version>${jboss.as.version}</version>
           <scope>test</scope>
           <exclusions>
             <exclusion>
@@ -1079,13 +1118,27 @@
         </dependency>
 
         <dependency>
+          <groupId>org.jboss.osgi.metadata</groupId>
+          <artifactId>jbosgi-metadata</artifactId>
+          <version>2.2.0.Final</version>
+        </dependency>
+
+        <dependency>
+          <groupId>org.jboss.osgi.vfs</groupId>
+          <artifactId>jbosgi-vfs30</artifactId>
+          <version>1.2.1.Final</version>
+        </dependency>
+
+        <dependency>
           <groupId>org.jboss.as</groupId>
           <artifactId>jboss-as-controller-client</artifactId>
+          <version>${jboss.as.version}</version>
           <scope>test</scope>
         </dependency>
         <dependency>
           <groupId>org.jboss.as</groupId>
           <artifactId>jboss-as-controller</artifactId>
+          <version>${jboss.as.version}</version>
           <scope>test</scope>
         </dependency>
       </dependencies>
@@ -1099,36 +1152,10 @@
           <value>wildfly8</value>
         </property>
       </activation>
-      <properties>
-        <wildfly.home>${project.build.directory}/wildfly/wildfly-${wildfly.version}</wildfly.home>
-      </properties>
       <build>
         <plugins>
           <plugin>
-            <!-- NB: This plugin needs to be before antrun, because it
-                 creates the wildfly directory for the unzip tasks. -->
             <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>unpack</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <configuration>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>org.wildfly</groupId>
-                      <artifactId>wildfly-dist</artifactId>
-                      <version>${wildfly.version}</version>
-                      <type>zip</type>
-                      <overWrite>false</overWrite>
-                      <outputDirectory>${project.build.directory}/wildfly</outputDirectory>
-                    </artifactItem>
-                  </artifactItems>
-                </configuration>
-              </execution>
-            </executions>
             <configuration>
               <usedDependencies combine.children="append">
                 <!-- used for arquillian tests -->
@@ -1143,77 +1170,41 @@
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
               <execution>
+                <id>install-wildfly-modules</id>
+                <phase>package</phase>
+              </execution>
+
+              <!-- Install arquillian-customised version of standalone.xml -->
+              <execution>
                 <id>prepare-arquillian-container</id>
-                <phase>pre-integration-test</phase>
+                <phase>package</phase>
                 <goals>
                   <goal>run</goal>
                 </goals>
                 <configuration>
-                  <target>
+                  <target unless="skipArqTests">
                     <copy
                       overwrite="true"
                       file="${project.basedir}/src/test/resources/arquillian/standalone-arquillian-wildfly.xml"
-                      tofile="${wildfly.home}/standalone/configuration/standalone.xml" />
-                    <mkdir dir="${project.build.directory}/downloads/" />
-                    <get
-                      src="http://sourceforge.net/projects/zanata/files/wildfly/wildfly-8.1.0.Final-module-mojarra-2.1.28.zip/download"
-                      dest="${project.build.directory}/downloads/wildfly-8.1.0.Final-module-mojarra-2.1.28.zip"
-                      usetimestamp="true" />
-                    <get
-                      src="http://sourceforge.net/projects/zanata/files/wildfly/wildfly-8.1.0.Final-module-hibernate-main-4.2.15.Final.zip/download"
-                      dest="${project.build.directory}/downloads/wildfly-8.1.0.Final-module-hibernate-main-4.2.15.Final.zip"
-                      usetimestamp="true" />
-                    <unzip
-                      src="${project.build.directory}/downloads/wildfly-8.1.0.Final-module-mojarra-2.1.28.zip"
-                      dest="${wildfly.home}" />
-                    <unzip
-                      src="${project.build.directory}/downloads/wildfly-8.1.0.Final-module-hibernate-main-4.2.15.Final.zip"
-                      dest="${wildfly.home}" />
+                      tofile="${appserver.home}/standalone/configuration/standalone.xml" />
                   </target>
                 </configuration>
               </execution>
             </executions>
           </plugin>
 
-          <!-- Configure Failsafe to run in integration-test/verify phase -->
           <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
-            <executions>
-              <!-- Container (Arquillian tests) -->
-              <execution>
-                <id>container-tests</id>
-                <goals>
-                  <goal>integration-test</goal>
-                  <goal>verify</goal>
-                </goals>
-                <configuration>
-                  <includes>
-                    <include>**/*ITCase.java</include>
-                  </includes>
-                  <testNGArtifactName>none:none</testNGArtifactName>
-                  <runOrder>alphabetical</runOrder>
-                  <forkCount>1</forkCount>
-                  <reuseForks>true</reuseForks>
-                  <systemPropertyVariables>
-                    <arquillian.launch>wildfly81</arquillian.launch>
-                    <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-                    <!-- the maven dependency plugin will have already downloaded the server on /target -->
-                    <jboss.home>${wildfly.home}</jboss.home>
-                  </systemPropertyVariables>
-                  <redirectTestOutputToFile>false</redirectTestOutputToFile>
-                </configuration>
-              </execution>
-            </executions>
+            <configuration>
+              <systemPropertyVariables>
+                <!-- NB this is a container qualifier in arquillian.xml -->
+                <arquillian.launch>wildfly81</arquillian.launch>
+              </systemPropertyVariables>
+            </configuration>
           </plugin>
         </plugins>
       </build>
       <dependencies>
-        <dependency>
-          <groupId>io.undertow</groupId>
-          <artifactId>undertow-core</artifactId>
-          <version>1.0.15.Final</version>
-          <scope>provided</scope>
-        </dependency>
         <dependency>
           <groupId>org.wildfly</groupId>
           <artifactId>wildfly-arquillian-container-managed</artifactId>
@@ -1293,6 +1284,12 @@
     <dependency>
       <groupId>org.zanata</groupId>
       <artifactId>zanata-adapter-po</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.xml.bind</groupId>
+          <artifactId>jaxb-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -1311,8 +1308,8 @@
     <dependency>
       <groupId>org.zanata</groupId>
       <artifactId>zanata-common-api</artifactId>
-      <version>${zanata.api.compat.version}</version>
       <classifier>compat</classifier>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -1360,6 +1357,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
+      <version>${resteasy.version}</version>
       <scope>${resteasy.scope}</scope>
       <exclusions>
         <exclusion>
@@ -1380,6 +1378,12 @@
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxb-provider</artifactId>
       <scope>${resteasy.scope}</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.xml.bind</groupId>
+          <artifactId>jaxb-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -1393,12 +1397,16 @@
       <scope>${resteasy.scope}</scope>
       <exclusions>
         <exclusion>
-          <artifactId>
-            servlet-api
-          </artifactId>
-          <groupId>
-            javax.servlet
-          </groupId>
+          <groupId>javax.servlet</groupId>
+          <artifactId>servlet-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.logging</groupId>
+          <artifactId>jboss-logging</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.resteasy</groupId>
+          <artifactId>resteasy-jaxrs</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -1428,38 +1436,11 @@
     <dependency>
       <groupId>org.jboss</groupId>
       <artifactId>jboss-dmr</artifactId>
+      <version>1.2.1.Final</version>
       <scope>test</scope>
     </dependency>
 
-    <!-- Drools -->
-
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.protobuf</groupId>
-      <artifactId>protobuf-java</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-compiler</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>ecj</artifactId>
-          <groupId>org.eclipse.jdt.core.compiler</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>org.antlr</artifactId>
-          <groupId>antlr</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>antlr</artifactId>
-          <groupId>antlr</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
+    <!-- TODO remove this? -->
     <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr</artifactId>
@@ -1470,13 +1451,11 @@
     <dependency>
       <groupId>antlr</groupId>
       <artifactId>antlr</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>dom4j</groupId>
       <artifactId>dom4j</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -1507,7 +1486,6 @@
     <dependency>
       <groupId>com.sun.faces</groupId>
       <artifactId>jsf-impl</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <!-- Hibernate / JPA -->
@@ -1534,6 +1512,10 @@
           <artifactId>ejb3-persistence</artifactId>
           <groupId>org.hibernate</groupId>
         </exclusion>
+        <exclusion>
+          <groupId>org.jboss.logging</groupId>
+          <artifactId>jboss-logging</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
 
@@ -1547,6 +1529,13 @@
           <groupId>com.sun</groupId>
         </exclusion>
       </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>io.undertow</groupId>
+      <artifactId>undertow-core</artifactId>
+      <version>1.0.15.Final</version>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -1697,6 +1686,19 @@
       <version>${lucene.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-artifact</artifactId>
+      <version>3.2.1</version>
+      <!-- We only need the class DefaultArtifactVersion -->
+      <exclusions>
+        <exclusion>
+          <groupId>org.codehaus.plexus</groupId>
+          <artifactId>plexus-utils</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
     <!-- Solr dependencies -->
     <dependency>
       <groupId>org.apache.solr</groupId>
@@ -1717,10 +1719,9 @@
       <artifactId>solr-solrj</artifactId>
     </dependency>
 
-    <!-- JBoss 5 Provided Dependencies -->
     <dependency>
       <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-search</artifactId>
+      <artifactId>hibernate-search-orm</artifactId>
       <exclusions>
         <exclusion>
           <groupId>org.hibernate</groupId>
@@ -1746,14 +1747,11 @@
     <dependency>
       <groupId>org.hibernate.javax.persistence</groupId>
       <artifactId>hibernate-jpa-2.0-api</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-search-engine</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-search-orm</artifactId>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
@@ -1763,6 +1761,8 @@
     <dependency>
       <groupId>org.infinispan</groupId>
       <artifactId>infinispan-core</artifactId>
+	    <!-- TODO Use a bom for EAP or wildfly (This is the EAP 6.3 version) -->
+	    <version>5.2.4.Final</version>
       <scope>provided</scope>
     </dependency>
 
@@ -1777,11 +1777,11 @@
       <groupId>org.jboss.marshalling</groupId>
       <artifactId>jboss-marshalling-river</artifactId>
       <scope>provided</scope>
-    </dependency>
+	  </dependency>
 
     <dependency>
-      <groupId>javax.el</groupId>
-      <artifactId>el-api</artifactId>
+      <groupId>org.jboss.spec.javax.el</groupId>
+      <artifactId>jboss-el-api_2.2_spec</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -1850,12 +1850,21 @@
     <dependency>
       <groupId>org.jboss.web</groupId>
       <artifactId>jbossweb</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.security</groupId>
       <artifactId>jboss-negotiation-common</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.jms</groupId>
+      <artifactId>jboss-jms-api_1.1_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.ejb</groupId>
+      <artifactId>jboss-ejb-api_3.1_spec</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -1889,62 +1898,74 @@
     <dependency>
       <groupId>org.jboss.shrinkwrap.resolver</groupId>
       <artifactId>shrinkwrap-resolver-api-maven</artifactId>
+      <version>${shrinkwrap.resolver.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.shrinkwrap.resolver</groupId>
       <artifactId>shrinkwrap-resolver-api</artifactId>
+      <version>${shrinkwrap.resolver.version}</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.arquillian.config</groupId>
       <artifactId>arquillian-config-api</artifactId>
+      <version>${arquillian.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.arquillian.container</groupId>
       <artifactId>arquillian-container-test-api</artifactId>
+      <version>${arquillian.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.arquillian.container</groupId>
       <artifactId>arquillian-container-test-impl-base</artifactId>
+      <version>${arquillian.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.arquillian.container</groupId>
       <artifactId>arquillian-container-spi</artifactId>
+      <version>${arquillian.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.arquillian.core</groupId>
       <artifactId>arquillian-core-spi</artifactId>
+      <version>${arquillian.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.arquillian.core</groupId>
       <artifactId>arquillian-core-api</artifactId>
+      <version>${arquillian.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.arquillian.junit</groupId>
       <artifactId>arquillian-junit-container</artifactId>
+      <version>${arquillian.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.arquillian.junit</groupId>
       <artifactId>arquillian-junit-core</artifactId>
+      <version>${arquillian.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.arquillian.test</groupId>
       <artifactId>arquillian-test-api</artifactId>
+      <version>${arquillian.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.arquillian.test</groupId>
       <artifactId>arquillian-test-spi</artifactId>
+      <version>${arquillian.version}</version>
       <scope>test</scope>
     </dependency>
 
@@ -1974,6 +1995,7 @@
     <dependency>
       <groupId>org.jboss.arquillian.protocol</groupId>
       <artifactId>arquillian-protocol-servlet</artifactId>
+      <version>${arquillian.version}</version>
       <scope>test</scope>
     </dependency>
 
@@ -2053,6 +2075,12 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- openid4java -->
@@ -2088,7 +2116,7 @@
     <dependency>
       <groupId>se.jiderhamn</groupId>
       <artifactId>classloader-leak-prevention</artifactId>
-      <version>1.9.3</version>
+      <version>1.11.0</version>
       <exclusions>
         <exclusion>
           <groupId>javax.servlet</groupId>
@@ -2136,11 +2164,12 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>jaxrs-api</artifactId>
+      <version>${resteasy.version}</version>
       <scope>${resteasy.scope}</scope>
     </dependency>
     <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
+      <groupId>org.jboss.spec.javax.xml.bind</groupId>
+      <artifactId>jboss-jaxb-api_2.2_spec</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -2209,9 +2238,10 @@
 
     <dependency>
       <!-- needed for GWT compilation of JAXB annotated classes -->
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
+      <groupId>org.jboss.spec.javax.xml.bind</groupId>
+      <artifactId>jboss-jaxb-api_2.2_spec</artifactId>
       <classifier>sources</classifier>
+      <version>1.0.4.Final</version>
       <scope>provided</scope>
     </dependency>
 

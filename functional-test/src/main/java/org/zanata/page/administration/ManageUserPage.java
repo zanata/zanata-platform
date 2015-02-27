@@ -32,6 +32,7 @@ import org.zanata.page.BasePage;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,11 +42,7 @@ import java.util.List;
 @Slf4j
 public class ManageUserPage extends BasePage {
 
-    public static final int USERNAME_COLUMN = 0;
-    public static final int EDITBUTTON_COLUMN = 4;
-
-    private By userTable = By.id("usermanagerForm:userList");
-    private By userEditButton = By.xpath(".//button[contains(text(), 'Edit')]");
+    private By userTable = By.id("usermanagerForm");
 
     public ManageUserPage(WebDriver driver) {
         super(driver);
@@ -53,41 +50,41 @@ public class ManageUserPage extends BasePage {
 
     public ManageUserAccountPage editUserAccount(String username) {
         log.info("Click edit on {}", username);
-        WebElement editCell = findRowByUserName(username).getCells()
-                .get(EDITBUTTON_COLUMN);
-        waitForWebElement(editCell, userEditButton).click();
+        findRowByUserName(username).click();
         return new ManageUserAccountPage(getDriver());
     }
 
-    private TableRow findRowByUserName(final String username) {
-        return waitForAMoment().until(new Function<WebDriver, TableRow>() {
-            @Override
-            public TableRow apply(WebDriver driver) {
-                List<TableRow> tableRows = WebElementUtil
-                        .getTableRows(getDriver(),
-                                waitForWebElement(userTable));
-                Optional<TableRow> matchedRow = Iterables.tryFind(tableRows,
-                        new Predicate<TableRow>() {
-                            @Override
-                            public boolean apply(TableRow input) {
-                                List<String> cellContents =
-                                        input.getCellContents();
-                                String localeCell = cellContents
-                                        .get(USERNAME_COLUMN)
-                                        .trim();
-                                return localeCell.equalsIgnoreCase(username);
-                            }
-                        });
-
-                // we keep looking for the user until timeout
-                return matchedRow.isPresent() ? matchedRow.get() : null;
+    private WebElement findRowByUserName(final String username) {
+        for (WebElement listItem : getRows()) {
+            if (getListItemUsername(listItem).equals(username)) {
+                return listItem;
             }
-        });
+        }
+        return null;
+    }
+
+    public List<WebElement> getRows() {
+        return waitForWebElement(userTable)
+                .findElements(By.className("list__item--actionable"));
+    }
+
+    public String getListItemUsername(WebElement listItem) {
+        String listItemText = listItem.findElement(By.tagName("h3")).getText();
+        return listItemText.substring(0, listItemText
+                .lastIndexOf(getListItemRoles(listItem))).trim();
+    }
+
+    public String getListItemRoles(WebElement listItem) {
+        return listItem.findElement(By.tagName("h3"))
+                .findElement(By.className("txt--meta")).getText();
     }
 
     public List<String> getUserList() {
         log.info("Query user list");
-        return WebElementUtil.getColumnContents(getDriver(), userTable,
-                USERNAME_COLUMN);
+        List<String> names = new ArrayList<>();
+        for (WebElement element : getRows()) {
+            names.add(getListItemUsername(element));
+        }
+        return names;
     }
 }

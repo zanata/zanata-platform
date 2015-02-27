@@ -33,9 +33,16 @@ import org.zanata.page.BasePage;
 public class HelpPage extends BasePage {
 
     private By contactAdminLink = By.linkText("Contact Admin");
+    private By moreActions = By.className("dropdown__toggle");
 
     public HelpPage(WebDriver driver) {
         super(driver);
+    }
+
+    public HelpPage clickMoreActions() {
+        log.info("Click More Actions");
+        waitForWebElement(moreActions).click();
+        return new HelpPage(getDriver());
     }
 
     public ContactAdminFormPage clickContactAdmin() {

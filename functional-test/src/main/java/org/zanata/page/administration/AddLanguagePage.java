@@ -26,6 +26,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
+import org.zanata.page.languages.LanguagesPage;
+import org.zanata.util.Checkbox;
+import org.zanata.util.WebElementUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,41 +37,65 @@ import java.util.Map;
 @Slf4j
 public class AddLanguagePage extends BasePage {
 
-    public static final int NAME_ROW = 3;
-    private static final int NAME_COLUMN = 0;
-    private static final int VALUE_COLUMN = 1;
-
-    private By languageInputField = By.xpath(
-            "//input[@type='text' and contains(@id, 'localeName')]");
-    private By saveButton = By.xpath("//input[@value='Save']");
-    private By enabledByDefaultCheckbox = By.xpath(
-            "//input[@type='checkbox' and contains(@name, 'enabledByDefault')]");
+    private By saveButton = By.id("addLanguageForm:save-button");
+    private By enabledByDefaultCheckbox = By.id("addLanguageForm:enabled");
+    private By languageInfo = By.id("addLanguageForm:output");
+    private By languageInfoItem = By.className("txt--meta");
+    private By pluralsWarning = By.id("addLanguageForm:localeNameMsgs");
 
     public AddLanguagePage(final WebDriver driver) {
         super(driver);
     }
 
-    public AddLanguagePage inputLanguage(String language) {
+    public AddLanguagePage enterSearchLanguage(String language) {
         log.info("Enter language {}", language);
-        waitForWebElement(languageInputField).sendKeys(language);
-        defocus();
-        waitForPageSilence();
+        WebElementUtil.searchAutocomplete(getDriver(),
+                "localeAutocomplete", language);
+        // Pause for a moment, as quick actions can break here
+        slightPause();
         return new AddLanguagePage(getDriver());
     }
 
-    public AddLanguagePage enableLanguageByDefault() {
-        log.info("Click Enable by default");
-        if (!waitForWebElement(enabledByDefaultCheckbox).isSelected()) {
-            waitForWebElement(enabledByDefaultCheckbox).click();
-        }
+    public AddLanguagePage selectSearchLanguage(final String language) {
+        log.info("Select language {}", language);
+        waitForAMoment().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver driver) {
+                List < WebElement > searchResults =
+                        WebElementUtil.getSearchAutocompleteResults(
+                                driver,
+                                "addLanguageForm",
+                                "localeAutocomplete");
+                boolean clickedLanguage = false;
+                for (WebElement searchResult : searchResults) {
+                    if (searchResult.getText().contains(language)) {
+                        searchResult.click();
+                        clickedLanguage = true;
+                        break;
+                    }
+                }
+                return clickedLanguage;
+            }
+        });
         return new AddLanguagePage(getDriver());
     }
 
-    public AddLanguagePage disableLanguageByDefault() {
-        log.info("Click Disable by default");
-        if (waitForWebElement(enabledByDefaultCheckbox).isSelected()) {
-            waitForWebElement(enabledByDefaultCheckbox).click();
+    public AddLanguagePage waitForPluralsWarning() {
+        log.info("Expect plurals warning");
+        waitForWebElement(pluralsWarning);
+        return new AddLanguagePage(getDriver());
+    }
+
+    public AddLanguagePage enableLanguageByDefault(boolean enable) {
+        log.info("Click Enable by default to:" + enable);
+        Checkbox enabledByDefault = Checkbox.of(waitForWebElement(enabledByDefaultCheckbox));
+
+        if (enable) {
+            enabledByDefault.check();
+        } else {
+            enabledByDefault.uncheck();
         }
+
         return new AddLanguagePage(getDriver());
     }
 
@@ -79,25 +106,27 @@ public class AddLanguagePage extends BasePage {
         waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                List<WebElement> thisElement = getDriver()
-                        .findElements(By.className("prop"));
-                return !thisElement.get(NAME_ROW)
-                        .findElements(By.tagName("span"))
-                        .get(VALUE_COLUMN).getText().isEmpty();
+                return !waitForElementExists(languageInfo)
+                        .findElements(By.className("l--push-top-half"))
+                        .get(0).findElement(languageInfoItem)
+                        .getText().isEmpty();
             }
         });
-        for (WebElement item : getDriver().findElements(By.className("prop"))) {
-            map.put(item.findElements(By.tagName("span"))
-                    .get(NAME_COLUMN).getText(),
-                item.findElements(By.tagName("span"))
-                    .get(VALUE_COLUMN).getText());
+        for (WebElement item : waitForElementExists(languageInfo)
+                .findElements(By.className("l--push-top-half"))) {
+            String name = item.getText();
+            String value = item.findElement(languageInfoItem).getText();
+            // Truncate name at value
+            int cutoff = name.lastIndexOf(value);
+            name = name.substring(0, cutoff).trim();
+            map.put(name, value);
         }
         return map;
     }
 
-    public ManageLanguagePage saveLanguage() {
+    public LanguagesPage saveLanguage() {
         log.info("Click Save");
         clickAndCheckErrors(waitForWebElement(saveButton));
-        return new ManageLanguagePage(getDriver());
+        return new LanguagesPage(getDriver());
     }
 }

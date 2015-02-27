@@ -219,8 +219,7 @@ public class ZanataRestCaller {
                 Thread.sleep(1000);
                 log.debug("copyTrans completion: {}", copyTransStatus.getPercentageComplete());
                 copyTransStatus = resource.getCopyTransStatus(projectSlug, iterationSlug, docId);
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 throw Throwables.propagate(e);
             }
         }
@@ -249,8 +248,7 @@ public class ZanataRestCaller {
             while (copyTransStatus.isInProgress()) {
                 try {
                     Thread.sleep(1000);
-                }
-                catch (InterruptedException e) {
+                } catch (InterruptedException e) {
                     throw Throwables.propagate(e);
                 }
                 copyTransStatus = copyTransResource.getCopyTransStatus(projectSlug, iterationSlug, sourceResource.getName());
@@ -273,8 +271,7 @@ public class ZanataRestCaller {
                     processStatus.getMessages());
             try {
                 Thread.sleep(1000);
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
                 throw Throwables.propagate(e);
             }
             processStatus = resource.getProcessStatus(processId);
@@ -288,13 +285,14 @@ public class ZanataRestCaller {
 
     public void asyncPushTarget(String projectSlug, String iterationSlug,
             String docId, LocaleId localeId, TranslationsResource transResource,
-            String mergeType) {
+            String mergeType, boolean assignCreditToUploader) {
         IAsynchronousProcessResource resource =
                 zanataProxyFactory.getAsynchronousProcessResource();
         ProcessStatus processStatus =
                 resource.startTranslatedDocCreationOrUpdate(docId, projectSlug,
                         iterationSlug, localeId, transResource,
-                        Collections.<String>emptySet(), mergeType);
+                        Collections.<String>emptySet(), mergeType,
+                        assignCreditToUploader);
         processStatus = waitUntilFinished(resource, processStatus);
         log.info("finished async translation({}-{}) push: {}", projectSlug,
                 iterationSlug, processStatus.getStatusCode());

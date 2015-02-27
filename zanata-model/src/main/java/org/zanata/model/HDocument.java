@@ -223,12 +223,8 @@ public class HDocument extends ModelEntityBase implements DocumentWithId,
     }
 
     @OneToMany
-    @JoinColumn(name = "document_id", insertable = false, updatable = false/*
-                                                                            * ,
-                                                                            * nullable
-                                                                            * =
-                                                                            * true
-                                                                            */)
+    @JoinColumn(name = "document_id", insertable = false, updatable = false)
+    // , nullable = true
     @MapKey(name = "resId")
     /**
      * NB Don't modify this collection.  Add to the TextFlows list instead.

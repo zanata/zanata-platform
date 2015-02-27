@@ -88,7 +88,7 @@ public class PropertiesRoundTripTest extends ZanataTestCase {
                 "properties-test", "master", "properties", Lists
                 .newArrayList("pl"));
         List<String> output = client.callWithTimeout(tempDir,
-                "mvn -B org.zanata:zanata-maven-plugin:push -Dzanata.srcDir=. "+
+                "mvn -B org.zanata:zanata-maven-plugin:push -Dzanata.srcDir=. " +
                 "-Dzanata.userConfig=" + userConfigPath);
 
         assertThat(client.isPushSuccessful(output)).isTrue();

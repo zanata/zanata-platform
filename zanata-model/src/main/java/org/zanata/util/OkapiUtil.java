@@ -111,7 +111,7 @@ public class OkapiUtil {
      * @return A string with all tmx mark-up content stripped out. Essentially a
      *         plain text version of the string.
      */
-    public static String removeFormattingMarkup(/* final */String content) {
+    public static String removeFormattingMarkup(String content) {
         // The content must be a fully formed <seg> element with optional
         // attributes and with no leading/trailing whitespace
         assert content.startsWith("<seg") && content.endsWith("</seg>");
@@ -125,8 +125,8 @@ public class OkapiUtil {
                             content.getBytes()));
             StringBuilder writer = new StringBuilder();
 
-            int ignoreLevel = 0; // Nesting level. When this is > 0 it means we
-                                 // are ignoring events
+            // Nesting level. When this is > 0 it means we are ignoring events
+            int ignoreLevel = 0;
 
             while (reader.hasNext()) {
                 XMLEvent nextEv = reader.nextEvent();

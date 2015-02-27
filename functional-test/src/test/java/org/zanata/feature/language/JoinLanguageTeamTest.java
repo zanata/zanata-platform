@@ -20,17 +20,22 @@
  */
 package org.zanata.feature.language;
 
-import org.junit.ClassRule;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.subethamail.wiser.WiserMessage;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
-import org.zanata.page.administration.ManageLanguageTeamMemberPage;
+import org.zanata.page.languages.LanguagePage;
+import org.zanata.util.HasEmailRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.zanata.util.HasEmailRule.getEmailContent;
 
 /**
  * @author Damian Jansen
@@ -39,23 +44,34 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class JoinLanguageTeamTest extends ZanataTestCase {
 
-    @ClassRule
-    public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
+    @Rule
+    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
+
+    @Rule
+    public HasEmailRule hasEmailRule = new HasEmailRule();
 
     @Feature(summary = "The administrator can add a member to a language team",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 181703)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void translatorJoinsLanguageTeam() throws Exception {
-        ManageLanguageTeamMemberPage manageTeamMemberPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToAdministration()
-                .goToManageLanguagePage()
-                .manageTeamMembersFor("pl")
+        LanguagePage languagePage = new LoginWorkFlow()
+                .signIn("admin", "admin").goToLanguages()
+                .gotoLanguagePage("pl")
+                .gotoMembersTab()
+                .clickMembersTabMoreActions()
                 .clickAddTeamMember()
-                .searchPersonAndAddToTeam("translator");
+                .searchPersonAndAddToTeam("translator",
+                        LanguagePage.TeamPermission.Translator,
+                        LanguagePage.TeamPermission.Reviewer);
 
-        assertThat(manageTeamMemberPage.getMemberUsernames())
+        assertThat(languagePage.getMemberUsernames())
                 .contains("translator")
                 .as("Translator is a listed member of the pl team");
+        assertThat(hasEmailRule.emailsArrivedWithinTimeout(1, 5,
+                TimeUnit.SECONDS))
+                .isTrue();
+        WiserMessage emailMessage = hasEmailRule.getMessages().get(0);
+        assertThat(getEmailContent(emailMessage))
+                .contains("Administrator has changed your permissions");
     }
 }

@@ -473,8 +473,6 @@ public class TranslationsRawCompatibilityITCase extends RestTest {
         assertThat(tft1.getContents().get(0), is("Translated 1"));
         assertThat(tft1.getExtensions(true).findByType(SimpleComment.class)
                 .getValue(), is("Translated Comment 1"));
-        assertThat(tft1.getTranslator().getName(), is("Sample User"));
-        assertThat(tft1.getTranslator().getEmail(), is("user1@localhost"));
 
         // Second Text Flow Target
         TextFlowTarget tft2 = updatedTransRes.getTextFlowTargets().get(1);
@@ -483,8 +481,6 @@ public class TranslationsRawCompatibilityITCase extends RestTest {
         assertThat(tft2.getContents().get(0), is("Translated 2"));
         assertThat(tft2.getExtensions(true).findByType(SimpleComment.class)
                 .getValue(), is("Translated Comment 2"));
-        assertThat(tft2.getTranslator().getName(), is("Sample User"));
-        assertThat(tft2.getTranslator().getEmail(), is("user1@localhost"));
 
         // First Text Flow Target
         TextFlowTarget tft3 = updatedTransRes.getTextFlowTargets().get(2);
@@ -493,8 +489,6 @@ public class TranslationsRawCompatibilityITCase extends RestTest {
         assertThat(tft3.getContents().get(0), is("Translated 3"));
         assertThat(tft3.getExtensions(true).findByType(SimpleComment.class)
                 .getValue(), is("Translated Comment 3"));
-        assertThat(tft3.getTranslator().getName(), is("Sample User"));
-        assertThat(tft3.getTranslator().getEmail(), is("user1@localhost"));
     }
 
 }

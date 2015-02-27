@@ -22,6 +22,7 @@ package org.zanata.webtrans.client.ui;
 
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.TextBox;
+import org.zanata.util.CoverageIgnore;
 
 /**
  * @author damason@redhat.com
@@ -51,6 +52,7 @@ public class SearchTextBox extends TextBox {
         return isElementFocused(getElement());
     }
 
+    @CoverageIgnore("JSNI")
     private native boolean isElementFocused(Element element)/*-{
         return element.ownerDocument.activeElement === element;
     }-*/;

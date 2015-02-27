@@ -23,6 +23,7 @@ package org.zanata.feature.project;
 
 import java.util.HashMap;
 
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -33,6 +34,7 @@ import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.util.AddUsersRule;
+import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
@@ -49,15 +51,19 @@ public class CreateProjectTest extends ZanataTestCase {
     @ClassRule
     public static AddUsersRule addUsersRule = new AddUsersRule();
 
+    @BeforeClass
+    public static void beforeClass() {
+        new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
+        assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
+                .isEqualTo("admin")
+                .as("Admin is logged in");
+    }
+
     @Feature(summary = "The user can create a project",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 144262)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Category(BasicAcceptanceTest.class)
     public void createABasicProject() throws Exception {
-        assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
-                .isEqualTo("admin")
-                .as("User logs in");
-
         ProjectVersionsPage projectVersionsPage = new ProjectWorkFlow()
                 .createNewSimpleProject("basicproject", "basicproject");
 
@@ -74,10 +80,6 @@ public class CreateProjectTest extends ZanataTestCase {
         projectSettings.put("Project ID", "descriptionproject");
         projectSettings.put("Name", "Project With Description Test");
         projectSettings.put("Description", "Project Description!");
-
-        assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
-                .isEqualTo("admin")
-                .as("Admin can log in");
 
         ProjectBasePage projectPage =
                 new ProjectWorkFlow().createNewProject(projectSettings);

@@ -32,11 +32,11 @@ import org.zanata.page.BasePage;
 @Slf4j
 public class EditRoleAssignmentPage extends BasePage {
 
-    private By policySelect = By.id("projectForm:policyNameField:policyName");
-    private By patternField = By.id("projectForm:identityPatternField:identityPattern");
-    private By roleSelect = By.id("projectForm:roleField:roles");
-    private By saveButton = By.id("projectForm:save");
-    private By cancelButton = By.id("projectForm:cancel");
+    private By policySelect = By.id("role-rule-form:policyNameField:policyName");
+    private By patternField = By.id("role-rule-form:identityPatternField:identityPattern");
+    private By roleSelect = By.id("role-rule-form:roleField:roles");
+    private By saveButton = By.id("role-rule-form:save");
+    private By cancelButton = By.id("role-rule-form:cancel");
 
     public EditRoleAssignmentPage(WebDriver driver) {
         super(driver);
@@ -61,10 +61,10 @@ public class EditRoleAssignmentPage extends BasePage {
         return new EditRoleAssignmentPage(getDriver());
     }
 
-    public EditRoleAssignmentPage saveRoleAssignment() {
+    public RoleAssignmentsPage saveRoleAssignment() {
         log.info("Click Save");
         waitForWebElement(saveButton).click();
-        return new EditRoleAssignmentPage(getDriver());
+        return new RoleAssignmentsPage(getDriver());
     }
 
     public RoleAssignmentsPage cancelEditRoleAssignment() {

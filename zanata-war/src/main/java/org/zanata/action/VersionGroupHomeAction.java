@@ -389,7 +389,7 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     }
 
     public WordStatistic getStatisticsForLocale(LocaleId localeId) {
-        if( !localeStats.containsKey(localeId) ) {
+        if (!localeStats.containsKey(localeId)) {
             WordStatistic statistic = new WordStatistic();
             for (Map.Entry<VersionLocaleKey, WordStatistic> entry : statisticMap
                     .entrySet()) {
@@ -405,7 +405,7 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     }
 
     public WordStatistic getStatisticForProject(Long projectIterationId) {
-        if( !projectStats.containsKey(projectIterationId) ) {
+        if (!projectStats.containsKey(projectIterationId)) {
             WordStatistic statistic = new WordStatistic();
             for (Map.Entry<VersionLocaleKey, WordStatistic> entry : statisticMap
                     .entrySet()) {

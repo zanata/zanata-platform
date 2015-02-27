@@ -24,7 +24,8 @@ site: http://www.fsf.org.
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:composite="http://java.sun.com/jsf/composite"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:f="http://java.sun.com/jsf/core">
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:s="http://jboss.org/schema/seam/taglib">
 
 <composite:interface>
   <composite:attribute name="url"
@@ -39,17 +40,19 @@ site: http://www.fsf.org.
   <composite:attribute name="maxfiles"
     shortDescription="maximum number of files allowed in the upload dialog at once"
     required="true"/>
+  <composite:attribute name="styleClass" shortDescription="css class for toggle button"/>
 </composite:interface>
 
 <composite:implementation>
 
-<button class="button button--snug l--push-top-half"
-  id="#{cc.clientId}-toggle-button"
-  data-toggle="modal"
-  data-target="##{cc.clientId}"
-  title="#{cc.attrs.title}">
-  <composite:insertChildren/>
-</button>
+    <a href="#"
+      class="#{cc.attrs.styleClass}"
+      id="#{cc.clientId}-toggle-button"
+      data-toggle="modal"
+      data-target="##{cc.clientId}"
+      title="#{cc.attrs.title}">
+      <composite:insertChildren/>
+    </a>
 
 <div class="modal" id="#{cc.clientId}" tabindex="-1" role="dialog"
   aria-labelledby="myModalLabel" aria-hidden="true">

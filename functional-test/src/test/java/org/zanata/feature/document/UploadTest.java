@@ -24,6 +24,8 @@ import java.io.File;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,6 +35,7 @@ import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projectversion.VersionDocumentsPage;
 import org.zanata.page.projectversion.versionsettings.VersionDocumentsTab;
+import org.zanata.util.AddUsersRule;
 import org.zanata.util.CleanDocumentStorageRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
@@ -52,6 +55,9 @@ import static org.zanata.util.FunctionalTestHelper.assumeTrue;
 @Slf4j
 public class UploadTest extends ZanataTestCase {
 
+    @ClassRule
+    public static AddUsersRule addUsersRule = new AddUsersRule();
+
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
@@ -59,15 +65,18 @@ public class UploadTest extends ZanataTestCase {
     public CleanDocumentStorageRule documentStorageRule =
             new CleanDocumentStorageRule();
 
-    private ZanataRestCaller zanataRestCaller;
     private TestFileGenerator testFileGenerator = new TestFileGenerator();
     private String documentStorageDirectory;
 
+    @BeforeClass
+    public static void beforeClass() {
+        new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
+        new LoginWorkFlow().signIn("admin", "admin");
+    }
+
     @Before
     public void before() {
-        new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
-        zanataRestCaller = new ZanataRestCaller();
-        zanataRestCaller.createProjectAndVersion("uploadtest",
+        new ZanataRestCaller().createProjectAndVersion("uploadtest",
                 "txt-upload", "file");
         documentStorageDirectory = CleanDocumentStorageRule
                 .getDocumentStoragePath()
@@ -78,46 +87,6 @@ public class UploadTest extends ZanataTestCase {
         if (new File(documentStorageDirectory).exists()) {
             log.warn("Document storage directory exists (cleanup incomplete)");
         }
-        new LoginWorkFlow().signIn("admin", "admin");
-    }
-
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Category(BasicAcceptanceTest.class)
-    public void uploadedDocumentIsInFilesystem() {
-        File originalFile =
-                testFileGenerator.generateTestFileWithContent(
-                        "uploadedDocumentIsInFilesystem", ".txt",
-                        "This is a test file");
-        String testFileName = originalFile.getName();
-
-        VersionDocumentsTab versionDocumentsTab = new ProjectWorkFlow()
-                .goToProjectByName("uploadtest")
-                .gotoVersion("txt-upload")
-                .gotoSettingsTab()
-                .gotoSettingsDocumentsTab()
-                .pressUploadFileButton()
-                .enterFilePath(originalFile.getAbsolutePath())
-                .submitUpload()
-                .clickUploadDone();
-
-        assertThat(new File(documentStorageDirectory).list().length)
-                .isEqualTo(1)
-                .as("There is only one uploaded source file");
-
-        File newlyCreatedFile = new File(documentStorageDirectory,
-                testFileGenerator
-                        .getFirstFileNameInDirectory(documentStorageDirectory));
-
-        assertThat(testFileGenerator.getTestFileContent(newlyCreatedFile))
-                .isEqualTo("This is a test file")
-                .as("The contents of the file were also uploaded");
-        VersionDocumentsPage versionDocumentsPage = versionDocumentsTab
-                .gotoDocumentTab()
-                .waitForSourceDocsContains(testFileName);
-
-        assertThat(versionDocumentsPage.sourceDocumentsContains(testFileName))
-                .isTrue()
-                .as("Document shows in table");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)

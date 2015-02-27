@@ -20,6 +20,8 @@
  */
 package org.zanata.feature.project;
 
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -27,8 +29,10 @@ import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.projects.projectsettings.ProjectTranslationTab;
+import org.zanata.util.AddUsersRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
+import org.zanata.workflow.ProjectWorkFlow;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assume.assumeTrue;
@@ -40,8 +44,18 @@ import static org.junit.Assume.assumeTrue;
 @Category(DetailedTest.class)
 public class EditProjectValidationsTest extends ZanataTestCase {
 
+    @ClassRule
+    public static AddUsersRule addUsersRule = new AddUsersRule();
+
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
+
+    @BeforeClass
+    public static void beforeClass() {
+        assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
+                .isEqualTo("admin")
+                .as("Admin is logged in");
+    }
 
     @Feature(summary = "The administrator can change the validation levels " +
             "for a project",
@@ -49,10 +63,8 @@ public class EditProjectValidationsTest extends ZanataTestCase {
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setValidationOptions() throws Exception {
 
-        ProjectTranslationTab projectTranslationTab = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToProjects()
-                .goToProject("about fedora")
+        ProjectTranslationTab projectTranslationTab = new ProjectWorkFlow()
+                .goToProjectByName("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsTranslationTab();
 
@@ -62,15 +74,22 @@ public class EditProjectValidationsTest extends ZanataTestCase {
                 .as("The level for tabs is currently Warning");
 
         projectTranslationTab = projectTranslationTab
-                .setValidationLevel("HTML/XML tags", "Error")
-                .setValidationLevel("Java variables", "Error")
-                .setValidationLevel("Leading/trailing newline (\\n)", "Error")
-                .setValidationLevel("Printf variables", "Error")
-                .setValidationLevel("Tab characters (\\t)", "Error")
+                .setValidationLevel("HTML/XML tags", "Error");
+        projectTranslationTab.reload();
+        projectTranslationTab = projectTranslationTab
+                .setValidationLevel("Java variables", "Error");
+        projectTranslationTab.reload();
+        projectTranslationTab = projectTranslationTab
+                .setValidationLevel("Leading/trailing newline (\\n)", "Error");
+        projectTranslationTab.reload();
+        projectTranslationTab = projectTranslationTab
+                .setValidationLevel("Printf variables", "Error");
+        projectTranslationTab.reload();
+        projectTranslationTab = projectTranslationTab
+                .setValidationLevel("Tab characters (\\t)", "Error");
+        projectTranslationTab.reload();
+        projectTranslationTab = projectTranslationTab
                 .setValidationLevel("XML entity reference", "Error");
-
-
-        assumeTrue("RHBZ1017458", projectTranslationTab.hasNoCriticalErrors());
 
         projectTranslationTab = projectTranslationTab.goToHomePage()
                 .goToProjects()
@@ -109,10 +128,8 @@ public class EditProjectValidationsTest extends ZanataTestCase {
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void printfAndPositionalPrintfAreExclusive() throws Exception {
-        ProjectTranslationTab projectTranslationTab = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToProjects()
-                .goToProject("about fedora")
+        ProjectTranslationTab projectTranslationTab = new ProjectWorkFlow()
+                .goToProjectByName("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsTranslationTab()
                 .setValidationLevel(

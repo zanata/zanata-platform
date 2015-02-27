@@ -189,18 +189,8 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
                 new DocumentLocaleKey(event.getDocumentId(),
                         event.getLocaleId());
 
-        WordStatistic stats = documentStatisticCache.get(key);
-
-        if (stats != null) {
-            HTextFlow textFlow = textFlowDAO.findById(
-                    event.getTextFlowId());
-
-            stats.decrement(event.getPreviousState(),
-                    textFlow.getWordCount().intValue());
-            stats.increment(event.getNewState(),
-                    textFlow.getWordCount().intValue());
-            documentStatisticCache.put(key, stats);
-        }
+        //invalidate document statistic cache
+        clearDocumentStatistics(event.getDocumentId(), event.getLocaleId());
 
         // update document status information
         updateDocStatusCache(key, event.getTextFlowTargetId());
@@ -212,7 +202,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     private void updateDocStatusCache(DocumentLocaleKey key,
             Long updatedTargetId) {
         DocumentStatus documentStatus = docStatusCache.get(key);
-        if(documentStatus != null) {
+        if (documentStatus != null) {
             HTextFlowTarget target =
                 textFlowTargetDAO.findById(updatedTargetId, false);
             updateDocumentStatus(documentDAO, documentStatus,

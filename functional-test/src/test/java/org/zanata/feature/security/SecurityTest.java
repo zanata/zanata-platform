@@ -20,15 +20,18 @@
  */
 package org.zanata.feature.security;
 
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.openqa.selenium.By;
 import org.subethamail.wiser.WiserMessage;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.account.ResetPasswordPage;
+import org.zanata.page.utility.HomePage;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.EnsureLogoutRule;
 import org.zanata.util.HasEmailRule;
@@ -73,7 +76,7 @@ public class SecurityTest extends ZanataTestCase {
     public void signInFailure() {
         assertThat(new LoginWorkFlow()
                 .signInFailure("nosuchuser", "password")
-                .expectError("Login failed"))
+                .expectErrors())
                 .contains("Login failed")
                 .as("Log in error message is shown");
     }
@@ -87,10 +90,10 @@ public class SecurityTest extends ZanataTestCase {
                 .clickSignInLink()
                 .goToResetPassword()
                 .enterUserName("admin")
-                .enterEmail("admin@example.com")
-                .resetPassword();
+                .enterEmail("admin@example.com");
+        HomePage homePage = resetPasswordPage.resetPassword();
 
-        assertThat(resetPasswordPage.getNotificationMessage())
+        assertThat(homePage.getNotificationMessage())
                 .isEqualTo("You will soon receive an email with a link to " +
                         "reset your password.");
 
@@ -119,8 +122,10 @@ public class SecurityTest extends ZanataTestCase {
                 .enterEmail("nosuchuser@nosuchdomain.com")
                 .resetFailure();
 
-        assertThat(resetPasswordPage.getNotificationMessage())
-                .isEqualTo("No such account found")
+        assertThat(
+                resetPasswordPage.getNotificationMessage(By
+                        .id("passwordResetRequestForm:messages")))
+                .isEqualTo("No account found.")
                 .as("A no such account message is displayed");
     }
 
@@ -137,16 +142,17 @@ public class SecurityTest extends ZanataTestCase {
                 .enterEmail("b")
                 .resetFailure();
 
-        assertThat(resetPasswordPage.expectError("not a well-formed email address"))
+        assertThat(resetPasswordPage.expectErrors())
                 .contains("not a well-formed email address")
                 .as("Invalid email error is displayed");
 
-        String error = resetPasswordPage.getErrors().get(0);
         // Both are valid, but show seemingly at random
-        assertThat(error.equals("size must be between 3 and 20") ||
-                error.equals("must match ^[a-z\\d_]{3,20}$"))
-                .isTrue()
-                .as("Invalid email error is displayed");
+        assertThat(resetPasswordPage.getErrors().get(0))
+                .isIn("Between 3 and 20 lowercase letters, numbers and " +
+                            "underscores only",
+                        "size must be between 3 and 20",
+                        "must match ^[a-z\\d_]{3,20}$")
+                .as("Invalid username error is displayed");
     }
 
     @Feature(summary = "The user must enter both an account name and email " +
@@ -161,16 +167,9 @@ public class SecurityTest extends ZanataTestCase {
                 .clearFields()
                 .resetFailure();
 
-        assertThat(resetPasswordPage.expectError("may not be empty"))
-                .contains("may not be empty")
-                .as("Empty email error is displayed");
-
-        // All are valid, but may show at random
-        String error = resetPasswordPage.getErrors().get(0);
-        assertThat(error.equals("size must be between 3 and 20") ||
-                error.equals("may not be empty") ||
-                error.equals("must match ^[a-z\\d_]{3,20}$"))
-                .as("The regex match for the reset password field has failed");
+        assertThat(resetPasswordPage.expectErrors())
+                .contains("value is required")
+                .as("value is required error is displayed");
     }
 
 }

@@ -320,8 +320,7 @@ public class PermissionEvaluatorTest {
                             .checkPermission("throws-exception",
                                     new HProjectIteration()))
                     .isFalse();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             assertThat(e).isExactlyInstanceOf(RuntimeException.class);
             assertThat(e).hasCauseInstanceOf(InvocationTargetException.class);
         }

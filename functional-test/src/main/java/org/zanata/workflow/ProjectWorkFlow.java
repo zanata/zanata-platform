@@ -87,7 +87,8 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
                 .enterProjectId(settings.get("Project ID"))
                 .enterDescription(settings.get("Description"))
                 .selectProjectType(settings.get("Project Type"));
-        createProjectPage.slightPause(); // Unusual timing issue
+        // Unusual timing issue:
+        createProjectPage.slightPause();
         return createProjectPage.pressCreateProject();
     }
 

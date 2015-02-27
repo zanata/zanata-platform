@@ -38,7 +38,6 @@ import org.zanata.feature.glossary.GlossaryDeleteTest;
 import org.zanata.feature.glossary.GlossaryPushTest;
 import org.zanata.feature.glossary.InvalidGlossaryPushTest;
 import org.zanata.feature.googleopenid.GoogleOpenIDTest;
-import org.zanata.feature.infrastructure.RetryRuleTest;
 import org.zanata.feature.language.AddLanguageTest;
 import org.zanata.feature.language.ContactLanguageTeamTest;
 import org.zanata.feature.language.JoinLanguageTeamTest;
@@ -70,11 +69,10 @@ import org.zanata.feature.versionGroup.*;
          */
         ChangePasswordTest.class,
         InactiveUserLoginTest.class,
-        InvalidEmailAddressTest.class,
         ProfileTest.class,
         RegisterTest.class,
         UsernameValidationTest.class,
-        ValidEmailAddressTest.class,
+        EmailValidationTest.class,
 
         /*
          * Administration
@@ -145,12 +143,6 @@ import org.zanata.feature.versionGroup.*;
         GoogleOpenIDTest.class,
 
         /*
-         * Infrastructure
-         * Test infrastructure validation
-         */
-        RetryRuleTest.class,
-
-        /*
          * Language
          * Participation in an management of language teams
          */
@@ -176,7 +168,8 @@ import org.zanata.feature.versionGroup.*;
         EditProjectGeneralTest.class,
         EditProjectLanguagesTest.class,
         EditProjectValidationsTest.class,
-
+        EditWebHooksTest.class,
+        SetProjectVisibilityTest.class,
         /*
          * Project Version
          * Creation and management of Project Versions
@@ -203,7 +196,6 @@ import org.zanata.feature.versionGroup.*;
          * Creation and management of Version Groups
          */
         VersionGroupTest.class,
-        VersionGroupIDValidationTest.class,
         VersionGroupUrlTest.class
 })
 public class TestPlan {

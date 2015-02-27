@@ -46,7 +46,7 @@ public abstract class InMemoryListFilter<T> extends AbstractListFilter<T> {
     protected List<T> fetchRecords(int start, int max, final String filter) {
         loadElements();
         List<T> filteredList = Lists.newArrayList(elements);
-        if( filter != null ) {
+        if (filter != null) {
             filteredList = Lists.newArrayList(
                     Collections2.filter(elements, new Predicate<T>() {
                         @Override
@@ -61,7 +61,7 @@ public abstract class InMemoryListFilter<T> extends AbstractListFilter<T> {
     }
 
     private void loadElements() {
-        if(elements == null) {
+        if (elements == null) {
             elements = fetchAll();
         }
     }

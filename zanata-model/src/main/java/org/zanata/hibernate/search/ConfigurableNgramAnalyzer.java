@@ -69,7 +69,8 @@ public class ConfigurableNgramAnalyzer extends Analyzer {
         this.foldCase = foldCase;
     }
 
-    @SuppressWarnings("resource") // caller should close
+    // caller should close the TokenStream
+    @SuppressWarnings("resource")
     @Override
     public TokenStream tokenStream(String fieldName, Reader reader) {
         TokenStream tokenStream;

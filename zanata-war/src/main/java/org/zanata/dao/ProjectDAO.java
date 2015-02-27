@@ -330,7 +330,7 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                                         "where tft.translator = :translator"
                         )
                         .setParameter("translator", account);
-        return ((Long)q.uniqueResult()).intValue();
+        return ((Long) q.uniqueResult()).intValue();
     }
 
 
@@ -353,7 +353,7 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                         .setParameter("translator", account)
                         .setParameter("project", project)
                         .setCacheable(true);
-        return (Date)q.uniqueResult();
+        return (Date) q.uniqueResult();
     }
 
     /**
@@ -370,7 +370,7 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                         )
                         .setParameter("project", project)
                         .setCacheable(true);
-        return (Date)q.uniqueResult();
+        return (Date) q.uniqueResult();
     }
 
     /**
@@ -390,10 +390,9 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                         .setMaxResults(1)
                         .setCacheable(true);
         List results = q.list();
-        if( results.isEmpty() ) {
+        if (results.isEmpty()) {
             return null;
-        }
-        else {
+        } else {
             return (HPerson) results.get(0);
         }
     }
@@ -432,6 +431,6 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                         )
                         .setParameter("maintainer", maintainer)
                         .setParameter("filter", "%" + sqlFilter + "%");
-        return ((Long)q.uniqueResult()).intValue();
+        return ((Long) q.uniqueResult()).intValue();
     }
 }

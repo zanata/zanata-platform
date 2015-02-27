@@ -76,7 +76,7 @@ public class TranslateTextTest extends ZanataTestCase {
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void translateBasicTextFile() {
         File testfile = testFileGenerator.generateTestFileWithContent(
-                "basictext",".txt",
+                "basictext", ".txt",
                 "Line One\nLine Two\nLine Three");
         zanataRestCaller.createProjectAndVersion("txt-translate", "txt", "file");
         EditorPage editorPage = new ProjectWorkFlow()

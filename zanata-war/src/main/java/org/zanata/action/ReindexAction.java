@@ -1,6 +1,7 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -29,18 +30,38 @@ import com.google.common.base.Optional;
 public class ReindexAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    private final DecimalFormat PERCENT_FORMAT = new DecimalFormat("###.##");
+
     @In
-    SearchIndexManager searchIndexManager;
+    private SearchIndexManager searchIndexManager;
 
     public List<ReindexClassOptions> getClasses() {
         return searchIndexManager.getReindexOptions();
     }
 
-    public void selectAll(boolean selected) {
+    public boolean isAnyOptionSelected() {
         for (ReindexClassOptions opts : searchIndexManager.getReindexOptions()) {
-            opts.setPurge(selected);
-            opts.setReindex(selected);
-            opts.setOptimize(selected);
+            if(opts.isOptimize() || opts.isPurge() || opts.isReindex()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isSelectAll() {
+        for (ReindexClassOptions opts : searchIndexManager.getReindexOptions()) {
+            if(!opts.isOptimize() || !opts.isPurge() || !opts.isReindex()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void setSelectAll(boolean selectAll) {
+        for (ReindexClassOptions opts : searchIndexManager.getReindexOptions()) {
+            opts.setPurge(selectAll);
+            opts.setReindex(selectAll);
+            opts.setOptimize(selectAll);
         }
     }
 
@@ -133,6 +154,17 @@ public class ReindexAction implements Serializable {
             return 0;
         } else {
             return searchIndexManager.getProcessHandle().getCurrentProgress();
+        }
+    }
+
+    public String getProgressPercentage() {
+        if (searchIndexManager.getProcessHandle() == null) {
+            return "0";
+        } else {
+            double completedPercent =
+                    (double) getReindexProgress() / (double) getReindexCount()
+                            * 100;
+            return PERCENT_FORMAT.format(completedPercent);
         }
     }
 

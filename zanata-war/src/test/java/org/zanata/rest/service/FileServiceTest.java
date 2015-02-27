@@ -113,7 +113,7 @@ public class FileServiceTest {
     public void translationUploadParamsHandledCorrectly() {
         when(
                 transUploader.tryUploadTranslationFile(eq(id), eq(LOCALE),
-                        eq(MERGE), formCaptor.capture()))
+                        eq(MERGE), eq(false), formCaptor.capture()))
                 .thenReturn(okResponse);
         fileService.uploadTranslationFile(PROJ_SLUG, VER_SLUG, LOCALE, DOC_ID,
                 MERGE, form);
@@ -121,7 +121,7 @@ public class FileServiceTest {
     }
 
     public void translationUploadResponseReturnedDirectly() {
-        when(transUploader.tryUploadTranslationFile(id, LOCALE, MERGE, form))
+        when(transUploader.tryUploadTranslationFile(id, LOCALE, MERGE, false, form))
                 .thenReturn(okResponse);
         response =
                 fileService.uploadTranslationFile(PROJ_SLUG, VER_SLUG, LOCALE,

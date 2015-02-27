@@ -33,8 +33,8 @@
 
   <!-- Language rules -->
   <rule>
-    <from casesensitive="true">^/language/view/(.+)$</from>
-    <to last="true">/language/language.seam\?id=$1</to>
+    <from casesensitive="true">^/language/view/([^/]+)(/([^?]*)\??(.*))?$</from>
+    <to last="true">/language/language.seam\?id=$1&amp;$4</to>
   </rule>
 
   <rule>
@@ -46,13 +46,6 @@
     <from casesensitive="true">^/language/join/(.+)$</from>
     <to
       last="true">/language/request_to_join_update_role.seam\?emailType=request_to_join_update_role_language&amp;id=$1
-    </to>
-  </rule>
-
-  <rule>
-    <from casesensitive="true">/language/contact/(.+)$</from>
-    <to
-      last="true">/language/contact_coordinator.seam\?emailType=contact_coordinator&amp;id=$1
     </to>
   </rule>
 
@@ -313,10 +306,6 @@
     <to>$1/admin/$2$3</to>
   </outbound-rule>
 
-  <outbound-rule>
-    <from>^(/.+)?/language/contact_coordinator.seam\?emailType=contact_coordinator&amp;id=(.+)$</from>
-    <to>$1/language/contact/$2</to>
-  </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/language/request_to_join_update_role.seam\?emailType=request_to_join_update_role_language&amp;id=(.+)$</from>
     <to>$1/language/join/$2</to>

@@ -79,8 +79,7 @@ public class CleanDocumentStorageRule extends ExternalResource {
                 storagePath =
                         (String) remoteContext
                                 .lookup("zanata/files/document-storage-directory");
-            }
-            catch (NamingException e) {
+            } catch (NamingException e) {
                 // wildfly uses 'http-remoting:' not 'remote:'
                 String httpPort = System.getenv("JBOSS_HTTP_PORT");
                 int httpPortNum = httpPort != null ? parseInt(httpPort) : 8180;

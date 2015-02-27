@@ -82,7 +82,8 @@ public class TranslationDocumentUpload {
 
     public Response
             tryUploadTranslationFile(GlobalDocumentId id, String localeId,
-                    String mergeType, DocumentFileUploadForm uploadForm) {
+                    String mergeType, boolean assignCreditToUploader,
+            DocumentFileUploadForm uploadForm) {
         try {
             failIfTranslationUploadNotValid(id, localeId, uploadForm);
 
@@ -151,7 +152,8 @@ public class TranslationDocumentUpload {
                     translationServiceImpl.translateAllInDoc(
                             id.getProjectSlug(), id.getVersionSlug(),
                             id.getDocId(), locale.getLocaleId(), transRes,
-                            extensions, mergeTypeFromString(mergeType));
+                            extensions, mergeTypeFromString(mergeType),
+                            assignCreditToUploader);
 
             return transUploadResponse(totalChunks, warnings);
         } catch (FileNotFoundException e) {

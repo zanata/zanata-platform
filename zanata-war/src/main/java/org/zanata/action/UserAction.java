@@ -26,6 +26,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
@@ -41,8 +42,12 @@ import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.i18n.Messages;
+import org.zanata.model.HPerson;
+import org.zanata.model.HProjectIteration;
 import org.zanata.service.EmailService;
 import org.zanata.service.UserAccountService;
+import org.zanata.ui.AbstractListFilter;
+import org.zanata.ui.InMemoryListFilter;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -71,13 +76,7 @@ public class UserAction extends
     private EntityManager entityManager;
 
     @In
-    private ApplicationConfiguration applicationConfiguration;
-
-    @In
     private Messages msgs;
-
-    @In
-    private PersonDAO personDAO;
 
     @In
     private UserAccountService userAccountServiceImpl;
@@ -85,11 +84,31 @@ public class UserAction extends
     @In
     private EmailService emailServiceImpl;
 
+    @In
+    private PersonDAO personDAO;
+
     private boolean newUserFlag;
 
-    private UserPagedListDataModel userPagedListDataModel = new UserPagedListDataModel();
-
     private String originalUsername;
+
+    @Getter
+    private AbstractListFilter<String> userFilter =
+            new AbstractListFilter<String>() {
+                AccountDAO accountDAO =
+                        (AccountDAO) Component.getInstance(AccountDAO.class,
+                                ScopeType.STATELESS);
+
+                @Override
+                protected List<String> fetchRecords(int start, int max,
+                        String filter) {
+                    return accountDAO.getUserNames(filter, start, max);
+                }
+
+                @Override
+                protected long fetchTotalRecords(String filter) {
+                    return accountDAO.getUserCount(filter);
+                }
+            };
 
     public void deleteUser(String userName) {
         try {
@@ -99,25 +118,15 @@ public class UserAction extends
             entityManager.flush();
         } catch (PersistenceException e) {
             if (e.getCause() instanceof ConstraintViolationException) {
-                FacesMessages
-                        .instance()
-                        .add(StatusMessage.Severity.ERROR,
-                                msgs.get(
-                                        "jsf.UserManager.delete.constraintViolation.error"));
+                FacesMessages.instance()
+                        .add(StatusMessage.Severity.ERROR, msgs.get(
+                            "jsf.UserManager.delete.constraintViolation.error"));
             }
         }
     }
 
-    public DataModel getUserPagedListDataModel() {
-        return userPagedListDataModel;
-    }
-
     public String getEmail(String username) {
         return personDAO.findEmail(username);
-    }
-
-    // This is readonly field in UI.
-    public void setEmail(String email) {
     }
 
     public String getName(String username) {
@@ -185,25 +194,4 @@ public class UserAction extends
             return true;
         }
     }
-
-    public class UserPagedListDataModel extends PagedListDataModel<String> {
-        @Getter
-        @Setter
-        private String filter;
-
-        @Override
-        public DataPage<String> fetchPage(int startRow, int pageSize) {
-            AccountDAO accountDAO =
-                    (AccountDAO) Component.getInstance(AccountDAO.class,
-                            ScopeType.STATELESS);
-
-            List<String> userList =
-                    accountDAO.getUserNames(filter, startRow, pageSize);
-
-            int listSize = accountDAO.getUserCount(filter);
-
-            return new DataPage<String>(listSize, startRow, userList);
-        }
-    }
-
 }

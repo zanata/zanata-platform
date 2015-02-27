@@ -38,7 +38,6 @@ import org.zanata.page.account.SignInPage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.HasEmailRule;
-import org.zanata.util.rfc2822.InvalidEmailAddressRFC2822;
 import org.zanata.workflow.BasicWorkFlow;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,6 +51,7 @@ public class RegisterTest extends ZanataTestCase {
 
     @ClassRule
     public static AddUsersRule addUsersRule = new AddUsersRule();
+
     @ClassRule
     public static HasEmailRule emailRule = new HasEmailRule();
 
@@ -65,7 +65,7 @@ public class RegisterTest extends ZanataTestCase {
 
         // Conflicting fields - must be set for each test function to avoid
         // "not available" errors
-        fields.put("email", "test@test.com");
+        fields.put("email", "test@example.com");
         fields.put("username", "testusername");
         fields.put("name", "test");
         fields.put("password", "testpassword");
@@ -98,7 +98,7 @@ public class RegisterTest extends ZanataTestCase {
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void usernameLengthValidation() throws Exception {
-        fields.put("email", "length.test@test.com");
+        fields.put("email", "length.test@example.com");
         RegisterPage registerPage = homePage.goToRegistration();
 
         fields.put("username", "bo");
@@ -130,29 +130,11 @@ public class RegisterTest extends ZanataTestCase {
         RegisterPage registerPage = homePage
                 .goToRegistration()
                 .enterUserName("admin");
-        registerPage.defocus();
+        registerPage.defocus(registerPage.usernameField);
 
-        assertThat(registerPage.expectError(
-                    RegisterPage.USERNAME_UNAVAILABLE_ERROR))
+        assertThat(registerPage.expectErrors())
                 .contains(RegisterPage.USERNAME_UNAVAILABLE_ERROR)
                 .as("Username not available message is shown");
-    }
-
-    @Feature(summary = "The user must enter a valid email address to register",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void emailValidation() throws Exception {
-        fields.put("email",
-                InvalidEmailAddressRFC2822.PLAIN_ADDRESS.toString());
-        fields.put("username", "emailvalidation");
-        RegisterPage registerPage = homePage
-                .goToRegistration()
-                .setFields(fields);
-        registerPage.defocus();
-
-        assertThat(registerPage.getErrors())
-                .contains(RegisterPage.MALFORMED_EMAIL_ERROR)
-                .as("Email validation errors are shown");
     }
 
     @Feature(summary = "The user must enter all necessary fields to register",

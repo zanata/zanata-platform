@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>3.6.0-SNAPSHOT</version>
+    <version>3.7.0-SNAPSHOT</version>
   </parent>
   <artifactId>functional-test</artifactId>
   <!--if we want to use pom packaging, we need to explicitly enable some plugins and various things-->
@@ -12,20 +12,19 @@
   <name>functional-test</name>
 
   <properties>
-    <selenium.version>2.39.0</selenium.version>
+    <selenium.version>2.44.0</selenium.version>
 
     <!--Cargo Settings -->
-    <cargo.wait>false</cargo.wait>
     <cargo.host>localhost</cargo.host>
-    <cargo.container>jboss72x</cargo.container>
     <!--jboss port offset -->
     <cargo.port.offset>0</cargo.port.offset>
     <!-- This may be changed by the JBOSS_HTTP_PORT profile -->
+    <!-- This needs to agree with the http socket-binding in standalone.xml -->
     <cargo.servlet.port>8180</cargo.servlet.port>
-    <cargo.installation>http://downloads.sourceforge.net/project/zanata/server/zanata-server.zip</cargo.installation>
+    <cargo.jboss.management-http.port>10090</cargo.jboss.management-http.port>
+    <cargo.jboss.management-native.port>10099</cargo.jboss.management-native.port>
     <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
     <cargo.container.home>${project.build.directory}/jboss/container</cargo.container.home>
-    <cargo.install.relative.to.container.home>../../cargo/installs/zanata-server</cargo.install.relative.to.container.home>
     <context.path>zanata</context.path>
 
     <!--data source-->
@@ -50,7 +49,6 @@
     <webdriver.chrome.bin>/opt/google/chrome/google-chrome</webdriver.chrome.bin>
     <!-- this decides what web driver type we intended to use-->
     <webdriver.type>chrome</webdriver.type>
-    <webdriver.display>:0</webdriver.display>
     <webdriver.log>${project.build.directory}/webdriver.log</webdriver.log>
     <webdriver.screenshot.dir>${project.build.directory}/screenshots</webdriver.screenshot.dir>
     <webdriver.wait>10</webdriver.wait>
@@ -61,14 +59,15 @@
       -Xnoagent -Djava.compiler=NONE
     </cargo.debug.jvm.args>
     <!-- this property can be used to control what test needs to be run by failsafe -->
-    <include.test.patterns>**/AggregateTestSuite.java</include.test.patterns>
+    <default.test.patterns>**/BasicAcceptanceTestSuite.java</default.test.patterns>
+    <include.test.patterns>${default.test.patterns}</include.test.patterns>
     <hibernate.search.default.indexBase>${project.build.directory}/zanataindex</hibernate.search.default.indexBase>
     <javamelody.storage-directory>${project.build.directory}/zanatastats</javamelody.storage-directory>
     <!-- This may be changed by the SMTP_PORT profile -->
     <smtp.port>2552</smtp.port>
     <jndi-remote-client.groupId>org.jboss.as</jndi-remote-client.groupId>
-    <jndi-remote-client.artifactId>jboss-as-ejb-client-bom</jndi-remote-client.artifactId>
-    <jndi-remote-client.version>7.1.1.Final</jndi-remote-client.version>
+    <jndi-remote-client.artifactId>jboss-as-controller-client</jndi-remote-client.artifactId>
+    <jndi-remote-client.version>7.2.0.Final</jndi-remote-client.version>
     <standalone.xml.file>standalone.xml</standalone.xml.file>
   </properties>
 
@@ -77,7 +76,7 @@
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
-        <version>4.3.3</version>
+        <version>4.3.4</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
@@ -153,6 +152,10 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.subethamail</groupId>
@@ -221,6 +224,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>jaxrs-api</artifactId>
+      <scope>${resteasy.scope}</scope>
     </dependency>
 
     <!-- to use rest client in test -->
@@ -250,17 +254,33 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxb-provider</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.xml.bind</groupId>
+          <artifactId>jaxb-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.logging</groupId>
+          <artifactId>jboss-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
 
     <dependency>
       <groupId>org.zanata</groupId>
       <artifactId>zanata-adapter-po</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.xml.bind</groupId>
+          <artifactId>jaxb-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
+      <groupId>org.jboss.spec.javax.xml.bind</groupId>
+      <artifactId>jboss-jaxb-api_2.2_spec</artifactId>
     </dependency>
 
     <dependency>
@@ -276,13 +296,25 @@
       <groupId>${jndi-remote-client.groupId}</groupId>
       <artifactId>${jndi-remote-client.artifactId}</artifactId>
       <version>${jndi-remote-client.version}</version>
-      <type>pom</type>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.xml.bind</groupId>
+          <artifactId>jaxb-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jboss</groupId>
       <artifactId>jboss-remote-naming</artifactId>
+      <version>2.0.1.Final</version>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.remoting</groupId>
+          <artifactId>jboss-remoting</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -313,19 +345,6 @@
           <value>jbosseap6</value>
         </property>
       </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <configuration>
-              <usedDependencies>
-                <usedDependency>org.jboss.as:jboss-as-ejb-client-bom</usedDependency>
-              </usedDependencies>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-
     </profile>
     <profile>
       <id>wildfly8</id>
@@ -336,51 +355,19 @@
         </property>
       </activation>
       <properties>
-        <cargo.container>wildfly8x</cargo.container>
-        <cargo.installation>http://download.jboss.org/wildfly/${wildfly.version}/wildfly-${wildfly.version}.zip</cargo.installation>
         <standalone.xml.file>standalone_wildfly.xml</standalone.xml.file>
         <jndi-remote-client.groupId>org.wildfly</jndi-remote-client.groupId>
-        <jndi-remote-client.artifactId>wildfly-ejb-client-bom</jndi-remote-client.artifactId>
+        <jndi-remote-client.artifactId>wildfly-controller-client</jndi-remote-client.artifactId>
         <jndi-remote-client.version>${wildfly.version}</jndi-remote-client.version>
       </properties>
       <build>
         <plugins>
           <plugin>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <configuration>
-              <usedDependencies>
-                <usedDependency>org.wildfly:wildfly-ejb-client-bom</usedDependency>
-              </usedDependencies>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.cargo</groupId>
-            <artifactId>cargo-maven2-plugin</artifactId>
-            <configuration combine.self="append">
-            </configuration>
+            <artifactId>maven-antrun-plugin</artifactId>
             <executions>
               <execution>
-                <id>cargo-install</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>install</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.gmaven</groupId>
-            <artifactId>gmaven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>unpack-wildfly-modules</id>
+                <id>install-wildfly-modules</id>
                 <phase>package</phase>
-                <goals>
-                  <goal>execute</goal>
-                </goals>
-                <configuration>
-                  <source>${pom.basedir}/src/etc/wildflyModules.groovy</source>
-                </configuration>
               </execution>
             </executions>
           </plugin>
@@ -403,11 +390,63 @@
         </dependencies>
       </dependencyManagement>
     </profile>
+
+    <profile>
+      <id>skipFuncTests</id>
+      <activation>
+        <property>
+          <name>skipFuncTests</name>
+        </property>
+      </activation>
+      <properties>
+        <skipITs>true</skipITs>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>allFuncTests</id>
+      <activation>
+        <property>
+          <name>allFuncTests</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <include.test.patterns>**/DetailedTestSuite.java</include.test.patterns>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>check-tests-enabled</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target xmlns:if="ant:if">
+                    <echo if:set="skipFuncTests"
+                      message="WARNING: -DskipFuncTests takes precedence over -DallFuncTests" />
+                    <echo if:set="skipITs"
+                      message="WARNING: -DskipITs takes precedence over -DallFuncTests" />
+                    <echo if:set="skipTests"
+                      message="WARNING: -DskipTests takes precedence over -DallFuncTests" />
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
     <profile>
       <id>run-functional-test</id>
       <activation>
         <property>
-          <name>functional-test</name>
+          <name>!skipFuncTests</name>
         </property>
       </activation>
       <build>
@@ -458,7 +497,7 @@
             <configuration>
               <classifier>mysql.classifier</classifier>
               <port>${mysql.port}</port>
-              <data>${project.build.directory}/mdb</data>
+              <socket>${mysql.socket}</socket>
             </configuration>
             <executions>
               <execution>
@@ -502,6 +541,13 @@
                 <phase>package</phase>
                 <configuration>
                   <sqlCommand>ALTER DATABASE ${ds.database} CHARACTER SET utf8 COLLATE utf8_general_ci;</sqlCommand>
+                  <srcFiles>
+                    <!-- we can take a snapshot of the database in previous run -->
+                    <!-- see server/etc/scripts/functional-test-db-snapshot.sh -->
+                    <!-- see server/etc/scripts/cargowait.sh -->
+                    <srcFile>${project.build.directory}/database.sql</srcFile>
+                  </srcFiles>
+                  <onError>continue</onError>
                 </configuration>
               </execution>
             </executions>
@@ -510,17 +556,11 @@
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
             <configuration combine.self="append">
-              <container>
-                <!--if install from url-->
-                <zipUrlInstaller>
-                  <url>${cargo.installation}</url>
-                  <downloadDir>${user.home}/Downloads</downloadDir>
-                  <extractDir>${cargo.extract.dir}</extractDir>
-                </zipUrlInstaller>
-              </container>
               <configuration>
                 <properties>
                   <cargo.servlet.port>${cargo.servlet.port}</cargo.servlet.port>
+                  <cargo.jboss.management-http.port>${cargo.jboss.management-http.port}</cargo.jboss.management-http.port>
+                  <cargo.jboss.management-native.port>${cargo.jboss.management-native.port}</cargo.jboss.management-native.port>
                 </properties>
               </configuration>
               <deployables>
@@ -528,7 +568,7 @@
                   <type>war</type>
                   <location>${project.basedir}/../zanata-test-war/target/${zanata.test.war.name}.war</location>
                   <pingURL>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</pingURL>
-                  <pingTimeout>300000</pingTimeout>
+                  <pingTimeout>600000</pingTimeout>
                   <properties>
                     <context>${context.path}</context>
                   </properties>
@@ -538,11 +578,42 @@
             </configuration>
             <executions>
               <execution>
+                <id>cargo-install</id>
+                <phase>prepare-package</phase>
+              </execution>
+              <execution>
                 <id>cargo-start</id>
                 <phase>pre-integration-test</phase>
                 <goals>
                   <goal>start</goal>
                 </goals>
+                <configuration>
+                  <configuration>
+                    <properties>
+                      <cargo.jvmargs>
+                        <!-- NB: JDom parser doesn't like comments starting with '-' -->
+                        -XX:PermSize=512m -XX:MaxPermSize=1024
+                        -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled
+                        ${cargo.debug.jvm.args}
+                      </cargo.jvmargs>
+                    </properties>
+                  </configuration>
+                </configuration>
+              </execution>
+              <execution>
+                <id>default-cli</id>
+                <configuration>
+                  <configuration>
+                    <properties>
+                      <cargo.jvmargs>
+                        <!-- NB: JDom parser doesn't like comments starting with '-' -->
+                        -XX:PermSize=512m -XX:MaxPermSize=1024
+                        -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled
+                        ${cargo.debug.jvm.args}
+                      </cargo.jvmargs>
+                    </properties>
+                  </configuration>
+                </configuration>
               </execution>
               <execution>
                 <id>cargo-stop</id>
@@ -556,21 +627,6 @@
 
           <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
-            <version>2.11</version>
-            <executions>
-              <execution>
-                <id>integration-test</id>
-                <goals>
-                  <goal>integration-test</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>verify</id>
-                <goals>
-                  <goal>verify</goal>
-                </goals>
-              </execution>
-            </executions>
             <configuration>
               <redirectTestOutputToFile>false</redirectTestOutputToFile>
               <printSummary>true</printSummary>
@@ -578,13 +634,11 @@
               <!--<forkMode>always</forkMode>-->
               <includes>
                 <include>${include.test.patterns}</include>
-                <!--index page-->
-                <include>**/FeatureTest.java</include>
               </includes>
               <properties>
                 <property>
                   <name>listener</name>
-                  <value>org.zanata.util.ScreenshotEnabledTestRunListener,org.zanata.util.FeatureInventoryRecorder</value>
+                  <value>org.zanata.util.ScreenshotEnabledTestRunListener,org.zanata.util.FeatureInventoryRecorder,org.zanata.util.TestLogger</value>
                 </property>
               </properties>
               <systemPropertyVariables>
@@ -605,6 +659,30 @@
       </activation>
       <properties>
         <cargo.servlet.port>${env.JBOSS_HTTP_PORT}</cargo.servlet.port>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>JBOSS_MANAGEMENT_HTTP_PORT</id>
+      <activation>
+        <property>
+          <name>env.JBOSS_MANAGEMENT_HTTP_PORT</name>
+        </property>
+      </activation>
+      <properties>
+        <cargo.jboss.management-http.port>${env.JBOSS_MANAGEMENT_HTTP_PORT}</cargo.jboss.management-http.port>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>JBOSS_MANAGEMENT_NATIVE_PORT</id>
+      <activation>
+        <property>
+          <name>env.JBOSS_MANAGEMENT_NATIVE_PORT</name>
+        </property>
+      </activation>
+      <properties>
+        <cargo.jboss.management-native.port>${env.JBOSS_MANAGEMENT_NATIVE_PORT}</cargo.jboss.management-native.port>
       </properties>
     </profile>
 
@@ -670,10 +748,57 @@
         <targetPath>${project.build.directory}/feature-inventory</targetPath>
       </testResource>
     </testResources>
+
     <plugins>
+      <plugin>
+        <groupId>org.codehaus.gmaven</groupId>
+        <artifactId>gmaven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <properties>
+                <delete>true</delete>
+              </properties>
+              <!-- Sets property mysql.socket -->
+              <source>${project.basedir}/etc/mysql-socket.groovy</source>
+            </configuration>
+          </execution>
+          <execution>
+            <id>initialize</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <configuration>
+              <properties>
+                <delete>false</delete>
+              </properties>
+              <!-- Sets property mysql.socket -->
+              <source>${project.basedir}/etc/mysql-socket.groovy</source>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
+          <execution>
+            <id>init-no-appserver</id>
+            <phase>initialize</phase>
+          </execution>
           <execution>
             <phase>generate-resources</phase>
             <goals>
@@ -682,21 +807,48 @@
             <configuration>
               <target>
                 <echo>===== Properties that can be set for functional test =====</echo>
-                <echo>-Dfunctional-test : to activate functional test run</echo>
+                <echo>-DskipFuncTests : to skip running functional tests, and/or:</echo>
+                <echo>-DskipArqTests : to skip Arquillian integration tests (if building zanata-war)</echo>
+                <echo/>
+                <echo>Unless skipping tests, you must choose an appserver:</echo>
+                <echo>-Dappserver=jbosseap6 -Dcargo.installation=http://example.com/jbosseap632.zip -Dcargo.basename=jbosseap632</echo>
+                <echo>or -Dappserver=wildfly8</echo>
+                <echo>NB: cargo.basename needs to match the basename of the file given in cargo.installation.</echo>
+                <echo>For example, if cargo.installation is http://example.com/download/jboss-6.3.2.zip, cargo.basename should be jboss-6.3.2.</echo>
+                <echo>appserver.dir.name is top-level dir inside zip.  For jbosseap6, default is jboss-eap-6.3.  Override for later versions.</echo>
+                <echo/>
+                <echo>-DallFuncTests to enable all functional tests (defaults to smoke tests)</echo>
+                <echo/>
+                <echo>-Dcargo.debug.jvm.args : If not set by default will listen to port 8787. Need to set to empty on jenkins</echo>
+                <echo/>
                 <echo>-Dzanata.target.version=version of zanata to deploy. Default is: ${project.parent.version}</echo>
                 <echo>-Dzanata.instance.url=http://${cargo.host}:${cargo.servlet.port}/${context.path}</echo>
                 <echo>-Dzanata.apikey=b6d7044e9ee3b2447c28fb7c50d86d98</echo>
                 <!--<echo>-Dzanata.client.version=maven client version to use. Currently: ${zanata.client.version}</echo>-->
                 <echo>-Dzanata.sample.projects.basedir=${project.build.testOutputDirectory}/sample-projects</echo>
-                <echo>-Dcargo.debug.jvm.args : If not set by default will listen to port 8787. Need to set to empty on jenkins</echo>
-                <echo>-Dinclude.test.patterns=test filter pattern. Can be used to control what test to run. Default is **/*AggregateTestSuite.java.</echo>
+                <echo>-Dinclude.test.patterns=test filter pattern. Can be used to control what test to run. Default is ${default.test.patterns}</echo>
                 <echo>-Dwebdriver.type=run tests in htmlUnit, chrome or firefox. For chrome, see also webdriver.chrome.* Default is chrome.</echo>
-                <echo>-Dwebdriver.display=display to run test browser in, for Xnest or otherwise. Default is :0.</echo>
                 <echo>-Dwebdriver.chrome.bin=full path to chrome binary.</echo>
-                <echo>-Dwebdriver.chrome.driver=full path to chromedriver binary.</echo>
+                <echo>-Dwebdriver.chrome.driver=full path to chromedriver binary. Default is chromedriver on $PATH</echo>
                 <echo>-Dwebdriver.wait=global wait time in seconds for element searches. Default is 10.</echo>
+                <echo>NB: set env var DISPLAY to run test browser in alternative display, for Xnest/Xvfb/Xvnc. eg: xvfb-run -e mvn verify -Dappserver=wildfly8</echo>
                 <echo>==========================================================</echo>
-                <echo>to ask cargo to start up then wait so that tests can be run manually: mvn clean package cargo:run -Dfunctional-test -Dmysql.port=13306</echo>
+                <echo>to ask cargo to start up then wait so that tests can be run manually: mvn clean package cargo:run -Dappserver=wildfly8 -Dmysql.port=13306</echo>
+                <!-- placeholder. Actual content should be populated by running server/etc/scripts/functional-test-db-snapshot.sh -->
+                <touch file="${project.build.directory}/database.sql" />
+              </target>
+            </configuration>
+          </execution>
+          <execution>
+            <id>preIT-no-appserver</id>
+            <phase>prepare-package</phase>
+            <goals><goal>run</goal></goals>
+            <configuration>
+              <target unless="skipFuncTests">
+                <fail message="'appserver' property must be set to run integration tests (or else use -DskipFuncTests)"
+                  unless="appserver" />
+                <fail message="'cargo.installation' property must be set to run integration tests (or else use -DskipFuncTests)"
+                  unless="cargo.installation"/>
               </target>
             </configuration>
           </execution>
@@ -745,12 +897,7 @@
         <!-- this plugin configuration is shared by two profiles: functional-test and wildfly -->
         <configuration>
           <container>
-            <containerId>${cargo.container}</containerId>
             <type>installed</type>
-
-            <output>${project.build.directory}/container.log</output>
-            <append>false</append>
-            <log>${project.build.directory}/cargo.log</log>
 
             <systemProperties>
               <ehcache.disk.store.dir>${project.build.directory}/ehcache</ehcache.disk.store.dir>
@@ -760,7 +907,7 @@
               <jboss.socket.binding.port-offset>${cargo.port.offset}</jboss.socket.binding.port-offset>
             </systemProperties>
 
-            <timeout>0</timeout>
+            <timeout>120000</timeout>
           </container>
 
           <configuration>
@@ -792,12 +939,6 @@
 
             <properties>
               <cargo.jboss.configuration>standalone</cargo.jboss.configuration>
-              <cargo.jvmargs>
-                <!-- NB: JDom parser doesn't like comments starting with '-' -->
-                -XX:PermSize=512m -XX:MaxPermSize=1024
-                -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled
-                ${cargo.debug.jvm.args}
-              </cargo.jvmargs>
               <cargo.port.offset>${cargo.port.offset}</cargo.port.offset>
               <cargo.jboss.ajp.port>8109</cargo.jboss.ajp.port>
             </properties>

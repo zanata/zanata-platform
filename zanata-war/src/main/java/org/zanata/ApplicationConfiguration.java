@@ -122,6 +122,8 @@ public class ApplicationConfiguration implements Serializable {
 
     private Optional<String> openIdProvider; // Cache the OpenId provider
 
+    private String serverPath;
+
     @Create
     public void load() {
         log.info("Reloading configuration");
@@ -236,18 +238,21 @@ public class ApplicationConfiguration implements Serializable {
 
     public String getServerPath() {
         String configuredValue = databaseBackedConfig.getServerHost();
+        if (configuredValue != null) {
+            serverPath = configuredValue;
+        }
         // Try to determine a server path if one is not configured
-        if (configuredValue == null) {
+        if (serverPath == null) {
             HttpServletRequest request =
                     ServletContexts.instance().getRequest();
             if (request != null) {
-                configuredValue =
+                serverPath =
                         request.getScheme() + "://" + request.getServerName()
                                 + ":" + request.getServerPort()
                                 + request.getContextPath();
             }
         }
-        return configuredValue;
+        return serverPath;
     }
 
     public String getDocumentFileStorageLocation() {

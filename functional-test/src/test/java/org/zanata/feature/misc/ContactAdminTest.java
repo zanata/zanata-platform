@@ -58,8 +58,10 @@ public class ContactAdminTest extends ZanataTestCase {
     public void testContactAdmin() {
         DashboardBasePage dashboard =
                 new LoginWorkFlow().signIn("translator", "translator");
-        ContactAdminFormPage contactAdminFormPage =
-                dashboard.goToHelp().clickContactAdmin();
+        ContactAdminFormPage contactAdminFormPage = dashboard
+                .goToHelp()
+                .clickMoreActions()
+                .clickContactAdmin();
 
         HelpPage helpPage = contactAdminFormPage
                 .inputSubject("hello admin")
@@ -74,7 +76,7 @@ public class ContactAdminTest extends ZanataTestCase {
         List<WiserMessage> messages = emailRule.getMessages();
 
         assertThat(messages.size())
-                .isEqualTo(1)
+                .isGreaterThanOrEqualTo(1)
                 .as("One email was sent");
 
         WiserMessage wiserMessage = messages.get(0);

@@ -1,8 +1,5 @@
 package org.zanata.rest.service;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,19 +8,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
 import javax.persistence.EntityManager;
 
 import org.junit.BeforeClass;
-import org.mockito.Mockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
+import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
@@ -35,12 +34,24 @@ import org.zanata.rest.dto.extensions.gettext.PoTargetHeader;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.seam.SeamAutowire;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 @Test(groups = { "unit-tests" })
 public class ResourceUtilsTest {
     private static final Logger log = LoggerFactory
             .getLogger(ResourceUtilsTest.class);
 
     private static ResourceUtils resourceUtils;
+
+    @Mock
+    private EntityManager mockEm;
+
+    @Mock
+    private LocaleDAO mockLocaleDAO;
 
     @BeforeClass
     public static void logMemoryForTests() {
@@ -50,14 +61,14 @@ public class ResourceUtilsTest {
         log.info("unit tests free memory :" + runtime.freeMemory());
     }
 
-    @BeforeTest
+    @BeforeMethod
     public void initializeResourceUtils() {
-        // Assume persistence
-        EntityManager mockEm = Mockito.mock(EntityManager.class);
-
+        MockitoAnnotations.initMocks(this);
         resourceUtils =
-                SeamAutowire.instance().reset().use("entityManager", mockEm)
-                        .autowire(ResourceUtils.class);
+                SeamAutowire.instance().reset()
+                    .use("entityManager", mockEm)
+                    .use("localeDAO", mockLocaleDAO)
+                    .autowire(ResourceUtils.class);
     }
 
     @Test
@@ -330,25 +341,24 @@ public class ResourceUtilsTest {
      */
     @Test
     public void readPluralForms() {
-        ResourceUtils resourceUtils = new ResourceUtils();
-        resourceUtils.create();
         Properties properties = ResourceUtils.getPluralForms();
 
         for (Object key : properties.keySet()) {
             String propKey = (String) key;
             LocaleId localeId = LocaleId.fromJavaName(propKey);
-            resourceUtils.getPluralForms(localeId, false);
+            resourceUtils.getPluralForms(localeId, true, false);
+            verify(mockLocaleDAO).findByLocaleId(localeId);
             resourceUtils.getNPluralForms(null, localeId);
         }
     }
 
     @Test
     public void pluralFormsAlternateSeparators() {
-        ResourceUtils resourceUtils = new ResourceUtils();
-        resourceUtils.create();
-
         // Plural forms for "es"
-        String esPluralForm = resourceUtils.getPluralForms(new LocaleId("es"));
+        String esPluralForm = resourceUtils.getPluralForms(LocaleId.ES);
+
+        verify(mockLocaleDAO).findByLocaleId(LocaleId.ES);
+
         assertThat(esPluralForm, notNullValue());
 
         // Alternate forms that should match the "es" plurals
@@ -366,4 +376,59 @@ public class ResourceUtilsTest {
                 is(esPluralForm));
     }
 
+    @Test
+    public void pluralFormsTest() {
+
+        //given mock data
+        String testPluralForms = "testPluralForms";
+        HLocale mockHLocale = new HLocale(LocaleId.ES);
+        mockHLocale.setPluralForms(testPluralForms);
+        when(mockLocaleDAO.findByLocaleId(LocaleId.ES)).thenReturn(mockHLocale);
+
+        //execute
+        String pluralForms = resourceUtils.getPluralForms(LocaleId.ES);
+
+        //verify and assert
+        verify(mockLocaleDAO).findByLocaleId(LocaleId.ES);
+        assertThat(pluralForms, is(testPluralForms));
+    }
+
+    @Test
+    public void pluralFormsTestUseDBEntryTest() {
+
+        //given mock data
+        HLocale mockHLocale = new HLocale(LocaleId.ES);
+        when(mockLocaleDAO.findByLocaleId(LocaleId.ES)).thenReturn(mockHLocale);
+
+        //execute
+        String pluralForms = resourceUtils.getPluralForms(LocaleId.ES);
+
+        //verify and assert
+        verify(mockLocaleDAO).findByLocaleId(LocaleId.ES);
+        assertThat(pluralForms, notNullValue());
+    }
+
+    @Test
+    public void isValidPluralFormsTest() {
+        String invalidPluralForms = "testPluralForms";
+        assertThat(resourceUtils.isValidPluralForms(invalidPluralForms), is(false));
+
+        invalidPluralForms = "nplurals=notinteger";
+        assertThat(resourceUtils.isValidPluralForms(invalidPluralForms), is(false));
+
+        invalidPluralForms = "nplurals=-1";
+        assertThat(resourceUtils.isValidPluralForms(invalidPluralForms), is(false));
+
+        invalidPluralForms = "nplurals=" + resourceUtils.MAX_TARGET_CONTENTS + 1;
+        assertThat(resourceUtils.isValidPluralForms(invalidPluralForms), is(false));
+
+        invalidPluralForms = "nplurals=0";
+        assertThat(resourceUtils.isValidPluralForms(invalidPluralForms), is(false));
+
+        invalidPluralForms = "nplurals=1;plural=0";
+        assertThat(resourceUtils.isValidPluralForms(invalidPluralForms), is(true));
+
+        invalidPluralForms = "nplurals=5; plural=10" + resourceUtils.MAX_TARGET_CONTENTS;
+        assertThat(resourceUtils.isValidPluralForms(invalidPluralForms), is(true));
+    }
 }

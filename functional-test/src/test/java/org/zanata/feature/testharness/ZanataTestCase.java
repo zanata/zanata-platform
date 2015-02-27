@@ -30,7 +30,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
-import org.zanata.util.RetryRule;
+import org.zanata.page.WebDriverFactory;
 
 /**
  * Global application of rules to Zanata functional tests
@@ -43,9 +43,6 @@ public class ZanataTestCase {
 
     public final static int MAX_SHORT_TEST_DURATION = 120000;
     public final static int MAX_LONG_TEST_DURATION = 300000;
-
-    @Rule
-    public RetryRule retryRule = new RetryRule(1);
 
     @Rule
     public TestName testName = new TestName();
@@ -76,7 +73,7 @@ public class ZanataTestCase {
         Duration duration = new Duration(testFunctionStart, new DateTime());
         PeriodFormatter periodFormatter = new PeriodFormatterBuilder()
                 .appendLiteral("Finished "
-                        .concat(getTestDescription()).concat(" in " ))
+                        .concat(getTestDescription()).concat(" in "))
                 .printZeroAlways()
                 .appendMinutes()
                 .appendSuffix(" minutes, ")
@@ -86,5 +83,7 @@ public class ZanataTestCase {
                 .appendSuffix("ms")
                 .toFormatter();
         log.info(periodFormatter.print(duration.toPeriod()));
+        WebDriverFactory.INSTANCE.logLogs();
     }
+
 }

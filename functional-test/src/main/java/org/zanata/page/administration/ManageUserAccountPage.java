@@ -40,7 +40,7 @@ public class ManageUserAccountPage extends BasePage {
 
     private By passwordField = By.id("userdetailForm:passwordField:password");
     private By passwordConfirmField = By.id("userdetailForm:passwordConfirmField:confirm");
-    private By enabledField = By.id("userdetailForm:enabledField:enabled");
+    private By enabledField = By.id("userdetailForm:enabled");
     private By saveButton = By.id("userdetailForm:userdetailSave");
     private By cancelButton = By.id("userdetailForm:userdetailCancel");
 

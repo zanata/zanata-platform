@@ -111,8 +111,7 @@ public class JBossSSOLoginModule implements LoginModule {
                 //parsedResponse.get("email");
                 log.info("JBoss.org user " + username
                         + " successfully authenticated");
-            }
-            else {
+            } else {
                 log.info("JBoss.org user " + username
                         + " failed authentication");
             }
