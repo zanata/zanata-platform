@@ -40,7 +40,7 @@ import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.page.languages.LanguagesPage;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.page.projects.ProjectsPage;
-import org.zanata.page.utility.HelpPage;
+import org.zanata.page.utility.ContactAdminFormPage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.WebElementUtil;
 import com.google.common.base.Function;
@@ -78,6 +78,7 @@ public class BasePage extends CorePage {
     private static final By BY_SIGN_OUT = By.id("right_menu_sign_out_link");
     private static final By BY_DASHBOARD_LINK = By.id("dashboard");
     private static final By BY_ADMINISTRATION_LINK = By.id("administration");
+    private By contactAdminLink = By.linkText("Contact admin");
 
     public BasePage(final WebDriver driver) {
         super(driver);
@@ -240,11 +241,16 @@ public class BasePage extends CorePage {
         getExecutor().executeScript("arguments[0].click();", element);
     }
 
-    public HelpPage goToHelp() {
-        log.info("Click Help");
+    public String getHelpURL() {
+        log.info("Query Help URL");
         WebElement help_link = getDriver().findElement(By.id("help_link"));
-        clickNavMenuItem(help_link);
-        return new HelpPage(getDriver());
+        return help_link.getAttribute("href");
+    }
+
+    public ContactAdminFormPage clickContactAdmin() {
+        log.info("Click Contact Admin button");
+        waitForWebElement(contactAdminLink).click();
+        return new ContactAdminFormPage(getDriver());
     }
 
     public BasePage enterSearch(String searchText) {

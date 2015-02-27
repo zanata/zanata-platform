@@ -85,10 +85,10 @@
         </s:fragment>
 
         <li>
-          <s:link id="help_link" view="/help/view.xhtml"
-            propagation="none">#{msgs['jsf.Help']}
+          <a id="help_link" target="_blank" href="#{applicationConfigurationAction.helpUrl}">
+            #{msgs['jsf.Help']}
             <i class="is-hidden--m-up l--float-right i--inline i--help"></i>
-          </s:link>
+          </a>
         </li>
       </ul>
     </div>
@@ -114,6 +114,12 @@
             #{msgs['jsf.Dashboard']} <i
             class="l--float-right i--inline i--dashboard"></i>
           </s:link>
+        </li>
+        <li>
+          <a href="#{request.contextPath}/dashboard/settings">
+            #{msgs['jsf.Settings']} <i
+            class="l--float-right i--inline i--settings"></i>
+          </a>
         </li>
         <s:fragment rendered="#{s:hasRole('admin')}">
           <li>

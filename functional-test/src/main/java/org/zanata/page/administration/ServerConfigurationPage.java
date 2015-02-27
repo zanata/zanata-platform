@@ -23,6 +23,7 @@ package org.zanata.page.administration;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.zanata.page.BasePage;
 
 /**
@@ -33,12 +34,21 @@ import org.zanata.page.BasePage;
 public class ServerConfigurationPage extends BasePage {
 
     private By urlField = By.id("serverConfigForm:urlField");
+    private By helpUrlField = By.id("serverConfigForm:helpUrlField");
     private By maxConcurrentField = By.id("serverConfigForm:maxConcurrentPerApiKeyField:maxConcurrentPerApiKeyEml");
     private By maxActiveField = By.id("serverConfigForm:maxActiveRequestsPerApiKeyField:maxActiveRequestsPerApiKeyEml");
     private By saveButton = By.id("serverConfigForm:save");
 
     public ServerConfigurationPage(WebDriver driver) {
         super(driver);
+    }
+
+    public ServerConfigurationPage inputHelpURL(String url) {
+        log.info("Enter Help URL {}", url);
+        scrollIntoView(waitForWebElement(helpUrlField));
+        new Actions(getDriver()).moveToElement(waitForWebElement(helpUrlField))
+                .click().sendKeys(url).perform();
+        return new ServerConfigurationPage(getDriver());
     }
 
     public ServerConfigurationPage inputMaxConcurrent(int max) {

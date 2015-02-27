@@ -23,8 +23,8 @@ package org.zanata.page.utility;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.PageFactory;
 import org.zanata.page.BasePage;
-import org.zanata.util.WebElementUtil;
 
 /**
  * @author Patrick Huang <a
@@ -54,9 +54,15 @@ public class ContactAdminFormPage extends BasePage {
         return new ContactAdminFormPage(getDriver());
     }
 
-    public HelpPage send() {
+    /**
+     * Send the message to the administrator
+     * Requires a page type to return to
+     * @param pageClass type of page to return to
+     * @return new page type P
+     */
+    public <P> P send(Class<P> pageClass) {
         log.info("Click Send");
         waitForWebElement(sendButton).click();
-        return new HelpPage(getDriver());
+        return PageFactory.initElements(getDriver(), pageClass);
     }
 }
