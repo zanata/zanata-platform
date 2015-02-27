@@ -33,6 +33,7 @@ public class HomePage extends BasePage {
     public static final String SIGNUP_SUCCESS_MESSAGE =
             "You will soon receive an email " +
             "with a link to activate your account.";
+    public static final String EMAILCHANGED_MESSAGE = "Email updated.";
 
     private By mainBodyContent = By.id("main_body_content");
     private By editPageContentButton = By.linkText("Edit Page Content");
