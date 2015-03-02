@@ -78,6 +78,7 @@ public class ContactLanguageTeamTest extends ZanataTestCase {
 
         assertThat(content)
                 .contains("Dear Language Team Coordinator")
+                .contains("There is no coordinator for")
                 .as("The email is to the language team coordinator");
         assertThat(languagesPage.getNotificationMessage())
                 .contains("Your message has been sent to the administrator")

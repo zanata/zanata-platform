@@ -2,12 +2,17 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
   class="modal" id="contactCoordinatorDialog" tabindex="-1" role="dialog"
   aria-labelledby="myModalLabel" aria-hidden="true">
 
   <script>
+    //USED to determine email type for sendEmail bean
+    var EMAIL_TYPE = 'contact_coordinator';
+
+
     $(document).ready(function() {
-      document.getElementById('#{rich:clientId('emailType')}').value = '#{emailType}';
+      document.getElementById('#{rich:clientId('emailType')}').value = EMAIL_TYPE;
       document.getElementById('#{rich:clientId('id')}').value = '#{id}';
     });
 
@@ -16,6 +21,8 @@
       document.getElementById('#{rich:clientId('id')}').value = '';
       document.getElementById('#{rich:clientId('subject')}').value = '';
       document.getElementById('#{rich:clientId('message')}').value = '';
+
+      jQuery('#{rich:clientId('send')}').removeClass('is-active');
       return false;
     }
   </script>
@@ -33,7 +40,7 @@
     </header>
 
     <h:form id="contactCoordinatorForm" styleClass="l--push-bottom-0">
-      <h:inputHidden id="emailType" value="#{sendEmail.emailType}" />
+      <h:inputHidden id="emailType" value="#{sendEmail.emailType}"/>
       <h:inputHidden id="id" value="#{sendEmail.language}" />
 
       <div class="modal__content l--pad-all-quarter">
@@ -51,10 +58,11 @@
           </h:outputLabel>
           <s:decorate id="subjectField" template="../field.xhtml">
             <h:inputText id="subject" value="#{sendEmail.subject}"
-              required="true"/>
+              required="true">
+              <a4j:ajax event="blur" render="subjectField" execute="@this"/>
+            </h:inputText>
           </s:decorate>
         </div>
-
 
         <div class="l--push-top-half form__item">
           <h:outputLabel for="message">
@@ -62,7 +70,9 @@
           </h:outputLabel>
           <s:decorate id="messageField" template="../field.xhtml">
             <h:inputTextarea id="message" value="#{sendEmail.htmlMessage}"
-              required="true"/>
+              required="true">
+              <a4j:ajax event="blur" render="messageField" execute="@this"/>
+            </h:inputTextarea>
           </s:decorate>
         </div>
       </div>

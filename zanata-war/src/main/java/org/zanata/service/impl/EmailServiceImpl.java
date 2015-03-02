@@ -49,7 +49,10 @@ import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 import org.zanata.service.EmailService;
 
+import javax.annotation.Nullable;
 import javax.mail.internet.InternetAddress;
+
+import com.google.common.collect.Lists;
 
 import static org.zanata.email.Addresses.getAddresses;
 
@@ -135,17 +138,36 @@ public class EmailServiceImpl implements EmailService {
         return msgs.get("jsf.email.passwordreset.SentNotification");
     }
 
+
+    /**
+     * sends emails to configured admin emails for server, or admin users if no
+     * server emails are configured.
+     *
+     * @param strategy - Email template
+     * @param receivedReasons
+     *            - Reasons of why users are receiving email as admin can
+     *            received via: 1) Direct email from logged in users. 2) User
+     *            request to join language team when there's no coordinator. 3)
+     *            User request to update their role in language team when
+     *            there's no coordinator. 4) User request to join a version group
+     *            when there's no maintainer.
+     */
     @Override
-    public String sendToAdmins(EmailStrategy strategy) {
+    public String sendToAdmins(EmailStrategy strategy,
+            @Nullable List<String> receivedReasons) {
         List<String> adminEmails = applicationConfiguration.getAdminEmail();
+        receivedReasons =
+            receivedReasons == null ? Lists.<String> newArrayList()
+                : receivedReasons;
+
         if (!adminEmails.isEmpty()) {
-            String receivedReason = msgs.get("jsf.email.admin.ReceivedReason");
+            receivedReasons.add(msgs.get("jsf.email.admin.ReceivedReason"));
             String toName = msgs.get("jsf.ZanataAdministrator");
-            emailBuilder.sendMessage(strategy, receivedReason,
+            emailBuilder.sendMessage(strategy, receivedReasons,
                     getAddresses(adminEmails, toName));
             return msgs.get("jsf.email.admin.SentNotification");
         } else {
-            return sendToAdminUsers(strategy);
+            return sendToAdminUsers(strategy, receivedReasons);
         }
     }
 
@@ -153,11 +175,11 @@ public class EmailServiceImpl implements EmailService {
      * Emails admin users with given template
      *
      */
-    private String sendToAdminUsers(EmailStrategy strategy) {
-        String receivedReason = msgs.get(
-                "jsf.email.admin.user.ReceivedReason");
-        emailBuilder.sendMessage(strategy, receivedReason,
-                getAddresses(getAdmins()));
+    private String sendToAdminUsers(EmailStrategy strategy,
+        List<String> receivedReasons) {
+        receivedReasons.add(msgs.get("jsf.email.admin.user.ReceivedReason"));
+        emailBuilder.sendMessage(strategy, receivedReasons,
+            getAddresses(getAdmins()));
         return msgs.get("jsf.email.admin.SentNotification");
     }
 
@@ -170,12 +192,17 @@ public class EmailServiceImpl implements EmailService {
                     "jsf.email.coordinator.ReceivedReason",
                     locale.retrieveNativeName());
 
-            emailBuilder.sendMessage(strategy, receivedReason,
+            emailBuilder.sendMessage(strategy,
+                    Lists.newArrayList(receivedReason),
                     getAddresses(coordinators));
             return msgs.format("jsf.email.coordinator.SentNotification",
                     locale.retrieveNativeName());
         } else {
-            return sendToAdmins(strategy);
+            String receivedReason =
+                    msgs.format(
+                            "jsf.email.admin.ReceivedReason.language.noCoordinator",
+                            locale.getLocaleId(), locale.retrieveDisplayName());
+            return sendToAdmins(strategy, Lists.newArrayList(receivedReason));
         }
     }
 
@@ -186,12 +213,17 @@ public class EmailServiceImpl implements EmailService {
             String receivedReason = msgs.format(
                     "jsf.email.group.maintainer.ReceivedReason",
                     versionGroupJoinAction.getGroupName());
-            emailBuilder.sendMessage(strategy, receivedReason,
+            emailBuilder.sendMessage(strategy,
+                    Lists.newArrayList(receivedReason),
                     getAddresses(maintainers));
             return msgs.format("jsf.email.group.maintainer.SentNotification",
                     versionGroupJoinAction.getGroupName());
         } else {
-            return sendToAdmins(strategy);
+            String receivedReason =
+                msgs.format(
+                    "jsf.email.admin.ReceivedReason.versionGroup.noMaintainer",
+                    versionGroupJoinAction.getGroupName());
+            return sendToAdmins(strategy, Lists.newArrayList(receivedReason));
         }
     }
 
