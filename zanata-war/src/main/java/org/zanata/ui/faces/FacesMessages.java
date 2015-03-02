@@ -76,7 +76,7 @@ public class FacesMessages {
             for (FacesMessage message : entry.getValue()) {
                 String clientId = getClientId(entry.getKey());
                 FacesContext.getCurrentInstance().addMessage(clientId,
-                        message);
+                    message);
             }
         }
         clear();
@@ -131,14 +131,12 @@ public class FacesMessages {
             globalMessages.add(jsfMssg);
         } else {
             // Control specific message
-            String clientId = getClientId(id);
-
-            if (keyedMessages.containsKey(clientId)) {
-                keyedMessages.get(clientId).add(jsfMssg);
+            if (keyedMessages.containsKey(id)) {
+                keyedMessages.get(id).add(jsfMssg);
             } else {
                 List<FacesMessage> list = new ArrayList<>();
                 list.add(jsfMssg);
-                keyedMessages.put(clientId, list);
+                keyedMessages.put(id, list);
             }
         }
 
