@@ -11,6 +11,15 @@
   </formats>
   <fileSets>
     <fileSet>
+      <directory>..</directory>
+      <outputDirectory>.</outputDirectory>
+      <includes>
+        <include>COPYING.GPL</include>
+        <include>COPYING.LESSER</include>
+      </includes>
+      <fileMode>644</fileMode>
+    </fileSet>
+    <fileSet>
       <directory>target/appassembler/bin</directory>
       <outputDirectory>bin</outputDirectory>
       <includes>
