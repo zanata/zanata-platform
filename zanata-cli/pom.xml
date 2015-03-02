@@ -41,6 +41,7 @@
               <mainClass>org.zanata.client.BashCompletionGenerator</mainClass>
               <arguments>
                 <argument>${project.build.directory}/zanata-cli-completion</argument>
+                <argument>${basedir}/COPYING-header.txt</argument>
               </arguments>
               <classpathScope>test</classpathScope>
             </configuration>
@@ -65,6 +66,7 @@
           </execution>
         </executions>
         <configuration>
+          <licenseHeaderFile>${basedir}/COPYING-header.txt</licenseHeaderFile>
           <programs>
             <program>
               <mainClass>org.zanata.client.ZanataClient</mainClass>
