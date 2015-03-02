@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.AccessibleObject;
 import java.nio.charset.Charset;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -40,8 +41,15 @@ public class BashCompletionGenerator {
 
     private List<String> baseCommands;
     private List<Option> genericOptions;
-    private Map<String, List<Option>> commandOptions = Maps.newHashMap();
-    private Set<Option> allOptions = Sets.newHashSet();
+
+    // by using TreeMap/TreeSet, we get consistent ordering in the generated files
+    private Map<String, List<Option>> commandOptions = Maps.newTreeMap();
+    private Set<Option> allOptions = Sets.newTreeSet(new Comparator<Option>() {
+        @Override
+        public int compare(Option o1, Option o2) {
+            return o1.name().compareTo(o2.name());
+        }
+    });
     private String commandName;
     private String commandDescription;
 
