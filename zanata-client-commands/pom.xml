@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>client</artifactId>
-    <version>3.4.2</version>
+    <version>3.4.3-SNAPSHOT</version>
   </parent>
   <artifactId>zanata-client-commands</artifactId>
   <name>Zanata client commands</name>
@@ -14,7 +14,7 @@
     <connection>scm:git:git://github.com/zanata/zanata-client.git</connection>
     <developerConnection>scm:git:git@github.com:zanata/zanata-client.git</developerConnection>
     <url>https://github.com/zanata/zanata-client</url>
-    <tag>client-3.4.2</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <dependencies>
