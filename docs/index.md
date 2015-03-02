@@ -31,4 +31,4 @@ We have a mailing list located at: zanata-users@redhat.com
 License
 -------
 
-The project is licensed under the BSD license.
+The project is licensed under the [LGPL 2.1 license](https://www.gnu.org/licenses/lgpl-2.1.html).
