@@ -17,6 +17,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.ws.Service;
 
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.resteasy.util.GenericType;
@@ -37,6 +38,7 @@ import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.zanata.util.Event;
+import org.zanata.util.ServiceLocator;
 
 /**
  * This API is experimental only and subject to change or even removal.
@@ -63,10 +65,6 @@ public class ServerConfigurationService {
     private MediaType accept;
     @In
     private ApplicationConfigurationDAO applicationConfigurationDAO;
-
-    // TODO: is it possible to inject static event?
-    @In("event")
-    private static Event<ConfigurationChanged> zanataConfigurationChangedEvent;
 
     /**
      * Retrieves all existing server configurations.
@@ -179,7 +177,10 @@ public class ServerConfigurationService {
             appConfig = new HApplicationConfiguration(key, newValue);
             applicationConfigurationDAO.makePersistent(appConfig);
         }
-        zanataConfigurationChangedEvent.fireAfterSuccess(new ConfigurationChanged(key));
+
+        Event<ConfigurationChanged> event =
+                ServiceLocator.instance().getInstance(Event.class);
+        event.fireAfterSuccess(new ConfigurationChanged(key));
     }
 
     private boolean isConfigKeyValid(String configKey) {

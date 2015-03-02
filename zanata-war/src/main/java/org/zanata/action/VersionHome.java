@@ -125,10 +125,7 @@ public class VersionHome extends SlugHome<HProjectIteration> {
     @Getter
     private String selectedProjectType;
 
-    @Getter
-    private VersionLocaleAutocomplete localeAutocomplete =
-            new VersionLocaleAutocomplete();
-
+    private VersionLocaleAutocomplete localeAutocomplete;
 
     @Getter
     @Setter
@@ -137,6 +134,13 @@ public class VersionHome extends SlugHome<HProjectIteration> {
     @Getter
     @Setter
     private String copyFromVersionSlug;
+
+    public VersionLocaleAutocomplete getLocaleAutocomplete() {
+        if(localeAutocomplete == null) {
+            localeAutocomplete = new VersionLocaleAutocomplete(projectSlug, slug);
+        }
+        return localeAutocomplete;
+    }
 
     private final Function<HProjectIteration, VersionItem> VERSION_ITEM_FN =
             new Function<HProjectIteration, VersionItem>() {
@@ -300,7 +304,7 @@ public class VersionHome extends SlugHome<HProjectIteration> {
     public boolean validateSlug(String slug, String componentId) {
         if (!isSlugAvailable(slug)) {
             facesMessages.addToControl(componentId,
-                    "This Version ID has been used in this project");
+                "This Version ID has been used in this project");
             return false;
         }
         return true;
@@ -414,22 +418,8 @@ public class VersionHome extends SlugHome<HProjectIteration> {
     public String update() {
         String state = super.update();
         projectIterationUpdateEvent.fire(
-                new ProjectIterationUpdate(getInstance()));
+            new ProjectIterationUpdate(getInstance()));
         return state;
-    }
-
-    /**
-     * This is for autocomplete components of which ConversationScopeMessages
-     * will be null
-     *
-     * @param conversationScopeMessages
-     * @return
-     */
-    private String update(ConversationScopeMessages conversationScopeMessages) {
-        if (this.conversationScopeMessages == null) {
-            this.conversationScopeMessages = conversationScopeMessages;
-        }
-        return update();
     }
 
     @Restrict("#{s:hasPermission(versionHome.instance, 'update')}")
@@ -530,12 +520,15 @@ public class VersionHome extends SlugHome<HProjectIteration> {
         }
     }
 
+    @AllArgsConstructor
     private class VersionLocaleAutocomplete extends LocaleAutocomplete {
+        private String projectSlug, versionSlug;
+
 
         @Override
         protected Collection<HLocale> getLocales() {
             if (StringUtils.isNotEmpty(projectSlug)
-                    && StringUtils.isNotEmpty(slug)) {
+                    && StringUtils.isNotEmpty(versionSlug)) {
                 LocaleService localeService =
                         ServiceLocator.instance().getInstance(
                                 LocaleServiceImpl.class);
@@ -557,16 +550,24 @@ public class VersionHome extends SlugHome<HProjectIteration> {
             LocaleService localeService =
                     ServiceLocator.instance().getInstance(
                             LocaleServiceImpl.class);
+            ProjectIterationDAO versionDAO =
+                    ServiceLocator.instance().getInstance(
+                            ProjectIterationDAO.class);
+            FacesMessages messages =
+                    ServiceLocator.instance().getInstance(
+                        FacesMessages.class);
+
             HLocale locale = localeService.getByLocaleId(getSelectedItem());
 
-            getInstance().getCustomizedLocales().add(locale);
+            HProjectIteration version =
+                versionDAO.getBySlug(projectSlug, versionSlug);
 
-            update(conversationScopeMessages);
+            version.getCustomizedLocales().add(locale);
+            versionDAO.makePersistent(version);
             reset();
-            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+            messages.addGlobal(FacesMessage.SEVERITY_INFO,
                     msgs.format("jsf.iteration.LanguageAdded",
                             locale.retrieveDisplayName()));
-
         }
     }
 
