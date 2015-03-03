@@ -44,13 +44,19 @@ import com.google.common.collect.Lists;
 @AllArgsConstructor
 public class HApplicationConfiguration extends ModelEntityBase {
 
+    /**
+     * obsolete data key. Help content was removed from UI but the content was
+     * left in the database for reference purposes.
+     */
+    @Deprecated
+    public static String KEY_HELP_CONTENT = "pages.help.content";
+
     public static String KEY_HOST = "host.url";
     public static String KEY_REGISTER = "register.url";
     public static String KEY_DOMAIN = "email.domain";
     public static String KEY_ADMIN_EMAIL = "email.admin.addr";
     public static String KEY_EMAIL_FROM_ADDRESS = "email.from.addr";
     public static String KEY_HOME_CONTENT = "pages.home.content";
-    public static String KEY_HELP_CONTENT = "pages.help.content";
     public static String KEY_LOG_DESTINATION_EMAIL = "log.destination.email";
     public static String KEY_EMAIL_LOG_EVENTS = "log.email.active";
     public static String KEY_EMAIL_LOG_LEVEL = "log.email.level";
