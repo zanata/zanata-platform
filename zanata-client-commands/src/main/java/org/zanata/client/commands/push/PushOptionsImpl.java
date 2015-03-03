@@ -218,8 +218,8 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
     @Option(
             name = "--exclude-locale-filenames",
             handler = BooleanValueHandler.class,
-            usage = "Exclude filenames which match locales in zanata.xml (other than the\n"
-                    + "source locale).  For instance, if zanata.xml includes de and fr,\n"
+            usage = "Exclude filenames which match project configured locales (other than the\n"
+                    + "source locale).  For instance, if project includes de and fr,\n"
                     + "then the files messages_de.properties and messages_fr.properties\n"
                     + "will not be treated as source files.\n"
                     + "NB: This parameter will be ignored for some project types which use\n"
