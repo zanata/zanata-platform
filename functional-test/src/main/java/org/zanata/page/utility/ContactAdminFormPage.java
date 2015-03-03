@@ -35,7 +35,7 @@ public class ContactAdminFormPage extends BasePage {
 
     private By subjectField = By.id("contactAdminForm:subjectField:subject");
     private By messageField = By.id("contactAdminForm:messageField:message");
-    private By sendButton = By.id("contactAdminForm:send");
+    private By sendButton = By.id("send");
 
     public ContactAdminFormPage(WebDriver driver) {
         super(driver);
