@@ -22,6 +22,8 @@ package org.zanata.service;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import org.zanata.email.EmailStrategy;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
@@ -50,8 +52,18 @@ public interface EmailService {
     /**
      * sends emails to configured admin emails for server, or admin users if no
      * server emails are configured.
+     *
+     * @param strategy - Email template
+     * @param receivedReasons
+     *            - Reasons of why users are receiving email as admin can
+     *            received via: 1) Direct email from logged in users. 2) User
+     *            request to join language team when there's no coordinator. 3)
+     *            User request to update their role in language team when
+     *            there's no coordinator. 4) User request to join a version group
+     *            when there's no maintainer.
      */
-    String sendToAdmins(EmailStrategy strategy);
+    String sendToAdmins(EmailStrategy strategy,
+            @Nullable List<String> receivedReasons);
 
     /**
      * sends emails to version group maintainers -> admin -> admin users
