@@ -158,7 +158,8 @@ public class EmailStrategyTest {
         EmailStrategy strategy =
                 new ActivationEmailStrategy(key);
 
-        builder.buildMessage(message, strategy, toAddresses, "activation test");
+        builder.buildMessage(message, strategy, toAddresses,
+            Lists.newArrayList("activation test"));
 
         checkFromAndTo(message);
         assertThat(message.getSubject()).isEqualTo(msgs.get(
@@ -180,7 +181,7 @@ public class EmailStrategyTest {
                         fromLoginName, fromName, replyEmail, userSubject,
                         htmlMessage);
 
-        builder.buildMessage(message, strategy, toAddresses, "contactAdmin test");
+        builder.buildMessage(message, strategy, toAddresses, Lists.newArrayList("contactAdmin test"));
 
         checkFromAndTo(message);
         assertThat(message.getSubject()).isEqualTo(msgs.format(
@@ -204,7 +205,7 @@ public class EmailStrategyTest {
                         localeId, localeNativeName, htmlMessage);
 
         builder.buildMessage(message, strategy, toAddresses,
-                "contactLanguageCoordinator test");
+            Lists.newArrayList("contactLanguageCoordinator test"));
 
         checkFromAndTo(message);
         assertThat(message.getSubject()).isEqualTo(msgs.format(
@@ -229,7 +230,7 @@ public class EmailStrategyTest {
                 new EmailValidationEmailStrategy(key);
 
         builder.buildMessage(message, strategy, toAddresses,
-                "emailValidation test");
+            Lists.newArrayList("emailValidation test"));
 
         checkFromAndTo(message);
         assertThat(message.getSubject()).isEqualTo(msgs.get(
@@ -251,7 +252,7 @@ public class EmailStrategyTest {
                 new PasswordResetEmailStrategy(key);
 
         builder.buildMessage(message, strategy, toAddresses,
-                "passwordReset test");
+            Lists.newArrayList("passwordReset test"));
 
         checkFromAndTo(message);
         assertThat(message.getSubject()).isEqualTo(msgs.get(
@@ -275,7 +276,7 @@ public class EmailStrategyTest {
                         true, true, true);
 
         builder.buildMessage(message, strategy, toAddresses,
-                "requestRoleLanguage test");
+            Lists.newArrayList("requestRoleLanguage test"));
 
         checkFromAndTo(message);
         assertThat(message.getSubject()).isEqualTo(
@@ -302,7 +303,7 @@ public class EmailStrategyTest {
                         true, true, true);
 
         builder.buildMessage(message, strategy, toAddresses,
-                "requestToJoinLanguage test");
+            Lists.newArrayList("requestToJoinLanguage test"));
 
         checkFromAndTo(message);
         assertThat(message.getSubject()).isEqualTo(msgs.format(
@@ -336,7 +337,7 @@ public class EmailStrategyTest {
                         projectIterIds, htmlMessage);
 
         builder.buildMessage(message, strategy, toAddresses,
-                "requestToJoinVersionGroup test");
+            Lists.newArrayList("requestToJoinVersionGroup test"));
 
         checkFromAndTo(message);
         assertThat(message.getSubject()).isEqualTo(msgs.format(
@@ -362,7 +363,7 @@ public class EmailStrategyTest {
                 new UsernameChangedEmailStrategy(newUsername, true);
 
         builder.buildMessage(message, strategy, toAddresses,
-                "usernameChanged test");
+            Lists.newArrayList("usernameChanged test"));
 
         checkFromAndTo(message);
         assertThat(message.getSubject()).isEqualTo(msgs.get(

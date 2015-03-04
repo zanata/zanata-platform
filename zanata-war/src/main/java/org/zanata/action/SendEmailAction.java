@@ -67,8 +67,6 @@ import com.google.common.collect.Lists;
 /**
  * Sends an email to a specified role.
  *
- * Currently just sends an email to admin.
- *
  * @author damason@redhat.com
  *
  */
@@ -196,11 +194,11 @@ public class SendEmailAction implements Serializable {
                             fromLoginName, fromName, replyEmail,
                             subject, htmlMessage);
 
-                    String msg = emailServiceImpl.sendToAdmins(strategy);
+                    String msg = emailServiceImpl.sendToAdmins(strategy, null);
 
                     facesMessages.addGlobal(msg);
                     conversationScopeMessages.setMessage(
-                            FacesMessage.SEVERITY_INFO, msg);
+                        FacesMessage.SEVERITY_INFO, msg);
                     return SUCCESS;
                 }
                 case EMAIL_TYPE_CONTACT_COORDINATOR: {
