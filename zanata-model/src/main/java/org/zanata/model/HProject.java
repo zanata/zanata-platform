@@ -56,6 +56,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 import org.hibernate.annotations.Where;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
@@ -63,8 +64,10 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.annotation.EntityRestrict;
 import org.zanata.common.EntityStatus;
+import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.model.type.EntityStatusType;
+import org.zanata.model.type.LocaleIdType;
 import org.zanata.model.validator.Url;
 import org.zanata.rest.dto.Project;
 
@@ -79,7 +82,14 @@ import com.google.common.collect.Sets;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Access(AccessType.FIELD)
-@TypeDef(name = "entityStatus", typeClass = EntityStatusType.class)
+@TypeDefs({
+    @TypeDef(name = "entityStatus", typeClass = EntityStatusType.class),
+    @TypeDef(
+        name = "localeId",
+        defaultForType = LocaleId.class,
+        typeClass = LocaleIdType.class)
+
+})
 @Restrict
 @EntityRestrict({ INSERT, UPDATE, DELETE })
 @Setter
@@ -120,6 +130,13 @@ public class HProject extends SlugEntityBase implements Serializable,
             name = "projectId"), inverseJoinColumns = @JoinColumn(
             name = "localeId"))
     private Set<HLocale> customizedLocales = Sets.newHashSet();
+
+    @ElementCollection
+    @JoinTable(name = "HProject_LocaleAlias",
+               joinColumns = { @JoinColumn(name = "projectId") })
+    @MapKeyColumn(name = "localeId")
+    @Column(name = "alias", nullable = false)
+    private Map<LocaleId, String> localeAliases = Maps.newHashMap();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private List<WebHook> webHooks = Lists.newArrayList();

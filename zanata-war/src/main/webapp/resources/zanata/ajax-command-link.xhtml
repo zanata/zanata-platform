@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:composite="http://java.sun.com/jsf/composite"
+  xmlns:a4j="http://richfaces.org/a4j">
+
+<composite:interface shortDescription="Generates a command link that is capable of disaplaying its working status">
+  <composite:facet name="loading"
+    shortDescription="Content to be shown when loading"/>
+
+  <composite:attribute name="render" type="java.lang.String"
+    shortDescription="List of component ids to render after completion"/>
+
+  <composite:attribute name="styleClass" type="java.lang.String"
+    shortDescription="css style for the generated link"/>
+
+  <composite:attribute name="action" required="false"
+    method-signature="void action()"
+    shortDescription="sorting method with signature of void action()"/>
+
+  <composite:attribute name="oncomplete" type="java.lang.String"
+    required="false"
+    shortDescription="Javascript code to execute on completion of the ajax request."/>
+</composite:interface>
+
+<composite:implementation>
+  <a4j:commandLink
+    action="#{cc.attrs.action}"
+    styleClass="#{cc.attrs.styleClass}"
+    onclick="event.stopPropagation();"
+    onbegin="zanata.loader.activate($(this).find('.js-loader')); $(this).find('.js-default').addClass('is-hidden'); $(this).find('.js-in-progress').removeClass('is-hidden');"
+    oncomplete="$(this).find('.js-in-progress').addClass('is-hidden'); $(this).find('.js-default').removeClass('is-hidden'); zanata.loader.deactivate($(this).find('.js-loader')); #{cc.attrs.oncomplete}"
+    render="#{cc.attrs.render}">
+    <span
+      class="loader--mini loader--inline l--push-left-half js-loader">
+    </span>
+    <span class="js-in-progress is-hidden">
+      <composite:renderFacet name="loading" />
+    </span>
+    <span class="js-default">
+      <composite:insertChildren/>
+    </span>
+  </a4j:commandLink>
+</composite:implementation>
+</html>

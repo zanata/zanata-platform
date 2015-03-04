@@ -1,0 +1,82 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
+
+  <h3 class="heading--secondary">#{heading}</h3>
+
+  <ui:remove><!-- TODO consider making this a component --></ui:remove>
+  <div class="w--5-12 form--search js-form--search">
+    <label class="is-sr-only">#{msgs['jsf.languages.FilterLanguages']}</label>
+    <!-- FIXME should this be here if there are no active locales?
+               maybe disable it or something? -->
+
+    <h:inputText id="#{id}-filter-input"
+      required="false"
+      placeholder="#{msgs['jsf.languages.FilterLanguages']}"
+      value="#{filterText}"
+      oninput="return filterLocalesFromTextBox('[id=\\'#{component.namingContainer.clientId}:#{id}-filter-input\\']', '##{id}-list');"
+      onkeyup="return onFilterLocalesTextboxKeyUp('[id=\\'#{component.namingContainer.clientId}:#{id}-filter-input\\']', '##{id}-list', event);"
+      onkeypress="doNotSubmit(event);"
+      maxlength="255"
+      styleClass="form--search__input js-form--search__input l--push-bottom-quarter">
+    </h:inputText>
+  </div>
+
+  <s:fragment rendered="#{empty languages}">
+    <div id="#{id}-no-languages" class="txt--meta">
+      #{noLanguagesPlaceholder}
+    </div>
+  </s:fragment>
+
+  <div class="#{ empty languages ? 'is-hidden' : ''}">
+
+    <div class="is-hidden--s l--pad-v-quarter">
+      <zanata:select-all-checkbox listSelector="##{id}-list"/>
+      <div class="l--pad-left-1half">
+        <div class="g g--tight js-list-operation"
+          data-target-list="##{id}-list"
+          data-any-selected-class="is-hidden">
+          <ui:insert name="listHeader" />
+        </div>
+        <div class="js-list-operation is-hidden"
+          data-target-list="##{id}-list"
+          data-none-selected-class="is-hidden">
+          <ui:insert name="listOperations"/>
+        </div>
+      </div>
+    </div>
+
+    <div id="#{id}-no-results" class="is-hidden txt--meta">
+      <h:outputText escape="false"
+        value="#{msgs['jsf.languages.NoLanguagesMatchSearch']}" />
+    </div>
+
+    <ul id="#{id}-list" class="list--slat list--highlight d--top"
+      data-empty-results-indicator="##{id}-no-results">
+      <ui:repeat value="#{languages}" var="locale">
+        <li class="reveal form__checkbox form__checkbox--spaced js-form__checkbox">
+          <ui:insert name="listRow"/>
+        </li>
+      </ui:repeat>
+    </ul>
+  </div>
+
+  <!-- Placed at the end of the list content so that it runs when all the
+       content from ajax is present in the DOM -->
+  <script type="text/javascript">
+  //<![CDATA[
+    // refresh checkbox facades on language lists
+    zanata.form.appendCheckboxes(jQuery('##{id}').element);
+    // ensure active locales filter is applied correctly after items are refreshed
+    filterLocalesFromTextBox("[id='#{component.namingContainer.clientId}:#{id}-filter-input']", '##{id}-list');
+    // Triggers appropriate button visibility.
+    jQuery('##{id}-list').change();
+  //]]>
+  </script>
+
+</ui:composition>
