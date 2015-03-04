@@ -3,6 +3,7 @@ package org.zanata.client;
 import java.io.StringWriter;
 import java.net.URL;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -183,6 +184,7 @@ public class ZanataClientTest {
         client.processArgs(command, "--url", url, "--project", project,
                 "--project-version", version);
 
+        assertThat(err.toString(), CoreMatchers.is(""));
         verify(mockOptions).setUrl(new URL(url));
         verify(mockOptions).setProj(project);
         verify(mockOptions).setProjectVersion(version);

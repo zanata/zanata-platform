@@ -166,7 +166,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
             if (getOpts().getLocaleMapList() == null)
                 throw new ConfigException("pushType set to '"
                         + getOpts().getPushType()
-                        + "', but zanata.xml contains no <locales>");
+                        + "', but project has no locales configured");
             log.warn("pushType set to '"
                     + getOpts().getPushType()
                     + "': existing translations on server may be overwritten/deleted");

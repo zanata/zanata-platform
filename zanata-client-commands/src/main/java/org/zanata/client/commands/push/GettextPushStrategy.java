@@ -30,7 +30,7 @@ public class GettextPushStrategy extends AbstractGettextPushStrategy {
         final LocaleList localeListInConfig = getOpts().getLocaleMapList();
 
         if (localeListInConfig == null || localeListInConfig.isEmpty()) {
-            log.warn("No locale list in configuration (check zanata.xml)");
+            log.warn("No locale list in configuration (check your server settings)");
             return Collections.emptyList();
         }
 
@@ -46,7 +46,7 @@ public class GettextPushStrategy extends AbstractGettextPushStrategy {
         // for all remaining po files we give a warning
         for (File transFile : transFilesOnDisk) {
             log.warn(
-                    "Skipping file {}; no locale entry found in zanata.xml",
+                    "Skipping file {}; no locale entry found from project config",
                     transFile);
         }
         return localeListInConfig;

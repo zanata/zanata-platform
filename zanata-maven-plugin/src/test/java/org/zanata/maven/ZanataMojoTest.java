@@ -1,6 +1,7 @@
 package org.zanata.maven;
 
 import java.io.File;
+import java.net.URL;
 
 import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
@@ -34,7 +35,9 @@ public abstract class ZanataMojoTest<M extends Mojo, C extends ZanataCommand>
     }
 
     protected void applyPomParams(String pomFile) throws Exception {
-        File testPom = getTestFile("src/test/resources/push-test/" + pomFile);
+        URL resource = Thread.currentThread().getContextClassLoader()
+                .getResource("push-test/" + pomFile);
+        File testPom = new File(resource.getFile());
         // This will work with "mvn test", but not with Eclipse's JUnit runner:
         // PushSimpleMojo mojo = (PushSimpleMojo) lookupMojo("push", testPom);
         // assertNotNull(mojo);

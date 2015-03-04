@@ -52,8 +52,9 @@ public abstract class AbstractPushPullOptionsImpl<O extends PushPullOptions>
      * Override the parent method as the push and pull commands can have locales
      * specified via command line.
      *
-     * @return The locale map list taking into account the global locales in
-     *         zanata.xml as well as the command line argument ones.
+     * @return The locale map list taking into account the global locales
+     *         configured as well as the command line argument
+     *         ones.
      */
     @Override
     public LocaleList getLocaleMapList() {

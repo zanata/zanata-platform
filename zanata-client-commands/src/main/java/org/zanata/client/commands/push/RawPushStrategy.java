@@ -57,7 +57,7 @@ public class RawPushStrategy extends AbstractCommonPushStrategy<PushOptions> {
     public void visitTranslationFiles(String sourceDocument,
             TranslationFilesVisitor visitor) {
         if (getOpts().getLocaleMapList() == null) {
-            log.error("Locale mapping list not found, unable to push translations. Check mapping in zanata.xml");
+            log.error("Locale mapping list not found, unable to push translations. Check your server settings.");
             return;
         }
         for (LocaleMapping localeMapping : getOpts().getLocaleMapList()) {

@@ -123,10 +123,10 @@ public abstract class AbstractPushMojo extends
     private boolean caseSensitive = true;
 
     /**
-     * Exclude filenames which match locales in zanata.xml (other than the
-     * source locale). For instance, if zanata.xml includes de and fr, then the
-     * files messages_de.properties and messages_fr.properties will not be
-     * treated as source files.
+     * Exclude filenames which match locales configured for the project (other
+     * than the source locale). For instance, if project includes de and fr,
+     * then the files messages_de.properties and messages_fr.properties will not
+     * be treated as source files.
      * <p>
      * NB: This parameter will be ignored for some project types which use
      * different file naming conventions (eg podir, gettext).

@@ -73,7 +73,7 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
     @Option(aliases = { "-l" }, name = "--locales",
             metaVar = "LOCALE1,LOCALE2",
             usage = "Locales to pull from the server.\n"
-                    + "By default all locales in zanata.xml will be pulled.")
+                    + "By default all locales configured will be pulled.")
     public void setLocales(String locales) {
         this.locales = locales.split(",");
     }

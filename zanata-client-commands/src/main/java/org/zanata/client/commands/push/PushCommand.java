@@ -339,7 +339,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
         if (pushTrans() && getOpts().getLocaleMapList() == null) {
             throw new ConfigException("pushType set to '"
                     + getOpts().getPushType()
-                    + "', but zanata.xml contains no <locales>");
+                    + "', but project has no locales configured");
         }
 
         if (pushTrans()) {

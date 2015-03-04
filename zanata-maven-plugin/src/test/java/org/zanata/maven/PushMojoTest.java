@@ -1,7 +1,5 @@
 package org.zanata.maven;
 
-import java.util.Arrays;
-
 import com.google.common.collect.ImmutableList;
 import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.PushPullType;
