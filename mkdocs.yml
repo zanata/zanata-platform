@@ -16,6 +16,12 @@ pages:
 - ['configuration/jms-messaging.md', 'Configuration', 'JMS Messaging']
 - ['configuration/wildfly.md', 'Configuration', 'Wildfly']
 
+# Release notes
+- ['release-notes/release-notes-3.3.2.md', 'Release Notes', '3.3.2']
+- ['release-notes/release-notes-3.4.md', 'Release Notes', '3.4']
+- ['release-notes/release-notes-3.5.md', 'Release Notes', '3.5']
+- ['release-notes/release-notes-3.6.md', 'Release Notes', '3.6']
+
 # User Guide
 - ['user-guide/translators-new-account.md', 'User Guide', 'Creating a new account']
 - ['user-guide/joining-a-language-team.md', 'User Guide', 'Joining a Language team']
