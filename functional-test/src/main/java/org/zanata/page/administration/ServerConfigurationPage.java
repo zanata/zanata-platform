@@ -22,6 +22,7 @@ package org.zanata.page.administration;
 
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.zanata.page.BasePage;
@@ -35,6 +36,7 @@ public class ServerConfigurationPage extends BasePage {
 
     private By urlField = By.id("serverConfigForm:urlField");
     private By helpUrlField = By.id("serverConfigForm:helpUrlField");
+    private By termsUrlField = By.id("serverConfigForm:termsOfUseUrlField");
     private By maxConcurrentField = By.id("serverConfigForm:maxConcurrentPerApiKeyField:maxConcurrentPerApiKeyEml");
     private By maxActiveField = By.id("serverConfigForm:maxActiveRequestsPerApiKeyField:maxActiveRequestsPerApiKeyEml");
     private By saveButton = By.id("serverConfigForm:save");
@@ -43,11 +45,24 @@ public class ServerConfigurationPage extends BasePage {
         super(driver);
     }
 
+    private void enterTextConfigField(By by, String text) {
+        scrollIntoView(waitForWebElement(by));
+        new Actions(getDriver()).moveToElement(waitForWebElement(by))
+                .click()
+                .sendKeys(Keys.chord(Keys.CONTROL, "a"))
+                .sendKeys(Keys.DELETE)
+                .sendKeys(text).perform();
+    }
+
     public ServerConfigurationPage inputHelpURL(String url) {
         log.info("Enter Help URL {}", url);
-        scrollIntoView(waitForWebElement(helpUrlField));
-        new Actions(getDriver()).moveToElement(waitForWebElement(helpUrlField))
-                .click().sendKeys(url).perform();
+        enterTextConfigField(helpUrlField, url);
+        return new ServerConfigurationPage(getDriver());
+    }
+
+    public ServerConfigurationPage inputTermsOfUseURL(String url) {
+        log.info("Enter Terms of Use URL {}", url);
+        enterTextConfigField(termsUrlField, url);
         return new ServerConfigurationPage(getDriver());
     }
 
@@ -80,4 +95,5 @@ public class ServerConfigurationPage extends BasePage {
         waitForWebElement(saveButton).click();
         return new AdministrationPage(getDriver());
     }
+
 }
