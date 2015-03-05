@@ -11,16 +11,18 @@ pages:
 # Configuration Guide
 - ['configuration/authentication.md', 'Configuration', 'Authentication']
 - ['configuration/document-storage-directory.md', 'Configuration', 'Document Storage Directory']
-- ['configuration/email.md', 'Configuration', 'Email']
+# Once pull request https://github.com/zanata/zanata-server/pull/633 is integrated, this can be uncommented
+# - ['configuration/email.md', 'Configuration', 'Email']
+# Once pull request https://github.com/zanata/zanata-server/pull/577 is integrated, this can be uncommented
 # - ['configuration/infinispan.md', 'Configuration', 'Caches']
 - ['configuration/jms-messaging.md', 'Configuration', 'JMS Messaging']
 - ['configuration/wildfly.md', 'Configuration', 'Wildfly']
 
 # Release notes
-- ['release-notes/release-notes-3.3.2.md', 'Release Notes', '3.3.2']
-- ['release-notes/release-notes-3.4.md', 'Release Notes', '3.4']
-- ['release-notes/release-notes-3.5.md', 'Release Notes', '3.5']
-- ['release-notes/release-notes-3.6.md', 'Release Notes', '3.6']
+- ['release-notes/release-notes-3.3.2.md', 'Release Notes', '3.3.2 - Release Notes']
+- ['release-notes/release-notes-3.4.md', 'Release Notes', '3.4 - Release Notes']
+- ['release-notes/release-notes-3.5.md', 'Release Notes', '3.5 - Release Notes']
+- ['release-notes/release-notes-3.6.md', 'Release Notes', '3.6 - Release Notes']
 
 # User Guide
 - ['user-guide/translators-new-account.md', 'User Guide', 'Creating a new account']

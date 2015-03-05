@@ -1,3 +1,5 @@
+<h1>JMS Messaging</h1>
+
 Make sure your jboss standalone.xml has management native socket binding enabled.
 You should see an entry like this:
 

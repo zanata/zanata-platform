@@ -1,11 +1,11 @@
 Once a project has been created, the maintainer can add further details and project behaviour via the Settings tab.
-See the [Project Creation Help]({{ site.url }}/help/projects/create-project) for details on creating projects.
+See the [Project Creation Help](user-guide/projects/create-project) for details on creating projects.
 <figure>
 <img alt="Project General Settings tab" src="images/project-settings-button.png" />
 <figcaption>Project Settings tab link.</figcaption>
 </figure>
 
-The Settings tab contains fields that manage appearance and workflow of your project.  Some of these are already covered in the [Project Creation Help]({{ site.url }}/help/projects/create-project).
+The Settings tab contains fields that manage appearance and workflow of your project.  Some of these are already covered in the [Project Creation Help](user-guide/projects/create-project).
 
 ------------
 
@@ -15,12 +15,13 @@ The Settings tab contains fields that manage appearance and workflow of your pro
 <img alt="Project General Settings tab" src="images/project-general-settings.png" />
 <figcaption>Project General Settings tab</figcaption>
 </figure>
+<br>
 
 ### Project Type
 
 Project Type defines the type of files that your project uses to store source and translation strings. This setting ensures that files for your project will be downloaded in the correct format.
 
-There is a brief description for each project type next to each project type option. If the description is insufficient, more information on each project type is available at [Project Types wiki page](https://github.com/zanata/zanata/wiki/Project-Types).
+There is a brief description for each project type next to each project type option. If the description is insufficient, more information on each project type is available at [Project Types wiki page](user-guide/project-types).
 
 ### Home Page
 
@@ -52,11 +53,14 @@ This can be toggled using the same button, as desired.
 <img alt="Project Languages Settings tab" src="/images/project-languages-settings.png" />
 <figcaption>Project Languages Settings tab</figcaption>
 </figure>
+<br>
 
+------------
 ### Reset languages from global settings
 
 By default, your project will be available for translation to all of the enabled locales defined on the Zanata server. If your project has added or removed any languages, this button will appear, allowing you to reset the project's languages to the default list.
 
+------------
 ### Add a Language
 
 To search for available languages, enter text into the field under "Add a language". Available languages matching the entered text will display in a dropdown.
@@ -67,6 +71,7 @@ To add add a language to your project, select the desired language from the drop
 <figcaption>Adding a project language</figcaption>
 </figure>
 
+------------
 ### Remove a Language
 
 To remove a language from the list of available locales, first move the cursor over the language, then click the "X" that appears.
@@ -85,6 +90,7 @@ To remove a language from the list of available locales, first move the cursor o
 <figcaption>Project Translation Settings tab</figcaption>
 </figure>
 
+------------
 ### Validations
 
 Validations run in the translation editor and help translators to provide translations that are valid for your project. Validations set to `Warning` or `Error` in this list will be displayed in the translation editor when an invalid translation has been entered.
@@ -106,6 +112,7 @@ Refer to [the Copy Translations reference]({{ site.url }}/help/reuse/copytrans-e
 <img alt="Project Permissions Settings tab" src="images/project-permissions-settings.png" />
 <figcaption>Project Permissions Settings tab</figcaption>
 </figure>
+<br>
 
 ### Add a Maintainer
 
@@ -128,6 +135,7 @@ The access restriction feature is intended for use with special roles that can b
 <img alt="Project About Settings tab" src="images/project-about-settings.png" />
 <figcaption>Project About Settings tab</figcaption>
 </figure>
+<br>
 
 About is optional rich text that will be shown on your project's about tab. This can be used to provide more detailed information to translators to help them understand and translate your project.
 The rich text format is Seam Text. For help with rich text formatting, click "Seam Text" under the editor.

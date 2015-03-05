@@ -1,10 +1,10 @@
 Anyone with an account can upload source strings to Zanata. The first step is to create a project:
 
  1. **Create a project.**
- 1. [Create a version]({{ site.url }}/help/projects/create-version) under the project.
+ 1. [Create a version](user-guide/projects/create-version) under the project.
  1. Upload documents to the version:
    - Using the website
-   - Using the [command-line client push]({{ site.url }}/help/cli/cli-push) command
+   - Using the [command-line client push](http://zanata-client.readthedocs.org/en/latest/commands/push/) command
 
 ## Project creation through the website
 
@@ -41,12 +41,12 @@ A short description to provide a little more information for translators to iden
 
 Project Type defines the type of files that your project uses to store source and translation strings. This setting ensures that files for your project will be downloaded in the correct format.
 
-There is a brief description for each project type next to each project type option. If the description is insufficient, more information on each project type is available at [Project Types wiki page](https://github.com/zanata/zanata/wiki/Project-Types).
+There is a brief description for each project type next to each project type option. If the description is insufficient, more information on each project type is available at the [Project Types guide](user-guide/project-types).
 
 ## Project Settings
 
 Once the project has been created, the maintainer can customize the project appearance and behaviour as required.
-See the [Project Settings Help]({{ site.url }}/help/projects/customize-project) for details on project settings.
+See the [Project Settings Help](user-guide/projects/project-settings) for details on project settings.
 
 ## Project creation from command line
 
