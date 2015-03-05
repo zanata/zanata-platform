@@ -966,6 +966,19 @@ public class ProjectHome extends SlugHome<HProject> implements
         return Arrays.asList(ValidationAction.State.values());
     }
 
+    /**
+     * Update the about page to the entered value, and show a success message.
+     */
+    @Restrict("#{s:hasPermission(projectHome.instance, 'update')}")
+    public void updateAboutPage() {
+        String status = update();
+        if ("updated".equals(status)) {
+            FacesMessages.instance().add(StatusMessage.Severity.INFO, msgs.get("jsf.project.AboutPageUpdated"));
+        } else {
+            FacesMessages.instance().add(StatusMessage.Severity.ERROR, msgs.get("jsf.project.AboutPageUpdateFailed"));
+        }
+    }
+
     @Override
     protected void updatedMessage() {
         // Disable the default message from Seam
