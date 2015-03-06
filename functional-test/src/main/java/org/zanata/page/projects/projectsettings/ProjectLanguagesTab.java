@@ -168,4 +168,31 @@ public class ProjectLanguagesTab extends ProjectBasePage {
 
         return new ProjectLanguagesTab(getDriver());
     }
+
+    public ProjectLanguagesTab clickLanguageActionsDropdown(String locale) {
+        LanguageList.clickActionsDropdown(waitForWebElement(activeLocales),
+                locale);
+        return new ProjectLanguagesTab(getDriver());
+    }
+
+    public ProjectLanguagesTab clickAddAlias(String locale) {
+        LanguageList.clickAddAlias(waitForWebElement(activeLocales), locale);
+        return new ProjectLanguagesTab(getDriver());
+    }
+
+    public ProjectLanguagesTab enterAliasForLocale(String locale, String alias) {
+        LanguageList.enterAlias(waitForWebElement(activeLocales),
+                locale, alias);
+        return new ProjectLanguagesTab(getDriver());
+    }
+
+    public ProjectLanguagesTab saveLocaleAlias(String locale) {
+        LanguageList.setAlias(waitForWebElement(activeLocales), locale);
+        return new ProjectLanguagesTab(getDriver());
+    }
+
+    public String getAlias(String locale) {
+        return LanguageList.getAliasForLocale(waitForWebElement(activeLocales),
+                locale);
+    }
 }

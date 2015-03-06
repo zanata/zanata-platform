@@ -108,4 +108,25 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
                 .contains("en-US", "fr", "hi")
                 .as("The enabled language list contains en-US, fr and hi");
     }
+
+    @Feature(summary = "The administrator can set an alias for a project " +
+            "language",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Test
+    public void setLanguageAliasTest() {
+        ProjectLanguagesTab projectLanguagesTab = new ProjectWorkFlow()
+                .goToProjectByName("about fedora")
+                .gotoSettingsTab()
+                .gotoSettingsLanguagesTab()
+                .expectEnabledLocaleListCount(3);
+        projectLanguagesTab = projectLanguagesTab
+                .clickLanguageActionsDropdown("pl")
+                .clickAddAlias("pl")
+                .enterAliasForLocale("pl", "pl-PL")
+                .saveLocaleAlias("pl");
+
+        assertThat(projectLanguagesTab.getAlias("pl"))
+                .isEqualTo("pl-PL")
+                .as("The alias was set");
+    }
 }
