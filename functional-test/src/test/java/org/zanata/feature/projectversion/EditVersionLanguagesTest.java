@@ -22,7 +22,6 @@
 package org.zanata.feature.projectversion;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -74,37 +73,27 @@ public class EditVersionLanguagesTest extends ZanataTestCase {
                 .gotoVersion("overridelangtest")
                 .gotoSettingsTab()
                 .gotoSettingsLanguagesTab()
-                .clickInheritCheckbox()
                 .waitForLocaleListVisible();
 
         List<String> enabledLocaleList = versionLanguagesTab
                 .getEnabledLocaleList();
 
-        assertThat(enabledLocaleList.isEmpty())
+        assertThat(enabledLocaleList)
+                .contains("fr", "hi", "pl")
                 .as("The enabled list contains no languages");
 
         versionLanguagesTab = versionLanguagesTab
                 .gotoSettingsTab()
                 .gotoSettingsLanguagesTab()
                 .enterSearchLanguage("en-US")
-                .addLocale("English (United States)[en-US]");
-        versionLanguagesTab.expectNotification("Language \"English " +
-                "(United States)\" has been added to version.");
+                .addLocale("en-US");
+        versionLanguagesTab.expectNotification("Language \"en-US\" has been " +
+                "enabled.");
         versionLanguagesTab = versionLanguagesTab
-                .waitForLanguagesContains("English (United States)[en-US]");
+                .waitForLanguagesContains("en-US");
 
-        versionLanguagesTab = versionLanguagesTab
-                .enterSearchLanguage("fr")
-                .addLocale("French[fr]");
-        versionLanguagesTab.expectNotification("Language \"French\" has " +
-                "been added to version.");
-        versionLanguagesTab = versionLanguagesTab
-                .waitForLanguagesContains("French[fr]");
-
-        enabledLocaleList = versionLanguagesTab.getEnabledLocaleList();
-
-        assertThat(enabledLocaleList)
-                .contains("English (United States)[en-US]", "French[fr]")
+        assertThat(versionLanguagesTab.getEnabledLocaleList())
+                .contains("en-US", "fr")
                 .as("Two languages are available to translate");
     }
 }
