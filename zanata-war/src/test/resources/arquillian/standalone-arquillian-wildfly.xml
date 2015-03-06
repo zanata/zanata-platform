@@ -106,6 +106,18 @@
       <logger category="org.jboss.as.config">
         <level name="DEBUG"/>
       </logger>
+      <!-- Disable WARN about GWT's org.hibernate.validator.ValidationMessages -->
+      <logger category="org.jboss.modules">
+        <level name="ERROR"/>
+      </logger>
+      <!-- Disable WARN: "Queue with name '...' has already been registered" -->
+      <logger category="org.richfaces.log.Components">
+        <level name="ERROR"/>
+      </logger>
+      <!-- Disable WARN: "RP discovery / realm validation disabled;" -->
+      <logger category="org.openid4java.server.RealmVerifier">
+        <level name="ERROR"/>
+      </logger>
       <logger category="sun.rmi">
         <level name="WARN"/>
       </logger>
