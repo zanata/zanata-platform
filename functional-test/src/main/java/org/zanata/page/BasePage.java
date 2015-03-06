@@ -23,7 +23,6 @@ package org.zanata.page;
 import java.util.List;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -156,6 +155,7 @@ public class BasePage extends CorePage {
 
     public SignInPage clickSignInLink() {
         log.info("Click Log In");
+        waitForPageSilence();
         WebElement signInLink = getDriver().findElement(BY_SIGN_IN);
         signInLink.click();
         return new SignInPage(getDriver());
@@ -163,14 +163,16 @@ public class BasePage extends CorePage {
 
     public boolean hasLoggedIn() {
         log.info("Query user is logged in");
+        waitForPageSilence();
         List<WebElement> avatar = getDriver().findElements(BY_USER_AVATAR);
         return avatar.size() > 0;
     }
 
     public String loggedInAs() {
         log.info("Query logged in user name");
-        return waitForWebElement(BY_USER_AVATAR).getAttribute(
-                "data-original-title");
+        waitForPageSilence();
+        return waitForWebElement(BY_USER_AVATAR)
+                .getAttribute("data-original-title");
     }
 
     public HomePage logout() {
