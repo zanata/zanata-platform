@@ -341,6 +341,20 @@
       </dependency>
 
       <dependency>
+        <groupId>org.jboss.marshalling</groupId>
+        <artifactId>jboss-marshalling</artifactId>
+        <version>1.4.6.Final</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.marshalling</groupId>
+        <artifactId>jboss-marshalling-river</artifactId>
+        <version>1.4.6.Final</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
         <groupId>org.opensymphony.quartz</groupId>
         <artifactId>quartz</artifactId>
         <version>1.6.5</version>
@@ -1495,21 +1509,9 @@
             <scope>test</scope>
           </dependency>
           <dependency>
-            <groupId>org.jboss.marshalling</groupId>
-            <artifactId>jboss-marshalling</artifactId>
-            <version>1.4.6.Final</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
             <groupId>org.jboss.logmanager</groupId>
             <artifactId>jboss-logmanager</artifactId>
             <version>1.5.2.Final</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss.marshalling</groupId>
-            <artifactId>jboss-marshalling-river</artifactId>
-            <version>1.4.6.Final</version>
             <scope>test</scope>
           </dependency>
           <dependency>
