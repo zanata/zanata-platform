@@ -1760,8 +1760,8 @@
     <dependency>
       <groupId>org.infinispan</groupId>
       <artifactId>infinispan-core</artifactId>
-	    <!-- TODO Use a bom for EAP or wildfly (This is the EAP 6.3 version) -->
-	    <version>5.2.4.Final</version>
+      <!-- TODO Use a bom for EAP or wildfly (This is the EAP 6.3 version) -->
+      <version>5.2.4.Final</version>
       <scope>provided</scope>
     </dependency>
 
@@ -1776,7 +1776,7 @@
       <groupId>org.jboss.marshalling</groupId>
       <artifactId>jboss-marshalling-river</artifactId>
       <scope>provided</scope>
-	  </dependency>
+    </dependency>
 
     <dependency>
       <groupId>org.jboss.spec.javax.el</groupId>

@@ -60,7 +60,7 @@ public class InfinispanCacheWrapper<K, V> implements CacheWrapper<K, V> {
     public synchronized V getWithLoader(K key) {
         // NB: Need to manually implement the cache loader feature
         V cachedValue = getCache().get(key);
-        if( cachedValue == null && cacheLoader != null ) {
+        if(cachedValue == null && cacheLoader != null) {
             try {
                 cachedValue = cacheLoader.load(key);
             } catch (Exception e) {

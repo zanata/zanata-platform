@@ -51,7 +51,7 @@ public class InfinispanTestCacheContainer implements CacheContainer {
 
     @Override
     public void stop() {
-        if( delegate != null) {
+        if(delegate != null) {
             delegate.stop();
         }
     }
