@@ -65,6 +65,7 @@ import org.hibernate.search.annotations.Indexed;
 import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.annotation.EntityRestrict;
 import org.zanata.common.EntityStatus;
+import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.hibernate.search.GroupSearchBridge;
 import org.zanata.model.type.EntityStatusType;
@@ -123,6 +124,13 @@ public class HProjectIteration extends SlugEntityBase implements
             name = "projectIterationId"), inverseJoinColumns = @JoinColumn(
             name = "localeId"))
     private Set<HLocale> customizedLocales = Sets.newHashSet();
+
+    @ElementCollection
+    @JoinTable(name = "HProjectIteration_LocaleAlias",
+               joinColumns = { @JoinColumn(name = "projectIterationId") })
+    @MapKeyColumn(name = "localeId")
+    @Column(name = "alias", nullable = false)
+    private Map<LocaleId, String> localeAliases = Maps.newHashMap();
 
     @ManyToMany
     @JoinTable(name = "HIterationGroup_ProjectIteration",

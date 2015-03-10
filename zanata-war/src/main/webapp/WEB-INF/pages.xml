@@ -337,27 +337,6 @@
     </navigation>
   </page>
 
-  <!-- Help -->
-  <page view-id="/help/view.xhtml">
-    <navigation from-action="#{sendEmail.send}">
-      <rule if-outcome="success">
-        <redirect view-id="/help/view.xhtml" />
-      </rule>
-      <rule if-outcome="failure">
-        <redirect view-id="/help/view.xhtml" />
-      </rule>
-    </navigation>
-  </page>
-
-  <page view-id="/help/edit_help_content.xhtml">
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/help/view.xhtml', msgs['jsf.Help'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', msgs['jsf.EditHelpPageContent'])}" />
-  </page>
-
-
   <!-- Project -->
   <page view-id="/project/home.xhtml">
     <action execute="#{breadcrumbs.clear}" />

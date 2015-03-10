@@ -106,7 +106,22 @@
           <s:decorate id="termsOfUseUrlField" template="../WEB-INF/layout/field.xhtml" enclose="true">
             <h:inputText id="termsOfUseUrlEml" value="#{serverConfigurationBean.termsOfUseUrl}">
               <a4j:ajax event="blur" render="termsOfUseUrlField" execute="@this"/>
-              <rich:placeholder value="#{msgs['jsf.config.term.url.placeholder']}"
+              <rich:placeholder value="#{msgs.format('jsf.config.term.url.placeholder', serverConfigurationBean.defaultTermOfUseUrl)}"
+                styleClass="txt--neutral" />
+            </h:inputText>
+          </s:decorate>
+        </div>
+
+        <div class="form__item l--push-top-1">
+          <h:outputLabel for="helpInput">#{msgs['jsf.config.HelpUrl']}
+          <span class="txt--meta">
+            <i class="i i--info" title="#{msgs['jsf.config.HelpUrltooltip']}"></i>
+          </span>
+          </h:outputLabel>
+          <s:decorate id="helpUrlField" template="../WEB-INF/layout/field.xhtml" enclose="true">
+            <h:inputText id="helpInput" value="#{serverConfigurationBean.helpUrl}">
+              <a4j:ajax event="blur" render="helpUrlField" execute="@this"/>
+              <rich:placeholder value="#{msgs.format('jsf.config.help.url.placeholder', serverConfigurationBean.defaultHelpUrl)}"
                 styleClass="txt--neutral" />
             </h:inputText>
           </s:decorate>

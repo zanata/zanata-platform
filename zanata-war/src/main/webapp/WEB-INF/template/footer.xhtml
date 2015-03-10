@@ -1,79 +1,58 @@
-<div class="footer_container" xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:s="http://jboss.org/schema/seam/taglib"
-  xmlns:rich="http://richfaces.org/rich">
+  xmlns:f="http://java.sun.com/jsf/core">
 
-  <div class="section_block">
-    <h4>Zanata</h4>
-
-    <div class="content">
-      <ul>
-        <li><a href="http://zanata.org/"
-          target="_blank">#{msgs['jsf.AboutZanata']}</a>
-        </li>
-        <li><a href="http://zanata.org/help"
-          target="_blank">#{msgs['jsf.Documentation']}</a></li>
-        <li><a href="https://github.com/zanata/zanata/wiki"
-          target="_blank">#{msgs['jsf.Wiki']}</a></li>
-        <li><a href="http://blog-zanatatm.rhcloud.com/"
-          target="_blank">#{msgs['jsf.Blog']}</a>
-        </li>
-      </ul>
+  <footer role="contentinfo" class="l--push--v-2">
+    <div class="l__wrapper">
+      <div class="l--pad-v-1 d--top">
+        <div class="g">
+          <div class="g__item w--1-2 l--push-bottom-quarter">
+            <ul class="list--horizontal txt--meta">
+              <li><a href="#{applicationConfigurationAction.termOfUseUrl}"
+                target="_blank">#{msgs['jsf.TermsOfUse']}</a></li>
+              <li><a href="http://zanata.org/about"
+                target="_blank">#{msgs['jsf.About']}</a></li>
+              <li><a href="http://zanata.org/blog"
+                target="_blank">#{msgs['jsf.Blog']}</a></li>
+              <li><a href="#{applicationConfigurationAction.helpUrl}"
+                target="_blank">#{msgs['jsf.Help']}</a></li>
+              <s:fragment rendered="#{identity.loggedIn}">
+                <ui:include src="../layout/admin/contact_admin_modal.xhtml"/>
+                <li><a href="#"
+                    data-toggle="modal" data-target="#contactAdminDialog">
+                    #{msgs['jsf.ContactAdmin']}</a></li>
+              </s:fragment>
+              <li><a
+                href="https://bugzilla.redhat.com/enter_bug.cgi?format=guided&amp;product=Zanata"
+                target="_blank">#{msgs['jsf.ReportAProblem']}</a>
+              </li>
+              <li>
+                <h:form id="localeSelector_form">
+                  <h:selectOneMenu id="Select"
+                    value="#{localeSelector.localeString}"
+                    valueChangeListener="#{localeSelector.select}"
+                    onchange="submit()">
+                    <f:selectItems
+                      value="#{localeSelector.supportedLocales}"/>
+                  </h:selectOneMenu>
+                </h:form>
+              </li>
+            </ul>
+          </div>
+          <div class="g__item w--1-2 txt--align-right">
+            <p class="txt--meta">
+              <h:outputText
+                value="#{msgs.format('jsf.RunningVersionInfo',
+                  msgs['jsf.Zanata'], applicationConfiguration.version,
+                  applicationConfiguration.scmDescribe)}
+                  | #{msgs['jsf.CopyrightNotice']}"
+                escape="false"/>
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-
-  <div class="section_block">
-    <h4>#{msgs['jsf.Support']}</h4>
-
-    <div class="content">
-      <ul>
-        <li><s:link view="/help/view.xhtml"
-          propagation="none">#{msgs['jsf.Help']}</s:link></li>
-        <li><a href="http://webchat.freenode.net/?channels=zanata"
-          target="_blank">#{msgs['jsf.IrcHelp']}</a></li>
-        <li><a
-          href="https://bugzilla.redhat.com/enter_bug.cgi?format=guided&amp;product=Zanata"
-          target="_blank">#{msgs['jsf.ReportAProblem']}</a></li>
-        <li><a
-          href="https://bugzilla.redhat.com/buglist.cgi?product=Zanata&amp;bug_status=__open__"
-          target="_blank">#{msgs['jsf.KnownIssues']}</a></li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="section_block">
-    <h4>#{msgs['jsf.SiteMap']}</h4>
-
-    <div class="content" id="nav-footer">
-      <ul>
-        <li><s:link id="Projects_sitemap" view="/project/home.xhtml"
-          propagation="none" value="#{msgs['jsf.Projects']}"/></li>
-        <li><s:link id="Groups_sitemap"
-          view="/version-group/home.xhtml" propagation="none"
-          value="#{msgs['jsf.Groups']}"/></li>
-        <li><s:link id="Languages_sitemap" view="/language/home.xhtml"
-          propagation="none" value="#{msgs['jsf.Languages']}"/></li>
-        <li><s:link id="Help_sitemap" view="/help/view.xhtml"
-          propagation="none" value="#{msgs['jsf.Help']}"/></li>
-      </ul>
-    </div>
-  </div>
-  <div class="locale_selector_block">
-    <h:form id="localeSelector_form">
-      <h:selectOneMenu id="Select" value="#{localeSelector.localeString}"
-        valueChangeListener="#{localeSelector.select}" onchange="submit()">
-        <f:selectItems value="#{localeSelector.supportedLocales}"/>
-      </h:selectOneMenu>
-    </h:form>
-  </div>
-  <div style="clear: both; display: block;"/>
-  <div class="copyright_block">
-    <h:outputText
-      value="#{msgs.format('jsf.RunningVersionInfo', msgs['jsf.Zanata'],
-      applicationConfiguration.version, applicationConfiguration.scmDescribe)}
-      #{msgs['jsf.CopyrightNotice']}"
-      escape="false"/>
-  </div>
-</div>
+  </footer>
+</ui:composition>

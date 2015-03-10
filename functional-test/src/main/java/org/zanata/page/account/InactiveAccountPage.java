@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2015, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,36 +18,38 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.page.utility;
+package org.zanata.page.account;
 
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.BasePage;
+import org.zanata.page.utility.HomePage;
 
 /**
- * @author Patrick Huang
- *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Slf4j
-public class HelpPage extends BasePage {
+public class InactiveAccountPage extends BasePage {
 
-    private By contactAdminLink = By.linkText("Contact Admin");
-    private By moreActions = By.className("dropdown__toggle");
-
-    public HelpPage(WebDriver driver) {
+    public InactiveAccountPage(WebDriver driver) {
         super(driver);
     }
 
-    public HelpPage clickMoreActions() {
-        log.info("Click More Actions");
-        waitForWebElement(moreActions).click();
-        return new HelpPage(getDriver());
+    public HomePage clickResendActivationEmail() {
+        log.info("Click resend activation email");
+        waitForWebElement(By.id("resendEmail")).click();
+        return new HomePage(getDriver());
     }
 
-    public ContactAdminFormPage clickContactAdmin() {
-        log.info("Click Contact Admin button");
-        waitForWebElement(contactAdminLink).click();
-        return new ContactAdminFormPage(getDriver());
+    public InactiveAccountPage enterNewEmail(String email) {
+        waitForWebElement(By.id("inactiveAccountForm:emailField:email"))
+                .sendKeys(email);
+        return new InactiveAccountPage(getDriver());
+    }
+
+    public HomePage clickUpdateEmail() {
+        waitForWebElement(By.id("inactiveAccountForm:emailField:updateEmail")).click();
+        return new HomePage(getDriver());
     }
 }

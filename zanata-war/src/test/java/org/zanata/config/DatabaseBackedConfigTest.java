@@ -69,11 +69,4 @@ public class DatabaseBackedConfigTest extends ZanataDbunitJpaTest {
         // This value is NOT provided in the DB Unit script above
         assertThat(databaseBackedConfig.getAdminEmailAddress(), nullValue());
     }
-
-    @Test
-    public void reset() {
-        String original = databaseBackedConfig.getHelpContent();
-        databaseBackedConfig.reset();
-        assertThat(databaseBackedConfig.getHelpContent(), equalTo(original));
-    }
 }

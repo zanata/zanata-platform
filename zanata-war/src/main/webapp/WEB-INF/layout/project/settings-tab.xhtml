@@ -8,6 +8,7 @@
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
 <script type="text/javascript">
+  //<![CDATA[
   function onValidationOptionChange(validationId) {
     var value = validationId.split('-');
     bindValidationValue(value[0], value[1]);
@@ -22,7 +23,7 @@
   }
 
   function onPayloadInputKeyDown(input, event) {
-      if(event.keyCode == 13) {
+      if(isEnterKey(event)) {
         event.preventDefault();
         if(jQuery(input).val()) {
           addWebhook(jQuery(input).val());
@@ -35,6 +36,8 @@
     jQuery(ele).children('i').addClass('is-hidden');
     zanata.loader.activate(jQuery(ele).children('#loader'));
   }
+
+  //]]>
 </script>
 
 <a4j:jsFunction name="addWebhook"
@@ -242,50 +245,8 @@
     </s:div>
   </h:form>
 </li>
-<li id="settings-languages">
-  <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
-    #{msgs['jsf.Languages']}
-  </h2>
-  <h:form id="settings-languages-form" styleClass="l--push-bottom-0">
-    <button styleClass="button--small l--push-bottom-half" jsfc="a4j:commandButton"
-      value="#{msgs['jsf.Language.useGlobal']}"
-      rendered="#{projectHome.instance.overrideLocales}"
-      action="#{projectHome.updateLanguagesFromGlobal()}"
-      render="settings-languages-form"/>
-
-    <ul class="list--slat list--highlight l--push-top-half">
-      <ui:repeat value="#{projectHome.getInstanceActiveLocales()}" var="locale">
-        <li class="reveal--list-item">#{locale.retrieveDisplayName()}<span
-          class="txt--understated l--push-left-quarter">[#{locale.localeId}]</span>
-          <a4j:commandLink oncomplete="refreshStatistics()" execute="@this"
-            action="#{projectHome.removeLanguage(locale.localeId)}"
-            styleClass="l--float-right txt--danger reveal__target"
-            render="settings-languages-form">
-            <i class="i--large i--remove"></i>
-          </a4j:commandLink>
-        </li>
-      </ui:repeat>
-      <li class="list--highlight__item--none">
-        <label
-          for="#{rich:clientId('languageAutocomplete')}-autocomplete__input">
-          #{msgs['jsf.AddALanguage']}
-        </label>
-
-        <zanata:autocomplete
-          actionBean="#{projectHome.localeAutocomplete}"
-          maxlength="80" searchWhenFocus="true"
-          id="languageAutocomplete"
-          fetchValue="#{result.localeId}" render="settings-languages-form"
-          oncomplete="refreshStatistics();focusCurrentActiveInput()"
-          placeholder="#{msgs['jsf.language.search.placeholder']}">
-
-          #{result.retrieveDisplayName()}<span
-          class="txt--understated l--push-left-quarter">[#{result.localeId}]</span>
-        </zanata:autocomplete>
-
-      </li>
-    </ul>
-  </h:form>
+<li id="settings-languages" class="js-static-element">
+  <ui:include src="settings-tab-languages.xhtml" />
 </li>
 <li id="settings-translation">
   <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
@@ -529,7 +490,7 @@
     </p>
 
     <a4j:commandLink value="#{msgs['jsf.project.saveNotes']}"
-      action="#{projectHome.update}" rendered="#{projectHome.managed}"
+      action="#{projectHome.updateAboutPage}" rendered="#{projectHome.managed}"
       render="project-about"
       styleClass="l--push-top-1 button button--primary"/>
   </h:form>

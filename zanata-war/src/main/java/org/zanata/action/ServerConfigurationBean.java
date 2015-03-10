@@ -58,6 +58,10 @@ import static org.zanata.model.HApplicationConfiguration.*;
 public class ServerConfigurationBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    public static final String DEFAULT_HELP_URL = "http://zanata.org/help";
+
+    public static final String DEFAULT_TERM_OF_USE_URL = "http://zanata.org/term";
+
     @In
     private ApplicationConfigurationDAO applicationConfigurationDAO;
 
@@ -96,11 +100,6 @@ public class ServerConfigurationBean implements Serializable {
 
     @Getter
     @Setter
-    private String helpContent = "";
-    private PropertyWithKey<String> helpContentProperty = new PropertyWithKey<String>("helpContent", KEY_HELP_CONTENT);
-
-    @Getter
-    @Setter
     private boolean enableLogEmail;
     private PropertyWithKey<Boolean> enableLogEmailProperty = new PropertyWithKey<Boolean>("enableLogEmail", KEY_EMAIL_LOG_EVENTS);
 
@@ -125,6 +124,11 @@ public class ServerConfigurationBean implements Serializable {
     @Getter
     @Setter
     private String termsOfUseUrl;
+
+    @Url(canEndInSlash = true)
+    @Getter
+    @Setter
+    private String helpUrl;
 
     @Pattern(regexp = "\\d{0,5}")
     @Getter
@@ -151,11 +155,11 @@ public class ServerConfigurationBean implements Serializable {
             new PropertyWithKey<String>("piwikUrl", KEY_PIWIK_URL),
             new PropertyWithKey<String>("piwikIdSite", KEY_PIWIK_IDSITE),
             new PropertyWithKey<String>("termsOfUseUrl", KEY_TERMS_CONDITIONS_URL),
+            new PropertyWithKey<String>("helpUrl", KEY_HELP_URL),
             new PropertyWithKey<String>("maxConcurrentRequestsPerApiKey", KEY_MAX_CONCURRENT_REQ_PER_API_KEY),
             new PropertyWithKey<String>("maxActiveRequestsPerApiKey", KEY_MAX_ACTIVE_REQ_PER_API_KEY),
             new PropertyWithKey<String>("maxFilesPerUpload", KEY_MAX_FILES_PER_UPLOAD),
-            homeContentProperty,
-            helpContentProperty
+            homeContentProperty
     );
 
     public String updateHomeContent() {
@@ -164,15 +168,6 @@ public class ServerConfigurationBean implements Serializable {
 
         FacesMessages.instance().add("Home content was successfully updated.");
         return "/home.xhtml";
-    }
-
-    public String updateHelpContent() {
-        persistPropertyToDatabase(helpContentProperty);
-        applicationConfigurationDAO.flush();
-
-        FacesMessages.instance().add(
-                "Help page content was successfully updated.");
-        return "/help/view.xhtml";
     }
 
     @Create
@@ -282,5 +277,13 @@ public class ServerConfigurationBean implements Serializable {
         public T get() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
             return (T) BeanUtils.getProperty(ServerConfigurationBean.this, propertyName);
         }
+    }
+
+    public String getDefaultTermOfUseUrl() {
+        return DEFAULT_TERM_OF_USE_URL;
+    }
+
+    public String getDefaultHelpUrl() {
+        return DEFAULT_HELP_URL;
     }
 }

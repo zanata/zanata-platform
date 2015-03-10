@@ -1,0 +1,276 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
+
+  <h:outputScript library="script" name="settings-tab-languages.js" />
+
+  <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
+    #{msgs['jsf.Languages']}
+  </h2>
+
+  <h:form id="settings-languages-form" styleClass="l--push-bottom-0">
+    <s:div id="settings-languages-list">
+
+      <button styleClass="button--small l--push-bottom-half" jsfc="a4j:commandButton"
+        value="#{msgs['jsf.Language.useGlobal']}"
+        rendered="#{projectHome.overrideLocales}"
+        action="#{projectHome.useDefaultLocales()}"
+        render="settings-languages-form"/>
+
+      <button jsfc="a4j:commandButton"
+        styleClass="button--small l--push-bottom-half l--push-left-half"
+        value="#{msgs['jsf.localeAlias.RemoveAllAliases']}"
+        rendered="#{not empty projectHome.localeAliases}"
+        action="#{projectHome.removeAllLocaleAliases()}"
+        render="settings-languages-form"/>
+
+      <ui:remove><!-- Active Languages --></ui:remove>
+
+      <ui:decorate template="languages-list.xhtml" >
+        <ui:param name="id" value="active-locales" />
+        <ui:param name="heading" value="#{msgs['jsf.Enabled']}" />
+        <ui:param name="filterText" value="#{projectHome.enabledLocalesFilter}" />
+        <ui:param name="languages" value="#{projectHome.enabledLocales}" />
+        <ui:param name="noLanguagesPlaceholder" value="#{msgs['jsf.languages.NoLanguagesEnabled']}" />
+
+        <ui:define name="listOperations">
+          <zanata:ajax-command-link
+            action="#{projectHome.disableSelectedLocales()}"
+            oncomplete="refreshStatistics()"
+            styleClass="button--link link--danger"
+            render="settings-languages-list">
+            <f:facet name="loading">
+              <span class="txt--neutral">
+                #{msgs['jsf.project.DisableLanguages.inProgress.label']}
+              </span>
+            </f:facet>
+            <i class="i i--remove"></i>
+            #{msgs['jsf.languages.DisableLanguages.short']}
+          </zanata:ajax-command-link>
+
+          <zanata:ajax-command-link
+            action="#{projectHome.removeSelectedLocaleAliases}"
+            styleClass="button--link link--danger l--push-left-half"
+            render="settings-languages-list">
+            <f:facet name="loading">
+              <span class="txt--neutral">
+                #{msgs['jsf.LocaleAlias.DeleteAliases.inProgress.label']}
+              </span>
+            </f:facet>
+            <i class="i i--trash"></i>
+            #{msgs['jsf.LocaleAlias.DeleteAliases']}
+          </zanata:ajax-command-link>
+        </ui:define>
+
+        <ui:define name="listHeader">
+          <div class="g__item w--5-12"><h4 class="zeta">
+            #{msgs['jsf.NativeName.short']}</h4></div>
+          <div class="g__item w--2-12"><h4 class="zeta">
+            #{msgs['jsf.LocaleCode.short']}</h4></div>
+          <div class="g__item w--2-12"><h4 class="zeta">
+            #{msgs['jsf.LocaleAlias.short']}
+            <i class="i i--info" title="#{msgs['jsf.LocaleAlias.tooltip']}"></i>
+          </h4></div>
+          <div class="g__item w--3-12"></div>
+        </ui:define>
+
+        <ui:define name="listRow">
+          <h:selectBooleanCheckbox
+            value="#{projectHome.selectedEnabledLocales[locale.localeId]}"
+            styleClass="form__checkbox__input js-form__checkbox__input"/>
+
+          <div class="js-form__checkbox__label l--pad-left-1half">
+            <div class="g g--tight">
+              <div class="g__item w--5-12 w--1-s js-locale-name">
+                #{locale.retrieveDisplayName()}
+              </div>
+              <div class="g__item w--2-12 w--3-10-s">
+                <span class="txt--understated js-locale-id">#{locale.localeId}</span>
+              </div>
+              <div class="g__item w--2-12 w--3-10-s">
+                <span class="txt--understated js-locale-alias">
+                  #{projectHome.getLocaleAlias(locale)}
+                </span>
+              </div>
+
+              <div class="g__item w--3-12 w--4-10-s l--pad-right-half txt--align-right txt--align-right-s">
+                <div id="language-actions-#{locale.localeId}"
+                  class="l--push-right-quarter reveal__target">
+                  <div class="dropdown dropdown--small dropdown--right dropdown--single js-dropdown">
+                    <div class="button--group">
+                      <zanata:ajax-command-button
+                        oncomplete="refreshStatistics();"
+                        action="#{projectHome.disableLocale(locale)}"
+                        styleClass="button button--small"
+                        render="settings-languages-list">
+                        #{msgs['jsf.languages.DisableLanguage.short']}
+                      </zanata:ajax-command-button>
+                      <button class="button button--small js-dropdown__toggle">
+                        <i class="i i--arrow-down"></i>
+                      </button>
+                    </div>
+                    <ul class="dropdown__content js-dropdown__content">
+                      <s:fragment rendered="#{not projectHome.hasLocaleAlias(locale)}">
+                        <li>
+                          <h:outputLink id="addLocaleAliasLink"
+                            styleClass="dropdown__content__link button--link i__item--left"
+                            onclick="showLocaleAliasInput('#{locale.localeId}', '#{projectHome.getLocaleAlias(locale)}'); return false;"
+                            value="#">
+                            <i class="i i--plus i__item__icon"></i>
+                            #{msgs['jsf.languages.AddAlias']}
+                          </h:outputLink>
+                        </li>
+                      </s:fragment>
+                      <s:fragment rendered="#{projectHome.hasLocaleAlias(locale)}">
+                        <li>
+                          <h:outputLink id="editLocaleAliasLink"
+                            styleClass="dropdown__content__link button--link i__item--left"
+                            onclick="showLocaleAliasInput('#{locale.localeId}', '#{projectHome.getLocaleAlias(locale)}'); return false;"
+                            value="#">
+                            <i class="i i--edit i__item__icon"></i>
+                            #{msgs['jsf.languages.EditAlias']}
+                          </h:outputLink>
+                        </li>
+                      </s:fragment>
+                      <s:fragment rendered="#{projectHome.hasLocaleAlias(locale)}">
+                        <li>
+                          <button
+                            class="dropdown__content__link button--link txt--danger i__item--left"
+                            onclick="deleteLocaleAlias('#{locale.localeId}')">
+                            <i class="i i--trash i__item__icon"></i>
+                            #{msgs['jsf.languages.DeleteAlias']}
+                          </button>
+                        </li>
+                      </s:fragment>
+                    </ul>
+                  </div>
+                </div>
+
+                <div id="language-processing-#{locale.localeId}"
+                  class="is-hidden l--push-right-half">
+                  <div id="set-alias-loader-#{locale.localeId}"
+                    class="loader--small loader--inline l--push-left-half">
+                    <span class="loader__spinner">
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    </span>
+                  </div>
+                </div>
+
+                <div id="edit-alias-cancel-#{locale.localeId}"
+                  class="is-hidden">
+                  <button type="button"
+                    onclick="hideLocaleAliasInput('#{locale.localeId}');showLocaleActions('#{locale.localeId}');return false;"
+                    class="button--link l--float-right l--push-right-half">
+                    #{msgs['jsf.Cancel']}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="l--pad-all-quarter bg--high is-hidden"
+               id="locale-alias-form-#{locale.localeId}">
+            <!-- make for screenreader only -->
+            <label for="locale-alias-input" class="is-sr-only">
+              #{msgs['jsf.localeAlias.SetLocaleAlias']}
+            </label>
+            <div class="form--inline">
+              <h:inputText id="locale-alias-input"
+                required="false"
+                value="#{projectHome.enteredLocaleAliases[locale.localeId]}"
+                placeholder="e.g. zh_CN"
+                onkeydown="return onLocaleAliasInputKeyDown('#{locale.localeId}', event);"
+                maxlength="255"
+                styleClass="form--inline__input">
+              </h:inputText>
+              <div class="form--inline__suffix">
+                <a4j:commandButton
+                  value="#{msgs['jsf.localeAlias.SetLocaleAlias.brief']}"
+                  onbegin="hideLocaleAliasInput('#{locale.localeId}'); showLocaleAliasLoader('#{locale.localeId}'); zanata.loader.activate('#set-alias-loader-#{locale.localeId}');"
+                  action="#{projectHome.updateToEnteredLocaleAlias(locale.localeId)}"
+                  oncomplete="zanata.loader.deactivate('#set-alias-loader-#{locale.localeId}'); showLocaleActions('#{locale.localeId}');"
+                  render="settings-languages-list"
+                  styleClass="form--inline__addon button--primary" />
+              </div>
+            </div>
+          </div>
+        </ui:define>
+      </ui:decorate>
+
+      <hr/>
+
+      <ui:decorate template="languages-list.xhtml" >
+        <ui:param name="id" value="available-locales" />
+        <ui:param name="heading" value="#{msgs['jsf.languages.Disabled']}" />
+        <ui:param name="filterText" value="#{projectHome.disabledLocalesFilter}" />
+        <ui:param name="languages" value="#{projectHome.disabledLocales}" />
+        <ui:param name="noLanguagesPlaceholder" value="#{msgs['jsf.languages.NoLanguagesDisabled']}" />
+
+        <ui:define name="listHeader">
+          <div class="g__item w--5-12">
+            <h4 class="zeta">#{msgs['jsf.NativeName.short']}</h4>
+          </div>
+          <div class="g__item w--2-12">
+            <h4 class="zeta">#{msgs['jsf.LocaleCode.short']}</h4>
+          </div>
+          <div class="g__item w--5-12"></div>
+        </ui:define>
+
+        <ui:define name="listOperations">
+          <zanata:ajax-command-button
+            action="#{projectHome.enableSelectedLocales}"
+            styleClass="button--link link--success"
+            render="settings-languages-list">
+            <f:facet name="loading">
+              <span class="txt--neutral">
+                ${msgs['jsf.languages.EnableLanguages.inProgress.label']}
+              </span>
+            </f:facet>
+            <i class="i i--checkmark"></i>
+            ${msgs['jsf.languages.EnableLanguages.label']}
+          </zanata:ajax-command-button>
+        </ui:define>
+
+        <ui:define name="listRow">
+          <h:selectBooleanCheckbox
+            value="#{projectHome.selectedDisabledLocales[locale.localeId]}"
+            styleClass="form__checkbox__input js-form__checkbox__input"/>
+          <div class="js-form__checkbox__label l--pad-left-1half">
+            <div class="g g--tight">
+              <div class="g__item w--5-12 w--1-s js-locale-name">
+                #{locale.retrieveDisplayName()}
+              </div>
+              <div class="g__item w--2-12 w--3-10-s">
+                <span class="txt--understated js-locale-id">
+                  #{locale.localeId.id}
+                </span>
+              </div>
+              <div class="g__item w--5-12 w--7-10-s reveal__target txt--align-right txt--align-right-s">
+                <div class="dropdown dropdown--small dropdown--right dropdown--single js-dropdown">
+                  <div class="button--group l--push-right-quarter">
+                    <zanata:ajax-command-button
+                      oncomplete="refreshStatistics();"
+                      action="#{projectHome.enableLocale(locale)}"
+                      styleClass="button button--small"
+                      render="settings-languages-list">
+                      #{msgs['jsf.languages.EnableLanguage']}
+                    </zanata:ajax-command-button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ui:define>
+
+      </ui:decorate>
+
+    </s:div>
+  </h:form>
+
+</ui:composition>

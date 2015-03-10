@@ -35,6 +35,8 @@ import org.zanata.email.EmailBuilder;
 import org.zanata.email.LanguageTeamPermissionChangeEmailStrategy;
 import org.zanata.events.LanguageTeamPermissionChangedEvent;
 import org.zanata.i18n.Messages;
+
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -91,7 +93,8 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandler implements
                 Addresses.getAddress(changedEvent.getEmail(),
                         changedEvent.getName());
 
-        emailBuilder.sendMessage(emailStrategy, receivedReason, to);
+        emailBuilder.sendMessage(emailStrategy,
+                Lists.newArrayList(receivedReason), to);
     }
 
 }

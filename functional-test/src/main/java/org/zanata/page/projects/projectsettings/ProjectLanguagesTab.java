@@ -20,18 +20,14 @@
  */
 package org.zanata.page.projects.projectsettings;
 
-import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.projects.ProjectBasePage;
-import org.zanata.util.WebElementUtil;
+import org.zanata.util.LanguageList;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -43,8 +39,10 @@ import java.util.List;
 @Slf4j
 public class ProjectLanguagesTab extends ProjectBasePage {
 
-    private By addNewLanguageField = By.id("languageAutocomplete-autocomplete__input");
-    private By settingsLanguagesForm = By.id("settings-languages-form");
+    private By activeLocales = By.id("active-locales-list");
+    private By inactiveLocales = By.id("available-locales-list");
+    private By disabledLocalesFilter = By.id(
+            "settings-languages-form:available-locales-filter-input");
 
     public ProjectLanguagesTab(WebDriver driver) {
         super(driver);
@@ -57,13 +55,7 @@ public class ProjectLanguagesTab extends ProjectBasePage {
      */
     public List<String> getEnabledLocaleList() {
         log.info("Query enabled locales");
-        return Lists.transform(getEnabledLocaleListElement(),
-                new Function<WebElement, String>() {
-                        @Override
-                        public String apply(WebElement li) {
-                            return li.getText();
-                        }
-                });
+        return LanguageList.getListedLocales(waitForWebElement(activeLocales));
     }
 
     public ProjectLanguagesTab expectEnabledLocaleListCount(final int count) {
@@ -76,10 +68,29 @@ public class ProjectLanguagesTab extends ProjectBasePage {
         return new ProjectLanguagesTab(getDriver());
     }
 
-    private List<WebElement> getEnabledLocaleListElement() {
-        return waitForWebElement(settingsLanguagesForm)
-                .findElement(By.className("list--slat"))
-                .findElements(By.className("reveal--list-item"));
+    /**
+     * Get a list of disabled locales in this project
+     *
+     * @return String list of language/locale names
+     */
+    public List<String> getDisabledLocaleList() {
+        log.info("Query enabled locales");
+        return LanguageList.getListedLocales(waitForWebElement(inactiveLocales));
+    }
+
+    public ProjectLanguagesTab expectDisabledLocaleListCount(final int count) {
+        waitForAMoment().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return getDisabledLocaleList().size() == count;
+            }
+        });
+        return new ProjectLanguagesTab(getDriver());
+    }
+
+    private List<WebElement> getDisabledLocaleListElement() {
+        return waitForWebElement(inactiveLocales)
+                .findElements(By.className("reveal"));
     }
 
     public ProjectLanguagesTab waitForLocaleListVisible() {
@@ -87,9 +98,7 @@ public class ProjectLanguagesTab extends ProjectBasePage {
         waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver driver) {
-                return driver.findElement(settingsLanguagesForm)
-                        .findElement(By.className("list--slat"))
-                        .isDisplayed();
+                return waitForWebElement(activeLocales).isDisplayed();
             }
         });
         return new ProjectLanguagesTab(getDriver());
@@ -102,46 +111,31 @@ public class ProjectLanguagesTab extends ProjectBasePage {
      */
     public ProjectLanguagesTab enterSearchLanguage(String languageQuery) {
         log.info("Enter language search {}", languageQuery);
-        WebElementUtil.searchAutocomplete(getDriver(), "languageAutocomplete",
-                languageQuery);
+        waitForWebElement(disabledLocalesFilter).sendKeys(languageQuery);
         return new ProjectLanguagesTab(getDriver());
     }
 
     /**
      * Add a language to the languages list.
-     * Assumes that the search string has already been entered.
      *
-     * @param localeId language to select
+     * @param searchLocaleId language to select
      * @return new language settings, anticipating the language has been added.
      */
-    public ProjectLanguagesTab addLanguage(final String localeId) {
-        log.info("Click Add language on {}", localeId);
-        waitForAMoment().until(new Predicate<WebDriver>() {
+    public ProjectLanguagesTab addLanguage(final String searchLocaleId) {
+        log.info("Click Enable on {}", searchLocaleId);
+        String message = "can not find locale - " + searchLocaleId;
+        waitForAMoment().withMessage(message).until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver driver) {
-                List<WebElement> searchResults =
-                        WebElementUtil.getSearchAutocompleteResults(
-                                getDriver(),
-                                "settings-languages-form",
-                                "languageAutocomplete");
-
-                boolean clickedLocale = false;
-                for (WebElement searchResult : searchResults) {
-                    if (searchResult.getText().contains(localeId)) {
-                        searchResult.click();
-                        clickedLocale = true;
-                        break;
-                    }
-                }
-                return clickedLocale;
+                return LanguageList.toggleLanguageInList(
+                        getDriver().findElement(inactiveLocales),
+                        searchLocaleId);
             }
         });
-
-
         refreshPageUntil(this, new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver driver) {
-                return getEnabledLocaleList().contains(localeId);
+                return getEnabledLocaleList().contains(searchLocaleId);
             }
         });
 
@@ -151,32 +145,54 @@ public class ProjectLanguagesTab extends ProjectBasePage {
     /**
      * Click the removal link for a language.
      *
-     * @param localeId language to remove
+     * @param searchLocaleId language to remove
      * @return new language settings tab
      */
-    public ProjectLanguagesTab removeLocale(final String localeId) {
-        log.info("Click Remove on {}", localeId);
-        boolean removedLocale = false;
-        for (WebElement localeLi : getEnabledLocaleListElement()) {
-            String displayedLocaleId =
-                    localeLi.findElement(By.xpath(".//span")).getText()
-                            .replace("[", "").replace("]", "");
-            if (displayedLocaleId.equals(localeId)) {
-                localeLi.findElement(By.tagName("a")).click();
-                removedLocale = true;
-                break;
+    public ProjectLanguagesTab removeLocale(final String searchLocaleId) {
+        log.info("Click Disable on {}", searchLocaleId);
+        String message = "can not find locale - " + searchLocaleId;
+        waitForAMoment().withMessage(message).until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver driver) {
+                return LanguageList.toggleLanguageInList(
+                        getDriver().findElement(activeLocales),
+                        searchLocaleId);
             }
-        }
-        Preconditions.checkState(removedLocale, "can not remove locale: %s",
-                localeId);
-
+        });
         refreshPageUntil(this, new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver driver) {
-                return !getEnabledLocaleList().contains(localeId);
+                return !getEnabledLocaleList().contains(searchLocaleId);
             }
         });
 
         return new ProjectLanguagesTab(getDriver());
+    }
+
+    public ProjectLanguagesTab clickLanguageActionsDropdown(String locale) {
+        LanguageList.clickActionsDropdown(waitForWebElement(activeLocales),
+                locale);
+        return new ProjectLanguagesTab(getDriver());
+    }
+
+    public ProjectLanguagesTab clickAddAlias(String locale) {
+        LanguageList.clickAddAlias(waitForWebElement(activeLocales), locale);
+        return new ProjectLanguagesTab(getDriver());
+    }
+
+    public ProjectLanguagesTab enterAliasForLocale(String locale, String alias) {
+        LanguageList.enterAlias(waitForWebElement(activeLocales),
+                locale, alias);
+        return new ProjectLanguagesTab(getDriver());
+    }
+
+    public ProjectLanguagesTab saveLocaleAlias(String locale) {
+        LanguageList.setAlias(waitForWebElement(activeLocales), locale);
+        return new ProjectLanguagesTab(getDriver());
+    }
+
+    public String getAlias(String locale) {
+        return LanguageList.getAliasForLocale(waitForWebElement(activeLocales),
+                locale);
     }
 }

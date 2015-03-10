@@ -5,11 +5,13 @@
 <body>
 #parse($body)
 <hr/>
-    #if ($receivedReason)
+    #if ($receivedReasons && !$receivedReasons.isEmpty())
     <p>
         <span>
             $msgs.get("jsf.email.YouAreReceivingThisMailBecause") <br/>
-            $receivedReason <br/>
+            #foreach ($receivedReason in $receivedReasons)
+                $receivedReason <br/>
+            #end
         </span>
     </p>
     #end

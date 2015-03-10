@@ -55,4 +55,12 @@
   <lifecycle>
     <phase-listener>org.zanata.security.FedoraOpenIdPhaseListener</phase-listener>
   </lifecycle>
+
+  <render-kit>
+    <renderer>
+      <component-family>javax.faces.Input</component-family>
+      <renderer-type>javax.faces.Text</renderer-type>
+      <renderer-class>org.zanata.ui.input.TextInputRenderer</renderer-class>
+    </renderer>
+  </render-kit>
 </faces-config>

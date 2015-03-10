@@ -5,6 +5,7 @@ import static javax.mail.Message.RecipientType.TO;
 
 import java.io.StringWriter;
 import java.net.ConnectException;
+import java.util.List;
 
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -89,8 +90,8 @@ public class EmailBuilder {
      * @throws javax.mail.MessagingException
      */
     public void sendMessage(EmailStrategy strategy,
-            String receivedReason, InternetAddress toAddress) {
-        sendMessage(strategy, receivedReason, new InternetAddress[] {
+        List<String> receivedReasons, InternetAddress toAddress) {
+        sendMessage(strategy, receivedReasons, new InternetAddress[] {
                         toAddress });
     }
 
@@ -100,10 +101,10 @@ public class EmailBuilder {
      * @throws javax.mail.MessagingException
      */
     public void sendMessage(EmailStrategy strategy,
-            String receivedReason, InternetAddress[] toAddresses) {
+            List<String> receivedReasons, InternetAddress[] toAddresses) {
         try {
             MimeMessage email = new MimeMessage(mailSession);
-            buildMessage(email, strategy, toAddresses, receivedReason);
+            buildMessage(email, strategy, toAddresses, receivedReasons);
             logMessage(email);
             Transport.send(email);
         } catch (MessagingException e) {
@@ -145,7 +146,7 @@ public class EmailBuilder {
      */
     @VisibleForTesting
     MimeMessage buildMessage(MimeMessage msg, EmailStrategy strategy,
-            InternetAddress[] toAddresses, String receivedReason)
+            InternetAddress[] toAddresses, List<String> receivedReasons)
             throws MessagingException {
 
         Optional<InternetAddress> from = strategy.getFromAddress();
@@ -162,7 +163,7 @@ public class EmailBuilder {
 
         PersistentMap<String, Object> genericContext = map(
                 "msgs",  msgs,
-                "receivedReason", receivedReason,
+                "receivedReasons", receivedReasons,
                 "serverPath", emailContext.getServerPath());
 
         // the Map needs to be mutable for "foreach" to work

@@ -207,21 +207,6 @@
     <to last="true">/tm/create.seam$1</to>
   </rule>
 
-
-  <!-- help / -->
-
-  <rule>
-    <from casesensitive="true">^/help/view(.+)?$</from>
-    <to last="true">/help/view.seam$1</to>
-  </rule>
-
-  <rule>
-    <from casesensitive="true">^/help/contact(.+)?$</from>
-    <!-- TODO need to make this smart enough to deal with any query parameters...
-    for now just ignore them (don't put $1 on the end) -->
-    <to last="true">/help/contact_admin.seam\?emailType=contact_admin</to>
-  </rule>
-
   <!-- ROOT / -->
   <rule>
     <from>^/$</from>

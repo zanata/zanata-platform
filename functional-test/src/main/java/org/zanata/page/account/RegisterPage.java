@@ -155,4 +155,18 @@ public class RegisterPage extends CorePage {
         log.info("Query password field type");
         return waitForWebElement(passwordField).getAttribute("type");
     }
+
+    public boolean termsOfUseUrlVisible() {
+        log.info("Query terms of use URL is visible");
+        return waitForElementExists(By.id("loginForm"))
+                .findElements(By.className("txt--meta")).size() > 0;
+    }
+
+    public String getTermsUrl() {
+        log.info("Query terms of use URL");
+        return waitForWebElement(waitForElementExists(By.id("loginForm")),
+                By.className("txt--meta"))
+                .findElement(By.tagName("a"))
+                .getAttribute("href");
+    }
 }

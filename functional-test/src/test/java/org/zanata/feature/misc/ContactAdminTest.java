@@ -31,7 +31,6 @@ import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.utility.ContactAdminFormPage;
-import org.zanata.page.utility.HelpPage;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.Constants;
 import org.zanata.util.HasEmailRule;
@@ -56,20 +55,17 @@ public class ContactAdminTest extends ZanataTestCase {
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 181717)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void testContactAdmin() {
-        DashboardBasePage dashboard =
-                new LoginWorkFlow().signIn("translator", "translator");
-        ContactAdminFormPage contactAdminFormPage = dashboard
-                .goToHelp()
-                .clickMoreActions()
+        ContactAdminFormPage contactAdminFormPage = new LoginWorkFlow()
+                .signIn("translator", "translator")
                 .clickContactAdmin();
 
-        HelpPage helpPage = contactAdminFormPage
+        DashboardBasePage dashboardBasePage = contactAdminFormPage
                 .inputSubject("hello admin")
                 .inputMessage("I love Zanata")
-                .send();
+                .send(DashboardBasePage.class);
 
-        assertThat(helpPage.expectNotification("Your message has been sent " +
-                "to the administrator"))
+        assertThat(dashboardBasePage.expectNotification("Your message has " +
+                "been sent to the administrator"))
                 .isTrue()
                 .as("An email sent notification shows");
 

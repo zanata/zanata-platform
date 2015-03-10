@@ -88,6 +88,16 @@ public class LocaleServiceImpl implements LocaleService {
         setVersionGroupDAO(versionGroupDAO);
     }
 
+    public static Map<LocaleId, String> getLocaleAliasesByIteration(HProjectIteration iteration) {
+        Map<LocaleId, String> localeAliases;
+        if (iteration.isOverrideLocales()) {
+            localeAliases = iteration.getLocaleAliases();
+        } else {
+            localeAliases = iteration.getProject().getLocaleAliases();
+        }
+        return localeAliases;
+    }
+
     @In
     public void setTextFlowTargetDAO(TextFlowTargetDAO textFlowTargetDAO) {
         this.textFlowTargetDAO = textFlowTargetDAO;
