@@ -85,21 +85,7 @@ public class SampleProjectProfile {
                 .createQuery("from HApplicationConfiguration",
                         HApplicationConfiguration.class).getResultList();
 
-        Iterable<HApplicationConfiguration> cleanableConfig =
-                Iterables.filter(configurations,
-                        new Predicate<HApplicationConfiguration>() {
-                            @Override
-                            public boolean
-                                    apply(HApplicationConfiguration input) {
-                                String key = input.getKey();
-                                // TODO if we ever need to test this settings, we need to reset values for following to default
-                                return !key
-                                        .equals(HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS)
-                                        && !key.equals(HApplicationConfiguration.KEY_EMAIL_LOG_EVENTS)
-                                        && !key.equals(HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL);
-                            }
-                        });
-        for (HApplicationConfiguration configuration : cleanableConfig) {
+        for (HApplicationConfiguration configuration : configurations) {
             entityManager.remove(configuration);
         }
         entityManager.flush();
