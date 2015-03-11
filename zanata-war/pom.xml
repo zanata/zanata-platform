@@ -125,7 +125,6 @@
             <!-- Needed by ui rendering at runtime -->
             <usedDependency>org.jboss.spec.javax.el:jboss-el-api_2.2_spec</usedDependency>
             <usedDependency>javax.servlet.jsp:jsp-api</usedDependency>
-            <usedDependency>com.sun.faces:jsf-impl</usedDependency>
             <!-- Used for different content analyzers based on langugage for search. -->
             <usedDependency>org.apache.solr:solr-core</usedDependency>
             <usedDependency>org.apache.solr:solr-solrj</usedDependency>

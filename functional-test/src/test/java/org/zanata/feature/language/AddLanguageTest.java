@@ -34,6 +34,7 @@ import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.administration.AddLanguagePage;
 import org.zanata.page.languages.LanguagesPage;
+import org.zanata.page.projects.projectsettings.ProjectLanguagesTab;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.BasicWorkFlow;
@@ -101,7 +102,7 @@ public class AddLanguageTest extends ZanataTestCase {
                 .getEnabledLocaleList();
 
         assertThat(enabledLocaleList)
-                .contains(languageDisplayName)
+                .contains(language)
                 .as("The language is enabled by default");
     }
 
@@ -135,16 +136,20 @@ public class AddLanguageTest extends ZanataTestCase {
                 .isFalse()
                 .as("The language is disabled by default");
 
-        List<String> enabledLocaleList = languagesPage.goToHomePage()
+        ProjectLanguagesTab projectLanguagesTab = languagesPage.goToHomePage()
                 .goToProjects()
                 .goToProject("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsLanguagesTab()
-                .waitForLocaleListVisible()
-                .getEnabledLocaleList();
+                .waitForLocaleListVisible();
+        List<String> enabledLocaleList = projectLanguagesTab.getEnabledLocaleList();
+        List<String> disabledLocaleList = projectLanguagesTab.getDisabledLocaleList();
 
         assertThat(enabledLocaleList)
-                .doesNotContain(languageDisplayName)
+                .doesNotContain(language)
+                .as("The language is disabled by default");
+        assertThat(disabledLocaleList)
+                .contains(language)
                 .as("The language is disabled by default");
     }
 

@@ -105,7 +105,6 @@ public class ConfigurationServiceImpl implements ConfigurationService {
                             .append("\n")
                             .append(makeProjectTypeSection(getProjectType()))
                             .append("\n");
-            appendLocalesIfPresent();
             doc.append("\n").append("</config>\n");
             return doc.toString();
         }
@@ -137,39 +136,6 @@ public class ConfigurationServiceImpl implements ConfigurationService {
                     .getProjectType();
         }
 
-        private void appendLocalesIfPresent() {
-            List<HLocale> locales = getLocalesToAppend();
-            if (!locales.isEmpty()) {
-                appendLocales(locales);
-            }
-        }
-
-        private List<HLocale> getLocalesToAppend() {
-            return removeSourceLocale(getAllLocales());
-        }
-
-        private List<HLocale> removeSourceLocale(List<HLocale> locales) {
-            HLocale source =
-                    localeServiceImpl.getSourceLocale(projectSlug, versionSlug);
-            locales.remove(source);
-            return locales;
-        }
-
-        protected List<HLocale> getAllLocales() {
-            return localeServiceImpl.getSupportedLanguageByProjectIteration(
-                    projectSlug, versionSlug);
-        }
-
-        private void appendLocales(List<HLocale> locales) {
-            doc.append("\n").append(indent("<locales>\n"));
-            for (HLocale locale : locales) {
-                doc.append(
-                        indent(indent(tag("locale", locale.getLocaleId()
-                                .getId())))).append("\n");
-            }
-            doc.append(indent("</locales>\n"));
-        }
-
     }
 
     private class SingleLocaleConfigBuilder extends ConfigBuilder {
@@ -180,11 +146,6 @@ public class ConfigurationServiceImpl implements ConfigurationService {
                 String versionSlug, HLocale locale) {
             super(projectSlug, versionSlug);
             this.locale = locale;
-        }
-
-        @Override
-        protected List<HLocale> getAllLocales() {
-            return newArrayList(locale);
         }
     }
 

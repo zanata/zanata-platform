@@ -74,7 +74,7 @@ public class EditProjectAboutTest extends ZanataTestCase {
                 .enterAboutText(aboutText)
                 .pressSave();
 
-        projectAboutTab.expectNotification("Successfully updated");
+        projectAboutTab.expectNotification("About page updated.");
         ProjectAboutPage projectAboutPage = projectAboutTab.gotoAboutTab();
 
         assertThat(projectAboutPage.getAboutText())

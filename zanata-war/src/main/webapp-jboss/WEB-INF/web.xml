@@ -113,6 +113,12 @@
     <param-value>java:jboss/datasources/${ds.jndi.name}</param-value>
   </context-param>
 
+  <!-- Zanata custom taglib -->
+  <context-param>
+    <param-name>javax.faces.FACELETS_LIBRARIES</param-name>
+    <param-value>/WEB-INF/zanata.taglib.xml</param-value>
+  </context-param>
+
   <!-- ClassLoaderLeakPreventor needs to be first, so that it can stop all leaks -->
   <listener>
     <listener-class>org.zanata.servlet.LeakListener</listener-class>

@@ -23,7 +23,6 @@ package org.zanata.page;
 import java.util.List;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -50,6 +49,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.workflow.BasicWorkFlow;
 
 /**
  * A Base Page is an extension of the Core Page, providing the navigation bar
@@ -71,14 +71,12 @@ public class BasePage extends CorePage {
     @FindBy(id = "languages_link")
     private WebElement languagesLink;
 
-    @FindBy(id = "user--avatar")
-    private WebElement userAvatar;
-
     private static final By BY_SIGN_IN = By.id("signin_link");
     private static final By BY_SIGN_OUT = By.id("right_menu_sign_out_link");
     private static final By BY_DASHBOARD_LINK = By.id("dashboard");
     private static final By BY_ADMINISTRATION_LINK = By.id("administration");
-    private By contactAdminLink = By.linkText("Contact admin");
+    private static final By contactAdminLink = By.linkText("Contact admin");
+    private static final By BY_USER_AVATAR = By.id("user--avatar");
 
     public BasePage(final WebDriver driver) {
         super(driver);
@@ -86,7 +84,7 @@ public class BasePage extends CorePage {
 
     public DashboardBasePage goToMyDashboard() {
         log.info("Click Dashboard menu link");
-        userAvatar.click();
+        waitForWebElement(BY_USER_AVATAR).click();
         clickLinkAfterAnimation(BY_DASHBOARD_LINK);
         return new DashboardBasePage(getDriver());
     }
@@ -139,10 +137,8 @@ public class BasePage extends CorePage {
 
     public AdministrationPage goToAdministration() {
         log.info("Click Administration menu link");
-        userAvatar.click();
-
+        waitForWebElement(BY_USER_AVATAR).click();
         clickLinkAfterAnimation(BY_ADMINISTRATION_LINK);
-
         return new AdministrationPage(getDriver());
     }
 
@@ -151,7 +147,6 @@ public class BasePage extends CorePage {
         Preconditions
                 .checkArgument(!hasLoggedIn(),
                         "User has logged in! You should sign out or delete cookie first in your test.");
-
         WebElement registerLink =
                 getDriver().findElement(By.id("register_link_internal_auth"));
         registerLink.click();
@@ -160,6 +155,7 @@ public class BasePage extends CorePage {
 
     public SignInPage clickSignInLink() {
         log.info("Click Log In");
+        waitForPageSilence();
         WebElement signInLink = getDriver().findElement(BY_SIGN_IN);
         signInLink.click();
         return new SignInPage(getDriver());
@@ -167,21 +163,28 @@ public class BasePage extends CorePage {
 
     public boolean hasLoggedIn() {
         log.info("Query user is logged in");
-        List<WebElement> signInLink = getDriver().findElements(BY_SIGN_IN);
-        return signInLink.size() == 0;
+        waitForPageSilence();
+        List<WebElement> avatar = getDriver().findElements(BY_USER_AVATAR);
+        return avatar.size() > 0;
     }
 
     public String loggedInAs() {
         log.info("Query logged in user name");
-        return userAvatar.getAttribute("data-original-title");
+        waitForPageSilence();
+        return waitForWebElement(BY_USER_AVATAR)
+                .getAttribute("data-original-title");
     }
 
     public HomePage logout() {
         log.info("Click Log Out");
-        scrollIntoView(userAvatar);
-        userAvatar.click();
-
+        scrollIntoView(waitForWebElement(BY_USER_AVATAR));
+        waitForWebElement(BY_USER_AVATAR).click();
         clickLinkAfterAnimation(BY_SIGN_OUT);
+        //Handle RHBZ1197955
+        if (getDriver().findElements(By.className("error-div")).size() > 0) {
+            log.info("RHBZ1197955 encountered, go to homepage");
+            new BasicWorkFlow().goToHome();
+        }
         return new HomePage(getDriver());
     }
 

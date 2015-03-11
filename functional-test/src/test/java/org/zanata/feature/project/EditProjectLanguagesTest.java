@@ -74,11 +74,11 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
                 .getEnabledLocaleList();
 
         assertThat(enabledLocaleList)
-                .contains("French[fr]", "Hindi[hi]", "Polish[pl]")
+                .contains("fr", "hi", "pl")
                 .as("The enabled list contains three languages");
 
         assertThat(enabledLocaleList)
-                .doesNotContain("English (United States)[en-US]")
+                .doesNotContain("en-US")
                 .as("The enabled list does not contain " +
                         "'English (United States)[en-US]'");
 
@@ -92,22 +92,41 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
                 .getEnabledLocaleList();
 
         assertThat(enabledLocaleList)
-                .doesNotContain("English (United States)[en-US]")
-                .doesNotContain("Polish[pl]")
+                .doesNotContain("en-US")
+                .doesNotContain("pl")
                 .as("The enabled list does not contain 'US English' or Polish");
 
         enabledLocaleList = projectLanguagesTab
                 .gotoSettingsTab()
                 .gotoSettingsLanguagesTab()
                 .enterSearchLanguage("en-US")
-                .addLanguage("English (United States)[en-US]")
+                .addLanguage("en-US")
                 .expectEnabledLocaleListCount(3)
                 .getEnabledLocaleList();
 
         Assertions.assertThat(enabledLocaleList)
-                .contains("English (United States)[en-US]",
-                        "French[fr]",
-                        "Hindi[hi]")
+                .contains("en-US", "fr", "hi")
                 .as("The enabled language list contains en-US, fr and hi");
+    }
+
+    @Feature(summary = "The administrator can set an alias for a project " +
+            "language",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Test
+    public void setLanguageAliasTest() {
+        ProjectLanguagesTab projectLanguagesTab = new ProjectWorkFlow()
+                .goToProjectByName("about fedora")
+                .gotoSettingsTab()
+                .gotoSettingsLanguagesTab()
+                .expectEnabledLocaleListCount(3);
+        projectLanguagesTab = projectLanguagesTab
+                .clickLanguageActionsDropdown("pl")
+                .clickAddAlias("pl")
+                .enterAliasForLocale("pl", "pl-PL")
+                .saveLocaleAlias("pl");
+
+        assertThat(projectLanguagesTab.getAlias("pl"))
+                .isEqualTo("pl-PL")
+                .as("The alias was set");
     }
 }

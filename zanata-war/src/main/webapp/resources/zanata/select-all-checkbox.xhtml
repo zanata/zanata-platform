@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:composite="http://java.sun.com/jsf/composite"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:h="http://java.sun.com/jsf/html">
+
+<composite:interface shortDescription="Adds a checkbox used to select or deselect
+    all other checkboxes in a given area">
+  <composite:attribute name="label" type="java.lang.String" default=""
+    shortDescription="display text of checkbox"/>
+
+  <composite:attribute name="styleClass" type="java.lang.String"
+    shortDescription="css style for wrapper of checkbox"/>
+
+  <composite:attribute name="listSelector" type="java.lang.String"
+    shortDescription="Selector for a DOM element where dependent checkboxes
+    will be found."/>
+
+</composite:interface>
+
+<composite:implementation>
+  <h:outputScript>
+    function #{cc.attrs.id}Selected($this) {
+      var listSelector = $this.data('list-selector');
+      var listElement = $(listSelector);
+      listElement
+        .find('input.js-form__checkbox__input:visible')
+        .prop('checked', $this.is(':checked'))
+        .change();
+    }
+  </h:outputScript>
+  <div class="form__checkbox js-form__checkbox #{cc.attrs.styleClass}">
+    <input type="checkbox" id="form-checkbox-1"
+      class="form__checkbox__input js-form__checkbox__input"
+      data-list-selector="#{cc.attrs.listSelector}"
+      name="form-checkbox"
+      onchange="#{cc.attrs.id}Selected($(this))"/>
+    <label for="form-checkbox-1"
+      class="form__checkbox__label">#{cc.attrs.label}</label>
+  </div>
+</composite:implementation>
+</html>

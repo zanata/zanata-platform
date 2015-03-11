@@ -120,10 +120,6 @@ public class DatabaseBackedConfig implements Serializable {
         return getConfigValue(HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL);
     }
 
-    public String getHelpContent() {
-        return getConfigValue(HApplicationConfiguration.KEY_HELP_CONTENT);
-    }
-
     public String getHelpUrl() {
         return getConfigValue(HApplicationConfiguration.KEY_HELP_URL);
     }
