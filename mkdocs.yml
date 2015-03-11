@@ -13,8 +13,7 @@ pages:
 - ['configuration/document-storage-directory.md', 'Configuration', 'Document Storage Directory']
 # Once pull request https://github.com/zanata/zanata-server/pull/633 is integrated, this can be uncommented
 # - ['configuration/email.md', 'Configuration', 'Email']
-# Once pull request https://github.com/zanata/zanata-server/pull/577 is integrated, this can be uncommented
-# - ['configuration/infinispan.md', 'Configuration', 'Caches']
+- ['configuration/infinispan.md', 'Configuration', 'Caches']
 - ['configuration/jms-messaging.md', 'Configuration', 'JMS Messaging']
 
 # Release notes

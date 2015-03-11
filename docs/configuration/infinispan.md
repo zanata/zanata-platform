@@ -1,6 +1,4 @@
-# Infinispan
-
-_This section is still under review and is about features that have not been released yet_
+# Infinispan for caching
 
 Zanata uses Infinispan to manage its internal data caches and search indexes. Configuration for these caches happens in JBoss' `standalone/configuration/standalone.xml`. There are two different caches that need to be configured for Zanata:
 
