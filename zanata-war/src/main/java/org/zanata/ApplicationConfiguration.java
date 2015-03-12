@@ -258,7 +258,7 @@ public class ApplicationConfiguration implements Serializable {
                     request.getScheme() + "://" + request.getServerName()
                             + ":" + request.getServerPort()
                             + request.getContextPath();
-        };
+        }
     }
 
     public String getDocumentFileStorageLocation() {

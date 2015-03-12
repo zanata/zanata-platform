@@ -85,7 +85,7 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandler implements
                         changedEvent.getLanguage());
         String contactTeamCoordinatorLink =
                 applicationConfiguration.getServerPath() +
-                        "/language/contact/" + changedEvent.getLanguage();
+                        "/language/view/" + changedEvent.getLanguage();
         LanguageTeamPermissionChangeEmailStrategy emailStrategy =
                 new LanguageTeamPermissionChangeEmailStrategy(
                         changedEvent, msgs, contactTeamCoordinatorLink);
