@@ -26,6 +26,8 @@ import java.io.FileWriter;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.codec.binary.Hex;
 import org.junit.Test;
@@ -35,6 +37,8 @@ import com.google.common.base.Charsets;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 /**
  * @author Carlos Munoz <a
@@ -61,4 +65,90 @@ public class HashUtilTest {
 
         assertThat(digestWriterHash, equalTo(hashUtilHash));
     }
+
+    @Test
+    public void singleSourceHash() {
+        String testSingleContent = "test single content";
+        String testSingleContentHash = "18ee57a0cd282965a4e6a5e772352dba";
+        String hashUtilHash = HashUtil.sourceHash(testSingleContent);
+        assertThat(hashUtilHash, is(testSingleContentHash));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void singleSourceHashNullIsInvalid() {
+        String nullString = null;
+        HashUtil.sourceHash(nullString);
+    }
+
+    @Test
+    public void singleSourceHashNullIfEmpty() {
+        assertThat(HashUtil.sourceHash(""), nullValue());
+    }
+
+    @Test
+    public void sourceHashHashesJoinedStrings() {
+        List<String> contents = new ArrayList<>();
+        contents.add("content 1");
+        contents.add("content 2");
+        contents.add("content 3");
+
+        String pipeJoined = "content 1|content 2|content 3";
+        String hashOfPipeJoined = HashUtil.sourceHash(pipeJoined);
+
+        assertThat(HashUtil.sourceHash(contents), is(hashOfPipeJoined));
+    }
+
+    @Test
+    public void sourceHashNullIfEmpty() {
+        List<String> emptyContents = new ArrayList<>();
+        assertThat(HashUtil.sourceHash(emptyContents), nullValue());
+    }
+
+    @Test
+    public void sourceHashWrapsEmptyInPipes() {
+        List<String> contents = new ArrayList<>();
+        contents.add("content 1");
+        contents.add("");
+        contents.add("");
+
+        String pipeJoined = "content 1||";
+        String hashOfPipeJoined = HashUtil.sourceHash(pipeJoined);
+
+        assertThat(HashUtil.sourceHash(contents), is(hashOfPipeJoined));
+    }
+
+    @Test
+    public void sourceHashTreatsNullAsEmpty() {
+        List<String> contents = new ArrayList<>();
+        contents.add("content 1");
+        contents.add(null);
+        contents.add("content 3");
+
+        String pipeJoined = "content 1||content 3";
+        String hashOfPipeJoined = HashUtil.sourceHash(pipeJoined);
+
+        assertThat(HashUtil.sourceHash(contents), is(hashOfPipeJoined));
+    }
+
+    @Test
+    public void sourceHashHandlesLotsOfContents() {
+        List<String> contents = new ArrayList<>();
+        contents.add("content 1");
+        contents.add("content 2");
+        contents.add("content 3");
+        contents.add("content 4");
+        contents.add("content 5");
+        contents.add("content 6");
+        contents.add("content 7");
+        contents.add("content 8");
+        contents.add("content 9");
+        contents.add("content 10");
+
+        String pipeJoined = "content 1|content 2|content 3|content 4|" +
+                "content 5|content 6|content 7|content 8|content 9|content 10";
+        String hashOfPipeJoined = HashUtil.sourceHash(pipeJoined);
+
+        assertThat(HashUtil.sourceHash(contents), is(hashOfPipeJoined));
+    }
+
 }
