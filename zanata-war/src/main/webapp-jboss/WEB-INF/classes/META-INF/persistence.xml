@@ -50,6 +50,8 @@
     <class>org.zanata.model.tm.TransMemory</class>
     <class>org.zanata.model.WebHook</class>
 
+    <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+
     <properties>
       <!--
           Binds the EntityManagerFactory to JNDI where Seam can look it up. This is only relevant when
@@ -87,6 +89,19 @@
       <!-- Search engine -->
       <property name="hibernate.search.default.directory_provider"
         value="org.hibernate.search.store.impl.FSDirectoryProvider" />
+      <!-- to use an existing cache manager (Good for external configuration) -->
+      <!--<property name="hibernate.search.infinispan.cachemanager_jndiname"
+        value="java:jboss/infinispan/container/hibernate-search"/>-->
+      <!-- 50 Meg chunk size by default -->
+      <!--<property name="hibernate.search.infinispan.chunk_size" value="52428800"/>
+      <property name="hibernate.search.infinispan.indexwriter.ram_buffer_size"
+        value="30"/>
+      <property
+        name="hibernate.search.infinispan.indexwriter.merge_max_optimize_size"
+        value="21"/>
+      <property
+        name="hibernate.search.infinispan.indexwriter.merge_max_size"
+        value="21"/>-->
       <property name="hibernate.search.lucene_version" value="LUCENE_36" />
       <property name="hibernate.search.worker.batch_size" value="50" />
 
@@ -106,7 +121,9 @@
            See http://stackoverflow.com/a/8701914
       -->
       <property name="hibernate.cache.region.factory_class"
-        value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory" />
+        value="org.hibernate.cache.infinispan.JndiInfinispanRegionFactory" />
+      <property name="hibernate.cache.infinispan.cachemanager"
+        value="java:jboss/infinispan/container/hibernate" />
       <property name="hibernate.cache.region_prefix" value="" />
 
       <!-- Default EHcache config location -->

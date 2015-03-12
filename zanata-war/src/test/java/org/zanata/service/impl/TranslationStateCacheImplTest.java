@@ -29,13 +29,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.infinispan.manager.CacheContainer;
+import org.infinispan.manager.DefaultCacheManager;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowTargetDAO;
+import org.zanata.seam.SeamAutowire;
 import org.zanata.service.impl.TranslationStateCacheImpl.DocumentLocaleKey;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -51,7 +55,7 @@ public class TranslationStateCacheImplTest {
     private CacheLoader<DocumentLocaleKey, WordStatistic> docStatisticLoader;
 
     @Mock
-    private CacheLoader<DocumentLocaleKey, DocumentStatus> docStatsLoader;
+    private CacheLoader<DocumentLocaleKey, DocumentStatus> docStatusLoader;
     @Mock
     private TextFlowTargetDAO textFlowTargetDAO;
     @Mock
@@ -61,22 +65,17 @@ public class TranslationStateCacheImplTest {
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         tsCache =
-                new TranslationStateCacheImpl(docStatisticLoader, docStatsLoader,
-                        targetValidationLoader) {
-            @Override
-            TextFlowTargetDAO getTextFlowTargetDAO() {
-                return textFlowTargetDAO;
-            }
-        };
+                new TranslationStateCacheImpl(docStatisticLoader,
+                        docStatusLoader, targetValidationLoader);
+
+        SeamAutowire seam = SeamAutowire.instance();
+        seam.reset()
+            .use("textFlowTargetDAO", textFlowTargetDAO)
+            .use("cacheContainer", new InfinispanTestCacheContainer())
+            .ignoreNonResolvable();
+        tsCache = seam.autowire(tsCache);
 
         tsCache.create();
-        tsCache.destroy();
-        tsCache.create();
-    }
-
-    @AfterMethod
-    public void afterMethod() {
-        tsCache.destroy();
     }
 
     public void testGetLastModifiedTextFlowTarget() throws Exception {
@@ -90,7 +89,7 @@ public class TranslationStateCacheImplTest {
                         "");
 
         // When:
-        when(docStatsLoader.load(key)).thenReturn(docStats);
+        when(docStatusLoader.load(key)).thenReturn(docStats);
 
         DocumentStatus result1 =
                 tsCache.getDocumentStatus(documentId, testLocaleId);
@@ -98,7 +97,7 @@ public class TranslationStateCacheImplTest {
                 tsCache.getDocumentStatus(documentId, testLocaleId);
 
         // Then:
-        verify(docStatsLoader).load(key); // only load the value once
+        verify(docStatusLoader).load(key); // only load the value once
         assertThat(result1, equalTo(docStats));
         assertThat(result2, equalTo(docStats));
     }

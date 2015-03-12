@@ -47,7 +47,7 @@ import org.zanata.model.HTextFlow;
  * @see org.zanata.rest.dto.extensions.gettext.PotEntryHeader
  */
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 @BatchSize(size = 20)
 @Setter
 public class HPotEntryData implements Serializable {

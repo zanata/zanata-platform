@@ -341,6 +341,20 @@
       </dependency>
 
       <dependency>
+        <groupId>org.jboss.marshalling</groupId>
+        <artifactId>jboss-marshalling</artifactId>
+        <version>1.4.6.Final</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.marshalling</groupId>
+        <artifactId>jboss-marshalling-river</artifactId>
+        <version>1.4.6.Final</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
         <groupId>org.opensymphony.quartz</groupId>
         <artifactId>quartz</artifactId>
         <version>1.6.5</version>
@@ -687,6 +701,20 @@
       </dependency>
 
       <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-search-infinispan</artifactId>
+        <version>${hibernate.search.version}</version>
+        <scope>${hibernate.search.scope}</scope>
+        <exclusions>
+          <!-- Slightly older version provided by the app server -->
+          <exclusion>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-core</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
         <groupId>org.hibernate.common</groupId>
         <artifactId>hibernate-commons-annotations</artifactId>
         <version>4.0.4.Final</version>
@@ -708,12 +736,6 @@
             <artifactId>jboss-logging</artifactId>
           </exclusion>
         </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-ehcache</artifactId>
-        <version>${hibernate.version}</version>
         <!--<version>${hibernate.version}</version>-->
       </dependency>
 
@@ -1487,21 +1509,9 @@
             <scope>test</scope>
           </dependency>
           <dependency>
-            <groupId>org.jboss.marshalling</groupId>
-            <artifactId>jboss-marshalling</artifactId>
-            <version>1.4.6.Final</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
             <groupId>org.jboss.logmanager</groupId>
             <artifactId>jboss-logmanager</artifactId>
             <version>1.5.2.Final</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss.marshalling</groupId>
-            <artifactId>jboss-marshalling-river</artifactId>
-            <version>1.4.6.Final</version>
             <scope>test</scope>
           </dependency>
           <dependency>

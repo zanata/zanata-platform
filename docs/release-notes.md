@@ -1,3 +1,9 @@
+## 3.7
+
+<h5>Infrastructure Changes</h5>
+
+Zanata now uses Infinispan as its cache provider, and the cache needs to be configured in Jboss' `standalone.xml` file. Please see the [Infinispan](configuration/infinispan) section for more information.
+
 ## 3.6
 
 <h5>New Editor (Alpha)</h5>

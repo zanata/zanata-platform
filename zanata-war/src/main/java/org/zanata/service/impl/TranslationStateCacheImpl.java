@@ -26,11 +26,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.annotations.VisibleForTesting;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import net.sf.ehcache.CacheManager;
 
+import org.infinispan.manager.CacheContainer;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
@@ -39,7 +40,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.cache.CacheWrapper;
-import org.zanata.cache.EhcacheWrapper;
+import org.zanata.cache.InfinispanCacheWrapper;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
@@ -83,8 +84,6 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     private static final String TFT_VALIDATION_CACHE_NAME = BASE
             + ".targetValidationCache";
 
-    private CacheManager cacheManager;
-
     private CacheWrapper<DocumentLocaleKey, WordStatistic> documentStatisticCache;
     private CacheLoader<DocumentLocaleKey, WordStatistic> documentStatisticLoader;
 
@@ -95,7 +94,19 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     private CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
 
     @In
-    private ServiceLocator serviceLocator;
+    private CacheContainer cacheContainer;
+
+    @In
+    private TextFlowDAO textFlowDAO;
+
+    @In
+    private TextFlowTargetDAO textFlowTargetDAO;
+
+    @In
+    private DocumentDAO documentDAO;
+
+    @In
+    private LocaleDAO localeDAO;
 
     // constructor for Seam
     public TranslationStateCacheImpl() {
@@ -104,6 +115,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     }
 
     // Constructor for testing
+    @VisibleForTesting
     public TranslationStateCacheImpl(
         CacheLoader<DocumentLocaleKey, WordStatistic> documentStatisticLoader,
         CacheLoader<DocumentLocaleKey, DocumentStatus> docStatsLoader,
@@ -115,22 +127,18 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
 
     @Create
     public void create() {
-        cacheManager = CacheManager.create();
         documentStatisticCache =
-                EhcacheWrapper.create(DOC_STATISTIC_CACHE_NAME,
-                        cacheManager, documentStatisticLoader);
+                InfinispanCacheWrapper.create(DOC_STATISTIC_CACHE_NAME,
+                        cacheContainer, documentStatisticLoader);
 
         docStatusCache =
-                EhcacheWrapper.create(DOC_STATUS_CACHE_NAME, cacheManager,
+                InfinispanCacheWrapper.create(DOC_STATUS_CACHE_NAME,
+                        cacheContainer,
                         docStatusLoader);
         targetValidationCache =
-                EhcacheWrapper.create(TFT_VALIDATION_CACHE_NAME, cacheManager,
+                InfinispanCacheWrapper.create(TFT_VALIDATION_CACHE_NAME,
+                        cacheContainer,
                         targetValidationLoader);
-    }
-
-    @Destroy
-    public void destroy() {
-        cacheManager.shutdown();
     }
 
     @Override
@@ -142,7 +150,6 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
 
     @Override
     public void clearDocumentStatistics(Long documentId) {
-        LocaleDAO localeDAO = serviceLocator.getInstance(LocaleDAO.class);
         for (HLocale locale : localeDAO.findAll()) {
             DocumentLocaleKey key =
                     new DocumentLocaleKey(documentId, locale.getLocaleId());
@@ -155,6 +162,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
         documentStatisticCache.remove(new DocumentLocaleKey(documentId,
                 localeId));
     }
+
 
     public DocumentStatus getDocumentStatus(Long documentId, LocaleId localeId) {
         return docStatusCache.getWithLoader(new DocumentLocaleKey(
@@ -196,8 +204,8 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
         DocumentStatus documentStatus = docStatusCache.get(key);
         if (documentStatus != null) {
             HTextFlowTarget target =
-                getTextFlowTargetDAO().findById(updatedTargetId, false);
-            updateDocumentStatus(getDocumentDAO(), documentStatus,
+                textFlowTargetDAO.findById(updatedTargetId, false);
+            updateDocumentStatus(documentDAO, documentStatus,
                 key.getDocumentId(), target);
         }
     }
@@ -205,7 +213,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     private Boolean loadTargetValidation(Long textFlowTargetId,
             ValidationId validationId) {
         HTextFlowTarget tft =
-                getTextFlowTargetDAO().findById(textFlowTargetId, false);
+                textFlowTargetDAO.findById(textFlowTargetId, false);
         if (tft != null) {
             ValidationAction action =
                     ValidationFactoryProvider.getFactoryInstance()
@@ -216,18 +224,6 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
             return !errorList.isEmpty();
         }
         return null;
-    }
-
-    DocumentDAO getDocumentDAO() {
-        return serviceLocator.getInstance(DocumentDAO.class);
-    }
-
-    TextFlowTargetDAO getTextFlowTargetDAO() {
-        return serviceLocator.getInstance(TextFlowTargetDAO.class);
-    }
-
-    TextFlowDAO getTextFlowDAO() {
-        return serviceLocator.getInstance(TextFlowDAO.class);
     }
 
     private static class DocumentStatisticLoader extends

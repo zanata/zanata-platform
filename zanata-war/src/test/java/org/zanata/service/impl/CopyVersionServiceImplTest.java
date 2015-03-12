@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.dbunit.operation.DatabaseOperation;
+import org.infinispan.manager.CacheContainer;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -38,6 +39,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.async.handle.CopyVersionTaskHandle;
+import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
@@ -125,6 +127,7 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
                 .use("session", getSession())
                 .use("identity", identity)
                 .use("filePersistService", fileSystemPersistService)
+                .use("cacheContainer", new InfinispanTestCacheContainer())
                 .useImpl(VersionStateCacheImpl.class)
                 .ignoreNonResolvable()
                 .autowire(CopyVersionServiceImpl.class);

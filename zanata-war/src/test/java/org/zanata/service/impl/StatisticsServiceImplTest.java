@@ -28,15 +28,13 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
-import net.sf.ehcache.CacheManager;
-
 import org.dbunit.operation.DatabaseOperation;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
+import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.PersonDAO;
@@ -64,7 +62,6 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
 
     @Mock
     private ValidationService validationServiceImpl;
-    private CacheManager cacheManager;
 
     private StatisticsServiceImpl statisticsService;
 
@@ -98,23 +95,17 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
     public void initializeSeam() {
         MockitoAnnotations.initMocks(this);
         // @formatter:off
-      seam.reset()
+        seam.reset()
             .use("entityManager", getEm())
             .use("session", getSession())
             .use("validationServiceImpl", validationServiceImpl)
+            .use("cacheContainer", new InfinispanTestCacheContainer())
             .useImpl(TranslationStateCacheImpl.class)
             .ignoreNonResolvable();
-      // @formatter:on
-        cacheManager = CacheManager.create();
-        cacheManager.removalAll();
+        // @formatter:on
 
         statisticsService = seam.autowire(StatisticsServiceImpl.class);
         textFlowTargetDAO = seam.autowire(TextFlowTargetDAO.class);
-    }
-
-    @AfterMethod
-    public void after() {
-        cacheManager.shutdown();
     }
 
     @Test

@@ -30,9 +30,11 @@ import java.util.Set;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
+import org.infinispan.manager.CacheContainer;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
+import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -86,6 +88,7 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
                 .use("projectIterationDAO",
                         new ProjectIterationDAO(getSession()))
                 .use("session", getSession())
+                .use("cacheContainer", new InfinispanTestCacheContainer())
                 .useImpl(VersionStateCacheImpl.class).useImpl(LocaleServiceImpl.class).ignoreNonResolvable();
 
         versionGroupServiceImpl = seam.autowire(VersionGroupServiceImpl.class);

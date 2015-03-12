@@ -129,7 +129,6 @@
             <!-- Used by lucene search -->
             <usedDependency>org.hibernate.common:hibernate-commons-annotations</usedDependency>
             <!-- Used by hibernate -->
-            <usedDependency>org.hibernate:hibernate-ehcache</usedDependency>
             <usedDependency>org.hibernate:hibernate-search-analyzers</usedDependency>
             <!-- used for arquillian deployment (org.zanata.Deployments) -->
             <usedDependency>org.hibernate:hibernate-testing</usedDependency>
@@ -1498,11 +1497,6 @@
 
     <dependency>
       <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-ehcache</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
       <scope>${hibernate.scope}</scope>
     </dependency>
@@ -1577,12 +1571,6 @@
       <groupId>net.htmlparser.jericho</groupId>
       <artifactId>jericho-html</artifactId>
       <version>3.3</version>
-    </dependency>
-
-    <dependency>
-      <groupId>net.sf.ehcache</groupId>
-      <artifactId>ehcache-core</artifactId>
-      <version>2.5.1</version>
     </dependency>
 
     <!-- Okapi Filters -->
@@ -1763,6 +1751,31 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-search-engine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-search-infinispan</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-core</artifactId>
+      <!-- TODO Use a bom for EAP or wildfly (This is the EAP 6.3 version) -->
+      <version>5.2.4.Final</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- These two are being explicitly added as jboss-as-parent
+      excludes them -->
+    <dependency>
+      <groupId>org.jboss.marshalling</groupId>
+      <artifactId>jboss-marshalling</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.marshalling</groupId>
+      <artifactId>jboss-marshalling-river</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
