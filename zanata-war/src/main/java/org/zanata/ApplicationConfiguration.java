@@ -122,7 +122,7 @@ public class ApplicationConfiguration implements Serializable {
 
     private Optional<String> openIdProvider; // Cache the OpenId provider
 
-    private String serverPath;
+    private String defaultServerPath;
 
     @Create
     public void load() {
@@ -239,20 +239,26 @@ public class ApplicationConfiguration implements Serializable {
     public String getServerPath() {
         String configuredValue = databaseBackedConfig.getServerHost();
         if (configuredValue != null) {
-            serverPath = configuredValue;
+            return configuredValue;
+        } else if (defaultServerPath != null) {
+            return defaultServerPath;
+        } else {
+            createDefaultServerPath();
+            return defaultServerPath;
         }
-        // Try to determine a server path if one is not configured
-        if (serverPath == null) {
-            HttpServletRequest request =
-                    ServletContexts.instance().getRequest();
-            if (request != null) {
-                serverPath =
-                        request.getScheme() + "://" + request.getServerName()
-                                + ":" + request.getServerPort()
-                                + request.getContextPath();
-            }
+    }
+
+
+    //@see comment at org.zanata.security.AuthenticationManager.onLoginCompleted()
+    public void createDefaultServerPath() {
+        HttpServletRequest request =
+                ServletContexts.instance().getRequest();
+        if (request != null) {
+            defaultServerPath =
+                    request.getScheme() + "://" + request.getServerName()
+                            + ":" + request.getServerPort()
+                            + request.getContextPath();
         }
-        return serverPath;
     }
 
     public String getDocumentFileStorageLocation() {
