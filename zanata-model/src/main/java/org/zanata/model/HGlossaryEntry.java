@@ -50,7 +50,7 @@ import org.zanata.hibernate.search.LocaleIdBridge;
  *
  **/
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Indexed
 @Setter
 @EqualsAndHashCode(callSuper = true, doNotUseGetters = true,

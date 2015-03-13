@@ -88,7 +88,7 @@ import com.google.common.collect.ImmutableList;
  */
 @Entity
 @EntityListeners({ HTextFlow.EntityListener.class })
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Setter
 @NoArgsConstructor
 @ToString(of = { "resId", "revision", "comment", "obsolete" })
@@ -384,7 +384,7 @@ public class HTextFlow extends HTextContainer implements Serializable,
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "textFlow")
     @MapKeyColumn(name = "locale")
     @BatchSize(size = 10)
-    @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     public Map<Long, HTextFlowTarget> getTargets() {
         if (targets == null) {
             targets = new HashMap<Long, HTextFlowTarget>();
