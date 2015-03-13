@@ -82,7 +82,7 @@ import com.google.common.collect.ImmutableList;
  */
 @Entity
 @EntityListeners({HDocument.EntityListener.class})
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @TypeDef(name = "contentType", typeClass = ContentTypeType.class)
 @Setter
 @NoArgsConstructor

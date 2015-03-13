@@ -80,7 +80,7 @@ import com.google.common.collect.Sets;
  *
  */
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Access(AccessType.FIELD)
 @TypeDefs({
     @TypeDef(name = "entityStatus", typeClass = EntityStatusType.class),
@@ -151,7 +151,7 @@ public class HProject extends SlugEntityBase implements Serializable,
     @JoinTable(name = "HProject_Maintainer", joinColumns = @JoinColumn(
             name = "projectId"), inverseJoinColumns = @JoinColumn(
             name = "personId"))
-    @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<HPerson> maintainers = Sets.newHashSet();
 
     @ManyToMany
@@ -168,7 +168,7 @@ public class HProject extends SlugEntityBase implements Serializable,
     private Map<String, String> customizedValidations = Maps.newHashMap();
 
     @OneToMany(mappedBy = "project")
-    @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private List<HProjectIteration> projectIterations = Lists.newArrayList();
 
     @Type(type = "entityStatus")

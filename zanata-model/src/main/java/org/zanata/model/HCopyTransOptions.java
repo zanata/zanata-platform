@@ -43,7 +43,7 @@ import org.zanata.model.type.ConditionRuleActionType;
 @Entity
 @TypeDef(name = "conditionRuleAction",
         typeClass = ConditionRuleActionType.class)
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor

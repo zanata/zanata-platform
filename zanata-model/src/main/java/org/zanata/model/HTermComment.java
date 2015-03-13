@@ -45,7 +45,7 @@ import org.hibernate.annotations.Type;
  *
  **/
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Setter
 @NoArgsConstructor
 @ToString(of = "comment")
