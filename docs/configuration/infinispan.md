@@ -12,8 +12,6 @@ The Infinispan configuration will be located inside the following module in `sta
 
 Keep in mind that the module version may vary depending on your JBoss version.
 
-Depending on your JBoss installation, the hibernate cache might already be present in the configuration, in which case there is no need to create another one, but just modify it.
-
 ### Configuration for Internal data caches
 
 ```xml
@@ -30,3 +28,5 @@ Depending on your JBoss installation, the hibernate cache might already be prese
 </cache-container>
 ...
 ```
+
+*Please see the JBoss EAP or Wildfly documentation for more options on cache configuration.*
