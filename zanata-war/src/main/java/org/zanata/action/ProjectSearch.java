@@ -27,6 +27,9 @@ import com.google.common.collect.Lists;
 import org.zanata.ui.AbstractAutocomplete;
 import org.zanata.util.ServiceLocator;
 
+/**
+ * This will search both projects and people.
+ */
 @Name("projectSearch")
 @Scope(ScopeType.CONVERSATION)
 @AutoCreate
