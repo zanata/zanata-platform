@@ -18,8 +18,9 @@ import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.service.CopyVersionService;
 
 /**
+ * Manages copy version tasks.
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">aeng@redhat.com</a>
  */
 @AutoCreate
 @Name("copyVersionManager")
@@ -35,6 +36,16 @@ public class CopyVersionManager implements Serializable {
     @In
     private Identity identity;
 
+    /**
+     * Copy existing version to new version
+     *
+     * @param projectSlug
+     *            - existing project identifier
+     * @param versionSlug
+     *            - existing version identifier
+     * @param newVersionSlug
+     *            - new version identifier
+     */
     public void startCopyVersion(String projectSlug, String versionSlug,
             String newVersionSlug) {
         CopyVersionKey key = CopyVersionKey.getKey(projectSlug, newVersionSlug);
@@ -44,6 +55,14 @@ public class CopyVersionManager implements Serializable {
                 newVersionSlug, handle);
     }
 
+    /**
+     * Cancel running copy version task
+     *
+     * @param projectSlug
+     *            - target project identifier
+     * @param versionSlug
+     *            - target version identifier
+     */
     public void cancelCopyVersion(String projectSlug, String versionSlug) {
         if (isCopyVersionRunning(projectSlug, versionSlug)) {
             CopyVersionTaskHandle handle =
@@ -68,11 +87,21 @@ public class CopyVersionManager implements Serializable {
         return handle != null && !handle.isDone();
     }
 
+    /**
+     * Key used for copy version task
+     *
+     * @param projectSlug
+     *            - target project identifier
+     * @param versionSlug
+     *            - target version identifier
+     */
     @EqualsAndHashCode
     @Getter
     @AllArgsConstructor
     public static final class CopyVersionKey implements Serializable {
+        // target project identifier
         private final String projectSlug;
+        // target version identifier
         private final String versionSlug;
 
         public static CopyVersionKey getKey(String projectSlug,

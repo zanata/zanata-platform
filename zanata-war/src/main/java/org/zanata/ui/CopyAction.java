@@ -21,19 +21,36 @@
 
 package org.zanata.ui;
 
-import java.text.DecimalFormat;
+import org.zanata.async.AsyncTaskHandle;
 
 /**
  *
- * Interface for Seam component - progressBar.xhtml
+ * Interface for Seam component - version-copy-action-loader.xhtml
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-public interface ProgressBar {
+public abstract class CopyAction implements ProgressBar {
 
-    final DecimalFormat PERCENT_FORMAT = new DecimalFormat("###.####");
+    public abstract String getProgressMessage();
 
-    boolean isInProgress();
+    public abstract void onComplete();
 
-    String getCompletedPercentage();
+    protected abstract AsyncTaskHandle<Void> getHandle();
+
+    @Override
+    public String getCompletedPercentage() {
+        AsyncTaskHandle<Void> handle = getHandle();
+
+        if (handle != null) {
+            double completedPercent =
+                (double) handle.getCurrentProgress() / (double) handle
+                    .getMaxProgress() * 100;
+            if (Double.compare(completedPercent, 100) == 0) {
+                onComplete();
+            }
+            return PERCENT_FORMAT.format(completedPercent);
+        } else {
+            return "0";
+        }
+    }
 }

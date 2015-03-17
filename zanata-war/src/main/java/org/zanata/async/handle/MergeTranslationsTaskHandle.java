@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2015, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -22,30 +22,21 @@ package org.zanata.async.handle;
 
 import lombok.Getter;
 import lombok.Setter;
+
 import org.zanata.async.AsyncTaskHandle;
 
 /**
- * Asynchronous task handle for the copy version process.
+ * Asynchronous task handle for the merge translations process.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-public class CopyVersionTaskHandle extends AsyncTaskHandle<Void> {
+public class MergeTranslationsTaskHandle extends AsyncTaskHandle<Void> {
     @Getter @Setter
-    private int documentCopied;
-    @Getter @Setter
-    private int totalDoc;
+    private int totalTranslations;
     @Getter @Setter
     private String cancelledBy;
     @Getter @Setter
     private long cancelledTime;
     @Getter @Setter
     private String triggeredBy;
-
-    /**
-     * Increments the processed document count by 1
-     */
-    public void incrementDocumentProcessed() {
-        documentCopied++;
-    }
 }

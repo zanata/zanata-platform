@@ -32,4 +32,18 @@
     <customChange class="org.zanata.liquibase.custom.ChangePositionalResIdToContentHash" />
   </changeSet>
 
+  <changeSet id="3" author="aeng@redhat.com">
+    <comment>Add revisionComment to HTextFlowTarget, HTextFlowTargetHistory</comment>
+    <addColumn tableName="HTextFlowTarget">
+      <column name="revisionComment" type="longtext">
+        <constraints nullable="true" />
+      </column>
+    </addColumn>
+    <addColumn tableName="HTextFlowTargetHistory">
+      <column name="revisionComment" type="longtext">
+        <constraints nullable="true" />
+      </column>
+    </addColumn>
+  </changeSet>
+
 </databaseChangeLog>

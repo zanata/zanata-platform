@@ -407,6 +407,9 @@
     <param name="projectSlug" value="#{copyTransAction.projectSlug}" />
     <param name="iterationSlug" value="#{copyTransAction.iterationSlug}" />
 
+    <param name="projectSlug" value="#{mergeTransAction.targetProjectSlug}" />
+    <param name="iterationSlug" value="#{mergeTransAction.targetVersionSlug}" />
+
     <action execute="#{versionHome.init(false)}" />
     <action execute="#{versionHome.validateSuppliedId}" />
 
@@ -420,6 +423,14 @@
     </navigation>
     <navigation
       from-action="#{versionHomeAction.uploadTranslationFile(versionHomeAction.selectedLocale)}">
+      <redirect view-id="/iteration/view.xhtml">
+        <param name="projectSlug"
+          value="#{versionHome.projectSlug}" />
+        <param name="iterationSlug"
+          value="#{versionHome.instance.slug}" />
+      </redirect>
+    </navigation>
+    <navigation from-action="#{mergeTransAction.startMergeTranslations}">
       <redirect view-id="/iteration/view.xhtml">
         <param name="projectSlug"
           value="#{versionHome.projectSlug}" />

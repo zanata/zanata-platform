@@ -46,6 +46,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -117,9 +118,24 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
 
     private List<HTextFlowTargetReviewComment> reviewComments;
 
+    @Getter
+    private String revisionComment;
+
+    private boolean revisionCommentSet = false;
+
     // Only for internal use (persistence transient)
     @Setter(AccessLevel.PRIVATE)
     private Integer oldVersionNum;
+
+    public void setRevisionComment(String revisionComment) {
+        this.revisionComment = revisionComment;
+        revisionCommentSet = true;
+    }
+
+    @Transient
+    boolean isRevisionCommentSet() {
+        return revisionCommentSet;
+    }
 
     // Only for internal use (persistence transient)
     @Setter(AccessLevel.PRIVATE)
@@ -411,6 +427,9 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
             // insert history if this has changed from its initial state
             if (tft.initialState != null && tft.initialState.hasChanged(tft)) {
                 tft.getHistory().put(tft.oldVersionNum, tft.initialState);
+                if (!tft.isRevisionCommentSet()) {
+                    tft.setRevisionComment(null);
+                }
             }
         }
 

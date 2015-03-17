@@ -22,14 +22,8 @@
   <composite:attribute name="render"
     shortDescription="Ids of component to render on pull request"/>
 
-  <composite:attribute name="oncomplete"
+  <composite:attribute name="oncomplete" required="true"
     shortDescription="The client-side script method to be called after complete"/>
-
-  <composite:attribute name="oncompleteAction"
-    shortDescription="MethodExpression representing the application action to invoke on complete"/>
-
-  <composite:attribute name="onCompleteRender"
-    shortDescription="Ids of component to render on complete"/>
 
   <composite:attribute name="type"
     shortDescription="Type of statistic bar, 'large', 'full' or leave empty for default"
@@ -38,35 +32,33 @@
 </composite:interface>
 <composite:implementation>
 
-  <a4j:jsFunction name="onCompleteFunction" action="#{cc.attrs.oncompleteAction}" rendered="#{not empty cc.attrs.oncompleteAction}"
-    render="poll-#{cc.attrs.id}, #{cc.attrs.onCompleteRender}" oncomplete="#{cc.attrs.oncomplete}"/>
-
-  <a4j:jsFunction name="onCompleteFunction" rendered="#{empty cc.attrs.oncompleteAction}"
-    render="poll-#{cc.attrs.id}, #{cc.attrs.onCompleteRender}" oncomplete="#{cc.attrs.oncomplete}"/>
-
   <a4j:poll id="poll-#{cc.attrs.id}" interval="#{cc.attrs.interval}"
     enabled="#{cc.attrs.actionBean.inProgress}"
-    limitRender="true" oncomplete="onPollComplete()"
+    limitRender="true" oncomplete="#{cc.attrs.id}OnPollComplete();"
     render="poll-#{cc.attrs.id}, #{cc.attrs.id}-var, #{cc.attrs.render}"/>
 
   <script type="text/javascript">
     //<![CDATA[
-    function onPollComplete() {
+    function #{cc.attrs.id}OnPollComplete() {
       var contentDiv = jQuery("[id='#{rich:clientId(cc.attrs.id)}:#{cc.attrs.id}-content']");
       var completedPercentage = jQuery("[id='#{cc.attrs.id}-completePercent']").val();
 
       var completedBar = jQuery(contentDiv).find('.progress-bar__translated');
-      jQuery(completedBar).width(completedPercentage + "%");
-      jQuery(completedBar).attr('title', completedPercentage + "%");
+      jQuery(completedBar).width(getPercentage(completedPercentage));
+      jQuery(completedBar).attr('title', getPercentage(completedPercentage));
 
       var uncompletedBar = jQuery(contentDiv).find('.progress-bar__item');
-      jQuery(uncompletedBar).width((100 - completedPercentage) + "%");
-      jQuery(uncompletedBar).css('margin-left', completedPercentage + "%");
+      jQuery(uncompletedBar).width(getPercentage((100 - completedPercentage)));
+      jQuery(uncompletedBar).css('margin-left', getPercentage(completedPercentage));
 
       var inProgress = jQuery("[id='#{cc.attrs.id}-inProgress']").val();
       if (inProgress == 'false' || completedPercentage == '100') {
-        onCompleteFunction();
+        #{cc.attrs.oncomplete};
       }
+    }
+
+    function getPercentage(val) {
+      return val + '%';
     }
     //]]>
   </script>

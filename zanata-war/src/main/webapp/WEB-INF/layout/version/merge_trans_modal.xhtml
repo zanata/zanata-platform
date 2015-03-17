@@ -1,0 +1,171 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:f="http://java.sun.com/jsf/core"
+  class="modal" id="mergeTransDialog" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
+
+  <script>
+    function getKeepExistingTranslatedChk() {
+      return jQuery('#' + jqSelector('#{rich:clientId('keepExistingTranslation')}'));
+    }
+
+    function displayProjectSelector(display) {
+      jQuery(getProjectSelector()).toggleClass('is-hidden', !display);
+      jQuery('#project-static').toggleClass('is-hidden', display);
+    }
+
+    function getProjectSelector() {
+      return jQuery('#' + jqSelector('#{rich:clientId('projectSelector')}'));
+    }
+  </script>
+
+  <div class="modal__dialog l--constrain-medium">
+    <header class="modal__header">
+      <h2 class="modal__title">
+        #{msgs['jsf.iteration.mergeTrans.header']}
+      </h2>
+      <button type="button"
+        class="modal__close button--link"
+        data-dismiss="modal" onclick="displayProjectSelector(false);return false;">
+        <i class="i i--huge i--cancel"></i>
+      </button>
+    </header>
+
+    <h:form id="merge-form" styleClass="l--push-bottom-0">
+      <s:token allowMultiplePosts="true"/>
+      <a4j:jsFunction name="bindKeepExistingTranslated" limitRender="true">
+        <a4j:param name="va1" assignTo="#{key}"/>
+        <a4j:param name="val2"
+          assignTo="#{mergeTransAction.keepExistingTranslation}"/>
+      </a4j:jsFunction>
+
+      <a4j:jsFunction name="bindSourceProjectSlug" limitRender="true"
+        render="sourceVersions, merge-button">
+        <a4j:param name="va1" assignTo="#{mergeTransAction.sourceProjectSlug}"/>
+      </a4j:jsFunction>
+
+      <a4j:jsFunction name="bindSourceVersionSlug" limitRender="true">
+        <a4j:param name="va1" assignTo="#{mergeTransAction.sourceVersionSlug}"/>
+      </a4j:jsFunction>
+
+      <div class="modal__content l--push-all-1">
+        <div class="form__item">
+          <p>
+            <h:outputText
+              value="#{msgs['jsf.iteration.mergeTrans.description1']}"
+              escape="false"/>
+          </p>
+          <p>
+            <h:outputText
+              value="#{msgs['jsf.iteration.mergeTrans.description2']}"
+              escape="false"/>
+          </p>
+        </div>
+
+        <div class="l--pad-top-half form__item">
+          <h3 class="epsilon l--push-bottom-quarter">
+            <h:outputText
+              value="#{msgs['jsf.iteration.mergeTrans.toVersion.label']}"
+              escape="false"/>
+          </h3>
+          <div>
+            <div>
+              <i class="i i--project l--push-right-quarter"></i>
+              #{mergeTransAction.targetVersion.project.name}
+            </div>
+            <div>
+              <i class="i i--version l--push-right-quarter"></i>
+              #{mergeTransAction.targetVersionSlug}
+            </div>
+          </div>
+        </div>
+
+        <s:div styleClass="l--pad-all-half bg--pop-higher" id="selection-section">
+          <h3 class="epsilon l--push-bottom-quarter">
+            <h:outputText
+              value="#{msgs['jsf.iteration.mergeTrans.fromVersion.label']}"
+              escape="false"/>
+          </h3>
+          <div class="l--push-bottom-quarter">
+            <i class="i i--project l--push-right-quarter"></i>
+            <div id="project-static" class="bx--inline-block">
+              #{mergeTransAction.sourceProject.name}
+              <s:fragment rendered="#{not empty mergeTransAction.projects}">
+                <a href="#" class="txt--mini l--push-left-1"
+                  onclick="displayProjectSelector(true)">
+                  #{msgs['jsf.iteration.mergeTrans.chooseAnotherProject']}
+                </a>
+              </s:fragment>
+            </div>
+            <h:selectOneMenu id="projectSelector" rendered="#{not empty mergeTransAction.projects}"
+              styleClass="w--1-2 is-hidden" onchange="bindSourceProjectSlug(this.value)">
+              <f:selectItems value="#{mergeTransAction.projects}" var="project"
+                itemLabel="#{project.name} [#{project.slug}]"
+                itemValue="#{project.slug}" itemLabelEscaped="true"/>
+            </h:selectOneMenu>
+          </div>
+          <s:div id="sourceVersions">
+            <s:fragment rendered="#{empty mergeTransAction.sourceVersions}">
+              <div class="bg--neutral l--pad-all-half">
+                <h3 class="epsilon">
+                  #{msgs['jsf.iteration.mergeTrans.noVersionToMerge.heading']}
+                </h3>
+                <s:fragment rendered="#{not empty mergeTransAction.projects}">
+                  <p class="txt--meta">
+                    #{msgs['jsf.iteration.mergeTrans.noVersionToMerge.description']}
+                  </p>
+                </s:fragment>
+              </div>
+            </s:fragment>
+            <s:fragment rendered="#{not empty mergeTransAction.sourceVersions}">
+              <i class="i i--version l--push-right-quarter"></i>
+              <h:selectOneMenu styleClass="w--1-2"
+                onchange="bindSourceVersionSlug(this.value)">
+                <f:selectItems value="#{mergeTransAction.sourceVersions}"
+                  var="version" itemLabel="#{version.slug}"
+                  itemValue="#{version.slug}" itemLabelEscaped="true"/>
+              </h:selectOneMenu>
+            </s:fragment>
+          </s:div>
+
+          <div class="l--push-top-half">
+            <zanata:checkbox
+              label="#{msgs['jsf.iteration.mergeTrans.keepExistingTranslated']}"
+              value="keep-translation" checked="#{mergeTransAction.keepExistingTranslation}"
+              onValueChanged="bindKeepExistingTranslated" escapeLabel="false">
+              <span class="txt--meta">
+                <h:outputText
+                  value="#{msgs['jsf.iteration.mergeTrans.keepExistingTranslated.Description']}"
+                  escape="false"/>
+              </span>
+            </zanata:checkbox>
+          </div>
+        </s:div>
+      </div>
+
+      <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
+        <div class="g--tight">
+          <s:div styleClass="g__item txt--align-right"
+            id="merge-trans-buttons">
+            <a4j:commandButton id="merge-button"
+              rendered="#{not mergeTransAction.isCopyActionsRunning(mergeTransAction.targetProjectSlug, mergeTransAction.targetVersionSlug)}"
+              styleClass="button button--primary" disabled="#{empty mergeTransAction.sourceVersions}"
+              action="#{mergeTransAction.startMergeTranslations}"
+              value="#{msgs['jsf.iteration.mergeTrans']}"/>
+
+            <s:fragment rendered="#{mergeTransAction.isCopyActionsRunning(mergeTransAction.targetProjectSlug, mergeTransAction.targetVersionSlug)}">
+              <zanata:loader type="loader--small" layout="inline" jsHandle="true"
+                id="merge-trans-loader"/>
+            </s:fragment>
+          </s:div>
+        </div>
+      </footer>
+
+    </h:form>
+  </div>
+
+</div>

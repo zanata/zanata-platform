@@ -27,6 +27,7 @@ pages:
 - ['user-guide/keyboard-shortcuts.md', 'User Guide', 'Keyboard Shortcuts']
 - ['user-guide/project-types.md', 'User Guide', 'Project Types']
 - ['user-guide/client-configuration.md', 'User Guide', 'Client Configuration']
+- ['user-guide/merge-translations.md', 'User Guide', 'Merge translations']
 ## Project
 - ['user-guide/projects/create-project.md', 'User Guide', 'Creating a Project']
 - ['user-guide/projects/project-settings.md', 'User Guide', 'Project settings']
