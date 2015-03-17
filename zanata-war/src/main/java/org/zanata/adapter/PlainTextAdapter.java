@@ -30,6 +30,6 @@ import net.sf.okapi.filters.plaintext.PlainTextFilter;
  */
 public class PlainTextAdapter extends OkapiFilterAdapter {
     public PlainTextAdapter() {
-        super(new PlainTextFilter(), IdSource.textUnitId);
+        super(new PlainTextFilter(), IdSource.contentHash);
     }
 }

@@ -27,4 +27,9 @@
     </addColumn>
   </changeSet>
 
+  <changeSet author="damason@redhat.com" id="1">
+    <comment>Modify existing id for plaintext and libreoffice documents to use content hash instead of old positional id.</comment>
+    <customChange class="org.zanata.liquibase.custom.ChangePositionalResIdToContentHash" />
+  </changeSet>
+
 </databaseChangeLog>
