@@ -101,7 +101,7 @@ public class AsyncTaskManager {
                     taskFuture.set(returnValue);
                 } catch (Throwable t) {
                     taskFuture.setException(t);
-                    log.warn(
+                    log.error(
                             "Exception when executing an asynchronous task.", t);
                 }
             }
