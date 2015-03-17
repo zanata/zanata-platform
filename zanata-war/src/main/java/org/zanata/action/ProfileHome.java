@@ -28,6 +28,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -48,6 +49,8 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
+
+import static org.apache.commons.lang.StringUtils.abbreviate;
 
 /**
  * User profile page backing bean.
@@ -92,7 +95,8 @@ public class ProfileHome implements Serializable {
         if (account == null) {
             facesMessages.clear();
             facesMessages.add(StatusMessage.Severity.ERROR,
-                    msgs.format("jsf.UsernameNotAvailable", username));
+                    msgs.format("jsf.UsernameNotAvailable", abbreviate(username,
+                            24)));
             account = useAuthenticatedAccount();
         }
         HPerson person =

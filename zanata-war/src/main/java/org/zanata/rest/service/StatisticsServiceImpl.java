@@ -78,6 +78,8 @@ import org.zanata.util.StatisticsUtil;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 import com.google.common.base.Optional;
 
+import static org.apache.commons.lang.StringUtils.abbreviate;
+
 /**
  * Default implementation for the
  * {@link org.zanata.rest.service.StatisticsResource} interface. This is a
@@ -368,7 +370,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
     private HPerson findPersonOrExceptionOnNotFound(String username) {
         HPerson person = personDAO.findByUsername(username);
         if (person == null) {
-            throw new NoSuchEntityException(username);
+            throw new NoSuchEntityException(abbreviate(username, 23));
         }
         return person;
     }
