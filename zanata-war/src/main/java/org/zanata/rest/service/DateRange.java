@@ -38,14 +38,12 @@ class DateRange {
         if (dateRange.length != 2) {
             throw new InvalidDateParamException(dateRangeParam);
         }
-        // here we use java util timezone first because it supports more short IDs
         DateTimeZone zone;
         if (fromTimezoneId == null) {
             zone = DateTimeZone.getDefault();
         } else {
             try {
-                zone =
-                        DateTimeZone.forTimeZone(TimeZone.getTimeZone(fromTimezoneId));
+                zone = DateTimeZone.forID(fromTimezoneId);
             } catch (IllegalArgumentException e) {
                 throw new BadRequestException("Invalid timezone ID:" + fromTimezoneId);
             }

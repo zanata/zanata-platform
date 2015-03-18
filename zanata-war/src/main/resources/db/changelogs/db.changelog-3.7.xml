@@ -48,6 +48,16 @@
     </createIndex>
   </changeSet>
 
+  <changeSet id="3" author="pahuang@redhat.com">
+    <comment>add indexes to HTextFlowTargetHistory and HTextFlowTarget table</comment>
+    <createIndex tableName="HTextFlowTargetHistory" indexName="Idx_lastModifiedBy">
+      <column name="last_modified_by_id"/>
+    </createIndex>
+    <createIndex tableName="HTextFlowTarget" indexName="Idx_lastModifiedBy">
+      <column name="last_modified_by_id"/>
+    </createIndex>
+  </changeSet>
+
   <changeSet id="3" author="aeng@redhat.com">
     <comment>Add revisionComment to HTextFlowTarget, HTextFlowTargetHistory</comment>
     <addColumn tableName="HTextFlowTarget">
