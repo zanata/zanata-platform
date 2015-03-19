@@ -37,6 +37,8 @@
     file="changelogs/db.changelog-3.4.xml" />
   <include relativeToChangelogFile="true"
     file="changelogs/db.changelog-3.6.xml" />
+  <include relativeToChangelogFile="true"
+    file="changelogs/db.changelog-3.7.xml" />
 
   <!-- NB: triggers must be created after all table changes -->
   <!-- If the Liquibase version is being updated, please refer to the

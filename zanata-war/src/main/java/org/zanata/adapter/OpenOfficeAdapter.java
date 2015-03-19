@@ -31,7 +31,7 @@ import net.sf.okapi.filters.openoffice.OpenOfficeFilter;
  */
 public class OpenOfficeAdapter extends OkapiFilterAdapter {
     public OpenOfficeAdapter() {
-        super(prepareFilter(), IdSource.subDocNameAndTextUnitId, true);
+        super(prepareFilter(), IdSource.contentHash, true);
     }
 
     private static OpenOfficeFilter prepareFilter() {

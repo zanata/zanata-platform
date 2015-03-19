@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+    <!-- This change was added in the 3.7 development branch, but back-ported to the 3.6 branch at patch 3.6.1 -->
+    <changeSet author="damason@redhat.com" id="1">
+        <comment>Modify existing id for plaintext and libreoffice documents to use content hash instead of old positional id.</comment>
+        <customChange class="org.zanata.liquibase.custom.ChangePositionalResIdToContentHash" />
+    </changeSet>
+
+</databaseChangeLog>
