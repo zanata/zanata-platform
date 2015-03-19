@@ -49,7 +49,7 @@ Zanata now requires JMS to be configured in standalone.xml in order to queue up 
 
 <h5>New Features</h5>
 * [1044261](https://bugzilla.redhat.com/show_bug.cgi?id=1044261) - Drupal integration with Zanata
-* [1066780](https://bugzilla.redhat.com/show_bug.cgi?id=1066780) - RFE: Improve the project list page [proto]
+
 * [1127066](https://bugzilla.redhat.com/show_bug.cgi?id=1127066) - Copy Version button on project version listing
 * [1162383](https://bugzilla.redhat.com/show_bug.cgi?id=1162383) - Updated pages in Administration section
 * [1120457](https://bugzilla.redhat.com/show_bug.cgi?id=1120457) - Email notify the user when the language team permissions change
