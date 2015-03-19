@@ -38,8 +38,18 @@ These steps should be repeated for each project-version before using any zanata-
 
 You can customize `zanata.xml` with command hooks so that other tools will automatically run before or after Zanata commands. Read about command hooks at the [command hook page on the wiki](https://github.com/zanata/zanata-server/wiki/Client-Command-Hooks).
 
+## Source directory and translation directory
+
+To prevent the need to specify the source and translation directories on the command-line, they can be specified in zanata.xml. The source and translation directories are specified in the `<src-dir>` and `<trans-dir>` elements respectively, as shown below. Both paths must be relative to the directory that contains zanata.xml.
+
+```xml
+<src-dir>po</src-dir>
+<trans-dir>.</trans-dir>
+```
 
 ## Locale Configuration
+
+***Note:*** Locale configuration in zanata.xml is being phased out, and this configuration will be specified on the server instead. When your project is on a server version that allows locale configuration and you have a client version that supports server locales, you should remove this configuration. Check the details in [feature request 1156236](https://bugzilla.redhat.com/show_bug.cgi?id=1156236).
 
 The `zanata.xml` will contain a list of locales so that the client knows which locales to push and pull to/from the Zanata server. When downloaded from the Zanata server, the list will have the locales as specified by the server itself. It will look something like this:
 
