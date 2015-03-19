@@ -87,25 +87,50 @@ Supported placeholders/variables are:
  1. **{locale\_with\_underscore}** same as above except all hyphens '-' will be replaced with underscores '_'. This is typically used in properties and gettext projects.
  1. **{extension}** the source document file extension
 
-For example, given a source document is found at `/home/user/myproject/src/main/resource/message.properties` 
-
-... and your source document root (src-dir option) is set to "." 
-
-... Your zanata.xml is located at `/home/user/myproject` 
-
-... For a locale mapping defined as `<locale map-from="zh-CN">zh</locale>`: 
-
-
-The following placeholders will be detected:
+For example, if you have the following file structure (where `{projectRoot}` is the root directory of your project and contains zanata.xml):
 
 ```
-{path}                     = 'src/main/resource'
-{filename}                 = 'message'
-{locale}                   = 'zh-CN'
-{locale\_with\_underscore} = 'zh_CN'
-{extension}                = 'properties' 
+{projectRoot}/
+              templates/messages/kdeedu/kalzium.pot
+              templates/messages/kdeedu/artikulate.pot
+              de-DE/messages/kdeedu/kalzium.po
+              de-DE/messages/keeedu/artikulate.po
+              ...
+              zanata.xml
 ```
 
+Here we have two source documents (with "pot" extension) and two translation documents (with "po" extension) for the locale "de-DE".
+
+You can then use below configuration:
+{% highlight xml %}
+<src-dir>templates</src-dir>
+<trans-dir>.</trans-dir>
+<rules>
+    <rule pattern="**/*.pot">{locale}/{path}/{filename}.po</rule>
+</rules>
+{% endhighlight %}
+
+Explanation: Since you have defined `<src-dir>` as `templates`, the source document `templates/messages/kdeedu/kalzium.pot` will have its path extracted relative to `{projectRoot}/templates`, which gives the relative path `messages/kdeedu/kalzium.pot`. The relative path then will be partitioned into several tokens to form the following variables:
+
+```
+{path}						        = 'messages/kdeedu/'
+{filename}					      = 'kalzium'
+{locale}					        = 'de-DE'
+{locale_with_underscore}	= 'de_DE'
+{extension}					      = 'pot'
+```
+
+> **NOTE** the relative path `messages/kdeedu/kalzium.pot` will be the document's unique identifier inside Zanata. 
+> If you change `src-dir` setting later, e.g. to ".", which results in a change of the relative path to `templates/messages/kdeedu/kalzium.pot`, 
+> pushing again will create a new document with the new path as its unique identifier, and the old document will be considered obsolete and will not be visible to anyone. 
+> The old document's translations will not be copied to the new document automatically, but they will appear as Translation Memory matches. This can be confusing and frustrating for translators.
+
+As the rule is defined as `{locale}/{path}/{filename}.po`, for locale `de-DE`,
+
+- source file kalzium.pot's translation file will be written to or read from `{projectRoot}/de-DE/messages/kdeedu/kalzium.po`.
+- source file artikulate.pot's translation file will be written to or read from `{projectRoot}/de-DE/messages/kdeedu/artikulate.po`.
+
+You can also replace `{locale}` with `{locale_with_underscore}` if you want all your locales to use underscore instead of hyphen. e.g. `de-DE` will become `de_DE` which results in translation files written to or read from `{projectRoot}/de_DE/messages/kdeedu/kalzium.po`.
 
 The mapping rules configuration is optional in zanata.xml. If not specified, standard rules are applied according to your [project type](https://github.com/zanata/zanata-server/wiki/Project-Types).
 
