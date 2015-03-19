@@ -92,7 +92,8 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
         if (!(entity instanceof HTextFlowTarget)) {
             return;
         }
-
+        final HTextFlowTarget target =
+                HTextFlowTarget.class.cast(event.getEntity());
         try {
             new Work<Void>() {
                 @Override
@@ -102,8 +103,7 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
                                     Lists.newArrayList(event.getOldState()),
                                     Predicates.instanceOf(ContentState.class));
 
-                    HTextFlowTarget target =
-                            HTextFlowTarget.class.cast(event.getEntity());
+
                     prepareTransUnitUpdatedEvent(target.getVersionNum() - 1,
                             oldContentState, target);
                     return null;
@@ -193,13 +193,14 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
         if (!(entity instanceof HTextFlowTarget)) {
             return;
         }
+        final HTextFlowTarget target =
+                HTextFlowTarget.class.cast(event.getEntity());
         try {
             new Work<Void>() {
 
                 @Override
                 protected Void work() throws Exception {
-                    HTextFlowTarget target =
-                            HTextFlowTarget.class.cast(event.getEntity());
+
                     prepareTransUnitUpdatedEvent(0, ContentState.New, target);
                     return null;
                 }

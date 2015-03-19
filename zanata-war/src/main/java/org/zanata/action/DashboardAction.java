@@ -62,7 +62,6 @@ import lombok.Getter;
 @Restrict("#{identity.loggedIn}")
 public class DashboardAction implements Serializable {
     private static final long serialVersionUID = 1L;
-    private static final int USER_IMAGE_SIZE = 115;
 
     @In
     private GravatarService gravatarServiceImpl;
@@ -100,7 +99,8 @@ public class DashboardAction implements Serializable {
             fetchUserMaintainedProjects();
 
     public String getUserImageUrl() {
-        return gravatarServiceImpl.getUserImageUrl(USER_IMAGE_SIZE);
+        return gravatarServiceImpl.getUserImageUrl(
+                GravatarService.USER_IMAGE_SIZE);
     }
 
     public String getUsername() {

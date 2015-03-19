@@ -337,6 +337,12 @@
     </navigation>
   </page>
 
+  <!-- User profile -->
+  <page view-id="/profile/home.xhtml">
+    <action execute="#{breadcrumbs.clear}" />
+    <param name="username" value="#{profileHome.username}" />
+  </page>
+
   <!-- Project -->
   <page view-id="/project/home.xhtml">
     <action execute="#{breadcrumbs.clear}" />

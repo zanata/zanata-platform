@@ -58,6 +58,7 @@ Zanata now requires JMS to be configured in standalone.xml in order to queue up 
 * [1127056](https://bugzilla.redhat.com/show_bug.cgi?id=1127056) - Migration Guide for community users
 * [1122776](https://bugzilla.redhat.com/show_bug.cgi?id=1122776) - WebHooks callback API
 * [1186951](https://bugzilla.redhat.com/show_bug.cgi?id=1186951) - Zanata Overlay module
+* [1183994](https://bugzilla.redhat.com/show_bug.cgi?id=1183994) - RFE: Gather and display metrics detailing the number of words translated by a specific translator, for a specific project
 
 
 <h5>Bugfixes</h5>
@@ -74,7 +75,7 @@ Zanata now requires JMS to be configured in standalone.xml in order to queue up 
 * [1185134](https://bugzilla.redhat.com/show_bug.cgi?id=1185134) - Placeholder text in server config ToU field valid, but rejected
 * [1185170](https://bugzilla.redhat.com/show_bug.cgi?id=1185170) - Create version in a project is always created as read only
 * [1186084](https://bugzilla.redhat.com/show_bug.cgi?id=1186084) - WebUI is very slow if users cannot access Google
-* [1186997](https://bugzilla.redhat.com/show_bug.cgi?id=1186997) - Introduction of hornetq-ra breaks the overlay installer 
+* [1186997](https://bugzilla.redhat.com/show_bug.cgi?id=1186997) - Introduction of hornetq-ra breaks the overlay installer
 * [1192271](https://bugzilla.redhat.com/show_bug.cgi?id=1192271) - For gettext plural project, project-version statistics was inconsistent between language and document, sometime more than 100%
 * [1193699](https://bugzilla.redhat.com/show_bug.cgi?id=1193699) - Bookmarked url (selected language or selected doc) in version page, bookmarked url selected language, selected project in version-group page not working
 
@@ -134,7 +135,7 @@ Zanata now requires JMS to be configured in standalone.xml in order to queue up 
 * [988202](https://bugzilla.redhat.com/show_bug.cgi?id=988202) - RFE: REST API rate limiting
 * [1002378](https://bugzilla.redhat.com/show_bug.cgi?id=1002378) - RFE: Introduce a modular translation structure, and gwt generate the *Messages.properties files
 * [1066701](https://bugzilla.redhat.com/show_bug.cgi?id=1066701) - RFE: As a Zanata user, I would like to be able to bookmark language and project selections in the groups page
-  * Now is possible to bookmark a project version, language, or setting item for communication or later reference. 
+  * Now is possible to bookmark a project version, language, or setting item for communication or later reference.
 * [1066756](https://bugzilla.redhat.com/show_bug.cgi?id=1066756) - RFE: Merge user settings pages into dashboard
 * [1066796](https://bugzilla.redhat.com/show_bug.cgi?id=1066796) - RFE: Implement new project page
 * [1077439](https://bugzilla.redhat.com/show_bug.cgi?id=1077439) - RFE: Use lucene indexes to do Copy Trans.
@@ -153,7 +154,7 @@ Zanata now requires JMS to be configured in standalone.xml in order to queue up 
 * [1086036](https://bugzilla.redhat.com/show_bug.cgi?id=1086036) - Project / version language listing and inheritance issue
 * [1088651](https://bugzilla.redhat.com/show_bug.cgi?id=1088651) - New About tab does not handle existing project Seam text
 * [1088737](https://bugzilla.redhat.com/show_bug.cgi?id=1088737) - Project type for a version is null after creation if the project type setting is not touched
-* [1094071](https://bugzilla.redhat.com/show_bug.cgi?id=1094071) - Copy Translations information not correct 
+* [1094071](https://bugzilla.redhat.com/show_bug.cgi?id=1094071) - Copy Translations information not correct
 * [1094090](https://bugzilla.redhat.com/show_bug.cgi?id=1094090) - TMX import/export blocked by api not providing user key
 * [1096564](https://bugzilla.redhat.com/show_bug.cgi?id=1096564) - Entering garbage at the end of a projects url breaks navigation
 * [1097940](https://bugzilla.redhat.com/show_bug.cgi?id=1097940) - New password field should have show/hide toggle
@@ -184,7 +185,7 @@ Zanata now requires JMS to be configured in standalone.xml in order to queue up 
 <h5>New Features</h5>
 
 * [978072](https://bugzilla.redhat.com/show_bug.cgi?id=978072) - RFE: support roff as an input/output format
-    * This feature is implemented on the client side only with [1038449 - command hook](https://bugzilla.redhat.com/show_bug.cgi?id=1038449). Users who wish to push .roff file can use a command hook to invoke external tool (po4a) before push to convert .roff into .pot. Invoke po4a again after pull to convert translated .po into .roff. 
+    * This feature is implemented on the client side only with [1038449 - command hook](https://bugzilla.redhat.com/show_bug.cgi?id=1038449). Users who wish to push .roff file can use a command hook to invoke external tool (po4a) before push to convert .roff into .pot. Invoke po4a again after pull to convert translated .po into .roff.
 
 * [1036435](https://bugzilla.redhat.com/show_bug.cgi?id=1036435) - RFE: Upgrade to Liquibase 3.x
 * [980670](https://bugzilla.redhat.com/show_bug.cgi?id=980670) - [RFE] Add HTML as an input method to be translated

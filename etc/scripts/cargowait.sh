@@ -35,7 +35,7 @@ echo ">> Now working in $(pwd)"
 echo
 
 # this will build zanata war and prepare war overlay for functional test
-mvn ${clean} package -Dchromefirefox -DskipTests -Dfunctional-test -pl zanata-model,zanata-war,zanata-test-war;
+mvn ${clean} package -Dchromefirefox -DskipTests -Dappserver=wildfly8 -pl zanata-model,zanata-war,zanata-test-war;
 
 # this will start cargo container and deploy above generated overlay war and then pause
-mvn ${clean} process-test-resources package cargo:run -Dfunctional-test -Dmysql.port=13306 -pl functional-test ${extraArgs};
+mvn ${clean} package cargo:run -DskipTests -Dappserver=wildfly8 -Dmysql.port=13306 -pl functional-test ${extraArgs};

@@ -18,7 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.service.impl;
+package org.zanata.rest.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
@@ -48,9 +48,9 @@ import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.contribution.BaseContributionStatistic;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
 import org.zanata.rest.dto.stats.contribution.LocaleStatistics;
-import org.zanata.rest.service.StatisticsResource;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.service.ValidationService;
+import org.zanata.service.impl.TranslationStateCacheImpl;
 
 /**
  * @author Carlos Munoz <a

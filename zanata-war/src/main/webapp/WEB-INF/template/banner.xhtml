@@ -30,13 +30,14 @@
       <h:form styleClass="form--search header__search js-form--search" id="general-search-form">
         <label class="form--search__label"
           for="#{rich:clientId('projectAutocomplete')}-autocomplete__input">
-          #{msgs['jsf.SearchProjects']}
+          #{msgs['jsf.Search']}
         </label>
 
         <zanata:autocomplete actionBean="#{projectSearch.projectAutocomplete}"
           maxlength="100" minlength="1" id="projectAutocomplete"
           fetchValue="#{result.project.slug}"
-          placeholder="#{msgs['jsf.SearchProjects']}"
+          placeholder="#{msgs['jsf.Search']}"
+          activePlaceholder="#{msgs['jsf.SearchProjectsAndPeople']}"
           onSelectItem="selectItem"
           inputClass="form--search__input js-form--search__input">
 
@@ -46,7 +47,13 @@
             <f:param name="slug" value="#{result.project.slug}"/>
           </s:link>
 
-          <s:link view="/search.xhtml" rendered="#{result.isProjectNull()}">
+          <s:link propagation="none" view="/profile/home.xhtml"
+            rendered="#{!result.isUserNull()}">
+            <i class="i i--user"></i> #{result.account.username}
+            <f:param name="username" value="#{result.account.username}"/>
+          </s:link>
+
+          <s:link view="/search.xhtml" rendered="#{result.isProjectNull() and result.isUserNull()}">
             <i class="i i--search"></i> Search Zanata for
             '#{projectSearch.projectAutocomplete.query}'
             <f:param name="query" value="#{projectSearch.projectAutocomplete.query}"/>
