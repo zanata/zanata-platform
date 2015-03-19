@@ -427,12 +427,9 @@
                 </goals>
                 <configuration>
                   <target xmlns:if="ant:if">
-                    <echo if:set="skipFuncTests"
-                      message="WARNING: -DskipFuncTests takes precedence over -DallFuncTests" />
-                    <echo if:set="skipITs"
-                      message="WARNING: -DskipITs takes precedence over -DallFuncTests" />
-                    <echo if:set="skipTests"
-                      message="WARNING: -DskipTests takes precedence over -DallFuncTests" />
+                    <echo if:set="skipFuncTests" message="WARNING: -DskipFuncTests takes precedence over -DallFuncTests" />
+                    <echo if:set="skipITs" message="WARNING: -DskipITs takes precedence over -DallFuncTests" />
+                    <echo if:set="skipTests" message="WARNING: -DskipTests takes precedence over -DallFuncTests" />
                   </target>
                 </configuration>
               </execution>
@@ -809,7 +806,7 @@
                 <echo>===== Properties that can be set for functional test =====</echo>
                 <echo>-DskipFuncTests : to skip running functional tests, and/or:</echo>
                 <echo>-DskipArqTests : to skip Arquillian integration tests (if building zanata-war)</echo>
-                <echo/>
+                <echo />
                 <echo>Unless skipping tests, you must choose an appserver:</echo>
                 <echo>-Dappserver=jbosseap6 -Dcargo.installation=http://example.com/jbosseap632.zip -Dcargo.basename=jbosseap632</echo>
                 <echo>or -Dappserver=wildfly8</echo>
@@ -818,9 +815,9 @@
                 <echo>appserver.dir.name is top-level dir inside zip.  For jbosseap6, default is jboss-eap-6.3.  Override for later versions.</echo>
                 <echo/>
                 <echo>-DallFuncTests to enable all functional tests (defaults to smoke tests)</echo>
-                <echo/>
+                <echo />
                 <echo>-Dcargo.debug.jvm.args : If not set by default will listen to port 8787. Need to set to empty on jenkins</echo>
-                <echo/>
+                <echo />
                 <echo>-Dzanata.target.version=version of zanata to deploy. Default is: ${project.parent.version}</echo>
                 <echo>-Dzanata.instance.url=http://${cargo.host}:${cargo.servlet.port}/${context.path}</echo>
                 <echo>-Dzanata.apikey=b6d7044e9ee3b2447c28fb7c50d86d98</echo>
@@ -845,10 +842,8 @@
             <goals><goal>run</goal></goals>
             <configuration>
               <target unless="skipFuncTests">
-                <fail message="'appserver' property must be set to run integration tests (or else use -DskipFuncTests)"
-                  unless="appserver" />
-                <fail message="'cargo.installation' property must be set to run integration tests (or else use -DskipFuncTests)"
-                  unless="cargo.installation"/>
+                <fail message="'appserver' property must be set to run integration tests (or else use -DskipFuncTests)" unless="appserver" />
+                <fail message="'cargo.installation' property must be set to run integration tests (or else use -DskipFuncTests)" unless="cargo.installation" />
               </target>
             </configuration>
           </execution>

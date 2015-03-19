@@ -16,6 +16,7 @@
     <connection>scm:git:git://github.com/zanata/zanata-server.git</connection>
     <developerConnection>scm:git:git@github.com:zanata/zanata-server.git</developerConnection>
     <url>https://github.com/zanata/zanata-server</url>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
@@ -1435,20 +1436,10 @@
                 <configuration>
                   <target unless="skipITs">
                     <mkdir dir="${download.dir}" />
-                    <get
-                      src="http://sourceforge.net/projects/zanata/files/wildfly/${mojarra.module.name}/download"
-                      dest="${download.dir}/${mojarra.module.name}"
-                      skipexisting="true" />
-                    <get
-                      src="http://sourceforge.net/projects/zanata/files/wildfly/${hibernate.module.name}/download"
-                      dest="${download.dir}/${hibernate.module.name}"
-                      skipexisting="true" />
-                    <unzip
-                      src="${download.dir}/${mojarra.module.name}"
-                      dest="${appserver.home}" />
-                    <unzip
-                      src="${download.dir}/${hibernate.module.name}"
-                      dest="${appserver.home}" />
+                    <get src="http://sourceforge.net/projects/zanata/files/wildfly/${mojarra.module.name}/download" dest="${download.dir}/${mojarra.module.name}" skipexisting="true" />
+                    <get src="http://sourceforge.net/projects/zanata/files/wildfly/${hibernate.module.name}/download" dest="${download.dir}/${hibernate.module.name}" skipexisting="true" />
+                    <unzip src="${download.dir}/${mojarra.module.name}" dest="${appserver.home}" />
+                    <unzip src="${download.dir}/${hibernate.module.name}" dest="${appserver.home}" />
                   </target>
                 </configuration>
               </execution>
