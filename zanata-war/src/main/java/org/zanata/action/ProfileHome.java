@@ -21,6 +21,7 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -98,16 +99,20 @@ public class ProfileHome implements Serializable {
                     msgs.format("jsf.UsernameNotAvailable", abbreviate(username,
                             24)));
             account = useAuthenticatedAccount();
+            if (account == null) {
+                // user not logged in and username not found
+                return;
+            }
         }
         HPerson person =
-                personDAO.findById(account.getPerson().getId(), false);
+                personDAO.findById(account.getPerson().getId());
+        Set<HLocale> languageMemberships = person.getLanguageMemberships();
         name = person.getName();
         userImageUrl = gravatarServiceImpl
                 .getUserImageUrl(GravatarService.USER_IMAGE_SIZE,
                         person.getEmail());
         userLanguageTeams = Joiner.on(", ").skipNulls().join(
-                Collections2.transform(account.getPerson()
-                                .getLanguageMemberships(),
+                Collections2.transform(languageMemberships,
                         new Function<HLocale, Object>() {
                             @Nullable
                             @Override
