@@ -22,8 +22,20 @@ property can safely be reverted or removed before subsequent startups.
 -----------------------
 
 <h5>New Features</h5>
-
 * [1133989](https://bugzilla.redhat.com/show_bug.cgi?id=1133989) - Copy translations from existing version.
+* 
+
+## 3.6.1
+
+<h5>Bugfixes</h5>
+* [1194543](https://bugzilla.redhat.com/show_bug.cgi?id=1194543) - Manual document re-upload makes previous 
+
+-----------------------
+
+<h5>New Features</h5>
+*
+
+----
 
 ## 3.6
 
