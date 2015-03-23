@@ -407,10 +407,12 @@ public class TranslationsRawCompatibilityITCase extends RestTest {
                         is("user1@localhost"));
             }
         }.run();
+
+        putJsonTranslations();
     }
 
-    @Test
-    @RunAsClient
+//    @Test
+//    @RunAsClient
     public void putJsonTranslations() throws Exception {
         // Get the original translations
         ITranslatedDocResource translationsClient =
