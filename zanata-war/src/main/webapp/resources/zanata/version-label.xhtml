@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:s="http://jboss.org/schema/seam/taglib">
+
+<composite:interface>
+    <composite:attribute name="version" type="org.zanata.model.HProjectIteration"
+                         shortDescription="Version to display" required="true"/>
+    <composite:attribute name="showIcon" type="java.lang.Boolean"
+                         shortDescription="Optional, use to suppress icon display"
+                         required="false" default="true"/>
+</composite:interface>
+
+<composite:implementation>
+  <s:fragment rendered="#{cc.attrs.version.status == 'ACTIVE'}">
+    #{cc.attrs.version.slug}
+  </s:fragment>
+  <s:fragment rendered="#{cc.attrs.version.status == 'READONLY'}">
+    <span class="txt--neutral">#{cc.attrs.version.slug}
+      <s:fragment rendered="#{cc.attrs.showIcon}">
+        <i class="i--small i--right i--lock" title="#{msgs['jsf.iteration.tooltip.readonly']}"></i>
+      </s:fragment>
+    </span>
+  </s:fragment>
+  <s:fragment rendered="#{cc.attrs.version.status == 'OBSOLETE'}">
+    <span class="txt--neutral">#{cc.attrs.version.slug}
+      <s:fragment rendered="#{cc.attrs.showIcon}">
+        <i class="i--small i--right i--archive" title="#{msgs['jsf.iteration.tooltip.obsolete']}"></i>
+      </s:fragment>
+    </span>
+  </s:fragment>
+</composite:implementation>
+</html>
+
+
+

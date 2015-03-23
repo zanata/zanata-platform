@@ -179,13 +179,13 @@
                   id="#{status.index}:version:#{versionItem.version.slug}"/>
               </s:fragment>
               <label for="#{status.index}:version:#{versionItem.version.slug}"
-                class="form__radio__label">#{versionItem.version.slug} <span
-                class="txt--meta">
-                <i class="i--document i txt--neutral"
-                  title="#{msgs['jsf.Documents']}"></i> #{versionItem.version.documents.size()}  <i
-                class="i--language i txt--neutral"
-                title="#{msgs['jsf.Languages']}"></i> #{versionHomeAction.getVersionSupportedLocaleCount(versionItem.version.project.slug, versionItem.version.slug)}
-              </span>
+                class="form__radio__label"><zanata:version-label version="#{versionItem.version}"/>
+                <span class="txt--meta l--push-left-half">
+                  <i class="i--document i txt--neutral" title="#{msgs['jsf.Documents']}"></i>
+                  #{versionItem.version.documents.size()}
+                  <i class="i--language i txt--neutral" title="#{msgs['jsf.Languages']}"></i>
+                  #{versionHomeAction.getVersionSupportedLocaleCount(versionItem.version.project.slug, versionItem.version.slug)}
+                </span>
               </label>
             </div>
           </li>

@@ -129,13 +129,14 @@ public class ActivateWorkspaceHandler extends
         boolean isProjectActive =
                 isProjectIterationActive(project.getStatus(),
                         projectIteration.getStatus());
+        boolean isProjectObsolete = isProjectIterationObsolete(project.getStatus(), projectIteration.getStatus());
         boolean hasWriteAccess = hasWritePermission(project, locale);
         boolean hasGlossaryUpdateAccess = hasGlossaryUpdatePermission();
         boolean requireReview = projectIteration.getRequireTranslationReview();
         boolean hasReviewAccess = hasReviewerPermission(locale, project);
 
         WorkspaceRestrictions workspaceRestrictions =
-                new WorkspaceRestrictions(isProjectActive, hasWriteAccess,
+                new WorkspaceRestrictions(isProjectActive, isProjectObsolete, hasWriteAccess,
                         hasGlossaryUpdateAccess, hasReviewAccess, requireReview);
         log.debug("workspace restrictions: {}", workspaceRestrictions);
 
@@ -181,6 +182,12 @@ public class ActivateWorkspaceHandler extends
             EntityStatus iterStatus) {
         return (projectStatus.equals(EntityStatus.ACTIVE) && iterStatus
                 .equals(EntityStatus.ACTIVE));
+    }
+
+    private boolean isProjectIterationObsolete(EntityStatus projectStatus,
+                                               EntityStatus iterStatus) {
+        return (projectStatus.equals(EntityStatus.OBSOLETE) || iterStatus
+                .equals(EntityStatus.OBSOLETE));
     }
 
     protected Person retrievePerson() {

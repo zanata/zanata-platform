@@ -188,20 +188,7 @@
   </p>
 
   <s:div styleClass="l--push-bottom-half" id="version-info">
-    <s:fragment rendered="#{versionHome.instance.status eq 'ACTIVE'}">
-      <h1 class="l--push-all-0">
-        <i class="i--small i--version txt--neutral i--left"></i>
-        #{versionHomeAction.versionSlug}
-      </h1>
-    </s:fragment>
-    <s:fragment rendered="#{versionHome.instance.status ne 'ACTIVE'}">
-      <h1 class="l--push-all-0 txt--neutral">
-        <i class="i--small i--version txt--neutral i--left"></i>
-        #{versionHomeAction.versionSlug}
-        <i class="i--small i--right i--lock"
-          title="#{msgs['jsf.iteration.tooltip.readonly']}"></i>
-      </h1>
-    </s:fragment>
+    <h1 class="l--push-all-0"><zanata:version-label version="#{versionHome.instance}"/></h1>
   </s:div>
 
   <s:div styleClass="progress-bar--large__expander l--pad-bottom-half"

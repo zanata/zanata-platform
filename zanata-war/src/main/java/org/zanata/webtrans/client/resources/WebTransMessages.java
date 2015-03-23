@@ -381,8 +381,11 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("Page size")
     String pageSize();
 
-    @DefaultMessage("Read only")
-    String readOnly();
+    @DefaultMessage("This project-version is readonly. It cannot be edited.")
+    String readOnlyTooltip();
+
+    @DefaultMessage("This project-version is archived. It cannot be edited.")
+    String obsoleteTooltip();
 
     @DefaultMessage("Advanced user configuration")
     String otherConfiguration();

@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:composite="http://java.sun.com/jsf/composite"
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:s="http://jboss.org/schema/seam/taglib">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
 <composite:interface>
   <composite:attribute name="value" type="org.zanata.model.Activity"
@@ -124,8 +125,9 @@
           title="#{msgs['jsf.Version']}">
           <span class="is-invisible">#{msgs['jsf.Version']}</span>
         </i>
-        <a
-          href="#{activityEntry.getVersionUrl(cc.attrs.value)}">#{versionName}</a>
+        <a href="#{activityEntry.getVersionUrl(cc.attrs.value)}">
+          <zanata:version-label version="#{activityEntry.getVersion(cc.attrs.value)}"/>
+        </a>
       </li>
     </s:fragment>
   </ul>

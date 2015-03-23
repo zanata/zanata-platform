@@ -121,7 +121,7 @@ public class TestFixture {
         ProjectIterationId projectIterationId =
                 new ProjectIterationId(projectSlug, iterationSlug, projectType);
         WorkspaceRestrictions workspaceRestrictions =
-                new WorkspaceRestrictions(projectActive, hasWriteAccess, true,
+                new WorkspaceRestrictions(projectActive, false, hasWriteAccess, true,
                         true, true);
         return new UserWorkspaceContext(new WorkspaceContext(new WorkspaceId(
                 projectIterationId, LocaleId.EN_US), "workspaceName",
@@ -131,7 +131,7 @@ public class TestFixture {
     public static UserWorkspaceContext userWorkspaceContext(
             boolean projectActive, boolean hasWriteAccess) {
         WorkspaceRestrictions workspaceRestrictions =
-                new WorkspaceRestrictions(projectActive, hasWriteAccess, true,
+                new WorkspaceRestrictions(projectActive, false, hasWriteAccess, true,
                         true, true);
         return new UserWorkspaceContext(new WorkspaceContext(workspaceId(),
                 "workspaceName", LocaleId.EN_US.getId()), workspaceRestrictions);

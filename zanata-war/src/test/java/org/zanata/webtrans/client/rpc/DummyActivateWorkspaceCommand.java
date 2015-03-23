@@ -45,7 +45,7 @@ public class DummyActivateWorkspaceCommand implements Command {
                 new WorkspaceContext(action.getWorkspaceId(),
                         "Dummy Workspace", "Mock Sweedish");
         WorkspaceRestrictions workspaceRestrictions =
-                new WorkspaceRestrictions(true, true, true, true, true);
+                new WorkspaceRestrictions(true, false, true, true, true, true);
         UserWorkspaceContext userWorkspaceContext =
                 new UserWorkspaceContext(context, workspaceRestrictions);
         userWorkspaceContext.setSelectedDoc(new DocumentInfo(new DocumentId(
