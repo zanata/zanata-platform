@@ -40,6 +40,10 @@ import org.zanata.util.ShortString;
 import org.zanata.util.UrlUtil;
 
 /**
+ * Provides data and operations needed to display an activity entry.
+ *
+ * This is used by template activity-entry.xhtml
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Name("activityEntry")
@@ -203,16 +207,23 @@ public class ActivityEntry {
     }
 
     public String getVersionName(Activity activity) {
+        HProjectIteration version = getVersion(activity);
+        if (version == null) {
+            return "";
+        } else {
+            return version.getSlug();
+        }
+    }
+
+    public HProjectIteration getVersion(Activity activity) {
         Object context =
                 getEntity(activity.getContextType(), activity.getContextId());
-
         if (isTranslationUpdateActivity(activity.getActivityType())
                 || activity.getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
                 || activity.getActivityType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT) {
-            HProjectIteration version = (HProjectIteration) context;
-            return version.getSlug();
+            return (HProjectIteration) context;
         }
-        return "";
+        return null;
     }
 
     public String getDocumentName(Activity activity) {

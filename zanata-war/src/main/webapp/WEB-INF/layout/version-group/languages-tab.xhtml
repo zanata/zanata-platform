@@ -225,7 +225,7 @@
                     <h3 class="list__title">#{version.project.name}</h3>
                       <span class="list__item__meta">
                         <i
-                          class="txt--neutral i i--version"></i> #{version.slug}
+                          class="txt--neutral i i--version"></i> <zanata:version-label version="#{version}"/>
 
                         <s:fragment
                           rendered="#{!versionGroupHomeAction.isLocaleActivatedInVersion(version, versionGroupHomeAction.selectedLocale.localeId)}">

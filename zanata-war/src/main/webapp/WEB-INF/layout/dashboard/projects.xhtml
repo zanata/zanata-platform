@@ -65,18 +65,18 @@
                       <span class="is-invisible">#{msgs['jsf.dashboard.projects.translateOptions.label']}</span>
                     </a>
                     <ul class="dropdown__content js-dropdown__content">
-                      <li class="dropdown__header">
+                      <li class="dropdown__header txt--nowrap">
                         <span class="txt--meta">
                           <i class="i i--version i__item__icon"></i>
                           #{msgs['jsf.dashboard.projects.versions.label']}
                         </span>
                       </li>
                       <ui:repeat value="#{project.projectIterations}" var="version">
-                        <li>
+                        <li class="txt--nowrap">
                           <s:link view="/iteration/view.xhtml" propagation="none">
                             <f:param name="projectSlug" value="#{project.slug}"/>
                             <f:param name="iterationSlug" value="#{version.slug}"/>
-                            <h:outputText value="#{version.slug}"/>
+                            <zanata:version-label version="#{version}"/>
                           </s:link>
                         </li>
                       </ui:repeat>

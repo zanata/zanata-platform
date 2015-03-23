@@ -193,7 +193,12 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
                     userWorkspaceContext.getWorkspaceContext().getLocaleName()));
         }
 
-        display.setReadOnlyVisible(userWorkspaceContext.hasReadOnlyAccess());
+        boolean showObsolete = userWorkspaceContext.getWorkspaceRestrictions().isProjectObsolete();
+        boolean showReadOnly = !showObsolete && userWorkspaceContext.hasReadOnlyAccess();
+
+        display.setReadOnlyVisible(showReadOnly);
+        display.setObsoleteVisible(showObsolete);
+
     }
 
     private void registerKeyShortcuts() {

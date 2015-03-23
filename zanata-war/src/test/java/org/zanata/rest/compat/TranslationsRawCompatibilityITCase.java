@@ -403,6 +403,7 @@ public class TranslationsRawCompatibilityITCase extends RestTest {
                         is("user1@localhost"));
             }
         }.run();
+
     }
 
     @Test

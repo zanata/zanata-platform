@@ -157,8 +157,10 @@
             <s:link view="/iteration/view.xhtml">
               <f:param name="projectSlug" value="#{version.project.slug}"/>
               <f:param name="iterationSlug" value="#{version.slug}"/>
-              #{version.project.name} <i
-              class="i i--version"></i> #{version.slug}
+              #{version.project.name} <i class="i i--version"></i> <zanata:version-label version="#{version}"/>
+              <s:fragment rendered="#{version.status == 'OBSOLETE'}">
+                <span class="txt--danger l--push-left-half">#{msgs['jsf.group.ArchivedVersionNotIncluded']}</span>
+              </s:fragment>
             </s:link>
             <a4j:commandLink
               styleClass="button--link l--float-right reveal__target"
@@ -191,7 +193,7 @@
             oncomplete="refreshStatistics();focusCurrentActiveInput();"
             placeholder="#{msgs['jsf.SearchProjects']}">
 
-            #{result.project.slug} <i class="i i--version"></i> #{result.slug}
+            #{result.project.slug} <i class="i i--version"></i> <zanata:version-label version="#{result}"/>
           </zanata:autocomplete>
         </li>
       </ul>

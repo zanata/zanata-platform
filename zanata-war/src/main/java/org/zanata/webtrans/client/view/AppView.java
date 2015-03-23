@@ -92,6 +92,9 @@ public class AppView extends Composite implements AppDisplay,
     @UiField
     InlineLabel readOnlyLabel;
 
+    @UiField
+    InlineLabel obsoleteLabel;
+
     @UiField(provided = true)
     Breadcrumb selectedDocumentSpan;
 
@@ -173,7 +176,8 @@ public class AppView extends Composite implements AppDisplay,
 
         initWidget(uiBinder.createAndBindUi(this));
 
-        readOnlyLabel.setTitle(messages.readOnly());
+        readOnlyLabel.setTitle(messages.readOnlyTooltip());
+        obsoleteLabel.setTitle(messages.obsoleteTooltip());
 
         keyShortcuts.setTitle(messages.availableKeyShortcutsTitle());
 
@@ -277,6 +281,11 @@ public class AppView extends Composite implements AppDisplay,
     @Override
     public void setReadOnlyVisible(boolean visible) {
         readOnlyLabel.setVisible(visible);
+    }
+
+    @Override
+    public void setObsoleteVisible(boolean visible) {
+        obsoleteLabel.setVisible(visible);
     }
 
     private final static double MIN_MENU_WIDTH = 2;
