@@ -60,6 +60,9 @@ public class TranslationsRawCompatibilityITCase extends RestTest {
     @Override
     protected void prepareDBUnitOperations() {
         addBeforeTestOperation(new DataSetOperation(
+                "org/zanata/test/model/ClearAllTables.dbunit.xml",
+                DatabaseOperation.DELETE_ALL));
+        addBeforeTestOperation(new DataSetOperation(
                 "org/zanata/test/model/AccountData.dbunit.xml",
                 DatabaseOperation.CLEAN_INSERT));
         addBeforeTestOperation(new DataSetOperation(
