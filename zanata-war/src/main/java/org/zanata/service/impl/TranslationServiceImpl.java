@@ -112,9 +112,6 @@ public class TranslationServiceImpl implements TranslationService {
     private DocumentDAO documentDAO;
 
     @In
-    private PersonDAO personDAO;
-
-    @In
     private TextFlowDAO textFlowDAO;
 
     @In
@@ -628,6 +625,7 @@ public class TranslationServiceImpl implements TranslationService {
                 }
             }.workInTransaction();
         } catch (Exception e) {
+            log.error("exception in transferFromTranslationsResourceExtensions: {}", e.getMessage());
             throw new ZanataServiceException("Error during translation.", 500,
                     e);
         }
@@ -666,6 +664,7 @@ public class TranslationServiceImpl implements TranslationService {
                 work.setAssignCreditToUploader(assignCreditToUploader);
                 changed |= work.workInTransaction();
             } catch (Exception e) {
+                log.error("exception in SaveBatchWork:{}", e.getMessage());
                 throw new ZanataServiceException("Error during translation.",
                         500, e);
             }
@@ -700,6 +699,7 @@ public class TranslationServiceImpl implements TranslationService {
                                             .getLocaleId()));
                 }
             } catch (Exception e) {
+                log.error("exception in removeTargets: {}", e.getMessage());
                 throw new ZanataServiceException("Error during translation.",
                         500, e);
             }
@@ -736,6 +736,10 @@ public class TranslationServiceImpl implements TranslationService {
 
         @Override
         protected Boolean work() throws Exception {
+            // we need to call clear at the beginning because text flow target
+            // history rely on after commit callback.
+            textFlowTargetDAO.clear();
+            document = entityManager.find(HDocument.class, document.getId());
             boolean changed = false;
 
             // we need a fresh object in this session,
@@ -829,7 +833,7 @@ public class TranslationServiceImpl implements TranslationService {
 
                         changed = true;
                         Long actorId;
-                        if(assignCreditToUploader){
+                        if (assignCreditToUploader){
                             HPerson hPerson = authenticatedAccount.getPerson();
                             hTarget.setTranslator(hPerson);
                             hTarget.setLastModifiedBy(hPerson);
@@ -848,8 +852,6 @@ public class TranslationServiceImpl implements TranslationService {
                     handleOp.get().increaseProgress(1);
                 }
             }
-            // every batch will start with a new hibernate session therefore no
-            // need to call clear
             textFlowTargetDAO.flush();
 
             return changed;

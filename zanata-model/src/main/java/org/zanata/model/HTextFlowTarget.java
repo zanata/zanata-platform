@@ -149,8 +149,8 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
 
     // TODO PERF @NaturalId(mutable=false) for better criteria caching
     @NaturalId
-    @ManyToOne
-    @JoinColumn(name = "locale", nullable = false)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "locale", nullable = false, updatable = false)
     @Field(analyze = Analyze.NO)
     @FieldBridge(impl = LocaleIdBridge.class)
     public @Nonnull
