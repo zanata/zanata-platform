@@ -27,6 +27,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Properties;
 
 import javax.mail.BodyPart;
@@ -42,6 +43,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.common.ProjectType;
 import org.zanata.i18n.Messages;
+import org.zanata.i18n.MessagesFactory;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 
 /**
@@ -64,12 +66,19 @@ public class EmailStrategyTest {
         }
     };
     String fromAddress = "zanata@example.com";
-    String fromName = "SERVER_NAME[测试]";
+    String fromName = msgs.get("jsf.Zanata");
     String toName = "User Name[测试]";
     String toAddress = "username@example.com";
     String serverPath = "https://zanata.example.com";
     InternetAddress toAddr;
     InternetAddress[] toAddresses;
+
+    MessagesFactory msgsFactory = new MessagesFactory() {
+        @Override
+        public Messages getMessages(Locale locale) {
+            return msgs;
+        }
+    };
 
     Session session = Session.getDefaultInstance(new Properties());
     EmailBuilder.Context context = new EmailBuilder.Context() {
@@ -82,13 +91,8 @@ public class EmailStrategyTest {
         String getServerPath() {
             return serverPath;
         }
-
-        @Override
-        String getFromName() {
-            return fromName;
-        }
     };
-    EmailBuilder builder = new EmailBuilder(session, context, msgs);
+    EmailBuilder builder = new EmailBuilder(session, context, msgsFactory);
     MimeMessage message;
 
     // context values needed for some templates:

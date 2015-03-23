@@ -36,6 +36,7 @@ import org.zanata.i18n.Messages;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
+import org.zanata.i18n.MessagesFactory;
 
 import static com.googlecode.totallylazy.collections.PersistentMap.constructors.map;
 import static org.jboss.seam.ScopeType.EVENT;
@@ -65,7 +66,7 @@ public class EmailBuilder {
     @In
     private Context emailContext;
     @In
-    private Messages msgs;
+    private MessagesFactory messagesFactory;
 
     private static VelocityEngine makeVelocityEngine() {
         VelocityEngine ve = new VelocityEngine();
@@ -148,9 +149,14 @@ public class EmailBuilder {
             InternetAddress[] toAddresses, String receivedReason)
             throws MessagingException {
 
+        // TODO remember users' locales, and customise for each recipient
+        // msgs = messagesFactory.getMessages(account.getLocale());
+        Messages msgs = messagesFactory.getDefaultLocaleMessages();
+
         Optional<InternetAddress> from = strategy.getFromAddress();
+        String fromName = msgs.get("jsf.Zanata");
         msg.setFrom(from.or(Addresses.getAddress(
-                emailContext.getFromAddress(), emailContext.getFromName())));
+                emailContext.getFromAddress(), fromName)));
         Optional<InternetAddress[]> replyTo = strategy.getReplyToAddress();
         if (replyTo.isPresent()) {
             msg.setReplyTo(replyTo.get());
@@ -201,16 +207,11 @@ public class EmailBuilder {
     public static class Context {
         @In
         private ApplicationConfiguration applicationConfiguration;
-        @In
-        private Messages msgs;
         String getServerPath() {
             return applicationConfiguration.getServerPath();
         }
         String getFromAddress() {
             return applicationConfiguration.getFromEmailAddr();
-        }
-        String getFromName() {
-            return msgs.get("jsf.Zanata");
         }
     }
 
