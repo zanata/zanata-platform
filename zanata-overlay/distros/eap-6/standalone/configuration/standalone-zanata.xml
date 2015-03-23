@@ -31,6 +31,7 @@
     <system-properties>
         <property name="javamelody.storage-directory" value="${user.home}/zanata/stats"/>
         <property name="hibernate.search.default.indexBase" value="${user.home}/zanata/indexes"/>
+        <property name="jboss.as.management.blocking.timeout" value="1000"/>
     </system-properties>
 
 

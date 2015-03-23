@@ -32,6 +32,7 @@
         <property name="javamelody.storage-directory" value="${user.home}/zanata/stats"/>
         <property name="hibernate.search.default.indexBase" value="${user.home}/zanata/indexes"/>
         <property name="ehcache.disk.store.dir" value="${user.home}/zanata/ehcache"/>
+        <property name="jboss.as.management.blocking.timeout" value="1000"/>
     </system-properties>
 
 
