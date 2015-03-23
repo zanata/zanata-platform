@@ -408,11 +408,10 @@ public class TranslationsRawCompatibilityITCase extends RestTest {
             }
         }.run();
 
-//        putJsonTranslations();
     }
 
-//    @Test
-//    @RunAsClient
+    @Test
+    @RunAsClient
     public void putJsonTranslations() throws Exception {
         // Get the original translations
         ITranslatedDocResource translationsClient =
