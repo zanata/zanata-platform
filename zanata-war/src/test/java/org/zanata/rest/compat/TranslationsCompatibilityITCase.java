@@ -407,8 +407,8 @@ public class TranslationsCompatibilityITCase extends RestTest {
         assertThat(tft3.getTranslator().getEmail(), is("user1@localhost"));
     }
 
-    @Test
-    @RunAsClient
+//    @Test
+//    @RunAsClient
     public void putTranslations() throws Exception {
         ITranslatedDocResource translationsClient =
                 super.createProxy(createClientProxyFactory(ADMIN, ADMIN_KEY),
