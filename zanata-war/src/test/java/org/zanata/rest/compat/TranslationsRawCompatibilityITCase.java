@@ -408,7 +408,7 @@ public class TranslationsRawCompatibilityITCase extends RestTest {
             }
         }.run();
 
-        putJsonTranslations();
+//        putJsonTranslations();
     }
 
 //    @Test
