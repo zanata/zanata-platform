@@ -62,7 +62,7 @@
       <dependency>
         <groupId>org.fedorahosted.tennera</groupId>
         <artifactId>jgettext</artifactId>
-        <version>0.13</version>
+        <version>0.14</version>
       </dependency>
       <dependency>
         <groupId>org.zanata</groupId>
