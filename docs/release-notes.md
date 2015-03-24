@@ -31,6 +31,7 @@ property can safely be reverted or removed before subsequent startups.
 * [1194543](https://bugzilla.redhat.com/show_bug.cgi?id=1194543) - Manual document re-upload makes previous translations fuzzy
 * [1197902](https://bugzilla.redhat.com/show_bug.cgi?id=1197902) - Large translated document push times are inconsistent
 * [1183412](https://bugzilla.redhat.com/show_bug.cgi?id=1183412) - Emails to administrators are sent in the current interface language
+* [1202670](https://bugzilla.redhat.com/show_bug.cgi?id=1202670) - There should be visual clues to indicate active, readonly, and archived versions.
 
 
 -----------------------
