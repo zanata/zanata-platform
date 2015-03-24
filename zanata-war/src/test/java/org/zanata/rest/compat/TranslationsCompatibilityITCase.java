@@ -170,8 +170,8 @@ public class TranslationsCompatibilityITCase extends RestTest {
         response.releaseConnection();
     }
 
-//    @Test
-//    @RunAsClient
+    @Test
+    @RunAsClient
     public void putResource() throws Exception {
         // Create a new Resource
         Resource res = new Resource("new-put-resource");
