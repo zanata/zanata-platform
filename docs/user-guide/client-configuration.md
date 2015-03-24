@@ -1,5 +1,3 @@
-# Common configuration files for Flies clients
-
 # Introduction
 
 In general, Zanata clients should get their configuration from user config, project config and command line args (or similar).
@@ -85,5 +83,3 @@ URLs in project configuration should be matched against the [servers] defined in
 ## Command line or other mechanism (eg Maven properties)
 
 The client should also provide the ability to override user/project configuration values, perhaps with command line arguments or GUI options, etc.
-
-See ZanataMavenIntegration for the Maven configuration properties and example pom.xml.
