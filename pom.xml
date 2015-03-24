@@ -38,6 +38,8 @@
     <zanata.api.version>3.4.1</zanata.api.version>
     <zanata.common.version>3.3.0</zanata.common.version>
     <resteasy.version>3.0.1.Final</resteasy.version>
+    <checkstyle.config.location>https://raw.githubusercontent.com/zanata/zanata-parent/zanata-parent-20/checkstyle.xml</checkstyle.config.location>
+    <checkstyle.suppressions.location>https://raw.github.com/zanata/zanata-parent/zanata-parent-20/checkstyle-suppressions.xml</checkstyle.suppressions.location>
   </properties>
 
   <build>
