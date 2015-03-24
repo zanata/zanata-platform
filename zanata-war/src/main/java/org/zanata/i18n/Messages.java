@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2010-2015, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -58,12 +58,24 @@ import static org.jboss.seam.ScopeType.EVENT;
 @Scope(EVENT)
 public class Messages extends AbstractMap<String, String> {
 
+    /**
+     * Gets the 'messages' ResourceBundle for the locale of the current
+     * request, if any, otherwise server's default locale.
+     * @see org.jboss.seam.web.Locale
+     */
     private static ResourceBundle getResourceBundle() {
+        return getResourceBundle(org.jboss.seam.core.Locale.instance());
+    }
+
+    /**
+     * Gets the 'messages' ResourceBundle for the specified locale.
+     */
+    private static ResourceBundle getResourceBundle(java.util.Locale locale) {
         // Generic ResourceBundle without built-in interpolation:
         ResourceBundle resourceBundle = null;
         try {
             resourceBundle = ResourceBundle.getBundle(
-                    "messages", org.jboss.seam.core.Locale.instance());
+                    "messages", locale);
         } catch (MissingResourceException e) {
             resourceBundle = new ResourceBundle() {
                 @Override
@@ -83,8 +95,23 @@ public class Messages extends AbstractMap<String, String> {
 
     private final ResourceBundle resourceBundle;
 
+    /**
+     * Create an instance for the locale of the current request, if any,
+     * otherwise the server's default locale.
+     */
     public Messages() {
-        this.resourceBundle = getResourceBundle();
+        this(getResourceBundle());
+    }
+
+    /**
+     * Create an instance for the specified locale.
+     */
+    public Messages(java.util.Locale locale) {
+        this(getResourceBundle(locale));
+    }
+
+    private Messages(ResourceBundle resourceBundle) {
+        this.resourceBundle = resourceBundle;
     }
 
     @Observer("org.jboss.seam.localeSelected")
