@@ -168,7 +168,7 @@
                     #{member.person.name}
                   </h3>
               <span class="list__item__meta">
-                #{member.person.account.username}<s:span rendered="#{identity.loggedIn}"> [#{member.person.email}] </s:span>
+                #{member.person.account.username}<s:span rendered="#{s:hasRole('admin')}"> [#{member.person.email}] </s:span>
               </span>
                 </div>
                 <div class="list__item__actions">
