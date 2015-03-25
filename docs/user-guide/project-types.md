@@ -4,10 +4,12 @@ Project type can be specified on the command line, in `zanata.xml`, in `pom.xml`
 
 ## Which Project Type?
 File types are _(selectively)_ supported via the Okapi Framework.
+
 ### Supported Types
 
-#### No Selection
-No Selection allows the upload of all file types other than `.properties` and `.xml` via the Website GUI, but will prevent the use of Zanata CLI clients.
+#### Unspecified
+This project type selection is only shown for old projects that were created before project types were shown on the server. If your project or project-version has this type, you should change it to the appropriate type.
+When project type is not specified, you will not be able to upload source files through the web interface, and you will have to manually add a project type to the client configuration file.
 
 #### File `.txt` `.odt` `.ods` `.odg` `.odp` `.idml` `.dtd` `.htm` `.html`
 Previously _Raw_, File is an **experimental** project type that provides limited support for plain-text, LibreOffice, HTML, inDesign and DTD files. Source files must be under a separate directory to translation files. The behaviour of this project type is subject to change without notice while it is in experimental state.<br>
@@ -15,16 +17,20 @@ The parser recognises newlines for `.txt`, and paragraphs for `.html`.
 
 #### Gettext `.pot`
 Uses the gettext format with a single template (.pot) file. Translation files (.po) are named with the locale identifier.
+
 #### Podir `.pot`
 Uses gettext format with multiple template (.pot) files. Translation files use the same name as template files, but are placed in a directory named with the locale identifier. Use this type for publican/docbook projects.
+
 #### Properties `.properties`
 Handles normal java properties files using ISO-8859-1 encoding (Latin-1). Java properties files require non Latin-1 characters to be escaped with unicode escape characters (e.g. \uFEDC).<br>
 **_Note: Currently, properties files can only be uploaded using the [Zanata CLI Client](http://zanata.org/help/cli/cli-push/)_**
+
 #### Utf8Properties `.properties`
 Handles non-standard java properties files that use UTF-8 encoding, and do not use unicode escape characters.<br>
 **_Note: Currently, properties files can only be uploaded using the [Zanata CLI Client](http://zanata.org/help/cli/cli-push/)_**
 
 ### Partial / Limited Support
+
 #### Xliff
 Not actively supported. _(Details on file schema hopefully forthcoming...)_
 #### Xml
