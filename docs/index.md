@@ -1,31 +1,22 @@
 Zanata Server
 =============
-
-TBD
-
-Features
---------
-
-- TBD
+Please visit [About|Zanata](http://zanata.org/about/)
 
 Installation
 ------------
 
-<!-- For installation instructions please see the [Installation Section](installation) -->
+[Installation section](configuration/installation.md)
 
 Contribute
 ----------
 
-- Issue Tracker: http://bugzilla.redhat.com
-- Source Code: github.com/zanata/zanata-server
+- [Issue Tracker](http://bugzilla.redhat.com/buglist.cgi?product=Zanata)
+- [Source Code on GitHub](http://github.com/zanata)
 
 Support
 -------
-
-If you are having issues, please let us know.
-We have a mailing list located at: zanata-users@redhat.com
+For help and support options, see [Help|Zanata](http://zanata.org/help/)
 
 License
 -------
-
-<!-- The project is licensed under the BSD license. -->
+Zanata is Free software, licensed under the [LGPL](http://www.gnu.org/licenses/lgpl-2.1.html).
