@@ -3,6 +3,9 @@
 <h5>Bugfixes</h5>
 * [1194543](https://bugzilla.redhat.com/show_bug.cgi?id=1194543) - Manual document re-upload makes previous translations fuzzy
 * [1183412](https://bugzilla.redhat.com/show_bug.cgi?id=1183412) - Emails to administrators are sent in the current interface language
+* [875965](https://bugzilla.redhat.com/show_bug.cgi?id=875965) - Enable visible white space in source
+* [1205465](https://bugzilla.redhat.com/show_bug.cgi?id=1205465) - User emails are visible to non admin users in Language page
+* [1205468](https://bugzilla.redhat.com/show_bug.cgi?id=1205468) - Sorting mechanism broken on Languages page
 
 -----------------------
 
