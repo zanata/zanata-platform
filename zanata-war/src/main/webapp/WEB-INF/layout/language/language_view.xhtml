@@ -131,7 +131,7 @@
                   #{member.person.name}
                 </h3>
                   <span class="list__item__meta">
-                    #{member.person.account.username} [#{member.person.email}]
+                    #{member.person.account.username} <s:fragment rendered="#{s:hasRole('admin')}">[#{member.person.email}]</s:fragment>
                   </span>
               </div>
               <div class="bx--inline-block txt--align-right">
