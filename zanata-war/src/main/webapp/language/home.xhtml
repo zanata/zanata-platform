@@ -78,7 +78,7 @@
                         <h3 class="list__title">
                           #{language.retrieveDisplayName()}
                           <span class="txt--meta l--push-left-quarter l--push-right-half" title="#{msgs['jsf.TeamMembers']}">
-                            <i class="i i--users"></i> #{language.members.size}
+                            <i class="i i--users"></i> #{supportedLanguageAction.getMemberSize(language.localeId)}
                           </span>
                         </h3>
                         <span class="list__item__meta">#{language.localeId.id} [#{language.retrieveNativeName()}]</span>
