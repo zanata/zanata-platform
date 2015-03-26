@@ -17,7 +17,8 @@ The following packages are optional, but recommended:
  1. Download and install MySQL 5 from the [MySQL download page](http://dev.mysql.com/downloads/mysql/).
  Zanata has been thoroughly tested against MySQL 5 and the Zanata team therefore recommends that you install and use this version with Zanata.
 
- 1. Create a database schema for Zanata. **NOTE:** Ensure that the default collation is UTF-8.
+ 1. Start MySQL service and create a database schema for Zanata.
+ `CREATE DATABASE zanata /**!40100 DEFAULT CHARACTER SET utf8 **/;`
 
 ## Installing Zanata
 
@@ -68,6 +69,34 @@ Zanata does not create an admin user by default. You need to register specific u
 <simple name="java:global/zanata/smtp/tls" value="" />
 <simple name="java:global/zanata/smtp/ssl" value="" />
 ```
+
+## Installing virus scanner (optional)
+
+To prevent virus infected document being uploaded, Zanata is capable of working with clamav.
+If clamav is not installed, a warning will be logged when files are uploaded.
+If clamav is installed but `clamd` is not running,
+Zanata may reject all uploaded files (depending on file type).  To install and run clamav:
+```
+# Assuming the function install_missing() is still available
+if [ -e /usr/bin/systemctl ];then
+    install_missing clamav-server clamav-scanner-systemd
+    sudo systemctl enable clamd@scan
+    sudo systemctl start clamd@scan
+else
+    install_missing clamd
+    sudo chkconfig clamd on
+    if ! service clamd status ;then
+	sudo service clamd start
+    fi
+fi
+```
+
+You should probably also ensure that freshclam is set to run at least once per day,
+to keep virus definitions up to date.
+The clamav package will probably do this for you, but you can check by looking for `/etc/cron.daily/freshclam`.
+To override the default behaviour above, you can set the system property `virusScanner` when running the server.
+`DISABLED` means no virus scanning will be performed; all files will be assumed safe.
+Any other value will be treated as the name of a virus scanner command: the command will be called with the name of a file to scan.
 
 ## Running Zanata
 

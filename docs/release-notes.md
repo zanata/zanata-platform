@@ -16,7 +16,7 @@ property can safely be reverted or removed before subsequent startups.
         </system-properties>
 
 
-<h5>Bugfixes</h5>
+<h5>Bug fixes</h5>
 * [1194543](https://bugzilla.redhat.com/show_bug.cgi?id=1194543) - Manual document re-upload makes previous translations fuzzy
 
 -----------------------
@@ -27,7 +27,7 @@ property can safely be reverted or removed before subsequent startups.
 
 ## 3.6.1
 
-<h5>Bugfixes</h5>
+<h5>Bug fixes</h5>
 * [1194543](https://bugzilla.redhat.com/show_bug.cgi?id=1194543) - Manual document re-upload makes previous translations fuzzy
 * [1197902](https://bugzilla.redhat.com/show_bug.cgi?id=1197902) - Large translated document push times are inconsistent
 * [1183412](https://bugzilla.redhat.com/show_bug.cgi?id=1183412) - Emails to administrators are sent in the current interface language
@@ -35,11 +35,6 @@ property can safely be reverted or removed before subsequent startups.
 * [875965](https://bugzilla.redhat.com/show_bug.cgi?id=875965) - Enable visible white space in source
 * [1205465](https://bugzilla.redhat.com/show_bug.cgi?id=1205465) - User emails are visible to non admin users in Language page
 * [1205468](https://bugzilla.redhat.com/show_bug.cgi?id=1205468) - Sorting mechanism broken on Languages page
-
------------------------
-
-<h5>New Features</h5>
-*
 
 ----
 
@@ -79,7 +74,7 @@ Zanata now requires JMS to be configured in standalone.xml in order to queue up 
 * [1183994](https://bugzilla.redhat.com/show_bug.cgi?id=1183994) - RFE: Gather and display metrics detailing the number of words translated by a specific translator, for a specific project
 
 
-<h5>Bugfixes</h5>
+<h5>Bug fixes</h5>
 * [1132271](https://bugzilla.redhat.com/show_bug.cgi?id=1132271) - Access contact admin url without logging in will trigger an exception
 * [1082448](https://bugzilla.redhat.com/show_bug.cgi?id=1082448) - Dashboard shows incorrect number of maintained projects
 * [1069951](https://bugzilla.redhat.com/show_bug.cgi?id=1069951) - Empty string in adding a language causes a broken language to be added
@@ -257,3 +252,548 @@ Zanata now requires JMS to be configured in standalone.xml in order to queue up 
 * [1044768](https://bugzilla.redhat.com/show_bug.cgi?id=1044768) - Zanata does not pull the latest changes in translation due to unchanged ETags
 * [1063112](https://bugzilla.redhat.com/show_bug.cgi?id=1063112) - Client push in dryRun mode should not invoke CopyTrans
 * [1069428](https://bugzilla.redhat.com/show_bug.cgi?id=1069428) - Various concurrency problems due to unsafe Seam injections
+
+-----------------------
+
+## 3.0.0
+<h5>New Features</h5>
+
+* [980659](https://bugzilla.redhat.com/show_bug.cgi?id=980659) - TMX import/export
+    * Imported TMX shown in translation memory search results
+    * Allow users to export translations to TMX (from Project/Version pages)
+    * Allow admins to export **all** project translations to TMX (from Projects page)
+    * Allow admins to import and export TMX translation memories (from Admin pages)
+
+* [953734](https://bugzilla.redhat.com/show_bug.cgi?id=953734) - Translation review/approval
+    * Coordinators can assign reviewers for their languages
+    * Project maintainers can require review for translations in their projects
+    
+* [979285](https://bugzilla.redhat.com/show_bug.cgi?id=979285) - Implement virus scanning using ClamAV (clamdscan)
+* [978666](https://bugzilla.redhat.com/show_bug.cgi?id=978666) - Translators and reviewers can add comments to translations
+* [844819](https://bugzilla.redhat.com/show_bug.cgi?id=844819) - New visual style for Zanata
+* [1066756](https://bugzilla.redhat.com/show_bug.cgi?id=1066756) - Add user dashboard
+* [981064](https://bugzilla.redhat.com/show_bug.cgi?id=981064) - Recent translation/review activity
+* Upgrade platform to JBoss EAP 6.1
+* Add descriptions on project type selectors
+* Allow adapter parameters to be set on source document upload
+* Editor improvements
+* Add attention key shortcut: Alt+X
+* Add attention shortcut to copy from source: Alt+X,G
+* File upload
+* Move raw document storage to file system
+
+-----------------------
+
+## 2.3.2
+
+* [958350](https://bugzilla.redhat.com/show_bug.cgi?id=958350) - Concurrent save on different row causes incorrect validation warnings in current row
+* [959060](https://bugzilla.redhat.com/show_bug.cgi?id=959060) - Generated Zanata config file contains invalid project type
+* [961163](https://bugzilla.redhat.com/show_bug.cgi?id=961163) - shift-w and g erroneously triggers Copy from Source
+* [959115](https://bugzilla.redhat.com/show_bug.cgi?id=959115) - Database connection pool leaks under load
+
+-----------------------
+
+## 2.3.1
+<h5>Bug fixes</h5>
+
+* [953195](https://bugzilla.redhat.com/show_bug.cgi?id=953195) - HQL query exception while trying to filter strings
+* Prevent incorrect validation warnings with concurrent edits
+* Search result back to editor causes multiple code mirror focus
+* Support message bookmark
+
+-----------------------
+
+## 2.3.0
+
+* [908548](https://bugzilla.redhat.com/show_bug.cgi?id=908548) - Long document names cause layout issues in Doc page
+* [786630](https://bugzilla.redhat.com/show_bug.cgi?id=786630) - Shortcut Alt+G causes editor to lose focus
+* [870876](https://bugzilla.redhat.com/show_bug.cgi?id=870876) - PO download for non-PO projects cannot be uploaded
+* [846314](https://bugzilla.redhat.com/show_bug.cgi?id=846314) - Show validation state in doc list and link to error-filter view in editor
+* [844553](https://bugzilla.redhat.com/show_bug.cgi?id=844553) - Notification of an entry should have a link that go to the entry
+* [727826](https://bugzilla.redhat.com/show_bug.cgi?id=727826) - Order Projects alphabetically
+* [917911](https://bugzilla.redhat.com/show_bug.cgi?id=917911) - Keep "Validation Warnings: n" displayed even when moving focus to different pages
+* [910637](https://bugzilla.redhat.com/show_bug.cgi?id=910637) - Keep "Validation Warnings: n" displayed even when moving focus to different entry
+* [767055](https://bugzilla.redhat.com/show_bug.cgi?id=767055) - Error when pull as XLIFF file format: Underlying stream encoding 'ASCII' and input parameter for writeStartDocument() method 'utf-8' do not match
+* [953361](https://bugzilla.redhat.com/show_bug.cgi?id=953361) - Source document name search triggers delete confirmation
+* [874335](https://bugzilla.redhat.com/show_bug.cgi?id=874335) - Allow admins to see the email addresses of project maintainers
+* [950806](https://bugzilla.redhat.com/show_bug.cgi?id=950806) - Notification links disappear from list when detail is viewed
+* [947832](https://bugzilla.redhat.com/show_bug.cgi?id=947832) - Empty translation page when pushing next
+* [923461](https://bugzilla.redhat.com/show_bug.cgi?id=923461) - Update document list view and link to the violated entries after project wide validation
+* [910183](https://bugzilla.redhat.com/show_bug.cgi?id=910183) - Search in Document List does not show when on page 2+ of Document List
+* [854087](https://bugzilla.redhat.com/show_bug.cgi?id=854087) - report which locales have recent changes
+
+-----------------------
+
+## 2.2.2
+
+* [917895](https://bugzilla.redhat.com/show_bug.cgi?id=917895) - Validation rules should be enabled by default
+* [917897](https://bugzilla.redhat.com/show_bug.cgi?id=917897) - AlreadyClosedException when new document uploaded and translated
+* [807100](https://bugzilla.redhat.com/show_bug.cgi?id=807100) - Removing admin role doesn't take effect for Kerberos authentication
+
+-----------------------
+
+## 2.2.1
+
+* [915130](https://bugzilla.redhat.com/show_bug.cgi?id=915130) - Unexpected error when clicking "resend activation email" or "update email address"
+* [916812](https://bugzilla.redhat.com/show_bug.cgi?id=916812) - Activation Key should update after user click "Resend activation email" and "Change email"
+
+-----------------------
+
+## 2.2.0
+
+* [895280](https://bugzilla.redhat.com/show_bug.cgi?id=895280) - Persist project type on server
+* [893811](https://bugzilla.redhat.com/show_bug.cgi?id=893811) -  Old registration activation link should expire after a given period
+* [750104](https://bugzilla.redhat.com/show_bug.cgi?id=750104) - Old email validation links for email change should expire after a given period
+* [913373](https://bugzilla.redhat.com/show_bug.cgi?id=913373) - Ctrl-Enter not moving to next trans unit if there are no changes
+* [908563](https://bugzilla.redhat.com/show_bug.cgi?id=908563) - Html Xml tag validation will produce exception in certain case
+* [912583](https://bugzilla.redhat.com/show_bug.cgi?id=912583) - Change project type 'raw' to be 'file'
+* [910216](https://bugzilla.redhat.com/show_bug.cgi?id=910216) - Statistics API returns word level statistics when only message level statistics are requested
+* [910212](https://bugzilla.redhat.com/show_bug.cgi?id=910212) - Ability to resume push/pull from a specified document
+* [903470](https://bugzilla.redhat.com/show_bug.cgi?id=903470) - Allow java clients to send and receive source control URLs for projects
+* [896356](https://bugzilla.redhat.com/show_bug.cgi?id=896356) - Need to specify the size of the stream when sending a file (or part thereof)
+* [896299](https://bugzilla.redhat.com/show_bug.cgi?id=896299) - store and display source control URL
+* [895295](https://bugzilla.redhat.com/show_bug.cgi?id=895295) - Validator to warn of inconsistent number of lines
+* [913745](https://bugzilla.redhat.com/show_bug.cgi?id=913745) - Zip File download does not work
+* [913331](https://bugzilla.redhat.com/show_bug.cgi?id=913331) - "Contact Team Coordinator" return unexpected error
+* [913310](https://bugzilla.redhat.com/show_bug.cgi?id=913310) - Value in zanata.properties does not shows up in server configuration page
+* [912590](https://bugzilla.redhat.com/show_bug.cgi?id=912590) - Project maintainer should be able to "edit page code"
+* [909032](https://bugzilla.redhat.com/show_bug.cgi?id=909032) - Project version's project type should default to that of the project
+* [909026](https://bugzilla.redhat.com/show_bug.cgi?id=909026) - Unexpected error when trying to download config file when project-type not set on version
+* [903926](https://bugzilla.redhat.com/show_bug.cgi?id=903926) - Project maintainer should be able to define and save validations rules per project/document
+* [903477](https://bugzilla.redhat.com/show_bug.cgi?id=903477) - Workspace document list view should have same features as JSF document list view
+* [903026](https://bugzilla.redhat.com/show_bug.cgi?id=903026) - Display Last Translator and Last Modified column in the document list
+
+-----------------------
+
+## 2.1.3
+
+* [896332](https://bugzilla.redhat.com/show_bug.cgi?id=896332) - CopyTrans should use the most recent matching translation
+
+-----------------------
+
+## 2.1.1
+
+* [894909](https://bugzilla.redhat.com/show_bug.cgi?id=894909) - Kerberos user unable to log in properly
+* [888090](https://bugzilla.redhat.com/show_bug.cgi?id=888090) - Implement REST ETag mechanism for certain GET operations
+
+-----------------------
+
+## 2.1.0
+
+* [844550](https://bugzilla.redhat.com/show_bug.cgi?id=844550) - Provide sort by option on branch stats page
+* [874367](https://bugzilla.redhat.com/show_bug.cgi?id=874367) - Editor should warn before saving a Fuzzy translation as Approved from a keyboard shortcut
+* [877223](https://bugzilla.redhat.com/show_bug.cgi?id=877223) - Add "clear" button to search field in workspace
+* [878275](https://bugzilla.redhat.com/show_bug.cgi?id=878275) - Breadcrumb navigation in workspace should separate project version and locale
+* [880436](https://bugzilla.redhat.com/show_bug.cgi?id=880436) - Plain text area editor doesn't get autosize correctly with long string
+* [882739](https://bugzilla.redhat.com/show_bug.cgi?id=882739) - Tooltips on paging buttons (editor) shows shortcut keys which doesn't apply
+* [892816](https://bugzilla.redhat.com/show_bug.cgi?id=892816) - Recently removed project maintainer retains access to project maintainer actions
+* [874374](https://bugzilla.redhat.com/show_bug.cgi?id=874374) - Make translation editor options persistent
+* [880894](https://bugzilla.redhat.com/show_bug.cgi?id=880894) - Externalize Email Server configuration
+* [881549](https://bugzilla.redhat.com/show_bug.cgi?id=881549) - Allow admins to change account user names
+* [884335](https://bugzilla.redhat.com/show_bug.cgi?id=884335) - Add Translation Memory Cache for filter query
+* [891485](https://bugzilla.redhat.com/show_bug.cgi?id=891485) - Removing a locale member causes a RecordNotFound error
+* [864280](https://bugzilla.redhat.com/show_bug.cgi?id=864280) - upload/download raw file types with the Maven plugin
+* [876012](https://bugzilla.redhat.com/show_bug.cgi?id=876012) - The Content-Type of Download as po link is application/octet-stream, but should be text/plain
+* [881962](https://bugzilla.redhat.com/show_bug.cgi?id=881962) - Project-wide Search and replace starts by Enter key before ready
+* [887052](https://bugzilla.redhat.com/show_bug.cgi?id=887052) - Source and Target search in editor fails when the search term includes an apostrophe (')
+* [888150](https://bugzilla.redhat.com/show_bug.cgi?id=888150) - Case sensitive search should return case sensitive results
+* [877228](https://bugzilla.redhat.com/show_bug.cgi?id=877228) - Clearing the search field in workspace should keep position at last selected message
+* [880444](https://bugzilla.redhat.com/show_bug.cgi?id=880444) - enable spell check in code mirror editor for Firefox
+* [880879](https://bugzilla.redhat.com/show_bug.cgi?id=880879) - Undo button causing repeated save failures and other weirdness
+* [884402](https://bugzilla.redhat.com/show_bug.cgi?id=884402) - Entry should NOT move unless it is absolutely needed
+* [884502](https://bugzilla.redhat.com/show_bug.cgi?id=884502) - navigation breaks in filter mode after saved status not included in filter view
+* [887717](https://bugzilla.redhat.com/show_bug.cgi?id=887717) - enable 'Enter' key saves immediately will make pager input dysfunctional
+* [887718](https://bugzilla.redhat.com/show_bug.cgi?id=887718) - Too slow to load the last pages of a big document with Firefox
+* [888096](https://bugzilla.redhat.com/show_bug.cgi?id=888096) - project become read only with editor options panel open will still allow user to change editor options
+* [888592](https://bugzilla.redhat.com/show_bug.cgi?id=888592) - Options to customize translation editor display
+* [889411](https://bugzilla.redhat.com/show_bug.cgi?id=889411) - Red border indicating failed validation shows on strings without validation warning/error
+* [891458](https://bugzilla.redhat.com/show_bug.cgi?id=891458) - Document List search returning incorrect results
+* [885934](https://bugzilla.redhat.com/show_bug.cgi?id=885934) - option to avoid encoding tab as \t
+* [803923](https://bugzilla.redhat.com/show_bug.cgi?id=803923) - email should be able to corrected during register validation
+* [829565](https://bugzilla.redhat.com/show_bug.cgi?id=829565) - Kerberos activation link in email gets 404 page not found
+* [872039](https://bugzilla.redhat.com/show_bug.cgi?id=872039) - Escaping with single-quote (a.k.a. Apostrophes ') character in MessageFormat strings can cause confusing validation warnings
+* [886711](https://bugzilla.redhat.com/show_bug.cgi?id=886711) - Error when using pull for project type raw when the document name does not include a type extension
+* [831056](https://bugzilla.redhat.com/show_bug.cgi?id=831056) - Option for highlight only the search terms
+* [785046](https://bugzilla.redhat.com/show_bug.cgi?id=785046) - Limit source string length in properties file
+* [846643](https://bugzilla.redhat.com/show_bug.cgi?id=846643) - Shorten the navigation sequence to open a document in the Editor
+* [884386](https://bugzilla.redhat.com/show_bug.cgi?id=884386) - Email validation link should be invalid after user validate the email, or user request another validation
+
+-----------------------
+
+## 2.0.3
+<h5>New Features</h5>
+
+* Allow admin to add extra locales by typing in the BCP-47 locale code.
+* TM Merge reports what it did
+* Allow choice of editor page size
+* Support txt, dtd and open document format (REST & web interface)
+* Editor option to disable CodeMirror (to enable browser spell-check)
+* Detect loss of connection to server
+* Fix for problem creating users with Kerberos
+* Allow Project Maintainers to Delete a Source Document
+
+[<h5>Bug fixes | Bugzilla</h5>](https://bugzilla.redhat.com/buglist.cgi?j_top=OR&f1=cf_fixed_in&o1=substring&classification=Community&o2=substring&query_format=advanced&f2=cf_fixed_in&bug_status=VERIFIED&bug_status=RELEASE_PENDING&bug_status=POST&bug_status=CLOSED&v1=2.0.3&product=Zanata)
+
+-----------------------
+
+## 2.0.2
+* Bug fixes for document search/navigation
+
+
+-----------------------
+
+## 2.0.1
+* Update jboss-el to avoid bad artifact in repository
+
+-----------------------
+
+## 2.0.0
+<h5>New Features</h5>
+
+* UI redesign
+* Performance: async push service to avoid timeouts when pushing source/target
+* Performance: improve performance when loading large documents
+* Allow user to save work when concurrent edit occurs
+* Include last translator information in TM info box
+* Web analytics (Piwik integration)
+* Navigation breadcrumbs
+* Bugzilla link in UI
+* Get Stats about Translation Documents via REST
+* Remove blinking notification in editor
+* Configurable page size
+* Advanced glossary features
+* Open ID Authentication
+* Admin role assignment configuration for authentication types
+* Highlight tags in editor fields (CodeMirror for editor)
+* Translation editor rewrite
+* Project-level default Copy Trans options
+* Red bars for translations with validation warnings should stay in red when moving to the next row
+* Option to show word or message based statistics
+* Visible whitespace in editor
+* View history of translations for a text flow
+
+[<h5>Bug fixes | Bugzilla</h5>](https://bugzilla.redhat.com/buglist.cgi?j_top=OR&f1=cf_fixed_in&o1=substring&classification=Community&o2=substring&query_format=advanced&f2=cf_fixed_in&bug_status=CLOSED&v1=1.8.0&v2=2.0.0&product=Zanata)
+
+-----------------------
+
+## 1.7.3
+[<h5>Bug fixes | Bugzilla</h5>](https://bugzilla.redhat.com/buglist.cgi?f1=cf_fixed_in&o1=substring&classification=Community&query_format=advanced&bug_status=CLOSED&v1=1.7.3&product=Zanata)
+
+-----------------------
+
+## 1.7.2
+[<h5>Bug fixes | Bugzilla</h5>](https://bugzilla.redhat.com/buglist.cgi?classification=Community&target_release=1.7.2&query_format=advanced&bug_status=CLOSED&product=Zanata)
+
+-----------------------
+
+## 1.7.1
+[<h5>Bug fixes | Bugzilla</h5>](https://bugzilla.redhat.com/buglist.cgi?classification=Community&target_release=1.7.1&query_format=advanced&bug_status=CLOSED&product=Zanata)
+
+-----------------------
+
+## 1.7.0
+<h5>New Features</h5>
+
+* UI Improvements
+* Don't enforce locales for source documents
+* On-Demand copy trans
+* Email log appender
+* Centralise management of key shortcuts in Zanata
+* Improvements to reindexing (processing in small batches, index classes separately)
+* Editor validation for XML entities
+* Undo button for saved translations
+* Translation Memory merge in editor
+* Add support for positional strings in printf validator
+* Translation Memory now uses word-based indexing
+ 
+[<h5>Bug fixes | Bugzilla</h5>](https://bugzilla.redhat.com/buglist.cgi?classification=Community&target_release=1.6.2&target_release=1.7&query_format=advanced&bug_status=CLOSED&product=Zanata)
+
+-----------------------
+
+## 1.6.1
+* Allow Zanata to add locales for which plural form is not known
+
+[<h5>Bug fixes | Bugzilla</h5>](https://bugzilla.redhat.com/buglist.cgi?classification=Community&target_release=1.6.1&query_format=advanced&bug_status=CLOSED&product=Zanata)
+
+-----------------------
+
+## 1.6.0
+<h5>New Features</h5>
+
+* UI Improvements
+* Allow Project Maintainers to edit all language files
+* Glossary suggestions
+* Add the ability to specify custom locales that are not enabled by default
+* Upgrade Liquibase to version 2.0
+* Project grouping
+* Support plural forms
+* Offline translation feature via web UI
+* Allow translators to push translations using Maven client
+* Indicators for simultaneous edits
+* Java style variable validations in translation editor
+* "Create Project" for non-administrator users
+* Display page context in window title
+* Ability to monitor Zanata server statistics (JavaMelody)
+* Overview for available keyboard shortcuts in web editor
+
+[<h5>Bug fixes</h5>](https://bugzilla.redhat.com/buglist.cgi?classification=Community&target_release=1.6&target_release=1.6-alpha-1&target_release=1.6-beta-1&query_format=advanced&bug_status=CLOSED&product=Zanata)
+  
+-----------------------
+
+## 1.5.0
+<h5>New Features</h5>
+
+* [757621](https://bugzilla.redhat.com/show_bug.cgi?id=757621) - Allow bookmarking of selected document, document list filter and current view
+* [758587](https://bugzilla.redhat.com/show_bug.cgi?id=758587) - Add workspace query string parameters for generating a custom doclist with a custom title.
+    * e.g. &title=Custom%20title&doc=full/path/of/first/doc&doc=full/path/of/second/doc
+
+* [755759](https://bugzilla.redhat.com/show_bug.cgi?id=755759) - Allow readonly access to retired project/project iteration
+* [773459](https://bugzilla.redhat.com/show_bug.cgi?id=773459) - Implement filter messages in the editor by translation status
+* [768802](https://bugzilla.redhat.com/show_bug.cgi?id=768802) - Newline validation on leading and trailing string
+* [769471](https://bugzilla.redhat.com/show_bug.cgi?id=769471) - Variables to be checked for consistency
+* [756235](https://bugzilla.redhat.com/show_bug.cgi?id=756235) - XML and HTML tags to be checked for completeness
+* Redesign of color scheme translation editor workspace layout
+* Project/project iteration status changes: ACTIVE, READONLY, and OBSOLETE
+* Project list filtering based on status
+* Overall statistics page for Admin
+* Add file download page with the option to download a single PO file, or a zip with a project iteration's files for one locale
+* Translation memory results now have highlighted differences
+* Activate entity caching
+* Maven client option to create 'skeleton' PO files when no translations are present
+* Maven client option to log detailed client-server message information
+* Generate Zanata Rest API documentation
+* Add automated compatibility tests with previous versions of the Zanata java client classes
+* Redirect to previous page after sign in
+* Several UI updates and changes
+ 
+<h5>Bug fixes</h5>
+
+* [785034](https://bugzilla.redhat.com/show_bug.cgi?id=785034) - Rapid key navigation causes backlog of TM queries
+* [750956](https://bugzilla.redhat.com/show_bug.cgi?id=750956) - Long strings slow down the operation
+* [756292](https://bugzilla.redhat.com/show_bug.cgi?id=756292) - "Participants" information is incorrect
+* [759337](https://bugzilla.redhat.com/show_bug.cgi?id=759337) - Translation editor: Long word in source cell invades the editor cell
+* [746899](https://bugzilla.redhat.com/show_bug.cgi?id=746899) - On push operations, copyTrans runs too slowly
+* [719176](https://bugzilla.redhat.com/show_bug.cgi?id=719176) - Edit profile: "duplicate email" is shown even if user press save without changing email
+* [690669](https://bugzilla.redhat.com/show_bug.cgi?id=690669) - Translation editor table shows changes which failed to save
+
+-----------------------
+
+## 1.4.5.2
+ * Fix handling of fuzzy entries when saving Properties files
+
+-----------------------
+
+## 1.4.5.1
+ * [795597](https://bugzilla.redhat.com/show_bug.cgi?id=795597) - Fix regression with Unicode encoding for ordinary (Latin-1) .properties files
+
+-----------------------
+
+## 1.4.5
+ * [742872](https://bugzilla.redhat.com/show_bug.cgi?id=742872) - Add support for Maven modules:
+ * [760431](https://bugzilla.redhat.com/show_bug.cgi?id=760431) - Fix bug: Moving to a new page does not refresh the translation textboxes (ghost translations)
+
+-----------------------
+
+## 1.4.4
+* [747836](https://bugzilla.redhat.com/show_bug.cgi?id=747836) - Ensure final reindex batch is properly flushed
+* [760390](https://bugzilla.redhat.com/show_bug.cgi?id=760390) - Support UTF-8 Properties files, handle empty properties
+* [759994](https://bugzilla.redhat.com/show_bug.cgi?id=759994) - Fix bug: Editor table stops working after 'Source and Target' search returns no results
+* Add dryRun option for Maven goals 'push' and 'pull'
+
+-----------------------
+
+## 1.4.3
+<h5>New Features</h5>
+
+* [750690](https://bugzilla.redhat.com/show_bug.cgi?id=750690) - Show message context in editor info panel
+* [727716](https://bugzilla.redhat.com/show_bug.cgi?id=727716) - Add failsafe editor in case of Seam Text problems
+* [730189](https://bugzilla.redhat.com/show_bug.cgi?id=730189) - Change string similarity algorithm so that only identical strings (not substrings) can get 100% 
+* [747836](https://bugzilla.redhat.com/show_bug.cgi?id=747836) - Show progress during re-index operations; avoid timeout for large databases
+* Update gwteventservice to 1.2.0-RC1
+* Modify email templates to include server URL
+
+<h5>Bug fixes</h5>
+
+* [754637](https://bugzilla.redhat.com/show_bug.cgi?id=754637) - 'J' and 'K' navigation keys trigger when entering text in the TM search box
+* [756293](https://bugzilla.redhat.com/show_bug.cgi?id=756293) - Not able to work in parallel on the same workbench
+* [751264](https://bugzilla.redhat.com/show_bug.cgi?id=751264) - Fix problems with editor table when searching or switching pages
+
+-----------------------
+
+## 1.4.2
+* [742083](https://bugzilla.redhat.com/show_bug.cgi?id=742083) - Language team coordinator
+* [742854](https://bugzilla.redhat.com/show_bug.cgi?id=742854) - Contact server admins 
+* [743783](https://bugzilla.redhat.com/show_bug.cgi?id=743783) - First/last entry button 
+* [744114](https://bugzilla.redhat.com/show_bug.cgi?id=744114) - Load project pages faster 
+* [744671](https://bugzilla.redhat.com/show_bug.cgi?id=744671) - Option for Enter to save translation 
+* [746859](https://bugzilla.redhat.com/show_bug.cgi?id=746859) - Sort projects by name, not ID 
+* [740122](https://bugzilla.redhat.com/show_bug.cgi?id=740122) - Make newlines visible to reduce newline mismatch errors in translations 
+* [740191](https://bugzilla.redhat.com/show_bug.cgi?id=740191) - Improve shortcut keys
+* [746870](https://bugzilla.redhat.com/show_bug.cgi?id=746870) - Save as Fuzzy now leaves the cell editor open
+* [743134](https://bugzilla.redhat.com/show_bug.cgi?id=743134) - Modal navigation: next fuzzy, untranslated, fuzzy or untranslated
+* Rearrange various UI elements to be more logical (profile page, document stats, project search field)
+* Users now have to ask before joining a language team
+* Coordinator can add and remove team members
+* Contact coordinators
+* Fix tab order: editor cell -> Save as Approved -> Save as Fuzzy -> Cancel
+
+-----------------------
+
+## 1.4.1
+* [741523](https://bugzilla.redhat.com/show_bug.cgi?id=741523) - Fixed: % completed should be calculated with words, not messages
+* [724867](https://bugzilla.redhat.com/show_bug.cgi?id=724867) - Fixed: Selecting Administration submenu items does not always highlight the parent menu
+* [742111](https://bugzilla.redhat.com/show_bug.cgi?id=742111) - Fixed: Change of tile to list view on Language page, make project list sortable 
+* [743179](https://bugzilla.redhat.com/show_bug.cgi?id=743179) - Performance fix for projects with 1000+ documents
+
+-----------------------
+
+## 1.4
+* add project-type to zanata.xml for generic push/pull commands
+* redirect to login from translation editor when required
+* if domain is left blank by admin, don't populate email address for new users
+* UI bug fixes
+
+-----------------------
+
+## 1.4-alpha-1
+* create generic push/pull commands, with include/exclude filters
+* add support for Java Properties and XLIFF projects
+* bug fix: mark existing translations of modified XLIFF/Properties strings as fuzzy
+* modify keyboard shortcuts in editor
+* add new Zanata logo/favicon
+* various UI improvements
+* auto-size for translation text area
+* add icons to buttons and remove text
+* add option to hide editor buttons
+* remove Clone and Save button; move Copy button to middle
+* autosave when leaving a cell
+* remove Fuzzy checkbox; add Save as Fuzzy
+* better statistics graphs
+* display resource IDs for translation units
+* add ability to hide translation unit details
+* show translation states with coloured side bars, and italics for Fuzzy
+* recalculate missing word counts
+* add liquibase script
+* bug fix for search re-indexing by admin
+* copy translations of identical strings when importing new documents
+* bug fixes and improvements for UI
+* bug fix for word counts (thread safety)
+* remove email address from Language Team pages
+* enable stats for anonymous users
+* no need to enforce locales for source documents
+* bug fix for push/merge when PO files are missing some msgids
+* bug fixes
+
+-----------------------
+
+## 1.3
+* bug fixes for authentication and for source comments
+
+-----------------------
+
+## 1.3-alpha-3
+* finalise rebrand from flies->zanata: XML namespaces, media types, etc
+* more logging for authentication errors
+* bug fix for Kerberos authentication
+
+-----------------------
+
+## 1.3-alpha-2
+* switch source control to git on github
+* rebrand from flies->zanata (maven artifacts, java packages, mailing lists)
+* Fedora authentication rhbz#692011
+* generate zanata.xml config file (http://code.google.com/p/flies/issues/detail?id=282)
+* merge translations on import (http://code.google.com/p/flies/issues/detail?id=28)
+* preserve and generate PO header comments for translator credits (http://code.google.com/p/flies/issues/detail?id=269)
+* bug fixes
+
+-----------------------
+
+## 1.3-alpha-1
+* rebrand from flies->zanata (except URIs, maven artifacts and java packages)
+* specify locales per project/version (http://code.google.com/p/flies/issues/detail?id=261)
+* added tab for home page, removed project list, contents editable by admin (http://code.google.com/p/flies/issues/detail?id=279)
+* added help page/tab, contents editable by admin (http://code.google.com/p/flies/issues/detail?id=280)
+* removed name and description from project version (http://code.google.com/p/flies/issues/detail?id=281)
+* stats for all languages (http://code.google.com/p/flies/issues/detail?id=275)
+* workaround for form/login issue on Firefox 4.0 rhbz#691963
+* bug fixes
+
+-----------------------
+
+## flies-1.2
+* disabled bad key bindings (http://code.google.com/p/flies/issues/detail?id=262)
+* fixed python client issue with PotEntryHeader.extractedComment (http://code.google.com/p/flies/issues/detail?id=256)
+* web template redesign (new logo, CSS) (http://code.google.com/p/flies/issues/detail?id=238)
+* fixed Seam integration tests (http://code.google.com/p/flies/issues/detail?id=231)
+
+-----------------------
+
+## flies-1.2-alpha-3
+* improve notifications in editor (http://code.google.com/p/flies/issues/detail?id=191)
+* highlight search terms in editor (http://code.google.com/p/flies/issues/detail?id=227)
+
+-----------------------
+
+## flies-1.2-alpha-2
+* better messages
+* bug fixes
+
+-----------------------
+
+## flies-1.2-alpha-1
+* development change: re-arranged Maven modules into common, client and server
+
+-----------------------
+
+## flies-1.1.1
+* use word counts in translation statistics (http://code.google.com/p/flies/issues/detail?id=203)
+* bug fixes
+
+-----------------------
+
+## flies-1.1
+* Kerberos/JAAS fixes
+* require name & email address on first login for JAAS/Kerberos
+* validate changes to email address
+* use correct BCP-47 language tags (zh-CN-Hans is now zh-Hans-CN)
+
+-----------------------
+
+## flies-1.1-alpha-1
+* JAAS authentication
+* Kerberos authentication
+* remove communities tab and my communities UI (http://code.google.com/p/flies/issues/detail?id=197)
+* remove "Language Missing" button (http://code.google.com/p/flies/issues/detail?id=185)
+* show member number for the language groups (http://code.google.com/p/flies/issues/detail?id=186)
+* allow overriding POT directory in Maven client (http://code.google.com/p/flies/issues/detail?id=200)
+* support `[servers]` in flies.ini for Maven client (http://code.google.com/p/flies/issues/detail?id=193)
+* better info/error messages in Maven client
+
+-----------------------
+
+## flies-1.0.3
+* fix TM caching issue (http://code.google.com/p/flies/issues/detail?id=190)
+* add 'translator' role and security rules
+* configurable URLs
+
+-----------------------
+
+## flies-1.0.2
+* minor UI fixes (http://code.google.com/p/flies/issues/detail?id=173, http://code.google.com/p/flies/issues/detail?id=176)
+* ergonomics for Maven client
+* UI for assigning project maintainers (http://code.google.com/p/flies/issues/detail?id=180)
+* better error checking in REST API (http://code.google.com/p/flies/issues/detail?id=175)
+* security rule fix (http://code.google.com/p/flies/issues/detail?id=182)
+
+-----------------------
+
+## flies-1.0.1
+* database schema fixes
+* fixes for deployment issues
+
+-----------------------
+
+## flies-1.0
+* initial release
+
