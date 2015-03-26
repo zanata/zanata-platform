@@ -180,6 +180,11 @@ public class ProjectLanguagesTab extends ProjectBasePage {
         return new ProjectLanguagesTab(getDriver());
     }
 
+    public ProjectLanguagesTab clickEditAlias(String locale) {
+        LanguageList.clickEditAlias(waitForWebElement(activeLocales), locale);
+        return new ProjectLanguagesTab(getDriver());
+    }
+
     public ProjectLanguagesTab enterAliasForLocale(String locale, String alias) {
         LanguageList.enterAlias(waitForWebElement(activeLocales),
                 locale, alias);
@@ -188,6 +193,11 @@ public class ProjectLanguagesTab extends ProjectBasePage {
 
     public ProjectLanguagesTab saveLocaleAlias(String locale) {
         LanguageList.setAlias(waitForWebElement(activeLocales), locale);
+        return new ProjectLanguagesTab(getDriver());
+    }
+
+    public ProjectLanguagesTab deleteAlias(String locale) {
+        LanguageList.unsetAlias(waitForWebElement(activeLocales), locale);
         return new ProjectLanguagesTab(getDriver());
     }
 

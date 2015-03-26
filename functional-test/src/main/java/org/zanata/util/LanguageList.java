@@ -43,6 +43,8 @@ public class LanguageList {
     private static By aliasInput = By.className("form--inline__input");
     private static By setAlias = By.className("form--inline__addon");
     private static By addAliasLink = By.linkText("Add alias");
+    private static By deleteAliasLink = By.className("i--trash");
+    private static By editAliasLink = By.linkText("Edit alias");
 
     public static List<String> getListedLocales(WebElement localeList) {
         return Lists.transform(getListElements(localeList),
@@ -86,19 +88,38 @@ public class LanguageList {
         getLocaleEntry(list, locale).findElement(addAliasLink).click();
     }
 
+    public static void clickEditAlias(WebElement list, String locale) {
+        getLocaleEntry(list, locale).findElement(editAliasLink).click();
+    }
+
     public static void enterAlias(WebElement localeList, String locale,
             String alias) {
-        getLocaleEntry(localeList, locale).findElement(aliasInput)
-                .sendKeys(alias);
+        WebElement field = getLocaleEntry(localeList, locale)
+                .findElement(aliasInput);
+        field.clear();
+        field.sendKeys(alias);
     }
 
     public static void setAlias(WebElement localeList, String locale) {
         getLocaleEntry(localeList, locale).findElement(setAlias).click();
     }
 
+    public static void unsetAlias(WebElement localeList, String locale) {
+        getLocaleEntry(localeList, locale).findElement(deleteAliasLink).click();
+    }
+
     public static String getAliasForLocale(WebElement list, String locale) {
+        if (!hasAlias(list, locale)) {
+            return "";
+        }
+
         return getLocaleEntry(list, locale).findElement(localeAlias)
                 .getText();
+    }
+
+    private static boolean hasAlias(WebElement localeList, String locale) {
+        return getLocaleEntry(localeList, locale).findElements(localeAlias)
+                .size() > 0;
     }
 
     private static WebElement getLocaleEntry(WebElement list, String locale) {

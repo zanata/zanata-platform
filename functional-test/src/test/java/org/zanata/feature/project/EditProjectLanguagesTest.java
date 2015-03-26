@@ -28,6 +28,7 @@ import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -128,5 +129,61 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
         assertThat(projectLanguagesTab.getAlias("pl"))
                 .isEqualTo("pl-PL")
                 .as("The alias was set");
+    }
+
+    @Feature(summary = "The administrator can remove an alias for a project " +
+            "language",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Test
+    public void removeLanguageAliasTest() {
+        ProjectLanguagesTab projectLanguagesTab = new ProjectWorkFlow()
+                .goToProjectByName("about fedora")
+                .gotoSettingsTab()
+                .gotoSettingsLanguagesTab()
+                .clickLanguageActionsDropdown("pl")
+                .clickAddAlias("pl")
+                .enterAliasForLocale("pl", "pl-PL")
+                .saveLocaleAlias("pl");
+
+        assertThat(projectLanguagesTab.getAlias("pl"))
+                .isEqualTo("pl-PL")
+                .as("The alias was set");
+
+        projectLanguagesTab = projectLanguagesTab
+                .clickLanguageActionsDropdown("pl")
+                .deleteAlias("pl");
+
+        assertThat(projectLanguagesTab.getAlias("pl"))
+                .isEmpty();
+    }
+
+    @Feature(summary = "The administrator can edit an alias for a project " +
+            "language",
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Test
+    public void editLanguageAliasTest() {
+        String locale = "pl";
+        ProjectLanguagesTab projectLanguagesTab = new ProjectWorkFlow()
+                .goToProjectByName("about fedora")
+                .gotoSettingsTab()
+                .gotoSettingsLanguagesTab()
+                .clickLanguageActionsDropdown(locale)
+                .clickAddAlias(locale)
+                .enterAliasForLocale(locale, "pl-PL")
+                .saveLocaleAlias(locale);
+
+        assertThat(projectLanguagesTab.getAlias(locale))
+                .isEqualTo("pl-PL")
+                .as("The alias was set");
+
+        projectLanguagesTab = projectLanguagesTab
+                .clickLanguageActionsDropdown(locale)
+                .clickEditAlias(locale)
+                .enterAliasForLocale(locale, "pl-POL")
+                .saveLocaleAlias(locale);
+
+        assertThat(projectLanguagesTab.getAlias(locale))
+                .as("The alias was changed")
+                .isEqualTo("pl-POL");
     }
 }
