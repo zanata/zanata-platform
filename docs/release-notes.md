@@ -35,6 +35,9 @@ property can safely be reverted or removed before subsequent startups.
 * [875965](https://bugzilla.redhat.com/show_bug.cgi?id=875965) - Enable visible white space in source
 * [1205465](https://bugzilla.redhat.com/show_bug.cgi?id=1205465) - User emails are visible to non admin users in Language page
 * [1205468](https://bugzilla.redhat.com/show_bug.cgi?id=1205468) - Sorting mechanism broken on Languages page
+* [1205046](https://bugzilla.redhat.com/show_bug.cgi?id=1205046) - Key shortcuts are not all visible on a small window
+* [1000273](https://bugzilla.redhat.com/show_bug.cgi?id=1000273) - Font in TM and font in Editor Not matching
+* [1013928](https://bugzilla.redhat.com/show_bug.cgi?id=1013928) - Editor options panel cannot scroll on small screens
 
 ----
 
