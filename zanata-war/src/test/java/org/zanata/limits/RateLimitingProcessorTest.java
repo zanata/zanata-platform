@@ -41,9 +41,10 @@ public class RateLimitingProcessorTest {
     public void restCallLimiterReturnsFalseWillCauseErrorResponse()
             throws Exception {
         when(restCallLimiter.tryAcquireAndRun(runnable)).thenReturn(false);
-        doReturn(restCallLimiter).when(rateLimitManager).getLimiter(API_KEY);
+        doReturn(restCallLimiter).when(rateLimitManager).getLimiter(
+                RateLimiterToken.fromApiKey(API_KEY));
 
-        processor.processApiKey(API_KEY, response, runnable);
+        processor.processForApiKey(API_KEY, response, runnable);
 
         verify(restCallLimiter).tryAcquireAndRun(runnable);
         verify(response).sendError(eq(429), anyString());
@@ -53,9 +54,10 @@ public class RateLimitingProcessorTest {
     public void restCallLimiterReturnsTrueWillNotReturnErrorResponse()
             throws Exception {
         when(restCallLimiter.tryAcquireAndRun(runnable)).thenReturn(true);
-        doReturn(restCallLimiter).when(rateLimitManager).getLimiter(API_KEY);
+        doReturn(restCallLimiter).when(rateLimitManager).getLimiter(
+            RateLimiterToken.fromApiKey(API_KEY));
 
-        processor.processApiKey(API_KEY, response, runnable);
+        processor.processForApiKey(API_KEY, response, runnable);
 
         verify(restCallLimiter).tryAcquireAndRun(runnable);
         verifyZeroInteractions(response);

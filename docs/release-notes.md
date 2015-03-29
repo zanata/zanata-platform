@@ -13,7 +13,7 @@
 -----------------------
 
 <h5>New Features</h5>
-*
+* [1172618](https://bugzilla.redhat.com/show_bug.cgi?id=1172618) - Allow anonymous pull from Zanata
 
 ----
 

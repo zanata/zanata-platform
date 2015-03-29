@@ -42,7 +42,6 @@ public class ResourceRequestEnvironment {
      */
     public Map<String, Object> getDefaultHeaders() {
         Map<String, Object> map = Maps.newHashMap();
-        map.put("X-Auth-Token", "abc123");
         return map;
     }
 }

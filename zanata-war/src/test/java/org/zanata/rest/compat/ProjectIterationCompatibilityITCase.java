@@ -39,6 +39,9 @@ public class ProjectIterationCompatibilityITCase extends RestTest {
     @Override
     protected void prepareDBUnitOperations() {
         addBeforeTestOperation(new DataSetOperation(
+            "org/zanata/test/model/AccountData.dbunit.xml",
+            DatabaseOperation.CLEAN_INSERT));
+        addBeforeTestOperation(new DataSetOperation(
                 "org/zanata/test/model/ProjectsData.dbunit.xml",
                 DatabaseOperation.CLEAN_INSERT));
     }

@@ -35,7 +35,6 @@ import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ProxyFactory;
 import org.jboss.seam.util.Naming;
 import org.junit.After;
 import org.junit.Before;
@@ -46,7 +45,6 @@ import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.ResourceRequestEnvironment;
 import org.zanata.rest.client.ZanataProxyFactory;
 import org.zanata.rest.dto.VersionInfo;
-import org.zanata.rest.helper.RemoteTestSignaler;
 
 /**
  * Provides basic test utilities to test raw REST APIs and compatibility.
@@ -206,6 +204,18 @@ public abstract class RestTest {
      */
     public static final ResourceRequestEnvironment getAuthorizedEnvironment() {
         return ENV_AUTHORIZED;
+    }
+
+    /**
+     * Gets an empty header for REST request.
+     */
+    public static final ResourceRequestEnvironment getEmptyHeaderEnvironment() {
+        return new ResourceRequestEnvironment() {
+            @Override
+            public Map<String, Object> getDefaultHeaders() {
+                return new HashMap<String, Object>();
+            }
+        };
     }
 
     /**

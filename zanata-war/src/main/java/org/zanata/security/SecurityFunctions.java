@@ -29,11 +29,16 @@ import org.zanata.model.HAccountRole;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
-import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.permission.GrantsPermission;
+import org.zanata.util.HttpUtil;
 import org.zanata.util.ServiceLocator;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Contains static helper functions used inside the rules files.
@@ -41,6 +46,7 @@ import org.zanata.util.ServiceLocator;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Slf4j
 public class SecurityFunctions {
     protected SecurityFunctions() {
     }
@@ -388,5 +394,76 @@ public class SecurityFunctions {
             }
         }
         return null;
+    }
+
+    /*****************************************************************************************
+     * TMX rules
+     ******************************************************************************************/
+
+    @GrantsPermission(actions = "download-tmx")
+    public static boolean canDownloadTMX() {
+        Optional<HAccount> account = getAuthenticatedAccount();
+        return account.isPresent();
+    }
+
+
+    /*****************************************************************************************
+     * HTTP request rules
+     ******************************************************************************************/
+
+    /**
+     * Check if user can access to REST URL with httpMethod.
+     * 1) Check if request can communicate to with rest service path,
+     * 2) then check if request can perform the specific API action.
+     *
+     * If request is from anonymous user(account == null),
+     * only 'Read' action are allowed. Additionally, role-based check will be
+     * performed in the REST service class.
+     *
+     * This rule apply to all REST endpoint.
+     *
+     * @param account - Authenticated account
+     * @param httpMethod - {@link javax.ws.rs.HttpMethod}
+     * @param restServicePath - service path of rest request.
+     *                        See annotation @Path in REST service class.
+     */
+    public static final boolean canAccessRestPath(@Nullable HAccount account,
+            String httpMethod, String restServicePath) {
+        //This is to allow data injection for function-test/rest-test
+        if(isTestServicePath(restServicePath)) {
+            log.debug("Allow rest access for Zanata test");
+            return true;
+        }
+        if (account != null) {
+            return true;
+        }
+        if (HttpUtil.isReadMethod(httpMethod)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static final boolean canAccessRestPath(
+            @Nonnull ZanataIdentity identity,
+            String httpMethod, String restServicePath) {
+        // This is to allow data injection for function-test/rest-test
+        if (isTestServicePath(restServicePath)) {
+            log.debug("Allow rest access for Zanata test");
+            return true;
+        }
+        if (identity.isLoggedIn()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Check if request path are from functional test or RestTest
+     *
+     * @param servicePath - service path of rest request.
+     *                        See annotation @Path in REST service class.
+     */
+    private static boolean isTestServicePath(String servicePath) {
+        return servicePath != null && servicePath.startsWith("/test");
     }
 }
