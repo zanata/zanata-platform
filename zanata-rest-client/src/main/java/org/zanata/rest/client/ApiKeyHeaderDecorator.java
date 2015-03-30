@@ -2,6 +2,7 @@ package org.zanata.rest.client;
 
 import javax.ws.rs.ext.Provider;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.annotations.interception.ClientInterceptor;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.spi.interception.ClientExecutionContext;
@@ -31,10 +32,14 @@ public class ApiKeyHeaderDecorator implements ClientExecutionInterceptor {
     @SuppressWarnings("rawtypes")
     @Override
     public ClientResponse execute(ClientExecutionContext ctx) throws Exception {
-        ctx.getRequest().getHeadersAsObjects()
+        if(StringUtils.isNotEmpty(username)) {
+            ctx.getRequest().getHeadersAsObjects()
                 .add(RestConstant.HEADER_USERNAME, username);
-        ctx.getRequest().getHeadersAsObjects()
+        }
+        if(StringUtils.isNotEmpty(apiKey)) {
+            ctx.getRequest().getHeadersAsObjects()
                 .add(RestConstant.HEADER_API_KEY, apiKey);
+        }
         ctx.getRequest().getHeadersAsObjects()
                 .add(RestConstant.HEADER_VERSION_NO, ver);
         try {

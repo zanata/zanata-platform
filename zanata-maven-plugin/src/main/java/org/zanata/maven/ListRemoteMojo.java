@@ -33,4 +33,8 @@ public class ListRemoteMojo extends
         return "list-remote";
     }
 
+    @Override
+    public boolean isAuthRequired() {
+        return false;
+    }
 }

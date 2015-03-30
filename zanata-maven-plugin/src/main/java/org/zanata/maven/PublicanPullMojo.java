@@ -89,4 +89,8 @@ public class PublicanPullMojo extends
         return "publican-pull";
     }
 
+    @Override
+    public boolean isAuthRequired() {
+        return false;
+    }
 }

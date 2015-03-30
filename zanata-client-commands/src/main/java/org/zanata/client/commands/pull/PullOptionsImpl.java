@@ -164,4 +164,9 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
     public boolean isContinueAfterError() {
         return continueAfterError;
     }
+
+    @Override
+    public boolean isAuthRequired() {
+        return false;
+    }
 }

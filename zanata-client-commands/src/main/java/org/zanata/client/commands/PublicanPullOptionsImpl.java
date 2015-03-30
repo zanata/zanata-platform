@@ -73,4 +73,8 @@ public class PublicanPullOptionsImpl extends ConfigurableProjectOptionsImpl
         this.exportPot = exportPot;
     }
 
+    @Override
+    public boolean isAuthRequired() {
+        return false;
+    }
 }

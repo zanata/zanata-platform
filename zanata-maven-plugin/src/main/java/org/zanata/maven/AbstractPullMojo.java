@@ -170,4 +170,8 @@ public abstract class AbstractPullMojo extends
         return "pull";
     }
 
+    @Override
+    public boolean isAuthRequired() {
+        return false;
+    }
 }
