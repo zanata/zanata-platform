@@ -219,6 +219,18 @@ public abstract class RestTest {
     }
 
     /**
+     * Gets an empty header for REST request.
+     */
+    public static final ResourceRequestEnvironment getEmptyHeaderEnvironment() {
+        return new ResourceRequestEnvironment() {
+            @Override
+            public Map<String, Object> getDefaultHeaders() {
+                return new HashMap<String, Object>();
+            }
+        };
+    }
+
+    /**
      * Creates and returns a new instance of a proxy factory for the given
      * credentials. This method aids with the testing of Rest API classes.
      *

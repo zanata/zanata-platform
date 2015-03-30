@@ -31,13 +31,23 @@ public class RateLimitingProcessor {
     private final LeakyBucket logLimiter = new LeakyBucket(1, 5,
             TimeUnit.MINUTES);
 
-    public void processApiKey(String apiKey, HttpResponse response,
-            Runnable taskToRun) throws Exception {
-        process(apiKey, response, taskToRun);
+    public void processForApiKey(String apiKey, HttpResponse response,
+        Runnable taskToRun) throws Exception {
+        process(RateLimiterToken.fromApiKey(apiKey), response, taskToRun);
     }
 
-    private void process(String key, HttpResponse response, Runnable taskToRun)
-            throws IOException {
+    public void processForUser(String username, HttpResponse response,
+        Runnable taskToRun) throws IOException {
+        process(RateLimiterToken.fromUsername(username), response, taskToRun);
+    }
+
+    public void processForAnonymousIP(String ip, HttpResponse response,
+        Runnable taskToRun) throws IOException {
+        process(RateLimiterToken.fromIPAddress(ip), response, taskToRun);
+    }
+
+    private void process(RateLimiterToken key, HttpResponse response,
+            Runnable taskToRun) throws IOException {
         RestCallLimiter rateLimiter = rateLimitManager.getLimiter(key);
 
         log.debug("check semaphore for {}", this);
@@ -48,16 +58,20 @@ public class RateLimitingProcessor {
                         "{} has too many concurrent requests. Returning status 429",
                         key);
             }
-            String errorMessage =
+
+            String errorMessage;
+            if(key.getType().equals(RateLimiterToken.TYPE.API_KEY)) {
+                errorMessage =
                     String.format(
-                            "Too many concurrent requests for this user (maximum is %d)",
-                            rateLimiter.getMaxConcurrentPermits());
+                        "Too many concurrent requests for client API key (maximum is %d)",
+                        rateLimiter.getMaxConcurrentPermits());
+            } else  {
+                errorMessage =
+                    String.format(
+                        "Too many concurrent requests for client '%s' (maximum is %d)",
+                        key.getValue(), rateLimiter.getMaxConcurrentPermits());
+            }
             response.sendError(TOO_MANY_REQUEST, errorMessage);
         }
-    }
-
-    public void processUsername(String username, HttpResponse response,
-            Runnable taskToRun) throws IOException {
-        process(username, response, taskToRun);
     }
 }

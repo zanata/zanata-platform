@@ -40,6 +40,10 @@ property can safely be reverted or removed before subsequent startups.
 * [1000273](https://bugzilla.redhat.com/show_bug.cgi?id=1000273) - Font in TM and font in Editor Not matching
 * [1013928](https://bugzilla.redhat.com/show_bug.cgi?id=1013928) - Editor options panel cannot scroll on small screens
 
+
+<h5>New Features</h5>
+* [1172618](https://bugzilla.redhat.com/show_bug.cgi?id=1172618) - Allow anonymous pull from Zanata
+
 ----
 
 ## 3.6
