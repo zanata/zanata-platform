@@ -15,6 +15,7 @@
     <connection>scm:git:git://github.com/zanata/zanata.git</connection>
     <developerConnection>scm:git:git@github.com:zanata/zanata.git</developerConnection>
     <url>https://github.com/zanata/zanata</url>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
@@ -132,7 +133,6 @@
             <!-- Used by lucene search -->
             <usedDependency>org.hibernate.common:hibernate-commons-annotations</usedDependency>
             <!-- Used by hibernate -->
-            <usedDependency>org.hibernate:hibernate-ehcache</usedDependency>
             <usedDependency>org.hibernate:hibernate-search-analyzers</usedDependency>
             <!-- used for arquillian deployment (org.zanata.Deployments) -->
             <usedDependency>org.hibernate:hibernate-testing</usedDependency>
@@ -991,10 +991,8 @@
                 <goals><goal>run</goal></goals>
                 <configuration>
                   <target unless="skipArqTests">
-                    <fail message="'appserver' property must be set to run integration tests (or else use -DskipArqTests)"
-                      unless="appserver" />
-                    <fail message="'cargo.installation' property must be set to run integration tests (or else use -DskipArqTests)"
-                      unless="cargo.installation"/>
+                    <fail message="'appserver' property must be set to run integration tests (or else use -DskipArqTests)" unless="appserver" />
+                    <fail message="'cargo.installation' property must be set to run integration tests (or else use -DskipArqTests)" unless="cargo.installation" />
                   </target>
                 </configuration>
               </execution>
@@ -1054,9 +1052,7 @@
                 </goals>
                 <configuration>
                   <target unless="skipArqTests">
-                    <copy overwrite="true"
-                      file="${project.basedir}/src/test/resources/arquillian/standalone-arquillian.xml"
-                      tofile="${appserver.home}/standalone/configuration/standalone-arquillian.xml" />
+                    <copy overwrite="true" file="${project.basedir}/src/test/resources/arquillian/standalone-arquillian.xml" tofile="${appserver.home}/standalone/configuration/standalone-arquillian.xml" />
                   </target>
                 </configuration>
               </execution>
@@ -1186,10 +1182,7 @@
                 </goals>
                 <configuration>
                   <target unless="skipArqTests">
-                    <copy
-                      overwrite="true"
-                      file="${project.basedir}/src/test/resources/arquillian/standalone-arquillian-wildfly.xml"
-                      tofile="${appserver.home}/standalone/configuration/standalone.xml" />
+                    <copy overwrite="true" file="${project.basedir}/src/test/resources/arquillian/standalone-arquillian-wildfly.xml" tofile="${appserver.home}/standalone/configuration/standalone.xml" />
                   </target>
                 </configuration>
               </execution>
@@ -1501,11 +1494,6 @@
 
     <dependency>
       <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-ehcache</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
       <scope>${hibernate.scope}</scope>
     </dependency>
@@ -1529,6 +1517,11 @@
 
     <dependency>
       <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-ehcache</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
       <artifactId>hibernate-testing</artifactId>
       <scope>test</scope>
       <exclusions>
@@ -1537,6 +1530,12 @@
           <groupId>com.sun</groupId>
         </exclusion>
       </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>net.sf.ehcache</groupId>
+      <artifactId>ehcache-core</artifactId>
+      <version>2.5.1</version>
     </dependency>
 
     <dependency>
@@ -1580,12 +1579,6 @@
       <groupId>net.htmlparser.jericho</groupId>
       <artifactId>jericho-html</artifactId>
       <version>3.3</version>
-    </dependency>
-
-    <dependency>
-      <groupId>net.sf.ehcache</groupId>
-      <artifactId>ehcache-core</artifactId>
-      <version>2.5.1</version>
     </dependency>
 
     <!-- Okapi Filters -->
@@ -1766,6 +1759,31 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-search-engine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-search-infinispan</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-core</artifactId>
+      <!-- TODO Use a bom for EAP or wildfly (This is the EAP 6.3 version) -->
+      <version>5.2.4.Final</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- These two are being explicitly added as jboss-as-parent
+      excludes them -->
+    <dependency>
+      <groupId>org.jboss.marshalling</groupId>
+      <artifactId>jboss-marshalling</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.marshalling</groupId>
+      <artifactId>jboss-marshalling-river</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -2117,7 +2135,7 @@
     <dependency>
       <groupId>se.jiderhamn</groupId>
       <artifactId>classloader-leak-prevention</artifactId>
-      <version>1.11.0</version>
+      <version>1.12.0</version>
       <exclusions>
         <exclusion>
           <groupId>javax.servlet</groupId>

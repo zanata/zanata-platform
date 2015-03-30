@@ -5,10 +5,10 @@
   version="2.0">
 
   <persistence-unit name="zanataTestDatasourcePU"
-    transaction-type="RESOURCE_LOCAL">
+    transaction-type="JTA">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
 
-    <non-jta-data-source>java:jboss/datasources/zanataTestDatasource</non-jta-data-source>
+    <jta-data-source>java:jboss/datasources/zanataTestDatasource</jta-data-source>
 
     <!--
       NB non-jta-data-source is not compatible with JPA tests, but is
@@ -66,6 +66,14 @@
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     <properties>
+      <property name="jboss.entity.manager.factory.jndi.name"
+        value="java:/zanataEntityManagerFactory" />
+      <!-- Only relevant if Seam is loading the persistence unit (Java SE bootstrap) -->
+      <!-- NB: Might have to be removed for Hibernate 4.3 -->
+      <property name="hibernate.transaction.manager_lookup_class"
+        value="org.hibernate.transaction.JBossTransactionManagerLookup" />
+
+      <property name="hibernate.cache.use_second_level_cache" value="true" />
       <property name="hibernate.show_sql" value="false" />
       <property name="hibernate.cache.region.factory_class"
         value="org.hibernate.testing.cache.CachingRegionFactory" />
@@ -85,8 +93,6 @@
       <!-- Search engine -->
       <property name="hibernate.search.default.directory_provider"
         value="org.hibernate.search.store.impl.FSDirectoryProvider" />
-      <property name="hibernate.search.default.indexBase"
-        value="zanatasearchindex" />
       <property name="hibernate.search.lucene_version" value="LUCENE_36" />
       <property name="hibernate.search.worker.batch_size" value="50" />
 

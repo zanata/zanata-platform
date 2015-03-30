@@ -20,17 +20,27 @@
  */
 package org.zanata.dao;
 
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.transform.ResultTransformer;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.zanata.common.ContentState;
+import org.zanata.model.HPerson;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
 
 @Name("textFlowTargetHistoryDAO")
 @AutoCreate
@@ -157,6 +167,115 @@ public class TextFlowTargetHistoryDAO extends
         query.setComment("TextFlowTargetHistoryDAO.findConflictInHistory");
         Long count = (Long) query.uniqueResult();
         return count != 0;
+    }
+
+    /**
+     * Query to get total wordCount of a person(translated_by_id or
+     * reviewed_by_id) from HTextFlowTarget union HTextFlowTargetHistory tables
+     * within given date range group by lastChangeDate (date portion only),
+     * project version, locale and state.
+     *
+     * HTextFlowTargetHistory: gets all records translated from user in any
+     * version, any locale and dateRange.
+     *
+     * HTextFlowTarget: gets all records translated from user in any version,
+     * any locale and dateRange.
+     *
+     * @param user
+     *            a HPerson person
+     * @param fromDate
+     *            date from
+     * @param toDate
+     *            date to
+     *
+     * @param userZoneOpt
+     *            optional DateTimeZone of the user. Only present if it's
+     *            different from system time zone
+     * @param systemZone
+     *            current system time zone
+     * @param resultTransformer
+     *            result transformer to transform query results
+     * @return a list of transformed object
+     */
+    @NativeQuery(value = "need to use union", specificTo = "mysql due to usage of date() and convert_tz() functions.")
+    public <T> List<T> getUserTranslationMatrix(
+            HPerson user, DateTime fromDate, DateTime toDate,
+            Optional<DateTimeZone> userZoneOpt, DateTimeZone systemZone,
+            ResultTransformer resultTransformer) {
+        // @formatter:off
+        String queryHistory = "select history.id, iter.id as iteration, tft.locale as locale, tf.wordCount as wordCount, history.state as state, history.lastChanged as lastChanged " +
+                "  from HTextFlowTargetHistory history " +
+                "    join HTextFlowTarget tft on tft.id = history.target_id " +
+                "    join HTextFlow tf on tf.id = tft.tf_id " +
+                "    join HDocument doc on doc.id = tf.document_id " +
+                "    join HProjectIteration iter on iter.id = doc.project_iteration_id " +
+                "  where history.lastChanged >= :fromDate and history.lastChanged <= :toDate " +
+                "    and history.last_modified_by_id = :user and (history.translated_by_id is not null or history.reviewed_by_id is not null)" +
+                "    and history.state <> :untranslated and history.state <> :rejected";
+
+        String queryTarget = "select tft.id, iter.id as iteration, tft.locale as locale, tf.wordCount as wordCount, tft.state as state, tft.lastChanged as lastChanged " +
+                "  from HTextFlowTarget tft " +
+                "    join HTextFlow tf on tf.id = tft.tf_id " +
+                "    join HDocument doc on doc.id = tf.document_id " +
+                "    join HProjectIteration iter on iter.id = doc.project_iteration_id " +
+                "  where tft.lastChanged >= :fromDate and tft.lastChanged <= :toDate " +
+                "    and tft.last_modified_by_id = :user and (tft.translated_by_id is not null or tft.reviewed_by_id is not null)" +
+                "    and tft.state <> :untranslated and tft.state <> :rejected";
+
+        String convertedLastChanged = convertTimeZoneFunction("lastChanged",
+                userZoneOpt, systemZone);
+        // @formatter:on
+        String dateOfLastChanged = stripTimeFromDateTimeFunction(convertedLastChanged);
+        String queryString =
+                "select " + dateOfLastChanged + ", iteration, locale, state, sum(wordCount)" +
+                        "  from (" +
+                        "  (" + queryHistory + ") union (" + queryTarget + ")" +
+                        "  ) as all_translation" +
+                        "  group by " + dateOfLastChanged + ", iteration, locale, state " +
+                        "  order by lastChanged, iteration, locale, state";
+        Query query = getSession().createSQLQuery(queryString)
+                .setParameter("user", user.getId())
+                .setInteger("untranslated", ContentState.New.ordinal())
+                .setInteger("rejected", ContentState.Rejected.ordinal())
+                .setTimestamp("fromDate", fromDate.toDate())
+                .setTimestamp("toDate", toDate.toDate())
+                .setResultTransformer(resultTransformer);
+        return query.list();
+    }
+
+    @VisibleForTesting
+    protected String convertTimeZoneFunction(String columnName,
+            Optional<DateTimeZone> userZoneOpt, DateTimeZone systemZone) {
+        if (userZoneOpt.isPresent()) {
+            String userOffset = getOffsetAsString(userZoneOpt.get());
+            String systemOffset = getOffsetAsString(systemZone);
+            return String.format("CONVERT_TZ(%s, '%s', '%s')", columnName, systemOffset, userOffset);
+        }
+        // no need to convert timezone
+        return columnName;
+    }
+
+    // This is so we can override it in test and be able to test it against h2
+    @VisibleForTesting
+    protected String stripTimeFromDateTimeFunction(String columnName) {
+        return "date(" + columnName + ")";
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T loadById(Object object, Class<T> entityClass) {
+        return (T) getSession().byId(entityClass).load(
+                ((BigInteger) object).longValue());
+    }
+
+    private static String getOffsetAsString(DateTimeZone zone) {
+        int standardOffset = zone.getStandardOffset(0);
+        String prefix = "";
+        if (standardOffset < 0) {
+            prefix = "-";
+            standardOffset = -standardOffset;
+        }
+        return String.format("%s%02d:00", prefix,
+                TimeUnit.MILLISECONDS.toHours(standardOffset));
     }
 
 }

@@ -46,6 +46,8 @@ import org.hibernate.annotations.Type;
 import org.zanata.common.ContentState;
 
 import com.google.common.base.Objects;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Immutable
@@ -105,6 +107,10 @@ public class HTextFlowTargetHistory extends HTextContainer implements
 
     private HPerson reviewer;
 
+    @Getter
+    @Setter
+    private String revisionComment;
+
     public HTextFlowTargetHistory() {
     }
 
@@ -115,9 +121,11 @@ public class HTextFlowTargetHistory extends HTextContainer implements
         this.textFlowRevision = target.getTextFlowRevision();
         this.textFlowTarget = target;
         this.versionNum = target.getVersionNum();
-        translator = target.getTranslator();
-        reviewer = target.getReviewer();
+        this.translator = target.getTranslator();
+        this.reviewer = target.getReviewer();
         this.setContents(target.getContents());
+        this.revisionComment = target.getRevisionComment();
+
     }
 
     @Id
@@ -246,12 +254,13 @@ public class HTextFlowTargetHistory extends HTextContainer implements
                         this.lastModifiedBy)
                 || !Objects.equal(current.getTranslator(), this.translator)
                 || !Objects.equal(current.getReviewer(), this.reviewer)
-                || !Objects.equal(current.getState(), this.state)
+            || !Objects.equal(current.getState(), this.state)
                 || !Objects.equal(current.getTextFlowRevision(),
                         this.textFlowRevision)
                 || !Objects.equal(current.getLastChanged(), this.lastChanged)
                 || !Objects.equal(current.getTextFlow().getId(),
                         this.textFlowTarget.getId())
-                || !Objects.equal(current.getVersionNum(), this.versionNum);
+                || !Objects.equal(current.getVersionNum(), this.versionNum)
+                || !Objects.equal(current.getRevisionComment(), this.revisionComment);
     }
 }

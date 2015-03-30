@@ -42,6 +42,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
+import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.util.Hex;
 import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.common.DocumentType;
@@ -77,8 +78,8 @@ import org.zanata.service.TranslationStateCache;
 import org.zanata.service.VersionStateCache;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.AbstractSortAction;
+import org.zanata.ui.CopyAction;
 import org.zanata.ui.InMemoryListFilter;
-import org.zanata.ui.ProgressBar;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.DateUtil;
 import org.zanata.util.ServiceLocator;
@@ -106,6 +107,12 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     @In
     private CopyVersionManager copyVersionManager;
+
+    @In
+    private MergeTranslationsManager mergeTranslationsManager;
+
+    @In
+    private CopyTransManager copyTransManager;
 
     @In
     private ProjectIterationDAO projectIterationDAO;
@@ -297,11 +304,6 @@ public class VersionHomeAction extends AbstractSortAction implements
         copyVersionHandler.setProjectSlug(projectSlug);
     }
 
-    public void onCopyVersionComplete() {
-        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                msgs.format("jsf.copyVersion.Completed", versionSlug));
-    }
-
     public void cancelCopyVersion() {
         copyVersionManager.cancelCopyVersion(projectSlug, versionSlug);
         conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
@@ -309,7 +311,7 @@ public class VersionHomeAction extends AbstractSortAction implements
     }
 
     @NoArgsConstructor
-    public static class CopyVersionHandler implements ProgressBar {
+    public static class CopyVersionHandler extends CopyAction {
 
         @Setter
         private String projectSlug;
@@ -324,16 +326,15 @@ public class VersionHomeAction extends AbstractSortAction implements
         }
 
         @Override
-        public String getCompletedPercentage() {
-            CopyVersionTaskHandle handle = getHandle();
-            if (handle != null) {
-                double completedPercent =
-                        (double) handle.getCurrentProgress() / (double) handle
-                                .getMaxProgress() * 100;
-                return PERCENT_FORMAT.format(completedPercent);
-            } else {
-                return "0";
-            }
+        public String getProgressMessage() {
+            return getMessages().format("jsf.copyVersion.processedDocuments",
+                    getProcessedDocuments(), getTotalDocuments());
+        }
+
+        @Override
+        public void onComplete() {
+            FacesMessages.instance().add(FacesMessage.SEVERITY_INFO,
+                getMessages().format("jsf.copyVersion.Completed", versionSlug));
         }
 
         public int getProcessedDocuments() {
@@ -352,12 +353,16 @@ public class VersionHomeAction extends AbstractSortAction implements
             return 0;
         }
 
+        private Messages getMessages() {
+            return ServiceLocator.instance().getInstance(Messages.class);
+        }
+
         private CopyVersionManager getCopyVersionManager() {
             return ServiceLocator.instance().getInstance(
                     CopyVersionManager.class);
         }
 
-        private CopyVersionTaskHandle getHandle() {
+        protected CopyVersionTaskHandle getHandle() {
             CopyVersionManager copyVersionManager = ServiceLocator
                     .instance().getInstance(CopyVersionManager.class);
 
@@ -908,6 +913,16 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     public String decodeDocId(String docId) {
         return UrlUtil.decodeString(docId);
+    }
+
+    // Check if copy-trans, copy version or merge-trans is running for given
+    // version
+    public boolean isCopyActionsRunning() {
+        return mergeTranslationsManager.isRunning(
+            projectSlug, versionSlug)
+            || copyVersionManager.isCopyVersionRunning(projectSlug,
+            versionSlug) ||
+            copyTransManager.isCopyTransRunning(getVersion());
     }
 
     public void uploadTranslationFile(HLocale hLocale) {

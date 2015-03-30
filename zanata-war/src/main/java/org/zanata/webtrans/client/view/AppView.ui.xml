@@ -75,7 +75,9 @@
           <li class="{style.topPanel-Workspace}">
             <nobr>
               <g:InlineLabel ui:field="readOnlyLabel"
-                styleName="i i--lock txt--warning txt--hero l--push-right-quarter" />
+                styleName="i i--lock txt--danger txt--hero l--push-right-quarter" />
+              <g:InlineLabel ui:field="obsoleteLabel"
+                styleName="i i--archive txt--danger txt--hero l--push-right-quarter" />
               <fui:Breadcrumb ui:field="projectLink" />
               <fui:Breadcrumb ui:field="versionLink" />
               <fui:Breadcrumb ui:field="filesLink" />

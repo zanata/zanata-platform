@@ -31,6 +31,7 @@ import javax.jms.QueueSession;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
@@ -59,6 +60,19 @@ public class NotificationManager implements Serializable {
 
     @In
     private QueueSession queueSession;
+
+
+    @Create
+    public void onCreate() {
+        try {
+            mailQueueSender.getQueue();
+        } catch (JMSException e) {
+            // it will never reach this block. As long as you call getQueue()
+            // and if the queue is not defined, seam will terminate:
+            // org.jboss.seam.jms.ManagedQueueSender.getQueue(ManagedQueueSender.java:45
+            Throwables.propagate(e);
+        }
+    }
 
     @Observer(LanguageTeamPermissionChangedEvent.EVENT_NAME)
     public

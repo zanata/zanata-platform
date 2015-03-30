@@ -16,6 +16,7 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.TranslationFinder;
 import org.zanata.service.ValidationService;
 import org.zanata.service.VersionStateCache;
+import org.zanata.util.MessageGenerator;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import com.google.common.base.Optional;
 import com.google.common.base.Stopwatch;
@@ -179,23 +180,6 @@ class CopyTransWork extends Work<Integer> {
         return numCopied;
     }
 
-    private String createComment(HTextFlowTarget target) {
-        String author;
-        HDocument document = target.getTextFlow().getDocument();
-        String projectname =
-                document.getProjectIteration().getProject().getName();
-        String version = document.getProjectIteration().getSlug();
-        String documentid = document.getDocId();
-        if (target.getLastModifiedBy() != null) {
-            author = ", author " + target.getLastModifiedBy().getName();
-        } else {
-            author = "";
-        }
-
-        return "translation auto-copied from project " + projectname
-                + ", version " + version + ", document " + documentid + author;
-    }
-
     private void saveCopyTransMatch(final HTextFlowTarget matchingTarget,
             final HTextFlow originalTf, final HCopyTransOptions options,
             final boolean requireTranslationReview) {
@@ -264,12 +248,18 @@ class CopyTransWork extends Work<Integer> {
             }
             hTarget.setContents(matchingTarget.getContents());
             hTarget.setState(copyState);
-            HSimpleComment hcomment = hTarget.getComment();
-            if (hcomment == null) {
-                hcomment = new HSimpleComment();
-                hTarget.setComment(hcomment);
+            if(matchingTarget.getComment() == null) {
+                hTarget.setComment(null);
+            } else {
+                HSimpleComment hComment = hTarget.getComment();
+                if (hComment == null) {
+                    hComment = new HSimpleComment();
+                    hTarget.setComment(hComment);
+                }
+                hComment.setComment(matchingTarget.getComment().getComment());
             }
-            hcomment.setComment(createComment(matchingTarget));
+            hTarget.setRevisionComment(MessageGenerator
+                .getCopyTransMessage(matchingTarget));
 
             // TODO Maybe we should think about registering a Hibernate
             // integrator for these updates

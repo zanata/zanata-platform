@@ -122,8 +122,8 @@ public class ZanataIdentity extends Identity {
                         target, action, getAccountUsername());
             }
         } else {
-            if (log.isWarnEnabled()) {
-                log.warn("DENIED hasPermission({}, {}) for user {}",
+            if (log.isDebugEnabled()) {
+                log.debug("DENIED hasPermission({}, {}) for user {}",
                         target, action, getAccountUsername());
             }
         }
@@ -144,8 +144,8 @@ public class ZanataIdentity extends Identity {
                         name, action, arg, getAccountUsername());
             }
         } else {
-            if (log.isWarnEnabled()) {
-                log.warn("DENIED hasPermission({}, {}, {}) for user {}",
+            if (log.isDebugEnabled()) {
+                log.debug("DENIED hasPermission({}, {}, {}) for user {}",
                         name, action, arg, getAccountUsername());
             }
         }

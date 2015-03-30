@@ -9,12 +9,12 @@ pages:
 - ['index.md', 'Home']
 
 # Configuration Guide
+- ['configuration/installation.md', 'Configuration', 'Installation']
 - ['configuration/authentication.md', 'Configuration', 'Authentication']
 - ['configuration/document-storage-directory.md', 'Configuration', 'Document Storage Directory']
 # Once pull request https://github.com/zanata/zanata-server/pull/633 is integrated, this can be uncommented
 # - ['configuration/email.md', 'Configuration', 'Email']
-# Once pull request https://github.com/zanata/zanata-server/pull/577 is integrated, this can be uncommented
-# - ['configuration/infinispan.md', 'Configuration', 'Caches']
+- ['configuration/infinispan.md', 'Configuration', 'Caches']
 - ['configuration/jms-messaging.md', 'Configuration', 'JMS Messaging']
 
 # Release notes
@@ -27,10 +27,16 @@ pages:
 - ['user-guide/keyboard-shortcuts.md', 'User Guide', 'Keyboard Shortcuts']
 - ['user-guide/project-types.md', 'User Guide', 'Project Types']
 - ['user-guide/client-configuration.md', 'User Guide', 'Client Configuration']
+- ['user-guide/client-command-hook.md', 'User Guide', 'Client Command Hook']
+- ['user-guide/user-profile.md', 'User Guide', 'User Profile Page']
+- ['user-guide/merge-translations.md', 'User Guide', 'Merge translations']
 ## Project
 - ['user-guide/projects/create-project.md', 'User Guide', 'Creating a Project']
 - ['user-guide/projects/project-settings.md', 'User Guide', 'Project settings']
 - ['user-guide/projects/create-version.md', 'User Guide', 'Creating a Version']
 - ['user-guide/projects/upload-strings.md', 'User Guide', 'Upload Strings']
+- ['user-guide/projects/project-view.md', 'User Guide', 'The Project View']
+## Version
+- ['user-guide/versions/version-view.md', 'User Guide', 'The Version View']
 
 copyright: Copyright &copy; 2015, <a href="http//www.redhat.com">Red Hat</a>.

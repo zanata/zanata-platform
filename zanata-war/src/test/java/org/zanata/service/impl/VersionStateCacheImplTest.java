@@ -5,11 +5,13 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.infinispan.manager.CacheContainer;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.LocaleId;
 import org.zanata.service.VersionLocaleKey;
 import org.zanata.ui.model.statistic.WordStatistic;
@@ -31,15 +33,8 @@ public class VersionStateCacheImplTest {
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         cache = new VersionStateCacheImpl(versionStatisticLoader);
-
+        cache.setCacheContainer(new InfinispanTestCacheContainer());
         cache.create();
-        cache.destroy();
-        cache.create();
-    }
-
-    @AfterMethod
-    public void afterMethod() {
-        cache.destroy();
     }
 
     public void getStatisticTest() throws Exception {

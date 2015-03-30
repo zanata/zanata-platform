@@ -22,8 +22,8 @@
 
 package org.zanata.service.impl;
 
-import net.sf.ehcache.CacheManager;
-
+import com.google.common.annotations.VisibleForTesting;
+import org.infinispan.manager.CacheContainer;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Destroy;
@@ -32,7 +32,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.cache.CacheWrapper;
-import org.zanata.cache.EhcacheWrapper;
+import org.zanata.cache.InfinispanCacheWrapper;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -61,10 +61,11 @@ public class VersionStateCacheImpl implements VersionStateCache {
     private static final String VERSION_STATISTIC_CACHE_NAME = BASE
             + ".versionStatisticCache";
 
-    private CacheManager cacheManager;
-
     private CacheWrapper<VersionLocaleKey, WordStatistic> versionStatisticCache;
     private CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader;
+
+    @In
+    private CacheContainer cacheContainer;
 
     @In
     private ServiceLocator serviceLocator;
@@ -82,15 +83,9 @@ public class VersionStateCacheImpl implements VersionStateCache {
 
     @Create
     public void create() {
-        cacheManager = CacheManager.create();
         versionStatisticCache =
-                EhcacheWrapper.create(VERSION_STATISTIC_CACHE_NAME,
-                        cacheManager, versionStatisticLoader);
-    }
-
-    @Destroy
-    public void destroy() {
-        cacheManager.shutdown();
+                InfinispanCacheWrapper.create(VERSION_STATISTIC_CACHE_NAME,
+                        cacheContainer, versionStatisticLoader);
     }
 
     @Observer(TextFlowTargetStateEvent.EVENT_NAME)
@@ -127,6 +122,11 @@ public class VersionStateCacheImpl implements VersionStateCache {
                     new VersionLocaleKey(versionId, locale.getLocaleId());
             versionStatisticCache.remove(key);
         }
+    }
+
+    @VisibleForTesting
+    public void setCacheContainer(CacheContainer cacheContainer) {
+        this.cacheContainer = cacheContainer;
     }
 
     private static class VersionStatisticLoader extends

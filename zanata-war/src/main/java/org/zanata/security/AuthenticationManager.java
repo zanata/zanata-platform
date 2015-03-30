@@ -309,7 +309,7 @@ public class AuthenticationManager {
         // is available. In cases where it's not in database and
         // there is no servlet request, the value will not be null.
         // e.g. EmailBuilder triggered by JMS message
-        applicationConfiguration.getServerPath();
+        applicationConfiguration.createDefaultServerPath();
     }
 
     public boolean isAccountWaitingForActivation(String username) {

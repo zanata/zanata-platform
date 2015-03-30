@@ -24,6 +24,8 @@ public interface AppDisplay extends WidgetDisplay {
 
     void setReadOnlyVisible(boolean visible);
 
+    void setObsoleteVisible(boolean showObsolete);
+
     void showSideMenu(boolean isShowing);
 
     void setProjectLinkLabel(String text);

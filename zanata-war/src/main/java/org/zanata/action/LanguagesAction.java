@@ -24,12 +24,14 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LanguageTeamService;
@@ -37,6 +39,7 @@ import org.zanata.service.LocaleService;
 import org.zanata.ui.InMemoryListFilter;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import lombok.Getter;
 
 @Name("languagesAction")
@@ -54,6 +57,8 @@ public class LanguagesAction extends InMemoryListFilter<HLocale> implements
     private ZanataIdentity identity;
 
     private List<HLocale> allLanguages;
+
+    private Map<LocaleId, Integer> membersSize = Maps.newHashMap();
 
     @Getter
     private SortingType LanguageSortingList = new SortingType(
@@ -81,6 +86,11 @@ public class LanguagesAction extends InMemoryListFilter<HLocale> implements
         this.reset();
     }
 
+    public int getMemberSize(LocaleId localeId) {
+        Integer size = membersSize.get(localeId);
+        return size == null ? 0 : size;
+    }
+
     @Override
     protected List<HLocale> fetchAll() {
         if (allLanguages == null) {
@@ -89,6 +99,10 @@ public class LanguagesAction extends InMemoryListFilter<HLocale> implements
                 allLanguages = localeServiceImpl.getAllLocales();
             } else {
                 allLanguages = localeServiceImpl.getSupportedLocales();
+            }
+            for (HLocale locale : allLanguages) {
+                membersSize.put(locale.getLocaleId(), locale.getMembers()
+                        .size());
             }
         }
         return allLanguages;
@@ -127,9 +141,9 @@ public class LanguagesAction extends InMemoryListFilter<HLocale> implements
             } else if (selectedSortOption
                     .equals(SortingType.SortOption.LOCALE_ID)) {
                 return o1.getLocaleId().getId().compareTo(
-                        o2.getLocaleId().getId());
+                    o2.getLocaleId().getId());
             } else {
-                return o1.getMembers().size() - o2.getMembers().size();
+                return getMemberSize(o1.getLocaleId()) - getMemberSize(o2.getLocaleId());
             }
         }
     }

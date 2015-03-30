@@ -22,6 +22,7 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
+import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
@@ -33,6 +34,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyVersionService;
 import org.zanata.service.VersionStateCache;
 import org.zanata.util.JPACopier;
+import org.zanata.util.MessageGenerator;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -350,6 +352,10 @@ public class CopyVersionServiceImpl implements CopyVersionService {
                         "reviewComments", "history");
         copy.setTextFlow(newTf);
         copy.setTextFlowRevision(newTf.getRevision());
+        if(tft.getComment() != null) {
+            copy.setComment(new HSimpleComment(tft.getComment().getComment()));
+        }
+        copy.setRevisionComment(MessageGenerator.getCopyVersionMessage(tft));
 
         // copy review comment
         copy.setReviewComments(Lists

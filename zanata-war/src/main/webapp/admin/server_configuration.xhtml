@@ -134,7 +134,7 @@
           <div class="l--push-top-half">
             <h:outputLabel>Enabled <i class="i i--info txt--meta"
               title="#{msgs['jsf.config.EnableLogEmails.tooltip']}"></i></h:outputLabel>
-            <h:selectBooleanCheckbox
+            <h:selectBooleanCheckbox id="enableLogCheck"
               value="#{serverConfigurationBean.enableLogEmail}"
               styleClass="l--push-h-quarter">
               <a4j:ajax execute="@this" render="emailLogSettings"/>

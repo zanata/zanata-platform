@@ -2,7 +2,8 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:composite="http://java.sun.com/jsf/composite"
-  xmlns:s="http://jboss.org/schema/seam/taglib">
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:h="http://java.sun.com/jsf/html">
 
 <composite:interface>
   <composite:attribute name="onValueChanged" required="true"
@@ -16,6 +17,10 @@
 
   <composite:attribute name="label" type="java.lang.String"
     shortDescription="display text of checkbox" required="true"/>
+
+  <composite:attribute name="escapeLabel" type="java.lang.Boolean" default="true"
+    shortDescription="Flag indicating that characters that are sensitive in HTML and XML markup must be escaped. This flag
+                is set to 'true' by default."/>
 
   <composite:attribute name="labelStyle" type="java.lang.String"
     shortDescription="css style for label"/>
@@ -38,8 +43,9 @@
         class="form__checkbox__input js-form__checkbox__input"/>
     </s:fragment>
     <label class="form__checkbox__label js-form__checkbox__label #{cc.attrs.labelStyle}">
-      #{cc.attrs.label}
+      <h:outputText value="#{cc.attrs.label}" escape="#{cc.attrs.escapeLabel}"/>
     </label>
+    <composite:insertChildren/>
   </div>
 </composite:implementation>
 </html>

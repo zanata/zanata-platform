@@ -6,7 +6,8 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:rich="http://richfaces.org/rich"
-  template="../WEB-INF/template/template_2x.xhtml">
+  template="../WEB-INF/template/template_2x.xhtml"
+  xmlns:z="http://java.sun.com/jsf/composite/zanata">
 
   <ui:param name="showGlobalMessages" value="true"/>
 
@@ -34,7 +35,9 @@
         </rich:column>
         <rich:column sortBy="#{selectableVersion.projectIteration.slug}">
           <f:facet name="header">#{msgs['jsf.Version']}</f:facet>
-          #{selectableVersion.projectIteration.slug}
+          <div class="new-zanata">
+            <z:version-label version="#{selectableVersion.projectIteration}"/>
+          </div>
         </rich:column>
 
         <rich:column styleClass="centered">

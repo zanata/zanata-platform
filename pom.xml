@@ -16,6 +16,7 @@
     <connection>scm:git:git://github.com/zanata/zanata-server.git</connection>
     <developerConnection>scm:git:git@github.com:zanata/zanata-server.git</developerConnection>
     <url>https://github.com/zanata/zanata-server</url>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
@@ -44,7 +45,7 @@
     <!-- This should always be the previous version of the used api version above (but only 3.0.1 or later will work) -->
     <zanata.api.compat.version>3.3.1</zanata.api.compat.version>
     <zanata.client.version>3.3.1</zanata.client.version>
-    <zanata.common.version>3.4.0</zanata.common.version>
+    <zanata.common.version>3.6.0</zanata.common.version>
 
     <richfaces.version>4.5.0.Final</richfaces.version>
 
@@ -338,6 +339,20 @@
         <groupId>org.jboss.xnio</groupId>
         <artifactId>xnio-nio</artifactId>
         <version>3.2.3.Final</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.marshalling</groupId>
+        <artifactId>jboss-marshalling</artifactId>
+        <version>1.4.6.Final</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.marshalling</groupId>
+        <artifactId>jboss-marshalling-river</artifactId>
+        <version>1.4.6.Final</version>
+        <scope>test</scope>
       </dependency>
 
       <dependency>
@@ -687,6 +702,20 @@
       </dependency>
 
       <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-search-infinispan</artifactId>
+        <version>${hibernate.search.version}</version>
+        <scope>${hibernate.search.scope}</scope>
+        <exclusions>
+          <!-- Slightly older version provided by the app server -->
+          <exclusion>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-core</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
         <groupId>org.hibernate.common</groupId>
         <artifactId>hibernate-commons-annotations</artifactId>
         <version>4.0.4.Final</version>
@@ -708,12 +737,6 @@
             <artifactId>jboss-logging</artifactId>
           </exclusion>
         </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-ehcache</artifactId>
-        <version>${hibernate.version}</version>
         <!--<version>${hibernate.version}</version>-->
       </dependency>
 
@@ -739,6 +762,12 @@
             <artifactId>jboss-logging</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-ehcache</artifactId>
+        <version>${hibernate.version}</version>
       </dependency>
 
       <dependency>
@@ -941,7 +970,7 @@
       <dependency>
         <groupId>org.fedorahosted.tennera</groupId>
         <artifactId>jgettext</artifactId>
-        <version>0.13</version>
+        <version>0.14</version>
       </dependency>
       <dependency>
         <groupId>org.functionaljava</groupId>
@@ -1413,20 +1442,10 @@
                 <configuration>
                   <target unless="skipITs">
                     <mkdir dir="${download.dir}" />
-                    <get
-                      src="http://sourceforge.net/projects/zanata/files/wildfly/${mojarra.module.name}/download"
-                      dest="${download.dir}/${mojarra.module.name}"
-                      skipexisting="true" />
-                    <get
-                      src="http://sourceforge.net/projects/zanata/files/wildfly/${hibernate.module.name}/download"
-                      dest="${download.dir}/${hibernate.module.name}"
-                      skipexisting="true" />
-                    <unzip
-                      src="${download.dir}/${mojarra.module.name}"
-                      dest="${appserver.home}" />
-                    <unzip
-                      src="${download.dir}/${hibernate.module.name}"
-                      dest="${appserver.home}" />
+                    <get src="http://sourceforge.net/projects/zanata/files/wildfly/${mojarra.module.name}/download" dest="${download.dir}/${mojarra.module.name}" skipexisting="true" />
+                    <get src="http://sourceforge.net/projects/zanata/files/wildfly/${hibernate.module.name}/download" dest="${download.dir}/${hibernate.module.name}" skipexisting="true" />
+                    <unzip src="${download.dir}/${mojarra.module.name}" dest="${appserver.home}" />
+                    <unzip src="${download.dir}/${hibernate.module.name}" dest="${appserver.home}" />
                   </target>
                 </configuration>
               </execution>
@@ -1502,21 +1521,9 @@
             <scope>test</scope>
           </dependency>
           <dependency>
-            <groupId>org.jboss.marshalling</groupId>
-            <artifactId>jboss-marshalling</artifactId>
-            <version>1.4.6.Final</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
             <groupId>org.jboss.logmanager</groupId>
             <artifactId>jboss-logmanager</artifactId>
             <version>1.5.2.Final</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss.marshalling</groupId>
-            <artifactId>jboss-marshalling-river</artifactId>
-            <version>1.4.6.Final</version>
             <scope>test</scope>
           </dependency>
           <dependency>

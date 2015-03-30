@@ -31,6 +31,7 @@
   <system-properties>
     <property name="hibernate.search.default.indexBase"
       value="./target/zanatasearchindex" />
+    <property name="jboss.as.management.blocking.timeout" value="1000"/>
     <!--javamelody.storage-directory=/var/lib/zanata/stats-->
   </system-properties>
 
@@ -82,6 +83,18 @@
       </logger>
       <logger category="org.apache.tomcat.util.modeler">
         <level name="WARN" />
+      </logger>
+      <!-- Disable WARN about GWT's org.hibernate.validator.ValidationMessages -->
+      <logger category="org.jboss.modules">
+        <level name="ERROR"/>
+      </logger>
+      <!-- Disable WARN: "Queue with name '...' has already been registered" -->
+      <logger category="org.richfaces.log.Components">
+        <level name="ERROR"/>
+      </logger>
+      <!-- Disable WARN: "RP discovery / realm validation disabled;" -->
+      <logger category="org.openid4java.server.RealmVerifier">
+        <level name="ERROR"/>
       </logger>
       <logger category="sun.rmi">
         <level name="WARN" />
@@ -180,6 +193,7 @@
     </subsystem>
     <subsystem xmlns="urn:jboss:domain:infinispan:1.3">
       <cache-container name="hibernate" default-cache="local-query"
+        jndi-name="java:jboss/infinispan/container/hibernate" start="EAGER"
         module="org.jboss.as.jpa.hibernate:4">
         <local-cache name="entity">
           <transaction mode="NON_XA" />
@@ -194,6 +208,18 @@
         <local-cache name="timestamps">
           <transaction mode="NONE" />
           <eviction strategy="NONE" />
+        </local-cache>
+      </cache-container>
+      <!--
+      Zanata multi-purpose caches.
+      -->
+      <cache-container name="zanata" default-cache="default" jndi-name="java:jboss/infinispan/container/zanata"
+        start="EAGER"
+        module="org.jboss.as.clustering.web.infinispan">
+        <local-cache name="default">
+          <transaction mode="NON_XA"/>
+          <eviction strategy="LRU" max-entries="10000"/>
+          <expiration max-idle="100000"/>
         </local-cache>
       </cache-container>
     </subsystem>
