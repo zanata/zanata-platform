@@ -36,6 +36,12 @@
     <ds.connection.url>jdbc:mysql://localhost:${mysql.port}/${ds.database}?characterEncoding=UTF-8</ds.connection.url>
     <ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
 
+    <!-- mysql-dist 5.5.34 is the default version, but 5.6.14 may also work.
+         mysql-dist 5.6.21 won't work due to
+         https://github.com/jcabi/jcabi-mysql-maven-plugin/issues/47
+     -->
+    <mysql.dist.version>5.5.34</mysql.dist.version>
+
     <!-- target zanata instance will be built by war overlay -->
     <zanata.test.war.name>zanata-test-${project.version}</zanata.test.war.name>
     <zanata.instance.url>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</zanata.instance.url>
@@ -477,7 +483,7 @@
                     <artifactItem>
                       <groupId>com.jcabi</groupId>
                       <artifactId>mysql-dist</artifactId>
-                      <version>5.5.34</version>
+                      <version>${mysql.dist.version}</version>
                       <classifier>${mysql.classifier}</classifier>
                       <type>zip</type>
                       <overWrite>false</overWrite>

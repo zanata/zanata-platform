@@ -132,22 +132,38 @@
             <column name="sourceRef" type="longtext"/>
         </addColumn>   
 	</changeSet>
-	
-	<changeSet author="aeng@redhat.com" id="8" dbms="mysql">
+
+    <changeSet author="aeng@redhat.com" id="8" dbms="mysql">
+        <!-- old checksum (without dropping/creating FKs) -->
+        <validCheckSum>7:1d46e83838884b75859df2299905d8a0</validCheckSum>
+        <!-- new checksum (with dropping/creating FKs) -->
+        <validCheckSum>7:d67a05b8803bac708c7df58d7153bb0e</validCheckSum>
         <comment>Alter glossary tables - remove sourceRef/add auto increment</comment>
-        
+
         <dropColumn tableName="HGlossaryTerm" columnName="sourceRef" />
-        
+
+        <!--
+          MySQL/MariaDB 5.6 or later can't change a column to autoincrement
+          unless constraints are removed first:
+          -->
+        <dropForeignKeyConstraint baseTableName="HGlossaryTerm" constraintName="UKglossaryterm_glossary_entry_id" />
+        <dropForeignKeyConstraint baseTableName="HTermComment" constraintName="UKtermComment_glossaryTerm" />
         <addAutoIncrement tableName="HGlossaryEntry" columnName="id" columnDataType="bigint"/>
         <addAutoIncrement tableName="HGlossaryTerm" columnName="id" columnDataType="bigint"/>
         <addAutoIncrement tableName="HTermComment" columnName="id" columnDataType="bigint"/>
+        <addForeignKeyConstraint baseTableName="HGlossaryTerm"
+                baseColumnNames="glossaryEntryId" constraintName="UKglossaryterm_glossary_entry_id"
+                referencedTableName="HGlossaryEntry" referencedColumnNames="id" />
+        <addForeignKeyConstraint baseTableName="HTermComment"
+                baseColumnNames="glossaryTermId" constraintName="UKtermComment_glossaryTerm"
+                referencedTableName="HGlossaryTerm" referencedColumnNames="id" />
     </changeSet>
 
     <changeSet author="aeng@redhat.com" id="8.5" dbms="h2">
         <comment>Alter glossary tables - remove sourceRef/add auto increment</comment>
         <dropColumn tableName="HGlossaryTerm" columnName="sourceRef" />
     </changeSet>
-    
+
     <changeSet author="aeng@redhat.com" id="9">
         <comment>Alter glossary term table - remove constraint</comment>
         <dropForeignKeyConstraint baseTableName="HTermComment" constraintName="UKtermComment_glossaryTerm" />
