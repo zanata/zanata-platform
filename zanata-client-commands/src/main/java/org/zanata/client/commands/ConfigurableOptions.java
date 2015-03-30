@@ -58,4 +58,11 @@ public interface ConfigurableOptions extends BasicOptions {
 
     public
             void setDisableSSLCert(boolean disableSSLCert);
+
+    /**
+     * Use to disable check for presence of username and API key before running command.
+     *
+     * @return true if this command should fail when username or API key is absent.
+     */
+    public boolean isAuthRequired();
 }

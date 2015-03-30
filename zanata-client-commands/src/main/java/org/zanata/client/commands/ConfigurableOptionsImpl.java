@@ -137,4 +137,9 @@ public abstract class ConfigurableOptionsImpl extends BasicOptionsImpl
         this.disableSSLCert = disableSSLCert;
     }
 
+    @Override
+    public boolean isAuthRequired() {
+        // auth should be required for most commands
+        return true;
+    }
 }

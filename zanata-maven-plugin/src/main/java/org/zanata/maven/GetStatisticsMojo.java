@@ -114,4 +114,9 @@ public class GetStatisticsMojo extends
     public String getCommandName() {
         return "stats";
     }
+
+    @Override
+    public boolean isAuthRequired() {
+        return false;
+    }
 }

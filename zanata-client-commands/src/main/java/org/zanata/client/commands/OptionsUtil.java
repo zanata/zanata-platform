@@ -317,10 +317,10 @@ public class OptionsUtil {
         if (opts.getUrl() == null) {
             throw new ConfigException("Server URL must be specified");
         }
-        if (opts.getUsername() == null) {
+        if (opts.isAuthRequired() && opts.getUsername() == null) {
             throw new ConfigException("Username must be specified");
         }
-        if (opts.getKey() == null) {
+        if (opts.isAuthRequired() && opts.getKey() == null) {
             throw new ConfigException("API key must be specified");
         }
         if (opts.isDisableSSLCert()) {

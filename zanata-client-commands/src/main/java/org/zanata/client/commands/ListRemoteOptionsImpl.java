@@ -17,4 +17,8 @@ public class ListRemoteOptionsImpl extends ConfigurableProjectOptionsImpl {
         return "Lists all remote documents in the configured server/project/version.";
     }
 
+    @Override
+    public boolean isAuthRequired() {
+        return false;
+    }
 }

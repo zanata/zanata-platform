@@ -308,4 +308,10 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends
     public void setDisableSSLCert(boolean disableSSLCert) {
         this.disableSSLCert = disableSSLCert;
     }
+
+    @Override
+    public boolean isAuthRequired() {
+        // auth should be required for most commands
+        return true;
+    }
 }

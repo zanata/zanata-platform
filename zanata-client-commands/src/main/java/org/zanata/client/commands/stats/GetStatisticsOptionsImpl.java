@@ -112,4 +112,9 @@ public class GetStatisticsOptionsImpl extends ConfigurableProjectOptionsImpl
     public String getCommandDescription() {
         return "Displays translation statistics for a Zanata project version.";
     }
+
+    @Override
+    public boolean isAuthRequired() {
+        return false;
+    }
 }
