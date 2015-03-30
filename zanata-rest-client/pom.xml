@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>client</artifactId>
-    <version>3.4.3-SNAPSHOT</version>
+    <version>3.6.0</version>
 
   </parent>
   <packaging>jar</packaging>
@@ -16,7 +16,7 @@
     <connection>scm:git:git://github.com/zanata/zanata-client.git</connection>
     <developerConnection>scm:git:git@github.com:zanata/zanata-client.git</developerConnection>
     <url>https://github.com/zanata/zanata-client</url>
-    <tag>HEAD</tag>
+    <tag>client-3.6.0</tag>
   </scm>
 
   <dependencies>
