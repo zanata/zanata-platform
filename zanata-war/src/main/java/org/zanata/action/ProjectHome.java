@@ -237,7 +237,6 @@ public class ProjectHome extends SlugHome<HProject> implements
             };
 
     public void createNew() {
-        log.info("createNew()");
         getInstance().setDefaultProjectType(ProjectType.File);
         selectedProjectType = getInstance().getDefaultProjectType().name();
         enteredLocaleAliases.putAll(getLocaleAliases());
