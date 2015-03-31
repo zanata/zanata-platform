@@ -27,6 +27,16 @@
     </addColumn>
   </changeSet>
 
+  <!-- Restore H2 constraints removed by changeset db.changelog-1.6a.xml:1:aeng@redhat.com -->
+  <changeSet author="sflaniga@redhat.com" id="1.6a:1:aeng@redhat.com:fix" dbms="h2">
+    <addForeignKeyConstraint baseTableName="HGlossaryTerm"
+      baseColumnNames="glossaryEntryId" constraintName="UKglossaryterm_glossary_entry_id"
+      referencedTableName="HGlossaryEntry" referencedColumnNames="id" />
+    <addPrimaryKey tableName="HGlossaryEntry" columnNames="id" />
+    <addPrimaryKey tableName="HGlossaryTerm" columnNames="id" />
+    <addPrimaryKey tableName="HTermComment" columnNames="id" />
+  </changeSet>
+
   <!-- This change was added in the 3.7 development branch, but back-ported to the 3.6 branch at patch 3.6.1 -->
   <changeSet author="damason@redhat.com" id="1">
     <comment>Modify existing id for plaintext and libreoffice documents to use content hash instead of old positional id.</comment>
