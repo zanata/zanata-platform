@@ -14,8 +14,8 @@ The following packages are optional, but recommended:
 
 ## Setting up the Zanata Database
 
- 1. Download and install MySQL 5 from the [MySQL download page](http://dev.mysql.com/downloads/mysql/).
- Zanata has been thoroughly tested against MySQL 5 and the Zanata team therefore recommends that you install and use this version with Zanata.
+ 1. Download and install MySQL 5.5 from the [MySQL download page](http://dev.mysql.com/downloads/mysql/).
+ Zanata has been thoroughly tested against MySQL 5.5 and the Zanata team therefore recommends that you install and use this version with Zanata.
 
  1. Start MySQL service and create a database schema for Zanata.
  `CREATE DATABASE zanata /**!40100 DEFAULT CHARACTER SET utf8 **/;`
