@@ -13,7 +13,8 @@
   <ui:define name="page_title">#{msgs['jsf.Groups']}</ui:define>
 
   <ui:define name="right_content">
-    <rich:panel rendered="#{identity.loggedIn}">
+    <rich:panel
+        rendered="#{identity.loggedIn and s:hasPermission(versionGroupHome.instance, 'insert')}">
       <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
       <s:link styleClass="action_link" id="group-create"
         view="/version-group/create_version_group.xhtml"
