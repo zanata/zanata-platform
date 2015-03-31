@@ -24,10 +24,10 @@ public class SetProjectVisibilityTest extends ZanataTestCase {
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    @Feature(summary = "The administrator can set a project to obsolete",
+    @Feature(summary = "The administrator can set a project to archived",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 135846)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void setAProjectObsolete() throws Exception {
+    public void setAProjectArchived() throws Exception {
         ProjectsPage projectsPage = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToProjects()
@@ -43,7 +43,7 @@ public class SetProjectVisibilityTest extends ZanataTestCase {
 
         projectsPage = projectsPage.setActiveFilterEnabled(false)
                 .setReadOnlyFilterEnabled(false)
-                .setObsoleteFilterEnabled(true);
+                .setArchivedFilterEnabled(true);
 
         projectsPage.waitForProjectVisibility("about fedora", true);
 
@@ -58,14 +58,14 @@ public class SetProjectVisibilityTest extends ZanataTestCase {
                 .goToProjects()
                 .getProjectNamesOnCurrentPage())
                 .doesNotContain("about fedora")
-                .as("User cannot navigate to the obsolete project");
+                .as("User cannot navigate to the archived project");
     }
 
-    @Feature(summary = "The administrator can set an obsolete project " +
+    @Feature(summary = "The administrator can set an archived project " +
             "to active",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void setAnObsoleteProjectAsActive() throws Exception {
+    public void setAnArchivedProjectAsActive() throws Exception {
         ProjectGeneralTab projectGeneralTab = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToProjects()
@@ -74,7 +74,7 @@ public class SetProjectVisibilityTest extends ZanataTestCase {
                 .gotoSettingsGeneral()
                 .archiveProject()
                 .goToProjects()
-                .setObsoleteFilterEnabled(true)
+                .setArchivedFilterEnabled(true)
                 .goToProject("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsGeneral()
