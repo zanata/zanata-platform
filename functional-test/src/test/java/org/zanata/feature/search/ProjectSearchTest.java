@@ -83,10 +83,10 @@ public class ProjectSearchTest extends ZanataTestCase {
                 .as("No projects are displayed");
     }
 
-    @Feature(summary = "The user cannot search for Obsolete projects",
+    @Feature(summary = "The user cannot search for Archived projects",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void normalUserCannotSearchObsolete() throws Exception {
+    public void normalUserCannotSearchArchived() throws Exception {
         new LoginWorkFlow().signIn("admin", "admin")
                 .goToProjects()
                 .goToProject("about fedora")
@@ -102,7 +102,7 @@ public class ProjectSearchTest extends ZanataTestCase {
 
         assertThat(basePage.getProjectSearchAutocompleteItems())
                 .doesNotContain("About Fedora")
-                .as("User cannot see the obsolete project");
+                .as("User cannot see the archived project");
     }
 
 }

@@ -44,8 +44,8 @@ public class VersionGroupsPage extends BasePage {
     private By groupTable = By.id("groupForm:groupTable");
     private By infomsg = By.className("infomsg.icon-info-circle-2");
     private By createGroupButton = By.id("group-create");
-    private By toggleObsolete = By.id("groupForm:showObsolete");
-    private By obsoleteLink = By.className("obsolete_link");
+    private By toggleArchived = By.id("groupForm:showObsolete");
+    private By archiveLink = By.className("obsolete_link");
 
     public VersionGroupsPage(WebDriver driver) {
         super(driver);
@@ -68,16 +68,16 @@ public class VersionGroupsPage extends BasePage {
         return new VersionGroupPage(getDriver());
     }
 
-    public VersionGroupsPage toggleObsolete(final boolean show) {
-        WebElement showObsolete = waitForWebElement(toggleObsolete);
-        if (show != showObsolete.isSelected()) {
-            showObsolete.click();
+    public VersionGroupsPage toggleArchived(final boolean show) {
+        WebElement showArchived = waitForWebElement(toggleArchived);
+        if (show != showArchived.isSelected()) {
+            showArchived.click();
         }
         waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return waitForWebElement(groupTable)
-                        .findElements(obsoleteLink)
+                        .findElements(archiveLink)
                         .isEmpty() == !show;
             }
         });

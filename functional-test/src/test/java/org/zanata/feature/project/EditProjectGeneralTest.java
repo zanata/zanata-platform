@@ -71,7 +71,7 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .goToProjects()
                 .setActiveFilterEnabled(true)
                 .setReadOnlyFilterEnabled(false)
-                .setObsoleteFilterEnabled(false)
+                .setArchivedFilterEnabled(false)
                 .waitForProjectVisibility("about fedora", false);
 
         assertThat(projectsPage.getProjectNamesOnCurrentPage())
@@ -80,7 +80,7 @@ public class EditProjectGeneralTest extends ZanataTestCase {
 
         projectsPage = projectsPage.setActiveFilterEnabled(false)
                 .setReadOnlyFilterEnabled(true)
-                .setObsoleteFilterEnabled(false)
+                .setArchivedFilterEnabled(false)
                 .waitForProjectVisibility("about fedora", true);
 
         assertThat(projectsPage.getProjectNamesOnCurrentPage())
@@ -101,7 +101,7 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .goToProjects()
                 .setActiveFilterEnabled(false)
                 .setReadOnlyFilterEnabled(true)
-                .setObsoleteFilterEnabled(false)
+                .setArchivedFilterEnabled(false)
                 .waitForProjectVisibility("about fedora", true)
                 .getProjectNamesOnCurrentPage())
                 .contains("about fedora")
@@ -117,7 +117,7 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .goToProjects()
                 .setActiveFilterEnabled(true)
                 .setReadOnlyFilterEnabled(false)
-                .setObsoleteFilterEnabled(false)
+                .setArchivedFilterEnabled(false)
                 .waitForProjectVisibility("about fedora", true);
 
         assertThat(projectsPage.getProjectNamesOnCurrentPage())
