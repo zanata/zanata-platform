@@ -355,6 +355,16 @@
         <scope>test</scope>
       </dependency>
 
+      <!-- Liquibase Dependencies -->
+      <!-- If the Liquibase version is being updated, please refer to
+      any changelog files that run 'on change' and make sure that they still run
+      after upgrading the version. -->
+      <dependency>
+        <groupId>org.liquibase</groupId>
+        <artifactId>liquibase-core</artifactId>
+        <version>3.3.3</version>
+      </dependency>
+
       <dependency>
         <groupId>org.opensymphony.quartz</groupId>
         <artifactId>quartz</artifactId>
