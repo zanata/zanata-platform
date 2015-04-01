@@ -1,5 +1,5 @@
 /*
- * Copyright 2013, Red Hat, Inc. and individual contributors
+ * Copyright 2014, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,24 +18,20 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.zanata.events;
-
-import org.zanata.common.LocaleId;
 
 import lombok.Value;
 
+import org.zanata.security.AuthenticationType;
+
 /**
- * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- *
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Value
-public final class DocumentUploadedEvent {
-    public static final String EVENT_NAME =
-            "org.zanata.events.DocumentUploadedEvent";
-    private final long actorId;
-    private final Long documentId;
-    private final boolean isSourceDocument;
-    private final LocaleId localeId;
+public class Logout {
+    // TODO remove constant after switching to CDI
+    // NB must be a constant string equal to class name
+    public static final String EVENT_NAME = "org.zanata.events.Logout";
 
+    String username;
 }

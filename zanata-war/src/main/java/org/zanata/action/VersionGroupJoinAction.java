@@ -35,7 +35,6 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -45,6 +44,7 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.VersionGroupService;
+import org.zanata.ui.faces.FacesMessages;
 
 import com.google.common.collect.Lists;
 
@@ -53,6 +53,9 @@ import com.google.common.collect.Lists;
 @Scope(ScopeType.PAGE)
 public class VersionGroupJoinAction implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
 
     @In
     private VersionGroupService versionGroupServiceImpl;
@@ -140,7 +143,7 @@ public class VersionGroupJoinAction implements Serializable {
             }
             return sendEmail.sendToVersionGroupMaintainer(maintainers);
         } else {
-            FacesMessages.instance().add(
+            facesMessages.addGlobal(
                     "#{msgs['jsf.NoProjectVersionSelected']}");
             return "failure";
         }

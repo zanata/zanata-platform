@@ -34,6 +34,7 @@ import org.zanata.events.TextFlowTargetUpdateContextEvent;
 import org.zanata.service.SecurityService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.TranslationService.TranslationResult;
+import org.zanata.util.Event;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.rpc.RevertTransUnitUpdates;
@@ -59,6 +60,9 @@ public class RevertTransUnitUpdatesHandler extends
     @In(value = "webtrans.gwt.TransUnitUpdateHelper", create = true)
     private TransUnitUpdateHelper transUnitUpdateHelper;
 
+    @In("event")
+    private Event<TextFlowTargetUpdateContextEvent> textFlowTargetUpdateContextEvent;
+
     @Override
     public UpdateTransUnitResult execute(RevertTransUnitUpdates action,
             ExecutionContext context) throws ActionException {
@@ -67,14 +71,12 @@ public class RevertTransUnitUpdatesHandler extends
 
         if (Events.exists()) {
             for (TransUnitUpdateInfo updateInfo : action.getUpdatesToRevert()) {
-                Events.instance()
-                        .raiseEvent(
-                                TextFlowTargetUpdateContextEvent.EVENT_NAME,
-                                new TextFlowTargetUpdateContextEvent(updateInfo
-                                        .getTransUnit().getId(), action
-                                        .getWorkspaceId().getLocaleId(), action
-                                        .getEditorClientId(),
-                                        UpdateType.NonEditorSave));
+                textFlowTargetUpdateContextEvent.fire(
+                        new TextFlowTargetUpdateContextEvent(
+                                updateInfo.getTransUnit().getId(),
+                                action.getWorkspaceId().getLocaleId(),
+                                action.getEditorClientId(),
+                                UpdateType.NonEditorSave));
             }
         }
 

@@ -37,13 +37,14 @@ import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.international.StatusMessage;
 import org.zanata.action.validator.NotDuplicateEmail;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HPerson;
 import org.zanata.service.EmailService;
 import org.zanata.service.RegisterService;
+import org.zanata.ui.faces.FacesMessages;
+
+import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 @Name("register")
 @Scope(ScopeType.CONVERSATION)
@@ -54,6 +55,9 @@ public class RegisterAction implements Serializable {
 
     @In
     private EntityManager entityManager;
+
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
 
     @In
     RegisterService registerServiceImpl;
@@ -132,7 +136,7 @@ public class RegisterAction implements Serializable {
                     .createQuery("from HAccount a where a.username = :username")
                     .setParameter("username", username).getSingleResult();
             valid = false;
-            FacesMessages.instance().addToControl("username",
+            facesMessages.addToControl("username",
                     "This username is not available");
         } catch (NoResultException e) {
             // pass
@@ -142,7 +146,7 @@ public class RegisterAction implements Serializable {
     public void validateHumanField() {
         if (humanField != null && humanField.length() > 0) {
             valid = false;
-            FacesMessages.instance().add(StatusMessage.Severity.ERROR,
+            facesMessages.addGlobal(SEVERITY_ERROR,
                     "You have filled a field that was not meant for humans.");
             humanField = null;
         }
@@ -168,7 +172,7 @@ public class RegisterAction implements Serializable {
 
         String message =
                 emailServiceImpl.sendActivationEmail(user, email, key);
-        FacesMessages.instance().add(message);
+        facesMessages.addGlobal(message);
 
         return "/home.xhtml";
     }

@@ -83,6 +83,7 @@ import org.zanata.service.LockManagerService;
 import org.zanata.service.TranslationMergeService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.ValidationService;
+import org.zanata.util.Event;
 import org.zanata.util.ShortString;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
@@ -141,6 +142,12 @@ public class TranslationServiceImpl implements TranslationService {
 
     @In
     private Messages msgs;
+
+    @In("event")
+    private Event<DocumentUploadedEvent> documentUploadedEvent;
+
+    @In("event")
+    private Event<TextFlowTargetStateEvent> textFlowTargetStateEvent;
 
     @Override
     public List<TranslationResult> translate(LocaleId localeId,
@@ -315,12 +322,11 @@ public class TranslationServiceImpl implements TranslationService {
             // new DocumentId(document.getId(), document.getDocId()), hasError,
             // hTextFlowTarget.getLastChanged(),
             // hTextFlowTarget.getLastModifiedBy().getAccount().getUsername());
-            Events.instance().raiseTransactionSuccessEvent(
-                    TextFlowTargetStateEvent.EVENT_NAME,
+            textFlowTargetStateEvent.fireAfterSuccess(
                     new TextFlowTargetStateEvent(actorId, versionId,
                             documentId, textFlow.getId(), hTextFlowTarget
-                                    .getLocale().getLocaleId(), hTextFlowTarget
-                                    .getId(), hTextFlowTarget.getState(),
+                            .getLocale().getLocaleId(), hTextFlowTarget
+                            .getId(), hTextFlowTarget.getState(),
                             oldState));
         }
     }
@@ -690,14 +696,11 @@ public class TranslationServiceImpl implements TranslationService {
                     }
                 }.workInTransaction();
 
-                if (Events.exists()) {
-                    Long actorId = authenticatedAccount.getPerson().getId();
-                    Events.instance().raiseEvent(
-                            DocumentUploadedEvent.EVENT_NAME,
-                            new DocumentUploadedEvent(actorId,
-                                    document.getId(), false, hLocale
-                                            .getLocaleId()));
-                }
+                Long actorId = authenticatedAccount.getPerson().getId();
+                documentUploadedEvent.fire(new DocumentUploadedEvent(
+                        actorId,
+                        document.getId(), false,
+                        hLocale.getLocaleId()));
             } catch (Exception e) {
                 log.error("exception in removeTargets: {}", e.getMessage());
                 throw new ZanataServiceException("Error during translation.",

@@ -21,8 +21,7 @@ import com.google.common.collect.Iterables;
 @Getter
 @ToString
 public class LanguageTeamPermissionChangedEvent implements Serializable {
-    public static final String LANGUAGE_TEAM_PERMISSION_CHANGED =
-            "languageTeamPermissionChanged";
+    public static final String EVENT_NAME = "org.zanata.events.LanguageTeamPermissionChangedEvent";
     private static final long serialVersionUID = -1L;
 
     private final LocaleId language;

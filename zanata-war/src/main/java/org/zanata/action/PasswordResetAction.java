@@ -14,7 +14,6 @@ import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.NotLoggedInException;
 import org.jboss.seam.security.RunAsOperation;
@@ -22,6 +21,7 @@ import org.jboss.seam.security.management.IdentityManager;
 import org.zanata.exception.KeyNotFoundException;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccountResetPasswordKey;
+import org.zanata.ui.faces.FacesMessages;
 
 @Name("passwordReset")
 @Scope(ScopeType.CONVERSATION)
@@ -34,6 +34,9 @@ public class PasswordResetAction implements Serializable {
 
     @In
     private IdentityManager identityManager;
+
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
 
     @In
     private Messages msgs;
@@ -61,7 +64,7 @@ public class PasswordResetAction implements Serializable {
 
     public boolean validatePasswordsMatch() {
         if (password == null || !password.equals(passwordConfirm)) {
-            FacesMessages.instance().addToControl("passwordConfirm",
+            facesMessages.addToControl("passwordConfirm",
                     "Passwords do not match");
             return false;
         }
@@ -105,11 +108,11 @@ public class PasswordResetAction implements Serializable {
                                     .getAccount().getUsername(), getPassword());
                 } catch (AuthorizationException e) {
                     passwordChanged = false;
-                    FacesMessages.instance().add(
+                    facesMessages.addGlobal(
                             "Error changing password: " + e.getMessage());
                 } catch (NotLoggedInException ex) {
                     passwordChanged = false;
-                    FacesMessages.instance().add(
+                    facesMessages.addGlobal(
                             "Error changing password: " + ex.getMessage());
                 }
             }
@@ -118,12 +121,12 @@ public class PasswordResetAction implements Serializable {
         entityManager.remove(getKey());
 
         if (passwordChanged) {
-            FacesMessages.instance()
-                    .add(msgs.get("jsf.password.change.success"));
+            facesMessages
+                    .addGlobal(msgs.get("jsf.password.change.success"));
             return "/account/login.xhtml";
         } else {
-            FacesMessages.instance()
-                    .add(msgs.get("jsf.password.change.failed"));
+            facesMessages
+                    .addGlobal(msgs.get("jsf.password.change.failed"));
             return null;
         }
 

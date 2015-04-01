@@ -28,10 +28,10 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.framework.EntityHome;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.service.SlugEntityService;
+import org.zanata.ui.faces.FacesMessages;
 
 /**
  * Controller class for the Translation Memory UI.
@@ -46,6 +46,9 @@ public class TranslationMemoryHome extends EntityHome<TransMemory> {
     @In
     private SlugEntityService slugEntityServiceImpl;
 
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
+
     public void verifySlugAvailable(ValueChangeEvent e) {
         String slug = (String) e.getNewValue();
         validateSlug(slug, e.getComponent().getId());
@@ -53,7 +56,7 @@ public class TranslationMemoryHome extends EntityHome<TransMemory> {
 
     public boolean validateSlug(String slug, String componentId) {
         if (!slugEntityServiceImpl.isSlugAvailable(slug, TransMemory.class)) {
-            FacesMessages.instance().addToControl(componentId,
+            facesMessages.addToControl(componentId,
                     "This Id is not available");
             return false;
         }

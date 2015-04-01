@@ -1,9 +1,8 @@
 package org.zanata.events;
 
+import lombok.Value;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 /**
  * This event is raised in Hibernate entity listener after change has been made.
@@ -17,8 +16,7 @@ import lombok.RequiredArgsConstructor;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@RequiredArgsConstructor
-@Getter
+@Value
 public class TextFlowTargetUpdatedEvent {
     public static final String EVENT_NAME =
             "org.zanata.events.TextFlowTargetUpdatedEvent";

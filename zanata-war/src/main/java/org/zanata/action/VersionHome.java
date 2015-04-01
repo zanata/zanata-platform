@@ -42,8 +42,6 @@ import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.core.Events;
-import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -51,6 +49,7 @@ import org.zanata.common.ProjectType;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.LocaleDAO;
+import org.zanata.events.ProjectIterationUpdate;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
@@ -60,7 +59,10 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
 import org.zanata.service.ValidationService;
 import org.zanata.service.impl.LocaleServiceImpl;
+import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ComparatorUtil;
+import org.zanata.util.Event;
+import org.zanata.util.ServiceLocator;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
@@ -82,9 +84,6 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
     private static final long serialVersionUID = 1L;
 
-    public static final String PROJECT_ITERATION_UPDATE =
-            "project.iteration.update";
-
     @Getter
     @Setter
     private String slug;
@@ -92,6 +91,9 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     @Getter
     @Setter
     private String projectSlug;
+
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
 
     @In
     private ProjectIterationDAO projectIterationDAO;
@@ -119,6 +121,9 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
     @In
     private CopyVersionManager copyVersionManager;
+
+    @In("event")
+    private Event<ProjectIterationUpdate> projectIterationUpdateEvent;
 
     private Map<ValidationId, ValidationAction> availableValidations = Maps
             .newHashMap();
@@ -295,8 +300,8 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
     public boolean validateSlug(String slug, String componentId) {
         if (!isSlugAvailable(slug)) {
-            FacesMessages.instance().addToControl(componentId,
-                    "This Version ID has been used in this project");
+            facesMessages.addToControl(componentId,
+                "This Version ID has been used in this project");
             return false;
         }
         return true;
@@ -408,7 +413,8 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     @Restrict("#{s:hasPermission(versionHome.instance, 'update')}")
     public String update() {
         String state = super.update();
-        Events.instance().raiseEvent(PROJECT_ITERATION_UPDATE, getInstance());
+        projectIterationUpdateEvent.fire(
+            new ProjectIterationUpdate(getInstance()));
         return state;
     }
 
@@ -609,14 +615,15 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
      */
     private void showRemovedAliasesMessage(List<LocaleId> removed) {
         if (removed.isEmpty()) {
-            FacesMessages.instance().add(StatusMessage.Severity.INFO,
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
                     msgs.get("jsf.LocaleAlias.NoAliasesToRemove"));
         } else if (removed.size() == 1) {
-            FacesMessages.instance().add(StatusMessage.Severity.INFO,
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
                     msgs.format("jsf.LocaleAlias.AliasRemoved", removed.get(0)));
         } else {
-            FacesMessages.instance().add(StatusMessage.Severity.INFO,
-                    msgs.format("jsf.LocaleAlias.AliasesRemoved", StringUtils.join(removed, ", ")));
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                    msgs.format("jsf.LocaleAlias.AliasesRemoved",
+                            StringUtils.join(removed, ", ")));
         }
     }
 
@@ -654,15 +661,15 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
         if (isNullOrEmpty(alias)) {
             if (hadAlias) {
-                FacesMessages.instance().add(StatusMessage.Severity.INFO,
-                    msgs.format("jsf.LocaleAlias.AliasRemoved", localeId));
+                facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                        msgs.format("jsf.LocaleAlias.AliasRemoved", localeId));
             } else {
-                FacesMessages.instance().add(StatusMessage.Severity.INFO,
-                    msgs.format("jsf.LocaleAlias.NoAliasToRemove", localeId));
+                facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                        msgs.format("jsf.LocaleAlias.NoAliasToRemove", localeId));
             }
         } else {
-            FacesMessages.instance().add(StatusMessage.Severity.INFO,
-                msgs.format("jsf.LocaleAlias.AliasSet", localeId, alias));
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                    msgs.format("jsf.LocaleAlias.AliasSet", localeId, alias));
         }
     }
 
@@ -751,11 +758,13 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         if (removed.isEmpty()) {
             // This should not be possible in the UI, but maybe if multiple users are editing it.
         } else if (removed.size() == 1) {
-            FacesMessages.instance().add(StatusMessage.Severity.INFO,
-                    msgs.format("jsf.languageSettings.LanguageDisabled", removed.get(0)));
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                    msgs.format("jsf.languageSettings.LanguageDisabled",
+                            removed.get(0)));
         } else {
-            FacesMessages.instance().add(StatusMessage.Severity.INFO,
-                    msgs.format("jsf.languageSettings.LanguagesDisabled", StringUtils.join(removed, ", ")));
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                    msgs.format("jsf.languageSettings.LanguagesDisabled",
+                            StringUtils.join(removed, ", ")));
         }
     }
 
@@ -768,7 +777,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     public void disableLocale(HLocale locale) {
         boolean wasEnabled = disableLocaleSilently(locale);
         if (wasEnabled) {
-            FacesMessages.instance().add(StatusMessage.Severity.INFO,
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
                     msgs.format("jsf.languageSettings.LanguageDisabled",
                             locale.getLocaleId()));
         }
@@ -827,7 +836,6 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     @Setter
     private Map<LocaleId, Boolean> selectedDisabledLocales = Maps.newHashMap();
 
-
     @Restrict("#{s:hasPermission(versionHome.instance, 'update')}")
     public void enableSelectedLocales() {
         List<LocaleId> enabled = new ArrayList<>();
@@ -845,11 +853,13 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         if (enabled.isEmpty()) {
             // This should not be possible in the UI, but maybe if multiple users are editing it.
         } else if (enabled.size() == 1) {
-            FacesMessages.instance().add(StatusMessage.Severity.INFO,
-                    msgs.format("jsf.languageSettings.LanguageEnabled", enabled.get(0)));
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                    msgs.format("jsf.languageSettings.LanguageEnabled",
+                            enabled.get(0)));
         } else {
-            FacesMessages.instance().add(StatusMessage.Severity.INFO,
-                    msgs.format("jsf.languageSettings.LanguagesEnabled", StringUtils.join(enabled, ", ")));
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                    msgs.format("jsf.languageSettings.LanguagesEnabled",
+                            StringUtils.join(enabled, ", ")));
         }
     }
 
@@ -859,8 +869,9 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
         if (wasDisabled) {
             LocaleId localeId = locale.getLocaleId();
-            FacesMessages.instance().add(StatusMessage.Severity.INFO,
-                    msgs.format("jsf.languageSettings.LanguageEnabled", localeId));
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                    msgs.format("jsf.languageSettings.LanguageEnabled",
+                            localeId));
         }
         // TODO consider printing message like "Locale {0} was already enabled"
     }

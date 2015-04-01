@@ -54,6 +54,7 @@
   </application>
   <lifecycle>
     <phase-listener>org.zanata.security.FedoraOpenIdPhaseListener</phase-listener>
+    <phase-listener>org.zanata.ui.faces.FacesMessagesPhaseListener</phase-listener>
   </lifecycle>
 
   <render-kit>

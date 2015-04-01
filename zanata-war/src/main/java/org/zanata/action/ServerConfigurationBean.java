@@ -41,13 +41,13 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.faces.FacesMessages;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.action.validator.EmailList;
 import org.zanata.dao.ApplicationConfigurationDAO;
 import org.zanata.model.HApplicationConfiguration;
 import org.zanata.model.validator.Url;
 import org.zanata.rest.service.ServerConfigurationService;
+import org.zanata.ui.faces.FacesMessages;
 
 import static org.zanata.model.HApplicationConfiguration.*;
 
@@ -57,6 +57,9 @@ import static org.zanata.model.HApplicationConfiguration.*;
 @Slf4j
 public class ServerConfigurationBean implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
 
     public static final String DEFAULT_HELP_URL = "http://zanata.org/help";
 
@@ -166,7 +169,7 @@ public class ServerConfigurationBean implements Serializable {
         persistPropertyToDatabase(homeContentProperty);
         applicationConfigurationDAO.flush();
 
-        FacesMessages.instance().add("Home content was successfully updated.");
+        facesMessages.addGlobal("Home content was successfully updated.");
         return "/home.xhtml";
     }
 
@@ -230,9 +233,8 @@ public class ServerConfigurationBean implements Serializable {
         applicationConfigurationDAO.makePersistent(emailLogEventsValue);
 
         applicationConfigurationDAO.flush();
-        FacesMessages facesMessages = FacesMessages.instance();
-        facesMessages.clearGlobalMessages();
-        facesMessages.add("Configuration was successfully updated.");
+        facesMessages.clear();
+        facesMessages.addGlobal("Configuration was successfully updated.");
         return "success";
     }
 

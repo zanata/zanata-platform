@@ -34,7 +34,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.core.Events;
 import org.jboss.seam.faces.FacesManager;
-import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.faces.Redirect;
 import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.Credentials;
@@ -52,6 +51,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
+import org.zanata.events.LoginCompleted;
 import org.zanata.model.HAccount;
 import org.zanata.security.openid.FedoraOpenIdProvider;
 import org.zanata.security.openid.GenericOpenIdProvider;
@@ -62,6 +62,8 @@ import org.zanata.security.openid.OpenIdAuthenticationResult;
 import org.zanata.security.openid.OpenIdProvider;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.security.openid.YahooOpenIdProvider;
+import org.zanata.ui.faces.FacesMessages;
+import org.zanata.util.Event;
 import org.zanata.util.ServiceLocator;
 
 @Name("org.jboss.seam.security.zanataOpenId")
@@ -77,6 +79,9 @@ public class ZanataOpenId implements OpenIdAuthCallback {
     private ZanataIdentity identity;
     private ApplicationConfiguration applicationConfiguration;
 
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
+
     @In
     private Credentials credentials;
 
@@ -85,6 +90,9 @@ public class ZanataOpenId implements OpenIdAuthCallback {
 
     @In
     private AccountDAO accountDAO;
+
+    @In("event")
+    private Event<LoginCompleted> loginCompletedEvent;
 
     private String id;
     private OpenIdAuthenticationResult authResult;
@@ -185,8 +193,7 @@ public class ZanataOpenId implements OpenIdAuthCallback {
                 // TODO This should be done at a higher level. i.e. instead of
                 // returning a string, return an
                 // object that holds more information for the UI to render
-                FacesMessages.instance().add(StatusMessage.Severity.INFO,
-                        "Authentication Request Cancelled");
+                facesMessages.addGlobal("Authentication Request Cancelled");
             }
 
             // examine the verification result and extract the verified
@@ -238,14 +245,14 @@ public class ZanataOpenId implements OpenIdAuthCallback {
     }
 
     private void loginImmediate() {
-        if (loginImmediately() && Events.exists()) {
-            Events.instance().raiseEvent(Identity.EVENT_POST_AUTHENTICATE,
-                    identity);
+        if (loginImmediately()) {
+            if (Events.exists()) {
+                Events.instance().raiseEvent(Identity.EVENT_POST_AUTHENTICATE,
+                        identity);
+            }
             // Events.instance().raiseEvent(Identity.EVENT_LOGIN_SUCCESSFUL,
             // AuthenticationType.OPENID);
-            Events.instance().raiseEvent(
-                    AuthenticationManager.EVENT_LOGIN_COMPLETED,
-                    AuthenticationType.OPENID);
+            loginCompletedEvent.fire(new LoginCompleted(AuthenticationType.OPENID));
         }
     }
 

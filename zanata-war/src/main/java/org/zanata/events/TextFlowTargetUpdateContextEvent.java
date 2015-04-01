@@ -4,9 +4,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
-import lombok.Data;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Value;
 
 /**
  * This event is raised by text flow target update initiator before making a
@@ -18,11 +16,10 @@ import lombok.RequiredArgsConstructor;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@RequiredArgsConstructor
-@Getter
+@Value
 public class TextFlowTargetUpdateContextEvent {
     public static final String EVENT_NAME =
-            "org.zanata.event.TextFlowTargetUpdateContextEvent";
+            "org.zanata.events.TextFlowTargetUpdateContextEvent";
 
     private final TransUnitId transUnitId;
     private final LocaleId localeId;

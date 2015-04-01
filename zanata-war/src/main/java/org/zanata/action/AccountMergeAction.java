@@ -20,7 +20,7 @@
  */
 package org.zanata.action;
 
-import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
+import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 import java.io.Serializable;
 
@@ -33,17 +33,15 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.security.AuthenticationManager;
-import org.zanata.security.AuthenticationType;
-import org.zanata.security.ZanataCredentials;
 import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdAuthenticationResult;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.service.RegisterService;
+import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ServiceLocator;
 
 /**
@@ -57,6 +55,9 @@ public class AccountMergeAction implements Serializable {
 
     @In(value = JpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
+
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
 
     @In
     private AuthenticationManager authenticationManager;
@@ -110,12 +111,12 @@ public class AccountMergeAction implements Serializable {
         // The account to merge in has been authenticated
         if (obsoleteAccount != null) {
             if (obsoleteAccount.getId() == null) {
-                FacesMessages.instance().add(ERROR,
+                facesMessages.addGlobal(SEVERITY_ERROR,
                         "Could not find an account for that user.");
                 valid = false;
             } else if (authenticatedAccount.getId().equals(
                     obsoleteAccount.getId())) {
-                FacesMessages.instance().add(ERROR,
+                facesMessages.addGlobal(SEVERITY_ERROR,
                         "You are attempting to merge the same account.");
                 valid = false;
             }
@@ -128,7 +129,7 @@ public class AccountMergeAction implements Serializable {
         registerServiceImpl
                 .mergeAccounts(authenticatedAccount, obsoleteAccount);
         obsoleteAccount = null; // reset the obsolete account
-        FacesMessages.instance().add("Your accounts have been merged.");
+        facesMessages.addGlobal("Your accounts have been merged.");
     }
 
     public void cancel() {

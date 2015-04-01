@@ -20,6 +20,7 @@ import org.zanata.model.HLocaleMember;
 import org.zanata.model.HLocaleMember.HLocaleMemberPk;
 import org.zanata.model.HPerson;
 import org.zanata.service.LanguageTeamService;
+import org.zanata.util.Event;
 
 @Name("languageTeamServiceImpl")
 @Scope(ScopeType.STATELESS)
@@ -35,6 +36,11 @@ public class LanguageTeamServiceImpl implements LanguageTeamService {
 
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION)
     private HAccount authenticatedAccount;
+
+    @In("event")
+    private Event<LanguageTeamPermissionChangedEvent>
+            languageTeamPermissionChangedEvent;
+
 
     public List<HLocale> getLanguageMemberships(String userName) {
         return personDAO.getLanguageMembershipByUsername(userName);
@@ -83,11 +89,7 @@ public class LanguageTeamServiceImpl implements LanguageTeamService {
         }
         localeMemberDAO.makePersistent(localeMember);
         localeMemberDAO.flush();
-        if (Events.exists()) {
-            Events.instance().raiseTransactionSuccessEvent(
-                    LanguageTeamPermissionChangedEvent.LANGUAGE_TEAM_PERMISSION_CHANGED,
-                    permissionChangedEvent);
-        }
+        languageTeamPermissionChangedEvent.fire(permissionChangedEvent);
     }
 
     public boolean leaveLanguageTeam(String locale, Long personId) {
@@ -101,17 +103,13 @@ public class LanguageTeamServiceImpl implements LanguageTeamService {
             localeMemberDAO.makeTransient(membership);
             lang.getMembers().remove(membership);
             localeMemberDAO.flush();
-            if (Events.exists()) {
-                HPerson doneByPerson = authenticatedAccount.getPerson();
-                Events.instance()
-                        .raiseTransactionSuccessEvent(
-                                LanguageTeamPermissionChangedEvent.LANGUAGE_TEAM_PERMISSION_CHANGED,
-                                new LanguageTeamPermissionChangedEvent(
-                                        currentPerson, lang.getLocaleId(),
-                                        doneByPerson)
-                                        .updatingPermissions(membership, false,
-                                                false, false));
-            }
+            HPerson doneByPerson = authenticatedAccount.getPerson();
+            languageTeamPermissionChangedEvent.fire(
+                    new LanguageTeamPermissionChangedEvent(
+                            currentPerson, lang.getLocaleId(),
+                            doneByPerson)
+                            .updatingPermissions(membership, false,
+                                    false, false));
             return true;
         }
 

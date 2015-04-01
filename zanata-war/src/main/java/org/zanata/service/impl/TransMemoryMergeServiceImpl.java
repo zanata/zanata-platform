@@ -28,7 +28,6 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.core.Events;
 import org.zanata.common.ContentState;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TransMemoryUnitDAO;
@@ -42,6 +41,7 @@ import org.zanata.service.SecurityService;
 import org.zanata.service.TransMemoryMergeService;
 import org.zanata.service.TranslationMemoryService;
 import org.zanata.service.TranslationService;
+import org.zanata.util.Event;
 import org.zanata.webtrans.server.rpc.TransMemoryMergeStatusResolver;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
@@ -83,6 +83,10 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
 
     @In
     private TranslationService translationServiceImpl;
+
+    @In("event")
+    private Event<TextFlowTargetUpdateContextEvent>
+            textFlowTargetUpdateContextEvent;
 
     private static final String commentPrefix =
             "auto translated by TM merge from";
@@ -147,15 +151,13 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
             return Collections.EMPTY_LIST;
         }
 
-        if (Events.exists()) {
-            for (TransUnitUpdateRequest updateRequest : updateRequests) {
-                Events.instance().raiseEvent(
-                        TextFlowTargetUpdateContextEvent.EVENT_NAME,
-                        new TextFlowTargetUpdateContextEvent(updateRequest
-                                .getTransUnitId(), action.getWorkspaceId()
-                                .getLocaleId(), action.getEditorClientId(),
-                                TransUnitUpdated.UpdateType.NonEditorSave));
-            }
+        for (TransUnitUpdateRequest updateRequest : updateRequests) {
+            textFlowTargetUpdateContextEvent.fire(
+                    new TextFlowTargetUpdateContextEvent(
+                            updateRequest.getTransUnitId(),
+                            action.getWorkspaceId().getLocaleId(),
+                            action.getEditorClientId(),
+                            TransUnitUpdated.UpdateType.NonEditorSave));
         }
 
         return translationServiceImpl.translate(action.getWorkspaceId()

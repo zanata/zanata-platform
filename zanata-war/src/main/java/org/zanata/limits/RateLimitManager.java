@@ -15,6 +15,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.events.ConfigurationChanged;
 import org.zanata.util.Introspectable;
 import com.google.common.base.Function;
 import com.google.common.cache.Cache;
@@ -24,6 +25,9 @@ import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.zanata.util.ServiceLocator;
+
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.TransactionPhase;
 
 /**
  * @author Patrick Huang <a
@@ -64,8 +68,11 @@ public class RateLimitManager implements Introspectable {
         maxActive = appConfig.getMaxActiveRequestsPerApiKey();
     }
 
-    @Observer({ ApplicationConfiguration.EVENT_CONFIGURATION_CHANGED })
-    public void configurationChanged() {
+    @Observer(ConfigurationChanged.EVENT_NAME)
+    // TODO only do this if the relevant values have changed
+    public void configurationChanged(
+            @Observes(during = TransactionPhase.AFTER_SUCCESS)
+            ConfigurationChanged payload) {
         int oldConcurrent = maxConcurrent;
         int oldActive = maxActive;
         boolean changed = false;

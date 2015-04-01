@@ -11,7 +11,6 @@ import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.faces.FacesMessages;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.dao.AccountDAO;
 import org.zanata.i18n.Messages;
@@ -20,6 +19,7 @@ import org.zanata.model.HAccountActivationKey;
 import org.zanata.model.HAccountResetPasswordKey;
 import org.zanata.service.EmailService;
 import org.zanata.service.UserAccountService;
+import org.zanata.ui.faces.FacesMessages;
 
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -32,6 +32,9 @@ import java.util.Date;
 @Slf4j
 public class PasswordResetRequestAction implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
 
     @In
     private AccountDAO accountDAO;
@@ -82,18 +85,18 @@ public class PasswordResetRequestAction implements Serializable {
         }
 
         if(isAccountWaitingForActivation()) {
-            FacesMessages.instance().add(msgs.get("jsf.account.notActivated"));
+            facesMessages.addGlobal(msgs.get("jsf.account.notActivated"));
             return null;
         }
 
         String message = emailServiceImpl.sendPasswordResetEmail(
             getAccount().getPerson(), key.getKeyHash());
-        FacesMessages.instance().add(message);
+        facesMessages.addGlobal(message);
         return "home";
     }
 
     private String getAccountNoFoundMessage() {
-        FacesMessages.instance().add(msgs.get("jsf.account.notFound"));
+        facesMessages.addGlobal(msgs.get("jsf.account.notFound"));
         return null;
     }
 
@@ -113,7 +116,7 @@ public class PasswordResetRequestAction implements Serializable {
                         account.getPerson().getName(),
                         account.getPerson().getEmail(),
                         account.getAccountActivationKey().getKeyHash());
-                FacesMessages.instance().add(message);
+                facesMessages.addGlobal(message);
             }
         }
         return "/home.xhtml";

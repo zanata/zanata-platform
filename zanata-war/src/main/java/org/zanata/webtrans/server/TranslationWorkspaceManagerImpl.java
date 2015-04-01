@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.enterprise.event.Observes;
 import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
@@ -14,21 +15,20 @@ import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.core.Events;
 import org.jboss.seam.web.ServletContexts;
-import org.zanata.ZanataInit;
-import org.zanata.action.ProjectHome;
-import org.zanata.action.VersionHome;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.events.Logout;
+import org.zanata.events.ProjectIterationUpdate;
+import org.zanata.events.ProjectUpdate;
+import org.zanata.events.ServerStarted;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GravatarService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.ValidationService;
@@ -64,9 +64,6 @@ import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 @Slf4j
 public class TranslationWorkspaceManagerImpl implements
         TranslationWorkspaceManager {
-
-    private static final String EVENT_WORKSPACE_CREATED =
-            "webtrans.WorkspaceCreated";
 
     private final ConcurrentHashMap<WorkspaceId, TranslationWorkspace> workspaceMap;
     private final Multimap<ProjectIterationId, TranslationWorkspace> projIterWorkspaceMap;
@@ -117,13 +114,17 @@ public class TranslationWorkspaceManagerImpl implements
                 ValidationService.class);
     }
 
-    @Observer(ZanataInit.EVENT_Zanata_Startup)
-    public void start() {
+    @Observer(ServerStarted.EVENT_NAME)
+    public void start(@Observes ServerStarted payload) {
         log.info("starting...");
     }
 
-    @Observer(ZanataIdentity.USER_LOGOUT_EVENT)
-    public void exitWorkspace(String username) {
+    @Observer(Logout.EVENT_NAME)
+    public void exitWorkspace(@Observes Logout payload) {
+        exitWorkspace(payload.getUsername());
+    }
+
+    void exitWorkspace(String username) {
         String httpSessionId = getSessionId();
         if (httpSessionId == null) {
             log.debug("Logout: null session");
@@ -170,8 +171,12 @@ public class TranslationWorkspaceManagerImpl implements
         return request.getSession().getId();
     }
 
-    @Observer(ProjectHome.PROJECT_UPDATE)
-    public void projectUpdate(HProject project) {
+    @Observer(ProjectUpdate.EVENT_NAME)
+    public void projectUpdate(@Observes ProjectUpdate payload) {
+        projectUpdate(payload.getProject());
+    }
+
+    void projectUpdate(HProject project) {
         String projectSlug = project.getSlug();
         log.info("Project {} updated, status={}", projectSlug,
                 project.getStatus());
@@ -181,8 +186,12 @@ public class TranslationWorkspaceManagerImpl implements
         }
     }
 
-    @Observer(VersionHome.PROJECT_ITERATION_UPDATE)
-    public void projectIterationUpdate(HProjectIteration projectIteration) {
+    @Observer(ProjectIterationUpdate.EVENT_NAME)
+    public void projectIterationUpdate(@Observes ProjectIterationUpdate payload) {
+        projectIterationUpdate(payload.getIteration());
+    }
+
+    void projectIterationUpdate(HProjectIteration projectIteration) {
         HashMap<ValidationId, State> validationStates = Maps.newHashMap();
 
         for (ValidationAction validationAction : getValidationService()
@@ -258,10 +267,6 @@ public class TranslationWorkspaceManagerImpl implements
             if (prev == null) {
                 projIterWorkspaceMap.put(workspaceId.getProjectIterationId(),
                         workspace);
-                if (Events.exists()) {
-                    Events.instance().raiseEvent(EVENT_WORKSPACE_CREATED,
-                            workspaceId);
-                }
             }
 
             return prev == null ? workspace : prev;

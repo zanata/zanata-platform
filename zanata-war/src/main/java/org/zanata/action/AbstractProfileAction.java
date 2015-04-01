@@ -5,13 +5,13 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.ui.faces.FacesMessages;
 
 /**
  * @author Patrick Huang
@@ -27,6 +27,9 @@ public abstract class AbstractProfileAction {
     @In
     ZanataIdentity identity;
 
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
+
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     HAccount authenticatedAccount;
 
@@ -41,7 +44,7 @@ public abstract class AbstractProfileAction {
 
         if (person != null && !person.getAccount().equals(authenticatedAccount)) {
             valid = false;
-            FacesMessages.instance().addToControl("email",
+            facesMessages.addToControl("email",
                     "This email address is already taken");
         }
     }
@@ -51,7 +54,7 @@ public abstract class AbstractProfileAction {
 
         if (account != null && !account.equals(authenticatedAccount)) {
             valid = false;
-            FacesMessages.instance().addToControl("username",
+            facesMessages.addToControl("username",
                     "This username is already taken");
         }
     }

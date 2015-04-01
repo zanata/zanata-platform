@@ -50,9 +50,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.core.Events;
-import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.international.StatusMessage;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -60,6 +57,8 @@ import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountRoleDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.WebHookDAO;
+import org.zanata.events.ProjectIterationUpdate;
+import org.zanata.events.ProjectUpdate;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
@@ -76,7 +75,9 @@ import org.zanata.service.ValidationService;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.autocomplete.MaintainerAutocomplete;
+import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ComparatorUtil;
+import org.zanata.util.Event;
 import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
@@ -84,6 +85,8 @@ import org.zanata.webtrans.shared.validation.ValidationFactory;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
+import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 @Name("projectHome")
 @Slf4j
@@ -118,6 +121,15 @@ public class ProjectHome extends SlugHome<HProject> implements
 
     @In
     private EntityManager entityManager;
+
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
+
+    @In("event")
+    private Event<ProjectUpdate> projectUpdateEvent;
+
+    @In("event")
+    private Event<ProjectIterationUpdate> projectIterationUpdateEvent;
 
     @In
     private Messages msgs;
@@ -324,15 +336,16 @@ public class ProjectHome extends SlugHome<HProject> implements
         boolean hadAlias = setLocaleAliasSilently(localeId, alias);
         if (isNullOrEmpty(alias)) {
             if (hadAlias) {
-                FacesMessages.instance().add(StatusMessage.Severity.INFO,
-                    msgs.format("jsf.LocaleAlias.AliasRemoved", localeId));
+                facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                        msgs.format("jsf.LocaleAlias.AliasRemoved", localeId));
             } else {
-                FacesMessages.instance().add(StatusMessage.Severity.INFO,
-                    msgs.format("jsf.LocaleAlias.NoAliasToRemove", localeId));
+                facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                        msgs.format("jsf.LocaleAlias.NoAliasToRemove",
+                                localeId));
             }
         } else {
-            FacesMessages.instance().add(StatusMessage.Severity.INFO,
-                msgs.format("jsf.LocaleAlias.AliasSet", localeId, alias));
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                    msgs.format("jsf.LocaleAlias.AliasSet", localeId, alias));
         }
     }
 
@@ -410,22 +423,24 @@ public class ProjectHome extends SlugHome<HProject> implements
      */
     private void showRemovedAliasesMessage(List<LocaleId> removed) {
         if (removed.isEmpty()) {
-            FacesMessages.instance().add(StatusMessage.Severity.INFO,
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
                     msgs.get("jsf.LocaleAlias.NoAliasesToRemove"));
         } else if (removed.size() == 1) {
-            FacesMessages.instance().add(StatusMessage.Severity.INFO,
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
                     msgs.format("jsf.LocaleAlias.AliasRemoved", removed.get(0)));
         } else {
-            FacesMessages.instance().add(StatusMessage.Severity.INFO,
-                    msgs.format("jsf.LocaleAlias.AliasesRemoved", StringUtils.join(removed, ", ")));
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                    msgs.format("jsf.LocaleAlias.AliasesRemoved",
+                            StringUtils.join(removed, ", ")));
         }
     }
 
     @Restrict("#{s:hasPermission(projectHome.instance, 'update')}")
     public void disableLocale(HLocale locale) {
         disableLocaleSilently(locale);
-        FacesMessages.instance().add(StatusMessage.Severity.INFO,
-                msgs.format("jsf.languageSettings.LanguageDisabled", locale.getLocaleId()));
+        facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                msgs.format("jsf.languageSettings.LanguageDisabled",
+                        locale.getLocaleId()));
     }
 
 
@@ -446,11 +461,13 @@ public class ProjectHome extends SlugHome<HProject> implements
         if (removedLocales.isEmpty()) {
             // This should not be possible in the UI, but maybe if multiple users are editing it.
         } else if (removedLocales.size() == 1) {
-            FacesMessages.instance().add(StatusMessage.Severity.INFO,
-                    msgs.format("jsf.languageSettings.LanguageDisabled", removedLocales.get(0)));
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                    msgs.format("jsf.languageSettings.LanguageDisabled",
+                            removedLocales.get(0)));
         } else {
-            FacesMessages.instance().add(StatusMessage.Severity.INFO,
-                    msgs.format("jsf.languageSettings.LanguagesDisabled", StringUtils.join(removedLocales, ", ")));
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                    msgs.format("jsf.languageSettings.LanguagesDisabled",
+                            StringUtils.join(removedLocales, ", ")));
         }
     }
 
@@ -478,8 +495,8 @@ public class ProjectHome extends SlugHome<HProject> implements
     public void enableLocale(HLocale locale) {
         enableLocaleSilently(locale);
         LocaleId localeId = locale.getLocaleId();
-        FacesMessages.instance().add(StatusMessage.Severity.INFO,
-            msgs.format("jsf.languageSettings.LanguageEnabled", localeId));
+        facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                msgs.format("jsf.languageSettings.LanguageEnabled", localeId));
     }
 
     @Restrict("#{s:hasPermission(projectHome.instance, 'update')}")
@@ -499,11 +516,13 @@ public class ProjectHome extends SlugHome<HProject> implements
         if (addedLocales.isEmpty()) {
             // This should not be possible in the UI, but maybe if multiple users are editing it.
         } else if (addedLocales.size() == 1) {
-            FacesMessages.instance().add(StatusMessage.Severity.INFO,
-                    msgs.format("jsf.languageSettings.LanguageEnabled", addedLocales.get(0)));
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                    msgs.format("jsf.languageSettings.LanguageEnabled",
+                            addedLocales.get(0)));
         } else {
-            FacesMessages.instance().add(StatusMessage.Severity.INFO,
-                    msgs.format("jsf.languageSettings.LanguagesEnabled", StringUtils.join(addedLocales, ", ")));
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                    msgs.format("jsf.languageSettings.LanguagesEnabled",
+                            StringUtils.join(addedLocales, ", ")));
         }
     }
 
@@ -642,7 +661,7 @@ public class ProjectHome extends SlugHome<HProject> implements
 
     public boolean validateSlug(String slug, String componentId) {
         if (!isSlugAvailable(slug)) {
-            FacesMessages.instance().addToControl(componentId,
+            facesMessages.addToControl(componentId,
                     "This Project ID is not available");
             return false;
         }
@@ -673,14 +692,14 @@ public class ProjectHome extends SlugHome<HProject> implements
 
         if (StringUtils.isEmpty(selectedProjectType)
                 || selectedProjectType.equals("null")) {
-            FacesMessages.instance().add(StatusMessage.Severity.ERROR,
+            facesMessages.addGlobal(SEVERITY_ERROR,
                     "Project type not selected");
             return null;
         }
 
         if (StringUtils.isEmpty(selectedProjectType)
                 || selectedProjectType.equals("null")) {
-            FacesMessages.instance().add(StatusMessage.Severity.ERROR,
+            facesMessages.addGlobal(SEVERITY_ERROR,
                     "Project type not selected");
             return null;
         }
@@ -696,7 +715,7 @@ public class ProjectHome extends SlugHome<HProject> implements
                         validationAction.getState().name());
             }
             retValue = super.persist();
-            Events.instance().raiseEvent("projectAdded");
+            projectUpdateEvent.fire(new ProjectUpdate(getInstance()));
         }
         return retValue;
     }
@@ -758,8 +777,7 @@ public class ProjectHome extends SlugHome<HProject> implements
                 if (version.getStatus() == EntityStatus.ACTIVE) {
                     version.setStatus(EntityStatus.READONLY);
                     entityManager.merge(version);
-                    Events.instance().raiseEvent(
-                            VersionHome.PROJECT_ITERATION_UPDATE, version);
+                    projectIterationUpdateEvent.fire(new ProjectIterationUpdate(version));
                 }
             }
         } else if (getInstance().getStatus() == EntityStatus.OBSOLETE) {
@@ -768,8 +786,8 @@ public class ProjectHome extends SlugHome<HProject> implements
                 if (version.getStatus() != EntityStatus.OBSOLETE) {
                     version.setStatus(EntityStatus.OBSOLETE);
                     entityManager.merge(version);
-                    Events.instance().raiseEvent(
-                            VersionHome.PROJECT_ITERATION_UPDATE, version);
+                    projectIterationUpdateEvent.fire(
+                            new ProjectIterationUpdate(version));
                 }
             }
         }
@@ -912,7 +930,7 @@ public class ProjectHome extends SlugHome<HProject> implements
             WebHook webHook = new WebHook(this.getInstance(), url);
             getInstance().getWebHooks().add(webHook);
             update();
-            FacesMessages.instance().add(StatusMessage.Severity.INFO,
+            facesMessages.addGlobal(
                 msgs.format("jsf.project.AddNewWebhook", webHook.getUrl()));
         }
     }
@@ -921,19 +939,19 @@ public class ProjectHome extends SlugHome<HProject> implements
     public void removeWebHook(WebHook webHook) {
         getInstance().getWebHooks().remove(webHook);
         webHookDAO.makeTransient(webHook);
-        FacesMessages.instance().add(StatusMessage.Severity.INFO,
+        facesMessages.addGlobal(
             msgs.format("jsf.project.RemoveWebhook", webHook.getUrl()));
     }
 
     private boolean isValidUrl(String url) {
         if (!UrlUtil.isValidUrl(url)) {
-            FacesMessages.instance().add(StatusMessage.Severity.ERROR,
+            facesMessages.addGlobal(SEVERITY_ERROR,
                     msgs.format("jsf.project.InvalidUrl", url));
             return false;
         }
         for(WebHook webHook: getInstance().getWebHooks()) {
             if(StringUtils.equalsIgnoreCase(webHook.getUrl(), url)) {
-                FacesMessages.instance().add(StatusMessage.Severity.ERROR,
+                facesMessages.addGlobal(SEVERITY_ERROR,
                         msgs.format("jsf.project.DuplicateUrl", url));
                 return false;
             }
@@ -972,9 +990,11 @@ public class ProjectHome extends SlugHome<HProject> implements
     public void updateAboutPage() {
         String status = update();
         if ("updated".equals(status)) {
-            FacesMessages.instance().add(StatusMessage.Severity.INFO, msgs.get("jsf.project.AboutPageUpdated"));
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                    msgs.get("jsf.project.AboutPageUpdated"));
         } else {
-            FacesMessages.instance().add(StatusMessage.Severity.ERROR, msgs.get("jsf.project.AboutPageUpdateFailed"));
+            facesMessages.addGlobal(FacesMessage.SEVERITY_ERROR,
+                    msgs.get("jsf.project.AboutPageUpdateFailed"));
         }
     }
 

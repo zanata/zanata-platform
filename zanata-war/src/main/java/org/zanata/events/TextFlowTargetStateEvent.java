@@ -23,8 +23,7 @@ package org.zanata.events;
 
 import javax.annotation.Nullable;
 
-import lombok.Data;
-
+import lombok.Value;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 
@@ -33,10 +32,10 @@ import org.zanata.common.LocaleId;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@Data
+@Value
 public final class TextFlowTargetStateEvent {
     public static final String EVENT_NAME =
-            "org.zanata.event.HTextFlowTranslated";
+            "org.zanata.events.TextFlowTargetStateEvent";
     // this may be null in the case of document uploads
     private final @Nullable
     Long actorId;

@@ -20,7 +20,7 @@
  */
 package org.zanata.action;
 
-import static org.jboss.seam.international.StatusMessage.Severity.ERROR;
+import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -41,7 +41,6 @@ import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.faces.FacesMessages;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.dao.TransMemoryDAO;
@@ -49,6 +48,7 @@ import org.zanata.exception.EntityMissingException;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.rest.service.TranslationMemoryResourceService;
 
+import org.zanata.ui.faces.FacesMessages;
 import com.google.common.collect.Lists;
 
 /**
@@ -62,6 +62,8 @@ import com.google.common.collect.Lists;
 @Scope(ScopeType.PAGE)
 @Slf4j
 public class TranslationMemoryAction implements Serializable {
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
 
     @In
     private TransMemoryDAO transMemoryDAO;
@@ -156,7 +158,7 @@ public class TranslationMemoryAction implements Serializable {
             translationMemoryResource.deleteTranslationMemory(transMemorySlug);
             transMemoryList = null; // Force refresh next time list is requested
         } catch (EntityMissingException e) {
-            FacesMessages.instance().addFromResourceBundle(ERROR,
+            facesMessages.addFromResourceBundle(SEVERITY_ERROR,
                     "jsf.transmemory.TransMemoryNotFound");
         }
     }

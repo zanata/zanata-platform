@@ -23,6 +23,7 @@ import org.zanata.common.MergeType;
 import org.zanata.model.HAccount;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
+import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowBuilder;
@@ -56,6 +57,11 @@ public class TranslationServiceImplJpaTest extends ZanataJpaTest {
         HAccount authenticatedUser =
                 EntityMakerBuilder.builder().includeOptionalOneToOne().build()
                         .makeAndPersist(getEm(), HAccount.class);
+        HPerson person =
+                EntityMakerBuilder.builder().build()
+                        .makeAndPersist(getEm(), HPerson.class);
+        authenticatedUser.setPerson(person);
+
         service = seam.reset()
                 .use("entityManager", getEm())
                 .use("session", getSession())

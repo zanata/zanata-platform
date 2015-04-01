@@ -14,6 +14,9 @@ import org.zanata.service.TranslationStateCache;
 import com.google.common.annotations.VisibleForTesting;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.TransactionPhase;
+
 /**
  * Manager that handles post update of translation. Important:
  * TextFlowTargetStateEvent IS NOT asynchronous, that is why
@@ -39,7 +42,9 @@ public class TranslationUpdatedManager {
      * Target has been successfully translated.
      */
     @Observer(TextFlowTargetStateEvent.EVENT_NAME)
-    public void textFlowStateUpdated(TextFlowTargetStateEvent event) {
+    public void textFlowStateUpdated(
+            @Observes(during = TransactionPhase.AFTER_SUCCESS)
+            TextFlowTargetStateEvent event) {
         translationStateCacheImpl.textFlowStateUpdated(event);
         publishAsyncEvent(event);
     }

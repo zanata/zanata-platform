@@ -783,6 +783,12 @@
       </dependency>
 
       <dependency>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.el</groupId>
+            <artifactId>el-api</artifactId>
+          </exclusion>
+        </exclusions>
         <groupId>org.jboss.logging</groupId>
         <artifactId>jboss-logging</artifactId>
         <version>3.1.4.GA</version>
@@ -1455,7 +1461,16 @@
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
             <version>1.1</version>
-            <scope>test</scope>
+            <exclusions>
+              <exclusion>
+                <groupId>javax.annotation</groupId>
+                <artifactId>jsr250-api</artifactId>
+              </exclusion>
+              <exclusion>
+                <groupId>javax.el</groupId>
+                <artifactId>el-api</artifactId>
+              </exclusion>
+            </exclusions>
           </dependency>
           <dependency>
             <groupId>org.fusesource.jansi</groupId>

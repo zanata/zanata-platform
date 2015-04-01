@@ -26,6 +26,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.TransactionPhase;
 import javax.persistence.EntityManager;
 
 import org.apache.commons.lang.time.DateUtils;
@@ -180,7 +182,7 @@ public class ActivityServiceImpl implements ActivityService {
      */
     @Observer(TextFlowTargetStateEvent.EVENT_NAME)
     @Transactional
-    public void logTextFlowStateUpdate(TextFlowTargetStateEvent event) {
+    public void logTextFlowStateUpdate(@Observes(during = TransactionPhase.AFTER_SUCCESS) TextFlowTargetStateEvent event) {
         Long actorId = event.getActorId();
         if (actorId != null) {
             Lock lock = activityLockManager.getLock(actorId);
@@ -208,7 +210,7 @@ public class ActivityServiceImpl implements ActivityService {
      */
     @Observer(DocumentUploadedEvent.EVENT_NAME)
     @Transactional
-    public void onDocumentUploaded(DocumentUploadedEvent event) {
+    public void onDocumentUploaded(@Observes(during = TransactionPhase.AFTER_SUCCESS) DocumentUploadedEvent event) {
         Lock lock = activityLockManager.getLock(event.getActorId());
         lock.lock();
         try {

@@ -26,12 +26,12 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.core.Events;
 import org.zanata.common.LocaleId;
 import org.zanata.events.TextFlowTargetUpdateContextEvent;
 import org.zanata.service.SecurityService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.TranslationService.TranslationResult;
+import org.zanata.util.Event;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
@@ -57,6 +57,10 @@ public class UpdateTransUnitHandler extends
 
     @In
     private SecurityService securityServiceImpl;
+
+    @In("event")
+    private Event<TextFlowTargetUpdateContextEvent>
+            textFlowTargetUpdateContextEvent;
 
     @Override
     public UpdateTransUnitResult execute(UpdateTransUnit action,
@@ -87,14 +91,12 @@ public class UpdateTransUnitHandler extends
             List<TransUnitUpdateRequest> updateRequests,
             EditorClientId editorClientId,
             TransUnitUpdated.UpdateType updateType) {
-        if (Events.exists()) {
-            for (TransUnitUpdateRequest updateRequest : updateRequests) {
-                Events.instance().raiseEvent(
-                        TextFlowTargetUpdateContextEvent.EVENT_NAME,
-                        new TextFlowTargetUpdateContextEvent(updateRequest
-                                .getTransUnitId(), localeId, editorClientId,
-                                updateType));
-            }
+
+        for (TransUnitUpdateRequest updateRequest : updateRequests) {
+            textFlowTargetUpdateContextEvent.fire(
+                    new TextFlowTargetUpdateContextEvent(updateRequest
+                            .getTransUnitId(), localeId, editorClientId,
+                            updateType));
         }
 
         List<TranslationResult> translationResults =

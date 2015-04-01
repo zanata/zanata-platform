@@ -32,15 +32,14 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.core.Events;
-import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.international.StatusMessage.Severity;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.LocaleMemberDAO;
 import org.zanata.dao.PersonDAO;
+import org.zanata.events.JoinedLanguageTeam;
 import org.zanata.events.LanguageTeamPermissionChangedEvent;
+import org.zanata.events.LeftLanguageTeam;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
@@ -49,6 +48,8 @@ import org.zanata.model.HPerson;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.service.LanguageTeamService;
 import org.zanata.service.LocaleService;
+import org.zanata.ui.faces.FacesMessages;
+import org.zanata.util.Event;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.InMemoryListFilter;
 import org.zanata.util.ServiceLocator;
@@ -57,7 +58,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import static org.zanata.events.LanguageTeamPermissionChangedEvent.LANGUAGE_TEAM_PERMISSION_CHANGED;
+import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 @Name("languageAction")
 @Scope(ScopeType.PAGE)
@@ -82,6 +83,18 @@ public class LanguageAction implements Serializable {
 
     @In
     private Messages msgs;
+
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
+
+    @In("event")
+    private Event<JoinedLanguageTeam> joinLanguageTeamEvent;
+
+    @In("event")
+    private Event<LanguageTeamPermissionChangedEvent> languageTeamPermissionChangedEvent;
+
+    @In("event")
+    private Event<LeftLanguageTeam> leaveLanguageTeamEvent;
 
     @In
     private LocaleMemberDAO localeMemberDAO;
@@ -173,9 +186,8 @@ public class LanguageAction implements Serializable {
         if(resourceUtils.isValidPluralForms(pluralForms)) {
             return true;
         }
-
-        FacesMessages.instance().addToControl(componentId,
-            msgs.format("jsf.language.plurals.invalid", pluralForms));
+        facesMessages.addToControl(componentId,
+                msgs.format("jsf.language.plurals.invalid", pluralForms));
         return false;
     }
 
@@ -192,8 +204,8 @@ public class LanguageAction implements Serializable {
         hLocale.setDisplayName(hLocale.getDisplayName().trim());
         hLocale.setNativeName(hLocale.getNativeName().trim());
         localeDAO.makePersistent(getLocale());
-        FacesMessages.instance()
-            .add(msgs.format("jsf.language.updated", getLocale().getLocaleId()));
+        facesMessages.addGlobal(msgs.format("jsf.language.updated", getLocale()
+                .getLocaleId()));
     }
 
     public HLocale getLocale() {
@@ -227,12 +239,13 @@ public class LanguageAction implements Serializable {
                     this.language, authenticatedAccount.getPerson().getId(),
                     true, true, true);
             resetLocale();
+            joinLanguageTeamEvent.fire(new JoinedLanguageTeam(authenticatedAccount.getUsername(), new LocaleId(language)));
             log.info("{} joined language team {}",
                     authenticatedAccount.getUsername(), this.language);
-            FacesMessages.instance().add(msgs.format("jsf.MemberOfTeam",
+            facesMessages.addGlobal(msgs.format("jsf.MemberOfTeam",
                     getLocale().retrieveNativeName()));
         } catch (Exception e) {
-            FacesMessages.instance().add(Severity.ERROR, e.getMessage());
+            facesMessages.addGlobal(SEVERITY_ERROR, e.getMessage());
         }
     }
 
@@ -252,61 +265,47 @@ public class LanguageAction implements Serializable {
         languageTeamServiceImpl.leaveLanguageTeam(this.language,
                 authenticatedAccount.getPerson().getId());
         resetLocale();
+        leaveLanguageTeamEvent.fire(new LeftLanguageTeam(authenticatedAccount.getUsername(), new LocaleId(language)));
         log.info("{} left language team {}", authenticatedAccount.getUsername(),
                 this.language);
-        FacesMessages.instance().add(msgs.format("jsf.LeftTeam",
+        facesMessages.addGlobal(msgs.format("jsf.LeftTeam",
                 getLocale().retrieveNativeName()));
     }
 
     @Restrict("#{s:hasPermission(languageAction.locale, 'manage-language-team')}")
     public void saveTeamCoordinator(HLocaleMember member) {
         savePermission(member, msgs.get("jsf.Coordinator"), member.isCoordinator());
-        if (Events.exists()) {
-            HPerson doneByPerson = authenticatedAccount.getPerson();
-            LanguageTeamPermissionChangedEvent changedEvent =
-                    new LanguageTeamPermissionChangedEvent(
-                            member.getPerson(), getLocale().getLocaleId(),
-                            doneByPerson)
-                            .changedCoordinatorPermission(member);
-            Events.instance()
-                    .raiseTransactionSuccessEvent(
-                            LANGUAGE_TEAM_PERMISSION_CHANGED,
-                            changedEvent);
-        }
+        HPerson doneByPerson = authenticatedAccount.getPerson();
+        LanguageTeamPermissionChangedEvent changedEvent =
+                new LanguageTeamPermissionChangedEvent(
+                        member.getPerson(), getLocale().getLocaleId(),
+                        doneByPerson)
+                         .changedCoordinatorPermission(member);
+        languageTeamPermissionChangedEvent.fire(changedEvent);
     }
 
     @Restrict("#{s:hasPermission(languageAction.locale, 'manage-language-team')}")
     public void saveTeamReviewer(HLocaleMember member) {
         savePermission(member, msgs.get("jsf.Reviewer"), member.isReviewer());
-        if (Events.exists()) {
-            HPerson doneByPerson = authenticatedAccount.getPerson();
-            LanguageTeamPermissionChangedEvent changedEvent =
-                    new LanguageTeamPermissionChangedEvent(
-                            member.getPerson(), getLocale().getLocaleId(),
-                            doneByPerson)
-                            .changedReviewerPermission(member);
-            Events.instance()
-                    .raiseTransactionSuccessEvent(
-                            LANGUAGE_TEAM_PERMISSION_CHANGED,
-                            changedEvent);
-        }
+        HPerson doneByPerson = authenticatedAccount.getPerson();
+        LanguageTeamPermissionChangedEvent changedEvent =
+                new LanguageTeamPermissionChangedEvent(
+                        member.getPerson(), getLocale().getLocaleId(),
+                        doneByPerson)
+                        .changedReviewerPermission(member);
+        languageTeamPermissionChangedEvent.fire(changedEvent);
     }
 
     @Restrict("#{s:hasPermission(languageAction.locale, 'manage-language-team')}")
     public void saveTeamTranslator(HLocaleMember member) {
         savePermission(member, msgs.get("jsf.Translator"), member.isTranslator());
-        if (Events.exists()) {
-            HPerson doneByPerson = authenticatedAccount.getPerson();
-            LanguageTeamPermissionChangedEvent changedEvent =
-                    new LanguageTeamPermissionChangedEvent(
-                            member.getPerson(), getLocale().getLocaleId(),
-                            doneByPerson)
-                            .changedTranslatorPermission(member);
-            Events.instance()
-                    .raiseTransactionSuccessEvent(
-                            LANGUAGE_TEAM_PERMISSION_CHANGED,
-                            changedEvent);
-        }
+        HPerson doneByPerson = authenticatedAccount.getPerson();
+        LanguageTeamPermissionChangedEvent changedEvent =
+                new LanguageTeamPermissionChangedEvent(
+                        member.getPerson(), getLocale().getLocaleId(),
+                        doneByPerson)
+                        .changedTranslatorPermission(member);
+        languageTeamPermissionChangedEvent.fire(changedEvent);
     }
 
     private void savePermission(HLocaleMember member, String permissionDesc,
@@ -317,13 +316,13 @@ public class LanguageAction implements Serializable {
         resetLocale();
         HPerson person = member.getPerson();
         if (isPermissionGranted) {
-            FacesMessages.instance().add(
+            facesMessages.addGlobal(
                     msgs.format("jsf.AddedAPermission",
                     person.getAccount().getUsername(), permissionDesc));
         } else {
-            FacesMessages.instance().add(
+            facesMessages.addGlobal(
                     msgs.format("jsf.RemovedAPermission",
-                    person.getAccount().getUsername(), permissionDesc));
+                            person.getAccount().getUsername(), permissionDesc));
         }
     }
 
