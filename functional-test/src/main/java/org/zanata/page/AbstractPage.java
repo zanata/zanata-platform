@@ -94,17 +94,6 @@ public class AbstractPage {
         return WebElementUtil.waitForAMoment(driver);
     }
 
-    /**
-     * Wait for all necessary elements to be available on page.
-     * @param elementBys
-     *            selenium search criteria for locating elements
-     */
-    public void waitForPage(List<By> elementBys) {
-        for (final By by : elementBys) {
-            waitForElementExists(by);
-        }
-    }
-
     public Alert switchToAlert() {
         return waitForAMoment().withMessage("alert").until(new Function<WebDriver, Alert>() {
             @Override
