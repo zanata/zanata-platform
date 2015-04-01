@@ -40,7 +40,7 @@
     <zanata.client.version>3.3.1</zanata.client.version>
     <zanata.common.version>3.4.0</zanata.common.version>
 
-    <richfaces.version>4.5.0.Final</richfaces.version>
+    <richfaces.version>4.5.4.Final</richfaces.version>
 
     <shrinkwrap.desc.version>2.0.0-alpha-5</shrinkwrap.desc.version>
 
