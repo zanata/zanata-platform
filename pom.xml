@@ -47,7 +47,7 @@
     <zanata.client.version>3.3.1</zanata.client.version>
     <zanata.common.version>3.6.0</zanata.common.version>
 
-    <richfaces.version>4.5.0.Final</richfaces.version>
+    <richfaces.version>4.5.4.Final</richfaces.version>
 
     <arquillian.version>1.1.5.Final</arquillian.version>
     <shrinkwrap.api.version>1.2.2</shrinkwrap.api.version>
