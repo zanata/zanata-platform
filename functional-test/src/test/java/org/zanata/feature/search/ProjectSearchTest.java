@@ -55,12 +55,12 @@ public class ProjectSearchTest extends ZanataTestCase {
                 .enterSearch("about")
                 .waitForSearchListContains("about fedora");
 
-        assertThat(basePage.getProjectSearchAutocompleteItems())
+        assertThat(basePage.getZanataSearchAutocompleteItems())
                 .contains("about fedora")
                 .as("Normal user can see the project");
 
         ProjectBasePage projectPage =
-                basePage.clickSearchEntry("about fedora");
+                basePage.clickProjectSearchEntry("about fedora");
 
         assertThat(projectPage.getProjectName().trim())
                 .isEqualTo("about fedora")
@@ -100,7 +100,7 @@ public class ProjectSearchTest extends ZanataTestCase {
                 .enterSearch("about")
                 .waitForSearchListContains("Search Zanata for 'about'");
 
-        assertThat(basePage.getProjectSearchAutocompleteItems())
+        assertThat(basePage.getZanataSearchAutocompleteItems())
                 .doesNotContain("About Fedora")
                 .as("User cannot see the archived project");
     }
