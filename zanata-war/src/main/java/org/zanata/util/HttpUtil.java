@@ -84,16 +84,20 @@ public final class HttpUtil {
     public static String getClientIp(HttpServletRequest request) {
         String ip;
 
-        if(StringUtils.isEmpty(PROXY_HEADER)) {
+        if (StringUtils.isEmpty(PROXY_HEADER)) {
             return request.getRemoteAddr();
         }
 
         // PROXY_HEADER can be list of ip address
+        String header = request.getHeader(PROXY_HEADER);
+        if (header == null) {
+            return request.getRemoteAddr();
+        }
         String[] ipList =
-                StringUtils.split(request.getHeader(PROXY_HEADER), ",");
+                StringUtils.split(header, ",");
 
-        if(ipList.length == 1) {
-            return ipList[0];
+        if (ipList.length == 0) {
+            return request.getRemoteAddr();
         }
 
         //return last ip address from list if found
