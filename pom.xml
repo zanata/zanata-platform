@@ -1218,6 +1218,7 @@
         <mojarra.module.name>wildfly-${module.wildfly.version}-module-mojarra-${mojarra.module.version}.zip</mojarra.module.name>
         <hibernate.module.version>4.2.15.Final</hibernate.module.version>
         <hibernate.module.name>wildfly-${module.wildfly.version}-module-hibernate-main-${hibernate.module.version}.zip</hibernate.module.name>
+        <undertow.module.name>wildfly-9.0.0.Beta2-modules-undertow.zip</undertow.module.name>
       </properties>
 
       <build>
@@ -1238,10 +1239,15 @@
                 <configuration>
                   <target unless="skipITs">
                     <mkdir dir="${download.dir}" />
+
                     <get src="http://sourceforge.net/projects/zanata/files/wildfly/${mojarra.module.name}/download" dest="${download.dir}/${mojarra.module.name}" skipexisting="true" />
-                    <get src="http://sourceforge.net/projects/zanata/files/wildfly/${hibernate.module.name}/download" dest="${download.dir}/${hibernate.module.name}" skipexisting="true" />
                     <unzip src="${download.dir}/${mojarra.module.name}" dest="${appserver.home}" />
+
+                    <get src="http://sourceforge.net/projects/zanata/files/wildfly/${hibernate.module.name}/download" dest="${download.dir}/${hibernate.module.name}" skipexisting="true" />
                     <unzip src="${download.dir}/${hibernate.module.name}" dest="${appserver.home}" />
+
+                    <get src="http://sourceforge.net/projects/zanata/files/wildfly/${undertow.module.name}/download" dest="${download.dir}/${undertow.module.name}" skipexisting="true" />
+                    <unzip src="${download.dir}/${undertow.module.name}" dest="${appserver.home}" />
                   </target>
                 </configuration>
               </execution>
