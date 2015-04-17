@@ -200,9 +200,8 @@ public class CorePage extends AbstractPage {
      */
     public void defocus(By elementBy) {
         log.info("Force unfocus");
-        WebElement element = getDriver().findElement(elementBy);
-        ((JavascriptExecutor) getDriver()).executeScript("arguments[0].blur()",
-                element);
+        WebElement element = existingElement(elementBy);
+        getExecutor().executeScript("arguments[0].blur()", element);
         waitForPageSilence();
     }
 
