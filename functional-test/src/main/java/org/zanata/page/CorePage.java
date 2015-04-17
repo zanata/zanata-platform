@@ -52,9 +52,7 @@ public class CorePage extends AbstractPage {
 
     public CorePage(WebDriver driver) {
         super(driver);
-        // TODO put this back when implicit waits have been removed
-        // With implicit waits, this adds 3 seconds to almost every page load
-//        assertNoCriticalErrors();
+        assertNoCriticalErrors();
     }
 
     public String getTitle() {
