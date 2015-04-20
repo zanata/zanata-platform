@@ -85,8 +85,9 @@ public class ProfileTest extends ZanataTestCase {
                 .goToSettingsTab()
                 .goToSettingsClientTab();
         String currentApiKey = dashboardClientTab.getApiKey();
-        dashboardClientTab = dashboardClientTab.pressApiKeyGenerateButton();
 
+        dashboardClientTab.waitForPageSilence();
+        dashboardClientTab = dashboardClientTab.pressApiKeyGenerateButton();
         dashboardClientTab.waitForApiKeyChanged(currentApiKey);
 
         assertThat(dashboardClientTab.getApiKey()).isNotEqualTo(currentApiKey)

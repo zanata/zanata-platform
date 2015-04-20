@@ -213,7 +213,8 @@ public class AbstractPage {
                 if (ajaxCalls == null) {
                     if (log.isWarnEnabled()) {
                         String url = getDriver().getCurrentUrl();
-                        String pageSource = ShortString.shorten(getDriver().getPageSource(), 2000);
+                        String pageSource = ShortString.shorten(
+                                getDriver().getPageSource(), 2000);
                         log.warn("XMLHttpRequest.active is null.  URL: {}\nPartial page source follows:\n{}", url, pageSource);
                     }
                     return true;
@@ -225,6 +226,28 @@ public class AbstractPage {
                             "any AJAX requests.");
                 }
                 return ajaxCalls <= getExpectedBackgroundRequests();
+
+            }
+        });
+        waitForLoaders();
+    }
+
+    /**
+     * Wait for all loaders to be inactive
+     */
+    private void waitForLoaders() {
+        waitForAMoment().withMessage("Loader indicator").until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                List<WebElement> loaders = driver
+                        .findElements(By.className("js-loader"));
+                for (WebElement loader : loaders) {
+                    if (loader.getAttribute("class").contains("is-active")) {
+                        log.info("Wait for loader finished");
+                        return false;
+                    }
+                }
+                return true;
             }
         });
     }
