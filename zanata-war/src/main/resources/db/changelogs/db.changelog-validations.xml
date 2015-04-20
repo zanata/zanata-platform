@@ -4,9 +4,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
+  <!-- This precondition changeset might fail if:
+       (a) CreateTableGeneratorInnoDB stops working (eg Liquibase upgrade), or
+       (b) someone creates a non-InnoDB table in Zanata's schema.
+  -->
   <changeSet author="sflaniga@redhat.com" id="check-innodb" runAlways="true"
     dbms="mysql">
-    <preConditions onFail="HALT">
+    <preConditions onFail="HALT" onFailMessage="All tables in the schema must be InnoDB: ALTER TABLE table_name ENGINE = INNODB">
       <sqlCheck expectedResult="0">
         SELECT count(*) FROM information_schema.tables
         WHERE TABLE_SCHEMA = SCHEMA() AND engine != 'InnoDB'
