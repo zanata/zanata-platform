@@ -261,7 +261,8 @@ public class AbstractPage {
                 if (outstanding == null) {
                     if (log.isWarnEnabled()) {
                         String url = getDriver().getCurrentUrl();
-                        String pageSource = ShortString.shorten(getDriver().getPageSource(), 2000);
+                        String pageSource = ShortString.shorten(
+                                getDriver().getPageSource(), 2000);
                         log.warn("XMLHttpRequest.active is null. Is AjaxCounterBean missing? URL: {}\nPartial page source follows:\n{}", url, pageSource);
                     }
                     return true;
@@ -275,11 +276,34 @@ public class AbstractPage {
                 }
                 int expected = getExpectedBackgroundRequests();
                 if (outstanding < expected) {
-                    log.warn("Expected at least {} background requests, but actual count is {}", expected, outstanding, new Throwable());
+                    log.warn(
+                            "Expected at least {} background requests, but actual count is {}",
+                            expected, outstanding, new Throwable());
                 } else {
                     log.debug("Waiting: outstanding = {}, expected = {}", outstanding, expected);
                 }
                 return outstanding <= expected;
+            }
+        });
+        waitForLoaders();
+    }
+
+    /**
+     * Wait for all loaders to be inactive
+     */
+    private void waitForLoaders() {
+        waitForAMoment().withMessage("Loader indicator").until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                List<WebElement> loaders = driver
+                        .findElements(By.className("js-loader"));
+                for (WebElement loader : loaders) {
+                    if (loader.getAttribute("class").contains("is-active")) {
+                        log.info("Wait for loader finished");
+                        return false;
+                    }
+                }
+                return true;
             }
         });
     }
