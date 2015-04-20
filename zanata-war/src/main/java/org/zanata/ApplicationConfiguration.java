@@ -20,8 +20,6 @@
  */
 package org.zanata;
 
-import static org.apache.commons.lang.StringUtils.isEmpty;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,7 +54,6 @@ import org.zanata.log4j.ZanataHTMLLayout;
 import org.zanata.log4j.ZanataSMTPAppender;
 import org.zanata.security.AuthenticationType;
 
-import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
@@ -73,8 +70,6 @@ public class ApplicationConfiguration implements Serializable {
 
     private static final String EMAIL_APPENDER_NAME =
             "zanata.log.appender.email";
-
-    private static final String STYLESHEET_LOCAL_PATH = "/assets/css/style.min.css";
 
     @Getter
     private static final int defaultMaxFilesPerUpload = 100;
@@ -114,12 +109,6 @@ public class ApplicationConfiguration implements Serializable {
             .newHashMap();
 
     private Set<String> adminUsers;
-
-    private String webAssetsUrl;
-    private String webAssetsStyleUrl;
-
-    // set by component.xml
-    private String webAssetsVersion = "";
 
     private Optional<String> openIdProvider; // Cache the OpenId provider
 
@@ -424,27 +413,6 @@ public class ApplicationConfiguration implements Serializable {
     public boolean useEmailServerSsl() {
         return jndiBackedConfig.getStmpUsesSsl() != null ? Boolean
                 .parseBoolean(jndiBackedConfig.getStmpUsesSsl()) : false;
-    }
-
-    public String getWebAssetsStyleUrl() {
-        if (isEmpty(webAssetsStyleUrl)) {
-            webAssetsStyleUrl = getWebAssetsUrl() + STYLESHEET_LOCAL_PATH;
-        }
-        return webAssetsStyleUrl;
-    }
-
-    public String getWebAssetsUrl() {
-        if (isEmpty(webAssetsUrl)) {
-            webAssetsUrl =
-                    String.format("%s/%s", getBaseWebAssetsUrl(),
-                            webAssetsVersion);
-        }
-        return webAssetsUrl;
-    }
-
-    private String getBaseWebAssetsUrl() {
-        return Objects.firstNonNull(jndiBackedConfig.getWebAssetsUrlBase(),
-                "//assets-zanata.rhcloud.com");
     }
 
     public int getMaxConcurrentRequestsPerApiKey() {

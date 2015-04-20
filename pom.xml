@@ -41,6 +41,7 @@
     <gwteventservice.version>1.2.1</gwteventservice.version>
     <okapi.version>0.22</okapi.version>
 
+    <zanata.assets.version>7.0-SNAPSHOT</zanata.assets.version>
     <zanata.api.version>3.7.0-SNAPSHOT</zanata.api.version>
     <!-- This should always be the previous version of the used api version above (but only 3.0.1 or later will work) -->
     <zanata.api.compat.version>3.3.1</zanata.api.compat.version>
@@ -365,6 +366,13 @@
         <groupId>org.opensymphony.quartz</groupId>
         <artifactId>quartz</artifactId>
         <version>1.6.5</version>
+      </dependency>
+
+      <!-- zanata assets -->
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-assets</artifactId>
+        <version>${zanata.assets.version}</version>
       </dependency>
 
       <!-- zanata api -->

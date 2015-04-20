@@ -71,8 +71,6 @@ public class JndiBackedConfig implements Serializable {
             "java:global/zanata/smtp/password";
     private static final String KEY_EMAIL_TLS = "java:global/zanata/smtp/tls";
     private static final String KEY_EMAIL_SSL = "java:global/zanata/smtp/ssl";
-    private static final String KEY_WEB_ASSETS_URL_BASE =
-            "java:global/zanata/webassets/url-base";
 
     private final Map<String, String> configurationValues =
             new HashMap<String, String>();
@@ -199,9 +197,5 @@ public class JndiBackedConfig implements Serializable {
 
     public String getStmpUsesSsl() {
         return getConfigValue(KEY_EMAIL_SSL);
-    }
-
-    public String getWebAssetsUrlBase() {
-        return getConfigValue(KEY_WEB_ASSETS_URL_BASE);
     }
 }

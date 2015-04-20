@@ -15,6 +15,13 @@ property can safely be reverted or removed before subsequent startups.
             <property name="jboss.as.management.blocking.timeout" value="1000"/>
         </system-properties>
 
+* [1207423](https://bugzilla.redhat.com/show_bug.cgi?id=1207423) - zanata-assets(javascipts and css style) now are packaged as jar and is part of zanata-server dependency.
+[Release](http://repository-zanata.forge.cloudbees.com/release/org/zanata/zanata-assets/) and [snapshot](http://repository-zanata.forge.cloudbees.com/snapshot/org/zanata/zanata-assets/)
+
+zanata-assets is set to **http://{zanata.url}/javax.faces.resource/jars/assets** by default. You override the value by setting the system property `zanata.assets.url` when running the server.
+
+Example usage in html file: `<link rel="shortcut icon" href="#{assets['img/logo/logo.ico']}"/>`
+
 
 <h5>Bug fixes</h5>
 * [1194543](https://bugzilla.redhat.com/show_bug.cgi?id=1194543) - Manual document re-upload makes previous translations fuzzy
