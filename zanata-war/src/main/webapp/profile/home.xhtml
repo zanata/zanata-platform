@@ -20,12 +20,13 @@
               alt="#{profileHome.username}"/>
           </div>
           <div class="media__body">
-            <h1 class="l--push-all-0">#{profileHome.name}</h1>
+            <h1 id="profile-displayname"
+              class="l--push-all-0">#{profileHome.name}</h1>
             <ul class="list--no-bullets txt--meta">
-              <li><i class="i i--user list__icon"
+              <li id="profile-username"><i class="i i--user list__icon"
                 title="Username"></i>#{profileHome.username}
               </li>
-              <li><i class="i i--language list__icon"
+              <li id="profile-languages"><i class="i i--language list__icon"
                 title="Spoken languages"></i>#{profileHome.userLanguageTeams}
               </li>
             </ul>
