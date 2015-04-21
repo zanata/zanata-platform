@@ -18,7 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package liquibase.sqlgenerator.ext;
+package liquibase.ext;
 
 import liquibase.database.Database;
 import liquibase.database.core.MySQLDatabase;
@@ -41,7 +41,7 @@ import java.util.Collection;
  * means (eg modifySql).
  * <p>
  * Note: SqlGenerator implementations must live in package
- * "liquibase.sqlgenerator.ext" to be automatically registered.
+ * "liquibase.ext" (or similar) to be automatically registered.
  * </p>
  *
  * @author Sean Flanigan <a
