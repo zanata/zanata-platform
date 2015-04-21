@@ -26,6 +26,7 @@ Example usage in html file: `<link rel="shortcut icon" href="#{assets['img/logo/
 <h5>Bug fixes</h5>
 * [1194543](https://bugzilla.redhat.com/show_bug.cgi?id=1194543) - Manual document re-upload makes previous translations fuzzy
 * [1029734](https://bugzilla.redhat.com/show_bug.cgi?id=1029734) - po header contains invalid entry will cause upload/push failure
+* [1165939](https://bugzilla.redhat.com/show_bug.cgi?id=1165939) - The Groups actions panel should not show for a normal user
 
 -----------------------
 
