@@ -642,60 +642,64 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
 
     @Override
     public void onRunDocValidation(RunDocValidationEvent event) {
-        if (event.getView() == MainView.Documents) {
-            List<ValidationId> valIds =
-                    userOptionsService.getConfigHolder().getState()
-                            .getEnabledValidationIds();
-            if (!valIds.isEmpty() && !pageRows.keySet().isEmpty()) {
-                ArrayList<DocumentId> docList = Lists.newArrayList();
-                for (DocumentId documentId : pageRows.keySet()) {
-                    display.showRowLoading(pageRows.get(documentId));
-                    docList.add(documentId);
-                }
-
-                dispatcher.execute(new RunDocValidationAction(valIds, docList),
-                        new AsyncCallback<RunDocValidationResult>() {
-                            @Override
-                            public void
-                                    onSuccess(RunDocValidationResult result) {
-                                Log.debug("Success doc validation - "
-                                        + result.getResultMap().size());
-
-                                for (Entry<DocumentId, Boolean> entry : result
-                                        .getResultMap().entrySet()) {
-                                    Integer row = pageRows.get(entry.getKey());
-                                    DocumentNode node =
-                                            nodes.get(entry.getKey());
-
-                                    DocValidationStatus status =
-                                            entry.getValue() ? DocValidationStatus.HasError
-                                                    : DocValidationStatus.NoError;
-
-                                    if (row != null) {
-                                        display.updateRowHasError(
-                                                row.intValue(), status);
-
-                                        if (node != null) {
-                                            node.getDocInfo().setHasError(
-                                                    entry.getValue());
-                                        }
-                                    }
-                                }
-                                eventBus.fireEvent(new DocValidationResultEvent(
-                                        new Date()));
-                            }
-
-                            @Override
-                            public void onFailure(Throwable caught) {
-                                eventBus.fireEvent(new NotificationEvent(
-                                        NotificationEvent.Severity.Error,
-                                        "Unable to run validation"));
-                                eventBus.fireEvent(new DocValidationResultEvent(
-                                        new Date()));
-                            }
-                        });
-            }
+        if (event.getView() != MainView.Documents) {
+            return;
         }
+        List<ValidationId> valIds =
+                userOptionsService.getConfigHolder().getState()
+                        .getEnabledValidationIds();
+        if (valIds.isEmpty() || pageRows.keySet().isEmpty()) {
+            // no validation to run. we just need to re-enable the button.
+            // see org.zanata.webtrans.client.presenter.ValidationOptionsPresenter.onCompleteRunDocValidation()
+            eventBus.fireEvent(new DocValidationResultEvent(null));
+            return;
+        }
+        ArrayList<DocumentId> docList = Lists.newArrayList();
+        for (DocumentId documentId : pageRows.keySet()) {
+            display.showRowLoading(pageRows.get(documentId));
+            docList.add(documentId);
+        }
+
+        dispatcher.execute(new RunDocValidationAction(valIds, docList),
+                new AsyncCallback<RunDocValidationResult>() {
+                    @Override
+                    public void
+                            onSuccess(RunDocValidationResult result) {
+                        Log.debug("Success doc validation - "
+                                + result.getResultMap().size());
+
+                        for (Entry<DocumentId, Boolean> entry : result
+                                .getResultMap().entrySet()) {
+                            Integer row = pageRows.get(entry.getKey());
+                            DocumentNode node =
+                                    nodes.get(entry.getKey());
+
+                            DocValidationStatus status =
+                                    entry.getValue() ? DocValidationStatus.HasError
+                                            : DocValidationStatus.NoError;
+
+                            if (row != null) {
+                                display.updateRowHasError(row, status);
+
+                                if (node != null) {
+                                    node.getDocInfo().setHasError(
+                                            entry.getValue());
+                                }
+                            }
+                        }
+                        eventBus.fireEvent(new DocValidationResultEvent(
+                                new Date()));
+                    }
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        eventBus.fireEvent(new NotificationEvent(
+                                Severity.Error,
+                                "Unable to run validation"));
+                        eventBus.fireEvent(new DocValidationResultEvent(
+                                new Date()));
+                    }
+                });
     }
 
     @Override

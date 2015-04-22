@@ -29,12 +29,13 @@ Example usage in html file: `<link rel="shortcut icon" href="#{assets['img/logo/
 * [895881](https://bugzilla.redhat.com/show_bug.cgi?id=895881) - 'Restore Defaults' in editor options does not properly restore defaults
 * [1207426](https://bugzilla.redhat.com/show_bug.cgi?id=1207426) - Update request to join group/language page
 * [1165939](https://bugzilla.redhat.com/show_bug.cgi?id=1165939) - The Groups actions panel should not show for a normal user
+* [1205512](https://bugzilla.redhat.com/show_bug.cgi?id=1205512) - Run validation in editor document list is disabled when it should not be
 
 -----------------------
 
 <h5>New Features</h5>
 * [1133989](https://bugzilla.redhat.com/show_bug.cgi?id=1133989) - Copy translations from existing version.
-* 
+*
 
 ## 3.6.1
 
@@ -285,7 +286,7 @@ Zanata now requires JMS to be configured in standalone.xml in order to queue up 
 * [953734](https://bugzilla.redhat.com/show_bug.cgi?id=953734) - Translation review/approval
     * Coordinators can assign reviewers for their languages
     * Project maintainers can require review for translations in their projects
-    
+
 * [979285](https://bugzilla.redhat.com/show_bug.cgi?id=979285) - Implement virus scanning using ClamAV (clamdscan)
 * [978666](https://bugzilla.redhat.com/show_bug.cgi?id=978666) - Translators and reviewers can add comments to translations
 * [844819](https://bugzilla.redhat.com/show_bug.cgi?id=844819) - New visual style for Zanata
@@ -523,7 +524,7 @@ Zanata now requires JMS to be configured in standalone.xml in order to queue up 
 * Translation Memory merge in editor
 * Add support for positional strings in printf validator
 * Translation Memory now uses word-based indexing
- 
+
 [<h5>Bug fixes | Bugzilla</h5>](https://bugzilla.redhat.com/buglist.cgi?classification=Community&target_release=1.6.2&target_release=1.7&query_format=advanced&bug_status=CLOSED&product=Zanata)
 
 -----------------------
@@ -555,7 +556,7 @@ Zanata now requires JMS to be configured in standalone.xml in order to queue up 
 * Overview for available keyboard shortcuts in web editor
 
 [<h5>Bug fixes</h5>](https://bugzilla.redhat.com/buglist.cgi?classification=Community&target_release=1.6&target_release=1.6-alpha-1&target_release=1.6-beta-1&query_format=advanced&bug_status=CLOSED&product=Zanata)
-  
+
 -----------------------
 
 ## 1.5.0
@@ -583,7 +584,7 @@ Zanata now requires JMS to be configured in standalone.xml in order to queue up 
 * Add automated compatibility tests with previous versions of the Zanata java client classes
 * Redirect to previous page after sign in
 * Several UI updates and changes
- 
+
 <h5>Bug fixes</h5>
 
 * [785034](https://bugzilla.redhat.com/show_bug.cgi?id=785034) - Rapid key navigation causes backlog of TM queries
@@ -625,7 +626,7 @@ Zanata now requires JMS to be configured in standalone.xml in order to queue up 
 
 * [750690](https://bugzilla.redhat.com/show_bug.cgi?id=750690) - Show message context in editor info panel
 * [727716](https://bugzilla.redhat.com/show_bug.cgi?id=727716) - Add failsafe editor in case of Seam Text problems
-* [730189](https://bugzilla.redhat.com/show_bug.cgi?id=730189) - Change string similarity algorithm so that only identical strings (not substrings) can get 100% 
+* [730189](https://bugzilla.redhat.com/show_bug.cgi?id=730189) - Change string similarity algorithm so that only identical strings (not substrings) can get 100%
 * [747836](https://bugzilla.redhat.com/show_bug.cgi?id=747836) - Show progress during re-index operations; avoid timeout for large databases
 * Update gwteventservice to 1.2.0-RC1
 * Modify email templates to include server URL
@@ -640,12 +641,12 @@ Zanata now requires JMS to be configured in standalone.xml in order to queue up 
 
 ## 1.4.2
 * [742083](https://bugzilla.redhat.com/show_bug.cgi?id=742083) - Language team coordinator
-* [742854](https://bugzilla.redhat.com/show_bug.cgi?id=742854) - Contact server admins 
-* [743783](https://bugzilla.redhat.com/show_bug.cgi?id=743783) - First/last entry button 
-* [744114](https://bugzilla.redhat.com/show_bug.cgi?id=744114) - Load project pages faster 
-* [744671](https://bugzilla.redhat.com/show_bug.cgi?id=744671) - Option for Enter to save translation 
-* [746859](https://bugzilla.redhat.com/show_bug.cgi?id=746859) - Sort projects by name, not ID 
-* [740122](https://bugzilla.redhat.com/show_bug.cgi?id=740122) - Make newlines visible to reduce newline mismatch errors in translations 
+* [742854](https://bugzilla.redhat.com/show_bug.cgi?id=742854) - Contact server admins
+* [743783](https://bugzilla.redhat.com/show_bug.cgi?id=743783) - First/last entry button
+* [744114](https://bugzilla.redhat.com/show_bug.cgi?id=744114) - Load project pages faster
+* [744671](https://bugzilla.redhat.com/show_bug.cgi?id=744671) - Option for Enter to save translation
+* [746859](https://bugzilla.redhat.com/show_bug.cgi?id=746859) - Sort projects by name, not ID
+* [740122](https://bugzilla.redhat.com/show_bug.cgi?id=740122) - Make newlines visible to reduce newline mismatch errors in translations
 * [740191](https://bugzilla.redhat.com/show_bug.cgi?id=740191) - Improve shortcut keys
 * [746870](https://bugzilla.redhat.com/show_bug.cgi?id=746870) - Save as Fuzzy now leaves the cell editor open
 * [743134](https://bugzilla.redhat.com/show_bug.cgi?id=743134) - Modal navigation: next fuzzy, untranslated, fuzzy or untranslated
@@ -660,7 +661,7 @@ Zanata now requires JMS to be configured in standalone.xml in order to queue up 
 ## 1.4.1
 * [741523](https://bugzilla.redhat.com/show_bug.cgi?id=741523) - Fixed: % completed should be calculated with words, not messages
 * [724867](https://bugzilla.redhat.com/show_bug.cgi?id=724867) - Fixed: Selecting Administration submenu items does not always highlight the parent menu
-* [742111](https://bugzilla.redhat.com/show_bug.cgi?id=742111) - Fixed: Change of tile to list view on Language page, make project list sortable 
+* [742111](https://bugzilla.redhat.com/show_bug.cgi?id=742111) - Fixed: Change of tile to list view on Language page, make project list sortable
 * [743179](https://bugzilla.redhat.com/show_bug.cgi?id=743179) - Performance fix for projects with 1000+ documents
 
 -----------------------

@@ -2,16 +2,18 @@ package org.zanata.webtrans.client.view;
 
 import java.util.Date;
 
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.InlineHTML;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.ListItemWidget;
 import org.zanata.webtrans.client.ui.UnorderedListWidget;
 import org.zanata.webtrans.client.util.DateUtil;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -21,6 +23,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+
+import static com.google.common.collect.Iterables.*;
 
 public class ValidationOptionsView extends Composite implements
         ValidationOptionsDisplay {
@@ -45,6 +49,8 @@ public class ValidationOptionsView extends Composite implements
     @UiField
     WebTransMessages messages;
 
+    private int selectedValidationCount = 0;
+
     @Inject
     public ValidationOptionsView() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -58,18 +64,37 @@ public class ValidationOptionsView extends Composite implements
         chk.setValue(enabled);
         chk.setTitle(tooltip);
         chk.setEnabled(!locked);
+        if (enabled) {
+            selectedValidationCount++;
+        }
+        chk.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+                if (event.getValue()) {
+                    selectedValidationCount++;
+                } else {
+                    selectedValidationCount--;
+                }
+                enabledRunValidation(selectedValidationCount > 0);
+            }
+        });
         contentPanel.add(new ListItemWidget(chk));
-
         return chk;
     }
 
     @Override
-    public void changeValidationSelectorValue(String label, boolean enabled) {
-        for (Widget checkbox : contentPanel) {
-            if (checkbox instanceof CheckBox
-                    && ((CheckBox) checkbox).getText().equals(label)) {
-                ((CheckBox) checkbox).setValue(enabled);
-            }
+    public void changeValidationSelectorValue(final String label, boolean enabled) {
+        Predicate<Widget> predicate = new Predicate<Widget>() {
+                    @Override
+                    public boolean apply(Widget input) {
+                        return input != null && input instanceof CheckBox &&
+                                ((CheckBox) input).getText().equals(label);
+                    }
+                };
+        Optional<Widget> optional =
+                tryFind(contentPanel, predicate);
+        if (optional.isPresent()) {
+            ((CheckBox) optional.get()).setValue(enabled);
         }
     }
 
