@@ -229,7 +229,7 @@ public class EditorOptionsPresenterTest {
     public void onCodeMirrorOptionChanged() {
         configHolder.setUseCodeMirrorEditor(false);
 
-        presenter.onUseCodeMirrorOptionChanged(true);
+        presenter.onUseCodeMirrorOptionChanged(true, false);
 
         assertThat(configHolder.getState().isUseCodeMirrorEditor(),
                 Matchers.equalTo(true));

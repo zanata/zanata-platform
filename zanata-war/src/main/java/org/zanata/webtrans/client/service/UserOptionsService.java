@@ -178,6 +178,7 @@ public class UserOptionsService {
         configHolder.setShowGlossaryPanel(UserConfigHolder.DEFAULT_SHOW_PANEL);
         configHolder
                 .setSelectedReferenceForSourceLang(UserConfigHolder.DEFAULT_SELECTED_REFERENCE);
+        configHolder.setShowOptionalTransUnitDetails(UserConfigHolder.DEFAULT_SHOW_TU_DETAILS);
     }
 
     public UserConfigHolder getConfigHolder() {

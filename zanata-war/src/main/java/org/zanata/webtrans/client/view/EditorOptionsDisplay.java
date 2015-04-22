@@ -25,7 +25,7 @@ public interface EditorOptionsDisplay extends WidgetDisplay {
 
         void onEditorButtonsOptionChanged(Boolean editorButtons);
 
-        void onUseCodeMirrorOptionChanged(Boolean useCodeMirrorChkValue);
+        void onUseCodeMirrorOptionChanged(Boolean useCodeMirrorChkValue, boolean force);
 
         void onShowSaveApprovedWarningChanged(Boolean showSaveApprovedWarning);
 

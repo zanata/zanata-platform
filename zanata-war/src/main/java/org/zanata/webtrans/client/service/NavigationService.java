@@ -325,15 +325,17 @@ public class NavigationService implements TransUnitUpdatedEventHandler,
 
     public void execute(UpdateContextCommand command) {
         GetTransUnitActionContext context = contextHolder.getContext();
-        GetTransUnitActionContext newContext = command.updateContext(context);
-        Log.debug("old context: " + context);
-        Log.debug("new context: " + newContext);
-        if (context.needReloadList(newContext)) {
-            boolean needReloadIndex =
-                    context.needReloadNavigationIndex(newContext);
-            requestTransUnitsAndUpdatePageIndex(newContext, needReloadIndex);
+        if(context != null) {
+            GetTransUnitActionContext newContext = command.updateContext(context);
+            Log.debug("old context: " + context);
+            Log.debug("new context: " + newContext);
+            if (context.needReloadList(newContext)) {
+                boolean needReloadIndex =
+                        context.needReloadNavigationIndex(newContext);
+                requestTransUnitsAndUpdatePageIndex(newContext, needReloadIndex);
+            }
+            contextHolder.updateContext(newContext);
         }
-        contextHolder.updateContext(newContext);
     }
 
     public void selectByRowIndex(int rowIndexOnPage) {

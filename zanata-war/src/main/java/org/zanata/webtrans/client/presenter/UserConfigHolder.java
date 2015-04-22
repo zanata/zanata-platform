@@ -72,6 +72,7 @@ public class UserConfigHolder {
     public static final DiffMode DEFAULT_TM_DISPLAY_MODE = DiffMode.NORMAL;
     public static final boolean DEFAULT_SHOW_PANEL = true;
     public static final String DEFAULT_SELECTED_REFERENCE = "none";
+    public static final boolean DEFAULT_SHOW_TU_DETAILS = true;
 
     public UserConfigHolder() {
         // default state
@@ -95,7 +96,7 @@ public class UserConfigHolder {
 
         state.showTMPanel = DEFAULT_SHOW_PANEL;
         state.showGlossaryPanel = DEFAULT_SHOW_PANEL;
-        state.showOptionalTransUnitDetails = DEFAULT_SHOW_PANEL;
+        state.showOptionalTransUnitDetails = DEFAULT_SHOW_TU_DETAILS;
         state.selectedReferenceForSourceLang = DEFAULT_SELECTED_REFERENCE;
         state.displayTheme = ThemesOption.THEMES_DEFAULT;
         state.enabledValidationIds = new ArrayList<ValidationId>();

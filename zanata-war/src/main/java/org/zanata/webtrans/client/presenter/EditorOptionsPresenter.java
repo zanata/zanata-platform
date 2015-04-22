@@ -122,10 +122,8 @@ public class EditorOptionsPresenter extends
 
     @Override
     public void onPageSizeClick(int pageSize) {
-        if (userOptionsService.getConfigHolder().getState().getEditorPageSize() != pageSize) {
-            userOptionsService.getConfigHolder().setEditorPageSize(pageSize);
-            eventBus.fireEvent(new EditorPageSizeChangeEvent(pageSize));
-        }
+        userOptionsService.getConfigHolder().setEditorPageSize(pageSize);
+        eventBus.fireEvent(new EditorPageSizeChangeEvent(pageSize));
     }
 
     @Override
@@ -197,8 +195,8 @@ public class EditorOptionsPresenter extends
     }
 
     @Override
-    public void onUseCodeMirrorOptionChanged(Boolean useCodeMirrorChkValue) {
-        if (userOptionsService.getConfigHolder().getState()
+    public void onUseCodeMirrorOptionChanged(Boolean useCodeMirrorChkValue, boolean force) {
+        if (force || userOptionsService.getConfigHolder().getState()
                 .isUseCodeMirrorEditor() != useCodeMirrorChkValue) {
             userOptionsService.getConfigHolder().setUseCodeMirrorEditor(
                     useCodeMirrorChkValue);
@@ -248,6 +246,7 @@ public class EditorOptionsPresenter extends
     @Override
     public void loadDefaultOptions() {
         userOptionsService.loadEditorDefaultOptions();
+        changeReferenceLangPresenter.loadDefaultOption();
         refreshOptions();
     }
 

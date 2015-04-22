@@ -121,4 +121,10 @@ public class ChangeReferenceLangPresenter extends
                     .getSelectedReferenceForSourceLang());
         }
     }
+
+    public void loadDefaultOption() {
+        display.setSelectedLocale(UserConfigHolder
+            .DEFAULT_SELECTED_REFERENCE);
+        onSourceLangListBoxOptionChanged(Locale.notChosenLocale);
+    }
 }

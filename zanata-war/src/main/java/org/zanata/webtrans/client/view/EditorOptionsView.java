@@ -107,34 +107,22 @@ public class EditorOptionsView extends Composite implements
 
     @UiHandler("five")
     public void onPageSizeFiveClicked(ClickEvent event) {
-        selectPage(five);
-        listener.onPageSizeClick(5);
+        selectPageSize(5);
     }
 
     @UiHandler("ten")
     public void onPageSizeTenClicked(ClickEvent event) {
-        selectPage(ten);
-        listener.onPageSizeClick(10);
+        selectPageSize(10);
     }
 
     @UiHandler("twentyFive")
     public void onPageSizeTwentyFiveClicked(ClickEvent event) {
-        selectPage(twentyFive);
-        listener.onPageSizeClick(25);
+        selectPageSize(25);
     }
 
     @UiHandler("fifty")
     public void onPageSizeFiftyClicked(ClickEvent event) {
-        selectPage(fifty);
-        listener.onPageSizeClick(50);
-    }
-
-    private void selectPage(Anchor selectedPage) {
-        five.removeStyleName("txt--important");
-        ten.removeStyleName("txt--important");
-        twentyFive.removeStyleName("txt--important");
-        fifty.removeStyleName("txt--important");
-        selectedPage.addStyleName("txt--important");
+        selectPageSize(50);
     }
 
     @UiHandler("editorButtonsChk")
@@ -149,7 +137,7 @@ public class EditorOptionsView extends Composite implements
 
     @UiHandler("useCodeMirrorChk")
     public void onCodeMirrorOptionChanged(ValueChangeEvent<Boolean> event) {
-        listener.onUseCodeMirrorOptionChanged(useCodeMirrorChk.getValue());
+        listener.onUseCodeMirrorOptionChanged(useCodeMirrorChk.getValue(), false);
     }
 
     @UiHandler("showSaveApprovedWarningChk")
@@ -202,6 +190,7 @@ public class EditorOptionsView extends Composite implements
         navOptionGroup.setDefaultSelected(state.getNavOption());
         selectPageSize(state.getEditorPageSize());
         useCodeMirrorChk.setValue(state.isUseCodeMirrorEditor());
+        listener.onUseCodeMirrorOptionChanged(useCodeMirrorChk.getValue(), true);
         showSaveApprovedWarningChk.setValue(state.isShowSaveApprovedWarning());
 
         if (state.getTransMemoryDisplayMode() == DiffMode.NORMAL) {
@@ -212,20 +201,38 @@ public class EditorOptionsView extends Composite implements
 
         showTMChk.setValue(state.isShowTMPanel());
         showGlossaryChk.setValue(state.isShowGlossaryPanel());
+        onTMOrGlossaryDisplayOptionsChanged(null);
         showOptionalTransUnitDetailsChk.setValue(state
                 .isShowOptionalTransUnitDetails());
     }
 
     private void selectPageSize(int pageSize) {
-        if (pageSize == 5) {
-            selectPage(five);
-        } else if (pageSize == 10) {
-            selectPage(ten);
-        } else if (pageSize == 25) {
-            selectPage(twentyFive);
-        } else if (pageSize == 50) {
-            selectPage(fifty);
+        switch (pageSize) {
+            case 5:
+                updatePageSizeAnchorStyle(five);
+                listener.onPageSizeClick(pageSize);
+                break;
+            case 10:
+                updatePageSizeAnchorStyle(ten);
+                listener.onPageSizeClick(pageSize);
+                break;
+            case 25:
+                updatePageSizeAnchorStyle(twentyFive);
+                listener.onPageSizeClick(pageSize);
+                break;
+            case 50:
+                updatePageSizeAnchorStyle(fifty);
+                listener.onPageSizeClick(pageSize);
+                break;
         }
+    }
+
+    private void updatePageSizeAnchorStyle(Anchor selectedPage) {
+        five.removeStyleName("txt--important");
+        ten.removeStyleName("txt--important");
+        twentyFive.removeStyleName("txt--important");
+        fifty.removeStyleName("txt--important");
+        selectedPage.addStyleName("txt--important");
     }
 
     interface EditorOptionsUiBinder extends UiBinder<Widget, EditorOptionsView> {
