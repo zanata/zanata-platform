@@ -34,7 +34,7 @@
         <i class="i i--huge i--cancel"></i></button>
     </header>
 
-    <div class="modal__content l--pad-all-quarter">
+    <div class="modal__content l--pad-all-1">
       <h:form id="searchForm">
           <div class="form--inline">
             <h:inputText value="#{languageAction.searchTerm}" id="searchField"
@@ -59,11 +59,10 @@
       </a4j:status>
 
       <h:form id="resultForm" styleClass="l--push-bottom-0">
-        <a4j:outputPanel id="searchResults" layout="block"
-          style="overflow:auto;max-height:320px">
+        <a4j:outputPanel id="searchResults" layout="block">
           <h:outputText id="noResultsMessage"
             rendered="#{empty languageAction.searchResults}"
-            value="No results to display."/>
+            value="#{msgs['jsf.search.NoResult']}"/>
 
           <s:fragment rendered="#{not empty languageAction.searchResults}">
             <ul class="list--slat">

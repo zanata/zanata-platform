@@ -92,7 +92,7 @@ public class EmailStrategyTest {
             return serverPath;
         }
     };
-    EmailBuilder builder = new EmailBuilder(session, context, msgsFactory);
+    EmailBuilder builder = new EmailBuilder(session, context, msgsFactory, null);
     MimeMessage message;
 
     // context values needed for some templates:
@@ -272,33 +272,6 @@ public class EmailStrategyTest {
     }
 
     @Test
-    public void requestRoleLanguage() throws Exception {
-        EmailStrategy strategy =
-                new RequestRoleLanguageEmailStrategy(
-                        fromLoginName, fromName, replyEmail,
-                        localeId, localeNativeName, htmlMessage,
-                        true, true, true);
-
-        builder.buildMessage(message, strategy, toAddresses,
-            Lists.newArrayList("requestRoleLanguage test"));
-
-        checkFromAndTo(message);
-        assertThat(message.getSubject()).isEqualTo(
-                msgs.format("jsf.email.rolerequest.Subject", fromLoginName, localeId));
-
-        String html = extractHtmlPart(message);
-        checkGenericTemplate(html);
-
-        assertThat(html).contains(msgs.format(
-                "jsf.email.rolerequest.UserRequestingRole",
-                fromName, fromLoginName, localeId, localeNativeName));
-        assertThat(html).contains(
-                htmlMessage);
-        assertThat(html).contains(
-                serverPath + "/language/view/" + localeId);
-    }
-
-    @Test
     public void requestToJoinLanguage() throws Exception {
         EmailStrategy strategy =
                 new RequestToJoinLanguageEmailStrategy(
@@ -311,7 +284,7 @@ public class EmailStrategyTest {
 
         checkFromAndTo(message);
         assertThat(message.getSubject()).isEqualTo(msgs.format(
-                "jsf.email.joinrequest.Subject", fromLoginName, localeId));
+                "jsf.language.email.joinrequest.Subject", fromLoginName, localeId));
 
         String html = extractHtmlPart(message);
         checkGenericTemplate(html);

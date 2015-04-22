@@ -284,39 +284,8 @@
       value="no-cache, no-store, max-age=0, must-revalidate" />
     <param name="versionGroupSlug" value="#{versionGroupHomeAction.slug}" />
     <param name="versionGroupSlug" value="#{versionGroupHome.slug}" />
-    <action execute="#{versionGroupHome.validateSuppliedId}" />
-  </page>
-
-  <page view-id="/version-group/request_to_join.xhtml">
-    <param name="emailType" value="#{sendEmail.emailType}" />
     <param name="versionGroupSlug" value="#{versionGroupJoinAction.slug}" />
-    <action
-      execute="#{versionGroupJoinAction.searchMaintainedProjectVersion()}" />
-
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/version-group/home.xhtml', msgs['jsf.Groups'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/version-group/version_group.xhtml', versionGroupJoinAction.slug).param('versionGroupSlug', versionGroupJoinAction.slug)}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', msgs['jsf.RequestJoinGroup'])}" />
-
-    <navigation from-action="#{versionGroupJoinAction.send}">
-      <rule if-outcome="success">
-        <redirect view-id="/version-group/version_group.xhtml">
-          <param name="versionGroupSlug"
-            value="#{versionGroupJoinAction.slug}" />
-        </redirect>
-      </rule>
-      <rule if-outcome="failure">
-        <redirect view-id="/version-group/request_to_join.xhtml" />
-      </rule>
-    </navigation>
-    <navigation from-action="#{versionGroupJoinAction.cancel}">
-      <redirect view-id="/version-group/version_group.xhtml">
-        <param name="versionGroupSlug" value="#{versionGroupJoinAction.slug}" />
-      </redirect>
-    </navigation>
+    <action execute="#{versionGroupHome.validateSuppliedId}" />
   </page>
 
   <page view-id="/profile/create_user.xhtml">
@@ -455,42 +424,8 @@
 
   <page view-id="/language/language.xhtml">
     <param name="id" value="#{languageAction.language}" />
-
-    <navigation from-action="#{sendEmail.send}">
-      <redirect view-id="/language/language.xhtml">
-        <param name="id" value="#{sendEmail.language}" />
-      </redirect>
-    </navigation>
-  </page>
-
-  <page view-id="/language/request_to_join_update_role.xhtml">
-    <param name="emailType" value="#{sendEmail.emailType}" />
-    <param name="emailType" value="#{languageJoinUpdateRoleAction.emailType}" />
-    <param name="id" value="#{languageJoinUpdateRoleAction.language}" />
-    <param name="id" value="#{sendEmail.language}" />
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/language/home.xhtml', msgs['jsf.Languages'])}" />
-    <action
-      execute="#{breadcrumbs.addLocation('/language/language.xhtml', sendEmail.locale.localeId.id).param('id', sendEmail.locale.localeId.id)}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', languageJoinUpdateRoleAction.title)}" />
-
-    <navigation from-action="#{sendEmail.send}">
-      <rule if-outcome="success">
-        <redirect view-id="/language/language.xhtml">
-          <param name="id" value="#{sendEmail.language}" />
-        </redirect>
-      </rule>
-      <rule if-outcome="failure">
-        <redirect view-id="/language/request_to_join_update_role.xhtml" />
-      </rule>
-    </navigation>
-    <navigation from-action="#{sendEmail.cancel}">
-      <redirect view-id="/language/language.xhtml">
-        <param name="id" value="#{sendEmail.language}" />
-      </redirect>
-    </navigation>
+    <param name="id" value="#{languageJoinAction.language}" />
+    <param name="id" value="#{languageContactCoordinatorAction.localeId}" />
   </page>
 
   <!-- Translation Memory -->

@@ -6,6 +6,7 @@ import static javax.mail.Message.RecipientType.TO;
 import java.io.StringWriter;
 import java.net.ConnectException;
 import java.util.List;
+import java.util.Locale;
 
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -31,6 +32,7 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.international.LocaleSelector;
 import org.jboss.seam.mail.MailSession;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.i18n.Messages;
@@ -68,6 +70,8 @@ public class EmailBuilder {
     private Context emailContext;
     @In
     private MessagesFactory messagesFactory;
+    @In
+    private LocaleSelector localeSelector;
 
     private static VelocityEngine makeVelocityEngine() {
         VelocityEngine ve = new VelocityEngine();
@@ -103,6 +107,9 @@ public class EmailBuilder {
      */
     public void sendMessage(EmailStrategy strategy,
             List<String> receivedReasons, InternetAddress[] toAddresses) {
+        Locale pervLocale = localeSelector.getLocale();
+        localeSelector.setLocale(new Locale("en"));
+
         try {
             MimeMessage email = new MimeMessage(mailSession);
             buildMessage(email, strategy, toAddresses, receivedReasons);
@@ -114,6 +121,8 @@ public class EmailBuilder {
                 throw new RuntimeException("The system failed to connect to mail service. Please contact the administrator!", e);
             }
             throw new RuntimeException(e);
+        } finally {
+            localeSelector.setLocale(pervLocale);
         }
     }
 

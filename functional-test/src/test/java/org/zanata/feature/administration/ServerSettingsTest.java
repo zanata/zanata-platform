@@ -60,7 +60,6 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .save()
                 .goToHomePage()
                 .clickContactAdmin()
-                .inputSubject("I AM THE ADMIN")
                 .inputMessage("Test pattern")
                 .send(HomePage.class);
         String emailContent = HasEmailRule
@@ -96,7 +95,6 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .save()
                 .goToHomePage()
                 .clickContactAdmin()
-                .inputSubject("Test email recipient")
                 .inputMessage("Test pattern")
                 .send(HomePage.class);
 

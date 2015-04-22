@@ -24,6 +24,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import org.zanata.common.LocaleId;
 import org.zanata.email.EmailStrategy;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
@@ -75,7 +76,7 @@ public interface EmailService {
      * sends emails to language coordinators -> admin -> admin users
      *
      */
-    String sendToLanguageCoordinators(HLocale locale,
+    String sendToLanguageCoordinators(LocaleId localeId,
             EmailStrategy strategy);
 
     String sendUsernameChangedEmail(String email, String newUsername);

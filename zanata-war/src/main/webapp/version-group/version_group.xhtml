@@ -8,7 +8,7 @@
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:rich="http://richfaces.org/rich"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
-  template="../WEB-INF/template/template.xhtml">
+  template="/WEB-INF/template/template.xhtml">
 
 <ui:define name="page_title">
   #{msgs['jsf.Groups']} - #{versionGroupHome.instance.name}
@@ -215,19 +215,12 @@
                 role="content"
                 aria-labelledby="dropdownContent">
                 <li>
-                  <s:link view="/version-group/request_to_join.xhtml"
-                    styleClass="i__item--right"
-                    propagation="none">
-                    <f:param name="emailType"
-                      value="request_to_join_group"/>
-                    <f:param name="versionGroupSlug"
-                      value="#{versionGroupHomeAction.slug}"/>
-                    <h:outputFormat
-                      value="#{msgs['jsf.RequestAddProjectToGroup']}">
-                      <f:param value="#{versionGroupHome.instance.name}"/>
-                    </h:outputFormat>
+                  <a href="#" class="i__item--right"
+                    data-toggle="modal" onclick="return false;"
+                    data-target="#joinGroupDialog">
+                    #{msgs.format('jsf.RequestAddProjectToGroup', versionGroupHome.instance.name)}
                     <i class="i i--project i__item__icon"></i>
-                  </s:link>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -252,13 +245,13 @@
       <ul class="tabs__content panels__container js-tabs-content l--push-top-1">
         <li id="languages">
           <ui:include
-            src="../WEB-INF/layout/version-group/languages-tab.xhtml">
+            src="/WEB-INF/layout/version-group/languages-tab.xhtml">
           </ui:include>
         </li>
 
         <li id="projects">
           <ui:include
-            src="../WEB-INF/layout/version-group/projects-tab.xhtml"/>
+            src="/WEB-INF/layout/version-group/projects-tab.xhtml"/>
         </li>
 
         <li id="maintainers">
@@ -273,13 +266,17 @@
           rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
           <li id="settings">
             <ui:include
-              src="../WEB-INF/layout/version-group/settings-tab.xhtml"/>
+              src="/WEB-INF/layout/version-group/settings-tab.xhtml"/>
           </li>
         </s:fragment>
       </ul>
     </div>
   </div>
 </div>
-</ui:define>
+  <s:fragment
+    rendered="#{versionGroupHomeAction.isUserProjectMaintainer()}">
+    <ui:include src="/WEB-INF/layout/version-group/request_join_modal.xhtml"/>
+  </s:fragment>
 
+</ui:define>
 </ui:composition>

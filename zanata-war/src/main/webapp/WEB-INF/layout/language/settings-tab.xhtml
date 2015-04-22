@@ -106,7 +106,7 @@
 
         <div class="l--push-top-1">
           <a4j:commandLink action="#{languageAction.saveSettings()}" styleClass="loader button button--primary"
-            render="language-info" onbegin="jQuery(this).attr('disabled', true)" oncomplete="jQuery(this).removeAttr('disabled').removeClass('is-active')">
+            render="language-info" onbegin="jQuery(this).attr('disabled', 'disabled')" oncomplete="jQuery(this).removeAttr('disabled').removeClass('is-active')">
             <span class="loader__label">#{msgs['jsf.Save']}</span>
           </a4j:commandLink>
         </div>

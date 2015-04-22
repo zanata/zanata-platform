@@ -23,86 +23,90 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
+import javax.faces.application.FacesMessage;
+
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
+import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.zanata.email.ContactAdminEmailStrategy;
+import org.zanata.common.LocaleId;
+import org.zanata.email.ContactLanguageCoordinatorEmailStrategy;
 import org.zanata.email.EmailStrategy;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
+import org.zanata.model.HLocale;
 import org.zanata.service.EmailService;
+import org.zanata.service.LocaleService;
+import org.zanata.ui.faces.FacesMessages;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.zanata.ui.faces.FacesMessages;
 
 /**
- * Handles send email to admin.
- * Need to separate from SendEmailAction as contact admin now pages which has footer.xhtml
- *
- * @see org.zanata.action.SendEmailAction
- *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("contactAdminAction")
+@AutoCreate
+@Name("languageContactCoordinatorAction")
 @Scope(ScopeType.PAGE)
-@Restrict("#{identity.loggedIn}")
 @Slf4j
-public class ContactAdminAction implements Serializable {
+public class LanguageContactCoordinatorAction implements Serializable {
 
     @In(value = JpaIdentityStore.AUTHENTICATED_USER, required = false)
     private HAccount authenticatedAccount;
+
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
 
     @In
     private EmailService emailServiceImpl;
 
     @In
+    private LocaleService localeServiceImpl;
+
+    @In
     private Messages msgs;
-
-    @In("jsfMessages")
-    private FacesMessages facesMessages;
-
-    @Getter
-    private String replyEmail;
-
-    @Getter
-    private String subject;
 
     @Getter
     @Setter
     private String message;
 
-    private String fromName;
+    @Getter
+    @Setter
+    private String localeId;
 
-    private String fromLoginName;
+    private HLocale locale;
 
-    @Create
-    public void onCreate() {
-        fromName = authenticatedAccount.getPerson().getName();
-        fromLoginName = authenticatedAccount.getUsername();
-        replyEmail = authenticatedAccount.getPerson().getEmail();
-
-        subject = msgs.get("jsf.message.admin.inquiry.subject");
-        message = "";
-    }
-
+    @Restrict("#{identity.loggedIn}")
     public void send() {
-        try {
-            EmailStrategy strategy = new ContactAdminEmailStrategy(
-                    fromLoginName, fromName, replyEmail, subject, message);
+        String fromName = authenticatedAccount.getPerson().getName();
+        String fromLoginName = authenticatedAccount.getUsername();
+        String replyEmail = authenticatedAccount.getPerson().getEmail();
 
-            facesMessages.addGlobal(emailServiceImpl.sendToAdmins(strategy,
-                    null));
+        String localeNativeName = getLocale().retrieveNativeName();
+
+        EmailStrategy strategy =
+                new ContactLanguageCoordinatorEmailStrategy(
+                        fromLoginName, fromName, replyEmail,
+                        getSubject(),
+                        getLocale().getLocaleId().getId(),
+                        localeNativeName, message);
+
+        try {
+            String msg = emailServiceImpl.sendToLanguageCoordinators(
+                    getLocale().getLocaleId(), strategy);
+
+            facesMessages.addGlobal(msg);
         } catch (Exception e) {
+            String subject = strategy.getSubject(msgs);
+
             StringBuilder sb =
                     new StringBuilder()
                             .append("Failed to send email with subject '")
-                            .append(subject)
+                            .append(strategy.getSubject(msgs))
                             .append("' , message '").append(message)
                             .append("'");
             log.error(
@@ -110,5 +114,17 @@ public class ContactAdminAction implements Serializable {
                     e, fromName, fromLoginName, replyEmail, subject, message);
             facesMessages.addGlobal(sb.toString());
         }
+    }
+
+    private String getSubject() {
+        return msgs.format("jsf.message.coordinator.inquiry.subject", localeId,
+                getLocale().retrieveDisplayName());
+    }
+
+    public HLocale getLocale() {
+        if (locale == null) {
+            locale = localeServiceImpl.getByLocaleId(new LocaleId(localeId));
+        }
+        return locale;
     }
 }

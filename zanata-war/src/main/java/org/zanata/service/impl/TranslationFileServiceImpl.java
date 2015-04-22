@@ -93,7 +93,7 @@ public class TranslationFileServiceImpl implements TranslationFileService {
         DOCTYPEMAP.put(PLAIN_TEXT, PlainTextAdapter.class);
         DOCTYPEMAP.put(XML_DOCUMENT_TYPE_DEFINITION, DTDAdapter.class);
         DOCTYPEMAP.put(IDML, IDMLAdapter.class);
-        DOCTYPEMAP.put(HTML, HTMLAdapter.class);
+        DOCTYPEMAP.put(HTML, HTMLAdapter.class);release
         DOCTYPEMAP.put(SUBTITLE, SubtitleAdapter.class);
     }
 

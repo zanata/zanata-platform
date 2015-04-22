@@ -60,7 +60,6 @@ public class ContactAdminTest extends ZanataTestCase {
                 .clickContactAdmin();
 
         DashboardBasePage dashboardBasePage = contactAdminFormPage
-                .inputSubject("hello admin")
                 .inputMessage("I love Zanata")
                 .send(DashboardBasePage.class);
 

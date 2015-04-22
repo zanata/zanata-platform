@@ -45,15 +45,14 @@ import com.google.common.collect.Sets;
 public class LanguagePage extends BasePage {
 
     private By contactCoordinatorsButton =
-            By.linkText("Contact Team Coordinators");
+            By.linkText("Contact Coordinators");
     private By saveButton = By.id("save-button");
     private By moreActions = By.className("dropdown__toggle");
-    private By membersTabMoreActions = By.id("members-more-actions");
     private By enableByDefault = By.id("enable-by-default");
     private By membersTab = By.id("members_tab");
     private By settingsTab = By.id("settings_tab");
     private By joinLanguageTeamButton = By.linkText("Join Language Team");
-    private By addTeamMemberLink = By.id("addTeamMemberLink");
+    private By addTeamMemberButton = By.id("add-team-member-button");
     private By addUserSearchInput = By.id("searchForm:searchField");
     private By addUserSearchButton = By.id("searchForm:searchBtn");
     private By personTable = By.id("resultForm:searchResults");
@@ -71,12 +70,6 @@ public class LanguagePage extends BasePage {
     public LanguagePage clickMoreActions() {
         log.info("Click More Actions");
         waitForWebElement(moreActions).click();
-        return new LanguagePage(getDriver());
-    }
-
-    public LanguagePage clickMembersTabMoreActions() {
-        log.info("Click Members tab More Actions");
-        waitForWebElement(membersTabMoreActions).click();
         return new LanguagePage(getDriver());
     }
 
@@ -145,7 +138,7 @@ public class LanguagePage extends BasePage {
 
     public LanguagePage clickAddTeamMember() {
         log.info("Click Add Team Member");
-        waitForWebElement(addTeamMemberLink).click();
+        waitForWebElement(addTeamMemberButton).click();
         return this;
     }
 

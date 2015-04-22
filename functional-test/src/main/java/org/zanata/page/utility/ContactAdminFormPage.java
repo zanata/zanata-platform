@@ -33,19 +33,11 @@ import org.zanata.page.BasePage;
 @Slf4j
 public class ContactAdminFormPage extends BasePage {
 
-    private By subjectField = By.id("contactAdminForm:subjectField:subject");
-    private By messageField = By.id("contactAdminForm:messageField:message");
-    private By sendButton = By.id("send");
+    private By messageField = By.id("contactAdminForm:messageField:contact-admin-message");
+    private By sendButton = By.id("contact-admin-send-button");
 
     public ContactAdminFormPage(WebDriver driver) {
         super(driver);
-    }
-
-    public ContactAdminFormPage inputSubject(String subject) {
-        log.info("Enter subject {}", subject);
-        waitForWebElement(subjectField).clear();
-        waitForWebElement(subjectField).sendKeys(subject);
-        return new ContactAdminFormPage(getDriver());
     }
 
     public ContactAdminFormPage inputMessage(String message) {

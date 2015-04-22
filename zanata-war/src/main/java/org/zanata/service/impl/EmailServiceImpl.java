@@ -35,6 +35,8 @@ import org.jboss.seam.security.RunAsOperation;
 import org.jboss.seam.security.management.IdentityManager;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.action.VersionGroupJoinAction;
+import org.zanata.common.LocaleId;
+import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.email.ActivationEmailStrategy;
 import org.zanata.email.Addresses;
@@ -79,6 +81,9 @@ public class EmailServiceImpl implements EmailService {
 
     @In
     private VersionGroupJoinAction versionGroupJoinAction;
+
+    @In
+    private LocaleDAO localeDAO;
 
     @In
     private Messages msgs;
@@ -184,8 +189,10 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public String sendToLanguageCoordinators(HLocale locale,
+    public String sendToLanguageCoordinators(LocaleId localeId,
             EmailStrategy strategy) {
+        HLocale locale = localeDAO.findByLocaleId(localeId);
+
         List<HPerson> coordinators = getCoordinators(locale);
         if (!coordinators.isEmpty()) {
             String receivedReason = msgs.format(

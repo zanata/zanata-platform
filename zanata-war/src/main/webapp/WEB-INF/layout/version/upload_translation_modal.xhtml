@@ -11,7 +11,7 @@
     $(document).ready(function() {
       var uploadButton = getUploadButton();
       zanata.loader.deactivate('#upload-translation-loader');
-      jQuery(uploadButton).attr('disabled', true);
+      jQuery(uploadButton).attr('disabled', 'disabled');
       jQuery(uploadButton).removeClass('is-hidden');
 
       $(getUploadFile()).change(function() {
@@ -19,7 +19,7 @@
         if(jQuery(getUploadFile()).val() != '') {
           jQuery(uploadButton).removeAttr('disabled');
         } else {
-          jQuery(uploadButton).attr('disabled', true);
+          jQuery(uploadButton).attr('disabled', 'disabled');
         }
       });
     });
@@ -35,7 +35,7 @@
     function cancelUpload() {
       zanata.loader.deactivate('#upload-translation-loader');
       jQuery(getUploadFile()).val('');
-      jQuery(getUploadButton()).attr('disabled', true);
+      jQuery(getUploadButton()).attr('disabled', 'disabled');
       return false;
     }
 

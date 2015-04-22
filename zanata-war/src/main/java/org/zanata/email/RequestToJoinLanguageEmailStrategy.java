@@ -57,7 +57,7 @@ public class RequestToJoinLanguageEmailStrategy
 
     @Override
     public String getSubject(Messages msgs) {
-        return msgs.format("jsf.email.joinrequest.Subject",
+        return msgs.format("jsf.language.email.joinrequest.Subject",
                 fromLoginName, localeId);
     }
 

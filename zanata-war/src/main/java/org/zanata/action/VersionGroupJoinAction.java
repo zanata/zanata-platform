@@ -21,13 +21,14 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
+import java.util.Locale;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
@@ -35,33 +36,39 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.security.Restrict;
+import org.jboss.seam.international.LocaleSelector;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.common.EntityStatus;
+import org.zanata.common.ProjectType;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.VersionGroupDAO;
+import org.zanata.email.EmailStrategy;
+import org.zanata.email.RequestToJoinVersionGroupEmailStrategy;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.service.EmailService;
 import org.zanata.service.VersionGroupService;
+
+import org.zanata.ui.AbstractAutocomplete;
 import org.zanata.ui.faces.FacesMessages;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
 
 import com.google.common.collect.Lists;
 
 @AutoCreate
 @Name("versionGroupJoinAction")
 @Scope(ScopeType.PAGE)
-public class VersionGroupJoinAction implements Serializable {
+@Slf4j
+public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
+        implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    @In("jsfMessages")
-    private FacesMessages facesMessages;
 
     @In
     private VersionGroupService versionGroupServiceImpl;
-
-    @In
-    private VersionGroupDAO versionGroupDAO;
 
     @In
     private ProjectDAO projectDAO;
@@ -69,8 +76,8 @@ public class VersionGroupJoinAction implements Serializable {
     @In
     private ProjectIterationDAO projectIterationDAO;
 
-    @In(create = true)
-    private SendEmailAction sendEmail;
+    @In
+    private VersionGroupDAO versionGroupDAO;
 
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
@@ -80,83 +87,169 @@ public class VersionGroupJoinAction implements Serializable {
     private String slug;
 
     @Getter
-    @Setter
-    private String iterationSlug;
-
-    @Getter
-    @Setter
     private String projectSlug;
 
     @Getter
-    private List<SelectableProject> projectVersions = Lists.newArrayList();
+    private List<SelectableVersion> projectVersions = Lists.newArrayList();
 
-    public void searchMaintainedProjectVersion() {
-        Set<HProject> maintainedProjects =
-                authenticatedAccount.getPerson().getMaintainerProjects();
-        for (HProject project : maintainedProjects) {
-            for (HProjectIteration projectIteration : projectDAO
-                    .getAllIterations(project.getSlug())) {
-                projectVersions.add(new SelectableProject(projectIteration,
-                        false));
+    @In
+    private EmailService emailServiceImpl;
+
+    @Getter
+    @Setter
+    private String message;
+
+    @In("jsfMessages")
+    private FacesMessages facesMessages;
+
+    public boolean hasSelectedVersion() {
+        if(projectVersions.isEmpty()) {
+            return false;
+        }
+        for (SelectableVersion projectVersion : projectVersions) {
+            if (projectVersion.isSelected()) {
+                return true;
             }
         }
+        return false;
     }
 
     public String getGroupName() {
         return versionGroupDAO.getBySlug(slug).getName();
     }
 
-    public void searchProjectVersion() {
-        if (StringUtils.isNotEmpty(iterationSlug)
-                && StringUtils.isNotEmpty(projectSlug)) {
-            HProjectIteration projectIteration =
-                    projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-            if (projectIteration != null) {
-                projectVersions.add(new SelectableProject(projectIteration,
-                        true));
+    public void bindSelectedVersion(String versionSlug, boolean selected) {
+        for (SelectableVersion projectVersion : projectVersions) {
+            if (projectVersion.getIterationSlug().equals(versionSlug)) {
+                projectVersion.setSelected(selected);
             }
         }
     }
 
-    public boolean isVersionInGroup(Long projectIterationId) {
-        return versionGroupServiceImpl.isVersionInGroup(slug,
-                projectIterationId);
-    }
-
-    public void cancel() {
-        sendEmail.cancel();
-    }
-
-    public String send() {
-        boolean isAnyVersionSelected = false;
-        for (SelectableProject projectVersion : projectVersions) {
-            if (projectVersion.isSelected()) {
-                isAnyVersionSelected = true;
-                break;
+    public List<SelectableVersion> getVersions() {
+        if (projectVersions.isEmpty() && StringUtils.isNotEmpty(projectSlug)) {
+            List<HProjectIteration> versions =
+                    projectIterationDAO.getByProjectSlug(projectSlug,
+                        EntityStatus.ACTIVE, EntityStatus.READONLY);
+            for (HProjectIteration version : versions) {
+                if(!isVersionInGroup(version.getId())) {
+                    projectVersions
+                            .add(new SelectableVersion(projectSlug, version
+                                    .getSlug(), version.getProjectType(), false));
+                }
             }
         }
-        if (isAnyVersionSelected) {
-            List<HPerson> maintainers = new ArrayList<HPerson>();
+        return projectVersions;
+    }
+
+    public boolean isVersionInGroup(Long versionId) {
+        return versionGroupServiceImpl.isVersionInGroup(slug, versionId);
+    }
+
+    public List<HPerson> getGroupMaintainers() {
+        List<HPerson> maintainers = Lists.newArrayList();
+        for (HPerson maintainer : versionGroupServiceImpl
+            .getMaintainersBySlug(slug)) {
+            maintainers.add(maintainer);
+        }
+        return maintainers;
+    }
+
+    @Restrict("#{identity.loggedIn}")
+    public void send() {
+        if (hasSelectedVersion()) {
+            String fromName = authenticatedAccount.getPerson().getName();
+            String fromLoginName = authenticatedAccount.getUsername();
+            String replyEmail = authenticatedAccount.getPerson().getEmail();
+
+            List<HPerson> maintainers = Lists.newArrayList();
             for (HPerson maintainer : versionGroupServiceImpl
-                    .getMaintainersBySlug(slug)) {
+                .getMaintainersBySlug(slug)) {
                 maintainers.add(maintainer);
             }
-            return sendEmail.sendToVersionGroupMaintainer(maintainers);
+
+            Collection<ProjectIterationId> projectVersionIds =
+                Lists.newArrayList();
+
+            for (VersionGroupJoinAction.SelectableVersion selectedVersion : projectVersions) {
+                if (selectedVersion.isSelected()) {
+                    projectVersionIds.add(new ProjectIterationId(
+                        selectedVersion.getProjectSlug(),
+                        selectedVersion.getIterationSlug(),
+                        selectedVersion.getProjectType()));
+                }
+            }
+
+            EmailStrategy strategy =
+                new RequestToJoinVersionGroupEmailStrategy(
+                    fromLoginName, fromName, replyEmail,
+                    getGroupName(), getSlug(),
+                    projectVersionIds, message);
+
+            try {
+                String msg =
+                    emailServiceImpl.sendToVersionGroupMaintainers(
+                        getGroupMaintainers(), strategy);
+                facesMessages.addGlobal(msg);
+                clearFormFields();
+
+            } catch (Exception e) {
+                String subject = strategy.getSubject(msgs);
+
+                StringBuilder sb =
+                    new StringBuilder()
+                        .append("Failed to send email with subject '")
+                        .append(subject)
+                        .append("' , message '").append(message)
+                        .append("'");
+                log.error(
+                        "Failed to send email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}'",
+                        e, fromName, fromLoginName, replyEmail,
+                        subject, message);
+                facesMessages.addGlobal(sb.toString());
+            }
         } else {
-            facesMessages.addGlobal(
-                    "#{msgs['jsf.NoProjectVersionSelected']}");
-            return "failure";
+            facesMessages.addGlobal(msgs.get("jsf.NoProjectVersionSelected"));
         }
     }
 
-    @AllArgsConstructor
-    public final class SelectableProject {
+    /**
+     * This is to reset data when user closes dialog or after sending email.
+     * See version-group/request_join_modal.xhtml#cancelJoinGroupEmail
+     */
+    public void clearFormFields() {
+        projectSlug = "";
+        projectVersions.clear();
+        setQuery("");
+    }
 
-        @Getter
-        private HProjectIteration projectIteration;
+    @Override
+    public List<HProject> suggest() {
+        if(authenticatedAccount == null || StringUtils.isEmpty(getQuery())) {
+            return Collections.emptyList();
+        }
+        return projectDAO.getProjectsForMaintainer(
+                authenticatedAccount.getPerson(), getQuery(), 0,
+                Integer.MAX_VALUE);
+    }
 
+    @Override
+    public void onSelectItemAction() {
+        projectSlug = getSelectedItem();
+        // Need to clear the all the versions displayed in dialog from previous
+        // selected project when user select a new project from search
+        projectVersions.clear();
+    }
+
+    public final class SelectableVersion extends ProjectIterationId {
         @Getter
         @Setter
         private boolean selected;
+
+        public SelectableVersion(String projectSlug, String versionSlug,
+                ProjectType projectType, boolean selected) {
+            super(projectSlug, versionSlug, projectType);
+            this.selected = selected;
+        }
     }
 }
