@@ -1404,7 +1404,7 @@
       <properties>
         <cargo.container>jboss72x</cargo.container>
         <!-- name of the top-level dir within the appserver zip -->
-        <appserver.dir.name>jboss-eap-6.3</appserver.dir.name>
+        <appserver.dir.name>jboss-eap-6.4</appserver.dir.name>
         <!-- where the appserver will be installed -->
         <appserver.home>${cargo.extract.dir}/${cargo.basename}/${appserver.dir.name}</appserver.home>
       </properties>

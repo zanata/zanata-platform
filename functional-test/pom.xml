@@ -814,10 +814,10 @@
                 <echo>-DskipArqTests : to skip Arquillian integration tests (if building zanata-war)</echo>
                 <echo />
                 <echo>Unless skipping tests, you must choose an appserver:</echo>
-                <echo>-Dappserver=jbosseap6 -Dcargo.installation=http://example.com/jbosseap632.zip -Dcargo.basename=jbosseap632</echo>
+                <echo>-Dappserver=jbosseap6 -Dcargo.installation=http://example.com/jbosseap640.zip -Dcargo.basename=jbosseap640</echo>
                 <echo>or -Dappserver=wildfly8</echo>
                 <echo>NB: cargo.basename needs to match the basename of the file given in cargo.installation.</echo>
-                <echo>For example, if cargo.installation is http://example.com/download/jboss-6.3.2.zip, cargo.basename should be jboss-6.3.2.</echo>
+                <echo>For example, if cargo.installation is http://example.com/download/jboss-6.4.0.zip, cargo.basename should be jboss-6.4.0.</echo>
                 <echo>appserver.dir.name is top-level dir inside zip.  For jbosseap6, default is jboss-eap-6.3.  Override for later versions.</echo>
                 <echo/>
                 <echo>-DallFuncTests to enable all functional tests (defaults to smoke tests)</echo>
