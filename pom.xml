@@ -1203,7 +1203,9 @@
       </activation>
       <properties>
         <cargo.container>wildfly8x</cargo.container>
+        <wildfly.client.version>8.1.0.Final</wildfly.client.version>
         <!-- used in the wildfly8 profile in zanata-war -->
+        <!-- This is the server version -->
         <wildfly.version>8.1.0.Final</wildfly.version>
         <!-- In case this profile was activated by default: -->
         <appserver>wildfly8</appserver>
