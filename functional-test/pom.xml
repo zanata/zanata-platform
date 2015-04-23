@@ -364,7 +364,7 @@
         <standalone.xml.file>standalone_wildfly.xml</standalone.xml.file>
         <jndi-remote-client.groupId>org.wildfly</jndi-remote-client.groupId>
         <jndi-remote-client.artifactId>wildfly-controller-client</jndi-remote-client.artifactId>
-        <jndi-remote-client.version>${wildfly.version}</jndi-remote-client.version>
+        <jndi-remote-client.version>${wildfly.client.version}</jndi-remote-client.version>
       </properties>
       <build>
         <plugins>
