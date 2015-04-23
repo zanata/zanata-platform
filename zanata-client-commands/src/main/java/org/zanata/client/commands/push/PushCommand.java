@@ -39,9 +39,12 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
+import com.google.common.base.Strings;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.UniformInterfaceException;
+
+import static com.google.common.collect.Collections2.filter;
+import static com.google.common.collect.Iterables.all;
 
 /**
  * @author Sean Flanigan <a
@@ -452,14 +455,25 @@ public class PushCommand extends PushPullCommand<PushOptions> {
         if (!MergeType.IMPORT.name().equalsIgnoreCase(mergeType)) {
             List<TextFlowTarget> originalTargets =
                     translationResources.getTextFlowTargets();
-            Collection<TextFlowTarget> untranslatedEntries = Collections2
-                    .filter(originalTargets,
+            final Predicate<String> blankStringPredicate =
+                    new Predicate<String>() {
+                        @Override
+                        public boolean apply(String input) {
+                            return Strings.isNullOrEmpty(input);
+                        }
+                    };
+
+            Collection<TextFlowTarget> untranslatedEntries =
+                    filter(originalTargets,
                             new Predicate<TextFlowTarget>() {
                                 @Override
                                 public boolean apply(
                                         TextFlowTarget input) {
-                                    return input == null ||
-                                            input.getState().isUntranslated();
+                                    // it's unsafe to rely on content state (plural entries)
+                                    return input == null
+                                            || input.getContents().isEmpty()
+                                            || all(input.getContents(),
+                                                    blankStringPredicate);
                                 }
                             });
             log.debug(
