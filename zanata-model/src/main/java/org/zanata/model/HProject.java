@@ -97,7 +97,7 @@ import com.google.common.collect.Sets;
 @Indexed
 @ToString(callSuper = true, of = "name")
 public class HProject extends SlugEntityBase implements Serializable,
-        HasEntityStatus {
+        HasEntityStatus, HasUserFriendlyToString {
     private static final long serialVersionUID = 1L;
 
     @Size(max = 80)
@@ -184,5 +184,11 @@ public class HProject extends SlugEntityBase implements Serializable,
     public void addMaintainer(HPerson maintainer) {
         this.getMaintainers().add(maintainer);
         maintainer.getMaintainerProjects().add(this);
+    }
+
+    @Override
+    public String userFriendlyToString() {
+        return String.format("Project(name=%s, slug=%s, status=%s)", getName(),
+                getSlug(), getStatus());
     }
 }

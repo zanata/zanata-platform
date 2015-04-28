@@ -87,7 +87,8 @@ import com.google.common.collect.Sets;
 @NoArgsConstructor
 @ToString(callSuper = true, of = { "project" })
 public class HProjectIteration extends SlugEntityBase implements
-        Iterable<DocumentWithId>, HasEntityStatus, IsEntityWithType {
+        Iterable<DocumentWithId>, HasEntityStatus, IsEntityWithType,
+        HasUserFriendlyToString {
     private static final long serialVersionUID = 182037127575991478L;
 
     @ManyToOne
@@ -172,5 +173,11 @@ public class HProjectIteration extends SlugEntityBase implements
             return Boolean.FALSE;
         }
         return requireTranslationReview;
+    }
+
+    @Override
+    public String userFriendlyToString() {
+        return String.format("Project version(slug=%s, status=%s)", getSlug(),
+                getStatus());
     }
 }

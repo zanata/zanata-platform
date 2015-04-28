@@ -71,7 +71,8 @@ import org.zanata.rest.dto.Account;
 @ToString(callSuper = true, of = "username")
 @EqualsAndHashCode(callSuper = true, of = { "enabled", "passwordHash",
         "username", "apiKey" })
-public class HAccount extends ModelEntityBase implements Serializable {
+public class HAccount extends ModelEntityBase implements Serializable,
+        HasUserFriendlyToString {
     private static final long serialVersionUID = 1L;
 
     private String username;
@@ -168,5 +169,10 @@ public class HAccount extends ModelEntityBase implements Serializable {
     @MapKey(name = "name")
     public Map<String, HAccountOption> getEditorOptions() {
         return editorOptions;
+    }
+
+    @Override
+    public String userFriendlyToString() {
+        return String.format("Account(username=%s, enabled=%s, roles=%s)", getUsername(), isEnabled(), getRoles());
     }
 }

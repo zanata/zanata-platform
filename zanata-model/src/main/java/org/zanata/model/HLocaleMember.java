@@ -47,7 +47,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 @Table(name = "HLocale_Member")
 @Setter
 @NoArgsConstructor
-public class HLocaleMember implements Serializable {
+public class HLocaleMember implements Serializable, HasUserFriendlyToString {
     private static final long serialVersionUID = 1L;
 
     private HLocaleMemberPk id = new HLocaleMemberPk();
@@ -56,6 +56,8 @@ public class HLocaleMember implements Serializable {
     private boolean isReviewer;
     private boolean isTranslator;
 
+    private transient String userFriendlyToString;
+
     public HLocaleMember(HPerson person, HLocale supportedLanguage,
             boolean isTranslator, boolean isReviewer, boolean isCoordinator) {
         id.setPerson(person);
@@ -63,6 +65,11 @@ public class HLocaleMember implements Serializable {
         setTranslator(isTranslator);
         setReviewer(isReviewer);
         setCoordinator(isCoordinator);
+        userFriendlyToString =
+                String.format(
+                        "Locale membership(person=%s, isTranslator=%s, isReviewer=%s, isCoordinator=%s)",
+                        person.getName(), isTranslator, isReviewer,
+                        isCoordinator);
     }
 
     @EmbeddedId
@@ -97,6 +104,11 @@ public class HLocaleMember implements Serializable {
     @Transient
     public HLocale getSupportedLanguage() {
         return id.getSupportedLanguage();
+    }
+
+    @Override
+    public String userFriendlyToString() {
+        return userFriendlyToString;
     }
 
     @Embeddable
