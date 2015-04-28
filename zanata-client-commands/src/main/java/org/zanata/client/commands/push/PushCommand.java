@@ -443,6 +443,15 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                                 qualifiedDocName(localDocName))
                                 + "\n\n.";
                 log.error(message);
+                if (e instanceof UniformInterfaceException) {
+                    String entity =
+                            ((UniformInterfaceException) e).getResponse()
+                                    .getEntity(String.class);
+
+                    throw new RuntimeException(String.format(
+                            "%n * Error Message: %s;%n * Response From Server: %s]",
+                            e.getMessage(), entity));
+                }
                 throw new RuntimeException(e.getMessage(), e);
             }
         }
