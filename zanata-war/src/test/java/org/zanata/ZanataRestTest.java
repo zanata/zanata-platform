@@ -29,7 +29,6 @@ import org.zanata.rest.ConstraintViolationExceptionMapper;
 import org.zanata.rest.NoSuchEntityExceptionMapper;
 import org.zanata.rest.NotLoggedInExceptionMapper;
 import org.zanata.rest.ZanataServiceExceptionMapper;
-import org.zanata.rest.client.TraceDebugInterceptor;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.AuthenticationType;
 
@@ -148,7 +147,6 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
                 validatorFactory.getValidator());
         providerInstances.add(seamAutowire
                 .autowire(HibernateValidationInterceptor.class));
-        providers.add(TraceDebugInterceptor.class);
     }
 
     /**

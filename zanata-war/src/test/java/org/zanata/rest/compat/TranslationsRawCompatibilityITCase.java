@@ -22,6 +22,7 @@ package org.zanata.rest.compat;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
@@ -29,9 +30,8 @@ import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
-import org.zanata.RestTest;
-import org.zanata.apicompat.rest.client.ISourceDocResource;
-import org.zanata.apicompat.rest.client.ITranslatedDocResource;
+import org.zanata.apicompat.rest.service.SourceDocResource;
+import org.zanata.apicompat.rest.service.TranslatedDocResource;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.apicompat.common.ContentState;
 import org.zanata.apicompat.common.ContentType;
@@ -55,7 +55,7 @@ import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
 import static org.zanata.util.RawRestTestUtils.jsonMarshal;
 import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
 
-public class TranslationsRawCompatibilityITCase extends RestTest {
+public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -77,6 +77,10 @@ public class TranslationsRawCompatibilityITCase extends RestTest {
         addBeforeTestOperation(new DataSetOperation(
                 "org/zanata/test/model/TextFlowTestData.dbunit.xml",
                 DatabaseOperation.CLEAN_INSERT));
+
+        addAfterTestOperation(new DataSetOperation(
+                "org/zanata/test/model/ClearAllTables.dbunit.xml",
+                DatabaseOperation.DELETE_ALL));
     }
 
     @Test
@@ -155,18 +159,14 @@ public class TranslationsRawCompatibilityITCase extends RestTest {
         }.run();
 
         // Verify that it was created successfully
-        ISourceDocResource sourceDocClient =
-                super.createProxy(
-                        createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
-                        ISourceDocResource.class,
-                        "/projects/p/sample-project/iterations/i/1.0/r");
-        ClientResponse<Resource> resourceResponse =
+        SourceDocResource sourceDocClient = getSourceDocResource("/projects/p/sample-project/iterations/i/1.0/r/");
+        Response resourceResponse =
                 sourceDocClient.getResource(res.getName(), new StringSet(
                         PoHeader.ID + ";" + SimpleComment.ID));
 
         assertThat(resourceResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
 
-        Resource createdResource = resourceResponse.getEntity();
+        Resource createdResource = getResourceFromResponse(resourceResponse);
 
         assertThat(createdResource.getName(), is(res.getName()));
         assertThat(createdResource.getType(), is(res.getType()));
@@ -231,16 +231,12 @@ public class TranslationsRawCompatibilityITCase extends RestTest {
             }
         }.run();
 
-        ISourceDocResource translationsClient =
-                super.createProxy(
-                        createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
-                        ISourceDocResource.class,
-                        "/projects/p/sample-project/iterations/i/1.0/r/");
+        SourceDocResource translationsClient = getSourceDocResource("/projects/p/sample-project/iterations/i/1.0/r/");
         // Verify that it was created successfully
-        ClientResponse<Resource> resourceResponse =
+        Response resourceResponse =
                 translationsClient.getResource(res.getName(), new StringSet(
                         PoHeader.ID + ";" + SimpleComment.ID));
-        Resource createdResource = resourceResponse.getEntity();
+        Resource createdResource = getResourceFromResponse(resourceResponse);
 
         assertThat(createdResource.getName(), is(res.getName()));
         assertThat(createdResource.getType(), is(res.getType()));
@@ -303,10 +299,7 @@ public class TranslationsRawCompatibilityITCase extends RestTest {
     @Test
     @RunAsClient
     public void putJsonResourceMeta() throws Exception {
-        ISourceDocResource translationsClient =
-                super.createProxy(createClientProxyFactory(ADMIN, ADMIN_KEY),
-                        ISourceDocResource.class,
-                        "/projects/p/sample-project/iterations/i/1.0/r/");
+        SourceDocResource translationsClient = getSourceDocResource("/projects/p/sample-project/iterations/i/1.0/r/");
         final ResourceMeta resMeta = new ResourceMeta();
         resMeta.setName("my/path/document-2.txt");
         resMeta.setType(ResourceType.FILE);
@@ -330,10 +323,10 @@ public class TranslationsRawCompatibilityITCase extends RestTest {
         }.run();
 
         // Fetch again
-        ClientResponse<ResourceMeta> getResponse =
+        Response getResponse =
                 translationsClient.getResourceMeta("my,path,document-2.txt",
                         null);
-        ResourceMeta newResMeta = getResponse.getEntity();
+        ResourceMeta newResMeta = getResourceMetaFromResponse(getResponse);
 
         assertThat(getResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
         assertThat(newResMeta.getName(), is(resMeta.getName()));
@@ -406,22 +399,19 @@ public class TranslationsRawCompatibilityITCase extends RestTest {
                         is("user1@localhost"));
             }
         }.run();
-
     }
 
     @Test
     @RunAsClient
     public void putJsonTranslations() throws Exception {
         // Get the original translations
-        ITranslatedDocResource translationsClient =
-                super.createProxy(
-                        createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
-                        ITranslatedDocResource.class,
-                        "/projects/p/sample-project/iterations/i/1.0/r/");
-        ClientResponse<TranslationsResource> response =
+        TranslatedDocResource translationsClient = getTransResource("/projects/p/sample-project/iterations/i/1.0/r/",
+                AuthenticatedAsUser.Admin);
+        Response response =
                 translationsClient.getTranslations("my,path,document-2.txt",
-                        LocaleId.EN_US, new StringSet(SimpleComment.ID));
-        final TranslationsResource transRes = response.getEntity();
+                        LocaleId.EN_US, new StringSet(SimpleComment.ID), false,
+                        null);
+        final TranslationsResource transRes = getTransResourceFromResponse(response);
 
         assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
         assertThat(transRes.getTextFlowTargets().size(),
@@ -463,8 +453,8 @@ public class TranslationsRawCompatibilityITCase extends RestTest {
         // accordingly
         response =
                 translationsClient.getTranslations("my,path,document-2.txt",
-                        LocaleId.EN_US, new StringSet(SimpleComment.ID));
-        TranslationsResource updatedTransRes = response.getEntity();
+                        LocaleId.EN_US, new StringSet(SimpleComment.ID), false, null);
+        TranslationsResource updatedTransRes = getTransResourceFromResponse(response);
 
         assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
         assertThat(updatedTransRes.getTextFlowTargets().size(),

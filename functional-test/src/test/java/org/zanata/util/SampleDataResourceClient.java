@@ -20,13 +20,8 @@
  */
 package org.zanata.util;
 
-import javax.ws.rs.core.Response;
-
-import org.hamcrest.Matchers;
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
-
-import static org.hamcrest.MatcherAssert.assertThat;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
 
 /**
  * @author Patrick Huang <a
@@ -34,32 +29,31 @@ import static org.hamcrest.MatcherAssert.assertThat;
  */
 public class SampleDataResourceClient {
 
-    private static void checkAndReleaseConnection(Response response1) {
-        ClientResponse response = (ClientResponse) response1;
-        assertThat(response.getStatus(), Matchers.equalTo(200));
-        response.releaseConnection();
-    }
-
-    private static ClientRequest createRequest(String path) {
-        ClientRequest clientRequest =
-                new ClientRequest(
-                        PropertiesHolder.getProperty(Constants.zanataInstance
-                                .value()) + "rest/test/data/sample" + path);
-        // having null username will bypass ZanataRestSecurityInterceptor
-        // clientRequest.header("X-Auth-User", null);
-        clientRequest.getHeaders().remove("X-Auth-User");
-        clientRequest.header("X-Auth-Token",
-                PropertiesHolder.getProperty(Constants.zanataApiKey.value()));
-        clientRequest.header("Content-Type", "application/xml");
-        return clientRequest;
+    private static WebResource.Builder createRequest(String path) {
+        WebResource.Builder resource =
+                Client.create()
+                        .resource(
+                                PropertiesHolder
+                                        .getProperty(Constants.zanataInstance
+                                                .value())
+                                        + "rest/test/data/sample" + path)
+                        // having null username will bypass
+                        // ZanataRestSecurityInterceptor
+                        // clientRequest.header("X-Auth-User", null);
+                        .header("X-Auth-Token",
+                                PropertiesHolder
+                                        .getProperty(Constants.zanataApiKey
+                                                .value()))
+                        .header("Content-Type", "application/xml");
+        return resource;
     }
 
     public static void deleteExceptEssentialData() throws Exception {
-        checkAndReleaseConnection(createRequest("").delete());
+        createRequest("").delete();
     }
 
     public static void makeSampleUsers() throws Exception {
-        checkAndReleaseConnection(createRequest("/users").put());
+        createRequest("/users").put();
     }
 
     /**
@@ -70,24 +64,29 @@ public class SampleDataResourceClient {
      */
     public static void userJoinsLanguageTeam(String username,
             String localesCSV) throws Exception {
-        ClientRequest request =
-                createRequest("/accounts/u/" + username + "/languages");
-
-        checkAndReleaseConnection(request.queryParameter("locales", localesCSV)
-                .put());
+        Client.create()
+                .resource(
+                        PropertiesHolder.getProperty(Constants.zanataInstance
+                                .value()) + "rest/test/data/sample/accounts/u/"
+                                + username + "/languages")
+                .queryParam("locales", localesCSV)
+                .header("X-Auth-Token",
+                        PropertiesHolder.getProperty(Constants.zanataApiKey
+                                .value()))
+                .header("Content-Type", "application/xml").put();
     }
 
     public static void makeSampleProject() throws Exception {
-        checkAndReleaseConnection(createRequest("/project").put());
+        createRequest("/project").put();
     }
 
     public static void makeSampleLanguages() throws Exception {
-        checkAndReleaseConnection(createRequest("/languages").put());
+        createRequest("/languages").put();
     }
 
     public static void addLanguage(String localeId) throws Exception {
-        checkAndReleaseConnection(createRequest("/languages/l/" + localeId)
-                .put());
+        createRequest("/languages/l/" + localeId).put();
     }
 
 }
+

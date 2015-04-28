@@ -112,8 +112,6 @@
             <usedDependency>org.opensymphony.quartz:quartz</usedDependency>
             <!-- Used indirectly by org.zanata.arquillian.Deployments -->
             <usedDependency>org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api</usedDependency>
-            <!-- used by REST API interfaces -->
-            <usedDependency>org.jboss.resteasy:resteasy-multipart-provider</usedDependency>
             <!-- Used by javamelody for email/pdf support -->
             <usedDependency>com.lowagie:itext</usedDependency>
             <!--used to log sql and parameters when debugging Hibernate -->
@@ -390,6 +388,8 @@
               <!--TODO move all gwt wrapper class under specific package. i.e boundary-->
               <!--<exclude>**/boundary/**/*</exclude>-->
               <exclude>**/test/**/*</exclude>
+              <exclude>**/Sample*</exclude>
+              <exclude>**/dto/**</exclude>
               <!--<exclude>**/supersource/**/*</exclude>-->
               <exclude>**/client/**/*View</exclude>
               <exclude>**/client/Application*</exclude>
@@ -399,6 +399,7 @@
               <exclude>**/client/rpc/**</exclude>
               <exclude>**/client/ui/**</exclude>
               <exclude>**/client/view/**</exclude>
+              <exclude>**/client/util/**</exclude>
               <exclude>**/EventWrapperImpl*</exclude>
               <exclude>**/*DataProvider*</exclude>
               <exclude>**/*SelectionModel*</exclude>
@@ -406,6 +407,9 @@
               <exclude>**/shared/auth/**</exclude>
               <exclude>**/shared/model/**</exclude>
               <exclude>**/shared/rpc/**</exclude>
+              <exclude>**/shared/util/**</exclude>
+              <!--hard to test due to environment dependent-->
+              <exclude>org/zanata/security/**</exclude>
 
               <!--Server exclusion-->
               <exclude>**/job/**</exclude>
@@ -1233,6 +1237,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.jayway.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.velocity</groupId>
       <artifactId>velocity</artifactId>
       <version>1.7</version>
@@ -1296,12 +1306,6 @@
     <dependency>
       <groupId>org.zanata</groupId>
       <artifactId>zanata-adapter-glossary</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.zanata</groupId>
-      <artifactId>zanata-rest-client</artifactId>
-      <scope>test</scope>
     </dependency>
 
     <!-- Compatibility Dependencies -->
@@ -2095,10 +2099,12 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpcore</artifactId>
+      <version>4.2.4</version>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
+      <version>4.2.5</version>
       <exclusions>
         <exclusion>
           <groupId>commons-logging</groupId>
@@ -2312,3 +2318,5 @@
 
 
 </project>
+
+

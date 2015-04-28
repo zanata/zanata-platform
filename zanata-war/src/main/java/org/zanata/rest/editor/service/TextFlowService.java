@@ -37,6 +37,9 @@ import org.zanata.rest.editor.dto.EditorTextFlow;
 import org.zanata.rest.editor.dto.TransUnit;
 import org.zanata.rest.editor.dto.TransUnits;
 import org.zanata.rest.editor.service.resource.TextFlowResource;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -44,6 +47,8 @@ import org.zanata.rest.editor.service.resource.TextFlowResource;
 @Name("editor.textFlowService")
 @Path(TextFlowResource.SERVICE_PATH)
 @Transactional
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class TextFlowService implements TextFlowResource {
     @In
     private TextFlowDAO textFlowDAO;

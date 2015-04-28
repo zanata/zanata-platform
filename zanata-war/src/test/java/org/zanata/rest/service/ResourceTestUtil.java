@@ -13,9 +13,9 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
-class ResourceTestUtil {
+public class ResourceTestUtil {
 
-    static void clearRevs(AbstractResourceMeta doc) {
+    public static void clearRevs(AbstractResourceMeta doc) {
         doc.setRevision(null);
 
         if (doc instanceof Resource) {
@@ -29,7 +29,7 @@ class ResourceTestUtil {
 
     }
 
-    static void clearRevs(TranslationsResource doc) {
+    public static void clearRevs(TranslationsResource doc) {
         doc.setRevision(null);
         for (TextFlowTarget tft : doc.getTextFlowTargets()) {
             tft.setRevision(null);
@@ -37,7 +37,7 @@ class ResourceTestUtil {
         }
     }
 
-    static void clearPoTargetHeaders(TranslationsResource... docs) {
+    public static void clearPoTargetHeaders(TranslationsResource... docs) {
         for (TranslationsResource doc : docs) {
             Iterator<TranslationsResourceExtension> it =
                     doc.getExtensions(true).iterator();
@@ -47,17 +47,6 @@ class ResourceTestUtil {
                 }
             }
         }
-    }
-
-    static void addPoHeader(Resource res, String key, String value) {
-        PoHeader poHeader = res.getExtensions(true).findByType(PoHeader.class);
-
-        if (poHeader == null) {
-            poHeader = new PoHeader();
-            res.getExtensions().add(poHeader);
-        }
-
-        poHeader.getEntries().add(new HeaderEntry(key, value));
     }
 
 }

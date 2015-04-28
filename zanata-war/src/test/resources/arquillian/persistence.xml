@@ -74,6 +74,9 @@
         value="org.hibernate.transaction.JBossTransactionManagerLookup" />
 
       <property name="hibernate.cache.use_second_level_cache" value="true" />
+      <property name="jboss.entity.manager.factory.jndi.name"
+        value="java:/zanataEntityManagerFactory" />
+
       <property name="hibernate.show_sql" value="false" />
       <property name="hibernate.cache.region.factory_class"
         value="org.hibernate.testing.cache.CachingRegionFactory" />
@@ -93,6 +96,8 @@
       <!-- Search engine -->
       <property name="hibernate.search.default.directory_provider"
         value="org.hibernate.search.store.impl.FSDirectoryProvider" />
+      <property name="hibernate.search.default.indexBase"
+        value="zanatasearchindex" />
       <property name="hibernate.search.lucene_version" value="LUCENE_36" />
       <property name="hibernate.search.worker.batch_size" value="50" />
 

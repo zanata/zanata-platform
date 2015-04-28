@@ -37,6 +37,9 @@ import org.zanata.events.LanguageTeamPermissionChangedEvent;
 import org.zanata.i18n.Messages;
 
 import com.google.common.collect.Lists;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -53,6 +56,8 @@ import lombok.extern.slf4j.Slf4j;
 @Scope(ScopeType.STATELESS)
 @AutoCreate
 @Slf4j
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class LanguageTeamPermissionChangeJmsMessagePayloadHandler implements
         EmailQueueMessageReceiver.JmsMessagePayloadHandler {
     @In
@@ -63,6 +68,7 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandler implements
 
     @In
     private ApplicationConfiguration applicationConfiguration;
+
 
     @Override
     public void handle(Serializable data) {

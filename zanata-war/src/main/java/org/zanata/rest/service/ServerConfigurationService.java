@@ -48,8 +48,8 @@ import org.zanata.util.ServiceLocator;
  */
 @Name("serverConfigurationResource")
 @Path("/configurations")
-@Produces("application/xml")
-@Consumes("application/xml")
+@Produces({"application/xml", "application/json"})
+@Consumes({"application/xml", "application/json"})
 @Transactional
 @Restrict("#{s:hasRole('admin')}")
 @Slf4j
@@ -60,7 +60,7 @@ public class ServerConfigurationService {
 
     /** Type of media requested. */
     @HeaderParam("Accept")
-    @DefaultValue(MediaType.APPLICATION_XML)
+    @DefaultValue(MediaType.APPLICATION_JSON)
     @Context
     private MediaType accept;
     @In

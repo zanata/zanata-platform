@@ -21,6 +21,7 @@
 package org.zanata.rest.service.raw;
 
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
@@ -117,6 +118,62 @@ public class ProjectRawRestITCase extends RestTest {
 
     @Test
     @RunAsClient
+    public void retrieveNonExistingProject() throws Exception {
+        new ResourceRequest(getRestEndpointUrl("/projects/p/do-not-exist-project"),
+                "GET") {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.header(HttpHeaders.ACCEPT,
+                        MediaTypes.APPLICATION_ZANATA_PROJECT_XML);
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(), is(404));
+            }
+        }.run();
+    }
+
+    @Test
+    @RunAsClient
+    public void retrieveObsoleteProject() throws Exception {
+        new ResourceRequest(getRestEndpointUrl("/projects/p/obsolete-project"),
+                "GET") {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.header(HttpHeaders.ACCEPT,
+                        MediaTypes.APPLICATION_ZANATA_PROJECT_XML);
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                // Obsolete projects are not found
+                assertThat(response.getStatus(), is(404));
+            }
+        }.run();
+    }
+
+    @Test
+    @RunAsClient
+    public void retrieveRetiredProject() throws Exception {
+        new ResourceRequest(getRestEndpointUrl("/projects/p/retired-project"),
+                "GET") {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.header(HttpHeaders.ACCEPT,
+                        MediaTypes.APPLICATION_ZANATA_PROJECT_XML);
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                // Retired projects can be read
+                assertThat(response.getStatus(), is(200));
+            }
+        }.run();
+    }
+
+    @Test
+    @RunAsClient
     public void getJson() throws Exception {
         new ResourceRequest(getRestEndpointUrl("/projects/p/sample-project"),
                 "GET") {
@@ -175,6 +232,90 @@ public class ProjectRawRestITCase extends RestTest {
             @Override
             protected void onResponse(ClientResponse response) {
                 assertThat(response.getStatus(), is(201)); // Created
+            }
+        }.run();
+    }
+
+    @Test
+    @RunAsClient
+    public void createProjectWithInvalidSlug() throws Exception {
+        final Project project =
+                new Project("test-project", "Test Project",
+                        ProjectType.Gettext.toString(),
+                        "This is a Test project");
+        project.setStatus(EntityStatus.ACTIVE);
+        project.getIterations(true).add(new ProjectIteration("test-1.0"));
+        project.getIterations(true).add(new ProjectIteration("test-2.0"));
+
+        new ResourceRequest(getRestEndpointUrl("/projects/p/my,new,project"),
+                "PUT", getAuthorizedEnvironment()) {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.body(MediaTypes.APPLICATION_ZANATA_PROJECT_XML,
+                        jaxbMarhsal(project).getBytes());
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(), is(404));
+            }
+        }.run();
+    }
+
+    @Test
+    @RunAsClient
+    public void createProjectWithInvalidData() throws Exception {
+        final String invalidProjectName =
+                "My test ProjectMy test ProjectMy test ProjectMy test ProjectMy test ProjectMy test Project";
+        final Project project =
+                new Project("my-new-project", invalidProjectName,
+                        ProjectType.Gettext.toString(),
+                        "This is a Test project");
+        project.setStatus(EntityStatus.ACTIVE);
+        project.getIterations(true).add(new ProjectIteration("test-1.0"));
+        project.getIterations(true).add(new ProjectIteration("test-2.0"));
+
+        new ResourceRequest(getRestEndpointUrl("/projects/p/my-new-project"),
+                "PUT", getAuthorizedEnvironment()) {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.body(MediaTypes.APPLICATION_ZANATA_PROJECT_XML,
+                        jaxbMarhsal(project).getBytes());
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getResponseStatus(), is(
+                        Response.Status.BAD_REQUEST));
+            }
+        }.run();
+    }
+
+    @Test
+    @RunAsClient
+    public void updateProjectWithInvalidData() throws Exception {
+        final String invalidProjectName =
+                "My test ProjectMy test ProjectMy test ProjectMy test ProjectMy test ProjectMy test Project";
+        final Project project =
+                new Project("test-project", invalidProjectName,
+                        ProjectType.Gettext.toString(),
+                        "This is a Test project");
+        project.setStatus(EntityStatus.ACTIVE);
+        project.getIterations(true).add(new ProjectIteration("test-1.0"));
+        project.getIterations(true).add(new ProjectIteration("test-2.0"));
+
+        new ResourceRequest(getRestEndpointUrl("/projects/p/test-project"),
+                "PUT", getAuthorizedEnvironment()) {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.body(MediaTypes.APPLICATION_ZANATA_PROJECT_XML,
+                        jaxbMarhsal(project).getBytes());
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getResponseStatus(), is(
+                        Response.Status.BAD_REQUEST));
             }
         }.run();
     }

@@ -36,6 +36,8 @@ public class HDocumentHistoryJPATest extends ZanataDbunitJpaTest {
         beforeTestOperations.add(new DataSetOperation(
                 "org/zanata/test/model/LocalesData.dbunit.xml",
                 DatabaseOperation.CLEAN_INSERT));
+        afterTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/ClearAllTables.dbunit.xml"));
     }
 
     // FIXME this test only works if resources-dev is on the classpath

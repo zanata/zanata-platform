@@ -42,12 +42,17 @@ import org.zanata.rest.editor.service.resource.StatisticResource;
 import org.zanata.util.StatisticsUtil;
 
 import com.google.common.collect.Lists;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Name("editor.statisticService")
 @Path(StatisticResource.SERVICE_PATH)
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class StatisticsService implements StatisticResource {
     @In
     private DocumentDAO documentDAO;

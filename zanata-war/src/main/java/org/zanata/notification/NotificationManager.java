@@ -28,6 +28,9 @@ import javax.jms.ObjectMessage;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jboss.seam.ScopeType;
@@ -51,6 +54,8 @@ import com.google.common.base.Throwables;
 @Scope(ScopeType.APPLICATION)
 @Startup
 @Slf4j
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class NotificationManager implements Serializable {
     private static final long serialVersionUID = -1L;
 

@@ -20,38 +20,42 @@
  */
 package org.zanata.rest.compat;
 
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
+
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.resteasy.client.ClientRequest;
+import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.RestTest;
+import org.zanata.apicompat.rest.MediaTypes;
+import org.zanata.apicompat.rest.dto.ProjectIteration;
 import org.zanata.provider.DBUnitProvider;
 import org.zanata.apicompat.rest.client.IStatisticsResource;
 import org.zanata.apicompat.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.apicompat.rest.dto.stats.TranslationStatistics;
 import org.zanata.apicompat.rest.service.StatisticsResource;
+import org.zanata.rest.ResourceRequest;
+
+import com.google.common.collect.Lists;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
+import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
 
 /**
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class StatisticsCompatibilityITCase extends RestTest {
+public class StatisticsCompatibilityITCase extends CompatibilityBase {
 
     private StatisticsResource statsResource;
-
-    @Before
-    public void before() {
-        statsResource =
-            super.createProxy(
-                    createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
-                    IStatisticsResource.class);
-    }
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -77,6 +81,11 @@ public class StatisticsCompatibilityITCase extends RestTest {
         addAfterTestOperation(new DBUnitProvider.DataSetOperation(
                 "org/zanata/test/model/HistoryTestData.dbunit.xml",
                 DatabaseOperation.DELETE_ALL));
+    }
+
+    @Before
+    public void before() {
+        statsResource = getStatisticsResource();
     }
 
     @Test

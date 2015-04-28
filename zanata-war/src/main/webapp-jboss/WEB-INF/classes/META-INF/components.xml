@@ -135,11 +135,6 @@
 
   <component name="essentialDataCreator"
     class="org.zanata.util.EssentialDataCreator" installed="true">
-    <property name="username">admin</property>
-    <property name="password">admin</property>
-    <property name="apiKey">b6d7044e9ee3b2447c28fb7c50d86d98</property>
-    <property name="email">admin@example.com</property>
-    <property name="name">Administrator</property>
   </component>
 
 

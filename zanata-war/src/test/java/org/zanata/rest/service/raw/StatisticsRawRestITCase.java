@@ -67,6 +67,10 @@ public class StatisticsRawRestITCase extends RestTest {
         addBeforeTestOperation(new DataSetOperation(
                 "org/zanata/test/model/TextFlowTestData.dbunit.xml",
                 DatabaseOperation.CLEAN_INSERT));
+
+        addAfterTestOperation(new DataSetOperation(
+                "org/zanata/test/model/ClearAllTables.dbunit.xml",
+                DatabaseOperation.DELETE_ALL));
     }
 
     @Test

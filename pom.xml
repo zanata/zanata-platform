@@ -44,8 +44,8 @@
     <zanata.assets.version>7.0-SNAPSHOT</zanata.assets.version>
     <zanata.api.version>3.7.0-SNAPSHOT</zanata.api.version>
     <!-- This should always be the previous version of the used api version above (but only 3.0.1 or later will work) -->
-    <zanata.api.compat.version>3.3.1</zanata.api.compat.version>
-    <zanata.client.version>3.3.1</zanata.client.version>
+    <zanata.api.compat.version>3.4.1</zanata.api.compat.version>
+    <zanata.client.version>3.7.0-SNAPSHOT</zanata.client.version>
     <zanata.common.version>3.6.0</zanata.common.version>
 
     <richfaces.version>4.5.4.Final</richfaces.version>
@@ -1005,6 +1005,23 @@
             <groupId>xml-apis</groupId>
           </exclusion>
         </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>com.jayway.awaitility</groupId>
+        <artifactId>awaitility</artifactId>
+        <version>1.6.3</version>
+        <exclusions>
+          <exclusion>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.objenesis</groupId>
+            <artifactId>objenesis</artifactId>
+          </exclusion>
+        </exclusions>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>

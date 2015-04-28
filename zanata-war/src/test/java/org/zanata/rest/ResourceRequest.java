@@ -23,6 +23,8 @@ package org.zanata.rest;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 
+import com.google.common.base.Throwables;
+
 /**
  * This class performs an HTTP resource request and offers callback methods for
  * the request's lifecycle.
@@ -59,7 +61,23 @@ public abstract class ResourceRequest {
         prepareEnvironment(request);
         prepareRequest(request);
         ClientResponse response = request.execute();
-        onResponse(response);
+        try {
+            onResponse(response);
+        } finally {
+            response.releaseConnection();
+        }
+    }
+
+    public ClientResponse runWithResult() {
+        ClientRequest request = new ClientRequest(resourceUrl);
+        request.setHttpMethod(method);
+        prepareEnvironment(request);
+        prepareRequest(request);
+        try {
+            return request.execute();
+        } catch (Exception e) {
+            throw Throwables.propagate(e);
+        }
     }
 
     private void prepareEnvironment(ClientRequest request) {

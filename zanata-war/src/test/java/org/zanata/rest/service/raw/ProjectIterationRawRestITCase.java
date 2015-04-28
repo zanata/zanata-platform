@@ -175,6 +175,26 @@ public class ProjectIterationRawRestITCase extends RestTest {
 
     @Test
     @RunAsClient
+    public void getNotExistProjectIteration() throws Exception {
+        new ResourceRequest(
+                getRestEndpointUrl("/projects/p/obsolete-project/iterations/i/i-dont-exist"),
+                "GET") {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.header(HttpHeaders.ACCEPT,
+                        MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(),
+                        is(Response.Status.NOT_FOUND.getStatusCode()));
+            }
+        }.run();
+    }
+
+    @Test
+    @RunAsClient
     public void getObsoleteIterationOnCurrentProject() throws Exception {
         new ResourceRequest(
                 getRestEndpointUrl("/projects/p/current-project/iterations/i/current-obsolete"),
@@ -213,6 +233,54 @@ public class ProjectIterationRawRestITCase extends RestTest {
             @Override
             protected void onResponse(ClientResponse response) {
                 assertThat(response.getStatus(), is(201)); // Created
+            }
+        }.run();
+    }
+
+    @Test
+    @RunAsClient
+    public void createWithInvalidSlug() throws Exception {
+        final ProjectIteration iteration =
+                new ProjectIteration("test-iteration");
+        iteration.setStatus(EntityStatus.ACTIVE);
+
+        new ResourceRequest(
+                getRestEndpointUrl("/projects/p/sample-project/iterations/i/my,new,iteration"),
+                "PUT", getAuthorizedEnvironment()) {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.body(
+                        MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML,
+                        jaxbMarhsal(iteration).getBytes());
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(), is(404));
+            }
+        }.run();
+    }
+
+    @Test
+    @RunAsClient
+    public void putSameProject() throws Exception {
+        final ProjectIteration iteration =
+                new ProjectIteration("1.0");
+        iteration.setStatus(EntityStatus.ACTIVE);
+
+        new ResourceRequest(
+                getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0"),
+                "PUT", getAuthorizedEnvironment()) {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.body(
+                        MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML,
+                        jaxbMarhsal(iteration).getBytes());
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(), is(200));
             }
         }.run();
     }

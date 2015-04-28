@@ -18,21 +18,17 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.validator;
+package org.zanata.model.validator;
 
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
-import org.zanata.model.validator.SlugValidator;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Arrays;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import javax.validation.ConstraintValidatorContext;
-import java.util.Arrays;
-import java.util.Iterator;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doCallRealMethod;
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen
@@ -41,13 +37,20 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Slugs must start with a number or letter, and only contain letters,
  * numbers, periods, underscores and hyphens
  */
-@Test(groups = "unit-tests")
+@RunWith(Parameterized.class)
 public class SlugValidatorTest {
 
-    private SlugValidator slugValidator = mock(SlugValidator.class);
+    @Parameterized.Parameter(0)
+    public String slug;
 
-    @DataProvider(name = "slugs")
-    public static Iterator<Object[]> slugs() {
+    @Parameterized.Parameter(1)
+    public boolean isAcceptable;
+
+    private SlugValidator slugValidator = new SlugValidator();
+    private ConstraintValidatorContext context = null;
+
+    @Parameterized.Parameters(name = "{index}: slug({0}) is valid: {1}")
+    public static Iterable<Object[]> slugs() {
         Object[][] slugs = {
                 { "slug.test", true },
                 { "slug_test", true },
@@ -89,16 +92,12 @@ public class SlugValidatorTest {
                 { "slug}test", false }
                 */
         };
-        return Arrays.asList(slugs).iterator();
+        return Arrays.asList(slugs);
     }
 
-    @Test(dataProvider = "slugs")
-    public void validateSlug(String slug, boolean isAcceptable)
-            throws Exception {
-        doCallRealMethod().when(slugValidator).isValid(anyString(),
-                any(ConstraintValidatorContext.class));
-
-        assertThat(slugValidator.isValid(slug, null))
+    @Test
+    public void validateSlug() throws Exception {
+        assertThat(slugValidator.isValid(slug, context))
                 .isEqualTo(isAcceptable)
                 .as("Slug is validated correctly");
     }

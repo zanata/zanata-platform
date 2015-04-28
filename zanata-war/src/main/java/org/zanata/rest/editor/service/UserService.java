@@ -13,6 +13,9 @@ import org.zanata.model.HPerson;
 import org.zanata.rest.editor.dto.User;
 import org.zanata.rest.editor.service.resource.UserResource;
 import org.zanata.service.GravatarService;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -20,6 +23,8 @@ import org.zanata.service.GravatarService;
 @Name("editor.userService")
 @Path(UserResource.SERVICE_PATH)
 @Transactional
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserService implements UserResource {
 
     @In(value = JpaIdentityStore.AUTHENTICATED_USER)

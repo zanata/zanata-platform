@@ -46,7 +46,8 @@ class MessageUnwrapper {
         ImmutableMap.Builder<String, ? super Object> builder =
                 ImmutableMap.builder();
         for (String propName : propNames) {
-            builder.put(propName, getPropertyValue(message, propName));
+            Object propertyValue = getPropertyValue(message, propName);
+            builder.put(propName, propertyValue == null ? "" : propertyValue);
         }
         return builder.build();
     }

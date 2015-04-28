@@ -31,6 +31,9 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jboss.seam.annotations.In;
@@ -64,6 +67,8 @@ import static org.zanata.notification.NotificationManager.MessagePropertiesKey;
 })
 @Name("emailQueueMessageReceiver")
 @Slf4j
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class EmailQueueMessageReceiver implements MessageListener {
 
     private static Map<String, JmsMessagePayloadHandler> handlers = Collections

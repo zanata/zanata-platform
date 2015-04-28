@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.core.HttpHeaders;
 
+import org.assertj.core.api.Assertions;
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.ClientRequest;
@@ -109,6 +110,54 @@ public class GlossaryRawRestITCase extends RestTest {
                 expectedTerms.add(expTerm);
 
                 assertThat(actualTerms, is(expectedTerms));
+            }
+        }.run();
+    }
+
+    @Test
+    @RunAsClient
+    public void retrieveGlossaryTermWithLocale() throws Exception {
+        new ResourceRequest(getRestEndpointUrl("/glossary/de"), "GET") {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.header(HttpHeaders.ACCEPT,
+                        MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML);
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(), is(200));
+                assertJaxbUnmarshal(response, Glossary.class);
+
+                Glossary glossary = jaxbUnmarshal(response, Glossary.class);
+                assertThat(glossary.getGlossaryEntries().size(), is(1));
+
+                // Glossary Entry
+                GlossaryEntry entry = glossary.getGlossaryEntries().get(0);
+                assertThat(entry.getSourcereference(), is("source reference"));
+                assertThat(entry.getSrcLang(), is(LocaleId.EN_US));
+                assertThat(entry.getGlossaryTerms().size(), is(1));
+            }
+        }.run();
+    }
+
+    @Test
+    @RunAsClient
+    public void retrieveNonExistingGlossaryTermLocale() throws Exception {
+        new ResourceRequest(getRestEndpointUrl("/glossary/fr"), "GET") {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.header(HttpHeaders.ACCEPT,
+                        MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML);
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(), is(200));
+                assertJaxbUnmarshal(response, Glossary.class);
+
+                Glossary glossary = jaxbUnmarshal(response, Glossary.class);
+                assertThat(glossary.getGlossaryEntries().size(), is(0));
             }
         }.run();
     }
@@ -226,6 +275,41 @@ public class GlossaryRawRestITCase extends RestTest {
             @Override
             protected void onResponse(ClientResponse response) {
                 assertThat(response.getStatus(), is(200)); // Ok
+            }
+        }.run();
+    }
+
+    @Test
+    @RunAsClient
+    public void deleteGlossaryTermWithLocale() throws Exception {
+        new ResourceRequest(getRestEndpointUrl("/glossary/es"), "DELETE",
+                getAuthorizedEnvironment()) {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(), is(200)); // Ok
+            }
+        }.run();
+
+        new ResourceRequest(getRestEndpointUrl("/glossary"), "GET") {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.header(HttpHeaders.ACCEPT,
+                        MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML);
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+
+                Glossary glossary = jaxbUnmarshal(response, Glossary.class);
+                Assertions.assertThat(glossary.getGlossaryEntries()).hasSize(1);
+                Assertions
+                        .assertThat(
+                                glossary.getGlossaryEntries().get(0)
+                                        .getGlossaryTerms()).hasSize(2);
             }
         }.run();
     }

@@ -20,11 +20,10 @@
  */
 package org.zanata;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -33,7 +32,6 @@ import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
-import org.infinispan.manager.CacheContainer;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.ClientRequest;
@@ -45,9 +43,9 @@ import org.zanata.arquillian.RemoteAfter;
 import org.zanata.arquillian.RemoteBefore;
 import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.ResourceRequestEnvironment;
-import org.zanata.rest.client.ZanataProxyFactory;
-import org.zanata.rest.dto.VersionInfo;
 import org.zanata.util.ServiceLocator;
+
+import com.google.common.collect.Lists;
 
 /**
  * Provides basic test utilities to test raw REST APIs and compatibility.
@@ -230,49 +228,25 @@ public abstract class RestTest {
         };
     }
 
-    /**
-     * Creates and returns a new instance of a proxy factory for the given
-     * credentials. This method aids with the testing of Rest API classes.
-     *
-     * @param username
-     *            The username that the proxy factory will authenticate with.
-     * @param apiKey
-     *            The apiKey for the user name.
-     * @return A new instance of a proxy factory to create Rest API resources.
-     */
-    public final ZanataProxyFactory createClientProxyFactory(String username,
-            String apiKey) {
-        try {
-            return new ZanataProxyFactory(new URI(getRestEndpointUrl()),
-                    username, apiKey, new VersionInfo("Test", "Test"),
-                    false, false) {
-                @Override
-                protected String getUrlPrefix() {
-                    return ""; // No prefix for tests
-                }
-            };
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
+    public static ResourceRequestEnvironment getTranslatorHeaders() {
+        return new ResourceRequestEnvironment() {
+            @Override
+            public Map<String, Object> getDefaultHeaders() {
+                return new HashMap<String, Object>() {
+                    {
+                        put("X-Auth-User", TRANSLATOR);
+                        put("X-Auth-Token", TRANSLATOR_KEY);
+                    }
+                };
+            }
+        };
     }
 
-    protected <T> T createProxy(ZanataProxyFactory clientFactory,
-            Class<T> clientClass, String baseUri) {
-        try {
-            return clientFactory.createProxy(clientClass, new URI(
-                    getRestEndpointUrl(baseUri)));
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    protected <T> T createProxy(ZanataProxyFactory clientFactory,
-            Class<T> clientClass) {
-        try {
-            return clientFactory.createProxy(clientClass, new URI(
-                    getRestEndpointUrl()));
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+    protected void addExtensionToRequest(Set<String> extensions,
+            ClientRequest request) {
+        if (extensions != null) {
+            request.getQueryParameters().put("ext", Lists
+                    .newArrayList(extensions));
         }
     }
 

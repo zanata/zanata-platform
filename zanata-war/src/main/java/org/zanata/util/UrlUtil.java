@@ -52,8 +52,15 @@ import org.zanata.common.LocaleId;
 public class UrlUtil implements Serializable {
     private static final long serialVersionUID = 1L;
     private final static String ENCODING = "UTF-8";
-    private final static String contextPath = ServletLifecycle
-            .getCurrentServletContext().getContextPath();
+    private static String contextPath;
+
+    public static String getContextPath() {
+        if (contextPath == null) {
+            contextPath = ServletLifecycle
+                    .getCurrentServletContext().getContextPath();
+        }
+        return contextPath;
+    }
 
     /**
      * Get the local url part, including context path, for the given page
@@ -100,22 +107,22 @@ public class UrlUtil implements Serializable {
     }
 
     public String projectUrl(String projectSlug) {
-        return contextPath + "/project/view/" + projectSlug;
+        return getContextPath() + "/project/view/" + projectSlug;
     }
 
     public String createNewVersionUrl(String projectSlug) {
-        return contextPath + "/project/add_iteration.seam?projectSlug="
+        return getContextPath() + "/project/add_iteration.seam?projectSlug="
                 + projectSlug;
     }
 
     public String versionUrl(String projectSlug, String versionSlug) {
-        return contextPath + "/iteration/view/" + projectSlug + "/"
+        return getContextPath() + "/iteration/view/" + projectSlug + "/"
                 + versionSlug;
     }
 
     public String editorDocumentListUrl(String projectSlug, String versionSlug,
             LocaleId targetLocaleId, LocaleId sourceLocaleId) {
-        return contextPath + "/webtrans/translate?project=" + projectSlug
+        return getContextPath() + "/webtrans/translate?project=" + projectSlug
                 + "&iteration=" + versionSlug + "&localeId=" + targetLocaleId
                 + "&locale=" + sourceLocaleId;
     }

@@ -162,6 +162,8 @@ public class ResourceUtils {
                         Response.status(Status.BAD_REQUEST)
                                 .entity("encountered TextFlow with duplicate ID "
                                         + tf.getId()).build();
+                log.warn("encountered TextFlow with duplicate ID "
+                        + tf.getId());
                 throw new WebApplicationException(response);
             }
             HTextFlow textFlow;

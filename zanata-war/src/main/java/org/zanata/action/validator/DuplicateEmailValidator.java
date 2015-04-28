@@ -34,13 +34,18 @@ public class DuplicateEmailValidator implements
 
     @Override
     public boolean isValid(String string, ConstraintValidatorContext context) {
-        if (string == null)
+        if (string == null) {
             return true;
-        if (string.length() == 0)
+        }
+        if (string.length() == 0) {
             return true;
-        PersonDAO personDAO =
-                ServiceLocator.instance().getInstance(PersonDAO.class);
+        }
+        PersonDAO personDAO = getPersonDAO();
         return personDAO.findByEmail(string) == null;
+    }
+
+    protected PersonDAO getPersonDAO() {
+        return ServiceLocator.instance().getInstance(PersonDAO.class);
     }
 
     @Override

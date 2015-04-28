@@ -20,6 +20,10 @@
  */
 package org.zanata.feature.concurrentedit;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.zanata.util.ZanataRestCaller.buildSourceResource;
+import static org.zanata.util.ZanataRestCaller.buildTextFlow;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -29,31 +33,26 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.jboss.resteasy.client.ClientRequest;
+import javax.ws.rs.core.MediaType;
+
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.Constants;
 import org.zanata.util.PropertiesHolder;
 import org.zanata.util.ZanataRestCaller;
+
 import com.google.common.base.Function;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.zanata.util.ZanataRestCaller.buildSourceResource;
-import static org.zanata.util.ZanataRestCaller.buildTextFlow;
-import static org.zanata.util.ZanataRestCaller.checkStatusAndReleaseConnection;
-import static org.zanata.util.ZanataRestCaller.getStatusAndReleaseConnection;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
 
 /**
  * @author Patrick Huang <a
@@ -68,13 +67,10 @@ public class ConcurrentAccessTest extends ZanataTestCase {
     @BeforeClass
     // Need to ensure that the correct concurrent slots are available
     public static void beforeClass() throws Exception {
-        ClientRequest clientRequest =
-                clientRequestAsAdmin("rest/configurations/"
-                        + "c/max.concurrent.req.per.apikey");
-        // Default
-        clientRequest.body("text/plain", "6");
-        Response putResponse = clientRequest.put();
-        assertThat(getStatusAndReleaseConnection(putResponse)).isEqualTo(201);
+        String path = "rest/configurations/c/max.concurrent.req.per.apikey";
+        WebResource.Builder configRequest = clientRequestAsAdmin(path);
+        configRequest.entity("6", MediaType.APPLICATION_JSON_TYPE);
+        configRequest.put();
     }
 
     @Feature(summary = "The system will handle concurrent document " +
@@ -139,15 +135,16 @@ public class ConcurrentAccessTest extends ZanataTestCase {
         }
     }
 
-    private static ClientRequest clientRequestAsAdmin(String path) {
-        ClientRequest clientRequest =
-                new ClientRequest(
-                        PropertiesHolder.getProperty(Constants.zanataInstance
-                                .value()) + path);
-        clientRequest.header("X-Auth-User", "admin");
-        clientRequest.header("X-Auth-Token",
-                PropertiesHolder.getProperty(Constants.zanataApiKey.value()));
-        clientRequest.header("Content-Type", "application/xml");
-        return clientRequest;
+    private static WebResource.Builder clientRequestAsAdmin(String path) {
+        return Client
+                .create()
+                .resource(PropertiesHolder.getProperty(Constants.zanataInstance
+                        .value()) + path)
+                .header("X-Auth-User", "admin")
+                .header("X-Auth-Token",
+                        PropertiesHolder.getProperty(Constants.zanataApiKey
+                                .value()))
+                .header("Content-Type", "application/xml")
+                .header("Accept", "application/xml");
     }
 }

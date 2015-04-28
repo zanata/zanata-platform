@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog 
+<databaseChangeLog
 	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
@@ -123,14 +123,14 @@
 				<constraints nullable="false" />
 			</column>
 		</addColumn>
-		
+
 		<addForeignKeyConstraint baseTableName="HGlossaryEntry"
             baseColumnNames="srcLocaleId" constraintName="UKglossaryentry_srcLocaleId"
             referencedTableName="HLocale" referencedColumnNames="id" />
-            
+
          <addColumn tableName="HGlossaryEntry">
             <column name="sourceRef" type="longtext"/>
-        </addColumn>   
+        </addColumn>
 	</changeSet>
 
     <changeSet author="aeng@redhat.com" id="8" dbms="mysql">
@@ -177,7 +177,7 @@
             </column>
         </addColumn>
     </changeSet>
-    
+
     <changeSet author="aeng@redhat.com" id="11">
         <comment>Add obsolete column to HProjectIteration</comment>
         <addColumn tableName="HProjectIteration">

@@ -3,6 +3,9 @@ package org.zanata.rest.editor.service;
 import java.util.List;
 
 import com.google.common.base.Optional;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
@@ -30,6 +33,8 @@ import javax.annotation.Nonnull;
 @Scope(ScopeType.STATELESS)
 @Slf4j
 @AutoCreate
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class TransUnitUtils {
     public static int MAX_SIZE = 200;
     public static String ID_SEPARATOR = ",";

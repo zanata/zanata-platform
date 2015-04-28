@@ -17,6 +17,9 @@ import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.service.ETagUtils;
 import org.zanata.rest.editor.service.resource.ProjectResource;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -24,6 +27,8 @@ import org.zanata.rest.editor.service.resource.ProjectResource;
 @Name("editor.projectService")
 @Path(ProjectResource.SERVICE_PATH)
 @Transactional
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProjectService implements ProjectResource {
 
     @Context

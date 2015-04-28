@@ -21,15 +21,12 @@
 package org.zanata.rest.compat;
 
 import java.util.List;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
-import org.zanata.RestTest;
-import org.zanata.apicompat.rest.client.ISourceDocResource;
-import org.zanata.apicompat.rest.client.ITranslatedDocResource;
 import org.zanata.apicompat.common.ContentState;
 import org.zanata.apicompat.common.ContentType;
 import org.zanata.apicompat.common.LocaleId;
@@ -42,13 +39,15 @@ import org.zanata.apicompat.rest.dto.resource.ResourceMeta;
 import org.zanata.apicompat.rest.dto.resource.TextFlow;
 import org.zanata.apicompat.rest.dto.resource.TextFlowTarget;
 import org.zanata.apicompat.rest.dto.resource.TranslationsResource;
+import org.zanata.apicompat.rest.service.SourceDocResource;
+import org.zanata.apicompat.rest.service.TranslatedDocResource;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 
-public class TranslationsCompatibilityITCase extends RestTest {
+public class TranslationsCompatibilityITCase extends CompatibilityBase {
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -91,22 +90,19 @@ public class TranslationsCompatibilityITCase extends RestTest {
         tf1.getExtensions(true).add(new SimpleComment("This is one comment"));
         res.getTextFlows().add(tf1);
 
-        ISourceDocResource sourceDocClient =
-                super.createProxy(createClientProxyFactory(ADMIN, ADMIN_KEY),
-                        ISourceDocResource.class,
-                        "/projects/p/sample-project/iterations/i/1.0/r/");
-        ClientResponse<String> response =
+        SourceDocResource sourceDocClient = getSourceDocResource("/projects/p/sample-project/iterations/i/1.0/r/");
+        Response response =
                 sourceDocClient.post(res, new StringSet(PoHeader.ID + ";"
                         + SimpleComment.ID), true);
 
         assertThat(response.getStatus(), is(Status.CREATED.getStatusCode())); // 201
-        response.releaseConnection();
+        releaseConnection(response);
 
         // Verify that it was created successfully
-        ClientResponse<Resource> resourceResponse =
+        Response resourceResponse =
                 sourceDocClient.getResource(res.getName(), new StringSet(
                         PoHeader.ID + ";" + SimpleComment.ID));
-        Resource createdResource = resourceResponse.getEntity();
+        Resource createdResource = getResourceFromResponse(resourceResponse);
 
         assertThat(createdResource.getName(), is(res.getName()));
         assertThat(createdResource.getType(), is(res.getType()));
@@ -150,16 +146,13 @@ public class TranslationsCompatibilityITCase extends RestTest {
         res.setRevision(1);
 
         // Post once
-        ISourceDocResource sourceDocClient =
-                super.createProxy(createClientProxyFactory(ADMIN, ADMIN_KEY),
-                        ISourceDocResource.class,
-                        "/projects/p/sample-project/iterations/i/1.0/r/");
-        ClientResponse<String> response =
+        SourceDocResource sourceDocClient = getSourceDocResource("/projects/p/sample-project/iterations/i/1.0/r/");
+        Response response =
                 sourceDocClient.post(res, new StringSet(PoHeader.ID + ";"
                         + SimpleComment.ID), true);
 
         assertThat(response.getStatus(), is(Status.CREATED.getStatusCode())); // 201
-        response.releaseConnection();
+        releaseConnection(response);
 
         // Post Twice (should conflict)
         response =
@@ -167,7 +160,7 @@ public class TranslationsCompatibilityITCase extends RestTest {
                         + SimpleComment.ID), true);
 
         assertThat(response.getStatus(), is(Status.CONFLICT.getStatusCode())); // 409
-        response.releaseConnection();
+        releaseConnection(response);
     }
 
     @Test
@@ -185,22 +178,19 @@ public class TranslationsCompatibilityITCase extends RestTest {
         tf1.getExtensions(true).add(new SimpleComment("This is one comment"));
         res.getTextFlows().add(tf1);
 
-        ISourceDocResource sourceDocClient =
-                super.createProxy(createClientProxyFactory(ADMIN, ADMIN_KEY),
-                        ISourceDocResource.class,
-                        "/projects/p/sample-project/iterations/i/1.0/r/");
-        ClientResponse<String> response =
+        SourceDocResource sourceDocClient = getSourceDocResource("/projects/p/sample-project/iterations/i/1.0/r/");
+        Response response =
                 sourceDocClient.putResource(res.getName(), res, new StringSet(
-                        PoHeader.ID + ";" + SimpleComment.ID));
+                        PoHeader.ID + ";" + SimpleComment.ID), false);
 
         assertThat(response.getStatus(), is(Status.CREATED.getStatusCode())); // 201
-        response.releaseConnection();
+        releaseConnection(response);
 
         // Verify that it was created successfully
-        ClientResponse<Resource> resourceResponse =
+        Response resourceResponse =
                 sourceDocClient.getResource(res.getName(), new StringSet(
                         PoHeader.ID + ";" + SimpleComment.ID));
-        Resource createdResource = resourceResponse.getEntity();
+        Resource createdResource = getResourceFromResponse(resourceResponse);
 
         assertThat(createdResource.getName(), is(res.getName()));
         assertThat(createdResource.getType(), is(res.getType()));
@@ -236,15 +226,11 @@ public class TranslationsCompatibilityITCase extends RestTest {
     @Test
     @RunAsClient
     public void getXmlResource() throws Exception {
-        ISourceDocResource sourceDocClient =
-                super.createProxy(
-                        createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
-                        ISourceDocResource.class,
-                        "/projects/p/sample-project/iterations/i/1.0/r/");
-        ClientResponse<Resource> response =
+        SourceDocResource sourceDocClient = getSourceDocResource("/projects/p/sample-project/iterations/i/1.0/r/");
+        Response response =
                 sourceDocClient.getResource("my,path,document-2.txt",
                         new StringSet(SimpleComment.ID));
-        Resource resource = response.getEntity();
+        Resource resource = getResourceFromResponse(response);
 
         assertThat(resource.getName(), is("my/path/document-2.txt"));
         assertThat(resource.getType(), is(ResourceType.FILE));
@@ -280,44 +266,40 @@ public class TranslationsCompatibilityITCase extends RestTest {
         res.setLang(LocaleId.EN_US);
         res.setRevision(1);
 
-        ISourceDocResource sourceDocClient =
-                super.createProxy(createClientProxyFactory(ADMIN, ADMIN_KEY),
-                        ISourceDocResource.class,
-                        "/projects/p/sample-project/iterations/i/1.0/r/");
-        ClientResponse<String> response =
+        SourceDocResource sourceDocClient = getSourceDocResource(
+                "/projects/p/sample-project/iterations/i/1.0/r/");
+
+        Response response =
                 sourceDocClient.putResource(res.getName(), res, new StringSet(
-                        PoHeader.ID + ";" + SimpleComment.ID));
+                        PoHeader.ID + ";" + SimpleComment.ID), false);
 
         assertThat(response.getStatus(), is(Status.CREATED.getStatusCode())); // 201
-        response.releaseConnection();
+        releaseConnection(response);
 
         // Delete the resource
-        ClientResponse<String> deleteResponse =
+        Response deleteResponse =
                 sourceDocClient.deleteResource(res.getName());
 
         assertThat(deleteResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
-        deleteResponse.releaseConnection();
+        releaseConnection(response);
 
         // try to fetch it again
-        ClientResponse<Resource> getResponse =
+        Response getResponse =
                 sourceDocClient.getResource(res.getName(), null);
         assertThat(getResponse.getStatus(),
                 is(Status.NOT_FOUND.getStatusCode())); // 404
-        getResponse.releaseConnection();
+        releaseConnection(getResponse);
     }
 
     @Test
     @RunAsClient
     public void getResourceMeta() throws Exception {
-        ISourceDocResource sourceDocClient =
-                super.createProxy(
-                        createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
-                        ISourceDocResource.class,
-                        "/projects/p/sample-project/iterations/i/1.0/r/");
-        ClientResponse<ResourceMeta> response =
+        SourceDocResource sourceDocClient = getSourceDocResource(
+                "/projects/p/sample-project/iterations/i/1.0/r/");
+        Response response =
                 sourceDocClient.getResourceMeta("my,path,document-2.txt",
                         new StringSet(SimpleComment.ID));
-        ResourceMeta resMeta = response.getEntity();
+        ResourceMeta resMeta = getResourceMetaFromResponse(response);
 
         assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
         assertThat(resMeta.getName(), is("my/path/document-2.txt"));
@@ -329,10 +311,8 @@ public class TranslationsCompatibilityITCase extends RestTest {
     @Test
     @RunAsClient
     public void putResourceMeta() throws Exception {
-        ISourceDocResource sourceDocClient =
-                super.createProxy(createClientProxyFactory(ADMIN, ADMIN_KEY),
-                        ISourceDocResource.class,
-                        "/projects/p/sample-project/iterations/i/1.0/r/");
+        SourceDocResource sourceDocClient = getSourceDocResource(
+                "/projects/p/sample-project/iterations/i/1.0/r/");
         ResourceMeta resMeta = new ResourceMeta();
         resMeta.setName("my/path/document-2.txt");
         resMeta.setType(ResourceType.FILE);
@@ -340,16 +320,16 @@ public class TranslationsCompatibilityITCase extends RestTest {
         resMeta.setLang(LocaleId.EN_US);
         resMeta.setRevision(1);
 
-        ClientResponse<String> putResponse =
+        Response putResponse =
                 sourceDocClient.putResourceMeta("my,path,document-2.txt",
                         resMeta, null);
         assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
-        putResponse.releaseConnection();
+        releaseConnection(putResponse);
 
         // Fetch again
-        ClientResponse<ResourceMeta> getResponse =
+        Response getResponse =
                 sourceDocClient.getResourceMeta("my,path,document-2.txt", null);
-        ResourceMeta newResMeta = getResponse.getEntity();
+        ResourceMeta newResMeta = getResourceMetaFromResponse(getResponse);
 
         assertThat(getResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
         assertThat(newResMeta.getName(), is(resMeta.getName()));
@@ -362,15 +342,14 @@ public class TranslationsCompatibilityITCase extends RestTest {
     @Test
     @RunAsClient
     public void getTranslations() throws Exception {
-        ITranslatedDocResource translationsClient =
-                super.createProxy(
-                        createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
-                        ITranslatedDocResource.class,
-                        "/projects/p/sample-project/iterations/i/1.0/r/");
-        ClientResponse<TranslationsResource> response =
+        TranslatedDocResource translationsClient = getTransResource(
+                "/projects/p/sample-project/iterations/i/1.0/r/",
+                AuthenticatedAsUser.Admin);
+        Response response =
                 translationsClient.getTranslations("my,path,document-2.txt",
-                        LocaleId.EN_US, new StringSet(SimpleComment.ID));
-        TranslationsResource transRes = response.getEntity();
+                        LocaleId.EN_US, new StringSet(SimpleComment.ID), false,
+                        null);
+        TranslationsResource transRes = getTransResourceFromResponse(response);
 
         assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
         assertThat(transRes.getTextFlowTargets().size(),
@@ -407,17 +386,16 @@ public class TranslationsCompatibilityITCase extends RestTest {
         assertThat(tft3.getTranslator().getEmail(), is("user1@localhost"));
     }
 
-//    @Test
-//    @RunAsClient
+    @Test
+    @RunAsClient
     public void putTranslations() throws Exception {
-        ITranslatedDocResource translationsClient =
-                super.createProxy(createClientProxyFactory(ADMIN, ADMIN_KEY),
-                        ITranslatedDocResource.class,
-                        "/projects/p/sample-project/iterations/i/1.0/r/");
-        ClientResponse<TranslationsResource> response =
+        TranslatedDocResource translationsClient = getTransResource("/projects/p/sample-project/iterations/i/1.0/r/",
+                AuthenticatedAsUser.Admin);
+        Response response =
                 translationsClient.getTranslations("my,path,document-2.txt",
-                        LocaleId.EN_US, new StringSet(SimpleComment.ID));
-        TranslationsResource transRes = response.getEntity();
+                        LocaleId.EN_US, new StringSet(SimpleComment.ID), false,
+                        null);
+        TranslationsResource transRes = getTransResourceFromResponse(response);
 
         assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
         assertThat(transRes.getTextFlowTargets().size(),
@@ -440,20 +418,20 @@ public class TranslationsCompatibilityITCase extends RestTest {
                 .add(new SimpleComment("Translated Comment 3"));
 
         // Put the translations
-        ClientResponse<String> putResponse =
+        Response putResponse =
                 translationsClient.putTranslations("my,path,document-2.txt",
                         LocaleId.EN_US, transRes, new StringSet(
-                                SimpleComment.ID));
+                                SimpleComment.ID), "auto");
 
         assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
-        putResponse.releaseConnection();
+        releaseConnection(putResponse);
 
         // Retrieve the translations once more to make sure they were changed
         // accordingly
         response =
                 translationsClient.getTranslations("my,path,document-2.txt",
-                        LocaleId.EN_US, new StringSet(SimpleComment.ID));
-        transRes = response.getEntity();
+                        LocaleId.EN_US, new StringSet(SimpleComment.ID), false, null);
+        transRes = getTransResourceFromResponse(response);
 
         assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
         assertThat(transRes.getTextFlowTargets().size(),
@@ -488,24 +466,22 @@ public class TranslationsCompatibilityITCase extends RestTest {
     @Test
     @RunAsClient
     public void deleteTranslations() throws Exception {
-        ITranslatedDocResource translationsClient =
-                super.createProxy(createClientProxyFactory(ADMIN, ADMIN_KEY),
-                        ITranslatedDocResource.class,
-                        "/projects/p/sample-project/iterations/i/1.0/r/");
-        ClientResponse<String> response =
+        TranslatedDocResource translationsClient = getTransResource("/projects/p/sample-project/iterations/i/1.0/r/",
+                AuthenticatedAsUser.Admin);
+        Response response =
                 translationsClient.deleteTranslations("my,path,document-3.txt",
                         LocaleId.EN_US);
 
         assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
-        response.releaseConnection();
+        releaseConnection(response);
 
         // try to fetch them again
-        ClientResponse<TranslationsResource> getResponse =
+        Response getResponse =
                 translationsClient.getTranslations("my,path,document-3.txt",
                         LocaleId.EN_US, new StringSet(PoHeader.ID + ";"
-                                + SimpleComment.ID));
+                                + SimpleComment.ID), false, null);
         List<TextFlowTarget> targets =
-                getResponse.getEntity().getTextFlowTargets();
+                getTransResourceFromResponse(getResponse).getTextFlowTargets();
         for (TextFlowTarget target : targets) {
             assertThat(target.getState(), is(ContentState.New));
         }

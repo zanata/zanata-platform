@@ -43,7 +43,11 @@ import org.zanata.search.FilterConstraints;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.shared.model.DocumentId;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -51,6 +55,8 @@ import com.google.common.collect.Lists;
 @Name("editor.projectVersionService")
 @Path(ProjectVersionResource.SERVICE_PATH)
 @Transactional
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProjectVersionService implements ProjectVersionResource {
     @In
     private TextFlowDAO textFlowDAO;
@@ -119,8 +125,7 @@ public class ProjectVersionService implements ProjectVersionResource {
 
         Type genericType = new GenericType<List<Locale>>() {
         }.getGenericType();
-        Object entity =
-                new GenericEntity<List<Locale>>(localesRefs, genericType);
+        Object entity = new GenericEntity<>(localesRefs, genericType);
         return Response.ok(entity).build();
     }
 
@@ -138,7 +143,7 @@ public class ProjectVersionService implements ProjectVersionResource {
             return response.build();
         }
 
-        List<ResourceMeta> resources = new ArrayList<ResourceMeta>();
+        List<ResourceMeta> resources = new ArrayList<>();
 
         for (HDocument doc : hProjectIteration.getDocuments().values()) {
 
@@ -149,8 +154,7 @@ public class ProjectVersionService implements ProjectVersionResource {
 
         Type genericType = new GenericType<List<ResourceMeta>>() {
         }.getGenericType();
-        Object entity =
-                new GenericEntity<List<ResourceMeta>>(resources, genericType);
+        Object entity = new GenericEntity<>(resources, genericType);
         return Response.ok(entity).tag(etag).build();
     }
 
@@ -196,13 +200,12 @@ public class ProjectVersionService implements ProjectVersionResource {
 
         Type genericType = new GenericType<List<Locale>>() {
         }.getGenericType();
-        Object entity =
-                new GenericEntity<List<TransUnitStatus>>(statusList,
-                        genericType);
+        Object entity = new GenericEntity<>(statusList, genericType);
         return Response.ok(entity).build();
     }
 
-    private HProjectIteration retrieveAndCheckIteration(String projectSlug,
+    @VisibleForTesting
+    protected HProjectIteration retrieveAndCheckIteration(String projectSlug,
             String versionSlug, boolean writeOperation) {
         HProjectIteration hProjectIteration =
                 projectIterationDAO.getBySlug(projectSlug, versionSlug);

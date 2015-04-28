@@ -1,0 +1,91 @@
+package org.zanata.notification;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import javax.mail.internet.InternetAddress;
+
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import org.zanata.ApplicationConfiguration;
+import org.zanata.common.LocaleId;
+import org.zanata.email.EmailBuilder;
+import org.zanata.email.LanguageTeamPermissionChangeEmailStrategy;
+import org.zanata.events.LanguageTeamPermissionChangedEvent;
+import org.zanata.i18n.Messages;
+
+@Test(groups = "unit-tests")
+public class LanguageTeamPermissionChangeJmsMessagePayloadHandlerTest {
+    private LanguageTeamPermissionChangeJmsMessagePayloadHandler handler;
+    @Mock
+    private EmailBuilder emailBuilder;
+    @Mock
+    private ApplicationConfiguration applicationConfiguration;
+    @Mock
+    private LanguageTeamPermissionChangedEvent permissionChangeEvent;
+
+    @BeforeMethod
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        handler =
+                new LanguageTeamPermissionChangeJmsMessagePayloadHandler(
+                        emailBuilder, new Messages(), applicationConfiguration);
+
+    }
+
+    @Test
+    public void willNotHandleWhenEventIsIrrelevant() {
+        handler.handle("not a language team permission change event");
+
+        Mockito.verifyZeroInteractions(emailBuilder, applicationConfiguration);
+    }
+
+    @Test
+    public void willNotHandleIfTeamPermissionHasNotChanged() {
+        when(permissionChangeEvent.hasPermissionsChanged()).thenReturn(false);
+
+        handler.handle(permissionChangeEvent);
+
+        Mockito.verifyZeroInteractions(emailBuilder, applicationConfiguration);
+    }
+
+    @Test
+    public void willSendEmailToAffectedPerson() {
+        when(permissionChangeEvent.hasPermissionsChanged()).thenReturn(true);
+        when(permissionChangeEvent.getLanguage()).thenReturn(LocaleId.DE);
+        when(permissionChangeEvent.getEmail()).thenReturn("john@a.c");
+        when(permissionChangeEvent.getName()).thenReturn("John Smith");
+        when(applicationConfiguration.getServerPath()).thenReturn(
+                "http://localhost");
+
+        handler.handle(permissionChangeEvent);
+
+        ArgumentCaptor<LanguageTeamPermissionChangeEmailStrategy> strategyArgumentCaptor =
+                ArgumentCaptor
+                        .forClass(
+                        LanguageTeamPermissionChangeEmailStrategy.class);
+        ArgumentCaptor<List> receivedReasonCaptor =
+                ArgumentCaptor.forClass(List.class);
+        ArgumentCaptor<InternetAddress> toAddressCaptor =
+                ArgumentCaptor.forClass(InternetAddress.class);
+
+        verify(emailBuilder).sendMessage(strategyArgumentCaptor.capture(),
+                receivedReasonCaptor.capture(), toAddressCaptor.capture());
+        assertThat(receivedReasonCaptor.getValue()).contains(
+                "You are a team member in the \"de\" language team");
+        assertThat(toAddressCaptor.getValue().toString()).isEqualTo(
+                "John Smith <john@a.c>");
+        LanguageTeamPermissionChangeEmailStrategy strategy =
+                strategyArgumentCaptor.getValue();
+        assertThat(strategy.getSubject(new Messages())).isEqualTo(
+                "Your permissions in language team \"de\" have changed");
+
+    }
+}

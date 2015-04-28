@@ -37,16 +37,19 @@ public class EmailListValidator implements
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext context) {
-        if (s == null)
+        if (s == null) {
             return true;
-        if (s.length() == 0)
+        }
+        if (s.length() == 0) {
             return true;
+        }
 
         // trim still required to prevent leading whitespace invalidating the
         // first email address
         for (String email : s.trim().split("\\s*,\\s*")) {
-            if (!emailValidator.isValid(email, context))
+            if (!emailValidator.isValid(email, context)) {
                 return false;
+            }
         }
         return true;
     }

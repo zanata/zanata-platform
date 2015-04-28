@@ -38,6 +38,9 @@ import org.zanata.service.ActivityService;
 import org.zanata.util.DateUtil;
 import org.zanata.util.ShortString;
 import org.zanata.util.UrlUtil;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /**
  * Provides data and operations needed to display an activity entry.
@@ -49,6 +52,8 @@ import org.zanata.util.UrlUtil;
 @Name("activityEntry")
 @Scope(ScopeType.STATELESS)
 @AutoCreate
+@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class ActivityEntry {
     @In
     private ActivityService activityServiceImpl;

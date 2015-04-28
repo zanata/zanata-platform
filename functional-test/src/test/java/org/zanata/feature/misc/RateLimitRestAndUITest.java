@@ -20,6 +20,8 @@
  */
 package org.zanata.feature.misc;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -27,17 +29,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.core.BaseClientResponse;
+import javax.ws.rs.core.MediaType;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.administration.AdministrationPage;
 import org.zanata.page.administration.ServerConfigurationPage;
 import org.zanata.util.AddUsersRule;
@@ -45,22 +47,23 @@ import org.zanata.util.Constants;
 import org.zanata.util.PropertiesHolder;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.LoginWorkFlow;
+
 import com.google.common.base.Function;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.zanata.util.ZanataRestCaller.checkStatusAndReleaseConnection;
-import static org.zanata.util.ZanataRestCaller.getStatusAndReleaseConnection;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.UniformInterfaceException;
+import com.sun.jersey.api.client.WebResource;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Feature(summary = "The system can be set to rate consecutive REST access calls",
-    tcmsTestPlanIds = 5315, tcmsTestCaseIds = 0)
+@Feature(
+        summary = "The system can be set to rate consecutive REST access calls",
+        tcmsTestPlanIds = 5315, tcmsTestCaseIds = 0)
 @Category(DetailedTest.class)
 @Slf4j
 public class RateLimitRestAndUITest extends ZanataTestCase {
@@ -71,7 +74,7 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
     private static final String TRANSLATOR = "translator";
     private static final String TRANSLATOR_API =
             PropertiesHolder.getProperty(Constants.zanataTranslatorKey
-            .value());
+                    .value());
     private String maxConcurrentPathParam = "c/max.concurrent.req.per.apikey";
     private String maxActivePathParam = "c/max.active.req.per.apikey";
 
@@ -90,9 +93,9 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
         AdministrationPage administrationPage =
                 serverConfigPage.inputMaxConcurrent(5).inputMaxActive(3).save();
 
-        //RHBZ1160651
-        //assertThat(administrationPage.getNotificationMessage())
-        //        .isEqualTo("Configuration was successfully updated.");
+        // RHBZ1160651
+        // assertThat(administrationPage.getNotificationMessage())
+        // .isEqualTo("Configuration was successfully updated.");
 
         serverConfigPage = administrationPage.goToServerConfigPage();
 
@@ -104,96 +107,95 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void canCallServerConfigurationRestService() throws Exception {
-        ClientRequest clientRequest =
+        WebResource.Builder clientRequest =
                 clientRequestAsAdmin("rest/configurations/"
                         + maxConcurrentPathParam);
-        clientRequest.body("text/plain", "1");
+        clientRequest.entity("1", MediaType.APPLICATION_JSON_TYPE);
         // can put
-        Response putResponse = clientRequest.put();
-
-        assertThat(getStatusAndReleaseConnection(putResponse)).isEqualTo(201);
+        clientRequest.put();
 
         // can get single configuration
-        Response getResponse =
-                clientRequestAsAdmin(
-                        "rest/configurations/" + maxConcurrentPathParam).get();
-
-        assertThat(getResponse.getStatus()).isEqualTo(200);
         String rateLimitConfig =
-                ((BaseClientResponse<String>) getResponse)
-                        .getEntity(String.class);
+                clientRequestAsAdmin(
+                        "rest/configurations/" + maxConcurrentPathParam).get(
+                        String.class);
+
         assertThat(rateLimitConfig)
                 .contains("max.concurrent.req.per.apikey");
         assertThat(rateLimitConfig).contains("<value>1</value>");
 
         // can get all configurations
-        Response getAllResponse =
-                clientRequestAsAdmin("rest/configurations/").get();
-        BaseClientResponse<String> baseClientResponse =
-                (BaseClientResponse) getAllResponse;
-
-        String configurations = baseClientResponse.getEntity(String.class);
+        String configurations =
+                clientRequestAsAdmin("rest/configurations/").get(String.class);
         log.info("result {}", configurations);
 
-        assertThat(getStatusAndReleaseConnection(getAllResponse))
-                .isEqualTo(200);
         assertThat(configurations).isNotNull();
     }
 
-    private static ClientRequest clientRequestAsAdmin(String path) {
-        ClientRequest clientRequest =
-                new ClientRequest(
-                        PropertiesHolder.getProperty(Constants.zanataInstance
-                                .value()) + path);
-        clientRequest.header("X-Auth-User", "admin");
-        clientRequest.header("X-Auth-Token",
-                PropertiesHolder.getProperty(Constants.zanataApiKey.value()));
-        clientRequest.header("Content-Type", "application/xml");
-        return clientRequest;
+    private static WebResource.Builder clientRequestAsAdmin(String path) {
+        return Client
+                .create()
+                .resource(PropertiesHolder.getProperty(Constants.zanataInstance
+                        .value()) + path)
+                .header("X-Auth-User", "admin")
+                .header("X-Auth-Token",
+                        PropertiesHolder.getProperty(Constants.zanataApiKey
+                                .value()))
+                .header("Content-Type", "application/xml")
+                .header("Accept", "application/xml");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void serverConfigurationRestServiceOnlyAvailableToAdmin()
             throws Exception {
         // all request should be rejected
-        Response response =
-                clientRequestAsTranslator("rest/configurations/").get();
-        assertThat(getStatusAndReleaseConnection(response)).isEqualTo(401);
+        ClientResponse response =
+                clientRequestAsTranslator("rest/configurations/").get(
+                        ClientResponse.class);
+        assertThat(response.getStatus()).isEqualTo(401);
 
-        Response response1 =
+        ClientResponse response1 =
                 clientRequestAsTranslator(
-                        "rest/configurations/c/email.admin.addr").get();
-        assertThat(getStatusAndReleaseConnection(response1)).isEqualTo(401);
+                        "rest/configurations/c/email.admin.addr").get(
+                        ClientResponse.class);
+        assertThat(response1.getStatus()).isEqualTo(401);
 
-        ClientRequest request =
-                clientRequestAsTranslator("rest/configurations/c/email.admin.addr");
-        request.body("text/plain", "admin@email.com");
-        Response response2 = request.put();
-        assertThat(getStatusAndReleaseConnection(response2)).isEqualTo(401);
+        WebResource.Builder request =
+                clientRequestAsTranslator(
+                "rest/configurations/c/email.admin.addr");
+        request.entity("admin@email.com", MediaType.APPLICATION_JSON_TYPE);
+        try {
+            request.put();
+        } catch (UniformInterfaceException e) {
+            assertThat(e.getResponse().getStatus()).isEqualTo(401);
+        }
     }
 
-    private static ClientRequest clientRequestAsTranslator(String path) {
-        ClientRequest clientRequest =
-                new ClientRequest(
-                        PropertiesHolder.getProperty(Constants.zanataInstance
-                                .value()) + path);
-        clientRequest.header("X-Auth-User", TRANSLATOR);
-        clientRequest.header("X-Auth-Token", TRANSLATOR_API);
-        clientRequest.header("Content-Type", "application/xml");
-        return clientRequest;
+    private static WebResource.Builder clientRequestAsTranslator(String path) {
+        return Client.create().resource(
+                PropertiesHolder.getProperty(Constants.zanataInstance
+                        .value()) + path)
+                .header("X-Auth-User", TRANSLATOR)
+                .header("X-Auth-Token", TRANSLATOR_API)
+                .header("Content-Type", "application/xml")
+                .header("Accept", "application/xml");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void canOnlyDealWithKnownConfiguration() throws Exception {
-        ClientRequest clientRequest =
+        WebResource.Builder clientRequest =
                 clientRequestAsAdmin("rest/configurations/c/abc");
 
-        Response putResponse = clientRequest.put();
-        assertThat(getStatusAndReleaseConnection(putResponse)).isEqualTo(400);
+        try {
+            clientRequest.put();
+        } catch (UniformInterfaceException e) {
+            assertThat(e.getResponse().getStatus()).isEqualTo(400);
+        }
 
-        Response getResponse =
-                clientRequestAsAdmin("rest/configurations/c/abc").get();
-        assertThat(getStatusAndReleaseConnection(getResponse)).isEqualTo(404);
+        ClientResponse getResponse =
+                clientRequestAsAdmin("rest/configurations/c/abc").get(
+                        ClientResponse.class);
+        assertThat(getResponse.getStatus()).isEqualTo(404);
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -204,12 +206,12 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
         new ZanataRestCaller(TRANSLATOR, TRANSLATOR_API)
                 .createProjectAndVersion(projectSlug, iterationSlug, "gettext");
 
-        ClientRequest clientRequest =
+        WebResource.Builder clientRequest =
                 clientRequestAsAdmin("rest/configurations/"
                         + maxConcurrentPathParam);
-        clientRequest.body(MediaType.TEXT_PLAIN_TYPE, "2");
+        clientRequest.entity("2", MediaType.APPLICATION_JSON_TYPE);
 
-        checkStatusAndReleaseConnection(clientRequest.put());
+        clientRequest.put();
 
         // prepare to fire multiple REST requests
         final AtomicInteger atomicInteger = new AtomicInteger(1);
@@ -252,7 +254,7 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
 
         List<Integer> result = getResultStatusCodes(futures);
 
-        // 1 request from translator should get 403 and fail
+        // 1 request from translator should get 429 and fail
         log.info("result: {}", result);
         assertThat(result).contains(201, 201, 201, 201, 429);
     }
@@ -260,19 +262,20 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
     @Test(timeout = 5000)
     public void exceptionWillReleaseSemaphore() throws Exception {
         // Given: max active is set to 1
-        ClientRequest configRequest =
+        WebResource.Builder configRequest =
                 clientRequestAsAdmin("rest/configurations/"
                         + maxActivePathParam);
-        configRequest.body(MediaType.TEXT_PLAIN_TYPE, "1");
-        checkStatusAndReleaseConnection(configRequest.put());
+        configRequest.entity("1", MediaType.APPLICATION_JSON_TYPE);
+        configRequest.put();
 
         // When: multiple requests that will result in a mapped exception
-        ClientRequest clientRequest =
-                clientRequestAsAdmin("rest/test/data/sample/dummy?exception=org.zanata.rest.NoSuchEntityException");
-        getStatusAndReleaseConnection(clientRequest.get());
-        getStatusAndReleaseConnection(clientRequest.get());
-        getStatusAndReleaseConnection(clientRequest.get());
-        getStatusAndReleaseConnection(clientRequest.get());
+        WebResource.Builder clientRequest =
+                clientRequestAsAdmin(
+                "rest/test/data/sample/dummy?exception=org.zanata.rest.NoSuchEntityException");
+        clientRequest.get(ClientResponse.class);
+        clientRequest.get(ClientResponse.class);
+        clientRequest.get(ClientResponse.class);
+        clientRequest.get(ClientResponse.class);
 
         // Then: request that result in exception should still release
         // semaphore. i.e. no permit leak
@@ -282,19 +285,20 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
     @Test(timeout = 5000)
     public void unmappedExceptionWillAlsoReleaseSemaphore() throws Exception {
         // Given: max active is set to 1
-        ClientRequest configRequest =
+        WebResource.Builder configRequest =
                 clientRequestAsAdmin("rest/configurations/"
                         + maxActivePathParam);
-        configRequest.body(MediaType.TEXT_PLAIN_TYPE, "1");
-        checkStatusAndReleaseConnection(configRequest.put());
+        configRequest.entity("1", MediaType.APPLICATION_JSON_TYPE);
+        configRequest.put();
 
         // When: multiple requests that will result in an unmapped exception
-        ClientRequest clientRequest =
-                clientRequestAsAdmin("rest/test/data/sample/dummy?exception=java.lang.RuntimeException");
-        getStatusAndReleaseConnection(clientRequest.get());
-        getStatusAndReleaseConnection(clientRequest.get());
-        getStatusAndReleaseConnection(clientRequest.get());
-        getStatusAndReleaseConnection(clientRequest.get());
+        WebResource.Builder clientRequest =
+                clientRequestAsAdmin(
+                "rest/test/data/sample/dummy?exception=java.lang.RuntimeException");
+        clientRequest.get(ClientResponse.class);
+        clientRequest.get(ClientResponse.class);
+        clientRequest.get(ClientResponse.class);
+        clientRequest.get(ClientResponse.class);
 
         // Then: request that result in exception should still release
         // semaphore. i.e. no permit leak
@@ -310,9 +314,9 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
                     ZanataRestCaller.buildSourceResource("doc" + counter,
                             ZanataRestCaller.buildTextFlow("res" + counter,
                                     "content" + counter)), false);
-        } catch (Exception e) {
+        } catch (UniformInterfaceException e) {
             log.info("rest call failed: {}", e.getMessage());
-            return 500;
+            return e.getResponse().getStatus();
         }
     }
 
@@ -338,3 +342,4 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
                 });
     }
 }
+

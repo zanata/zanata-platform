@@ -27,6 +27,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.stream.StreamSource;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -59,13 +63,7 @@ public class RawRestTestUtils {
         try {
             mapper.readValue((String) response.getEntity(String.class),
                     jsonType);
-        } catch (JsonParseException e) {
-            throw new AssertionError(e);
-        } catch (JsonMappingException e) {
-            throw new AssertionError(e);
-        } catch (IllegalStateException e) {
-            throw new AssertionError(e);
-        } catch (IOException e) {
+        } catch (IllegalStateException | IOException e) {
             throw new AssertionError(e);
         }
     }
@@ -112,13 +110,7 @@ public class RawRestTestUtils {
         try {
             return mapper.readValue((String) response.getEntity(String.class),
                     jsonType);
-        } catch (JsonParseException e) {
-            throw new AssertionError(e);
-        } catch (JsonMappingException e) {
-            throw new AssertionError(e);
-        } catch (IllegalStateException e) {
-            throw new AssertionError(e);
-        } catch (IOException e) {
+        } catch (IllegalStateException | IOException e) {
             throw new AssertionError(e);
         }
     }
@@ -142,13 +134,7 @@ public class RawRestTestUtils {
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.writeValueAsString(jsonObject);
-        } catch (JsonParseException e) {
-            throw new AssertionError(e);
-        } catch (JsonMappingException e) {
-            throw new AssertionError(e);
-        } catch (IllegalStateException e) {
-            throw new AssertionError(e);
-        } catch (IOException e) {
+        } catch (IllegalStateException | IOException e) {
             throw new AssertionError(e);
         }
     }

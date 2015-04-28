@@ -31,15 +31,12 @@ import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.apicompat.rest.MediaTypes;
-import org.zanata.apicompat.rest.client.IProjectIterationResource;
 import org.zanata.apicompat.rest.dto.ProjectIteration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
-import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
-import static org.zanata.util.RawRestTestUtils.jsonMarshal;
-import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
+import static org.zanata.util.RawRestTestUtils.*;
 
 public class ProjectIterationRawCompatibilityITCase extends RestTest {
 
@@ -51,6 +48,10 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
         addBeforeTestOperation(new DataSetOperation(
                 "org/zanata/test/model/ProjectsData.dbunit.xml",
                 DatabaseOperation.CLEAN_INSERT));
+
+        addAfterTestOperation(new DataSetOperation(
+                "org/zanata/test/model/ClearAllTables.dbunit.xml",
+                DatabaseOperation.DELETE_ALL));
     }
 
     @Test
@@ -72,6 +73,31 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
 
                 ProjectIteration it =
                         jsonUnmarshal(response, ProjectIteration.class);
+                assertThat(it.getId(), is("1.0"));
+            }
+
+        }.run();
+    }
+
+    @Test
+    @RunAsClient
+    public void getXmlProjectIteration() throws Exception {
+        new ResourceRequest(
+                getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0"),
+                "GET") {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.header(HttpHeaders.ACCEPT,
+                        MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
+            };
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+                assertJaxbUnmarshal(response, ProjectIteration.class);
+
+                ProjectIteration it =
+                        jaxbUnmarshal(response, ProjectIteration.class);
                 assertThat(it.getId(), is("1.0"));
             }
 
@@ -104,18 +130,75 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
         }.run();
 
         // Retreive it again
-        IProjectIterationResource iterationClient =
-                super.createProxy(
-                        createClientProxyFactory(TRANSLATOR, TRANSLATOR_KEY),
-                        IProjectIterationResource.class,
-                        "/projects/p/sample-project/iterations/i/"
-                                + newIteration.getId());
+        new ResourceRequest(
+                getRestEndpointUrl("/projects/p/sample-project/iterations/i/"
+                        + newIteration.getId()),
+                "GET") {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.header(HttpHeaders.ACCEPT,
+                        MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON);
+            };
 
-        ClientResponse<ProjectIteration> getResponse = iterationClient.get();
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+                assertJsonUnmarshal(response, ProjectIteration.class);
 
-        assertThat(getResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
+                ProjectIteration it =
+                        jsonUnmarshal(response, ProjectIteration.class);
+                assertThat(it.getId(), is("new-iteration"));
+            }
 
-        ProjectIteration it = getResponse.getEntity();
-        assertThat(it.getId(), is("new-iteration"));
+        }.run();
+    }
+
+    @Test
+    @RunAsClient
+    public void putXmlProjectIteration() throws Exception {
+        final ProjectIteration newIteration =
+                new ProjectIteration("new-iteration");
+
+        new ResourceRequest(
+                getRestEndpointUrl("/projects/p/sample-project/iterations/i/"
+                        + newIteration.getId()), "PUT",
+                getAuthorizedEnvironment()) {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.body(
+                        MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML,
+                        jaxbMarhsal(newIteration));
+            };
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(),
+                        is(Status.CREATED.getStatusCode())); // 201
+            }
+
+        }.run();
+
+        // Retreive it again
+        new ResourceRequest(
+                getRestEndpointUrl("/projects/p/sample-project/iterations/i/"
+                        + newIteration.getId()),
+                "GET") {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.header(HttpHeaders.ACCEPT,
+                        MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
+            };
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+                assertJaxbUnmarshal(response, ProjectIteration.class);
+
+                ProjectIteration it =
+                        jaxbUnmarshal(response, ProjectIteration.class);
+                assertThat(it.getId(), is("new-iteration"));
+            }
+
+        }.run();
     }
 }
