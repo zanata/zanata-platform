@@ -23,6 +23,7 @@ package org.zanata;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -50,6 +51,7 @@ import org.zanata.config.DatabaseBackedConfig;
 import org.zanata.config.JaasConfig;
 import org.zanata.config.JndiBackedConfig;
 import org.zanata.events.ConfigurationChanged;
+import org.zanata.i18n.Messages;
 import org.zanata.log4j.ZanataHTMLLayout;
 import org.zanata.log4j.ZanataSMTPAppender;
 import org.zanata.security.AuthenticationType;
@@ -80,6 +82,8 @@ public class ApplicationConfiguration implements Serializable {
     private JndiBackedConfig jndiBackedConfig;
     @In
     private JaasConfig jaasConfig;
+    @In
+    private Messages msgs;
 
     private static final ZanataSMTPAppender smtpAppenderInstance =
             new ZanataSMTPAppender();
@@ -436,5 +440,10 @@ public class ApplicationConfiguration implements Serializable {
         } catch (NumberFormatException e) {
             return defaultValue;
         }
+    }
+
+    public String copyrightNotice() {
+        return msgs.format("jsf.CopyrightNotice",
+                String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
     }
 }

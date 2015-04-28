@@ -29,6 +29,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Properties;
 import java.util.jar.Attributes;
@@ -430,7 +431,8 @@ public class ZanataInit {
         }
         log.info("  AS version: " + appServerVersion.asVersion.orNull());
         log.info("  SCM: " + ver.getScmDescribe());
-        log.info("  Red Hat Inc 2008-2014");
+        log.info("  Red Hat Inc 2008-{}",
+                Calendar.getInstance().get(Calendar.YEAR));
         log.info("============================================");
     }
 

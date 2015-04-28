@@ -47,7 +47,7 @@
                 value="#{msgs.format('jsf.RunningVersionInfo',
                   msgs['jsf.Zanata'], applicationConfiguration.version,
                   applicationConfiguration.scmDescribe)}
-                  | #{msgs['jsf.CopyrightNotice']}"
+                  | #{applicationConfiguration.copyrightNotice()}"
                 escape="false"/>
             </p>
           </div>
