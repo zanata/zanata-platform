@@ -41,6 +41,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.zanata.adapter.FileFormatAdapter;
@@ -69,6 +70,7 @@ import com.google.common.io.ByteStreams;
 
 @Name("fileService")
 @Path(FileResource.FILE_RESOURCE)
+@Slf4j
 public class FileService implements FileResource {
     private static final String FILE_TYPE_OFFLINE_PO = "offlinepo";
     private static final String FILE_TYPE_OFFLINE_PO_TEMPLATE = "offlinepot";
@@ -152,7 +154,7 @@ public class FileService implements FileResource {
                                 .getRawDocumentContentAsStream(document
                                         .getRawDocument());
             } catch (RawDocumentContentAccessException e) {
-                e.printStackTrace();
+                log.error(e.toString(), e);
                 return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e)
                         .build();
             }
@@ -260,6 +262,7 @@ public class FileService implements FileResource {
                                 .getRawDocumentContentAsStream(hDocument
                                         .getRawDocument());
             } catch (RawDocumentContentAccessException e) {
+                log.error(e.toString(), e);
                 return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e)
                         .build();
             }
