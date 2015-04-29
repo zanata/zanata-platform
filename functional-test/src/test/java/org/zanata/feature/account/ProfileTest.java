@@ -20,6 +20,7 @@
  */
 package org.zanata.feature.account;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -79,6 +80,7 @@ public class ProfileTest extends ZanataTestCase {
     @Feature(summary = "The user can change their API key",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    @Ignore("RHBZ1216304")
     public void changeUsersApiKey() throws Exception {
         DashboardClientTab dashboardClientTab = new LoginWorkFlow()
                 .signIn("translator", "translator")
