@@ -235,7 +235,7 @@ public class AccountRawCompatibilityITCase extends CompatibilityBase {
         Response putResponse = accountClient.put(a);
 
         // Assert initial put
-        assertThat(putResponse.getStatus(), is(Status.UNAUTHORIZED.getStatusCode()));
+        assertThat(putResponse.getStatus(), is(Status.FORBIDDEN.getStatusCode()));
         releaseConnection(putResponse);
     }
 
