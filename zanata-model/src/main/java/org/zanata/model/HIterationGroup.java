@@ -48,7 +48,8 @@ import com.google.common.collect.Sets;
 @Setter
 @Getter
 @Access(AccessType.FIELD)
-public class HIterationGroup extends SlugEntityBase implements HasEntityStatus {
+public class HIterationGroup extends SlugEntityBase implements HasEntityStatus,
+        HasUserFriendlyToString {
     private static final long serialVersionUID = 5682522115222479842L;
 
     @Size(max = 80)
@@ -94,5 +95,11 @@ public class HIterationGroup extends SlugEntityBase implements HasEntityStatus {
 
     public void addProjectIteration(HProjectIteration iteration) {
         this.getProjectIterations().add(iteration);
+    }
+
+    @Override
+    public String userFriendlyToString() {
+        return String.format("Version group(slug=%s, name=%s, status=%s",
+                getSlug(), getName(), getStatus());
     }
 }

@@ -43,7 +43,7 @@ import org.zanata.model.type.RoleTypeType;
 @Entity
 @Setter
 @TypeDef(name = "roleType", typeClass = RoleTypeType.class)
-public class HAccountRole implements Serializable {
+public class HAccountRole implements Serializable, HasUserFriendlyToString {
     private static final long serialVersionUID = 9177366120789064801L;
 
     private Integer id;
@@ -83,6 +83,11 @@ public class HAccountRole implements Serializable {
     @NotNull
     public RoleType getRoleType() {
         return roleType;
+    }
+
+    @Override
+    public String userFriendlyToString() {
+        return getName();
     }
 
     public enum RoleType {

@@ -58,7 +58,8 @@ import com.ibm.icu.util.ULocale;
 @ToString(of = { "localeId" }, doNotUseGetters = true)
 @EqualsAndHashCode(callSuper = false, of = { "localeId" },
         doNotUseGetters = true)
-public class HLocale extends ModelEntityBase implements Serializable {
+public class HLocale extends ModelEntityBase implements Serializable,
+        HasUserFriendlyToString {
     private static final long serialVersionUID = 1L;
     private @Nonnull
     LocaleId localeId;
@@ -157,4 +158,9 @@ public class HLocale extends ModelEntityBase implements Serializable {
         return new ULocale(this.localeId.getId());
     }
 
+    @Override
+    public String userFriendlyToString() {
+        return String.format("Locale(id=%s, name=%s)", getLocaleId(),
+                retrieveDisplayName());
+    }
 }
