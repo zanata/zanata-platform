@@ -25,6 +25,7 @@ import java.util.List;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -52,6 +53,7 @@ import com.google.common.collect.Lists;
  */
 @Name("editor.translationService")
 @Path(TranslationResource.SERVICE_PATH)
+@Slf4j
 @Transactional
 public class TranslationService implements TranslationResource {
     @In
@@ -80,7 +82,10 @@ public class TranslationService implements TranslationResource {
         }
         List<Long> idList = TransUnitUtils.filterAndConvertIdsToList(ids);
         if (idList.size() > TransUnitUtils.MAX_SIZE) {
-            return Response.status(Response.Status.FORBIDDEN).build();
+            String msg = String.format("More than %d results.", TransUnitUtils.MAX_SIZE);
+            log.warn(msg);
+            return Response.status(Response.Status.FORBIDDEN).entity(msg)
+                    .build();
         }
 
         HLocale locale = localeServiceImpl.getByLocaleId(localeId);
