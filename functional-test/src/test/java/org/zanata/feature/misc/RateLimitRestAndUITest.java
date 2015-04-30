@@ -152,13 +152,13 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
         ClientResponse response =
                 clientRequestAsTranslator("rest/configurations/").get(
                         ClientResponse.class);
-        assertThat(response.getStatus()).isEqualTo(401);
+        assertThat(response.getStatus()).isEqualTo(403);
 
         ClientResponse response1 =
                 clientRequestAsTranslator(
                         "rest/configurations/c/email.admin.addr").get(
                         ClientResponse.class);
-        assertThat(response1.getStatus()).isEqualTo(401);
+        assertThat(response1.getStatus()).isEqualTo(403);
 
         WebResource.Builder request =
                 clientRequestAsTranslator(
@@ -167,7 +167,7 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
         try {
             request.put();
         } catch (UniformInterfaceException e) {
-            assertThat(e.getResponse().getStatus()).isEqualTo(401);
+            assertThat(e.getResponse().getStatus()).isEqualTo(403);
         }
     }
 
