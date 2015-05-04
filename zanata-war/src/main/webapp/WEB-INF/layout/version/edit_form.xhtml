@@ -61,14 +61,9 @@
         title="#{msgs['jsf.SlugExample']}"></i></span>
     </h:outputLabel>
     <s:decorate id="slugField" template="../field.xhtml" enclose="true">
-      <h:inputText rendered="#{versionHome.managed}" disabled="true"
-        value="#{versionHome.instance.slug}">
-      </h:inputText>
-
-      <h:inputText rendered="#{not versionHome.managed}" maxlength="40"
+      <h:inputText maxlength="40"
         id="slug" required="true" value="#{versionHome.instance.slug}"
         valueChangeListener="#{versionHome.verifySlugAvailable}">
-        <a4j:ajax event="blur" render="slugField" execute="@this"/>
         <f:validateLength minimum="1"/>
       </h:inputText>
     </s:decorate>

@@ -202,8 +202,10 @@ public class IndexingServiceImpl implements IndexingService {
             if (slugEntity instanceof HProject) {
                 indexingStrategy.reindexForProject((HProject) slugEntity,
                         session, handle);
+            } else if (slugEntity instanceof HProjectIteration) {
+                indexingStrategy.reindexForProjectVersion(
+                        (HProjectIteration) slugEntity, session, handle);
             }
-            // TODO pahuang handle HProjectIteration
 
             if (handle.getCurrentProgress() != handle
                     .getMaxProgress()) {

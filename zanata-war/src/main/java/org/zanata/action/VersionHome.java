@@ -92,6 +92,8 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     @Setter
     private String slug;
 
+    private Long versionId;
+
     @Getter
     @Setter
     private String projectSlug;
@@ -230,9 +232,17 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     @Override
     protected HProjectIteration loadInstance() {
         Session session = (Session) getEntityManager().getDelegate();
-        return (HProjectIteration) session.byNaturalId(HProjectIteration.class)
-                .using("slug", getSlug())
-                .using("project", projectDAO.getBySlug(projectSlug)).load();
+        if (versionId == null) {
+            HProjectIteration iteration = (HProjectIteration) session
+                    .byNaturalId(HProjectIteration.class)
+                    .using("slug", getSlug())
+                    .using("project", projectDAO.getBySlug(projectSlug)).load();
+            versionId = iteration.getId();
+            return iteration;
+        } else {
+            return (HProjectIteration) session.load(HProjectIteration.class,
+                    versionId);
+        }
     }
 
     @Restrict("#{s:hasPermission(versionHome.instance, 'update')}")
@@ -261,7 +271,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         if (availableValidations.isEmpty()) {
             Collection<ValidationAction> validationList =
                     validationServiceImpl.getValidationActions(projectSlug,
-                            slug);
+                            getInstance().getSlug());
 
             for (ValidationAction validationAction : validationList) {
                 availableValidations.put(validationAction.getId(),
@@ -419,6 +429,10 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         String state = super.update();
         projectIterationUpdateEvent.fire(
             new ProjectIterationUpdate(getInstance()));
+        if (!slug.equals(getInstance().getSlug())) {
+            slug = getInstance().getSlug();
+            return "versionSlugUpdated";
+        }
         return state;
     }
 

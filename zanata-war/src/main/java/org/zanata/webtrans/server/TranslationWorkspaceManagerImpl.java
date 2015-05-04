@@ -210,9 +210,9 @@ public class TranslationWorkspaceManagerImpl implements
         ProjectType projectType = projectIteration.getProjectType();
         log.info(
                 "Project {} iteration {} updated, status={}, isProjectActive={}, projectType={}",
-                new Object[] { projectSlug, iterSlug,
-                        projectIteration.getStatus(), isProjectActive,
-                        projectType });
+                projectSlug, iterSlug,
+                projectIteration.getStatus(), isProjectActive,
+                projectType);
 
         ProjectIterationId iterId =
                 new ProjectIterationId(projectSlug, iterSlug,

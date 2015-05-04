@@ -115,7 +115,15 @@ public class HTextFlowTargetIndexingStrategy extends
         session.clear(); // clear since the queue is processed
     }
 
-    public void reindexForProjectVersion(HProjectIteration projectIteration) {
-
+    public void reindexForProjectVersion(HProjectIteration projectIteration,
+            FullTextSession session, AsyncTaskHandle<Void> handle) {
+        // it must use the same session in the DAO and to do the indexing
+        HTextFlowTargetStreamingDAO dao =
+                new HTextFlowTargetStreamingDAO(HTextFlowTarget.class, session);
+        ScrollableResults
+                scrollableResults =
+                dao.getTargetsWithAllFieldsEagerlyFetchedForProjectIteration(
+                        projectIteration);
+        reindexScrollableResultSet(session, scrollableResults, handle);
     }
 }

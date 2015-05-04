@@ -14,6 +14,9 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.SlugEntityBase;
 import org.zanata.service.IndexingService;
+import org.zanata.webtrans.server.TranslationWorkspaceManager;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
+import org.zanata.webtrans.shared.model.WorkspaceId;
 import com.google.common.base.Throwables;
 
 /**
@@ -31,6 +34,9 @@ public class SlugUpdatedListener implements PostUpdateEventListener {
 
     @In
     private IndexingService indexingServiceImpl;
+
+    @In
+    private TranslationWorkspaceManager translationWorkspaceManager;
 
     private Integer index;
 
@@ -52,7 +58,6 @@ public class SlugUpdatedListener implements PostUpdateEventListener {
                 event.getEntity());
         log.debug("Slug entity [{}] changed slug. old slug: {}, new slug: {}",
                 slugEntityBase, oldSlug, newSlug);
-        // TODO pahuang need to update lucene index for all text flow targets under this project or iteration
 
         AsyncTaskHandle<Void> handle = new AsyncTaskHandle<>();
         asyncTaskHandleManager.registerTaskHandle(handle);
@@ -63,6 +68,8 @@ public class SlugUpdatedListener implements PostUpdateEventListener {
         catch (Exception e) {
             log.error("exception happen in async framework", e);
         }
+        // TODO pahuang need to send workspace update event to all open workspace and let user redirect to new url
+        // translationWorkspaceManager.tryGetWorkspace(new WorkspaceId(new ProjectIterationId(oldSlug, null, )))
     }
 
     private Integer getSlugFieldIndex(PostUpdateEvent event) {

@@ -31,6 +31,7 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 
 /**
@@ -102,6 +103,33 @@ public class HTextFlowTargetStreamingDAO extends
                                         "join fetch tft.textFlow.document.projectIteration.project p where p = :project");
         return query.setFetchSize(Integer.MIN_VALUE)
                 .setParameter("project", project)
+                .scroll(ScrollMode.FORWARD_ONLY);
+    }
+
+    /**
+     *
+     * @return scrollable result set of HTextFlowTarget under a project
+     *         iteration, with all of its fields(locale, textflow, document,
+     *         document locale, project iteration and project) eagerly fetched.
+     */
+    public ScrollableResults
+            getTargetsWithAllFieldsEagerlyFetchedForProjectIteration(
+                    HProjectIteration iteration) {
+        Query query =
+                getSession()
+                        .createQuery(
+                                "from HTextFlowTarget tft "
+                                        + "join fetch tft.locale "
+                                        + "join fetch tft.textFlow "
+                                        + "join fetch tft.textFlow.document "
+                                        +
+                                        "join fetch tft.textFlow.document.locale "
+                                        +
+                                        "join fetch tft.textFlow.document.projectIteration iter "
+                                        +
+                                        "join fetch tft.textFlow.document.projectIteration.project where iter = :iteration");
+        return query.setFetchSize(Integer.MIN_VALUE)
+                .setParameter("iteration", iteration)
                 .scroll(ScrollMode.FORWARD_ONLY);
     }
 }

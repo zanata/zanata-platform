@@ -37,7 +37,7 @@ import org.zanata.webtrans.shared.rpc.SessionEventData;
  *
  */
 public interface TranslationWorkspace {
-    public Map<EditorClientId, PersonSessionDetails> getUsers();
+    Map<EditorClientId, PersonSessionDetails> getUsers();
 
     void addEditorClient(String httpSessionId, EditorClientId editorClientId,
             PersonId personId);
@@ -55,6 +55,6 @@ public interface TranslationWorkspace {
 
     TransUnitId getUserSelection(EditorClientId editorClientId);
 
-    public void onEventServiceConnected(EditorClientId editorClientId,
+    void onEventServiceConnected(EditorClientId editorClientId,
             String connectionId);
 }

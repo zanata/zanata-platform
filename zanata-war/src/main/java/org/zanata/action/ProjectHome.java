@@ -543,7 +543,8 @@ public class ProjectHome extends SlugHome<HProject> implements
      */
     private boolean enableLocaleSilently(HLocale locale) {
         ensureOverridingLocales();
-        final boolean localeWasDisabled = getInstance().getCustomizedLocales().add(locale);
+        final boolean localeWasDisabled = getInstance().getCustomizedLocales().add(
+                locale);
         refreshDisabledLocales();
         return localeWasDisabled;
     }
@@ -696,9 +697,12 @@ public class ProjectHome extends SlugHome<HProject> implements
     @Restrict("#{s:hasPermission(projectHome.instance, 'update')}")
     public String update() {
         String result = super.update();
-        if (result.equals("updated")) {
+        if (!slug.equals(getInstance().getSlug())) {
             slug = getInstance().getSlug();
+            projectUpdateEvent.fire(new ProjectUpdate(getInstance()));
+            return "projectSlugUpdated";
         }
+        projectUpdateEvent.fire(new ProjectUpdate(getInstance()));
         return result;
     }
 
