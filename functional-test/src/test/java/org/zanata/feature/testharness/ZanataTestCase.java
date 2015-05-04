@@ -41,8 +41,8 @@ import org.zanata.util.RetryRule;
 @Slf4j
 public class ZanataTestCase {
 
-    public final static int MAX_SHORT_TEST_DURATION = 120000;
-    public final static int MAX_LONG_TEST_DURATION = 300000;
+    public final static int MAX_SHORT_TEST_DURATION = 180000;
+    public final static int MAX_LONG_TEST_DURATION = 600000;
 
     @Rule
     public TestName testName = new TestName();
