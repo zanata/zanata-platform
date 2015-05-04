@@ -27,7 +27,6 @@
         <s:decorate id="nameField" template="../field.xhtml" enclose="true">
           <h:inputText id="name" required="true" maxlength="80"
             value="#{projectHome.instance.name}">
-            <a4j:ajax event="blur" render="nameField" execute="@this"/>
           </h:inputText>
         </s:decorate>
       </div>
@@ -40,18 +39,14 @@
             title="#{msgs['jsf.SlugExample']}"></i></span>
         </h:outputLabel>
         <s:decorate id="slugField" template="../field.xhtml" enclose="true">
-          <h:inputText rendered="#{projectHome.managed}" disabled="true"
-            value="#{projectHome.instance.slug}">
-          </h:inputText>
-
-          <h:inputText rendered="#{not projectHome.managed}" maxlength="40"
+          <h:inputText maxlength="40"
             id="slug" required="true"
             value="#{projectHome.instance.slug}"
             valueChangeListener="#{projectHome.verifySlugAvailable}">
-            <a4j:ajax event="blur" render="slugField" execute="@this"/>
             <f:validateLength minimum="1"/>
           </h:inputText>
         </s:decorate>
+        <h:inputHidden id="projectId" value="#{projectHome.projectId}"/>
       </div>
     </div>
   </div>
@@ -64,7 +59,6 @@
       <h:inputTextarea id="description" required="false"
         value="#{projectHome.instance.description}">
         <f:validateLength maximum="100"/>
-        <a4j:ajax event="blur" render="descriptionField" execute="@this"/>
       </h:inputTextarea>
     </s:decorate>
   </div>

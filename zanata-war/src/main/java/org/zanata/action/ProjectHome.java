@@ -22,6 +22,7 @@ package org.zanata.action;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,6 +37,7 @@ import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import lombok.Getter;
@@ -95,11 +97,13 @@ public class ProjectHome extends SlugHome<HProject> implements
 
     private static final long serialVersionUID = 1L;
 
-    public static final String PROJECT_UPDATE = "project.update";
-
     @Getter
     @Setter
     private String slug;
+
+    @Setter
+    @Getter
+    private Long projectId;
 
     @In
     private ZanataIdentity identity;
@@ -614,8 +618,14 @@ public class ProjectHome extends SlugHome<HProject> implements
     @Override
     protected HProject loadInstance() {
         Session session = (Session) getEntityManager().getDelegate();
-        return (HProject) session.byNaturalId(HProject.class)
+        if (projectId == null) {
+            HProject project = (HProject) session.byNaturalId(HProject.class)
                 .using("slug", getSlug()).load();
+            projectId = project.getId();
+            return project;
+        } else {
+            return (HProject) session.byId(HProject.class).load(projectId);
+        }
     }
 
     public void validateSuppliedId() {
@@ -680,6 +690,16 @@ public class ProjectHome extends SlugHome<HProject> implements
         } else {
             getInstance().setDefaultProjectType(null);
         }
+    }
+
+    @Override
+    @Restrict("#{s:hasPermission(projectHome.instance, 'update')}")
+    public String update() {
+        String result = super.update();
+        if (result.equals("updated")) {
+            slug = getInstance().getSlug();
+        }
+        return result;
     }
 
     @Override
@@ -882,7 +902,7 @@ public class ProjectHome extends SlugHome<HProject> implements
     private Map<ValidationId, ValidationAction> getValidations() {
         if (availableValidations.isEmpty()) {
             Collection<ValidationAction> validationList =
-                    validationServiceImpl.getValidationActions(slug);
+                    validationServiceImpl.getValidationActions(getInstance().getSlug());
 
             for (ValidationAction validationAction : validationList) {
                 availableValidations.put(validationAction.getId(),

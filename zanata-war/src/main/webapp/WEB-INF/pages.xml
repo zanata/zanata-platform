@@ -332,6 +332,13 @@
         </redirect>
       </rule>
     </navigation>
+    <navigation from-action="#{projectHome.update}">
+      <rule if-outcome="updated">
+        <redirect view-id="/project/project.xhtml">
+          <param name="slug" value="#{projectHome.slug}" />
+        </redirect>
+      </rule>
+    </navigation>
   </page>
 
   <page view-id="/project/create_project.xhtml">
