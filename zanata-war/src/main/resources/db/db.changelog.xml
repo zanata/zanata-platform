@@ -40,10 +40,12 @@
   <include relativeToChangelogFile="true"
     file="changelogs/db.changelog-3.7.xml" />
 
-  <!-- NB: triggers must be created after all table changes -->
+  <!-- NB: triggers and validations must appear after all table changes -->
   <!-- If the Liquibase version is being updated, please refer to the
    file below and change the ids of the trigger change sets to reflect the
    updated Liquibase version-->
   <include relativeToChangelogFile="true"
     file="changelogs/db.changelog-triggers.xml" />
+  <include relativeToChangelogFile="true"
+           file="changelogs/db.changelog-validations.xml" />
 </databaseChangeLog>

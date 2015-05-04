@@ -38,6 +38,20 @@ Example usage in html file: `<link rel="shortcut icon" href="#{assets['img/logo/
 * [1133989](https://bugzilla.redhat.com/show_bug.cgi?id=1133989) - Copy translations from existing version.
 *
 
+## 3.6.3
+
+<h5>Bugfixes</h5>
+* [1207575](https://bugzilla.redhat.com/show_bug.cgi?id=1207575) - Zanata still creates MyISAM (not InnoDB) tables in some cases
+
+-----------------------
+
+## 3.6.2
+
+<h5>Bugfixes</h5>
+* [1206018](https://bugzilla.redhat.com/show_bug.cgi?id=1206018) - RichFaces: Remote Command Execution via insufficient EL parameter sanitization
+
+-----------------------
+
 ## 3.6.1
 
 <h5>Bug fixes</h5>

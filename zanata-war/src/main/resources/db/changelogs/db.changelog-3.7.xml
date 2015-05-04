@@ -83,4 +83,7 @@
     </addColumn>
   </changeSet>
 
+  <!-- TODO Ensure any new 3.7 tables are converted to InnoDB (on dev machines).
+       See db.changelog-3.6.xml -->
+
 </databaseChangeLog>

@@ -30,6 +30,118 @@
       referencedTableName = "HProject" referencedColumnNames = "id"/>
   </changeSet>
 
+  <!-- Ensure engine is InnoDB for every table created after Zanata 1.6 -->
+  <changeSet id="3.01" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for HIterationGroup</comment>
+    <sql>ALTER TABLE HIterationGroup ENGINE = INNODB</sql>
+  </changeSet>
+  <changeSet id="3.02" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for HIterationGroup_Maintainer</comment>
+    <sql>ALTER TABLE HIterationGroup_Maintainer ENGINE = INNODB</sql>
+  </changeSet>
+  <changeSet id="3.03" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for HIterationGroup_ProjectIteration</comment>
+    <sql>ALTER TABLE HIterationGroup_ProjectIteration ENGINE = INNODB</sql>
+  </changeSet>
+  <changeSet id="3.04" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for HCredentials</comment>
+    <sql>ALTER TABLE HCredentials ENGINE = INNODB</sql>
+  </changeSet>
+  <changeSet id="3.05" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for HProject_AllowedRole</comment>
+    <sql>ALTER TABLE HProject_AllowedRole ENGINE = INNODB</sql>
+  </changeSet>
+  <changeSet id="3.06" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for HRoleAssignmentRule</comment>
+    <sql>ALTER TABLE HRoleAssignmentRule ENGINE = INNODB</sql>
+  </changeSet>
+  <changeSet id="3.07" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for HCopyTransOptions</comment>
+    <sql>ALTER TABLE HCopyTransOptions ENGINE = INNODB</sql>
+  </changeSet>
+  <changeSet id="3.08" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for HRawDocument</comment>
+    <sql>ALTER TABLE HRawDocument ENGINE = INNODB</sql>
+  </changeSet>
+  <changeSet id="3.09" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for HDocument_RawDocument</comment>
+    <sql>ALTER TABLE HDocument_RawDocument ENGINE = INNODB</sql>
+  </changeSet>
+  <changeSet id="3.10" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for HDocumentUpload</comment>
+    <sql>ALTER TABLE HDocumentUpload ENGINE = INNODB</sql>
+  </changeSet>
+  <changeSet id="3.11" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for HDocumentUploadPart</comment>
+    <sql>ALTER TABLE HDocumentUploadPart ENGINE = INNODB</sql>
+  </changeSet>
+  <changeSet id="3.12" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for HAccountOption</comment>
+    <sql>ALTER TABLE HAccountOption ENGINE = INNODB</sql>
+  </changeSet>
+  <changeSet id="3.13" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for HPersonEmailValidationKey</comment>
+    <sql>ALTER TABLE HPersonEmailValidationKey ENGINE = INNODB</sql>
+  </changeSet>
+  <changeSet id="3.14" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for HProject_Validation</comment>
+    <sql>ALTER TABLE HProject_Validation ENGINE = INNODB</sql>
+  </changeSet>
+  <changeSet id="3.15" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for HProjectIteration_Validation</comment>
+    <sql>ALTER TABLE HProjectIteration_Validation ENGINE = INNODB</sql>
+  </changeSet>
+  <changeSet id="3.16" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for TransMemory</comment>
+    <sql>ALTER TABLE TransMemory ENGINE = INNODB</sql>
+  </changeSet>
+  <changeSet id="3.17" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for TransMemory_Metadata</comment>
+    <sql>ALTER TABLE TransMemory_Metadata ENGINE = INNODB</sql>
+  </changeSet>
+  <changeSet id="3.18" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for TransMemoryUnit</comment>
+    <sql>ALTER TABLE TransMemoryUnit ENGINE = INNODB</sql>
+  </changeSet>
+  <changeSet id="3.19" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for TransMemoryUnitVariant</comment>
+    <sql>ALTER TABLE TransMemoryUnitVariant ENGINE = INNODB</sql>
+  </changeSet>
+  <changeSet id="3.20" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for HTextFlowTargetReviewComment</comment>
+    <sql>ALTER TABLE HTextFlowTargetReviewComment ENGINE = INNODB</sql>
+  </changeSet>
+  <!-- changeset 3.21: HRawDocumentContent no longer exists -->
+  <changeSet id="3.22" author="sflaniga@redhat.com" dbms="mysql">
+    <!-- Activity table can be big, so check before running -->
+    <preConditions onFail="MARK_RAN">
+      <sqlCheck expectedResult="0">
+        SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES
+        WHERE TABLE_SCHEMA = SCHEMA()
+        AND ENGINE = 'InnoDB'
+        AND TABLE_NAME='Activity';
+      </sqlCheck>
+    </preConditions>
+    <comment>Ensure InnoDB for Activity</comment>
+    <sql>ALTER TABLE Activity ENGINE = INNODB</sql>
+  </changeSet>
+  <changeSet id="3.23" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for IterationGroup_Locale</comment>
+    <sql>ALTER TABLE IterationGroup_Locale ENGINE = INNODB</sql>
+  </changeSet>
+  <changeSet id="3.24" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for WebHook</comment>
+    <sql>ALTER TABLE WebHook ENGINE = INNODB</sql>
+  </changeSet>
+  <changeSet id="3.25" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for DATABASECHANGELOG</comment>
+    <sql>ALTER TABLE DATABASECHANGELOG ENGINE = INNODB</sql>
+  </changeSet>
+  <changeSet id="3.26" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for DATABASECHANGELOGLOCK</comment>
+    <sql>ALTER TABLE DATABASECHANGELOGLOCK ENGINE = INNODB</sql>
+  </changeSet>
+
   <changeSet id="1" author="damason@redhat.com">
     <comment>Create table HProject_LocaleAlias.</comment>
 
@@ -77,6 +189,15 @@
       constraintName = "FK_HProjectIteration_LocaleAlias_HProjectIteration"
       referencedTableName = "HProjectIteration"
       referencedColumnNames = "id"/>
+  </changeSet>
+
+  <changeSet id="3.27" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for HProject_LocaleAlias</comment>
+    <sql>ALTER TABLE HProject_LocaleAlias ENGINE = INNODB</sql>
+  </changeSet>
+  <changeSet id="3.28" author="sflaniga@redhat.com" dbms="mysql">
+    <comment>Ensure InnoDB for HProjectIteration_LocaleAlias</comment>
+    <sql>ALTER TABLE HProjectIteration_LocaleAlias ENGINE = INNODB</sql>
   </changeSet>
 
 </databaseChangeLog>
