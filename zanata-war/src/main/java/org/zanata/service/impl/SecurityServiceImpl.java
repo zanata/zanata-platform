@@ -81,6 +81,12 @@ public class SecurityServiceImpl implements SecurityService {
                         .getProjectIterationId().getProjectSlug(), workspaceId
                         .getProjectIterationId().getIterationSlug());
 
+        if (project == null || projectIteration == null) {
+            // TODO pahuang due to slug change or in future project being deleted permanently
+            // see org.zanata.webtrans.server.SeamDispatch.execute()
+            // for a valid exception to throw
+            throw new AuthorizationException("Project or version has moved");
+        }
         if (projectIterationIsInactive(project.getStatus(),
                 projectIteration.getStatus())) {
             throw new AuthorizationException("Project or version is read-only");

@@ -9,6 +9,7 @@ import org.hibernate.metamodel.source.MetadataImplementor;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
 import org.jboss.seam.contexts.Contexts;
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.service.impl.SlugUpdatedListener;
 import org.zanata.util.ServiceLocator;
 
 /**
@@ -37,6 +38,8 @@ public class HibernateIntegrator implements Integrator {
                     updateListener);
             eventListenerRegistry.appendListeners(EventType.POST_INSERT,
                     updateListener);
+            eventListenerRegistry.appendListeners(EventType.POST_COMMIT_UPDATE,
+                    ServiceLocator.instance().getInstance(SlugUpdatedListener.class));
         }
     }
 

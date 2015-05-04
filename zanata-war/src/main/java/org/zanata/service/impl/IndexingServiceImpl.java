@@ -40,7 +40,11 @@ import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.ContainsAsyncMethods;
+import org.zanata.dao.HTextFlowTargetStreamingDAO;
+import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.SlugEntityBase;
 import org.zanata.search.AbstractIndexingStrategy;
 import org.zanata.search.ClassIndexer;
 import org.zanata.search.HTextFlowTargetIndexingStrategy;
@@ -60,6 +64,9 @@ public class IndexingServiceImpl implements IndexingService {
 
     @In
     private EntityManagerFactory entityManagerFactory;
+
+    @In
+    private HTextFlowTargetStreamingDAO hTextFlowTargetStreamingDAO;
 
     @Override
     @Async
@@ -169,6 +176,78 @@ public class IndexingServiceImpl implements IndexingService {
             strategy = new SimpleClassIndexingStrategy<T>(clazz);
         }
         return new ClassIndexer<T>(handle, clazz, strategy);
+    }
+
+    @Override
+    @Async
+    public Future<Void> reindexSlugEntity(SlugEntityBase slugEntity,
+            AsyncTaskHandle<Void> handle)
+            throws Exception {
+        FullTextSession session = openFullTextSession();
+        try {
+
+            Long entityCount = getEntityCount(slugEntity, session);
+            handle.setMaxProgress(entityCount.intValue());
+            // TODO this is necessary because isInProgress checks number of
+            // operations, which may be 0
+            // look at updating isInProgress not to care about count
+            if (handle.getMaxProgress() == 0) {
+                log.info("Reindexing aborted because there are no actions "
+                        + "to perform (may be indexing an empty table)");
+                return AsyncTaskResult.taskResult();
+            }
+
+            HTextFlowTargetIndexingStrategy indexingStrategy =
+                    new HTextFlowTargetIndexingStrategy();
+            if (slugEntity instanceof HProject) {
+                indexingStrategy.reindexForProject((HProject) slugEntity,
+                        session, handle);
+            }
+            // TODO pahuang handle HProjectIteration
+
+            if (handle.getCurrentProgress() != handle
+                    .getMaxProgress()) {
+                // @formatter: off
+                log.warn(
+                        "Did not reindex the expected number of "
+                                + "objects. Counted {} but indexed {}. "
+                                + "The index may be out-of-sync. "
+                                + "This may be caused by lack of "
+                                + "sufficient memory, or by database "
+                                + "activity during reindexing.",
+                        handle.getMaxProgress(), handle
+                                .getCurrentProgress());
+                // @formatter: on
+            }
+
+            log.info(
+                    "Re-indexing HTextFlowTarget for slug change: [{}] finished",
+                    slugEntity);
+        } finally {
+            session.close();
+        }
+        return AsyncTaskResult.taskResult();
+    }
+
+    private static Long getEntityCount(SlugEntityBase slugEntity,
+            FullTextSession session) {
+        if (slugEntity instanceof HProject) {
+            HProject project = (HProject) slugEntity;
+            return (Long) session
+                    .createQuery(
+                            "select count(*) from HTextFlowTarget tft where tft.textFlow.document.projectIteration.project = :project")
+                    .setParameter("project", project)
+                    .uniqueResult();
+        } else if (slugEntity instanceof HProjectIteration) {
+            HProjectIteration iteration = (HProjectIteration) slugEntity;
+            return (Long) session
+                    .createQuery(
+                            "select count(*) from HTextFlowTarget tft where tft.textFlow.document.projectIteration = :iteration")
+                    .setParameter("iteration", iteration)
+                    .uniqueResult();
+        }
+        throw new IllegalArgumentException(
+                "only support HProject and HProjectIteration in this operation");
     }
 
 }

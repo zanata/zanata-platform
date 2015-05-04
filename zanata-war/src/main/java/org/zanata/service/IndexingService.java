@@ -23,6 +23,7 @@ package org.zanata.service;
 import org.zanata.action.ReindexClassOptions;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
+import org.zanata.model.SlugEntityBase;
 
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -34,6 +35,11 @@ public interface IndexingService {
     @Async
     Future<Void> startIndexing(
             Map<Class<?>, ReindexClassOptions> indexingOptions,
+            AsyncTaskHandle<Void> handle)
+            throws Exception;
+
+    @Async
+    Future<Void> reindexSlugEntity(SlugEntityBase slugEntity,
             AsyncTaskHandle<Void> handle)
             throws Exception;
 }

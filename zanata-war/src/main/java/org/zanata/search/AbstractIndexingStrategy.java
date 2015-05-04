@@ -14,7 +14,7 @@ import org.zanata.async.AsyncTaskHandle;
  */
 @Slf4j
 public abstract class AbstractIndexingStrategy<T> {
-    private int sessionClearBatchSize = 1000;
+    protected static final int sessionClearBatchSize = 1000;
     private ScrollableResults scrollableResults;
     private final Class<T> entityType;
 
