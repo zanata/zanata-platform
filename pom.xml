@@ -481,6 +481,12 @@
       </dependency>
 
       <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-liquibase</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt-dev</artifactId>
         <version>${gwt.version}</version>
@@ -1630,6 +1636,7 @@
   </distributionManagement>
 
   <modules>
+    <module>zanata-liquibase</module>
     <module>zanata-model</module>
     <module>zanata-war</module>
     <module>zanata-test-war</module>
