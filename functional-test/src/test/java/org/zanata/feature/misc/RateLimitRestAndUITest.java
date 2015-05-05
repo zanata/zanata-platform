@@ -34,6 +34,7 @@ import javax.ws.rs.core.MediaType;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -199,6 +200,7 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    @Ignore("RHBZ1218458")
     public void canLimitConcurrentRestRequestsPerAPIKey() throws Exception {
         // translator creates the project/version
         final String projectSlug = "project";
