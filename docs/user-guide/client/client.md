@@ -1,0 +1,1 @@
+All Zanata client documentation is located at [Zanata client|readthedocs](http://zanata-client.readthedocs.org/en/latest/)

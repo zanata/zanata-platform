@@ -7,8 +7,74 @@ theme: readthedocs
 
 pages:
 - ['index.md', 'Home']
+# Getting started
+- ['user-guide/translator-guide.md', 'Getting Started', 'Translator Guide']
+- ['user-guide/project-maintainer-guide.md', 'Getting Started', 'Project Maintainer Guide']
+## Accounts
+- ['user-guide/account/account-sign-up.md', 'Accounts', 'Create new account']
+- ['user-guide/account/account-activate.md', 'Accounts', 'Activate account']
+- ['user-guide/account/account-resend-activation.md', 'Accounts', 'Resend activation email']
+- ['user-guide/account/account-settings.md', 'Accounts', 'Account settings']
+- ['user-guide/account/user-profile.md', 'Accounts', 'User profile']
+- ['user-guide/account/user-dashboard.md', 'Accounts', 'User dashboard']
+## Projects
+- ['user-guide/projects/project-view.md', 'Projects', 'Project view']
+- ['user-guide/projects/create-project.md', 'Projects', 'Creating a project']
+- ['user-guide/projects/project-settings.md', 'Projects', 'Project settings']
+- ['user-guide/projects/project-types.md', 'Projects', 'Project types']
+- ['user-guide/projects/validations.md', 'Projects', 'Validations']
+- ['user-guide/projects/import-projects.md', 'Projects', 'Import Projects']
+- ['user-guide/projects/gettext-example.md', 'Projects', 'Gettext Project example']
+- ['user-guide/projects/podir-example.md', 'Projects', 'Podir Project example']
+## Versions
+- ['user-guide/versions/version-view.md', 'Versions', 'Version view']
+- ['user-guide/versions/create-version.md', 'Versions', 'Creating a version']
+- ['user-guide/versions/version-settings.md', 'Versions', 'Version settings']
+- ['user-guide/versions/request-to-join-group.md', 'Versions', 'Join a group']
+- ['user-guide/versions/merge-translations.md', 'Versions', 'Merge translations']
+- ['user-guide/versions/upload-strings.md', 'Versions', 'Upload documents']
+- ['user-guide/versions/download-translations.md', 'Versions', 'Download translations']
+## Languages
+- ['user-guide/languages/language-team.md', 'Languages', 'Language team']
+- ['user-guide/languages/add-team-member.md', 'Languages', 'Add members']
+- ['user-guide/languages/modify-role.md', 'Languages', 'Modify role']
+## Review
+- ['user-guide/review/overview.md', 'Translation Review', 'Overview']
+- ['user-guide/review/review-enable.md', 'Translation Review', 'Enabling review in version']
+- ['user-guide/review/add-reviewer.md', 'Translation Review', 'Add reviewer']
+- ['user-guide/review/translation-review.md', 'Translation Review', 'Start reviewing']
+## Translation reuse
+- ['user-guide/translation-reuse/copy-trans.md', 'Translation Reuse', 'Copy Trans']
+- ['user-guide/translation-reuse/copy-version.md', 'Translation Reuse', 'Copy version']
+- ['user-guide/translation-reuse/merge-trans.md', 'Translation Reuse', 'Merge translations']
+### merge translation from existing version
 
-# Configuration Guide
+## Groups
+- ['user-guide/groups/group-view.md', 'Groups', 'Group view']
+- ['user-guide/groups/create-group.md', 'Groups', 'Creating a group']
+- ['user-guide/groups/group-settings.md', 'Groups', 'Group settings']
+## Editor
+- ['user-guide/editor/overview.md', 'Editor', 'Overview']
+- ['user-guide/editor/editor-view.md', 'Editor', 'Editor view']
+- ['user-guide/editor/documents-view.md', 'Editor', 'Document view']
+- ['user-guide/editor/keyboard-shortcuts.md', 'Editor', 'Keyboard shortcuts']
+- ['user-guide/editor/translation-history.md', 'Editor', 'Translation history']
+## Glossary
+- ['user-guide/glossary/glossary-roles-permissions.md', 'Glossary', 'Roles and Permissions']
+- ['user-guide/glossary/upload-glossaries.md', 'Glossary', 'Upload glossaries']
+- ['user-guide/glossary/edit-glossaries.md', 'Glossary', 'Edit glossaries']
+- ['user-guide/glossary/delete-glossaries.md', 'Glossary', 'Delete glossaries']
+## API
+- ['user-guide/api/api.md', 'API', 'Zanata API']
+## Client
+- ['user-guide/client/client.md', 'Zanata Client', 'Zanata client']
+## Drupal
+- ['user-guide/drupal/drupal.md', 'Drupal plugin', 'Drupal plugin']
+## Admin
+- ['user-guide/admin/admin-overview.md', 'Admin', 'Overview']
+- ['user-guide/admin/contact-admin.md', 'Admin', 'Contact Admin']
+## need tmx section
+# Configuration
 - ['configuration/installation.md', 'Configuration', 'Installation']
 - ['configuration/authentication.md', 'Configuration', 'Authentication']
 - ['configuration/document-storage-directory.md', 'Configuration', 'Document Storage Directory']
@@ -17,26 +83,6 @@ pages:
 - ['configuration/infinispan.md', 'Configuration', 'Caches']
 - ['configuration/jms-messaging.md', 'Configuration', 'JMS Messaging']
 
-# Release notes
-- ['release-notes.md', 'Release Notes', 'Release Notes']
-
-# User Guide
-- ['user-guide/translators-new-account.md', 'User Guide', 'Creating a new account']
-- ['user-guide/joining-a-language-team.md', 'User Guide', 'Joining a Language team']
-- ['user-guide/contributing-translations.md', 'User Guide', 'Contributing Translations']
-- ['user-guide/keyboard-shortcuts.md', 'User Guide', 'Keyboard Shortcuts']
-- ['user-guide/project-types.md', 'User Guide', 'Project Types']
-- ['user-guide/client-configuration.md', 'User Guide', 'Client Configuration']
-- ['user-guide/client-command-hook.md', 'User Guide', 'Client Command Hook']
-- ['user-guide/user-profile.md', 'User Guide', 'User Profile Page']
-- ['user-guide/merge-translations.md', 'User Guide', 'Merge translations']
-## Project
-- ['user-guide/projects/create-project.md', 'User Guide', 'Creating a Project']
-- ['user-guide/projects/project-settings.md', 'User Guide', 'Project settings']
-- ['user-guide/projects/create-version.md', 'User Guide', 'Creating a Version']
-- ['user-guide/projects/upload-strings.md', 'User Guide', 'Upload Strings']
-- ['user-guide/projects/project-view.md', 'User Guide', 'The Project View']
-## Version
-- ['user-guide/versions/version-view.md', 'User Guide', 'The Version View']
+- ['release-notes.md']
 
 copyright: Copyright &copy; 2015, <a href="http//www.redhat.com">Red Hat</a>.

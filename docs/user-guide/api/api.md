@@ -1,0 +1,1 @@
+All Zanata API documentation is located at [Zanata API](https://zanata.ci.cloudbees.com/job/zanata-api-site/site/zanata-common-api/rest-api-docs/index.html)
