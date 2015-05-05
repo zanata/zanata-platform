@@ -34,7 +34,7 @@ Configuration and settings for Zanata server.
 
 ## Role assignment rules
 
-Role Assignment Rules assist with the automatic assignment of user roles to certain users when they sign in. If the user's identity (e.g. user name) matches a certain pattern and they are authenticated in a certain way (e.g. via Open Id where available), Zanata will be able to automatically add the user to a specified user Role.
+See [Role assignment rules](user-guide/admin/role-assignment-rules) for more information.
 
 ## Translation memory
 

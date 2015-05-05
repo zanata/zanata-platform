@@ -73,6 +73,7 @@ pages:
 ## Admin
 - ['user-guide/admin/admin-overview.md', 'Admin', 'Overview']
 - ['user-guide/admin/contact-admin.md', 'Admin', 'Contact Admin']
+- ['user-guide/admin/role-assignment-rules.md', 'Admin', 'Role assignment rules']
 ## need tmx section
 # Configuration
 - ['configuration/installation.md', 'Configuration', 'Installation']
