@@ -1272,6 +1272,11 @@
 
     <dependency>
       <groupId>org.zanata</groupId>
+      <artifactId>zanata-liquibase</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.zanata</groupId>
       <artifactId>zanata-common-util</artifactId>
     </dependency>
 
