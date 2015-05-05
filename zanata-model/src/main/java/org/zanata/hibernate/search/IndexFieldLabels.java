@@ -8,7 +8,6 @@ package org.zanata.hibernate.search;
  */
 public interface IndexFieldLabels {
     public static final String PROJECT_FIELD = "project";
-    public static final String ITERATION_FIELD = "iteration";
     public static final String ENTITY_STATUS = "status";
 
     /**
