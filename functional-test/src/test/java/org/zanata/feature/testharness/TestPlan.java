@@ -156,6 +156,7 @@ import org.zanata.feature.versionGroup.*;
          * Tests that don't fit into the other packages
          */
         ContactAdminTest.class,
+        FlakyTest.class,
         ObsoleteTextTest.class,
         RateLimitRestAndUITest.class,
 
