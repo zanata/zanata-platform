@@ -12,4 +12,12 @@ public interface HasWorkspaceContextUpdateData {
     ProjectType getProjectType();
 
     Map<ValidationId, State> getValidationStates();
+
+    String getOldProjectSlug();
+
+    String getNewProjectSlug();
+
+    String getOldIterationSlug();
+
+    String getNewIterationSlug();
 }

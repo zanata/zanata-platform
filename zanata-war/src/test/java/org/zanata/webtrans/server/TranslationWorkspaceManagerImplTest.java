@@ -1,6 +1,7 @@
 package org.zanata.webtrans.server;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
@@ -43,6 +44,7 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
 import org.zanata.webtrans.shared.rpc.WorkspaceContextUpdate;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 /**
@@ -67,6 +69,8 @@ public class TranslationWorkspaceManagerImplTest {
     private TranslationWorkspace mockWorkspace;
     @Captor
     private ArgumentCaptor<ExitWorkspace> eventCaptor;
+    private Optional<String> oldProjectSlug = Optional.absent();
+    private Optional<String> oldIterationSlug = Optional.absent();
 
     @BeforeMethod
     public void beforeMethod() {
@@ -222,7 +226,8 @@ public class TranslationWorkspaceManagerImplTest {
         spy.getOrRegisterWorkspace(workspaceId);
 
         // update project iteration
-        spy.projectIterationUpdate(projectIteration);
+        spy.projectIterationUpdate(projectIteration, oldProjectSlug,
+                oldIterationSlug);
         verify(mockWorkspace).publish(isA(WorkspaceContextUpdate.class));
     }
 
@@ -240,13 +245,17 @@ public class TranslationWorkspaceManagerImplTest {
 
         TranslationWorkspaceManagerImpl spy = spy(manager);
         doNothing().when(spy).projectIterationUpdate(
-                Mockito.any(HProjectIteration.class));
+                Mockito.any(HProjectIteration.class), eq(oldProjectSlug),
+                eq(oldIterationSlug));
 
-        spy.projectUpdate(master.getProject());
+        spy.projectUpdate(master.getProject(), master.getSlug());
 
-        verify(spy, atLeastOnce()).projectIterationUpdate(master);
-        verify(spy, atLeastOnce()).projectIterationUpdate(iteration1);
-        verify(spy, atLeastOnce()).projectIterationUpdate(iteration2);
+        verify(spy, atLeastOnce()).projectIterationUpdate(master,
+                Optional.of(master.getSlug()), oldIterationSlug);
+        verify(spy, atLeastOnce()).projectIterationUpdate(iteration1,
+                Optional.of(master.getSlug()), oldIterationSlug);
+        verify(spy, atLeastOnce()).projectIterationUpdate(iteration2,
+                Optional.of(master.getSlug()), oldIterationSlug);
     }
 
     @Test

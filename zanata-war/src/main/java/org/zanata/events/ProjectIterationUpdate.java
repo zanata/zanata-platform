@@ -36,4 +36,6 @@ public class ProjectIterationUpdate {
     public static final String EVENT_NAME = "org.zanata.events.ProjectIterationUpdate";
 
     HProjectIteration iteration;
+
+    String oldSlug;
 }

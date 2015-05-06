@@ -129,12 +129,6 @@ public class ProjectHome extends SlugHome<HProject> implements
     @In("jsfMessages")
     private FacesMessages facesMessages;
 
-    @In("event")
-    private Event<ProjectUpdate> projectUpdateEvent;
-
-    @In("event")
-    private Event<ProjectIterationUpdate> projectIterationUpdateEvent;
-
     @In
     private Messages msgs;
 
@@ -699,10 +693,8 @@ public class ProjectHome extends SlugHome<HProject> implements
         String result = super.update();
         if (!slug.equals(getInstance().getSlug())) {
             slug = getInstance().getSlug();
-            projectUpdateEvent.fire(new ProjectUpdate(getInstance()));
             return "projectSlugUpdated";
         }
-        projectUpdateEvent.fire(new ProjectUpdate(getInstance()));
         return result;
     }
 
@@ -739,7 +731,6 @@ public class ProjectHome extends SlugHome<HProject> implements
                         validationAction.getState().name());
             }
             retValue = super.persist();
-            projectUpdateEvent.fire(new ProjectUpdate(getInstance()));
         }
         return retValue;
     }
@@ -801,7 +792,6 @@ public class ProjectHome extends SlugHome<HProject> implements
                 if (version.getStatus() == EntityStatus.ACTIVE) {
                     version.setStatus(EntityStatus.READONLY);
                     entityManager.merge(version);
-                    projectIterationUpdateEvent.fire(new ProjectIterationUpdate(version));
                 }
             }
         } else if (getInstance().getStatus() == EntityStatus.OBSOLETE) {
@@ -810,8 +800,6 @@ public class ProjectHome extends SlugHome<HProject> implements
                 if (version.getStatus() != EntityStatus.OBSOLETE) {
                     version.setStatus(EntityStatus.OBSOLETE);
                     entityManager.merge(version);
-                    projectIterationUpdateEvent.fire(
-                            new ProjectIterationUpdate(version));
                 }
             }
         }

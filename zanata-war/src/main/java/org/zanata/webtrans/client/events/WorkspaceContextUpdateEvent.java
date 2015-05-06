@@ -1,6 +1,7 @@
 package org.zanata.webtrans.client.events;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.zanata.common.ProjectType;
 import org.zanata.webtrans.shared.model.ValidationAction.State;
@@ -14,11 +15,20 @@ public class WorkspaceContextUpdateEvent extends
     private final boolean isProjectActive;
     private final ProjectType projectType;
     private final Map<ValidationId, State> validationStates;
+    private final String oldProjectSlug;
+    private final String newProjectSlug;
+    private final String oldIterationSlug;
+    private final String newIterationSlug;
+
 
     public WorkspaceContextUpdateEvent(HasWorkspaceContextUpdateData data) {
         this.isProjectActive = data.isProjectActive();
         this.projectType = data.getProjectType();
         this.validationStates = data.getValidationStates();
+        oldProjectSlug = data.getOldProjectSlug();
+        newProjectSlug = data.getNewProjectSlug();
+        oldIterationSlug = data.getOldIterationSlug();
+        newIterationSlug = data.getNewIterationSlug();
     }
 
     /**
@@ -60,5 +70,25 @@ public class WorkspaceContextUpdateEvent extends
 
     public Map<ValidationId, State> getValidationStates() {
         return validationStates;
+    }
+
+    public boolean hasSlugChanged() {
+        return hasProjectSlugChanged() || hasIterationSlugChanged();
+    }
+
+    public boolean hasIterationSlugChanged() {
+        return !Objects.equals(oldIterationSlug, newIterationSlug);
+    }
+
+    public boolean hasProjectSlugChanged() {
+        return !Objects.equals(oldProjectSlug, newProjectSlug);
+    }
+
+    public String getNewProjectSlug() {
+        return newProjectSlug;
+    }
+
+    public String getNewIterationSlug() {
+        return newIterationSlug;
     }
 }

@@ -150,6 +150,26 @@ public class EditorOptionsPresenterTest {
             public Map<ValidationId, State> getValidationStates() {
                 return null;
             }
+
+            @Override
+            public String getOldProjectSlug() {
+                return null;
+            }
+
+            @Override
+            public String getNewProjectSlug() {
+                return null;
+            }
+
+            @Override
+            public String getOldIterationSlug() {
+                return null;
+            }
+
+            @Override
+            public String getNewIterationSlug() {
+                return null;
+            }
         };
     }
 

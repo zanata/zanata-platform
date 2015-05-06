@@ -93,6 +93,8 @@ public class AppPresenterTest {
     private ContainerTranslationStatistics selectedDocumentStats;
     @Captor
     private ArgumentCaptor<KeyShortcut> keyShortcutCaptor;
+    @Mock
+    private TargetContentsPresenter targetContentsPresenter;
 
     @BeforeMethod
     public void beforeMethod() {
@@ -114,7 +116,7 @@ public class AppPresenterTest {
                         attentionKeyShortcutPresenter, keyShortcutPresenter,
                         translationPresenter, documentListPresenter,
                         searchResultPresenter, userWorkspace, messages,
-                        history, window, location);
+                        history, window, location, targetContentsPresenter);
 
         verify(display).setListener(presenter);
     }
@@ -648,6 +650,26 @@ public class AppPresenterTest {
 
             @Override
             public Map<ValidationId, State> getValidationStates() {
+                return null;
+            }
+
+            @Override
+            public String getOldProjectSlug() {
+                return null;
+            }
+
+            @Override
+            public String getNewProjectSlug() {
+                return null;
+            }
+
+            @Override
+            public String getOldIterationSlug() {
+                return null;
+            }
+
+            @Override
+            public String getNewIterationSlug() {
                 return null;
             }
         };

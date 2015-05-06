@@ -42,9 +42,7 @@ import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.dao.HTextFlowTargetStreamingDAO;
 import org.zanata.model.HProject;
-import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.SlugEntityBase;
 import org.zanata.search.AbstractIndexingStrategy;
 import org.zanata.search.ClassIndexer;
 import org.zanata.search.HTextFlowTargetIndexingStrategy;
@@ -180,13 +178,14 @@ public class IndexingServiceImpl implements IndexingService {
 
     @Override
     @Async
-    public Future<Void> reindexSlugEntity(SlugEntityBase slugEntity,
+    public Future<Void> reindexHTextFlowTargetssForProject(HProject hProject,
             AsyncTaskHandle<Void> handle)
             throws Exception {
         FullTextSession session = openFullTextSession();
         try {
 
-            Long entityCount = getEntityCount(slugEntity, session);
+            Long entityCount = getHTextFlowTargetCountForProject(hProject,
+                    session);
             handle.setMaxProgress(entityCount.intValue());
             // TODO this is necessary because isInProgress checks number of
             // operations, which may be 0
@@ -199,16 +198,9 @@ public class IndexingServiceImpl implements IndexingService {
 
             HTextFlowTargetIndexingStrategy indexingStrategy =
                     new HTextFlowTargetIndexingStrategy();
-            if (slugEntity instanceof HProject) {
-                indexingStrategy.reindexForProject((HProject) slugEntity,
-                        session, handle);
-            } else if (slugEntity instanceof HProjectIteration) {
-                indexingStrategy.reindexForProjectVersion(
-                        (HProjectIteration) slugEntity, session, handle);
-            }
+            indexingStrategy.reindexForProject(hProject, session, handle);
 
-            if (handle.getCurrentProgress() != handle
-                    .getMaxProgress()) {
+            if (handle.getCurrentProgress() != handle.getMaxProgress()) {
                 // @formatter: off
                 log.warn(
                         "Did not reindex the expected number of "
@@ -224,32 +216,20 @@ public class IndexingServiceImpl implements IndexingService {
 
             log.info(
                     "Re-indexing HTextFlowTarget for slug change: [{}] finished",
-                    slugEntity);
+                    hProject);
         } finally {
             session.close();
         }
         return AsyncTaskResult.taskResult();
     }
 
-    private static Long getEntityCount(SlugEntityBase slugEntity,
+    private static Long getHTextFlowTargetCountForProject(HProject hProject,
             FullTextSession session) {
-        if (slugEntity instanceof HProject) {
-            HProject project = (HProject) slugEntity;
-            return (Long) session
+        return (Long) session
                     .createQuery(
                             "select count(*) from HTextFlowTarget tft where tft.textFlow.document.projectIteration.project = :project")
-                    .setParameter("project", project)
+                    .setParameter("project", hProject)
                     .uniqueResult();
-        } else if (slugEntity instanceof HProjectIteration) {
-            HProjectIteration iteration = (HProjectIteration) slugEntity;
-            return (Long) session
-                    .createQuery(
-                            "select count(*) from HTextFlowTarget tft where tft.textFlow.document.projectIteration = :iteration")
-                    .setParameter("iteration", iteration)
-                    .uniqueResult();
-        }
-        throw new IllegalArgumentException(
-                "only support HProject and HProjectIteration in this operation");
     }
 
 }

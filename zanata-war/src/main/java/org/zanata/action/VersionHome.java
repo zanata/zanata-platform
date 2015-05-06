@@ -427,8 +427,6 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     @Restrict("#{s:hasPermission(versionHome.instance, 'update')}")
     public String update() {
         String state = super.update();
-        projectIterationUpdateEvent.fire(
-            new ProjectIterationUpdate(getInstance()));
         if (!slug.equals(getInstance().getSlug())) {
             slug = getInstance().getSlug();
             return "versionSlugUpdated";

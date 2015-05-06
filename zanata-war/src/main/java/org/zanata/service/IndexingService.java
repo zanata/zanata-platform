@@ -23,6 +23,7 @@ package org.zanata.service;
 import org.zanata.action.ReindexClassOptions;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
+import org.zanata.model.HProject;
 import org.zanata.model.SlugEntityBase;
 
 import java.util.Map;
@@ -38,8 +39,11 @@ public interface IndexingService {
             AsyncTaskHandle<Void> handle)
             throws Exception;
 
+    /**
+     * This will re-index all HTextFlowTargets under a given project.
+     */
     @Async
-    Future<Void> reindexSlugEntity(SlugEntityBase slugEntity,
+    Future<Void> reindexHTextFlowTargetssForProject(HProject hProject,
             AsyncTaskHandle<Void> handle)
             throws Exception;
 }

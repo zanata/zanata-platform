@@ -23,6 +23,16 @@ public class WindowLocationImpl implements
     }
 
     @Override
+    public void assign(String newUrl) {
+        Window.Location.assign(newUrl);
+    }
+
+    @Override
+    public String getHash() {
+        return Window.Location.getHash();
+    }
+
+    @Override
     public List<String> getQueryDocuments() {
         List<String> queryDocs =
                 getParameterMap().get(PRE_FILTER_QUERY_PARAMETER_KEY);

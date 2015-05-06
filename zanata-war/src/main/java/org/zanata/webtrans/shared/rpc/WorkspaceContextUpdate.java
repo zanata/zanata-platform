@@ -14,6 +14,10 @@ public class WorkspaceContextUpdate implements SessionEventData,
     private boolean isProjectActive;
     private ProjectType projectType;
     private Map<ValidationId, State> validationStates;
+    private String oldProjectSlug;
+    private String newProjectSlug;
+    private String oldIterationSlug;
+    private String newIterationSlug;
 
     @SuppressWarnings("unused")
     private WorkspaceContextUpdate() {
@@ -24,6 +28,20 @@ public class WorkspaceContextUpdate implements SessionEventData,
         this.isProjectActive = isProjectActive;
         this.projectType = projectType;
         this.validationStates = validationStates;
+    }
+
+    public WorkspaceContextUpdate projectSlugChanged(String oldSlug,
+            String newSlug) {
+        this.oldProjectSlug = oldSlug;
+        this.newProjectSlug = newSlug;
+        return this;
+    }
+
+    public WorkspaceContextUpdate iterationSlugChanged(String oldSlug,
+            String newSlug) {
+        this.oldIterationSlug = oldSlug;
+        this.newIterationSlug = newSlug;
+        return this;
     }
 
     @Override
@@ -41,4 +59,23 @@ public class WorkspaceContextUpdate implements SessionEventData,
         return validationStates;
     }
 
+    @Override
+    public String getOldProjectSlug() {
+        return oldProjectSlug;
+    }
+
+    @Override
+    public String getNewProjectSlug() {
+        return newProjectSlug;
+    }
+
+    @Override
+    public String getOldIterationSlug() {
+        return oldIterationSlug;
+    }
+
+    @Override
+    public String getNewIterationSlug() {
+        return newIterationSlug;
+    }
 }

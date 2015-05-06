@@ -61,6 +61,10 @@ public interface Window {
 
         public String getHref();
 
+        void assign(String newUrl);
+
+        String getHash();
+
         /**
          *
          * @return list of document paths specified in the URL
