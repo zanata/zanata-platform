@@ -50,8 +50,6 @@ pages:
 - ['user-guide/translation-reuse/copy-trans.md', 'Translation Reuse', 'Copy Trans']
 - ['user-guide/translation-reuse/copy-version.md', 'Translation Reuse', 'Copy version']
 - ['user-guide/translation-reuse/merge-trans.md', 'Translation Reuse', 'Merge translations']
-### merge translation from existing version
-
 ## Groups
 - ['user-guide/groups/group-view.md', 'Groups', 'Group view']
 - ['user-guide/groups/create-group.md', 'Groups', 'Creating a group']
@@ -77,15 +75,14 @@ pages:
 - ['user-guide/admin/admin-overview.md', 'Admin', 'Overview']
 - ['user-guide/admin/contact-admin.md', 'Admin', 'Contact Admin']
 - ['user-guide/admin/role-assignment-rules.md', 'Admin', 'Role assignment rules']
-## need tmx section
-# Configuration
-- ['configuration/installation.md', 'Configuration', 'Installation']
-- ['configuration/authentication.md', 'Configuration', 'Authentication']
-- ['configuration/document-storage-directory.md', 'Configuration', 'Document Storage Directory']
+# System admin
+- ['user-guide/system-admin/configuration/installation.md', 'System Admin', 'Installation']
+- ['user-guide/system-admin/configuration/authentication.md', 'System Admin', 'Authentication']
+- ['user-guide/system-admin/configuration/document-storage-directory.md', 'System Admin', 'Document Storage Directory']
 # Once pull request https://github.com/zanata/zanata-server/pull/633 is integrated, this can be uncommented
-# - ['configuration/email.md', 'Configuration', 'Email']
-- ['configuration/infinispan.md', 'Configuration', 'Caches']
-- ['configuration/jms-messaging.md', 'Configuration', 'JMS Messaging']
+# - ['user-guide/system-admin/configuration/email.md', 'Configuration', 'Email']
+- ['user-guide/system-admin/configuration/infinispan.md', 'System Admin', 'Caches']
+- ['user-guide/system-admin/configuration/jms-messaging.md', 'System Admin', 'JMS Messaging']
 
 - ['release-notes.md']
 

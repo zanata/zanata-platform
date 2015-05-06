@@ -2,10 +2,12 @@ Zanata Server
 =============
 Please visit [About|Zanata](http://zanata.org/about/)
 
-Installation
+Getting started
 ------------
 
-[Installation section](configuration/installation.md)
+- [Project maintainer guide](user-guide/project-maintainer-guide.md)
+- [Translator guide](user-guide/translator-guide.md)
+- [System admin guide](user-guide/system-admin/configuration/installation.md)
 
 Contribute
 ----------
