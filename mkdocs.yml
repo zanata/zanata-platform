@@ -5,6 +5,9 @@ repo_url: http://www.github.com/zanata/zanata-server
 theme: readthedocs
 # theme_dir: For custom themes
 
+# workaround for issue: https://github.com/rtfd/readthedocs.org/issues/1260
+use_directory_urls: false
+
 pages:
 - ['index.md', 'Home']
 # Getting started

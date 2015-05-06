@@ -33,10 +33,4 @@ Podir projects consist of multiple source files (.pot) in a common source direct
 
 ## Push your content to Zanata
 
-Move your content over to the Zanata project's directory created previously, and run the following client command from the same directory:
-
-```bash
-zanata-cli push -s . -t . --push-type both
-```
-
-This will push your content into the Zanata project that you previously created. For more information on pushing your content using the zanata client see [Document Upload with Client](http://zanata-client.readthedocs.org/en/latest/commands/push/).
+Move your content over to the Zanata project's directory created previously, and run [Zanata client push](http://zanata-client.readthedocs.org/en/latest/commands/push/).

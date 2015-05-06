@@ -13,14 +13,6 @@ Contribute
 - [Issue Tracker](http://bugzilla.redhat.com/buglist.cgi?product=Zanata)
 - [Source Code on GitHub](http://github.com/zanata)
 
-Support
--------
-For help and support options, see [Help|Zanata](http://zanata.org/help/)
-
-License
--------
-Zanata is Free software, licensed under the [LGPL](http://www.gnu.org/licenses/lgpl-2.1.html).
-
 Release notes
 -------
 
@@ -48,3 +40,8 @@ Contact us
         <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
     </li>
 </ul>
+
+
+License
+-------
+Zanata is Free software, licensed under the [LGPL](http://www.gnu.org/licenses/lgpl-2.1.html).
