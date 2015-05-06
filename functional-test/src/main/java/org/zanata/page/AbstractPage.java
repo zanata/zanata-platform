@@ -295,8 +295,9 @@ public class AbstractPage {
         waitForAMoment().withMessage("Loader indicator").until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                List<WebElement> loaders = driver
-                        .findElements(By.className("js-loader"));
+
+                List<WebElement> loaders = (List<WebElement>) getExecutor()
+                        .executeScript("return (typeof $ == 'undefined') ?  [] : $('.js-loader')");
                 for (WebElement loader : loaders) {
                     if (loader.getAttribute("class").contains("is-active")) {
                         log.info("Wait for loader finished");

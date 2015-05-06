@@ -162,7 +162,6 @@ public class RegisterTest extends ZanataTestCase {
             "page, and vice versa",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test
-    @Ignore("RHBZ1216304")
     public void signUpToLoginAndBack() {
         RegisterPage registerPage = new BasicWorkFlow()
                 .goToHome()
