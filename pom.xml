@@ -29,6 +29,7 @@
     <failsafe.rerunFailingTestsCount>3</failsafe.rerunFailingTestsCount>
     <failsafe.useFile>false</failsafe.useFile>
     <surefire.useFile>false</surefire.useFile>
+    <surefire.version>2.19-SNAPSHOT</surefire.version>
     <!-- Applies to surefire and failsafe (if enabled) -->
     <failIfNoTests>true</failIfNoTests>
 
@@ -1092,6 +1093,17 @@
   </repositories>
 
   <pluginRepositories>
+    <!-- Needed for surefire/failsafe snapshots -->
+    <pluginRepository>
+      <id>apache.snapshots.https</id>
+      <url>https://repository.apache.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
     <pluginRepository>
       <id>jboss-public-repository-group</id>
       <name>JBoss Public Maven Repository Group</name>
@@ -1166,6 +1178,7 @@
                 <allowedRepository>repo.bodar.com</allowedRepository>
               </allowedRepositories>
               <allowedPluginRepositories combine.children="append">
+                <allowedPluginRepository>apache.snapshots.https</allowedPluginRepository>
                 <allowedPluginRepository>cobertura-it-maven-plugin-maven2-release</allowedPluginRepository>
                 <allowedPluginRepository>jboss-public-repository-group</allowedPluginRepository>
               </allowedPluginRepositories>
@@ -1246,7 +1259,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>2.19-20150503.223005-71</version>
+          <version>${surefire.version}</version>
           <executions>
             <execution>
               <id>integration-test</id>
