@@ -178,7 +178,7 @@ public class IndexingServiceImpl implements IndexingService {
 
     @Override
     @Async
-    public Future<Void> reindexHTextFlowTargetssForProject(HProject hProject,
+    public Future<Void> reindexHTextFlowTargetsForProject(HProject hProject,
             AsyncTaskHandle<Void> handle)
             throws Exception {
         FullTextSession session = openFullTextSession();

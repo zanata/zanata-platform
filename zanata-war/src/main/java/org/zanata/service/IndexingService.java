@@ -43,7 +43,7 @@ public interface IndexingService {
      * This will re-index all HTextFlowTargets under a given project.
      */
     @Async
-    Future<Void> reindexHTextFlowTargetssForProject(HProject hProject,
+    Future<Void> reindexHTextFlowTargetsForProject(HProject hProject,
             AsyncTaskHandle<Void> handle)
             throws Exception;
 }
