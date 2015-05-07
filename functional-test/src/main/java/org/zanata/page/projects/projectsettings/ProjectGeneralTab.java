@@ -64,6 +64,20 @@ public class ProjectGeneralTab extends ProjectBasePage {
     }
 
     /**
+     * Enter a new slug for the project. Removes any existing text.
+     *
+     * @param projectSlug new project slug
+     * @return new Project General Settings page
+     */
+    public ProjectGeneralTab enterProjectSlug(String projectSlug) {
+        log.info("Enter project slug {}", projectSlug);
+        waitForWebElement(projectIdField).clear();
+        waitForWebElement(projectIdField).sendKeys(projectSlug);
+        defocus(projectIdField);
+        return new ProjectGeneralTab(getDriver());
+    }
+
+    /**
      * Enter a new name for the project. Removes any existing text.
      *
      * @param projectName new project name

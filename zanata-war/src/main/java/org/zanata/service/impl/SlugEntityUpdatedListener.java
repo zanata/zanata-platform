@@ -18,6 +18,8 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.SlugEntityBase;
 import org.zanata.service.IndexingService;
 import org.zanata.util.Event;
+import org.zanata.util.ServiceLocator;
+import com.google.common.collect.Lists;
 
 /**
  * This class is a hibernate event listener which listens on post commit events
@@ -33,23 +35,9 @@ import org.zanata.util.Event;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Name("slugEntityUpdatedListener")
-@Scope(ScopeType.APPLICATION)
-@AutoCreate
 @Slf4j
 public class SlugEntityUpdatedListener implements PostUpdateEventListener {
     private static final long serialVersionUID = -1L;
-    @In
-    private AsyncTaskHandleManager asyncTaskHandleManager;
-
-    @In
-    private IndexingService indexingServiceImpl;
-
-    @In("event")
-    private Event<ProjectUpdate> projectUpdateEvent;
-
-    @In("event")
-    private Event<ProjectIterationUpdate> projectIterationUpdateEvent;
 
     private static Integer slugFieldIndexInProject;
     private static Integer slugFieldIndexInIteration;
@@ -70,7 +58,7 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
             slugFieldIndexInProject = getSlugFieldIndex(slugFieldIndexInProject, event);
             String oldSlug = event.getOldState()[slugFieldIndexInProject].toString();
             String newSlug = event.getState()[slugFieldIndexInProject].toString();
-            projectUpdateEvent.fire(new ProjectUpdate(project, oldSlug));
+            getProjectUpdateEvent().fire(new ProjectUpdate(project, oldSlug));
             reindexIfProjectSlugHasChanged(oldSlug, newSlug, project);
 
         } else if (slugEntityBase instanceof HProjectIteration) {
@@ -78,7 +66,7 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
                     (HProjectIteration) slugEntityBase;
             slugFieldIndexInIteration = getSlugFieldIndex(slugFieldIndexInIteration, event);
             String oldSlug = event.getOldState()[slugFieldIndexInIteration].toString();
-            projectIterationUpdateEvent.fire(new ProjectIterationUpdate(
+            getProjectIterationUpdateEvent().fire(new ProjectIterationUpdate(
                     iteration, oldSlug));
         }
     }
@@ -89,9 +77,9 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
             log.debug("HProject [{}] changed slug. old slug: {}, new slug: {}",
                     project, oldSlug, newSlug);
             AsyncTaskHandle<Void> handle = new AsyncTaskHandle<>();
-            asyncTaskHandleManager.registerTaskHandle(handle);
+            getAsyncTaskHandleManager().registerTaskHandle(handle);
             try {
-                indexingServiceImpl.reindexHTextFlowTargetsForProject(
+                getIndexingServiceImpl().reindexHTextFlowTargetsForProject(
                         project, handle);
             } catch (Exception e) {
                 log.error("exception happen in async framework", e);
@@ -124,6 +112,25 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
                 return i;
             }
         }
-        throw new IllegalStateException("can not find slug index in entity properties");
+        log.error("can not find slug index in entity [{}] properties [{}]",
+                event.getEntity(), Lists.newArrayList(propertyNames));
+        throw new IllegalStateException(
+                "can not find slug index in entity properties");
+    }
+
+    public AsyncTaskHandleManager getAsyncTaskHandleManager() {
+        return ServiceLocator.instance().getInstance(AsyncTaskHandleManager.class);
+    }
+
+    public IndexingService getIndexingServiceImpl() {
+        return ServiceLocator.instance().getInstance(IndexingService.class);
+    }
+
+    public Event<ProjectUpdate> getProjectUpdateEvent() {
+        return ServiceLocator.instance().getInstance("event", Event.class);
+    }
+
+    public Event<ProjectIterationUpdate> getProjectIterationUpdateEvent() {
+        return ServiceLocator.instance().getInstance("event", Event.class);
     }
 }

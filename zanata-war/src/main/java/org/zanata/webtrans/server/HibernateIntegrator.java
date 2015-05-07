@@ -39,7 +39,7 @@ public class HibernateIntegrator implements Integrator {
             eventListenerRegistry.appendListeners(EventType.POST_INSERT,
                     updateListener);
             eventListenerRegistry.appendListeners(EventType.POST_COMMIT_UPDATE,
-                    ServiceLocator.instance().getInstance(SlugEntityUpdatedListener.class));
+                    new SlugEntityUpdatedListener());
         }
     }
 
