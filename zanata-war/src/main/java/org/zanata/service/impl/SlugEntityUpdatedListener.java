@@ -51,7 +51,8 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
     @In("event")
     private Event<ProjectIterationUpdate> projectIterationUpdateEvent;
 
-    private Integer index;
+    private static Integer slugFieldIndexInProject;
+    private static Integer slugFieldIndexInIteration;
 
     @Override
     public void onPostUpdate(PostUpdateEvent event) {
@@ -61,21 +62,22 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
             return;
         }
 
-        int index = getSlugFieldIndex(event);
-        String oldSlug = event.getOldState()[index].toString();
-        String newSlug = event.getState()[index].toString();
-
         SlugEntityBase slugEntityBase = SlugEntityBase.class.cast(
                 event.getEntity());
 
         if (slugEntityBase instanceof HProject) {
             HProject project = (HProject) slugEntityBase;
+            slugFieldIndexInProject = getSlugFieldIndex(slugFieldIndexInProject, event);
+            String oldSlug = event.getOldState()[slugFieldIndexInProject].toString();
+            String newSlug = event.getState()[slugFieldIndexInProject].toString();
             projectUpdateEvent.fire(new ProjectUpdate(project, oldSlug));
             reindexIfProjectSlugHasChanged(oldSlug, newSlug, project);
 
         } else if (slugEntityBase instanceof HProjectIteration) {
             HProjectIteration iteration =
                     (HProjectIteration) slugEntityBase;
+            slugFieldIndexInIteration = getSlugFieldIndex(slugFieldIndexInIteration, event);
+            String oldSlug = event.getOldState()[slugFieldIndexInIteration].toString();
             projectIterationUpdateEvent.fire(new ProjectIterationUpdate(
                     iteration, oldSlug));
         }
@@ -89,7 +91,7 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
             AsyncTaskHandle<Void> handle = new AsyncTaskHandle<>();
             asyncTaskHandleManager.registerTaskHandle(handle);
             try {
-                indexingServiceImpl.reindexHTextFlowTargetssForProject(
+                indexingServiceImpl.reindexHTextFlowTargetsForProject(
                         project, handle);
             } catch (Exception e) {
                 log.error("exception happen in async framework", e);
@@ -97,19 +99,31 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
         }
     }
 
-    private Integer getSlugFieldIndex(PostUpdateEvent event) {
-        if (index != null) {
-            return index;
+    /**
+     * Try to locate index for field slug in the entity. We try to optimize a
+     * bit here since the index should be consistent and only need to be looked
+     * up once. If the given index is not null, it means it has been looked up
+     * and set already so we just return that value. Otherwise it will look it
+     * up in hibernate persister and return the index value.
+     *
+     * @param slugFieldIndex
+     *            if not null it will be the index to use
+     * @param event
+     *            post update event for an entity
+     * @return looked up index for slug field for the entity
+     */
+    private static Integer getSlugFieldIndex(Integer slugFieldIndex, PostUpdateEvent event) {
+        if (slugFieldIndex != null) {
+            return slugFieldIndex;
         }
         String[] propertyNames = event.getPersister().getPropertyNames();
         int i;
         for (i = 0; i < propertyNames.length; i++) {
             String propertyName = propertyNames[i];
             if (propertyName.equals("slug")) {
-                index = i;
-                return index;
+                return i;
             }
         }
-        throw new IllegalStateException("can not find slug index in property");
+        throw new IllegalStateException("can not find slug index in entity properties");
     }
 }
