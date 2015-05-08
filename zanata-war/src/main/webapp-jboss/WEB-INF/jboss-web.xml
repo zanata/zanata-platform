@@ -5,17 +5,31 @@ in case changes are required for production deployment (eg cfengine).
 
 <jboss-web xmlns="http://www.jboss.com/xml/ns/javaee"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="7.0">
-  <!--
-    xsi:schemaLocation="http://www.jboss.com/xml/ns/javaee
-    https://issues.jboss.org/secure/attachment/12354188/jboss-web_7_0.xsd"
-  -->
 
-  <!--
-      <resource-ref>
-        <res-ref-name>jdbc/TheDataSource</res-ref-name>
-        <jndi-name>java:/DefaultDS</jndi-name>
-      </resource-ref>
-   -->
+  <resource-ref>
+    <res-ref-name>jdbc/zanata</res-ref-name>
+    <jndi-name>java:jboss/datasources/zanataDatasource</jndi-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>infinispan/zanata</res-ref-name>
+    <jndi-name>java:jboss/infinispan/container/zanata</jndi-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>queue/DLQ</res-ref-name>
+    <jndi-name>java:/jms/queue/DLQ</jndi-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>queue/ExpiryQueue</res-ref-name>
+    <jndi-name>java:/jms/queue/ExpiryQueue</jndi-name>
+  </resource-ref>
+
+  <resource-ref>
+    <res-ref-name>queue/MailsQueue</res-ref-name>
+    <jndi-name>java:/jms/queue/MailsQueue</jndi-name>
+  </resource-ref>
 
   <security-domain>zanata</security-domain>
   <valve>
