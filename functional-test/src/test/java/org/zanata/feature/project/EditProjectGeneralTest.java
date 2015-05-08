@@ -211,6 +211,8 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .as("The git url is correct");
     }
 
+    @Feature(summary = "Project slug can be changed and page will redirect to new URL after the change",
+            tcmsTestPlanIds = 0, tcmsTestCaseIds = 0)
     @Test
     public void changeProjectSlug() {
         ProjectGeneralTab projectGeneralTab = new ProjectWorkFlow()
@@ -221,7 +223,7 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .updateProject();
 
         projectGeneralTab.reload();
-        // above will make sure url has been updated to use new slug
+        assertThat(projectGeneralTab.getUrl()).contains("/fedora-reborn");
         projectGeneralTab = projectGeneralTab
                 .gotoSettingsTab()
                 .gotoSettingsGeneral();

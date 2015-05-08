@@ -20,17 +20,40 @@
  */
 package org.zanata.page.projectversion.versionsettings;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.projectversion.VersionBasePage;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 public class VersionGeneralTab extends VersionBasePage {
+    private By versionIdField = By.id("settings-general_form:slugField:slug");
+    private By updateButton = By.id("settings-general_form:updateButton");
 
     public VersionGeneralTab(WebDriver driver) {
         super(driver);
     }
 
 
+    public VersionGeneralTab enterVersionID(String newSlug) {
+        log.info("Enter project version slug {}", newSlug);
+        waitForWebElement(versionIdField).clear();
+        waitForWebElement(versionIdField).sendKeys(newSlug);
+        defocus(versionIdField);
+        return new VersionGeneralTab(getDriver());
+    }
+
+    public VersionGeneralTab updateVersion() {
+        log.info("Click Update general settings");
+        scrollIntoView(waitForWebElement(updateButton));
+        clickAndCheckErrors(waitForWebElement(updateButton));
+        return new VersionGeneralTab(getDriver());
+    }
+
+    public String getVersionID() {
+        return waitForWebElement(versionIdField).getAttribute("value");
+    }
 }

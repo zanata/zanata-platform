@@ -98,7 +98,7 @@
     <ui:include src="edit_form.xhtml"/>
 
     <div class="l--push-top-1">
-      <a4j:commandLink value="#{msgs['jsf.UpdateGeneralSettings']}"
+      <a4j:commandLink id="updateButton" value="#{msgs['jsf.UpdateGeneralSettings']}"
         action="#{versionHome.update}"
         rendered="#{versionHome.managed}"
         render="version-info, copy-project-type"

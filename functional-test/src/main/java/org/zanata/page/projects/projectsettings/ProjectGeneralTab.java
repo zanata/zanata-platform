@@ -38,7 +38,7 @@ import java.util.Map;
 @Slf4j
 public class ProjectGeneralTab extends ProjectBasePage {
 
-    private By projectIdField = By.id("settings-general-form:slugField");
+    private By projectIdField = By.id("settings-general-form:slugField:slug");
     private By projectNameField = By.id("settings-general-form:nameField:name");
     private By descriptionField = By.id("settings-general-form:descriptionField:description");
     private By projectTypeList = By.id("project-types");
