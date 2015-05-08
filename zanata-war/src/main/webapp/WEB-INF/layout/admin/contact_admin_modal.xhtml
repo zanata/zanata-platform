@@ -7,13 +7,34 @@
   aria-labelledby="myModalLabel" aria-hidden="true">
 
   <script>
+    jQuery(document).ready(function () {
+      getContactAdminMessageField().bind('input propertychange', function() {
+        toggleSendButton();
+      });
+    });
+
+
     function cancelContactAdmin() {
-      jQuery('#' + jqSelector('#{rich:clientId('contact-admin-message')}')).val('');
-      jQuery(getContactAdminForm()).find('#contact-admin-send-button').removeClass('is-active');
+      getContactAdminMessageField().val('');
+      getContactAdminSendButton().removeClass('is-active');
+      toggleSendButton();
     }
 
     function getContactAdminForm() {
       return jQuery('#' + jqSelector('#{rich:clientId('contactAdminForm')}'));
+    }
+
+    function getContactAdminMessageField() {
+      return jQuery('#' + jqSelector('#{rich:clientId('contact-admin-message')}'));
+    }
+
+    function getContactAdminSendButton() {
+      return getContactAdminForm().find('#contact-admin-send-button');
+    }
+
+    function toggleSendButton() {
+      var hasMessage = getContactAdminMessageField().val() !== '';
+      getContactAdminSendButton().prop('disabled', !hasMessage);
     }
   </script>
 
@@ -33,7 +54,7 @@
 
       <a4j:jsFunction name="sendContactAdminEmail" action="#{contactAdminAction.send}"
         execute="@form"
-        oncomplete="jQuery(getContactAdminForm()).find('#contact-admin-cancel-button').click()"/>
+        oncomplete="getContactAdminForm().find('#contact-admin-cancel-button').click()"/>
 
       <div class="modal__content l--pad-all-1">
         <s:decorate id="messageField" template="/WEB-INF/layout/field.xhtml">
@@ -53,7 +74,7 @@
           </button>
 
           <button id="contact-admin-send-button" class="button loader button--primary"
-            onclick="sendContactAdminEmail();return false;">
+            disabled="disabled" onclick="sendContactAdminEmail();return false;">
             <span class="loader__label">#{msgs['jsf.email.Send']}</span>
           </button>
         </div>

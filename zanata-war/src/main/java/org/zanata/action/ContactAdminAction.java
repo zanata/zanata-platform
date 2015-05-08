@@ -30,6 +30,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.email.ContactAdminAnonymousEmailStrategy;
 import org.zanata.email.ContactAdminEmailStrategy;
 import org.zanata.email.EmailStrategy;
 import org.zanata.i18n.Messages;
@@ -40,18 +41,18 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.zanata.ui.faces.FacesMessages;
+import org.zanata.util.HttpUtil;
+
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 /**
- * Handles send email to admin.
- * Need to separate from SendEmailAction as contact admin now pages which has footer.xhtml
- *
- * @see org.zanata.action.SendEmailAction
+ * Handles send email to admin - Contact admin(Registered and non-registered users)
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Name("contactAdminAction")
 @Scope(ScopeType.PAGE)
-@Restrict("#{identity.loggedIn}")
 @Slf4j
 public class ContactAdminAction implements Serializable {
 
@@ -68,47 +69,66 @@ public class ContactAdminAction implements Serializable {
     private FacesMessages facesMessages;
 
     @Getter
-    private String replyEmail;
-
-    @Getter
-    private String subject;
-
-    @Getter
     @Setter
     private String message;
 
-    private String fromName;
+    @Getter
+    @Setter
+    private String subject;
 
-    private String fromLoginName;
-
-    @Create
-    public void onCreate() {
-        fromName = authenticatedAccount.getPerson().getName();
-        fromLoginName = authenticatedAccount.getUsername();
-        replyEmail = authenticatedAccount.getPerson().getEmail();
-
-        subject = msgs.get("jsf.message.admin.inquiry.subject");
-        message = "";
-    }
-
+    /**
+     * Send email to admin by registered user.
+     */
+    @Restrict("#{identity.loggedIn}")
     public void send() {
+        String fromName = authenticatedAccount.getPerson().getName();
+        String fromLoginName = authenticatedAccount.getUsername();
+        String replyEmail = authenticatedAccount.getPerson().getEmail();
+        subject = msgs.get("jsf.message.admin.inquiry.subject");
         try {
             EmailStrategy strategy = new ContactAdminEmailStrategy(
-                    fromLoginName, fromName, replyEmail, subject, message);
+                fromLoginName, fromName, replyEmail, subject, message);
 
             facesMessages.addGlobal(emailServiceImpl.sendToAdmins(strategy,
-                    null));
+                null));
         } catch (Exception e) {
-            StringBuilder sb =
-                    new StringBuilder()
-                            .append("Failed to send email with subject '")
-                            .append(subject)
-                            .append("' , message '").append(message)
-                            .append("'");
-            log.error(
-                    "Failed to send email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}'",
-                    e, fromName, fromLoginName, replyEmail, subject, message);
-            facesMessages.addGlobal(sb.toString());
+            sendEmailFailedNotification(e, fromLoginName);
         }
+    }
+
+    /**
+     * Send email to admin by anonymous user.
+     */
+    public void sendAnonymous() {
+        String ipAddress = getClientIp(); //client ip address
+        subject = msgs.get("jsf.message.admin.inquiry.subject");
+
+        try {
+            EmailStrategy strategy = new ContactAdminAnonymousEmailStrategy(
+                ipAddress, subject, message);
+
+            facesMessages.addGlobal(emailServiceImpl.sendToAdmins(strategy,
+                null));
+        } catch (Exception e) {
+            sendEmailFailedNotification(e, ipAddress);
+        }
+    }
+
+    private void sendEmailFailedNotification(Exception e, String fromName) {
+        StringBuilder sb = new StringBuilder()
+            .append("Failed to send email with subject '")
+            .append(subject)
+            .append("' , message '").append(message)
+            .append("', from '").append(fromName)
+            .append("'");
+        log.error("{}. {}", sb.toString(), e);
+        facesMessages.addGlobal(sb.toString());
+    }
+
+    private String getClientIp() {
+        HttpServletRequest request =
+                (HttpServletRequest) FacesContext.getCurrentInstance()
+                        .getExternalContext().getRequest();
+        return HttpUtil.getClientIp(request);
     }
 }
