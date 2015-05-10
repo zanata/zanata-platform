@@ -44,5 +44,5 @@ Notice the presence of the `zanta.xml` file already there. This file will be gen
 
 
 
-See [Upload documents](user-guide/versions/upload-strings) and [Download translation](user-guide/versions/download-translations) for more information.
+See [Upload documents](user-guide/documents/upload-documents) and [Download translation](user-guide/documents/download-translated-documents) for more information.
 

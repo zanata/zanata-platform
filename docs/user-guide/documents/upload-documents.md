@@ -1,6 +1,6 @@
-# Upload Strings
+# Upload documents
 
-Anyone with an account on Zanata can create a translation project for their strings. 
+Anyone with an account on Zanata can create a translation project for their documents.
 
 You will need to [Create a project](projects/create-project) and [Create a version](versions/create-version) to upload strings.
 

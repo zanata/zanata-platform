@@ -106,4 +106,4 @@ Go to the `<JBOSS>/bin` directory and run the `standalone.sh` (Linux, Mac) or `s
 
 To start using your Zanata server, open a browser and navigate to `http://localhost:8080/zanata`
 
-You can now upload some source strings and start translating. To get started, see [Adding Source Strings](user-guide/projects/upload-strings).
+You can now upload some source strings and start translating. To get started, see [Adding Source Documents](user-guide/documents/upload-documents).

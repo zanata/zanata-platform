@@ -35,8 +35,11 @@ pages:
 - ['user-guide/versions/version-settings.md', 'Versions', 'Version settings']
 - ['user-guide/versions/request-to-join-group.md', 'Versions', 'Join a group']
 - ['user-guide/versions/merge-translations.md', 'Versions', 'Merge translations']
-- ['user-guide/versions/upload-strings.md', 'Versions', 'Upload documents']
-- ['user-guide/versions/download-translations.md', 'Versions', 'Download translations']
+## Documents
+- ['user-guide/documents/upload-documents.md', 'Documents', 'Upload documents']
+- ['user-guide/documents/download-translated-documents.md', 'Documents', 'Download translated documents']
+- ['user-guide/documents/raw-documents.md', 'Documents', 'Raw documents']
+- ['user-guide/documents/custom-document-param.md', 'Documents', 'Custom document parameters']
 ## Languages
 - ['user-guide/languages/language-team.md', 'Languages', 'Language team']
 - ['user-guide/languages/add-team-member.md', 'Languages', 'Add members']
