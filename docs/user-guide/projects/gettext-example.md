@@ -32,4 +32,4 @@ Notice the presence of the `zanata.xml` file already there. This file will be ge
 
 This example is also using the locale mapping feature. The `map-from` attributes on the `locale` elements are telling the client that although it will find the files using locales `es_ES` and `zh_TW`, those translated documents should be stored in the server under locales `es-ES` and `zh-Hant`.
 
-See [Upload documents](user-guide/versions/upload-strings) and [Download translation](user-guide/versions/download-translations) for more information.
+See [Upload documents](user-guide/documents/upload-documents) and [Download translation](user-guide/documents/download-translated-documents) for more information.
