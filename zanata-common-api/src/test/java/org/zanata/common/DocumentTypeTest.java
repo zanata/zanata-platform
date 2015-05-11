@@ -25,73 +25,81 @@ import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
 import static org.zanata.common.DocumentType.*;
 
 import java.util.List;
+import java.util.Set;
 
 public class DocumentTypeTest {
 
     @Test
     public void typeForExtantType() {
-        assertThat(typeFor("txt"), is(PLAIN_TEXT));
+        assertThat(fromSourceExtension("txt"), contains(PLAIN_TEXT));
     }
 
     @Test
     public void typeForNonExistentTypeCurrentBehaviour() {
-        assertThat(typeFor("unknown"), is(nullValue()));
+        assertThat(fromSourceExtension("unknown"), hasSize(0));
     }
 
     @Test(expected = IllegalArgumentException.class)
     @Ignore
     public void typeForNonExistentTypeBetterBehaviour() {
-        typeFor("unknown");
+        fromSourceExtension("unknown");
     }
 
     @Test
     public void typeForKnownTypeAfterDot() {
-        assertThat(typeFor(".txt"), is(nullValue()));
+        assertThat(fromSourceExtension(".txt"), hasSize(0));
     }
 
     @Test
     public void typeForKnownTypeWithPrefix() {
-        assertThat(typeFor("foo.txt"), is(nullValue()));
+        assertThat(fromSourceExtension("foo.txt"), hasSize(0));
     }
 
     @Test
-    public void getAllExtensionsNotEmpty() {
-        List<String> allExtensions = getAllExtensions();
+    public void getAllSourceExtensionsNotEmpty() {
+        Set<String> allExtensions = getAllSourceExtensions();
         assertThat(allExtensions, not(empty()));
         assertThat(
                 allExtensions,
-                containsInAnyOrder("po", "pot", "txt", "dtd", "idml", "html",
+                containsInAnyOrder("pot", "txt", "dtd", "idml", "html",
                         "htm", "odt", "fodt", "odp", "fodp", "ods", "fods",
                         "odg", "fodg", "odb", "odf", "srt", "sbt", "sub",
                         "vtt", "properties", "xml"));
     }
 
+    @Test
+    public void getAllTranslationExtensionsNotEmpty() {
+        Set<String> allExtensions = getAllTranslationExtensions();
+        assertThat(allExtensions, not(empty()));
+        assertThat(
+            allExtensions,
+            containsInAnyOrder("po", "txt", "dtd", "idml", "html",
+                "htm", "odt", "fodt", "odp", "fodp", "ods", "fods",
+                "odg", "fodg", "odb", "odf", "srt", "sbt", "sub",
+                "vtt", "properties", "xml"));
+    }
+
     @Test(expected = UnsupportedOperationException.class)
     public void getAllExtensionsReadOnlyCannotAdd() {
-        List<String> allExtensions = getAllExtensions();
+        Set<String> allExtensions = getAllSourceExtensions();
         allExtensions.add("newExtension");
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void getAllExtensionsReadOnlyCannotClear() {
-        List<String> allExtensions = getAllExtensions();
+        Set<String> allExtensions = getAllSourceExtensions();
         allExtensions.clear();
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void getAllExtensionsReadOnlyCannotRemove() {
-        List<String> allExtensions = getAllExtensions();
-        allExtensions.remove(0);
     }
 
     @Test
     public void getExtensionsHasCorrectValues() {
         // given: HTML has extensions "html" and "htm"
-        assertThat(HTML.getExtensions().contains("html"), is(true));
-        assertThat(HTML.getExtensions().contains("htm"), is(true));
-        assertThat(HTML.getExtensions().contains("idml"), is(false));
+        assertThat(HTML.getSourceExtensions().contains("html"), is(true));
+        assertThat(HTML.getSourceExtensions().contains("htm"), is(true));
+        assertThat(HTML.getSourceExtensions().contains("idml"), is(false));
     }
 }

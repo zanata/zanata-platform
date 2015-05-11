@@ -20,6 +20,8 @@
  */
 package org.zanata.rest.service;
 
+import java.util.List;
+import java.util.Map;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -32,6 +34,7 @@ import javax.ws.rs.core.Response;
 
 import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+import org.zanata.common.DocumentType;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.dto.ChunkUploadResponse;
 
@@ -45,6 +48,7 @@ public interface FileResource {
     @Deprecated
     public static final String FILE_RESOURCE = SERVICE_PATH;
     public static final String ACCEPTED_TYPES_RESOURCE = "/accepted_types";
+    public static final String ACCEPTED_TYPE_LIST_RESOURCE = "/accepted_document_types";
     public static final String DOWNLOAD_TEMPLATE = "/download/{downloadId}";
     public static final String FILE_DOWNLOAD_TEMPLATE =
             "/translation/{projectSlug}/{iterationSlug}/{locale}/{fileType}";
@@ -76,12 +80,24 @@ public interface FileResource {
      */
     public static final String FILETYPE_TRANSLATED_APPROVED = "baked";
 
+    /**
+     * Deprecated.
+     * @see #acceptedFileTypeList
+     */
+    @Deprecated
     @GET
     @Path(ACCEPTED_TYPES_RESOURCE)
     @Produces(MediaType.TEXT_PLAIN)
     // /file/accepted_types
             public
             Response acceptedFileTypes();
+
+    @GET
+    @Path(ACCEPTED_TYPE_LIST_RESOURCE)
+    @Produces(MediaType.APPLICATION_JSON)
+    @TypeHint(List.class)
+    public
+    Response acceptedFileTypeList();
 
     @POST
     @Path(SOURCE_UPLOAD_TEMPLATE)
@@ -148,7 +164,7 @@ public interface FileResource {
      * @param locale
      *            Translations for this locale will be contained in the
      *            downloaded document.
-     * @param fileType
+     * @param fileExtension
      *            File type to be downloaded. (Options: 'po', 'half_baked',
      *            'baked')
      * @param docId

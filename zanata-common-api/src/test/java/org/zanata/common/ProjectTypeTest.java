@@ -22,7 +22,9 @@ package org.zanata.common;
 
 import org.junit.Test;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -76,23 +78,29 @@ public class ProjectTypeTest {
 
     @Test
     public void gettextProjectsSupportOnlyPot() {
-        List<String> supported = getSupportedSourceFileTypes(Gettext);
-        assertThat(supported, contains("pot"));
+        List<DocumentType> supported = getSupportedSourceFileTypes(Gettext);
+        assertThat(supported.get(0).getSourceExtensions(), contains("pot"));
         assertThat(supported, hasSize(1));
     }
 
     @Test
     public void podirProjectsSupportOnlyPot() {
-        List<String> supported = getSupportedSourceFileTypes(Podir);
-        assertThat(supported, contains("pot"));
+        List<DocumentType> supported = getSupportedSourceFileTypes(Podir);
+        assertThat(supported.get(0).getSourceExtensions(), contains("pot"));
         assertThat(supported, hasSize(1));
     }
 
     @Test
     public void supportedSourceFileTypesCorrectForFileProject() {
-        List<String> supportedTypes = getSupportedSourceFileTypes(File);
-        assertThat(supportedTypes, containsInAnyOrder("dtd", "txt", "idml", "htm", "html", "odt",
-                "odp", "ods", "odg", "srt", "sbt", "sub", "vtt"));
+        List<DocumentType> supportedTypes = getSupportedSourceFileTypes(File);
+        Set<String> extensions = new HashSet<>();
+        for (DocumentType docType: supportedTypes) {
+            extensions.addAll(docType.getSourceExtensions());
+        }
+        assertThat(extensions,
+            containsInAnyOrder("dtd", "txt", "idml", "htm", "html", "odt",
+                "odp", "ods", "odg", "srt", "sbt", "sub", "vtt",
+                "properties", "xml", "pot"));
     }
 
     @Test

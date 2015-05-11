@@ -20,8 +20,11 @@
  */
 package org.zanata.rest.client;
 
+import java.util.List;
+
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jboss.resteasy.client.ClientResponse;
+import org.zanata.common.DocumentType;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.dto.ChunkUploadResponse;
 import org.zanata.rest.service.FileResource;
@@ -52,9 +55,15 @@ public interface IFileResource extends FileResource {
     @GET
     @Path(ACCEPTED_TYPES_RESOURCE)
     @Produces(MediaType.TEXT_PLAIN)
-    // /file/accepted_types
             public
             ClientResponse<String> acceptedFileTypes();
+
+    @Override
+    @GET
+    @Path(ACCEPTED_TYPE_LIST_RESOURCE)
+    @Produces({MediaType.APPLICATION_JSON})
+    public
+    ClientResponse<List<DocumentType>> acceptedFileTypeList();
 
     @Override
     @POST
