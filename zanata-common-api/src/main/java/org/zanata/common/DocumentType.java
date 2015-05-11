@@ -154,12 +154,6 @@ public enum DocumentType {
         this.extensions = unmodifiableMap(extensions);
     }
 
-    // FIXME damason: rename getExtension to toString
-    @Deprecated
-    public String getExtension() {
-        return extensions.get(0);
-    }
-
     public Map<String, String> getExtensions() {
         return extensions;
     }
