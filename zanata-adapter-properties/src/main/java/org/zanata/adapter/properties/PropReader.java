@@ -9,6 +9,7 @@ import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.codec.Charsets;
 import org.fedorahosted.openprops.Properties;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -29,12 +30,10 @@ import com.google.common.collect.Maps;
  * @version $Revision: 1.1 $
  */
 public class PropReader {
-    // "8859_1" is used in Properties.java...
-    private static final String ISO_8859_1 = "ISO-8859-1";
     public static final String PROP_CONTENT_TYPE = "text/plain";
     private static final String NEWLINE_REGEX = "(\r\n|\r|\n)";
 
-    private final String charset;
+    private final PropWriter.CHARSET charset;
     private final LocaleId sourceLocale;
     private final ContentState contentState;
 
@@ -47,7 +46,7 @@ public class PropReader {
      * @param contentState
      *            ContentState for new TextFlowTargets (typically Approved)
      */
-    public PropReader(String charset, LocaleId sourceLocale,
+    public PropReader(PropWriter.CHARSET charset, LocaleId sourceLocale,
             ContentState contentState) {
         this.charset = charset;
         this.sourceLocale = sourceLocale;
@@ -55,7 +54,7 @@ public class PropReader {
     }
 
     public PropReader() {
-        this(ISO_8859_1, LocaleId.EN_US, ContentState.Translated);
+        this(PropWriter.CHARSET.Latin1, LocaleId.EN_US, ContentState.Translated);
     }
 
     // pre: template already extracted
@@ -212,7 +211,7 @@ public class PropReader {
 
     private Properties loadProps(InputStream in) throws IOException,
             RuntimeException {
-        Reader reader = new InputStreamReader(in, charset);
+        Reader reader = new InputStreamReader(in, charset.getAlias());
         try {
             Properties props = new Properties();
             props.load(reader);

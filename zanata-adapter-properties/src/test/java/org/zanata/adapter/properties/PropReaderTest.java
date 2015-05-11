@@ -13,6 +13,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.commons.codec.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -36,13 +37,12 @@ public class PropReaderTest {
     private static final String SYSTEM_LINE_ENDING = System
             .getProperty("line.separator");
     PropReader propReader;
-    static final String ISO_8859_1 = "ISO-8859-1";
     String locale = "fr";
 
     @Before
     public void resetReader() {
         propReader =
-                new PropReader(ISO_8859_1, new LocaleId(locale),
+                new PropReader(PropWriter.CHARSET.Latin1, new LocaleId(locale),
                         ContentState.Translated);
     }
 
@@ -64,7 +64,7 @@ public class PropReaderTest {
         Resource docIn =
                 (Resource) unmarshal.unmarshal(new StringReader(sw.toString()));
 
-        PropWriter.write(docIn, TEST_OUTPUT_DIR);
+        PropWriter.writeSource(docIn, TEST_OUTPUT_DIR, PropWriter.CHARSET.Latin1);
 
         assertInputAndOutputDocContentSame(docName);
     }
@@ -88,7 +88,8 @@ public class PropReaderTest {
                 (TranslationsResource) unmarshal.unmarshal(new StringReader(sw
                         .toString()));
 
-        PropWriter.write(null, docIn, TEST_OUTPUT_DIR, "test", locale, false);
+        PropWriter.writeTranslations(null, docIn, TEST_OUTPUT_DIR,
+            "test", locale, PropWriter.CHARSET.Latin1, false);
 
         assertInputAndOutputDocContentSame(docName);
     }
@@ -105,7 +106,7 @@ public class PropReaderTest {
      * @throws MalformedURLException
      */
     private void assertInputAndOutputDocContentSame(String docName)
-            throws FileNotFoundException, IOException, MalformedURLException {
+            throws IOException {
         File newFile =
                 new File(TEST_OUTPUT_DIR.getPath() + File.separator + docName);
         InputStream newStream = newFile.toURI().toURL().openStream();

@@ -21,7 +21,6 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.PathUtil;
 
-import com.google.common.base.Charsets;
 import com.sun.xml.txw2.output.IndentingXMLStreamWriter;
 
 public class XliffWriter extends XliffCommon {
@@ -138,7 +137,6 @@ public class XliffWriter extends XliffCommon {
                             contextGroupMap.get(contextValues[0]);
                     list.add(new String[] { contextValues[1], contextValues[2] });
                 }
-
             }
 
             for (Map.Entry<String, ArrayList<String[]>> entry : contextGroupMap
@@ -175,48 +173,69 @@ public class XliffWriter extends XliffCommon {
      */
     public static void write(File baseDir, Resource doc, String locale,
             TranslationsResource targetDoc, boolean createSkeletons) {
-        try {
-            XMLOutputFactory output = XMLOutputFactory.newInstance();
-            File outFile =
-                    new File(baseDir, doc.getName() + "_"
-                            + locale.replace('-', '_') + ".xml");
-            PathUtil.makeParents(outFile);
-            FileOutputStream fileStream = new FileOutputStream(outFile);
-            try {
-                XMLStreamWriter xmlStreamWriter =
-                        output.createXMLStreamWriter(fileStream, "utf-8");
-                try {
-                    IndentingXMLStreamWriter writer =
-                            new IndentingXMLStreamWriter(xmlStreamWriter);
-                    try {
-                        if (targetDoc != null) {
-                            writeHeader(writer, doc, locale);
-                        } else {
-                            writeHeader(writer, doc, null);
-                        }
-                        writeTransUnits(writer, doc, targetDoc, createSkeletons);
+        File outFile =
+                new File(baseDir, doc.getName() + "_"
+                        + locale.replace('-', '_') + ".xml");
+        writeFile(outFile, doc, locale, targetDoc, createSkeletons);
+    }
 
-                        // end body tag
-                        writer.writeEndElement();
-                        // end file tag
-                        writer.writeEndElement();
-                        // end xliff tag
-                        writer.writeEndDocument();
-                        writer.flush();
-                    } finally {
-                        writer.close();
-                    }
-                } finally {
-                    xmlStreamWriter.close();
-                }
-            } finally {
-                fileStream.close();
-            }
-        } catch (XMLStreamException e) {
-            throw new RuntimeException("Error generating XLIFF file format   ",
-                    e);
+    /**
+     * Used for writing translation file with given translations map
+     *
+     * @param doc
+     * @param targetDoc
+     * @param file
+     * @param locale (use hyphen, not underscore)
+     * @throws IOException
+     */
+    public static void writeFile(File file, Resource doc, String locale,
+        TranslationsResource targetDoc, boolean createSkeletons) {
+
+        try {
+            PathUtil.makeParents(file);
         } catch (IOException e) {
             throw new RuntimeException("Error writing XLIFF file  ", e);
+        }
+
+        XMLStreamWriter xmlStreamWriter = null;
+        IndentingXMLStreamWriter writer = null;
+
+        try (FileOutputStream fileStream = new FileOutputStream(file)) {
+            XMLOutputFactory output = XMLOutputFactory.newInstance();
+            xmlStreamWriter = output.createXMLStreamWriter(fileStream, "utf-8");
+            writer = new IndentingXMLStreamWriter(xmlStreamWriter);
+
+            writeHeader(writer, doc, locale);
+
+            writeTransUnits(writer, doc, targetDoc, createSkeletons);
+
+            // end body tag
+            writer.writeEndElement();
+            // end file tag
+            writer.writeEndElement();
+            // end xliff tag
+            writer.writeEndDocument();
+            writer.flush();
+        } catch (XMLStreamException e) {
+            throw new RuntimeException("Error generating XLIFF file format   ",
+                e);
+        } catch (IOException e) {
+            throw new RuntimeException("Error writing XLIFF file  ", e);
+        } finally {
+            try {
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (XMLStreamException e) {
+                throw new RuntimeException("Error generating XLIFF file format   ",
+                    e);
+            }
+            try {
+                xmlStreamWriter.close();
+            } catch (XMLStreamException e) {
+                throw new RuntimeException("Error generating XLIFF file format   ",
+                    e);
+            }
         }
     }
 
