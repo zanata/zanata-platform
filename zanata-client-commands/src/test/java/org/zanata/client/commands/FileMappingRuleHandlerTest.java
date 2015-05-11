@@ -35,6 +35,8 @@ import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.ProjectType;
 
+import com.google.common.base.Optional;
+
 public class FileMappingRuleHandlerTest {
 
     private ConfigurableProjectOptions opts = new PushOptionsImpl();
@@ -77,7 +79,7 @@ public class FileMappingRuleHandlerTest {
                         ProjectType.Gettext, opts);
         assertThat(handler.getRelativeTransFilePathForSourceDoc(
                 QualifiedSrcDocName.from("message.pot"),
-                new LocaleMapping("zh")), Matchers.equalTo("zh.po"));
+                new LocaleMapping("zh"), Optional.<String>absent()), Matchers.equalTo("zh.po"));
     }
 
     private String getTransFile(String sourceFile, String locale, String rule,
@@ -86,17 +88,29 @@ public class FileMappingRuleHandlerTest {
             new FileMappingRule("**/*", rule), projectType, opts);
         return handler.getRelativeTransFilePathForSourceDoc(
                 QualifiedSrcDocName.from(sourceFile),
-                new LocaleMapping(locale));
+                new LocaleMapping(locale), Optional.<String>absent());
     }
 
     @Test
     public void canGetPartsFromQualifiedDocName() {
         EnumMap<Placeholders, String> map =
                 FileMappingRuleHandler.parseToMap("foo/message.pot",
-                        new LocaleMapping("zh-CN", "zh-Hans"));
+                        new LocaleMapping("zh-CN", "zh-Hans"), Optional.<String>absent());
         assertThat(map, Matchers.hasEntry(Placeholders.path, "foo"));
         assertThat(map, Matchers.hasEntry(Placeholders.filename, "message"));
         assertThat(map, Matchers.hasEntry(Placeholders.extension, "pot"));
+        assertThat(map, Matchers.hasEntry(Placeholders.locale, "zh-Hans"));
+        assertThat(map, Matchers.hasEntry(Placeholders.localeWithUnderscore, "zh_Hans"));
+    }
+
+    @Test
+    public void canGetPartsFromQualifiedDocName2() {
+        EnumMap<Placeholders, String> map =
+            FileMappingRuleHandler.parseToMap("foo/message.pot",
+                new LocaleMapping("zh-CN", "zh-Hans"), Optional.of("po"));
+        assertThat(map, Matchers.hasEntry(Placeholders.path, "foo"));
+        assertThat(map, Matchers.hasEntry(Placeholders.filename, "message"));
+        assertThat(map, Matchers.hasEntry(Placeholders.extension, "po"));
         assertThat(map, Matchers.hasEntry(Placeholders.locale, "zh-Hans"));
         assertThat(map, Matchers.hasEntry(Placeholders.localeWithUnderscore, "zh_Hans"));
     }

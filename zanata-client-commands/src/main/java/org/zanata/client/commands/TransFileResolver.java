@@ -80,16 +80,16 @@ public class TransFileResolver {
      * @return translation destination
      */
     public File resolveTransFile(QualifiedSrcDocName qualifiedSrcDocName,
-            LocaleMapping localeMapping) {
+            LocaleMapping localeMapping, Optional<String> translationFileExtension) {
         Optional<File> fileOptional =
                 tryGetTransFileFromProjectMappingRules(qualifiedSrcDocName,
-                        localeMapping);
+                        localeMapping, translationFileExtension);
         if (fileOptional.isPresent()) {
             return fileOptional.get();
         } else {
             ProjectType projectType = getProjectType();
             return getDefaultTransFileFromProjectType(qualifiedSrcDocName,
-                    localeMapping, projectType);
+                    localeMapping, projectType, translationFileExtension);
         }
     }
 
@@ -107,7 +107,8 @@ public class TransFileResolver {
             LocaleMapping localeMapping) {
         QualifiedSrcDocName qualifiedSrcDocName =
                 unqualifiedSrcDocName.toQualifiedDocName(getProjectType());
-        return resolveTransFile(qualifiedSrcDocName, localeMapping);
+        return resolveTransFile(qualifiedSrcDocName, localeMapping,
+            Optional.<String>absent());
     }
 
     private ProjectType getProjectType() {
@@ -121,17 +122,18 @@ public class TransFileResolver {
 
     private File getDefaultTransFileFromProjectType(
             QualifiedSrcDocName qualifiedSrcDocName, LocaleMapping localeMapping,
-            ProjectType projectType) {
+            ProjectType projectType, Optional<String> translationFileExtension) {
         FileMappingRule rule = PROJECT_TYPE_FILE_MAPPING_RULES.get(projectType);
         checkState(rule != null, _("no.default.mapping"), projectType);
         String relativePath = new FileMappingRuleHandler(rule, projectType, opts)
                 .getRelativeTransFilePathForSourceDoc(qualifiedSrcDocName,
-                        localeMapping);
+                        localeMapping, translationFileExtension);
         return new File(opts.getTransDir(), relativePath);
     }
 
     private Optional<File> tryGetTransFileFromProjectMappingRules(
-            QualifiedSrcDocName qualifiedSrcDocName, LocaleMapping localeMapping) {
+            QualifiedSrcDocName qualifiedSrcDocName, LocaleMapping localeMapping,
+            Optional<String> translationFileExtension) {
         List<FileMappingRule> fileMappingRules = opts.getFileMappingRules();
         // TODO may need to sort the rules. put rules without pattern to last
         for (FileMappingRule rule : fileMappingRules) {
@@ -141,7 +143,7 @@ public class TransFileResolver {
                 String relativePath = handler
                         .getRelativeTransFilePathForSourceDoc(
                                 qualifiedSrcDocName,
-                                localeMapping);
+                                localeMapping, translationFileExtension);
                 return Optional.of(new File(opts.getTransDir(), relativePath));
             }
         }

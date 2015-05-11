@@ -33,6 +33,8 @@ import org.zanata.client.commands.TransFileResolver;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.util.PathUtil;
 
+import com.google.common.base.Optional;
+
 /**
  *
  * @author David Mason, <a
@@ -62,15 +64,15 @@ public class RawPullStrategy {
     }
 
     public void writeTransFile(String localDocName,
-            LocaleMapping localeMapping, InputStream transFile)
+            LocaleMapping localeMapping, InputStream transFile, Optional<String> translationFileExtension)
             throws IOException {
         if (transFile == null) {
             throw new RuntimeException("no data for downloaded file "
                     + localDocName);
         }
         File file = new TransFileResolver(opts).resolveTransFile(
-                QualifiedSrcDocName.from(localDocName),
-                localeMapping);
+            QualifiedSrcDocName.from(localDocName),
+            localeMapping, translationFileExtension);
         logAndStreamToFile(transFile, file);
     }
 

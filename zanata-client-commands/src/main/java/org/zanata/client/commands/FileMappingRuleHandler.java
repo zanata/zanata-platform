@@ -37,10 +37,12 @@ import org.slf4j.LoggerFactory;
 import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.util.FileUtil;
+import org.zanata.common.DocumentType;
 import org.zanata.common.ProjectType;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
@@ -93,8 +95,14 @@ public class FileMappingRuleHandler {
 
     private boolean matchFileExtensionWithProjectType(
             QualifiedSrcDocName qualifiedSrcDocName) {
-        return projectType.getSourceFileTypes()
-                .contains(qualifiedSrcDocName.getExtension());
+        List<DocumentType> documentTypes = projectType.getSourceFileTypes();
+        for (DocumentType docType: documentTypes) {
+            if (docType.getSourceExtensions().contains(
+                    qualifiedSrcDocName.getExtension())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -108,9 +116,9 @@ public class FileMappingRuleHandler {
      */
     public String getRelativeTransFilePathForSourceDoc(
             QualifiedSrcDocName qualifiedSrcDocName,
-            @Nonnull LocaleMapping localeMapping) {
+            @Nonnull LocaleMapping localeMapping, Optional<String> translationFileExtension) {
         EnumMap<Placeholders, String> map =
-                parseToMap(qualifiedSrcDocName.getFullName(), localeMapping);
+                parseToMap(qualifiedSrcDocName.getFullName(), localeMapping, translationFileExtension);
 
         String transFilePath = mappingRule.getRule();
         for (Map.Entry<Placeholders, String> entry : map.entrySet()) {
@@ -125,11 +133,15 @@ public class FileMappingRuleHandler {
 
     @VisibleForTesting
     protected static EnumMap<Placeholders, String> parseToMap(
-            @Nonnull String sourceFile, @Nonnull LocaleMapping localeMapping) {
+            @Nonnull String sourceFile, @Nonnull LocaleMapping localeMapping,
+            Optional<String> translationFileExtension) {
         EnumMap<Placeholders, String> parts =
                 new EnumMap<Placeholders, String>(Placeholders.class);
         File file = new File(sourceFile);
-        String extension = FilenameUtils.getExtension(sourceFile);
+
+        String extension =
+            translationFileExtension.isPresent() ? translationFileExtension.get()
+                        : FilenameUtils.getExtension(sourceFile);
         String filename = FilenameUtils.removeExtension(file.getName());
         parts.put(Placeholders.extension, extension);
         parts.put(Placeholders.filename, filename);

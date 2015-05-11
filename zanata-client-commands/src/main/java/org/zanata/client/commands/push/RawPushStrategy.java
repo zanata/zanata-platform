@@ -28,6 +28,8 @@ import org.zanata.client.commands.QualifiedSrcDocName;
 import org.zanata.client.commands.TransFileResolver;
 import org.zanata.client.config.LocaleMapping;
 
+import com.google.common.base.Optional;
+
 /**
  * Strategy for uploading documents using the document file upload API methods.
  *
@@ -55,7 +57,7 @@ public class RawPushStrategy extends AbstractCommonPushStrategy<PushOptions> {
      * @param visitor
      */
     public void visitTranslationFiles(String sourceDocument,
-            TranslationFilesVisitor visitor) {
+            TranslationFilesVisitor visitor, Optional<String> translationExtension) {
         if (getOpts().getLocaleMapList() == null) {
             log.error("Locale mapping list not found, unable to push translations. Check your server settings.");
             return;
@@ -63,7 +65,7 @@ public class RawPushStrategy extends AbstractCommonPushStrategy<PushOptions> {
         for (LocaleMapping localeMapping : getOpts().getLocaleMapList()) {
             File translationFile = new TransFileResolver(getOpts())
                     .resolveTransFile(QualifiedSrcDocName.from(
-                            sourceDocument), localeMapping);
+                            sourceDocument), localeMapping, translationExtension);
 
             if (translationFile.canRead()) {
                 visitor.visit(localeMapping, translationFile);

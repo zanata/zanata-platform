@@ -23,9 +23,16 @@ package org.zanata.rest.service;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
@@ -33,15 +40,19 @@ import javax.ws.rs.core.StreamingOutput;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.ContentState;
+import org.zanata.common.DocumentType;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.ChunkUploadResponse;
+import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+
+import static org.zanata.common.ProjectType.Podir;
 
 /**
  * @author Patrick Huang <a
@@ -51,11 +62,24 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 public class MockFileResource implements FileResource {
     @Override
     public Response acceptedFileTypes() {
-        StringSet entity = new StringSet("");
-        entity.addAll(ProjectType.getSupportedSourceFileTypes(ProjectType.File));
-        entity.addAll(ProjectType
-                .getSupportedSourceFileTypes(ProjectType.Gettext));
-        return Response.ok(entity.toString()).build();
+        StringSet extensions = new StringSet("");
+        for (DocumentType docType : ProjectType
+                .getSupportedSourceFileTypes(ProjectType.File)) {
+            extensions.addAll(docType.getSourceExtensions());
+        }
+        for (DocumentType docType : ProjectType
+                .getSupportedSourceFileTypes(ProjectType.Gettext)) {
+            extensions
+                    .addAll(docType.getSourceExtensions());
+        }
+        return Response.ok(extensions.toString()).build();
+    }
+
+    @Override
+    public Response acceptedFileTypeList() {
+        GenericEntity<List<DocumentType>> genericEntity =
+            new GenericEntity<List<DocumentType>>(ProjectType.fileProjectSourceDocTypes()) {};
+        return Response.ok(genericEntity).build();
     }
 
     @Override

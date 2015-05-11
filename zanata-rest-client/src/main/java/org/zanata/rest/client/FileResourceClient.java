@@ -22,9 +22,14 @@
 package org.zanata.rest.client;
 
 import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.core.MediaType;
 
+import com.sun.jersey.api.client.GenericType;
+import org.zanata.common.DocumentType;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.ChunkUploadResponse;
@@ -50,14 +55,14 @@ public class FileResourceClient {
 
     }
 
-    public StringSet acceptedFileTypes() {
-        String types = factory.getClient()
+    public List<DocumentType> acceptedFileTypes() {
+        List<DocumentType> types = factory.getClient()
                 .resource(baseUri)
-                .path(FileResource.SERVICE_PATH)
-                .path("accepted_types")
-                .accept(MediaType.TEXT_PLAIN_TYPE)
-                .get(String.class);
-        return new StringSet(types);
+                .path(FileResource.SERVICE_PATH
+                    + FileResource.ACCEPTED_TYPE_LIST_RESOURCE)
+                .get(new GenericType<List<DocumentType>>() {
+            });
+        return types;
     }
 
     public ChunkUploadResponse uploadSourceFile(

@@ -189,8 +189,27 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
         return fileTypes;
     }
 
+    private static final String fileTypeHelp = "File types to locate and transmit to the server. \n" +
+        "Default file extension will be used unless it is being specified. \n" +
+        "Pattern: Type[file extension;file extension],Type[file extension;file extension] \n" +
+        "Supported types: \n" +
+        "\t XML_DOCUMENT_TYPE_DEFINITION[xml]) \n" +
+        "\t PLAIN_TEXT[txt] \n" +
+        "\t IDML[idml] \n" +
+        "\t HTML[html,htm] \n" +
+        "\t OPEN_DOCUMENT_TEXT[odt] \n" +
+        "\t OPEN_DOCUMENT_PRESENTATION[odp] \n" +
+        "\t OPEN_DOCUMENT_GRAPHICS[odg] \n" +
+        "\t OPEN_DOCUMENT_SPREADSHEET[ods] \n" +
+        "\t SUBTITLE[srt,sbt,sub,vtt] \n" +
+        "\t GETTEXT[pot] \n" +
+        "\t PROPERTIES[properties] \n" +
+        "\t PROPERTIES_UTF8[properties] \n" +
+        "\t XLIFF[xml] \n" +
+        "Usage --file-types \"XML_DOCUMENT_TYPE_DEFINITION,IDML[txt]\"";
+
     @Option(name = "--file-types", metaVar = "TYPES",
-            usage = "File types to locate and transmit to the server.")
+            usage = fileTypeHelp)
     public void setFileTypes(String fileTypes) {
         this.fileTypes = ImmutableList.copyOf(StringUtil.split(fileTypes, ","));
     }

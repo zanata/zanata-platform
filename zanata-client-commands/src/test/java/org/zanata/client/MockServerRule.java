@@ -48,10 +48,10 @@ import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.push.PushOptionsImpl;
 import org.zanata.client.commands.push.RawPushCommand;
 import org.zanata.client.config.LocaleList;
+import org.zanata.common.DocumentType;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.rest.DocumentFileUploadForm;
-import org.zanata.rest.StringSet;
 import org.zanata.rest.client.AsyncProcessClient;
 import org.zanata.rest.client.CopyTransClient;
 import org.zanata.rest.client.FileResourceClient;
@@ -65,7 +65,6 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.FileResource;
 
-import com.google.common.base.Joiner;
 import com.google.common.base.Throwables;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
@@ -288,10 +287,13 @@ public class MockServerRule extends ExternalResource {
     public RawPushCommand createRawPushCommand() {
         when(clientFactory.getFileResourceClient()).thenReturn(
                 fileResourceClient);
-        List<String> fileTypes =
-                ProjectType.getSupportedSourceFileTypes(ProjectType.File);
-        when(fileResourceClient.acceptedFileTypes())
-                .thenReturn(new StringSet(Joiner.on(";").join(fileTypes)));
+
+        List<DocumentType> documentTypes =
+                ProjectType.fileProjectSourceDocTypes();
+
+        when(fileResourceClient.acceptedFileTypes()).thenReturn(
+            documentTypes);
+
         ChunkUploadResponse uploadResponse =
                 new ChunkUploadResponse(1L, 1, false, "Upload successful");
         // push source

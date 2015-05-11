@@ -25,6 +25,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -32,6 +34,7 @@ import javax.ws.rs.core.Response;
 import com.google.common.base.Strings;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * @author Patrick Huang <a
@@ -106,5 +109,26 @@ public class ClientUtil {
         } catch (MalformedURLException | URISyntaxException e) {
             return movedTo;
         }
+    }
+
+    /**
+     * Extract filename from response header.
+     *
+     * e.g. Content-Disposition=[attachment; filename="RPM.po"]
+     *
+     * @param headers
+     * @return
+     */
+    public static String getFileNameFromHeader(MultivaluedMap<String, String> headers) {
+        final String CONTENT_DISPOSITION_HEADER = "Content-Disposition";
+        final String FILENAME_PATTERN = "filename=\"(.*?)\"$";
+
+        String contentDisposition = headers.getFirst(CONTENT_DISPOSITION_HEADER);
+        if (StringUtils.isEmpty(contentDisposition)) {
+            return null;
+        }
+        Pattern p = Pattern.compile(FILENAME_PATTERN);
+        Matcher m = p.matcher(contentDisposition);
+        return m.find() ? m.group(1) : null;
     }
 }

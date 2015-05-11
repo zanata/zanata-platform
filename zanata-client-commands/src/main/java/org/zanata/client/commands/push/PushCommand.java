@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.adapter.properties.PropWriter;
 import org.zanata.adapter.xliff.XliffCommon.ValidationType;
 import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.commands.PushPullType;
@@ -55,7 +56,6 @@ public class PushCommand extends PushPullCommand<PushOptions> {
     private static final Logger log = LoggerFactory
             .getLogger(PushCommand.class);
     private static final int POLL_PERIOD = 250;
-    private static final String UTF_8 = "UTF-8";
 
     private static final Map<String, AbstractPushStrategy> strategies =
             new HashMap<String, AbstractPushStrategy>();
@@ -69,7 +69,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
 
     {
         strategies.put(PROJECT_TYPE_UTF8_PROPERTIES, new PropertiesStrategy(
-                UTF_8));
+            PropWriter.CHARSET.UTF8));
         strategies.put(PROJECT_TYPE_PROPERTIES, new PropertiesStrategy());
         strategies.put(PROJECT_TYPE_GETTEXT, new GettextPushStrategy());
         strategies.put(PROJECT_TYPE_PUBLICAN, new GettextDirStrategy());

@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.zanata.adapter.properties.PropWriter;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.util.PathUtil;
 
@@ -49,7 +50,7 @@ public class PropertiesPushStrategyTest {
         } finally {
             fos.close();
         }
-        PropertiesStrategy strat = new PropertiesStrategy("UTF-8");
+        PropertiesStrategy strat = new PropertiesStrategy(PropWriter.CHARSET.UTF8);
         strat.setPushOptions(opts);
         strat.init();
 

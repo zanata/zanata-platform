@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.PushPullCommand;
@@ -33,6 +34,7 @@ import org.zanata.client.commands.PushPullType;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.exceptions.ConfigException;
+import org.zanata.common.DocumentType;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.client.ClientUtil;
 import org.zanata.rest.client.FileResourceClient;
@@ -40,7 +42,10 @@ import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.service.FileResource;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
 import com.sun.jersey.api.client.ClientResponse;
+
+import javax.ws.rs.core.HttpHeaders;
 
 /**
  *
@@ -201,8 +206,17 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
                                             .getEntity(InputStream.class);
                             if (transDoc != null) {
                                 try {
-                                    strat.writeTransFile(localDocName, locMapping,
-                                            transDoc);
+                                    String fileName =
+                                            ClientUtil.getFileNameFromHeader(
+                                                    response.getHeaders());
+                                    String targetFileExt = FilenameUtils
+                                                    .getExtension(fileName);
+
+                                    Optional translationFileExtension =
+                                            Optional.fromNullable(targetFileExt);
+
+                                    strat.writeTransFile(localDocName,
+                                        locMapping, transDoc, translationFileExtension);
                                 } finally {
                                     transDoc.close();
                                 }
@@ -219,5 +233,4 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
             }
         }
     }
-
 }

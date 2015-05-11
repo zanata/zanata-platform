@@ -20,6 +20,7 @@
  */
 package org.zanata.client.commands;
 
+import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
 import org.slf4j.Logger;
@@ -44,5 +45,10 @@ public final class Messages {
                 "Cannot find key [{}] in resource bundle. Please report a bug to developer.",
                 key);
         return key;
+    }
+
+    public static String format(String key, Object... args) {
+        String template = _(key);
+        return MessageFormat.format(template, args);
     }
 }
