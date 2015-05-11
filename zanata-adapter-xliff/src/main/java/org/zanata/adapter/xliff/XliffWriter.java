@@ -222,19 +222,23 @@ public class XliffWriter extends XliffCommon {
         } catch (IOException e) {
             throw new RuntimeException("Error writing XLIFF file  ", e);
         } finally {
-            try {
-                if (writer != null) {
+            if (writer != null) {
+                try {
                     writer.close();
+                } catch (XMLStreamException e) {
+                    throw new RuntimeException(
+                        "Error generating XLIFF file format   ",
+                        e);
                 }
-            } catch (XMLStreamException e) {
-                throw new RuntimeException("Error generating XLIFF file format   ",
-                    e);
             }
-            try {
-                xmlStreamWriter.close();
-            } catch (XMLStreamException e) {
-                throw new RuntimeException("Error generating XLIFF file format   ",
-                    e);
+            if (xmlStreamWriter != null) {
+                try {
+                    xmlStreamWriter.close();
+                } catch (XMLStreamException e) {
+                    throw new RuntimeException(
+                        "Error generating XLIFF file format   ",
+                        e);
+                }
             }
         }
     }
