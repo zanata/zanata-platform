@@ -1,0 +1,5 @@
+<p>$msgs.get("jsf.email.admin.DearAdmin")</p>
+
+<p>$msgs.format("jsf.email.admin.AnonymousUserMessageIntro", $ipAddress)</p>
+<hr/>
+$htmlMessage

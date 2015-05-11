@@ -49,6 +49,14 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
         return (HAccount) cr.uniqueResult();
     }
 
+    public HAccount getByEmail(String email) {
+        return (HAccount) getSession()
+            .createQuery(
+                "from HAccount acc where acc.person.email = :email")
+            .setString("email", email)
+            .setComment("AccountDAO.getByEmail").uniqueResult();
+    }
+
     public HAccount getByUsernameAndEmail(String username, String email) {
         return (HAccount) getSession()
                 .createQuery(

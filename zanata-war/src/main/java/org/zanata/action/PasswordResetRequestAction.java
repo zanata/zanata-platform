@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.constraints.Email;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.End;
@@ -21,8 +21,6 @@ import org.zanata.service.EmailService;
 import org.zanata.service.UserAccountService;
 import org.zanata.ui.faces.FacesMessages;
 
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -53,21 +51,12 @@ public class PasswordResetRequestAction implements Serializable {
 
     @Setter
     @Getter
-    @NotEmpty
-    @Size(min = 3, max = 20)
-    @Pattern(regexp = "^[a-z\\d_]{3,20}$",
-        message = "{validation.username.constraints}")
-    private String username;
-
-    @Setter
-    @Getter
-    @NotEmpty
-    @Email
-    private String email;
-
-    @Setter
-    @Getter
     private String activationKey;
+
+    @Setter
+    @Getter
+    @NotEmpty
+    private String usernameOrEmail;
 
     private HAccount account;
 
@@ -101,8 +90,8 @@ public class PasswordResetRequestAction implements Serializable {
     }
 
     @End
-    public String sendActivationEmail(String username, String email) {
-        HAccount account = accountDAO.getByUsernameAndEmail(username, email);
+    public String sendActivationEmail(String usernameOrEmail) {
+        HAccount account = getAccount(usernameOrEmail);
         if(account != null) {
             HAccountActivationKey key = account.getAccountActivationKey();
             if(key != null) {
@@ -132,8 +121,27 @@ public class PasswordResetRequestAction implements Serializable {
 
     public HAccount getAccount() {
         if(account == null) {
-            account = accountDAO.getByUsernameAndEmail(username, email);
+            account = getAccount(usernameOrEmail);
         }
         return account;
+    }
+
+    private HAccount getAccount(String usernameOrEmail) {
+        HAccount account = null;
+        if(isEmailAddress(usernameOrEmail)) {
+            account = accountDAO.getByEmail(usernameOrEmail);
+        }
+        //if account still null after try as email
+        if (account == null){
+            account = accountDAO.getByUsername(usernameOrEmail);
+        }
+        return account;
+    }
+
+    /**
+     * Check if input string has '@' sign
+     */
+    private boolean isEmailAddress(String value) {
+        return StringUtils.contains(value, "@");
     }
 }

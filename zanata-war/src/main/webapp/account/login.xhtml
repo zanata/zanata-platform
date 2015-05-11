@@ -5,6 +5,7 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:f="http://java.sun.com/jsf/core"
   template="../WEB-INF/template/template_nobanner.xhtml">
 
   <ui:define name="page_title">#{msgs['jsf.Login']}</ui:define>
@@ -111,8 +112,9 @@
                       styleClass="button--full button--fedora" value="Fedora"/>
                   </li>
                   <li class="l--push-top-half">
-                    <h:commandLink action="#{loginAction.openIdLogin('Google')}"
-                      styleClass="button--full button--google" value="Google"/>
+                    <s:link value="Google" styleClass="button--full button--google"
+                      view="/account/google_password_reset_request.xhtml" propagation="none">
+                    </s:link>
                   </li>
                   <li class="l--push-top-half">
                     <h:commandLink action="#{loginAction.openIdLogin('Yahoo')}"

@@ -144,8 +144,8 @@ public class LanguageJoinAction implements Serializable {
                     .append("' , message '").append(message)
                     .append("'");
             log.error(
-                    "Failed to send email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}'",
-                    e, fromName, fromLoginName, replyEmail, subject, message);
+                    "Failed to send email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}'. {}",
+                    fromName, fromLoginName, replyEmail, subject, message, e);
             facesMessages.addGlobal(sb.toString());
         } finally {
             reset();
