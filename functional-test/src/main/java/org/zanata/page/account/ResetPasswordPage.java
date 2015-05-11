@@ -33,40 +33,30 @@ import org.zanata.page.utility.HomePage;
 @Slf4j
 public class ResetPasswordPage extends BasePage {
 
-    private By usernameField = By.id("passwordResetRequestForm:usernameField:username");
-    private By emailField = By.id("passwordResetRequestForm:emailField:email");
+    private By usernameEmailField = By.id("passwordResetRequestForm:usernameEmailField:usernameEmail");
     private By submitButton = By.id("passwordResetRequestForm:submitRequest");
 
     public ResetPasswordPage(WebDriver driver) {
         super(driver);
     }
 
-    public ResetPasswordPage enterUserName(String username) {
-        log.info("Enter username {}", username);
-        waitForWebElement(usernameField).sendKeys(username);
-        return new ResetPasswordPage(getDriver());
-    }
-
-    public ResetPasswordPage enterEmail(String email) {
-        log.info("Enter email {}", email);
-        waitForWebElement(emailField).sendKeys(email);
+    public ResetPasswordPage enterUserNameEmail(String usernameEmail) {
+        log.info("Enter username or email {}", usernameEmail);
+        waitForWebElement(usernameEmailField).sendKeys(usernameEmail);
         return new ResetPasswordPage(getDriver());
     }
 
     public ResetPasswordPage clearFields() {
         log.info("Clear fields");
-        waitForWebElement(usernameField).clear();
-        defocus(usernameField);
-        waitForWebElement(emailField).clear();
-        defocus(emailField);
+        waitForWebElement(usernameEmailField).clear();
+        defocus(usernameEmailField);
         waitForPageSilence();
         return new ResetPasswordPage(getDriver());
     }
 
     public HomePage resetPassword() {
         log.info("Click Submit");
-        defocus(usernameField);
-        defocus(emailField);
+        defocus(usernameEmailField);
         waitForPageSilence();
         waitForWebElement(submitButton).click();
         return new HomePage(getDriver());
@@ -74,8 +64,7 @@ public class ResetPasswordPage extends BasePage {
 
     public ResetPasswordPage resetFailure() {
         log.info("Click Submit");
-        defocus(usernameField);
-        defocus(emailField);
+        defocus(usernameEmailField);
         waitForPageSilence();
         waitForWebElement(submitButton).click();
         return new ResetPasswordPage(getDriver());
