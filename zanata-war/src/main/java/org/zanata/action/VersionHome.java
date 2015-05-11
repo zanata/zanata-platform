@@ -55,6 +55,7 @@ import org.zanata.i18n.Messages;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.validator.SlugValidator;
 import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
@@ -64,7 +65,6 @@ import org.zanata.transformer.Transformer;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.util.Event;
-import org.zanata.util.ServiceLocator;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
@@ -80,6 +80,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 @Name("versionHome")
 @Slf4j
@@ -88,9 +89,18 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * This field is set from http parameter which will be the original slug
+     */
     @Getter
-    @Setter
     private String slug;
+
+    /**
+     * This field is set from form input which can differ from original slug
+     */
+    @Setter
+    @Getter
+    private String inputSlugValue;
 
     private Long versionId;
 
@@ -318,6 +328,14 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
                 "This Version ID has been used in this project");
             return false;
         }
+        boolean valid = new SlugValidator().isValid(slug, null);
+        if (!valid) {
+            String validationMessages =
+                    ResourceBundle.getBundle("ValidationMessages").getString(
+                            "javax.validation.constraints.Slug.message");
+            facesMessages.addToControl(componentId, validationMessages);
+            return false;
+        }
         return true;
     }
 
@@ -355,8 +373,17 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
                                 getInstance().getSlug(), copyFromVersionSlug));
     }
 
+    public void setSlug(String slug) {
+        this.slug = slug;
+        this.inputSlugValue = slug;
+    }
+
     @Override
     public String persist() {
+        if (!validateSlug(getInputSlugValue(), "slug")) {
+            return null;
+        }
+        getInstance().setSlug(getInputSlugValue());
         updateProjectType();
 
         HProject project = getProject();
@@ -426,6 +453,10 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     @Override
     @Restrict("#{s:hasPermission(versionHome.instance, 'update')}")
     public String update() {
+        if (!validateSlug(getInputSlugValue(), "slug")) {
+            return null;
+        }
+        getInstance().setSlug(getInputSlugValue());
         String state = super.update();
         if (!slug.equals(getInstance().getSlug())) {
             slug = getInstance().getSlug();

@@ -62,9 +62,10 @@
     </h:outputLabel>
     <s:decorate id="slugField" template="../field.xhtml" enclose="true">
       <h:inputText maxlength="40"
-        id="slug" required="true" value="#{versionHome.instance.slug}"
+        id="slug" required="true" value="#{versionHome.inputSlugValue}"
         valueChangeListener="#{versionHome.verifySlugAvailable}">
         <f:validateLength minimum="1"/>
+        <a4j:ajax event="blur" render="slugField" execute="@this"/>
       </h:inputText>
     </s:decorate>
   </div>

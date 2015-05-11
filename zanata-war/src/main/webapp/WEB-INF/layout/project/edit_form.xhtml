@@ -41,9 +41,10 @@
         <s:decorate id="slugField" template="../field.xhtml" enclose="true">
           <h:inputText maxlength="40"
             id="slug" required="true"
-            value="#{projectHome.instance.slug}"
+            value="#{projectHome.inputSlugValue}"
             valueChangeListener="#{projectHome.verifySlugAvailable}">
             <f:validateLength minimum="1"/>
+            <a4j:ajax event="blur" render="slugField" execute="@this"/>
           </h:inputText>
         </s:decorate>
         <h:inputHidden id="projectId" value="#{projectHome.projectId}"/>

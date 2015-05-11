@@ -22,7 +22,6 @@ package org.zanata.action;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,6 +29,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.faces.application.FacesMessage;
@@ -37,7 +37,6 @@ import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import lombok.Getter;
@@ -59,8 +58,6 @@ import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountRoleDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.WebHookDAO;
-import org.zanata.events.ProjectIterationUpdate;
-import org.zanata.events.ProjectUpdate;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
@@ -69,6 +66,7 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.WebHook;
+import org.zanata.model.validator.SlugValidator;
 import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
@@ -79,7 +77,6 @@ import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.autocomplete.MaintainerAutocomplete;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ComparatorUtil;
-import org.zanata.util.Event;
 import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
@@ -97,9 +94,18 @@ public class ProjectHome extends SlugHome<HProject> implements
 
     private static final long serialVersionUID = 1L;
 
+    /**
+     * This field is set from http parameter which will be the original slug
+     */
+    @Getter
+    private String slug;
+
+    /**
+     * This field is set from form input which can differ from original slug
+     */
     @Getter
     @Setter
-    private String slug;
+    private String inputSlugValue;
 
     @Setter
     @Getter
@@ -670,6 +676,14 @@ public class ProjectHome extends SlugHome<HProject> implements
                     "This Project ID is not available");
             return false;
         }
+        boolean valid = new SlugValidator().isValid(slug, null);
+        if (!valid) {
+            String validationMessages =
+                    ResourceBundle.getBundle("ValidationMessages").getString(
+                            "javax.validation.constraints.Slug.message");
+            facesMessages.addToControl(componentId, validationMessages);
+            return false;
+        }
         return true;
     }
 
@@ -687,9 +701,18 @@ public class ProjectHome extends SlugHome<HProject> implements
         }
     }
 
+    public void setSlug(String slug) {
+        this.slug = slug;
+        this.inputSlugValue = slug;
+    }
+
     @Override
     @Restrict("#{s:hasPermission(projectHome.instance, 'update')}")
     public String update() {
+        if (!validateSlug(getInputSlugValue(), "slug")) {
+            return null;
+        }
+        getInstance().setSlug(getInputSlugValue());
         String result = super.update();
         if (!slug.equals(getInstance().getSlug())) {
             slug = getInstance().getSlug();
@@ -702,9 +725,10 @@ public class ProjectHome extends SlugHome<HProject> implements
     @Transactional
     public String persist() {
         String retValue = "";
-        if (!validateSlug(getInstance().getSlug(), "slug")) {
+        if (!validateSlug(getInputSlugValue(), "slug")) {
             return null;
         }
+        getInstance().setSlug(getInputSlugValue());
 
         if (StringUtils.isEmpty(selectedProjectType)
                 || selectedProjectType.equals("null")) {

@@ -123,7 +123,8 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
     }
 
     public IndexingService getIndexingServiceImpl() {
-        return ServiceLocator.instance().getInstance(IndexingService.class);
+        return ServiceLocator.instance().getInstance("indexingServiceImpl",
+                IndexingService.class);
     }
 
     public Event<ProjectUpdate> getProjectUpdateEvent() {
