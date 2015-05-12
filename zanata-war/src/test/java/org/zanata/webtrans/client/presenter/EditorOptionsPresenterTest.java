@@ -118,7 +118,7 @@ public class EditorOptionsPresenterTest {
         WorkspaceContextUpdateEvent workspaceContextUpdateEvent =
                 new WorkspaceContextUpdateEvent(workplaceContextData(false,
                         ProjectType.Podir));
-        when(userWorkspaceContext.hasReadOnlyAccess()).thenReturn(true);
+        when(userWorkspaceContext.hasReadOnlyAccess()).thenReturn(false, true);
         when(userOptionsService.getConfigHolder()).thenReturn(configHolder);
 
         // When:
