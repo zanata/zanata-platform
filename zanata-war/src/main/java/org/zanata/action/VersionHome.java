@@ -453,7 +453,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     @Override
     @Restrict("#{s:hasPermission(versionHome.instance, 'update')}")
     public String update() {
-        if (!validateSlug(getInputSlugValue(), "slug")) {
+        if (!getInputSlugValue().equals(slug) && !validateSlug(getInputSlugValue(), "slug")) {
             return null;
         }
         getInstance().setSlug(getInputSlugValue());

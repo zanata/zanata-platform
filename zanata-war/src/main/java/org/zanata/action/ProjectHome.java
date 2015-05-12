@@ -709,7 +709,7 @@ public class ProjectHome extends SlugHome<HProject> implements
     @Override
     @Restrict("#{s:hasPermission(projectHome.instance, 'update')}")
     public String update() {
-        if (!validateSlug(getInputSlugValue(), "slug")) {
+        if (!getInputSlugValue().equals(slug) && !validateSlug(getInputSlugValue(), "slug")) {
             return null;
         }
         getInstance().setSlug(getInputSlugValue());
