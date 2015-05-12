@@ -1,7 +1,23 @@
 ## 3.6.3
 
+<h5>Infrastructure Changes</h5>
+
+Zanata now requires JBoss EAP 6.4.0.GA or later (recommended), or WildFly version 9.0.0.CR1 or later.
+
+The WildFly modules for Hibernate and Mojarra have been updated, to 4.2.19.Final and 2.1.29-01 respectively.  The Zanata installer includes the updated modules.
+
+The Zanata installer's configuration now enables "connection debugging" to prevent any potential JDBC connection leaks.
+
+-----------------------
+
+<h5>New Features</h5>
+* Added Liquibase logging (as part of [1207575](https://bugzilla.redhat.com/show_bug.cgi?id=1207575))
+
+-----------------------
+
 <h5>Bugfixes</h5>
 * [1207575](https://bugzilla.redhat.com/show_bug.cgi?id=1207575) - Zanata still creates MyISAM (not InnoDB) tables in some cases
+* [1197955](https://bugzilla.redhat.com/show_bug.cgi?id=1197955) - [WildFly] IllegalStateException: UT000010: Session not found
 
 -----------------------
 

@@ -1205,6 +1205,7 @@
       </build>
       <dependencies>
         <dependency>
+          <!-- This might be org.wildfly.arquillian in future: -->
           <groupId>org.wildfly</groupId>
           <artifactId>wildfly-arquillian-container-managed</artifactId>
           <version>${wildfly.client.version}</version>

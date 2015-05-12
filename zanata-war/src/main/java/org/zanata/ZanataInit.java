@@ -51,8 +51,6 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 
-import com.google.common.base.Optional;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FileUtils;
@@ -82,9 +80,9 @@ import org.zanata.util.VersionUtility;
 @Slf4j
 public class ZanataInit {
     private static final DefaultArtifactVersion MIN_EAP_VERSION =
-            new DefaultArtifactVersion("6.3.3");
+            new DefaultArtifactVersion("6.4.0.GA");
     private static final DefaultArtifactVersion MIN_WILDFLY_VERSION =
-            new DefaultArtifactVersion("8.1.0");
+            new DefaultArtifactVersion("9.0.0.CR1");
 
 
     static {
@@ -106,7 +104,7 @@ public class ZanataInit {
 
     @Observer("org.jboss.seam.postInitialization")
     public void initZanata() throws Exception {
-        AppServerVersion appServerVersion = checkJBossVersion();
+        checkAppServerVersion();
         ServletContext servletContext =
                 ServletLifecycle.getCurrentServletContext();
         String appServerHome = servletContext.getRealPath("/");
@@ -131,7 +129,7 @@ public class ZanataInit {
         this.applicationConfiguration.setBuildTimestamp(zanataVersion.getBuildTimeStamp());
         this.applicationConfiguration.setScmDescribe(zanataVersion.getScmDescribe());
 
-        logBanner(zanataVersion, appServerVersion);
+        logBanner(zanataVersion);
 
         if (this.applicationConfiguration.isDebug()) {
             log.info("debug: enabled");
@@ -175,68 +173,69 @@ public class ZanataInit {
         log.info("Started Zanata...");
     }
 
-    private Optional<DefaultArtifactVersion> getEAPVersion()
-            throws AttributeNotFoundException, MBeanException,
-            ReflectionException, InstanceNotFoundException,
-            MalformedObjectNameException {
-        try {
-            MBeanServer server = ManagementFactory.getPlatformMBeanServer();
-            ObjectName name = new ObjectName("jboss.as:management-root=server");
-            String productName = (String) (server.getAttribute(name, "productName"));
-            if (productName == null || !productName.equals("EAP")) {
-                return Optional.absent();
-            }
-            String version = (String) (server.getAttribute(name, "productVersion"));
-            log.info("EAP productVersion: {}", version);
-            return Optional.of(new DefaultArtifactVersion(version));
-        } catch (Exception e) {
-            log.debug(e.toString(), e);
-            return Optional.absent();
-        }
-    }
-
-    private Optional<DefaultArtifactVersion> getASReleaseVersion()
-            throws AttributeNotFoundException, MBeanException,
-            ReflectionException, InstanceNotFoundException,
-            MalformedObjectNameException {
-        try {
-            MBeanServer server = ManagementFactory.getPlatformMBeanServer();
-            ObjectName name = new ObjectName("jboss.as:management-root=server");
-            String version = (String) (server.getAttribute(name, "releaseVersion"));
-            if (version == null) {
-                return Optional.absent();
-            }
-            log.info("JBoss AS releaseVersion: {}", version);
-            return Optional.of(new DefaultArtifactVersion(version));
-        } catch (Exception e) {
-            log.debug(e.toString(), e);
-            return Optional.absent();
-        }
-    }
-
-    private AppServerVersion checkJBossVersion()
+    private void checkAppServerVersion()
             throws MalformedObjectNameException, AttributeNotFoundException,
             MBeanException, ReflectionException, InstanceNotFoundException {
-        Optional<DefaultArtifactVersion> eapVersion = getEAPVersion();
-        Optional<DefaultArtifactVersion> asReleaseVersion =
-                getASReleaseVersion();
-        if (eapVersion.isPresent()) {
-            if (eapVersion.get().compareTo(MIN_EAP_VERSION) < 0) {
-                log.warn("EAP version is {}.  Please upgrade to {} or later.",
-                        eapVersion.get(), MIN_EAP_VERSION);
+        MBeanServer jmx = ManagementFactory.getPlatformMBeanServer();
+        ObjectName server = new ObjectName("jboss.as:management-root=server");
+        String releaseCodename =
+                (String) jmx.getAttribute(server, "releaseCodename");
+        String releaseVersion =
+                (String) jmx.getAttribute(server, "releaseVersion");
+        String productName =
+                (String) jmx.getAttribute(server, "productName");
+        String productVersion =
+                (String) jmx.getAttribute(server, "productVersion");
+
+        log.info("App server release codename: {}", releaseCodename);
+        log.info("App server release version: {}", releaseVersion);
+
+        switch ((productName == null) ? "" : productName) {
+            case "EAP":
+                checkEAPVersion(productVersion);
+                break;
+            case "WildFly Full":
+                checkWildFlyVersion(productVersion);
+                break;
+            default:
+                log.warn(
+                        "Unknown app server.  This application requires EAP >= {} or WildFly Full >= {}",
+                        MIN_EAP_VERSION, MIN_WILDFLY_VERSION);
+                break;
+        }
+    }
+
+    private void checkEAPVersion(String productVersion) {
+        if (productVersion != null) {
+            DefaultArtifactVersion pv =
+                    new DefaultArtifactVersion(productVersion);
+            if (pv.compareTo(MIN_EAP_VERSION) < 0) {
+                log.warn(
+                        "EAP version is {}.  Please upgrade to {} or later.",
+                        productVersion, MIN_EAP_VERSION);
+            } else {
+                log.info("EAP version: {}", productVersion);
             }
         } else {
-            if (asReleaseVersion.isPresent()) {
-                if (asReleaseVersion.get().compareTo(MIN_WILDFLY_VERSION) < 0) {
-                    log.warn("WildFly version is {}.  Please upgrade to {} or later.",
-                            asReleaseVersion.get(), MIN_WILDFLY_VERSION);
-                }
-            } else {
-                log.warn("Unknown app server.  This application requires EAP >= {} or WildFly >= {}",
-                        MIN_EAP_VERSION, MIN_WILDFLY_VERSION);
-            }
+            log.warn("EAP version is unknown");
         }
-        return new AppServerVersion(eapVersion, asReleaseVersion);
+    }
+
+    private void checkWildFlyVersion(String productVersion) {
+        if (productVersion != null) {
+            DefaultArtifactVersion pv =
+                    new DefaultArtifactVersion(productVersion);
+            if (pv.compareTo(MIN_WILDFLY_VERSION) < 0) {
+                log.warn(
+                        "WildFly Full version is {}.  Please upgrade to {} or later.",
+                        productVersion, MIN_WILDFLY_VERSION);
+            } else {
+                log.info("WildFly Full version: {}",
+                        productVersion);
+            }
+        } else {
+            log.warn("WildFly Full version is unknown");
+        }
     }
 
     private void checkLuceneLocks(File indexDir)
@@ -415,7 +414,7 @@ public class ZanataInit {
         }
     }
 
-    private void logBanner(VersionInfo ver, AppServerVersion appServerVersion) {
+    private void logBanner(VersionInfo ver) {
         log.info("============================================");
         log.info("   _____                     _              ");
         log.info("  /__  /  ____ _____  ____ _/ /_____ _      ");
@@ -423,18 +422,9 @@ public class ZanataInit {
         log.info("   / /__/ /_/ / / / / /_/ / /_/ /_/ /       ");
         log.info("  /____/\\__,_/_/ /_/\\__,_/\\__/\\__,_/        ");
         log.info("  Application version: " + ver.getVersionNo());
-        if (appServerVersion.eapVersion.isPresent()) {
-            log.info("  EAP version: " + appServerVersion.eapVersion.get());
-        }
-        log.info("  AS version: " + appServerVersion.asVersion.orNull());
         log.info("  SCM: " + ver.getScmDescribe());
         log.info("  Red Hat Inc 2008-2014");
         log.info("============================================");
-    }
-
-    @Value private static class AppServerVersion {
-        Optional<DefaultArtifactVersion> eapVersion;
-        Optional<DefaultArtifactVersion> asVersion;
     }
 
 }
