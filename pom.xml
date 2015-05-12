@@ -1480,7 +1480,7 @@
         <wildfly.client.version>8.1.0.Final</wildfly.client.version>
         <!-- used in the wildfly8 profile in zanata-war -->
         <!-- This is the server version -->
-        <wildfly.version>9.0.0.CR1</wildfly.version>
+        <wildfly.version>9.0.0.Beta2</wildfly.version>
         <!-- In case this profile was activated by default: -->
         <appserver>wildfly8</appserver>
         <cargo.installation>http://download.jboss.org/wildfly/${wildfly.version}/wildfly-${wildfly.version}.zip</cargo.installation>
