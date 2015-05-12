@@ -382,9 +382,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
         if (event.hasSlugChanged()) {
             eventBus.fireEvent(new NotificationEvent(Severity.Error, messages
                     .workspaceUrlHasChanged()));
-            if (targetContentsPresenter.currentEditorContentHasChanged()) {
-                targetContentsPresenter.saveCurrentIfValid(ContentState.NeedReview);
-            }
+
             final String newUrl = buildNewUrl(event);
             new Timer() {
 
@@ -392,7 +390,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
                 public void run() {
                     windowLocation.assign(newUrl);
                 }
-            }.schedule(5000);
+            }.schedule(10000);
         }
         display.setReadOnlyVisible(userWorkspaceContext.hasReadOnlyAccess());
     }

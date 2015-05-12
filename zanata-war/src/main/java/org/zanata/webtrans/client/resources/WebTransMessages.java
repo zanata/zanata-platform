@@ -550,6 +550,6 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("Anonymous")
     String anonymousUser();
 
-    @DefaultMessage("Project ID or version ID has changed and any unsaved work will be saved as fuzzy. Editor will reload soon.")
+    @DefaultMessage("Project ID or version ID has changed. Please copy your unsaved work into clipboard. Editor will reload in 10 seconds.")
     String workspaceUrlHasChanged();
 }
