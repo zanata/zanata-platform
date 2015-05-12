@@ -1,5 +1,3 @@
-# Installation
-
 The Zanata client (zanata-cli) can be installed on most systems. Installation is easiest under Fedora, other systems can use Apache Ivy for installation. Manual installation is also possible.
 
 
@@ -11,13 +9,11 @@ If you are using Fedora, zanata-cli is available through the `yum` package manag
 sudo yum install zanata-client
 ```
 
+*Note:* If you are not running the latest version of Fedora, the latest version of the client may not be available, so you might want to try the Ivy version (below).
+
 ## Installation with Ivy
 
-The Ivy distribution of the client is a small script that will download the client the first time it is run. This distribution requires Apache Ivy to run.
-
-Instructions for installing Apache Ivy and the Ivy version of zanata-cli can be found at [Zanata Ivy Client on github](https://github.com/zanata/zanata-client-ivy).
-
-*Note:* The Ivy client will download required files the first time it is run, which may take several minutes. It will show `resolving dependencies...` while this is happening.
+See [Ivy installation](ivy/installation) for more information.
 
 ## Manual Installation
 
@@ -30,6 +26,7 @@ To manually install zanata-cli:
  1. Create a symbolic link to the `zanata-cli` script in the bin directory of the extracted archive. e.g. from the archive directory, run `sudo ln -s bin/zanata-cli  /usr/local/bin/zanata-cli`.
 
  1. (optional) you can also enable tab-autocomplete for the client if you use bash as your terminal shell. This can be done by copying or linking the `zanata-cli-completion` script from the bin directory to `/etc/bash_completion.d/`. e.g. `ln -s bin/zanata-cli-completion /etc/bash_completion.d/zanata-cli-completion`.
+
 
 ## Nightly Builds
 

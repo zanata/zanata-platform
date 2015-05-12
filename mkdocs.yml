@@ -10,6 +10,8 @@ pages:
 - ['installation.md', 'User Guide', 'Installation']
 - ['configuration.md', 'User Guide', 'Configuration']
 - ['command-hook.md', 'User Guide', 'Command Hook']
+- ['ivy/installation.md', 'Ivy', 'Installation']
+- ['ivy/setup.md', 'Ivy', 'Setup']
 - ['maven-plugin/installation.md', 'Maven Plugin', 'Installation']
 - ['maven-plugin/configuration.md', 'Maven Plugin', 'Configuration']
 - ['maven-plugin/commands.md', 'Maven Plugin', 'Commands']

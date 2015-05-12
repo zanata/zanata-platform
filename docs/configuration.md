@@ -36,7 +36,7 @@ To add project-version configuration to your project directory:
 
 These steps should be repeated for each project-version before using any zanata-cli commands for the project-version.
 
-You can customize `zanata.xml` with command hooks so that other tools will automatically run before or after Zanata commands. Read about command hooks at the [command hook page on the wiki](https://github.com/zanata/zanata-server/wiki/Client-Command-Hooks).
+You can customize `zanata.xml` with command hooks so that other tools will automatically run before or after Zanata commands. Read about command hooks at the [command hook](command-hook).
 
 ## Source directory and translation directory
 
@@ -142,7 +142,7 @@ As the rule is defined as `{locale}/{path}/{filename}.po`, for locale `de-DE`,
 
 You can also replace `{locale}` with `{locale_with_underscore}` if you want all your locales to use underscore instead of hyphen. e.g. `de-DE` will become `de_DE` which results in translation files written to or read from `{projectRoot}/de_DE/messages/kdeedu/kalzium.po`.
 
-The mapping rules configuration is optional in zanata.xml. If not specified, standard rules are applied according to your [project type](https://github.com/zanata/zanata-server/wiki/Project-Types).
+The mapping rules configuration is optional in zanata.xml. If not specified, standard rules are applied according to your [project type](http://docs.zanata.org/en/latest/user-guide/projects/project-types/index.html).
 
  1. gettext: `{path}/{locale_with_underscore}.po`
  1. podir: `{locale}/{path}/{filename}.po`
@@ -150,8 +150,5 @@ The mapping rules configuration is optional in zanata.xml. If not specified, sta
  1. utf8properties: `{path}/{filename}_{locale_with_underscore}.{extension}`
  1. xliff: `{path}/{filename}_{locale_with_underscore}.{extension}`
  1. xml: `{path}/{filename}_{locale_with_underscore}.{extension}`
- 1. file: `{locale}/{path}/{filename}.{extension}`  
+ 1. file: `{locale}/{path}/{filename}.{extension}`
 
----
-
-[Old instructions](https://github.com/zanata/zanata-server/wiki/Client-Configuration)

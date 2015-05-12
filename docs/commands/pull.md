@@ -1,5 +1,3 @@
-# Command: pull
-
 To download documents from your project-version, the command-line client's `pull` command can be used.
 
 These instructions assume that you have installed zanata-cli as shown in [Installing the Client](installation), and have saved user and project configuration as shown in [Configuring the Client][configuration].
