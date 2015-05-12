@@ -60,7 +60,10 @@
     <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
     <!-- see also the jboss7 profile below -->
     <hibernate.scope>provided</hibernate.scope>
-    <hibernate.version>4.2.17.Final</hibernate.version>
+    <!--
+         NB: JBoss EAP 6.4.0 has 4.2.18.Final-redhat-2
+    -->
+    <hibernate.version>4.2.19.Final</hibernate.version>
     <hibernate.search.scope>compile</hibernate.search.scope>
     <!-- Hibernate Search 4.4.x is for Hibernate Core 4.2.x:
      http://in.relation.to/Bloggers/HibernateSearchWeekendReleasesFromBothMaintenanceBranches
@@ -1477,7 +1480,7 @@
         <wildfly.client.version>8.1.0.Final</wildfly.client.version>
         <!-- used in the wildfly8 profile in zanata-war -->
         <!-- This is the server version -->
-        <wildfly.version>8.1.0.Final</wildfly.version>
+        <wildfly.version>9.0.0.CR1</wildfly.version>
         <!-- In case this profile was activated by default: -->
         <appserver>wildfly8</appserver>
         <cargo.installation>http://download.jboss.org/wildfly/${wildfly.version}/wildfly-${wildfly.version}.zip</cargo.installation>
@@ -1487,9 +1490,9 @@
         <appserver.home>${cargo.extract.dir}/${appserver.dir.name}/${appserver.dir.name}</appserver.home>
 
         <module.wildfly.version>8.1.0.Final</module.wildfly.version>
-        <mojarra.module.version>2.1.28</mojarra.module.version>
+        <mojarra.module.version>2.1.29-01</mojarra.module.version>
         <mojarra.module.name>wildfly-${module.wildfly.version}-module-mojarra-${mojarra.module.version}.zip</mojarra.module.name>
-        <hibernate.module.version>4.2.15.Final</hibernate.module.version>
+        <hibernate.module.version>4.2.19.Final</hibernate.module.version>
         <hibernate.module.name>wildfly-${module.wildfly.version}-module-hibernate-main-${hibernate.module.version}.zip</hibernate.module.name>
       </properties>
 
@@ -1593,6 +1596,12 @@
             <groupId>org.jboss.logmanager</groupId>
             <artifactId>jboss-logmanager</artifactId>
             <version>1.5.2.Final</version>
+            <scope>test</scope>
+          </dependency>
+          <dependency>
+            <groupId>org.jboss.marshalling</groupId>
+            <artifactId>jboss-marshalling</artifactId>
+            <version>1.4.6.Final</version>
             <scope>test</scope>
           </dependency>
           <dependency>

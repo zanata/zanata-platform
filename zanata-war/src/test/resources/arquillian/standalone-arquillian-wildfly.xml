@@ -318,7 +318,7 @@
     <subsystem xmlns="urn:jboss:domain:jpa:1.1">
       <jpa default-datasource="" default-extended-persistence-inheritance="DEEP"/>
     </subsystem>
-    <subsystem xmlns="urn:jboss:domain:jsf:1.0" default-jsf-impl-slot="mojarra-2.1.28"/>
+    <subsystem xmlns="urn:jboss:domain:jsf:1.0" default-jsf-impl-slot="mojarra-2.1.29-01"/>
     <subsystem xmlns="urn:jboss:domain:mail:2.0">
       <mail-session name="default" jndi-name="java:jboss/mail/Default">
         <smtp-server outbound-socket-binding-ref="mail-smtp"/>
