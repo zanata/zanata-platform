@@ -12,7 +12,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.mockito.Mock;
+import org.testng.annotations.Test;
 import org.zanata.common.EntityStatus;
+import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.DocumentUploadDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -24,6 +26,7 @@ import org.zanata.rest.dto.ChunkUploadResponse;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 
+@Test(groups = { "unit-tests" })
 public class DocumentUploadTest {
 
     protected static final GlobalDocumentId ANY_ID = new GlobalDocumentId(
@@ -72,6 +75,7 @@ public class DocumentUploadTest {
         when(projectIteration.getProject()).thenReturn(project);
         when(project.getStatus()).thenReturn(conf.projectStatus);
         when(projectIteration.getStatus()).thenReturn(conf.versionStatus);
+        when(projectIteration.getProjectType()).thenReturn(conf.projectType);
     }
 
     protected void mockLoggedIn() {
@@ -121,6 +125,7 @@ public class DocumentUploadTest {
         public final GlobalDocumentId id;
         public final String projectSlug, versionSlug, docId;
         public final EntityStatus projectStatus, versionStatus;
+        public final ProjectType projectType;
 
         public HDocument existingDocument;
 
@@ -146,6 +151,7 @@ public class DocumentUploadTest {
             hash = builder.hash;
             params = builder.params;
             storedParams = builder.storedParams;
+            projectType = builder.projectType;
 
             uploadForm = new DocumentFileUploadForm();
             uploadForm.setFileType(fileType);
@@ -170,6 +176,7 @@ public class DocumentUploadTest {
 
             private String projectSlug, versionSlug, docId;
             private EntityStatus projectStatus, versionStatus;
+            private ProjectType projectType;
             private String fileType;
             private boolean first, last;
             private Long uploadId;
@@ -198,6 +205,11 @@ public class DocumentUploadTest {
 
             public Builder projectStatus(EntityStatus projectStatus) {
                 this.projectStatus = projectStatus;
+                return this;
+            }
+
+            public Builder projectType(ProjectType projectType) {
+                this.projectType = projectType;
                 return this;
             }
 
@@ -272,8 +284,9 @@ public class DocumentUploadTest {
                 docId = "mydoc";
                 projectStatus = EntityStatus.ACTIVE;
                 versionStatus = EntityStatus.ACTIVE;
+                projectType = ProjectType.File;
 
-                fileType("txt");
+                fileType("PLAIN_TEXT");
                 first = true;
                 last = true;
                 size = 4L;

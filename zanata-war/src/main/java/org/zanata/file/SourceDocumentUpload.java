@@ -34,11 +34,13 @@ import javax.ws.rs.core.Response.Status;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.io.FilenameUtils;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.DocumentUploadDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -147,17 +149,28 @@ public class SourceDocumentUpload {
                                         uploadForm));
             }
 
-            if (DocumentType.typeFor(uploadForm.getFileType()) == DocumentType.GETTEXT_PORTABLE_OBJECT_TEMPLATE) {
+            HProjectIteration version =
+                projectIterationDAO.getBySlug(id.getProjectSlug(), id.getVersionSlug());
+
+            if (version == null) {
+                throw new ZanataServiceException("Project version not found: "
+                    + id.getProjectSlug() + " " + id.getVersionSlug());
+            }
+
+            if (version.getProjectType() == ProjectType.File) {
+                if (!tempFile.isPresent()) {
+                    tempFile = Optional.of(util
+                            .persistTempFileFromUpload(uploadForm));
+                }
+                processAdapterFile(tempFile.get(), id, uploadForm);
+            } else if (DocumentType.getByName(uploadForm.getFileType()) == DocumentType.GETTEXT) {
                 InputStream potStream = getInputStream(tempFile, uploadForm);
                 parsePotFile(potStream, id, uploadForm);
             } else {
-                if (!tempFile.isPresent()) {
-                    tempFile =
-                            Optional.of(util
-                                    .persistTempFileFromUpload(uploadForm));
-                }
-                processAdapterFile(tempFile.get(), id, uploadForm);
+                throw new ZanataServiceException("Unsupported source file: "
+                    + id.getDocId());
             }
+
             if (tempFile.isPresent()) {
                 tempFile.get().delete();
             }
@@ -202,7 +215,7 @@ public class SourceDocumentUpload {
 
     private void failIfFileTypeNotValid(DocumentFileUploadForm uploadForm)
             throws ChunkUploadException {
-        DocumentType type = DocumentType.typeFor(uploadForm.getFileType());
+        DocumentType type = DocumentType.getByName(uploadForm.getFileType());
         if (!isSourceDocumentType(type)) {
             throw new ChunkUploadException(Status.BAD_REQUEST, "The type \""
                     + uploadForm.getFileType()
@@ -216,7 +229,7 @@ public class SourceDocumentUpload {
     }
 
     private boolean isPotType(DocumentType type) {
-        return type == DocumentType.GETTEXT_PORTABLE_OBJECT_TEMPLATE;
+        return type == DocumentType.GETTEXT;
     }
 
     private boolean isAdapterType(DocumentType type) {
@@ -268,10 +281,13 @@ public class SourceDocumentUpload {
                             id.getVersionSlug(), id.getDocId());
         }
         try {
+            Optional<String> docType =
+                Optional.fromNullable(uploadForm.getFileType());
+
             Resource doc =
                     translationFileServiceImpl.parseUpdatedAdapterDocumentFile(
                             tempFile.toURI(), id.getDocId(),
-                            uploadForm.getFileType(), params);
+                            uploadForm.getFileType(), params, docType);
             doc.setLang(LocaleId.EN_US);
             // TODO Copy Trans values
             document =
@@ -288,7 +304,7 @@ public class SourceDocumentUpload {
 
         String contentHash = uploadForm.getHash();
         DocumentType documentType =
-                DocumentType.typeFor(uploadForm.getFileType());
+                DocumentType.getByName(uploadForm.getFileType());
 
         persistRawDocument(document, tempFile, contentHash, documentType,
                 params);
@@ -305,7 +321,7 @@ public class SourceDocumentUpload {
         rawDocument.setType(documentType);
         rawDocument.setUploadedBy(identity.getCredentials().getUsername());
         filePersistService.persistRawDocumentContentFromFile(rawDocument,
-                rawFile);
+                rawFile, FilenameUtils.getExtension(rawFile.getName()));
         if (params.isPresent()) {
             rawDocument.setAdapterParameters(params.get());
         }

@@ -414,17 +414,6 @@ public class DocumentListTable extends FlexTable {
             anchor.setTarget("_blank");
             panel.add(anchor);
         }
-        Anchor upload = new Anchor();
-        upload.setTitle(messages.uploadButtonTitle());
-        upload.setStyleName("i i--import l--push-left-half");
-        upload.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                listener.showUploadDialog(docInfo);
-            }
-        });
-        panel.add(upload);
-
         return panel;
     }
 

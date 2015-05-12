@@ -34,9 +34,6 @@ import org.zanata.webtrans.client.ui.SearchFieldListener;
 import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
-import org.zanata.webtrans.shared.model.WorkspaceId;
-
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 
 /**
  *
@@ -76,15 +73,7 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener 
 
         void downloadAllFiles();
 
-        void showUploadDialog(DocumentInfo docInfo);
-
         void cancelDownloadAllFiles();
-
-        void cancelFileUpload();
-
-        void onFileUploadComplete(SubmitCompleteEvent event);
-
-        void onUploadFile();
 
         void updateDownloadFileProgress();
 
@@ -104,14 +93,6 @@ public interface DocumentListDisplay extends WidgetDisplay, SearchFieldListener 
     void setAndShowFilesDownloadLink(String url);
 
     InlineLink getDownloadAllFilesInlineLink(String url);
-
-    void showUploadDialog(DocumentInfo info, WorkspaceId workspaceId);
-
-    void closeFileUpload();
-
-    String getSelectedUploadFileName();
-
-    void submitUploadForm();
 
     void startGetDownloadStatus(int periodMillis);
 

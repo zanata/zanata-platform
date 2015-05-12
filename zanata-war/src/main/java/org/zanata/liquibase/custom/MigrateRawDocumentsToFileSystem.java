@@ -244,7 +244,9 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
     }
 
     private static String fileNameFromIdAndType(Long docId, String type) {
-        String extension = DocumentType.valueOf(type).getExtension();
+        String extension =
+                DocumentType.valueOf(type).getSourceExtensions().iterator()
+                        .next();
         return docId.toString() + "." + extension;
     }
 

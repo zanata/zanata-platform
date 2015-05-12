@@ -74,7 +74,7 @@
     #{rich:component('uploadSourcePanel')}
   .
     show();
-    checkIfSpecificFileSelected();
+    checkIfFileSelected();
   }
 
   function hideUploadSourcePanel() {
@@ -84,16 +84,31 @@
     return false;
   }
 
-  function checkIfSpecificFileSelected() {
-    checkIfFileSelected(#{rich:element('specificDocFileInput')},
-      #{rich:element('specificDocSubmitUploadButton')});
+  function checkIfFileSelected() {
+    var isFileSelected = getSourceDocInput().val() != '';
+    setUploadSourceButtonEnabled(isFileSelected);
+    if (isFileSelected) {
+      renderSourceDocTypeSelector(getSourceDocInput().val());
+    }
   }
 
-  function checkIfFileSelected(fileInput, submitButton) {
-    var noFileSelected = fileInput.value === undefined ||
-      fileInput.value === "";
-    submitButton.disabled = noFileSelected;
+  function getSourceDocTypeSelection() {
+    return jQuery('#' + jqSelector('#{rich:clientId('sourceDocumentTypes')}'));
   }
+
+  function getSourceDocInput() {
+    return jQuery('#' + jqSelector('#{rich:clientId('specificDocFileInput')}'));
+  }
+
+  function getUploadSourceDocButton() {
+    return jQuery('#' + jqSelector('#{rich:clientId('specificDocSubmitUploadButton')}'));
+  }
+
+  function setUploadSourceButtonEnabled(enable) {
+    var uploadButton = getUploadSourceDocButton();
+    uploadButton.prop('disabled', !enable);
+  }
+
 </script>
 
   <h:form styleClass="l--push-bottom-0">
@@ -151,6 +166,18 @@
       action="#{mergeTransAction.onComplete()}"
       render="mergeTrans, version-more-actions, merge-trans-buttons, selection-section"
       oncomplete="refreshStatistics();"/>
+
+    <a4j:jsFunction name="renderSourceDocTypeSelector"
+      oncomplete="setUploadSourceButtonEnabled(getSourceDocTypeSelection().val() != '')"
+      render="source-documentType-selection" limitRender="true">
+      <a4j:param name="val1" assignTo="#{selectedSourceDocName}"/>
+    </a4j:jsFunction>
+
+    <a4j:jsFunction name="bindSourceDocumentType"
+      onbegin="setUploadSourceButtonEnabled(getSourceDocTypeSelection().val() != '')"
+      action="#{versionHomeAction.sourceFileUpload.setDocumentType(docType)}">
+      <a4j:param name="val1" assignTo="#{docType}"/>
+    </a4j:jsFunction>
 
   </h:form>
 
@@ -422,7 +449,7 @@
   </s:fragment>
 
 <rich:popupPanel id="uploadSourcePanel"
-  moveable="#{false}"
+  moveable="#{true}"
   resizeable="#{false}"
   autosized="#{true}">
   <f:facet name="header">
@@ -431,7 +458,7 @@
   <h:form id="uploadSrcForm" enctype="multipart/form-data">
     <s:fileUpload id="specificDocFileInput"
       accept="*"
-      onchange="checkIfSpecificFileSelected();"
+      onchange="checkIfFileSelected();"
       data="#{versionHomeAction.sourceFileUpload.fileContents}"
       fileName="#{versionHomeAction.sourceFileUpload.fileName}"/>
     <h:inputHidden id="uploadSourceDocId"
@@ -439,6 +466,8 @@
     <br/>
     <h:selectOneMenu
       value="#{versionHomeAction.sourceFileUpload.sourceLang}">
+      <f:selectItem itemLabel="#{msgs['jsf.upload.selectDocType']}"
+        itemValue="#{null}" noSelectionOption="false" />
       <s:selectItems
         value="#{versionHomeAction.availableSourceLocales}" var="locale"
         label="#{locale.retrieveNativeName()}"
@@ -446,10 +475,25 @@
         escape="true"/>
       <h:outputLabel value="#{msgs['jsf.SourceLanguage']}"/>
     </h:selectOneMenu>
-    <br/>
+
+    <s:div id="source-documentType-selection">
+      <s:fragment rendered="#{versionHomeAction.needDocumentTypeSelection(selectedSourceDocName)}">
+        <h:outputLabel styleClass="l--push-top-half">#{msgs['jsf.iteration.documentType.select']}</h:outputLabel>
+        <h:selectOneMenu id="sourceDocumentTypes" onchange="bindSourceDocumentType(jQuery(this).val())"
+          value="#{versionHomeAction.sourceFileUpload.documentType}">
+          <f:selectItem itemLabel="#{msgs['jsf.upload.selectDocType']}" itemValue="#{null}"
+            noSelectionOption="false" />
+          <f:selectItems value="#{versionHomeAction.getDocumentTypes(selectedSourceDocName)}"
+            var="documentType"
+            itemLabel="#{documentType.name()}"
+            itemValue="#{documentType.name()}"/>
+        </h:selectOneMenu>
+      </s:fragment>
+    </s:div>
+
     <rich:collapsiblePanel
       header="#{msgs['jsf.iteration.files.CustomParams']}"
-      switchType="client"
+      switchType="client" styleClass="l--push-top-half"
       expanded="false">
       <h:outputLabel for="adapterParams"
         value="#{msgs['jsf.iteration.files.CustomParams.description']}"/>
@@ -463,7 +507,7 @@
       </a>
     </rich:collapsiblePanel>
 
-    <div style="text-align:right">
+    <div class="txt--align-right l--push-top-quarter">
       <h:commandButton id="specificDocSubmitUploadButton"
         value="#{msgs['jsf.Upload']}"
         action="#{versionHomeAction.uploadSourceFile}"/>

@@ -501,9 +501,6 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("Last run: {0}")
     String lastValidationRun(String completeTime);
 
-    @DefaultMessage("Upload document to merge/override translation")
-    String uploadButtonTitle();
-
     @DefaultMessage("Download document with extension {0}")
     String downloadFileTitle(String key);
 

@@ -36,6 +36,7 @@ import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.validation.ConstraintViolationException;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -82,6 +83,7 @@ import org.zanata.ui.CopyAction;
 import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.DateUtil;
+import org.zanata.util.FileUtil;
 import org.zanata.util.ServiceLocator;
 import org.zanata.util.StatisticsUtil;
 import org.zanata.util.UrlUtil;
@@ -695,17 +697,34 @@ public class VersionHomeAction extends AbstractSortAction implements
                         .getProject(), hLocale);
     }
 
+    private DocumentType getDocumentType(Optional<String> docType) {
+        DocumentType type;
+        if (!docType.isPresent()) {
+            // if docType null, only 1 document type available for selected file extensions
+            type = translationFileServiceImpl
+                            .getDocumentTypes(sourceFileUpload.getFileName())
+                            .iterator().next();
+        } else {
+            // if docType not null, adapter is selected by user from drop down
+            type = DocumentType.getByName(docType.get());
+        }
+        return type;
+    }
+
     public void uploadSourceFile() {
         identity.checkPermission("import-template", getVersion());
 
         if (sourceFileUpload.getFileName().endsWith(".pot")) {
             uploadPotFile();
         } else {
-            DocumentType type =
-                    translationFileServiceImpl.getDocumentType(sourceFileUpload
-                            .getFileName());
-            if (translationFileServiceImpl.hasAdapterFor(type)) {
-                uploadAdapterFile();
+
+            Optional<String> docType =
+                Optional.fromNullable(sourceFileUpload.documentType);
+
+            DocumentType documentType = getDocumentType(docType);
+
+            if (translationFileServiceImpl.hasAdapterFor(documentType)) {
+                uploadAdapterFile(documentType);
             } else {
                 conversationScopeMessages.setMessage(
                         FacesMessage.SEVERITY_INFO,
@@ -721,10 +740,17 @@ public class VersionHomeAction extends AbstractSortAction implements
                 versionSlug, docId);
     }
 
-    public String extensionOf(String docPath, String docName) {
+    public String sourceExtensionOf(String docPath, String docName) {
         return "."
-                + translationFileServiceImpl.getFileExtension(projectSlug,
-                        versionSlug, docPath, docName);
+                + translationFileServiceImpl.getSourceFileExtension(projectSlug,
+            versionSlug, docPath, docName);
+    }
+
+    public String translationExtensionOf(String docPath, String docName) {
+        return "."
+            + translationFileServiceImpl.getTranslationFileExtension(
+            projectSlug,
+            versionSlug, docPath, docName);
     }
 
     public boolean hasOriginal(String docPath, String docName) {
@@ -754,7 +780,7 @@ public class VersionHomeAction extends AbstractSortAction implements
         String docId = sourceFileUpload.getDocId();
         if (docId == null) {
             docId =
-                    translationFileServiceImpl.generateDocId(
+                    FileUtil.generateDocId(
                             sourceFileUpload.getDocumentPath(),
                             sourceFileUpload.getFileName());
         }
@@ -788,7 +814,7 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     private Optional<String> getOptionalParams() {
         return Optional.fromNullable(Strings.emptyToNull(sourceFileUpload
-                .getAdapterParams()));
+            .getAdapterParams()));
     }
 
     public void setSelectedLocaleId(String localeId) {
@@ -805,7 +831,7 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     // TODO add logging for disk writing errors
     // TODO damason: unify this with Source/TranslationDocumentUpload
-    private void uploadAdapterFile() {
+    private void uploadAdapterFile(DocumentType docType) {
         String fileName = sourceFileUpload.getFileName();
         String docId = sourceFileUpload.getDocId();
         String documentPath = "";
@@ -845,17 +871,16 @@ public class VersionHomeAction extends AbstractSortAction implements
         HDocument document = null;
         try {
             Resource doc;
+
             if (docId == null) {
-                doc =
-                        translationFileServiceImpl.parseAdapterDocumentFile(
+                doc = translationFileServiceImpl.parseAdapterDocumentFile(
                                 tempFile.toURI(), documentPath, fileName,
-                                getOptionalParams());
+                                getOptionalParams(), Optional.of(docType.name()));
             } else {
-                doc =
-                        translationFileServiceImpl
+                doc = translationFileServiceImpl
                                 .parseUpdatedAdapterDocumentFile(
                                         tempFile.toURI(), docId, fileName,
-                                        getOptionalParams());
+                                        getOptionalParams(), Optional.of(docType.name()));
             }
             doc.setLang(new LocaleId(sourceFileUpload.getSourceLang()));
             Set<String> extensions = Collections.<String> emptySet();
@@ -879,8 +904,7 @@ public class VersionHomeAction extends AbstractSortAction implements
             HRawDocument rawDocument = new HRawDocument();
             rawDocument.setDocument(document);
             rawDocument.setContentHash(new String(Hex.encodeHex(md5hash)));
-            rawDocument.setType(DocumentType.typeFor(translationFileServiceImpl
-                    .extractExtension(fileName)));
+            rawDocument.setType(docType);
             rawDocument.setUploadedBy(identity.getCredentials().getUsername());
 
             Optional<String> params = getOptionalParams();
@@ -899,7 +923,7 @@ public class VersionHomeAction extends AbstractSortAction implements
                         "uploaded file did not pass virus scan");
             }
             filePersistService.persistRawDocumentContentFromFile(rawDocument,
-                    tempFile);
+                    tempFile, FilenameUtils.getExtension(fileName));
             documentDAO.addRawDocument(document, rawDocument);
             documentDAO.flush();
         }
@@ -925,17 +949,39 @@ public class VersionHomeAction extends AbstractSortAction implements
             copyTransManager.isCopyTransRunning(getVersion());
     }
 
+    public boolean needDocumentTypeSelection(String fileName) {
+        return translationFileServiceImpl.hasMultipleDocumentTypes(fileName);
+    }
+
+    public List<DocumentType> getDocumentTypes(String fileName) {
+        return Lists.newArrayList(
+            translationFileServiceImpl.getDocumentTypes(fileName));
+    }
+
+    public void setDefaultTranslationDocType(String fileName) {
+        translationFileUpload.setDocumentType(null);
+    }
+
     public void uploadTranslationFile(HLocale hLocale) {
         identity.checkPermission("modify-translation", hLocale, getVersion()
                 .getProject());
         try {
             // process the file
+            String fileName = translationFileUpload.fileName;
+            if (!needDocumentTypeSelection(fileName)) {
+                //Get documentType for this file name
+                DocumentType documentType = getDocumentTypes(fileName).get(0);
+                translationFileUpload.setDocumentType(documentType.name());
+            }
+
+            Optional<String> docType =
+                Optional.fromNullable(translationFileUpload.documentType);
             TranslationsResource transRes =
                     translationFileServiceImpl.parseTranslationFile(
                             translationFileUpload.getFileContents(),
                             translationFileUpload.getFileName(), hLocale
                                     .getLocaleId().getId(), projectSlug,
-                            versionSlug, translationFileUpload.docId);
+                            versionSlug, translationFileUpload.docId, docType);
 
             // translate it
             Set<String> extensions;
@@ -1145,6 +1191,8 @@ public class VersionHomeAction extends AbstractSortAction implements
         private String sourceLang = "en-US"; // en-US by default
 
         private String adapterParams = "";
+
+        private String documentType;
     }
 
     /**
@@ -1164,5 +1212,7 @@ public class VersionHomeAction extends AbstractSortAction implements
         private boolean mergeTranslations = true; // Merge by default
 
         private boolean assignCreditToUploader = false;
+
+        private String documentType;
     }
 }

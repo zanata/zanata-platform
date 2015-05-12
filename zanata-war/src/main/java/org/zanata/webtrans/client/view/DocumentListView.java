@@ -31,7 +31,6 @@ import org.zanata.webtrans.client.ui.DocumentListTable;
 import org.zanata.webtrans.client.ui.DocumentListTable.DocValidationStatus;
 import org.zanata.webtrans.client.ui.DocumentNode;
 import org.zanata.webtrans.client.ui.DownloadFilesConfirmationBox;
-import org.zanata.webtrans.client.ui.FileUploadDialog;
 import org.zanata.webtrans.client.ui.HasPager;
 import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.LoadingPanel;
@@ -92,7 +91,6 @@ public class DocumentListView extends Composite implements DocumentListDisplay {
     HTMLPanel tableWrapper;
 
     private final DownloadFilesConfirmationBox confirmationBox;
-    private final FileUploadDialog fileUploadDialog;
 
     private final LoadingPanel loadingPanel;
 
@@ -109,7 +107,6 @@ public class DocumentListView extends Composite implements DocumentListDisplay {
 
         confirmationBox =
                 new DownloadFilesConfirmationBox(false, messages, resources);
-        fileUploadDialog = new FileUploadDialog(resources);
         pager = new Pager(messages);
         searchField = new SearchField(this);
         searchField.setTextBoxTitle(messages.docListFilterDescription());
@@ -193,8 +190,6 @@ public class DocumentListView extends Composite implements DocumentListDisplay {
     public void setListener(Listener documentListPresenter) {
         this.listener = documentListPresenter;
         confirmationBox.registerHandler(listener);
-        fileUploadDialog.registerHandler(listener,
-                Application.getUploadFileUrl());
         documentListTable.setListener(listener);
     }
 
@@ -265,27 +260,6 @@ public class DocumentListView extends Composite implements DocumentListDisplay {
 
             }
         };
-    }
-
-    @Override
-    public void showUploadDialog(DocumentInfo info, WorkspaceId workspaceId) {
-        fileUploadDialog.setDocumentInfo(info, workspaceId);
-        fileUploadDialog.center();
-    }
-
-    @Override
-    public void closeFileUpload() {
-        fileUploadDialog.hide();
-    }
-
-    @Override
-    public String getSelectedUploadFileName() {
-        return fileUploadDialog.getUploadFileName();
-    }
-
-    @Override
-    public void submitUploadForm() {
-        fileUploadDialog.submitForm();
     }
 
     @Override

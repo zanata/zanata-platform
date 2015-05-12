@@ -28,6 +28,7 @@ import java.io.InputStream;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.io.FilenameUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
@@ -60,8 +61,8 @@ public class FileSystemPersistService implements FilePersistService {
 
     @Override
     public void persistRawDocumentContentFromFile(HRawDocument rawDocument,
-            File fromFile) {
-        String fileName = generateFileNameFor(rawDocument);
+            File fromFile, String extension) {
+        String fileName = generateFileNameFor(rawDocument, extension);
         rawDocument.setFileId(fileName);
 
         File newFile = getFileForName(fileName);
@@ -82,7 +83,9 @@ public class FileSystemPersistService implements FilePersistService {
     @Override
     public void copyAndPersistRawDocument(HRawDocument fromDoc,
             HRawDocument toDoc) {
-        persistRawDocumentContentFromFile(toDoc, getFileForRawDocument(fromDoc));
+        File file = getFileForRawDocument(fromDoc);
+        persistRawDocumentContentFromFile(toDoc, file,
+                FilenameUtils.getExtension(file.getName()));
     }
 
     private File getFileForName(String fileName) {
@@ -104,11 +107,10 @@ public class FileSystemPersistService implements FilePersistService {
         return docsDirectory;
     }
 
-    private static String generateFileNameFor(HRawDocument rawDocument) {
+    private static String generateFileNameFor(HRawDocument rawDocument, String extension) {
         // Could change to use id of rawDocument, and throw if rawDocument has
         // no id yet.
         String idAsString = rawDocument.getDocument().getId().toString();
-        String extension = rawDocument.getType().getExtension();
         return idAsString + "." + extension;
     }
 

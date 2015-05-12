@@ -88,7 +88,7 @@ public class GetDocumentListHandler extends
             if (filePersistService.hasPersistedDocument(id)) {
                 String extension =
                         "."
-                                + translationFileServiceImpl.getFileExtension(
+                                + translationFileServiceImpl.getSourceFileExtension(
                                         iterationId.getProjectSlug(),
                                         iterationId.getIterationSlug(),
                                         hDoc.getPath(), hDoc.getName());

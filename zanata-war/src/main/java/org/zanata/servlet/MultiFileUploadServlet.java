@@ -22,6 +22,7 @@ package org.zanata.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.OptimisticLockException;
@@ -34,28 +35,29 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.StaleStateException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.seam.servlet.ContextualHttpServletRequest;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.zanata.action.AuthenticatedAccountHome;
+import org.zanata.common.DocumentType;
 import org.zanata.file.GlobalDocumentId;
 import org.zanata.file.SourceDocumentUpload;
 import org.zanata.file.UserFileUploadTracker;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.dto.ChunkUploadResponse;
-import org.zanata.service.TranslationFileService;
-import org.zanata.service.impl.TranslationFileServiceImpl;
+import org.zanata.util.FileUtil;
 import org.zanata.util.ServiceLocator;
 
 import static com.google.common.base.Strings.emptyToNull;
@@ -242,29 +244,31 @@ public class MultiFileUploadServlet extends HttpServlet {
 
         private String projectSlug;
         private String versionSlug;
+        private final List<String> fileTypes;
         private String path = "";
         private String lang = "en-US";
         private String fileParams = "";
 
         private SourceDocumentUpload sourceUploader;
-        private TranslationFileService translationFileServiceImpl;
 
         public FileUploadRequestHandler(HttpServletRequest request) {
             this.request = request;
             projectSlug = request.getParameter("p");
             versionSlug = request.getParameter("v");
-
+            /**
+             * TODO: add types parameter in all caller of /files/upload (multifile upload)
+             * https://bugzilla.redhat.com/show_bug.cgi?id=1217671
+             */
+            String fileTypesQuery = request.getParameter("types");
+            if (StringUtils.isNotEmpty(fileTypesQuery)) {
+                fileTypes = Lists.newArrayList(fileTypesQuery.split(","));
+            } else {
+                fileTypes = Collections.emptyList();
+            }
             sourceUploader = ServiceLocator.instance().getInstance(SourceDocumentUpload.class);
-            translationFileServiceImpl = ServiceLocator.instance().getInstance(
-                    TranslationFileServiceImpl.class);
         }
 
         public JSONArray process() throws FileUploadException {
-            // FIXME fail with error?
-            if (translationFileServiceImpl == null) {
-                log.error("translationFileServiceImpl is null");
-            }
-
             List<FileItem> items = getRequestItems();
             JSONArray filesJson = processFilesFromItems(items);
 
@@ -322,7 +326,7 @@ public class MultiFileUploadServlet extends HttpServlet {
          * @return JSON summary of outcome of the attempt.
          */
         private JSONObject processFileItem(FileItem item) {
-            String docId = translationFileServiceImpl.generateDocId(path, item.getName());
+            String docId = FileUtil.generateDocId(path, item.getName());
             GlobalDocumentId id = new GlobalDocumentId(projectSlug, versionSlug, docId);
 
             Optional<String> errorMessage;
@@ -392,9 +396,34 @@ public class MultiFileUploadServlet extends HttpServlet {
             form.setFirst(true);
             form.setLast(true);
             form.setSize(item.getSize());
-            form.setFileType(translationFileServiceImpl.extractExtension(item.getName()));
+
+            form.setFileType(getFileTypeForItem(item.getName()));
             form.setFileStream(item.getInputStream());
             return form;
+        }
+
+        private String getFileTypeForItem(String filename) {
+            String extension = FilenameUtils.getExtension(filename);
+            /**
+             * TODO: Implement docType selection for multifile upload.
+             * At the moment, get the first docType from returned list.
+             */
+            DocumentType fileType =
+                    DocumentType.fromSourceExtension(extension).iterator()
+                            .next();
+            if (!fileTypes.isEmpty()) {
+                for (String parsedFileType : fileTypes) {
+                    DocumentType docType = DocumentType.getByName(
+                            parsedFileType);
+                    if (docType != null
+                            && docType.getSourceExtensions()
+                                    .contains(extension)) {
+                        fileType = docType;
+                        break;
+                    }
+                }
+            }
+            return fileType == null ? extension : fileType.name();
         }
 
 

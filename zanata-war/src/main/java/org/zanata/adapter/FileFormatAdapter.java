@@ -24,8 +24,11 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import org.zanata.common.LocaleId;
 import org.zanata.exception.FileFormatAdapterException;
+import org.zanata.file.GlobalDocumentId;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -55,15 +58,20 @@ public interface FileFormatAdapter {
      * @throws FileFormatAdapterException
      *             if the document cannot be parsed
      */
-    Resource parseDocumentFile(URI documentUri, LocaleId sourceLocale,
-            Optional<String> params) throws FileFormatAdapterException,
+    Resource parseDocumentFile(@Nonnull URI documentUri,
+            @Nonnull LocaleId sourceLocale, Optional<String> params)
+            throws FileFormatAdapterException,
             IllegalArgumentException;
 
     /**
      * Extract translation strings from the given translation document.
      *
-     * @param translatedDocumentContent
+     * @param fileUri
      *            translated document to parse
+     * @param sourceLocaleId
+     *            source locale id
+     * @param localeId
+     *            translation locale id
      * @param params
      *            adapter-specific parameter string. See documentation for
      *            individual adapters.
@@ -73,9 +81,10 @@ public interface FileFormatAdapter {
      * @throws IllegalArgumentException
      *             if translatedDocumentContent or localeId is null
      */
-    TranslationsResource parseTranslationFile(URI fileUri, String localeId,
-            Optional<String> params) throws FileFormatAdapterException,
-            IllegalArgumentException;
+    TranslationsResource parseTranslationFile(@Nonnull URI fileUri,
+            @Nonnull LocaleId sourceLocaleId, @Nonnull String localeId,
+            Optional<String> params)
+            throws FileFormatAdapterException, IllegalArgumentException;
 
     /**
      * Write translated file to the given output, using the given list of
@@ -83,9 +92,11 @@ public interface FileFormatAdapter {
      *
      * @param output
      *            stream to write translated document
-     * @param original
+     * @param originalFile
      *            source document
-     * @param translations
+     * @param resource
+     *            source file
+     * @param translationsResource
      *            to use in generating translated file
      * @param locale
      *            to use for translated document
@@ -99,8 +110,8 @@ public interface FileFormatAdapter {
      *             if any parameters are null
      */
     void writeTranslatedFile(OutputStream output, URI originalFile,
-            Map<String, TextFlowTarget> translations, String locale,
-            Optional<String> params) throws FileFormatAdapterException,
-            IllegalArgumentException;
+            Resource resource, TranslationsResource translationsResource,
+            String locale, Optional<String> params)
+            throws FileFormatAdapterException, IllegalArgumentException;
 
 }

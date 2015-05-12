@@ -283,10 +283,6 @@ public class Application implements EntryPoint {
         return getModuleParentBaseUrl() + "rest/file/download/" + downloadId;
     }
 
-    public static String getUploadFileUrl() {
-        return GWT.getModuleBaseURL() + "files/upload";
-    }
-
     @CoverageIgnore("JSNI")
     public static native void redirectToUrl(String url)/*-{
     $wnd.location = url;

@@ -1313,6 +1313,16 @@
       <artifactId>zanata-adapter-glossary</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-adapter-properties</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-adapter-xliff</artifactId>
+    </dependency>
+
     <!-- Compatibility Dependencies -->
 
     <dependency>

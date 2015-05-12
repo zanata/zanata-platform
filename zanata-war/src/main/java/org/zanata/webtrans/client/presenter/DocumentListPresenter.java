@@ -29,8 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.servlet.http.HttpServletResponse;
-
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
@@ -45,7 +43,6 @@ import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
-import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.events.RefreshProjectStatsEvent;
 import org.zanata.webtrans.client.events.RunDocValidationEvent;
 import org.zanata.webtrans.client.events.RunDocValidationEventHandler;
@@ -84,12 +81,10 @@ import org.zanata.webtrans.shared.rpc.RunDocValidationResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Objects;
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.inject.Inject;
 
 public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
@@ -595,44 +590,6 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
     }
 
     @Override
-    public void showUploadDialog(DocumentInfo docInfo) {
-        display.showUploadDialog(docInfo, userWorkspaceContext
-                .getWorkspaceContext().getWorkspaceId());
-    }
-
-    @Override
-    public void cancelFileUpload() {
-        display.closeFileUpload();
-    }
-
-    @Override
-    public void onFileUploadComplete(SubmitCompleteEvent event) {
-        display.closeFileUpload();
-        if (event.getResults().contains(
-                String.valueOf(HttpServletResponse.SC_OK))) {
-            if (event.getResults().contains("Warnings")) {
-                eventBus.fireEvent(new NotificationEvent(Severity.Warning,
-                        "File uploaded with warnings", event.getResults(),
-                        true, null));
-            } else {
-                eventBus.fireEvent(new NotificationEvent(Severity.Info,
-                        "File uploaded", event.getResults(), true, null));
-            }
-            queryStats();
-        } else {
-            eventBus.fireEvent(new NotificationEvent(Severity.Error,
-                    "File upload failed.", event.getResults(), true, null));
-        }
-    }
-
-    @Override
-    public void onUploadFile() {
-        if (!Strings.isNullOrEmpty(display.getSelectedUploadFileName())) {
-            display.submitUploadForm();
-        }
-    }
-
-    @Override
     public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event) {
         userWorkspaceContext.setProjectActive(event.isProjectActive());
         userWorkspaceContext.getWorkspaceContext().getWorkspaceId()
@@ -694,7 +651,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
                     @Override
                     public void onFailure(Throwable caught) {
                         eventBus.fireEvent(new NotificationEvent(
-                                Severity.Error,
+                                NotificationEvent.Severity.Error,
                                 "Unable to run validation"));
                         eventBus.fireEvent(new DocValidationResultEvent(
                                 new Date()));

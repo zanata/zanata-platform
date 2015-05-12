@@ -161,10 +161,17 @@ public class DocumentUploadUtil {
 
     private static void failIfDocumentTypeNotRecognized(
             DocumentFileUploadForm uploadForm) throws ChunkUploadException {
-        if (DocumentType.typeFor(uploadForm.getFileType()) == null) {
-            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+        try {
+            DocumentType type = DocumentType.valueOf(uploadForm.getFileType());
+            if(type == null) {
+                throw new ChunkUploadException(Status.PRECONDITION_FAILED,
                     "Value '" + uploadForm.getFileType()
-                            + "' is not a recognized document type.");
+                        + "' is not a recognized document type.");
+            }
+        } catch (IllegalArgumentException e) {
+            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+                "Value '" + uploadForm.getFileType()
+                    + "' is not a recognized document type.");
         }
     }
 
@@ -217,7 +224,7 @@ public class DocumentUploadUtil {
         HDocumentUpload newUpload = new HDocumentUpload();
         newUpload.setProjectIteration(projectIteration);
         newUpload.setDocId(id.getDocId());
-        newUpload.setType(DocumentType.typeFor(uploadForm.getFileType()));
+        newUpload.setType(DocumentType.getByName(uploadForm.getFileType()));
         // locale intentionally left null for source
         newUpload.setLocale(locale);
         newUpload.setContentHash(uploadForm.getHash());

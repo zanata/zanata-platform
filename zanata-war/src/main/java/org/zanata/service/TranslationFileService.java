@@ -28,6 +28,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 
 import com.google.common.base.Optional;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
@@ -56,7 +57,7 @@ public interface TranslationFileService {
      */
     TranslationsResource parseTranslationFile(InputStream fileContents,
             String fileName, String localeId, String projectSlug,
-            String iterationSlug, String docId) throws ZanataServiceException;
+            String iterationSlug, String docId, Optional<String> documentType) throws ZanataServiceException;
 
     /**
      * Extract the translated strings from a po file to usable form, using
@@ -87,7 +88,7 @@ public interface TranslationFileService {
      */
     TranslationsResource parseAdapterTranslationFile(File tempFile,
             String projectSlug, String iterationSlug, String docId,
-            String localeId, String fileName) throws ZanataServiceException;
+            String localeId, String fileName, Optional<String> documentType) throws ZanataServiceException;
 
     /**
      * Extract the translatable strings from a new document file or from a new
@@ -105,6 +106,10 @@ public interface TranslationFileService {
      */
     Resource parseUpdatedPotFile(InputStream fileContents, String docId,
             String uploadFileName, boolean offlinePo);
+
+    boolean hasMultipleDocumentTypes(String fileNameOrExtension);
+
+    Set<DocumentType> getDocumentTypes(String fileNameOrExtension);
 
     /**
      * Extracts the translatable strings from a document file to a usable form.
@@ -124,7 +129,7 @@ public interface TranslationFileService {
      *             there is an error during parsing
      */
     Resource parseAdapterDocumentFile(URI documentFile, String path,
-            String fileName, Optional<String> params)
+            String fileName, Optional<String> params, Optional<String> documentType)
             throws ZanataServiceException;
 
     /**
@@ -145,7 +150,7 @@ public interface TranslationFileService {
      * @throws ZanataServiceException
      */
     Resource parseUpdatedAdapterDocumentFile(URI documentFile, String docId,
-            String uploadFileName, Optional<String> params)
+            String uploadFileName, Optional<String> params, Optional<String> documentType)
             throws ZanataServiceException;
 
     /**
@@ -161,7 +166,7 @@ public interface TranslationFileService {
 
     FileFormatAdapter getAdapterFor(DocumentType type);
 
-    DocumentType getDocumentType(String fileNameOrExtension);
+    Set<DocumentType> getSupportedDocumentTypes();
 
     /**
      * Persist an input stream to a temporary file.
@@ -186,24 +191,15 @@ public interface TranslationFileService {
      */
     void removeTempFile(File tempFile);
 
-    String getFileExtension(String projectSlug, String iterationSlug,
+    String getSourceFileExtension(String projectSlug, String iterationSlug,
             String docPath, String docName);
 
-    /**
-     *
-     * @param fileNameOrExtension
-     * @return the extension for a given filename, or the extension that was
-     *         passed in
-     */
-    String extractExtension(String fileNameOrExtension);
+    String getTranslationFileExtension(String projectSlug, String iterationSlug,
+        String docPath, String docName);
 
     /**
      * @return true if the specified document is of type po, false if it is any
      *         other type, including null.
      */
-            boolean
-            isPoDocument(String projectSlug, String iterationSlug, String docId);
-
-    String generateDocId(String path, String fileName);
-
+    boolean isPoDocument(String projectSlug, String iterationSlug, String docId);
 }

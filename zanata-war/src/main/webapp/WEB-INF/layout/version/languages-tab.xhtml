@@ -318,7 +318,7 @@
                     </li>
                   </s:fragment>
                   <s:fragment
-                    rendered="#{versionHomeAction.isPoDocument(document.docId)}">
+                    rendered="#{versionHomeAction.isPoDocument(document.docId) and versionHomeAction.version.projectType ne 'File'}">
                     <li>
                       <h:outputLink styleClass="i__item--right"
                         value="#{request.contextPath}/rest/file/translation/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/#{versionHomeAction.selectedLocale.localeId}/po">
@@ -357,7 +357,7 @@
                         <h:outputFormat
                           value="#{msgs['jsf.iteration.files.DownloadTranslated']}">
                           <f:param
-                            value="#{versionHomeAction.extensionOf(document.path, document.name)}"/>
+                            value="#{versionHomeAction.translationExtensionOf(document.path, document.name)}"/>
                         </h:outputFormat>
                         <i class="i i--export i__item__icon"></i>
                       </h:outputLink>

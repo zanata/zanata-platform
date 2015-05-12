@@ -135,11 +135,14 @@ public class TranslationDocumentUpload {
                 // FIXME this is misusing the 'filename' field. the method
                 // should probably take a
                 // type anyway
+                Optional<String> docType =
+                    Optional.fromNullable(uploadForm.getFileType());
+
                 transRes =
                         translationFileServiceImpl.parseAdapterTranslationFile(
                                 tempFile.get(), id.getProjectSlug(),
                                 id.getVersionSlug(), id.getDocId(), localeId,
-                                uploadForm.getFileType());
+                                uploadForm.getFileType(), docType);
             }
             if (tempFile.isPresent()) {
                 tempFile.get().delete();
@@ -192,7 +195,7 @@ public class TranslationDocumentUpload {
         String fileType = uploadForm.getFileType();
         if (!fileType.equals(".po")
                 && !translationFileServiceImpl.hasAdapterFor(DocumentType
-                        .typeFor(fileType))) {
+                        .getByName(fileType))) {
             throw new ChunkUploadException(Status.BAD_REQUEST, "The type \""
                     + fileType + "\" specified in form parameter 'type' "
                     + "is not valid for a translation file on this server.");

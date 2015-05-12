@@ -51,9 +51,12 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.util.FileUtil;
 import org.zanata.util.HashUtil;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
+import com.google.common.collect.Maps;
 
 /**
  * An adapter that uses a provided {@link IFilter} implementation to parse
@@ -219,7 +222,6 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
      * Separates translatable text from surrounding non-translatable text.
      *
      * @param tu
-     * @return
      */
     private Map<String, String> getPartitionedText(TextUnit tu) {
         return TranslatableSeparator.separate(GenericContent
@@ -230,8 +232,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
     /**
      * Separates translatable text from surrounding non-translatable text.
      *
-     * @param tu
-     * @return
+     * @param letterCodedText
      */
     private Map<String, String> getPartitionedText(String letterCodedText) {
         return TranslatableSeparator.separate(letterCodedText);
@@ -277,7 +278,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
 
     @Override
     public TranslationsResource parseTranslationFile(URI fileUri,
-            String localeId, Optional<String> filterParams)
+            LocaleId sourceLocaleId, String localeId, Optional<String> filterParams)
             throws FileFormatAdapterException, IllegalArgumentException {
         if (localeId == null || localeId.isEmpty()) {
             throw new IllegalArgumentException(
@@ -336,26 +337,53 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
 
     @Override
     public void writeTranslatedFile(OutputStream output, URI originalFile,
-            Map<String, TextFlowTarget> translations, String locale,
-            Optional<String> params) throws FileFormatAdapterException,
-            IllegalArgumentException {
-        net.sf.okapi.common.LocaleId localeId =
-                net.sf.okapi.common.LocaleId.fromString(locale);
-        IFilterWriter writer = filter.createFilterWriter();
-        writer.setOptions(localeId, getOutputEncoding());
+            Resource resource, TranslationsResource translationsResource,
+            String locale, Optional<String> params)
+            throws FileFormatAdapterException, IllegalArgumentException {
 
-        if (requireFileOutput) {
-            writeTranslatedFileWithFileOutput(output, originalFile,
+        Map<String, TextFlowTarget> translations =
+                transformToMapByResId(
+                    translationsResource.getTextFlowTargets());
+
+        try {
+            net.sf.okapi.common.LocaleId localeId =
+                net.sf.okapi.common.LocaleId.fromString(locale);
+
+            IFilterWriter writer = filter.createFilterWriter();
+            writer.setOptions(localeId, getOutputEncoding());
+
+            if (requireFileOutput) {
+                writeTranslatedFileWithFileOutput(output, originalFile,
                     translations, localeId, writer, params);
-        } else {
-            writer.setOutput(output);
-            generateTranslatedFile(originalFile, translations, localeId,
+            } else {
+                writer.setOutput(output);
+                generateTranslatedFile(originalFile, translations, localeId,
                     writer, params);
+            }
+        } catch (IllegalArgumentException e) {
+            throw new FileFormatAdapterException(
+                "Unable to generate translated file", e);
         }
     }
 
+    /**
+     * Transform list of TextFlowTarget to map with TextFlowTarget.resId as key
+     *
+     * @param targets
+     * @return
+     */
+    private Map<String, TextFlowTarget> transformToMapByResId(
+        List<TextFlowTarget> targets) {
+        Map<String, TextFlowTarget> resIdTargetMap = Maps.newHashMap();
+
+        for(TextFlowTarget target: targets) {
+            resIdTargetMap.put(target.getResId(), target);
+        }
+        return resIdTargetMap;
+    }
+
     protected String getOutputEncoding() {
-        return "UTF-8";
+        return Charsets.UTF_8.name();
     }
 
     private void writeTranslatedFileWithFileOutput(OutputStream output,
@@ -370,12 +398,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
             generateTranslatedFile(originalFile, translations, localeId,
                     writer, params);
 
-            byte[] buffer = new byte[4096]; // To hold file contents
-            int bytesRead;
-            FileInputStream input = new FileInputStream(tempFile);
-            while ((bytesRead = input.read(buffer)) != -1) {
-                output.write(buffer, 0, bytesRead);
-            }
+            FileUtil.writeFileToOutputStream(tempFile, output);
         } catch (IOException e) {
             // FIXME log
             throw new FileFormatAdapterException(
@@ -385,14 +408,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
             throw new FileFormatAdapterException(
                     "Unable to generate translated file", e);
         } finally {
-            if (tempFile != null) {
-                if (!tempFile.delete()) {
-                    log.warn(
-                            "unable to remove temporary file {}, marked for delete on exit",
-                            tempFile.getAbsolutePath());
-                    tempFile.deleteOnExit();
-                }
-            }
+            FileUtil.tryDeleteFile(tempFile);
         }
 
     }

@@ -4,63 +4,93 @@
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:rich="http://richfaces.org/rich"
+  xmlns:f="http://java.sun.com/jsf/core"
   class="modal" id="uploadTranslationDialog" tabindex="-1" role="dialog"
   aria-labelledby="myModalLabel" aria-hidden="true">
 
   <script>
-    $(document).ready(function() {
-      var uploadButton = getUploadButton();
+    jQuery(document).ready(function() {
       zanata.loader.deactivate('#upload-translation-loader');
-      jQuery(uploadButton).attr('disabled', 'disabled');
-      jQuery(uploadButton).removeClass('is-hidden');
-
-      $(getUploadFile()).change(function() {
-        var uploadButton = getUploadButton();
-        if(jQuery(getUploadFile()).val() != '') {
-          jQuery(uploadButton).removeAttr('disabled');
-        } else {
-          jQuery(uploadButton).attr('disabled', 'disabled');
+      setUploadTranslationDocButtonEnabled(false);
+      setUploadTranslationDocButtonVisible(true);
+      getUploadFileComponent().change(function() {
+        var isFileSelected = getUploadFileName() != '';
+        if (isFileSelected) {
+          renderAdapterSelection(getUploadFileName());
         }
+        setUploadTranslationDocButtonEnabled(isFileSelected);
+        setUploadTranslationDocButtonVisible(true);
       });
     });
 
-    function getUploadButton() {
+    function setUploadTranslationDocButtonEnabled(enable) {
+      getUploadTranslationDocButton().prop('disabled', !enable);
+    }
+
+    function setUploadTranslationDocButtonVisible(visible) {
+      getUploadTranslationDocButton().toggleClass('is-hidden', !visible);
+    }
+
+    function getUploadTranslationDocButton() {
       return jQuery('#' + jqSelector('#{rich:clientId('upload-button')}'));
     }
 
-    function getUploadFile() {
+    function getUploadFileComponent() {
       return jQuery('#' + jqSelector('#{rich:clientId('upload-file')}'));
+    }
+
+    function clearDocumentTypeSelection() {
+      jQuery('#' + jqSelector('#{rich:clientId('documentType-selection')}')).html('');
+    }
+
+    function getUploadFileName() {
+      return getUploadFileComponent().val();
+    }
+
+    function getDocTypeSelection() {
+      return jQuery('#' + jqSelector('#{rich:clientId('documentTypes')}'));
     }
 
     function cancelUpload() {
       zanata.loader.deactivate('#upload-translation-loader');
-      jQuery(getUploadFile()).val('');
-      jQuery(getUploadButton()).attr('disabled', 'disabled');
+      getUploadFileComponent().val('');
+      clearDocumentTypeSelection();
+      setUploadTranslationDocButtonEnabled(false);
+      setUploadTranslationDocButtonVisible(true);
       return false;
     }
 
     function onUpload() {
       zanata.loader.activate('#upload-translation-loader');
-      jQuery(getUploadButton()).addClass('is-hidden')
+      setUploadTranslationDocButtonEnabled(true);
+      setUploadTranslationDocButtonVisible(false);
     }
 
-    function onMergeValueChanged(key, checked) {
-      bindMergeValue(checked);
-    }
-
-    function onMyTransValueChanged(key, checked) {
-      bindMyTransValue(checked);
-    }
   </script>
 
   <a4j:jsFunction name="bindMergeValue"
     action="#{versionHomeAction.translationFileUpload.setMergeTranslations(checked)}">
-    <a4j:param name="val1" assignTo="#{checked}"/>
+    <a4j:param name="val1" assignTo="#{key}"/>
+    <a4j:param name="val2" assignTo="#{checked}"/>
   </a4j:jsFunction>
 
   <a4j:jsFunction name="bindMyTransValue"
     action="#{versionHomeAction.translationFileUpload.setAssignCreditToUploader(checked)}">
-    <a4j:param name="val1" assignTo="#{checked}"/>
+    <a4j:param name="val1" assignTo="#{key}"/>
+    <a4j:param name="val2" assignTo="#{checked}"/>
+  </a4j:jsFunction>
+
+  <a4j:jsFunction name="bindDocumentType"
+    onbegin="setUploadTranslationDocButtonEnabled(getDocTypeSelection().val() != '');setUploadTranslationDocButtonVisible(true);"
+    action="#{versionHomeAction.translationFileUpload.setDocumentType(docType)}">
+    <a4j:param name="val1" assignTo="#{docType}"/>
+  </a4j:jsFunction>
+
+  <a4j:jsFunction name="renderAdapterSelection"
+    action="#{versionHomeAction.setDefaultTranslationDocType(fileName)}"
+    limitRender="true" render="documentType-selection"
+    oncomplete="setUploadTranslationDocButtonEnabled(getDocTypeSelection().val() != '');setUploadTranslationDocButtonVisible(true);">
+    <a4j:param name="val1" assignTo="#{fileName}"/>
   </a4j:jsFunction>
 
   <div class="modal__dialog l--constrain-medium">
@@ -88,17 +118,33 @@
             fileName="#{versionHomeAction.translationFileUpload.fileName}"/>
         </div>
 
+        <s:div id="documentType-selection">
+          <s:div styleClass="l--pad-top-half form__item"
+            rendered="#{versionHomeAction.needDocumentTypeSelection(fileName)}">
+            <h:outputLabel>#{msgs['jsf.iteration.documentType.select']}</h:outputLabel>
+            <h:selectOneMenu id="documentTypes" onchange="bindDocumentType(jQuery(this).val())"
+              value="#{versionHomeAction.translationFileUpload.documentType}">
+              <f:selectItem itemLabel="#{msgs['jsf.upload.selectDocType']}" itemValue="#{null}"
+                noSelectionOption="true" />
+              <f:selectItems value="#{versionHomeAction.getDocumentTypes(fileName)}"
+                var="documentType"
+                itemLabel="#{documentType.name()}"
+                itemValue="#{documentType.name()}"/>
+            </h:selectOneMenu>
+          </s:div>
+        </s:div>
+
         <div class="l--pad-top-half form__item">
           <ul class="list--horizontal">
             <li title="#{msgs['jsf.iteration.files.Merge.title']}">
-              <zanata:checkbox onValueChanged="onMergeValueChanged"
+              <zanata:checkbox onValueChanged="bindMergeValue"
                 checked="#{versionHomeAction.translationFileUpload.mergeTranslations}"
                 label="#{msgs['jsf.iteration.files.Merge']}?" value=""/>
 
             </li>
             <li title="#{msgs['jsf.iteration.files.AssignCreditToUploader.title']}"
               class="l--push-left-half">
-              <zanata:checkbox onValueChanged="onMyTransValueChanged"
+              <zanata:checkbox onValueChanged="bindMyTransValue"
                 checked="#{versionHomeAction.translationFileUpload.assignCreditToUploader}"
                 label="#{msgs['jsf.iteration.files.AssignCreditToUploader']}" value=""/>
             </li>

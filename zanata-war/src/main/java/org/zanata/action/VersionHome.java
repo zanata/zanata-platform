@@ -43,6 +43,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.international.StatusMessage;
+import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
@@ -59,6 +60,7 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
 import org.zanata.service.ValidationService;
 import org.zanata.service.impl.LocaleServiceImpl;
+import org.zanata.transformer.Transformer;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.util.Event;
@@ -67,9 +69,11 @@ import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
 
+import javax.annotation.Nullable;
 import javax.faces.application.FacesMessage;
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityNotFoundException;
+import javax.swing.text.Document;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
@@ -449,10 +453,30 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
      * @return comma-separated list of accepted file extensions. May be an empty
      *         string
      */
-    public String getAcceptedSourceFileTypes() {
-        return Joiner
-                .on(", ")
-                .join(ProjectType.getSupportedSourceFileTypes(getProjectType()));
+    public String getAcceptedSourceFileExtensions() {
+        List<String> supportedTypes = Lists.transform(ProjectType
+            .getSupportedSourceFileTypes(getProjectType()),
+            new Function<DocumentType, String>() {
+                @Override
+                public String apply(DocumentType docType) {
+                    return Joiner.on(",").join(
+                        docType.getSourceExtensions());
+                }
+            });
+        return Joiner.on(", ").join(supportedTypes);
+    }
+
+    public String getAcceptedSourceFile() {
+        List<String> supportedTypes = Lists.transform(ProjectType
+                .getSupportedSourceFileTypes(getProjectType()),
+            new Function<DocumentType, String>() {
+                @Override
+                public String apply(DocumentType docType) {
+                    return docType.name() + "[" + Joiner.on(",").join(
+                        docType.getSourceExtensions()) + "]";
+                }
+            });
+        return Joiner.on(", ").join(supportedTypes);
     }
 
     private void updateProjectType() {

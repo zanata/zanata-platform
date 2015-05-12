@@ -41,45 +41,8 @@ public class TranslationFileServiceImplTest {
                         .autowire(TranslationFileServiceImpl.class);
     }
 
-    // FIXME this is the current behaviour, but doesn't seem sensible
-    @Test(enabled = true)
-    public void extractExtensionFromPlainFilenameCurrentBehaviour() {
-        assertThat(transFileService.extractExtension("foobar"), is("foobar"));
-    }
-
-    @Test(enabled = false)
-    public void extractExtensionFromPlainFilenameBetterBehaviour() {
-        assertThat(transFileService.extractExtension("foobar"), is(""));
-    }
-
-    public void extractNormalExtension() {
-        assertThat(transFileService.extractExtension("file.txt"), is("txt"));
-    }
-
-    public void extractExtensionWithMultipleDots() {
-        assertThat(transFileService.extractExtension("foo.bar.txt"), is("txt"));
-    }
-
-    public void extractFromSQLInjection() {
-        String extension =
-                transFileService
-                        .extractExtension("file.txt;DROP ALL OBJECTS;other.txt");
-        assertThat(extension, is("txt"));
-    }
-
     public void hasPlainTextAdapter() {
         assertThat(transFileService.hasAdapterFor(DocumentType.PLAIN_TEXT),
                 is(true));
-    }
-
-    public void generateSimpleDocId() {
-        assertThat(transFileService.generateDocId("foo", "bar.txt"),
-                is("foo/bar.txt"));
-    }
-
-    public void generateSQLInjectionDocId() {
-        String sqlInjectFilename = "file.txt;DROP ALL OBJECTS;other.txt";
-        assertThat(transFileService.generateDocId("", sqlInjectFilename),
-                is(sqlInjectFilename));
     }
 }

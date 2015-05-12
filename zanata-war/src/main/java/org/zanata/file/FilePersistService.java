@@ -30,7 +30,7 @@ public interface FilePersistService {
     // InputStream)
 
     public void persistRawDocumentContentFromFile(HRawDocument rawDocument,
-            File rawFile);
+            File rawFile, String extension);
 
     void copyAndPersistRawDocument(HRawDocument fromDoc,
             HRawDocument toDoc);

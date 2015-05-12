@@ -33,7 +33,8 @@
               <zanata:multi-file-upload styleClass="i__item--right"
                 id="doc-tab-file-upload-component"
                 title="#{msgs['jsf.iteration.files.UploadNewSourceDocument']}"
-                accepted="#{versionHome.acceptedSourceFileTypes}"
+                accepted="#{versionHome.acceptedSourceFileExtensions}"
+                acceptedDescriptions="#{versionHome.acceptedSourceFile}"
                 url="#{request.contextPath}/files/upload?p=#{versionHome.projectSlug}&amp;v=#{versionHome.slug}"
                 maxfiles="#{applicationConfiguration.maxFilesPerUpload}">
                 #{msgs['jsf.iteration.files.UploadNewSourceDocument']}
@@ -114,8 +115,9 @@
                   </span>
               </a>
               <ul class="dropdown__content js-dropdown__content">
+                <s:fragment rendered="#{versionHomeAction.version.projectType ne 'File'}"></s:fragment>
                 <s:fragment
-                  rendered="#{versionHomeAction.isPoDocument(document.docId)}">
+                  rendered="#{versionHomeAction.isPoDocument(document.docId) and versionHomeAction.version.projectType ne 'File'}">
                   <li>
                     <h:outputLink styleClass="i__item--right"
                       value="#{request.contextPath}/rest/file/source/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/pot">
@@ -156,7 +158,7 @@
                       <h:outputFormat
                         value="#{msgs['jsf.iteration.files.DownloadDocument']}">
                         <f:param
-                          value="#{versionHomeAction.extensionOf(document.path, document.name)}"/>
+                          value="#{versionHomeAction.sourceExtensionOf(document.path, document.name)}"/>
                       </h:outputFormat>
                       <i class="i i--export i__item__icon"></i>
                     </h:outputLink>
