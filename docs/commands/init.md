@@ -1,5 +1,3 @@
-# Command: init
-
 To initialise a project from the command line, the `init` command can be used. This command will guide you through the steps necessary to set up a new or existing project, and start using Zanata.
 
 These instructions assume that you have installed zanata-cli version 3.4.0 or higher as shown in [Installing the Client](installation).

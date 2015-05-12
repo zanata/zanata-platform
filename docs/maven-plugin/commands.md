@@ -1,5 +1,3 @@
-# Commands
-
 If your project uses Apache Maven, you can use Zanata's Maven Plugin rather than the command line client. The Maven Plugin can be used for non-Maven projects, but the same functionality is available in zanata-cli without the need to install or configure Maven.
 
 The following instructions assume that you have installed and configured the Zanata Maven Plugin. Instructions for installation and configuration are available at [Installing the Maven Plugin](maven-plugin/installation) and [Configuring the Maven Plugin](maven-plugin/configuration)
