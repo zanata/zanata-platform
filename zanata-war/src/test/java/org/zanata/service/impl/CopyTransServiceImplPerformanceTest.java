@@ -284,7 +284,7 @@ public class CopyTransServiceImplPerformanceTest {
 
         Liquibase liquibase = new Liquibase("db/db.changelog.xml",
                 new ClassLoaderResourceAccessor(), database);
-        liquibase.update(null);
+        liquibase.update("");
     }
 
     private HLocale makeLocale(LocaleId localeId) {
