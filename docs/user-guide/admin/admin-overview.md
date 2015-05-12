@@ -13,43 +13,51 @@ To access to admin menu, login to Zanata with admin role user, select `Administr
 </figure>
 <br/>
 
-## Server configuration
+### Server configuration
 
 Configuration and settings for Zanata server.
 
-## Manage users
+See [server configuration](user-guide/admin/server-config) for more information.
+
+### Manage users
 
 - Edit user information such as password, roles.
 - Delete users in Zanata.
 
 
-## Manage Roles
+### Manage Roles
 
 - Create new roles to Zanata.
 - Edit/Remove roles in Zanata.
 
-## Manage Search
+### Manage Search
 
-- Reindexing Zanata database used for searching.
+Reindexing Zanata database used for searching. 
 
-## Role assignment rules
+See [Manage search](user-guide/admin/manage-search) for more information.
+
+### Role assignment rules
 
 See [Role assignment rules](user-guide/admin/role-assignment-rules) for more information.
 
-## Translation memory
+### Translation memory
 
 - Import/Export external TMX file for translation memory in editor.
 
-## Process manager
+### Process manager
 
-- See all background asynchronous tasks running in Zanata.
+All background asynchronous tasks running in Zanata.
 
-## Overall statistic
+See [Process manager](user-guide/admin/process-manager) for more information.
+
+### Overall statistic
 
 Overall general statistics of Zanata.
 
-- Number of users, projects, documents and translations.
+See [Statistic](user-guide/admin/statistic) for more information.
 
-## Server monitoring
+### Server monitoring
 
-- Server performance and statistics.
+Server performance and statistics.
+
+See [Monitoring](user-guide/admin/monitoring) for more information.

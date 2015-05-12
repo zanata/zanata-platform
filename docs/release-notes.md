@@ -2,7 +2,7 @@
 
 <h5>Infrastructure Changes</h5>
 
-* Zanata now uses Infinispan as its cache provider, and the cache needs to be configured in Jboss' `standalone.xml` file. Please see the [Infinispan](configuration/infinispan) section for more information.
+* Zanata now uses Infinispan as its cache provider, and the cache needs to be configured in Jboss' `standalone.xml` file. Please see the [Infinispan](user-guide/system-admin/configuration/infinispan) section for more information.
 
 * This release adds a one-time migration of some data, which can cause a timeout during server startup. This applies to
 all plain text and libreoffice formats, so is only a concern for servers that are upgrading from an earlier version and

@@ -10,6 +10,7 @@ use_directory_urls: false
 
 pages:
 - ['index.md', 'Home']
+- ['release-notes.md', 'Release notes', 'Release notes']
 # Getting started
 - ['user-guide/translator-guide.md', 'Getting Started', 'Translator Guide']
 - ['user-guide/project-maintainer-guide.md', 'Getting Started', 'Project Maintainer Guide']
@@ -77,7 +78,13 @@ pages:
 ## Admin
 - ['user-guide/admin/admin-overview.md', 'Admin', 'Overview']
 - ['user-guide/admin/contact-admin.md', 'Admin', 'Contact Admin']
+- ['user-guide/admin/server-config.md', 'Admin', 'Server configuration']
+- ['user-guide/admin/manage-search.md', 'Admin', 'Manage search']
+- ['user-guide/admin/process-manager.md', 'Admin', 'Process manager']
 - ['user-guide/admin/role-assignment-rules.md', 'Admin', 'Role assignment rules']
+- ['user-guide/admin/statistic.md', 'Admin', 'Statistic']
+- ['user-guide/admin/monitoring.md', 'Admin', 'Monitoring']
+## TODO: tmx, Manage users, Manage roles
 # System admin
 - ['user-guide/system-admin/configuration/installation.md', 'System Admin', 'Installation']
 - ['user-guide/system-admin/configuration/authentication.md', 'System Admin', 'Authentication']
@@ -87,6 +94,7 @@ pages:
 - ['user-guide/system-admin/configuration/infinispan.md', 'System Admin', 'Caches']
 - ['user-guide/system-admin/configuration/jms-messaging.md', 'System Admin', 'JMS Messaging']
 
+# UI bug, last entry does not show in the list, using it to push JMS Messaging up
 - ['release-notes.md']
 
 copyright: Copyright &copy; 2015, <a href="http//www.redhat.com">Red Hat</a>.
