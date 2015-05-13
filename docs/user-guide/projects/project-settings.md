@@ -106,7 +106,7 @@ See [validation](user-guide/projects/validations) all available check.
 
 Copy Translations attempts to reuse translations that have been entered in Zanata by matching them with untranslated strings in your project-version.  These settings change the way Copy Translations behaves when a new version is created.
 
-Refer to [the Copy Translations reference]({{ site.url }}/help/reuse/copytrans-explained) for more information.
+Refer to [the Copy Translations reference](user-guide/translation-reuse/copy-trans/) for more information.
 
 ------------
 

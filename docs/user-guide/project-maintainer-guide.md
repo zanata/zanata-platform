@@ -1,6 +1,6 @@
 Any user who has joined Zanata can upload their project to be translated.
 
-See [signup account](user-guide/account/sign-up) and [activate account](user-guide/account/account-activate) for more information.
+See [signup account](user-guide/account/account-sign-up) and [activate account](user-guide/account/account-activate) for more information.
 
 ## New project
 

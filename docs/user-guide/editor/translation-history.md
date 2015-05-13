@@ -1,10 +1,10 @@
 User will be able to see translation history of each messages. It will display for each translation, the version number, contents and status, modified user and modified date.
 
 ### How to show translation history
-In editor click on the "timer" like icon below cancel will bring up the initial view:
+In editor click on the "timer" like icon below will bring up the initial view:
 
 <figure>
-<img alt="Translation history" src="images/translation-history.png" />
+<img alt="Translation history" src="images/editor-history-button.png" />
 </figure>
 <br/>
 
@@ -12,7 +12,7 @@ In editor click on the "timer" like icon below cancel will bring up the initial 
 If selecting exactly two entries, user will be able to compare them in a diff view:
 
 <figure>
-<img alt="Translation history comparison" src="images/translation-history-comparison.png" />
+<img alt="Translation history comparison" src="images/editor-translation-history-comparison.png" />
 </figure>
 <br/>
 

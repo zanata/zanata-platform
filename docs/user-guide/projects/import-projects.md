@@ -1,7 +1,7 @@
 This document will provide help when importing or migrating projects into Zanata from other translation platforms. 
 You need a user account on the Zanata instance you will migrate to.
 
-See [signup account](user-guide/account/sign-up) and [activate account](user-guide/account/account-activate) for more information.
+See [signup account](user-guide/account/account-sign-up) and [activate account](user-guide/account/account-activate) for more information.
 
 ## Create a project in Zanata
 
