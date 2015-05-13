@@ -14,8 +14,8 @@ Below are the summary of these 2 roles with their permission.
         <tr>
             <td>**Roles**</td>
             <td>[Upload glossary](user-guide/glossary/upload-glossaries)</td>
-            <td>[Edit glossary](user-guide/glossary/edit-glossary)</td>
-            <td>[Delete glossary](user-guide/glossary/delete-glossary)</td>
+            <td>[Edit glossary](user-guide/glossary/edit-glossaries)</td>
+            <td>[Delete glossary](user-guide/glossary/delete-glossaries)</td>
         </tr>
     </th>
     <tr>

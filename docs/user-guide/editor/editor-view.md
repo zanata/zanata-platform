@@ -109,7 +109,7 @@ You will be restricted to only viewing source and translations in the editor.
 <br/>
 
 Translators can enable or disable validation check on their translations except for those which is enforced by project maintainers.
-See [Project settings](user-guide/project/project-settings#validations) for more information.
+See [Project settings](user-guide/projects/project-settings#validations) for more information.
 
 See [validations](user-guide/projects/validations) all available check.
     

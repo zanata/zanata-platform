@@ -107,7 +107,7 @@ As it is a _prototype_, there are bound to be some bugs and sub-optimal behaviou
 
 <h5>Infrastructure Changes</h5>
 
-Zanata now requires JMS to be configured in standalone.xml in order to queue up some messages going out of the system. For instructions on how to do this, please [See Here](configuration/jms-messaging)
+Zanata now requires JMS to be configured in standalone.xml in order to queue up some messages going out of the system. For instructions on how to do this, please [See Here](user-guide/system-admin/configuration/jms-messaging)
 
 <h5>Drupal Plugin</h5>
 * [1078009](https://bugzilla.redhat.com/show_bug.cgi?id=1078009) -  PROTOTYPE: Drupal plugin to push and pull Zanata translations
