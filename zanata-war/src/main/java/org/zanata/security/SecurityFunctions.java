@@ -304,17 +304,17 @@ public class SecurityFunctions {
      * Mark Project and Project Iteration obsolete rules
      **************************************************************************/
 
-    // Only admin can archive projects
+    // Project maintainer can archive/delete projects
     @GrantsPermission(actions = "mark-obsolete")
     public static boolean canArchiveProject(HProject project) {
-        return getIdentity().hasRole("admin");
+        return isProjectMaintainer(project);
     }
 
-    // Only admin can archive project iterations
+    // Project maintainer can archive/delete project iterations
     @GrantsPermission(actions = "mark-obsolete")
     public static boolean canArchiveProjectIteration(
             HProjectIteration projectIteration) {
-        return getIdentity().hasRole("admin");
+        return isProjectMaintainer(projectIteration.getProject());
     }
 
     /***************************************************************************

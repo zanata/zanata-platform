@@ -60,12 +60,10 @@ public class ProjectAction implements Serializable {
     }
 
     public boolean isShowObsolete() {
-        return showObsolete;
+        return false;
     }
 
     public void setShowObsolete(boolean showObsolete) {
-        projectPagedListDataModel.setFilterObsolete(!showObsolete);
-        this.showObsolete = showObsolete;
     }
 
     public boolean isShowActive() {

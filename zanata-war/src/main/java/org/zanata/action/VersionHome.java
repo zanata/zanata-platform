@@ -42,7 +42,8 @@ import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.international.StatusMessage;
+import org.jboss.seam.faces.FacesManager;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -50,7 +51,6 @@ import org.zanata.common.ProjectType;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.LocaleDAO;
-import org.zanata.events.ProjectIterationUpdate;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
@@ -61,19 +61,15 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
 import org.zanata.service.ValidationService;
 import org.zanata.service.impl.LocaleServiceImpl;
-import org.zanata.transformer.Transformer;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ComparatorUtil;
-import org.zanata.util.Event;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
 
-import javax.annotation.Nullable;
 import javax.faces.application.FacesMessage;
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityNotFoundException;
-import javax.swing.text.Document;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
@@ -138,8 +134,8 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     @In
     private CopyVersionManager copyVersionManager;
 
-    @In("event")
-    private Event<ProjectIterationUpdate> projectIterationUpdateEvent;
+    @In
+    private ApplicationConfiguration applicationConfiguration;
 
     private Map<ValidationId, ValidationAction> availableValidations = Maps
             .newHashMap();
@@ -247,11 +243,25 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
                     .byNaturalId(HProjectIteration.class)
                     .using("slug", getSlug())
                     .using("project", projectDAO.getBySlug(projectSlug)).load();
+            validateIterationState(iteration);
             versionId = iteration.getId();
             return iteration;
         } else {
-            return (HProjectIteration) session.load(HProjectIteration.class,
-                    versionId);
+            HProjectIteration iteration =
+                    (HProjectIteration) session.load(HProjectIteration.class,
+                            versionId);
+            validateIterationState(iteration);
+            return iteration;
+        }
+    }
+
+    private void validateIterationState(HProjectIteration iteration) {
+        if (iteration == null
+                || iteration.getStatus() == EntityStatus.OBSOLETE) {
+            log.warn(
+                    "Project version [id={}, slug={}], does not exist or is soft deleted: {}",
+                    versionId, slug, iteration);
+            throw new EntityNotFoundException();
         }
     }
 
@@ -457,11 +467,31 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
             return null;
         }
         getInstance().setSlug(getInputSlugValue());
+
+        boolean softDeleted = false;
+        if (getInstance().getStatus() == EntityStatus.OBSOLETE) {
+            // if we offer delete in REST, we need to move this to hibernate listener
+            String newSlug = getInstance().changeToDeletedSlug();
+            getInstance().setSlug(newSlug);
+
+            softDeleted = true;
+        }
+
         String state = super.update();
+
+        if (softDeleted) {
+            // TODO CDI this url will need to be looked at in CDI migration
+            String url = applicationConfiguration
+                    .getServerPath() + "/project/project.seam?slug=" + projectSlug;
+            FacesManager.instance().redirectToExternalURL(url);
+            return state;
+        }
+
         if (!slug.equals(getInstance().getSlug())) {
             slug = getInstance().getSlug();
             return "versionSlugUpdated";
         }
+
         return state;
     }
 
@@ -472,11 +502,14 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
     @Restrict("#{s:hasPermission(versionHome.instance, 'update')}")
     public void updateStatus(char initial) {
+        String message = msgs.format("jsf.iteration.status.updated",
+                EntityStatus.valueOf(initial));
         getInstance().setStatus(EntityStatus.valueOf(initial));
+        if (getInstance().getStatus() == EntityStatus.OBSOLETE) {
+            message = msgs.get("jsf.iteration.deleted");
+        }
         update();
-        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                msgs.format("jsf.iteration.status.updated",
-                        EntityStatus.valueOf(initial)));
+        facesMessages.addGlobal(FacesMessage.SEVERITY_INFO, message);
     }
 
     public void updateSelectedProjectType(ValueChangeEvent e) {
