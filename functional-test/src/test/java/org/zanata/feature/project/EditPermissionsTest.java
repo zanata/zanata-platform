@@ -144,7 +144,7 @@ public class EditPermissionsTest extends ZanataTestCase {
                 .enterSearchMaintainer("glossarist")
                 .selectSearchMaintainer("glossarist");
 
-        projectPermissionsTab.waitForMaintainersContains("glossarist");
+        projectPermissionsTab.expectMaintainersContains("glossarist");
 
         assertThat(projectPermissionsTab.getSettingsMaintainersList())
                 .contains("glossarist")

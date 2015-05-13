@@ -158,7 +158,7 @@ public class FileTypeUploadTest extends ZanataTestCase {
                 .clickUploadDone()
                 .gotoDocumentTab();
 
-        assertThat(versionDocumentsPage.waitForSourceDocsContains(testFileName))
+        assertThat(versionDocumentsPage.expectSourceDocsContains(testFileName))
                 .as("Document shows in table");
     }
 

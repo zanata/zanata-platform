@@ -21,12 +21,10 @@
 package org.zanata.page.dashboard;
 
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.zanata.util.WebElementUtil;
 
 import java.util.List;
 
@@ -45,7 +43,7 @@ public class DashboardActivityTab extends DashboardBasePage {
 
     public List<WebElement> getMyActivityList() {
         log.info("Query activity list");
-        return waitForWebElement(activityList).findElements(By.xpath("./li"));
+        return readyElement(activityList).findElements(By.xpath("./li"));
     }
 
     /**
@@ -55,7 +53,7 @@ public class DashboardActivityTab extends DashboardBasePage {
     public boolean clickMoreActivity() {
         log.info("Click More Activity button");
         final int activityListOrigSize = getMyActivityList().size();
-        waitForWebElement(moreActivityButton).click();
+        readyElement(moreActivityButton).click();
         return waitForAMoment().until(new Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver input) {

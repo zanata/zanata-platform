@@ -20,15 +20,9 @@
  */
 package org.zanata.page.administration;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
 import org.zanata.page.BasePage;
-import org.zanata.util.TableRow;
-import org.zanata.util.WebElementUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,66 +59,66 @@ public class TranslationMemoryPage extends BasePage {
 
     public TranslationMemoryEditPage clickCreateNew() {
         log.info("Click Create New");
-        waitForWebElement(dropDownMenu).click();
+        readyElement(dropDownMenu).click();
         clickLinkAfterAnimation(createTmLink);
         return new TranslationMemoryEditPage(getDriver());
     }
 
     public TranslationMemoryPage clickOptions(String tmName) {
         log.info("Click Options dropdown for {}", tmName);
-        waitForWebElement(findRowByTMName(tmName), listDropDownMenu).click();
+        readyElement(findRowByTMName(tmName), listDropDownMenu).click();
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage clickImport(String tmName) {
         log.info("Click Import");
-        waitForWebElement(findRowByTMName(tmName), listImportButton).click();
+        readyElement(findRowByTMName(tmName), listImportButton).click();
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage enterImportFileName(String importFileName) {
         log.info("Enter import TM filename {}", importFileName);
-        waitForWebElement(filenameInput).sendKeys(importFileName);
+        readyElement(filenameInput).sendKeys(importFileName);
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage clickUploadButtonAndAcknowledge() {
         log.info("Click and accept Upload button");
-        waitForWebElement(uploadButton).click();
+        readyElement(uploadButton).click();
         switchToAlert().accept();
         return new TranslationMemoryPage(getDriver());
     }
 
     public Alert expectFailedUpload() {
         log.info("Click Upload");
-        waitForWebElement(uploadButton).click();
+        readyElement(uploadButton).click();
         return switchToAlert();
     }
 
     public TranslationMemoryPage clickClearTMAndAccept(String tmName) {
         log.info("Click and accept Clear {}", tmName);
-        waitForWebElement(findRowByTMName(tmName), listClearButton).click();
+        readyElement(findRowByTMName(tmName), listClearButton).click();
         switchToAlert().accept();
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage clickClearTMAndCancel(String tmName) {
         log.info("Click and Cancel Clear {}", tmName);
-        waitForWebElement(findRowByTMName(tmName), listClearButton).click();
+        readyElement(findRowByTMName(tmName), listClearButton).click();
         switchToAlert().dismiss();
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage clickDeleteTmAndAccept(String tmName) {
         log.info("Click and accept Delete {}", tmName);
-        waitForWebElement(findRowByTMName(tmName), listDeleteButton).click();
+        readyElement(findRowByTMName(tmName), listDeleteButton).click();
         switchToAlert().accept();
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage clickDeleteTmAndCancel(String tmName) {
         log.info("Click and cancel Delete {}", tmName);
-        waitForWebElement(findRowByTMName(tmName), listDeleteButton).click();
+        readyElement(findRowByTMName(tmName), listDeleteButton).click();
         switchToAlert().dismiss();
         return new TranslationMemoryPage(getDriver());
     }
@@ -151,24 +145,13 @@ public class TranslationMemoryPage extends BasePage {
 
     public String getNumberOfEntries(String tmName) {
         log.info("Query number of entries {}", tmName);
+        waitForPageSilence();
         return getListEntryCount(findRowByTMName(tmName));
-    }
-
-    public String waitForExpectedNumberOfEntries(final String tmName,
-            final String expected) {
-        log.info("Waiting for {} entries in {}", expected, tmName);
-        return waitForAMoment().until(new Function<WebDriver, String>() {
-            @Override
-            public String apply(WebDriver driver) {
-                return expected.equals(getNumberOfEntries(tmName)) ? getNumberOfEntries(tmName)
-                        : null;
-            }
-        });
     }
 
     public boolean canDelete(String tmName) {
         log.info("Query can delete {}", tmName);
-        String disabled = waitForWebElement(
+        String disabled = readyElement(
                 findRowByTMName(tmName), listDeleteButton)
                 .getAttribute("disabled");
 
@@ -179,7 +162,7 @@ public class TranslationMemoryPage extends BasePage {
      * Check to see if the TM list is empty
      */
     private boolean noTmsCreated() {
-        for (WebElement element : waitForWebElement(tmList)
+        for (WebElement element : readyElement(tmList)
                 .findElements(By.tagName("p"))) {
             if (element.getText().equals(NO_MEMORIES)) {
                 return true;
@@ -204,7 +187,7 @@ public class TranslationMemoryPage extends BasePage {
             log.info("TM list is empty");
             return new ArrayList<>();
         }
-        return waitForWebElement(waitForWebElement(tmList),
+        return readyElement(readyElement(tmList),
                 By.className("list--stats"))
                 .findElements(By.className("list__item--actionable"));
     }
@@ -215,7 +198,7 @@ public class TranslationMemoryPage extends BasePage {
     }
 
     private String getListEntryDescription(WebElement listElement) {
-        return waitForWebElement(listElement, listItemDescription).getText();
+        return readyElement(listElement, listItemDescription).getText();
     }
 
     private String getListEntryCount(WebElement listElement) {

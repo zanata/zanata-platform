@@ -80,7 +80,7 @@ public class EmailValidationTest extends ZanataTestCase {
     public void invalidEmailRejection() throws Exception {
         registerPage = registerPage.enterEmail("plaintext").registerFailure();
 
-        assertThat(registerPage.expectErrors())
+        assertThat(registerPage.getErrors())
                 .contains(RegisterPage.MALFORMED_EMAIL_ERROR)
                 .as("The email formation error is displayed");
     }

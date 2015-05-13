@@ -50,7 +50,7 @@ public class GooglePermissionsPage extends AbstractPage {
                         .isEnabled();
             }
         });
-        waitForWebElement(approveAccessButton).click();
+        readyElement(approveAccessButton).click();
         return new EditProfilePage(getDriver());
     }
 }

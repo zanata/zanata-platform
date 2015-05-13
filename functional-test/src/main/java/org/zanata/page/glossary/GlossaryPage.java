@@ -29,7 +29,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
-import org.zanata.util.WebElementUtil;
 
 /**
  * @author Carlos Munoz <a
@@ -70,9 +69,9 @@ public class GlossaryPage extends BasePage {
     }
 
     private List<WebElement> getListItems() {
-        return waitForElementExists(
-                waitForElementExists(glossaryMain),
-                        By.className("list--stats"))
+        return existingElement(
+                existingElement(glossaryMain),
+                By.className("list--stats"))
                 .findElements(listItem);
     }
 }

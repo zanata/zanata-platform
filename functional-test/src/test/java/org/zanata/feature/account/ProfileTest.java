@@ -89,7 +89,7 @@ public class ProfileTest extends ZanataTestCase {
 
         dashboardClientTab.waitForPageSilence();
         dashboardClientTab = dashboardClientTab.pressApiKeyGenerateButton();
-        dashboardClientTab.waitForApiKeyChanged(currentApiKey);
+        dashboardClientTab.expectApiKeyChanged(currentApiKey);
 
         assertThat(dashboardClientTab.getApiKey()).isNotEqualTo(currentApiKey)
                 .as("The user's api key is different");
@@ -114,7 +114,7 @@ public class ProfileTest extends ZanataTestCase {
                 .enterName("Tranny")
                 .clickUpdateProfileButton();
 
-        dashboardProfileTab.waitForUsernameChanged("translator");
+        dashboardProfileTab.expectUsernameChanged("translator");
 
         assertThat(dashboardProfileTab.getUserFullName()).isEqualTo("Tranny")
                 .as("The user's name has been changed");
@@ -131,7 +131,7 @@ public class ProfileTest extends ZanataTestCase {
                 .typeNewAccountEmailAddress("admin@example.com")
                 .clickUpdateEmailButton();
 
-        assertThat(dashboardAccountTab.expectErrors())
+        assertThat(dashboardAccountTab.getErrors())
                 .contains(DashboardAccountTab.EMAIL_TAKEN_ERROR)
                 .as("The email is rejected, being already taken");
 
@@ -142,7 +142,7 @@ public class ProfileTest extends ZanataTestCase {
                 .typeNewAccountEmailAddress("test @example.com")
                 .clickUpdateEmailButton();
 
-        assertThat(dashboardAccountTab.expectErrors())
+        assertThat(dashboardAccountTab.getErrors())
                 .contains(RegisterPage.MALFORMED_EMAIL_ERROR)
                 .as("The email is rejected, being of invalid format");
     }

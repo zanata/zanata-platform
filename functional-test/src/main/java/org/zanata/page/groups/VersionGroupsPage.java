@@ -58,25 +58,25 @@ public class VersionGroupsPage extends BasePage {
 
     public CreateVersionGroupPage createNewGroup() {
         log.info("Click New Group button");
-        waitForWebElement(createGroupButton).click();
+        readyElement(createGroupButton).click();
         return new CreateVersionGroupPage(getDriver());
     }
 
     public VersionGroupPage goToGroup(String groupName) {
         log.info("Click group {}", groupName);
-        waitForWebElement(groupTable).findElement(By.linkText(groupName)).click();
+        readyElement(groupTable).findElement(By.linkText(groupName)).click();
         return new VersionGroupPage(getDriver());
     }
 
     public VersionGroupsPage toggleArchived(final boolean show) {
-        WebElement showArchived = waitForWebElement(toggleArchived);
+        WebElement showArchived = readyElement(toggleArchived);
         if (show != showArchived.isSelected()) {
             showArchived.click();
         }
         waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return waitForWebElement(groupTable)
+                return readyElement(groupTable)
                         .findElements(archiveLink)
                         .isEmpty() == !show;
             }
@@ -86,8 +86,8 @@ public class VersionGroupsPage extends BasePage {
 
     public String getInfoMessage() {
         log.info("Test info msg");
-        log.info(waitForWebElement(infomsg).getText());
-        return waitForWebElement(infomsg).getText();
+        log.info(readyElement(infomsg).getText());
+        return readyElement(infomsg).getText();
     }
 
 }

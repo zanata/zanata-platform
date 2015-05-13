@@ -20,12 +20,9 @@
  */
 package org.zanata.page.administration;
 
-import com.google.common.base.Function;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.BasePage;
 import org.zanata.page.utility.HomePage;
 
@@ -46,10 +43,10 @@ public class EditHomeContentPage extends BasePage {
     public EditHomeContentPage enterText(String text) {
         log.info("Enter homepage code\n{}", text);
         // Switch to the CKEditor frame
-        getDriver().switchTo().frame(waitForWebElement(By
+        getDriver().switchTo().frame(readyElement(By
                 .id("cke_homeContentForm:homeContent:inp"))
                 .findElement(By.tagName("iframe")));
-        waitForWebElement(By.tagName("body")).sendKeys(text);
+        readyElement(By.tagName("body")).sendKeys(text);
         // Switch back!
         getDriver().switchTo().defaultContent();
         return new EditHomeContentPage(getDriver());
@@ -57,13 +54,13 @@ public class EditHomeContentPage extends BasePage {
 
     public HomePage update() {
         log.info("Click Update");
-        waitForWebElement(updateButton).click();
+        readyElement(updateButton).click();
         return new HomePage(getDriver());
     }
 
     public HomePage cancelUpdate() {
         log.info("Click Cancel");
-        waitForWebElement(cancelButton).click();
+        readyElement(cancelButton).click();
         return new HomePage(getDriver());
     }
 }

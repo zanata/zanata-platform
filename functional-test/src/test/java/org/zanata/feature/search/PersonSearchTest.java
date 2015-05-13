@@ -57,7 +57,7 @@ public class PersonSearchTest extends ZanataTestCase {
         BasePage basePage = new BasicWorkFlow()
                 .goToHome()
                 .enterSearch("trans")
-                .waitForSearchListContains("translator");
+                .expectSearchListContains("translator");
 
         assertThat(basePage.getZanataSearchAutocompleteItems())
                 .contains("translator")
@@ -82,7 +82,7 @@ public class PersonSearchTest extends ZanataTestCase {
         BasePage basePage = new BasicWorkFlow()
                 .goToHome()
                 .enterSearch("snart")
-                .waitForSearchListContains("Search Zanata for 'snart'");
+                .expectSearchListContains("Search Zanata for 'snart'");
 
         assertThat(basePage.getZanataSearchAutocompleteItems())
                 .doesNotContain("translator")
@@ -108,7 +108,7 @@ public class PersonSearchTest extends ZanataTestCase {
         ProfilePage profilePage = new BasicWorkFlow()
                 .goToHome()
                 .enterSearch("trans")
-                .waitForSearchListContains("translator")
+                .expectSearchListContains("translator")
                 .clickUserSearchEntry("translator");
 
         assertThat(profilePage.expectContributionsMatrixVisible())

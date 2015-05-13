@@ -55,8 +55,8 @@ public class LanguageWorkFlow extends AbstractWebWorkFlow {
         // continue to add the new language
         return languagesPage.clickMoreActions()
             .addNewLanguage()
-            .enableLanguageByDefault(true)
             .enterSearchLanguage(localeId)
+            .enableLanguageByDefault()
             .saveLanguage();
     }
 }

@@ -68,26 +68,26 @@ public class VersionFilteringTest extends ZanataTestCase {
 
         ProjectVersionsPage projectVersionsPage = new ProjectWorkFlow()
                 .goToProjectByName(projectName)
-                .waitForDisplayedVersions(2);
+                .expectDisplayedVersions(2);
 
         assertVersions(projectVersionsPage, 2, new String[]{"bravo", "alpha"});
 
         projectVersionsPage = projectVersionsPage
                 .clickSearchIcon()
                 .enterVersionSearch("alpha")
-                .waitForDisplayedVersions(1);
+                .expectDisplayedVersions(1);
 
         assertVersions(projectVersionsPage, 1, new String[]{"alpha"});
 
         projectVersionsPage = projectVersionsPage
                 .clearVersionSearch()
-                .waitForDisplayedVersions(2);
+                .expectDisplayedVersions(2);
 
         assertVersions(projectVersionsPage, 2, new String[]{"bravo", "alpha"});
 
         projectVersionsPage = projectVersionsPage
                 .enterVersionSearch("bravo")
-                .waitForDisplayedVersions(1);
+                .expectDisplayedVersions(1);
 
         assertVersions(projectVersionsPage, 1, new String[]{"bravo"});
 
@@ -95,14 +95,14 @@ public class VersionFilteringTest extends ZanataTestCase {
         projectVersionsPage = projectVersionsPage
                 .clearVersionSearch()
                 .enterVersionSearch("charlie")
-                .waitForDisplayedVersions(0);
+                .expectDisplayedVersions(0);
 
         assertVersions(projectVersionsPage, 0, new String[]{});
 
         projectVersionsPage.waitForPageSilence();
         projectVersionsPage = projectVersionsPage
                 .clearVersionSearch()
-                .waitForDisplayedVersions(2);
+                .expectDisplayedVersions(2);
 
         assertVersions(projectVersionsPage, 2, new String[]{"bravo", "alpha"});
     }

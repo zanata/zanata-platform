@@ -73,7 +73,7 @@ public class EditVersionLanguagesTest extends ZanataTestCase {
                 .gotoVersion("overridelangtest")
                 .gotoSettingsTab()
                 .gotoSettingsLanguagesTab()
-                .waitForLocaleListVisible();
+                .expectLocaleListVisible();
 
         List<String> enabledLocaleList = versionLanguagesTab
                 .getEnabledLocaleList();
@@ -90,10 +90,12 @@ public class EditVersionLanguagesTest extends ZanataTestCase {
         versionLanguagesTab.expectNotification("Language \"en-US\" has been " +
                 "enabled.");
         versionLanguagesTab = versionLanguagesTab
-                .waitForLanguagesContains("en-US");
+                .expectLanguagesContains("en-US");
 
-        assertThat(versionLanguagesTab.getEnabledLocaleList())
-                .contains("en-US", "fr")
-                .as("Two languages are available to translate");
+        enabledLocaleList = versionLanguagesTab.getEnabledLocaleList();
+
+        assertThat(enabledLocaleList)
+                .contains("en-US", "fr", "hi", "pl")
+                .as("The languages are available to translate");
     }
 }

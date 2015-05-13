@@ -30,6 +30,8 @@ import org.zanata.util.LanguageList;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * This class represents the project language settings page.
  *
@@ -55,7 +57,7 @@ public class ProjectLanguagesTab extends ProjectBasePage {
      */
     public List<String> getEnabledLocaleList() {
         log.info("Query enabled locales");
-        return LanguageList.getListedLocales(waitForWebElement(activeLocales));
+        return LanguageList.getListedLocales(readyElement(activeLocales));
     }
 
     public ProjectLanguagesTab expectEnabledLocaleListCount(final int count) {
@@ -69,49 +71,13 @@ public class ProjectLanguagesTab extends ProjectBasePage {
     }
 
     /**
-     * Get a list of disabled locales in this project
-     *
-     * @return String list of language/locale names
-     */
-    public List<String> getDisabledLocaleList() {
-        log.info("Query enabled locales");
-        return LanguageList.getListedLocales(waitForWebElement(inactiveLocales));
-    }
-
-    public ProjectLanguagesTab expectDisabledLocaleListCount(final int count) {
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getDisabledLocaleList().size() == count;
-            }
-        });
-        return new ProjectLanguagesTab(getDriver());
-    }
-
-    private List<WebElement> getDisabledLocaleListElement() {
-        return waitForWebElement(inactiveLocales)
-                .findElements(By.className("reveal"));
-    }
-
-    public ProjectLanguagesTab waitForLocaleListVisible() {
-        log.info("Wait for locale list visible");
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver driver) {
-                return waitForWebElement(activeLocales).isDisplayed();
-            }
-        });
-        return new ProjectLanguagesTab(getDriver());
-    }
-
-    /**
      * Enter text into the language search field
      * @param languageQuery text to search for
      * @return new language settings tab
      */
     public ProjectLanguagesTab enterSearchLanguage(String languageQuery) {
         log.info("Enter language search {}", languageQuery);
-        waitForWebElement(disabledLocalesFilter).sendKeys(languageQuery);
+        readyElement(disabledLocalesFilter).sendKeys(languageQuery);
         return new ProjectLanguagesTab(getDriver());
     }
 

@@ -61,7 +61,7 @@ public class AddLanguagePage extends BasePage {
         waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver driver) {
-                List < WebElement > searchResults =
+                List<WebElement> searchResults =
                         WebElementUtil.getSearchAutocompleteResults(
                                 driver,
                                 "addLanguageForm",
@@ -80,20 +80,25 @@ public class AddLanguagePage extends BasePage {
         return new AddLanguagePage(getDriver());
     }
 
-    public AddLanguagePage waitForPluralsWarning() {
+    public AddLanguagePage expectPluralsWarning() {
         log.info("Expect plurals warning");
-        waitForWebElement(pluralsWarning);
+        waitForPageSilence();
+        readyElement(pluralsWarning);
         return new AddLanguagePage(getDriver());
     }
 
-    public AddLanguagePage enableLanguageByDefault(boolean enable) {
-        log.info("Click Enable by default to:" + enable);
-        Checkbox enabledByDefault = Checkbox.of(waitForWebElement(enabledByDefaultCheckbox));
+    public AddLanguagePage enableLanguageByDefault() {
+        log.info("Click Enable by default");
+        if (!readyElement(enabledByDefaultCheckbox).isSelected()) {
+            readyElement(enabledByDefaultCheckbox).click();
+        }
+        return new AddLanguagePage(getDriver());
+    }
 
-        if (enable) {
-            enabledByDefault.check();
-        } else {
-            enabledByDefault.uncheck();
+    public AddLanguagePage disableLanguageByDefault() {
+        log.info("Click Disable by default");
+        if (readyElement(enabledByDefaultCheckbox).isSelected()) {
+            readyElement(enabledByDefaultCheckbox).click();
         }
 
         return new AddLanguagePage(getDriver());
@@ -106,13 +111,13 @@ public class AddLanguagePage extends BasePage {
         waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return !waitForElementExists(languageInfo)
+                return !existingElement(languageInfo)
                         .findElements(By.className("l--push-top-half"))
                         .get(0).findElement(languageInfoItem)
                         .getText().isEmpty();
             }
         });
-        for (WebElement item : waitForElementExists(languageInfo)
+        for (WebElement item : existingElement(languageInfo)
                 .findElements(By.className("l--push-top-half"))) {
             String name = item.getText();
             String value = item.findElement(languageInfoItem).getText();
@@ -126,7 +131,7 @@ public class AddLanguagePage extends BasePage {
 
     public LanguagesPage saveLanguage() {
         log.info("Click Save");
-        clickAndCheckErrors(waitForWebElement(saveButton));
+        clickAndCheckErrors(readyElement(saveButton));
         return new LanguagesPage(getDriver());
     }
 }

@@ -161,7 +161,7 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
                 .gotoSettingsPermissionsTab()
                 .enterSearchMaintainer(username)
                 .selectSearchMaintainer(username);
-        projectPermissionsTab.waitForMaintainersContains(username);
+        projectPermissionsTab.expectMaintainersContains(username);
         return new ProjectPermissionsTab(driver);
     }
 
@@ -175,7 +175,7 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
                         .gotoSettingsPermissionsTab();
 
         projectPermissionsTab.clickRemoveOn(username)
-                .waitForMaintainersNotContains(username);
+                .expectMaintainersNotContains(username);
 
         return new ProjectPermissionsTab(driver);
     }

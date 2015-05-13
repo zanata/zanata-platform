@@ -43,31 +43,31 @@ public class TranslationMemoryEditPage extends BasePage {
 
     public TranslationMemoryEditPage enterMemoryID(String id) {
         log.info("Enter TM ID {}", id);
-        waitForWebElement(idField).sendKeys(id);
+        readyElement(idField).sendKeys(id);
         return new TranslationMemoryEditPage(getDriver());
     }
 
     public TranslationMemoryEditPage enterMemoryDescription(String description) {
         log.info("Enter TM description {}", description);
-        waitForWebElement(descriptionField).sendKeys(description);
+        readyElement(descriptionField).sendKeys(description);
         return new TranslationMemoryEditPage(getDriver());
     }
 
     public TranslationMemoryPage saveTM() {
         log.info("Click Save");
-        waitForWebElement(saveButton).click();
+        readyElement(saveButton).click();
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryEditPage clickSaveAndExpectFailure() {
         log.info("Click Save");
-        waitForWebElement(saveButton).click();
+        readyElement(saveButton).click();
         return new TranslationMemoryEditPage(getDriver());
     }
 
     public TranslationMemoryPage cancelTM() {
         log.info("Click Cancel");
-        waitForWebElement(cancelButton).click();
+        readyElement(cancelButton).click();
         return new TranslationMemoryPage(getDriver());
     }
 

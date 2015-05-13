@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.BasePage;
-import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 
 import java.util.ArrayList;
@@ -36,6 +35,7 @@ import java.util.List;
 @Slf4j
 public class RoleAssignmentsPage extends BasePage {
 
+    private By moreActions = By.id("roleassign-more-actions");
     private By newRuleButton = By.linkText("New Rule");
     private By roleTable = By.className("list--stats");
 
@@ -43,9 +43,15 @@ public class RoleAssignmentsPage extends BasePage {
         super(driver);
     }
 
+    public RoleAssignmentsPage clickMoreActions() {
+        log.info("Click More Actions dropdown");
+        readyElement(moreActions).click();
+        return new RoleAssignmentsPage(getDriver());
+    }
+
     public EditRoleAssignmentPage clickCreateNew() {
         log.info("Click Create New");
-        waitForWebElement(newRuleButton).click();
+        readyElement(newRuleButton).click();
         return new EditRoleAssignmentPage(getDriver());
     }
 

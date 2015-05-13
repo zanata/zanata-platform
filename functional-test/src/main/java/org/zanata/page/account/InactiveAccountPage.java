@@ -38,18 +38,18 @@ public class InactiveAccountPage extends BasePage {
 
     public HomePage clickResendActivationEmail() {
         log.info("Click resend activation email");
-        waitForWebElement(By.id("resendEmail")).click();
+        readyElement(By.id("resendEmail")).click();
         return new HomePage(getDriver());
     }
 
     public InactiveAccountPage enterNewEmail(String email) {
-        waitForWebElement(By.id("inactiveAccountForm:emailField:email"))
+        readyElement(By.id("inactiveAccountForm:emailField:email"))
                 .sendKeys(email);
         return new InactiveAccountPage(getDriver());
     }
 
     public HomePage clickUpdateEmail() {
-        waitForWebElement(By.id("inactiveAccountForm:emailField:updateEmail")).click();
+        readyElement(By.id("inactiveAccountForm:emailField:updateEmail")).click();
         return new HomePage(getDriver());
     }
 }

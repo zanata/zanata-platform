@@ -217,7 +217,7 @@ public class VersionGroupTest extends ZanataTestCase {
         groupPage.defocus(groupPage.groupNameField);
         groupPage.saveGroupFailure();
 
-        assertThat(groupPage.expectErrors())
+        assertThat(groupPage.getErrors())
                 .contains(CreateVersionGroupPage.VALIDATION_ERROR)
                 .as("Validation error is displayed for " + inputText);
     }

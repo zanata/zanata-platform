@@ -26,11 +26,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.page.projectversion.VersionDocumentsPage;
 import org.zanata.page.projectversion.versionsettings.VersionDocumentsTab;
 import org.zanata.util.AddUsersRule;
@@ -84,6 +86,43 @@ public class MultiFileUploadTest extends ZanataTestCase {
         if (new File(documentStorageDirectory).exists()) {
             log.warn("Document storage directory exists (cleanup incomplete)");
         }
+    }
+
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    @Category(BasicAcceptanceTest.class)
+    @Ignore("Error in system path")
+    public void uploadedDocumentsAreInFilesystem() {
+        File firstFile = testFileGenerator.generateTestFileWithContent(
+                "multiuploadInFilesystem", ".txt",
+                "This is a test file");
+        File secondFile = testFileGenerator.generateTestFileWithContent(
+                "multiuploadInFilesystem2", ".txt",
+                "This is another test file");
+        String testFileName = firstFile.getName();
+
+        VersionDocumentsTab versionDocumentsTab = new ProjectWorkFlow()
+                .goToProjectByName("multi-upload")
+                .gotoVersion("multi-upload")
+                .gotoSettingsTab()
+                .gotoSettingsDocumentsTab()
+                .pressUploadFileButton()
+                .enterFilePath(firstFile.getAbsolutePath())
+                .enterFilePath(secondFile.getAbsolutePath())
+                .submitUpload()
+                .clickUploadDone();
+
+        assertThat(new File(documentStorageDirectory).list().length)
+                .isEqualTo(2)
+                .as("There are two uploaded source files");
+
+        VersionDocumentsPage versionDocumentsPage = versionDocumentsTab
+                .gotoDocumentTab()
+                .expectSourceDocsContains(testFileName);
+
+        assertThat(versionDocumentsPage.getSourceDocumentNames())
+                .contains(firstFile.getName())
+                .contains(secondFile.getName())
+                .as("The documents were uploaded");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)

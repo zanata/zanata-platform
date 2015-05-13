@@ -57,7 +57,7 @@ public class ManageSearchPage extends BasePage {
 
     public ManageSearchPage selectAllActionsFor(String clazz) {
         List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(),
-                waitForWebElement(classesTable));
+                readyElement(classesTable));
         for (TableRow tableRow : tableRows) {
             if (tableRow.getCellContents().contains(clazz)) {
                 WebElement allActionsChkBox =
@@ -71,7 +71,7 @@ public class ManageSearchPage extends BasePage {
 
     public ManageSearchPage clickSelectAll() {
         log.info("Click Select All");
-        waitForWebElement(selectAllButton).click();
+        readyElement(selectAllButton).click();
         // It seems that if the Select All and Perform buttons are clicked too
         // quickly in succession, the operation will fail
         try {
@@ -85,7 +85,7 @@ public class ManageSearchPage extends BasePage {
     public boolean allActionsSelected() {
         log.info("Query all actions selected");
         List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(),
-                waitForWebElement(waitForElementExists(classesTable),
+                readyElement(existingElement(classesTable),
                         By.tagName("table")));
         for (TableRow tableRow : tableRows) {
             // column 2, 3, 4 are checkboxes for purge, reindex and optimize
@@ -101,49 +101,44 @@ public class ManageSearchPage extends BasePage {
 
     public ManageSearchPage performSelectedActions() {
         log.info("Click Perform Actions");
-        waitForWebElement(performButton).click();
+        readyElement(performButton).click();
         waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 // The Abort button will display
-                return waitForWebElement(cancelButton).isDisplayed();
+                return readyElement(cancelButton).isDisplayed();
             }
         });
         return new ManageSearchPage(getDriver());
     }
 
-    public ManageSearchPage waitForActionsToFinish() {
+    public ManageSearchPage expectActionsToFinish() {
         log.info("Wait: all actions are finished");
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                // once the button re-appears, it means the reindex is done.
-                return waitForWebElement(performButton).isDisplayed();
-            }
-        });
+        // once the button re-appears, it means the reindex is done.
+        readyElement(performButton);
         return new ManageSearchPage(getDriver());
     }
 
     public ManageSearchPage abort() {
         log.info("Click Abort");
-        waitForWebElement(abortButton).click();
+        readyElement(abortButton).click();
         return new ManageSearchPage(getDriver());
     }
 
 
     public boolean noOperationsRunningIsDisplayed() {
         log.info("Query No Operations");
-        return waitForWebElement(noOpsLabel).isDisplayed();
+        return readyElement(noOpsLabel).isDisplayed();
     }
 
     public boolean completedIsDisplayed() {
         log.info("Query is action completed");
-        return waitForWebElement(completedLabel).isDisplayed();
+        return readyElement(completedLabel).isDisplayed();
     }
 
     public boolean abortedIsDisplayed() {
         log.info("Query is action aborted");
-        return waitForWebElement(abortedLabel).isDisplayed();
+        return readyElement(abortedLabel).isDisplayed();
     }
 
 }

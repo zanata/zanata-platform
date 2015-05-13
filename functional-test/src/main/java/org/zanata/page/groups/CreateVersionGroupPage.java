@@ -53,48 +53,48 @@ public class CreateVersionGroupPage extends BasePage {
 
     public CreateVersionGroupPage inputGroupId(String groupId) {
         log.info("Enter Group ID {}", groupId);
-        waitForWebElement(groupIdField).sendKeys(groupId);
+        readyElement(groupIdField).sendKeys(groupId);
         return new CreateVersionGroupPage(getDriver());
     }
 
     public String getGroupIdValue() {
         log.info("Query Group ID");
-        return waitForWebElement(groupIdField).getAttribute("value");
+        return readyElement(groupIdField).getAttribute("value");
     }
 
     public CreateVersionGroupPage inputGroupName(String groupName) {
         log.info("Enter Group name {}", groupName);
-        waitForWebElement(groupNameField).sendKeys(groupName);
+        readyElement(groupNameField).sendKeys(groupName);
         return new CreateVersionGroupPage(getDriver());
     }
 
     public CreateVersionGroupPage inputGroupDescription(String desc) {
         log.info("Enter Group description {}", desc);
-        waitForWebElement(groupDescriptionField).sendKeys(desc);
+        readyElement(groupDescriptionField).sendKeys(desc);
         return this;
     }
 
     public VersionGroupsPage saveGroup() {
         log.info("Click Save");
-        clickAndCheckErrors(waitForWebElement(saveButton));
+        clickAndCheckErrors(readyElement(saveButton));
         return new VersionGroupsPage(getDriver());
     }
 
     public CreateVersionGroupPage saveGroupFailure() {
         log.info("Click Save");
-        waitForWebElement(saveButton).click();
+        readyElement(saveButton).click();
         return new CreateVersionGroupPage(getDriver());
     }
 
     public CreateVersionGroupPage clearFields() {
-        waitForWebElement(groupIdField).clear();
-        waitForWebElement(groupNameField).clear();
-        waitForWebElement(groupDescriptionField).clear();
+        readyElement(groupIdField).clear();
+        readyElement(groupNameField).clear();
+        readyElement(groupDescriptionField).clear();
         waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getGroupIdValue().equals("") &&
-                        waitForWebElement(groupNameField).getAttribute("value")
+                        readyElement(groupNameField).getAttribute("value")
                                 .equals("");
             }
         });

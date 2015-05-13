@@ -53,7 +53,7 @@ public class ProjectSearchTest extends ZanataTestCase {
         BasePage basePage = new BasicWorkFlow()
                 .goToHome()
                 .enterSearch("about")
-                .waitForSearchListContains("about fedora");
+                .expectSearchListContains("about fedora");
 
         assertThat(basePage.getZanataSearchAutocompleteItems())
                 .contains("about fedora")
@@ -75,7 +75,7 @@ public class ProjectSearchTest extends ZanataTestCase {
         ProjectsPage projectsPage = new BasicWorkFlow()
                 .goToHome()
                 .enterSearch("arodef")
-                .waitForSearchListContains("Search Zanata for 'arodef'")
+                .expectSearchListContains("Search Zanata for 'arodef'")
                 .submitSearch();
 
         assertThat(projectsPage.getProjectNamesOnCurrentPage().isEmpty())
@@ -98,7 +98,7 @@ public class ProjectSearchTest extends ZanataTestCase {
         BasePage basePage = new BasicWorkFlow()
                 .goToHome()
                 .enterSearch("about")
-                .waitForSearchListContains("Search Zanata for 'about'");
+                .expectSearchListContains("Search Zanata for 'about'");
 
         assertThat(basePage.getZanataSearchAutocompleteItems())
                 .doesNotContain("About Fedora")

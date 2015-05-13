@@ -76,7 +76,7 @@ public class SecurityTest extends ZanataTestCase {
     public void signInFailure() {
         assertThat(new LoginWorkFlow()
                 .signInFailure("nosuchuser", "password")
-                .expectErrors())
+                .expectError("Login failed"))
                 .contains("Login failed")
                 .as("Log in error message is shown");
     }
@@ -120,8 +120,7 @@ public class SecurityTest extends ZanataTestCase {
                 .enterUserNameEmail("nosuchuser@nosuchdomain.com")
                 .resetFailure();
 
-        assertThat(
-                resetPasswordPage.getNotificationMessage(By
+        assertThat(resetPasswordPage.getNotificationMessage(By
                         .id("passwordResetRequestForm:messages")))
                 .isEqualTo("No account found.")
                 .as("A no such account message is displayed");
@@ -138,7 +137,7 @@ public class SecurityTest extends ZanataTestCase {
                 .clearFields()
                 .resetFailure();
 
-        assertThat(resetPasswordPage.expectErrors())
+        assertThat(resetPasswordPage.getErrors())
                 .contains("value is required")
                 .as("value is required error is displayed");
     }

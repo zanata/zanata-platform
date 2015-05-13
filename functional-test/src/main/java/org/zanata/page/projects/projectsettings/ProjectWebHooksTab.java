@@ -20,7 +20,6 @@
  */
 package org.zanata.page.projects.projectsettings;
 
-import com.google.common.base.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -30,6 +29,8 @@ import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.util.WebElementUtil;
 
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
@@ -45,38 +46,30 @@ public class ProjectWebHooksTab extends ProjectBasePage {
     }
 
     public ProjectWebHooksTab enterUrl(String url) {
-        waitForWebElement(urlInputField).sendKeys(url + Keys.ENTER);
+        readyElement(urlInputField).sendKeys(url + Keys.ENTER);
         return new ProjectWebHooksTab(getDriver());
     }
 
     public List<String> getWebHooks() {
-        return WebElementUtil.elementsToText(waitForWebElement(webHooksList)
+        return WebElementUtil.elementsToText(readyElement(webHooksList)
                 .findElement(By.className("list--slat"))
                 .findElements(By.className("list-item")));
     }
 
-    public ProjectWebHooksTab waitForWebHooksContains(final String url) {
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getWebHooks().contains(url);
-            }
-        });
+    public ProjectWebHooksTab expectWebHooksContains(final String url) {
+        waitForPageSilence();
+        assertThat(getWebHooks()).contains(url);
         return new ProjectWebHooksTab(getDriver());
     }
 
-    public ProjectWebHooksTab waitForWebHooksNotContains(final String url) {
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return !getWebHooks().contains(url);
-            }
-        });
+    public ProjectWebHooksTab expectWebHooksNotContains(final String url) {
+        waitForPageSilence();
+        assertThat(getWebHooks()).doesNotContain(url);
         return new ProjectWebHooksTab(getDriver());
     }
 
     public ProjectWebHooksTab clickRemoveOn(String url) {
-        List<WebElement> listItems = waitForWebElement(webHooksList)
+        List<WebElement> listItems = readyElement(webHooksList)
                 .findElement(By.className("list--slat"))
                 .findElements(By.className("list-item"));
         boolean clicked = false;

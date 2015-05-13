@@ -28,12 +28,13 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.projectversion.CreateVersionPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.util.WebElementUtil;
 
 import com.google.common.base.Predicate;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen
@@ -97,33 +98,36 @@ public class ProjectVersionsPage extends ProjectBasePage {
 
     public int getNumberOfDisplayedVersions() {
         log.info("Query number of displayed versions");
-        return Integer.parseInt(waitForWebElement(versionCount).getText());
+        return Integer.parseInt(readyElement(versionCount).getText());
     }
 
-    public ProjectVersionsPage waitForDisplayedVersions(final int expected) {
+    public ProjectVersionsPage expectDisplayedVersions(final int expected) {
         log.info("Wait for number of displayed versions to be {}", expected);
-        waitForAMoment().until(new Predicate<WebDriver>() {
+        waitForPageSilence();
+        waitForAMoment().withMessage("Waiting for versions").until(
+                new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
-                return getNumberOfDisplayedVersions() == expected &&
-                        getVersions().size() == expected;
+                return getNumberOfDisplayedVersions() == expected;
             }
         });
+        assertThat(getNumberOfDisplayedVersions()).isEqualTo(expected);
+        assertThat(getVersions()).hasSize(expected);
         return new ProjectVersionsPage(getDriver());
     }
 
     public ProjectVersionsPage clickSearchIcon() {
         log.info("Click Search icon");
-        waitForWebElement(waitForElementExists(versions), searchIcon).click();
+        readyElement(existingElement(versions), searchIcon).click();
         return new ProjectVersionsPage(getDriver());
     }
 
     public ProjectVersionsPage clearVersionSearch() {
         log.info("Clear version search field");
         int maxKeys = 500;
-        while (!waitForWebElement(versionSearchInput)
+        while (!readyElement(versionSearchInput)
                 .getAttribute("value").isEmpty() && maxKeys > 0) {
-            waitForWebElement(versionSearchInput).sendKeys(Keys.BACK_SPACE);
+            readyElement(versionSearchInput).sendKeys(Keys.BACK_SPACE);
             maxKeys = maxKeys - 1;
         }
         if (maxKeys == 0) {
@@ -134,7 +138,7 @@ public class ProjectVersionsPage extends ProjectBasePage {
 
     public ProjectVersionsPage enterVersionSearch(String searchTerm) {
         log.info("Enter version search {}", searchTerm);
-        waitForWebElement(versionSearchInput).sendKeys(searchTerm);
+        readyElement(versionSearchInput).sendKeys(searchTerm);
         return new ProjectVersionsPage(getDriver());
     }
 }

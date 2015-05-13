@@ -20,17 +20,11 @@
  */
 package org.zanata.page.administration;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
-import org.zanata.util.TableRow;
-import org.zanata.util.WebElementUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +58,7 @@ public class ManageUserPage extends BasePage {
     }
 
     public List<WebElement> getRows() {
-        return waitForWebElement(userTable)
+        return readyElement(userTable)
                 .findElements(By.className("list__item--actionable"));
     }
 

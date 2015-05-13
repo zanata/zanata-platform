@@ -70,13 +70,13 @@ public class VersionGroupPage extends BasePage {
     }
 
     public String getGroupName() {
-        return waitForWebElement(groupNameLabel)
+        return readyElement(groupNameLabel)
                 .findElement(By.tagName("h1")).getText();
     }
 
     public List<WebElement> searchProject(final String projectName,
             final int expectedResultNum) {
-        waitForWebElement(projectSearchField).sendKeys(projectName);
+        readyElement(projectSearchField).sendKeys(projectName);
 
         return refreshPageUntil(this,
                 new Function<WebDriver, List<WebElement>>() {
@@ -106,7 +106,7 @@ public class VersionGroupPage extends BasePage {
     public VersionGroupPage addToGroup(int rowIndex) {
         WebElementUtil.getListItems(getDriver(), newVersionList)
                 .get(rowIndex).click();
-        waitForWebElement(projectAddButton).click();
+        readyElement(projectAddButton).click();
         return new VersionGroupPage(getDriver());
     }
 
@@ -155,48 +155,48 @@ public class VersionGroupPage extends BasePage {
     public VersionGroupPage clickAddProjectVersionsButton() {
         log.info("Click Add Project Version");
         // parent
-        waitForWebElement(waitForElementExists(projectForm),
+        readyElement(existingElement(projectForm),
                 By.className("button--primary")).click();
         return new VersionGroupPage(getDriver());
     }
 
     public VersionGroupPage clickLanguagesTab() {
         log.info("Click Languages tab");
-        waitForElementExists(languagesTabBody);
-        clickWhenTabEnabled(waitForWebElement(languagesTab));
+        existingElement(languagesTabBody);
+        clickWhenTabEnabled(readyElement(languagesTab));
         return new VersionGroupPage(getDriver());
     }
 
     public VersionGroupPage clickProjectsTab() {
         log.info("Click Projects tab");
-        waitForElementExists(projectsTabBody);
-        clickWhenTabEnabled(waitForWebElement(projectsTab));
+        existingElement(projectsTabBody);
+        clickWhenTabEnabled(readyElement(projectsTab));
         return new VersionGroupPage(getDriver());
     }
 
     public VersionGroupPage clickMaintainersTab() {
         log.info("Click Maintainers tab");
-        waitForElementExists(maintainersTabBody);
-        clickWhenTabEnabled(waitForWebElement(maintainersTab));
+        existingElement(maintainersTabBody);
+        clickWhenTabEnabled(readyElement(maintainersTab));
         return new VersionGroupPage(getDriver());
     }
 
     public VersionGroupPage clickSettingsTab() {
         log.info("Click Settings tab");
-        waitForElementExists(settingsTabBody);
-        clickWhenTabEnabled(waitForWebElement(settingsTab));
+        existingElement(settingsTabBody);
+        clickWhenTabEnabled(readyElement(settingsTab));
         return new VersionGroupPage(getDriver());
     }
 
     public VersionGroupPage clickLanguagesSettingsTab() {
         clickSettingsTab();
-        waitForWebElement(settingsLanguagesTab).click();
+        readyElement(settingsLanguagesTab).click();
         return new VersionGroupPage(getDriver());
     }
 
     public Boolean isLanguagesTabActive() {
         log.info("Query is languages tab displayed");
-        final WebElement languagesTab = waitForWebElement(By.id("languages"));
+        final WebElement languagesTab = readyElement(By.id("languages"));
         waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver webDriver) {
@@ -207,7 +207,7 @@ public class VersionGroupPage extends BasePage {
     }
 
     public Boolean isProjectsTabActive() {
-        final WebElement languagesTab = waitForElementExists(By.id("projects"));
+        final WebElement languagesTab = existingElement(By.id("projects"));
         waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver webDriver) {
@@ -224,7 +224,7 @@ public class VersionGroupPage extends BasePage {
      */
     public VersionGroupPage enterProjectVersion(String projectVersion) {
         log.info("Enter project version {}", projectVersion);
-        waitForWebElement(By.id("versionAutocomplete-autocomplete__input"))
+        readyElement(By.id("versionAutocomplete-autocomplete__input"))
                 .sendKeys(projectVersion);
         return new VersionGroupPage(getDriver());
     }

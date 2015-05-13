@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -294,7 +295,14 @@ public class WebElementUtil {
 
     public static void searchAutocomplete(WebDriver driver, String id,
             String query) {
-        driver.findElement(By.id(id + "-autocomplete__input")).sendKeys(query);
+        final String locator = id + "-autocomplete__input";
+        waitForAMoment(driver).until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return input.findElement(By.id(locator)).isDisplayed();
+            }
+        });
+        driver.findElement(By.id(locator)).sendKeys(query);
     }
 
     public static List<WebElement> getSearchAutocompleteResults(

@@ -43,7 +43,7 @@ public class ProjectMaintainersPage extends ProjectBasePage {
     public List<String> getMaintainers() {
         log.info("Query maintainers list");
         List<String> names = new ArrayList<String>();
-        for (WebElement row : waitForWebElement(maintainersList)
+        for (WebElement row : readyElement(maintainersList)
                 .findElements(By.tagName("li"))) {
             names.add(row.getText());
         }

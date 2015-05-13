@@ -72,7 +72,6 @@ public enum WebDriverFactory {
         WebDriver driver = createPlainDriver();
         webdriverWait = Integer.parseInt(PropertiesHolder
                 .getProperty(webDriverWait.value()));
-        driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
         return driver;
     }

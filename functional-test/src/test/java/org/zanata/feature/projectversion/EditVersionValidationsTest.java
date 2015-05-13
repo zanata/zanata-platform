@@ -112,7 +112,7 @@ public class EditVersionValidationsTest extends ZanataTestCase {
                 .as("The text in the translation target is blank");
 
         editorPage.pasteIntoRowAtIndex(0, "\t").saveAsFuzzyAtRow(0);
-        editorPage.waitForValidationErrorsVisible();
+        editorPage.expectValidationErrorsVisible();
 
         assertThat(editorPage.getValidationMessageCurrentTarget())
                 .isEqualTo("Warning: none, Errors: 1")
@@ -221,7 +221,7 @@ public class EditVersionValidationsTest extends ZanataTestCase {
         editorPage = editorPage
                 .openValidationOptions()
                 .clickValidationCheckbox(EditorPage.Validations.TABS);
-        editorPage.waitForValidationErrorsVisible();
+        editorPage.expectValidationErrorsVisible();
 
         assertThat(editorPage.isValidationMessageCurrentTargetVisible())
                 .isTrue()

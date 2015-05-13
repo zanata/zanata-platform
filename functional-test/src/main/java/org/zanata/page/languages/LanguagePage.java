@@ -69,13 +69,13 @@ public class LanguagePage extends BasePage {
 
     public LanguagePage clickMoreActions() {
         log.info("Click More Actions");
-        waitForWebElement(moreActions).click();
+        readyElement(moreActions).click();
         return new LanguagePage(getDriver());
     }
 
     public ContactTeamPage clickContactCoordinatorsButton() {
         log.info("Click Contact Coordinators button");
-        waitForWebElement(contactCoordinatorsButton).click();
+        readyElement(contactCoordinatorsButton).click();
         return new ContactTeamPage(getDriver());
     }
 

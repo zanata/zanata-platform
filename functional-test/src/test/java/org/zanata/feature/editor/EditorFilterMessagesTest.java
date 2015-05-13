@@ -77,13 +77,8 @@ public class EditorFilterMessagesTest extends ZanataTestCase {
                 "hello world", "greetings", "hey");
 
         final EditorPage page = editorPage.inputFilterQuery("resource-id:res2");
-
-        editorPage.waitFor(new Callable<Iterable<? extends String>>() {
-            @Override
-            public List<String> call() throws Exception {
-                return page.getMessageSources();
-            }
-        }, Matchers.contains("greetings"));
+        page.waitForPageSilence();
+        assertThat(page.getMessageSources()).contains("greetings");
     }
 
     @Feature(summary = "The user may save the filter url for later use",

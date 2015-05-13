@@ -43,25 +43,25 @@ public class CreateProjectPage extends BasePage {
 
     public CreateProjectPage enterProjectId(String projectId) {
         log.info("Enter project ID {}", projectId);
-        waitForWebElement(idField).sendKeys(projectId);
+        readyElement(idField).sendKeys(projectId);
         return new CreateProjectPage(getDriver());
     }
 
     public CreateProjectPage enterProjectName(final String projectName) {
         log.info("Enter project name {}", projectName);
-        waitForWebElement(nameField).sendKeys(projectName);
+        readyElement(nameField).sendKeys(projectName);
         return new CreateProjectPage(getDriver());
     }
 
     public CreateProjectPage enterDescription(String projectDescription) {
         log.info("Enter project description {}", projectDescription);
-        waitForWebElement(descriptionField).sendKeys(projectDescription);
+        readyElement(descriptionField).sendKeys(projectDescription);
         return new CreateProjectPage(getDriver());
     }
 
     public CreateProjectPage selectProjectType(String projectType) {
         log.info("Click project type {}", projectType);
-        List<WebElement> projectTypes = waitForWebElement(projectTypeList)
+        List<WebElement> projectTypes = readyElement(projectTypeList)
                 .findElements(By.tagName("li"));
 
         for (WebElement projectTypeLi : projectTypes) {
@@ -76,7 +76,7 @@ public class CreateProjectPage extends BasePage {
 
     public ProjectVersionsPage pressCreateProject() {
         log.info("Click Create");
-        clickAndCheckErrors(waitForWebElement(createButton));
+        clickAndCheckErrors(readyElement(createButton));
         return new ProjectVersionsPage(getDriver());
     }
 }

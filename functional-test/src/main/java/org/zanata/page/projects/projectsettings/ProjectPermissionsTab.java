@@ -33,6 +33,8 @@ import org.zanata.util.WebElementUtil;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 /**
  * @author Damian Jansen
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
@@ -112,30 +114,24 @@ public class ProjectPermissionsTab extends ProjectBasePage {
         });
     }
 
-    public ProjectPermissionsTab waitForMaintainersContains(
+    public ProjectPermissionsTab expectMaintainersContains(
             final String username) {
         log.info("Wait for maintainers contains {}", username);
-        return refreshPageUntil(this, new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver driver) {
-                return getSettingsMaintainersList().contains(username);
-            }
-        });
+        waitForPageSilence();
+        assertThat(getSettingsMaintainersList()).contains(username);
+        return this;
     }
 
-    public ProjectPermissionsTab waitForMaintainersNotContains(
+    public ProjectPermissionsTab expectMaintainersNotContains(
             final String username) {
         log.info("Wait for maintainers does not contain {}", username);
-        return refreshPageUntil(this, new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver driver) {
-                return !getSettingsMaintainersList().contains(username);
-            }
-        });
+        waitForPageSilence();
+        assertThat(getSettingsMaintainersList()).doesNotContain(username);
+        return this;
     }
 
     private List<WebElement> getSettingsMaintainersElement() {
-        return waitForWebElement(maintainersForm)
+        return readyElement(maintainersForm)
                 .findElement(By.id("maintainers-list"))
                 .findElements(By.className("reveal--list-item"));
     }

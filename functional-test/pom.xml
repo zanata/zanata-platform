@@ -57,7 +57,7 @@
     <webdriver.type>chrome</webdriver.type>
     <webdriver.log>${project.build.directory}/webdriver.log</webdriver.log>
     <webdriver.screenshot.dir>${project.build.directory}/screenshots</webdriver.screenshot.dir>
-    <webdriver.wait>10</webdriver.wait>
+    <webdriver.wait>20</webdriver.wait>
     <googleopenid.credentials>zanata.user.1:</googleopenid.credentials>
     <!-- on jenkins, this needs to be set to empty - so that cargo can shutdown. see http://stackoverflow.com/questions/1096642/tomcat-failed-to-shutdown -->
     <cargo.debug.jvm.args>
@@ -106,7 +106,7 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <scope>test</scope>
+      <scope>compile</scope>
     </dependency>
 
     <dependency>

@@ -42,19 +42,19 @@ public class ProjectAboutTab extends ProjectBasePage {
 
     public ProjectAboutTab enterAboutText(String aboutText) {
         log.info("Enter About text {}", aboutText);
-        waitForWebElement(aboutTextField).sendKeys(aboutText);
+        readyElement(aboutTextField).sendKeys(aboutText);
         return new ProjectAboutTab(getDriver());
     }
 
     public ProjectAboutTab clearAboutText() {
         log.info("Clear About textedit");
-        waitForWebElement(aboutTextField).clear();
+        readyElement(aboutTextField).clear();
         return new ProjectAboutTab(getDriver());
     }
 
     public String getAboutText() {
         log.info("Query About text");
-        return waitForWebElement(aboutTextField).getText();
+        return readyElement(aboutTextField).getText();
     }
 
     public ProjectAboutTab pressSave() {

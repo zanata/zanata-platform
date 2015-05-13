@@ -58,50 +58,50 @@ public class ManageUserAccountPage extends BasePage {
 
     public ManageUserAccountPage enterPassword(String password) {
         log.info("Enter password {}", password);
-        waitForWebElement(passwordField).sendKeys(password);
+        readyElement(passwordField).sendKeys(password);
         return new ManageUserAccountPage(getDriver());
     }
 
     public ManageUserAccountPage enterConfirmPassword(String confirmPassword) {
         log.info("Enter confirm password {}", confirmPassword);
-        waitForWebElement(passwordConfirmField).sendKeys(confirmPassword);
+        readyElement(passwordConfirmField).sendKeys(confirmPassword);
         return new ManageUserAccountPage(getDriver());
     }
 
     public ManageUserAccountPage clickEnabled() {
         log.info("Click Enabled");
-        waitForWebElement(enabledField).click();
+        readyElement(enabledField).click();
         return new ManageUserAccountPage(getDriver());
     }
 
     public ManageUserAccountPage clickRole(String role) {
         log.info("Click role {}", role);
-        waitForWebElement(By.id("userdetailForm:rolesField:roles:"
+        readyElement(By.id("userdetailForm:rolesField:roles:"
                 .concat(roleMap.get(role)))).click();
         return new ManageUserAccountPage(getDriver());
     }
 
     public boolean isRoleChecked(String role) {
         log.info("Query is role {} checked", role);
-        return waitForWebElement(By.id("userdetailForm:rolesField:roles:"
+        return readyElement(By.id("userdetailForm:rolesField:roles:"
                 .concat(roleMap.get(role)))).isSelected();
     }
 
     public ManageUserPage saveUser() {
         log.info("Click Save");
-        waitForWebElement(saveButton).click();
+        readyElement(saveButton).click();
         return new ManageUserPage(getDriver());
     }
 
     public ManageUserAccountPage saveUserExpectFailure() {
         log.info("Click Save");
-        waitForWebElement(saveButton).click();
+        readyElement(saveButton).click();
         return new ManageUserAccountPage(getDriver());
     }
 
     public ManageUserPage cancelEditUser() {
         log.info("Click Cancel");
-        waitForWebElement(cancelButton).click();
+        readyElement(cancelButton).click();
         return new ManageUserPage(getDriver());
     }
 

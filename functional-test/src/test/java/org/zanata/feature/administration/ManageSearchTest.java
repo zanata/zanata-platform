@@ -80,7 +80,7 @@ public class ManageSearchTest extends ZanataTestCase {
 
         manageSearchPage = manageSearchPage
                 .performSelectedActions()
-                .waitForActionsToFinish();
+                .expectActionsToFinish();
 
         assertThat(manageSearchPage.completedIsDisplayed())
                 .as("Completed is displayed");

@@ -30,6 +30,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.zanata.page.BasePage;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @Slf4j
 public class CreateVersionPage extends BasePage {
 
@@ -77,8 +79,9 @@ public class CreateVersionPage extends BasePage {
     }
 
     private void clickCopyFromCheckbox() {
-        getExecutor().executeScript("arguments[0].click();",
-                waitForWebElement(copyFromPreviousVersionChk)
+        ((JavascriptExecutor) getDriver())
+                .executeScript("arguments[0].click();",
+                readyElement(copyFromPreviousVersionChk)
                         .findElement(By.tagName("span")));
 
     }
@@ -94,7 +97,7 @@ public class CreateVersionPage extends BasePage {
         } else {
             clickCopyFromCheckbox();
         }
-        waitForWebElement(previousVersionsList);
+        readyElement(previousVersionsList);
         return this;
     }
 
@@ -109,19 +112,19 @@ public class CreateVersionPage extends BasePage {
         } else {
             clickCopyFromCheckbox();
         }
-        waitForWebElement(projectTypesList);
+        readyElement(projectTypesList);
         return this;
     }
 
     public boolean copyFromVersionIsChecked() {
         log.info("Query is Copy from Version checkbox checked");
-        return waitForWebElement(copyFromPreviousVersionChk)
+        return readyElement(copyFromPreviousVersionChk)
                 .findElement(By.tagName("input")).isSelected();
     }
 
     private WebElement getVersionIdField() {
         log.info("Query Version ID");
-        return waitForWebElement(projectVersionID);
+        return readyElement(projectVersionID);
     }
 
     public CreateVersionPage selectProjectType(final String projectType) {
@@ -130,7 +133,7 @@ public class CreateVersionPage extends BasePage {
                 .until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver input) {
-                for (WebElement item : waitForWebElement(projectTypeSelection)
+                for (WebElement item : readyElement(projectTypeSelection)
                         .findElements(By.tagName("li"))) {
                     if (item.findElement(By.tagName("label")).getText()
                             .startsWith(projectType)) {
@@ -146,24 +149,20 @@ public class CreateVersionPage extends BasePage {
 
     public VersionLanguagesPage saveVersion() {
         log.info("Click Save");
-        clickAndCheckErrors(waitForWebElement(saveButton));
+        clickAndCheckErrors(readyElement(saveButton));
         return new VersionLanguagesPage(getDriver());
     }
 
     public CreateVersionPage saveExpectingError() {
         log.info("Click Save");
-        waitForWebElement(saveButton).click();
+        readyElement(saveButton).click();
         return new CreateVersionPage(getDriver());
     }
 
-    public CreateVersionPage waitForNumErrors(final int numberOfErrors) {
+    public CreateVersionPage expectNumErrors(final int numberOfErrors) {
         log.info("Wait for number of error to be {}", numberOfErrors);
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getErrors().size() == numberOfErrors;
-            }
-        });
+        waitForPageSilence();
+        assertThat(getErrors()).hasSize(numberOfErrors);
         return new CreateVersionPage(getDriver());
     }
 

@@ -60,7 +60,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
      * @return project ID string
      */
     public String getProjectId() {
-        return waitForWebElement(projectIdField).getAttribute("value");
+        return readyElement(projectIdField).getAttribute("value");
     }
 
     /**
@@ -71,8 +71,8 @@ public class ProjectGeneralTab extends ProjectBasePage {
      */
     public ProjectGeneralTab enterProjectName(final String projectName) {
         log.info("Enter project name {}", projectName);
-        waitForWebElement(projectNameField).clear();
-        waitForWebElement(projectNameField).sendKeys(projectName);
+        readyElement(projectNameField).clear();
+        readyElement(projectNameField).sendKeys(projectName);
         defocus(projectNameField);
         return new ProjectGeneralTab(getDriver());
     }
@@ -84,8 +84,8 @@ public class ProjectGeneralTab extends ProjectBasePage {
      */
     public ProjectGeneralTab enterDescription(String projectDescription) {
         log.info("Enter project description {}", projectDescription);
-        waitForWebElement(descriptionField).clear();
-        waitForWebElement(descriptionField).sendKeys(projectDescription);
+        readyElement(descriptionField).clear();
+        readyElement(descriptionField).sendKeys(projectDescription);
         defocus(descriptionField);
         return new ProjectGeneralTab(getDriver());
     }
@@ -126,7 +126,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
     // Return a map of project type to div container
     private Map<String, WebElement> getProjectTypes() {
         Map<String, WebElement> types = new HashMap<String, WebElement>();
-        for (WebElement projectTypeRow : waitForWebElement(projectTypeList)
+        for (WebElement projectTypeRow : readyElement(projectTypeList)
                 .findElements(By.tagName("li"))) {
             String label = projectTypeRow.findElement(By.tagName("label"))
                     .getText();
@@ -195,8 +195,8 @@ public class ProjectGeneralTab extends ProjectBasePage {
      */
     public ProjectGeneralTab enterHomePage(String homepage) {
         log.info("Enter home page {}", homepage);
-        waitForWebElement(homepageField).clear();
-        waitForWebElement(homepageField).sendKeys(homepage);
+        readyElement(homepageField).clear();
+        readyElement(homepageField).sendKeys(homepage);
         return new ProjectGeneralTab(getDriver());
     }
 
@@ -207,8 +207,8 @@ public class ProjectGeneralTab extends ProjectBasePage {
      */
     public ProjectGeneralTab enterRepository(String repo) {
         log.info("Enter repository {}", repo);
-        waitForWebElement(repoField).clear();
-        waitForWebElement(repoField).sendKeys(repo);
+        readyElement(repoField).clear();
+        readyElement(repoField).sendKeys(repo);
         return new ProjectGeneralTab(getDriver());
     }
 
@@ -218,8 +218,8 @@ public class ProjectGeneralTab extends ProjectBasePage {
      */
     public ProjectGeneralTab updateProject() {
         log.info("Click Update general settings");
-        scrollIntoView(waitForWebElement(updateButton));
-        clickAndCheckErrors(waitForWebElement(updateButton));
+        scrollIntoView(readyElement(updateButton));
+        clickAndCheckErrors(readyElement(updateButton));
         return new ProjectGeneralTab(getDriver());
     }
 }

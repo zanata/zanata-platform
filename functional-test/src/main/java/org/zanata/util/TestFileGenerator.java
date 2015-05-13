@@ -39,6 +39,7 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.google.common.base.Preconditions;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.fedorahosted.openprops.Properties;
 import com.google.common.base.Throwables;
@@ -50,6 +51,7 @@ import lombok.Setter;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+@Slf4j
 public class TestFileGenerator {
     // Length is maximum filename length - 4 (.xxx) - 19 (for tmp file
     // randomness)
@@ -245,4 +247,5 @@ public class TestFileGenerator {
         Preconditions.checkArgument(testFile.exists(), "%s not found", testFile);
         return testFile;
     }
+
 }

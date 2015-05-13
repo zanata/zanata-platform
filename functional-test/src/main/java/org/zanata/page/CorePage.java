@@ -30,7 +30,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.WebElementUtil;
 
@@ -65,7 +64,7 @@ public class CorePage extends AbstractPage {
     public HomePage goToHomePage() {
         log.info("Click Zanata home icon");
         scrollToTop();
-        waitForWebElement(homeLink).click();
+        readyElement(homeLink).click();
         return new HomePage(getDriver());
     }
 
@@ -123,23 +122,32 @@ public class CorePage extends AbstractPage {
     }
 
     /**
-     * Wait until at least one error is visible
+     * Wait until an expected error is visible
      *
+     * @param expected The expected error string
      * @return The full list of visible errors
      */
-    public List<String> expectErrors() {
-        waitForPageSilence();
+    public List<String> expectError(final String expected) {
+        String msg = "expected error: " + expected;
+        logWaiting(msg);
+        waitForAMoment().withMessage(msg).until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return getErrors().contains(expected);
+            }
+        });
         return getErrors();
     }
 
     public String getNotificationMessage(By elementBy) {
-        log.info("Query notification message: " + elementBy);
-        WebElement message = waitForElementExists(elementBy);
-        return message.getText();
+        log.info("Query notification message");
+        List<WebElement> messages = existingElement(elementBy)
+                        .findElements(By.tagName("li"));
+        return messages.size() > 0 ? messages.get(0).getText() : "";
     }
 
     public String getNotificationMessage() {
-        return getNotificationMessage(By.cssSelector("#messages li"));
+        return getNotificationMessage(By.id("messages"));
     }
 
     public boolean expectNotification(final String notification) {
@@ -195,7 +203,8 @@ public class CorePage extends AbstractPage {
     public void defocus(By elementBy) {
         log.info("Force unfocus");
         WebElement element = getDriver().findElement(elementBy);
-        getExecutor().executeScript("arguments[0].blur()", element);
+        ((JavascriptExecutor) getDriver()).executeScript("arguments[0].blur()",
+                element);
         waitForPageSilence();
     }
 

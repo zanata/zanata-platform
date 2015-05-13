@@ -39,6 +39,6 @@ public class ProjectAboutPage extends ProjectBasePage {
 
     public String getAboutText() {
         log.info("Query About content");
-        return waitForWebElement(aboutText).getText();
+        return readyElement(aboutText).getText();
     }
 }

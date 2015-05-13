@@ -66,7 +66,7 @@ public class EditWebHooksTest extends ZanataTestCase {
                 .gotoSettingsTab()
                 .gotoSettingsWebHooksTab()
                 .enterUrl(testUrl)
-                .waitForWebHooksContains(testUrl);
+                .expectWebHooksContains(testUrl);
 
         assertThat(projectWebHooksTab.getWebHooks())
                 .contains(testUrl)
@@ -83,9 +83,9 @@ public class EditWebHooksTest extends ZanataTestCase {
                 .gotoSettingsTab()
                 .gotoSettingsWebHooksTab()
                 .enterUrl(testUrl)
-                .waitForWebHooksContains(testUrl)
+                .expectWebHooksContains(testUrl)
                 .clickRemoveOn(testUrl)
-                .waitForWebHooksNotContains(testUrl);
+                .expectWebHooksNotContains(testUrl);
 
         assertThat(projectWebHooksTab.getWebHooks())
                 .doesNotContain(testUrl)

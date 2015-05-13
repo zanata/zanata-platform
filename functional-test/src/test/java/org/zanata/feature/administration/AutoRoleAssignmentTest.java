@@ -51,6 +51,7 @@ public class AutoRoleAssignmentTest extends ZanataTestCase {
                 .signIn("admin", "admin")
                 .goToAdministration()
                 .goToManageRoleAssignments()
+                .clickMoreActions()
                 .clickCreateNew()
                 .enterIdentityPattern(".+ransla.+")
                 .selectRole("admin")

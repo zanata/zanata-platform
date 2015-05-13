@@ -40,13 +40,13 @@ public class ContactTeamPage extends BasePage {
 
     public ContactTeamPage enterMessage(String message) {
         log.info("Enter message {}", message);
-        waitForWebElement(messageField).sendKeys(message);
+        readyElement(messageField).sendKeys(message);
         return new ContactTeamPage(getDriver());
     }
 
     public LanguagesPage clickSend() {
         log.info("Click the Send Message button");
-        waitForWebElement(sendButton).click();
+        readyElement(sendButton).click();
         return new LanguagesPage(getDriver());
     }
 }

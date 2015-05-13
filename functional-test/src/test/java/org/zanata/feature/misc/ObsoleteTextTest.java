@@ -37,10 +37,11 @@ import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.ZanataRestCaller.buildSourceResource;
 import static org.zanata.util.ZanataRestCaller.buildTextFlow;
 import static org.zanata.workflow.BasicWorkFlow.PROJECT_VERSION_TEMPLATE;
+
 
 /**
  * TCMS test case <a
@@ -125,19 +126,14 @@ public class ObsoleteTextTest extends ZanataTestCase {
                         .translateTargetAtRowIndex(2, "translated")
                         .approveTranslationAtRow(2);
 
-        editorPageFinal.waitFor(new Callable<String>() {
-            @Override
-            public String call() throws Exception {
-                return editorPageFinal.getStatistics();
-            }
-        }, Matchers.containsString("100%"));
+        editorPageFinal.waitForPageSilence();
+        assertThat(editorPageFinal.getStatistics()).contains("100%");
 
         VersionLanguagesPage versionPage =
                 new BasicWorkFlow().goToPage(String.format(
                         PROJECT_VERSION_TEMPLATE, "obsolete-test", "master"),
                         VersionLanguagesPage.class);
-        assertThat(versionPage.getStatisticsForLocale("fr"),
-                Matchers.equalTo("100.0%"));
+        assertThat(versionPage.getStatisticsForLocale("fr")).isEqualTo("100.0%");
     }
 
     private static EditorPage openEditor() {

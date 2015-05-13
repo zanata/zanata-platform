@@ -43,7 +43,7 @@ public class AbstractWebWorkFlow {
             @Override
             public boolean apply(WebDriver input) {
                 driver.get(hostUrl);
-                return new HomePage(driver).isValid();
+                return new HomePage(driver).isPageValid();
             }
         });
         return new HomePage(driver);

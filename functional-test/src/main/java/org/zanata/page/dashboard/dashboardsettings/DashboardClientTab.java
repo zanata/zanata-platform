@@ -20,11 +20,12 @@
  */
 package org.zanata.page.dashboard.dashboardsettings;
 
-import com.google.common.base.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.dashboard.DashboardBasePage;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -42,28 +43,24 @@ public class DashboardClientTab extends DashboardBasePage {
 
     public DashboardClientTab pressApiKeyGenerateButton() {
         log.info("Press Generate API Key");
-        waitForWebElement(generateApiKeyButton).click();
+        readyElement(generateApiKeyButton).click();
         getDriver().switchTo().alert().accept();
         return new DashboardClientTab(getDriver());
     }
 
     public String getApiKey() {
         log.info("Query API Key");
-        return waitForWebElement(apiKeyLabel).getAttribute("value");
+        return readyElement(apiKeyLabel).getAttribute("value");
     }
 
     public String getConfigurationDetails() {
         log.info("Query configuration details");
-        return waitForWebElement(configurationTextArea).getText();
+        return readyElement(configurationTextArea).getText();
     }
 
-    public void waitForApiKeyChanged(final String current) {
+    public void expectApiKeyChanged(final String current) {
         log.info("Wait for API key changed from {}", current);
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return !getApiKey().equals(current);
-            }
-        });
+        waitForPageSilence();
+        assertThat(getApiKey()).isNotEqualTo(current);
     }
 }

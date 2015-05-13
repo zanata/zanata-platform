@@ -21,7 +21,6 @@
 package org.zanata.page.projects;
 
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -31,6 +30,8 @@ import org.zanata.util.WebElementUtil;
 
 import java.util.Collections;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 public class ProjectsPage extends BasePage {
@@ -50,7 +51,7 @@ public class ProjectsPage extends BasePage {
 
     public CreateProjectPage clickOnCreateProjectLink() {
         log.info("Click Create Project");
-        waitForWebElement(createProjectButton).click();
+        readyElement(createProjectButton).click();
         return new CreateProjectPage(getDriver());
     }
 
@@ -73,7 +74,7 @@ public class ProjectsPage extends BasePage {
 
     public List<String> getProjectNamesOnCurrentPage() {
         log.info("Query Projects list");
-        if (waitForWebElement(mainContentDiv)
+        if (readyElement(mainContentDiv)
                 .getText().contains("No project exists")) {
             return Collections.emptyList();
         }
@@ -83,27 +84,33 @@ public class ProjectsPage extends BasePage {
     }
 
     /**
-     * Wait for a project name to be shown or hidden in the list.
+     * Wait for a project name to be shown in the list.
      * The list may take several seconds to reload.
      * @param projectName name of the desired project
-     * @param visible is or is not visible
      */
-    public ProjectsPage waitForProjectVisibility(final String projectName,
-                                            final boolean visible) {
-        log.info("Wait for project {} visibility is {}", projectName, visible);
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getProjectNamesOnCurrentPage()
-                        .contains(projectName) == visible;
-            }
-        });
+    public ProjectsPage expectProjectVisible(final String projectName) {
+        log.info("Wait for project {} visible", projectName);
+        waitForPageSilence();
+        assertThat(getProjectNamesOnCurrentPage()).contains(projectName);
+        return new ProjectsPage(getDriver());
+    }
+
+    /**
+     * Wait for a project name to be hidden in the list.
+     * The list may take several seconds to reload.
+     * @param projectName name of the desired project
+     */
+    public ProjectsPage expectProjectNotVisible(final String projectName) {
+        log.info("Wait for project {} not visible", projectName);
+        waitForPageSilence();
+        assertThat(getProjectNamesOnCurrentPage()).doesNotContain(
+                projectName);
         return new ProjectsPage(getDriver());
     }
 
     public ProjectsPage setActiveFilterEnabled(boolean enabled) {
         log.info("Click to set Active filter enabled to {}", enabled);
-        WebElement activeCheckbox = waitForWebElement(activeCheckBox);
+        WebElement activeCheckbox = readyElement(activeCheckBox);
         if (activeCheckbox.isSelected() != enabled) {
             activeCheckbox.click();
         }
@@ -112,7 +119,7 @@ public class ProjectsPage extends BasePage {
 
     public ProjectsPage setReadOnlyFilterEnabled(final boolean enabled) {
         log.info("Click to set Read-only filter enabled to {}", enabled);
-        WebElement readOnlyCheckbox = waitForWebElement(readOnlyCheckBox);
+        WebElement readOnlyCheckbox = readyElement(readOnlyCheckBox);
         if (readOnlyCheckbox.isSelected() != enabled) {
             readOnlyCheckbox.click();
         }
@@ -121,7 +128,7 @@ public class ProjectsPage extends BasePage {
 
     public ProjectsPage setArchivedFilterEnabled(boolean enabled) {
         log.info("Click to set Archived filter enabled to {}", enabled);
-        WebElement archivedCheckbox = waitForWebElement(archivedCheckBox);
+        WebElement archivedCheckbox = readyElement(archivedCheckBox);
         if (archivedCheckbox.isSelected() != enabled) {
             archivedCheckbox.click();
         }
