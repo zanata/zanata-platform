@@ -52,9 +52,7 @@ public class CorePage extends AbstractPage {
 
     public CorePage(WebDriver driver) {
         super(driver);
-        // TODO put this back when implicit waits have been removed
-        // With implicit waits, this adds 3 seconds to almost every page load
-//        assertNoCriticalErrors();
+        assertNoCriticalErrors();
     }
 
     public String getTitle() {
@@ -202,9 +200,8 @@ public class CorePage extends AbstractPage {
      */
     public void defocus(By elementBy) {
         log.info("Force unfocus");
-        WebElement element = getDriver().findElement(elementBy);
-        ((JavascriptExecutor) getDriver()).executeScript("arguments[0].blur()",
-                element);
+        WebElement element = existingElement(elementBy);
+        getExecutor().executeScript("arguments[0].blur()", element);
         waitForPageSilence();
     }
 
