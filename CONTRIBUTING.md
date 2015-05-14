@@ -9,7 +9,7 @@ Our CI server merges changes from `integration/master` to `master` after testing
 
 To run all tests against WildFly (takes about 1 hour):
 
-    mvn clean verify -Dappserver=wildfly8 -Dfunctional-test -Dchromefirefox
+    mvn clean verify -Dappserver=wildfly8 -DstaticAnalysis -Dchromefirefox
 
 
 This guide is very much a work in progress, so please ask questions if anything is unclear or missing: https://www.redhat.com/mailman/listinfo/zanata-devel
