@@ -126,6 +126,7 @@ public class ProjectsPage extends BasePage {
         return new ProjectsPage(getDriver());
     }
 
+    @Deprecated
     public ProjectsPage setArchivedFilterEnabled(boolean enabled) {
         log.info("Click to set Archived filter enabled to {}", enabled);
         WebElement archivedCheckbox = readyElement(archivedCheckBox);

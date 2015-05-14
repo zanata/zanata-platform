@@ -24,10 +24,10 @@
         <div class="g--tight">
           <s:div styleClass="g__item txt--align-right"
             id="delete-confirmation-buttons">
-            <button styleClass="button--primary" jsfc="a4j:commandButton"
+            <button id="deleteButton" styleClass="button--primary" jsfc="a4j:commandButton"
               onclick="runDelete();zanata.modal.hide('#delete-confirmation-modal')" value="#{msgs['jsf.Delete']}"></button>
 
-            <button styleClass="button--danger" jsfc="a4j:commandButton"
+            <button id="cancelDelete" styleClass="button--danger" jsfc="a4j:commandButton"
               onclick="zanata.modal.hide('#delete-confirmation-modal')" value="#{msgs['jsf.Cancel']}"></button>
           </s:div>
         </div>
