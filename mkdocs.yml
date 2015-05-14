@@ -14,6 +14,7 @@ pages:
 # Getting started
 - ['user-guide/translator-guide.md', 'Getting Started', 'Translator Guide']
 - ['user-guide/project-maintainer-guide.md', 'Getting Started', 'Project Maintainer Guide']
+- ['user-guide/system-admin/configuration/installation.md' , 'Getting Started', 'System admin guide']
 ## Accounts
 - ['user-guide/account/account-sign-up.md', 'Accounts', 'Create new account']
 - ['user-guide/account/account-activate.md', 'Accounts', 'Activate account']
