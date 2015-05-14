@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
+import java.util.Collections;
 import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 import javax.xml.bind.JAXBContext;
@@ -74,7 +75,7 @@ public class PropReaderTest {
         String docName = "test_fr.properties";
         InputStream targetStream = getResourceAsStream(docName);
         TranslationsResource transDoc = new TranslationsResource();
-        propReader.extractTarget(transDoc, targetStream);
+        propReader.extractTarget(transDoc, targetStream, new Resource());
 
         JAXBContext jc = JAXBContext.newInstance(TranslationsResource.class);
         Marshaller marshal = jc.createMarshaller();
