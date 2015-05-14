@@ -72,7 +72,7 @@ import com.google.common.collect.ImmutableMap;
  */
 @Slf4j
 public class CopyTransServiceImplPerformanceTest {
-    private static final String PERSIST_NAME = "zanataTestDatasourcePU";
+    private static final String PERSIST_NAME = "zanataDatasourcePU";
     private static final String MYSQL_TEST_DB_URL =
             "jdbc:log4jdbc:mysql://localhost:3306/zanata_unit_test?characterEncoding=UTF-8";
     private static final String MYSQL_DIALECT =

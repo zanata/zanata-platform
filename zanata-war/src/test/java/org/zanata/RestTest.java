@@ -160,7 +160,7 @@ public abstract class RestTest {
         try {
             DataSource dataSource =
                     (DataSource) Naming.getInitialContext().lookup(
-                            "java:jboss/datasources/zanataTestDatasource");
+                            "java:jboss/datasources/zanataDatasource");
             DatabaseConnection dbConn =
                     new DatabaseConnection(dataSource.getConnection());
             // NB: Specific to H2

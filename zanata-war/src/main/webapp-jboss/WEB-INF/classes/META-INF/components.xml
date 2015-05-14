@@ -71,10 +71,9 @@
 
       entity-manager-factory name is also referenced in in persistence.xml
   -->
-  <!-- FIXME zanataDatabase vs testDatabase -->
   <persistence:entity-manager-factory
     name="entityManagerFactory"
-    persistence-unit-name="@persistence-unit-name@"
+    persistence-unit-name="zanataDatasourcePU"
     installed="true"
     startup="true" />
 

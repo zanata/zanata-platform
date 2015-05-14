@@ -92,7 +92,7 @@
 
   <context-param>
     <param-name>liquibase.datasource</param-name>
-    <param-value>java:jboss/datasources/${ds.jndi.name}</param-value>
+    <param-value>java:jboss/datasources/zanataDatasource</param-value>
   </context-param>
   <!--
   <context-param>
@@ -115,7 +115,7 @@
 
   <context-param>
     <param-name>javamelody.datasources</param-name>
-    <param-value>java:jboss/datasources/${ds.jndi.name}</param-value>
+    <param-value>java:jboss/datasources/zanataDatasource</param-value>
   </context-param>
 
   <!-- Zanata custom taglib -->

@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JPAProvider {
     private static final Logger log = LoggerFactory.getLogger(JPAProvider.class);
-    private static final String PERSIST_NAME = "zanataTestDatasourcePU";
+    private static final String PERSIST_NAME = "zanataDatasourcePU";
 
     private static EntityManagerFactory emf;
 

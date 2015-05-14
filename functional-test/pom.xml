@@ -27,8 +27,6 @@
     <cargo.container.home>${project.build.directory}/jboss/container</cargo.container.home>
     <context.path>zanata</context.path>
 
-    <!--data source-->
-    <ds.jndi.name>zanataDatasource</ds.jndi.name>
     <!--mysql-maven-plugin will use these setup-->
     <ds.database>root</ds.database>
     <ds.username>root</ds.username>

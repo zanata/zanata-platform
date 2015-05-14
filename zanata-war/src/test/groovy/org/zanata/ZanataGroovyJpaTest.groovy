@@ -28,7 +28,7 @@ import javax.persistence.Persistence
 @Listeners(TestMethodListener.class)
 abstract class ZanataGroovyJpaTest {
     private static final Logger log = LoggerFactory.getLogger(ZanataJpaTest.class);
-    private static final String PERSIST_NAME = "zanataTestDatasourcePU";
+    private static final String PERSIST_NAME = "zanataDatasourcePU";
 
     private static EntityManagerFactory emf;
 

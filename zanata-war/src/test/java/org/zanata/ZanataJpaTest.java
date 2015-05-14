@@ -31,7 +31,7 @@ import org.zanata.util.ZanataEntities;
 @Test(singleThreaded = true)
 public abstract class ZanataJpaTest {
     private static final Logger log = LoggerFactory.getLogger(ZanataJpaTest.class);
-    private static final String PERSIST_NAME = "zanataTestDatasourcePU";
+    private static final String PERSIST_NAME = "zanataDatasourcePU";
 
     private static EntityManagerFactory emf;
 

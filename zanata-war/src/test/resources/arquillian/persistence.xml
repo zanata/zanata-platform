@@ -4,11 +4,11 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
   version="2.0">
 
-  <persistence-unit name="zanataTestDatasourcePU"
+  <persistence-unit name="zanataDatasourcePU"
     transaction-type="JTA">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
 
-    <jta-data-source>java:jboss/datasources/zanataTestDatasource</jta-data-source>
+    <jta-data-source>java:jboss/datasources/zanataDatasource</jta-data-source>
 
     <!--
       NB non-jta-data-source is not compatible with JPA tests, but is
