@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.faces.application.FacesMessage;
@@ -57,8 +58,6 @@ import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountRoleDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.WebHookDAO;
-import org.zanata.events.ProjectIterationUpdate;
-import org.zanata.events.ProjectUpdate;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
@@ -67,6 +66,7 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.WebHook;
+import org.zanata.model.validator.SlugValidator;
 import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
@@ -77,7 +77,6 @@ import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.autocomplete.MaintainerAutocomplete;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ComparatorUtil;
-import org.zanata.util.Event;
 import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
@@ -95,11 +94,22 @@ public class ProjectHome extends SlugHome<HProject> implements
 
     private static final long serialVersionUID = 1L;
 
-    public static final String PROJECT_UPDATE = "project.update";
+    /**
+     * This field is set from http parameter which will be the original slug
+     */
+    @Getter
+    private String slug;
 
+    /**
+     * This field is set from form input which can differ from original slug
+     */
     @Getter
     @Setter
-    private String slug;
+    private String inputSlugValue;
+
+    @Setter
+    @Getter
+    private Long projectId;
 
     @In
     private ZanataIdentity identity;
@@ -124,12 +134,6 @@ public class ProjectHome extends SlugHome<HProject> implements
 
     @In("jsfMessages")
     private FacesMessages facesMessages;
-
-    @In("event")
-    private Event<ProjectUpdate> projectUpdateEvent;
-
-    @In("event")
-    private Event<ProjectIterationUpdate> projectIterationUpdateEvent;
 
     @In
     private Messages msgs;
@@ -539,7 +543,8 @@ public class ProjectHome extends SlugHome<HProject> implements
      */
     private boolean enableLocaleSilently(HLocale locale) {
         ensureOverridingLocales();
-        final boolean localeWasDisabled = getInstance().getCustomizedLocales().add(locale);
+        final boolean localeWasDisabled = getInstance().getCustomizedLocales().add(
+                locale);
         refreshDisabledLocales();
         return localeWasDisabled;
     }
@@ -614,8 +619,14 @@ public class ProjectHome extends SlugHome<HProject> implements
     @Override
     protected HProject loadInstance() {
         Session session = (Session) getEntityManager().getDelegate();
-        return (HProject) session.byNaturalId(HProject.class)
+        if (projectId == null) {
+            HProject project = (HProject) session.byNaturalId(HProject.class)
                 .using("slug", getSlug()).load();
+            projectId = project.getId();
+            return project;
+        } else {
+            return (HProject) session.byId(HProject.class).load(projectId);
+        }
     }
 
     public void validateSuppliedId() {
@@ -665,6 +676,14 @@ public class ProjectHome extends SlugHome<HProject> implements
                     "This Project ID is not available");
             return false;
         }
+        boolean valid = new SlugValidator().isValid(slug, null);
+        if (!valid) {
+            String validationMessages =
+                    ResourceBundle.getBundle("ValidationMessages").getString(
+                            "javax.validation.constraints.Slug.message");
+            facesMessages.addToControl(componentId, validationMessages);
+            return false;
+        }
         return true;
     }
 
@@ -682,13 +701,34 @@ public class ProjectHome extends SlugHome<HProject> implements
         }
     }
 
+    public void setSlug(String slug) {
+        this.slug = slug;
+        this.inputSlugValue = slug;
+    }
+
+    @Override
+    @Restrict("#{s:hasPermission(projectHome.instance, 'update')}")
+    public String update() {
+        if (!getInputSlugValue().equals(slug) && !validateSlug(getInputSlugValue(), "slug")) {
+            return null;
+        }
+        getInstance().setSlug(getInputSlugValue());
+        String result = super.update();
+        if (!slug.equals(getInstance().getSlug())) {
+            slug = getInstance().getSlug();
+            return "projectSlugUpdated";
+        }
+        return result;
+    }
+
     @Override
     @Transactional
     public String persist() {
         String retValue = "";
-        if (!validateSlug(getInstance().getSlug(), "slug")) {
+        if (!validateSlug(getInputSlugValue(), "slug")) {
             return null;
         }
+        getInstance().setSlug(getInputSlugValue());
 
         if (StringUtils.isEmpty(selectedProjectType)
                 || selectedProjectType.equals("null")) {
@@ -715,7 +755,6 @@ public class ProjectHome extends SlugHome<HProject> implements
                         validationAction.getState().name());
             }
             retValue = super.persist();
-            projectUpdateEvent.fire(new ProjectUpdate(getInstance()));
         }
         return retValue;
     }
@@ -777,7 +816,6 @@ public class ProjectHome extends SlugHome<HProject> implements
                 if (version.getStatus() == EntityStatus.ACTIVE) {
                     version.setStatus(EntityStatus.READONLY);
                     entityManager.merge(version);
-                    projectIterationUpdateEvent.fire(new ProjectIterationUpdate(version));
                 }
             }
         } else if (getInstance().getStatus() == EntityStatus.OBSOLETE) {
@@ -786,8 +824,6 @@ public class ProjectHome extends SlugHome<HProject> implements
                 if (version.getStatus() != EntityStatus.OBSOLETE) {
                     version.setStatus(EntityStatus.OBSOLETE);
                     entityManager.merge(version);
-                    projectIterationUpdateEvent.fire(
-                            new ProjectIterationUpdate(version));
                 }
             }
         }
@@ -882,7 +918,7 @@ public class ProjectHome extends SlugHome<HProject> implements
     private Map<ValidationId, ValidationAction> getValidations() {
         if (availableValidations.isEmpty()) {
             Collection<ValidationAction> validationList =
-                    validationServiceImpl.getValidationActions(slug);
+                    validationServiceImpl.getValidationActions(getInstance().getSlug());
 
             for (ValidationAction validationAction : validationList) {
                 availableValidations.put(validationAction.getId(),

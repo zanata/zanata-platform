@@ -3,6 +3,7 @@ package org.zanata.webtrans.client.resources;
 import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
 import com.google.gwt.i18n.client.LocalizableResource.Generate;
 import com.google.gwt.i18n.client.Messages;
+import com.google.gwt.safehtml.shared.SafeHtml;
 
 @DefaultLocale
 @Generate(format = "com.google.gwt.i18n.rebind.format.PropertiesFormat")
@@ -548,4 +549,7 @@ public interface WebTransMessages extends Messages {
 
     @DefaultMessage("Anonymous")
     String anonymousUser();
+
+    @DefaultMessage("Project ID or version ID has changed. Please copy your unsaved work into clipboard. Editor will reload in 10 seconds.")
+    String workspaceUrlHasChanged();
 }

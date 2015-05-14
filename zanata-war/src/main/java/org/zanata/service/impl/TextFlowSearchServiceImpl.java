@@ -84,15 +84,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService {
     private DocumentDAO documentDAO;
 
     @In
-    private ProjectIterationDAO projectIterationDAO;
-
-    @In
-    private FullTextEntityManager entityManager;
-
-    @In
     private FullTextSession session;
-
-    private static final boolean ENABLE_HQL_SEARCH = true;
 
     @Override
     public List<HTextFlow> findTextFlows(WorkspaceId workspace,
@@ -152,17 +144,8 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService {
             return Collections.emptyList();
         }
 
-        // FIXME this switch is provided for easy comparison of options before a
-        // final
-        // decisions is made on which option to use. Remove before signing off
-        // on this.
-        if (ENABLE_HQL_SEARCH) {
-            return findTextFlowsWithDatabaseSearch(projectSlug, iterationSlug,
-                    documentPaths, constraints, hLocale);
-        } else {
-            return findTextFlowsWithHibernateSearch(projectSlug, iterationSlug,
-                    localeId, documentPaths, constraints);
-        }
+        return findTextFlowsWithDatabaseSearch(projectSlug, iterationSlug,
+                documentPaths, constraints, hLocale);
     }
 
     /**
@@ -259,182 +242,6 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService {
         return matchingTextFlows;
     }
 
-    /**
-     * @param projectSlug
-     * @param iterationSlug
-     * @param localeId
-     *            validated locale id
-     * @param documentPaths
-     * @param constraints
-     * @return
-     */
-    private List<HTextFlow> findTextFlowsWithHibernateSearch(
-            String projectSlug, String iterationSlug, LocaleId localeId,
-            List<String> documentPaths, FilterConstraints constraints) {
-        // Common query terms between source and targets
-        TermQuery projectQuery =
-                new TermQuery(new Term(IndexFieldLabels.PROJECT_FIELD,
-                        projectSlug));
-        TermQuery iterationQuery =
-                new TermQuery(new Term(IndexFieldLabels.ITERATION_FIELD,
-                        iterationSlug));
-        TermQuery localeQuery =
-                new TermQuery(new Term(IndexFieldLabels.LOCALE_ID_FIELD,
-                        localeId.getId()));
-
-        MultiPhraseQuery documentsQuery = new MultiPhraseQuery();
-        if (documentPaths != null && !documentPaths.isEmpty()) {
-            ArrayList<Term> docPathTerms = new ArrayList<Term>();
-            for (String s : documentPaths) {
-                docPathTerms
-                        .add(new Term(IndexFieldLabels.DOCUMENT_ID_FIELD, s));
-            }
-            documentsQuery.add(docPathTerms.toArray(new Term[docPathTerms
-                    .size()]));
-        }
-
-        List<HTextFlow> resultList = new ArrayList<HTextFlow>();
-        if (constraints.isSearchInTarget()) {
-            // Content query for target
-            String targetAnalyzerName =
-                    TextContainerAnalyzerDiscriminator
-                            .getAnalyzerDefinitionName(localeId.getId());
-            Analyzer targetAnalyzer =
-                    entityManager.getSearchFactory().getAnalyzer(
-                            targetAnalyzerName);
-
-            Query tgtContentPhraseQuery;
-            QueryParser contentQueryParser =
-                    new MultiFieldQueryParser(Version.LUCENE_29,
-                            IndexFieldLabels.CONTENT_FIELDS, targetAnalyzer);
-            try {
-                tgtContentPhraseQuery =
-                        contentQueryParser.parse("\""
-                                + QueryParser.escape(constraints
-                                        .getSearchString()) + "\"");
-            } catch (ParseException e) {
-                throw new ZanataServiceException("Failed to parse query", e);
-            }
-
-            // Target Query
-            BooleanQuery targetQuery = new BooleanQuery();
-            targetQuery.add(projectQuery, Occur.MUST);
-            targetQuery.add(iterationQuery, Occur.MUST);
-            targetQuery.add(tgtContentPhraseQuery, Occur.MUST);
-            if (documentsQuery.getTermArrays().size() > 0) {
-                targetQuery.add(documentsQuery, Occur.MUST);
-            }
-            targetQuery.add(localeQuery, Occur.MUST);
-
-            if (!constraints.getIncludedStates().hasTranslated()) {
-                TermQuery approvedStateQuery =
-                        new TermQuery(new Term(
-                                IndexFieldLabels.CONTENT_STATE_FIELD,
-                                ContentState.Approved.toString()));
-                targetQuery.add(approvedStateQuery, Occur.MUST_NOT);
-            }
-
-            if (!constraints.getIncludedStates().hasFuzzy()) {
-                TermQuery approvedStateQuery =
-                        new TermQuery(new Term(
-                                IndexFieldLabels.CONTENT_STATE_FIELD,
-                                ContentState.NeedReview.toString()));
-                targetQuery.add(approvedStateQuery, Occur.MUST_NOT);
-            }
-
-            if (!constraints.getIncludedStates().hasNew()) {
-                TermQuery approvedStateQuery =
-                        new TermQuery(new Term(
-                                IndexFieldLabels.CONTENT_STATE_FIELD,
-                                ContentState.New.toString()));
-                targetQuery.add(approvedStateQuery, Occur.MUST_NOT);
-            }
-
-            FullTextQuery ftQuery =
-                    entityManager.createFullTextQuery(targetQuery,
-                            HTextFlowTarget.class);
-            @SuppressWarnings("unchecked")
-            List<HTextFlowTarget> matchedTargets =
-                    (List<HTextFlowTarget>) ftQuery.getResultList();
-            log.info("got {} HTextFLowTarget results", matchedTargets.size());
-            for (HTextFlowTarget htft : matchedTargets) {
-                // manually check for case sensitive matches
-                if (!constraints.isCaseSensitive()
-                        || (contentIsValid(htft.getContents(), constraints))) {
-                    if (!htft.getTextFlow().getDocument().isObsolete()) {
-                        resultList.add(htft.getTextFlow());
-                    }
-                }
-            }
-        }
-
-        if (constraints.isSearchInSource()) {
-            // Source locale
-            // NB: Assume the first document's locale, or the same target locale
-            // if there are no documents
-            // TODO Move source locale to the Project iteration level
-            LocaleId sourceLocaleId = localeId;
-            HProjectIteration projectIteration =
-                    projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-            if (!projectIteration.getDocuments().isEmpty()) {
-                sourceLocaleId =
-                        projectIteration.getDocuments().values().iterator()
-                                .next().getLocale().getLocaleId();
-            }
-
-            // Content query for source
-            String sourceAnalyzerName =
-                    TextContainerAnalyzerDiscriminator
-                            .getAnalyzerDefinitionName(sourceLocaleId.getId());
-            Analyzer sourceAnalyzer =
-                    entityManager.getSearchFactory().getAnalyzer(
-                            sourceAnalyzerName);
-
-            Query srcContentPhraseQuery;
-            QueryParser srcContentQueryParser =
-                    new MultiFieldQueryParser(Version.LUCENE_29,
-                            IndexFieldLabels.CONTENT_FIELDS, sourceAnalyzer);
-            try {
-                srcContentPhraseQuery =
-                        srcContentQueryParser.parse("\""
-                                + QueryParser.escape(constraints
-                                        .getSearchString()) + "\"");
-            } catch (ParseException e) {
-                throw new ZanataServiceException("Failed to parse query", e);
-            }
-
-            // Source Query
-            BooleanQuery sourceQuery = new BooleanQuery();
-            sourceQuery.add(projectQuery, Occur.MUST);
-            sourceQuery.add(iterationQuery, Occur.MUST);
-            sourceQuery.add(srcContentPhraseQuery, Occur.MUST);
-            if (documentsQuery.getTermArrays().size() > 0) {
-                sourceQuery.add(documentsQuery, Occur.MUST);
-            }
-
-            FullTextQuery ftQuery =
-                    entityManager.createFullTextQuery(sourceQuery,
-                            HTextFlow.class);
-            @SuppressWarnings("unchecked")
-            List<HTextFlow> matchedSources =
-                    (List<HTextFlow>) ftQuery.getResultList();
-            log.info("got {} HTextFLow results", matchedSources.size());
-            for (HTextFlow htf : matchedSources) {
-                if (!resultList.contains(htf)) {
-                    // manually check for case sensitive matches
-                    if (!constraints.isCaseSensitive()
-                            || (contentIsValid(htf.getContents(), constraints))) {
-                        if (!htf.getDocument().isObsolete()) {
-                            resultList.add(htf);
-                        }
-                    }
-                }
-            }
-        }
-
-        return resultList;
-    }
-
     @Override
     public List<HTextFlow> findTextFlows(WorkspaceId workspace, DocumentId doc,
             FilterConstraints constraints) {
@@ -445,36 +252,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService {
         return this.findTextFlows(workspace, documentPaths, constraints);
     }
 
-    private static boolean contentIsValid(Collection<String> contents,
-            FilterConstraints constraints) {
-        boolean valid = false;
-        if (constraints.isSearchInSource()) {
-            for (String content : contents) {
-                // make sure contents are EXACTLY the same (they should already
-                // be the same case insensitively)
-                if (constraints.isCaseSensitive()
-                        && content.contains(constraints.getSearchString())) {
-                    valid = true;
-                    break;
-                }
-            }
-        }
-        if (constraints.isSearchInTarget()) {
-            for (String content : contents) {
-                // make sure contents are EXACTLY the same (they should already
-                // be the same case insensitively)
-                if (constraints.isCaseSensitive()
-                        && content.contains(constraints.getSearchString())) {
-                    valid = true;
-                    break;
-                }
-            }
-        }
-
-        return valid;
-    }
-
-    private static enum HDocumentToId implements Function<HDocument, Long> {
+    private enum HDocumentToId implements Function<HDocument, Long> {
         FUNCTION;
 
         @Override

@@ -20,11 +20,18 @@
  */
 package org.zanata.search;
 
+import org.hibernate.CacheMode;
+import org.hibernate.FlushMode;
 import org.hibernate.Query;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.search.FullTextSession;
+import org.zanata.async.AsyncTaskHandle;
+import org.zanata.dao.HTextFlowTargetStreamingDAO;
+import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Indexing strategy specific to HTextFlowTargets. This indexing strategy
@@ -34,6 +41,7 @@ import org.zanata.model.HTextFlowTarget;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Slf4j
 public class HTextFlowTargetIndexingStrategy extends
         AbstractIndexingStrategy<HTextFlowTarget> {
     public HTextFlowTargetIndexingStrategy() {
@@ -59,5 +67,63 @@ public class HTextFlowTargetIndexingStrategy extends
                                         + "join fetch tft.textFlow.document.projectIteration.project");
         query.setFetchSize(Integer.MIN_VALUE);
         return query.scroll(ScrollMode.FORWARD_ONLY);
+    }
+
+    public void reindexForProject(HProject project, FullTextSession session,
+            AsyncTaskHandle handle) {
+        // it must use the same session in the DAO and to do the indexing
+        HTextFlowTargetStreamingDAO dao =
+                new HTextFlowTargetStreamingDAO(HTextFlowTarget.class, session);
+        ScrollableResults scrollableResults =
+                dao.getTargetsWithAllFieldsEagerlyFetchedForProject(
+                        project);
+        reindexScrollableResultSet(session, scrollableResults, handle);
+    }
+
+    private static void reindexScrollableResultSet(FullTextSession session,
+            ScrollableResults scrollableResults, AsyncTaskHandle handle) {
+
+        session.setFlushMode(FlushMode.MANUAL);
+        session.setCacheMode(CacheMode.IGNORE);
+        int rowNum = 0;
+        try {
+            while (scrollableResults.next()) {
+
+                rowNum++;
+                HTextFlowTarget entity =
+                        (HTextFlowTarget) scrollableResults.get(0);
+                // TODO pahuang do I need to purge first then reindex?
+                session.index(entity);
+                if (handle != null) {
+                    handle.increaseProgress(1);
+                }
+
+                if (rowNum % sessionClearBatchSize == 0) {
+                    log.info(
+                            "periodic flush and clear for HTextFlowTarget (n={})",
+                            rowNum);
+                    session.flushToIndexes(); // apply changes to indexes
+                    session.clear(); // clear since the queue is processed
+                }
+            }
+        } finally {
+            if (scrollableResults != null) {
+                scrollableResults.close();
+            }
+        }
+        session.flushToIndexes(); // apply changes to indexes
+        session.clear(); // clear since the queue is processed
+    }
+
+    public void reindexForProjectVersion(HProjectIteration projectIteration,
+            FullTextSession session, AsyncTaskHandle<Void> handle) {
+        // it must use the same session in the DAO and to do the indexing
+        HTextFlowTargetStreamingDAO dao =
+                new HTextFlowTargetStreamingDAO(HTextFlowTarget.class, session);
+        ScrollableResults
+                scrollableResults =
+                dao.getTargetsWithAllFieldsEagerlyFetchedForProjectIteration(
+                        projectIteration);
+        reindexScrollableResultSet(session, scrollableResults, handle);
     }
 }

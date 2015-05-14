@@ -118,7 +118,7 @@ public class EditorOptionsPresenterTest {
         WorkspaceContextUpdateEvent workspaceContextUpdateEvent =
                 new WorkspaceContextUpdateEvent(workplaceContextData(false,
                         ProjectType.Podir));
-        when(userWorkspaceContext.hasReadOnlyAccess()).thenReturn(true);
+        when(userWorkspaceContext.hasReadOnlyAccess()).thenReturn(false, true);
         when(userOptionsService.getConfigHolder()).thenReturn(configHolder);
 
         // When:
@@ -148,6 +148,26 @@ public class EditorOptionsPresenterTest {
 
             @Override
             public Map<ValidationId, State> getValidationStates() {
+                return null;
+            }
+
+            @Override
+            public String getOldProjectSlug() {
+                return null;
+            }
+
+            @Override
+            public String getNewProjectSlug() {
+                return null;
+            }
+
+            @Override
+            public String getOldIterationSlug() {
+                return null;
+            }
+
+            @Override
+            public String getNewIterationSlug() {
                 return null;
             }
         };

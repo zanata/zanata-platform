@@ -42,8 +42,6 @@ public class ContainingWorkspaceBridge implements FieldBridge {
 
         addStringField(IndexFieldLabels.PROJECT_FIELD, project.getSlug(),
                 luceneDocument, luceneOptions);
-        addStringField(IndexFieldLabels.ITERATION_FIELD, iteration.getSlug(),
-                luceneDocument, luceneOptions);
         addStringField(IndexFieldLabels.DOCUMENT_ID_FIELD, doc.getDocId(),
                 luceneDocument, luceneOptions);
     }

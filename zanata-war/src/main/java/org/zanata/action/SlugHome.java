@@ -42,8 +42,6 @@ public abstract class SlugHome<E> extends EntityHome<E> {
 
     private static final long serialVersionUID = 1L;
 
-    private List<SelectItem> statusList = new ArrayList<SelectItem>();
-
     @SuppressWarnings("unchecked")
     @Override
     protected E loadInstance() {

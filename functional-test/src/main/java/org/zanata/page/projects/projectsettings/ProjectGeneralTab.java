@@ -38,7 +38,7 @@ import java.util.Map;
 @Slf4j
 public class ProjectGeneralTab extends ProjectBasePage {
 
-    private By projectIdField = By.id("settings-general-form:slugField");
+    private By projectIdField = By.id("settings-general-form:slugField:slug");
     private By projectNameField = By.id("settings-general-form:nameField:name");
     private By descriptionField = By.id("settings-general-form:descriptionField:description");
     private By projectTypeList = By.id("project-types");
@@ -61,6 +61,20 @@ public class ProjectGeneralTab extends ProjectBasePage {
      */
     public String getProjectId() {
         return readyElement(projectIdField).getAttribute("value");
+    }
+
+    /**
+     * Enter a new slug for the project. Removes any existing text.
+     *
+     * @param projectSlug new project slug
+     * @return new Project General Settings page
+     */
+    public ProjectGeneralTab enterProjectSlug(String projectSlug) {
+        log.info("Enter project slug {}", projectSlug);
+        waitForWebElement(projectIdField).clear();
+        waitForWebElement(projectIdField).sendKeys(projectSlug);
+        defocus(projectIdField);
+        return new ProjectGeneralTab(getDriver());
     }
 
     /**

@@ -94,10 +94,16 @@ public class EditorOptionsPresenter extends
 
     @Override
     public void onWorkspaceContextUpdated(WorkspaceContextUpdateEvent event) {
+        boolean oldReadOnly = userWorkspaceContext.hasReadOnlyAccess();
         userWorkspaceContext.setProjectActive(event.isProjectActive());
         userWorkspaceContext.getWorkspaceContext().getWorkspaceId()
                 .getProjectIterationId().setProjectType(event.getProjectType());
-        setReadOnly(userWorkspaceContext.hasReadOnlyAccess());
+        if (oldReadOnly != userWorkspaceContext.hasReadOnlyAccess()) {
+            // because this may cause a force redraw event which triggers an auto-save of pending change.
+            // see org.zanata.webtrans.client.view.EditorOptionsView.setOptionsState()
+            // see onUseCodeMirrorOptionChanged()
+            setReadOnly(userWorkspaceContext.hasReadOnlyAccess());
+        }
     }
 
     private void setReadOnly(boolean readOnly) {

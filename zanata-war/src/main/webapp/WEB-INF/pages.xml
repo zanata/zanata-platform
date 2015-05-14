@@ -332,6 +332,13 @@
         </redirect>
       </rule>
     </navigation>
+    <navigation from-action="#{projectHome.update}">
+      <rule if-outcome="projectSlugUpdated">
+        <redirect view-id="/project/project.xhtml">
+          <param name="slug" value="#{projectHome.slug}" />
+        </redirect>
+      </rule>
+    </navigation>
   </page>
 
   <page view-id="/project/create_project.xhtml">
@@ -412,6 +419,16 @@
         <param name="iterationSlug"
           value="#{versionHome.instance.slug}" />
       </redirect>
+    </navigation>
+    <navigation from-action="#{versionHome.update}">
+      <rule if-outcome="versionSlugUpdated">
+        <redirect view-id="/iteration/view.xhtml">
+          <param name="projectSlug"
+            value="#{versionHome.projectSlug}" />
+          <param name="iterationSlug"
+            value="#{versionHome.instance.slug}" />
+        </redirect>
+      </rule>
     </navigation>
   </page>
 

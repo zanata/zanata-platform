@@ -20,12 +20,14 @@
  */
 package org.zanata.webtrans.client.presenter;
 
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
+import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.events.AttentionModeActivationEvent;
 import org.zanata.webtrans.client.events.AttentionModeActivationEventHandler;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
@@ -40,6 +42,7 @@ import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.events.RefreshProjectStatsEvent;
 import org.zanata.webtrans.client.events.ShowSideMenuEvent;
 import org.zanata.webtrans.client.events.ShowSideMenuEventHandler;
+import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
 import org.zanata.webtrans.client.history.History;
@@ -50,16 +53,22 @@ import org.zanata.webtrans.client.keys.Keys;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.DocumentNode;
+import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.view.AppDisplay;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.WorkspaceId;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.dom.client.Element;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -84,6 +93,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
     private final History history;
     private final Window window;
     private final Window.Location windowLocation;
+    private final TargetContentsPresenter targetContentsPresenter;
     private final UserWorkspaceContext userWorkspaceContext;
     private final WebTransMessages messages;
     private final LocaleId localeId;
@@ -111,7 +121,8 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
             final SearchResultsPresenter searchResultsPresenter,
             final UserWorkspaceContext userWorkspaceContext,
             final WebTransMessages messages, final History history,
-            final Window window, final Window.Location windowLocation) {
+            final Window window, final Window.Location windowLocation,
+            TargetContentsPresenter targetContentsPresenter) {
         super(display, eventBus);
         this.userWorkspaceContext = userWorkspaceContext;
         this.attentionKeyShortcutPresenter = attentionKeyShortcutPresenter;
@@ -124,6 +135,7 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
         this.sideMenuPresenter = sideMenuPresenter;
         this.window = window;
         this.windowLocation = windowLocation;
+        this.targetContentsPresenter = targetContentsPresenter;
 
         localeId =
                 userWorkspaceContext.getWorkspaceContext().getWorkspaceId()
@@ -367,7 +379,41 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
                     NotificationEvent.Severity.Info, messages
                             .notifyEditableWorkspace()));
         }
+        if (event.hasSlugChanged()) {
+            eventBus.fireEvent(new NotificationEvent(Severity.Error, messages
+                    .workspaceUrlHasChanged()));
+
+            final String newUrl = buildNewUrl(event);
+            new Timer() {
+
+                @Override
+                public void run() {
+                    windowLocation.assign(newUrl);
+                }
+            }.schedule(10000);
+        }
         display.setReadOnlyVisible(userWorkspaceContext.hasReadOnlyAccess());
+    }
+
+    public String buildNewUrl(WorkspaceContextUpdateEvent event) {
+        WorkspaceId workspaceId =
+                userWorkspaceContext.getWorkspaceContext().getWorkspaceId();
+        LocaleId localeId = workspaceId.getLocaleId();
+        String locale = windowLocation.getParameter("locale");
+        ProjectIterationId projectIterationId =
+                workspaceId.getProjectIterationId();
+        String projectSlug =
+                event.hasProjectSlugChanged() ? event.getNewProjectSlug()
+                        : projectIterationId
+                                .getProjectSlug();
+        String versionSlug =
+                event.hasIterationSlugChanged() ? event.getNewIterationSlug()
+                        : projectIterationId.getIterationSlug();
+
+        return Application.getModuleParentBaseUrl() + "webtrans/translate?project=" +
+                projectSlug + "&iteration=" + versionSlug +
+                "&localeId=" + localeId + "&locale=" + locale +
+                windowLocation.getHash();
     }
 
     @Override

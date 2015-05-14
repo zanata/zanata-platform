@@ -15,7 +15,10 @@ import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.util.Work;
 import org.jboss.seam.web.ServletContexts;
+import org.zanata.async.Async;
+import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountDAO;
@@ -47,6 +50,7 @@ import org.zanata.webtrans.shared.rpc.ExitWorkspace;
 import org.zanata.webtrans.shared.rpc.WorkspaceContextUpdate;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Throwables;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -62,6 +66,7 @@ import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 @Scope(ScopeType.APPLICATION)
 @Name("translationWorkspaceManager")
 @Slf4j
+@ContainsAsyncMethods
 public class TranslationWorkspaceManagerImpl implements
         TranslationWorkspaceManager {
 
@@ -172,26 +177,47 @@ public class TranslationWorkspaceManagerImpl implements
     }
 
     @Observer(ProjectUpdate.EVENT_NAME)
-    public void projectUpdate(@Observes ProjectUpdate payload) {
-        projectUpdate(payload.getProject());
+    // transaction has already been committed and marked as rolled back only for
+    // current thread. We have to open a new transaction to load any lazy
+    // properties (otherwise exception like javax.resource.ResourceException:
+    // IJ000460: Error checking for a transaction: Transactions are not active)
+    @Async
+    public void projectUpdate(@Observes final ProjectUpdate payload) {
+        try {
+            new Work<Void>() {
+
+                @Override
+                protected Void work() throws Exception {
+                    projectUpdate(payload.getProject(), payload.getOldSlug());
+                    return null;
+                }
+            }.workInTransaction();
+        } catch (Exception e) {
+            throw Throwables.propagate(e);
+        }
+
     }
 
-    void projectUpdate(HProject project) {
+    void projectUpdate(HProject project, String oldProjectSlug) {
         String projectSlug = project.getSlug();
-        log.info("Project {} updated, status={}", projectSlug,
-                project.getStatus());
+        log.info("Project newSlug={}, oldSlug={} updated, status={}",
+                projectSlug, oldProjectSlug, project.getStatus());
 
         for (HProjectIteration iter : project.getProjectIterations()) {
-            projectIterationUpdate(iter);
+            projectIterationUpdate(iter, Optional.of(oldProjectSlug),
+                    Optional.<String> absent());
         }
     }
 
     @Observer(ProjectIterationUpdate.EVENT_NAME)
+    @Async
     public void projectIterationUpdate(@Observes ProjectIterationUpdate payload) {
-        projectIterationUpdate(payload.getIteration());
+        projectIterationUpdate(payload.getIteration(),
+                Optional.<String> absent(), Optional.of(payload.getOldSlug()));
     }
 
-    void projectIterationUpdate(HProjectIteration projectIteration) {
+    void projectIterationUpdate(HProjectIteration projectIteration,
+            Optional<String> oldProjectSlug, Optional<String> oldIterationSlug) {
         HashMap<ValidationId, State> validationStates = Maps.newHashMap();
 
         for (ValidationAction validationAction : getValidationService()
@@ -209,20 +235,73 @@ public class TranslationWorkspaceManagerImpl implements
                         projectIteration.getStatus());
         ProjectType projectType = projectIteration.getProjectType();
         log.info(
-                "Project {} iteration {} updated, status={}, isProjectActive={}, projectType={}",
-                new Object[] { projectSlug, iterSlug,
-                        projectIteration.getStatus(), isProjectActive,
-                        projectType });
+                "Project {} iteration {} updated, status={}, isProjectActive={}, projectType={}, oldProjectSlug={}, oldIterationSlug={}",
+                projectSlug, iterSlug,
+                projectIteration.getStatus(), isProjectActive,
+                projectType, oldProjectSlug, oldIterationSlug);
 
         ProjectIterationId iterId =
-                new ProjectIterationId(projectSlug, iterSlug,
-                        projectIteration.getProjectType());
+                createProjectIterationId(projectIteration, oldProjectSlug,
+                        oldIterationSlug,
+                        projectSlug, iterSlug);
         for (TranslationWorkspace workspace : projIterWorkspaceMap.get(iterId)) {
             WorkspaceContextUpdate event =
                     new WorkspaceContextUpdate(isProjectActive, projectType,
                             validationStates);
+            if (oldProjectSlug.isPresent()) {
+                event =
+                        event.projectSlugChanged(oldProjectSlug.get(),
+                                projectSlug);
+            }
+            if (oldIterationSlug.isPresent()) {
+                event =
+                        event.iterationSlugChanged(oldIterationSlug.get(),
+                                iterSlug);
+            }
             workspace.publish(event);
         }
+    }
+
+    /**
+     * We need to use old slug to retrieve existing workspace if slug has
+     * changed.
+     *
+     * @param projectIteration
+     *            project iteration
+     * @param oldProjectSlug
+     *            optional old project slug
+     * @param oldIterationSlug
+     *            optional old iteration slug
+     * @param projectSlug
+     *            current project slug
+     * @param iterSlug
+     *            current iteration slug
+     * @return a ProjectIterationId object that will be the part of exising
+     *         workspace id.
+     */
+    private ProjectIterationId createProjectIterationId(
+            HProjectIteration projectIteration, Optional<String> oldProjectSlug,
+            Optional<String> oldIterationSlug, String projectSlug,
+            String iterSlug) {
+        ProjectIterationId iterId;
+        if (oldProjectSlug.isPresent() && oldIterationSlug.isPresent()) {
+            iterId = new ProjectIterationId(oldProjectSlug.get(),
+                    oldIterationSlug.get(),
+                    projectIteration.getProjectType());
+        } else if (oldProjectSlug.isPresent()) {
+            iterId = new ProjectIterationId(oldProjectSlug.get(),
+                    iterSlug,
+                    projectIteration.getProjectType());
+        } else if (oldIterationSlug.isPresent()) {
+            iterId = new ProjectIterationId(projectSlug,
+                    oldIterationSlug.get(),
+                    projectIteration.getProjectType());
+        } else {
+            iterId = new ProjectIterationId(projectSlug,
+                    iterSlug,
+                    projectIteration.getProjectType());
+        }
+        return iterId;
     }
 
     private boolean projectIterationIsActive(EntityStatus projectStatus,

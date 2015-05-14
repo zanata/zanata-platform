@@ -210,4 +210,26 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .isEqualTo("http://git.example.com")
                 .as("The git url is correct");
     }
+
+    @Feature(summary = "Project slug can be changed and page will redirect to new URL after the change",
+            tcmsTestPlanIds = 0, tcmsTestCaseIds = 0)
+    @Test
+    public void changeProjectSlug() {
+        ProjectGeneralTab projectGeneralTab = new ProjectWorkFlow()
+                .goToProjectByName("about fedora")
+                .gotoSettingsTab()
+                .gotoSettingsGeneral()
+                .enterProjectSlug("fedora-reborn")
+                .updateProject();
+
+        projectGeneralTab.reload();
+        assertThat(projectGeneralTab.getUrl()).contains("/fedora-reborn");
+        projectGeneralTab = projectGeneralTab
+                .gotoSettingsTab()
+                .gotoSettingsGeneral();
+
+        assertThat(projectGeneralTab.getProjectId())
+                .isEqualTo("fedora-reborn")
+                .as("The project slug is correct");
+    }
 }

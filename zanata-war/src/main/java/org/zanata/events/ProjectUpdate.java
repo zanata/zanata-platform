@@ -35,4 +35,6 @@ public class ProjectUpdate {
     public static final String EVENT_NAME = "org.zanata.events.ProjectUpdate";
 
     HProject project;
+
+    String oldSlug;
 }

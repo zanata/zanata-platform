@@ -302,7 +302,7 @@ public class AbstractPage {
             public boolean apply(WebDriver input) {
                 // Find all elements with class name js-loader, or return []
                 String script = "return (typeof $ == 'undefined') ?  [] : " +
-                        "$('.js-loader')";
+                        "$('.js-loader').toArray()";
                 @SuppressWarnings("unchecked")
                 List<WebElement> loaders = (List<WebElement>) getExecutor()
                         .executeScript(script);

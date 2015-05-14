@@ -73,14 +73,25 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public HProject checkWorkspaceStatus(WorkspaceId workspaceId) {
         identity.checkLoggedIn();
+        String projectSlug = workspaceId.getProjectIterationId()
+                .getProjectSlug();
         HProject project =
-                projectDAO.getBySlug(workspaceId.getProjectIterationId()
-                        .getProjectSlug());
+                projectDAO.getBySlug(projectSlug);
+        String iterationSlug = workspaceId
+                .getProjectIterationId().getIterationSlug();
         HProjectIteration projectIteration =
-                projectIterationDAO.getBySlug(workspaceId
-                        .getProjectIterationId().getProjectSlug(), workspaceId
-                        .getProjectIterationId().getIterationSlug());
+                projectIterationDAO.getBySlug(
+                        projectSlug, iterationSlug);
 
+        if (project == null || projectIteration == null) {
+            // TODO due to slug change or in future project being deleted permanently
+            // see org.zanata.webtrans.server.SeamDispatch.execute()
+            // for maybe a better exception to throw
+            throw new AuthorizationException(
+                    String.format(
+                            "Project [%s] or version [%s] does not exist. Are they moved?",
+                            projectSlug, iterationSlug));
+        }
         if (projectIterationIsInactive(project.getStatus(),
                 projectIteration.getStatus())) {
             throw new AuthorizationException("Project or version is read-only");
