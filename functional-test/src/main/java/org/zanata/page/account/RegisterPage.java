@@ -149,13 +149,13 @@ public class RegisterPage extends CorePage {
 
     public boolean termsOfUseUrlVisible() {
         log.info("Query terms of use URL is visible");
-        return waitForElementExists(By.id("loginForm"))
+        return existingElement(By.id("loginForm"))
                 .findElements(By.className("txt--meta")).size() > 0;
     }
 
     public String getTermsUrl() {
         log.info("Query terms of use URL");
-        return waitForWebElement(waitForElementExists(By.id("loginForm")),
+        return readyElement(existingElement(By.id("loginForm")),
                 By.className("txt--meta"))
                 .findElement(By.tagName("a"))
                 .getAttribute("href");

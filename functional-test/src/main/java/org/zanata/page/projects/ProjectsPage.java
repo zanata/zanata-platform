@@ -69,7 +69,7 @@ public class ProjectsPage extends BasePage {
                 link.click();
                 return new ProjectVersionsPage(getDriver());
             }
-        });
+        }, "Find and go to project " + projectName);
     }
 
     public List<String> getProjectNamesOnCurrentPage() {

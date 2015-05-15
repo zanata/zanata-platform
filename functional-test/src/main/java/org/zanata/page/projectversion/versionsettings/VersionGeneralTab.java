@@ -40,20 +40,20 @@ public class VersionGeneralTab extends VersionBasePage {
 
     public VersionGeneralTab enterVersionID(String newSlug) {
         log.info("Enter project version slug {}", newSlug);
-        waitForWebElement(versionIdField).clear();
-        waitForWebElement(versionIdField).sendKeys(newSlug);
+        readyElement(versionIdField).clear();
+        readyElement(versionIdField).sendKeys(newSlug);
         defocus(versionIdField);
         return new VersionGeneralTab(getDriver());
     }
 
     public VersionGeneralTab updateVersion() {
         log.info("Click Update general settings");
-        scrollIntoView(waitForWebElement(updateButton));
-        clickAndCheckErrors(waitForWebElement(updateButton));
+        scrollIntoView(readyElement(updateButton));
+        clickAndCheckErrors(readyElement(updateButton));
         return new VersionGeneralTab(getDriver());
     }
 
     public String getVersionID() {
-        return waitForWebElement(versionIdField).getAttribute("value");
+        return readyElement(versionIdField).getAttribute("value");
     }
 }

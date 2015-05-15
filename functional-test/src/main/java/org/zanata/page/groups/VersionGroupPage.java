@@ -100,7 +100,7 @@ public class VersionGroupPage extends BasePage {
                         }
                         return listItems;
                     }
-                });
+                }, "Find results of searching for " + projectName);
     }
 
     public VersionGroupPage addToGroup(int rowIndex) {

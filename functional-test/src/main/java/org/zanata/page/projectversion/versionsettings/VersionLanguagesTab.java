@@ -80,7 +80,7 @@ public class VersionLanguagesTab extends VersionBasePage {
      */
     public List<String> getEnabledLocaleList() {
         log.info("Query enabled locales list");
-        return LanguageList.getListedLocales(waitForWebElement(activeLocales));
+        return LanguageList.getListedLocales(readyElement(activeLocales));
     }
 
     public VersionLanguagesTab expectLanguagesContains(String language) {
@@ -130,7 +130,7 @@ public class VersionLanguagesTab extends VersionBasePage {
             public boolean apply(WebDriver driver) {
                 return !getEnabledLocaleList().contains(localeId);
             }
-        });
+        }, "Wait for the locale list to not contain " + localeId);
 
         return new VersionLanguagesTab(getDriver());
     }
@@ -151,7 +151,7 @@ public class VersionLanguagesTab extends VersionBasePage {
             public boolean apply(WebDriver driver) {
                 return getEnabledLocaleList().contains(localeId);
             }
-        });
+        }, "Wait for the locale list to contain " + localeId);
 
         return new VersionLanguagesTab(getDriver());
     }

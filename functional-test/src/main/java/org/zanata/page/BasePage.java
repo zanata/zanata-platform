@@ -244,7 +244,7 @@ public class BasePage extends CorePage {
 
     public ContactAdminFormPage clickContactAdmin() {
         log.info("Click Contact Admin button");
-        waitForWebElement(contactAdminLink).click();
+        clickElement(contactAdminLink);
         return new ContactAdminFormPage(getDriver());
     }
 
