@@ -12,7 +12,7 @@
   <name>functional-test</name>
 
   <properties>
-    <selenium.version>2.44.0</selenium.version>
+    <selenium.version>2.45.0</selenium.version>
 
     <!--Cargo Settings -->
     <cargo.host>localhost</cargo.host>
@@ -80,12 +80,12 @@
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
-        <version>4.3.4</version>
+        <version>4.3.6</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpcore</artifactId>
-        <version>4.3.2</version>
+        <version>4.3.3</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
