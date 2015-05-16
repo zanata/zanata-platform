@@ -28,8 +28,8 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.framework.EntityHome;
 import org.zanata.model.tm.TransMemory;
+import org.zanata.seam.framework.EntityHome;
 import org.zanata.service.SlugEntityService;
 import org.zanata.ui.faces.FacesMessages;
 

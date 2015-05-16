@@ -26,10 +26,10 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.framework.EntityHome;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
+import org.zanata.seam.framework.EntityHome;
 
 /**
  * A simple bean to hold the currently authenticated account.

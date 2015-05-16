@@ -20,18 +20,9 @@
  */
 package org.zanata.action;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import javax.faces.model.SelectItem;
-
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
-import org.jboss.seam.framework.EntityHome;
-import org.zanata.common.ProjectType;
-import org.zanata.util.ComparatorUtil;
+import org.zanata.seam.framework.EntityHome;
 
 /**
  * This implementation uses a field 'slug' to refer to the id of the object.

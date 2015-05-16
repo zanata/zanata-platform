@@ -31,11 +31,11 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.framework.EntityHome;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountRoleDAO;
 import org.zanata.dao.RoleAssignmentRuleDAO;
 import org.zanata.model.HRoleAssignmentRule;
+import org.zanata.seam.framework.EntityHome;
 import org.zanata.security.AuthenticationType;
 
 /**
