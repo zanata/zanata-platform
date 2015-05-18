@@ -18,17 +18,17 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.email;
+package org.zanata.util;
 
 import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.zanata.email.EmailUtil.*;
+import static org.zanata.util.HtmlUtil.*;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public class EmailUtilTest {
+public class HtmlUtilTest {
 
     @Test
     public void sanitisePlainText() {

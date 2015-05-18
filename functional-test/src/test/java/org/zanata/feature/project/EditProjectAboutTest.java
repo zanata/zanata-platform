@@ -53,6 +53,7 @@ public class EditProjectAboutTest extends ZanataTestCase {
         new ZanataRestCaller().createProjectAndVersion(
                 "aboutpagetest", "aboutpagetest", "file");
 
+        String aboutTextSource = "This is my *about* text for AF";
         String aboutText = "This is my about text for AF";
         assertThat(new LoginWorkFlow()
                 .signIn("admin", "admin")
@@ -71,7 +72,7 @@ public class EditProjectAboutTest extends ZanataTestCase {
 
         projectAboutTab = projectAboutTab
                 .clearAboutText()
-                .enterAboutText(aboutText)
+                .enterAboutText(aboutTextSource)
                 .pressSave();
 
         projectAboutTab.expectNotification("About page updated.");

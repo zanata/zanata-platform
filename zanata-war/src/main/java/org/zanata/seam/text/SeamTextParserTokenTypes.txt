@@ -1,0 +1,29 @@
+// Seam Text implementation copied and adapted from Seam 2.3.1
+// (package org.jboss.seam.text).
+
+// $ANTLR 2.7.6 (2005-12-22): seam-text.g -> SeamTextParserTokenTypes.txt$
+SeamTextParser    // output token vocab name
+DOUBLEQUOTE("a doublequote \"")=4
+BACKTICK("a backtick '`'")=5
+ALPHANUMERICWORD("letters or digits")=6
+UNICODEWORD("letters or digits")=7
+PUNCTUATION("a punctuation character")=8
+SINGLEQUOTE("a single quote '")=9
+SLASH("a slash '/'")=10
+ESCAPE("the escaping blackslash '\'")=11
+STAR("a star '*'")=12
+BAR("a bar or pipe '|'")=13
+HAT("a caret '^'")=14
+PLUS("a plus '+'")=15
+EQ("an equals '='")=16
+HASH("a hash '#'")=17
+TWIDDLE("a tilde '~'")=18
+UNDERSCORE("an underscore '_'")=19
+OPEN("an opening square bracket '['")=20
+CLOSE("a closing square bracket ']'")=21
+QUOTE=22
+GT("a closing angle bracket '>'")=23
+LT("an opening angle bracket '<'")=24
+AMPERSAND("an ampersand '&'")=25
+SPACE("a space or tab")=26
+NEWLINE("a newline")=27

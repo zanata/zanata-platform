@@ -76,6 +76,7 @@ import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.autocomplete.MaintainerAutocomplete;
 import org.zanata.ui.faces.FacesMessages;
+import org.zanata.util.CommonMarkRenderer;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.ValidationAction;
@@ -125,6 +126,9 @@ public class ProjectHome extends SlugHome<HProject> implements
 
     @In
     private SlugEntityService slugEntityServiceImpl;
+
+    @In("commonMarkRenderer")
+    private CommonMarkRenderer renderer;
 
     @In
     private ConversationScopeMessages conversationScopeMessages;
@@ -757,6 +761,16 @@ public class ProjectHome extends SlugHome<HProject> implements
             retValue = super.persist();
         }
         return retValue;
+    }
+
+    /**
+     * Returns the rendered, sanitised HTML for the about page content set by the project maintainer.
+     * @return
+     */
+    public String getAboutHtml() {
+        // we could cache this, but it may not be worth it
+        String text = getInstance().getHomeContent();
+        return renderer.renderToHtmlSafe(text);
     }
 
     public List<HPerson> getInstanceMaintainers() {

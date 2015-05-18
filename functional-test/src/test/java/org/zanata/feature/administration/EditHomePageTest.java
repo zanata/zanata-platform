@@ -58,32 +58,17 @@ public class EditHomePageTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The administrator can edit the home screen in " +
-            "WYSIWYG mode",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void editPageContent() throws Exception {
-        HomePage homePage = new BasicWorkFlow()
-                .goToHome()
-                .goToEditPageContent()
-                .enterText("WYSIWYGTest")
-                .update();
-
-        assertThat(homePage.getMainBodyContent()).isEqualTo("WYSIWYGTest")
-                .as("Homepage text has been updated");
-    }
-
-    @Feature(summary = "The administrator can edit the home screen in " +
-            "html mode",
+            "source mode",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void editPageCode() throws Exception {
         HomePage homePage = new BasicWorkFlow()
                 .goToHome()
-                .goToEditPageCode()
-                .enterText("<b>HTMLTest</b>")
+                .goToEditPageContent()
+                .enterText("This text contains *some* markup")
                 .update();
 
-        assertThat(homePage.getMainBodyContent()).isEqualTo("HTMLTest")
+        assertThat(homePage.getMainBodyContent()).isEqualTo("This text contains some markup")
                 .as("Homepage text has been updated");
     }
 }

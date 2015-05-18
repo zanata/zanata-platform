@@ -35,13 +35,6 @@
     <restrict>#{s:hasRole('admin')}</restrict>
   </page>
 
-  <page view-id="/edit_home_content_code.xhtml">
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', msgs['jsf.server.EditHomePageCode.label'])}" />
-    <restrict>#{s:hasRole('admin')}</restrict>
-  </page>
-
   <!-- Landing page for open id authentication -->
   <page view-id="/openid.xhtml">
     <navigation>

@@ -228,8 +228,11 @@
 
       <li id="about">
         <s:div id="project-about">
-          <s:formattedText value="#{projectHome.instance.homeContent}"
-            rendered="#{not empty projectHome.instance.homeContent}"/>
+          <div id="home-content-rendered" class="prose">
+            <h:outputText
+              rendered="#{not empty projectHome.instance.homeContent}"
+              value="#{projectHome.aboutHtml}" escape="false" />
+          </div>
           <s:fragment rendered="#{empty projectHome.instance.homeContent}">
             #{msgs['jsf.project.NoHomeContent']}
           </s:fragment>

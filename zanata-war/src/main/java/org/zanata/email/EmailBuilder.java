@@ -40,6 +40,7 @@ import org.zanata.i18n.Messages;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import org.zanata.i18n.MessagesFactory;
+import org.zanata.util.HtmlUtil;
 
 import static com.googlecode.totallylazy.collections.PersistentMap.constructors.map;
 import static org.jboss.seam.ScopeType.EVENT;
@@ -195,7 +196,7 @@ public class EmailBuilder {
         Multipart mp = new MimeMultipart("alternative");
 
         MimeBodyPart textPart = new MimeBodyPart();
-        String text = EmailUtil.htmlToText(body);
+        String text = HtmlUtil.htmlToText(body);
         textPart.setText(text, "UTF-8");
         mp.addBodyPart(textPart);
 

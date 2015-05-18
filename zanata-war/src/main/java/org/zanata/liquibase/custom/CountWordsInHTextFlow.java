@@ -90,8 +90,6 @@ public class CountWordsInHTextFlow implements CustomTaskChange {
             throw new CustomChangeException(e);
         } catch (DatabaseException e) {
             throw new CustomChangeException(e);
-        } finally {
-            // conn.close(); ?
         }
     }
 

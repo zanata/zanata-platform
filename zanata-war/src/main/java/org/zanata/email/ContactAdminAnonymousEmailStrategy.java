@@ -28,6 +28,7 @@ import org.zanata.i18n.Messages;
 
 import com.google.common.base.Optional;
 import com.googlecode.totallylazy.collections.PersistentMap;
+import org.zanata.util.HtmlUtil;
 
 
 @RequiredArgsConstructor
@@ -58,7 +59,7 @@ public class ContactAdminAnonymousEmailStrategy extends EmailStrategy {
             InternetAddress[] toAddresses) {
         PersistentMap<String, Object> context = super.makeContext(
                 genericContext, toAddresses);
-        String safeHTML = EmailUtil.SANITIZER.sanitize(htmlMessage);
+        String safeHTML = HtmlUtil.SANITIZER.sanitize(htmlMessage);
         return context
                 .insert("ipAddress", ipAddress)
                 .insert("htmlMessage", safeHTML);

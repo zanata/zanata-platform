@@ -38,6 +38,17 @@
     <icu4j.version>50.1.1</icu4j.version>
     <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
     <lucene.version>3.6.2</lucene.version>
+
+    <!--
+    Not used yet.
+
+    When updating commonmark.js, please update the file commonmark-*.min.js
+    and the string jsf.project.about.markup in messages.properties.
+
+    TODO: package commonmark.js for webjars.org
+    <commonmark.spec.version>18.0</commonmark.spec.version>
+    -->
+
     <solr.version>${lucene.version}</solr.version>
     <seam.version>2.3.1.Final</seam.version>
     <gwteventservice.version>1.2.1</gwteventservice.version>

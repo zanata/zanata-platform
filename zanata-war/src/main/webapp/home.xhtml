@@ -10,9 +10,9 @@
 
   <ui:define name="page_title">#{msgs['jsf.Home']}</ui:define>
   <ui:define name="center_content">
-    <s:formattedText id="project-home-content"
-      value="#{applicationConfiguration.homeContent}"></s:formattedText>
-
+    <div id="home-content-rendered" class="prose">
+      <h:outputText value="#{homePage.html}" escape="false" />
+    </div>
   </ui:define>
 
   <ui:define name="right_content">
@@ -22,14 +22,7 @@
         value="#{msgs['jsf.server.EditHomePage.label']}"
         view="/edit_home_content.xhtml" propagation="none">
       </s:link>
-      <s:link styleClass="action_link"
-        value="#{msgs['jsf.server.EditHomePageCode.label']}"
-        view="/edit_home_content_code.xhtml"
-        title="#{msgs['jsf.server.EditHomePageCode.tooltip']}"
-        propagation="none">
-      </s:link>
     </rich:panel>
-
   </ui:define>
 
 </ui:composition>

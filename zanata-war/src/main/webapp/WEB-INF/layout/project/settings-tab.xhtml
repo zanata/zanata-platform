@@ -480,21 +480,33 @@
   </p>
   <h:form id="settings-about-form" styleClass="l--push-bottom-0">
 
-    <h:inputTextarea id="homeContent" required="false" rows="10"
-      value="#{projectHome.instance.homeContent}">
-    </h:inputTextarea>
+    <div class="js-commonmark">
+      <h:inputTextarea id="homeContent" required="false" rows="10"
+        value="#{projectHome.instance.homeContent}"
+        styleClass="text-editor js-commonmark__editor">
+      </h:inputTextarea>
 
-    <p class="txt--meta">
-      <h:outputText value="#{msgs['jsf.project.about.markup']}"
-        escape="false"/>
-    </p>
+      <p class="txt--meta">
+        <h:outputText value="#{msgs['jsf.project.about.markup']}"
+          escape="false"/>
+      </p>
 
-    <a4j:commandLink value="#{msgs['jsf.project.saveNotes']}"
-      action="#{projectHome.updateAboutPage}" rendered="#{projectHome.managed}"
-      render="project-about"
-      styleClass="l--push-top-1 button button--primary"/>
+      <a4j:commandLink value="#{msgs['jsf.project.saveNotes']}"
+        action="#{projectHome.updateAboutPage}" rendered="#{projectHome.managed}"
+        render="project-about"
+        styleClass="l--push-top-1 button button--primary"/>
+
+      <hr/>
+
+      <div id="home-content-preview" class="prose prose--preview js-commonmark__preview"></div>
+    </div>
+
   </h:form>
 </li>
 </ul>
 </div>
+
+  <h:outputScript target="body" library="script" name="${commonMarkRenderer.scriptName}"/>
+  <h:outputScript target="body" library="script" name="commonmark-preview.js"/>
+
 </ui:composition>

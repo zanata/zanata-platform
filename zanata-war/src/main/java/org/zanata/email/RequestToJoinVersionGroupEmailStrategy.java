@@ -24,6 +24,7 @@ import com.google.common.base.Optional;
 import com.googlecode.totallylazy.collections.PersistentMap;
 import lombok.RequiredArgsConstructor;
 import org.zanata.i18n.Messages;
+import org.zanata.util.HtmlUtil;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 
 import javax.mail.internet.InternetAddress;
@@ -66,7 +67,7 @@ public class RequestToJoinVersionGroupEmailStrategy
             InternetAddress[] toAddresses) {
         PersistentMap<String, Object> context = super.makeContext(
                 genericContext, toAddresses);
-        String safeHTML = EmailUtil.SANITIZER.sanitize(htmlMessage);
+        String safeHTML = HtmlUtil.SANITIZER.sanitize(htmlMessage);
         return context
                 .insert("fromLoginName", fromLoginName)
                 .insert("fromName", fromName)

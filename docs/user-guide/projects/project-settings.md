@@ -162,5 +162,9 @@ Enter a valid URI into the provided text input. Hit the 'enter' key or click on 
 </figure>
 <br>
 
-About is optional rich text that will be shown on your project's about tab. This can be used to provide more detailed information to translators to help them understand and translate your project.
-The rich text format is Seam Text. For help with rich text formatting, click "Seam Text" under the editor.
+About is optional text that will be shown on your project's about
+tab. This can be used to provide more detailed information to translators
+to help them understand and translate your project.
+
+The text format is parsed as CommonMark markdown. For help with text
+formatting, click "CommonMark" under the editor.

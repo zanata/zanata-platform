@@ -27,6 +27,11 @@
     </addColumn>
   </changeSet>
 
+  <changeSet author="sflaniga@redhat.com" id="1">
+    <comment>Convert Seam Text to CommonMark</comment>
+    <customChange class="org.zanata.liquibase.custom.MigrateSeamTextToCommonMark" />
+  </changeSet>
+
   <!-- Restore H2 constraints removed by changeset db.changelog-1.6a.xml:1:aeng@redhat.com -->
   <changeSet author="sflaniga@redhat.com" id="1.6a:1:aeng@redhat.com:fix" dbms="h2">
     <addForeignKeyConstraint baseTableName="HGlossaryTerm"
