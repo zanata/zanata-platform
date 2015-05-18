@@ -108,6 +108,13 @@ public abstract class AbstractPullMojo extends
     private boolean continueAfterError = false;
 
     /**
+     * When specified, will only pull down translation files that have translated or better statistics above the specified percentage.
+     *
+     * @parameter expression="$zanata.minDocPercent}" default-value="0"
+     */
+    private int minDocPercent = 0;
+
+    /**
     *
     */
     public AbstractPullMojo() {
@@ -173,5 +180,10 @@ public abstract class AbstractPullMojo extends
     @Override
     public boolean isAuthRequired() {
         return false;
+    }
+
+    @Override
+    public int getMinDocPercent() {
+        return minDocPercent;
     }
 }

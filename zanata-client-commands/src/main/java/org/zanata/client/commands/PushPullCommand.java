@@ -44,6 +44,7 @@ import org.zanata.client.etag.ETagCacheReaderWriter;
 import org.zanata.client.exceptions.ConfigException;
 import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.client.SourceDocResourceClient;
+import org.zanata.rest.client.StatisticsResourceClient;
 import org.zanata.rest.client.TransDocResourceClient;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
@@ -67,6 +68,7 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
     private String modulePrefix;
     protected SourceDocResourceClient sourceDocResourceClient;
     protected TransDocResourceClient transDocResourceClient;
+    protected final StatisticsResourceClient statsClient;
 
     public PushPullCommand(O opts, RestClientFactory clientFactory) {
         super(opts, clientFactory);
@@ -80,6 +82,7 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
         transDocResourceClient =
                 getClientFactory().getTransDocResourceClient(opts.getProj(),
                         opts.getProjectVersion());
+        statsClient = getClientFactory().getStatisticsClient();
     }
 
     public PushPullCommand(O opts) {

@@ -28,8 +28,12 @@ import org.zanata.rest.client.ClientUtil;
 import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.util.HashUtil;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableMap;
 import com.sun.jersey.api.client.ClientResponse;
 
 /**
@@ -123,12 +127,16 @@ public class PullCommand extends PushPullCommand<PullOptions> {
             logger.info("Pulling target documents (translations) only");
             logger.info("Target-language base directory (translations): {}",
                     opts.getTransDir());
+            logger.info("Minimum accepted translation percentage: {}%",
+                    opts.getMinDocPercent());
         } else {
             logger.info("Pulling source and target (translation) documents");
             logger.info("Source-language directory (originals): {}",
                     opts.getSrcDir());
             logger.info("Target-language base directory (translations): {}",
                     opts.getTransDir());
+            logger.info("Minimum accepted translation percentage: {}%",
+                    opts.getMinDocPercent());
         }
     }
 
@@ -137,10 +145,10 @@ public class PullCommand extends PushPullCommand<PullOptions> {
         logOptions();
 
         LocaleList locales = getOpts().getLocaleMapList();
-        if (locales == null && (getOpts().getPullType() != PushPullType.Source))
+        if (locales == null && (getOpts().getPullType() != PushPullType.Source)) {
             throw new ConfigException("no locales specified");
-        PullStrategy strat = createStrategy(
-                getOpts());
+        }
+        PullStrategy strat = createStrategy(getOpts());
 
         if (strat.isTransOnly()
                 && getOpts().getPullType() == PushPullType.Source) {
@@ -198,11 +206,17 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                     + "': existing source-language files may be overwritten/deleted");
             confirmWithUser("This will overwrite/delete any existing documents and translations in the above directories.\n");
         } else {
-            confirmWithUser("This will overwrite/delete any existing translations in the above directory.\n");
+            confirmWithUser(
+                    "This will overwrite/delete any existing translations in the above directory.\n");
         }
 
         if (getOpts().getPurgeCache()) {
             eTagCache.clear();
+        }
+
+        Map<String, Map<LocaleId, TranslatedPercent>> statsMap = null;
+        if (pullTarget && getOpts().getMinDocPercent() > 0) {
+            statsMap = getDocsTranslatedPercent();
         }
 
         for (String qualifiedDocName : docsToPull) {
@@ -229,6 +243,14 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                         File transFile =
                                 strat.getTransFileToWrite(localDocName,
                                         locMapping);
+
+                        if (!shouldPullThisLocale(statsMap, localDocName, locale)) {
+                            log.info(
+                                    "{} is skipped due to insufficient translation percentage in locale {}",
+                                    transFile, locMapping.getLocalLocale());
+                            continue;
+                        }
+
                         ETagCacheEntry eTagCacheEntry =
                                 eTagCache.findEntry(localDocName,
                                         locale.getId());
@@ -330,6 +352,59 @@ public class PullCommand extends PushPullCommand<PullOptions> {
 
     }
 
+    private boolean shouldPullThisLocale(
+            Map<String, Map<LocaleId, TranslatedPercent>> statsMap,
+            String localDocName, LocaleId serverLocale) {
+        int minDocPercent = getOpts().getMinDocPercent();
+        if (log.isDebugEnabled() && statsMap != null) {
+            log.debug("{} for locale {} is translated {}%", localDocName,
+                    serverLocale, statsMap.get(localDocName).get(serverLocale)
+                    .translatedPercent);
+        }
+        return statsMap == null
+                || statsMap.get(localDocName).get(serverLocale)
+                        .isAboveThreshold(minDocPercent);
+    }
+
+    private Map<String, Map<LocaleId, TranslatedPercent>> getDocsTranslatedPercent() {
+        ContainerTranslationStatistics statistics =
+                getDetailStatisticsForProjectVersion();
+        List<ContainerTranslationStatistics> statsPerDoc =
+                statistics.getDetailedStats();
+        ImmutableMap.Builder<String, Map<LocaleId, TranslatedPercent>> docIdToStatsBuilder =
+                ImmutableMap.builder();
+        for (ContainerTranslationStatistics docStats : statsPerDoc) {
+            String docId = docStats.getId();
+            List<TranslationStatistics> statsPerLocale = docStats.getStats();
+            ImmutableMap.Builder<LocaleId, TranslatedPercent> localeToStatsBuilder =
+                    ImmutableMap.builder();
+
+            for (TranslationStatistics statsForSingleLocale : statsPerLocale) {
+                // TODO pahuang server statistics API should return locale with
+                // alias
+                TranslatedPercent translatedPercent =
+                        new TranslatedPercent(statsForSingleLocale.getTotal(),
+                                statsForSingleLocale.getTranslatedOnly(),
+                                statsForSingleLocale.getApproved());
+
+                localeToStatsBuilder.put(
+                        new LocaleId(statsForSingleLocale.getLocale()),
+                        translatedPercent);
+            }
+            Map<LocaleId, TranslatedPercent> localeStats =
+                    localeToStatsBuilder.build();
+            docIdToStatsBuilder.put(docId, localeStats);
+        }
+        return docIdToStatsBuilder.build();
+    }
+
+    @VisibleForTesting
+    protected ContainerTranslationStatistics getDetailStatisticsForProjectVersion() {
+        return statsClient
+                    .getStatistics(getOpts().getProj(),
+                            getOpts().getProjectVersion(), true, false, null);
+    }
+
     /**
      * Returns a list with all documents before fromDoc removed.
      *
@@ -398,6 +473,28 @@ public class PullCommand extends PushPullCommand<PullOptions> {
             log.info(
                     "Writing translation file in locale {} for document {} (skipped due to dry run)",
                     locMapping.getLocalLocale(), localDocName);
+        }
+    }
+
+    private static class TranslatedPercent {
+        private final int translatedPercent;
+        private final long total;
+        private final long translated;
+        private final long approved;
+
+        public TranslatedPercent(long total, long translated, long approved) {
+            this.total = total;
+            this.translated = translated;
+            this.approved = approved;
+            translatedPercent = (int) ((translated + approved) * 100 / total);
+        }
+
+        public boolean isAboveThreshold(int minimumPercent) {
+            if (minimumPercent == 100) {
+                return total == translated + approved;
+            } else {
+                return translatedPercent >= minimumPercent;
+            }
         }
     }
 

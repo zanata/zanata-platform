@@ -50,6 +50,7 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
     private boolean useCache = DEFAULT_USE_CACHE;
     private boolean purgeCache = DEFAULT_PURGE_CACHE;
     private boolean continueAfterError = DEFAULT_CONTINUE_AFTER_ERROR;
+    private int minDocPercent = 0;
 
     @Override
     public ZanataCommand initCommand() {
@@ -163,6 +164,16 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
     @Override
     public boolean isContinueAfterError() {
         return continueAfterError;
+    }
+
+    @Override
+    public int getMinDocPercent() {
+        return this.minDocPercent;
+    }
+
+    @Option(name = "--min-doc-percent", aliases = "-m", usage = "When specified, will only pull down translation files that have translated or better statistics above the specified percentage")
+    public void setMinDocPercent(int minDocPercent) {
+        this.minDocPercent = minDocPercent;
     }
 
     @Override
