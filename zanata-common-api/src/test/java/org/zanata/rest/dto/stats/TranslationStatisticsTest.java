@@ -50,7 +50,7 @@ public class TranslationStatisticsTest {
         assertThat((int) stats.getApproved(), equalTo(unitCount.getApproved()));
         assertThat((int) stats.getRejected(), equalTo(unitCount.getRejected()));
         assertThat((int) stats.getTotal(), equalTo(unitCount.getTotal()));
-        assertThat((int) stats.getTranslated(),
+        assertThat((int) stats.getTranslatedAndApproved(),
                 equalTo(unitCount.getTranslated() + unitCount.getApproved()));
         assertThat((int) stats.getUntranslated(),
                 equalTo(unitCount.getUntranslated()));
@@ -69,7 +69,7 @@ public class TranslationStatisticsTest {
         assertThat((int) stats.getApproved(), equalTo(wordCount.getApproved()));
         assertThat((int) stats.getRejected(), equalTo(wordCount.getRejected()));
         assertThat((int) stats.getTotal(), equalTo(wordCount.getTotal()));
-        assertThat((int) stats.getTranslated(),
+        assertThat((int) stats.getTranslatedAndApproved(),
                 equalTo(wordCount.getTranslated() + wordCount.getApproved()));
         assertThat((int) stats.getUntranslated(),
                 equalTo(wordCount.getUntranslated()));
@@ -99,7 +99,7 @@ public class TranslationStatisticsTest {
         assertThat((int) stats.getApproved(), equalTo(unitCount.getApproved()));
         assertThat((int) stats.getRejected(), equalTo(unitCount.getRejected()));
         assertThat((int) stats.getTotal(), equalTo(unitCount.getTotal()));
-        assertThat((int) stats.getTranslated(), equalTo(unitCount.getApproved()
+        assertThat((int) stats.getTranslatedAndApproved(), equalTo(unitCount.getApproved()
                 + unitCount.getTranslated()));
         assertThat((int) stats.getUntranslated(),
                 equalTo(unitCount.getUntranslated()));

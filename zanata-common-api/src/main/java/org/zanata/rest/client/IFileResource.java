@@ -51,10 +51,15 @@ import javax.ws.rs.core.MediaType;
 @Consumes({ MediaType.APPLICATION_OCTET_STREAM })
 public interface IFileResource extends FileResource {
 
+    /**
+     * Deprecated.
+     * @see #acceptedFileTypeList
+     */
     @Override
     @GET
     @Path(ACCEPTED_TYPES_RESOURCE)
     @Produces(MediaType.TEXT_PLAIN)
+    @Deprecated
             public
             ClientResponse<String> acceptedFileTypes();
 
