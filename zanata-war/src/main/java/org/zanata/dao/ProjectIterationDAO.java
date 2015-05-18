@@ -190,8 +190,7 @@ public class ProjectIterationDAO extends
         wordStatistic.set(
                 ContentState.New,
                 totalCount.intValue()
-                        - (wordStatistic.getApproved()
-                                + wordStatistic.getTranslated()
+                        - (wordStatistic.getTranslated()
                                 + wordStatistic.getNeedReview() + wordStatistic
                                     .getRejected()));
         return wordStatistic;

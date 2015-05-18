@@ -111,7 +111,7 @@ public abstract class AbstractStatistic implements Serializable {
     }
 
     public synchronized int getTranslated() {
-        return translated;
+        return translated + approved;
     }
 
     public synchronized int getRejected() {

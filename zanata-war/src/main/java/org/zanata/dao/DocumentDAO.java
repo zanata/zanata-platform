@@ -201,8 +201,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
         wordStatistic.set(
                 ContentState.New,
                 totalCount.intValue()
-                        - (wordStatistic.getApproved()
-                                + wordStatistic.getTranslated()
+                        - (wordStatistic.getTranslated()
                                 + wordStatistic.getNeedReview() + wordStatistic
                                     .getRejected()));
 

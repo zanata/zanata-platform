@@ -40,7 +40,7 @@ Example usage in html file: `<link rel="shortcut icon" href="#{assets['img/logo/
 * [1186972](https://bugzilla.redhat.com/show_bug.cgi?id=1186972) - Server-side file conversion and REST service.
     * File project type now supports XLIFF, PROPERTIES, PROPERTIES_UTF8, and GETTEXT
 * [1204982](https://bugzilla.redhat.com/show_bug.cgi?id=1204982) - Documentation update for zanata.org/help + readthedocs 
-*
+* [1209670](https://bugzilla.redhat.com/show_bug.cgi?id=1209670) - Improve review statistics - approved vs translated
 
 ## 3.6.3
 

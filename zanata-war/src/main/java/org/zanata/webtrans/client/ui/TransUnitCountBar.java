@@ -117,16 +117,16 @@ public class TransUnitCountBar extends Composite implements
     }
 
     private void setupLayoutPanel(double undefinedLeft, double undefinedWidth,
-            double approvedLeft, double approvedWidth, double savedLeft,
-            double savedWidth, double needReviewLeft, double needReviewWidth,
+            double approvedLeft, double approvedWidth, double translatedLeft,
+            double translatedWidth, double needReviewLeft, double needReviewWidth,
             double untranslatedLeft, double untranslatedWidth) {
         layoutPanel.forceLayout();
         layoutPanel.setWidgetLeftWidth(undefinedPanel, undefinedLeft, Unit.PX,
                 undefinedWidth, Unit.PX);
         layoutPanel.setWidgetLeftWidth(approvedPanel, approvedLeft, Unit.PX,
                 approvedWidth, Unit.PX);
-        layoutPanel.setWidgetLeftWidth(translatedPanel, savedLeft, Unit.PX,
-                savedWidth, Unit.PX);
+        layoutPanel.setWidgetLeftWidth(translatedPanel, translatedLeft, Unit.PX,
+                translatedWidth, Unit.PX);
         layoutPanel.setWidgetLeftWidth(draftPanel, needReviewLeft, Unit.PX,
                 needReviewWidth, Unit.PX);
         layoutPanel.setWidgetLeftWidth(untranslatedPanel, untranslatedLeft,
@@ -155,14 +155,14 @@ public class TransUnitCountBar extends Composite implements
             setupLayoutPanel(0.0, width, 0, 0, 0.0, 0, 0.0, 0, 0.0, 0);
             label.setText("");
         } else {
-            int completePx = approved * 100 / total * width / TOTAL_WIDTH;
-            int savedPx = translated * 100 / total * width / TOTAL_WIDTH;
+            int approvedPx = approved * 100 / total * width / TOTAL_WIDTH;
+            int translatedPx = translated * 100 / total * width / TOTAL_WIDTH;
             int inProgressPx = draft * 100 / total * width / TOTAL_WIDTH;
             int unfinishedPx = untranslated * 100 / total * width / TOTAL_WIDTH;
 
-            int needReviewLeft = savedPx + completePx;
+            int needReviewLeft = translatedPx + approvedPx;
             int untranslatedLeft = needReviewLeft + inProgressPx;
-            setupLayoutPanel(0.0, 0, 0.0, completePx, completePx, savedPx,
+            setupLayoutPanel(0.0, 0, 0.0, approvedPx, approvedPx, translatedPx,
                     needReviewLeft, inProgressPx, untranslatedLeft,
                     unfinishedPx);
             setLabelText();

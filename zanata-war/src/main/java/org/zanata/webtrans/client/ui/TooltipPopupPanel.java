@@ -63,45 +63,18 @@ public class TooltipPopupPanel extends PopupPanel {
     public TooltipPopupPanel(boolean projectRequireReview) {
         super(true);
         HTMLPanel container = uiBinder.createAndBindUi(this);
-
-        // if (projectRequireReview)
-        // {
-        // // Header row
-        // grid.setText(0, 0, "Approved");
-        // grid.getCellFormatter().addStyleName(0, 0, style.approvedHeader());
-        // grid.setText(0, 1, "Translated");
-        // grid.getCellFormatter().addStyleName(0, 1, style.translatedHeader());
-        // grid.setText(0, 2, "Draft");
-        // grid.getCellFormatter().addStyleName(0, 2, style.draftHeader());
-        // grid.setText(0, 3, "Untranslated");
-        // grid.getCellFormatter().addStyleName(0, 3,
-        // style.untranslatedHeader());
-        // // Data rows
-        // // grid.setWidget();
-        // }
-        // else
-        // {
-        // // Header row
-        // grid.setText(0, 0, "Approved");
-        // grid.getCellFormatter().addStyleName(0, 0, style.approvedHeader());
-        // grid.setText(0, 1, "Draft");
-        // grid.getCellFormatter().addStyleName(0, 1, style.draftHeader());
-        // grid.setText(0, 2, "Untranslated");
-        // grid.getCellFormatter().addStyleName(0, 2,
-        // style.untranslatedHeader());
-        // }
         setStyleName(style.transUnitCountTooltip());
         setWidget(container);
     }
 
     public void refreshData(TransUnitCountBar stats) {
-        wordTranslated.setText(String.valueOf(stats.getWordsTranslated()));
+        wordTranslated.setText(String.valueOf(stats.getWordsTranslated() + stats.getWordsApproved()));
         wordApproved.setText(String.valueOf(stats.getWordsApproved()));
         wordDraft.setText(String.valueOf(stats.getWordsDraft()));
         wordUntranslated.setText(String.valueOf(stats.getWordsUntranslated()));
         wordTotal.setText(String.valueOf(stats.getWordsTotal()));
 
-        msgTranslated.setText(String.valueOf(stats.getUnitTranslated()));
+        msgTranslated.setText(String.valueOf(stats.getUnitTranslated() + stats.getUnitApproved()));
         msgApproved.setText(String.valueOf(stats.getUnitApproved()));
         msgDraft.setText(String.valueOf(stats.getUnitDraft()));
         msgUntranslated.setText(String.valueOf(stats.getUnitUntranslated()));
