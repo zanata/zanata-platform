@@ -32,6 +32,7 @@ Example usage in html file: `<link rel="shortcut icon" href="#{assets['img/logo/
 * [1205512](https://bugzilla.redhat.com/show_bug.cgi?id=1205512) - Run validation in editor document list is disabled when it should not be
 * [903964](https://bugzilla.redhat.com/show_bug.cgi?id=903964) - Error message not propagated to client when push fails
 * [1218002](https://bugzilla.redhat.com/show_bug.cgi?id=1218002) - Disable Google Open Id option
+* [1222358](https://bugzilla.redhat.com/show_bug.cgi?id=1222358) - User profile page dropdown will not work in firefox
 
 -----------------------
 
