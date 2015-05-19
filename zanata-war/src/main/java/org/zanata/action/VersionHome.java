@@ -355,7 +355,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     }
 
     public String createVersion() {
-        if (!validateSlug(getInstance().getSlug(), "slug"))
+        if (!validateSlug(inputSlugValue, "slug"))
             return "invalid-slug";
 
         if (copyFromVersion) {
@@ -368,6 +368,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
     public void copyVersion() {
         getInstance().setStatus(EntityStatus.READONLY);
+        getInstance().setSlug(inputSlugValue);
 
         // create basic version here
         HProject project = getProject();
