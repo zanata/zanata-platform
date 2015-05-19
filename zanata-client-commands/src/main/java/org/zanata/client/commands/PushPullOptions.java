@@ -55,7 +55,7 @@ public interface PushPullOptions extends ConfigurableProjectOptions {
 
     File getTransDir();
 
-    public String getFromDoc();
+    String getFromDoc();
 
     /**
      * This name should represent the exact parameter as it would be entered on
@@ -63,7 +63,7 @@ public interface PushPullOptions extends ConfigurableProjectOptions {
      * parameter to the argument. This is so that the argument can be appended
      * directly to the parameter name.
      */
-    public String buildFromDocArgument(String argValue);
+    String buildFromDocArgument(String argValue);
 
     boolean getEnableModules();
 
