@@ -26,6 +26,7 @@ import org.zanata.client.commands.AbstractPushPullOptionsImpl;
 import org.zanata.client.commands.BooleanValueHandler;
 import org.zanata.client.commands.ZanataCommand;
 import org.zanata.client.commands.PushPullType;
+import com.google.common.base.Preconditions;
 
 /**
  * @author Sean Flanigan <a
@@ -171,8 +172,11 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
         return this.minDocPercent;
     }
 
-    @Option(name = "--min-doc-percent", aliases = "-m", usage = "When specified, will only pull down translation files that have translated or better statistics above the specified percentage")
+    @Option(name = "--min-doc-percent", metaVar = "PERCENT", usage = "Accepts integer from 0 to 100. Only pull translation documents which are at least PERCENT % completed.")
     public void setMinDocPercent(int minDocPercent) {
+        Preconditions
+                .checkArgument(minDocPercent >= 0 && minDocPercent <= 100,
+                        "--min-doc-percent should be an integer from 0 to 100");
         this.minDocPercent = minDocPercent;
     }
 

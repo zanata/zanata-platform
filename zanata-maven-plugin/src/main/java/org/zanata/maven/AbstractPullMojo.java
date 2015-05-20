@@ -27,6 +27,7 @@ import org.zanata.client.commands.pull.PullCommand;
 import org.zanata.client.commands.pull.PullOptions;
 import org.zanata.client.commands.pull.RawPullCommand;
 
+import com.google.common.base.Preconditions;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -108,7 +109,8 @@ public abstract class AbstractPullMojo extends
     private boolean continueAfterError = false;
 
     /**
-     * When specified, will only pull down translation files that have translated or better statistics above the specified percentage.
+     * Accepts integer from 0 to 100. Only pull translation documents
+     * which are at least PERCENT % completed.
      *
      * @parameter expression="$zanata.minDocPercent}" default-value="0"
      */
@@ -119,6 +121,9 @@ public abstract class AbstractPullMojo extends
     */
     public AbstractPullMojo() {
         super();
+        Preconditions
+                .checkArgument(minDocPercent >= 0 && minDocPercent <= 100,
+                        "zanata.minDocPercent should be an integer from 0 to 100");
     }
 
     public PushPullCommand<PullOptions> initCommand() {

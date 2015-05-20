@@ -33,6 +33,7 @@ import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.util.HashUtil;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.sun.jersey.api.client.ClientResponse;
@@ -215,9 +216,15 @@ public class PullCommand extends PushPullCommand<PullOptions> {
             eTagCache.clear();
         }
 
-        Map<String, Map<LocaleId, TranslatedPercent>> statsMap = null;
+        // this stats map will have docId as key, the value is another map with
+        // localeId as key and translated percent as value. It's optional if we
+        // require statistics to determine which file to pull. In cases where
+        // statistics is not required, i.e. pull source only or minimum percent
+        // is set to 0, this will be Optional.absence().
+        Optional<Map<String, Map<LocaleId, TranslatedPercent>>> optionalStats =
+                Optional.absent();
         if (pullTarget && getOpts().getMinDocPercent() > 0) {
-            statsMap = getDocsTranslatedPercent();
+            optionalStats = Optional.of(getDocsTranslatedPercent());
         }
 
         for (String qualifiedDocName : docsToPull) {
@@ -245,7 +252,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                                 strat.getTransFileToWrite(localDocName,
                                         locMapping);
 
-                        if (shouldPullThisLocale(statsMap, localDocName, locale)) {
+                        if (shouldPullThisLocale(optionalStats, localDocName, locale)) {
                             pullDocForLocale(strat, doc, localDocName, docUri,
                                     createSkeletons, locMapping, transFile);
                         } else {
@@ -368,16 +375,16 @@ public class PullCommand extends PushPullCommand<PullOptions> {
     }
 
     private boolean shouldPullThisLocale(
-            Map<String, Map<LocaleId, TranslatedPercent>> statsMap,
+            Optional<Map<String, Map<LocaleId, TranslatedPercent>>> optionalStats,
             String localDocName, LocaleId serverLocale) {
         int minDocPercent = getOpts().getMinDocPercent();
-        if (log.isDebugEnabled() && statsMap != null) {
+        if (log.isDebugEnabled() && optionalStats.isPresent()) {
             log.debug("{} for locale {} is translated {}%", localDocName,
-                    serverLocale, statsMap.get(localDocName).get(serverLocale)
+                    serverLocale, optionalStats.get().get(localDocName).get(serverLocale)
                     .translatedPercent);
         }
-        return statsMap == null
-                || statsMap.get(localDocName).get(serverLocale)
+        return !optionalStats.isPresent()
+                || optionalStats.get().get(localDocName).get(serverLocale)
                         .isAboveThreshold(minDocPercent);
     }
 
@@ -505,6 +512,8 @@ public class PullCommand extends PushPullCommand<PullOptions> {
         }
 
         public boolean isAboveThreshold(int minimumPercent) {
+            // if minimum percent is 100, we will compare exact number so that
+            // rounding issue won't affect the result
             if (minimumPercent == 100) {
                 return total == translated + approved;
             } else {
