@@ -33,6 +33,7 @@ import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -42,7 +43,7 @@ import org.zanata.model.type.ContentTypeType;
 
 @Entity
 @TypeDef(name = "contentType", typeClass = ContentTypeType.class)
-@org.hibernate.annotations.Entity(mutable = false)
+@Immutable
 @Setter
 public class HDocumentHistory implements IDocumentHistory {
 

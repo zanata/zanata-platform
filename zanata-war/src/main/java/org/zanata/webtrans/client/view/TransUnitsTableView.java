@@ -2,14 +2,13 @@ package org.zanata.webtrans.client.view;
 
 import java.util.List;
 
-import com.google.gwt.user.client.Element;
 import org.zanata.util.CoverageIgnore;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.ui.FilterViewConfirmationDisplay;
 import org.zanata.webtrans.client.ui.LoadingPanel;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;

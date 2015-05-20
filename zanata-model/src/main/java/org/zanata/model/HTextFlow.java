@@ -60,7 +60,6 @@ import org.hibernate.annotations.AccessType;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
@@ -253,8 +252,7 @@ public class HTextFlow extends HTextContainer implements Serializable,
 
     // TODO use orphanRemoval=true: requires JPA 2.0
     @OneToOne(optional = true, fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+            cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "comment_id")
     public HSimpleComment getComment() {
         return comment;

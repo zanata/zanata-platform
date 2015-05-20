@@ -169,7 +169,7 @@ public class RestUtilsTest {
 
     @Test
     public void testVersion() throws UnsupportedEncodingException {
-        VersionInfo ver = new VersionInfo(null, null);
+        VersionInfo ver = new VersionInfo(null, null, null);
         testRestUtilUnmarshall(ver, VersionInfo.class);
     }
 

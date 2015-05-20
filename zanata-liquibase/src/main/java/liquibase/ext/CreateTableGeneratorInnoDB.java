@@ -71,7 +71,7 @@ public class CreateTableGeneratorInnoDB extends CreateTableGenerator {
     @Override
     public Sql[] generateSql(CreateTableStatement statement, Database database,
             SqlGeneratorChain sqlGeneratorChain) {
-        Logger log = LogFactory.getLogger();
+        Logger log = LogFactory.getInstance().getLog();
 
         boolean foundCreateTable = false;
         Sql[] sqls = sqlGeneratorChain.generateSql(statement, database).clone();

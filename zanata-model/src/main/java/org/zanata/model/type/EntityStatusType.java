@@ -21,16 +21,11 @@
 
 package org.zanata.model.type;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
-
-import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
 import org.hibernate.dialect.Dialect;
+import org.hibernate.type.AbstractSingleColumnStandardBasicType;
 import org.hibernate.type.DiscriminatorType;
-import org.hibernate.type.ImmutableType;
+import org.hibernate.type.StringType;
 import org.zanata.common.EntityStatus;
 
 /**
@@ -38,39 +33,22 @@ import org.zanata.common.EntityStatus;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-// FIXME convert to AbstractStandardBasicType approach
-public class EntityStatusType extends ImmutableType implements
-        DiscriminatorType<EntityStatus> {
+public class EntityStatusType extends AbstractSingleColumnStandardBasicType<EntityStatus>
+    implements DiscriminatorType<EntityStatus> {
 
     private static final long serialVersionUID = 9055584208831741141L;
 
+    public EntityStatusType() {
+        super(StringType.INSTANCE.getSqlTypeDescriptor(),
+            EntityStatusTypeDescriptor.INSTANCE);
+    }
+
     @Override
-    public String toString(Object value) throws HibernateException {
-        return String.valueOf(((EntityStatus) value).getInitial());
+    public String toString(EntityStatus value) {
+        return String.valueOf((value).getInitial());
     }
 
-    public Object get(ResultSet rs, String name) throws SQLException {
-        String str = rs.getString(name);
-        if (str == null) {
-            return null;
-        } else {
-            return EntityStatus.valueOf(str.charAt(0));
-        }
-    }
-
-    public Class<EntityStatus> getReturnedClass() {
-        return EntityStatus.class;
-    }
-
-    public void set(PreparedStatement st, Object value, int index)
-            throws SQLException {
-        st.setString(index, String.valueOf(((EntityStatus) value).getInitial()));
-    }
-
-    public int sqlType() {
-        return Types.CHAR;
-    }
-
+    @Override
     public String getName() {
         return "entityStatus";
     }
@@ -78,7 +56,7 @@ public class EntityStatusType extends ImmutableType implements
     @Override
     public String objectToSQLString(EntityStatus value, Dialect dialect)
             throws Exception {
-        return "'" + value.getInitial() + "'";
+        return "\'" + toString(value) + "\'";
     }
 
     public EntityStatus stringToObject(String xml) throws Exception {
@@ -89,7 +67,7 @@ public class EntityStatusType extends ImmutableType implements
         return EntityStatus.valueOf(xml.charAt(0));
     }
 
-    public Object fromStringValue(String xml) {
+    public EntityStatus fromStringValue(String xml) {
         return EntityStatus.valueOf(xml.charAt(0));
     }
 

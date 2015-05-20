@@ -106,8 +106,8 @@ public class StatisticsCompatibilityITCase extends CompatibilityBase {
             assertThat(
                     langStats.getTotal(),
                     equalTo(langStats.getUntranslated()
-                            + langStats.getNeedReview()
-                            + langStats.getTranslated()));
+                            + langStats.getDraft()
+                            + langStats.getTranslatedAndApproved()));
             assertThat(langStats.getTotal(),
                     equalTo(langStats.getUntranslated() + langStats.getDraft()
                             + langStats.getTranslatedAndApproved()));
@@ -148,8 +148,8 @@ public class StatisticsCompatibilityITCase extends CompatibilityBase {
             assertThat(
                     langStats.getTotal(),
                     equalTo(langStats.getUntranslated()
-                            + langStats.getNeedReview()
-                            + langStats.getTranslated()));
+                            + langStats.getDraft()
+                            + langStats.getTranslatedAndApproved()));
             assertThat(langStats.getTotal(),
                     equalTo(langStats.getUntranslated() + langStats.getDraft()
                             + langStats.getTranslatedAndApproved()));
@@ -191,8 +191,8 @@ public class StatisticsCompatibilityITCase extends CompatibilityBase {
             assertThat(
                     langStats.getTotal(),
                     equalTo(langStats.getUntranslated()
-                            + langStats.getNeedReview()
-                            + langStats.getTranslated()));
+                            + langStats.getDraft()
+                            + langStats.getTranslatedAndApproved()));
             assertThat(langStats.getTotal(),
                     equalTo(langStats.getUntranslated() + langStats.getDraft()
                             + langStats.getTranslatedAndApproved()));
@@ -224,8 +224,8 @@ public class StatisticsCompatibilityITCase extends CompatibilityBase {
             assertThat(
                     langStats.getTotal(),
                     equalTo(langStats.getUntranslated()
-                            + langStats.getNeedReview()
-                            + langStats.getTranslated()));
+                            + langStats.getDraft()
+                            + langStats.getTranslatedAndApproved()));
             assertThat(langStats.getTotal(),
                     equalTo(langStats.getUntranslated() + langStats.getDraft()
                             + langStats.getTranslatedAndApproved()));

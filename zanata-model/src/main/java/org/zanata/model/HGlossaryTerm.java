@@ -39,7 +39,6 @@ import lombok.ToString;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -87,8 +86,7 @@ public class HGlossaryTerm extends ModelEntityBase {
         return content;
     }
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @IndexColumn(name = "pos", base = 0, nullable = false)
     @JoinColumn(name = "glossaryTermId", nullable = false)
     public List<HTermComment> getComments() {

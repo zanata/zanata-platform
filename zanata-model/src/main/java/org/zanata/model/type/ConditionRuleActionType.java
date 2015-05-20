@@ -20,15 +20,11 @@
  */
 package org.zanata.model.type;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
-
 import org.hibernate.HibernateException;
 import org.hibernate.dialect.Dialect;
-import org.hibernate.type.ImmutableType;
+import org.hibernate.type.AbstractSingleColumnStandardBasicType;
 import org.hibernate.type.LiteralType;
+import org.hibernate.type.StringType;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HCopyTransOptions.ConditionRuleAction;
 
@@ -36,54 +32,30 @@ import org.zanata.model.HCopyTransOptions.ConditionRuleAction;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-// FIXME convert to AbstractStandardBasicType approach
-public class ConditionRuleActionType extends ImmutableType implements
+public class ConditionRuleActionType extends
+    AbstractSingleColumnStandardBasicType<ConditionRuleAction> implements
         LiteralType<ConditionRuleAction> {
+
+    public ConditionRuleActionType() {
+        super(StringType.INSTANCE.getSqlTypeDescriptor(),
+            ConditionRuleActionTypeDescriptor.INSTANCE);
+    }
+
+
     @Override
     public String objectToSQLString(ConditionRuleAction value, Dialect dialect)
             throws Exception {
-        return "'" + value.getInitial() + "'";
+        return "\'" + toString(value) + "\'";
     }
 
     @Override
-    public Object get(ResultSet rs, String name) throws HibernateException,
-            SQLException {
-        String dbVal = rs.getString(name);
-        if (dbVal == null) {
-            return null;
-        } else {
-            return HCopyTransOptions.ConditionRuleAction.valueOf(dbVal
-                    .charAt(0));
-        }
+    public String toString(HCopyTransOptions.ConditionRuleAction value) throws HibernateException {
+        return String.valueOf((value).getInitial());
     }
 
     @Override
-    public void set(PreparedStatement st, Object value, int index)
-            throws HibernateException, SQLException {
-        st.setString(index, String
-                .valueOf(((HCopyTransOptions.ConditionRuleAction) value)
-                    .getInitial()));
-    }
-
-    @Override
-    public int sqlType() {
-        return Types.CHAR;
-    }
-
-    @Override
-    public String toString(Object value) throws HibernateException {
-        return String.valueOf(((HCopyTransOptions.ConditionRuleAction) value)
-                .getInitial());
-    }
-
-    @Override
-    public Object fromStringValue(String xml) throws HibernateException {
+    public HCopyTransOptions.ConditionRuleAction fromStringValue(String xml) throws HibernateException {
         return HCopyTransOptions.ConditionRuleAction.valueOf(xml.charAt(0));
-    }
-
-    @Override
-    public Class<HCopyTransOptions.ConditionRuleAction> getReturnedClass() {
-        return HCopyTransOptions.ConditionRuleAction.class;
     }
 
     @Override

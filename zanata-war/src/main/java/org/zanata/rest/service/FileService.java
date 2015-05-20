@@ -77,7 +77,7 @@ import com.google.common.collect.Lists;
 import com.google.common.io.ByteStreams;
 
 @Name("fileService")
-@Path(FileResource.FILE_RESOURCE)
+@Path(FileResource.SERVICE_PATH)
 @Slf4j
 public class FileService implements FileResource {
     private static final String FILE_TYPE_OFFLINE_PO = "offlinepo";

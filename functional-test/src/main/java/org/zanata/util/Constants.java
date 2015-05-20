@@ -20,7 +20,7 @@
  */
 package org.zanata.util;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +47,7 @@ public enum Constants {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).add("name", name())
+        return MoreObjects.toStringHelper(this).add("name", name())
                 .add("value", value).toString();
     }
 

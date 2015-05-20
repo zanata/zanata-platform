@@ -28,7 +28,6 @@ import javax.persistence.OneToOne;
 import lombok.Setter;
 import lombok.ToString;
 
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Type;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HashableState;
@@ -53,8 +52,7 @@ public abstract class PoHeaderBase extends ModelEntityBase implements
     private String entries;
 
     // TODO use orphanRemoval=true: requires JPA 2.0
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "comment_id")
     public HSimpleComment getComment() {
         return comment;

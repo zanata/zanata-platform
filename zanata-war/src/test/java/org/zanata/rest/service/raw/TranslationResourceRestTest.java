@@ -177,7 +177,6 @@ public class TranslationResourceRestTest extends SourceAndTranslationResourceRes
         target.setResId("tf1");
         target.setContents("hello world");
         target.setState(ContentState.Approved);
-        target.setTranslator(new Person("root@localhost", "Admin user"));
         entity.getTextFlowTargets().add(target);
 
         LocaleId de_DE = new LocaleId("de");
@@ -717,7 +716,6 @@ public class TranslationResourceRestTest extends SourceAndTranslationResourceRes
         target.setResId("tf1");
         target.setContents("hello world");
         target.setState(ContentState.Approved);
-        target.setTranslator(new Person("root@localhost", "Admin user"));
         entity.getTextFlowTargets().add(target);
 
         // Future Date for the PO Revision Date Header
@@ -783,7 +781,6 @@ public class TranslationResourceRestTest extends SourceAndTranslationResourceRes
         target.setResId("tf1");
         target.setContents("hello world");
         target.setState(ContentState.Approved);
-        target.setTranslator(new Person("root@localhost", "Admin user"));
         entity.getTextFlowTargets().add(target);
 
         Response putResponse =
@@ -961,8 +958,6 @@ public class TranslationResourceRestTest extends SourceAndTranslationResourceRes
         target.setDescription("translation of hello world");
         target.setResId("tf1");
         target.setState(ContentState.Approved);
-        Person person = new Person("email@example.com", "Translator Name");
-        target.setTranslator(person);
         trans.getTextFlowTargets().add(target);
         return trans;
     }

@@ -60,7 +60,6 @@ import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Parameter;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.ContentState;
 import org.zanata.common.HasContents;
 import org.zanata.common.LocaleId;
@@ -71,6 +70,7 @@ import org.zanata.hibernate.search.StringListBridge;
 import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
 import org.zanata.model.type.EntityType;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
@@ -395,7 +395,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).add("contents", getContents())
+        return MoreObjects.toStringHelper(this).add("contents", getContents())
                 .add("locale", getLocale()).add("state", getState())
                 .add("comment", getComment())
                 .add("textFlow", getTextFlow().getContents()).toString();

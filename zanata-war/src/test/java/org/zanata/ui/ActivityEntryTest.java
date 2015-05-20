@@ -463,12 +463,12 @@ public class ActivityEntryTest {
                 .getLastTextFlowContent(
                         makeActivity(ActivityType.REVIEWED_TRANSLATION,
                                 textFlowTarget)))
-                .isEqualTo(textFlow.getContent());
+                .isEqualTo(textFlow.getContents().get(0));
         Assertions.assertThat(activityEntry
                 .getLastTextFlowContent(
                         makeActivity(ActivityType.UPDATE_TRANSLATION,
                                 textFlowTarget)))
-                .isEqualTo(textFlow.getContent());
+                .isEqualTo(textFlow.getContents().get(0));
     }
 
     @Test

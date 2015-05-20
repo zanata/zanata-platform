@@ -67,7 +67,7 @@ public class MySQLDatabaseWithLog extends MySQLDatabase {
             List<SqlVisitor> sqlVisitors) throws LiquibaseException {
         if (getConnection() != null) {
             // don't log if running offline
-            Logger log = LogFactory.getLogger();
+            Logger log = LogFactory.getInstance().getLog();
             log.info("Executing " + change.getClass().getSimpleName());
         }
         super.executeStatements(change, changeLog, sqlVisitors);

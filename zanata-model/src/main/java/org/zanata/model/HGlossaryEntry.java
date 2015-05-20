@@ -36,7 +36,6 @@ import lombok.ToString;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
@@ -63,8 +62,7 @@ public class HGlossaryEntry extends ModelEntityBase {
     private String sourceRef;
     private HLocale srcLocale;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "glossaryEntry")
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "glossaryEntry", orphanRemoval = true)
     @MapKey(name = "locale")
     public Map<HLocale, HGlossaryTerm> getGlossaryTerms() {
         if (glossaryTerms == null) {

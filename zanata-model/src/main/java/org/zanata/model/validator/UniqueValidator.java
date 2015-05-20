@@ -32,6 +32,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.metadata.ClassMetadata;
 import org.jboss.seam.Component;
 
@@ -62,7 +63,7 @@ public class UniqueValidator implements ConstraintValidator<Unique, Object> {
                 session.getSessionFactory().getClassMetadata(value.getClass());
         String idName = metadata.getIdentifierPropertyName();
         // FIXME was EntityMode.POJO
-        Serializable id = metadata.getIdentifier(value);
+        Serializable id = metadata.getIdentifier(value, (SessionImplementor) null);
 
         DetachedCriteria criteria = DetachedCriteria.forClass(value.getClass());
         for (String property : parameters.properties()) {

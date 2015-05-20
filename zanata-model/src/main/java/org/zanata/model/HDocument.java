@@ -284,8 +284,7 @@ public class HDocument extends ModelEntityBase implements DocumentWithId,
 
     // TODO use orphanRemoval=true: requires JPA 2.0
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,
-            mappedBy = "document")
-    @Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+            mappedBy = "document", orphanRemoval = true)
     @MapKey(name = "targetLanguage")
     public Map<HLocale, HPoTargetHeader> getPoTargetHeaders() {
         if (poTargetHeaders == null) {

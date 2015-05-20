@@ -111,17 +111,17 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
                 TextFlow txtFlow = resource.getTextFlows().get(0);
                 assertThat(txtFlow.getId(), is("tf2"));
                 assertThat(txtFlow.getRevision(), is(1));
-                assertThat(txtFlow.getContent(), is("mssgId1"));
+                assertThat(txtFlow.getContents().get(0), is("mssgId1"));
 
                 txtFlow = resource.getTextFlows().get(1);
                 assertThat(txtFlow.getId(), is("tf3"));
                 assertThat(txtFlow.getRevision(), is(1));
-                assertThat(txtFlow.getContent(), is("mssgId2"));
+                assertThat(txtFlow.getContents().get(0), is("mssgId2"));
 
                 txtFlow = resource.getTextFlows().get(2);
                 assertThat(txtFlow.getId(), is("tf4"));
                 assertThat(txtFlow.getRevision(), is(1));
-                assertThat(txtFlow.getContent(), is("mssgId3"));
+                assertThat(txtFlow.getContents().get(0), is("mssgId3"));
             }
         }.run();
     }

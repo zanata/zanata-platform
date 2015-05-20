@@ -5,7 +5,8 @@ import java.util.Date;
 import org.joda.time.DateTime;
 import org.zanata.common.ContentState;
 import org.zanata.model.po.HPotEntryData;
-import com.google.common.base.Objects;
+
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -84,7 +85,7 @@ public class HTextFlowBuilder {
     @Override
     public String toString() {
         // @formatter:off
-        return Objects.toStringHelper(this).omitNullValues()
+        return MoreObjects.toStringHelper(this).omitNullValues()
                 .add("resId", resId)
                 .add("sourceContent", sourceContent)
                 .add("sourceComment", sourceComment)

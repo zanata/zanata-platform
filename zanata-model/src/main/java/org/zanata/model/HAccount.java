@@ -149,8 +149,7 @@ public class HAccount extends ModelEntityBase implements Serializable,
         return roles;
     }
 
-    @OneToMany(mappedBy = "account", cascade = { CascadeType.ALL })
-    @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @OneToMany(mappedBy = "account", cascade = { CascadeType.ALL }, orphanRemoval = true)
     public Set<HCredentials> getCredentials() {
         if (credentials == null) {
             credentials = new HashSet<HCredentials>();
@@ -164,8 +163,7 @@ public class HAccount extends ModelEntityBase implements Serializable,
         return mergedInto;
     }
 
-    @OneToMany(mappedBy = "account", cascade = { CascadeType.ALL })
-    @Cascade(value = org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
+    @OneToMany(mappedBy = "account", cascade = { CascadeType.ALL }, orphanRemoval = true)
     @MapKey(name = "name")
     public Map<String, HAccountOption> getEditorOptions() {
         return editorOptions;
