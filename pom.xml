@@ -164,10 +164,20 @@
 
   <properties>
     <!--
-    Version of java used for building. (Specified as major.minor, as used by
-    javac -source and -target).
+    Version of java compiler used for building. (Specified as major.minor,
+    as used by javac -source and -target).
     -->
     <required.java>1.7</required.java>
+    <!--
+      Version of Java used for runtime (major.minor) and for bytecode
+      generation. Should correspond with animal.sniffer.signature.
+    -->
+    <required.jvm>1.7</required.jvm>
+    <!--
+      Version of Java used for API compatibility checking. Should
+      correspond with required.jvm.
+    -->
+    <animal.sniffer.signature>java17</animal.sniffer.signature>
     <required.maven>3.0.5</required.maven>
     <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -409,7 +419,7 @@
               http://mojo.codehaus.org/extra-enforcer-rules/enforceBytecodeVersion.html
             -->
             <enforceBytecodeVersion>
-              <maxJdkVersion>${required.java}</maxJdkVersion>
+              <maxJdkVersion>${required.jvm}</maxJdkVersion>
             </enforceBytecodeVersion>
             <!--
               Ensure that Maven is using our chosen version of the JDK. See
@@ -450,6 +460,32 @@
           <failIfNoTests>false</failIfNoTests>
            -->
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+        <version>1.14</version>
+        <executions>
+          <execution>
+            <id>animal-sniffer</id>
+            <phase>test</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <excludeDependencies>
+                <!-- xom:1.0 uses this -->
+                <excludeDependency>com.ibm.icu:icu4j:jar:2.6.1</excludeDependency>
+              </excludeDependencies>
+              <signature>
+                <groupId>org.codehaus.mojo.signature</groupId>
+                <artifactId>${animal.sniffer.signature}</artifactId>
+                <version>1.0</version>
+              </signature>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
