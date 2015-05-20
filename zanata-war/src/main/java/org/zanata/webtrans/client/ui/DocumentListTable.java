@@ -330,9 +330,7 @@ public class DocumentListTable extends FlexTable {
         FlowPanel panel = new FlowPanel();
         final TransUnitCountBar graph =
                 new TransUnitCountBar(userWorkspaceContext, messages,
-                        LabelFormat.PERCENT_COMPLETE, false,
-                        userWorkspaceContext.getWorkspaceRestrictions()
-                                .isProjectRequireReview());
+                        LabelFormat.PERCENT_COMPLETE, false);
         Image loading = new Image(resources.spinner());
         panel.add(graph);
         panel.add(loading);

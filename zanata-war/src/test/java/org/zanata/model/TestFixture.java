@@ -122,7 +122,7 @@ public class TestFixture {
                 new ProjectIterationId(projectSlug, iterationSlug, projectType);
         WorkspaceRestrictions workspaceRestrictions =
                 new WorkspaceRestrictions(projectActive, false, hasWriteAccess, true,
-                        true, true);
+                        true);
         return new UserWorkspaceContext(new WorkspaceContext(new WorkspaceId(
                 projectIterationId, LocaleId.EN_US), "workspaceName",
                 LocaleId.EN_US.getId()), workspaceRestrictions);
@@ -132,7 +132,7 @@ public class TestFixture {
             boolean projectActive, boolean hasWriteAccess) {
         WorkspaceRestrictions workspaceRestrictions =
                 new WorkspaceRestrictions(projectActive, false, hasWriteAccess, true,
-                        true, true);
+                        true);
         return new UserWorkspaceContext(new WorkspaceContext(workspaceId(),
                 "workspaceName", LocaleId.EN_US.getId()), workspaceRestrictions);
     }

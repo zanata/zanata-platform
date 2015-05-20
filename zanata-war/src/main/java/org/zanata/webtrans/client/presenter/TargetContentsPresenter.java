@@ -647,8 +647,7 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
     public boolean canReview() {
         WorkspaceRestrictions restrictions =
                 userWorkspaceContext.getWorkspaceRestrictions();
-        return restrictions.isHasReviewAccess()
-                && restrictions.isProjectRequireReview();
+        return restrictions.isHasReviewAccess();
     }
 
     @Override

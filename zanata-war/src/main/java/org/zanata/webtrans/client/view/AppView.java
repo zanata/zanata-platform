@@ -152,9 +152,7 @@ public class AppView extends Composite implements AppDisplay,
         this.messages = messages;
         translationStatsBar =
                 new TransUnitCountBar(userWorkspaceContext, messages,
-                        LabelFormat.PERCENT_COMPLETE_HRS, true,
-                        userWorkspaceContext.getWorkspaceRestrictions()
-                                .isProjectRequireReview());
+                        LabelFormat.PERCENT_COMPLETE_HRS, true);
         translationStatsBar.setVisible(false); // hide until there is a value to
 
         projectLink =

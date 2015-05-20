@@ -13,7 +13,6 @@ public class WorkspaceRestrictions implements IsSerializable {
     private boolean hasEditTranslationAccess;
     private boolean hasReviewAccess;
     private boolean hasGlossaryUpdateAccess;
-    private boolean projectRequireReview;
 
     @SuppressWarnings("unused")
     private WorkspaceRestrictions() {
@@ -21,13 +20,12 @@ public class WorkspaceRestrictions implements IsSerializable {
 
     public WorkspaceRestrictions(boolean projectActive, boolean projectObsolete,
             boolean hasEditTranslationAccess, boolean hasGlossaryUpdateAccess,
-            boolean hasReviewAccess, boolean projectRequireReview) {
+            boolean hasReviewAccess) {
         this.isProjectActive = projectActive;
         this.isProjectObsolete = projectObsolete;
         this.hasEditTranslationAccess = hasEditTranslationAccess;
         this.hasGlossaryUpdateAccess = hasGlossaryUpdateAccess;
         this.hasReviewAccess = hasReviewAccess;
-        this.projectRequireReview = projectRequireReview;
     }
 
     public boolean isProjectActive() {
@@ -50,33 +48,29 @@ public class WorkspaceRestrictions implements IsSerializable {
         return hasReviewAccess;
     }
 
-    public boolean isProjectRequireReview() {
-        return projectRequireReview;
-    }
-
     public WorkspaceRestrictions changeProjectActivity(boolean projectActive) {
         return new WorkspaceRestrictions(projectActive, isProjectObsolete,
                 hasEditTranslationAccess, hasGlossaryUpdateAccess,
-                hasReviewAccess, projectRequireReview);
+                hasReviewAccess);
     }
 
     public WorkspaceRestrictions changeProjectObsolescence(boolean projectObsolete) {
         return new WorkspaceRestrictions(isProjectActive, projectObsolete,
                 hasEditTranslationAccess, hasGlossaryUpdateAccess,
-                hasReviewAccess, projectRequireReview);
+                hasReviewAccess);
     }
 
     public WorkspaceRestrictions changeEditTranslationAccess(
             boolean hasEditTranslationAccess) {
         return new WorkspaceRestrictions(isProjectActive, isProjectObsolete,
                 hasEditTranslationAccess, hasGlossaryUpdateAccess,
-                hasReviewAccess, projectRequireReview);
+                hasReviewAccess);
     }
 
     public WorkspaceRestrictions changeReviewAccess(boolean hasReviewAccess) {
         return new WorkspaceRestrictions(isProjectActive, isProjectObsolete,
                 hasEditTranslationAccess, hasGlossaryUpdateAccess,
-                hasReviewAccess, projectRequireReview);
+                hasReviewAccess);
     }
 
     @Override
@@ -87,7 +81,6 @@ public class WorkspaceRestrictions implements IsSerializable {
             add("hasEditTranslationAccess", hasEditTranslationAccess).
             add("hasGlossaryUpdateAccess", hasGlossaryUpdateAccess).
             add("hasReviewAccess", hasReviewAccess).
-            add("projectRequireReview", projectRequireReview).
             toString();
       // @formatter:on
     }

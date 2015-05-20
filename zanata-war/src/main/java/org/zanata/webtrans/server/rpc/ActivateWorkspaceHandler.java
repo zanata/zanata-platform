@@ -132,12 +132,11 @@ public class ActivateWorkspaceHandler extends
         boolean isProjectObsolete = isProjectIterationObsolete(project.getStatus(), projectIteration.getStatus());
         boolean hasWriteAccess = hasWritePermission(project, locale);
         boolean hasGlossaryUpdateAccess = hasGlossaryUpdatePermission();
-        boolean requireReview = projectIteration.getRequireTranslationReview();
         boolean hasReviewAccess = hasReviewerPermission(locale, project);
 
         WorkspaceRestrictions workspaceRestrictions =
                 new WorkspaceRestrictions(isProjectActive, isProjectObsolete, hasWriteAccess,
-                        hasGlossaryUpdateAccess, hasReviewAccess, requireReview);
+                        hasGlossaryUpdateAccess, hasReviewAccess);
         log.debug("workspace restrictions: {}", workspaceRestrictions);
 
         LoadOptionsResult loadOptsRes =

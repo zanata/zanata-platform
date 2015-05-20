@@ -60,7 +60,7 @@ public class TooltipPopupPanel extends PopupPanel {
     Grid grid;
 
     @Inject
-    public TooltipPopupPanel(boolean projectRequireReview) {
+    public TooltipPopupPanel() {
         super(true);
         HTMLPanel container = uiBinder.createAndBindUi(this);
         setStyleName(style.transUnitCountTooltip());

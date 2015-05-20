@@ -68,7 +68,7 @@ public class TransUnitCountBar extends Composite implements
     @Inject
     public TransUnitCountBar(UserWorkspaceContext userworkspaceContext,
             WebTransMessages messages, LabelFormat labelFormat,
-            boolean enableClickToggle, boolean projectRequireReview) {
+            boolean enableClickToggle) {
         this.messages = messages;
         if (labelFormat != null) {
             this.labelFormat = labelFormat;
@@ -79,7 +79,7 @@ public class TransUnitCountBar extends Composite implements
                 userworkspaceContext.getWorkspaceContext().getWorkspaceId()
                         .getLocaleId();
 
-        tooltipPanel = new TooltipPopupPanel(projectRequireReview);
+        tooltipPanel = new TooltipPopupPanel();
 
         initWidget(uiBinder.createAndBindUi(this));
 
