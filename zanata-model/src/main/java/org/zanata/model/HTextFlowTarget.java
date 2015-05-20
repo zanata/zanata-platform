@@ -395,9 +395,16 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this).add("contents", getContents())
-                .add("locale", getLocale()).add("state", getState())
-                .add("comment", getComment())
+        MoreObjects.ToStringHelper helper =
+                MoreObjects.toStringHelper(this)
+                        .add("contents", getContents())
+                        .add("locale", getLocale())
+                        .add("state", getState())
+                        .add("comment", getComment());
+        if (getTextFlow() == null) {
+            return helper.toString();
+        }
+        return helper
                 .add("textFlow", getTextFlow().getContents()).toString();
     }
 
