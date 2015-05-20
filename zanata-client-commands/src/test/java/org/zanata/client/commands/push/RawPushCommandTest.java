@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.zanata.client.commands.ConsoleInteractor;
 import org.zanata.rest.client.RestClientFactory;
 
 import static org.hamcrest.Matchers.contains;
@@ -23,6 +24,8 @@ public class RawPushCommandTest {
     private PushOptions opts;
     @Mock
     private RestClientFactory clientFactory;
+    @Mock
+    private ConsoleInteractor console;
 
     private RawPushCommand command;
 
@@ -32,7 +35,7 @@ public class RawPushCommandTest {
         when(opts.getProj()).thenReturn("project");
         when(opts.getProjectVersion()).thenReturn("version");
         when(opts.getProjectType()).thenReturn("File");
-        command = new RawPushCommand(opts, clientFactory);
+        command = new RawPushCommand(opts, clientFactory, console);
     }
 
     @Test

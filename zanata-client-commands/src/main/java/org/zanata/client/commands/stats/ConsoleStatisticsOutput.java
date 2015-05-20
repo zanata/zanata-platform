@@ -78,7 +78,7 @@ public class ConsoleStatisticsOutput implements
             TranslationStatistics s = stats.get(i);
             data[i] =
                     new Object[] { s.getLocale(), s.getUnit(), s.getTotal(),
-                            s.getTranslated(), s.getNeedReview(),
+                            s.getTranslatedAndApproved(), s.getDraft(),
                             s.getUntranslated(), s.getLastTranslated() };
         }
 

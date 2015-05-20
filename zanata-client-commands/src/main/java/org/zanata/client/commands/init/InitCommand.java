@@ -79,6 +79,11 @@ public class InitCommand extends ConfigurableCommand<InitOptions> {
     }
 
     @VisibleForTesting
+    protected InitCommand(InitOptions opts, ConsoleInteractor console) {
+        this(opts, console, new RestClientFactory() {});
+    }
+
+    @VisibleForTesting
     protected InitCommand(InitOptions opts,
             ConsoleInteractor console,
             RestClientFactory restClientFactory) {

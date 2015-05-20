@@ -61,6 +61,7 @@ import static org.zanata.common.ProjectType.Podir;
 @Path(FileResource.SERVICE_PATH)
 public class MockFileResource implements FileResource {
     @Override
+    @Deprecated
     public Response acceptedFileTypes() {
         StringSet extensions = new StringSet("");
         for (DocumentType docType : ProjectType

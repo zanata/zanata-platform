@@ -66,6 +66,7 @@ import org.zanata.rest.client.FileResourceClient;
 import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.dto.ChunkUploadResponse;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
@@ -85,19 +86,28 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
     private static final Pattern fileNameExtensionsPattern = Pattern.compile(
         "(?:([^\\[]*)?(?:\\[(.*?)\\])?)");
 
-    private final ConsoleInteractor consoleInteractor =
-            new ConsoleInteractorImpl();
+    private final ConsoleInteractor consoleInteractor;
 
     private FileResourceClient client;
 
     public RawPushCommand(PushOptions opts) {
         super(opts);
         client = getClientFactory().getFileResourceClient();
+        consoleInteractor = new ConsoleInteractorImpl();
     }
 
     public RawPushCommand(PushOptions opts, RestClientFactory clientFactory) {
         super(opts, clientFactory);
         client = getClientFactory().getFileResourceClient();
+        consoleInteractor = new ConsoleInteractorImpl();
+    }
+
+    @VisibleForTesting
+    protected RawPushCommand(PushOptions opts, RestClientFactory clientFactory,
+        ConsoleInteractor console) {
+        super(opts, clientFactory);
+        client = getClientFactory().getFileResourceClient();
+        this.consoleInteractor = console;
     }
 
     /**

@@ -46,6 +46,9 @@ public class ConsoleInteractorImpl implements ConsoleInteractor {
 
     public ConsoleInteractorImpl() {
         console = System.console();
+        if (console == null) {
+            throw new RuntimeException("Console not available: please run from a console, or use batch mode.");
+        }
         out = AnsiConsole.out();
     }
 
