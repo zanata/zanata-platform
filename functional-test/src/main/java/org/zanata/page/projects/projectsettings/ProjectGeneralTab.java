@@ -71,8 +71,8 @@ public class ProjectGeneralTab extends ProjectBasePage {
      */
     public ProjectGeneralTab enterProjectSlug(String projectSlug) {
         log.info("Enter project slug {}", projectSlug);
-        waitForWebElement(projectIdField).clear();
-        waitForWebElement(projectIdField).sendKeys(projectSlug);
+        readyElement(projectIdField).clear();
+        readyElement(projectIdField).sendKeys(projectSlug);
         defocus(projectIdField);
         return new ProjectGeneralTab(getDriver());
     }

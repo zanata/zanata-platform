@@ -73,7 +73,7 @@ public class SignInPage extends CorePage {
 
     public InactiveAccountPage clickSignInExpectInactive() {
         log.info("Click Sign In");
-        waitForWebElement(signInButton).click();
+        readyElement(signInButton).click();
         return new InactiveAccountPage(getDriver());
     }
 

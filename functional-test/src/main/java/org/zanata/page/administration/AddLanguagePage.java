@@ -106,6 +106,7 @@ public class AddLanguagePage extends BasePage {
 
     public Map<String, String> getLanguageDetails() {
         log.info("Query language details");
+        @SuppressWarnings("unchecked")
         Map<String, String> map = new HashMap();
         // Wait for the fields to be populated
         waitForAMoment().until(new Predicate<WebDriver>() {

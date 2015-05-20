@@ -140,6 +140,6 @@ public class VersionLanguagesPage extends VersionBasePage {
                         "can not find statistics for locale: %s", localeId);
                 return figure;
             }
-        });
+        }, "Find the stats for locale " + localeId);
     }
 }

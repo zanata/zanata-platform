@@ -44,17 +44,17 @@ public class ProfilePage extends BasePage {
 
     public String getDisplayName() {
         log.info("Query user's display name");
-        return waitForWebElement(displayNameBy).getText();
+        return readyElement(displayNameBy).getText();
     }
 
     public String getUsername() {
         log.info("Query user's username");
-        return waitForWebElement(userNameBy).getText();
+        return readyElement(userNameBy).getText();
     }
 
     public String getLanguages() {
         log.info("Query user's languages list");
-        return waitForWebElement(languagesBy).getText();
+        return readyElement(languagesBy).getText();
     }
 
     public boolean expectContributionsMatrixVisible() {

@@ -103,7 +103,7 @@ public class ProjectLanguagesTab extends ProjectBasePage {
             public boolean apply(WebDriver driver) {
                 return getEnabledLocaleList().contains(searchLocaleId);
             }
-        });
+        }, "Wait for the locale list to contain " + searchLocaleId);
 
         return new ProjectLanguagesTab(getDriver());
     }
@@ -130,45 +130,45 @@ public class ProjectLanguagesTab extends ProjectBasePage {
             public boolean apply(WebDriver driver) {
                 return !getEnabledLocaleList().contains(searchLocaleId);
             }
-        });
+        }, "Wait for the locale list to not contain " + searchLocaleId);
 
         return new ProjectLanguagesTab(getDriver());
     }
 
     public ProjectLanguagesTab clickLanguageActionsDropdown(String locale) {
-        LanguageList.clickActionsDropdown(waitForWebElement(activeLocales),
+        LanguageList.clickActionsDropdown(readyElement(activeLocales),
                 locale);
         return new ProjectLanguagesTab(getDriver());
     }
 
     public ProjectLanguagesTab clickAddAlias(String locale) {
-        LanguageList.clickAddAlias(waitForWebElement(activeLocales), locale);
+        LanguageList.clickAddAlias(readyElement(activeLocales), locale);
         return new ProjectLanguagesTab(getDriver());
     }
 
     public ProjectLanguagesTab clickEditAlias(String locale) {
-        LanguageList.clickEditAlias(waitForWebElement(activeLocales), locale);
+        LanguageList.clickEditAlias(readyElement(activeLocales), locale);
         return new ProjectLanguagesTab(getDriver());
     }
 
     public ProjectLanguagesTab enterAliasForLocale(String locale, String alias) {
-        LanguageList.enterAlias(waitForWebElement(activeLocales),
+        LanguageList.enterAlias(readyElement(activeLocales),
                 locale, alias);
         return new ProjectLanguagesTab(getDriver());
     }
 
     public ProjectLanguagesTab saveLocaleAlias(String locale) {
-        LanguageList.setAlias(waitForWebElement(activeLocales), locale);
+        LanguageList.setAlias(readyElement(activeLocales), locale);
         return new ProjectLanguagesTab(getDriver());
     }
 
     public ProjectLanguagesTab deleteAlias(String locale) {
-        LanguageList.unsetAlias(waitForWebElement(activeLocales), locale);
+        LanguageList.unsetAlias(readyElement(activeLocales), locale);
         return new ProjectLanguagesTab(getDriver());
     }
 
     public String getAlias(String locale) {
-        return LanguageList.getAliasForLocale(waitForWebElement(activeLocales),
+        return LanguageList.getAliasForLocale(readyElement(activeLocales),
                 locale);
     }
 }

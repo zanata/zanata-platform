@@ -80,17 +80,17 @@ public class LanguagePage extends BasePage {
     }
 
     public LanguagePage gotoSettingsTab() {
-        waitForWebElement(settingsTab).click();
+        readyElement(settingsTab).click();
         return new LanguagePage(getDriver());
     }
 
     public LanguagePage gotoMembersTab() {
-        waitForWebElement(membersTab).click();
+        readyElement(membersTab).click();
         return new LanguagePage(getDriver());
     }
 
     public LanguagePage enableLanguageByDefault(boolean enable) {
-        Checkbox checkbox = Checkbox.of(waitForWebElement(enableByDefault));
+        Checkbox checkbox = Checkbox.of(readyElement(enableByDefault));
         if (enable) {
             checkbox.check();
         } else {
@@ -100,7 +100,7 @@ public class LanguagePage extends BasePage {
     }
 
     public LanguagePage saveSettings() {
-        waitForWebElement(saveButton).click();
+        readyElement(saveButton).click();
         return new LanguagePage(getDriver());
     }
 
@@ -111,7 +111,7 @@ public class LanguagePage extends BasePage {
             return Collections.emptyList();
         }
         List<String> names = new ArrayList<>();
-        for (WebElement listEntry : waitForWebElement(By.id("members-form"))
+        for (WebElement listEntry : readyElement(By.id("members-form"))
             .findElements(By.className("list__item--actionable"))) {
             names.add(listEntry.findElement(By.tagName("h3")).getText().trim());
         }
@@ -120,12 +120,12 @@ public class LanguagePage extends BasePage {
 
     private String getMemberCount() {
         log.info("Query members info");
-        return waitForWebElement(By.id("members-size")).getText().trim();
+        return readyElement(By.id("members-size")).getText().trim();
     }
 
     public LanguagePage joinLanguageTeam() {
         log.info("Click Join");
-        waitForWebElement(joinLanguageTeamButton).click();
+        readyElement(joinLanguageTeamButton).click();
         // we need to wait for this join to finish before returning the page
         waitForAMoment().until(new Function<WebDriver, Boolean>() {
             @Override
@@ -138,7 +138,7 @@ public class LanguagePage extends BasePage {
 
     public LanguagePage clickAddTeamMember() {
         log.info("Click Add Team Member");
-        waitForWebElement(addTeamMemberButton).click();
+        readyElement(addTeamMemberButton).click();
         return this;
     }
 
@@ -157,13 +157,13 @@ public class LanguagePage extends BasePage {
 
     private LanguagePage enterUsername(String username) {
         log.info("Enter username search {}", username);
-        waitForWebElement(addUserSearchInput).sendKeys(username);
+        readyElement(addUserSearchInput).sendKeys(username);
         return new LanguagePage(getDriver());
     }
 
     private LanguagePage clickSearch() {
         log.info("Click Search");
-        waitForWebElement(addUserSearchButton).click();
+        readyElement(addUserSearchButton).click();
         return new LanguagePage(getDriver());
     }
 
@@ -199,7 +199,7 @@ public class LanguagePage extends BasePage {
             public boolean apply(WebDriver driver) {
                 return getMemberUsernames().contains(personUsername);
             }
-        });
+        }, "Wait for names to contain " + personUsername);
         return new LanguagePage(getDriver());
     }
 
@@ -208,7 +208,7 @@ public class LanguagePage extends BasePage {
         return waitForAMoment().until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver input) {
-                WebElement list = waitForWebElement(personTable)
+                WebElement list = readyElement(personTable)
                     .findElement(By.className("list--slat"));
                 List<WebElement> rows = list
                     .findElements(By.className("txt--meta"));
@@ -233,7 +233,7 @@ public class LanguagePage extends BasePage {
 
     public LanguagePage clickAddSelectedButton() {
         log.info("Click Add Selected");
-        waitForWebElement(addSelectedButton).click();
+        readyElement(addSelectedButton).click();
         return new LanguagePage(getDriver());
     }
 

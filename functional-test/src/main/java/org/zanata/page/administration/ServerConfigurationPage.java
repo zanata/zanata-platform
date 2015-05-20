@@ -57,8 +57,8 @@ public class ServerConfigurationPage extends BasePage {
     }
 
     private void enterTextConfigField(By by, String text) {
-        scrollIntoView(waitForWebElement(by));
-        new Actions(getDriver()).moveToElement(waitForWebElement(by))
+        scrollIntoView(readyElement(by));
+        new Actions(getDriver()).moveToElement(readyElement(by))
                 .click()
                 .sendKeys(Keys.chord(Keys.CONTROL, "a"))
                 .sendKeys(Keys.DELETE)
@@ -82,7 +82,7 @@ public class ServerConfigurationPage extends BasePage {
         return waitForAMoment().until(new Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver input) {
-                String value = waitForWebElement(by).getAttribute("value");
+                String value = existingElement(by).getAttribute("value");
                 log.info("Found {}", value);
                 return expectedValue.equals(value);
             }
@@ -115,20 +115,20 @@ public class ServerConfigurationPage extends BasePage {
 
     public ServerConfigurationPage clickLoggingEnabledCheckbox() {
         log.info("Click enable logging checkbox");
-        waitForWebElement(enableLogCheck).click();
+        clickElement(enableLogCheck);
         return new ServerConfigurationPage(getDriver());
     }
 
     public ServerConfigurationPage selectLoggingLevel(String logLevel) {
         log.info("Select logging level {}", logLevel);
-        new Select(waitForWebElement(logLevelSelect)).selectByVisibleText(
+        new Select(readyElement(logLevelSelect)).selectByVisibleText(
                 logLevel);
         return new ServerConfigurationPage(getDriver());
     }
 
     public String selectedLoggingLevel() {
         log.info("Query selected logging level");
-        return new Select(waitForWebElement(logLevelSelect))
+        return new Select(readyElement(logLevelSelect))
                 .getFirstSelectedOption().getText();
     }
 
@@ -140,7 +140,7 @@ public class ServerConfigurationPage extends BasePage {
 
     public String getLogEmailTarget() {
         log.info("Query log email target");
-        return waitForWebElement(emailDestinationField).getAttribute("value");
+        return readyElement(emailDestinationField).getAttribute("value");
     }
 
     public ServerConfigurationPage inputPiwikUrl(String url) {
@@ -151,7 +151,7 @@ public class ServerConfigurationPage extends BasePage {
 
     public String getPiwikUrl() {
         log.info("Query Piwik URL");
-        return waitForWebElement(piwikUrl).getAttribute("value");
+        return readyElement(piwikUrl).getAttribute("value");
     }
 
     public ServerConfigurationPage inputPiwikID(String id) {
@@ -162,7 +162,7 @@ public class ServerConfigurationPage extends BasePage {
 
     public String getPiwikID() {
         log.info("Query Piwik ID");
-        return waitForWebElement(piwikId).getAttribute("value");
+        return readyElement(piwikId).getAttribute("value");
     }
 
     public ServerConfigurationPage inputMaxConcurrent(int max) {
