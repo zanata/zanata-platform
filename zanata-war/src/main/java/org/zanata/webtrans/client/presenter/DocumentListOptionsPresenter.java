@@ -29,6 +29,7 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEventHandler;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.view.DocumentListOptionsDisplay;
@@ -49,9 +50,11 @@ public class DocumentListOptionsPresenter extends
     private final CachingDispatchAsync dispatcher;
     private final UserWorkspaceContext userWorkspaceContext;
     private final UserOptionsService userOptionsService;
+    private final WebTransMessages messages;
 
     @Inject
-    public DocumentListOptionsPresenter(DocumentListOptionsDisplay display,
+    public DocumentListOptionsPresenter(WebTransMessages messages,
+            DocumentListOptionsDisplay display,
             EventBus eventBus, UserWorkspaceContext userWorkspaceContext,
             CachingDispatchAsync dispatcher,
             UserOptionsService userOptionsService) {
@@ -59,7 +62,7 @@ public class DocumentListOptionsPresenter extends
         this.userWorkspaceContext = userWorkspaceContext;
         this.dispatcher = dispatcher;
         this.userOptionsService = userOptionsService;
-
+        this.messages = messages;
     }
 
     @Override
@@ -111,7 +114,7 @@ public class DocumentListOptionsPresenter extends
     @Override
     public void persistOptionChange() {
         userOptionsService.persistOptionChange(userOptionsService
-                .getDocumentListOptions());
+            .getDocumentListOptions());
     }
 
     @Override
@@ -138,7 +141,7 @@ public class DocumentListOptionsPresenter extends
                         eventBus.fireEvent(UserConfigChangeEvent.DOCUMENT_CONFIG_CHANGE_EVENT);
                         eventBus.fireEvent(new NotificationEvent(
                                 NotificationEvent.Severity.Warning,
-                                "Loaded user options"));
+                                messages.loadedUserOptions()));
                     }
                 });
     }
@@ -151,6 +154,6 @@ public class DocumentListOptionsPresenter extends
         eventBus.fireEvent(UserConfigChangeEvent.DOCUMENT_CONFIG_CHANGE_EVENT);
         eventBus.fireEvent(new NotificationEvent(
                 NotificationEvent.Severity.Warning,
-                "Loaded default user options."));
+                messages.restoreToDefaultOptions()));
     }
 }

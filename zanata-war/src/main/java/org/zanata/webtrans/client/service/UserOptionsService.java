@@ -29,6 +29,7 @@ import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.UserOptions;
 import org.zanata.webtrans.shared.model.ValidationId;
@@ -51,13 +52,15 @@ public class UserOptionsService {
     private final EventBus eventBus;
     private final CachingDispatchAsync dispatcher;
     private final UserConfigHolder configHolder;
+    private final WebTransMessages messages;
 
     @Inject
-    public UserOptionsService(EventBus eventBus,
+    public UserOptionsService(WebTransMessages messages, EventBus eventBus,
             CachingDispatchAsync dispatcher, UserConfigHolder configHolder) {
         this.eventBus = eventBus;
         this.dispatcher = dispatcher;
         this.configHolder = configHolder;
+        this.messages = messages;
     }
 
     public void persistOptionChange(Map<UserOptions, String> optsMap) {
@@ -74,7 +77,8 @@ public class UserOptionsService {
             @Override
             public void onSuccess(SaveOptionsResult result) {
                 eventBus.fireEvent(new NotificationEvent(
-                        NotificationEvent.Severity.Info, "Saved user options"));
+                        NotificationEvent.Severity.Warning,
+                        messages.savedOptions()));
             }
         });
     }

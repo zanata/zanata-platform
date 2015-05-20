@@ -31,6 +31,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.AccountDAO;
+import org.zanata.dao.AccountOptionDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountOption;
 import org.zanata.webtrans.server.ActionHandlerFor;
@@ -53,6 +54,9 @@ public class SaveOptionsHandler extends
     @In
     private AccountDAO accountDAO;
 
+    @In
+    private AccountOptionDAO accountOptionDAO;
+
     @Override
     public SaveOptionsResult execute(SaveOptionsAction action,
             ExecutionContext context) throws ActionException {
@@ -61,12 +65,12 @@ public class SaveOptionsHandler extends
 
         for (Entry<UserOptions, String> entry : action.getConfigurationMap()
                 .entrySet()) {
-            this.setOrCreateOptionValue(account, entry.getKey(),
-                    entry.getValue());
+            HAccountOption option = updateOrCreateOption(account, entry.getKey(),
+                entry.getValue());
+            accountOptionDAO.makePersistent(option);
         }
 
-        accountDAO.makePersistent(account);
-        accountDAO.flush();
+        accountOptionDAO.flush();
 
         SaveOptionsResult result = new SaveOptionsResult();
         result.setSuccess(true);
@@ -79,7 +83,7 @@ public class SaveOptionsHandler extends
             ExecutionContext context) throws ActionException {
     }
 
-    private void setOrCreateOptionValue(HAccount account, UserOptions name,
+    private HAccountOption updateOrCreateOption(HAccount account, UserOptions name,
             String newVal) {
         HAccountOption option =
                 account.getEditorOptions().get(name.getPersistentName());
@@ -91,5 +95,6 @@ public class SaveOptionsHandler extends
         } else {
             option.setValue(newVal);
         }
+        return option;
     }
 }

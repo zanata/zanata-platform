@@ -24,6 +24,7 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.RefreshPageEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.view.EditorOptionsDisplay;
@@ -65,6 +66,8 @@ public class EditorOptionsPresenterTest {
     private ArgumentCaptor<UserConfigChangeEvent> eventCaptor;
     @Mock
     private UserOptionsService userOptionsService;
+    @Mock
+    private WebTransMessages messages;
 
     private UserConfigHolder configHolder = new UserConfigHolder();
 
@@ -76,7 +79,7 @@ public class EditorOptionsPresenterTest {
         when(userOptionsService.getConfigHolder()).thenReturn(configHolder);
 
         presenter =
-                new EditorOptionsPresenter(display, eventBus,
+                new EditorOptionsPresenter(messages, display, eventBus,
                         userWorkspaceContext, validationDetailsPresenter,
                         changeReferenceLangPresenter,
                         dispatcher, userOptionsService);

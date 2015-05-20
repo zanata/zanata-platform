@@ -39,6 +39,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
+import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.shared.model.UserOptions;
 import org.zanata.webtrans.shared.rpc.NavOption;
@@ -60,6 +61,8 @@ public class UserOptionsServiceTest {
     private EventBus eventBus;
     @Mock
     private CachingDispatchAsync dispatcher;
+    @Mock
+    private WebTransMessages messages;
 
     private UserConfigHolder configHolder = new UserConfigHolder();
 
@@ -67,7 +70,7 @@ public class UserOptionsServiceTest {
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
 
-        service = new UserOptionsService(eventBus, dispatcher, configHolder);
+        service = new UserOptionsService(messages, eventBus, dispatcher, configHolder);
     }
 
     @Test
