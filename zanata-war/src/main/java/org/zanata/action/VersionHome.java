@@ -43,7 +43,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesManager;
-import org.zanata.ApplicationConfiguration;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -63,6 +62,7 @@ import org.zanata.service.ValidationService;
 import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ComparatorUtil;
+import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
@@ -135,7 +135,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     private CopyVersionManager copyVersionManager;
 
     @In
-    private ApplicationConfiguration applicationConfiguration;
+    private UrlUtil urlUtil;
 
     private Map<ValidationId, ValidationAction> availableValidations = Maps
             .newHashMap();
@@ -481,9 +481,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         String state = super.update();
 
         if (softDeleted) {
-            // TODO CDI this url will need to be looked at in CDI migration
-            String url = applicationConfiguration
-                    .getServerPath() + "/project/project.seam?slug=" + projectSlug;
+            String url = urlUtil.projectUrl(projectSlug);
             FacesManager.instance().redirectToExternalURL(url);
             return state;
         }
@@ -511,6 +509,10 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         }
         update();
         facesMessages.addGlobal(FacesMessage.SEVERITY_INFO, message);
+    }
+
+    public void deleteSelf() {
+        updateStatus('O');
     }
 
     public void updateSelectedProjectType(ValueChangeEvent e) {

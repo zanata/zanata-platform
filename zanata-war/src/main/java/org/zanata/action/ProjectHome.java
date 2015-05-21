@@ -53,7 +53,6 @@ import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesManager;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.zanata.ApplicationConfiguration;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
@@ -157,7 +156,7 @@ public class ProjectHome extends SlugHome<HProject> implements
     private CopyTransOptionsModel copyTransOptionsModel;
 
     @In
-    private ApplicationConfiguration applicationConfiguration;
+    private UrlUtil urlUtil;
 
     // This property is present to keep the filter in place when the region with
     // the filter box is refreshed.
@@ -744,8 +743,7 @@ public class ProjectHome extends SlugHome<HProject> implements
         String result = super.update();
 
         if (softDeleted) {
-            String url = applicationConfiguration
-                    .getServerPath() + "/dashboard/";
+            String url = urlUtil.dashboardUrl();
             FacesManager.instance().redirectToExternalURL(url);
             return result;
         }
@@ -877,6 +875,10 @@ public class ProjectHome extends SlugHome<HProject> implements
         conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                 msgs.format("jsf.project.status.updated",
                         EntityStatus.valueOf(initial)));
+    }
+
+    public void deleteSelf() {
+        updateStatus('O');
     }
 
     public Map<String, Boolean> getRoleRestrictions() {

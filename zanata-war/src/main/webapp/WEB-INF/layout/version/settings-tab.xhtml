@@ -46,7 +46,7 @@
   <a4j:param name="val2" assignTo="#{value}"/>
 </a4j:jsFunction>
 
-<a4j:jsFunction name="runDelete" action="#{versionHome.updateStatus('O')}" />
+<a4j:jsFunction name="runDelete" action="#{versionHome.deleteSelf()}" />
 
 <h1>#{msgs['jsf.iteration.VersionSettings']}</h1>
 
@@ -366,5 +366,7 @@
 </s:div>
 
 <ui:include src="/WEB-INF/layout/copy_trans_inline_modal.xhtml"/>
-<ui:include src="/WEB-INF/layout/delete_confirmation_modal.xhtml"/>
+  <ui:include src="/WEB-INF/layout/delete_confirmation_modal.xhtml">
+    <ui:param name="entityName" value="#{versionHome.instance.slug}" />
+  </ui:include>
 </ui:composition>

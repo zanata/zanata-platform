@@ -51,7 +51,8 @@ import com.google.common.annotations.VisibleForTesting;
 public abstract class SlugEntityBase extends ModelEntityBase {
 
     /**
-     * We append this suffix to a deleted slug entity so that its original slug become available to use.
+     * We append this suffix to a deleted slug entity so that its original slug
+     * become available to use.
      */
     private static final String DELETED_SLUG_SUFFIX = "_.-";
 
@@ -64,6 +65,16 @@ public abstract class SlugEntityBase extends ModelEntityBase {
     @Field
     private String slug;
 
+    /**
+     * If the slug entity is set to obsolete (soft delete), we need to recycle
+     * its slug. This will suffix the original slug with deleted slug suffix
+     * plus a timestamp. if original slug is too long, the suffix will be put
+     * into the end and replacing some of the old slug characters. This means we
+     * won't be able to recover what the old slug was.
+     *
+     * @return an artificial slug just so the old slug will become available to
+     *         use.
+     */
     @Transient
     public String changeToDeletedSlug() {
         String deletedSlugSuffix = deletedSlugSuffix();
@@ -71,9 +82,9 @@ public abstract class SlugEntityBase extends ModelEntityBase {
         if (newSlug.length() <= 40) {
             return newSlug;
         } else {
-            // if original slug is too long, we won't be
-            // able to recover what it was once deleted.
-            newSlug = slug.substring(0, 40 - deletedSlugSuffix.length()) + deletedSlugSuffix;
+            newSlug =
+                    slug.substring(0, 40 - deletedSlugSuffix.length())
+                            + deletedSlugSuffix;
             log.warn(
                     "Entity [{}] old slug [{}] is too long to apply suffix. We will add suffix in place [{}]",
                     this, slug, newSlug);

@@ -403,11 +403,6 @@ public class ProjectHomeAction extends AbstractSortAction implements
         return projectVersions;
     }
 
-    public boolean isUserAllowViewObsolete() {
-        return identity != null
-                && identity.hasPermission("HProject", "view-obsolete");
-    }
-
     public boolean isUserAllowedToTranslateOrReview(HProjectIteration version,
             HLocale localeId) {
         return version != null

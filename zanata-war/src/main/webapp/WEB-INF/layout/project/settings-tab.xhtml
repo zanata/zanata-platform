@@ -74,7 +74,7 @@
   <a4j:param name="val2" assignTo="#{isRestricted}"/>
 </a4j:jsFunction>
 
-<a4j:jsFunction name="runDelete" action="#{projectHome.updateStatus('O')}" />
+<a4j:jsFunction name="runDelete" action="#{projectHome.deleteSelf()}" />
 
 <h1>#{msgs['jsf.project.ProjectSettings']}</h1>
 
@@ -500,5 +500,7 @@
   <h:outputScript target="body" library="script" name="${commonMarkRenderer.scriptName}"/>
   <h:outputScript target="body" library="script" name="commonmark-preview.js"/>
 
-  <ui:include src="/WEB-INF/layout/delete_confirmation_modal.xhtml"/>
+  <ui:include src="/WEB-INF/layout/delete_confirmation_modal.xhtml">
+    <ui:param name="entityName" value="#{projectHome.instance.name}" />
+  </ui:include>
 </ui:composition>
