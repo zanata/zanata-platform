@@ -89,7 +89,7 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
 
     protected void confirmWithUser(String message) throws IOException {
         if (getOpts().isInteractiveMode()) {
-            ConsoleInteractor console = new ConsoleInteractorImpl();
+            ConsoleInteractor console = new ConsoleInteractorImpl(getOpts());
             console.printf(Question, message + "\nAre you sure (y/n)? ");
             console.expectYes();
         }
