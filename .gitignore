@@ -68,5 +68,9 @@ bin/
 # Gradle files
 .gradle/
 
+# node files
+node/
+node_modules/
+
 # other things that really ought to go under target/
 ehcache.disk.store.dir/
