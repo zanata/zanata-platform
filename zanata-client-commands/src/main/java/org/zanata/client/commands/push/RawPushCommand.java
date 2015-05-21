@@ -93,13 +93,13 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
     public RawPushCommand(PushOptions opts) {
         super(opts);
         client = getClientFactory().getFileResourceClient();
-        consoleInteractor = new ConsoleInteractorImpl();
+        consoleInteractor = new ConsoleInteractorImpl(opts);
     }
 
     public RawPushCommand(PushOptions opts, RestClientFactory clientFactory) {
         super(opts, clientFactory);
         client = getClientFactory().getFileResourceClient();
-        consoleInteractor = new ConsoleInteractorImpl();
+        consoleInteractor = new ConsoleInteractorImpl(opts);
     }
 
     @VisibleForTesting

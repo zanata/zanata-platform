@@ -72,7 +72,7 @@ public class InitCommand extends ConfigurableCommand<InitOptions> {
     public InitCommand(InitOptions opts) {
         // we don't have all mandatory information yet (server URL etc)
         super(opts, new RestClientFactory() {});
-        console = new ConsoleInteractorImpl();
+        console = new ConsoleInteractorImpl(opts);
         projectConfigHandler =
                 new ProjectConfigHandler(console, getOpts());
         userConfigHandler = new UserConfigHandler(console, getOpts());
