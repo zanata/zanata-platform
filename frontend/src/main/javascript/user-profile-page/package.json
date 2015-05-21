@@ -1,0 +1,48 @@
+{
+  "name": "react-profile",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "js": "webpack",
+    "build": "NODE_ENV=production webpack -p --config webpack.prod.config.js",
+    "start": "node server.js"
+  },
+  "author": "Patrick Huang",
+  "license": "BSD",
+  "devDependencies": {
+    "babel-core": "^4.3.0",
+    "babel-loader": "^4.0.0",
+    "jsx-loader": "^0.12.2",
+    "react-hot-loader": "^1.1.1",
+    "webpack": "^1.5.3",
+    "webpack-dev-server": "^1.7.0",
+    "jest-cli": "~0.4.0",
+    "react-tools": "~0.13.0"
+  },
+  "dependencies": {
+    "lodash": "^3.2.0",
+    "moment": "^2.9.0",
+    "moment-range": "^1.0.6",
+    "react": "^0.12.2",
+    "react-chartjs": "^0.4.0",
+    "superagent": "~0.21.0",
+    "flux": "~2.0.1",
+    "object-assign": "~2.0.0",
+    "events": "~1.0.2",
+    "es6-promise": "~2.0.1",
+    "keymirror": "~0.1.1",
+    "chart.js": "git://github.com/huangp/Chart.js"
+  },
+  "jest": {
+    "unmockedModulePathPatterns": [
+      "./node_modules/react",
+      "./node_modules/object-assign",
+      "./node_modules/es6-promise",
+      "./node_modules/events",
+      "./lib"
+    ],
+    "scriptPreprocessor": "./preprocessor.js"
+  }
+}
