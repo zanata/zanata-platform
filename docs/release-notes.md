@@ -18,6 +18,7 @@ The Zanata installer's configuration now enables "connection debugging" to preve
 <h5>Bugfixes</h5>
 * [1207575](https://bugzilla.redhat.com/show_bug.cgi?id=1207575) - Zanata still creates MyISAM (not InnoDB) tables in some cases
 * [1197955](https://bugzilla.redhat.com/show_bug.cgi?id=1197955) - [WildFly] IllegalStateException: UT000010: Session not found
+* [[1197955]](https://bugzilla.redhat.com/show_bug.cgi?id=1223597) - Statistic on last page in document list view in Editor always loading
 
 -----------------------
 
