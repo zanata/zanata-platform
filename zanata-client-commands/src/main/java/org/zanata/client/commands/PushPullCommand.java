@@ -30,18 +30,25 @@ import java.io.StringWriter;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.client.commands.pull.PullCommand;
+import org.zanata.client.commands.pull.PullOptions;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.etag.ETagCache;
 import org.zanata.client.etag.ETagCacheReaderWriter;
 import org.zanata.client.exceptions.ConfigException;
+import org.zanata.common.LocaleId;
 import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.client.SourceDocResourceClient;
 import org.zanata.rest.client.StatisticsResourceClient;
@@ -49,6 +56,8 @@ import org.zanata.rest.client.TransDocResourceClient;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
+import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.util.PathUtil;
 
 /**
@@ -248,4 +257,108 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
         }
     }
 
+    protected Map<String, Map<LocaleId, TranslatedPercent>> getDocsTranslatedPercent() {
+        ContainerTranslationStatistics statistics =
+                getDetailStatisticsForProjectVersion();
+        List<ContainerTranslationStatistics> statsPerDoc =
+                statistics.getDetailedStats();
+        ImmutableMap.Builder<String, Map<LocaleId, TranslatedPercent>> docIdToStatsBuilder =
+                ImmutableMap.builder();
+        for (ContainerTranslationStatistics docStats : statsPerDoc) {
+            String docId = docStats.getId();
+            List<TranslationStatistics> statsPerLocale = docStats.getStats();
+            ImmutableMap.Builder<LocaleId, TranslatedPercent> localeToStatsBuilder =
+                    ImmutableMap.builder();
+
+            for (TranslationStatistics statsForSingleLocale : statsPerLocale) {
+                // TODO server statistics API should return locale with alias
+                TranslatedPercent translatedPercent =
+                        new TranslatedPercent(statsForSingleLocale.getTotal(),
+                                statsForSingleLocale.getTranslatedOnly(),
+                                statsForSingleLocale.getApproved());
+
+                localeToStatsBuilder.put(
+                        new LocaleId(statsForSingleLocale.getLocale()),
+                        translatedPercent);
+            }
+            Map<LocaleId, TranslatedPercent> localeStats =
+                    localeToStatsBuilder.build();
+            docIdToStatsBuilder.put(docId, localeStats);
+        }
+        return docIdToStatsBuilder.build();
+    }
+
+    @VisibleForTesting
+    protected ContainerTranslationStatistics getDetailStatisticsForProjectVersion() {
+        return statsClient
+                    .getStatistics(getOpts().getProj(),
+                            getOpts().getProjectVersion(), true, false, null);
+    }
+
+    /**
+     * this stats map will have docId as key, the value is another map with
+     * localeId as key and translated percent as value.
+     * It's optional if we require statistics to determine which file to pull.
+     * In cases where statistics is not required,
+     * i.e. pull source only or minimum percent is set to 0, this will be
+     * Optional.absence().
+     *
+     * @param pullTarget whether we need to pull translation target
+     * @return either detailed document statistics or optional.absence()
+     */
+    protected Optional<Map<String, Map<LocaleId, TranslatedPercent>>> prepareStatsIfApplicable(
+            boolean pullTarget) {
+
+        Optional<Map<String, Map<LocaleId, TranslatedPercent>>> optionalStats =
+                Optional.absent();
+        O opts = getOpts();
+        if (pullTarget && opts instanceof PullOptions &&
+                ((PullOptions) opts).getMinDocPercent() > 0) {
+            optionalStats = Optional.of(getDocsTranslatedPercent());
+        }
+        return optionalStats;
+    }
+
+    protected boolean shouldPullThisLocale(
+            Optional<Map<String, Map<LocaleId, TranslatedPercent>>> optionalStats,
+            String localDocName, LocaleId serverLocale) {
+        int minDocPercent = ((PullOptions) getOpts()).getMinDocPercent();
+        if (log.isDebugEnabled() && optionalStats.isPresent()) {
+            log.debug("{} for locale {} is translated {}%", localDocName,
+                    serverLocale, optionalStats.get()
+                            .get(localDocName).get(serverLocale)
+                    .getTranslatedPercent());
+        }
+        return !optionalStats.isPresent()
+                || optionalStats.get().get(localDocName).get(serverLocale)
+                        .isAboveThreshold(minDocPercent);
+    }
+
+    protected static class TranslatedPercent {
+        protected final int translatedPercent;
+        private final long total;
+        private final long translated;
+        private final long approved;
+
+        public TranslatedPercent(long total, long translated, long approved) {
+            this.total = total;
+            this.translated = translated;
+            this.approved = approved;
+            translatedPercent = (int) ((translated + approved) * 100 / total);
+        }
+
+        public boolean isAboveThreshold(int minimumPercent) {
+            // if minimum percent is 100, we will compare exact number so that
+            // rounding issue won't affect the result
+            if (minimumPercent == 100) {
+                return total == translated + approved;
+            } else {
+                return translatedPercent >= minimumPercent;
+            }
+        }
+
+        public int getTranslatedPercent() {
+            return translatedPercent;
+        }
+    }
 }

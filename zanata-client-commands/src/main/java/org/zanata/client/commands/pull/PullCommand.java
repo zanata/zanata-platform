@@ -28,13 +28,10 @@ import org.zanata.rest.client.ClientUtil;
 import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
-import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.util.HashUtil;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.sun.jersey.api.client.ClientResponse;
 
@@ -215,17 +212,9 @@ public class PullCommand extends PushPullCommand<PullOptions> {
         if (getOpts().getPurgeCache()) {
             eTagCache.clear();
         }
-
-        // this stats map will have docId as key, the value is another map with
-        // localeId as key and translated percent as value. It's optional if we
-        // require statistics to determine which file to pull. In cases where
-        // statistics is not required, i.e. pull source only or minimum percent
-        // is set to 0, this will be Optional.absence().
         Optional<Map<String, Map<LocaleId, TranslatedPercent>>> optionalStats =
-                Optional.absent();
-        if (pullTarget && getOpts().getMinDocPercent() > 0) {
-            optionalStats = Optional.of(getDocsTranslatedPercent());
-        }
+                prepareStatsIfApplicable(pullTarget);
+
 
         for (String qualifiedDocName : docsToPull) {
             try {
@@ -262,7 +251,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                     }
                     if (!skippedLocales.isEmpty()) {
                         log.info(
-                                "Translation file for document {} for locales {} are skipped due to insufficient translate percentage",
+                                "Translation file for document {} for locales {} are skipped due to insufficient completed percentage",
                                 localDocName, skippedLocales);
                     }
 
@@ -374,59 +363,6 @@ public class PullCommand extends PushPullCommand<PullOptions> {
         }
     }
 
-    private boolean shouldPullThisLocale(
-            Optional<Map<String, Map<LocaleId, TranslatedPercent>>> optionalStats,
-            String localDocName, LocaleId serverLocale) {
-        int minDocPercent = getOpts().getMinDocPercent();
-        if (log.isDebugEnabled() && optionalStats.isPresent()) {
-            log.debug("{} for locale {} is translated {}%", localDocName,
-                    serverLocale, optionalStats.get().get(localDocName).get(serverLocale)
-                    .translatedPercent);
-        }
-        return !optionalStats.isPresent()
-                || optionalStats.get().get(localDocName).get(serverLocale)
-                        .isAboveThreshold(minDocPercent);
-    }
-
-    private Map<String, Map<LocaleId, TranslatedPercent>> getDocsTranslatedPercent() {
-        ContainerTranslationStatistics statistics =
-                getDetailStatisticsForProjectVersion();
-        List<ContainerTranslationStatistics> statsPerDoc =
-                statistics.getDetailedStats();
-        ImmutableMap.Builder<String, Map<LocaleId, TranslatedPercent>> docIdToStatsBuilder =
-                ImmutableMap.builder();
-        for (ContainerTranslationStatistics docStats : statsPerDoc) {
-            String docId = docStats.getId();
-            List<TranslationStatistics> statsPerLocale = docStats.getStats();
-            ImmutableMap.Builder<LocaleId, TranslatedPercent> localeToStatsBuilder =
-                    ImmutableMap.builder();
-
-            for (TranslationStatistics statsForSingleLocale : statsPerLocale) {
-                // TODO pahuang server statistics API should return locale with
-                // alias
-                TranslatedPercent translatedPercent =
-                        new TranslatedPercent(statsForSingleLocale.getTotal(),
-                                statsForSingleLocale.getTranslatedOnly(),
-                                statsForSingleLocale.getApproved());
-
-                localeToStatsBuilder.put(
-                        new LocaleId(statsForSingleLocale.getLocale()),
-                        translatedPercent);
-            }
-            Map<LocaleId, TranslatedPercent> localeStats =
-                    localeToStatsBuilder.build();
-            docIdToStatsBuilder.put(docId, localeStats);
-        }
-        return docIdToStatsBuilder.build();
-    }
-
-    @VisibleForTesting
-    protected ContainerTranslationStatistics getDetailStatisticsForProjectVersion() {
-        return statsClient
-                    .getStatistics(getOpts().getProj(),
-                            getOpts().getProjectVersion(), true, false, null);
-    }
-
     /**
      * Returns a list with all documents before fromDoc removed.
      *
@@ -495,30 +431,6 @@ public class PullCommand extends PushPullCommand<PullOptions> {
             log.info(
                     "Writing translation file in locale {} for document {} (skipped due to dry run)",
                     locMapping.getLocalLocale(), localDocName);
-        }
-    }
-
-    private static class TranslatedPercent {
-        private final int translatedPercent;
-        private final long total;
-        private final long translated;
-        private final long approved;
-
-        public TranslatedPercent(long total, long translated, long approved) {
-            this.total = total;
-            this.translated = translated;
-            this.approved = approved;
-            translatedPercent = (int) ((translated + approved) * 100 / total);
-        }
-
-        public boolean isAboveThreshold(int minimumPercent) {
-            // if minimum percent is 100, we will compare exact number so that
-            // rounding issue won't affect the result
-            if (minimumPercent == 100) {
-                return total == translated + approved;
-            } else {
-                return translatedPercent >= minimumPercent;
-            }
         }
     }
 
