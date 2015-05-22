@@ -510,20 +510,22 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
             ContainerTranslationStatistics statsContainer =
                     documentNode.getDocInfo().getStats();
 
-            TranslationStatistics msgStats =
-                    statsContainer.getStats(localeId.getId(), StatUnit.MESSAGE);
+            if(statsContainer != null) {
+                TranslationStatistics msgStats =
+                        statsContainer.getStats(localeId.getId(), StatUnit.MESSAGE);
 
-            if (msgStats != null) {
-                projectStats.getStats(localeId.getId(), StatUnit.MESSAGE).add(
-                        msgStats);
-            }
+                if (msgStats != null) {
+                    projectStats.getStats(localeId.getId(), StatUnit.MESSAGE).add(
+                            msgStats);
+                }
 
-            TranslationStatistics wordStats =
-                    statsContainer.getStats(localeId.getId(), StatUnit.WORD);
+                TranslationStatistics wordStats =
+                        statsContainer.getStats(localeId.getId(), StatUnit.WORD);
 
-            if (wordStats != null) {
-                projectStats.getStats(localeId.getId(), StatUnit.WORD).add(
-                        wordStats);
+                if (wordStats != null) {
+                    projectStats.getStats(localeId.getId(), StatUnit.WORD).add(
+                            wordStats);
+                }
             }
         }
         refreshStatsDisplay();
