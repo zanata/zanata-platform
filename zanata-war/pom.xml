@@ -1283,6 +1283,11 @@
 
     <dependency>
       <groupId>org.zanata</groupId>
+      <artifactId>frontend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.zanata</groupId>
       <artifactId>zanata-common-util</artifactId>
     </dependency>
 
