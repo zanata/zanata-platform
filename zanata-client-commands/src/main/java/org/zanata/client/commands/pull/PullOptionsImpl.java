@@ -169,4 +169,18 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
     public boolean isAuthRequired() {
         return false;
     }
+
+    @Option(name = "--use-cache", usage = "Whether to use an Entity cache when fetching documents.\n" +
+            "When using the cache, documents that have been retrieved previously and have not changed since then will not be retrieved again.\n" +
+            "Default is " + DEFAULT_USE_CACHE + ".")
+    public void setUseCache(boolean useCache) {
+        this.useCache = useCache;
+    }
+
+    @Option(name = "--purge-cache", usage = "Whether to purge the cache before performing the pull operation.\n" +
+            "This means that all documents will be fetched from the server anew.\n" +
+            "Default is " + DEFAULT_PURGE_CACHE + ".")
+    public void setPurgeCache(boolean purgeCache) {
+        this.purgeCache = purgeCache;
+    }
 }
