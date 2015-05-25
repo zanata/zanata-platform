@@ -35,6 +35,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -90,7 +91,7 @@ public class CommonMarkRenderer {
 
     private Invocable getInvocable() {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                getScriptAsStream(getScriptName())))) {
+                getScriptAsStream(getScriptName()), StandardCharsets.UTF_8))) {
 
             ScriptEngine engine = newEngine();
             engine.eval("window = this;");
