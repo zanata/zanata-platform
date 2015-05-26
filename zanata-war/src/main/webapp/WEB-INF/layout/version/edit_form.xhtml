@@ -71,7 +71,7 @@
   </div>
 
   <zanata:checkbox label="#{msgs['jsf.copyVersion.label']}" id="copy-from-version"
-    rendered="#{not versionHome.managed and not empty versionHome.project.projectIterations}"
+    rendered="#{not versionHome.managed and not empty versionHome.getOtherVersions()}"
     onValueChanged="onCopyFromVersionFlagChanged" value="copy-version-checkbox"
     styleClass="l--push-v-1" checked="#{versionHome.copyFromVersion}"/>
 
