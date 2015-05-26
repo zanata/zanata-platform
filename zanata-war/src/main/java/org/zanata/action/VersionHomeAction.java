@@ -931,14 +931,6 @@ public class VersionHomeAction extends AbstractSortAction implements
         translationFileServiceImpl.removeTempFile(tempFile);
     }
 
-    public String encodeDocId(String docId) {
-        return UrlUtil.encodeString(docId);
-    }
-
-    public String decodeDocId(String docId) {
-        return UrlUtil.decodeString(docId);
-    }
-
     // Check if copy-trans, copy version or merge-trans is running for given
     // version
     public boolean isCopyActionsRunning() {

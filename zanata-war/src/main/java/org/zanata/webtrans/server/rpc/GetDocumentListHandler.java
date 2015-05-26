@@ -21,6 +21,7 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationFileService;
+import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -73,14 +74,14 @@ public class GetDocumentListHandler extends
             if (type == null) {
                 type = projectIteration.getProject().getDefaultProjectType();
             }
-
+            String encodedDocId = UrlUtil.encodeString(hDoc.getDocId());
             if (type == null) {
                 // no .po download link
             } else if (type == ProjectType.Gettext || type == ProjectType.Podir) {
-                downloadExtensions.put(".po", "po?docId=" + hDoc.getDocId());
+                downloadExtensions.put(".po", "po?docId=" + encodedDocId);
             } else {
                 downloadExtensions.put("offline .po",
-                        "offlinepo?docId=" + hDoc.getDocId());
+                        "offlinepo?docId=" + encodedDocId);
             }
             GlobalDocumentId id =
                     new GlobalDocumentId(iterationId.getProjectSlug(),
@@ -93,7 +94,7 @@ public class GetDocumentListHandler extends
                                         iterationId.getIterationSlug(),
                                         hDoc.getPath(), hDoc.getName());
                 downloadExtensions.put(extension,
-                        "baked?docId=" + hDoc.getDocId());
+                        "baked?docId=" + encodedDocId);
             }
 
             DocumentInfo doc =
