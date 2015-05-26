@@ -66,12 +66,4 @@ public class JndiBackedConfigITCase extends ArquillianTest {
         String reloaded = jndiBackedConfig.getAdminUsersList();
         assertThat(reloaded, equalTo(original));
     }
-
-    @Test
-    public void getNonExistentProperty() throws Exception {
-        // This value must NOT be provided in the standalone.xml file used for
-        // arquillian tests.
-        String val = jndiBackedConfig.getSmtpHostName();
-        assertThat(val, nullValue());
-    }
 }

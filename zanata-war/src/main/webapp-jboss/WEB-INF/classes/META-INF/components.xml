@@ -136,6 +136,7 @@
     class="org.zanata.util.EssentialDataCreator" installed="true">
   </component>
 
+  <mail:mail-session session-jndi-name="java:jboss/mail/Default" />
 
   <!-- Remember the locale selected -->
 

@@ -381,44 +381,6 @@ public class ApplicationConfiguration implements Serializable {
         return databaseBackedConfig.getTermsOfUseUrl();
     }
 
-    public String getEmailServerHost() {
-        String host = jndiBackedConfig.getSmtpHostName();
-
-        // Default to localhost
-        if (host == null) {
-            host = "localhost";
-        }
-        return host;
-    }
-
-    public int getEmailServerPort() {
-        String port = jndiBackedConfig.getSmtpPort();
-
-        // Default to 25
-        if (port == null) {
-            port = "25";
-        }
-        return Integer.parseInt(port);
-    }
-
-    public String getEmailServerUsername() {
-        return jndiBackedConfig.getSmtpUsername();
-    }
-
-    public String getEmailServerPassword() {
-        return jndiBackedConfig.getSmtpPassword();
-    }
-
-    public boolean useEmailServerTls() {
-        return jndiBackedConfig.getSmtpUsesTls() != null ? Boolean
-                .parseBoolean(jndiBackedConfig.getSmtpUsesTls()) : false;
-    }
-
-    public boolean useEmailServerSsl() {
-        return jndiBackedConfig.getStmpUsesSsl() != null ? Boolean
-                .parseBoolean(jndiBackedConfig.getStmpUsesSsl()) : false;
-    }
-
     public int getMaxConcurrentRequestsPerApiKey() {
         return parseIntegerOrDefault(databaseBackedConfig.getMaxConcurrentRequestsPerApiKey(), 6);
     }

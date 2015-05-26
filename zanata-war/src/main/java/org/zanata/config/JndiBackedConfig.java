@@ -63,15 +63,6 @@ public class JndiBackedConfig implements Serializable {
             "java:global/zanata/email/default-from-address";
     private static final String KEY_DOCUMENT_FILE_STORE =
             "java:global/zanata/files/document-storage-directory";
-    private static final String KEY_EMAIL_HOST = "java:global/zanata/smtp/host";
-    private static final String KEY_EMAIL_PORT = "java:global/zanata/smtp/port";
-    private static final String KEY_EMAIL_USERNAME =
-            "java:global/zanata/smtp/username";
-    private static final String KEY_EMAIL_PASSWORD =
-            "java:global/zanata/smtp/password";
-    private static final String KEY_EMAIL_TLS = "java:global/zanata/smtp/tls";
-    private static final String KEY_EMAIL_SSL = "java:global/zanata/smtp/ssl";
-
     private final Map<String, String> configurationValues =
             new HashMap<String, String>();
 
@@ -173,29 +164,5 @@ public class JndiBackedConfig implements Serializable {
 
     public String getDocumentFileStorageLocation() {
         return getConfigValue(KEY_DOCUMENT_FILE_STORE);
-    }
-
-    public String getSmtpHostName() {
-        return getConfigValue(KEY_EMAIL_HOST);
-    }
-
-    public String getSmtpPort() {
-        return getConfigValue(KEY_EMAIL_PORT);
-    }
-
-    public String getSmtpUsername() {
-        return getConfigValue(KEY_EMAIL_USERNAME);
-    }
-
-    public String getSmtpPassword() {
-        return getConfigValue(KEY_EMAIL_PASSWORD);
-    }
-
-    public String getSmtpUsesTls() {
-        return getConfigValue(KEY_EMAIL_TLS);
-    }
-
-    public String getStmpUsesSsl() {
-        return getConfigValue(KEY_EMAIL_SSL);
     }
 }

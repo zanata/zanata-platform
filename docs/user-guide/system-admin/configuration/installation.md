@@ -52,12 +52,16 @@ Zanata does not create an admin user by default. You need to register specific u
 
  1. Register a user under the name "admin", and it will automatically have administrator privileges. Any number of users may be added to this list in a comma-separated format.
 
- 1. In the same file, configure other properties to your particular setup by adding more lines if necessary. The following properties must be configured in order for Zanata to run properly: 
+ 1. In the same file, configure other properties to your particular setup by adding more lines if necessary. The following properties must be configured in order for Zanata to run properly:
 ```xml
 <simple name="java:global/zanata/email/default-from-address" value="admin@example.com"/>
 ```
 
  This is the default email address that will appear as the sender on Zanata emails.
+
+### Email configuration (Zanata 3.6 or earlier)
+
+In Zanata 3.6 or earlier, email is configured by admin in the server settings screen.  By default, an SMTP server on localhost port 25 is expected.
 
  1. The following properties relate to the SMTP email server that Zanata uses to send emails. It defaults to a locally installed server using port 25. Add values to suit your configuration. If a particular property does not apply to the email server being used, you can comment it out or remove it completely.
 
@@ -69,6 +73,15 @@ Zanata does not create an admin user by default. You need to register specific u
 <simple name="java:global/zanata/smtp/tls" value="" />
 <simple name="java:global/zanata/smtp/ssl" value="" />
 ```
+
+### Email configuration (Zanata 3.7 and later)
+
+Email configuration is taken directly from JBoss/WildFly's `standalone.xml` configuration (*not* from the server settings screen), using the mail session configured with the JNDI name `java:jboss/mail/Default`.  In the default configuration of JBoss/WildFly, this expects an SMTP server on localhost port 25.
+
+The JNDI strings starting with `java:global/zanata/smtp/` are now obsolete.  If you have previously configured these values, you will need to change the configuration of the mail session `java:jboss/mail/Default` to include your preferred SMTP settings.
+
+JBoss's mail session configuration is described on these pages: https://developer.jboss.org/wiki/JBossAS720EmailSessionConfigurtion-EnglishVersion and http://www.mastertheboss.com/jboss-server/jboss-configuration/jboss-mail-service-configuration
+
 
 ## Installing virus scanner (optional)
 
@@ -100,7 +113,7 @@ Any other value will be treated as the name of a virus scanner command: the comm
 
 ## Running Zanata
 
-Go to the `<JBOSS>/bin` directory and run the `standalone.sh` (Linux, Mac) or `standalone.bat` (Windows) file. 
+Go to the `<JBOSS>/bin` directory and run the `standalone.sh` (Linux, Mac) or `standalone.bat` (Windows) file.
 
 ## Using Zanata
 
