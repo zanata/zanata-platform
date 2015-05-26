@@ -7,7 +7,7 @@
   <s:validateAll>
     <div class="#{invalid ? 'form__item--error' : ''}">
       <ui:insert/>
-      <s:div styleClass="message--danger" rendered="#{invalid}">
+      <s:div styleClass="message--danger app-error" rendered="#{invalid}">
         <s:message/>
       </s:div>
     </div>

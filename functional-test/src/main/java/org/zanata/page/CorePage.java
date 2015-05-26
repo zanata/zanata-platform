@@ -90,9 +90,10 @@ public class CorePage extends AbstractPage {
                 WebElementUtil.elementsToText(getDriver(),
                         By.xpath("//span[@class='errors']"));
 
+        // app-error is a presudo class we put in just for this
         List<String> newError =
                 WebElementUtil.elementsToText(getDriver(),
-                        By.className("message--danger"));
+                        By.className("app-error"));
 
         List<String> allErrors = Lists.newArrayList();
         allErrors.addAll(oldError);

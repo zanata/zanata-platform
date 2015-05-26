@@ -399,7 +399,7 @@ public class AppView extends Composite implements AppDisplay,
             case Warning:
                 return "message--warning";
             case Error:
-                return "message--danger";
+                return "message--danger app-error";
             case Info:
                 return "message--highlight";
         }

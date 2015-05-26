@@ -35,7 +35,7 @@
     </s:fragment>
     <s:fragment
       rendered="#{message.severity.toString().startsWith('ERROR') or message.severity.toString().startsWith('FATAL')}">
-      <li class="message--danger message--removable js-message-removable">
+      <li class="message--danger message--removable js-message-removable app-error">
         #{message.summary}
         <a href="#" class="message__remove js-message-remove">
           <i class="i i--remove"></i>
