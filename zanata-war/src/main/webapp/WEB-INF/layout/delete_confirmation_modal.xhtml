@@ -10,21 +10,34 @@
     role="dialog" aria-hidden="true">
     <div class="modal__dialog l--constrain-medium">
       <header class="modal__header">
-        <h2 class="modal__title">#{msgs.format('jsf.DeleteConfirmation', entityName)}</h2>
+        <h2 class="modal__title">#{msgs.format('jsf.DeleteConfirmation', entityType, entityName)}</h2>
         <button class="modal__close button--link" data-dismiss="modal"><i
           class="i i--huge i--cancel"></i></button>
       </header>
 
 
+      <h:outputScript>
+        function toggleDeleteButton(textField) {
+          var enabled = textField.value === '#{entityName}';
+          var deleteButton = document.getElementById('#{deleteButton.clientId}');
+          deleteButton.disabled = !enabled;
+        }
+      </h:outputScript>
       <div class="modal__content">
         <div class="l--pad-all-1">
-          <div class="txt--warning">
+          <div class="message--danger">
             <h:outputText value="#{msgs['jsf.DeleteConfirmation.Message.prefix']}" />
-            <h:outputFormat value=" #{msgs['jsf.DeleteConfirmation.Message.word.permanently']}" styleClass="txt--important" />
+            <strong>#{msgs['jsf.DeleteConfirmation.Message.word.permanently']}</strong>
             <h:outputText value="#{msgs['jsf.DeleteConfirmation.Message.suffix']}" />
+          </div>
+          <div class="l--pad-all-1">
+            <h:outputLabel value="#{msgs.format('jsf.DeleteConfirmation.Prompt', entityName)}" />
+            <h:inputText onkeyup="toggleDeleteButton(this);return true;" />
           </div>
         </div>
       </div>
+
+
 
       <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
         <div class="g--tight">
@@ -35,7 +48,7 @@
               #{msgs['jsf.Cancel']}
             </button>
 
-            <button id="deleteButton" styleClass="button--danger" jsfc="a4j:commandButton"
+            <button id="deleteButton" styleClass="button--danger" jsfc="a4j:commandButton" binding="#{deleteButton}" disabled="true"
               onclick="runDelete();zanata.modal.hide('#delete-confirmation-modal')" value="#{msgs['jsf.Delete']}"></button>
           </s:div>
         </div>
