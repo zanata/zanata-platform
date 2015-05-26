@@ -85,7 +85,7 @@ public class GettextDirStrategy extends AbstractGettextPushStrategy {
             String warningMsg =
                     "Found source file path starting with pot, perhaps you want to set source directory to pot?";
             ConsoleInteractorImpl console =
-                    new ConsoleInteractorImpl();
+                    new ConsoleInteractorImpl(getOpts());
             log.warn(warningMsg);
             if (isInteractive) {
                 console.printfln(warningMsg);

@@ -57,7 +57,7 @@ public class InitCommandTest {
     @Test
     public void createCommandWithoutMandatoryOptionsWillNotCauseException() {
         // we don't have server url etc yet
-        command = new InitCommand(opts);
+        command = new InitCommand(opts, console);
     }
 
     @Test

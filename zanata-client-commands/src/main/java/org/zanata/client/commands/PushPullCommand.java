@@ -21,14 +21,11 @@
 
 package org.zanata.client.commands;
 
-import java.io.Console;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.math.BigInteger;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +39,6 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.client.commands.pull.PullCommand;
 import org.zanata.client.commands.pull.PullOptions;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
@@ -60,6 +56,8 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.util.PathUtil;
+
+import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
 
 /**
  * @author Sean Flanigan <a
@@ -102,13 +100,9 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
 
     protected void confirmWithUser(String message) throws IOException {
         if (getOpts().isInteractiveMode()) {
-            Console console = System.console();
-            if (console == null) {
-                throw new RuntimeException(
-                        "console not available: please run Maven from a console, or use batch mode option (-B)");
-            }
-            console.printf(message + "\nAre you sure (y/n)? ");
-            expectYes(console);
+            ConsoleInteractor console = new ConsoleInteractorImpl(getOpts());
+            console.printf(Question, message + "\nAre you sure (y/n)? ");
+            console.expectYes();
         }
     }
 

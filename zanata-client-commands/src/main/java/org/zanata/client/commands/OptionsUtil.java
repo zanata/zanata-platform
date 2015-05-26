@@ -70,7 +70,7 @@ public class OptionsUtil {
                             projectConfig.getLocales() != null
                                     && !projectConfig.getLocales().isEmpty();
                     if (localesDefinedInFile) {
-                        ConsoleInteractorImpl console = new ConsoleInteractorImpl();
+                        ConsoleInteractorImpl console = new ConsoleInteractorImpl(opts);
                         console.printfln(Warning, _("locales.in.config.deprecated"));
                     } else {
                         shouldFetchLocalesFromServer = true;
@@ -152,7 +152,7 @@ public class OptionsUtil {
             opts.setCommandHooks(config.getHooks());
         }
         opts.setFileMappingRules(config.getRules());
-        checkPotentialMistakesInRules(opts, new ConsoleInteractorImpl());
+        checkPotentialMistakesInRules(opts, new ConsoleInteractorImpl(opts));
     }
 
     /**

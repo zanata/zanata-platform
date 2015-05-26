@@ -81,8 +81,8 @@ public class CsvStatisticsOutput implements ContainerStatisticsCommandOutput {
                 writer.writeNext(new String[] { transStats.getLocale(),
                         transStats.getUnit().toString(),
                         Long.toString(transStats.getTotal()),
-                        Long.toString(transStats.getTranslated()),
-                        Long.toString(transStats.getNeedReview()),
+                        Long.toString(transStats.getTranslatedAndApproved()),
+                        Long.toString(transStats.getDraft()),
                         Long.toString(transStats.getUntranslated()),
                         transStats.getLastTranslated() });
             }
