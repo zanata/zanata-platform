@@ -185,7 +185,7 @@ public class PullCommandTest {
         docStats.addStats(deLocaleStats);
 
         when(statsClient
-                .getStatistics(projectSlug, versionSlug, true, false, null))
+                .getStatistics(projectSlug, versionSlug, true, false, new String[] {"zh", "de"}))
                 .thenReturn(statistics);
 
         pullCommand = new PullCommand(opts, restClientFactory) {
@@ -213,7 +213,7 @@ public class PullCommandTest {
 
         // Then: translation for "de" will not be pulled
         verify(statsClient).getStatistics(projectSlug, versionSlug, true,
-                false, null);
+                false, new String[] {"zh", "de"});
         verify(transClient).getTranslations("file1", new LocaleId("zh"),
                 EXTENSIONS, false,
                 null);
@@ -248,7 +248,7 @@ public class PullCommandTest {
         docStats.addStats(deLocaleStats);
 
         when(statsClient
-                .getStatistics(projectSlug, versionSlug, true, false, null))
+                .getStatistics(projectSlug, versionSlug, true, false, new String[] {"zh", "de"}))
                 .thenReturn(statistics);
 
         pullCommand = new PullCommand(opts, restClientFactory) {
@@ -276,7 +276,7 @@ public class PullCommandTest {
 
         // Then: translation for "de" will not be pulled
         verify(statsClient).getStatistics(projectSlug, versionSlug, true,
-                false, null);
+                false, new String[] {"zh", "de"});
         verify(transClient).getTranslations("file1", new LocaleId("zh"),
                 EXTENSIONS, false,
                 null);

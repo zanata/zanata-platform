@@ -109,10 +109,11 @@ public abstract class AbstractPullMojo extends
     private boolean continueAfterError = false;
 
     /**
-     * Accepts integer from 0 to 100. Only pull translation documents
-     * which are at least PERCENT % completed.
+     * Accepts integer from 0 to 100. Only pull translation documents which are
+     * at least PERCENT % completed. Please note specifying this option may
+     * cause longer time to pull for a large project.
      *
-     * @parameter expression="$zanata.minDocPercent}" default-value="0"
+     * @parameter expression="${zanata.minDocPercent}" default-value="0"
      */
     private int minDocPercent = 0;
 

@@ -146,7 +146,7 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
         }
 
         Optional<Map<String, Map<LocaleId, TranslatedPercent>>> optionalStats =
-                prepareStatsIfApplicable(pullTarget);
+                prepareStatsIfApplicable(pullTarget, locales);
 
         for (String qualifiedDocName : docsToPull) {
             // TODO add filtering by file type? e.g. pull all dtd documents

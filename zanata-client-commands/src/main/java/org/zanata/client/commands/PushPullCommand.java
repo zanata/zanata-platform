@@ -27,6 +27,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.math.BigInteger;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -257,9 +258,10 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
         }
     }
 
-    protected Map<String, Map<LocaleId, TranslatedPercent>> getDocsTranslatedPercent() {
+    protected Map<String, Map<LocaleId, TranslatedPercent>> getDocsTranslatedPercent(
+            LocaleList locales) {
         ContainerTranslationStatistics statistics =
-                getDetailStatisticsForProjectVersion();
+                getDetailStatisticsForProjectVersion(locales);
         List<ContainerTranslationStatistics> statsPerDoc =
                 statistics.getDetailedStats();
         ImmutableMap.Builder<String, Map<LocaleId, TranslatedPercent>> docIdToStatsBuilder =
@@ -289,10 +291,15 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
     }
 
     @VisibleForTesting
-    protected ContainerTranslationStatistics getDetailStatisticsForProjectVersion() {
+    protected ContainerTranslationStatistics getDetailStatisticsForProjectVersion(
+            LocaleList locales) {
+        String[] localesOnServer = new String[locales.size()];
+        for (int i = 0; i < locales.size(); i++) {
+             localesOnServer[i] = locales.get(i).getLocale();
+        }
         return statsClient
                     .getStatistics(getOpts().getProj(),
-                            getOpts().getProjectVersion(), true, false, null);
+                            getOpts().getProjectVersion(), true, false, localesOnServer);
     }
 
     /**
@@ -304,17 +311,18 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
      * Optional.absence().
      *
      * @param pullTarget whether we need to pull translation target
+     * @param locales
      * @return either detailed document statistics or optional.absence()
      */
     protected Optional<Map<String, Map<LocaleId, TranslatedPercent>>> prepareStatsIfApplicable(
-            boolean pullTarget) {
+            boolean pullTarget, LocaleList locales) {
 
         Optional<Map<String, Map<LocaleId, TranslatedPercent>>> optionalStats =
                 Optional.absent();
         O opts = getOpts();
         if (pullTarget && opts instanceof PullOptions &&
                 ((PullOptions) opts).getMinDocPercent() > 0) {
-            optionalStats = Optional.of(getDocsTranslatedPercent());
+            optionalStats = Optional.of(getDocsTranslatedPercent(locales));
         }
         return optionalStats;
     }
@@ -335,7 +343,7 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
     }
 
     protected static class TranslatedPercent {
-        protected final int translatedPercent;
+        private final double translatedPercent;
         private final long total;
         private final long translated;
         private final long approved;
@@ -344,7 +352,14 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
             this.total = total;
             this.translated = translated;
             this.approved = approved;
-            translatedPercent = (int) ((translated + approved) * 100 / total);
+            if (total == 0) {
+                // in some case the document has no content, we want to pull the
+                // translation file regardless
+                translatedPercent = 100;
+            } else {
+                translatedPercent = (translated + approved) * 100.0 / total;
+
+            }
         }
 
         public boolean isAboveThreshold(int minimumPercent) {
@@ -357,7 +372,7 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
             }
         }
 
-        public int getTranslatedPercent() {
+        public double getTranslatedPercent() {
             return translatedPercent;
         }
     }

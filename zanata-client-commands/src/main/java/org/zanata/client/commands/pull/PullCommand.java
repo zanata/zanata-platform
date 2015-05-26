@@ -213,7 +213,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
             eTagCache.clear();
         }
         Optional<Map<String, Map<LocaleId, TranslatedPercent>>> optionalStats =
-                prepareStatsIfApplicable(pullTarget);
+                prepareStatsIfApplicable(pullTarget, locales);
 
 
         for (String qualifiedDocName : docsToPull) {
