@@ -313,7 +313,6 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
 
         Optional<Map<String, Map<LocaleId, TranslatedPercent>>> optionalStats =
                 Optional.absent();
-        O opts = getOpts();
         if (needToGetStatistics(pullTarget)) {
             optionalStats = Optional.of(getDocsTranslatedPercent(locales));
         }
