@@ -136,6 +136,10 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
         boolean pullTarget =
                 pullType == PushPullType.Both || pullType == PushPullType.Trans;
 
+        if (needToGetStatistics(pullTarget)) {
+            log.info("Setting minimum document completion percentage may potentially increase the processing time.");
+        }
+
         if (pullSrc) {
             log.warn("Pull Type set to '"
                     + pullType
