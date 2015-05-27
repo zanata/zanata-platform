@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projects.ProjectsPage;
-import org.zanata.page.projects.projectsettings.ProjectGeneralTab;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
@@ -24,7 +23,7 @@ public class SetProjectVisibilityTest extends ZanataTestCase {
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    @Feature(summary = "The administrator can set a project to archived",
+    @Feature(summary = "The administrator can delete a project",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 135846)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void deleteAProject() throws Exception {
@@ -35,6 +34,7 @@ public class SetProjectVisibilityTest extends ZanataTestCase {
                 .gotoSettingsTab()
                 .gotoSettingsGeneral()
                 .deleteProject()
+                .enterProjectNameToConfirmDelete("about fedora")
                 .confirmDeleteProject()
                 .goToProjects();
 

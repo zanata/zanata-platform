@@ -93,6 +93,7 @@ public class ProjectSearchTest extends ZanataTestCase {
                 .gotoSettingsTab()
                 .gotoSettingsGeneral()
                 .deleteProject()
+                .enterProjectNameToConfirmDelete("about fedora")
                 .confirmDeleteProject()
                 .logout();
 

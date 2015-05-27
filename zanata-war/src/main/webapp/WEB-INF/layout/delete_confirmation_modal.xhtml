@@ -21,6 +21,13 @@
           var enabled = textField.value === '#{entityName}';
           var deleteButton = document.getElementById('#{deleteButton.clientId}');
           deleteButton.disabled = !enabled;
+          if (enabled) {
+            deleteButton.disabled = false;
+            deleteButton.onclick = function() {
+              runDelete();
+              zanata.modal.hide('#delete-confirmation-modal')
+            }
+          }
         }
       </h:outputScript>
       <div class="modal__content">
@@ -32,7 +39,7 @@
           </div>
           <div class="l--pad-all-1">
             <h:outputLabel value="#{msgs.format('jsf.DeleteConfirmation.Prompt', entityName)}" />
-            <h:inputText onkeyup="toggleDeleteButton(this);return true;" />
+            <h:inputText id="confirmDeleteInput" onkeyup="toggleDeleteButton(this);return true;" />
           </div>
         </div>
       </div>
@@ -49,7 +56,7 @@
             </button>
 
             <button id="deleteButton" styleClass="button--danger" jsfc="a4j:commandButton" binding="#{deleteButton}" disabled="true"
-              onclick="runDelete();zanata.modal.hide('#delete-confirmation-modal')" value="#{msgs['jsf.Delete']}"></button>
+              value="#{msgs['jsf.Delete']}"></button>
           </s:div>
         </div>
       </footer>

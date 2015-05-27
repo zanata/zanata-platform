@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.projects.ProjectBasePage;
 
 import java.util.HashMap;
@@ -47,6 +46,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
     private By repoField = By.id("settings-general-form:repoField:repo");
     private By deleteButton = By.id("button-archive-project");
     private By confirmDeleteButton = By.id("deleteButton");
+    private By confirmDeleteInput = By.id("confirmDeleteInput");
     private By cancelDeleteButton = By.id("cancelDelete");
     private By lockProjectButton = By.id("settings-general-form:button-lock-project");
     private By unlockProjectButton = By.id("settings-general-form:button-unlock-project");
@@ -172,6 +172,19 @@ public class ProjectGeneralTab extends ProjectBasePage {
         log.info("Click Delete this project");
         clickElement(deleteButton);
         return new ProjectGeneralTab(getDriver());
+    }
+
+    /**
+     * Enter exact project name again to confirm the deletion.
+     * @param projectName project name
+     * @return this page
+     */
+    public ProjectGeneralTab enterProjectNameToConfirmDelete(String projectName) {
+        log.info("Input project name again to confirm");
+        readyElement(confirmDeleteInput).clear();
+        readyElement(confirmDeleteInput).sendKeys(projectName);
+        waitForPageSilence();
+        return this;
     }
 
     /**
