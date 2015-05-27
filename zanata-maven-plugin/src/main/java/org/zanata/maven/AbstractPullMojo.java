@@ -110,8 +110,8 @@ public abstract class AbstractPullMojo extends
 
     /**
      * Accepts integer from 0 to 100. Only pull translation documents which are
-     * at least PERCENT % completed. Please note specifying this option may
-     * cause longer time to pull for a large project.
+     * at least PERCENT % (message based) completed. Please note specifying this
+     * option may cause longer time to pull for a large project.
      *
      * @parameter expression="${zanata.minDocPercent}" default-value="0"
      */

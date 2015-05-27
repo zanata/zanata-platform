@@ -173,7 +173,7 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
     }
 
     @Option(name = "--min-doc-percent", metaVar = "PERCENT",
-            usage = "Accepts integer from 0 to 100. Only pull translation documents which are at least PERCENT % completed.\n" +
+            usage = "Accepts integer from 0 to 100. Only pull translation documents which are at least PERCENT % (message based) completed.\n" +
                     "Please note specifying this option may cause longer time to pull for a large project")
     public void setMinDocPercent(int minDocPercent) {
         Preconditions

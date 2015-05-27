@@ -126,7 +126,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
             logger.info("Pulling target documents (translations) only");
             logger.info("Target-language base directory (translations): {}",
                     opts.getTransDir());
-            logger.info("Minimum accepted translation percentage: {}%",
+            logger.info("Minimum accepted translation percentage (message based): {}%",
                     opts.getMinDocPercent());
         } else {
             logger.info("Pulling source and target (translation) documents");
@@ -134,7 +134,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                     opts.getSrcDir());
             logger.info("Target-language base directory (translations): {}",
                     opts.getTransDir());
-            logger.info("Minimum accepted translation percentage: {}%",
+            logger.info("Minimum accepted translation percentage (message based): {}%",
                     opts.getMinDocPercent());
         }
     }
