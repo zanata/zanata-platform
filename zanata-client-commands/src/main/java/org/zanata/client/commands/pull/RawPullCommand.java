@@ -23,9 +23,11 @@ package org.zanata.client.commands.pull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +36,6 @@ import org.zanata.client.commands.PushPullType;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.exceptions.ConfigException;
-import org.zanata.common.DocumentType;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.client.ClientUtil;
 import org.zanata.rest.client.FileResourceClient;
@@ -44,8 +45,6 @@ import org.zanata.rest.service.FileResource;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.sun.jersey.api.client.ClientResponse;
-
-import javax.ws.rs.core.HttpHeaders;
 
 /**
  *
@@ -137,6 +136,10 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
         boolean pullTarget =
                 pullType == PushPullType.Both || pullType == PushPullType.Trans;
 
+        if (needToGetStatistics(pullTarget)) {
+            log.info("Setting minimum document completion percentage may potentially increase the processing time.");
+        }
+
         if (pullSrc) {
             log.warn("Pull Type set to '"
                     + pullType
@@ -145,6 +148,9 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
         } else {
             confirmWithUser("This will overwrite/delete any existing translations in the above directory.\n");
         }
+
+        Optional<Map<String, Map<LocaleId, TranslatedPercent>>> optionalStats =
+                prepareStatsIfApplicable(pullTarget, locales);
 
         for (String qualifiedDocName : docsToPull) {
             // TODO add filtering by file type? e.g. pull all dtd documents
@@ -188,40 +194,23 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
                                 FileResource.FILETYPE_TRANSLATED_APPROVED;
                     }
 
+                    List<LocaleId> skippedLocales = Lists.newArrayList();
                     for (LocaleMapping locMapping : locales) {
                         LocaleId locale = new LocaleId(locMapping.getLocale());
-                        ClientResponse response =
-                                fileResourceClient.downloadTranslationFile(getOpts()
-                                        .getProj(), getOpts()
-                                        .getProjectVersion(), locale.getId(),
-                                        fileExtension, qualifiedDocName);
-                        if (response.getClientResponseStatus() == ClientResponse.Status.NOT_FOUND) {
-                            log.info(
-                                    "No translation document file found in locale {} for document [{}]",
-                                    locale, qualifiedDocName);
+
+                        if (shouldPullThisLocale(optionalStats, localDocName, locale)) {
+                            pullDocForLocale(strat, qualifiedDocName, localDocName,
+                                    fileExtension,
+                                    locMapping, locale);
                         } else {
-                            ClientUtil.checkResult(response);
-                            InputStream transDoc =
-                                    (InputStream) response
-                                            .getEntity(InputStream.class);
-                            if (transDoc != null) {
-                                try {
-                                    String fileName =
-                                            ClientUtil.getFileNameFromHeader(
-                                                    response.getHeaders());
-                                    String targetFileExt = FilenameUtils
-                                                    .getExtension(fileName);
-
-                                    Optional translationFileExtension =
-                                            Optional.fromNullable(targetFileExt);
-
-                                    strat.writeTransFile(localDocName,
-                                        locMapping, transDoc, translationFileExtension);
-                                } finally {
-                                    transDoc.close();
-                                }
-                            }
+                            skippedLocales.add(locale);
                         }
+
+                    }
+                    if (!skippedLocales.isEmpty()) {
+                        log.info(
+                                "Translation file for document {} for locales {} are skipped due to insufficient completed percentage",
+                                localDocName, skippedLocales);
                     }
                 }
             } catch (IOException | RuntimeException e) {
@@ -230,6 +219,41 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
                         + "    To retry from the last document, please add the option: {}\n",
                         getOpts().buildFromDocArgument(qualifiedDocName));
                 throw new RuntimeException(e.getMessage(), e);
+            }
+        }
+    }
+
+    private void pullDocForLocale(RawPullStrategy strat,
+            String qualifiedDocName, String localDocName, String fileExtension,
+            LocaleMapping locMapping, LocaleId locale) throws IOException {
+        ClientResponse response =
+                fileResourceClient.downloadTranslationFile(getOpts()
+                                .getProj(), getOpts()
+                                .getProjectVersion(), locale.getId(),
+                        fileExtension, qualifiedDocName);
+        if (response.getClientResponseStatus() == ClientResponse.Status.NOT_FOUND) {
+            log.info(
+                    "No translation document file found in locale {} for document [{}]",
+                    locale, qualifiedDocName);
+        } else {
+            ClientUtil.checkResult(response);
+            InputStream transDoc = response.getEntity(InputStream.class);
+            if (transDoc != null) {
+                try {
+                    String fileName =
+                            ClientUtil.getFileNameFromHeader(
+                                    response.getHeaders());
+                    String targetFileExt = FilenameUtils
+                            .getExtension(fileName);
+
+                    Optional<String> translationFileExtension =
+                            Optional.fromNullable(targetFileExt);
+
+                    strat.writeTransFile(localDocName,
+                        locMapping, transDoc, translationFileExtension);
+                } finally {
+                    transDoc.close();
+                }
             }
         }
     }

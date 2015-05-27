@@ -22,6 +22,8 @@
 package org.zanata.rest.client;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ws.rs.DefaultValue;
 
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
@@ -59,8 +61,18 @@ public class StatisticsResourceClient implements StatisticsResource {
                         .queryParam("detail", String.valueOf(includeDetails))
                         .queryParam("word", String.valueOf(includeWordStats))
                         .queryParams(asMultivaluedMap("locale",
-                                Lists.newArrayList(locales)));
+                                toLocaleList(locales)));
         return webResource.get(ContainerTranslationStatistics.class);
+    }
+
+    private static List<String> toLocaleList(String[] locales) {
+        List<String> localesList;
+        if (locales == null) {
+            localesList = Lists.newArrayList();
+        } else {
+            localesList = Lists.newArrayList(locales);
+        }
+        return localesList;
     }
 
     @Override
@@ -77,7 +89,7 @@ public class StatisticsResourceClient implements StatisticsResource {
                         .path(docId)
                         .queryParam("word", String.valueOf(includeWordStats))
                         .queryParams(asMultivaluedMap("locale",
-                                Lists.newArrayList(locales)));
+                                toLocaleList(locales)));
         return webResource.get(ContainerTranslationStatistics.class);
     }
 
