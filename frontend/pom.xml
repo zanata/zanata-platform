@@ -36,14 +36,6 @@
         <directory>src/main/web</directory>
         <targetPath>${web.target}</targetPath>
       </resource>
-      <resource>
-        <filtering>true</filtering>
-        <directory>${basedir}</directory>
-        <includes>
-          <include>npmWrapper.sh</include>
-        </includes>
-        <targetPath>${project.build.directory}</targetPath>
-      </resource>
     </resources>
     <plugins>
       <plugin>
@@ -74,28 +66,14 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.4.0</version>
         <configuration>
-          <executable>${project.build.directory}/npmWrapper.sh</executable>
-          <!-- setting PATH here will not work because the new PATH is only available after the command (i.e. node) is executed -->
+          <environmentVariables>
+            <PATH>${node.install.directory}/node:${node.install.directory}/node/npm/bin:${env.PATH}</PATH>
+          </environmentVariables>
+          <executable>${node.install.directory}/node/node</executable>
         </configuration>
 
 
         <executions>
-          <execution>
-            <id>chmod npmWrapper to be executable</id>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <phase>process-resources</phase>
-            <configuration>
-              <executable>chmod</executable>
-              <workingDirectory>${project.build.directory}</workingDirectory>
-              <arguments>
-                <argument>u+x</argument>
-                <argument>npmWrapper.sh</argument>
-              </arguments>
-            </configuration>
-          </execution>
-
           <execution>
             <id>execute npm install for: ${module.user-profile-page}</id>
             <phase>process-resources</phase>
@@ -105,6 +83,7 @@
             <configuration>
               <workingDirectory>${web.target}/${module.user-profile-page}</workingDirectory>
               <arguments>
+                <argument>${npm.cli.script}</argument>
                 <argument>install</argument>
               </arguments>
             </configuration>
@@ -118,6 +97,7 @@
             <configuration>
               <workingDirectory>${web.target}/${module.user-profile-page}</workingDirectory>
               <arguments>
+                <argument>${npm.cli.script}</argument>
                 <argument>run</argument>
                 <argument>build</argument>
                 <argument>bundleDest=${bundle.dest}</argument>
