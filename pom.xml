@@ -1680,6 +1680,21 @@
         </dependencies>
       </dependencyManagement>
     </profile>
+
+    <profile>
+      <id>build frontend module</id>
+      <activation>
+        <property>
+          <name>!excludeFrontend</name>
+        </property>
+      </activation>
+      <properties>
+        <required.maven>3.1.0</required.maven>
+      </properties>
+      <modules>
+        <module>frontend</module>
+      </modules>
+    </profile>
   </profiles>
 
   <distributionManagement>
@@ -1701,7 +1716,6 @@
 
   <modules>
     <module>zanata-liquibase</module>
-    <module>frontend</module>
     <module>zanata-model</module>
     <module>zanata-war</module>
     <module>zanata-test-war</module>
