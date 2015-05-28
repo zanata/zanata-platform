@@ -14,7 +14,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <node.version>v0.12.2</node.version>
     <npm.version>2.7.6</npm.version>
-    <assets.target>${project.build.directory}/assets</assets.target>
+    <web.target>${project.build.directory}/web</web.target>
     <bundle.output>${project.build.directory}/build</bundle.output>
     <bundle.dest>${bundle.output}/META-INF/resources</bundle.dest>
     <node.install.directory>${project.build.directory}</node.install.directory>
@@ -33,13 +33,8 @@
     <resources>
       <resource>
         <filtering>false</filtering>
-        <directory>src/main/assets</directory>
-        <targetPath>${assets.target}</targetPath>
-      </resource>
-      <resource>
-        <filtering>true</filtering>
-        <directory>src/etc/</directory>
-        <targetPath>${project.build.directory}</targetPath>
+        <directory>src/main/web</directory>
+        <targetPath>${web.target}</targetPath>
       </resource>
     </resources>
     <plugins>
@@ -81,7 +76,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <workingDirectory>${assets.target}/${module.user-profile-page}</workingDirectory>
+              <workingDirectory>${web.target}/${module.user-profile-page}</workingDirectory>
               <arguments>
                 <!-- we have to invoke npm in such a way-->
                 <argument>${npm.cli.script}</argument>
@@ -96,7 +91,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <workingDirectory>${assets.target}/${module.user-profile-page}</workingDirectory>
+              <workingDirectory>${web.target}/${module.user-profile-page}</workingDirectory>
               <arguments>
                 <argument>${npm.cli.script}</argument>
                 <argument>run</argument>
