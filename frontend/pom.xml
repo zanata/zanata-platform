@@ -17,7 +17,11 @@
     <assets.target>${project.build.directory}/assets</assets.target>
     <bundle.output>${project.build.directory}/build</bundle.output>
     <bundle.dest>${bundle.output}/META-INF/resources</bundle.dest>
-    <node.working.directory>${assets.target}</node.working.directory>
+    <node.install.directory>${project.build.directory}</node.install.directory>
+    <npm.cli.script>${node.install.directory}/node/npm/bin/npm-cli.js</npm.cli.script>
+
+    <!-- ==== list of modules to build by npm and node ==== -->
+    <module.user-profile-page>user-profile-page</module.user-profile-page>
   </properties>
 
 
@@ -29,8 +33,13 @@
     <resources>
       <resource>
         <filtering>false</filtering>
-        <directory>src/main/javascript</directory>
+        <directory>src/main/assets</directory>
         <targetPath>${assets.target}</targetPath>
+      </resource>
+      <resource>
+        <filtering>true</filtering>
+        <directory>src/etc/</directory>
+        <targetPath>${project.build.directory}</targetPath>
       </resource>
     </resources>
     <plugins>
@@ -39,11 +48,10 @@
         <artifactId>frontend-maven-plugin</artifactId>
         <version>0.0.23</version>
         <configuration>
-          <workingDirectory>${node.working.directory}</workingDirectory>
+          <workingDirectory>${node.install.directory}</workingDirectory>
         </configuration>
 
         <executions>
-
           <execution>
             <id>install node and npm</id>
             <phase>generate-resources</phase>
@@ -55,30 +63,48 @@
               <npmVersion>${npm.version}</npmVersion>
             </configuration>
           </execution>
+        </executions>
+      </plugin>
 
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.4.0</version>
+        <configuration>
+          <executable>${node.install.directory}/node/node</executable>
+        </configuration>
+        <executions>
           <execution>
-            <id>npm install for all submodules</id>
+            <id>execute npm install for - ${module.user-profile-page}</id>
             <phase>process-resources</phase>
             <goals>
-              <goal>npm</goal>
+              <goal>exec</goal>
             </goals>
-            <!-- Optional configuration which provides for running any npm command -->
             <configuration>
-              <arguments>install</arguments>
+              <workingDirectory>${assets.target}/${module.user-profile-page}</workingDirectory>
+              <arguments>
+                <!-- we have to invoke npm in such a way-->
+                <argument>${npm.cli.script}</argument>
+                <argument>install</argument>
+              </arguments>
             </configuration>
           </execution>
-
           <execution>
-            <id>npm build</id>
+            <id>execute npm run build for - ${module.user-profile-page}</id>
             <phase>compile</phase>
             <goals>
-              <goal>npm</goal>
+              <goal>exec</goal>
             </goals>
             <configuration>
-              <arguments>run build bundleDest=${bundle.dest}</arguments>
+              <workingDirectory>${assets.target}/${module.user-profile-page}</workingDirectory>
+              <arguments>
+                <argument>${npm.cli.script}</argument>
+                <argument>run</argument>
+                <argument>build</argument>
+                <argument>bundleDest=${bundle.dest}</argument>
+              </arguments>
             </configuration>
           </execution>
-
         </executions>
       </plugin>
 
@@ -100,20 +126,4 @@
     </plugins>
   </build>
 
-  <profiles>
-    <!-- need to create one profile for each sub module (node and npm will be downloaded every time ... -->
-    <profile>
-      <id>user-profile-page</id>
-      <properties>
-        <node.working.directory>${assets.target}/user-profile-page</node.working.directory>
-      </properties>
-      <activation>
-        <property>
-          <name>userProfile</name>
-        </property>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-
-    </profile>
-  </profiles>
 </project>
