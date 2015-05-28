@@ -303,7 +303,7 @@
                   <s:fragment rendered="#{identity.loggedIn}">
                     <li id="#{status.index}:link-translate-online">
                       <h:outputLink styleClass="i__item--right"
-                        value="#{request.contextPath}/webtrans/Application.seam?project=#{versionHomeAction.projectSlug}&amp;iteration=#{versionHomeAction.versionSlug}&amp;localeId=#{versionHomeAction.selectedLocale.localeId}&amp;locale=#{locale.language}#view:doc;doc:#{document.docId}">
+                        value="#{versionHomeAction.getEditorUrl(locale.language, document.docId)}">
                         <s:fragment
                           rendered="#{versionHomeAction.isUserAllowedToTranslateOrReview(versionHomeAction.selectedLocale)}">
                           #{msgs['jsf.iteration.TranslateOnline']} <i
@@ -380,7 +380,7 @@
 
             <s:fragment rendered="#{versionHomeAction.selectedLocale.active}">
               <a
-                href="#{request.contextPath}/webtrans/Application.seam?project=#{versionHomeAction.projectSlug}&amp;iteration=#{versionHomeAction.versionSlug}&amp;localeId=#{versionHomeAction.selectedLocale.localeId}&amp;locale=#{locale.language}#view:doc;doc:#{document.docId}">
+                href="#{versionHomeAction.getEditorUrl(locale.language, document.docId)}">
                 <div class="list__item__content">
                   <div class="list__item__info">
                     <h3 class="list__title">#{document.name}</h3>

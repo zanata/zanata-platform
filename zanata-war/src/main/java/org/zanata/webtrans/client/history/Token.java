@@ -2,6 +2,8 @@ package org.zanata.webtrans.client.history;
 
 import java.util.Map;
 
+import org.zanata.webtrans.shared.util.TokenUtil;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 
@@ -63,24 +65,7 @@ class Token implements Map.Entry<String, String> {
      * @return the given string with all token delimiters encoded
      */
     static String encode(String toEncode) {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < toEncode.length(); i++) {
-            char nextChar = toEncode.charAt(i);
-            switch (nextChar) {
-            case ':':
-                sb.append("!c");
-                break;
-            case ';':
-                sb.append("!s");
-                break;
-            case '!':
-                sb.append('!');
-            default:
-                sb.append(nextChar);
-            }
-        }
-        // Log.debug("Encoded: \"" + toEncode + "\" to \"" + sb + "\"");
-        return sb.toString();
+       return TokenUtil.encode(toEncode);
     }
 
     /**
@@ -89,34 +74,6 @@ class Token implements Map.Entry<String, String> {
      * @return the given string with any encoded token delimiters decoded
      */
     static String decode(String toDecode) {
-        StringBuilder sb = new StringBuilder();
-        boolean escaped = false;
-        for (int i = 0; i < toDecode.length(); i++) {
-            char nextChar = toDecode.charAt(i);
-            if (escaped) {
-                escaped = false;
-                switch (nextChar) {
-                case '!':
-                    sb.append('!');
-                    break;
-                case 'c':
-                    sb.append(':');
-                    break;
-                case 's':
-                    sb.append(';');
-                    break;
-                default:
-                    Log.warn("Unrecognised escaped character, appending: "
-                            + nextChar);
-                    sb.append(nextChar);
-                }
-            } else if (nextChar == '!') {
-                escaped = true;
-            } else {
-                sb.append(nextChar);
-            }
-        }
-        Log.debug("Decoded: \"" + toDecode + "\" to \"" + sb + "\"");
-        return sb.toString();
+        return TokenUtil.decode(toDecode);
     }
 }

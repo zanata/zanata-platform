@@ -39,6 +39,7 @@ Example usage in html file: `<link rel="shortcut icon" href="#{assets['img/logo/
 * [1222358](https://bugzilla.redhat.com/show_bug.cgi?id=1222358) - User profile page dropdown will not work in firefox
 * [1165930](https://bugzilla.redhat.com/show_bug.cgi?id=1165930) - 'Copy from previous version' shows if an obsolete version exists
 * [1098362](https://bugzilla.redhat.com/show_bug.cgi?id=1098362) - download link in editor doesn't encode properly and result in 404
+* [1225689](https://bugzilla.redhat.com/show_bug.cgi?id=1225689) - [Project Version View] Failed to load entries when the doc id contains characters that should be URL encoded
 
 -----------------------
 
