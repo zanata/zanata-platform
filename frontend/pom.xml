@@ -67,6 +67,9 @@
         <version>1.4.0</version>
         <configuration>
           <executable>${node.install.directory}/node/node</executable>
+          <environmentVariables>
+            <PATH>${node.install.directory}/node/node:${node.install.directory}/node/npm/bin:${env.PATH}</PATH>
+          </environmentVariables>
         </configuration>
         <executions>
           <execution>
