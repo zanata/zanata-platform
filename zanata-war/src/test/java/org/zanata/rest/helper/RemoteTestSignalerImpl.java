@@ -28,6 +28,7 @@ import java.util.List;
 
 import javax.ws.rs.Path;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jboss.arquillian.seam2.ReflectionHelper;
 import org.jboss.seam.annotations.Name;
 import org.zanata.arquillian.RemoteAfter;
@@ -42,9 +43,11 @@ import org.zanata.arquillian.RemoteBefore;
  */
 @Path("/test/remote/signal")
 @Name("remoteTestSignalerImpl")
+@Slf4j
 public class RemoteTestSignalerImpl implements RemoteTestSignaler {
     @Override
-    public void signalBeforeTest(String testClass) throws Exception {
+    public void signalBeforeTest(String testClass, String testMethod) throws Exception {
+        log.info("Starting test {}:{}", testClass, testMethod);
         Class<?> testCls = Class.forName(testClass);
         Object testInstance = testCls.newInstance();
 
@@ -52,11 +55,12 @@ public class RemoteTestSignalerImpl implements RemoteTestSignaler {
     }
 
     @Override
-    public void signalAfterTest(String testClass) throws Exception {
+    public void signalAfterTest(String testClass, String testMethod) throws Exception {
         Class<?> testCls = Class.forName(testClass);
         Object testInstance = testCls.newInstance();
 
         invokeAnnotatedMethods(testInstance, RemoteAfter.class);
+        log.info("Finished test {}:{}", testClass, testMethod);
     }
 
     private void invokeAnnotatedMethods(Object o,
