@@ -9,8 +9,8 @@
     "build": "NODE_ENV=production webpack -p --config webpack.prod.config.js",
     "start": "node server.js"
   },
-  "author": "Patrick Huang",
-  "license": "BSD",
+  "author": "Patrick Huang <pahuang@redhat.com>",
+  "license": "LGPL",
   "devDependencies": {
     "babel-core": "^4.3.0",
     "babel-loader": "^4.0.0",
