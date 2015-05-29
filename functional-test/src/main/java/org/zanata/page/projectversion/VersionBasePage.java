@@ -115,7 +115,7 @@ public class VersionBasePage extends BasePage {
     public VersionTranslationTab gotoSettingsTranslationTab() {
         log.info("Click Translation settings sub-tab");
         clickWhenTabEnabled(readyElement(settingsTranslationTab));
-        readyElement(By.id("settings-translation-review-form"));
+        readyElement(By.id("settings-translation-validation-form"));
         return new VersionTranslationTab(getDriver());
     }
 

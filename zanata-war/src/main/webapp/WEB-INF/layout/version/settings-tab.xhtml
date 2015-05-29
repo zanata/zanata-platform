@@ -268,27 +268,32 @@
   <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
     #{msgs['jsf.Translation']}
   </h2>
-  <h:form id="settings-translation-review-form" styleClass="l--push-bottom-0">
-    <h3 class="heading--secondary">#{msgs['jsf.label.review']}</h3>
 
-    <div class="is-active" id="translation-review-form">
-      <zanata:checkbox
-        label="#{msgs['jsf.iteration.requireTranslationReview']}"
-        onValueChanged="bindRequireReviewValue"
-        checked="#{versionHome.instance.requireTranslationReview}"
-        value="requireTranslationReview"/>
+  <ui:remove>
+    <!-- Remove require review option until https://bugzilla.redhat.com/show_bug.cgi?id=1211137-->
+    <h:form id="settings-translation-review-form" styleClass="l--push-bottom-0">
+      <h3 class="heading--secondary">#{msgs['jsf.label.review']}</h3>
 
-      <p class="txt--meta">#{msgs['jsf.iteration.requireReview.message']}
-        <a href="http://zanata.org/help/review/review-activating/"
-          target="_blank"
-          title="#{msgs['jsf.iteration.requireReview.help']}"><i
-          class="i i--help"></i>
-        </a>
-      </p>
-    </div>
-  </h:form>
+        <div class="is-active" id="translation-review-form">
+          <zanata:checkbox
+            label="#{msgs['jsf.iteration.requireTranslationReview']}"
+            onValueChanged="bindRequireReviewValue"
+            checked="#{versionHome.instance.requireTranslationReview}"
+            value="requireTranslationReview"/>
 
-  <hr/>
+          <p class="txt--meta">#{msgs['jsf.iteration.requireReview.message']}
+            <a href="http://zanata.org/help/review/review-activating/"
+              target="_blank"
+              title="#{msgs['jsf.iteration.requireReview.help']}"><i
+              class="i i--help"></i>
+            </a>
+          </p>
+        </div>
+    </h:form>
+    <hr/>
+  </ui:remove>
+
+
 
   <h:form id="settings-translation-validation-form">
     <h3 class="heading--secondary">#{msgs['jsf.Validation']}</h3>
