@@ -51,6 +51,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
+import org.jboss.seam.faces.FacesManager;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -153,6 +154,9 @@ public class ProjectHome extends SlugHome<HProject> implements
 
     @In
     private CopyTransOptionsModel copyTransOptionsModel;
+
+    @In
+    private UrlUtil urlUtil;
 
     // This property is present to keep the filter in place when the region with
     // the filter box is refreshed.
@@ -626,10 +630,23 @@ public class ProjectHome extends SlugHome<HProject> implements
         if (projectId == null) {
             HProject project = (HProject) session.byNaturalId(HProject.class)
                 .using("slug", getSlug()).load();
+            validateProjectState(project);
             projectId = project.getId();
             return project;
         } else {
-            return (HProject) session.byId(HProject.class).load(projectId);
+            HProject project =
+                    (HProject) session.byId(HProject.class).load(projectId);
+            validateProjectState(project);
+            return project;
+        }
+    }
+
+    private void validateProjectState(HProject project) {
+        if (project == null || project.getStatus() == EntityStatus.OBSOLETE) {
+            log.warn(
+                    "Project [id={}, slug={}], does not exist or is soft deleted: {}",
+                    projectId, slug, project);
+            throw new EntityNotFoundException();
         }
     }
 
@@ -639,8 +656,7 @@ public class ProjectHome extends SlugHome<HProject> implements
         // when id is invalid and conversation will not
         // start
 
-        if (ip.getStatus().equals(EntityStatus.OBSOLETE)
-                && !checkViewObsolete()) {
+        if (ip.getStatus().equals(EntityStatus.OBSOLETE)) {
             throw new EntityNotFoundException();
         }
     }
@@ -717,7 +733,20 @@ public class ProjectHome extends SlugHome<HProject> implements
             return null;
         }
         getInstance().setSlug(getInputSlugValue());
+
+        boolean softDeleted = false;
+        if (getInstance().getStatus() == EntityStatus.OBSOLETE) {
+            softDeleted = true;
+            getInstance().setSlug(getInstance().changeToDeletedSlug());
+        }
+
         String result = super.update();
+
+        if (softDeleted) {
+            String url = urlUtil.dashboardUrl();
+            FacesManager.instance().redirectToExternalURL(url);
+            return result;
+        }
         if (!slug.equals(getInstance().getSlug())) {
             slug = getInstance().getSlug();
             return "projectSlugUpdated";
@@ -848,6 +877,10 @@ public class ProjectHome extends SlugHome<HProject> implements
                         EntityStatus.valueOf(initial)));
     }
 
+    public void deleteSelf() {
+        updateStatus('O');
+    }
+
     public Map<String, Boolean> getRoleRestrictions() {
         if (roleRestrictions == null) {
             roleRestrictions = Maps.newHashMap();
@@ -876,10 +909,7 @@ public class ProjectHome extends SlugHome<HProject> implements
         List<HProjectIteration> results = new ArrayList<HProjectIteration>();
 
         for (HProjectIteration iteration : getInstance().getProjectIterations()) {
-            if (iteration.getStatus() == EntityStatus.OBSOLETE
-                    && checkViewObsolete()) {
-                results.add(iteration);
-            } else if (iteration.getStatus() != EntityStatus.OBSOLETE) {
+            if (iteration.getStatus() != EntityStatus.OBSOLETE) {
                 results.add(iteration);
             }
         }

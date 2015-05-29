@@ -111,7 +111,7 @@ public class NotificationItem extends Composite {
         if (severity == NotificationEvent.Severity.Warning) {
             return "message--warning";
         } else if (severity == NotificationEvent.Severity.Error) {
-            return "message--danger";
+            return "message--danger app-error";
         }
         return "message--highlight";
     }

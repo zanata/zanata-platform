@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projects.ProjectsPage;
-import org.zanata.page.projects.projectsettings.ProjectGeneralTab;
 import org.zanata.util.AddUsersRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
@@ -24,17 +23,19 @@ public class SetProjectVisibilityTest extends ZanataTestCase {
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    @Feature(summary = "The administrator can set a project to archived",
+    @Feature(summary = "The administrator can delete a project",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 135846)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void setAProjectArchived() throws Exception {
+    public void deleteAProject() throws Exception {
         ProjectsPage projectsPage = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToProjects()
                 .goToProject("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsGeneral()
-                .archiveProject()
+                .deleteProject()
+                .enterProjectNameToConfirmDelete("about fedora")
+                .confirmDeleteProject()
                 .goToProjects();
 
         assertThat(projectsPage.getProjectNamesOnCurrentPage())
@@ -42,8 +43,7 @@ public class SetProjectVisibilityTest extends ZanataTestCase {
                 .as("The project is not displayed");
 
         projectsPage = projectsPage.setActiveFilterEnabled(false)
-                .setReadOnlyFilterEnabled(false)
-                .setArchivedFilterEnabled(true);
+                .setReadOnlyFilterEnabled(false);
 
         projectsPage.expectProjectVisible("about fedora");
 
@@ -61,37 +61,4 @@ public class SetProjectVisibilityTest extends ZanataTestCase {
                 .as("User cannot navigate to the archived project");
     }
 
-    @Feature(summary = "The administrator can set an archived project " +
-            "to active",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void setAnArchivedProjectAsActive() throws Exception {
-        ProjectGeneralTab projectGeneralTab = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToProjects()
-                .goToProject("about fedora")
-                .gotoSettingsTab()
-                .gotoSettingsGeneral()
-                .archiveProject()
-                .goToProjects()
-                .setArchivedFilterEnabled(true)
-                .goToProject("about fedora")
-                .gotoSettingsTab()
-                .gotoSettingsGeneral()
-                .unarchiveProject();
-
-        assertThat(projectGeneralTab.isArchiveButtonAvailable())
-                .isTrue()
-                .as("The archive button is now available");
-
-        projectGeneralTab.logout();
-
-        assertThat(new LoginWorkFlow()
-                .signIn("translator", "translator")
-                .goToProjects()
-                .goToProject("about fedora")
-                .getProjectName())
-                .isEqualTo("about fedora")
-                .as("Translator can view the project");
-    }
 }

@@ -46,6 +46,8 @@
   <a4j:param name="val2" assignTo="#{value}"/>
 </a4j:jsFunction>
 
+<a4j:jsFunction name="runDelete" action="#{versionHome.deleteSelf()}" />
+
 <h1>#{msgs['jsf.iteration.VersionSettings']}</h1>
 
 <s:div styleClass="tabs--vertical js-tabs" id="version-settings">
@@ -142,29 +144,14 @@
       <s:fragment
         rendered="#{s:hasPermission(versionHome.instance, 'mark-obsolete')}">
         <s:div styleClass="g__item w--1-2"
-          rendered="#{versionHome.instance.status eq 'OBSOLETE'}">
-          <a4j:commandLink
-            styleClass="button--success l--push-bottom-half"
-            action="#{versionHome.updateStatus('A')}"
-            render="status, version-info">
-            <i class="i--left i--archive"></i>
-            #{msgs['jsf.iteration.UnArchiveThisVersion']}
-          </a4j:commandLink>
-
-          <p
-            class="txt--meta">#{msgs['jsf.iteration.unarchive.Message']}</p>
-        </s:div>
-        <s:div styleClass="g__item w--1-2"
           rendered="#{versionHome.instance.status ne 'OBSOLETE'}">
-          <a4j:commandLink styleClass="button--danger l--push-bottom-half"
-            action="#{versionHome.updateStatus('O')}"
-            render="status, version-info">
-            <i class="i--left i--archive"></i>
-            #{msgs['jsf.iteration.ArchiveThisVersion']}
-          </a4j:commandLink>
-
+          <a href="javascript:void(0)" class="button--danger l--push-bottom-half"
+            onclick="zanata.modal.show('#delete-confirmation-modal')">
+            #{msgs['jsf.iteration.DeleteThisVersion']}
+            <i class="i--left i--trash"></i>
+          </a>
           <p
-            class="txt--meta">#{msgs['jsf.iteration.archive.Message']}</p>
+            class="txt--meta">#{msgs['jsf.iteration.delete.Message']}</p>
         </s:div>
       </s:fragment>
     </s:div>
@@ -384,4 +371,8 @@
 </s:div>
 
 <ui:include src="/WEB-INF/layout/copy_trans_inline_modal.xhtml"/>
+  <ui:include src="/WEB-INF/layout/delete_confirmation_modal.xhtml">
+    <ui:param name="entityType" value="#{msgs['jsf.Version']}" />
+    <ui:param name="entityName" value="#{versionHome.instance.slug}" />
+  </ui:include>
 </ui:composition>

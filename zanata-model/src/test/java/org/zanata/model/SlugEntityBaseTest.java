@@ -21,6 +21,7 @@
 package org.zanata.model;
 
 import lombok.NoArgsConstructor;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,10 +33,18 @@ import static org.hamcrest.Matchers.equalTo;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class SlugEntityBaseTest {
+
+    private static final String DELETED_SUFFIX = "_.-1234567890";
+
     @NoArgsConstructor
     static class SlugClass extends SlugEntityBase {
         public SlugClass(String slug) {
             super(slug);
+        }
+
+        @Override
+        protected String deletedSlugSuffix() {
+            return DELETED_SUFFIX;
         }
     }
 
@@ -58,5 +67,22 @@ public class SlugEntityBaseTest {
 
         assertThat(entity.hashCode(), equalTo(other.hashCode()));
 
+    }
+
+    @Test
+    public void changeToDeletedSlug() {
+        SlugEntityBase slugEntityBase = new SlugClass("abc");
+        String newSlug = slugEntityBase.changeToDeletedSlug();
+        Assertions.assertThat(newSlug).isEqualTo("abc" + DELETED_SUFFIX);
+    }
+
+    @Test
+    public void canChangeToDeletedSlugWithSuffixInPlaceIfOldSlugIsTooLong() {
+        // 36 characters long
+        SlugEntityBase slugEntityBase = new SlugClass("abcdefghijklmnopqrstuvwxyz1234567890");
+        String newSlug = slugEntityBase.changeToDeletedSlug();
+        Assertions.assertThat(newSlug)
+                .isEqualTo("abcdefghijklmnopqrstuvwxyz1" + DELETED_SUFFIX)
+                .hasSize(40);
     }
 }

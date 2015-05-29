@@ -39,8 +39,7 @@ public class QueryProjectPagedListDataModel extends
         PagedListDataModel<HProject> implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Setter
-    private boolean includeObsolete;
+    private final boolean includeObsolete = false;
 
     @Setter
     @Getter
@@ -63,7 +62,7 @@ public class QueryProjectPagedListDataModel extends
             int projectSize =
                     projectDAO.getQueryProjectSize(query, includeObsolete);
 
-            return new DataPage<HProject>(projectSize, startRow, proj);
+            return new DataPage<>(projectSize, startRow, proj);
 
         } catch (ParseException e) {
             return null;

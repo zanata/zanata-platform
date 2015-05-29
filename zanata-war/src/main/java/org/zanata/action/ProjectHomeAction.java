@@ -394,22 +394,13 @@ public class ProjectHomeAction extends AbstractSortAction implements
         ProjectDAO projectDAO =
                 ServiceLocator.instance().getInstance(ProjectDAO.class);
         if (projectVersions == null) {
-            if (isUserAllowViewObsolete()) {
-                projectVersions = projectDAO.getAllIterations(slug);
-            } else {
-                projectVersions = projectDAO.getActiveIterations(slug);
-                projectVersions.addAll(projectDAO.getReadOnlyIterations(slug));
-            }
+            projectVersions = projectDAO.getActiveIterations(slug);
+            projectVersions.addAll(projectDAO.getReadOnlyIterations(slug));
 
             Collections.sort(projectVersions,
                     ComparatorUtil.VERSION_CREATION_DATE_COMPARATOR);
         }
         return projectVersions;
-    }
-
-    public boolean isUserAllowViewObsolete() {
-        return identity != null
-                && identity.hasPermission("HProject", "view-obsolete");
     }
 
     public boolean isUserAllowedToTranslateOrReview(HProjectIteration version,

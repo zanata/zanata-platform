@@ -39,7 +39,7 @@ public class ProjectAction implements Serializable {
 
     private boolean showActive = true;
     private boolean showReadOnly = true;
-    private boolean showObsolete = false;
+    private final boolean showObsolete = false;
 
     private ProjectPagedListDataModel projectPagedListDataModel =
             new ProjectPagedListDataModel(!showActive, !showReadOnly,
@@ -57,15 +57,6 @@ public class ProjectAction implements Serializable {
 
     public DataModel getProjectPagedListDataModel() {
         return projectPagedListDataModel;
-    }
-
-    public boolean isShowObsolete() {
-        return showObsolete;
-    }
-
-    public void setShowObsolete(boolean showObsolete) {
-        projectPagedListDataModel.setFilterObsolete(!showObsolete);
-        this.showObsolete = showObsolete;
     }
 
     public boolean isShowActive() {

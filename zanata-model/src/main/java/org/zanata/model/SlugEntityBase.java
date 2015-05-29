@@ -20,9 +20,11 @@
  */
 package org.zanata.model;
 
+import java.util.Date;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -31,10 +33,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.search.annotations.Field;
 import org.zanata.model.validator.Slug;
+import com.google.common.annotations.VisibleForTesting;
 
 @MappedSuperclass
 @ToString(callSuper = true)
@@ -43,15 +47,54 @@ import org.zanata.model.validator.Slug;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 public abstract class SlugEntityBase extends ModelEntityBase {
+
+    /**
+     * We append this suffix to a deleted slug entity so that its original slug
+     * become available to use.
+     */
+    private static final String DELETED_SLUG_SUFFIX = "_.-";
 
     private static final long serialVersionUID = -1911540675412928681L;
 
-    // TODO PERF @NaturalId(mutable=false) for better criteria caching
     @NaturalId(mutable = true)
     @Size(min = 1, max = 40)
     @Slug
     @NotNull
     @Field
     private String slug;
+
+    /**
+     * If the slug entity is set to obsolete (soft delete), we need to recycle
+     * its slug. This will suffix the original slug with deleted slug suffix
+     * plus a timestamp. if original slug is too long, the suffix will be put
+     * into the end and replacing some of the old slug characters. This means we
+     * won't be able to recover what the old slug was.
+     *
+     * @return an artificial slug just so the old slug will become available to
+     *         use.
+     */
+    @Transient
+    public String changeToDeletedSlug() {
+        String deletedSlugSuffix = deletedSlugSuffix();
+        String newSlug = slug + deletedSlugSuffix;
+        if (newSlug.length() <= 40) {
+            return newSlug;
+        } else {
+            newSlug =
+                    slug.substring(0, 40 - deletedSlugSuffix.length())
+                            + deletedSlugSuffix;
+            log.warn(
+                    "Entity [{}] old slug [{}] is too long to apply suffix. We will add suffix in place [{}]",
+                    this, slug, newSlug);
+            return newSlug;
+        }
+    }
+
+    @VisibleForTesting
+    protected String deletedSlugSuffix() {
+        int timeSuffix = new Date().hashCode();
+        return DELETED_SLUG_SUFFIX + timeSuffix;
+    }
 }

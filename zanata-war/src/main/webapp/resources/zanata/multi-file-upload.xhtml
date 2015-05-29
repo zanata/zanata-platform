@@ -278,7 +278,7 @@ site: http://www.fsf.org.
   <!-- templates are used in JavaScript, see jquery.fileupload-ui.js -->
   <script id="template-error" type="text/x-tmpl">
 <![CDATA[
-            <li class="message message--danger l--pad-h-1">
+            <li class="message message--danger app-error l--pad-h-1">
                {%=o.error%}
             </li>
 ]]>
@@ -299,9 +299,9 @@ site: http://www.fsf.org.
                 <div class="list__item__info">
                   <span class="list__title">{%=file.name%}</span>
                   {% if (file.error) { %}
-                    <span class="fileupload-error message message--danger">{%=file.error%}</span>
+                    <span class="fileupload-error message message--danger app-error">{%=file.error%}</span>
                   {% } else { %}
-                    <span class="fileupload-error message message--danger is-invisible"></span>
+                    <span class="fileupload-error message message--danger app-error is-invisible"></span>
                   {% } %}
                 </div>
                 <div class="list__item__actions">

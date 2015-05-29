@@ -140,6 +140,10 @@ public class UrlUtil implements Serializable {
                 sourceLocaleId, docId) + ";textflow:" + tuId;
     }
 
+    public String dashboardUrl() {
+        return getContextPath() + "/dashboard/";
+    }
+
     /**
      * UrlEncoder replace whitespace with '+'. Need manual replacement of '+' to
      * '%20'

@@ -74,6 +74,8 @@
   <a4j:param name="val2" assignTo="#{isRestricted}"/>
 </a4j:jsFunction>
 
+<a4j:jsFunction name="runDelete" action="#{projectHome.deleteSelf()}" />
+
 <h1>#{msgs['jsf.project.ProjectSettings']}</h1>
 
 <div class="tabs--vertical js-tabs">
@@ -220,26 +222,15 @@
       <s:fragment
         rendered="#{s:hasPermission(projectHome.instance, 'mark-obsolete')}">
         <s:div styleClass="g__item w--1-2"
-          rendered="#{projectHome.instance.status eq 'OBSOLETE'}">
-          <a4j:commandLink styleClass="button--success l--push-bottom-half"
-            id="button-unarchive-project"
-            action="#{projectHome.updateStatus('A')}" render="status">
-            <i class="i--left i--archive"></i>
-            #{msgs['jsf.UnArchiveThisProject']}
-          </a4j:commandLink>
-
-          <p class="txt--meta">#{msgs['jsf.UnarchiveProject.Message']}</p>
-        </s:div>
-        <s:div styleClass="g__item w--1-2"
           rendered="#{projectHome.instance.status ne 'OBSOLETE'}">
-          <a4j:commandLink styleClass="button--danger l--push-bottom-half"
-            id="button-archive-project"
-            action="#{projectHome.updateStatus('O')}" render="status">
-            <i class="i--left i--archive"></i>
-            #{msgs['jsf.ArchiveThisProject']}
-          </a4j:commandLink>
+          <a href="javascript:void(0)" id="button-archive-project"
+            class="button--danger l--push-bottom-half"
+            onclick="zanata.modal.show('#delete-confirmation-modal')">
+            #{msgs['jsf.DeleteThisProject']}
+            <i class="i--left i--trash"></i>
+          </a>
 
-          <p class="txt--meta">#{msgs['jsf.ArchiveProject.Message']}</p>
+          <p class="txt--meta">#{msgs['jsf.DeleteProject.Message']}</p>
         </s:div>
       </s:fragment>
     </s:div>
@@ -509,4 +500,8 @@
   <h:outputScript target="body" library="script" name="${commonMarkRenderer.scriptName}"/>
   <h:outputScript target="body" library="script" name="commonmark-preview.js"/>
 
+  <ui:include src="/WEB-INF/layout/delete_confirmation_modal.xhtml">
+    <ui:param name="entityType" value="#{msgs['jsf.Project']}" />
+    <ui:param name="entityName" value="#{projectHome.instance.name}" />
+  </ui:include>
 </ui:composition>

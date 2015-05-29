@@ -83,16 +83,18 @@ public class ProjectSearchTest extends ZanataTestCase {
                 .as("No projects are displayed");
     }
 
-    @Feature(summary = "The user cannot search for Archived projects",
+    @Feature(summary = "The user cannot search for Deleted projects",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void normalUserCannotSearchArchived() throws Exception {
+    public void userCannotSearchDeleteProject() throws Exception {
         new LoginWorkFlow().signIn("admin", "admin")
                 .goToProjects()
                 .goToProject("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsGeneral()
-                .archiveProject()
+                .deleteProject()
+                .enterProjectNameToConfirmDelete("about fedora")
+                .confirmDeleteProject()
                 .logout();
 
         BasePage basePage = new BasicWorkFlow()

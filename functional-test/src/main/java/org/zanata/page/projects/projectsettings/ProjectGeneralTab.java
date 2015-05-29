@@ -44,8 +44,10 @@ public class ProjectGeneralTab extends ProjectBasePage {
     private By projectTypeList = By.id("project-types");
     private By homepageField = By.id("settings-general-form:homePageField:homePage");
     private By repoField = By.id("settings-general-form:repoField:repo");
-    private By archiveButton = By.id("settings-general-form:button-archive-project");
-    private By unarchiveButton = By.id("settings-general-form:button-unarchive-project");
+    private By deleteButton = By.id("button-archive-project");
+    private By confirmDeleteButton = By.id("deleteButton");
+    private By confirmDeleteInput = By.id("confirmDeleteInput");
+    private By cancelDeleteButton = By.id("cancelDelete");
     private By lockProjectButton = By.id("settings-general-form:button-lock-project");
     private By unlockProjectButton = By.id("settings-general-form:button-unlock-project");
     private By updateButton = By.id("settings-general-form:button-update-settings");
@@ -157,28 +159,41 @@ public class ProjectGeneralTab extends ProjectBasePage {
      * Only Administrators can use this feature.
      * @return button available true/false
      */
-    public boolean isArchiveButtonAvailable() {
+    public boolean isDeleteButtonAvailable() {
         log.info("Query is Archive button displayed");
-        return getDriver().findElements(archiveButton).size() > 0;
+        return getDriver().findElements(deleteButton).size() > 0;
     }
 
     /**
-     * Press the "Archive this project" button
-     * @return new Project General Settings page
+     * Press the "Delete this project" button
+     * @return new Dashboard page
      */
-    public ProjectGeneralTab archiveProject() {
-        log.info("Click Archive this project");
-        clickElement(archiveButton);
+    public ProjectGeneralTab deleteProject() {
+        log.info("Click Delete this project");
+        clickElement(deleteButton);
         return new ProjectGeneralTab(getDriver());
     }
 
     /**
-     * Press the "Unarchive this project" button
-     * @return new Project General Settings page
+     * Enter exact project name again to confirm the deletion.
+     * @param projectName project name
+     * @return this page
      */
-    public ProjectGeneralTab unarchiveProject() {
-        log.info("Click Unarchive this project");
-        clickElement(unarchiveButton);
+    public ProjectGeneralTab enterProjectNameToConfirmDelete(String projectName) {
+        log.info("Input project name again to confirm");
+        readyElement(confirmDeleteInput).clear();
+        readyElement(confirmDeleteInput).sendKeys(projectName);
+        waitForPageSilence();
+        return this;
+    }
+
+    /**
+     * Confirm project delete
+     * @return new Dashboard page
+     */
+    public ProjectGeneralTab confirmDeleteProject() {
+        log.info("Click confirm Delete");
+        clickElement(confirmDeleteButton);
         return new ProjectGeneralTab(getDriver());
     }
 

@@ -91,17 +91,6 @@
                 <a4j:ajax event="change" render="projectList"/>
               </h:selectBooleanCheckbox>
               <h:outputText value="#{msgs['jsf.ReadOnly']}"/>
-
-              <h:outputText value="&#160;"/>
-              <s:fragment
-                rendered="#{s:hasPermission('HProject','view-obsolete')}">
-                <h:selectBooleanCheckbox
-                  title="#{msgs['jsf.FilterObsoleteProjects']}"
-                  value="#{projectAction.showObsolete}">
-                  <a4j:ajax event="change" render="projectList"/>
-                </h:selectBooleanCheckbox>
-                <h:outputText value="#{msgs['jsf.Obsolete']}"/>
-              </s:fragment>
             </a4j:region>
           </s:div>
           <br/>
@@ -122,12 +111,6 @@
                 value="#{project.name}" propagation="none"
                 view="/project/project.xhtml"
                 rendered="#{project.status == 'READONLY'}">
-                <f:param name="slug" value="#{project.slug}"/>
-              </s:link>
-              <s:link id="obsoleteProject" styleClass="table_link obsolete_link"
-                value="#{project.name}" propagation="none"
-                view="/project/project.xhtml"
-                rendered="#{project.status == 'OBSOLETE'}">
                 <f:param name="slug" value="#{project.slug}"/>
               </s:link>
             </rich:column>

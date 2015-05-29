@@ -97,7 +97,7 @@ public class NotificationDetailsBox extends ShortcutContextAwareDialogBox {
         if (severity == Severity.Warning) {
             return "message--warning l__wrapper l--pad-all-half";
         } else if (severity == Severity.Error) {
-            return "message--danger l__wrapper l--pad-all-half";
+            return "message--danger app-error l__wrapper l--pad-all-half";
         }
         return "message--highlight l__wrapper l--pad-all-half";
     }
