@@ -38,6 +38,8 @@ import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.seam.util.Naming;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.zanata.arquillian.RemoteAfter;
 import org.zanata.arquillian.RemoteBefore;
@@ -132,13 +134,20 @@ public abstract class RestTest {
         dbUnitProvider.cleanDataAfterTest();
     }
 
+    @Rule
+    public final TestName testName = new TestName();
+
     @Before
     public void signalBeforeTest() {
         ClientRequest clientRequest =
                 new ClientRequest(getRestEndpointUrl() + "test/remote/signal/before");
+        clientRequest.header("X-Auth-User", ADMIN);
         clientRequest.header("X-Auth-Token", ADMIN_KEY);
         try {
-            clientRequest.queryParameter("c", this.getClass().getName()).post();
+            clientRequest
+                    .queryParameter("c", this.getClass().getName())
+                    .queryParameter("m", testName.getMethodName())
+                    .post();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -148,9 +157,13 @@ public abstract class RestTest {
     public void signalAfterTest() {
         ClientRequest clientRequest =
                 new ClientRequest(getRestEndpointUrl() + "test/remote/signal/after");
+        clientRequest.header("X-Auth-User", ADMIN);
         clientRequest.header("X-Auth-Token", ADMIN_KEY);
         try {
-            clientRequest.queryParameter("c", this.getClass().getName()).post();
+            clientRequest
+                    .queryParameter("c", this.getClass().getName())
+                    .queryParameter("m", testName.getMethodName())
+                    .post();
         } catch (Exception e) {
             e.printStackTrace();
         }

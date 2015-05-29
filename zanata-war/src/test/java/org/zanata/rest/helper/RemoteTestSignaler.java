@@ -34,11 +34,11 @@ import javax.ws.rs.QueryParam;
 public interface RemoteTestSignaler {
     @POST
     @Path("/before")
-    public void signalBeforeTest(@QueryParam("c") String testClass)
+    public void signalBeforeTest(@QueryParam("c") String testClass, @QueryParam("m") String testMethod)
             throws Exception;
 
     @POST
     @Path("/after")
-    public void signalAfterTest(@QueryParam("c") String testClass)
+    public void signalAfterTest(@QueryParam("c") String testClass, @QueryParam("m") String testMethod)
             throws Exception;
 }
