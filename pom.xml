@@ -1243,13 +1243,15 @@
             <phase>none</phase>
             <goals><goal>run</goal></goals>
             <configuration combine.self="override">
-              <target xmlns:unless="ant:unless" unless="skipITs">
-                <echo message="appserver=${appserver}"/>
-                <echo message="cargo.installation=${cargo.installation}"/>
-                <echo message="appserver.home=${appserver.home}"/>
-                <echo message="DISPLAY=${env.DISPLAY}"/>
-                <echo message="WARNING: 'appserver' property must be set unless skippping integration tests" unless:set="appserver"/>
-                <echo message="WARNING: 'cargo.installation' property (and possibly cargo.basename) must be set unless skipping integration tests" unless:set="cargo.installation"/>
+              <target unless="skipITs" xmlns:unless="ant:unless">
+                <echo message="appserver=${appserver}" />
+                <echo message="cargo.installation=${cargo.installation}" />
+                <echo message="appserver.home=${appserver.home}" />
+                <echo message="DISPLAY=${env.DISPLAY}" />
+                <echo message="WARNING: 'appserver' property must be set unless skippping integration tests"
+                  unless:set="appserver" />
+                <echo message="WARNING: 'cargo.installation' property (and possibly cargo.basename) must be set unless skipping integration tests"
+                  unless:set="cargo.installation" />
               </target>
             </configuration>
           </execution>
@@ -1538,11 +1540,11 @@
                 </goals>
                 <configuration>
                   <target unless="skipITs">
-                    <mkdir dir="${download.dir}"/>
-                    <get src="http://sourceforge.net/projects/zanata/files/wildfly/${mojarra.module.name}/download" dest="${download.dir}/${mojarra.module.name}" skipexisting="true"/>
-                    <get src="http://sourceforge.net/projects/zanata/files/wildfly/${hibernate.module.name}/download" dest="${download.dir}/${hibernate.module.name}" skipexisting="true"/>
-                    <unzip src="${download.dir}/${mojarra.module.name}" dest="${appserver.home}"/>
-                    <unzip src="${download.dir}/${hibernate.module.name}" dest="${appserver.home}"/>
+                    <mkdir dir="${download.dir}" />
+                    <get src="http://sourceforge.net/projects/zanata/files/wildfly/${mojarra.module.name}/download" dest="${download.dir}/${mojarra.module.name}" skipexisting="true" />
+                    <get src="http://sourceforge.net/projects/zanata/files/wildfly/${hibernate.module.name}/download" dest="${download.dir}/${hibernate.module.name}" skipexisting="true" />
+                    <unzip src="${download.dir}/${mojarra.module.name}" dest="${appserver.home}" />
+                    <unzip src="${download.dir}/${hibernate.module.name}" dest="${appserver.home}" />
                   </target>
                 </configuration>
               </execution>
