@@ -212,7 +212,7 @@ public class RegisterTest extends ZanataTestCase {
     @Feature(summary = "The user must enter at least one alphanumeric " +
             "character in their username",
             bugzilla = 981498)
-    @Test(expected = AssertionError.class)
+    @Test
     public void bug981498_underscoreRules() {
         fields.put("email", "bug981498test@example.com");
         fields.put("username", "______");
