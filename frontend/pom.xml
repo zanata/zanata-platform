@@ -1,0 +1,128 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.zanata</groupId>
+    <artifactId>server</artifactId>
+    <version>3.7.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>frontend</artifactId>
+  <name>frontend</name>
+  <url>http://maven.apache.org</url>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <node.version>v0.12.2</node.version>
+    <npm.version>2.7.6</npm.version>
+    <web.target>${project.build.directory}/web</web.target>
+    <bundle.output>${project.build.directory}/build</bundle.output>
+    <bundle.dest>${bundle.output}/META-INF/resources</bundle.dest>
+    <node.install.directory>${project.build.directory}</node.install.directory>
+    <npm.cli.script>${node.install.directory}/node/npm/bin/npm-cli.js</npm.cli.script>
+
+    <!-- ==== list of modules to build by npm and node ==== -->
+    <module.user-profile-page>user-profile-page</module.user-profile-page>
+  </properties>
+
+
+  <dependencies>
+
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <filtering>false</filtering>
+        <directory>src/main/web</directory>
+        <targetPath>${web.target}</targetPath>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>0.0.23</version>
+        <configuration>
+          <workingDirectory>${node.install.directory}</workingDirectory>
+        </configuration>
+
+        <executions>
+          <execution>
+            <id>install node and npm</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+            <configuration>
+              <nodeVersion>${node.version}</nodeVersion>
+              <npmVersion>${npm.version}</npmVersion>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.4.0</version>
+        <configuration>
+          <environmentVariables>
+            <PATH>${node.install.directory}/node:${node.install.directory}/node/npm/bin:${env.PATH}</PATH>
+          </environmentVariables>
+          <executable>${node.install.directory}/node/node</executable>
+        </configuration>
+
+
+        <executions>
+          <execution>
+            <id>execute npm install for: ${module.user-profile-page}</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <workingDirectory>${web.target}/${module.user-profile-page}</workingDirectory>
+              <arguments>
+                <argument>${npm.cli.script}</argument>
+                <argument>install</argument>
+              </arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>execute npm run build for: ${module.user-profile-page}</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <workingDirectory>${web.target}/${module.user-profile-page}</workingDirectory>
+              <arguments>
+                <argument>${npm.cli.script}</argument>
+                <argument>run</argument>
+                <argument>build</argument>
+                <argument>bundleDest=${bundle.dest}</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+          <failIfNoTests>false</failIfNoTests>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <classesDirectory>${bundle.output}</classesDirectory>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

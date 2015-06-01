@@ -1,0 +1,82 @@
+[
+  {
+    "savedDate": "2015-03-01",
+    "projectSlug": "gcc",
+    "projectName": "gcc",
+    "versionSlug": "master",
+    "localeId": "zh",
+    "localeDisplayName": "Chinese",
+    "savedState": "Translated",
+    "wordCount": 22
+  },
+  {
+    "savedDate": "2015-03-01",
+    "projectSlug": "gcc",
+    "projectName": "gcc",
+    "versionSlug": "master",
+    "localeId": "zh",
+    "localeDisplayName": "Chinese",
+    "savedState": "NeedReview",
+    "wordCount": 13
+  },
+  {
+    "savedDate": "2015-03-01",
+    "projectSlug": "about-fedora",
+    "projectName": "about fedora",
+    "versionSlug": "beta",
+    "localeId": "ja",
+    "localeDisplayName": "Japanese",
+    "savedState": "NeedReview",
+    "wordCount": 71
+  },
+  {
+    "savedDate": "2015-03-01",
+    "projectSlug": "about-fedora",
+    "projectName": "about fedora",
+    "versionSlug": "beta",
+    "localeId": "ja",
+    "localeDisplayName": "Japanese",
+    "savedState": "Translated",
+    "wordCount": 2
+  },
+  {
+    "savedDate": "2015-03-02",
+    "projectSlug": "zanata-server",
+    "projectName": "Zanata Server",
+    "versionSlug": "master",
+    "localeId": "zh",
+    "localeDisplayName": "Chinese",
+    "savedState": "Translated",
+    "wordCount": 354
+  },
+  {
+    "savedDate": "2015-03-02",
+    "projectSlug": "zanata-server",
+    "projectName": "Zanata Server",
+    "versionSlug": "master",
+    "localeId": "zh",
+    "localeDisplayName": "Chinese",
+    "savedState": "NeedReview",
+    "wordCount": 24
+  },
+  {
+    "savedDate": "2015-03-03",
+    "projectSlug": "zanata-server",
+    "projectName": "Zanata Server",
+    "versionSlug": "master",
+    "localeId": "zh",
+    "localeDisplayName": "Japanese",
+    "savedState": "Translated",
+    "wordCount": 251
+  },
+  {
+    "savedDate": "2015-03-12",
+    "projectSlug": "zanata-server",
+    "projectName": "Zanata Server",
+    "versionSlug": "master",
+    "localeId": "zh",
+    "localeDisplayName": "Japanese",
+    "savedState": "Translated",
+    "wordCount": 251
+  }
+]

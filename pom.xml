@@ -401,6 +401,12 @@
         <version>${zanata.assets.version}</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>frontend</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
       <!-- zanata api -->
       <dependency>
         <groupId>org.zanata</groupId>
@@ -1675,6 +1681,21 @@
           </dependency>
         </dependencies>
       </dependencyManagement>
+    </profile>
+
+    <profile>
+      <id>build frontend module</id>
+      <activation>
+        <property>
+          <name>!excludeFrontend</name>
+        </property>
+      </activation>
+      <properties>
+        <required.maven>3.1.0</required.maven>
+      </properties>
+      <modules>
+        <module>frontend</module>
+      </modules>
     </profile>
   </profiles>
 
