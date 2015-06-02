@@ -51,6 +51,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
@@ -58,6 +59,7 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
 import org.hibernate.annotations.Where;
+import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -66,6 +68,7 @@ import org.zanata.annotation.EntityRestrict;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
+import org.zanata.hibernate.search.CaseInsensitiveWhitespaceAnalyzer;
 import org.zanata.model.type.EntityStatusType;
 import org.zanata.model.type.LocaleIdType;
 import org.zanata.model.validator.Url;
@@ -102,11 +105,11 @@ public class HProject extends SlugEntityBase implements Serializable,
 
     @Size(max = 80)
     @NotEmpty
-    @Field()
+    @Field(analyzer = @Analyzer(impl = CaseInsensitiveWhitespaceAnalyzer.class))
     private String name;
 
     @Size(max = 100)
-    @Field()
+    @Field(analyzer = @Analyzer(impl = CaseInsensitiveWhitespaceAnalyzer.class))
     private String description;
 
     @Type(type = "text")

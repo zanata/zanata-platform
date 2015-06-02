@@ -7,6 +7,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.analysis.StopAnalyzer;
+import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
@@ -14,6 +16,7 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.util.Version;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -25,13 +28,12 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.EntityStatus;
+import org.zanata.hibernate.search.CaseInsensitiveWhitespaceAnalyzer;
 import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-
-import com.google.common.collect.Lists;
 
 @Name("projectDAO")
 @AutoCreate
@@ -255,51 +257,24 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     public List<HProject> searchProjects(@Nonnull String searchQuery,
             int maxResult, int firstResult, boolean includeObsolete)
             throws ParseException {
-        FullTextQuery query = getTextQuery(searchQuery, includeObsolete);
+        FullTextQuery query = buildSearchQuery(searchQuery, includeObsolete);
         return query.setMaxResults(maxResult).setFirstResult(firstResult)
                 .getResultList();
     }
 
     public int getQueryProjectSize(@Nonnull String searchQuery,
             boolean includeObsolete) throws ParseException {
-        FullTextQuery query = getTextQuery(searchQuery, includeObsolete);
+        FullTextQuery query = buildSearchQuery(searchQuery, includeObsolete);
         return query.getResultSize();
     }
 
-    private org.apache.lucene.search.Query constructQuery(String field, String searchQuery)
-            throws ParseException {
-        QueryParser parser =
-                new QueryParser(Version.LUCENE_29, field,
-                        new StandardAnalyzer(Version.LUCENE_29));
-        return parser.parse(searchQuery);
-    }
-
-    /**
-     * Lucene index for project name and slug replaces hyphen with
-     * space. This method is to replace hyphen with space when performing search
-     *
-     * @param query
-     * @return
-     */
-    private String parseSlugAndName(String query) {
-        return query.replace("-", " ");
-    }
-
-    private FullTextQuery getTextQuery(@Nonnull String searchQuery,
-            boolean includeObsolete) throws ParseException {
-        org.apache.lucene.search.Query nameQuery =
-                constructQuery("name", parseSlugAndName(searchQuery) + "*");
-        org.apache.lucene.search.Query slugQuery =
-                constructQuery("slug", parseSlugAndName(searchQuery) + "*");
-
-        searchQuery = QueryParser.escape(searchQuery);
-        org.apache.lucene.search.Query descQuery =
-                constructQuery("description", searchQuery);
+    private FullTextQuery buildSearchQuery(@Nonnull String searchQuery,
+        boolean includeObsolete) throws ParseException {
 
         BooleanQuery booleanQuery = new BooleanQuery();
-        booleanQuery.add(slugQuery, BooleanClause.Occur.SHOULD);
-        booleanQuery.add(nameQuery, BooleanClause.Occur.SHOULD);
-        booleanQuery.add(descQuery, BooleanClause.Occur.SHOULD);
+        booleanQuery.add(buildSearchFieldQuery(searchQuery, "slug"), BooleanClause.Occur.SHOULD);
+        booleanQuery.add(buildSearchFieldQuery(searchQuery, "name"), BooleanClause.Occur.SHOULD);
+        booleanQuery.add(buildSearchFieldQuery(searchQuery, "description"), BooleanClause.Occur.SHOULD);
 
         if (!includeObsolete) {
             TermQuery obsoleteStateQuery =
@@ -309,6 +284,32 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         }
 
         return entityManager.createFullTextQuery(booleanQuery, HProject.class);
+    }
+
+    /**
+     * Build BooleanQuery on single lucene field by splitting searchQuery with
+     * white space.
+     *
+     * @param searchQuery
+     *            - query string, will replace hypen with space and escape
+     *            special char
+     * @param field
+     *            - lucene field
+     */
+    private BooleanQuery buildSearchFieldQuery(@Nonnull String searchQuery,
+        @Nonnull String field) throws ParseException {
+        BooleanQuery query = new BooleanQuery();
+
+        //escape special character search
+        searchQuery = QueryParser.escape(searchQuery);
+
+        for(String searchString: searchQuery.split("\\s+")) {
+            QueryParser parser = new QueryParser(Version.LUCENE_29, field,
+                    new CaseInsensitiveWhitespaceAnalyzer(Version.LUCENE_29));
+
+            query.add(parser.parse(searchString + "*"), BooleanClause.Occur.MUST);
+        }
+        return query;
     }
 
     public List<HProject> findAllTranslatedProjects(HAccount account, int maxResults) {

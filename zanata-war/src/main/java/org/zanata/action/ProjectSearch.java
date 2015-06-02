@@ -46,7 +46,7 @@ public class ProjectSearch implements Serializable {
             new QueryProjectPagedListDataModel(DEFAULT_PAGE_SIZE);
 
     // Count of result to be return as part of autocomplete
-    private final static int INITIAL_RESULT_COUNT = 5;
+    private final static int INITIAL_RESULT_COUNT = 10;
 
     public DataModel getProjectPagedListDataModel() {
         return queryProjectPagedListDataModel;
