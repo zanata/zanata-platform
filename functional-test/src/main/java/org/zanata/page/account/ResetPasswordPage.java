@@ -59,7 +59,7 @@ public class ResetPasswordPage extends BasePage {
         log.info("Click Submit");
         defocus(usernameEmailField);
         waitForPageSilence();
-        readyElement(submitButton).click();
+        clickElement(submitButton);
         return new HomePage(getDriver());
     }
 
@@ -67,7 +67,7 @@ public class ResetPasswordPage extends BasePage {
         log.info("Click Submit");
         defocus(usernameEmailField);
         waitForPageSilence();
-        readyElement(submitButton).click();
+        clickElement(submitButton);
         return new ResetPasswordPage(getDriver());
     }
 }

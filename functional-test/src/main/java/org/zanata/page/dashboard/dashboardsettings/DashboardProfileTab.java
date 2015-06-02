@@ -55,7 +55,7 @@ public class DashboardProfileTab extends DashboardBasePage {
 
     public DashboardProfileTab clickUpdateProfileButton() {
         log.info("Click Update");
-        readyElement(updateProfileButton).click();
+        clickElement(updateProfileButton);
         return new DashboardProfileTab(getDriver());
     }
 }

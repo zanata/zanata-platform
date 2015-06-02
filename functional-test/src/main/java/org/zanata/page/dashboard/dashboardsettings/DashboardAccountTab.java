@@ -61,7 +61,7 @@ public class DashboardAccountTab extends DashboardBasePage {
 
     public DashboardAccountTab clickUpdateEmailButton() {
         log.info("Click Update Email");
-        readyElement(updateEmailButton).click();
+        clickElement(updateEmailButton);
         return new DashboardAccountTab(getDriver());
     }
 
@@ -81,7 +81,7 @@ public class DashboardAccountTab extends DashboardBasePage {
 
     public DashboardAccountTab clickUpdatePasswordButton() {
         log.info("Click Update Password");
-        readyElement(changePasswordButton).click();
+        clickElement(changePasswordButton);
         return new DashboardAccountTab(getDriver());
     }
 }

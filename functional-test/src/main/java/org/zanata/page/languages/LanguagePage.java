@@ -69,23 +69,23 @@ public class LanguagePage extends BasePage {
 
     public LanguagePage clickMoreActions() {
         log.info("Click More Actions");
-        readyElement(moreActions).click();
+        clickElement(moreActions);
         return new LanguagePage(getDriver());
     }
 
     public ContactTeamPage clickContactCoordinatorsButton() {
         log.info("Click Contact Coordinators button");
-        readyElement(contactCoordinatorsButton).click();
+        clickElement(contactCoordinatorsButton);
         return new ContactTeamPage(getDriver());
     }
 
     public LanguagePage gotoSettingsTab() {
-        readyElement(settingsTab).click();
+        clickElement(settingsTab);
         return new LanguagePage(getDriver());
     }
 
     public LanguagePage gotoMembersTab() {
-        readyElement(membersTab).click();
+        clickElement(membersTab);
         return new LanguagePage(getDriver());
     }
 
@@ -100,7 +100,7 @@ public class LanguagePage extends BasePage {
     }
 
     public LanguagePage saveSettings() {
-        readyElement(saveButton).click();
+        clickElement(saveButton);
         return new LanguagePage(getDriver());
     }
 
@@ -125,7 +125,7 @@ public class LanguagePage extends BasePage {
 
     public LanguagePage joinLanguageTeam() {
         log.info("Click Join");
-        readyElement(joinLanguageTeamButton).click();
+        clickElement(joinLanguageTeamButton);
         // we need to wait for this join to finish before returning the page
         waitForAMoment().until(new Function<WebDriver, Boolean>() {
             @Override
@@ -138,7 +138,7 @@ public class LanguagePage extends BasePage {
 
     public LanguagePage clickAddTeamMember() {
         log.info("Click Add Team Member");
-        readyElement(addTeamMemberButton).click();
+        clickElement(addTeamMemberButton);
         return this;
     }
 
@@ -163,7 +163,7 @@ public class LanguagePage extends BasePage {
 
     private LanguagePage clickSearch() {
         log.info("Click Search");
-        readyElement(addUserSearchButton).click();
+        clickElement(addUserSearchButton);
         return new LanguagePage(getDriver());
     }
 
@@ -233,7 +233,7 @@ public class LanguagePage extends BasePage {
 
     public LanguagePage clickAddSelectedButton() {
         log.info("Click Add Selected");
-        readyElement(addSelectedButton).click();
+        clickElement(addSelectedButton);
         return new LanguagePage(getDriver());
     }
 

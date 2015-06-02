@@ -70,14 +70,14 @@ public class ManageUserAccountPage extends BasePage {
 
     public ManageUserAccountPage clickEnabled() {
         log.info("Click Enabled");
-        readyElement(enabledField).click();
+        clickElement(enabledField);
         return new ManageUserAccountPage(getDriver());
     }
 
     public ManageUserAccountPage clickRole(String role) {
         log.info("Click role {}", role);
-        readyElement(By.id("userdetailForm:rolesField:roles:"
-                .concat(roleMap.get(role)))).click();
+        clickElement(readyElement(By.id("userdetailForm:rolesField:roles:"
+                .concat(roleMap.get(role)))));
         return new ManageUserAccountPage(getDriver());
     }
 
@@ -89,19 +89,19 @@ public class ManageUserAccountPage extends BasePage {
 
     public ManageUserPage saveUser() {
         log.info("Click Save");
-        readyElement(saveButton).click();
+        clickElement(saveButton);
         return new ManageUserPage(getDriver());
     }
 
     public ManageUserAccountPage saveUserExpectFailure() {
         log.info("Click Save");
-        readyElement(saveButton).click();
+        clickElement(saveButton);
         return new ManageUserAccountPage(getDriver());
     }
 
     public ManageUserPage cancelEditUser() {
         log.info("Click Cancel");
-        readyElement(cancelButton).click();
+        clickElement(cancelButton);
         return new ManageUserPage(getDriver());
     }
 

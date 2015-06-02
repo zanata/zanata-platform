@@ -50,7 +50,7 @@ public class DashboardProjectsTab extends DashboardBasePage {
 
     public CreateProjectPage clickOnCreateProjectLink() {
         log.info("Click Create Project");
-        readyElement(createProjectLink).click();
+        clickElement(createProjectLink);
         return new CreateProjectPage(getDriver());
     }
 }

@@ -106,7 +106,7 @@ public class VersionGroupPage extends BasePage {
     public VersionGroupPage addToGroup(int rowIndex) {
         WebElementUtil.getListItems(getDriver(), newVersionList)
                 .get(rowIndex).click();
-        readyElement(projectAddButton).click();
+        clickElement(projectAddButton);
         return new VersionGroupPage(getDriver());
     }
 
@@ -190,7 +190,7 @@ public class VersionGroupPage extends BasePage {
 
     public VersionGroupPage clickLanguagesSettingsTab() {
         clickSettingsTab();
-        readyElement(settingsLanguagesTab).click();
+        clickElement(settingsLanguagesTab);
         return new VersionGroupPage(getDriver());
     }
 

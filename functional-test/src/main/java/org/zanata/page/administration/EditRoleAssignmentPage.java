@@ -63,13 +63,13 @@ public class EditRoleAssignmentPage extends BasePage {
 
     public RoleAssignmentsPage saveRoleAssignment() {
         log.info("Click Save");
-        readyElement(saveButton).click();
+        clickElement(saveButton);
         return new RoleAssignmentsPage(getDriver());
     }
 
     public RoleAssignmentsPage cancelEditRoleAssignment() {
         log.info("Click Cancel");
-        readyElement(cancelButton).click();
+        clickElement(cancelButton);
         return new RoleAssignmentsPage(getDriver());
     }
 }

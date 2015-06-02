@@ -57,13 +57,13 @@ public class GoogleAccountPage extends AbstractPage {
 
     public GooglePermissionsPage clickSignIn() {
         log.info("Click account Sign In");
-        readyElement(signInButton).click();
+        clickElement(signInButton);
         return new GooglePermissionsPage(getDriver());
     }
 
     public GoogleManagePermissionsPage clickPermissionsSignIn() {
         log.info("Click account management Sign In");
-        readyElement(signInButton).click();
+        clickElement(signInButton);
         return new GoogleManagePermissionsPage(getDriver());
     }
 
@@ -79,7 +79,7 @@ public class GoogleAccountPage extends AbstractPage {
 
     public GoogleAccountPage removeSavedAuthentication() {
         log.info("Click Sign in with different account");
-        readyElement(signInDifferent).click();
+        clickElement(signInDifferent);
         return new GoogleAccountPage(getDriver());
     }
 

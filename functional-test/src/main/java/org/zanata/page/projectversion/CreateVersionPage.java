@@ -155,7 +155,7 @@ public class CreateVersionPage extends BasePage {
 
     public CreateVersionPage saveExpectingError() {
         log.info("Click Save");
-        readyElement(saveButton).click();
+        clickElement(saveButton);
         return new CreateVersionPage(getDriver());
     }
 

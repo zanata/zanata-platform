@@ -85,13 +85,13 @@ public class LanguagesPage extends BasePage {
 
     public LanguagesPage clickMoreActions() {
         log.info("Click More Actions dropdown");
-        readyElement(moreActions).click();
+        clickElement(moreActions);
         return new LanguagesPage(getDriver());
     }
 
     public AddLanguagePage addNewLanguage() {
         log.info("Click Add New Language");
-        readyElement(addLanguageLink).click();
+        clickElement(addLanguageLink);
         return new AddLanguagePage(getDriver());
     }
 

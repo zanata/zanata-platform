@@ -38,7 +38,7 @@ public class InactiveAccountPage extends BasePage {
 
     public HomePage clickResendActivationEmail() {
         log.info("Click resend activation email");
-        readyElement(By.id("resendEmail")).click();
+        clickElement(By.id("resendEmail"));
         return new HomePage(getDriver());
     }
 
@@ -49,7 +49,7 @@ public class InactiveAccountPage extends BasePage {
     }
 
     public HomePage clickUpdateEmail() {
-        readyElement(By.id("inactiveAccountForm:emailField:updateEmail")).click();
+        clickElement(By.id("inactiveAccountForm:emailField:updateEmail"));
         return new HomePage(getDriver());
     }
 }

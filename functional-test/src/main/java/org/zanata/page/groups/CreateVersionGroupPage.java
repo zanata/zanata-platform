@@ -82,7 +82,7 @@ public class CreateVersionGroupPage extends BasePage {
 
     public CreateVersionGroupPage saveGroupFailure() {
         log.info("Click Save");
-        readyElement(saveButton).click();
+        clickElement(saveButton);
         return new CreateVersionGroupPage(getDriver());
     }
 

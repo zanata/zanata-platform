@@ -44,7 +44,7 @@ public class ManageUserPage extends BasePage {
 
     public ManageUserAccountPage editUserAccount(String username) {
         log.info("Click edit on {}", username);
-        findRowByUserName(username).click();
+        clickElement(findRowByUserName(username));
         return new ManageUserAccountPage(getDriver());
     }
 

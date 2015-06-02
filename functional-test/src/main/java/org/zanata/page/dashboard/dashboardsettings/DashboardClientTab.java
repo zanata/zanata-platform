@@ -43,7 +43,7 @@ public class DashboardClientTab extends DashboardBasePage {
 
     public DashboardClientTab pressApiKeyGenerateButton() {
         log.info("Press Generate API Key");
-        readyElement(generateApiKeyButton).click();
+        clickElement(generateApiKeyButton);
         getDriver().switchTo().alert().accept();
         return new DashboardClientTab(getDriver());
     }

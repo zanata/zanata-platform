@@ -58,13 +58,13 @@ public class VersionGroupsPage extends BasePage {
 
     public CreateVersionGroupPage createNewGroup() {
         log.info("Click New Group button");
-        readyElement(createGroupButton).click();
+        clickElement(createGroupButton);
         return new CreateVersionGroupPage(getDriver());
     }
 
     public VersionGroupPage goToGroup(String groupName) {
         log.info("Click group {}", groupName);
-        readyElement(groupTable).findElement(By.linkText(groupName)).click();
+        clickElement(readyElement(groupTable).findElement(By.linkText(groupName)));
         return new VersionGroupPage(getDriver());
     }
 

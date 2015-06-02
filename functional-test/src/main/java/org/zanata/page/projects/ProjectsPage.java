@@ -50,7 +50,7 @@ public class ProjectsPage extends BasePage {
 
     public CreateProjectPage clickOnCreateProjectLink() {
         log.info("Click Create Project");
-        readyElement(createProjectButton).click();
+        clickElement(createProjectButton);
         return new CreateProjectPage(getDriver());
     }
 

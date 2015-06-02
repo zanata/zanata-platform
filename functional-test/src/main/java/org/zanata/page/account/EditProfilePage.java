@@ -68,13 +68,13 @@ public class EditProfilePage extends BasePage {
 
     public HomePage clickSave() {
         log.info("Click Save");
-        readyElement(saveButton).click();
+        clickElement(saveButton);
         return new HomePage(getDriver());
     }
 
     public EditProfilePage clickSaveAndExpectErrors() {
         log.info("Click Save");
-        readyElement(saveButton).click();
+        clickElement(saveButton);
         return new EditProfilePage(getDriver());
     }
 

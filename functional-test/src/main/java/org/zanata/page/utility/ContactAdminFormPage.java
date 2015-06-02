@@ -62,7 +62,7 @@ public class ContactAdminFormPage extends BasePage {
      */
     public <P> P send(Class<P> pageClass) {
         log.info("Click Send");
-        readyElement(sendButton).click();
+        clickElement(sendButton);
         return PageFactory.initElements(getDriver(), pageClass);
     }
 }

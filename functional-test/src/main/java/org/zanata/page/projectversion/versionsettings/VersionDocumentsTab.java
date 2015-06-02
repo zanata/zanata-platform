@@ -73,7 +73,7 @@ public class VersionDocumentsTab extends VersionBasePage {
 
     public VersionDocumentsTab cancelUpload() {
         log.info("Click Cancel");
-        readyElement(cancelUploadButton).click();
+        clickElement(cancelUploadButton);
         waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
@@ -102,13 +102,13 @@ public class VersionDocumentsTab extends VersionBasePage {
 
     public VersionDocumentsTab submitUpload() {
         log.info("Click Submit upload");
-        readyElement(startUploadButton).click();
+        clickElement(startUploadButton);
         return new VersionDocumentsTab(getDriver());
     }
 
     public VersionDocumentsTab clickUploadDone() {
         log.info("Click upload Done button");
-        readyElement(fileUploadDone).click();
+        clickElement(fileUploadDone);
         return new VersionDocumentsTab(getDriver());
     }
 

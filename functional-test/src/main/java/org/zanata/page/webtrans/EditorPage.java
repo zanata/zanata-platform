@@ -92,7 +92,7 @@ public class EditorPage extends BasePage {
         });
         readyElement(glossarySearchInput).clear();
         readyElement(glossarySearchInput).sendKeys(term);
-        readyElement(By.id("gwt-debug-glossarySearchButton")).click();
+        clickElement(By.id("gwt-debug-glossarySearchButton"));
         return new EditorPage(getDriver());
     }
 

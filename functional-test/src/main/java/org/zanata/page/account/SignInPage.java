@@ -61,37 +61,37 @@ public class SignInPage extends CorePage {
 
     public DashboardBasePage clickSignIn() {
         log.info("Click Sign In");
-        readyElement(signInButton).click();
+        clickElement(signInButton);
         return new DashboardBasePage(getDriver());
     }
 
     public SignInPage clickSignInExpectError() {
         log.info("Click Sign In");
-        readyElement(signInButton).click();
+        clickElement(signInButton);
         return new SignInPage(getDriver());
     }
 
     public InactiveAccountPage clickSignInExpectInactive() {
         log.info("Click Sign In");
-        readyElement(signInButton).click();
+        clickElement(signInButton);
         return new InactiveAccountPage(getDriver());
     }
 
     public GoogleAccountPage selectGoogleOpenID() {
         log.info("Click 'Google'");
-        readyElement(googleButton).click();
+        clickElement(googleButton);
         return new GoogleAccountPage(getDriver());
     }
 
     public ResetPasswordPage goToResetPassword() {
         log.info("Click Forgot Password");
-        readyElement(forgotPasswordLink).click();
+        clickElement(forgotPasswordLink);
         return new ResetPasswordPage(getDriver());
     }
 
     public RegisterPage goToRegister() {
         log.info("Click Sign Up");
-        readyElement(signUpLink).click();
+        clickElement(signUpLink);
         return new RegisterPage(getDriver());
     }
 

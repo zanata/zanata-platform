@@ -71,7 +71,7 @@ public class ManageSearchPage extends BasePage {
 
     public ManageSearchPage clickSelectAll() {
         log.info("Click Select All");
-        readyElement(selectAllButton).click();
+        clickElement(selectAllButton);
         // It seems that if the Select All and Perform buttons are clicked too
         // quickly in succession, the operation will fail
         try {
@@ -101,7 +101,7 @@ public class ManageSearchPage extends BasePage {
 
     public ManageSearchPage performSelectedActions() {
         log.info("Click Perform Actions");
-        readyElement(performButton).click();
+        clickElement(performButton);
         waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
@@ -121,7 +121,7 @@ public class ManageSearchPage extends BasePage {
 
     public ManageSearchPage abort() {
         log.info("Click Abort");
-        readyElement(abortButton).click();
+        clickElement(abortButton);
         return new ManageSearchPage(getDriver());
     }
 

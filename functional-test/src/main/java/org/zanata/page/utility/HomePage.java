@@ -43,7 +43,7 @@ public class HomePage extends BasePage {
 
     public EditHomeContentPage goToEditPageContent() {
         log.info("Click Edit Page Content");
-        readyElement(editPageContentButton).click();
+        clickElement(editPageContentButton);
         return new EditHomeContentPage(getDriver());
     }
 

@@ -62,12 +62,12 @@ public class CorePage extends AbstractPage {
     public HomePage goToHomePage() {
         log.info("Click Zanata home icon");
         scrollToTop();
-        readyElement(homeLink).click();
+        clickElement(homeLink);
         return new HomePage(getDriver());
     }
 
     protected void clickAndCheckErrors(WebElement button) {
-        button.click();
+        clickElement(button);
         List<String> errors = getErrors();
         if (!errors.isEmpty()) {
             throw new RuntimeException(Joiner.on(";").join(errors));
@@ -75,7 +75,7 @@ public class CorePage extends AbstractPage {
     }
 
     protected void clickAndExpectErrors(WebElement button) {
-        button.click();
+        clickElement(button);
         refreshPageUntil(this, new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
@@ -178,51 +178,4 @@ public class CorePage extends AbstractPage {
         }
     }
 
-    /**
-     * Shift focus to the page, in order to activate some elements that only
-     * exhibit behaviour on losing focus. Some pages with contained objects
-     * cause object behaviour to occur when interacted with, so in this case
-     * interact with the container instead.
-     */
-    public void defocus() {
-        log.info("Click off element focus");
-        List<WebElement> webElements =
-                getDriver().findElements(By.id("container"));
-        webElements.addAll(getDriver().findElements(By.tagName("body")));
-        if (webElements.size() > 0) {
-            webElements.get(0).click();
-        } else {
-            log.warn("Unable to focus page container");
-        }
-    }
-
-    /**
-     * Force the blur 'unfocus' process on a given element
-     */
-    public void defocus(By elementBy) {
-        log.info("Force unfocus");
-        WebElement element = existingElement(elementBy);
-        getExecutor().executeScript("arguments[0].blur()", element);
-        waitForPageSilence();
-    }
-
-    /* The system sometimes moves too fast for the Ajax pages, so provide a
-     * pause
-     */
-    public void slightPause() {
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException ie) {
-            log.warn("Pause was interrupted");
-        }
-    }
-
-    public void scrollIntoView(WebElement targetElement) {
-        getExecutor().executeScript(
-                "arguments[0].scrollIntoView(true);", targetElement);
-    }
-
-    public void scrollToTop() {
-        getExecutor().executeScript("scroll(0, 0);");
-    }
 }

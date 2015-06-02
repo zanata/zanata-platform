@@ -59,66 +59,67 @@ public class TranslationMemoryPage extends BasePage {
 
     public TranslationMemoryEditPage clickCreateNew() {
         log.info("Click Create New");
-        readyElement(dropDownMenu).click();
+        clickElement(dropDownMenu);
         clickLinkAfterAnimation(createTmLink);
         return new TranslationMemoryEditPage(getDriver());
     }
 
     public TranslationMemoryPage clickOptions(String tmName) {
         log.info("Click Options dropdown for {}", tmName);
-        readyElement(findRowByTMName(tmName), listDropDownMenu).click();
+        clickElement(readyElement(findRowByTMName(tmName), listDropDownMenu));
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage clickImport(String tmName) {
         log.info("Click Import");
-        readyElement(findRowByTMName(tmName), listImportButton).click();
+        clickElement(readyElement(findRowByTMName(tmName), listImportButton));
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage enterImportFileName(String importFileName) {
         log.info("Enter import TM filename {}", importFileName);
         readyElement(filenameInput).sendKeys(importFileName);
+        slightPause();
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage clickUploadButtonAndAcknowledge() {
         log.info("Click and accept Upload button");
-        readyElement(uploadButton).click();
+        clickElement(uploadButton);
         switchToAlert().accept();
         return new TranslationMemoryPage(getDriver());
     }
 
     public Alert expectFailedUpload() {
         log.info("Click Upload");
-        readyElement(uploadButton).click();
+        clickElement(uploadButton);
         return switchToAlert();
     }
 
     public TranslationMemoryPage clickClearTMAndAccept(String tmName) {
         log.info("Click and accept Clear {}", tmName);
-        readyElement(findRowByTMName(tmName), listClearButton).click();
+        clickElement(readyElement(findRowByTMName(tmName), listClearButton));
         switchToAlert().accept();
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage clickClearTMAndCancel(String tmName) {
         log.info("Click and Cancel Clear {}", tmName);
-        readyElement(findRowByTMName(tmName), listClearButton).click();
+        clickElement(readyElement(findRowByTMName(tmName), listClearButton));
         switchToAlert().dismiss();
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage clickDeleteTmAndAccept(String tmName) {
         log.info("Click and accept Delete {}", tmName);
-        readyElement(findRowByTMName(tmName), listDeleteButton).click();
+        clickElement(readyElement(findRowByTMName(tmName), listDeleteButton));
         switchToAlert().accept();
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage clickDeleteTmAndCancel(String tmName) {
         log.info("Click and cancel Delete {}", tmName);
-        readyElement(findRowByTMName(tmName), listDeleteButton).click();
+        clickElement(readyElement(findRowByTMName(tmName), listDeleteButton));
         switchToAlert().dismiss();
         return new TranslationMemoryPage(getDriver());
     }

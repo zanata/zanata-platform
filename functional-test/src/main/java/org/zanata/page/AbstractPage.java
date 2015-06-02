@@ -32,6 +32,7 @@ import org.hamcrest.StringDescription;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.zanata.util.ShortString;
 import org.zanata.util.WebElementUtil;
@@ -110,15 +111,6 @@ public class AbstractPage {
     }
 
     /**
-     * @deprecated Use the overload which includes a message
-     */
-    @Deprecated
-    protected <P extends AbstractPage> P refreshPageUntil(P currentPage,
-            Predicate<WebDriver> predicate) {
-        return refreshPageUntil(currentPage, predicate, null);
-    }
-
-    /**
      * @param currentPage
      * @param predicate
      * @param message description of predicate
@@ -130,15 +122,6 @@ public class AbstractPage {
         waitForAMoment().withMessage(message).until(predicate);
         PageFactory.initElements(driver, currentPage);
         return currentPage;
-    }
-
-    /**
-     * @deprecated Use the overload which includes a message
-     */
-    @Deprecated
-    protected <P extends AbstractPage, T> T refreshPageUntil(P currentPage,
-            Function<WebDriver, T> function) {
-        return refreshPageUntil(currentPage, function, null);
     }
 
     /**
@@ -155,38 +138,6 @@ public class AbstractPage {
         T done = waitForAMoment().withMessage(message).until(function);
         PageFactory.initElements(driver, currentPage);
         return done;
-    }
-
-    /**
-     * Wait for certain condition to happen.
-     *
-     * For example, wait for a translation updated event gets broadcast to editor.
-     *
-     * @param callable a callable that returns a result
-     * @param matcher a matcher that matches to expected result
-     * @param <T> result type
-     * @deprecated use waitForPageSilence() and then simply check the condition
-     */
-    @Deprecated
-    public <T> void
-            waitFor(final Callable<T> callable, final Matcher<T> matcher) {
-        waitForAMoment().withMessage(StringDescription.toString(matcher)).until(
-                new Predicate<WebDriver>() {
-                    @Override
-                    public boolean apply(WebDriver input) {
-                        try {
-                            T result = callable.call();
-                            if (!matcher.matches(result)) {
-                                matcher.describeMismatch(result,
-                                        new Description.NullDescription());
-                            }
-                            return matcher.matches(result);
-                        } catch (Exception e) {
-                            log.warn("exception", e);
-                            return false;
-                        }
-                    }
-                });
     }
 
     /**
@@ -318,14 +269,6 @@ public class AbstractPage {
     }
 
     /**
-     * @deprecated use readyElement
-     */
-    @Deprecated
-    public WebElement waitForWebElement(final By elementBy) {
-        return readyElement(elementBy);
-    }
-
-    /**
      * Expect an element to be interactive, and return it
      * @param elementBy WebDriver By locator
      * @return target WebElement
@@ -338,15 +281,6 @@ public class AbstractPage {
         waitForElementReady(targetElement);
         assertReady(targetElement);
         return targetElement;
-    }
-
-    /**
-     * @deprecated use readyElement
-     */
-    @Deprecated
-    public WebElement waitForWebElement(final WebElement parentElement,
-            final By elementBy) {
-        return readyElement(parentElement, elementBy);
     }
 
     /**
@@ -363,13 +297,6 @@ public class AbstractPage {
         WebElement targetElement = existingElement(parentElement, elementBy);
         assertReady(targetElement);
         return targetElement;
-    }
-
-    /**
-     * @deprecated use existingElement
-     */
-    public WebElement waitForElementExists(final By elementBy) {
-        return existingElement(elementBy);
     }
 
     /**
@@ -392,15 +319,6 @@ public class AbstractPage {
     }
 
     /**
-     * @deprecated use existingElement
-     */
-    @Deprecated
-    public WebElement waitForElementExists(final WebElement parentElement,
-            final By elementBy) {
-        return existingElement(parentElement, elementBy);
-    }
-
-    /**
      * Wait for a child element to exist on the page, and return it.
      * Generally used for situations where checking on the state of an element,
      * e.g isVisible, rather than clicking on it or getting its text.
@@ -420,6 +338,24 @@ public class AbstractPage {
         });
     }
 
+    /**
+     * Convenience function for clicking elements.  Removes obstructing
+     * elements, scrolls the item into view and clicks it when it is ready.
+     * @param findby
+     */
+    public void clickElement(By findby) {
+        clickElement(readyElement(findby));
+    }
+
+    public void clickElement(final WebElement element) {
+        removeNotifications();
+        waitForNotificationsGone();
+        scrollIntoView(element);
+        waitForAMoment().withMessage("clickable: " + element.toString()).until(
+                ExpectedConditions.elementToBeClickable(element));
+        element.click();
+    }
+
     private void waitForElementReady(final WebElement element) {
          waitForAMoment().withMessage("Waiting for element to be ready").until(
                 new Predicate<WebDriver>() {
@@ -435,4 +371,203 @@ public class AbstractPage {
         assertThat(targetElement.isDisplayed()).as("displayed").isTrue();
         assertThat(targetElement.isEnabled()).as("enabled").isTrue();
     }
+
+    /**
+     * Remove any visible notifications
+     */
+    public void removeNotifications() {
+        @SuppressWarnings("unchecked")
+        List<WebElement> notifications = (List<WebElement>) getExecutor()
+                .executeScript("return (typeof $ == 'undefined') ?  [] : " +
+                        "$('a.message__remove').toArray()");
+        if (notifications.isEmpty()) {
+            return;
+        }
+        log.info("Closing {} notifications", notifications.size());
+        for (WebElement notification : notifications) {
+            try {
+                notification.click();
+            } catch (WebDriverException exc) {
+                log.info("Missed a notification X click");
+            }
+        }
+        // Finally, forcibly un-is-active the message container - for speed
+        String script = "return (typeof $ == 'undefined') ?  [] : " +
+                "$('ul.message--global').toArray()";
+        @SuppressWarnings("unchecked")
+        List<WebElement> messageBoxes = ((List<WebElement>) getExecutor()
+                .executeScript(script));
+        for (WebElement messageBox : messageBoxes) {
+            getExecutor().executeScript(
+                    "arguments[0].setAttribute('class', arguments[1]);",
+                    messageBox,
+                    messageBox.getAttribute("class").replace("is-active", ""));
+        }
+    }
+
+    /**
+     * Wait for the notifications box to go. Assumes test has dealt with
+     * removing it, or is waiting for it to time out.
+     */
+    public void waitForNotificationsGone() {
+        final String script = "return (typeof $ == 'undefined') ?  [] : " +
+                "$('ul.message--global').toArray()";
+        final String message = "Waiting for notifications box to go";
+        waitForAMoment().withMessage(message).until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                @SuppressWarnings("unchecked")
+                List<WebElement> boxes = (List<WebElement>) getExecutor()
+                        .executeScript(script);
+                for (WebElement box : boxes) {
+                    if (box.isDisplayed()) {
+                        log.info(message);
+                        return false;
+                    }
+                }
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Shift focus to the page, in order to activate some elements that only
+     * exhibit behaviour on losing focus. Some pages with contained objects
+     * cause object behaviour to occur when interacted with, so in this case
+     * interact with the container instead.
+     */
+    public void defocus() {
+        log.info("Click off element focus");
+        List<WebElement> webElements =
+                getDriver().findElements(By.id("container"));
+        webElements.addAll(getDriver().findElements(By.tagName("body")));
+        if (webElements.size() > 0) {
+            webElements.get(0).click();
+        } else {
+            log.warn("Unable to focus page container");
+        }
+    }
+
+    /**
+     * Force the blur 'unfocus' process on a given element
+     */
+    public void defocus(By elementBy) {
+        log.info("Force unfocus");
+        WebElement element = existingElement(elementBy);
+        getExecutor().executeScript("arguments[0].blur()", element);
+        waitForPageSilence();
+    }
+
+    /* The system sometimes moves too fast for the Ajax pages, so provide a
+     * pause
+     */
+    public void slightPause() {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException ie) {
+            log.warn("Pause was interrupted");
+        }
+    }
+
+    public void scrollIntoView(WebElement targetElement) {
+        getExecutor().executeScript(
+                "arguments[0].scrollIntoView(true);", targetElement);
+    }
+
+    public void scrollToTop() {
+        getExecutor().executeScript("scroll(0, 0);");
+    }
+
+
+    public String getHtmlSource(WebElement webElement) {
+        return (String) getExecutor().executeScript(
+                "return arguments[0].innerHTML;", webElement);
+    }
+
+    // TODO: Deprecated functions, remove after 3.7
+
+    /**
+     * @deprecated Use the overload which includes a message
+     */
+    @Deprecated
+    protected <P extends AbstractPage> P refreshPageUntil(P currentPage,
+            Predicate<WebDriver> predicate) {
+        return refreshPageUntil(currentPage, predicate, null);
+    }
+
+    /**
+     * @deprecated Use the overload which includes a message
+     */
+    @Deprecated
+    protected <P extends AbstractPage, T> T refreshPageUntil(P currentPage,
+            Function<WebDriver, T> function) {
+        return refreshPageUntil(currentPage, function, null);
+    }
+
+    /**
+     * Wait for certain condition to happen.
+     *
+     * For example, wait for a translation updated event gets broadcast to editor.
+     *
+     * @param callable a callable that returns a result
+     * @param matcher a matcher that matches to expected result
+     * @param <T> result type
+     * @deprecated use waitForPageSilence() and then simply check the condition
+     */
+    @Deprecated
+    public <T> void
+    waitFor(final Callable<T> callable, final Matcher<T> matcher) {
+        waitForAMoment().withMessage(StringDescription.toString(matcher)).until(
+                new Predicate<WebDriver>() {
+                    @Override
+                    public boolean apply(WebDriver input) {
+                        try {
+                            T result = callable.call();
+                            if (!matcher.matches(result)) {
+                                matcher.describeMismatch(result,
+                                        new Description.NullDescription());
+                            }
+                            return matcher.matches(result);
+                        } catch (Exception e) {
+                            log.warn("exception", e);
+                            return false;
+                        }
+                    }
+                });
+    }
+
+    /**
+     * @deprecated use readyElement
+     */
+    @Deprecated
+    public WebElement waitForWebElement(final By elementBy) {
+        return readyElement(elementBy);
+    }
+
+    /**
+     * @deprecated use readyElement
+     */
+    @Deprecated
+    public WebElement waitForWebElement(final WebElement parentElement,
+            final By elementBy) {
+        return readyElement(parentElement, elementBy);
+    }
+
+
+    /**
+     * @deprecated use existingElement
+     */
+    public WebElement waitForElementExists(final By elementBy) {
+        return existingElement(elementBy);
+    }
+
+    /**
+     * @deprecated use existingElement
+     */
+    @Deprecated
+    public WebElement waitForElementExists(final WebElement parentElement,
+            final By elementBy) {
+        return existingElement(parentElement, elementBy);
+    }
+
 }

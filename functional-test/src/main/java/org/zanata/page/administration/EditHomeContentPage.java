@@ -49,13 +49,13 @@ public class EditHomeContentPage extends BasePage {
 
     public HomePage update() {
         log.info("Click Update");
-        readyElement(updateButton).click();
+        clickElement(updateButton);
         return new HomePage(getDriver());
     }
 
     public HomePage cancelUpdate() {
         log.info("Click Cancel");
-        readyElement(cancelButton).click();
+        clickElement(cancelButton);
         return new HomePage(getDriver());
     }
 }

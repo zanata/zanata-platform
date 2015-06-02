@@ -55,19 +55,19 @@ public class TranslationMemoryEditPage extends BasePage {
 
     public TranslationMemoryPage saveTM() {
         log.info("Click Save");
-        readyElement(saveButton).click();
+        clickElement(saveButton);
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryEditPage clickSaveAndExpectFailure() {
         log.info("Click Save");
-        readyElement(saveButton).click();
+        clickElement(saveButton);
         return new TranslationMemoryEditPage(getDriver());
     }
 
     public TranslationMemoryPage cancelTM() {
         log.info("Click Cancel");
-        readyElement(cancelButton).click();
+        clickElement(cancelButton);
         return new TranslationMemoryPage(getDriver());
     }
 

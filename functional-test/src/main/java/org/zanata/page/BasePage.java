@@ -85,7 +85,7 @@ public class BasePage extends CorePage {
 
     public DashboardBasePage goToMyDashboard() {
         log.info("Click Dashboard menu link");
-        readyElement(userAvatar).click();
+        clickElement(userAvatar);
         clickLinkAfterAnimation(BY_DASHBOARD_LINK);
         return new DashboardBasePage(getDriver());
     }
@@ -101,18 +101,9 @@ public class BasePage extends CorePage {
         slightPause();
         if (!menuItem.isDisplayed()) {
             // screen is too small the menu become dropdown
-            readyElement(existingElement(By.id("nav-main")), By.tagName("a")).click();
+            clickElement(readyElement(existingElement(By.id("nav-main")), By.tagName("a")));
         }
-        waitForAMoment().withMessage("displayed: " + menuItem).until(
-                new Predicate<WebDriver>() {
-                    @Override
-                    public boolean apply(WebDriver input) {
-                        return menuItem.isDisplayed();
-                    }
-                });
-        waitForAMoment().withMessage("clickable: " + menuItem).until(
-                ExpectedConditions.elementToBeClickable(menuItem));
-        menuItem.click();
+        clickElement(menuItem);
     }
 
     public VersionGroupsPage goToGroups() {
@@ -318,17 +309,12 @@ public class BasePage extends CorePage {
                                 return null;
                             }
                         });
-        searchItem.click();
+        clickElement(searchItem);
     }
 
     public void clickWhenTabEnabled(final WebElement tab) {
         waitForPageSilence();
         clickElement(tab);
-    }
-
-    public String getHtmlSource(WebElement webElement) {
-        return (String) getExecutor().executeScript(
-                "return arguments[0].innerHTML;", webElement);
     }
 
     /**
@@ -337,82 +323,6 @@ public class BasePage extends CorePage {
      */
     public boolean isPageValid() {
         return (getDriver().findElements(By.id("home"))).size() > 0;
-    }
-
-    /**
-     * Convenience function for clicking elements.  Removes obstructing
-     * elements, scrolls the item into view and clicks it when it is ready.
-     * @param findby
-     */
-    public void clickElement(By findby) {
-        clickElement(readyElement(findby));
-    }
-
-    public void clickElement(final WebElement element) {
-        removeNotifications();
-        waitForNotificationsGone();
-        scrollIntoView(element);
-        waitForAMoment().withMessage("clickable: " + element.toString()).until(
-                ExpectedConditions.elementToBeClickable(element));
-        element.click();
-    }
-
-    /**
-     * Remove any visible notifications
-     */
-    public void removeNotifications() {
-        @SuppressWarnings("unchecked")
-        List<WebElement> notifications = (List<WebElement>) getExecutor()
-                .executeScript("return (typeof $ == 'undefined') ?  [] : " +
-                        "$('a.message__remove').toArray()");
-        if (notifications.isEmpty()) {
-            return;
-        }
-        log.info("Closing {} notifications", notifications.size());
-        for (WebElement notification : notifications) {
-            try {
-                notification.click();
-            } catch (WebDriverException exc) {
-                log.info("Missed a notification X click");
-            }
-        }
-        // Finally, forcibly un-is-active the message container - for speed
-        String script = "return (typeof $ == 'undefined') ?  [] : " +
-                "$('ul.message--global').toArray()";
-        @SuppressWarnings("unchecked")
-        List<WebElement> messageBoxes = ((List<WebElement>) getExecutor()
-                .executeScript(script));
-        for (WebElement messageBox : messageBoxes) {
-            getExecutor().executeScript(
-                    "arguments[0].setAttribute('class', arguments[1]);",
-                    messageBox,
-                    messageBox.getAttribute("class").replace("is-active", ""));
-        }
-    }
-
-    /**
-     * Wait for the notifications box to go. Assumes test has dealt with
-     * removing it, or is waiting for it to time out.
-     */
-    public void waitForNotificationsGone() {
-        final String script = "return (typeof $ == 'undefined') ?  [] : " +
-                "$('ul.message--global').toArray()";
-        final String message = "Waiting for notifications box to go";
-        waitForAMoment().withMessage(message).until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                @SuppressWarnings("unchecked")
-                List<WebElement> boxes = (List<WebElement>) getExecutor()
-                        .executeScript(script);
-                for (WebElement box : boxes) {
-                    if (box.isDisplayed()) {
-                        log.info(message);
-                        return false;
-                    }
-                }
-                return true;
-            }
-        });
     }
 
 }

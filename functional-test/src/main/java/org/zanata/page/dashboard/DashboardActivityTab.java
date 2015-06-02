@@ -53,7 +53,7 @@ public class DashboardActivityTab extends DashboardBasePage {
     public boolean clickMoreActivity() {
         log.info("Click More Activity button");
         final int activityListOrigSize = getMyActivityList().size();
-        readyElement(moreActivityButton).click();
+        clickElement(moreActivityButton);
         return waitForAMoment().until(new Function<WebDriver, Boolean>() {
             @Override
             public Boolean apply(WebDriver input) {

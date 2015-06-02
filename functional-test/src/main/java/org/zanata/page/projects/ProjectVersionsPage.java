@@ -118,7 +118,7 @@ public class ProjectVersionsPage extends ProjectBasePage {
 
     public ProjectVersionsPage clickSearchIcon() {
         log.info("Click Search icon");
-        readyElement(existingElement(versions), searchIcon).click();
+        clickElement(readyElement(existingElement(versions), searchIcon));
         return new ProjectVersionsPage(getDriver());
     }
 

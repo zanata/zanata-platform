@@ -89,13 +89,13 @@ public class RegisterPage extends CorePage {
     // TODO: Add a "signup success" page
     public HomePage register() {
         log.info("Click Sign Up");
-        readyElement(signUpButton).click();
+        clickElement(signUpButton);
         return new HomePage(getDriver());
     }
 
     public RegisterPage registerFailure() {
         log.info("Click Sign Up");
-        readyElement(signUpButton).click();
+        clickElement(signUpButton);
         return new RegisterPage(getDriver());
     }
 
@@ -127,13 +127,13 @@ public class RegisterPage extends CorePage {
 
     public SignInPage goToSignIn() {
         log.info("Click Log In");
-        readyElement(loginLink).click();
+        clickElement(loginLink);
         return new SignInPage(getDriver());
     }
 
     public RegisterPage clickPasswordShowToggle() {
         log.info("Click Show/Hide");
-        readyElement(showHideToggleButton).click();
+        clickElement(showHideToggleButton);
         return new RegisterPage(getDriver());
     }
 

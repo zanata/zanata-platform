@@ -58,6 +58,7 @@ public class ServerConfigurationPage extends BasePage {
 
     private void enterTextConfigField(By by, String text) {
         scrollIntoView(readyElement(by));
+        waitForNotificationsGone();
         new Actions(getDriver()).moveToElement(readyElement(by))
                 .click()
                 .sendKeys(Keys.chord(Keys.CONTROL, "a"))
@@ -191,7 +192,7 @@ public class ServerConfigurationPage extends BasePage {
 
     public AdministrationPage save() {
         log.info("Click Save");
-        readyElement(saveButton).click();
+        clickElement(saveButton);
         return new AdministrationPage(getDriver());
     }
 

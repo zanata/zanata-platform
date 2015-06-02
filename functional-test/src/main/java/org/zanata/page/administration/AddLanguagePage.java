@@ -90,7 +90,7 @@ public class AddLanguagePage extends BasePage {
     public AddLanguagePage enableLanguageByDefault() {
         log.info("Click Enable by default");
         if (!readyElement(enabledByDefaultCheckbox).isSelected()) {
-            readyElement(enabledByDefaultCheckbox).click();
+            clickElement(enabledByDefaultCheckbox);
         }
         return new AddLanguagePage(getDriver());
     }
@@ -98,7 +98,7 @@ public class AddLanguagePage extends BasePage {
     public AddLanguagePage disableLanguageByDefault() {
         log.info("Click Disable by default");
         if (readyElement(enabledByDefaultCheckbox).isSelected()) {
-            readyElement(enabledByDefaultCheckbox).click();
+            clickElement(enabledByDefaultCheckbox);
         }
 
         return new AddLanguagePage(getDriver());

@@ -46,7 +46,7 @@ public class ContactTeamPage extends BasePage {
 
     public LanguagesPage clickSend() {
         log.info("Click the Send Message button");
-        readyElement(sendButton).click();
+        clickElement(sendButton);
         return new LanguagesPage(getDriver());
     }
 }
