@@ -32,16 +32,16 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class TransMemoryMatcher {
-    private final SourceHTMLParser upcomingSourceParser;
+    private static final String EMPTY_STRING = "";
     private final HTMLParser tmSourceParser;
     private final Map<TextTokenKey, String> tmTokensMap;
     private final Map<TextTokenKey, String> upcomingTokensMap;
-    private final String upcomingSourceContent;
+    private final HTMLParser upcomingSourceParser;
 
     public TransMemoryMatcher(HTextFlow upcomingSource,
             HTextFlow transMemory, HLocale targetLocale) {
         // TODO pahuang work on plural
-        upcomingSourceContent = upcomingSource.getContents().get(0);
+        String upcomingSourceContent = upcomingSource.getContents().get(0);
         String tmSource = transMemory.getContents().get(0);
         String tmTarget = transMemory.getTargets().get(targetLocale.getId()).getContents().get(
                 0);
@@ -56,17 +56,67 @@ public class TransMemoryMatcher {
         tmSourceParser = new SourceHTMLParser(tmMap, tmSource);
         HTMLParser tmTargetParser = new TargetHTMLParser(tmMap, tmTarget);
 
+        log.debug("=== about to parse TM source ===");
         tmSourceParser.parse();
+        log.debug("=== about to parse TM target ===");
         tmTargetParser.parse();
 
         Map<ParentNodes, Map.Entry<String, String>> upcomingSourceMap = Maps.newHashMap();
 
+        log.debug("=== about to parse upcoming source ===");
         upcomingSourceParser =
-                new SourceHTMLParser(upcomingSourceMap, upcomingSourceContent);
+                new HTMLParser(
+                        upcomingSourceMap,
+                        upcomingSourceContent) {
+
+                    @Override
+                    protected void doWithTextNode(
+                            ParentNodes parentNodes,
+                            TextNode textNode) {
+                        String sourceTokenText = textNode.getWholeText();
+                        String translation = EMPTY_STRING;
+                        // text node text will get updated if it can find a
+                        // match in TM tokens
+                        textNode.text(translation);
+                        if (parentNodesToSourceTargetEntryMap.containsKey(parentNodes)) {
+                            Map.Entry<String, String> previousEntry =
+                                    parentNodesToSourceTargetEntryMap.get(parentNodes);
+                            // more than one text token share the same parent nodes, we combine the text together
+                            String combinedText = previousEntry.getKey() +
+                                    sourceTokenText;
+                            Map.Entry<String, String> newEntry =
+                                    makeMapEntry(combinedText, translation);
+                            parentNodesToSourceTargetEntryMap.put(parentNodes, newEntry);
+                            TextTokenKey key =
+                                    new TextTokenKey(parentNodes.size(),
+                                            combinedText);
+                            if (tmTokensMap.containsKey(key)) {
+                                translation = tmTokensMap.get(key);
+                                textNode.text(translation);
+                                newEntry.setValue(translation);
+                            }
+
+                        } else {
+                            Map.Entry<String, String>
+                                    sourceToTarget =
+                                    makeMapEntry(sourceTokenText, translation);
+                            parentNodesToSourceTargetEntryMap
+                                    .put(parentNodes, sourceToTarget);
+                            TextTokenKey key =
+                                    new TextTokenKey(parentNodes.size(),
+                                            sourceTokenText);
+                            if (tmTokensMap.containsKey(key)) {
+                                translation = tmTokensMap.get(key);
+                                textNode.text(translation);
+                                sourceToTarget.setValue(translation);
+                            }
+
+                        }
+                    }
+                };
         upcomingSourceParser.parse();
 
-        tmTokensMap = toMatchableTextTokensMap(
-                tmMap);
+        tmTokensMap = toMatchableTextTokensMap(tmMap);
         upcomingTokensMap = toMatchableTextTokensMap(upcomingSourceMap);
     }
 
@@ -121,7 +171,8 @@ public class TransMemoryMatcher {
             Map.Entry<String, String> sourceToTarget = entry.getValue();
             String textFlowSource = sourceToTarget
                     .getKey();
-            String textFlowTarget = sourceToTarget.getValue() == null ? textFlowSource : sourceToTarget.getValue();
+            String textFlowTarget = sourceToTarget.getValue() == null ?
+                    EMPTY_STRING : sourceToTarget.getValue();
             tmMapBuilder.put(
                     new TextTokenKey(parentNodesForTextNode.size(),
                             textFlowSource), textFlowTarget);
@@ -130,26 +181,7 @@ public class TransMemoryMatcher {
     }
 
     public String translationFromTransMemory() {
-        HTMLParser upcomingSourceTargetParser =
-                new HTMLParser(this.upcomingSourceParser.parentNodesToSourceTargetEntryMap,
-                        upcomingSourceContent) {
-
-                    @Override
-                    protected void doWithTextNode(
-                            ParentNodes parentNodes,
-                            TextNode textNode) {
-                        TextTokenKey textTokenKey =
-                                new TextTokenKey(parentNodes.size(), textNode.getWholeText());
-                        if (tmTokensMap.containsKey(textTokenKey) &&
-                                parentNodesToSourceTargetEntryMap.containsKey(parentNodes)) {
-                            parentNodesToSourceTargetEntryMap.get(parentNodes)
-                                    .setValue(tmTokensMap.get(textTokenKey));
-                        }
-                    }
-                };
-        upcomingSourceTargetParser.parse();
-
-        String translationBuildFromTM = upcomingSourceTargetParser.doc.body().html();
+        String translationBuildFromTM = upcomingSourceParser.doc.body().html();
         log.debug("Translation build from given TM is {}", translationBuildFromTM);
         return translationBuildFromTM;
     }
@@ -177,16 +209,30 @@ public class TransMemoryMatcher {
             return parentNodes.size();
         }
 
+        /**
+         * Checking whether the parent nodes are identical. When we try to join
+         * together source tokens, we need to make sure they share exactly the
+         * same nodes not just tags as parents. When we do look up for matching
+         * translation tokens, we use different algorithm.
+         *
+         * @param o other ParentNodes object
+         * @return true if parent nodes list are identical in identity
+         */
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             ParentNodes that = (ParentNodes) o;
-            ensureParentTags();
-            return Objects.equals(parentTags, that.parentTags);
+            return Objects.equals(parentNodes, that.parentNodes);
         }
 
-        public void ensureParentTags() {
+        @Override
+        public int hashCode() {
+            ensureParentTags();
+            return Objects.hash(parentNodes);
+        }
+
+        private void ensureParentTags() {
             if (parentTags == null) {
                 parentTags = Lists
                         .transform(parentNodes, new Function<Element, Tag>() {
@@ -199,14 +245,14 @@ public class TransMemoryMatcher {
             }
         }
 
-        @Override
-        public int hashCode() {
+        List<Tag> parentTags() {
             ensureParentTags();
-            return Objects.hash(parentTags);
+            return parentTags;
         }
 
         @Override
         public String toString() {
+            ensureParentTags();
             return MoreObjects.toStringHelper(this)
                     .add("parentTags", parentTags)
                     .toString();
@@ -222,27 +268,6 @@ public class TransMemoryMatcher {
         @Override
         public String toString() {
             return "(" + numOfParentNodes + "):" + textToken;
-        }
-    }
-
-    private static class SourceTokensToTargetTokens {
-        private final List<Map.Entry<String, String>> tokens;
-
-        private SourceTokensToTargetTokens(
-                List<Map.Entry<String, String>> tokens) {
-            this.tokens = ImmutableList.copyOf(tokens);
-        }
-
-        private SourceTokensToTargetTokens(List<Map.Entry<String, String>> tokens, String sourceToken, String targetToken) {
-            this.tokens = ImmutableList
-                    .<Map.Entry<String, String>> builder()
-                    .addAll(tokens)
-                    .add(new AbstractMap.SimpleEntry<>(sourceToken,
-                            targetToken)).build();
-        }
-
-        SourceTokensToTargetTokens add(String sourceToken, String targetToken) {
-            return new SourceTokensToTargetTokens(tokens, sourceToken, targetToken);
         }
     }
 
@@ -310,18 +335,35 @@ public class TransMemoryMatcher {
         @Override
         protected void doWithTextNode(ParentNodes parentNodes,
                 TextNode textNode) {
-            AbstractMap.SimpleEntry<String, String>
-                    sourceToTarget =
-                    new AbstractMap.SimpleEntry<>(textNode.getWholeText(),
-                            null);
+            String sourceTokenText = textNode.getWholeText();
+
             if (parentNodesToSourceTargetEntryMap.containsKey(parentNodes)) {
                 Map.Entry<String, String> previousEntry =
                         parentNodesToSourceTargetEntryMap.get(parentNodes);
+                // more than one text token share the same parent nodes, we will
+                // store individual token as well as combined tokens in case
+                // text tokens get swapped around in translation
+                Map.Entry<String, String>
+                        newEntry = makeMapEntry(previousEntry.getKey() +
+                        sourceTokenText, EMPTY_STRING);
+                parentNodesToSourceTargetEntryMap.put(parentNodes, newEntry);
+                log.debug("appending to parent nodes: {}, old token(s) [{}], new token [{}]",
+                        parentNodes, previousEntry.getKey(), sourceTokenText);
 
+            } else {
+                Map.Entry<String, String>
+                        sourceToTarget =
+                        makeMapEntry(sourceTokenText, EMPTY_STRING);
+                parentNodesToSourceTargetEntryMap
+                        .put(parentNodes, sourceToTarget);
+                log.debug("putting to parent nodes: {}, token [{}]",
+                        parentNodes, sourceTokenText);
             }
-            parentNodesToSourceTargetEntryMap
-                    .put(parentNodes, sourceToTarget);
         }
+    }
+
+    private static <K, V> Map.Entry<K, V> makeMapEntry(K key, V value) {
+        return new AbstractMap.SimpleEntry<>(key, value);
     }
 
     private static class TargetHTMLParser extends HTMLParser {
@@ -335,20 +377,38 @@ public class TransMemoryMatcher {
         @Override
         protected void doWithTextNode(ParentNodes parentNodes,
                 TextNode textNode) {
-            Map.Entry<String, String> sourceToTarget =
-                    parentNodesToSourceTargetEntryMap.get(parentNodes);
-            String wholeText = textNode.getWholeText();
-            if (sourceToTarget == null) {
-                log.warn("Can not match translation text token [{}] in source using parent nodes:{}", wholeText,
-                        parentNodes);
+            String targetTokenText = textNode.getWholeText();
+            Map.Entry<String, String> matchingSourceToken =
+                    findMatchingSourceToken(parentNodes, targetTokenText);
+            // we may have other translation tokens under same parent nodes
+            String previousTrans = matchingSourceToken.getValue();
+            matchingSourceToken.setValue(previousTrans + targetTokenText);
+            log.debug(
+                    "putting to source token [{}] as translation: existing trans [{}], current trans [{}]",
+                    matchingSourceToken.getKey(), previousTrans,
+                    targetTokenText);
+        }
 
-                throw new IllegalStateException(
-                        "can not match translation text token [" +
-                                wholeText
-                                + "] in source using parent nodes:"
-                                + parentNodes);
+        private Map.Entry<String, String> findMatchingSourceToken(
+                ParentNodes parentNodes, String targetTokenText) {
+            // because we build a new ParentNodes for target, the identity of
+            // parent nodes will NOT be the same but the tag names will be. We
+            // have to use tag names to look up matching source tokens
+            for (Map.Entry<ParentNodes, Map.Entry<String, String>> entry : parentNodesToSourceTargetEntryMap
+                    .entrySet()) {
+                ParentNodes key = entry.getKey();
+                if (key.parentTags().equals(parentNodes.parentTags())) {
+                    return entry.getValue();
+                }
             }
-            sourceToTarget.setValue(wholeText);
+            log.warn("Can not match translation text token [{}] in source using parent nodes:{}", targetTokenText,
+                    parentNodes);
+
+            throw new IllegalStateException(
+                    "can not match translation text token [" +
+                            targetTokenText
+                            + "] in source using parent nodes:"
+                            + parentNodes);
         }
     }
 }
