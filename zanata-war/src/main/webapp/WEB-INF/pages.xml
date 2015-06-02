@@ -53,7 +53,7 @@
         <redirect view-id="/account/login.xhtml" />
       </rule>
       <rule
-        if="#{identity.loggedIn and userRedirect.shouldRedirectToDashboard()}}">
+        if="#{identity.loggedIn and userRedirect.shouldRedirectToDashboard()}">
         <redirect view-id="/dashboard/home.xhtml" />
       </rule>
       <rule
