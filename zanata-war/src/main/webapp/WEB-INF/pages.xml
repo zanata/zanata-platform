@@ -318,13 +318,6 @@
     <param name="slug" value="#{projectHome.slug}" />
     <param name="slug" value="#{projectHomeAction.slug}" />
     <action execute="#{projectHome.initialize}" />
-    <navigation from-action="#{projectHome.removeMaintainer}">
-      <rule if-outcome="redirect">
-        <redirect view-id="/project/project.xhtml">
-          <param name="slug" value="#{projectHome.slug}" />
-        </redirect>
-      </rule>
-    </navigation>
     <navigation from-action="#{projectHome.update}">
       <rule if-outcome="projectSlugUpdated">
         <redirect view-id="/project/project.xhtml">
