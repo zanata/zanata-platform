@@ -56,6 +56,8 @@ This is dependent on database size and the system administrator should consider 
 * [1147304](https://bugzilla.redhat.com/show_bug.cgi?id=1147304) - Project search fails on special characters
 * [1123186](https://bugzilla.redhat.com/show_bug.cgi?id=1123186) - Project search fails for multiple word project names
 * [1112498](https://bugzilla.redhat.com/show_bug.cgi?id=1112498) - Unable to remove self as maintainer
+* [1227575](https://bugzilla.redhat.com/show_bug.cgi?id=1227575) - Exception on emptying the search field when many users were reported
+
 -----------------------
 
 <h5>New Features</h5>
