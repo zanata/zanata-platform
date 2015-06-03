@@ -25,7 +25,17 @@ Example usage in html file: `<link rel="shortcut icon" href="#{assets['img/logo/
 * [PR 633](https://github.com/zanata/zanata-server/pull/633) - Use JNDI to obtain mail server from app server
     * Zanata now uses `java:jboss/mail/Default` mail session for SMTP configuration.  See "Email configuration" in [System admin guide](http://docs.zanata.org/en/latest/user-guide/system-admin/configuration/installation/index.html) for details.
 
+<h5>Deployment</h5>
 
+Deployment for this release may require a longer timeout due to underlying database changes.
+This is dependent on database size and the system administrator should consider increasing the JBoss timeout value in standalone.xml.
+
+        <system-properties>
+            ...
+            <property name="jboss.as.management.blocking.timeout" value="2000"/>
+        </system-properties>
+    
+    
 <h5>Bug fixes</h5>
 * [1194543](https://bugzilla.redhat.com/show_bug.cgi?id=1194543) - Manual document re-upload makes previous translations fuzzy
 * [1029734](https://bugzilla.redhat.com/show_bug.cgi?id=1029734) - po header contains invalid entry will cause upload/push failure
