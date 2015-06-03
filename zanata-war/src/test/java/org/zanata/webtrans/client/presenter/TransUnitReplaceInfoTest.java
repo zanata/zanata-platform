@@ -3,9 +3,9 @@ package org.zanata.webtrans.client.presenter;
 import java.util.Comparator;
 
 import org.hamcrest.Matchers;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.Test;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
@@ -17,7 +17,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class TransUnitReplaceInfoTest {
     public static final long CONTAINING_DOC_ID = 1L;
     @Mock

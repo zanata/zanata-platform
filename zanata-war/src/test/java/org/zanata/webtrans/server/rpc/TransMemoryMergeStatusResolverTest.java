@@ -21,8 +21,8 @@
 
 package org.zanata.webtrans.server.rpc;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
@@ -51,7 +51,6 @@ import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class TransMemoryMergeStatusResolverTest {
     TransMemoryMergeStatusResolver resolver;
     private TransMemoryMerge action;
@@ -62,7 +61,7 @@ public class TransMemoryMergeStatusResolverTest {
     private String resId = "resId";
     private String msgContext;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         resolver = TransMemoryMergeStatusResolver.newInstance();
 

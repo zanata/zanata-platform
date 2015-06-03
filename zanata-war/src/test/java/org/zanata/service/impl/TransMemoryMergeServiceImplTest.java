@@ -37,12 +37,14 @@ import java.util.List;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.zanata.ZanataTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
@@ -78,8 +80,7 @@ import com.google.common.base.Optional;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
-public class TransMemoryMergeServiceImplTest {
+public class TransMemoryMergeServiceImplTest extends ZanataTest {
 
     private TransMemoryMergeService transMemoryMergeService;
 
@@ -111,7 +112,7 @@ public class TransMemoryMergeServiceImplTest {
     private static ArrayList<String> tmSource = newArrayList("tm source");
     private static ArrayList<String> tmTarget = newArrayList("tm target");
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         // @formatter:off
@@ -289,7 +290,7 @@ public class TransMemoryMergeServiceImplTest {
                 newArrayList(hTextFlow));
 
         Optional<TransMemoryResultItem> matches =
-                Optional.<TransMemoryResultItem> absent();
+                Optional.absent();
 
         when(
                 translationMemoryService.searchBestMatchTransMemory(hTextFlow,

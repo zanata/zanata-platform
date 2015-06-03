@@ -9,10 +9,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import com.google.common.base.Function;
 import com.google.common.base.Throwables;
 import com.google.common.base.Ticker;
@@ -27,7 +27,6 @@ import static org.mockito.Mockito.when;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 @Slf4j
 public class LeakyBucketTest {
 
@@ -39,7 +38,7 @@ public class LeakyBucketTest {
     @Mock
     private LeakyBucket.TimeTracker timeTracker;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         // LogManager.getLogger(LeakyBucket.class.getPackage().getName())
         // .setLevel(Level.DEBUG);

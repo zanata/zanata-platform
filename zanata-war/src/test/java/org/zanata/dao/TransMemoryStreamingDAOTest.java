@@ -13,8 +13,8 @@ import lombok.Cleanup;
 
 import org.hibernate.Session;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.zanata.ZanataJpaTest;
 import org.zanata.common.LocaleId;
 import org.zanata.model.tm.TransMemoryUnitVariant;
@@ -26,13 +26,12 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 
-@Test(groups = { "jpa-tests" })
 public class TransMemoryStreamingDAOTest extends ZanataJpaTest {
     private TransMemoryStreamingDAO dao;
     private TransMemoryDAO transMemoryDAO;
     private Session session;
 
-    @BeforeMethod(firstTimeOnly = true)
+    @Before
     public void setup() {
         dao =
                 new TransMemoryStreamingDAO(

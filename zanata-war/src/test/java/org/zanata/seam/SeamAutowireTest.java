@@ -20,11 +20,15 @@
  */
 package org.zanata.seam;
 
+import com.binarytweed.test.DelegateRunningTo;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import org.hamcrest.Matchers;
 import org.jboss.seam.Component;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.seam.test.ComponentWithNonRequiredChild;
@@ -47,12 +51,13 @@ import static org.hamcrest.Matchers.*;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@DelegateRunningTo(DataProviderRunner.class)
 public class SeamAutowireTest extends ZanataDbunitJpaTest {
     @Override
     protected void prepareDBUnitOperations() {
     }
 
-    @BeforeMethod
+    @Before
     public void resetSeamAutowire() {
         SeamAutowire.instance().reset();
     }
@@ -98,9 +103,8 @@ public class SeamAutowireTest extends ZanataDbunitJpaTest {
         assertThat(val, is("This is the component!"));
     }
 
-    @Test(
-            expectedExceptions = RuntimeException.class,
-            expectedExceptionsMessageRegExp = "Could not auto-wire component of type .*. No no-args constructor.")
+    @Test(expected = RuntimeException.class)
+//            expectedExceptionsMessageRegExp = "Could not auto-wire component of type .*. No no-args constructor."
     public void brokenChild() {
         SeamAutowire.instance().autowire(ComponentWithNonRequiredBrokenChild.class);
     }
@@ -122,14 +126,15 @@ public class SeamAutowireTest extends ZanataDbunitJpaTest {
         assertThat(test.isPostConstructInvoked(), is(true));
     }
 
-    @Test(dataProvider = "workingComponents")
+    @Test
+    @UseDataProvider("workingComponents")
     public void buildWorkingComponents(Class<?> componentClass) {
         Object comp = SeamAutowire.instance().autowire(componentClass);
         assertThat(comp, notNullValue());
     }
 
-    @DataProvider(name = "workingComponents")
-    public Object[][] workingComponents() {
+    @DataProvider
+    public static Object[][] workingComponents() {
         return new Object[][] {
                 {ComponentWithRequiredCreateChild.class},
                 {ComponentWithRequiredAutoCreateChild.class},
@@ -137,13 +142,14 @@ public class SeamAutowireTest extends ZanataDbunitJpaTest {
         };
     }
 
-    @Test(dataProvider = "brokenComponents", expectedExceptions=RuntimeException.class)
+    @Test(expected = RuntimeException.class)
+    @UseDataProvider("brokenComponents")
     public void buildBrokenComponents(Class<?> componentClass) {
         SeamAutowire.instance().autowire(componentClass);
     }
 
-    @DataProvider(name = "brokenComponents")
-    public Object[][] brokenComponents() {
+    @DataProvider
+    public static Object[][] brokenComponents() {
         return new Object[][] {
                 {ComponentWithRequiredBrokenChild.class},
                 {ComponentWithRequiredNoCreateChild.class}
@@ -161,9 +167,8 @@ public class SeamAutowireTest extends ZanataDbunitJpaTest {
                 notNullValue());
     }
 
-    @Test(
-            expectedExceptions = RuntimeException.class,
-            expectedExceptionsMessageRegExp = "Recursive dependency: unable to inject .* into component of type .*")
+    @Test(expected = RuntimeException.class)
+//            expectedExceptionsMessageRegExp = "Recursive dependency: unable to inject .* into component of type .*"
     public
             void cyclesNotAllowed() {
         SeamAutowire.instance().autowire(ComponentWithChildCycle.class);

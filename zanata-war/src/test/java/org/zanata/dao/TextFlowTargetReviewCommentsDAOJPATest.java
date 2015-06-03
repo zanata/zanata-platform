@@ -26,8 +26,8 @@ import java.util.List;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HPerson;
@@ -41,7 +41,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = { "jpa-tests" })
 public class TextFlowTargetReviewCommentsDAOJPATest extends ZanataDbunitJpaTest {
     private TextFlowTargetReviewCommentsDAO reviewCommentsDAO;
     private TextFlowTargetDAO textFlowTargetDAO;
@@ -65,7 +64,7 @@ public class TextFlowTargetReviewCommentsDAOJPATest extends ZanataDbunitJpaTest 
                 DatabaseOperation.CLEAN_INSERT));
     }
 
-    @BeforeMethod(firstTimeOnly = true)
+    @Before
     public void setup() {
         reviewCommentsDAO = new TextFlowTargetReviewCommentsDAO(getSession());
         textFlowTargetDAO = new TextFlowTargetDAO(getSession());

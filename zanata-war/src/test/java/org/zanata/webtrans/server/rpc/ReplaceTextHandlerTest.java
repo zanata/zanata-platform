@@ -24,11 +24,11 @@ import java.util.List;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.service.SecurityService;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.ReplaceText;
@@ -40,7 +40,6 @@ import net.customware.gwt.dispatch.shared.ActionException;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 
-@Test(groups = "unit-tests")
 public class ReplaceTextHandlerTest {
     public static final boolean CASE_INSENSITIVE = false;
     public static final boolean CASE_SENSITIVE = true;
@@ -53,7 +52,7 @@ public class ReplaceTextHandlerTest {
     @Mock
     private SecurityService mockSecurityService;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         handler = new ReplaceTextHandler();
@@ -101,7 +100,7 @@ public class ReplaceTextHandlerTest {
                 .getNewContents(), Matchers.equalTo(expectedList));
     }
 
-    @Test(expectedExceptions = { ActionException.class })
+    @Test(expected = ActionException.class)
     public void willThrowExceptionIfSearchTextIsEmpty() throws ActionException {
         TransUnit transUnit = transUnitBuilder.build();
         ReplaceText action =
@@ -109,7 +108,7 @@ public class ReplaceTextHandlerTest {
         handler.execute(action, context);
     }
 
-    @Test(expectedExceptions = { ActionException.class })
+    @Test(expected = ActionException.class)
     public void willThrowExceptionIfReplaceTextIsEmpty() throws ActionException {
         TransUnit transUnit = transUnitBuilder.build();
         ReplaceText action =

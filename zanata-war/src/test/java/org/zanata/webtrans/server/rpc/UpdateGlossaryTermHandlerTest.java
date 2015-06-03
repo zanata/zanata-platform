@@ -3,10 +3,12 @@ package org.zanata.webtrans.server.rpc;
 import java.util.Date;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.zanata.ZanataTest;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.model.HGlossaryEntry;
@@ -30,8 +32,7 @@ import static org.mockito.Mockito.when;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
-public class UpdateGlossaryTermHandlerTest {
+public class UpdateGlossaryTermHandlerTest extends ZanataTest {
     private UpdateGlossaryTermHandler handler;
     @Mock
     private ZanataIdentity identity;
@@ -43,7 +44,7 @@ public class UpdateGlossaryTermHandlerTest {
     private HLocale targetHLocale = new HLocale(LocaleId.DE);
     private HLocale srcLocale = new HLocale(LocaleId.EN_US);
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         // @formatter:off
@@ -99,7 +100,7 @@ public class UpdateGlossaryTermHandlerTest {
 
     }
 
-    @Test(expectedExceptions = ActionException.class)
+    @Test(expected = ActionException.class)
     public void testExecuteWhenTargetTermNotFound() throws Exception {
         GlossaryDetails selectedDetailEntry =
                 new GlossaryDetails("source", "target", null, null,
@@ -122,7 +123,7 @@ public class UpdateGlossaryTermHandlerTest {
         handler.execute(action, null);
     }
 
-    @Test(expectedExceptions = ActionException.class)
+    @Test(expected = ActionException.class)
     public void testExecuteWhenTargetTermVersionNotMatch() throws Exception {
         GlossaryDetails selectedDetailEntry =
                 new GlossaryDetails("source", "target", null, null,

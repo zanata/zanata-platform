@@ -28,17 +28,16 @@ import java.util.Random;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.hamcrest.Matchers;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.zanata.webtrans.shared.rpc.NavOption;
 
-@Test(groups = { "unit-tests" })
 public class UserConfigHolderTest {
 
     private UserConfigHolder configHolder;
 
-    @BeforeMethod
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         configHolder = new UserConfigHolder();
     }
 

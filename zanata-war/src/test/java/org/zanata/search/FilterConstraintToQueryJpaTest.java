@@ -9,8 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.Matchers;
 import org.hibernate.transform.ResultTransformer;
 import org.joda.time.DateTime;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.zanata.ZanataJpaTest;
 import org.zanata.common.ContentState;
 import org.zanata.model.HAccount;
@@ -35,7 +35,6 @@ import com.google.common.collect.Lists;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "jpa-tests")
 @Slf4j
 public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
 
@@ -51,7 +50,7 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
     private HPerson admin;
     private HPerson translator;
 
-    @BeforeMethod
+    @Before
     public void setUpData() {
         deleteAllTables();
         hLocale =

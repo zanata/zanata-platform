@@ -6,10 +6,10 @@ import static org.mockito.Mockito.when;
 
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.DisplaySouthPanelEvent;
 import org.zanata.webtrans.client.events.PageChangeEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
@@ -24,7 +24,6 @@ import org.zanata.webtrans.client.view.TranslationEditorDisplay;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class TranslationEditorPresenterTest {
     private TranslationEditorPresenter presenter;
     @Mock
@@ -48,7 +47,7 @@ public class TranslationEditorPresenterTest {
     @Mock
     private EditorKeyShortcuts editorKeyShortcuts;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         presenter =

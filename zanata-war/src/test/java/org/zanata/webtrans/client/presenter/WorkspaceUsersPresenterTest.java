@@ -1,13 +1,13 @@
 package org.zanata.webtrans.client.presenter;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
@@ -39,7 +39,6 @@ import static org.mockito.Mockito.when;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class WorkspaceUsersPresenterTest {
     private WorkspaceUsersPresenter presenter;
     @Mock
@@ -61,7 +60,7 @@ public class WorkspaceUsersPresenterTest {
     @Mock
     private HasManageUserPanel userSessionPanel;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         presenter =

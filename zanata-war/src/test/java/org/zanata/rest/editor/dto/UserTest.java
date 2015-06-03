@@ -1,12 +1,11 @@
 package org.zanata.rest.editor.dto;
 
-import static org.testng.Assert.assertEquals;
-
 import java.io.IOException;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.testng.annotations.Test;
-import org.zanata.common.LocaleId;
+import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -26,6 +25,6 @@ public class UserTest {
 
         User expected = new User("_username", "test@example.com", "testUser", "hash");
 
-        assertEquals(user, expected);
+        assertThat(user).isEqualTo(expected);
     }
 }

@@ -6,14 +6,14 @@ import static org.zanata.model.TestFixture.*;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.BookmarkedTextFlowEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
@@ -36,7 +36,6 @@ import com.google.gwt.event.shared.GwtEvent;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class HistoryEventHandlerServiceTest {
     private HistoryEventHandlerService service;
     @Mock
@@ -56,7 +55,7 @@ public class HistoryEventHandlerServiceTest {
     private GetTransUnitActionContextHolder contextHolder;
     private UserConfigHolder configHolder;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         contextHolder =

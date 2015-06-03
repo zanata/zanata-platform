@@ -29,14 +29,14 @@ import com.google.inject.Provider;
 import net.customware.gwt.presenter.client.EventBus;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.CommentBeforeSaveEvent;
@@ -92,7 +92,6 @@ import static org.mockito.Mockito.when;
 import static org.zanata.model.TestFixture.extractFromEvents;
 import static org.zanata.model.TestFixture.makeTransUnit;
 
-@Test(groups = { "unit-tests" })
 public class TargetContentsPresenterTest {
     private TargetContentsPresenter presenter;
 
@@ -138,7 +137,7 @@ public class TargetContentsPresenterTest {
     @Mock
     private ValidationWarningDisplay validationWarning;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         configHolder = new UserConfigHolder();
@@ -529,6 +528,7 @@ public class TargetContentsPresenterTest {
 
     @Test
     public void testSetFocus() {
+        selectedTU = currentPageRows.get(0);
         presenter.setStatesForTesting(selectedTU.getId(), 99, display);
 
         presenter.setFocus();
@@ -680,6 +680,7 @@ public class TargetContentsPresenterTest {
     @Test
     public void canMoveToPreviousEditorInPluralForm() {
         // Given: current editor index is 1
+        selectedTU = currentPageRows.get(1);
         presenter.setStatesForTesting(selectedTU.getId(), 1, display);
 
         // When:
@@ -707,6 +708,7 @@ public class TargetContentsPresenterTest {
     @Test
     public void canMoveToNextEditorInPluralForm() {
         // Given: current editor index is 0
+        selectedTU = currentPageRows.get(0);
         when(display.getEditors()).thenReturn(
                 Lists.newArrayList(editor, editor2));
         presenter.setStatesForTesting(selectedTU.getId(), 0, display);
@@ -723,6 +725,7 @@ public class TargetContentsPresenterTest {
     public void canMoveToNextEditorInPluralFormOnFirstRow() {
         // Given: current editor index is last index (represent last entry from
         // move to previous)
+        selectedTU = currentPageRows.get(currentPageRows.size()-1);
         when(display.getEditors()).thenReturn(
                 Lists.newArrayList(editor, editor2));
         presenter.setStatesForTesting(selectedTU.getId(),
@@ -739,6 +742,7 @@ public class TargetContentsPresenterTest {
     @Test
     public void canMoveToNextEntry() {
         // Given: current editor index is 1
+        selectedTU = currentPageRows.get(1);
         TargetContentsPresenter spyPresenter = spy(presenter);
         spyPresenter.setStatesForTesting(selectedTU.getId(), 1, display);
         doNothing().when(spyPresenter).savePendingChangesIfApplicable();

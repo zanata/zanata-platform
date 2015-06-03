@@ -1,12 +1,14 @@
 package org.zanata.webtrans.server.rpc;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.zanata.ZanataTest;
 import org.zanata.model.TestFixture;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
@@ -25,8 +27,7 @@ import static org.mockito.Mockito.when;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
-public class PublishWorkspaceChatHandlerTest {
+public class PublishWorkspaceChatHandlerTest extends ZanataTest {
     private PublishWorkspaceChatHandler handler;
     @Mock
     private ZanataIdentity identity;
@@ -37,7 +38,7 @@ public class PublishWorkspaceChatHandlerTest {
     @Captor
     private ArgumentCaptor<PublishWorkspaceChat> eventCaptor;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         // @formatter:off

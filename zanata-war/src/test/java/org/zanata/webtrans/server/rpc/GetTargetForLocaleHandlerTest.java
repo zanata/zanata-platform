@@ -9,10 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.dbunit.operation.DatabaseOperation;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowTargetDAO;
@@ -29,7 +30,6 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetTargetForLocale;
 import org.zanata.webtrans.shared.rpc.GetTargetForLocaleResult;
 
-@Test(groups = {"jpa-tests"})
 @Slf4j
 public class GetTargetForLocaleHandlerTest extends ZanataDbunitJpaTest {
     private GetTargetForLocaleHandler handler;
@@ -49,7 +49,7 @@ public class GetTargetForLocaleHandlerTest extends ZanataDbunitJpaTest {
                 DatabaseOperation.CLEAN_INSERT));
     }
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         // @formatter:off

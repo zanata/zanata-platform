@@ -24,11 +24,7 @@ import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.internal.SessionImpl;
 import org.junit.After;
 import org.junit.Before;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Optional;
-import org.testng.annotations.Parameters;
+import org.junit.runner.RunWith;
 
 /**
  * Adapted from org.jboss.seam.mock.DBUnitSeamTest
@@ -48,33 +44,16 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest {
 
     private boolean prepared = false;
 
-    @BeforeClass
-    @Parameters("binaryDir")
-    public void setBinaryDir(@Optional String binaryDir) {
-        if (binaryDir == null)
-            return;
-        this.binaryDir = binaryDir;
-    }
-
     protected String getBinaryDir() {
         return binaryDir;
-    }
-
-    @BeforeClass
-    @Parameters("replaceNull")
-    public void setReplaceNull(@Optional Boolean replaceNull) {
-        if (replaceNull == null)
-            return;
-        this.replaceNull = replaceNull;
     }
 
     protected Boolean isReplaceNull() {
         return replaceNull;
     }
 
-    @BeforeMethod
     @Before
-    protected void prepareDataBeforeTest() {
+    public void prepareDataBeforeTest() {
         // This is not pretty but we unfortunately can not have dependencies
         // between @BeforeClass methods.
         // This was a basic design mistake and we can't change it now because we
@@ -96,7 +75,6 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest {
         clearCache();
     }
 
-    @AfterMethod
     @After
     public void cleanDataAfterTest() {
         executeOperations(afterTestOperations);

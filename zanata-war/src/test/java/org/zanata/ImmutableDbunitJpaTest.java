@@ -20,45 +20,42 @@
  */
 package org.zanata;
 
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
+
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 public abstract class ImmutableDbunitJpaTest extends ZanataDbunitJpaTest {
 
-    @BeforeClass
+    @Before
     public void setupDatabase() throws Exception {
         super.setupEM();
         super.prepareDataBeforeTest();
     }
 
     @Override
-    protected void setupEM() {
+    public void setupEM() {
         // do nothing
     }
 
-    @BeforeMethod
     @Override
-    protected void prepareDataBeforeTest() {
+    public void prepareDataBeforeTest() {
         // do nothing
     }
 
-    @AfterClass
+    @After
     public void tearDownDatabase() {
         super.cleanDataAfterTest();
         super.shutdownEM();
     }
 
     @Override
-    protected void shutdownEM() {
+    public void shutdownEM() {
         // do nothing
     }
 
-    @AfterMethod
     @Override
     public void cleanDataAfterTest() {
         // do nothing

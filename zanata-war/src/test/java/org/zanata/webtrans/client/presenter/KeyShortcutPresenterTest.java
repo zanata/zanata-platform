@@ -33,12 +33,12 @@ import java.util.Set;
 
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.AttentionModeActivationEvent;
 import org.zanata.webtrans.client.keys.EventWrapper;
 import org.zanata.webtrans.client.keys.KeyShortcut;
@@ -61,7 +61,6 @@ import com.google.gwt.view.client.ListDataProvider;
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-@Test(groups = { "unit-tests" })
 public class KeyShortcutPresenterTest {
     static final String TEST_MESSAGE_CLOSE_SHORTCUT_VIEW =
             "close shortcut view";
@@ -96,7 +95,7 @@ public class KeyShortcutPresenterTest {
     @Mock
     private HandlerRegistration handlerRegistration;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
 

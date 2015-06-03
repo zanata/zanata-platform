@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.hamcrest.Matchers;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.zanata.common.ContentState;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
@@ -25,7 +25,6 @@ import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Test(groups = { "unit-tests" })
 @Slf4j
 public class ModalNavigationStateHolderTest {
     private ModalNavigationStateHolder navigationStateHolder;
@@ -49,15 +48,15 @@ public class ModalNavigationStateHolderTest {
     private UserConfigHolder configHolder;
     // @formatter:on
 
-    @BeforeClass
-    protected void setUpTestData() {
-        log.info("TransUnit list size: {}", tuList.size());
-        log.info("transIdStateMap : \n\t{}", transIdStateMap);
-        log.info("idIndexList : \n\t{}", idIndexList);
-    }
+//    @Before
+//    protected void setUpTestData() {
+//        log.info("TransUnit list size: {}", tuList.size());
+//        log.info("transIdStateMap : \n\t{}", transIdStateMap);
+//        log.info("idIndexList : \n\t{}", idIndexList);
+//    }
 
-    @BeforeMethod
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         transIdStateMap = new HashMap<TransUnitId, ContentState>();
         idIndexList = new ArrayList<TransUnitId>();
 

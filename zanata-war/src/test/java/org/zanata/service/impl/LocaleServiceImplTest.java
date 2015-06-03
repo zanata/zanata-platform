@@ -25,11 +25,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectDAO;
@@ -41,7 +41,6 @@ import org.zanata.model.HProjectIteration;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@Test(groups = { "business-tests" })
 public class LocaleServiceImplTest {
     private LocaleServiceImpl testLocaleServiceImpl;
 
@@ -63,7 +62,7 @@ public class LocaleServiceImplTest {
     private String projectSlug = "project";
     private String versionSlug = "master";
 
-    @BeforeMethod(firstTimeOnly = true)
+    @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
@@ -118,11 +117,11 @@ public class LocaleServiceImplTest {
         lan.add(new HLocale(new LocaleId("pt-BR")));
         when(localeDAO.findAll()).thenReturn(lan);
         List<HLocale> sup = testLocaleServiceImpl.getAllLocales();
-        Assert.assertEquals(sup.size(), 2);
+        assertThat(sup.size()).isEqualTo(2);
         String loc1 = sup.get(0).getLocaleId().getId();
-        Assert.assertEquals(loc1, "as-IN");
+        assertThat(loc1).isEqualTo("as-IN");
         String loc2 = sup.get(1).getLocaleId().getId();
-        Assert.assertEquals(loc2, "pt-BR");
+        assertThat(loc2).isEqualTo("pt-BR");
     }
 
     @Test

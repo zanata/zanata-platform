@@ -1,8 +1,11 @@
 package org.zanata.service.impl;
 
 import org.hamcrest.Matchers;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.zanata.ZanataTest;
 import org.zanata.common.MergeType;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.seam.SeamAutowire;
@@ -14,12 +17,11 @@ import static org.hamcrest.MatcherAssert.*;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
-public class TranslationMergeServiceFactoryTest {
+public class TranslationMergeServiceFactoryTest extends ZanataTest {
     private TranslationMergeServiceFactory factory;
 
-    @BeforeClass
-    public void beforeClass() {
+    @Before
+    public void before() {
         factory =
                 SeamAutowire.instance().reset().ignoreNonResolvable()
                         .autowire(TranslationMergeServiceFactory.class);

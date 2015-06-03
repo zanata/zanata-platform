@@ -24,17 +24,18 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.binarytweed.test.DelegateRunningTo;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.search.impl.FullTextSessionImpl;
 import org.hibernate.search.jpa.Search;
-import org.infinispan.manager.CacheContainer;
-import org.infinispan.manager.DefaultCacheManager;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.mockito.Mockito;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.zanata.SlowTest;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.async.handle.CopyTransTaskHandle;
@@ -57,8 +58,6 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.seam.AutowireTransaction;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.service.CopyTransService;
-import org.zanata.service.SearchIndexManager;
-import org.zanata.service.VersionStateCache;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -80,7 +79,7 @@ import static org.zanata.service.impl.ExecutionHelper.cartesianProduct;
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Test(groups = { "business-tests" })
+@DelegateRunningTo(DataProviderRunner.class)
 public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
     private SeamAutowire seam = SeamAutowire.instance();
 
@@ -100,8 +99,8 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
                 DatabaseOperation.CLEAN_INSERT));
     }
 
-    @BeforeMethod
-    protected void beforeMethod() throws Exception {
+    @Before
+    public void beforeMethod() throws Exception {
         seam.reset()
                 .use("entityManager", Search.getFullTextEntityManager(getEm()))
                 .use("entityManagerFactory", getEmf())
@@ -121,7 +120,8 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
     /**
      * Use this test to individually test copy trans scenarios.
      */
-    @Test(enabled = false)
+    @Ignore
+    @Test
     public void individualTest() {
 
         this.testCopyTrans(new CopyTransExecution(REJECT, IGNORE,
@@ -129,8 +129,8 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
                 .expectTransState(NeedReview));
     }
 
-    @DataProvider(name = "CopyTrans")
-    protected Object[][] createCopyTransTestParams() {
+    @DataProvider
+    public static Object[][] copyTransParams() {
         Set<CopyTransExecution> expandedExecutions = generateExecutions();
 
         Object[][] val = new Object[expandedExecutions.size()][1];
@@ -142,7 +142,8 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
         return val;
     }
 
-    @Test(dataProvider = "CopyTrans")
+    @Test
+    @UseDataProvider("copyTransParams")
     @SlowTest
     public void testCopyTrans(CopyTransExecution execution) {
         // Prepare Execution
@@ -320,7 +321,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
         testCopyTrans(execution);
     }
 
-    private ContentState getExpectedContentState(CopyTransExecution execution) {
+    private static ContentState getExpectedContentState(CopyTransExecution execution) {
         ContentState expectedContentState =
                 execution.getRequireTranslationReview() ? Approved : Translated;
 
@@ -353,7 +354,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
         }
     }
 
-    private Set<CopyTransExecution> generateExecutions() {
+    private static Set<CopyTransExecution> generateExecutions() {
         Set<CopyTransExecution> allExecutions =
                 new HashSet<CopyTransExecution>();
         // NB combinations which affect the query parameters
@@ -375,7 +376,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
                             (ContentState) params[7]);
 
             ContentState expectedContentState =
-                    this.getExpectedContentState(exec);
+                    getExpectedContentState(exec);
             if (expectedContentState == New) {
                 exec.expectUntranslated();
             } else {

@@ -3,8 +3,8 @@ package org.zanata.webtrans.client.service;
 import java.util.List;
 
 import org.hamcrest.Matchers;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.zanata.common.ContentState;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -19,7 +19,6 @@ import static org.zanata.webtrans.client.service.NavigationService.UNDEFINED;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class SinglePageDataModelImplTest {
     private SinglePageDataModelImpl model;
     // @formatter:off
@@ -30,7 +29,7 @@ public class SinglePageDataModelImplTest {
     );
     // @formatter:on
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         model = new SinglePageDataModelImpl();
     }

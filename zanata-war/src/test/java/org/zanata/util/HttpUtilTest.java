@@ -3,9 +3,9 @@ package org.zanata.util;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.HttpMethod;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mockito;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -14,10 +14,9 @@ import static org.mockito.Mockito.when;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Test(groups = { "unit-tests" })
 public class HttpUtilTest {
 
-    @BeforeMethod
+    @Before
     public void init() {
         setHeader("");
     }

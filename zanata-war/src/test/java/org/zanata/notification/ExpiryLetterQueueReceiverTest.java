@@ -2,21 +2,20 @@ package org.zanata.notification;
 
 import javax.jms.Message;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.util.EmptyEnumeration;
 
 import static org.mockito.Mockito.when;
 
-@Test(groups = "unit-tests")
 public class ExpiryLetterQueueReceiverTest {
     private ExpiryQueueReceiver receiver;
     @Mock
     private Message message;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         receiver = new ExpiryQueueReceiver();

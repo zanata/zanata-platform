@@ -28,21 +28,20 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.action.TabValidation;
 
-@Test(groups = { "unit-tests" })
 public class TabValidationTest {
     private ValidationMessages messages;
     private TabValidation validation;
     private static final List<String> noErrors = Collections
             .<String> emptyList();
 
-    @BeforeMethod
+    @Before
     public void init() throws IOException {
         messages = Gwti18nReader.create(ValidationMessages.class);
         validation = new TabValidation(ValidationId.TAB, messages);

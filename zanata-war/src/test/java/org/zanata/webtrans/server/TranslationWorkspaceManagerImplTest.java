@@ -15,13 +15,15 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.zanata.ZanataTest;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
@@ -51,8 +53,7 @@ import com.google.common.collect.Lists;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
-public class TranslationWorkspaceManagerImplTest {
+public class TranslationWorkspaceManagerImplTest extends ZanataTest {
     private TranslationWorkspaceManagerImpl manager;
 
     @Mock
@@ -72,7 +73,7 @@ public class TranslationWorkspaceManagerImplTest {
     private Optional<String> oldProjectSlug = Optional.absent();
     private Optional<String> oldIterationSlug = Optional.absent();
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         // @formatter:off
@@ -99,7 +100,7 @@ public class TranslationWorkspaceManagerImplTest {
         return projectIteration;
     }
 
-    @Test(expectedExceptions = NoSuchWorkspaceException.class)
+    @Test(expected = NoSuchWorkspaceException.class)
     public void testRegisterInvalidWorkspace() throws Exception {
         WorkspaceId workspaceId = TestFixture.workspaceId();
         when(
@@ -111,7 +112,7 @@ public class TranslationWorkspaceManagerImplTest {
         manager.getOrRegisterWorkspace(workspaceId);
     }
 
-    @Test(expectedExceptions = NoSuchWorkspaceException.class)
+    @Test(expected = NoSuchWorkspaceException.class)
     public void testRegisterWorkspaceForObsoleteProjectIteration()
             throws Exception {
         WorkspaceId workspaceId = TestFixture.workspaceId();
@@ -126,7 +127,7 @@ public class TranslationWorkspaceManagerImplTest {
         manager.getOrRegisterWorkspace(workspaceId);
     }
 
-    @Test(expectedExceptions = NoSuchWorkspaceException.class)
+    @Test(expected = NoSuchWorkspaceException.class)
     public void testRegisterWorkspaceWithInvalidLocale() throws Exception {
         WorkspaceId workspaceId = TestFixture.workspaceId();
         when(
@@ -140,7 +141,7 @@ public class TranslationWorkspaceManagerImplTest {
         manager.getOrRegisterWorkspace(workspaceId);
     }
 
-    @Test(expectedExceptions = NoSuchWorkspaceException.class)
+    @Test(expected = NoSuchWorkspaceException.class)
     public void testRegisterWorkspaceWithInactiveLocale() throws Exception {
         WorkspaceId workspaceId = TestFixture.workspaceId();
         when(

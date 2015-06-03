@@ -6,8 +6,8 @@ import java.util.Date;
 import java.util.HashMap;
 
 import org.hamcrest.Matchers;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.webtrans.shared.model.AuditInfo;
@@ -18,11 +18,10 @@ import org.zanata.webtrans.shared.model.DocumentInfo;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class PathDocumentFilterTest {
     private PathDocumentFilter filter;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         filter = new PathDocumentFilter();
     }

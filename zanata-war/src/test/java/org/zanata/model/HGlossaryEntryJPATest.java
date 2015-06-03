@@ -26,8 +26,8 @@ import java.util.Map;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
 import org.junit.Assert;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.dao.GlossaryDAO;
 import static org.hamcrest.CoreMatchers.is;
@@ -38,11 +38,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-@Test(groups = { "jpa-tests" })
 public class HGlossaryEntryJPATest extends ZanataDbunitJpaTest {
     private GlossaryDAO glossaryDAO;
 
-    @BeforeMethod(firstTimeOnly = true)
+    @Before
     public void beforeMethod() {
         glossaryDAO = new GlossaryDAO((Session) em.getDelegate());
     }

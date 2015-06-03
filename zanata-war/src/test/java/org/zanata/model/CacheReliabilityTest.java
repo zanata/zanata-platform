@@ -27,7 +27,7 @@ import org.hibernate.Session;
 import org.hibernate.stat.SecondLevelCacheStatistics;
 import org.hibernate.stat.SessionStatistics;
 import org.hibernate.stat.Statistics;
-import org.testng.annotations.Test;
+import org.junit.Test;
 import org.zanata.ZanataDbunitJpaTest;
 
 import static org.hamcrest.MatcherAssert.assertThat;

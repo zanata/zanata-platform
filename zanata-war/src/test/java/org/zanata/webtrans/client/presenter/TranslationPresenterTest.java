@@ -16,12 +16,12 @@ import java.util.List;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.DisplaySouthPanelEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
@@ -41,7 +41,6 @@ import com.google.gwt.event.dom.client.KeyCodes;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = { "unit-tests" })
 public class TranslationPresenterTest {
     private TranslationPresenter presenter;
     @Mock
@@ -68,7 +67,7 @@ public class TranslationPresenterTest {
     @Mock
     private TranslationEditorDisplay translationEditorDisplay;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         userWorkspaceContext = TestFixture.userWorkspaceContext();

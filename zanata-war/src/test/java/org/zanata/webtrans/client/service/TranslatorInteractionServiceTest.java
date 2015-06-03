@@ -1,13 +1,13 @@
 package org.zanata.webtrans.client.service;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.rpc.NoOpAsyncCallback;
@@ -25,7 +25,6 @@ import static org.mockito.Mockito.verify;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class TranslatorInteractionServiceTest {
     private TranslatorInteractionService service;
     @Mock
@@ -34,7 +33,7 @@ public class TranslatorInteractionServiceTest {
     @Captor
     private ArgumentCaptor<TransUnitEditAction> actionCaptor;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         identity =

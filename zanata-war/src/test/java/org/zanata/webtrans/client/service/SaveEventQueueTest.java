@@ -3,8 +3,8 @@ package org.zanata.webtrans.client.service;
 import java.util.List;
 
 import org.hamcrest.Matchers;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -17,12 +17,11 @@ import static org.hamcrest.MatcherAssert.*;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 @Slf4j
 public class SaveEventQueueTest {
     private SaveEventQueue queue;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         queue = new SaveEventQueue();
     }

@@ -6,13 +6,13 @@ import javax.inject.Provider;
 import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockito;
 import org.hamcrest.Matchers;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
@@ -37,7 +37,6 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class SourceContentsPresenterTest {
     private SourceContentsPresenter presenter;
     @Mock
@@ -59,7 +58,7 @@ public class SourceContentsPresenterTest {
 
     private UserConfigHolder configHolder;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         GwtMockito.initMocks(this);
@@ -71,7 +70,7 @@ public class SourceContentsPresenterTest {
         verify(eventBus).addHandler(UserConfigChangeEvent.TYPE, presenter);
     }
 
-    @AfterMethod
+    @After
     public void tearDown() {
         GwtMockito.tearDown();
     }

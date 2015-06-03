@@ -7,10 +7,10 @@ import static org.mockito.Mockito.when;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.history.History;
@@ -23,7 +23,6 @@ import org.zanata.webtrans.shared.rpc.EditorFilter;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class TransFilterPresenterTest {
     private TransFilterPresenter presenter;
     @Mock
@@ -39,7 +38,7 @@ public class TransFilterPresenterTest {
 
     private UserConfigHolder configHolder = new UserConfigHolder();
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 

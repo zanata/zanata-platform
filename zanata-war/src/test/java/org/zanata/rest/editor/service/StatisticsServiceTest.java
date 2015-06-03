@@ -3,10 +3,10 @@ package org.zanata.rest.editor.service;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
@@ -17,15 +17,13 @@ import org.zanata.rest.dto.stats.TranslationStatistics;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.*;
 
-@Test(groups = "unit-tests")
 public class StatisticsServiceTest {
     private StatisticsService service;
     @Mock
     private DocumentDAO documentDAO;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         service = new StatisticsService(documentDAO);

@@ -24,8 +24,9 @@ import java.util.ArrayList;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
@@ -42,7 +43,6 @@ import static org.hamcrest.Matchers.not;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Test(groups = { "business-tests" })
 public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
     private SeamAutowire seam = SeamAutowire.instance();
 
@@ -59,7 +59,7 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
                 DatabaseOperation.CLEAN_INSERT));
     }
 
-    @BeforeMethod
+    @Before
     public void initializeSeam() {
         seam.reset().use("entityManager", getEm()).use("session", getSession())
                 .useImpl(UserAccountServiceImpl.class).ignoreNonResolvable();

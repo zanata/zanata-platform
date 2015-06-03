@@ -2,10 +2,10 @@ package org.zanata.webtrans.client.presenter;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.service.UserSessionService;
 import org.zanata.webtrans.client.ui.ToggleEditor;
@@ -27,7 +27,6 @@ import static org.mockito.Mockito.when;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class EditorTranslatorsTest {
     private EditorTranslators editorTranslators;
     @Mock
@@ -44,7 +43,7 @@ public class EditorTranslatorsTest {
     @Mock
     private UserPanelSessionItem panelSessionItem;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         editors = Lists.newArrayList(editor1, editor2);

@@ -20,23 +20,23 @@
  */
 package org.zanata.util;
 
+import org.junit.Test;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
-import org.testng.annotations.Test;
 import org.zanata.events.ServerStarted;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Set;
 
-import static org.testng.Assert.fail;
+import static org.junit.Assert.fail;
 
 /**
  * TODO: remove this class after moving to CDI
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Test
 public class EventPayloadTest {
+    @Test
     public void payloadClassShouldHaveCorrectEVENT_NAME() throws IllegalAccessException {
         Reflections reflections = new Reflections(ServerStarted.class.getPackage().getName()+".", new SubTypesScanner(false));
         Set<Class<? extends Object>> payloadClasses =

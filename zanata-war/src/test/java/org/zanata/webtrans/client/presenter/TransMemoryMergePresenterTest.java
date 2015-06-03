@@ -34,13 +34,13 @@ import java.util.List;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.UiMessages;
@@ -69,7 +69,6 @@ import com.google.inject.Provider;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class TransMemoryMergePresenterTest {
     private TransMemoryMergePresenter presenter;
     @Mock
@@ -93,7 +92,7 @@ public class TransMemoryMergePresenterTest {
     @Mock
     private WebTransMessages webTranMessages;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         presenter =

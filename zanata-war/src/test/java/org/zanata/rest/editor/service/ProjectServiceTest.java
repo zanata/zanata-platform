@@ -5,10 +5,10 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HProject;
 import org.zanata.rest.NoSuchEntityException;
@@ -16,9 +16,7 @@ import org.zanata.rest.dto.Project;
 import org.zanata.rest.service.ETagUtils;
 
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.*;
 
-@Test(groups = "unit-tests")
 public class ProjectServiceTest {
     private ProjectService service;
     @Mock
@@ -28,7 +26,7 @@ public class ProjectServiceTest {
     @Mock
     private ETagUtils etagUtil;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         service = new ProjectService(request, etagUtil, projectDAO);

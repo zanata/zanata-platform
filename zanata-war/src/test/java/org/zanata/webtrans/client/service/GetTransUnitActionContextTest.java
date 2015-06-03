@@ -4,8 +4,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.zanata.model.TestFixture.*;
 
 import org.hamcrest.Matchers;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitId;
 
@@ -13,13 +13,12 @@ import org.zanata.webtrans.shared.model.TransUnitId;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class GetTransUnitActionContextTest {
     private static final boolean NEEDED = true;
     private static final boolean NO_NEED = false;
     private GetTransUnitActionContext context;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         context = new GetTransUnitActionContext(documentInfo(1, ""));
     }

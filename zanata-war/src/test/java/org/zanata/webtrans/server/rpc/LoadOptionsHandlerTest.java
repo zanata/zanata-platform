@@ -8,8 +8,9 @@ import java.util.List;
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountOptionDAO;
@@ -27,7 +28,6 @@ import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "jpa-tests")
 public class LoadOptionsHandlerTest extends ZanataDbunitJpaTest {
     private LoadOptionsHandler handler;
     private SaveOptionsHandler saveHandler;
@@ -45,7 +45,7 @@ public class LoadOptionsHandlerTest extends ZanataDbunitJpaTest {
                 DatabaseOperation.DELETE_ALL));
     }
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         AccountDAO accountDAO = new AccountDAO(getSession());
         AccountOptionDAO accountOptionDAO = new AccountOptionDAO(getSession());

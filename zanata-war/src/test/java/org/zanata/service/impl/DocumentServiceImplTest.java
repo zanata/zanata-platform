@@ -29,11 +29,11 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
@@ -55,7 +55,6 @@ import com.google.common.collect.Lists;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Test(groups = { "unit-tests" })
 public class DocumentServiceImplTest {
 
     @Mock
@@ -82,7 +81,7 @@ public class DocumentServiceImplTest {
 
     List<WebHook> webHooks = Lists.newArrayList();
 
-    @BeforeMethod(firstTimeOnly = true)
+    @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         documentService = new DocumentServiceImpl();

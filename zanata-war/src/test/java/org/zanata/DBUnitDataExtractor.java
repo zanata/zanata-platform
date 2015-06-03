@@ -13,7 +13,6 @@ import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.database.QueryDataSet;
 import org.dbunit.dataset.xml.FlatDtdDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
-import org.testng.annotations.Test;
 
 import com.google.common.collect.Lists;
 
@@ -26,10 +25,15 @@ import lombok.extern.slf4j.Slf4j;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "manual-tests")
 @Slf4j
 public class DBUnitDataExtractor {
     private static final String TEMP_DIR = System.getProperty("java.io.tmpdir");
+
+    public static void main(String[] args) throws Exception {
+        DBUnitDataExtractor extractor = new DBUnitDataExtractor();
+        extractor.getTextFlowsAndTargets();
+        extractor.getGlossary();
+    }
 
     private void generateTestData(String dataSetName,
             List<Map.Entry<String, String>> tableNameToQueryMap)
@@ -55,7 +59,6 @@ public class DBUnitDataExtractor {
         jdbcConnection.close();
     }
 
-    @Test
     public void getTextFlowsAndTargets() throws Exception {
         List<Map.Entry<String, String>> tableNameAndQuery =
                 Lists.newArrayList();
@@ -89,7 +92,6 @@ public class DBUnitDataExtractor {
                 tableNameAndQuery);
     }
 
-    @Test
     public void getGlossary() throws Exception {
         List<Map.Entry<String, String>> tableNameAndQuery =
                 Lists.newArrayList();

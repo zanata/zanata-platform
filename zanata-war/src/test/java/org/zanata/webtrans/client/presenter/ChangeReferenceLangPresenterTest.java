@@ -8,10 +8,10 @@ import static org.mockito.Mockito.when;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
@@ -23,7 +23,6 @@ import org.zanata.webtrans.client.view.ChangeReferenceLangDisplay;
 import org.zanata.webtrans.shared.model.IdForLocale;
 import org.zanata.webtrans.shared.model.Locale;
 
-@Test(groups = {"unit-tests"})
 public class ChangeReferenceLangPresenterTest {
     private ChangeReferenceLangPresenter presenter;
     @Mock
@@ -39,7 +38,7 @@ public class ChangeReferenceLangPresenterTest {
     private UserConfigHolder configHolder = new UserConfigHolder();
     private WorkspaceId workspaceId;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         when(userOptionsService.getConfigHolder()).thenReturn(configHolder);
@@ -55,7 +54,7 @@ public class ChangeReferenceLangPresenterTest {
 
     @Test
     public void onSourceLangListBoxOptionChangedWithValidLocale() {
-        configHolder.setSelectedReferenceForSourceLang(configHolder
+        configHolder.setSelectedReferenceForSourceLang(UserConfigHolder
                 .DEFAULT_SELECTED_REFERENCE);
 
         presenter.onSourceLangListBoxOptionChanged(new Locale(
@@ -68,13 +67,13 @@ public class ChangeReferenceLangPresenterTest {
 
     @Test
     public void onSourceLangListBoxOptionChangedWithNotChosenLocale() {
-        configHolder.setSelectedReferenceForSourceLang(configHolder
+        configHolder.setSelectedReferenceForSourceLang(UserConfigHolder
                 .DEFAULT_SELECTED_REFERENCE);
 
         presenter.onSourceLangListBoxOptionChanged(Locale.notChosenLocale);
 
         assertThat(configHolder.getState().getSelectedReferenceForSourceLang(),
-                Matchers.equalTo(configHolder.DEFAULT_SELECTED_REFERENCE));
+                Matchers.equalTo(UserConfigHolder.DEFAULT_SELECTED_REFERENCE));
         verify(eventBus).fireEvent(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
     }
 }

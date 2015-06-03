@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 
 import org.hamcrest.Matchers;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.model.TestFixture;
@@ -42,12 +42,11 @@ import com.google.common.collect.MapMaker;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
-@Test(groups = { "unit-tests" })
 public class TranslationWorkspaceImplTest {
     private TranslationWorkspaceImpl translationWorkspace;
     private WorkspaceId workspaceId;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         workspaceId =
                 new WorkspaceId(ProjectIterationId.of("project", "master",
@@ -57,7 +56,7 @@ public class TranslationWorkspaceImplTest {
         translationWorkspace = new TranslationWorkspaceImpl(workspaceContext);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void willNotCreateTranslationWorkspaceWithNullContext() {
         translationWorkspace = new TranslationWorkspaceImpl(null);
     }

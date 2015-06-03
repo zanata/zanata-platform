@@ -28,9 +28,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.shared.model.ValidationId;
@@ -41,13 +41,12 @@ import org.zanata.webtrans.shared.validation.action.HtmlXmlTagValidation;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-@Test(groups = { "unit-tests" })
 public class HtmlXmlTagValidationTests {
     private HtmlXmlTagValidation htmlXmlTagValidation;
 
     private ValidationMessages messages;
 
-    @BeforeMethod
+    @Before
     public void init() throws IOException {
         MockitoAnnotations.initMocks(this);
 

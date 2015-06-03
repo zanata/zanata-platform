@@ -22,13 +22,13 @@
 package org.zanata.webtrans.client.presenter;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.CommentBeforeSaveEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
@@ -52,7 +52,6 @@ import static org.mockito.Mockito.when;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class ForceReviewCommentPresenterTest {
     private ForceReviewCommentPresenter presenter;
     @Mock
@@ -72,7 +71,7 @@ public class ForceReviewCommentPresenterTest {
     @Captor
     private ArgumentCaptor<KeyShortcut> shortcutCapture;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 

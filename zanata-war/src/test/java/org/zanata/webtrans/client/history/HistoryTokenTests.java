@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.testng.annotations.Test;
+import org.junit.Test;
 import org.zanata.webtrans.client.presenter.MainView;
 
 /**
@@ -13,12 +13,11 @@ import org.zanata.webtrans.client.presenter.MainView;
  * @author David Mason, damason@redhat.com
  *
  */
-@Test(groups = { "unit-tests" })
 public class HistoryTokenTests {
     private HistoryToken token;
 
     @Before
-    public void resetToken() {
+    public void setup() {
         token = null;
     }
 

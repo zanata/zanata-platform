@@ -21,8 +21,8 @@
 package org.zanata.ui;
 
 import com.google.common.collect.Lists;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.List;
 
@@ -31,12 +31,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Test
 public class InMemoryListFilterTest {
 
     private InMemoryListFilter<Integer> listFilter;
 
-    @BeforeMethod
+    @Before
     public void prepareData() {
         final List<Integer> elements =
                 Lists.newArrayList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,

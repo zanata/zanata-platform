@@ -6,17 +6,16 @@ import static org.mockito.Mockito.when;
 
 import javax.ws.rs.core.Response;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.rest.editor.dto.User;
 import org.zanata.service.GravatarService;
 
-@Test(groups = "unit-tests")
 public class UserServiceTest {
     private UserService service;
     @Mock
@@ -26,7 +25,7 @@ public class UserServiceTest {
     private GravatarService gravatarService;
     private HPerson person;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         authenticatedAccount = new HAccount();

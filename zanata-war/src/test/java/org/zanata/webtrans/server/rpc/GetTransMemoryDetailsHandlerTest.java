@@ -3,10 +3,12 @@ package org.zanata.webtrans.server.rpc;
 import java.util.Date;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.zanata.ZanataTest;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
@@ -37,8 +39,7 @@ import static org.mockito.Mockito.when;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
-public class GetTransMemoryDetailsHandlerTest {
+public class GetTransMemoryDetailsHandlerTest extends ZanataTest {
     private GetTransMemoryDetailsHandler handler;
     @Mock
     private ZanataIdentity identity;
@@ -49,7 +50,7 @@ public class GetTransMemoryDetailsHandlerTest {
 
     private HLocale hLocale;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         // @formatter:off
@@ -120,7 +121,7 @@ public class GetTransMemoryDetailsHandlerTest {
         assertThat(result.getItems(), Matchers.hasSize(2));
     }
 
-    @Test(expectedExceptions = ActionException.class)
+    @Test(expected = ActionException.class)
     public void testExecuteWithInvalidLocale() throws Exception {
         WorkspaceId workspaceId = TestFixture.workspaceId();
         GetTransMemoryDetailsAction action = new GetTransMemoryDetailsAction();

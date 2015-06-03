@@ -26,7 +26,7 @@ import javax.persistence.Query;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.criterion.Restrictions;
-import org.testng.annotations.Test;
+import org.junit.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.model.tm.TransMemoryUnit;

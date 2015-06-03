@@ -14,7 +14,7 @@ import javax.xml.XMLConstants;
 import nu.xom.Attribute;
 import nu.xom.Element;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.model.tm.TMXMetadataHelper;
 import org.zanata.model.tm.TransMemoryUnit;
@@ -74,7 +74,7 @@ public class ExportTransMemoryTest extends TMXStreamingOutputTest {
         String de = LocaleId.DE.getId();
         String sourceLoc = sourceLocale.getId();
         ArrayList<TransMemoryUnit> tuList =
-                Lists.<TransMemoryUnit> newArrayList(
+                Lists.newArrayList(
                         tu(tm, "doc0:resId0", "doc0:resId0", sourceLoc,
                                 "<seg>source0</seg>",
                                 tuv(fr, "<seg>targetFR0</seg>"),

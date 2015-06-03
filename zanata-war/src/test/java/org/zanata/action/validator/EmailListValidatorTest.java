@@ -1,20 +1,19 @@
 package org.zanata.action.validator;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import javax.validation.ConstraintValidatorContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.testng.Assert.*;
 
-@Test(groups = { "unit-tests" })
 public class EmailListValidatorTest {
 
     private EmailListValidator validator;
     private ConstraintValidatorContext context = null;
 
-    @BeforeMethod
+    @Before
     public void create() {
         validator = new EmailListValidator();
         validator.initialize(null);
@@ -22,38 +21,40 @@ public class EmailListValidatorTest {
 
     @Test
     public void nullIsValid() throws Exception {
-        assertTrue(validator.isValid(null, context));
+        assertThat(validator.isValid(null, context)).isTrue();
     }
 
     @Test
     public void emptyIsValid() throws Exception {
-        assertTrue(validator.isValid("", context));
+        assertThat(validator.isValid("", context)).isTrue();
     }
 
     @Test
     public void aIsValid() throws Exception {
-        assertTrue(validator.isValid(" a@example.com ", context));
+        assertThat(validator.isValid(" a@example.com ", context)).isTrue();
     }
 
     @Test
     public void aBIsValid() throws Exception {
-        assertTrue(validator.isValid("a@example.com, b@example.org", context));
+        assertThat(validator.isValid("a@example.com, b@example.org", context))
+                .isTrue();
     }
 
     @Test
     public void CIsInvalid() throws Exception {
-        assertFalse(validator.isValid("c", context));
+        assertThat(validator.isValid("c", context)).isFalse();
     }
 
     @Test
     public void DIsValid() throws Exception {
-        assertTrue(validator.isValid("d@example", context));
+        assertThat(validator.isValid("d@example", context)).isTrue();
     }
 
     @Test
     public void aBCDIsValid() throws Exception {
-        assertFalse(validator
-                .isValid("a@example.com, b@example.org c d@example", context));
+        assertThat(validator
+                .isValid("a@example.com, b@example.org c d@example", context))
+                .isFalse();
     }
 
     @Test

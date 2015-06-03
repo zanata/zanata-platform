@@ -6,6 +6,7 @@ import java.sql.Statement;
 
 import lombok.Cleanup;
 
+import org.assertj.core.api.Fail;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.JDBCException;
 import org.hibernate.Query;
@@ -13,12 +14,10 @@ import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.hibernate.jdbc.Work;
-import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.zanata.ZanataDbunitJpaTest;
 
-@Test(groups = { "jpa-tests" })
 public class WrappedConnectionProviderTest extends ZanataDbunitJpaTest {
 
     private Session session;
@@ -39,7 +38,7 @@ public class WrappedConnectionProviderTest extends ZanataDbunitJpaTest {
                 DatabaseOperation.CLEAN_INSERT));
     }
 
-    @BeforeMethod(firstTimeOnly = true)
+    @Before
     public void setup() {
         session = getSession();
     }
@@ -89,7 +88,8 @@ public class WrappedConnectionProviderTest extends ZanataDbunitJpaTest {
     }
 
     private void concurrentResultSetNotDetected() {
-        Assert.fail("Failed to detect concurrent ResultSet - is Wrapped*ConnectionProvider enabled in persistence.xml?");
+        Fail.fail("Failed to detect concurrent ResultSet - is " +
+                "Wrapped*ConnectionProvider enabled in persistence.xml?");
     }
 
     private void checkExceptionType(JDBCException e) {

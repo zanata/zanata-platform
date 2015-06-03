@@ -1,6 +1,8 @@
 package org.zanata.limits;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -9,11 +11,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.SoftAssertions;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import static java.util.concurrent.TimeUnit.*;
 import static org.assertj.core.api.Assertions.*;
@@ -24,9 +28,14 @@ import static org.assertj.core.api.Assertions.*;
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Test(groups = "unit-tests")
+// each test will be run INVOCATIONS times
+@RunWith(Parameterized.class)
 @Slf4j
 public class RestCallLimiterTest {
+    @Parameterized.Parameters
+    public static List<Object[]> data() {
+        return Arrays.asList(new Object[INVOCATIONS][0]);
+    }
     // set true for shorter timeouts while debugging
     private static final boolean DEBUG = false;
     private RestCallLimiter limiter;
@@ -49,21 +58,21 @@ public class RestCallLimiterTest {
     };
     private volatile CountDownLatch awakenLatch;
 
-    @BeforeClass
-    public void beforeClass() {
-        // set logging to debug
+//    @BeforeClass
+//    public static void beforeClass() {
+//        // set logging to debug
 //        LogManager.getLogger(getClass()).setLevel(Level.DEBUG);
 //        LogManager.getLogger(RestCallLimiter.class).setLevel(Level.DEBUG);
-    }
+//    }
 
-    @BeforeMethod
-    public void beforeMethod(final Method method) {
+    @Before
+    public void beforeMethod() {
         limiter = new RestCallLimiter(maxConcurrent, maxActive);
         awakenLatch = new CountDownLatch(1);
         threadPool = Executors.newFixedThreadPool(N_THREADS);
     }
 
-    @AfterMethod
+    @After
     public void afterMethod() throws InterruptedException {
         awakenBlockedRunnables();
         threadPool.shutdown();
@@ -118,7 +127,7 @@ public class RestCallLimiterTest {
         awakenLatch.countDown();
     }
 
-    @Test(invocationCount = INVOCATIONS, skipFailedInvocations = true)
+    @Test
     public void shouldRejectRequestsAboveMaxConcurrent()
             throws Exception {
         String testName = "shouldRejectRequestsAboveMaxConcurrent";
@@ -149,7 +158,7 @@ public class RestCallLimiterTest {
         softly.assertAll();
     }
 
-    @Test(invocationCount = INVOCATIONS, skipFailedInvocations = true)
+    @Test
     public void shouldBlockRequestsAboveMaxActive()
             throws Exception {
         String testName = "shouldBlockRequestsAboveMaxActive";
@@ -187,7 +196,7 @@ public class RestCallLimiterTest {
         execsFinished.awaitAndVerify();
     }
 
-    @Test(invocationCount = INVOCATIONS, skipFailedInvocations = true)
+    @Test
     public void shouldChangeMaxConcurrent()
             throws Exception {
         String testName = "shouldChangeMaxConcurrent";
@@ -242,7 +251,7 @@ public class RestCallLimiterTest {
         assertThat(limiter.availableConcurrentPermit()).isEqualTo(newMaxConcurrent);
     }
 
-    @Test(invocationCount = INVOCATIONS, skipFailedInvocations = true)
+    @Test
     public void shouldChangeMaxActiveWhenNoThreadsAreBlocked() {
         limiter = new RestCallLimiter(3, 3);
         limiter.tryAcquireAndRun(nullRunnable);
@@ -258,7 +267,7 @@ public class RestCallLimiterTest {
         assertThat(limiter.availableActivePermit()).isEqualTo(1);
     }
 
-    @Test(invocationCount = INVOCATIONS, skipFailedInvocations = true)
+    @Test
     public void shouldChangeMaxActiveWhenThreadsAreBlocked()
             throws InterruptedException {
         String testName = "shouldChangeMaxActiveWhenThreadsAreBlocked";
@@ -327,7 +336,7 @@ public class RestCallLimiterTest {
         assertThat(limiter.availableActivePermit()).isEqualTo(newMaxActive);
     }
 
-    @Test(invocationCount = INVOCATIONS, skipFailedInvocations = true)
+    @Test
     public void shouldReleaseSemaphoreWhenRunnableThrowsException() throws Exception {
         Runnable runnable = new Runnable() {
             @Override
@@ -344,7 +353,7 @@ public class RestCallLimiterTest {
         }
     }
 
-    @Test(invocationCount = INVOCATIONS, skipFailedInvocations = true)
+    @Test
     public void shouldNotRejectWhenLimitsAreDisabled() throws InterruptedException {
         String testName = "shouldNotRejectWhenLimitsAreDisabled";
         limiter = new RestCallLimiter(0, 0);

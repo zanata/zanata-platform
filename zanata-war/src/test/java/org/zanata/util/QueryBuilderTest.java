@@ -21,7 +21,7 @@
 package org.zanata.util;
 
 import org.hibernate.criterion.Restrictions;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
@@ -32,7 +32,6 @@ import static org.zanata.util.QueryBuilder.or;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Test(groups = { "unit-tests" })
 public class QueryBuilderTest {
     @Test
     public void simpleQueryTest() {

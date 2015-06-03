@@ -33,7 +33,6 @@ import org.zanata.workflow.ProjectWorkFlow;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-// @Test(groups = "manual-run", description =
 // "This test class only sets up test data on server. It's not verifying any TM features.")
 public class TransMemoryTest extends ZanataTestCase {
 

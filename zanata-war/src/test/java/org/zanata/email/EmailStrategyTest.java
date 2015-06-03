@@ -39,8 +39,8 @@ import javax.mail.internet.MimeMessage;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.zanata.common.ProjectType;
 import org.zanata.i18n.Messages;
 import org.zanata.i18n.MessagesFactory;
@@ -109,8 +109,8 @@ public class EmailStrategyTest {
         toAddresses = new InternetAddress[] { toAddr };
     }
 
-    @BeforeMethod(alwaysRun = true)
-    private void beforeMethod() {
+    @Before
+    public void beforeMethod() {
         message = new MimeMessage(session);
     }
 

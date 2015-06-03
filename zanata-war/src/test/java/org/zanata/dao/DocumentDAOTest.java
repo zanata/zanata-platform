@@ -27,8 +27,8 @@ import static org.hamcrest.Matchers.not;
 import javax.annotation.Nullable;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HDocument;
@@ -43,7 +43,6 @@ import com.google.common.base.Function;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Test(groups = { "jpa-tests" })
 public class DocumentDAOTest extends ZanataDbunitJpaTest {
 
     // Static variables to work with the same document for all tests
@@ -58,7 +57,7 @@ public class DocumentDAOTest extends ZanataDbunitJpaTest {
 
     private LocaleDAO localeDAO;
 
-    @BeforeMethod(firstTimeOnly = true)
+    @Before
     public void setup() {
         documentDAO = new DocumentDAO(getSession());
         localeDAO = new LocaleDAO(getSession());

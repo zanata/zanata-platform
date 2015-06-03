@@ -2,10 +2,12 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.zanata.ZanataTest;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.model.TestFixture;
@@ -23,9 +25,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@Test(groups = { "jpa-tests" })
 @Slf4j
-public class GetLocaleListHandlerTest {
+public class GetLocaleListHandlerTest extends ZanataTest {
     private GetLocaleListHandler handler;
 
     @Mock
@@ -36,7 +37,7 @@ public class GetLocaleListHandlerTest {
 
     private GetLocaleList action;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         // @formatter:off

@@ -14,8 +14,9 @@ import org.assertj.core.api.Assertions;
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
 import org.hibernate.Session;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.ContentState;
 import org.zanata.model.HLocale;
@@ -26,7 +27,6 @@ import org.zanata.search.FilterConstraints;
 import org.zanata.webtrans.shared.model.ContentStateGroup;
 import org.zanata.webtrans.shared.model.DocumentId;
 
-@Test(groups = { "jpa-tests" })
 @Slf4j
 public class TextFlowDAOTest extends ZanataDbunitJpaTest {
     private static final boolean PRINT_TEST_DATA = false;
@@ -51,7 +51,7 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest {
                 DatabaseOperation.CLEAN_INSERT));
     }
 
-    @BeforeMethod(firstTimeOnly = true)
+    @Before
     public void setup() {
         dao = new TextFlowDAO((Session) getEm().getDelegate());
         if (PRINT_TEST_DATA) {
@@ -192,7 +192,8 @@ public class TextFlowDAOTest extends ZanataDbunitJpaTest {
         assertThat(result, Matchers.<HTextFlow> empty());
     }
 
-    @Test(enabled = false)
+    @Ignore
+    @Test
     public void thisBreaksForSomeReason() {
         // fails regardless of using different documentId, locale or constraints
         DocumentId id = new DocumentId(1L, "");

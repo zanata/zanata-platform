@@ -9,13 +9,13 @@ import java.io.IOException;
 
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.DocValidationResultEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
 import org.zanata.webtrans.client.resources.ValidationMessages;
@@ -36,7 +36,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class ValidationOptionsPresenterTest {
     private ValidationOptionsPresenter presenter;
     @Mock
@@ -58,7 +57,7 @@ public class ValidationOptionsPresenterTest {
 
     private ValidationFactory validationFactory;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() throws IOException {
         MockitoAnnotations.initMocks(this);
 

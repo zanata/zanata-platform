@@ -20,8 +20,9 @@
  */
 package org.zanata.webtrans.shared.rpc;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.HashMap;
 
@@ -31,12 +32,11 @@ import static org.zanata.webtrans.shared.rpc.QueryParser.parse;
 import static org.zanata.webtrans.shared.rpc.QueryParser.stripQuotesAndEscapes;
 
 
-@Test(groups = "unit-tests")
 public class QueryParserTest {
 
     private EditorFilter filter;
 
-    @BeforeMethod
+    @Before
     public void setup() {
         filter = null;
     }

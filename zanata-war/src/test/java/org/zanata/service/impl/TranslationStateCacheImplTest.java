@@ -31,11 +31,12 @@ import java.util.Map;
 
 import org.infinispan.manager.CacheContainer;
 import org.infinispan.manager.DefaultCacheManager;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.zanata.ZanataTest;
 import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowTargetDAO;
@@ -48,8 +49,7 @@ import org.zanata.webtrans.shared.model.ValidationId;
 
 import com.google.common.cache.CacheLoader;
 
-@Test(groups = { "business-tests" })
-public class TranslationStateCacheImplTest {
+public class TranslationStateCacheImplTest extends ZanataTest {
     TranslationStateCacheImpl tsCache;
     @Mock
     private CacheLoader<DocumentLocaleKey, WordStatistic> docStatisticLoader;
@@ -61,7 +61,7 @@ public class TranslationStateCacheImplTest {
     @Mock
     private CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         tsCache =
@@ -78,6 +78,7 @@ public class TranslationStateCacheImplTest {
         tsCache.create();
     }
 
+    @Test
     public void testGetLastModifiedTextFlowTarget() throws Exception {
         // Given:
         Long documentId = new Long("100");
@@ -102,6 +103,7 @@ public class TranslationStateCacheImplTest {
         assertThat(result2, equalTo(docStats));
     }
 
+    @Test
     public void testTextFlowTargetHasError() throws Exception {
         // Given:
         Long targetId = new Long("1000");
@@ -121,6 +123,7 @@ public class TranslationStateCacheImplTest {
         assertThat(result, equalTo(null));
     }
 
+    @Test
     public void testTextFlowTargetHasError2() throws Exception {
         // Given:
         Long targetId = new Long("1000");

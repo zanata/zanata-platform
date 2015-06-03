@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.zanata.ZanataTest;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.exception.ZanataServiceException;
@@ -33,8 +35,7 @@ import static org.mockito.Mockito.when;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
-public class GetGlossaryDetailsHandlerTest {
+public class GetGlossaryDetailsHandlerTest extends ZanataTest {
     private GetGlossaryDetailsHandler handler;
     @Mock
     private ZanataIdentity identity;
@@ -45,7 +46,7 @@ public class GetGlossaryDetailsHandlerTest {
     private HLocale targetHLocale = new HLocale(LocaleId.DE);
     private final HLocale srcLocale = new HLocale(LocaleId.EN);
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         // @formatter:off
@@ -97,7 +98,7 @@ public class GetGlossaryDetailsHandlerTest {
                 Matchers.equalTo("target term"));
     }
 
-    @Test(expectedExceptions = ActionException.class)
+    @Test(expected = ActionException.class)
     public void testExecuteWithInvalidLocale() throws Exception {
         WorkspaceId workspaceId =
                 TestFixture.workspaceId(targetHLocale.getLocaleId());

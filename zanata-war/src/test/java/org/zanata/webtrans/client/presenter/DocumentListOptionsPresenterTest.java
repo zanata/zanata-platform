@@ -11,12 +11,12 @@ import java.util.Map;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.webtrans.client.events.NotificationEvent;
@@ -38,7 +38,6 @@ import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-@Test(groups = { "unit-tests" })
 public class DocumentListOptionsPresenterTest {
     private DocumentListOptionsPresenter presenter;
     @Mock
@@ -61,7 +60,7 @@ public class DocumentListOptionsPresenterTest {
 
     private WorkspaceId workspaceId;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         configHolder = new UserConfigHolder();
         MockitoAnnotations.initMocks(this);

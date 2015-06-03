@@ -1,8 +1,8 @@
 package org.zanata.webtrans.client.service;
 
 import org.hamcrest.Matchers;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.zanata.webtrans.client.service.DistinctColorListImpl;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import com.google.common.collect.Lists;
@@ -13,12 +13,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class DistinctColorListImplTest {
     private static int counter = 0;
     private DistinctColorListImpl distinctColor;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         distinctColor =
                 new DistinctColorListImpl(Lists.newArrayList("red", "blue",

@@ -1,7 +1,7 @@
 package org.zanata.search;
 
 import org.hamcrest.Matchers;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.*;
 
@@ -9,7 +9,6 @@ import static org.hamcrest.MatcherAssert.*;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class ContentCriterionTest {
     private ContentCriterion criterion = new ContentCriterion(2);
 

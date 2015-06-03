@@ -21,8 +21,9 @@
 package org.zanata.config;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.seam.SeamAutowire;
 
@@ -39,7 +40,7 @@ import static org.hamcrest.Matchers.nullValue;
 public class DatabaseBackedConfigTest extends ZanataDbunitJpaTest {
     private DatabaseBackedConfig databaseBackedConfig;
 
-    @BeforeMethod
+    @Before
     public void prepare() {
         databaseBackedConfig =
                 SeamAutowire.instance().reset().use("session", getSession())

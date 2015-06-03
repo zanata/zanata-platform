@@ -31,8 +31,9 @@ import java.util.Set;
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
 import org.infinispan.manager.CacheContainer;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.LocaleId;
@@ -81,7 +82,7 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
                 DatabaseOperation.CLEAN_INSERT));
     }
 
-    @BeforeMethod
+    @Before
     public void initializeSeam() {
         seam.reset()
                 .use("versionGroupDAO", new VersionGroupDAO(getSession()))

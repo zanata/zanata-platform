@@ -22,46 +22,48 @@ package org.zanata.rest.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
-import org.testng.Assert;
-import org.testng.SkipException;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-import org.testng.reporters.Files;
+import com.google.common.io.Files;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Assert;
+import org.junit.Assume;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.zanata.exception.VirusDetectedException;
 
 /**
  * @author Sean Flanigan, <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Test(groups = { "unit-tests" })
+@Slf4j
 public class VirusScannerTest {
     private VirusScanner virusScanner = new VirusScanner();
 
     @BeforeClass
-    private void checkDisabled() {
-        if (VirusScanner.isDisabled()) {
-            throw new SkipException("virusScanner is DISABLED");
-        }
+    public static void checkScannerDisabled() {
+        Assume.assumeFalse("virusScanner is DISABLED", VirusScanner.isDisabled());
     }
 
+    @Test
     public void virusScanSafeFile() throws IOException {
         String data =
                 "This is a simple test file, which doesn't contain a virus.\n";
         File file = File.createTempFile("data", ".tmp");
         try {
-            Files.writeFile(data, file);
+            Files.write(data, file, StandardCharsets.UTF_8);
             virusScanner.scan(file, "safe");
         } finally {
             file.delete();
         }
     }
 
+    @Test
     public void virusScanEicarFile() throws IOException {
-        String eicar = generateFakeVirus();
+        String data = generateFakeVirus();
         File file = File.createTempFile("eicar", ".tmp");
         try {
-            Files.writeFile(eicar, file);
+            Files.write(data, file, StandardCharsets.UTF_8);
             virusScanner.scan(file, "eicar");
             virusNotFound("failed to detect eicar test signature");
         } catch (VirusDetectedException e) {
@@ -84,8 +86,7 @@ public class VirusScannerTest {
         if (VirusScanner.isScannerSet()) {
             Assert.fail(msg);
         } else {
-            throw new SkipException(
-                    "virusScanner is blank and clamdscan not found");
+            Assume.assumeTrue("virusScanner option is not set and clamdscan not found", false);
         }
     }
 

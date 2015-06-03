@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.rpc.AbstractAsyncCallback;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
@@ -32,7 +32,6 @@ import static org.mockito.Mockito.when;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class TransMemoryDetailsPresenterTest {
     private TransMemoryDetailsPresenter presenter;
     @Mock
@@ -46,7 +45,7 @@ public class TransMemoryDetailsPresenterTest {
     @Captor
     private ArgumentCaptor<AbstractAsyncCallback<TransMemoryDetailsList>> resultCaptor;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         presenter =

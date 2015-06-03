@@ -37,15 +37,16 @@ import com.google.gwtmockito.GwtMock;
 import com.google.gwtmockito.GwtMockito;
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEventHandler;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
@@ -84,7 +85,6 @@ import com.google.inject.Provider;
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  *
  */
-@Test(groups = { "unit-tests" })
 public class SearchResultsPresenterTest {
 
     private static final String TEST_LOCALE_ID = "de";
@@ -218,7 +218,7 @@ public class SearchResultsPresenterTest {
     private GetTransUnitActionContextHolder contextHolder =
             new GetTransUnitActionContextHolder(new UserConfigHolder());
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         GwtMockito.initMocks(this);
@@ -259,7 +259,7 @@ public class SearchResultsPresenterTest {
 
     }
 
-    @AfterMethod
+    @After
     public void tearDown() {
         GwtMockito.tearDown();
     }
@@ -425,7 +425,8 @@ public class SearchResultsPresenterTest {
                 newToken.getProjectSearchReplacement(), is(TEST_REPLACE_PHRASE));
     }
 
-    @Test(enabled = false, description = "need fix")
+    @Ignore
+    @Test
     public void firesSearchFromHistoryNoResults() {
         expectPrepareToDispatchSearch(TEST_SEARCH_PHRASE, false, null);
         expectDispatchSearch(buildNoSearchResultsResponse());
@@ -445,7 +446,8 @@ public class SearchResultsPresenterTest {
 
     }
 
-    @Test(enabled = false, description = "need fix")
+    @Ignore
+    @Test
     public void firesSearchFromHistoryOneResult() {
         expectSearchAndDisplaySingleResult();
 
@@ -457,7 +459,8 @@ public class SearchResultsPresenterTest {
     }
 
     // TODO use 4 results in 2 documents
-    @Test(enabled = false, description = "need fix")
+    @Ignore
+    @Test
     public void selectAllChkCheckedSingleResult() {
         expectSearchAndDisplaySingleResult();
         mockSelectAllHeader.setValue(Boolean.TRUE, true);
@@ -468,7 +471,8 @@ public class SearchResultsPresenterTest {
 
     }
 
-    @Test(enabled = false, description = "need fix")
+    @Ignore
+    @Test
     public void selectAllChkUnchecked() {
         expectSearchAndDisplaySingleResult();
         mockSelectAllHeader.setValue(Boolean.FALSE, true);

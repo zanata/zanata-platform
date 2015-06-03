@@ -29,10 +29,11 @@ import java.util.Arrays;
 import java.util.Date;
 
 import org.dbunit.operation.DatabaseOperation;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.ContentState;
@@ -56,7 +57,6 @@ import org.zanata.service.impl.TranslationStateCacheImpl;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Test(groups = { "business-tests" })
 public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
     private SeamAutowire seam = SeamAutowire.instance();
 
@@ -91,7 +91,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
                 DatabaseOperation.CLEAN_INSERT));
     }
 
-    @BeforeMethod
+    @Before
     public void initializeSeam() {
         MockitoAnnotations.initMocks(this);
         // @formatter:off
@@ -263,41 +263,41 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
         }
     }
 
-    @Test(expectedExceptions = NoSuchEntityException.class)
+    @Test(expected = NoSuchEntityException.class)
     public void contributionStatsInvalidVersion() {
         statisticsService.getContributionStatistics("non-exist-project",
                 "non-exist-version", "admin", "2013-01-01..2014-01-01");
     }
 
-    @Test(expectedExceptions = NoSuchEntityException.class)
+    @Test(expected = NoSuchEntityException.class)
     public void contributionStatsInvalidPerson() {
         statisticsService.getContributionStatistics("sample-project",
                 "1.0", "non-exist-user", "2013-01-01..2014-01-01");
     }
 
-    @Test(expectedExceptions = InvalidDateParamException.class,
-            description = "invalid date range separator")
+    @Test(expected = InvalidDateParamException.class)
+//            description = "invalid date range separator")
     public void contributionStatsInvalidDateRange1() {
         statisticsService.getContributionStatistics("sample-project",
                 "1.0", "admin", "2013-01-012014-01-01");
     }
 
-    @Test(expectedExceptions = InvalidDateParamException.class,
-            description = "invalid date format")
+    @Test(expected = InvalidDateParamException.class)
+//            description = "invalid date format")
     public void contributionStatsInvalidDateRange2() {
         statisticsService.getContributionStatistics("sample-project",
                 "1.0", "admin", "203-01-01..201-01-01");
     }
 
-    @Test(expectedExceptions = InvalidDateParamException.class,
-            description = "toDate is before fromDate")
+    @Test(expected = InvalidDateParamException.class)
+//            description = "toDate is before fromDate")
     public void contributionStatsInvalidDateRange3() {
         statisticsService.getContributionStatistics("sample-project",
                 "1.0", "admin", "2014-01-01..2013-01-01");
     }
 
-    @Test(expectedExceptions = InvalidDateParamException.class,
-            description = "date range is more than max-range(365 days)")
+    @Test(expected = InvalidDateParamException.class)
+//            description = "date range is more than max-range(365 days)")
     public void contributionStatsInvalidDateRange4() {
         statisticsService.getContributionStatistics("sample-project",
                 "1.0", "admin", "2013-01-01..2014-06-01");

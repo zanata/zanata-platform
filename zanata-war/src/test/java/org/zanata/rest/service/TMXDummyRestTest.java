@@ -4,11 +4,13 @@ import javax.ws.rs.core.Response;
 
 import org.hibernate.Session;
 import org.jboss.seam.security.Identity;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.ZanataRestTest;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowStreamingDAO;
@@ -23,11 +25,11 @@ public class TMXDummyRestTest extends ZanataRestTest {
     private SeamAutowire seam = SeamAutowire.instance();
 
     @BeforeClass
-    void beforeClass() {
+    public static void disableSecurity() {
         Identity.setSecurityEnabled(false);
     }
 
-    @BeforeMethod(dependsOnMethods = "prepareRestEasyFramework")
+    @Before
     public void createClient() {
         MockitoAnnotations.initMocks(this);
         this.tmService =
@@ -69,8 +71,9 @@ public class TMXDummyRestTest extends ZanataRestTest {
         resources.add(tmService);
     }
 
-    @Test(enabled = false)
-    void testGetTmx() {
+    @Ignore
+    @Test
+    public void testGetTmx() {
         Response response =
                 tmService.getProjectIterationTranslationMemory("iok", "6.4",
                         new LocaleId("as"));

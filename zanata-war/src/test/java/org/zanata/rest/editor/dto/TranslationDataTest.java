@@ -1,13 +1,12 @@
 package org.zanata.rest.editor.dto;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.testng.annotations.Test;
+import org.junit.Test;
 import org.zanata.common.ContentState;
-import org.zanata.common.LocaleId;
 
 import java.io.IOException;
 
-import static org.testng.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -31,7 +30,7 @@ public class TranslationDataTest {
         expected.setPlural(false);
         expected.setStatus(ContentState.NeedReview);
 
-        assertEquals(translationData, expected);
+        assertThat(translationData).isEqualTo(expected);
     }
 
 }

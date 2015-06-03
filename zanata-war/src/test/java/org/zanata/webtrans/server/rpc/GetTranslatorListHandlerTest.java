@@ -3,10 +3,12 @@ package org.zanata.webtrans.server.rpc;
 import java.util.Map;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.zanata.ZanataTest;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
@@ -33,8 +35,7 @@ import static org.mockito.Mockito.when;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
-public class GetTranslatorListHandlerTest {
+public class GetTranslatorListHandlerTest extends ZanataTest {
     private GetTranslatorListHandler handler;
     @Mock
     private ZanataIdentity identity;
@@ -48,7 +49,7 @@ public class GetTranslatorListHandlerTest {
     private GravatarService gravatarServiceImpl;
     private Map<EditorClientId, PersonSessionDetails> users;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         // @formatter:off

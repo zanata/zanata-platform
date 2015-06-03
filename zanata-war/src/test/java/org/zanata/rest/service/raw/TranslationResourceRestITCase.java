@@ -45,9 +45,9 @@ import org.zanata.rest.service.ResourceTestUtil;
 
 import com.google.common.collect.Lists;
 
-public class TranslationResourceRestTest extends SourceAndTranslationResourceRestBase {
+public class TranslationResourceRestITCase extends SourceAndTranslationResourceRestBase {
     private static final Logger log = LoggerFactory
-            .getLogger(TranslationResourceRestTest.class);
+            .getLogger(TranslationResourceRestITCase.class);
 
     private static final LocaleId DE = LocaleId.fromJavaName("de");
     private static final LocaleId FR = LocaleId.fromJavaName("fr");

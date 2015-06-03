@@ -6,11 +6,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.infinispan.manager.CacheContainer;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.LocaleId;
 import org.zanata.service.VersionLocaleKey;
@@ -21,7 +20,6 @@ import com.google.common.cache.CacheLoader;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Test(groups = { "business-tests" })
 public class VersionStateCacheImplTest {
 
     private VersionStateCacheImpl cache;
@@ -29,7 +27,7 @@ public class VersionStateCacheImplTest {
     @Mock
     private CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         cache = new VersionStateCacheImpl(versionStatisticLoader);
@@ -37,6 +35,7 @@ public class VersionStateCacheImplTest {
         cache.create();
     }
 
+    @Test
     public void getStatisticTest() throws Exception {
 
         Long projectIterationId = 1L;

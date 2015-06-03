@@ -20,9 +20,12 @@
  */
 package org.zanata.validator;
 
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.zanata.action.RegisterAction;
 
 import javax.validation.ConstraintViolation;
@@ -42,15 +45,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Test(groups = "unit-tests")
+@RunWith(DataProviderRunner.class)
 public class UsernameValidationTest {
 
     private static Validator validator;
 
     private RegisterAction registerAction = mock(RegisterAction.class);
 
-    @DataProvider(name = "badusernames")
-    public static Iterator<Object[]> badUserNames() {
+    @DataProvider
+    public static Object[][] badUserNames() {
         Object[][] names = {
                 { "user|name" },
                 { "user/name" },
@@ -82,11 +85,11 @@ public class UsernameValidationTest {
                 { "bo" },
                 { "" }
         };
-        return Arrays.asList(names).iterator();
+        return names;
     }
 
-    @DataProvider(name = "goodusernames")
-    public static Iterator<Object[]> goodUserNames() {
+    @DataProvider
+    public static Object[][] goodUserNames() {
         Object[][] names = {
                 { "username" },
                 { "user0name" },
@@ -96,19 +99,20 @@ public class UsernameValidationTest {
                 { "123" },
                 { "12345678901234567890" }
         };
-        return Arrays.asList(names).iterator();
+        return names;
     }
 
     @BeforeClass
-    public static void setUp() {
+    public static void initValidator() {
         try {
             validator = Validation.buildDefaultValidatorFactory().getValidator();
-        }catch (NullPointerException npe) {
+        } catch (NullPointerException npe) {
             throw new RuntimeException("Failed to build validator "+npe);
         }
     }
 
-    @Test(dataProvider = "badusernames")
+    @Test
+    @UseDataProvider("badUserNames")
     public void failInvalidUsername(String username) {
         doNothing().when(registerAction).validateUsername(anyString());
         doCallRealMethod().when(registerAction).setUsername(anyString());
@@ -125,7 +129,8 @@ public class UsernameValidationTest {
                 .as("The username failed validation");
     }
 
-    @Test(dataProvider = "goodusernames")
+    @Test
+    @UseDataProvider("goodUserNames")
     public void acceptValidUsername(String username) {
         doNothing().when(registerAction).validateUsername(anyString());
         doCallRealMethod().when(registerAction).setUsername(anyString());

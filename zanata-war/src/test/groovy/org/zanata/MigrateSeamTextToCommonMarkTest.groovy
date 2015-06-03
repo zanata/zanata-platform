@@ -34,7 +34,7 @@ import org.jsoup.select.NodeTraversor
 import org.jsoup.select.NodeVisitor
 import org.junit.Assert
 import org.junit.ComparisonFailure
-import org.testng.annotations.Test
+import org.junit.Test
 import org.zanata.liquibase.custom.MigrateSeamTextToCommonMark
 import org.zanata.util.CommonMarkRenderer
 import org.zanata.seam.text.SeamTextLexer

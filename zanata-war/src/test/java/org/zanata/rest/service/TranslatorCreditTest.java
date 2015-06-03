@@ -1,14 +1,14 @@
 package org.zanata.rest.service;
 
+import org.junit.Test;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.testng.annotations.Test;
 
-@Test(groups = { "unit-tests" })
 public class TranslatorCreditTest {
     protected TranslatorCredit getAnne2011() {
         TranslatorCredit cred = new TranslatorCredit();

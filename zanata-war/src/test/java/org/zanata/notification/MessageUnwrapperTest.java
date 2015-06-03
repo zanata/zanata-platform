@@ -10,11 +10,10 @@ import javax.jms.Message;
 import javax.jms.ObjectMessage;
 import javax.jms.TextMessage;
 
+import org.junit.Test;
 import org.mockito.Mockito;
-import org.testng.annotations.Test;
 import org.zanata.util.EmptyEnumeration;
 
-@Test(groups = "unit-tests")
 public class MessageUnwrapperTest {
 
     @Test

@@ -24,8 +24,8 @@ package org.zanata.webtrans.client.presenter;
 import java.util.Date;
 
 import org.hamcrest.Matchers;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 
@@ -40,7 +40,7 @@ import static org.hamcrest.MatcherAssert.*;
 public class ComparingPairTest {
     private ComparingPair pair;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         pair = ComparingPair.empty();
     }

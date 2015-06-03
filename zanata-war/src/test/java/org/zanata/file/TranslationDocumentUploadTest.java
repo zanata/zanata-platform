@@ -23,14 +23,13 @@ package org.zanata.file;
 import static javax.ws.rs.core.Response.Status.NOT_ACCEPTABLE;
 import static org.mockito.Mockito.doThrow;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.exception.ChunkUploadException;
 
-@Test(groups = { "unit-tests" })
 public class TranslationDocumentUploadTest extends DocumentUploadTest {
 
     private static final String ANY_LOCALE = "es";
@@ -41,7 +40,7 @@ public class TranslationDocumentUploadTest extends DocumentUploadTest {
 
     private TranslationDocumentUpload transUpload;
 
-    @BeforeMethod
+    @Before
     public void beforeTest() {
         MockitoAnnotations.initMocks(this);
         seam.reset();
@@ -51,11 +50,12 @@ public class TranslationDocumentUploadTest extends DocumentUploadTest {
         transUpload = seam.autowire(TranslationDocumentUpload.class);
     }
 
-    @AfterMethod
+    @After
     public void clearResponse() {
         response = null;
     }
 
+    @Test
     public void checksValidityAndFailsIfNotValid() {
         conf = defaultUpload().build();
         doThrow(new ChunkUploadException(NOT_ACCEPTABLE, "Test message")).when(

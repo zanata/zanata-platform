@@ -34,12 +34,12 @@ import java.util.HashMap;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.model.TestFixture;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
@@ -72,7 +72,6 @@ import com.google.gwt.user.client.ui.HasValue;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
-@Test(groups = { "unit-tests" })
 public class GlossaryPresenterTest {
     private GlossaryPresenter presenter;
 
@@ -98,7 +97,7 @@ public class GlossaryPresenterTest {
     @Captor
     private ArgumentCaptor<AsyncCallback<GetGlossaryResult>> callbackCaptor;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         userWorkspaceContext = TestFixture.userWorkspaceContext();

@@ -16,12 +16,14 @@ import java.util.Map;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.zanata.ZanataTest;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -62,8 +64,7 @@ import org.zanata.webtrans.shared.validation.ValidationFactory;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
-public class ActivateWorkspaceHandlerTest {
+public class ActivateWorkspaceHandlerTest extends ZanataTest {
     public static final String HTTP_SESSION_ID = "httpSessionId";
     private ActivateWorkspaceHandler handler;
     @Mock
@@ -98,7 +99,7 @@ public class ActivateWorkspaceHandlerTest {
 
     private ValidationFactory validationFactory;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         // @formatter:off

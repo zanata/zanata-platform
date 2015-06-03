@@ -38,6 +38,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
@@ -45,8 +47,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
@@ -73,9 +73,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-@Test(
-        groups = { "unit-tests" },
-        description = "This test uses SeamAutowire with mockito to simulate a RPC call environment")
+// This test uses mockito to simulate an RPC call environment
 @Slf4j
 public class NavigationServiceIntegrationTest {
     private static final WorkspaceId WORKSPACE_ID = TestFixture.workspaceId();
@@ -119,7 +117,7 @@ public class NavigationServiceIntegrationTest {
     private SinglePageDataModelImpl pageModel;
     private UserConfigHolder configHolder;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 

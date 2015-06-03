@@ -6,7 +6,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.Hours;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 public class DateRangeTest {
 

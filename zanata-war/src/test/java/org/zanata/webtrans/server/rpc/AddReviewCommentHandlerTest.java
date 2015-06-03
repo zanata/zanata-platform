@@ -21,15 +21,17 @@
 
 package org.zanata.webtrans.server.rpc;
 
+import org.zanata.ZanataTest;
 import org.hamcrest.Matchers;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
@@ -50,7 +52,6 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.AddReviewComment;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
-import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 
 import net.customware.gwt.dispatch.shared.ActionException;
 import static org.hamcrest.MatcherAssert.*;
@@ -61,8 +62,7 @@ import static org.mockito.Mockito.when;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
-public class AddReviewCommentHandlerTest {
+public class AddReviewCommentHandlerTest extends ZanataTest {
     private AddReviewCommentHandler handler;
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
@@ -93,7 +93,7 @@ public class AddReviewCommentHandlerTest {
     @Mock
     private HProject hProject;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         handler =
@@ -113,7 +113,7 @@ public class AddReviewCommentHandlerTest {
                         .autowire(AddReviewCommentHandler.class);
     }
 
-    @Test(expectedExceptions = ActionException.class)
+    @Test(expected = ActionException.class)
     public void testExecuteWithBlankComment() throws ActionException {
         String blankComment = "   \t \n";
         AddReviewCommentAction action =
@@ -174,7 +174,7 @@ public class AddReviewCommentHandlerTest {
                 Matchers.equalTo(new ReviewCommentId(1L)));
     }
 
-    @Test(expectedExceptions = ActionException.class)
+    @Test(expected = ActionException.class)
     public void testExecuteWhenTargetIsNull() throws Exception {
         // Given: we want to add comment to trans unit id 1 and locale id DE but
         // target is null
@@ -192,7 +192,7 @@ public class AddReviewCommentHandlerTest {
         handler.execute(action, null);
     }
 
-    @Test(expectedExceptions = ActionException.class)
+    @Test(expected = ActionException.class)
     public void testExecuteWhenTargetIsUntranslated() throws Exception {
         // Given: we want to add comment to trans unit id 1 and locale id DE but
         // target is new

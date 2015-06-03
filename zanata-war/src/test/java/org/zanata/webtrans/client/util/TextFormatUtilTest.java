@@ -1,10 +1,9 @@
 package org.zanata.webtrans.client.util;
 
-import org.testng.annotations.Test;
 
-import static org.testng.Assert.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.assertj.core.api.Assertions;
+import org.junit.Test;
 
 public class TextFormatUtilTest {
 

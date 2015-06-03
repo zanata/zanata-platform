@@ -14,9 +14,11 @@ import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
 import org.hibernate.Session;
 import org.jboss.seam.security.Identity;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
@@ -24,7 +26,6 @@ import org.zanata.dao.LocaleDAO;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
-@Test(groups = { "jpa-tests" })
 public class DocumentJPATest extends ZanataDbunitJpaTest {
 
     private LocaleDAO localeDAO;
@@ -54,11 +55,11 @@ public class DocumentJPATest extends ZanataDbunitJpaTest {
     }
 
     @BeforeClass
-    void beforeClass() {
+    public static void disableSecurity() {
         Identity.setSecurityEnabled(false);
     }
 
-    @BeforeMethod(firstTimeOnly = true)
+    @Before
     public void beforeMethod() {
         localeDAO = new LocaleDAO((Session) em.getDelegate());
         en_US = localeDAO.findByLocaleId(LocaleId.EN_US);
@@ -141,7 +142,8 @@ public class DocumentJPATest extends ZanataDbunitJpaTest {
     // FIXME this test only works if resources-dev is on the classpath.
     // workaround (disabled history)
     @SuppressWarnings("unchecked")
-    @Test(enabled = false)
+    @Ignore
+    @Test
     public void ensureHistoryOnTextFlow() {
         EntityManager em = getEm();
         HProject project = em.find(HProject.class, 1l);

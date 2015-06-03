@@ -24,18 +24,22 @@ package org.zanata.search;
 import java.util.Arrays;
 import java.util.List;
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import org.assertj.core.data.Offset;
+import org.junit.Assert;
+import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.Offset.offset;
 
 /**
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@Test(groups = { "unit-tests" })
 public class LevenshteinUtilTest {
-    private static final double DELTA = 0.0001;
+    private static final Offset<Double> DELTA = offset(0.0001);
 
+    @Test
     public void testVarious() {
         String s1 = "one two";
         String s2 = "one two three four five";
@@ -57,6 +61,7 @@ public class LevenshteinUtilTest {
         Assert.assertTrue(similarity < 0.3f);
     }
 
+    @Test
     public void testPoint996Similarity() {
         String s1 =
                 "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789";
@@ -68,6 +73,7 @@ public class LevenshteinUtilTest {
         Assert.assertTrue(similarity < 1.0f);
     }
 
+    @Test
     public void testDifferentSizedLists() {
         List<String> strings1 = Arrays.asList("1234567890", "abcdefghij");
         List<String> strings2 = Arrays.asList("1234567890abcdefghij");
@@ -76,25 +82,28 @@ public class LevenshteinUtilTest {
         Assert.assertTrue(similarity < 0.4);
     }
 
+    @Test
     public void testSimilarLists() {
         List<String> strings1 = Arrays.asList("1234567890", "abcdefghij");
         List<String> strings2 = Arrays.asList("123456789", "bcdefghij");
         double similarity = LevenshteinUtil.getSimilarity(strings1, strings2);
-        Assert.assertEquals(similarity, 0.9, DELTA);
+        assertThat(similarity).isEqualTo(0.9, DELTA);
     }
 
+    @Test
     public void testMisorderedLists() {
         List<String> strings1 = Arrays.asList("1234567890", "abcdefghij");
         List<String> strings2 = Arrays.asList("abcdefghij", "1234567890");
         double similarity = LevenshteinUtil.getSimilarity(strings1, strings2);
-        Assert.assertEquals(similarity, 0.0, DELTA);
+        assertThat(similarity).isEqualTo(0.0, DELTA);
     }
 
+    @Test
     public void testIdenticalLists() {
         List<String> strings1 = Arrays.asList("one", "two");
         List<String> strings2 = Arrays.asList("one", "two");
         double similarity = LevenshteinUtil.getSimilarity(strings1, strings2);
-        Assert.assertEquals(similarity, 1.0, DELTA);
+        assertThat(similarity).isEqualTo(1.0, DELTA);
     }
 
 }

@@ -1,19 +1,19 @@
 package org.zanata.webtrans.client.util;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import static org.testng.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-@Test(groups = { "unit-tests" })
 public class DateUtilTest {
 
     private Date aDate;
 
-    @BeforeMethod
+    @Before
     public void before() {
         aDate = new GregorianCalendar(2013, 11, 25, 1, 2, 3).getTime();
     }
@@ -21,12 +21,12 @@ public class DateUtilTest {
     @Test
     public void testFormatShortDate() throws Exception {
         String s = DateUtil.formatShortDate(aDate);
-        assertEquals(s, "25/12/13 01:02");
+        assertThat(s).isEqualTo("25/12/13 01:02");
     }
 
     @Test
     public void testFormatLongDateTime() throws Exception {
         String s = DateUtil.formatLongDateTime(aDate);
-        assertEquals(s, "25/12/13 01:02:03");
+        assertThat(s).isEqualTo("25/12/13 01:02:03");
     }
 }

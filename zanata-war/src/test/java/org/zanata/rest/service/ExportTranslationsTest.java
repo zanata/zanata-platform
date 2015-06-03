@@ -8,7 +8,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.model.ITextFlow;
 import org.zanata.model.ITextFlowTarget;

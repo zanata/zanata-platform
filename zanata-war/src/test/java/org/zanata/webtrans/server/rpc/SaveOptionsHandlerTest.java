@@ -11,8 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
 import org.jboss.seam.security.management.JpaIdentityStore;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountOptionDAO;
@@ -27,7 +28,6 @@ import org.zanata.webtrans.shared.rpc.SaveOptionsResult;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = { "jpa-tests" })
 @Slf4j
 public class SaveOptionsHandlerTest extends ZanataDbunitJpaTest {
     private SaveOptionsHandler handler;
@@ -46,7 +46,7 @@ public class SaveOptionsHandlerTest extends ZanataDbunitJpaTest {
                 DatabaseOperation.DELETE_ALL));
     }
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         authenticatedAccount = getEm().find(HAccount.class, 1L);
         // @formatter:off

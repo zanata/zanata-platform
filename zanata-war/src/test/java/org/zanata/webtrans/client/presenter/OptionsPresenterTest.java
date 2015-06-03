@@ -7,12 +7,12 @@ import static org.mockito.Mockito.when;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.service.UserOptionsService;
 import org.zanata.webtrans.client.view.DocumentListOptionsDisplay;
@@ -20,7 +20,6 @@ import org.zanata.webtrans.client.view.EditorOptionsDisplay;
 import org.zanata.webtrans.client.view.OptionsDisplay;
 import org.zanata.webtrans.shared.rpc.ThemesOption;
 
-@Test(groups = { "unit-tests" })
 public class OptionsPresenterTest {
     private OptionsPresenter presenter;
 
@@ -40,7 +39,7 @@ public class OptionsPresenterTest {
     @Captor
     private ArgumentCaptor<UserConfigChangeEvent> eventCaptor;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         when(userOptionsService.getConfigHolder()).thenReturn(configHolder);

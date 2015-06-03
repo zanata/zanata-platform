@@ -21,12 +21,12 @@ import java.util.TreeMap;
 
 import net.customware.gwt.presenter.client.EventBus;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
@@ -68,7 +68,6 @@ import org.zanata.webtrans.shared.rpc.ThemesOption;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-@Test(groups = { "unit-tests" })
 public class DocumentListPresenterTest {
     // field for document list presenter under test
     private DocumentListPresenter documentListPresenter;
@@ -110,7 +109,7 @@ public class DocumentListPresenterTest {
 
     private WorkspaceId workspaceId;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         configHolder = new UserConfigHolder();

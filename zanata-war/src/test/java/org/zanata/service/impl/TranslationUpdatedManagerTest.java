@@ -21,11 +21,11 @@
 
 package org.zanata.service.impl;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
@@ -43,7 +43,6 @@ import static org.mockito.Mockito.when;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Test(groups = { "unit-tests" })
 public class TranslationUpdatedManagerTest {
 
     @Mock
@@ -54,7 +53,7 @@ public class TranslationUpdatedManagerTest {
 
     TranslationUpdatedManager manager;
 
-    @BeforeMethod(firstTimeOnly = true)
+    @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         manager = new TranslationUpdatedManager();

@@ -8,10 +8,12 @@ import java.util.Map;
 import javax.validation.constraints.NotNull;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.zanata.ZanataTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
@@ -50,8 +52,7 @@ import static org.mockito.Mockito.when;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
-public class GetTranslationHistoryHandlerTest {
+public class GetTranslationHistoryHandlerTest extends ZanataTest {
     private GetTranslationHistoryHandler handler;
     @Mock
     private ZanataIdentity identity;
@@ -72,7 +73,7 @@ public class GetTranslationHistoryHandlerTest {
     @Mock
     private ResourceUtils resourceUtils;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         // @formatter:off
@@ -88,7 +89,7 @@ public class GetTranslationHistoryHandlerTest {
         action = new GetTranslationHistoryAction(transUnitId);
     }
 
-    @Test(expectedExceptions = ActionException.class)
+    @Test(expected = ActionException.class)
     public void invalidLocaleWillThrowException() throws ActionException {
         // Given:
         String projectSlug = "rhel";

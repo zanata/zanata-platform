@@ -25,9 +25,9 @@ import static javax.ws.rs.core.Response.Status.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.fail;
 import static org.zanata.file.DocumentUploadUtil.getInputStream;
 
 import java.io.ByteArrayInputStream;
@@ -40,13 +40,13 @@ import java.sql.SQLException;
 
 import org.apache.commons.io.IOUtils;
 import org.hibernate.Session;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.EntityStatus;
 import org.zanata.exception.ChunkUploadException;
 import org.zanata.model.HDocumentUpload;
@@ -57,7 +57,6 @@ import org.zanata.service.TranslationFileService;
 import com.google.common.base.Optional;
 import com.google.common.io.Files;
 
-@Test(groups = { "unit-tests" })
 public class DocumentUploadUtilTest extends DocumentUploadTest {
 
     private static final String HASH_OF_ABCDEFGHI =
@@ -79,7 +78,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
 
     private DocumentUploadUtil util;
 
-    @BeforeMethod
+    @Before
     public void beforeEachMethod() {
         MockitoAnnotations.initMocks(this);
         seam.reset();
@@ -94,6 +93,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         util = seam.autowire(DocumentUploadUtil.class);
     }
 
+    @Test
     public void notValidIfNotLoggedIn() {
         conf = defaultUpload().build();
         mockNotLoggedIn();
@@ -108,6 +108,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         }
     }
 
+    @Test
     public void notValidIfNoFileContent() {
         conf = defaultUpload().fileStream(null).build();
         mockLoggedIn();
@@ -123,6 +124,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         }
     }
 
+    @Test
     public void notValidIfNoFileType() {
         conf = defaultUpload().fileType(null).build();
         mockLoggedIn();
@@ -136,6 +138,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         }
     }
 
+    @Test
     public void notValidIfNoContentHash() {
         conf = defaultUpload().hash(null).build();
         mockLoggedIn();
@@ -149,6 +152,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         }
     }
 
+    @Test
     public void notValidIfVersionDoesNotExist() {
         conf = defaultUpload().build();
         mockLoggedIn();
@@ -164,10 +168,12 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         }
     }
 
+    @Test
     public void notValidIfProjectIsReadOnly() {
         notValidIfProjectStatusIs(EntityStatus.READONLY);
     }
 
+    @Test
     public void notValidIfProjectIsObsolete() {
         notValidIfProjectStatusIs(EntityStatus.OBSOLETE);
     }
@@ -188,10 +194,12 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         }
     }
 
+    @Test
     public void notValidIfVersionIsReadOnly() {
         notValidIfVersionStatusIs(EntityStatus.READONLY);
     }
 
+    @Test
     public void notValidIfVersionIsObsolete() {
         notValidIfVersionStatusIs(EntityStatus.OBSOLETE);
     }
@@ -211,6 +219,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         }
     }
 
+    @Test
     public void notValidIfFileTypeInvalid() {
         conf = defaultUpload().fileType("invalid").build();
         mockLoggedIn();
@@ -225,6 +234,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         }
     }
 
+    @Test
     public void subsequentPartNoUploadId() {
         conf = defaultUpload().first(false).uploadId(null).build();
         mockLoggedIn();
@@ -242,6 +252,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         }
     }
 
+    @Test
     public void subsequentPartUploadNotPresent() {
         conf = defaultUpload().first(false).uploadId(5L).build();
         mockLoggedIn();
@@ -258,6 +269,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         }
     }
 
+    @Test
     public void subsequentPartUploadMismatchedDocId() {
         conf =
                 defaultUpload().first(false).uploadId(5L)
@@ -279,6 +291,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         }
     }
 
+    @Test
     public void returnFormStreamWhenFileIsAbsent() throws FileNotFoundException {
         InputStream streamFromForm =
                 new ByteArrayInputStream("test".getBytes());
@@ -289,6 +302,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         assertThat(returnedStream, is(sameInstance(streamFromForm)));
     }
 
+    @Test
     public void returnFileStreamWhenFileIsPresent() throws IOException {
         File f = null;
         try {
@@ -311,6 +325,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         }
     }
 
+    @Test
     public void canCombineUploadPartsInOrder() throws SQLException, IOException {
         HDocumentUpload upload = mockTwoPartUploadUsingHash(HASH_OF_ABCDEFGHI);
 
@@ -337,6 +352,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         verify(session).delete(upload);
     }
 
+    @Test
     public void combineFailsOnHashMismatch() throws SQLException {
         HDocumentUpload upload = mockTwoPartUploadUsingHash("incorrect hash");
         InputStream finalPartStream =
@@ -357,6 +373,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         }
     }
 
+    @Test
     public void combineSetsHashWhenNoHashProvided() throws SQLException {
         HDocumentUpload upload = mockTwoPartUploadUsingHash("");
         InputStream finalPartStream =

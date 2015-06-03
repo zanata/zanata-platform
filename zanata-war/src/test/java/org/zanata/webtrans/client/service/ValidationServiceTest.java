@@ -15,10 +15,10 @@ import java.util.Map;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.RunValidationEvent;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
@@ -38,7 +38,6 @@ import com.google.common.collect.Maps;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class ValidationServiceTest {
     public static final ValidationId VAL_KEY = ValidationId.HTML_XML;
     private ValidationService service;
@@ -53,7 +52,7 @@ public class ValidationServiceTest {
     @Mock
     private UserConfigHolder configHolder;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() throws IOException {
         MockitoAnnotations.initMocks(this);
 

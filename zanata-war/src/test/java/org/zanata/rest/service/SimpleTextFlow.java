@@ -86,6 +86,6 @@ class SimpleTextFlow implements ITextFlow {
 
     @Override
     public Iterable<ITextFlowTarget> getAllTargetContents() {
-        return ImmutableList.<ITextFlowTarget> copyOf(getTargets().values());
+        return ImmutableList.copyOf(getTargets().values());
     }
 }

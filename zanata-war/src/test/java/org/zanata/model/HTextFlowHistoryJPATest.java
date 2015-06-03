@@ -9,8 +9,8 @@ import java.util.List;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
@@ -20,7 +20,7 @@ public class HTextFlowHistoryJPATest extends ZanataDbunitJpaTest {
     private LocaleDAO localeDAO;
     HLocale en_US;
 
-    @BeforeMethod(firstTimeOnly = true)
+    @Before
     public void beforeMethod() {
         localeDAO = new LocaleDAO((Session) em.getDelegate());
         en_US = localeDAO.findByLocaleId(LocaleId.EN_US);

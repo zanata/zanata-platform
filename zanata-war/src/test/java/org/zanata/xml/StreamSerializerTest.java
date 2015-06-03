@@ -13,7 +13,7 @@ import javax.xml.XMLConstants;
 import nu.xom.Attribute;
 import nu.xom.Element;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 import org.zanata.xml.StreamSerializer;
 
 public class StreamSerializerTest {

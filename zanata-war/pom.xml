@@ -364,17 +364,22 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <argLine>-Dconcordion.output.dir=${concordion.output.dir} -XX:MaxPermSize=256m</argLine>
-          <junitArtifactName>none:none</junitArtifactName>
-          <testNGArtifactName>org.testng:testng</testNGArtifactName>
-          <forkCount>1.5C</forkCount>
+          <testNGArtifactName>none:none</testNGArtifactName>
+          <!-- TODO ensure that stateful tests (eg using Hibernate Search)
+               are isolated, or rename them to ITCase (Arquillian), and
+               increase the forkCount.
+               <forkCount>1.5C</forkCount>
+           -->
+          <forkCount>1</forkCount>
           <reuseForks>false</reuseForks>
-          <suiteXmlFiles>
-            <suiteXmlFile>src/test/resources/AllNonContainerTests.tng.xml</suiteXmlFile>
-          </suiteXmlFiles>
+          <includes>
+            <include>**/*Test.groovy</include>
+            <include>**/*Test.java</include>
+            <include>**/*Tests.groovy</include>
+            <include>**/*Tests.java</include>
+          </includes>
           <runOrder>alphabetical</runOrder>
         </configuration>
-        <!-- below trick is to let surefire run both junit and testng.
-        see http://stackoverflow.com/questions/1232853/how-to-execute-junit-and-testng-tests-in-same-project-using-maven-surefire-plugi-->
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -1015,6 +1020,7 @@
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
               <includes>
+                <include>**/*ITCase.groovy</include>
                 <include>**/*ITCase.java</include>
               </includes>
               <forkCount>1</forkCount>
@@ -1222,6 +1228,20 @@
   </profiles>
 
   <dependencies>
+
+    <dependency>
+      <groupId>com.binarytweed</groupId>
+      <artifactId>quarantining-test-runner</artifactId>
+      <version>0.0.3</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.tngtech.java</groupId>
+      <artifactId>junit-dataprovider</artifactId>
+      <version>1.9.3</version>
+      <scope>test</scope>
+    </dependency>
 
     <dependency>
       <groupId>commons-beanutils</groupId>
@@ -2068,12 +2088,6 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <!-- We use testng in DBUnitImporter so can't use test scope here -->
     </dependency>
 
     <dependency>

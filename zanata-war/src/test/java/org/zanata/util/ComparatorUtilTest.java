@@ -21,7 +21,7 @@
 
 package org.zanata.util;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.model.*;
@@ -34,7 +34,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Damian Jansen
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Test(groups = { "unit-tests" })
 public class ComparatorUtilTest {
 
     @Test

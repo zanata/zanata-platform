@@ -11,8 +11,9 @@ import java.io.InputStream;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.testng.annotations.Test;
+import org.zanata.ZanataTest;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
@@ -26,8 +27,11 @@ import org.zanata.rest.dto.ChunkUploadResponse;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 
-@Test(groups = { "unit-tests" })
-public class DocumentUploadTest {
+public abstract class DocumentUploadTest extends ZanataTest {
+
+    static {
+        SeamAutowire.instance();
+    }
 
     protected static final GlobalDocumentId ANY_ID = new GlobalDocumentId(
             "myproject", "myversion", "mydoc");

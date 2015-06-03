@@ -15,10 +15,11 @@ import org.hamcrest.Matchers;
 import org.hibernate.search.impl.FullTextSessionImpl;
 import org.hibernate.search.jpa.impl.FullTextEntityManagerImpl;
 import org.infinispan.manager.CacheContainer;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.LocaleId;
@@ -49,7 +50,6 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = { "jpa-tests" })
 @Slf4j
 public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
     private GetTransUnitListHandler handler;
@@ -72,7 +72,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
                 DatabaseOperation.CLEAN_INSERT));
     }
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         ResourceUtils resourceUtils = new ResourceUtils();

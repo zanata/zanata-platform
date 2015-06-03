@@ -5,9 +5,10 @@ import javax.ws.rs.core.Response;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.resteasy.client.ClientResponse;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.dao.ActivityDAO;
 import org.zanata.dao.DocumentDAO;
@@ -50,7 +51,7 @@ public class LocalesServiceTest extends ZanataDbunitJpaTest {
                 DatabaseOperation.CLEAN_INSERT));
     }
 
-    @BeforeMethod
+    @Before
     public void initializeSeam() {
         seam.reset().useImpl(LocaleServiceImpl.class)
                 .use("session", getSession()).ignoreNonResolvable();
@@ -59,7 +60,7 @@ public class LocalesServiceTest extends ZanataDbunitJpaTest {
         okResponse = Response.ok().build();
     }
 
-    @AfterMethod
+    @After
     public void afterMethod() {
         okResponse = null;
         response = null;

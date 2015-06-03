@@ -13,12 +13,12 @@ import java.util.List;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
@@ -35,7 +35,6 @@ import com.google.gwt.event.dom.client.KeyCodes;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class EditorKeyShortcutsTest {
     private EditorKeyShortcuts keyShortcuts;
     @Mock
@@ -52,7 +51,7 @@ public class EditorKeyShortcutsTest {
     @Mock
     private KeyShortcutDisplay keyShortcutDisplay;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         configHolder = new UserConfigHolder();

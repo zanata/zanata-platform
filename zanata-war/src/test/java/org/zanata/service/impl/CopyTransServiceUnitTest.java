@@ -32,10 +32,10 @@ import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectDAO;
@@ -57,7 +57,6 @@ import org.zanata.service.VersionStateCache;
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class CopyTransServiceUnitTest {
 
     @Mock
@@ -83,7 +82,7 @@ public class CopyTransServiceUnitTest {
     @Mock
     TextFlowDAO textFlowDAO;
 
-    @BeforeMethod
+    @Before
     public void initializeSeam() {
         MockitoAnnotations.initMocks(this);
     }

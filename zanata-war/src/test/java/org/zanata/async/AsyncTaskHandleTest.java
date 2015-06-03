@@ -20,7 +20,8 @@
  */
 package org.zanata.async;
 
-import org.testng.annotations.Test;
+
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -61,8 +62,8 @@ public class AsyncTaskHandleTest {
         assertThat(handle.getResult()).isEqualTo("result");
     }
 
-    @Test(expectedExceptions = Exception.class,
-            expectedExceptionsMessageRegExp = ".*Exception thrown.*")
+    @Test(expected = Exception.class)
+//            expectedExceptionsMessageRegExp = ".*Exception thrown.*"
     public void testException() throws Exception {
         AsyncTaskHandle handle = new AsyncTaskHandle();
         AsyncTaskResult result = new AsyncTaskResult();

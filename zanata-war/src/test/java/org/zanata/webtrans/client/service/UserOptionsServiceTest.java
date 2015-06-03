@@ -32,11 +32,11 @@ import java.util.Map;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.WebTransMessages;
@@ -53,7 +53,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
-@Test(groups = "unit-tests")
 public class UserOptionsServiceTest {
     private UserOptionsService service;
 
@@ -66,7 +65,7 @@ public class UserOptionsServiceTest {
 
     private UserConfigHolder configHolder = new UserConfigHolder();
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
 

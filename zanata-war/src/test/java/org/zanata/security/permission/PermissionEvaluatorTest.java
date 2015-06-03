@@ -26,8 +26,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.assertj.core.api.SoftAssertions;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
@@ -39,14 +39,13 @@ import org.zanata.security.SecurityFunctions;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class PermissionEvaluatorTest {
 
     private final SoftAssertions softly = new SoftAssertions();
     private PermissionEvaluator simplePermissionEvaluator;
     private PermissionEvaluator complexPermissionEvaluator;
 
-    @BeforeMethod
+    @Before
     public void initialize() {
         simplePermissionEvaluator = new PermissionEvaluator();
         complexPermissionEvaluator = new PermissionEvaluator();

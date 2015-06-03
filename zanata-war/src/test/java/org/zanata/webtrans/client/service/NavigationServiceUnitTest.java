@@ -9,12 +9,12 @@ import java.util.Map;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.BookmarkedTextFlowEvent;
@@ -49,7 +49,6 @@ import com.google.gwt.event.shared.GwtEvent;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class NavigationServiceUnitTest {
     private static final int EDITOR_PAGE_SIZE = 3;
     private NavigationService service;
@@ -73,7 +72,7 @@ public class NavigationServiceUnitTest {
     private History history;
     private GetTransUnitActionContextHolder contextHolder;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         initData();

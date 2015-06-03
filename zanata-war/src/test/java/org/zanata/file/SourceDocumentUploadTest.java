@@ -32,14 +32,14 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.DocumentType;
 import org.zanata.exception.ChunkUploadException;
 import org.zanata.model.HDocument;
@@ -51,7 +51,6 @@ import org.zanata.service.TranslationFileService;
 
 import com.google.common.base.Optional;
 
-@Test(groups = { "unit-tests" })
 public class SourceDocumentUploadTest extends DocumentUploadTest {
     @Mock
     DocumentUploadUtil documentUploadUtil;
@@ -70,7 +69,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
 
     private SourceDocumentUpload sourceUpload;
 
-    @BeforeMethod
+    @Before
     public void beforeTest() {
         MockitoAnnotations.initMocks(this);
         seam.reset();
@@ -86,7 +85,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
         sourceUpload = seam.autowire(SourceDocumentUpload.class);
     }
 
-    @AfterMethod
+    @After
     public void clearResponse() {
         response = null;
         conf = null;
@@ -140,6 +139,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
                 .thenReturn(conf.hasImportTemplatePermission);
     }
 
+    @Test
     public void checksValidityAndFailsIfNotValid() {
         conf = defaultUpload().build();
         doThrow(new ChunkUploadException(NOT_ACCEPTABLE, "Test message")).when(
@@ -151,6 +151,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
         assertUploadTerminated();
     }
 
+    @Test
     public void usefulMessageWhenSourceUploadNotAllowed() throws IOException {
         conf = defaultUpload().hasImportTemplatePermission(false).build();
         mockRequiredServices();
@@ -160,6 +161,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
                 + "project-version \"myproject:myversion\".");
     }
 
+    @Test
     public void usefulMessageWhenFileTypeInvalid() throws IOException {
         // Note: could pass non-valid type rather than hacking it at the back
         conf = defaultUpload().plaintextAdapterAvailable(false).build();
@@ -170,6 +172,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
                 + "valid for a source file on this server.");
     }
 
+    @Test
     public void failsIfPersistFails() throws IOException {
         conf = defaultUpload().build();
 
@@ -185,6 +188,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
         assertResponseHasStatus(NOT_ACCEPTABLE);
     }
 
+    @Test
     public void canUploadNewDocument() throws IOException {
         conf = defaultUpload().build();
         mockRequiredServices();
@@ -199,6 +203,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
         assertThat(responseEntity().getErrorMessage(), is(nullValue()));
     }
 
+    @Test
     public void canUploadExistingDocument() throws IOException {
         conf = defaultUpload().existingDocument(new HDocument()).build();
         mockRequiredServices();
@@ -213,6 +218,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
         assertThat(responseEntity().getErrorMessage(), is(nullValue()));
     }
 
+    @Test
     public void usesGivenParameters() throws IOException {
         conf = defaultUpload().build();
         mockRequiredServices();
@@ -220,6 +226,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
         assertThat(paramCaptor.getValue().get(), is(conf.params));
     }
 
+    @Test
     public void fallsBackOnStoredParameters() throws IOException {
         conf = defaultUpload().params(null).build();
         mockRequiredServices();
@@ -227,6 +234,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
         assertThat(paramCaptor.getValue().get(), is(conf.storedParams));
     }
 
+    @Test
     public void uploadParametersAreStored() throws IOException {
         conf = defaultUpload().build();
         mockRequiredServices();
@@ -235,6 +243,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
                 is(conf.params));
     }
 
+    @Test
     public void storedParametersNotOverwrittenWithEmpty() throws IOException {
         conf = defaultUpload().params("").build();
         mockRequiredServices();

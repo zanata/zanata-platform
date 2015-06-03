@@ -10,15 +10,19 @@ import java.util.Map;
 import java.util.Properties;
 import javax.persistence.EntityManager;
 
+import com.binarytweed.test.DelegateRunningTo;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.zanata.ZanataTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
@@ -40,8 +44,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@Test(groups = { "unit-tests" })
-public class ResourceUtilsTest {
+@DelegateRunningTo(DataProviderRunner.class)
+public class ResourceUtilsTest extends ZanataTest {
     private static final Logger log = LoggerFactory
             .getLogger(ResourceUtilsTest.class);
 
@@ -61,7 +65,7 @@ public class ResourceUtilsTest {
         log.info("unit tests free memory :" + runtime.freeMemory());
     }
 
-    @BeforeMethod
+    @Before
     public void initializeResourceUtils() {
         MockitoAnnotations.initMocks(this);
         resourceUtils =
@@ -314,23 +318,24 @@ public class ResourceUtilsTest {
         assertThat("", lines, is(expected));
     }
 
-    private static final String[][] urlPatterns = new String[][] {
-            new String[] { ",my,doc,id", "/my/doc/id" },
-            new String[] { ",my,,doc,id", "/my//doc/id" },
-            new String[] { "x+y", "x y" }, };
-
-    @DataProvider(name = "urlpatterns")
-    private String[][] createUrlPatterns() {
-        return urlPatterns;
+    @DataProvider
+    public static Object[][] urlPatterns() {
+        return new Object[][] {
+                { ",my,doc,id", "/my/doc/id" },
+                { ",my,,doc,id", "/my//doc/id" },
+                { "x+y", "x y" }
+        };
     }
 
-    @Test(dataProvider = "urlpatterns")
+    @Test
+    @UseDataProvider("urlPatterns")
     public void decodeDocIds(String encoded, String decoded) {
         assertThat("Decoding " + encoded, resourceUtils.decodeDocId(encoded),
                 is(decoded));
     }
 
-    @Test(dataProvider = "urlpatterns")
+    @Test
+    @UseDataProvider("urlPatterns")
     public void encodeDocIds(String encoded, String decoded) {
         assertThat("Encoding " + decoded, resourceUtils.encodeDocId(decoded),
                 is(encoded));
@@ -419,7 +424,7 @@ public class ResourceUtilsTest {
         invalidPluralForms = "nplurals=-1";
         assertThat(resourceUtils.isValidPluralForms(invalidPluralForms), is(false));
 
-        invalidPluralForms = "nplurals=" + resourceUtils.MAX_TARGET_CONTENTS + 1;
+        invalidPluralForms = "nplurals=" + ResourceUtils.MAX_TARGET_CONTENTS + 1;
         assertThat(resourceUtils.isValidPluralForms(invalidPluralForms), is(false));
 
         invalidPluralForms = "nplurals=0";
@@ -428,7 +433,8 @@ public class ResourceUtilsTest {
         invalidPluralForms = "nplurals=1;plural=0";
         assertThat(resourceUtils.isValidPluralForms(invalidPluralForms), is(true));
 
-        invalidPluralForms = "nplurals=5; plural=10" + resourceUtils.MAX_TARGET_CONTENTS;
+        invalidPluralForms = "nplurals=5; plural=10" +
+                ResourceUtils.MAX_TARGET_CONTENTS;
         assertThat(resourceUtils.isValidPluralForms(invalidPluralForms), is(true));
     }
 }

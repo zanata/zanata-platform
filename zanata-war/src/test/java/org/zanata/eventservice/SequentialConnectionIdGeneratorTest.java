@@ -4,10 +4,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.*;
@@ -16,7 +16,6 @@ import static org.mockito.Mockito.*;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class SequentialConnectionIdGeneratorTest {
     private SequentialConnectionIdGenerator idGenerator;
     @Mock
@@ -24,7 +23,7 @@ public class SequentialConnectionIdGeneratorTest {
     @Mock
     private HttpSession session;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         idGenerator = new SequentialConnectionIdGenerator();

@@ -24,15 +24,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
 
 /**
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Test
 public class AsyncConfigTest {
 
     private static final String THREAD_POOL_SIZE_VAL = "15";
@@ -40,7 +39,7 @@ public class AsyncConfigTest {
     private AsyncConfig asyncConfig;
     @Mock private ConfigStore configStore;
 
-    @BeforeTest
+    @Before
     public void beforeTest() {
         initMocks(this);
         asyncConfig = new AsyncConfig(configStore);

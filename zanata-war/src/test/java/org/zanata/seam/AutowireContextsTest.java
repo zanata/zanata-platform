@@ -20,8 +20,10 @@
  */
 package org.zanata.seam;
 
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.zanata.ZanataTest;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -33,8 +35,8 @@ import static org.hamcrest.Matchers.nullValue;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class AutowireContextsTest {
-    @BeforeTest
+public class AutowireContextsTest extends ZanataTest {
+    @Before
     public void newSessionBeforeTest() {
         AutowireContexts.getInstance().newSession();
     }
@@ -74,7 +76,7 @@ public class AutowireContextsTest {
 
     @Test
     public void noComponent() {
-        assertThat((String) AutowireContexts.getInstance().getValue("not-set"),
+        assertThat(AutowireContexts.getInstance().getValue("not-set"),
                 nullValue());
     }
 }

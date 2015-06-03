@@ -1,12 +1,12 @@
 package org.zanata.webtrans.client;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.ProjectType;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
@@ -33,7 +33,6 @@ import static org.mockito.Mockito.when;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class EventProcessorTest {
     private EventProcessor eventProcessor;
     @Mock
@@ -50,7 +49,7 @@ public class EventProcessorTest {
     @Mock
     private EventServiceConfigurationTransferable configuration;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         userWorkspaceContext = TestFixture.userWorkspaceContext();

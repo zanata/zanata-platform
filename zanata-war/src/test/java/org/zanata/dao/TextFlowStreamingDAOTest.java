@@ -8,8 +8,8 @@ import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
 import org.hibernate.Session;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
@@ -18,7 +18,6 @@ import org.zanata.util.CloseableIterator;
 
 import com.google.common.collect.Iterators;
 
-@Test(groups = { "jpa-tests" })
 public class TextFlowStreamingDAOTest extends ZanataDbunitJpaTest {
 
     private static final int TEXTFLOWS_IN_SAMPLE_PROJECT_10 = 5;
@@ -43,7 +42,7 @@ public class TextFlowStreamingDAOTest extends ZanataDbunitJpaTest {
                 DatabaseOperation.CLEAN_INSERT));
     }
 
-    @BeforeMethod(firstTimeOnly = true)
+    @Before
     public void setup() {
         dao =
                 new TextFlowStreamingDAO(

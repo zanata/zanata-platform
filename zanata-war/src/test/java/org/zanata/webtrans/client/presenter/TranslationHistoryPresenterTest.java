@@ -4,14 +4,14 @@ import java.util.Date;
 import java.util.List;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.KeyShortcutEvent;
@@ -51,7 +51,6 @@ import static org.mockito.Mockito.when;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class TranslationHistoryPresenterTest {
     private TranslationHistoryPresenter presenter;
     @Mock
@@ -80,7 +79,7 @@ public class TranslationHistoryPresenterTest {
     @Captor
     private ArgumentCaptor<KeyShortcut> keyShortcutCapture;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         presenter =

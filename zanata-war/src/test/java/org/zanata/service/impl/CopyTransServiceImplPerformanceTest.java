@@ -17,6 +17,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.zanata.ZanataTest;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -41,6 +42,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.TestRule;
+import org.junit.runner.RunWith;
 import org.zanata.PerformanceProfiling;
 import org.zanata.SlowTest;
 import org.zanata.common.ContentState;
@@ -71,7 +73,7 @@ import com.google.common.collect.ImmutableMap;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
-public class CopyTransServiceImplPerformanceTest {
+public class CopyTransServiceImplPerformanceTest extends ZanataTest {
     private static final String PERSIST_NAME = "zanataDatasourcePU";
     private static final String MYSQL_TEST_DB_URL =
             "jdbc:log4jdbc:mysql://localhost:3306/zanata_unit_test?characterEncoding=UTF-8";

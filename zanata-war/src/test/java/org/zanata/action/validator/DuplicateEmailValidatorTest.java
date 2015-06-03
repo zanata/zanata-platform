@@ -3,25 +3,23 @@ package org.zanata.action.validator;
 import javax.validation.ConstraintValidatorContext;
 
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HPerson;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.*;
 
-@Test(groups = "unit-tests")
 public class DuplicateEmailValidatorTest {
     private DuplicateEmailValidator validator;
     @Mock
     private PersonDAO personDAO;
     private ConstraintValidatorContext context = null;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         validator = new DuplicateEmailValidator() {

@@ -5,10 +5,11 @@ import java.util.List;
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
 import org.hibernate.Session;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
@@ -33,7 +34,6 @@ import static org.mockito.Mockito.when;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "jpa-tests")
 @Slf4j
 public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
     private static final LocaleId TARGET_LOCALE_ID = new LocaleId("zh");
@@ -52,7 +52,7 @@ public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
                 DatabaseOperation.CLEAN_INSERT));
     }
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         GlossaryDAO dao = new GlossaryDAO((Session) getEm().getDelegate());

@@ -7,24 +7,23 @@ import javax.jms.Message;
 import javax.jms.ObjectMessage;
 import javax.jms.TextMessage;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.events.LanguageTeamPermissionChangedEvent;
 
 import com.google.common.collect.Lists;
 
 import static org.mockito.Mockito.*;
 
-@Test(groups = "unit-tests")
 public class EmailQueueMessageReceiverTest {
     private EmailQueueMessageReceiver receiver;
     @Mock
     private LanguageTeamPermissionChangeJmsMessagePayloadHandler languageTeamHandler;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         receiver = new EmailQueueMessageReceiver(languageTeamHandler);

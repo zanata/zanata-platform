@@ -21,7 +21,8 @@
 
 package org.zanata.util;
 
-import org.testng.annotations.Test;
+
+import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -29,7 +30,6 @@ import static org.hamcrest.Matchers.is;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Test(groups = { "unit-tests" })
 public class FileUtilTest {
 
     @Test

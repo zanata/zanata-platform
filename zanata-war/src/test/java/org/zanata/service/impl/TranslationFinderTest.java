@@ -2,22 +2,27 @@ package org.zanata.service.impl;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 import static org.zanata.service.impl.ExecutionHelper.cartesianProduct;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.binarytweed.test.DelegateRunningTo;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import lombok.Data;
 import org.assertj.core.api.Condition;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.search.impl.FullTextSessionImpl;
 import org.hibernate.search.jpa.Search;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
 import org.zanata.ImmutableDbunitJpaTest;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
@@ -41,6 +46,7 @@ import com.google.common.base.Optional;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
+@DelegateRunningTo(DataProviderRunner.class)
 public class TranslationFinderTest extends ImmutableDbunitJpaTest {
     private SeamAutowire seam = SeamAutowire.instance();
     private HLocale sourceLocale;
@@ -58,8 +64,8 @@ public class TranslationFinderTest extends ImmutableDbunitJpaTest {
                 DatabaseOperation.CLEAN_INSERT));
     }
 
-    @BeforeClass
-    public void beforeClass() throws Exception {
+    @Before
+    public void before() throws Exception {
         MockitoAnnotations.initMocks(this);
         seam.reset()
                 .use("entityManager",
@@ -106,7 +112,7 @@ public class TranslationFinderTest extends ImmutableDbunitJpaTest {
                         LocaleId.DE,
                         hDoc.getSourceLocaleId(), true, true,
                         true);
-        Assert.assertTrue(match.isPresent());
+        assertTrue(match.isPresent());
         checkTargetContents(match.get(), "most recent content");
     }
 
@@ -129,20 +135,23 @@ public class TranslationFinderTest extends ImmutableDbunitJpaTest {
     /**
      * Use this test to individually test copy trans scenarios.
      */
-    @Test(enabled = false)
+    @Ignore
+    @Test
     public void individualTest() {
         testExecution(
                 TranslationMemoryServiceImpl.class,
                 new Execution(false, true, true, true, true, true));
     }
 
-    @Test(dataProvider = "CopyTrans")
+    @Test
+    @UseDataProvider("copyTransCombinations")
     public void testTextFlowTargetDAO(Execution execution) {
         testExecution(TextFlowTargetDAO.class, execution);
     }
 
 
-    @Test(dataProvider = "CopyTrans")
+    @Test
+    @UseDataProvider("copyTransCombinations")
     public void testTranslationMemoryServiceImpl(Execution execution) {
         testExecution(TranslationMemoryServiceImpl.class, execution);
     }
@@ -215,8 +224,8 @@ public class TranslationFinderTest extends ImmutableDbunitJpaTest {
 
     }
 
-    @DataProvider(name = "CopyTrans")
-    protected Object[][] createCombinations() {
+    @DataProvider
+    public static Object[][] copyTransCombinations() {
         Set<Execution> expandedExecutions = generateAllExecutions();
 
         Object[][] val = new Object[expandedExecutions.size()][1];
@@ -228,7 +237,7 @@ public class TranslationFinderTest extends ImmutableDbunitJpaTest {
         return val;
     }
 
-    private Set<Execution> generateAllExecutions() {
+    private static Set<Execution> generateAllExecutions() {
         Set<Execution> allExecutions =
                 new HashSet<Execution>();
         List<Boolean> booleans = asList(true, false);

@@ -4,10 +4,10 @@ import java.io.IOException;
 import javax.servlet.FilterChain;
 
 import org.jboss.resteasy.spi.HttpResponse;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 
 import static org.mockito.Mockito.*;
 
@@ -15,7 +15,6 @@ import static org.mockito.Mockito.*;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class RateLimitingProcessorTest {
     public static final String API_KEY = "apiKey";
     private RateLimitingProcessor processor;
@@ -30,7 +29,7 @@ public class RateLimitingProcessorTest {
     @Mock
     private RestCallLimiter restCallLimiter;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() throws IOException {
         MockitoAnnotations.initMocks(this);
 

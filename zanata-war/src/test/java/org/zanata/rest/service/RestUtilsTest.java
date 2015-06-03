@@ -9,12 +9,17 @@ import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 import javax.ws.rs.core.MediaType;
 
+import com.binarytweed.test.DelegateRunningTo;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import org.jboss.resteasy.core.Headers;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.zanata.ZanataTest;
 import org.zanata.rest.dto.DTOUtil;
 import org.zanata.rest.dto.VersionInfo;
 import org.zanata.rest.dto.resource.Resource;
@@ -26,17 +31,17 @@ import com.allen_sauer.gwt.log.client.Log;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-@Test(groups = { "unit-tests" })
-public class RestUtilsTest {
+@DelegateRunningTo(DataProviderRunner.class)
+public class RestUtilsTest extends ZanataTest {
     RestUtils restUtils;
 
-    private ResourceTestObjectFactory resourceTestFactory =
+    private static ResourceTestObjectFactory resourceTestFactory =
             new ResourceTestObjectFactory();
-    private TranslationsResourceTestObjectFactory transTestFactory =
+    private static TranslationsResourceTestObjectFactory transTestFactory =
             new TranslationsResourceTestObjectFactory();
     private final Logger log = LoggerFactory.getLogger(RestUtilsTest.class);
 
-    @BeforeTest
+    @Before
     public void prepareSeam() {
         ValidatorFactory validatorFactory =
                 Validation.buildDefaultValidatorFactory();
@@ -48,8 +53,8 @@ public class RestUtilsTest {
                         .autowire(RestUtils.class);
     }
 
-    @DataProvider(name = "ResourceTestData")
-    public Object[][] getResourceTestData() {
+    @DataProvider
+    public static Object[][] resourceTestData() {
         return new Object[][] {
                 new Object[] { "getPoHeaderTest",
                         resourceTestFactory.getPoHeaderTest() },
@@ -61,8 +66,8 @@ public class RestUtilsTest {
                         resourceTestFactory.getTextFlowTest2() } };
     }
 
-    @DataProvider(name = "ResourceMetaTestData")
-    public Object[][] getResourceMetaTestData() {
+    @DataProvider
+    public static Object[][] resourceMetaTestData() {
         return new Object[][] {
                 new Object[] { "getResourceMeta",
                         resourceTestFactory.getResourceMeta() },
@@ -70,8 +75,8 @@ public class RestUtilsTest {
                         resourceTestFactory.getPoHeaderResourceMeta() } };
     }
 
-    @DataProvider(name = "TranslationTestData")
-    public Object[][] getTranslationTestData() {
+    @DataProvider
+    public static Object[][] translationTestData() {
         return new Object[][] {
                 new Object[] { "getPoTargetHeaderTextFlowTargetTest",
                         transTestFactory.getPoTargetHeaderTextFlowTargetTest() },
@@ -83,7 +88,8 @@ public class RestUtilsTest {
                         transTestFactory.getTextFlowTargetCommentTest() } };
     }
 
-    @Test(dataProvider = "ResourceTestData")
+    @Test
+    @UseDataProvider("resourceTestData")
     public void testUnmarshallResource(String desc, Resource res)
             throws UnsupportedEncodingException {
         // SeamMockClientExecutor test = new SeamMockClientExecutor();
@@ -154,14 +160,16 @@ public class RestUtilsTest {
         }
     }
 
-    @Test(dataProvider = "TranslationTestData")
+    @Test
+    @UseDataProvider("translationTestData")
     public void
             testUnmarshallTranslation(String desc, TranslationsResource res)
                     throws UnsupportedEncodingException {
         testRestUtilUnmarshall(res, TranslationsResource.class);
     }
 
-    @Test(dataProvider = "ResourceMetaTestData")
+    @Test
+    @UseDataProvider("resourceMetaTestData")
     public void testUnmarshallResourceMeta(String desc, ResourceMeta res)
             throws UnsupportedEncodingException {
         testRestUtilUnmarshall(res, ResourceMeta.class);

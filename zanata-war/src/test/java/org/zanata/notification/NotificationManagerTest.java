@@ -5,18 +5,16 @@ import javax.jms.ObjectMessage;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.events.LanguageTeamPermissionChangedEvent;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.*;
 
-@Test(groups = "unit-tests")
 public class NotificationManagerTest {
     private NotificationManager manager;
     @Mock
@@ -26,7 +24,7 @@ public class NotificationManagerTest {
     @Mock
     private ObjectMessage message;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         manager = new NotificationManager(mailQueueSender, queueSession);

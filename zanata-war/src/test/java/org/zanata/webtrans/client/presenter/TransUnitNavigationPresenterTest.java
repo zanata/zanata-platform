@@ -9,12 +9,12 @@ import static org.zanata.webtrans.client.events.NavTransUnitEvent.NavigationType
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.view.TransUnitNavigationDisplay;
@@ -24,7 +24,6 @@ import org.zanata.webtrans.shared.rpc.NavOption;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class TransUnitNavigationPresenterTest {
     private TransUnitNavigationPresenter presenter;
     @Mock
@@ -37,7 +36,7 @@ public class TransUnitNavigationPresenterTest {
     @Captor
     private ArgumentCaptor<NavTransUnitEvent> eventCaptor;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         userConfigHolder = new UserConfigHolder();

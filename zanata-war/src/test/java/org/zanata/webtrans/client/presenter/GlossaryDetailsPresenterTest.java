@@ -32,13 +32,13 @@ import static org.mockito.Mockito.when;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.UiMessages;
@@ -62,7 +62,6 @@ import com.google.gwt.user.client.ui.HasText;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
-@Test(groups = { "unit-tests" })
 public class GlossaryDetailsPresenterTest {
     private GlossaryDetailsPresenter glossaryDetailsPresenter;
 
@@ -103,7 +102,7 @@ public class GlossaryDetailsPresenterTest {
     @Mock
     private HasText targetLabel;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         glossaryDetailsPresenter =

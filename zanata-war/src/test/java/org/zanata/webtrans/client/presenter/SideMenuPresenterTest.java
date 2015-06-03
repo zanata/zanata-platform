@@ -10,13 +10,13 @@ import static org.mockito.Mockito.when;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.webtrans.client.events.NotificationEvent;
@@ -40,7 +40,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class SideMenuPresenterTest {
     private SideMenuPresenter presenter;
     @Mock
@@ -69,7 +68,7 @@ public class SideMenuPresenterTest {
     private UserSessionService sessionService;
     private WorkspaceId workspaceId;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         presenter =

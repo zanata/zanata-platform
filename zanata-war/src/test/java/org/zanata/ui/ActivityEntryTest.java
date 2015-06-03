@@ -1,10 +1,10 @@
 package org.zanata.ui;
 
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.ActivityType;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -28,7 +28,6 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 import static org.zanata.model.TestFixture.makeHTextFlow;
 
-@Test(groups = "unit-tests")
 public class ActivityEntryTest {
     private ActivityEntry activityEntry;
     @Mock
@@ -45,7 +44,7 @@ public class ActivityEntryTest {
     private HTextFlowTarget textFlowTarget;
     private HDocument document;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         activityEntry = new ActivityEntry(activityService, urlUtil, documentDAO);

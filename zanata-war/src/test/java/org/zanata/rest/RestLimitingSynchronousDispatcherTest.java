@@ -9,13 +9,15 @@ import org.jboss.resteasy.core.ResourceInvoker;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.HttpResponse;
 import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.zanata.ZanataTest;
 import org.zanata.limits.RateLimitingProcessor;
 import org.zanata.model.HAccount;
 import org.zanata.util.HttpUtil;
@@ -27,8 +29,7 @@ import static org.mockito.Mockito.doReturn;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
-public class RestLimitingSynchronousDispatcherTest {
+public class RestLimitingSynchronousDispatcherTest extends ZanataTest {
     private RestLimitingSynchronousDispatcher dispatcher;
 
     private static final String API_KEY = "apiKey123";
@@ -53,7 +54,7 @@ public class RestLimitingSynchronousDispatcherTest {
 
     private String clienIP = "255.255.255.0.1";
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() throws ServletException, IOException {
         MockitoAnnotations.initMocks(this);
         when(request.getHttpHeaders().getRequestHeaders())

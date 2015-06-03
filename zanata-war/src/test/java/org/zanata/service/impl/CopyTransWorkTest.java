@@ -24,7 +24,7 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import org.testng.annotations.Test;
+import org.junit.Test;
 import org.zanata.common.ContentState;
 
 import java.util.List;

@@ -8,10 +8,12 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.zanata.ZanataTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
@@ -38,8 +40,7 @@ import com.google.common.collect.Lists;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
-public class RevertTransUnitUpdatesHandlerTest {
+public class RevertTransUnitUpdatesHandlerTest extends ZanataTest {
     private RevertTransUnitUpdatesHandler handler;
     @Mock
     private TranslationService translationServiceImpl;
@@ -48,7 +49,7 @@ public class RevertTransUnitUpdatesHandlerTest {
     @Mock
     private TranslationWorkspace translationWorkspace;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         TransUnitTransformer transUnitTransformer =

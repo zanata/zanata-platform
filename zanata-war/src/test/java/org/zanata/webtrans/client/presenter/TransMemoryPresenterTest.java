@@ -22,14 +22,14 @@ import java.util.List;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.model.TestFixture;
@@ -63,7 +63,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
 
-@Test(groups = { "unit-tests" })
 public class TransMemoryPresenterTest {
     private TransMemoryPresenter presenter;
 
@@ -103,7 +102,7 @@ public class TransMemoryPresenterTest {
     private ArgumentCaptor<CopyDataToEditorEvent> copyTMEventCaptor;
     private UserConfigHolder configHolder;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         configHolder = new UserConfigHolder();

@@ -375,9 +375,7 @@ public class SeamAutowire {
 
             // Replace Component's method bodies with the ones in
             // AutowireComponent
-            CtMethod methodToReplace =
-                    contextsCls.getDeclaredMethod("isSessionContextActive");
-            methodToReplace
+            contextsCls.getDeclaredMethod("isSessionContextActive")
                     .setBody("{ return org.zanata.seam.AutowireContexts.isSessionContextActive(); }");
 
             contextsCls.toClass();

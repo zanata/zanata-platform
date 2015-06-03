@@ -22,12 +22,12 @@ import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.PresenterRevealedEvent;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.common.TransUnitCount;
@@ -58,7 +58,6 @@ import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
 
-@Test(groups = { "unit-tests" })
 public class AppPresenterTest {
     private AppPresenter presenter;
     @Mock
@@ -96,7 +95,7 @@ public class AppPresenterTest {
     @Mock
     private TargetContentsPresenter targetContentsPresenter;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         selectedDocumentStats = new ContainerTranslationStatistics();
         selectedDocumentStats.addStats(new TranslationStatistics(

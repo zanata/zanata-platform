@@ -15,12 +15,12 @@ import java.util.List;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.common.ContentState;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.NotificationEvent;
@@ -50,7 +50,6 @@ import com.google.inject.Provider;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Test(groups = "unit-tests")
 public class TransUnitSaveServiceTest {
     private TransUnitSaveService service;
     @Mock
@@ -81,7 +80,7 @@ public class TransUnitSaveServiceTest {
     private GoToRowLink goToLink;
     private SaveEventQueue queue;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         queue = new SaveEventQueue();

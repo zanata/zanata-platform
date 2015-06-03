@@ -7,8 +7,9 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.zanata.ZanataJpaTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -35,7 +36,6 @@ import lombok.RequiredArgsConstructor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Test(groups = { "jpa-tests" })
 public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
     private TextFlowTargetHistoryDAO historyDAO;
     private HPerson user;
@@ -47,7 +47,7 @@ public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
     private ResultTransformer resultTransformer;
     private static final DateTimeFormatter dateFormatter = DateTimeFormat.mediumDate();
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         resultTransformer = new StatisticsServiceImpl.UserMatrixResultTransformer(getEm(),
                 dateFormatter);

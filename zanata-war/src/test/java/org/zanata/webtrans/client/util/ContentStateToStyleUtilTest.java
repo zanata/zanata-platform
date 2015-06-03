@@ -1,6 +1,7 @@
 package org.zanata.webtrans.client.util;
 
-import org.testng.annotations.Test;
+
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -22,7 +22,7 @@ package org.zanata.ui;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
@@ -35,7 +35,6 @@ import java.util.List;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Test
 public class FilterUtilTest {
 
     private static final List<HLocale> ALL_LOCALES = Lists.newArrayList(

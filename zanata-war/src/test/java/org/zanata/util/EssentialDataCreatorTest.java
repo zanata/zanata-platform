@@ -21,11 +21,11 @@
 package org.zanata.util;
 
 import com.google.common.collect.Sets;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountRoleDAO;
@@ -44,7 +44,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@Test(groups = "unit-tests")
 public class EssentialDataCreatorTest {
     private EssentialDataCreator creator;
     @Mock
@@ -62,7 +61,7 @@ public class EssentialDataCreatorTest {
     @Mock
     private HAccount adminAccount;
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
         creator = new EssentialDataCreator(applicationConfiguration, accountDAO, accountRoleDAO, localeDAO);

@@ -43,8 +43,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.dbunit.operation.DatabaseOperation;
 import org.junit.Before;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.dao.TransMemoryDAO;
 import org.zanata.model.tm.TMMetadataType;
@@ -74,7 +74,6 @@ public class TMXParserTest extends ZanataDbunitJpaTest {
                 DatabaseOperation.DELETE_ALL));
     }
 
-    @BeforeMethod
     @Before
     public void initializeSeam() {
         seam.reset().ignoreNonResolvable().use("entityManager", getEm())
@@ -110,34 +109,29 @@ public class TMXParserTest extends ZanataDbunitJpaTest {
         });
     }
 
-    @Test(expectedExceptions = TMXParseException.class,
-            expectedExceptionsMessageRegExp = ".*Wrong root element.*")
-    @org.junit.Test(expected = TMXParseException.class)
+    @Test(expected = TMXParseException.class)
+//            expectedExceptionsMessageRegExp = ".*Wrong root element.*"
     public void parseInvalidXML() throws Exception {
         createTMFromFile("/tmx/invalid.xml");
     }
 
-    @Test(expectedExceptions = TMXParseException.class)
-    @org.junit.Test(expected = TMXParseException.class)
+    @Test(expected = TMXParseException.class)
     public void parseEmptyTXT() throws Exception {
         createTMFromFile("/tmx/empty.txt");
     }
 
-    @Test(expectedExceptions = TMXParseException.class)
-    @org.junit.Test(expected = TMXParseException.class)
+    @Test(expected = TMXParseException.class)
     public void parseInvalidTXT() throws Exception {
         createTMFromFile("/tmx/invalid.txt");
     }
 
-    @Test(expectedExceptions = TMXParseException.class,
-            expectedExceptionsMessageRegExp = ".*Invalid TMX document.*")
-    @org.junit.Test(expected = TMXParseException.class)
+    @Test(expected = TMXParseException.class)
+//            expectedExceptionsMessageRegExp = ".*Invalid TMX document.*"
     public void parseInvalidHTML() throws Exception {
         createTMFromFile("/tmx/invalid.xhtml");
     }
 
     @Test
-    @org.junit.Test
     public void parseTMX() throws Exception {
         // Create a TM
         TransMemory tm = createTMFromFile("/tmx/default-valid-tm.tmx");
@@ -166,7 +160,6 @@ public class TMXParserTest extends ZanataDbunitJpaTest {
     }
 
     @Test
-    @org.junit.Test
     public void parseDubiousTMXDespiteUnderscoresInLocales() throws Exception {
         // Create a TM
         TransMemory tm =
@@ -188,7 +181,6 @@ public class TMXParserTest extends ZanataDbunitJpaTest {
     }
 
     @Test
-    @org.junit.Test
     public void parseTMXWithMetadata() throws Exception {
         // Create a TM
         TransMemory tm = createTMFromFile("/tmx/valid-tmx-with-metadata.tmx");
@@ -271,22 +263,19 @@ public class TMXParserTest extends ZanataDbunitJpaTest {
         assertThat(tuv0Children.get(1).getValue(), is("Custom note on tuv"));
     }
 
-    @Test(expectedExceptions = TMXParseException.class)
-    @org.junit.Test(expected = TMXParseException.class)
+    @Test(expected = TMXParseException.class)
     public void invalidTMXNoContents() throws Exception {
         // Create a TM
         createTMFromFile("/tmx/invalid-tmx-no-contents.xml");
     }
 
-    @Test(expectedExceptions = TMXParseException.class)
-    @org.junit.Test(expected = TMXParseException.class)
+    @Test(expected = TMXParseException.class)
     public void undiscernibleSourceLang() throws Exception {
         // Create a TM
         createTMFromFile("/tmx/invalid-tmx-no-discernible-srclang.xml");
     }
 
     @Test
-    @org.junit.Test
     public void mergeSameTM() throws Exception {
         // Initial load
         TransMemory tm = createTMFromFile("/tmx/default-valid-tm.tmx");
@@ -303,7 +292,6 @@ public class TMXParserTest extends ZanataDbunitJpaTest {
     }
 
     @Test
-    @org.junit.Test
     public void mergeComplementaryTM() throws Exception {
         // Initial load
         TransMemory tm = createTMFromFile("/tmx/default-valid-tm.tmx");

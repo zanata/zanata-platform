@@ -8,12 +8,12 @@ import static org.mockito.Mockito.when;
 
 import javax.mail.internet.InternetAddress;
 
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.email.EmailBuilder;
@@ -21,7 +21,6 @@ import org.zanata.email.LanguageTeamPermissionChangeEmailStrategy;
 import org.zanata.events.LanguageTeamPermissionChangedEvent;
 import org.zanata.i18n.Messages;
 
-@Test(groups = "unit-tests")
 public class LanguageTeamPermissionChangeJmsMessagePayloadHandlerTest {
     private LanguageTeamPermissionChangeJmsMessagePayloadHandler handler;
     @Mock
@@ -31,7 +30,7 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandlerTest {
     @Mock
     private LanguageTeamPermissionChangedEvent permissionChangeEvent;
 
-    @BeforeMethod
+    @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         handler =

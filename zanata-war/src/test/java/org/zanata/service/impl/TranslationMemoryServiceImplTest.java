@@ -3,15 +3,20 @@ package org.zanata.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import com.binarytweed.test.DelegateRunningTo;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import lombok.ToString;
 import org.assertj.core.api.Condition;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.search.impl.FullTextSessionImpl;
 import org.hibernate.search.jpa.Search;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
 import org.zanata.ImmutableDbunitJpaTest;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
@@ -44,6 +49,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 // see also TranslationFinderTest
+@DelegateRunningTo(DataProviderRunner.class)
 public class TranslationMemoryServiceImplTest extends ImmutableDbunitJpaTest {
     private SeamAutowire seam = SeamAutowire.instance();
     private TranslationMemoryServiceImpl service;
@@ -64,8 +70,8 @@ public class TranslationMemoryServiceImplTest extends ImmutableDbunitJpaTest {
                 DatabaseOperation.CLEAN_INSERT));
     }
 
-    @BeforeClass
-    public void beforeClass() throws Exception {
+    @Before
+    public void before() throws Exception {
         MockitoAnnotations.initMocks(this);
         service =
                 seam.reset()
@@ -177,7 +183,8 @@ public class TranslationMemoryServiceImplTest extends ImmutableDbunitJpaTest {
         assertThat(match.isPresent()).isEqualTo(hasMatch);
     }
 
-    @Test(dataProvider = "TMData")
+    @Test
+    @UseDataProvider("tmTestParams")
     public void testTMSearch(TransMemoryExecution exec) {
 
         List<TransMemoryResultItem> results =
@@ -187,8 +194,8 @@ public class TranslationMemoryServiceImplTest extends ImmutableDbunitJpaTest {
         assertThat(results).hasSize(exec.getResultSize());
     }
 
-    @DataProvider(name = "TMData")
-    public Object[][] createTMTestParams() {
+    @DataProvider
+    public static Object[][] tmTestParams() {
         // Should return 1 records if all checked
         String validQuery = "file";
         String validProjectSlug = "same-project";
@@ -237,7 +244,7 @@ public class TranslationMemoryServiceImplTest extends ImmutableDbunitJpaTest {
         return val;
     }
 
-    private TransMemoryExecution createExecution(String query,
+    private static TransMemoryExecution createExecution(String query,
             Boolean[] checks, String[] values, int expectedSize) {
 
         return new TransMemoryExecution(new TransMemoryQuery(query,
@@ -249,7 +256,7 @@ public class TranslationMemoryServiceImplTest extends ImmutableDbunitJpaTest {
     @Getter
     @AllArgsConstructor
     @ToString
-    private class TransMemoryExecution {
+    private static class TransMemoryExecution {
 
         private TransMemoryQuery query;
         private int resultSize;
@@ -274,7 +281,7 @@ public class TranslationMemoryServiceImplTest extends ImmutableDbunitJpaTest {
                 });
     }
 
-    private TransMemoryQuery.Condition getCondition(boolean isCheck,
+    private static TransMemoryQuery.Condition getCondition(boolean isCheck,
             String value) {
         return new TransMemoryQuery.Condition(isCheck, value);
     }

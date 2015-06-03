@@ -9,11 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.assertj.core.api.Assertions;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
 import org.zanata.PerformanceProfiling;
 import org.zanata.ZanataJpaTest;
 import org.zanata.common.ContentState;
@@ -41,7 +43,6 @@ import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
 @Slf4j
-//@Test(groups = { "jpa-tests" })
 public class TranslationServiceImplJpaTest extends ZanataJpaTest {
 
     static SeamAutowire seam = SeamAutowire.instance();
@@ -50,7 +51,7 @@ public class TranslationServiceImplJpaTest extends ZanataJpaTest {
     private TranslationServiceImpl service;
     private Set<String> extensions = Sets.newHashSet("gettext", "comment");
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         deleteAllTables();
@@ -73,12 +74,14 @@ public class TranslationServiceImplJpaTest extends ZanataJpaTest {
                 .autowire(TranslationServiceImpl.class);
     }
 
-    @AfterMethod
+    @After
     public void cleanUp() {
         deleteAllTables();
     }
 
-    @Test(enabled = true, description = "this should only be executed manually in IDE")
+//    @Test(enabled = true, description = "this should only be executed manually in IDE")
+    @Ignore
+    @Test
     @PerformanceProfiling
     public void pushTranslation() {
         EntityMaker entityMaker = EntityMakerBuilder.builder()

@@ -1,6 +1,6 @@
 package org.zanata
 
-import org.testng.annotations.Test
+import org.junit.Test
 import org.zanata.model.HProject
 import org.zanata.test.data.ProjectData
 

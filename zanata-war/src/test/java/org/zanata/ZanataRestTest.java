@@ -15,10 +15,11 @@ import org.jboss.resteasy.core.Dispatcher;
 import org.jboss.resteasy.mock.MockDispatcherFactory;
 import org.jboss.resteasy.spi.ResourceFactory;
 import org.jboss.seam.security.management.JpaIdentityStore;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.zanata.config.JndiBackedConfig;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
@@ -49,7 +50,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
     @Mock
     private JndiBackedConfig jndiBackedConfig;
 
-    @BeforeMethod
+    @Before
     public final void prepareRestEasyFramework() {
         MockitoAnnotations.initMocks(this);
         when(jndiBackedConfig.getEnabledAuthenticationPolicies()).thenReturn(
@@ -108,7 +109,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
         seamAutowire.use(JpaIdentityStore.AUTHENTICATED_USER, account);
     }
 
-    @AfterMethod
+    @After
     public final void cleanUpRestEasyFramework() {
         exceptionMappers.clear();
         resources.clear();
