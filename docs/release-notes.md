@@ -27,13 +27,15 @@ Example usage in html file: `<link rel="shortcut icon" href="#{assets['img/logo/
 
 <h5>Deployment</h5>
 
-Deployment for this release may require a longer timeout due to underlying database changes.
-This is dependent on database size and the system administrator should consider increasing the JBoss timeout value in standalone.xml.
+* Deployment for this release may require a longer timeout due to underlying database changes. This is dependent on database size and the system administrator should consider increasing the JBoss timeout value in standalone.xml.
 
         <system-properties>
             ...
             <property name="jboss.as.management.blocking.timeout" value="2000"/>
         </system-properties>
+      
+        
+* The Zanata administrator will also need to reindex HProject table via the Administration menu. See [Manage search](user-guide/admin/manage-search) for more information.
     
     
 <h5>Bug fixes</h5>
@@ -57,6 +59,7 @@ This is dependent on database size and the system administrator should consider 
 * [1123186](https://bugzilla.redhat.com/show_bug.cgi?id=1123186) - Project search fails for multiple word project names
 * [1112498](https://bugzilla.redhat.com/show_bug.cgi?id=1112498) - Unable to remove self as maintainer
 * [1227575](https://bugzilla.redhat.com/show_bug.cgi?id=1227575) - Exception on emptying the search field when many users were reported
+* [1224030](https://bugzilla.redhat.com/show_bug.cgi?id=1224030) - Search form does not trigger search if paste text
 
 -----------------------
 
