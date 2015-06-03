@@ -1,16 +1,14 @@
 'Role assignment rules' are Zanata's way of dynamically assigning security roles and even Project access to users. 
 To configure Role Assignment Rules, admin users must go to the Administration section and click 'Role assignment rules' button.
-
 <figure>
-<img alt="Role Assignment Rules Location" src="images/role-assignment-access.png" />
+![Role Assignment Rules Location](/images/role-assignment-access.png)
 </figure>
 <br/>
 
 
 ### Overview
-
 <figure>
-<img alt="Role Assignment Rules overview" src="images/role-assignment-view.png" />
+![Role Assignment Rules overview](/images/role-assignment-view.png)
 </figure>
 <br/>
 
@@ -33,12 +31,12 @@ To configure Role Assignment Rules, admin users must go to the Administration se
 1. Navigate to 'Role assignment rules' page.
 1. Click on `More Action` menu on the top right panel.
 <figure>
-<img alt="Role Assignment Rules new" src="images/role-assignment-new-access.png" />
+![Role Assignment Rules new](/images/role-assignment-new-access.png)
 </figure>
 <br/>
 1. Select `New Rule`.
 <figure>
-<img alt="Role Assignment Rules new form" src="images/role-assignment-new-form.png" />
+![Role Assignment Rules new form](/images/role-assignment-new-form.png)
 </figure>
 <br/>
 1. Fill in the fields and click `Save`.
@@ -49,7 +47,7 @@ To configure Role Assignment Rules, admin users must go to the Administration se
 1. Locate the rule you wish to delete, click on `Options` menu in front of the row.
 1. Click `Delete` to remove the rule.
 <figure>
-<img alt="Role Assignment delete" src="images/role-assignment-delete.png" />
+![Role Assignment delete](/images/role-assignment-delete.png)
 </figure>
 <br/>
 
@@ -63,7 +61,7 @@ To restrict project access,
 1. Click on `Permission` tab.
 1. Check `Restrict access to certain user roles` and select roles that you wish to allow access to your project.
 <figure>
-<img alt="Role Assignment project" src="images/role-assignment-project.png" />
+![Role Assignment project](/images/role-assignment-project.png)
 </figure>
 <br/>
 1. Any role restrictions will now be seen on the project's page and only users belonging to that role will be able to work on the project.

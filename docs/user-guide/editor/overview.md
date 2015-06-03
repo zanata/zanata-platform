@@ -4,9 +4,8 @@ See [Translator guide](user-guide/translator-guide) for more information.
 
 
 ## Views in webtrans
-
 <figure>
-<img alt="View icons" src="images/editor-views-icon.png" />
+![View icons](/images/editor-views-icon.png)
 </figure>
 <br/>
 

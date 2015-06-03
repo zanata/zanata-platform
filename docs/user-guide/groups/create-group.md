@@ -4,13 +4,12 @@ Currently, only admin can create a group:
  1. Click on `Groups` section on the top menu.
  1. Click on 'New Group' button on right panel.
  <figure>
- <img alt="New group menu" src="images/create-group.png" />
+ ![New group menu](/images/create-group.png)
  </figure>
  
  The following screenshot shows the group creation page.
-
 <figure>
-<img alt="Group create form" src="images/create-group-completed.png" />
+![Group create form](/images/create-group-completed.png)
 <figcaption>Example filled in group creation form</figcaption>
 </figure>
 

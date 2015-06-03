@@ -1,7 +1,6 @@
 When a project is selected, you will be taken to an overall view of the project. This will show a list of the available versions as well as an indication of their translation progress.
-
 <figure>
-<img alt="Project view version tab" src="/images/project-view-versions.png" />
+![Project view version tab](/images/project-view-versions.png)
 <figcaption>Project View</figcaption>
 </figure>
 <br>

@@ -1,6 +1,4 @@
-<figure>
-<img alt="Editor view" src="images/editor-overview.png" />
-</figure>
+![Editor view](/images/editor-overview.png)
 <br/>
 
 ### 1. Breadcrumbs
@@ -77,16 +75,14 @@ If a glossary has been uploaded for your language, each word in the currently se
 
 If you're not part of that language team, the editor will open as readonly mode.
 You will be restricted to only viewing source and translations in the editor.
-
 <figure>
-<img alt="Readonly editor" src="images/editor-readonly-indicator.png" />
+![Readonly editor](/images/editor-readonly-indicator.png)
 </figure>
 <br/>
 
 ## Settings
-
 <figure>
-<img alt="Editor settings" src="images/editor-settings.png" />
+![Editor settings](/images/editor-settings.png)
 </figure>
 <br/>
 
@@ -102,9 +98,8 @@ You will be restricted to only viewing source and translations in the editor.
 
 
 ## Validations
-
 <figure>
-<img alt="Editor validation settings" src="images/editor-validations.png" />
+![Editor validation settings](/images/editor-validations.png)
 </figure>
 <br/>
 

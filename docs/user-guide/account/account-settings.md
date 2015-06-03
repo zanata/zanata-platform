@@ -1,27 +1,27 @@
-# Account Settings
-
 To access your user settings:
 
  1. Login to Zanata
  1. Click on `User menu` on top right corner, click on `Settings` on the drop down menu.
  1. Alternatively, you can click on the `Settings` tab on your dashboard page.
  
-## Account Settings
+## Settings
 
 ### Update email
  
  1. Enter the new email address in input field and click `Update email`.
- 
- <img alt="Email input field" src="images/account-settings-email.png" />
+  <figure>
+  ![Email input field](/images/account-settings-email.png)
+  </figure>
 
  1. A confirmation email will be sent to the new email address. Click on the link or the URL to confirm email address change.
 
 ### Change password
 
  1. Fill in the `Old Password` and `New Password` fields.
+  <figure>
+   ![Password input field](/images/account-settings-password.png)
+  </figure>
 
- <img alt="Password input field" src="images/account-settings-password.png" />
- 
  1. Click `Update password` to change your password.
  
 ### Merge with other account
@@ -38,8 +38,9 @@ Use this to merge additional Zanata accounts you may have created when signing u
 ## Languages
 
 This page shows all the language teams you have joined in Zanata.
-
-<img alt="Languages" src="images/account-settings-languages.png" />
+ <figure>
+   ![Languages](/images/account-settings-languages.png)
+ </figure>
 
 To join more language teams,
 

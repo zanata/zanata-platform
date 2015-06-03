@@ -2,17 +2,15 @@ User will be able to see translation history of each messages. It will display f
 
 ### How to show translation history
 In editor click on the "timer" like icon below will bring up the initial view:
-
 <figure>
-<img alt="Translation history" src="images/editor-history-button.png" />
+![Translation history](/images/editor-history-button.png)
 </figure>
 <br/>
 
 ### Comparison of two entries
 If selecting exactly two entries, user will be able to compare them in a diff view:
-
 <figure>
-<img alt="Translation history comparison" src="images/editor-translation-history-comparison.png" />
+![Translation history comparison](/images/editor-translation-history-comparison.png)
 </figure>
 <br/>
 

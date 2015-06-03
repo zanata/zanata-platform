@@ -33,17 +33,17 @@ Merge translations allows project maintainers to copy translations across differ
 1. Select a project version you wish to copy translations to.
 1. Expand `More Action` menu on top right corner and click on `Merge Translations`. This action is only available if you are a maintainer of the project.
 <figure>
-    <img alt="More action menu in project version page" src="images/version-more-action-menu.png" />
+![More action menu in project version page](/images/version-more-action-menu.png)
 </figure>
 1. In displayed dialog, select the project-version you wish to copy translations from.
 <figure>
-    <img alt="Merge translation dialog" src="images/version-merge-trans-dialog.png" />
+![Merge translation dialog](/images/version-merge-trans-dialog.png)
 </figure>
 1. If you do not want to overwrite translated/approved translations, ensure that `Keep existing translated/approved translations` is checked. If this option is not checked, translated/approved translations will be replaced with newer translated/approved translations if they are available.
 1. Click `Merge Translations` button to start the process.
 1. The progress of the merge process is shown by a progress bar on the version page.
 <figure>
-    <img alt="Merge translation in progress" src="images/version-merge-trans-progress.png" />
+![Merge translation in progress](/images/version-merge-trans-progress.png)
 </figure>
 
 ## Cancel Merge translation
@@ -52,7 +52,7 @@ Merge translations allows project maintainers to copy translations across differ
 1. Go to the progress bar section in project version page.
 1. Click on the `Cancel` button on top right panel.
 <figure>
-    <img alt="Cancel merge translation in progress" src="images/version-merge-trans-cancel.png" />
+![Cancel merge translation in progress](/images/version-merge-trans-cancel.png)
 </figure>
 
 

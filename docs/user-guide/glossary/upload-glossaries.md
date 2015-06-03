@@ -21,8 +21,8 @@ See [glossary roles and permission](user-guide/glossary/glossary-roles-permissio
 1. part-of-speech column: The part-of-speech is an informational field that indicates the sense in which the terms in the row should be used. Sample parts-of-speech include adjective, adverb, noun, and verb.
 1. description column: The description should provide any notes for the translator, including the meaning of the terms in the row.
 <figure>
-    <img alt="sample glossary csv file" src="images/glossary-csv.png" />
-    <figcaption>Valid glossary csv file</figcaption>
+![sample glossary csv file](/images/glossary-csv.png)
+<figcaption>Valid glossary csv file</figcaption>
 </figure>
 
 ### Upload via Web UI
@@ -31,18 +31,18 @@ See [glossary roles and permission](user-guide/glossary/glossary-roles-permissio
 1. Click `Glossary` menu.
 1. Click on `More Actions` on top right corner of the table, follow by `Upload glossary` from the list.
 <figure>
-    <img alt="More action in glossary page" src="images/glossary-upload.png" />
-    <figcaption>More actions in glossary table</figcaption>
+![More action in glossary page](/images/glossary-upload.png)
+<figcaption>More actions in glossary table</figcaption>
 </figure>
 
 1. A window will popup, click on `choose file` to select your glossary file.
 <figure>
- <img alt="Glossary upload window" src="images/glossary-upload-windows.png" />
+![Glossary upload window](/images/glossary-upload-windows.png)
 </figure>
 
 1. For PO file format, you will need to select **Source and Target languages** of the selected po file.
 <figure>
- <img alt="Glossary upload window, PO file" src="images/glossary-upload-windows-po.png" />
+![Glossary upload window, PO file](/images/glossary-upload-windows-po.png)
 </figure>
 
 1. Click `Upload` button to start uploading selected glossary file.

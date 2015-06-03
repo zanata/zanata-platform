@@ -1,6 +1,4 @@
-<figure>
-<img alt="Documents view" src="images/editor-doc-list.png" />
-</figure>
+![Documents view](/images/editor-doc-list.png)
 <br/>
 
 1. **Breadcrumbs** - Links to Project -> Version
@@ -12,9 +10,8 @@
 7. **Paging** - Page navigation for document list.
 
 ## Settings
-
 <figure>
-<img alt="Documents view settings" src="images/editor-doc-list-settings.png" />
+![Documents view settings](/images/editor-doc-list-settings.png)
 </figure>
 <br/>
 
@@ -26,9 +23,8 @@
 
 
 ## Validations
-
 <figure>
-<img alt="Documents view settings" src="images/editor-doc-list-validations.png" />
+![Editor doc list validations](/images/editor-doc-list-validations.png)
 </figure>
 <br/>
 

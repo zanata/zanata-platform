@@ -1,9 +1,8 @@
 ## General
 
 General configuration for Zanata server.
-
 <figure>
-<img alt="Admin settings general" src="images/admin-settings-general.png" />
+![Admin settings general](/images/admin-settings-general.png)
 </figure>
 <br/>
 
@@ -22,9 +21,8 @@ General configuration for Zanata server.
 ## Email log
 
 This enables or disables the sending of Zanata diagnostics log information via email.
-
 <figure>
-<img alt="Admin settings email log" src="images/admin-settings-email-log.png" />
+![Admin settings email log](/images/admin-settings-email-log.png)
 </figure>
 <br/>
 
@@ -39,9 +37,8 @@ This enables or disables the sending of Zanata diagnostics log information via e
 ## Piwik
 
 [Piwik](http://piwik.org/) is a web analytics tools application. It tracks online visits to one or more websites and displays reports on these visits for analysis.
-
 <figure>
-<img alt="Admin settings piwik" src="images/admin-settings-piwik.png" />
+![Admin settings piwik](/images/admin-settings-piwik.png)
 </figure>
 <br/>
 
@@ -53,9 +50,8 @@ This enables or disables the sending of Zanata diagnostics log information via e
 ## Client
 
 Admin can control the limit of client communication towards server via Client or REST API.
-
 <figure>
-<img alt="Admin settings client" src="images/admin-settings-client.png" />
+![Admin settings client](/images/admin-settings-client.png)
 </figure>
 <br/>
 

@@ -1,6 +1,4 @@
-<figure>
-<img alt="Process manager" src="images/admin-manage-search.png" />
-</figure>
+![Manage search](/images/admin-manage-search.png)
 <br/>
 
 Zanata uses lucene index for fast searching and perform various tasks such as translation memory search.

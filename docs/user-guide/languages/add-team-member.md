@@ -6,7 +6,7 @@ While signed-in as language coordinator
 1. Click the language team.
 1. Click on `+` sign on the top left panel.
 <figure>
-<img alt="Add new member" src="images/language-add-member.png" />
+![Add new member](/images/language-add-member.png)
 </figure>
 <br/>
 1. Enter username and click `Search`.

@@ -1,6 +1,4 @@
-<figure>
-<img alt="Statistic" src="images/admin-statistics.png" />
-</figure>
+![Statistic](/images/admin-statistics.png)
 <br/>
 
 This page shows the number of 
