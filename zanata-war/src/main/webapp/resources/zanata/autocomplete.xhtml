@@ -94,11 +94,18 @@
     }
 
     jQuery(function() {
-      jQuery('#' + '#{cc.attrs.id}-autocomplete__input').typing({
+      var inputField = jQuery('#' + '#{cc.attrs.id}-autocomplete__input');
+      inputField.typing({
         stop: function(event, elem) {
           onValueChange(elem, event, #{cc.attrs.id}RenderResult, #{cc.attrs.id}ClearResults);
         },
         delay: 400
+      });
+
+      inputField.bind('paste cut', function(event) {
+        setTimeout(function () {
+          onValueChange(inputField, event, #{cc.attrs.id}RenderResult, #{cc.attrs.id}ClearResults);
+        }, 400);
       });
     });
 
