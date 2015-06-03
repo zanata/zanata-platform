@@ -429,6 +429,8 @@
     <param name="id" value="#{languageAction.language}" />
     <param name="id" value="#{languageJoinAction.language}" />
     <param name="id" value="#{languageContactCoordinatorAction.localeId}" />
+
+    <action execute="#{languageAction.validateLanguage}" />
   </page>
 
   <!-- Translation Memory -->
