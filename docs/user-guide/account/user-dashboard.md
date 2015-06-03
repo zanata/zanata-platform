@@ -7,8 +7,9 @@ The dashboard aims to help you quickly see and navigate to content that is relev
 ## Opening the Dashboard
 
 If you sign in from the Zanata homepage, the first screen you see will be the user dashboard. To get to the dashboard from another page, expand the user menu on the right and click `Dashboard`.
-
-<img alt="User dashboard menu" src="images/user-dashboard.png" />
+ <figure>
+   ![User dashboard menu](/images/user-dashboard.png)
+ </figure>
 
 ## Dashboard Information
 
@@ -20,8 +21,9 @@ Dashboard has
 - an activity stream 
 - list of maintained projects
 - [Profile settings](user-guide/account/account-settings)
-
-<img alt="User dashboard" src="images/user-dashboard-view.png" />
+ <figure>
+   ![User dashboard](/images/user-dashboard-view.png)
+ </figure>
 
 ### User Information
 
@@ -44,5 +46,6 @@ If you have more recent activity than is shown in the activity stream, you can s
 ### Projects
 
 In the Project tab, a list of your maintained projects is shown. The down arrow to the left of the version can be clicked to show all the versions for the project. The project name, version name link directly to the project page, version page respectively.
-
-<img alt="User dashboard" src="images/user-dashboard-versions.png" />
+<figure>
+   ![User dashboard version](/images/user-dashboard-versions.png)
+</figure>

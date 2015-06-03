@@ -16,8 +16,9 @@ To create an account using OpenID:
  1. Complete the `Name`, `Username`, and `Email` fields. Ensure your email address is entered correctly.
  1. Click `Save`. This sends a validation email to the address you entered in the previous step.
  1. Open the validation email and click the validation link.
-
-<img alt="Account signup openid" src="images/account-signup-openid-details.png" />
+<figure>
+   ![Account signup openid](/images/account-signup-openid-details.png)
+ </figure>
 
 You can now sign in to Zanata using your OpenID credentials.
 

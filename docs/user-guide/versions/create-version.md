@@ -14,11 +14,11 @@ For simple projects, it is typical to create a single version named 'master'. Ot
 
 To add a version to your project, navigate to the project using the menu or user dashboard, go to `Version` tab, click on `More action` and select `New Version`. If your project has no versions yet, there will be a link under the project on the user dashboard to jump straight to version creation.
 
-![Version creation button on a project homepage](images/version-create.png)
+![Version creation button on a project homepage](/images/version-create.png)
 
 Version creation button on a project homepage.
 
-![Shortcut version creation link on user dashboard](images/user-dashboard-create-version.png)
+![Shortcut version creation link on user dashboard](/images/user-dashboard-create-version.png)
 
 Shortcut version creation link on user dashboard.
 
@@ -26,7 +26,7 @@ Shortcut version creation link on user dashboard.
 The following screenshot shows the version creation page. The settings in this screenshot will create a version under the 'zanata-server' project with ID 'master', that does not require a review phase for translations and will use the locales and validations from the project. See below for details on each option.
 
 
-![Example version creation form with completed name and other settings](images/version-create-new.png)
+![Example version creation form with completed name and other settings](/images/version-create-new.png)
 
 
 ### Version ID

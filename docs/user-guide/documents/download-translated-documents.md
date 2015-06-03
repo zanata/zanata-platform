@@ -11,13 +11,13 @@ Zanata allows anyone to download translations from a project version.
 
 1. On the right panel, click on the drop down menu, select `Download All(zip)`.
 <figure>
-<img alt="Download all translation files" src="images/version-download-translations-all.png" />
+![Download all translation files](/images/version-download-translations-all.png)
 </figure>
 <br/>
 
 1. Click on `Download` button to start downloading.
 <figure>
-<img alt="Download all translation files dialog" src="images/version-download-translations-all-dialog.png" />
+![Download all translation files dialog](/images/version-download-translations-all-dialog.png)
 </figure>
 <br/>
 
@@ -26,7 +26,7 @@ Zanata allows anyone to download translations from a project version.
 1. Click on the drop down menu located in front of a document.
 1. Select `Download translated [supported file format]`.
 <figure>
-<img alt="Download translation file" src="images/version-download-translations.png" />
+![Download translation file](/images/version-download-translations.png)
 </figure>
 
 ### From client

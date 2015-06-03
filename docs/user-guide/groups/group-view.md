@@ -1,7 +1,6 @@
 When a group is selected, you will be taken to an overall view of the group. This will show a list of the available versions as well as an indication of their translation progress.
-
 <figure>
-<img alt="Group view language tab" src="/images/group-view-languages.png" />
+![Group view language tab](/images/group-view-languages.png)
 <figcaption>Group View</figcaption>
 </figure>
 <br>

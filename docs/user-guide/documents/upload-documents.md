@@ -13,11 +13,11 @@ You will need to [Create a project](user-guide/projects/create-project) and [Cre
 #### Uploading new source documents
 
 1. Go to `Documents` tab, click on down arrow on top of Document panel.
-<img alt="Upload source document" src="images/upload-new-source-doc.png" />
+![Upload source document](/images/upload-new-source-doc.png)
 1. Select `Upload new source document`.
 1. Browse or Drag your documents into the dialog and click `Upload Documents`.
 1. You can access the same dialog in by go to `Settings` tab -> `Documents` section. Click `+` sign on top left panel.
-<img alt="Upload source document dialog" src="images/upload-source-doc-dialog.png" />
+![Upload source document dialog](/images/upload-source-doc-dialog.png)
 <br/>
 
 #### Updating existing source documents
@@ -26,7 +26,7 @@ You will need to [Create a project](user-guide/projects/create-project) and [Cre
 1. Select your file and choose the source language for this file.
 1. Click `Upload` to proceed.
 
-<img alt="Upload source document" src="images/upload-source-doc.png" />
+![Upload source document](/images/upload-source-doc.png)
 
 *Alternatively*
 
@@ -35,7 +35,7 @@ You will need to [Create a project](user-guide/projects/create-project) and [Cre
 1. Select your file and choose the source language for this file.
 1. Click `Upload` to proceed.
 
-<img alt="Upload source document from settings" src="images/upload-source-doc-from-settings.png" />
+![Upload source document from settings](/images/upload-source-doc-from-settings.png)
 
  
 #### Uploading translation documents
@@ -43,10 +43,10 @@ You will need to [Create a project](user-guide/projects/create-project) and [Cre
 1. Click on `Languages` tab in version page, select the language of translation document you wish to upload.
 1. On right panel, click on the down arrow(Translation option) on left side of document and select `Upload translation`.
 
-<img alt="Upload translation document" src="images/upload-translation-doc.png" />
+![Upload translation document](/images/upload-translation-doc.png)
+<br/>
 
-
-<img alt="Upload translation document dialog" src="images/upload-translation-doc-dialog.png" />
+![Upload translation document dialog](/images/upload-translation-doc-dialog.png)
 
 1. On the dialog, select your translation file. 
     - `Merge` option - If unchecked, uploaded translations overrides current translation, otherwise, it will merge with current translation in system.
