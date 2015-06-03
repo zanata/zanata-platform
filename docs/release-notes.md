@@ -56,6 +56,8 @@ This is dependent on database size and the system administrator should consider 
 * [1147304](https://bugzilla.redhat.com/show_bug.cgi?id=1147304) - Project search fails on special characters
 * [1123186](https://bugzilla.redhat.com/show_bug.cgi?id=1123186) - Project search fails for multiple word project names
 * [1112498](https://bugzilla.redhat.com/show_bug.cgi?id=1112498) - Unable to remove self as maintainer
+* [1224030](https://bugzilla.redhat.com/show_bug.cgi?id=1224030) - Search form does not trigger search if paste text
+
 -----------------------
 
 <h5>New Features</h5>
