@@ -27,13 +27,15 @@ Example usage in html file: `<link rel="shortcut icon" href="#{assets['img/logo/
 
 <h5>Deployment</h5>
 
-Deployment for this release may require a longer timeout due to underlying database changes.
-This is dependent on database size and the system administrator should consider increasing the JBoss timeout value in standalone.xml.
+* Deployment for this release may require a longer timeout due to underlying database changes. This is dependent on database size and the system administrator should consider increasing the JBoss timeout value in standalone.xml.
 
         <system-properties>
             ...
             <property name="jboss.as.management.blocking.timeout" value="2000"/>
         </system-properties>
+      
+        
+* The Zanata administrator will also need to reindex HProject table via the Administration menu. See [Manage search](user-guide/admin/manage-search) for more information.
     
     
 <h5>Bug fixes</h5>
