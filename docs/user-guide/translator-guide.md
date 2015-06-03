@@ -10,7 +10,7 @@ Any translator who has joined a language team can participate in the document tr
 1. In project page, locate the version you wish to translate.
 1. Click on `Options` and select `Translate in {your language}`.
 <figure>
-<img alt="Start translate" src="images/webtrans-access.png" />
+![Start translate](images/webtrans-access.png)
 </figure>
 <br/>
 
@@ -24,6 +24,6 @@ Any translator who has joined a language team can participate in the document tr
 4. Click on the document name to open up the [editor](user-guide/editor/editor-view).
 
 <figure>
-<img alt="Select document" src="images/editor-open-menu.png" />
+![Select document](images/editor-open-menu.png)
 </figure>
 <br/>
