@@ -212,6 +212,6 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest {
         assertThat(result.get(0).getTranslatedTextFlowTarget().getVersionNum(),
                 is(1)); // moved up only one version
         assertThat(result.get(0).getTranslatedTextFlowTarget().getState(),
-                is(ContentState.Translated));
+                is(ContentState.Approved));
     }
 }

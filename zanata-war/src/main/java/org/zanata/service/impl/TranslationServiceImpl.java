@@ -56,7 +56,6 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.common.util.ContentStateUtil;
 import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
@@ -237,9 +236,7 @@ public class TranslationServiceImpl implements TranslationService {
                     result.targetChanged =
                             translate(hTextFlowTarget,
                                     request.getNewContents(),
-                                    request.getNewContentState(), nPlurals,
-                                    projectIteration
-                                            .getRequireTranslationReview());
+                                    request.getNewContentState(), nPlurals);
                     result.isSuccess = true;
                 } catch (HibernateException e) {
                     result.isSuccess = false;
@@ -333,13 +330,13 @@ public class TranslationServiceImpl implements TranslationService {
 
     private boolean translate(@Nonnull HTextFlowTarget hTextFlowTarget,
             @Nonnull List<String> contentsToSave, ContentState requestedState,
-            int nPlurals, Boolean requireTranslationReview) {
+            int nPlurals) {
         boolean targetChanged = false;
         ContentState currentState = hTextFlowTarget.getState();
         targetChanged |= setContentIfChanged(hTextFlowTarget, contentsToSave);
         targetChanged |=
                 setContentStateIfChanged(requestedState, hTextFlowTarget,
-                        nPlurals, requireTranslationReview);
+                        nPlurals);
 
         if (targetChanged || hTextFlowTarget.getVersionNum() == 0) {
             HTextFlow textFlow = hTextFlowTarget.getTextFlow();
@@ -387,8 +384,7 @@ public class TranslationServiceImpl implements TranslationService {
      */
     private boolean setContentStateIfChanged(
             @Nonnull ContentState requestedState,
-            @Nonnull HTextFlowTarget target, int nPlurals,
-            boolean requireTranslationReview) {
+            @Nonnull HTextFlowTarget target, int nPlurals) {
         boolean changed = false;
         ContentState previousState = target.getState();
         target.setState(requestedState);
@@ -397,22 +393,17 @@ public class TranslationServiceImpl implements TranslationService {
         for (String warning : warnings) {
             log.warn(warning);
         }
-        if (requireTranslationReview) {
-            if (isReviewState(target.getState())) {
-                // reviewer saved it
-                target.setReviewer(authenticatedAccount.getPerson());
-                if (previousState == ContentState.New) {
-                    target.setTranslator(authenticatedAccount.getPerson());
-                }
-            } else {
+
+        if (isReviewState(target.getState())) {
+            // reviewer saved it
+            target.setReviewer(authenticatedAccount.getPerson());
+            if (previousState == ContentState.New) {
                 target.setTranslator(authenticatedAccount.getPerson());
             }
         } else {
-            if (target.getState() == ContentState.Approved) {
-                target.setState(ContentState.Translated);
-            }
             target.setTranslator(authenticatedAccount.getPerson());
         }
+
         if (target.getState() != previousState) {
             changed = true;
         }
