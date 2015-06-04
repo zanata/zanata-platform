@@ -83,7 +83,7 @@ public class TransMemoryMatcherTest {
     }
 
     @Test
-    public void canMatchSameStructureButDifferentTagsPlusTranslationSwappedLocation() {
+    public void canMatchSameStructureButDifferentTagsPlusTranslationTextSwappedLocation() {
         // Given:
         givenTransMemory(
                 "Do you know <div><some>you</some> will <strong>never</strong></div> walk alone?",
@@ -114,7 +114,25 @@ public class TransMemoryMatcherTest {
     }
 
     @Test
-    public void moreTestCases() {
+    public void canHandleIdenticalTextTokensInSourceWithDifferentTranslation() {
+        // Given: two text tokens are identical in source, e.g. "<some>good</some>"
+        givenTransMemory(
+                "How <some>good</some> are <strong>you</strong>? I am <some>good</some>.",
+                "<some>好</some><strong>你</strong>吗？ 我<some>不错</some>。");
+        matcher = givenUpcomingSourceToMatch(
+                "How <other>good</other> are <bold>you</bold>? I am <other>good</other>.");
+
+        // When:
+        String translation = matcher.translationFromTransMemory();
+
+        // Then:
+        Assertions.assertThat(translation)
+                .isEqualTo(
+                        "<other>好</other><bold>你</bold>吗？ 我<other>不错</other>。");
+    }
+
+    @Test
+    public void tagsSwappedLocation() {
         // Given: two text tokens are identical in source, e.g. "<some>good</some>"
         givenTransMemory(
                 "How <some>good</some> are <strong>you</strong>? I am <some>good</some>.",
