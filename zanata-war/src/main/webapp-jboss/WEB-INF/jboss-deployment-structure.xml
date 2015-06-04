@@ -27,8 +27,6 @@
       <module name="javax.validation.api" />
       <!-- not needed for wildfly: -->
       <module name="javax.xml.bind.api" />
-      <!-- not needed for wildfly: -->
-      <module name="javax.ws.rs.api" />
       <module name="org.antlr" />
       <module name="org.apache.commons.logging" />
       <module name="org.apache.log4j" />
