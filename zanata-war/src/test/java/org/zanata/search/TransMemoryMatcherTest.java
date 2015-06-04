@@ -132,8 +132,44 @@ public class TransMemoryMatcherTest {
     }
 
     @Test
+    public void extraTagsOutsideText() {
+        givenTransMemory(
+                "I <b>see</b> you",
+                "我<b>看见</b>你");
+        matcher = givenUpcomingSourceToMatch(
+                "I <a><bb>see</bb></a> you");
+        String translation = matcher.translationFromTransMemory();
+        Assertions.assertThat(translation)
+                .isEqualTo("我<a><bb>看见</bb></a>你");
+    }
+
+    @Test
+    public void extraTagsInsideText() {
+        givenTransMemory(
+                "I <b>see</b> you",
+                "我<b>看见</b>你");
+        matcher = givenUpcomingSourceToMatch(
+                "I <bb><a>see</a></bb> you");
+        String translation = matcher.translationFromTransMemory();
+        Assertions.assertThat(translation)
+                .isEqualTo("我<bb><a>看见</a></bb>你");
+    }
+
+    @Test
+    public void extraTagsOutsideOfTags() {
+        givenTransMemory(
+                "I <b>can <c>not</c> believe</b> you",
+                "我<b><c>不</c>能相信</b>你");
+        matcher = givenUpcomingSourceToMatch(
+                "I <a><bb>can <cc>not</cc> believe</bb></a> you");
+        String translation = matcher.translationFromTransMemory();
+        Assertions.assertThat(translation)
+                .isEqualTo("我<a><bb><cc>不</cc>能相信</bb></a>你");
+    }
+
+    @Test
     public void tagsSwappedLocation() {
-        // Given: two text tokens are identical in source, e.g. "<some>good</some>"
+        // Given: elements swapped location
         givenTransMemory(
                 "How <some>good</some> are <strong>you</strong>? I am <some>good</some>.",
                 "<strong>你</strong><some>好</some>吗？ 我<some>不错</some>。");

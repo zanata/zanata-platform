@@ -29,6 +29,7 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -45,8 +46,10 @@ public class TransMemoryMatcher {
                     .prettyPrint(false);
     private boolean canFullyReuseTM = false;
     private final Element transMemorySourceRootElement;
+    private final Element transMemoryTargetRootElement;
     private final Document upcomingSourceDoc;
     private LinkedList<TextTokenKey> upcomingSourceTokens  = Lists.newLinkedList();
+    private List<TextTokenKey> transMemoryTextTokens = Lists.newLinkedList();
 
     public TransMemoryMatcher(HTextFlow upcomingSource,
             HTextFlow transMemory, HLocale targetLocale) {
@@ -64,9 +67,11 @@ public class TransMemoryMatcher {
         // jsoup will ignore <br>
         upcomingSourceDoc = Jsoup.parseBodyFragment(upcomingSourceContent);
         transMemorySourceRootElement = Jsoup.parseBodyFragment(tmSource).body();
+        transMemoryTargetRootElement = Jsoup.parseBodyFragment(tmTarget).body();
+
 
         TransMemoryHTMLParser transMemoryParser =
-                new TransMemoryHTMLParser(transMemorySourceRootElement, tmTarget);
+                new TransMemoryHTMLParser(transMemorySourceRootElement, transMemoryTargetRootElement);
 
         if (!transMemoryParser.perfectMatch && !transMemoryParser.heuristicMatch) {
             log.info(
@@ -75,6 +80,8 @@ public class TransMemoryMatcher {
             canFullyReuseTM = false;
             return;
         }
+        transMemoryTextTokens = transMemoryParser.textTokens;
+
         log.debug("=== about to parse upcoming source ===");
         List<Node> upcomingNodes = upcomingSourceDoc.body()
                 .childNodes();
@@ -84,7 +91,7 @@ public class TransMemoryMatcher {
         Iterator<TextTokenKey> upcomingSourceTokensIt = upcomingSourceTokens
                 .iterator();
         Iterator<TextTokenKey>
-                transMemoryTokensIt = transMemoryParser.textTokens.iterator();
+                transMemoryTokensIt = transMemoryTextTokens.iterator();
         TextTokenKey nextSourceToken = upcomingSourceTokensIt.next();
         TextTokenKey nextTransMemoryToken = transMemoryTokensIt.next();
 
@@ -96,7 +103,7 @@ public class TransMemoryMatcher {
                     nextTransMemoryToken.optElementAfter)) {
                 log.debug("found source token for [{}] in TM [{}]", nextSourceToken, nextTransMemoryToken);
 
-                // we can't update text on the node here becuase it will affect matchText(nextSourceToken.optElementBefore, nextTransMemoryToken.optElementBefore) above
+                // we can't update text on the node here because it will affect matchText(nextSourceToken.optElementBefore, nextTransMemoryToken.optElementBefore) above
                 nextSourceToken.targetText = nextTransMemoryToken.targetText;
                 nextTransMemoryToken = nextOrNull(transMemoryTokensIt);
             } else {
@@ -189,12 +196,27 @@ public class TransMemoryMatcher {
     public String translationFromTransMemory() {
         Preconditions.checkState(canFullyReuseTM, "do not know how to apply translation memory to this source! Similarity must be 100%.");
         for (TextTokenKey upcomingSourceToken : upcomingSourceTokens) {
-            upcomingSourceToken.node.text(upcomingSourceToken.targetText);
+            upcomingSourceToken.sourceNode.text(upcomingSourceToken.targetText);
         }
         // TODO pahuang reshuffle tags under same parent nodes to match what's in TM target
+        for (TextTokenKey tmToken : transMemoryTextTokens) {
+
+        }
+        breadthFirstTraverse(upcomingSourceDoc.body(), upcomingSourceDoc.body().childNodes());
         String translationBuildFromTM = upcomingSourceDoc.outputSettings(OUTPUT_SETTINGS).body().html();
         log.debug("Translation build from given TM is {}", translationBuildFromTM);
         return translationBuildFromTM;
+    }
+
+    private void breadthFirstTraverse(Element parent, List<Node> upcomingNodes) {
+        List<TextNode> textNodes = parent.textNodes();
+//        Iterables.filter(transMemoryTextTokens, new Predicate<TextTokenKey>() {
+//            @Override
+//            public boolean apply(@Nullable TextTokenKey input) {
+//                return input != null && input.sourceNode
+//            }
+//        })
+
     }
 
 
@@ -271,12 +293,13 @@ public class TransMemoryMatcher {
     @RequiredArgsConstructor
     @EqualsAndHashCode
     private static class TextTokenKey {
-        private final TextNode node;
+        private final TextNode sourceNode;
         private final ParentNodes parentNodes;
         private final Optional<Element> optElementBefore;
         private final Optional<Element> optElementAfter;
         private final int siblingIndex;
         private final String sourceText;
+        private TranslationToken matchedTranslationToken;
         private String targetText = "";
 
         @Override
@@ -300,27 +323,22 @@ public class TransMemoryMatcher {
     }
 
     private static class TransMemoryHTMLParser {
-        private final Element sourceRootElement;
         private boolean perfectMatch = true;
         private boolean heuristicMatch = true;
         private List<TextTokenKey> textTokens = Lists.newLinkedList();
-        private List<TranslationToken> targetTextTokens = Lists.newLinkedList();
-        private List<TranslationToken> leftOverTransTokens = Collections.emptyList();
+
         private transient Map<List<Tag>, List<TranslationToken>> parentTagsToTransTokens =
                 Maps.newHashMap();
-        private transient Map<ParentNodes, TextTokenKey> lastSourceTextNodeForEachParentNodes =
-                Maps.newHashMap();
         private transient List<TextTokenKey> leftOverSourceTokens = Lists.newLinkedList();
+        private transient List<TranslationToken> leftOverTransTokens = Collections.emptyList();
 
         private TransMemoryHTMLParser(
-                Element sourceRootElement, String targetContent) {
-            this.sourceRootElement = sourceRootElement;
-            Document targetDoc = Jsoup.parseBodyFragment(targetContent);
-            parse(targetDoc);
+                Element sourceRootElement, Element targetRootElement) {
+            parse(sourceRootElement, targetRootElement);
         }
 
-        private void parse(Document targetDoc) {
-            List<Node> targetChildNodes = targetDoc.body().childNodes();
+        private void parse(Element sourceRootElement, Element targetElement) {
+            List<Node> targetChildNodes = targetElement.childNodes();
             depthFirstTraverseTargetNodes(targetChildNodes, new ParentNodes());
             depthFirstTraverseSourceNodes(sourceRootElement.childNodes(),
                     new ParentNodes(), textTokens);
@@ -341,7 +359,6 @@ public class TransMemoryMatcher {
                             textNode.getWholeText());
                     addToParentTagsMap(parentNodes.parentTags(),
                             translationToken);
-                    targetTextTokens.add(translationToken);
                 } else {
                     Element element = (Element) node;
                     depthFirstTraverseTargetNodes(element.childNodes(),
@@ -362,8 +379,6 @@ public class TransMemoryMatcher {
         private void matchSourceTokensToTargetTokens() {
 
             for (TextTokenKey sourceToken : textTokens) {
-                lastSourceTextNodeForEachParentNodes.put(
-                        sourceToken.parentNodes, sourceToken);
                 List<TranslationToken> transTokensUnderThisParentTags =
                         MoreObjects.firstNonNull(parentTagsToTransTokens
                                 .get(sourceToken.parentNodes.parentTags()),
@@ -383,6 +398,7 @@ public class TransMemoryMatcher {
                     TranslationToken translationToken =
                             optMatchTransToken.get();
                     log.debug("found matching translation for [{}] -> [{}]", sourceToken, translationToken);
+                    sourceToken.matchedTranslationToken = translationToken;
                     sourceToken.targetText = translationToken.targetText;
                     // remove matched translation
                     transTokensUnderThisParentTags.remove(translationToken);
@@ -410,6 +426,7 @@ public class TransMemoryMatcher {
                                 potentialMatchedTrans.iterator().next();
                         log.info("<Heuristic match>: assuming source token [{}] -> target token [{}]", sourceToken,
                                 leftOverTransToken);
+                        sourceToken.matchedTranslationToken = leftOverTransToken;
                         sourceToken.targetText = leftOverTransToken.targetText;
                         leftOverSourceTokens.remove(sourceToken);
                         leftOverTransSize--;
