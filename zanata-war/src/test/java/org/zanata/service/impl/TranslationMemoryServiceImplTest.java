@@ -3,7 +3,6 @@ package org.zanata.service.impl;
 import java.util.Date;
 import java.util.List;
 
-import com.binarytweed.test.DelegateRunningTo;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
@@ -13,7 +12,6 @@ import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.search.impl.FullTextSessionImpl;
 import org.hibernate.search.jpa.Search;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
@@ -49,7 +47,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 // see also TranslationFinderTest
-@DelegateRunningTo(DataProviderRunner.class)
+@RunWith(DataProviderRunner.class)
 public class TranslationMemoryServiceImplTest extends ImmutableDbunitJpaTest {
     private SeamAutowire seam = SeamAutowire.instance();
     private TranslationMemoryServiceImpl service;

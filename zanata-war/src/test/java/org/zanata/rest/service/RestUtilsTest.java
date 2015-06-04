@@ -9,7 +9,6 @@ import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 import javax.ws.rs.core.MediaType;
 
-import com.binarytweed.test.DelegateRunningTo;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
@@ -31,7 +30,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-@DelegateRunningTo(DataProviderRunner.class)
+@RunWith(DataProviderRunner.class)
 public class RestUtilsTest extends ZanataTest {
     RestUtils restUtils;
 

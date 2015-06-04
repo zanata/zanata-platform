@@ -1230,13 +1230,6 @@
   <dependencies>
 
     <dependency>
-      <groupId>com.binarytweed</groupId>
-      <artifactId>quarantining-test-runner</artifactId>
-      <version>0.0.3</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>com.tngtech.java</groupId>
       <artifactId>junit-dataprovider</artifactId>
       <version>1.9.3</version>
