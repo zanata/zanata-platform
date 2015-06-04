@@ -27,6 +27,7 @@ public class TransMemoryMatcherTest {
     private String resId = "abc";
     private HTextFlow transMemory;
     private HLocale targetLocale = TestFixture.setId(1L, new HLocale(new LocaleId("zh")));
+    private TransMemoryMatcher matcher;
 
     @Before
     public void setUp() {
@@ -51,11 +52,7 @@ public class TransMemoryMatcherTest {
                 "你知道吗<div><some>你</some>将<strong>永远不会</strong></div>一个人走?");
         String upcomingSource =
                 "Do you know <span><other>you</other> will <bold>never</bold></span> walk alone?";
-        HTextFlow upcomingMessage =
-                new HTextFlow(document, resId, upcomingSource);
-        TransMemoryMatcher matcher =
-                new TransMemoryMatcher(upcomingMessage, transMemory,
-                        targetLocale);
+        matcher = givenUpcomingSourceToMatch(upcomingSource);
 
 
         // When:
@@ -77,6 +74,14 @@ public class TransMemoryMatcherTest {
                 .as("will replace translation from TM with correct tags");
     }
 
+    public TransMemoryMatcher givenUpcomingSourceToMatch(
+            String upcomingSource) {
+        HTextFlow upcomingMessage =
+                new HTextFlow(document, resId, upcomingSource);
+        return new TransMemoryMatcher(upcomingMessage, transMemory,
+                targetLocale);
+    }
+
     @Test
     public void canMatchSameStructureButDifferentTagsPlusTranslationSwappedLocation() {
         // Given:
@@ -85,11 +90,8 @@ public class TransMemoryMatcherTest {
                 "<div><some>你</some><strong>永远不会</strong></div>一个人走你知道吗?");
         String upcomingSource =
                 "Do you know <span><other>you</other> will <bold>never</bold></span> walk alone?";
-        HTextFlow upcomingMessage =
-                new HTextFlow(document, resId, upcomingSource);
-        TransMemoryMatcher matcher =
-                new TransMemoryMatcher(upcomingMessage, transMemory,
-                        targetLocale);
+        matcher =
+                givenUpcomingSourceToMatch(upcomingSource);
 
 
         // When:
@@ -109,6 +111,24 @@ public class TransMemoryMatcherTest {
                 .isEqualTo(
                         "<span><other>你</other><bold>永远不会</bold></span>一个人走你知道吗?")
                 .as("will replace translation from TM with correct tags");
+    }
+
+    @Test
+    public void moreTestCases() {
+        // Given: two text tokens are identical in source, e.g. "<some>good</some>"
+        givenTransMemory(
+                "How <some>good</some> are <strong>you</strong>? I am <some>good</some>.",
+                "<strong>你</strong><some>好</some>吗？ 我<some>不错</some>。");
+        matcher = givenUpcomingSourceToMatch(
+                "How <other>good</other> are <bold>you</bold>? I am <other>good</other>.");
+
+        // When:
+        String translation = matcher.translationFromTransMemory();
+
+        // Then:
+        Assertions.assertThat(translation)
+                .isEqualTo(
+                        "<bold>你</bold><other>好</other>吗？ 我<other>不错<other>。");
     }
 
     @Test
