@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.faces.event.ValueChangeEvent;
+import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
@@ -32,6 +33,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.annotations.security.Restrict;
+import org.jboss.seam.faces.Redirect;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
@@ -101,6 +103,9 @@ public class LanguageAction implements Serializable {
 
     @In
     private ResourceUtils resourceUtils;
+
+    @In
+    private Redirect redirect;
 
     @Getter
     @Setter
@@ -222,6 +227,28 @@ public class LanguageAction implements Serializable {
         }
         return locale;
     }
+
+    public void validateLanguage() {
+        if(StringUtils.isEmpty(language)) {
+            redirectToLanguageHome();
+            return;
+        }
+
+        boolean isSupported =
+                localeServiceImpl.localeSupported(new LocaleId(language));
+        if(!isSupported) {
+            redirectToLanguageHome();
+            return;
+        }
+    }
+
+    private void redirectToLanguageHome() {
+        facesMessages.addGlobal(msgs.format(
+            "jsf.language.validation.NotSupport", language));
+        redirect.setViewId("/language/home.xhtml");
+        redirect.execute();
+    }
+
 
     public List<HLocaleMember> getLocaleMembers() {
         return localeMemberDAO.findAllByLocale(new LocaleId(language));

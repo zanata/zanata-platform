@@ -60,6 +60,7 @@ Example usage in html file: `<link rel="shortcut icon" href="#{assets['img/logo/
 * [1112498](https://bugzilla.redhat.com/show_bug.cgi?id=1112498) - Unable to remove self as maintainer
 * [1227575](https://bugzilla.redhat.com/show_bug.cgi?id=1227575) - Exception on emptying the search field when many users were reported
 * [1224030](https://bugzilla.redhat.com/show_bug.cgi?id=1224030) - Search form does not trigger search if paste text
+* [1198898](https://bugzilla.redhat.com/show_bug.cgi?id=1198898) - Exception on using the URL to view a language not yet added to Zanata
 
 -----------------------
 
