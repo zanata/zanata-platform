@@ -1,8 +1,8 @@
 ### Prerequisite
-See [glossary roles and permission](user-guide/glossary/glossary-roles-permissions) for permission setup.
+See [glossary roles and permission](/user-guide/glossary/glossary-roles-permissions) for permission setup.
 
 1. Go to editor in Zanata and select a string. Instructions for opening the
-    translation editor can be found at [Preparing for Translation](user-guide/translator-guide#start-translate-a-project-version).
+    translation editor can be found at [Preparing for Translation](/user-guide/translator-guide#start-translate-a-project-version).
 1. In Glossary panel (bottom right corner), click on <i class='i i--info txt--highlight'></i> icon on the glossary entry you wish to edit.
 <figure>
 ![Glossary panel](/images/glossary-panel.png)

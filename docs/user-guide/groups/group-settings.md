@@ -1,5 +1,5 @@
 Once a group has been created, the maintainer can add further details and group behaviour via the Settings tab.
-See the [Group Creation Help](user-guide/groups/create-group) for details on creating groups.
+See the [Group Creation Help](/user-guide/groups/create-group) for details on creating groups.
 <figure>
 ![Groups General Settings](/images/group-settings-button.png)
 <figcaption>Groups Settings tab link.</figcaption>
@@ -8,7 +8,7 @@ See the [Group Creation Help](user-guide/groups/create-group) for details on cre
 ------------
 ## General Settings
 
-The General tab contains fields that manage appearance your group which already covered in the [Group Creation Help](user-guide/groups/create-group).
+The General tab contains fields that manage appearance your group which already covered in the [Group Creation Help](/user-guide/groups/create-group).
 <figure>
 ![Group General Settings tab](/images/group-general-settings.png)
 <figcaption>Group General Settings tab</figcaption>

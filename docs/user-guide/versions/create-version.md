@@ -3,7 +3,7 @@ Documents for a project are grouped into versions, rather than being added direc
 For simple projects, it is typical to create a single version named 'master'. Other projects use workflows in which there is a version under active development, and one or more versions that are being maintained in a stable state with only some minor changes. Grouping these related versions under the same project allows for easier reuse of translations between versions.
 
 
- 1. [Create a project](user-guide/projects/create-project).
+ 1. [Create a project](/user-guide/projects/create-project).
  1. **Create a version under the project.**
  1. Upload documents to the version:
    - Using the website
@@ -35,12 +35,12 @@ This is the identifier used to refer to the version on the Zanata website and wh
 
 ### Project Type
 
-Project Type defines the type of files that your project uses to store source and translation strings. For more information see the [Project Types](user-guide/projects/project-types).
+Project Type defines the type of files that your project uses to store source and translation strings. For more information see the [Project Types](/user-guide/projects/project-types).
 
 ### Copy from previous version
 
 If selected, this new version is will based off the selected version.
-See [Copy version](user-guide/translation-reuse/copy-version) for more information.
+See [Copy version](/user-guide/translation-reuse/copy-version) for more information.
 
 ## Version creation through the command line
 

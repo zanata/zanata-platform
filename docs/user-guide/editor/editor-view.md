@@ -3,7 +3,7 @@
 
 ### 1. Breadcrumbs
 
-Links to Project -> Version -> [Documents view](user-guide/editor/documents-view) -> Document name. Each link will redirect to the respective page.
+Links to Project -> Version -> [Documents view](/user-guide/editor/documents-view) -> Document name. Each link will redirect to the respective page.
 
 
 ### 2. Statistic
@@ -12,7 +12,7 @@ Statistic and remaining hours of the current document translation document.
 
 ### 3. Views
 
-See [Views](user-guide/editor/overview#views-in-webtrans) for more information.
+See [Views](/user-guide/editor/overview#views-in-webtrans) for more information.
 
 ### 4. Search and filter 
 
@@ -104,7 +104,7 @@ You will be restricted to only viewing source and translations in the editor.
 <br/>
 
 Translators can enable or disable validation check on their translations except for those which is enforced by project maintainers.
-See [Project settings](user-guide/projects/project-settings#validations) for more information.
+See [Project settings](/user-guide/projects/project-settings#validations) for more information.
 
-See [validations](user-guide/projects/validations) all available check.
+See [validations](/user-guide/projects/validations) all available check.
     

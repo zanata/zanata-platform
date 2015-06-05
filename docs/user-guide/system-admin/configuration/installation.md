@@ -113,10 +113,13 @@ Any other value will be treated as the name of a virus scanner command: the comm
 
 ## Running Zanata
 
-Go to the `<JBOSS>/bin` directory and run the `standalone.sh` (Linux, Mac) or `standalone.bat` (Windows) file.
+Go to the `<JBOSS>/bin` directory and run
+
+* `standalone.sh` or `start-zanata.sh` for Linux, Mac
+* `standalone.bat` or `start-zanata.bat` for Windows
 
 ## Using Zanata
 
 To start using your Zanata server, open a browser and navigate to `http://localhost:8080/zanata`
 
-You can now upload some source strings and start translating. To get started, see [Adding Source Documents](user-guide/documents/upload-documents).
+You can now upload some source strings and start translating. To get started, see [Adding Source Documents](/user-guide/documents/upload-documents).

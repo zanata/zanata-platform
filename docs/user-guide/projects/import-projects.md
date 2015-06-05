@@ -1,11 +1,11 @@
 This document will provide help when importing or migrating projects into Zanata from other translation platforms. 
 You need a user account on the Zanata instance you will migrate to.
 
-See [signup account](user-guide/account/account-sign-up) and [activate account](user-guide/account/account-activate) for more information.
+See [signup account](/user-guide/account/account-sign-up) and [activate account](/user-guide/account/account-activate) for more information.
 
 ## Create a project in Zanata
 
-The first thing to do is to create a project and version to host your content in Zanata. You can do this using the command line clients (See [Initialising a Project](http://zanata-client.readthedocs.org/en/latest/commands/init/) ), or Zanata's web interface (See [Project Creation](user-guide/projects/create-project) ).
+The first thing to do is to create a project and version to host your content in Zanata. You can do this using the command line clients (See [Initialising a Project](http://zanata-client.readthedocs.org/en/latest/commands/init/) ), or Zanata's web interface (See [Project Creation](/user-guide/projects/create-project) ).
 
 Please note that the `init` command might not be available on older platforms (like Fedora 19). Alternatively, you can use the Zanata Ivy client. For more information see [Installing the Client](http://zanata-client.readthedocs.org/en/latest/installation/) and [Configuring the Client](http://zanata-client.readthedocs.org/en/latest/configuration/).
 
@@ -23,11 +23,11 @@ Extract the project's content from the other platform. Below are some examples o
 
 Depending on your project type, you might need to modify your Zanata configuration or your project's directory structure. Here are some examples on how to set up a project locally to be pushed to Zanata.
 
-+ [Gettext project](user-guide/projects/gettext-example)
++ [Gettext project](/user-guide/projects/gettext-example)
 
 Gettext projects consist of a single source file (.pot), and several translation files (.po) named after their corresponding locale.
 
-+ [Podir project](user-guide/projects/podir-example)
++ [Podir project](/user-guide/projects/podir-example)
 
 Podir projects consist of multiple source files (.pot) in a common source directory, and several translation files (.po) located in their corresponding locale's directory.
 

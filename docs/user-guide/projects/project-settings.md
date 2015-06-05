@@ -1,11 +1,11 @@
 Once a project has been created, the maintainer can add further details and project behaviour via the Settings tab.
-See the [Project Creation Help](user-guide/projects/create-project) for details on creating projects.
+See the [Project Creation Help](/user-guide/projects/create-project) for details on creating projects.
 <figure>
 ![Project General Settings tab](/images/project-settings-button.png)
 <figcaption>Project Settings tab link.</figcaption>
 </figure>
 
-The Settings tab contains fields that manage appearance and workflow of your project.  Some of these are already covered in the [Project Creation Help](user-guide/projects/create-project).
+The Settings tab contains fields that manage appearance and workflow of your project.  Some of these are already covered in the [Project Creation Help](/user-guide/projects/create-project).
 
 ------------
 
@@ -20,7 +20,7 @@ The Settings tab contains fields that manage appearance and workflow of your pro
 
 Project Type defines the type of files that your project uses to store source and translation strings. This setting ensures that files for your project will be downloaded in the correct format.
 
-There is a brief description for each project type next to each project type option. If the description is insufficient, more information on each project type is available at [Project Types](user-guide/projects/project-types).
+There is a brief description for each project type next to each project type option. If the description is insufficient, more information on each project type is available at [Project Types](/user-guide/projects/project-types).
 
 ### Home Page
 
@@ -95,13 +95,13 @@ Validations not enabled here can be toggled by translators to suit their individ
 * Warning - display warning to translator when validation failed. Translator can save the translation as `Translated`.
 * Error - display error to translator when validation failed. Translator cannot save translation as `Translated` until error has been fixed.
 
-See [validation](user-guide/projects/validations) all available check.
+See [validation](/user-guide/projects/validations) all available check.
 
 ### Copy Translations settings
 
 Copy Translations attempts to reuse translations that have been entered in Zanata by matching them with untranslated strings in your project-version.  These settings change the way Copy Translations behaves when a new version is created.
 
-Refer to [the Copy Translations reference](user-guide/translation-reuse/copy-trans/) for more information.
+Refer to [the Copy Translations reference](/user-guide/translation-reuse/copy-trans/) for more information.
 
 ------------
 

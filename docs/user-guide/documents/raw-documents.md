@@ -36,6 +36,6 @@ _**Workaround:** Only upload translation documents that are completely translate
 
 ## Tips for Translating 'Raw' Documents
 ### Inline Tags
-Some parts of raw documents are not intended for direct translation. These are converted to xml-style inline tags such as "&lt;g1>&lt;g2>&lt;/g2>&lt;/g1>" in the place of the image in the example document. It is recommended that these tags be included in translations with no modifications. The [XML/HTML tags validator](user-guide/projects/validations#htmlxml-tags) can help detect accidental changes to inline tags. 
+Some parts of raw documents are not intended for direct translation. These are converted to xml-style inline tags such as "&lt;g1>&lt;g2>&lt;/g2>&lt;/g1>" in the place of the image in the example document. It is recommended that these tags be included in translations with no modifications. The [XML/HTML tags validator](/user-guide/projects/validations#htmlxml-tags) can help detect accidental changes to inline tags.
 
-If unsure, you can also download a preview document to ensure that there are no errors or layout problems associated with treatment of tags - see [Downloading Translations through Web Interface](user-guide/documents/download-translated-documents/#from-website)
+If unsure, you can also download a preview document to ensure that there are no errors or layout problems associated with treatment of tags - see [Downloading Translations through Web Interface](/user-guide/documents/download-translated-documents/#from-website)

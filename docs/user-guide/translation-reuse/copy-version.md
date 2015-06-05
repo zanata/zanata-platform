@@ -2,13 +2,13 @@ Copy version is a service that allow project maintainers to create new project v
 
 This saves project maintainer from uploading the same source and translation documents every time a new version is required.
 
-When [creating new version](user-guide/versions/create-version), project maintainer can select if it will be copying from an existing version in the same project.
+When [creating new version](/user-guide/versions/create-version), project maintainer can select if it will be copying from an existing version in the same project.
 
 ## Run copy version
 
 ### From create new version page
 
-1. [Create a new version](user-guide/versions/create-version).
+1. [Create a new version](/user-guide/versions/create-version).
 1. Select option `Copy from previous version`.
 1. Select the version you wish to copy from.
 
@@ -33,7 +33,7 @@ A progress bar on the version page will displays the progress of the operation.
 ![Copy version access](/images/copy-version-access2.png)
 </figure>
 <br/>
-1. This will redirect you to [Create a new version](user-guide/versions/create-version) with pre-selected version.
+1. This will redirect you to [Create a new version](/user-guide/versions/create-version) with pre-selected version.
 1. Fill in new version id and click `Create Version` to start.
 
 A progress bar on the version page will displays the progress of the operation.

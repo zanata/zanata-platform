@@ -20,7 +20,7 @@ Dashboard has
 - translation statistics
 - an activity stream 
 - list of maintained projects
-- [Profile settings](user-guide/account/account-settings)
+- [Profile settings](/user-guide/account/account-settings)
  <figure>
    ![User dashboard](/images/user-dashboard-view.png)
  </figure>
