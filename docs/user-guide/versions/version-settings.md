@@ -1,5 +1,5 @@
 Once a version has been created, the maintainer can add further details and version behaviour via the Settings tab.
-See the [Version Creation Help](user-guide/versions/create-version) for details on creating version.
+See the [Version Creation Help](/user-guide/versions/create-version) for details on creating version.
 <figure>
 ![Version General Settings tab](/images/version-settings-button.png)
 <figcaption>Versions Settings tab link.</figcaption>
@@ -16,7 +16,7 @@ See the [Version Creation Help](user-guide/versions/create-version) for details 
 
 ### Project Type
 
-Project Type settings by default inherits from project's settings but maintainers are able to select a different project type for the version. See [Project Types](user-guide/projects/project-types) and [Project Settings](user-guide/projects/project-settings/#project-type) for more information.
+Project Type settings by default inherits from project's settings but maintainers are able to select a different project type for the version. See [Project Types](/user-guide/projects/project-types) and [Project Settings](/user-guide/projects/project-settings/#project-type) for more information.
 
 ### Make this version read only
 
@@ -63,10 +63,10 @@ By default, your project will be available for translation to a set of locales d
 ------------
 ### Require translation review
 
-See [Review overview](user-guide/review/overview) for more information.
+See [Review overview](/user-guide/review/overview) for more information.
 
 ### Customized list of validations
 
 If your version requires a different set of validations than the parent project, they can be selected here. If customized validations are not specified, the validations specified for your project will be used. An advantage of inheriting validations from the poject is that new validations can be added to the project without having to add them to each different version.
 
-For more information, see [Project settings](user-guide/projects/project-settings#validations).
+For more information, see [Project settings](/user-guide/projects/project-settings#validations).

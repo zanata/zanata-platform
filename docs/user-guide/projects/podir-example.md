@@ -1,4 +1,4 @@
-This document presents an example of a Zanata project with type `podir`. It assumes that you have already created a project and a version (See [Project Creation](user-guide/projects/create-project) ).
+This document presents an example of a Zanata project with type `podir`. It assumes that you have already created a project and a version (See [Project Creation](/user-guide/projects/create-project) ).
 
 Podir projects consist of multiple source files (.pot) in a common source directory, and several translation files (.po) located in their corresponding locale's directory. Below is a typical directory structure for a Podir project:
 
@@ -44,5 +44,5 @@ Notice the presence of the `zanta.xml` file already there. This file will be gen
 
 
 
-See [Upload documents](user-guide/documents/upload-documents) and [Download translation](user-guide/documents/download-translated-documents) for more information.
+See [Upload documents](/user-guide/documents/upload-documents) and [Download translation](/user-guide/documents/download-translated-documents) for more information.
 

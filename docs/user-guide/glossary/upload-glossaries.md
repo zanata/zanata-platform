@@ -1,6 +1,6 @@
 ### Prerequisite
 
-See [glossary roles and permission](user-guide/glossary/glossary-roles-permissions) for permission setup.
+See [glossary roles and permission](/user-guide/glossary/glossary-roles-permissions) for permission setup.
 
 ### Supported file format
 #### PO

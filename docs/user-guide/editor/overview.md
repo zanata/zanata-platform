@@ -1,6 +1,6 @@
 ## Navigating to editor
 
-See [Translator guide](user-guide/translator-guide) for more information.
+See [Translator guide](/user-guide/translator-guide) for more information.
 
 
 ## Views in webtrans
@@ -11,7 +11,7 @@ See [Translator guide](user-guide/translator-guide) for more information.
 
 From left to right
 
-1. [Editor view (default view)](user-guide/editor/editor-view)
-2. [Documents view](user-guide/editor/documents-view)
-3. [Project search and replace](user-guide/editor/project-search-replace-view)
-4. [Keyboard shortcut](user-guide/editor/keyboard-shortcuts)
+1. [Editor view (default view)](/user-guide/editor/editor-view)
+2. [Documents view](/user-guide/editor/documents-view)
+3. [Project search and replace](/user-guide/editor/project-search-replace-view)
+4. [Keyboard shortcut](/user-guide/editor/keyboard-shortcuts)

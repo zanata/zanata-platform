@@ -16,7 +16,7 @@ To access to admin menu, login to Zanata with admin role user, select `Administr
 
 Configuration and settings for Zanata server.
 
-See [server configuration](user-guide/admin/server-config) for more information.
+See [server configuration](/user-guide/admin/server-config) for more information.
 
 ### Manage users
 
@@ -33,11 +33,11 @@ See [server configuration](user-guide/admin/server-config) for more information.
 
 Reindexing Zanata database used for searching. 
 
-See [Manage search](user-guide/admin/manage-search) for more information.
+See [Manage search](/user-guide/admin/manage-search) for more information.
 
 ### Role assignment rules
 
-See [Role assignment rules](user-guide/admin/role-assignment-rules) for more information.
+See [Role assignment rules](/user-guide/admin/role-assignment-rules) for more information.
 
 ### Translation memory
 
@@ -47,16 +47,16 @@ See [Role assignment rules](user-guide/admin/role-assignment-rules) for more inf
 
 All background asynchronous tasks running in Zanata.
 
-See [Process manager](user-guide/admin/process-manager) for more information.
+See [Process manager](/user-guide/admin/process-manager) for more information.
 
 ### Overall statistic
 
 Overall general statistics of Zanata.
 
-See [Statistic](user-guide/admin/statistic) for more information.
+See [Statistic](/user-guide/admin/statistic) for more information.
 
 ### Server monitoring
 
 Server performance and statistics.
 
-See [Monitoring](user-guide/admin/monitoring) for more information.
+See [Monitoring](/user-guide/admin/monitoring) for more information.

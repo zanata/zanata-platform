@@ -2,7 +2,7 @@
 
 Anyone with an account on Zanata can create a translation project for their documents.
 
-You will need to [Create a project](user-guide/projects/create-project) and [Create a version](user-guide/versions/create-version) to upload strings.
+You will need to [Create a project](/user-guide/projects/create-project) and [Create a version](/user-guide/versions/create-version) to upload strings.
 
 ------------
 

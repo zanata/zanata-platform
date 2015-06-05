@@ -6,94 +6,102 @@ theme: readthedocs
 # theme_dir: For custom themes
 
 pages:
-- ['index.md', 'Home']
-- ['release-notes.md', 'Release notes', 'Release notes']
+- Home: 'index.md'
+- Release notes: 'release-notes.md'
 # Getting started
-- ['user-guide/translator-guide.md', 'Getting Started', 'Translator Guide']
-- ['user-guide/project-maintainer-guide.md', 'Getting Started', 'Project Maintainer Guide']
-- ['user-guide/system-admin/configuration/installation.md' , 'Getting Started', 'System admin guide']
-## Accounts
-- ['user-guide/account/account-sign-up.md', 'Accounts', 'Create new account']
-- ['user-guide/account/account-activate.md', 'Accounts', 'Activate account']
-- ['user-guide/account/account-resend-activation.md', 'Accounts', 'Resend activation email']
-- ['user-guide/account/account-settings.md', 'Accounts', 'Account settings']
-- ['user-guide/account/user-profile.md', 'Accounts', 'User profile']
-- ['user-guide/account/user-dashboard.md', 'Accounts', 'User dashboard']
-## Projects
-- ['user-guide/projects/project-view.md', 'Projects', 'Project view']
-- ['user-guide/projects/create-project.md', 'Projects', 'Creating a project']
-- ['user-guide/projects/project-settings.md', 'Projects', 'Project settings']
-- ['user-guide/projects/project-types.md', 'Projects', 'Project types']
-- ['user-guide/projects/validations.md', 'Projects', 'Validations']
-- ['user-guide/projects/import-projects.md', 'Projects', 'Import Projects']
-- ['user-guide/projects/gettext-example.md', 'Projects', 'Gettext Project example']
-- ['user-guide/projects/podir-example.md', 'Projects', 'Podir Project example']
-## Versions
-- ['user-guide/versions/version-view.md', 'Versions', 'Version view']
-- ['user-guide/versions/create-version.md', 'Versions', 'Creating a version']
-- ['user-guide/versions/version-settings.md', 'Versions', 'Version settings']
-- ['user-guide/versions/request-to-join-group.md', 'Versions', 'Join a group']
-- ['user-guide/versions/merge-translations.md', 'Versions', 'Merge translations']
-## Documents
-- ['user-guide/documents/upload-documents.md', 'Documents', 'Upload documents']
-- ['user-guide/documents/download-translated-documents.md', 'Documents', 'Download translated documents']
-- ['user-guide/documents/raw-documents.md', 'Documents', 'Raw documents']
-- ['user-guide/documents/custom-document-param.md', 'Documents', 'Custom document parameters']
-## Languages
-- ['user-guide/languages/language-team.md', 'Languages', 'Language team']
-- ['user-guide/languages/add-team-member.md', 'Languages', 'Add members']
-- ['user-guide/languages/modify-role.md', 'Languages', 'Modify role']
-## Review
-- ['user-guide/review/overview.md', 'Translation Review', 'Overview']
-- ['user-guide/review/review-enable.md', 'Translation Review', 'Enabling review in version']
-- ['user-guide/review/add-reviewer.md', 'Translation Review', 'Add reviewer']
-- ['user-guide/review/translation-review.md', 'Translation Review', 'Start reviewing']
-## Translation reuse
-- ['user-guide/translation-reuse/copy-trans.md', 'Translation Reuse', 'Copy Trans']
-- ['user-guide/translation-reuse/copy-version.md', 'Translation Reuse', 'Copy version']
-- ['user-guide/translation-reuse/merge-trans.md', 'Translation Reuse', 'Merge translations']
-## Groups
-- ['user-guide/groups/group-view.md', 'Groups', 'Group view']
-- ['user-guide/groups/create-group.md', 'Groups', 'Creating a group']
-- ['user-guide/groups/group-settings.md', 'Groups', 'Group settings']
-## Editor
-- ['user-guide/editor/overview.md', 'Editor', 'Overview']
-- ['user-guide/editor/editor-view.md', 'Editor', 'Editor view']
-- ['user-guide/editor/documents-view.md', 'Editor', 'Document view']
-- ['user-guide/editor/project-search-replace-view.md', 'Editor', 'Project search replace view']
-- ['user-guide/editor/keyboard-shortcuts.md', 'Editor', 'Keyboard shortcuts']
-- ['user-guide/editor/translation-history.md', 'Editor', 'Translation history']
-## Glossary
-- ['user-guide/glossary/glossary-roles-permissions.md', 'Glossary', 'Roles and Permissions']
-- ['user-guide/glossary/upload-glossaries.md', 'Glossary', 'Upload glossaries']
-- ['user-guide/glossary/edit-glossaries.md', 'Glossary', 'Edit glossaries']
-- ['user-guide/glossary/delete-glossaries.md', 'Glossary', 'Delete glossaries']
-## API
-- ['user-guide/api/api.md', 'API', 'Zanata API']
-## Client
-- ['user-guide/client/client.md', 'Zanata Client', 'Zanata client']
-## Drupal
-- ['user-guide/drupal/drupal.md', 'Drupal plugin', 'Drupal plugin']
-## Admin
-- ['user-guide/admin/admin-overview.md', 'Admin', 'Overview']
-- ['user-guide/admin/contact-admin.md', 'Admin', 'Contact Admin']
-- ['user-guide/admin/server-config.md', 'Admin', 'Server configuration']
-- ['user-guide/admin/manage-search.md', 'Admin', 'Manage search']
-- ['user-guide/admin/process-manager.md', 'Admin', 'Process manager']
-- ['user-guide/admin/role-assignment-rules.md', 'Admin', 'Role assignment rules']
-- ['user-guide/admin/statistic.md', 'Admin', 'Statistic']
-- ['user-guide/admin/monitoring.md', 'Admin', 'Monitoring']
-## TODO: tmx, Manage users, Manage roles
+- Getting Started:
+  - Translator Guide: 'user-guide/translator-guide.md'
+  - Project Maintainer Guide: 'user-guide/project-maintainer-guide.md'
+  - System admin guide: 'user-guide/system-admin/configuration/installation.md'
+# Accounts
+- Accounts:
+  - Create new account: 'user-guide/account/account-sign-up.md'
+  - Activate account: 'user-guide/account/account-activate.md'
+  - Resend activation email: 'user-guide/account/account-resend-activation.md'
+  - Account settings: 'user-guide/account/account-settings.md'
+  - User profile: 'user-guide/account/user-profile.md'
+  - User dashboard: 'user-guide/account/user-dashboard.md'
+# Projects
+- Projects:
+  - Project view: 'user-guide/projects/project-view.md'
+  - Creating a project: 'user-guide/projects/create-project.md'
+  - Project settings: 'user-guide/projects/project-settings.md'
+  - Project types: 'user-guide/projects/project-types.md'
+  - Validations: 'user-guide/projects/validations.md'
+  - Import Projects: 'user-guide/projects/import-projects.md'
+  - Gettext Project example: 'user-guide/projects/gettext-example.md'
+  - Podir Project example: 'user-guide/projects/podir-example.md'
+# Versions
+- Versions:
+  - Version view: 'user-guide/versions/version-view.md'
+  - Creating a version: 'user-guide/versions/create-version.md'
+  - Version settings: 'user-guide/versions/version-settings.md'
+  - Join a group: 'user-guide/versions/request-to-join-group.md'
+  - Merge translations: 'user-guide/versions/merge-translations.md'
+# Documents
+- Documents:
+  - Upload documents: 'user-guide/documents/upload-documents.md'
+  - Download translated documents: 'user-guide/documents/download-translated-documents.md'
+  - Raw documents: 'user-guide/documents/raw-documents.md'
+  - Custom document parameters: 'user-guide/documents/custom-document-param.md'
+# Languages
+- Languages:
+  - Language team: 'user-guide/languages/language-team.md'
+  - Add members: 'user-guide/languages/add-team-member.md'
+  - Modify role: 'user-guide/languages/modify-role.md'
+# Review
+- Translation Review:
+  - Overview: 'user-guide/review/overview.md'
+  - Enabling review in version: 'user-guide/review/review-enable.md'
+  - Add reviewer: 'user-guide/review/add-reviewer.md'
+  - Start reviewing: 'user-guide/review/translation-review.md'
+# Translation reuse
+- Translation reuse:
+   - Copy Trans: 'user-guide/translation-reuse/copy-trans.md'
+   - Copy version: 'user-guide/translation-reuse/copy-version.md'
+   - Merge translations: 'user-guide/translation-reuse/merge-trans.md'
+   # TODO: TM Merge
+# Groups
+- Groups:
+   - Group view: 'user-guide/groups/group-view.md'
+   - Creating a group: 'user-guide/groups/create-group.md'
+   - Group settings: 'user-guide/groups/group-settings.md'
+# Editor
+- Editor:
+   - Overview: 'user-guide/editor/overview.md'
+   - Editor view: 'user-guide/editor/editor-view.md'
+   - Document view: 'user-guide/editor/documents-view.md'
+   - Project search replace view: 'user-guide/editor/project-search-replace-view.md'
+   - Keyboard shortcuts: 'user-guide/editor/keyboard-shortcuts.md'
+   - Translation history: 'user-guide/editor/translation-history.md'
+# Glossary
+- Glossary:
+  - Roles and Permissions: 'user-guide/glossary/glossary-roles-permissions.md'
+  - Upload glossaries: 'user-guide/glossary/upload-glossaries.md'
+  - Edit glossaries: 'user-guide/glossary/edit-glossaries.md'
+  - Delete glossaries: 'user-guide/glossary/delete-glossaries.md'
+# API
+- Zanata API: 'user-guide/api/api.md'
+# Client
+- Zanata client: 'user-guide/client/client.md'
+# Drupal
+- Drupal plugin: 'user-guide/drupal/drupal.md'
+# Admin
+- Admin:
+  - Overview: 'user-guide/admin/admin-overview.md'
+  - Contact Admin: 'user-guide/admin/contact-admin.md'
+  - Server configuration: 'user-guide/admin/server-config.md'
+  - Manage search: 'user-guide/admin/manage-search.md'
+  - Process manager: 'user-guide/admin/process-manager.md'
+  - Role assignment rules: 'user-guide/admin/role-assignment-rules.md'
+  - Statistic: 'user-guide/admin/statistic.md'
+  - Monitoring: 'user-guide/admin/monitoring.md'
+  # TODO: tmx, Manage users, Manage roles
 # System admin
-- ['user-guide/system-admin/configuration/installation.md', 'System Admin', 'Installation']
-- ['user-guide/system-admin/configuration/authentication.md', 'System Admin', 'Authentication']
-- ['user-guide/system-admin/configuration/document-storage-directory.md', 'System Admin', 'Document Storage Directory']
-# Once pull request https://github.com/zanata/zanata-server/pull/633 is integrated, this can be uncommented
-# - ['user-guide/system-admin/configuration/email.md', 'Configuration', 'Email']
-- ['user-guide/system-admin/configuration/infinispan.md', 'System Admin', 'Caches']
-- ['user-guide/system-admin/configuration/jms-messaging.md', 'System Admin', 'JMS Messaging']
-
-# UI bug, last entry does not show in the list, using it to push JMS Messaging up
-- ['release-notes.md']
-
-copyright: Copyright &copy; 2015, <a href="http//www.redhat.com">Red Hat</a>.
+- System Admin:
+  - Installation: 'user-guide/system-admin/configuration/installation.md'
+  - Authentication: 'user-guide/system-admin/configuration/authentication.md'
+  - Document Storage Directory: 'user-guide/system-admin/configuration/document-storage-directory.md'
+  - Email: 'user-guide/system-admin/configuration/email.md'
+  - Caches: 'user-guide/system-admin/configuration/infinispan.md'
+  - JMS Messaging: 'user-guide/system-admin/configuration/jms-messaging.md'

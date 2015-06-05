@@ -45,7 +45,7 @@ This page shows all the language teams you have joined in Zanata.
 To join more language teams,
 
  1. Click on `Join a language team`.
- 1. See [Joining language team](user-guide/languages/language-team#joining-a-language-team).
+ 1. See [Joining language team](/user-guide/languages/language-team#joining-a-language-team).
 
 ## Client
 

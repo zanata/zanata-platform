@@ -15,4 +15,4 @@ The different views for a project offer more information about it.
 - **About** shows more information about the project.
 - **Settings** _(This is only available to Project Maintainers)_ allows the user to change project settings.
 
-To [view the information about a specific version](user-guide/versions/version-view), you can click on the version's name from the list.
+To [view the information about a specific version](/user-guide/versions/version-view), you can click on the version's name from the list.

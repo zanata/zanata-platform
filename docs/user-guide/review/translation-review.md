@@ -1,7 +1,7 @@
 Some project-versions require translations to be reviewed before they are considered ready to use. 
-Instructions for changing this setting can be found at [Enable review](user-guide/review/review-enable)
+Instructions for changing this setting can be found at [Enable review](/user-guide/review/review-enable)
 
-Review can only be performed by reviewers. To become a reviewer, see [Adding Reviewers](user-guide/review/add-reviewer)
+Review can only be performed by reviewers. To become a reviewer, see [Adding Reviewers](/user-guide/review/add-reviewer)
 
 The review process is about reading translations in the 'translated' state and determining whether they are technically correct translations of sufficient quality. These instructions show how to use the user interface for accepting or rejecting translations, but does not aim to teach how to decide whether a translation should be accepted.
 

@@ -1,4 +1,4 @@
-This document presents an example of a Zanata project with type `gettext`. It assumes that you have already created a project and a version (See [Project Creation](user-guide/projects/create-project) ).
+This document presents an example of a Zanata project with type `gettext`. It assumes that you have already created a project and a version (See [Project Creation](/user-guide/projects/create-project) ).
 
 Gettext projects consist of a single source file (.pot), and several translation files (.po) named after their corresponding locale. Below is a typical directory structure for a Gettext project:
 
@@ -32,4 +32,4 @@ Notice the presence of the `zanata.xml` file already there. This file will be ge
 
 This example is also using the locale mapping feature. The `map-from` attributes on the `locale` elements are telling the client that although it will find the files using locales `es_ES` and `zh_TW`, those translated documents should be stored in the server under locales `es-ES` and `zh-Hant`.
 
-See [Upload documents](user-guide/documents/upload-documents) and [Download translation](user-guide/documents/download-translated-documents) for more information.
+See [Upload documents](/user-guide/documents/upload-documents) and [Download translation](/user-guide/documents/download-translated-documents) for more information.

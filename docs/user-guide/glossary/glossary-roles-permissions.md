@@ -6,16 +6,16 @@
 
 There are 2 roles that manage glossaries in Zanata,  **glossarist** and **glossary-admin**.
 
-User can request those roles by [contacting Zanata admin](user-guide/admin/contact-admin).
+User can request those roles by [contacting Zanata admin](/user-guide/admin/contact-admin).
 
 Below are the summary of these 2 roles with their permission.
 <table>
     <th>
         <tr>
             <td>**Roles**</td>
-            <td>[Upload glossary](user-guide/glossary/upload-glossaries)</td>
-            <td>[Edit glossary](user-guide/glossary/edit-glossaries)</td>
-            <td>[Delete glossary](user-guide/glossary/delete-glossaries)</td>
+            <td>[Upload glossary](/user-guide/glossary/upload-glossaries)</td>
+            <td>[Edit glossary](/user-guide/glossary/edit-glossaries)</td>
+            <td>[Delete glossary](/user-guide/glossary/delete-glossaries)</td>
         </tr>
     </th>
     <tr>
