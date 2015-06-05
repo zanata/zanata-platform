@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Properties;
 import javax.persistence.EntityManager;
 
-import com.binarytweed.test.DelegateRunningTo;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
@@ -44,7 +43,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@DelegateRunningTo(DataProviderRunner.class)
+@RunWith(DataProviderRunner.class)
 public class ResourceUtilsTest extends ZanataTest {
     private static final Logger log = LoggerFactory
             .getLogger(ResourceUtilsTest.class);

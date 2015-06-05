@@ -18,20 +18,17 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.test;
+package org.zanata.seam;
 
-import com.binarytweed.test.Quarantine;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.zanata.ZanataTest;
-import org.zanata.seam.SeamAutowire;
 
 /**
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Quarantine({ "org.jboss.seam", "org.zanata.test.SeamQuarantineTest" })
-public class SeamQuarantineTest extends ZanataTest {
+public class SeamAutowireLinkageTest extends ZanataTest {
+
     @Test
     public void test1() throws ClassNotFoundException {
         // load Seam before test2 gets a chance to use SeamAutowire

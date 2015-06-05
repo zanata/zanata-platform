@@ -20,7 +20,6 @@
  */
 package org.zanata.seam;
 
-import com.binarytweed.test.DelegateRunningTo;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
@@ -51,7 +50,7 @@ import static org.hamcrest.Matchers.*;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@DelegateRunningTo(DataProviderRunner.class)
+@RunWith(DataProviderRunner.class)
 public class SeamAutowireTest extends ZanataDbunitJpaTest {
     @Override
     protected void prepareDBUnitOperations() {

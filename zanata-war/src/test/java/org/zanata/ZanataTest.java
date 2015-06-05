@@ -20,14 +20,15 @@
  */
 package org.zanata;
 
-import com.binarytweed.test.Quarantine;
-import org.junit.runner.RunWith;
-import org.zanata.test.QuarantiningRunner;
+import org.zanata.seam.SeamAutowire;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Quarantine({ "org.jboss.seam" })
-@RunWith(QuarantiningRunner.class)
 public abstract class ZanataTest {
+
+    static {
+        SeamAutowire.instance();
+    }
+
 }
