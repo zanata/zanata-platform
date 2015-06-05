@@ -177,12 +177,11 @@ public class TransMemoryMatcherTest {
                 "How <other>good</other> are <bold>you</bold>? I am <other>good</other>.");
 
         // When:
-        String translation = matcher.translationFromTransMemory();
+        double similarityPercent = matcher.calculateSimilarityPercent();
 
-        // Then:
-        Assertions.assertThat(translation)
-                .isEqualTo(
-                        "<bold>你</bold><other>好</other>吗？ 我<other>不错<other>。");
+        // Then: we cannot handle element swapped location
+        Assertions.assertThat(similarityPercent)
+                .isEqualTo(99);
     }
 
     @Test
