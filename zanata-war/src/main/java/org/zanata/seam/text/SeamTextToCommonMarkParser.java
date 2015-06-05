@@ -142,6 +142,7 @@ public class SeamTextToCommonMarkParser extends SeamTextParser {
         return "`";
     }
 
+    // NB for strict accuracy, we should probably un-escape HTML entities in the Seam Text while inside a monospace tag
     @Override
     protected String monospaceOpenTag() {
         return "`";
@@ -191,7 +192,7 @@ public class SeamTextToCommonMarkParser extends SeamTextParser {
 
     @Override
     protected String preformattedText(String text) {
-        return "\n```\n" + text + "\n```\n";
+        return "\n<pre><code>\n" + text + "\n</code></pre>\n";
     }
 
     @Override

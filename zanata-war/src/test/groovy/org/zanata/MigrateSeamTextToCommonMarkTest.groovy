@@ -139,27 +139,28 @@ class MigrateSeamTextToCommonMarkTest {
      * Checks that the HTML rendering of the Seam Text is (almost) the same as
      * the HTML rendering of the CommonMark after conversion from Seam Text.
      */
-    private void verifyConversion(String name, String seamText) {
+    private void verifyConversion(String name, String seamText, String expectedCM) {
         String commonMark = ''
         String seamToHtml
         String commonMarkToHtml
-        String prettySeam
-        String prettyCM
+        String prettySeamHtml
+        String prettyCMHtml
         try {
-            seamToHtml = convertToHtml(seamText)
             commonMark = convertToCommonMark(seamText, name)
-            commonMarkToHtml = renderer.renderToHtmlUnsafe(commonMark)
+            Assert.assertEquals(expectedCM, commonMark)
 
-            prettySeam = normalise(seamToHtml)
-            prettyCM = normalise(commonMarkToHtml)
-            Assert.assertEquals(prettySeam, prettyCM)
+            seamToHtml = convertToHtml(seamText)
+            prettySeamHtml = normalise(seamToHtml)
+            commonMarkToHtml = renderer.renderToHtmlUnsafe(commonMark)
+            prettyCMHtml = normalise(commonMarkToHtml)
+            Assert.assertEquals(prettySeamHtml, prettyCMHtml)
         } catch (ComparisonFailure e) {
             eprintln "$name:"
             eprintln "Seam Text: $seamText"
             eprintln "CommonMark: $commonMark"
             eprintln "Seam Text HTML: $seamToHtml"
             eprintln "CommonMark HTML: $commonMarkToHtml"
-            eprintln "CommonMark HTML normalised: $prettyCM"
+            eprintln "CommonMark HTML normalised: $prettyCMHtml"
             throw e
         } catch (ANTLRException e) {
             eprintln name + ":"
@@ -231,8 +232,6 @@ My code doesn't work:
 
 Any ideas?
 
-This is a |<tag attribute="value"/>| example.
-
 Go to the Seam website at [=>http://jboss.org/schema/seam].
 
 Go to [the Seam website=>http://jboss.org/schema/seam].
@@ -245,7 +244,74 @@ cool</a>, or even include an image: <img src="/logo.jpg"/>
     <tr><td>Last name:</td><td>King</td></tr>
 </table>
 """
-        verifyConversion("compressedSeamText", seamText)
+        String expectedCM =
+"""<!-- The following text was converted from Seam Text to CommonMark by Zanata.  Some formatting changes may have occurred. -->
+
+
+
+It's easy to make *emphasis*, `monospace`,
+<del>deleted text</del>, super<sup>scripts</sup> or <u>underlines</u>.
+
+# This is a big heading
+
+You *must* have some text following a heading!
+
+## This is a smaller heading
+
+This is the first paragraph. We can split it across multiple
+lines, but we must end it with a blank line.
+
+This is the second paragraph.
+
+An ordered list:
+
+1. first item
+1. second item
+1. and even the /third/ item
+
+An unordered list:
+
+* an item
+* another item
+
+The other guy said:
+
+<blockquote class="seamTextBlockquote">
+Nyeah nyeah-nee
+/nyeah/ nyeah!
+</blockquote>
+
+But what do you think he means by "nyeah-nee"?
+
+You can write down equations like 2*3=6 and HTML tags
+like &lt;body&gt; using the escape character: \\\\.
+
+My code doesn't work:
+
+
+<pre><code>
+for (int i=0; i&lt;100; i--)
+{
+    doSomething();
+}
+</code></pre>
+
+
+Any ideas?
+
+Go to the Seam website at [](http://jboss.org/schema/seam).
+
+Go to [the Seam website](http://jboss.org/schema/seam).
+
+You might want to link to <a href="http://jboss.org/schema/seam">something
+cool</a>, or even include an image: <img src="/logo.jpg"/>
+
+<table>
+    <tr><td>First name:</td><td>Gavin</td></tr>
+    <tr><td>Last name:</td><td>King</td></tr>
+</table>
+"""
+        verifyConversion("compressedSeamText", seamText, expectedCM)
     }
 
     @Test
@@ -313,11 +379,6 @@ Any ideas?
 
 
 
-This is a |<tag attribute="value"/>| example.
-
-
-
-
 Go to the Seam website at [=>http://jboss.org/schema/seam].
 
 
@@ -337,7 +398,100 @@ cool</a>, or even include an image: <img src="/logo.jpg"/>
 </table>
 
 """
-        verifyConversion("generalSeamText", seamText)
+        String expectedCM =
+"""<!-- The following text was converted from Seam Text to CommonMark by Zanata.  Some formatting changes may have occurred. -->
+
+
+
+It's easy to make *emphasis*, `monospace`,
+<del>deleted text</del>, super<sup>scripts</sup> or <u>underlines</u>.
+
+
+
+
+# This is a big heading
+
+You *must* have some text following a heading!
+
+## This is a smaller heading
+
+This is the first paragraph. We can split it across multiple
+lines, but we must end it with a blank line.
+
+This is the second paragraph.
+
+
+
+An ordered list:
+
+1. first item
+1. second item
+1. and even the /third/ item
+
+An unordered list:
+
+* an item
+* another item
+
+
+
+
+The other guy said:
+
+<blockquote class="seamTextBlockquote">
+Nyeah nyeah-nee
+/nyeah/ nyeah!
+</blockquote>
+
+But what do you think he means by "nyeah-nee"?
+
+
+
+
+
+You can write down equations like 2*3=6 and HTML tags
+like &lt;body&gt; using the escape character: \\\\.
+
+
+
+
+
+My code doesn't work:
+
+
+<pre><code>
+for (int i=0; i&lt;100; i--)
+{
+    doSomething();
+}
+</code></pre>
+
+
+Any ideas?
+
+
+
+
+Go to the Seam website at [](http://jboss.org/schema/seam).
+
+
+
+Go to [the Seam website](http://jboss.org/schema/seam).
+
+
+
+
+You might want to link to <a href="http://jboss.org/schema/seam">something
+cool</a>, or even include an image: <img src="/logo.jpg"/>
+
+
+<table>
+    <tr><td>First name:</td><td>Gavin</td></tr>
+    <tr><td>Last name:</td><td>King</td></tr>
+</table>
+
+"""
+        verifyConversion("generalSeamText", seamText, expectedCM)
     }
 
 }
