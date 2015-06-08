@@ -43,4 +43,6 @@ public interface PullOptions extends PushPullOptions {
     boolean getUseCache();
 
     boolean isContinueAfterError();
+
+    int getMinDocPercent();
 }

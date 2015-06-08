@@ -18,37 +18,37 @@ public interface ConfigurableOptions extends BasicOptions {
     /**
      * API key for accessing the REST API. Defaults to the value in zanata.ini.
      */
-    public String getKey();
+    String getKey();
 
-    public void setKey(String key);
+    void setKey(String key);
 
     /**
      * Base URL for the server. Defaults to the value in zanata.xml.
      */
-    public URL getUrl();
+    URL getUrl();
 
-    public void setUrl(URL url);
+    void setUrl(URL url);
 
     /**
      * Client configuration file.
      */
-    public File getUserConfig();
+    File getUserConfig();
 
-    public void setUserConfig(File userConfig);
+    void setUserConfig(File userConfig);
 
     /**
      * Username for accessing the REST API. Defaults to the value in zanata.ini.
      */
-    public String getUsername();
+    String getUsername();
 
-    public void setUsername(String username);
+    void setUsername(String username);
 
     /**
      * Enable HTTP message logging.
      */
-    public boolean getLogHttp();
+    boolean getLogHttp();
 
-    public void setLogHttp(boolean traceLogging);
+    void setLogHttp(boolean traceLogging);
 
     /**
      * Disable SSL certificate verification when connecting to Zanata host by
@@ -56,13 +56,12 @@ public interface ConfigurableOptions extends BasicOptions {
      */
     boolean isDisableSSLCert();
 
-    public
-            void setDisableSSLCert(boolean disableSSLCert);
+    void setDisableSSLCert(boolean disableSSLCert);
 
     /**
      * Use to disable check for presence of username and API key before running command.
      *
      * @return true if this command should fail when username or API key is absent.
      */
-    public boolean isAuthRequired();
+    boolean isAuthRequired();
 }

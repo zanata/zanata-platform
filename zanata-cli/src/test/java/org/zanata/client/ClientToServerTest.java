@@ -47,7 +47,7 @@ public class ClientToServerTest {
         String project = "iok";
         String version = "6.4";
         client.processArgs(command, "--url", url, "--project", project,
-                "--project-version", version, "--disable-ssl-cert");
+                "--project-version", version, "--disable-ssl-cert", "--details");
     }
 
     @Test

@@ -49,9 +49,9 @@ public interface BasicOptions {
 
     boolean isQuietSet();
 
-    public boolean isInteractiveMode();
+    boolean isInteractiveMode();
 
-    public void setInteractiveMode(boolean interactiveMode);
+    void setInteractiveMode(boolean interactiveMode);
 
     /**
      * Used to generate the command line interface and its usage help. This name
@@ -60,7 +60,7 @@ public interface BasicOptions {
      *
      * @return
      */
-    public String getCommandName();
+    String getCommandName();
 
     /**
      * Used to generate CLI usage help. This description should preferably match
@@ -68,9 +68,9 @@ public interface BasicOptions {
      *
      * @return
      */
-    public String getCommandDescription();
+    String getCommandDescription();
 
-    public @Nonnull List<CommandHook> getCommandHooks();
+    @Nonnull List<CommandHook> getCommandHooks();
 
-    public void setCommandHooks(@Nonnull List<CommandHook> commandHooks);
+    void setCommandHooks(@Nonnull List<CommandHook> commandHooks);
 }

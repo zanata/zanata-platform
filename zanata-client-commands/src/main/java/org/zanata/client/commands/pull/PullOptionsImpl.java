@@ -26,6 +26,7 @@ import org.zanata.client.commands.AbstractPushPullOptionsImpl;
 import org.zanata.client.commands.BooleanValueHandler;
 import org.zanata.client.commands.ZanataCommand;
 import org.zanata.client.commands.PushPullType;
+import com.google.common.base.Preconditions;
 
 /**
  * @author Sean Flanigan <a
@@ -50,6 +51,7 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
     private boolean useCache = DEFAULT_USE_CACHE;
     private boolean purgeCache = DEFAULT_PURGE_CACHE;
     private boolean continueAfterError = DEFAULT_CONTINUE_AFTER_ERROR;
+    private int minDocPercent = 0;
 
     @Override
     public ZanataCommand initCommand() {
@@ -163,6 +165,21 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
     @Override
     public boolean isContinueAfterError() {
         return continueAfterError;
+    }
+
+    @Override
+    public int getMinDocPercent() {
+        return this.minDocPercent;
+    }
+
+    @Option(name = "--min-doc-percent", metaVar = "PERCENT",
+            usage = "Accepts integer from 0 to 100. Only pull translation documents which are at least PERCENT % (message based) completed.\n" +
+                    "Please note specifying this option may cause longer time to pull for a large project")
+    public void setMinDocPercent(int minDocPercent) {
+        Preconditions
+                .checkArgument(minDocPercent >= 0 && minDocPercent <= 100,
+                        "--min-doc-percent should be an integer from 0 to 100");
+        this.minDocPercent = minDocPercent;
     }
 
     @Override

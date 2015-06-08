@@ -63,7 +63,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
     private CopyTransClient copyTransClient;
     private AsyncProcessClient asyncProcessClient;
 
-    public static interface TranslationResourcesVisitor {
+    public interface TranslationResourcesVisitor {
         void visit(LocaleMapping locale, TranslationsResource targetDoc);
     }
 
