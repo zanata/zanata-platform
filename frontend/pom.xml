@@ -85,6 +85,9 @@
               <arguments>
                 <argument>${npm.cli.script}</argument>
                 <argument>install</argument>
+                <argument>--cache-min</argument>
+                <!-- in seconds -->
+                <argument>999999</argument>
               </arguments>
             </configuration>
           </execution>
