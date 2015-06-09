@@ -2,7 +2,7 @@
 
 At the moment it only contains "user profile page" bundle.
 
-To build it, just run 
+To build it, just run
 
 ```mvn install```
 
@@ -15,4 +15,5 @@ Following mvn arguments is overrideable from command line:
 <npm.cli.script>${node.install.directory}/node/npm/bin/npm-cli.js</npm.cli.script>
 ```
 
-By default it will try to install npm modules using cache unless the cache entry is older than configured value (at time of writing, it's 999999 seconds).
+By default it will try to install npm modules from npm registry (default cache TTL is 10 seconds).
+If you activate profile ```-DnpmOffline``` the cache-min option will become 9999999 which means it will try to install npm modules from cache first.
