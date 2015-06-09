@@ -17,7 +17,7 @@
     <web.target>${project.build.directory}/web</web.target>
     <bundle.output>${project.build.directory}/build</bundle.output>
     <bundle.dest>${bundle.output}/META-INF/resources</bundle.dest>
-    <node.install.directory>${project.build.directory}</node.install.directory>
+    <node.install.directory>${download.dir}/zanata-frontend/node-${node.version}-npm-${npm.version}</node.install.directory>
     <npm.cli.script>${node.install.directory}/node/npm/bin/npm-cli.js</npm.cli.script>
 
     <!-- ==== list of modules to build by npm and node ==== -->
