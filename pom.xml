@@ -9,7 +9,7 @@
   </parent>
   <groupId>org.zanata</groupId>
   <artifactId>zanata-parent</artifactId>
-  <version>22-SNAPSHOT</version>
+  <version>24-SNAPSHOT</version>
   <name>Zanata Parent POM</name>
   <description>Parent pom for Zanata modules</description>
   <url>http://zanata.org/</url>
@@ -808,7 +808,7 @@
           <plugin>
             <groupId>org.sonatype.plugins</groupId>
             <artifactId>nexus-staging-maven-plugin</artifactId>
-            <version>1.4.5</version>
+            <version>1.6.5</version>
             <extensions>true</extensions>
             <configuration>
               <serverId>sonatype-nexus-staging</serverId>
