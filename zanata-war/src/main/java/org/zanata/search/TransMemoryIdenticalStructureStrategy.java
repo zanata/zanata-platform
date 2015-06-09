@@ -38,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
-class TransMemoryIdenticalStructureStrategy {
+class TransMemoryIdenticalStructureStrategy implements TransMemoryReuseStrategy {
 
     private final List<List<Element>> upcomingSourceElements;
     private final List<List<TextNode>> upcomingSourceTextNodes;
@@ -51,8 +51,6 @@ class TransMemoryIdenticalStructureStrategy {
             Element transMemorySourceRootElement, String tmTarget) {
         transMemoryTarget = tmTarget;
 
-        Element upcomingSourceRootElement1 = upcomingSourceRootElement;
-        Element transMemorySourceRootElement1 = transMemorySourceRootElement;
         upcomingSourceElements = Lists.newLinkedList();
         upcomingSourceTextNodes = Lists.newLinkedList();
         breadthFirstTraverse(upcomingSourceElements, upcomingSourceTextNodes,
@@ -75,6 +73,7 @@ class TransMemoryIdenticalStructureStrategy {
     }
 
 
+    @Override
     public boolean canUse() {
         if (upcomingSourceElements.size() != transMemorySourceElements.size()) {
             return false;
@@ -106,10 +105,12 @@ class TransMemoryIdenticalStructureStrategy {
         return true;
     }
 
+    @Override
     public String translationFromTransMemory() {
         Document transMemoryTargetDoc = Jsoup.parseBodyFragment(transMemoryTarget);
         transferElements(transMemoryTargetDoc.body().children(), 0);
-        String translationBuildFromTM = transMemoryTargetDoc.outputSettings(TransMemoryMatcher.OUTPUT_SETTINGS).body().html();
+        String translationBuildFromTM = transMemoryTargetDoc.outputSettings(
+                OUTPUT_SETTINGS).body().html();
         log.debug("Translation build from given TM is:{}", translationBuildFromTM);
         return translationBuildFromTM;
     }

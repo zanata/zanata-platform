@@ -2,15 +2,10 @@ package org.zanata.search;
 
 import org.assertj.core.api.Assertions;
 import org.jsoup.Jsoup;
-import org.junit.Before;
 import org.junit.Test;
 
 public class TransMemoryIdenticalStructureStrategyTest {
     private TransMemoryIdenticalStructureStrategy strategy;
-
-    @Before
-    public void setUp() throws Exception {
-    }
 
     @Test
     public void sameStructureCanUseThisStrategy() {

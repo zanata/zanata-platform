@@ -17,11 +17,13 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.TestFixture;
 
 import com.google.common.base.Charsets;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@Slf4j
 public class TransMemoryMatcherTest {
     private HDocument document = null;
     private String resId = "abc";
@@ -179,13 +181,16 @@ public class TransMemoryMatcherTest {
         // When:
         double similarityPercent = matcher.calculateSimilarityPercent();
 
-        // Then: we cannot handle element swapped location
+        // Then:
         Assertions.assertThat(similarityPercent)
-                .isEqualTo(99);
+                .isEqualTo(100);
+
+        String translation = matcher.translationFromTransMemory();
+        Assertions.assertThat(translation).isEqualTo("<bold>你</bold><other>好</other>吗？ 我<other>不错</other>。");
     }
 
     @Test
-    public void test() {
+    public void testConcept() {
         Document doc = Jsoup.parseBodyFragment(
                 "Do you know <some>you</some> will <strong>never</strong> walk alone?<p> <i>Yes</i>, I do.");
         List<Node> nodes = doc.body().childNodes();
@@ -193,18 +198,7 @@ public class TransMemoryMatcherTest {
         node.text("Yes I know");
         Document.OutputSettings outputSettings = new Document.OutputSettings()
                 .charset(Charsets.UTF_8).indentAmount(0).prettyPrint(false);
-        System.out.println(doc.outputSettings(outputSettings).body().html());
-
-// upcoming:
-//         - source:
-//              Do you know <other>you</other> will <bold>never</bold> walk <span>alone</span>? <d> <o>Yes</o>, I do.</d>
-//       TM:
-//         - source:
-//              Do you know <some>you</some> will <strong>never</strong> walk <some>alone<some>?<p> <i>Yes</i>, I do.</p>
-//         - target:
-//              DO YOU KNOW <some>YOU</some> WILL <strong>NEVER</strong> WALK <some>ALONE<some>?<p> <i>YES</i>, I DO.</p>    O (only if upcoming source has same tag on "you" and "alone")
-//              <strong>NEVER</strong> WILL <some>YOU</some>DO YOU KNOW WALK <some>ALONE</some>?<p> <i>YES</i>, I DO.</p>    X
-//              <some>YOU</some> WILL DO YOU KNOW <strong>NEVER</strong>WALK <some>ALONE</some>?<p> <i>YES</i>, I DO.</p>    X
+        log.debug(doc.outputSettings(outputSettings).body().html());
     }
 
 }
