@@ -186,7 +186,45 @@ public class TransMemoryMatcherTest {
                 .isEqualTo(100);
 
         String translation = matcher.translationFromTransMemory();
-        Assertions.assertThat(translation).isEqualTo("<bold>你</bold><other>好</other>吗？ 我<other>不错</other>。");
+        Assertions.assertThat(translation).isEqualTo(
+                "<bold>你</bold><other>好</other>吗？ 我<other>不错</other>。");
+    }
+
+    @Test
+    public void extraTagsButTagsAppearsInSameOrderInTransMemoryTarget() {
+        // Given:
+        givenTransMemory(
+                "How <some>good</some> are <strong>you</strong>? I am <some>good</some>.",
+                "<some>好</some>吗<strong>你</strong>？ 我<some>不错</some>。");
+        matcher = givenUpcomingSourceToMatch(
+                "<div>How <other>good</other> are <bold><a>you</a></bold>? I am <other>good</other>.</div>");
+
+        // When:
+        double similarityPercent = matcher.calculateSimilarityPercent();
+
+        // Then:
+        Assertions.assertThat(similarityPercent)
+                .isEqualTo(100);
+
+        String translation = matcher.translationFromTransMemory();
+        Assertions.assertThat(translation).isEqualTo("<div><other>好</other>吗<bold><a>你</a></bold>？ 我<other>不错</other>。</div>");
+    }
+
+    @Test
+    public void extraTagsAndTagsInDifferentOrderInTMTarget() {
+        // Given:
+        givenTransMemory(
+                "How <some>good</some> are <strong>you</strong>? I am <some>good</some>.",
+                "<strong>你</strong><some>好</some>吗？ 我<some>不错</some>。");
+        matcher = givenUpcomingSourceToMatch(
+                "<div>How <other>good</other> are <bold><a>you</a></bold>? I am <other>good</other>.</div>");
+
+        // When:
+        double similarityPercent = matcher.calculateSimilarityPercent();
+
+        // Then:
+        Assertions.assertThat(similarityPercent)
+                .isEqualTo(99);
     }
 
     @Test
