@@ -1,4 +1,4 @@
-## This is a module to build frontend javascript projects
+## This is a module to build zanata frontend javascript projects
 
 At the moment it only contains "user profile page" bundle.
 
@@ -6,7 +6,11 @@ To build it, just run
 
 ```mvn install```
 
-Following mvn arguments is overrideable from command line:
+It will build and deploy to local maven repository a jar file containing the javascript bundle.
+The jar file can be used directly under any servlet 3 compatible container and the bundle is accessible as static resources.
+See [Servlet 3 static resources](http://www.webjars.org/documentation#servlet3).
+
+The following Maven properties can be overridden on the command line with ```-Dkey=value```:
 
 ```
 <node.version>v0.12.2</node.version>

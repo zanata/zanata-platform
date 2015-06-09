@@ -131,7 +131,7 @@
 
   <profiles>
     <profile>
-      <id>npm offline</id>
+      <id>npmOffline</id>
       <activation>
         <property>
           <name>npmOffline</name>
