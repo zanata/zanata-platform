@@ -21,6 +21,7 @@
 package org.zanata.feature.account;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -55,6 +56,7 @@ public class ChangePasswordTest extends ZanataTestCase {
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86823)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Category(BasicAcceptanceTest.class)
+    @Ignore("Flaky test")
     public void changePasswordSuccessful() throws Exception {
         DashboardBasePage dashboard = new LoginWorkFlow()
                 .signIn("translator", "translator")
