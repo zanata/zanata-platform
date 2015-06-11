@@ -63,7 +63,6 @@
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>1.1</version>
         <executions>
           <execution>
             <id>default</id>
@@ -1022,18 +1021,18 @@
                 <configuration>
                   <target unless="skipArqTests">
                     <fail message="'appserver' property must be set to run integration tests (or else use -DskipArqTests)" unless="appserver" />
-                    <fail message="'cargo.installation' property must be set to run integration tests (or else use -DskipArqTests)" unless="cargo.installation" />
+                    <fail message="'cargo.installation' property is null (set env var EAP6_URL or else use -DskipArqTests)" unless="cargo.installation" />
                   </target>
                 </configuration>
               </execution>
             </executions>
           </plugin>
           <plugin>
-            <groupId>org.codehaus.cargo</groupId>
-            <artifactId>cargo-maven2-plugin</artifactId>
+            <groupId>org.codehaus.gmavenplus</groupId>
+            <artifactId>gmavenplus-plugin</artifactId>
             <executions>
               <execution>
-                <id>cargo-install</id>
+                <id>extract-appserver</id>
                 <phase>prepare-package</phase>
               </execution>
             </executions>
