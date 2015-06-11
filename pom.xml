@@ -1182,6 +1182,34 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.codehaus.gmavenplus</groupId>
+        <artifactId>gmavenplus-plugin</artifactId>
+        <executions>
+          <!-- NB: This execution needs to be before antrun, because it
+               creates the wildfly directory for the unzip tasks. -->
+          <execution>
+            <id>extract-appserver</id>
+            <!-- submodules should use 'prepare-package' to activate this -->
+            <phase>none</phase>
+            <goals><goal>execute</goal></goals>
+            <configuration>
+              <scripts>
+                <!-- Extracts app server and sets the Maven property
+                appserver.home (where the appserver is installed) -->
+                <script>file:///${project.basedir}/../etc/scripts/extractAppserver.groovy</script>
+              </scripts>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-nodeps</artifactId>
+            <version>1.8.1</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-maven-plugin</artifactId>
         <version>${zanata.client.version}</version>
@@ -1249,8 +1277,10 @@
                 <echo message="cargo.installation=${cargo.installation}" />
                 <echo message="appserver.home=${appserver.home}" />
                 <echo message="DISPLAY=${env.DISPLAY}" />
-                <echo message="WARNING: 'appserver' property must be set unless skippping integration tests" unless:set="appserver" />
-                <echo message="WARNING: 'cargo.installation' property (and possibly cargo.basename) must be set unless skipping integration tests" unless:set="cargo.installation" />
+                <echo message="WARNING: 'appserver' property must be set unless skipping integration tests"
+                  unless:set="appserver" />
+                <echo message="WARNING: 'cargo.installation' property is null.  You might need to set the env var EAP6_URL"
+                  unless:set="cargo.installation" />
               </target>
             </configuration>
           </execution>
@@ -1275,32 +1305,12 @@
         <plugin>
           <groupId>org.codehaus.cargo</groupId>
           <artifactId>cargo-maven2-plugin</artifactId>
-          <version>1.4.5</version>
+          <version>1.4.14</version>
           <configuration combine.self="append">
             <container>
               <containerId>${cargo.container}</containerId>
-              <!--if install from url-->
-              <zipUrlInstaller>
-                <url>${cargo.installation}</url>
-                <downloadDir>${download.dir}</downloadDir>
-                <extractDir>${cargo.extract.dir}</extractDir>
-              </zipUrlInstaller>
             </container>
           </configuration>
-          <executions>
-            <!-- Download and extract app server under target/ -->
-            <!-- NB: This execution needs to be before antrun, because it
-                 creates the wildfly directory for the unzip tasks. -->
-            <!-- TODO use antrun to download and extract appserver? -->
-            <execution>
-              <id>cargo-install</id>
-              <!-- submodules should use 'prepare-package' to activate this -->
-              <phase>none</phase>
-              <goals>
-                <goal>install</goal>
-              </goals>
-            </execution>
-          </executions>
         </plugin>
         <plugin>
           <artifactId>maven-failsafe-plugin</artifactId>
@@ -1388,6 +1398,11 @@
           <configuration>
             <providerSelection>2.0</providerSelection>
           </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.gmavenplus</groupId>
+          <artifactId>gmavenplus-plugin</artifactId>
+          <version>1.1</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -1485,10 +1500,7 @@
       </activation>
       <properties>
         <cargo.container>jboss72x</cargo.container>
-        <!-- name of the top-level dir within the appserver zip -->
-        <appserver.dir.name>jboss-eap-6.4</appserver.dir.name>
-        <!-- where the appserver will be installed -->
-        <appserver.home>${cargo.extract.dir}/${cargo.basename}/${appserver.dir.name}</appserver.home>
+        <cargo.installation>${env.EAP6_URL}</cargo.installation>
       </properties>
     </profile>
 
@@ -1503,6 +1515,7 @@
       </activation>
       <properties>
         <cargo.container>wildfly8x</cargo.container>
+        <!-- Version of the management api used by Arquillian and Cargo -->
         <wildfly.client.version>8.1.0.Final</wildfly.client.version>
         <!-- used in the wildfly8 profile in zanata-war -->
         <!-- This is the server version -->
@@ -1510,11 +1523,8 @@
         <!-- In case this profile was activated by default: -->
         <appserver>wildfly8</appserver>
         <cargo.installation>http://download.jboss.org/wildfly/${wildfly.version}/wildfly-${wildfly.version}.zip</cargo.installation>
-        <!-- name of the top-level dir within the appserver zip -->
-        <appserver.dir.name>wildfly-${wildfly.version}</appserver.dir.name>
-        <!-- where the appserver will be installed -->
-        <appserver.home>${cargo.extract.dir}/${appserver.dir.name}/${appserver.dir.name}</appserver.home>
 
+        <!-- Versions of our compatibility modules for wildfly -->
         <module.wildfly.version>8.1.0.Final</module.wildfly.version>
         <mojarra.module.version>2.1.29-01</mojarra.module.version>
         <mojarra.module.name>wildfly-${module.wildfly.version}-module-mojarra-${mojarra.module.version}.zip</mojarra.module.name>
