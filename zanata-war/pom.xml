@@ -86,27 +86,8 @@
             </goals>
             <configuration>
               <scripts>
-                <script>
-                  def props = new Properties()
-                  project.artifacts.each { a -&gt;
-                    def coord = a.groupId + ":" + a.artifactId + ":" + a.type + (a.classifier ? ":" + a.classifier : "")
-                    // Make version available to the build:
-                    project.properties.put "version." + coord, a.version
-                    // This can be expanded to ether deps if required:
-                    if (a.groupId.startsWith('org.webjars')) {
-                      // Make webjar version available at runtime:
-                      props.put coord, a.version
-                    }
-                  }
-                  // NB: this has a corresponding resource directory
-                  // declaration above.
-                  def genDir = new File(project.build.directory,
-                    'generated-resources/deps')
-                  genDir.mkdirs()
-                  new File(genDir, 'dependencies.properties').withWriter { out -&gt;
-                    props.store out, 'Zanata dependency versions'
-                  }
-                </script>
+                <script>file:///${project.basedir}/src/etc/dependencyVersions.groovy</script>
+
               </scripts>
             </configuration>
           </execution>
