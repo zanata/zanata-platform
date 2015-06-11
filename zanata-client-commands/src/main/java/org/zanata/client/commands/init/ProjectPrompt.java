@@ -104,7 +104,7 @@ class ProjectPrompt {
             selectProject();
             return;
         }
-        Project project = filteredProjects.get(Integer.valueOf(selection) - 1);
+        Project project = filteredProjects.get(Integer.parseInt(selection) - 1);
         String projectId = project.getId();
         opts.setProj(projectId);
         // TODO server returns Upper case project type!!!
@@ -128,7 +128,7 @@ class ProjectPrompt {
             List<Project> filteredProjects) {
         boolean isNumber = selection.matches("\\d+");
         if (isNumber) {
-            Integer indexNum = Integer.valueOf(selection) - 1;
+            Integer indexNum = Integer.parseInt(selection) - 1;
             // if input is a valid index number
             boolean isValidIndex =
                     indexNum >= 0 && indexNum < filteredProjects.size();

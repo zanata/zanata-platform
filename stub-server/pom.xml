@@ -154,13 +154,13 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>com.ning.maven.plugins</groupId>
-        <artifactId>maven-duplicate-finder-plugin</artifactId>
+        <groupId>org.basepom.maven</groupId>
+        <artifactId>duplicate-finder-maven-plugin</artifactId>
         <configuration>
-          <ignoredResources>
+          <ignoredResourcePatterns>
             <!-- from jetty dependencies we have a couple about.html -->
-            <ignoredResource>about.html</ignoredResource>
-            </ignoredResources>
+            <ignoredResourcePattern>about.html</ignoredResourcePattern>
+          </ignoredResourcePatterns>
         </configuration>
       </plugin>
     </plugins>

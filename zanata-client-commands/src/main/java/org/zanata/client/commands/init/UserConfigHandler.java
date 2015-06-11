@@ -88,7 +88,7 @@ class UserConfigHandler {
             consoleInteractor.printf(Question, _("which.server"));
             String chosenNumber =
                     consoleInteractor.expectAnswerWithRetry(expect(answers));
-            URL url = serverUrls.get(Integer.valueOf(chosenNumber) - 1);
+            URL url = serverUrls.get(Integer.parseInt(chosenNumber) - 1);
             consoleInteractor.printfln(Confirmation, _("server.selection"), url);
             opts.setUrl(url);
         }

@@ -98,7 +98,7 @@ class ProjectIterationPrompt {
         String selection =
                 consoleInteractor.expectAnswerWithRetry(expect(versionIndexes));
         ProjectIteration projectIteration = Iterables.get(activeIterations,
-                (Integer.valueOf(selection) - 1));
+                (Integer.parseInt(selection) - 1));
         String versionId = projectIteration.getId();
         opts.setProjectVersion(versionId);
         opts.setProjectType(resolveProjectType(project, projectIteration));

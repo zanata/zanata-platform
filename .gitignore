@@ -6,6 +6,7 @@
 .settings
 */bin/
 test-output/
+.zanata-cache/
 
 # idea
 *.idea/

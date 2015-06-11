@@ -37,6 +37,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -632,11 +633,6 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         }
 
         private InputStream getNextChunk() {
-            if (chunksRetrieved == totalChunkCount) {
-                throw new IllegalStateException(
-                        "getNextChunk() must not be called after all chunks have been retrieved");
-            }
-
             try {
                 actualChunkSize = fileStream.read(buffer);
             } catch (IOException e) {
@@ -668,7 +664,12 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
 
                 @Override
                 public InputStream next() {
-                    return getNextChunk();
+                    if (hasNext()) {
+                        return getNextChunk();
+                    } else {
+                        throw new NoSuchElementException(
+                                "getNextChunk() must not be called after all chunks have been retrieved");
+                    }
                 }
 
                 @Override

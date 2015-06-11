@@ -144,8 +144,8 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>com.ning.maven.plugins</groupId>
-        <artifactId>maven-duplicate-finder-plugin</artifactId>
+        <groupId>org.basepom.maven</groupId>
+        <artifactId>duplicate-finder-maven-plugin</artifactId>
         <configuration>
           <checkTestClasspath>false</checkTestClasspath>
         </configuration>
