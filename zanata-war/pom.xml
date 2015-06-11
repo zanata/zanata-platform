@@ -218,6 +218,8 @@
             <ignoredResourcePattern>build.properties</ignoredResourcePattern>
             <!-- Seam -->
             <ignoredResourcePattern>seam.properties</ignoredResourcePattern>
+            <!-- jboss-metadata-common and zanata-adapter-xliff -->
+            <ignoredResourcePattern>schema/xml.xsd</ignoredResourcePattern>
           </ignoredResourcePatterns>
         </configuration>
       </plugin>
