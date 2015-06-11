@@ -191,7 +191,7 @@
     <hamcrest.version>1.3</hamcrest.version>
     <lombok.version>1.12.6</lombok.version>
     <resteasy.version>2.3.7.Final</resteasy.version>
-    <findbugs.version>3.0.0</findbugs.version>
+    <findbugs.maven.version>3.0.1</findbugs.maven.version>
     <groovy.version>1.8.9</groovy.version>
     <guava.version>13.0.1</guava.version>
     <jackson.version>1.9.13</jackson.version>
@@ -491,7 +491,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
-        <version>2.5.2</version>
+        <version>${findbugs.maven.version}</version>
         <configuration>
           <excludeFilterFile>${findbugs.excludeFilterFile}</excludeFilterFile>
           <!-- NB: If we want to failOnError, we may need to
@@ -1151,7 +1151,7 @@
       <dependency>
         <groupId>com.google.code.findbugs</groupId>
         <artifactId>annotations</artifactId>
-        <version>${findbugs.version}</version>
+        <version>3.0.0</version>
         <scope>provided</scope>
       </dependency>
 
@@ -1451,7 +1451,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
-        <version>2.5.2</version>
+        <version>${findbugs.maven.version}</version>
         <configuration>
           <xmlOutput>true</xmlOutput>
           <!-- Optional directory to put findbugs xdoc xml report -->
