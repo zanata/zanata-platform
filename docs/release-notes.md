@@ -53,6 +53,7 @@ Example usage in html file: `<link rel="shortcut icon" href="#{assets['img/logo/
 * [1224030](https://bugzilla.redhat.com/show_bug.cgi?id=1224030) - Search form does not trigger search if paste text
 * [1198898](https://bugzilla.redhat.com/show_bug.cgi?id=1198898) - Exception on using the URL to view a language not yet added to Zanata
 * [1116172](https://bugzilla.redhat.com/show_bug.cgi?id=1116172) - Captcha no longer used, dead code still exists
+* [1230419](https://bugzilla.redhat.com/show_bug.cgi?id=1230419) - Only show "approved" figure in version page if "Review required" is enable or value more than 0
 * [1229940](https://bugzilla.redhat.com/show_bug.cgi?id=1229940) - When deleting a version or project remove links and replace icon from the activity feed
 * [1230424](https://bugzilla.redhat.com/show_bug.cgi?id=1230424) - Update message "Archived" to "Deleted" in activity table
 

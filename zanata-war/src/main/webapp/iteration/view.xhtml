@@ -207,8 +207,8 @@
         <strong>#{versionHomeAction.overallStatistic.total} words</strong>
       </p>
       <ul class="g--tight g--fit">
-        <s:fragment
-          rendered="#{versionHome.instance.requireTranslationReview}">
+        <ui:param name="showApproved" value="#{versionHomeAction.overallStatistic.percentApproved ne 0 || versionHome.instance.requireTranslationReview}"/>
+          <s:fragment rendered="#{showApproved}">
           <li class="g__item l--push-bottom-half">
               <span class="stats txt--state-highlight">
                 <span class="stats__figure">
@@ -222,7 +222,7 @@
 
         <li class="g__item l--push-bottom-half">
               <span
-                class="txt--state-success #{versionHome.instance.requireTranslationReview ? 'stats' : 'stats--large'}">
+                class="txt--state-success #{showApproved ? 'stats' : 'stats--large'}">
                 <span class="stats__figure">
                   #{statisticBar.formatPercentage(versionHomeAction.overallStatistic.percentTranslated)}%
                 </span>
@@ -231,8 +231,7 @@
               </span>
         </li>
         <li class="g__item l--push-bottom-half">
-              <span
-                class="#{versionHome.instance.requireTranslationReview ? 'stats' : 'stats--large'}">
+              <span class="#{showApproved ? 'stats' : 'stats--large'}">
                 <span class="stats__figure">
                   #{statisticBar.formatHours(versionHomeAction.overallStatistic.remainingHours)}
                 </span>
