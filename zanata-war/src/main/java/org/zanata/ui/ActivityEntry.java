@@ -22,13 +22,16 @@
 
 package org.zanata.ui;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.ActivityType;
+import org.zanata.common.EntityStatus;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.i18n.Messages;
 import org.zanata.model.Activity;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
@@ -41,6 +44,11 @@ import org.zanata.util.UrlUtil;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+
+import static org.zanata.common.ActivityType.REVIEWED_TRANSLATION;
+import static org.zanata.common.ActivityType.UPDATE_TRANSLATION;
+import static org.zanata.common.ActivityType.UPLOAD_SOURCE_DOCUMENT;
+import static org.zanata.common.ActivityType.UPLOAD_TRANSLATION_DOCUMENT;
 
 /**
  * Provides data and operations needed to display an activity entry.
@@ -63,6 +71,109 @@ public class ActivityEntry {
 
     @In
     private DocumentDAO documentDAO;
+
+    @In
+    private Messages msgs;
+
+    public String getActivityTypeIconClass(Activity activity) {
+        return activity.getActivityType() == UPDATE_TRANSLATION ? "i--translate" :
+            activity.getActivityType() == REVIEWED_TRANSLATION ? "i--review" :
+                activity.getActivityType() == UPLOAD_SOURCE_DOCUMENT ? "i--document" :
+                    activity.getActivityType() == UPLOAD_TRANSLATION_DOCUMENT ? "i--translate-up" :
+                        "";
+    }
+
+    public String getActivityTitle(Activity activity) {
+        return activity.getActivityType() == UPDATE_TRANSLATION ?
+            msgs.get("jsf.Translation") :
+            activity.getActivityType() == REVIEWED_TRANSLATION ?
+                msgs.get("jsf.Reviewed") :
+                activity.getActivityType() == UPLOAD_SOURCE_DOCUMENT ?
+                    msgs.get("jsf.UploadedSource") :
+                    activity.getActivityType() == UPLOAD_TRANSLATION_DOCUMENT ?
+                        msgs.get("jsf.UploadedTranslations") :
+                        "";
+    }
+
+    public String getActivityMessage(Activity activity) {
+        boolean isVersionDeleted = isVersionDeleted(activity);
+        boolean isProjectDeleted = isProjectDeleted(activity);
+
+        switch (activity.getActivityType()) {
+            case UPDATE_TRANSLATION:
+            if (isProjectDeleted) {
+                return msgs
+                        .format(
+                            "jsf.dashboard.activity.translate.message.projectDeleted",
+                            activity.getWordCount(),
+                            getProjectName(activity),
+                            StringEscapeUtils
+                                .escapeHtml(getLastTextFlowContent(activity)));
+            } else if (isVersionDeleted) {
+                return msgs
+                        .format("jsf.dashboard.activity.translate.message.versionDeleted",
+                                activity.getWordCount(),
+                                getProjectUrl(activity),
+                                getProjectName(activity),
+                                StringEscapeUtils
+                                        .escapeHtml(
+                                        getLastTextFlowContent(activity)));
+            } else {
+                return msgs
+                        .format("jsf.dashboard.activity.translate.message",
+                                activity.getWordCount(),
+                                getProjectUrl(activity),
+                                getProjectName(activity),
+                                getEditorUrl(activity),
+                                StringEscapeUtils
+                                        .escapeHtml(
+                                        getLastTextFlowContent(activity)));
+            }
+            case REVIEWED_TRANSLATION:
+                if(isProjectDeleted) {
+                    return msgs.format("jsf.dashboard.activity.review.message.projectDeleted",
+                        activity.getWordCount(), getProjectName(activity),
+                        StringEscapeUtils
+                            .escapeHtml(getLastTextFlowContent(activity)));
+                } else if(isVersionDeleted) {
+                    return msgs.format("jsf.dashboard.activity.review.message.versionDeleted",
+                        activity.getWordCount(), getProjectUrl(activity),
+                        getProjectName(activity),
+                        StringEscapeUtils
+                            .escapeHtml(getLastTextFlowContent(activity)));
+                } else {
+                    return msgs.format("jsf.dashboard.activity.review.message",
+                        activity.getWordCount(), getProjectUrl(activity),
+                        getProjectName(activity), getEditorUrl(activity),
+                        StringEscapeUtils
+                            .escapeHtml(getLastTextFlowContent(activity)));
+                }
+            case UPLOAD_SOURCE_DOCUMENT:
+                if(isProjectDeleted) {
+                    return msgs
+                        .format("jsf.dashboard.activity.uploadSource.message.projectDeleted",
+                            activity.getWordCount(), getProjectName(activity));
+                } else {
+                    return msgs
+                        .format("jsf.dashboard.activity.uploadSource.message",
+                            activity.getWordCount(), getProjectUrl(activity),
+                            getProjectName(activity));
+                }
+            case UPLOAD_TRANSLATION_DOCUMENT:
+                if(isProjectDeleted) {
+                    return msgs.format(
+                        "jsf.dashboard.activity.uploadTranslation.message.projectDeleted",
+                        activity.getWordCount(), getProjectName(activity));
+                } else {
+                    return msgs.format(
+                        "jsf.dashboard.activity.uploadTranslation.message",
+                        activity.getWordCount(), getProjectUrl(activity),
+                        getProjectName(activity));
+                }
+            default:
+                return "";
+        }
+    }
 
     public String getWordsCountMessage(int wordCount) {
         if (wordCount == 1) {
@@ -119,83 +230,93 @@ public class ActivityEntry {
     }
 
     public String getDocumentUrl(Activity activity) {
+        String url = "";
         Object context =
-                getEntity(activity.getContextType(), activity.getContextId());
+            getEntity(activity.getContextType(), activity.getContextId());
         Object lastTarget =
-                getEntity(activity.getLastTargetType(),
-                        activity.getLastTargetId());
+            getEntity(activity.getLastTargetType(),
+                activity.getLastTargetId());
 
         if (isTranslationUpdateActivity(activity.getActivityType())) {
             HProjectIteration version = (HProjectIteration) context;
             HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
 
-            return urlUtil.editorDocumentUrl(version.getProject().getSlug(),
-                    version.getSlug(), tft.getLocaleId(), tft.getTextFlow()
-                            .getLocale(), tft.getTextFlow().getDocument()
-                            .getDocId());
-        } else if (activity.getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT) {
+            url =
+                urlUtil.editorDocumentUrl(version.getProject().getSlug(),
+                    version.getSlug(), tft.getLocaleId(), tft
+                        .getTextFlow().getLocale(), tft
+                        .getTextFlow().getDocument().getDocId());
+        } else if (activity.getActivityType() == UPLOAD_SOURCE_DOCUMENT) {
             HProjectIteration version = (HProjectIteration) context;
-            return urlUtil.sourceFilesViewUrl(version.getProject().getSlug(),
+            url =
+                urlUtil.sourceFilesViewUrl(version.getProject().getSlug(),
                     version.getSlug());
-        } else if (activity.getActivityType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT) {
+        } else if (activity.getActivityType() == UPLOAD_TRANSLATION_DOCUMENT) {
             HProjectIteration version = (HProjectIteration) context;
             HDocument document = (HDocument) lastTarget;
             HTextFlowTarget tft =
-                    documentDAO.getLastTranslatedTargetOrNull(document.getId());
+                documentDAO.getLastTranslatedTargetOrNull(document.getId());
 
             if (tft != null) {
-                return urlUtil.editorDocumentUrl(
-                        version.getProject().getSlug(), version.getSlug(),
-                        tft.getLocaleId(), document.getSourceLocaleId(), tft
-                                .getTextFlow().getDocument().getDocId());
+                url =
+                    urlUtil.editorDocumentUrl(version.getProject()
+                            .getSlug(), version.getSlug(), tft
+                            .getLocaleId(), document.getSourceLocaleId(),
+                        tft.getTextFlow().getDocument().getDocId());
             }
         }
-        return "";
+        return url;
     }
 
     public String getVersionUrl(Activity activity) {
         Object context =
-                getEntity(activity.getContextType(), activity.getContextId());
+            getEntity(activity.getContextType(), activity.getContextId());
+        String url = "";
 
         if (isTranslationUpdateActivity(activity.getActivityType())
-                || activity.getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
-                || activity.getActivityType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT) {
+            || activity.getActivityType() == UPLOAD_SOURCE_DOCUMENT
+            || activity.getActivityType() == UPLOAD_TRANSLATION_DOCUMENT) {
             HProjectIteration version = (HProjectIteration) context;
-            return urlUtil.versionUrl(version.getProject().getSlug(),
+            url =
+                urlUtil.versionUrl(version.getProject().getSlug(),
                     version.getSlug());
         }
-        return "";
+
+        return url;
     }
 
     public String getDocumentListUrl(Activity activity) {
         Object context =
-                getEntity(activity.getContextType(), activity.getContextId());
+            getEntity(activity.getContextType(), activity.getContextId());
         Object lastTarget =
-                getEntity(activity.getLastTargetType(),
-                        activity.getLastTargetId());
+            getEntity(activity.getLastTargetType(),
+                activity.getLastTargetId());
+        String url = "";
 
         if (isTranslationUpdateActivity(activity.getActivityType())) {
             HProjectIteration version = (HProjectIteration) context;
             HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
 
-            return urlUtil.editorDocumentListUrl(
-                    version.getProject().getSlug(), version.getSlug(),
-                    tft.getLocaleId(), tft.getTextFlow().getLocale());
-        } else if (activity.getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT) {
+            url =
+                urlUtil.editorDocumentListUrl(version.getProject()
+                        .getSlug(), version.getSlug(), tft.getLocaleId(),
+                    tft.getTextFlow().getLocale());
+        } else if (activity.getActivityType() == UPLOAD_SOURCE_DOCUMENT) {
             // not supported for upload source action
-        } else if (activity.getActivityType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT) {
+        } else if (activity.getActivityType() == UPLOAD_TRANSLATION_DOCUMENT) {
             HProjectIteration version = (HProjectIteration) context;
             HDocument document = (HDocument) lastTarget;
             HTextFlowTarget tft =
-                    documentDAO.getLastTranslatedTargetOrNull(document.getId());
+                documentDAO.getLastTranslatedTargetOrNull(document.getId());
 
             if (tft != null) {
-                return urlUtil.editorDocumentListUrl(version.getProject()
-                        .getSlug(), version.getSlug(), tft.getLocaleId(), tft
-                        .getTextFlow().getLocale());
+                url =
+                    urlUtil.editorDocumentListUrl(version.getProject()
+                        .getSlug(), version.getSlug(), tft
+                        .getLocaleId(), tft.getTextFlow().getLocale());
             }
         }
-        return "";
+        return url;
     }
 
     public String getProjectName(Activity activity) {
@@ -233,39 +354,43 @@ public class ActivityEntry {
 
     public String getDocumentName(Activity activity) {
         Object lastTarget =
-                getEntity(activity.getLastTargetType(),
-                        activity.getLastTargetId());
+            getEntity(activity.getLastTargetType(),
+                activity.getLastTargetId());
+        String docName = "";
 
         if (isTranslationUpdateActivity(activity.getActivityType())) {
             HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
-            return tft.getTextFlow().getDocument().getName();
-        } else if (activity.getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT
-                || activity.getActivityType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT) {
+            docName = tft.getTextFlow().getDocument().getName();
+        } else if (activity.getActivityType() == UPLOAD_SOURCE_DOCUMENT
+            || activity.getActivityType() == UPLOAD_TRANSLATION_DOCUMENT) {
             HDocument document = (HDocument) lastTarget;
-            return document.getName();
+            docName = document.getName();
         }
-        return "";
+        return docName;
     }
 
     public String getLanguageName(Activity activity) {
         Object lastTarget =
-                getEntity(activity.getLastTargetType(),
-                        activity.getLastTargetId());
+            getEntity(activity.getLastTargetType(),
+                activity.getLastTargetId());
+        String name = "";
+
         if (isTranslationUpdateActivity(activity.getActivityType())) {
             HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
-            return tft.getLocaleId().getId();
-        } else if (activity.getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT) {
+            name = tft.getLocaleId().getId();
+        } else if (activity.getActivityType() == UPLOAD_SOURCE_DOCUMENT) {
             // not supported for upload source action
-        } else if (activity.getActivityType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT) {
+        } else if (activity.getActivityType() == UPLOAD_TRANSLATION_DOCUMENT) {
             HDocument document = (HDocument) lastTarget;
             HTextFlowTarget tft =
-                    documentDAO.getLastTranslatedTargetOrNull(document.getId());
+                documentDAO.getLastTranslatedTargetOrNull(document.getId());
 
             if (tft != null) {
-                return tft.getLocaleId().getId();
+                name = tft.getLocaleId().getId();
             }
         }
-        return "";
+
+        return name;
     }
 
     public String getLastTextFlowContent(Activity activity) {
@@ -293,5 +418,23 @@ public class ActivityEntry {
 
     private Object getEntity(EntityType contextType, long id) {
         return activityServiceImpl.getEntity(contextType, id);
+    }
+
+    public boolean isVersionDeleted(Activity activity) {
+        Object context =
+            getEntity(activity.getContextType(), activity.getContextId());
+
+        HProjectIteration version = (HProjectIteration) context;
+        return version.getStatus() == EntityStatus.OBSOLETE
+            || version.getProject().getStatus() == EntityStatus.OBSOLETE;
+    }
+
+    public boolean isProjectDeleted(Activity activity) {
+        Object context =
+            getEntity(activity.getContextType(), activity.getContextId());
+
+        HProjectIteration version = (HProjectIteration) context;
+        return version.getProject().getStatus() == EntityStatus.OBSOLETE;
+
     }
 }

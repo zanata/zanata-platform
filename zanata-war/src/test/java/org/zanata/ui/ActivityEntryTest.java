@@ -9,6 +9,7 @@ import org.zanata.common.ActivityType;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.i18n.Messages;
 import org.zanata.model.Activity;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -36,6 +37,8 @@ public class ActivityEntryTest {
     private ActivityService activityService;
     @Mock
     private UrlUtil urlUtil;
+    @Mock
+    private Messages msgs;
     private HProjectIteration iteration;
     private HProject project;
     private int wordCount = 10;
@@ -47,7 +50,7 @@ public class ActivityEntryTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        activityEntry = new ActivityEntry(activityService, urlUtil, documentDAO);
+        activityEntry = new ActivityEntry(activityService, urlUtil, documentDAO, msgs);
         iteration = new HProjectIteration();
         iteration.setId(1L);
         iteration.setSlug("master");
