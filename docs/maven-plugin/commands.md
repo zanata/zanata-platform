@@ -1,6 +1,6 @@
 If your project uses Apache Maven, you can use Zanata's Maven Plugin rather than the command line client. The Maven Plugin can be used for non-Maven projects, but the same functionality is available in zanata-cli without the need to install or configure Maven.
 
-The following instructions assume that you have installed and configured the Zanata Maven Plugin. Instructions for installation and configuration are available at [Installing the Maven Plugin](maven-plugin/installation) and [Configuring the Maven Plugin](maven-plugin/configuration)
+The following instructions assume that you have installed and configured the Zanata Maven Plugin. Instructions for installation and configuration are available at [Installing the Maven Plugin](/maven-plugin/installation) and [Configuring the Maven Plugin](/maven-plugin/configuration)
 
 ## Basic Maven Plugin commands
 
@@ -42,7 +42,7 @@ mvn zanata:push -Dzanata.srcDir="src/messages"
 
 This will look for source strings in "src/messages".
 
-More detail on the push command can be found at [Document Upload with Client](commands/push)
+More detail on the push command can be found at [Document Upload with Client](/commands/push)
 
 ### Pull
 
@@ -60,4 +60,4 @@ To download the source documents as well, specify pull type 'both' as shown here
 mvn zanata:pull -Dzanata.pullType="both"
 ```
 
-More detail on the pull command can be found at [Document Download with Client](commands/pull)
+More detail on the pull command can be found at [Document Download with Client](/commands/pull)

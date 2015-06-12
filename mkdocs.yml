@@ -6,17 +6,19 @@ theme: readthedocs
 # theme_dir: For custom themes
 
 pages:
-- ['index.md', 'Home']
-- ['installation.md', 'User Guide', 'Installation']
-- ['configuration.md', 'User Guide', 'Configuration']
-- ['command-hook.md', 'User Guide', 'Command Hook']
-- ['ivy/installation.md', 'Ivy', 'Installation']
-- ['ivy/setup.md', 'Ivy', 'Setup']
-- ['maven-plugin/installation.md', 'Maven Plugin', 'Installation']
-- ['maven-plugin/configuration.md', 'Maven Plugin', 'Configuration']
-- ['maven-plugin/commands.md', 'Maven Plugin', 'Commands']
-- ['commands/init.md', 'Commands']
-- ['commands/push.md', 'Commands']
-- ['commands/pull.md', 'Commands']
-
-copyright: Copyright &copy; 2015, <a href="http//www.redhat.com">Red Hat</a>.
+- Home: 'index.md'
+- User Guide:
+  - Installation: 'installation.md'
+  - Configuration: 'configuration.md'
+  - Command Hook: 'command-hook.md'
+- Ivy:
+  - Installation: 'ivy/installation.md'
+  - Setup: 'ivy/setup.md'
+- Maven Plugin:
+  - Installation: 'maven-plugin/installation.md'
+  - Configuration: 'maven-plugin/configuration.md'
+  - Commands: 'maven-plugin/commands.md'
+- Commands:
+  - init: 'commands/init.md'
+  - push: 'commands/push.md'
+  - pull: 'commands/pull.md'

@@ -1,6 +1,6 @@
 The Ivy distribution of the client is a small script that will download the client the first time it is run. This distribution requires Apache Ivy to run.
 
-1. See [Setup Ivy](ivy/setup) for Apache Ivy installation.
+1. See [Setup Ivy](/ivy/setup) for Apache Ivy installation.
 2. Save [this script](https://raw.github.com/zanata/zanata-client-ivy/master/zanata-cli) somewhere on your path, and make sure it is executable. For example, assuming you have `~/bin in $PATH`,
 
 ```
