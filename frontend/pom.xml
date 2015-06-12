@@ -17,8 +17,10 @@
     <web.target>${project.build.directory}/web</web.target>
     <bundle.output>${project.build.directory}/build</bundle.output>
     <bundle.dest>${bundle.output}/META-INF/resources</bundle.dest>
-    <node.install.directory>${project.build.directory}</node.install.directory>
+    <node.install.directory>${download.dir}/zanata-frontend/node-${node.version}-npm-${npm.version}</node.install.directory>
     <npm.cli.script>${node.install.directory}/node/npm/bin/npm-cli.js</npm.cli.script>
+    <!-- in seconds. 10 is the default value -->
+    <npm.cache.min>10</npm.cache.min>
 
     <!-- ==== list of modules to build by npm and node ==== -->
     <module.user-profile-page>user-profile-page</module.user-profile-page>
@@ -85,6 +87,8 @@
               <arguments>
                 <argument>${npm.cli.script}</argument>
                 <argument>install</argument>
+                <argument>--cache-min</argument>
+                <argument>${npm.cache.min}</argument>
               </arguments>
             </configuration>
           </execution>
@@ -124,5 +128,19 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>npmOffline</id>
+      <activation>
+        <property>
+          <name>npmOffline</name>
+        </property>
+      </activation>
+      <properties>
+        <npm.cache.min>9999999</npm.cache.min>
+      </properties>
+    </profile>
+  </profiles>
 
 </project>
