@@ -36,6 +36,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -83,6 +84,7 @@ public class DocumentServiceImplTest {
     private ApplicationConfiguration applicationConfiguration;
 
     private DocumentServiceImpl documentService;
+    private DocumentServiceImpl spyService;
 
     private Long docId = 1L, versionId = 1L, tfId = 1L;
     private LocaleId localeId = LocaleId.DE;
@@ -104,6 +106,11 @@ public class DocumentServiceImplTest {
         documentService = new DocumentServiceImpl();
         documentService.init(projectIterationDAO, documentDAO,
             translationStateCacheImpl, urlUtil, applicationConfiguration, msgs);
+        // TODO spy should only be needed for legacy code
+        spyService = Mockito.spy(documentService);
+        // avoid triggering HTTP requests in a unit test:
+        doNothing().when(spyService).publishDocumentMilestoneEvent(
+                any(WebHook.class), any(DocumentMilestoneEvent.class));
 
         HProjectIteration version = Mockito.mock(HProjectIteration.class);
         HProject project = Mockito.mock(HProject.class);
@@ -128,10 +135,8 @@ public class DocumentServiceImplTest {
 
     @Test
     public void documentMilestoneEventTranslatedTest() {
-        DocumentServiceImpl spyService = Mockito.spy(documentService);
         doNothing().when(spyService).publishDocumentMilestoneEvent(
                 any(WebHook.class), any(DocumentMilestoneEvent.class));
-
         WordStatistic stats = new WordStatistic(0, 0, 0, 10, 0);
         when(translationStateCacheImpl.getDocumentStatistics(docId, localeId))
             .thenReturn(stats);
@@ -152,8 +157,6 @@ public class DocumentServiceImplTest {
 
     @Test
     public void documentMilestoneEventTranslatedNot100Test() {
-        DocumentServiceImpl spyService = Mockito.spy(documentService);
-
         WordStatistic stats = new WordStatistic(0, 1, 0, 9, 0);
         when(translationStateCacheImpl.getDocumentStatistics(docId, localeId))
             .thenReturn(stats);
@@ -174,10 +177,8 @@ public class DocumentServiceImplTest {
 
     @Test
     public void documentMilestoneEventApprovedTest() {
-        DocumentServiceImpl spyService = Mockito.spy(documentService);
         doNothing().when(spyService).publishDocumentMilestoneEvent(
             any(WebHook.class), any(DocumentMilestoneEvent.class));
-
         WordStatistic stats = new WordStatistic(10, 0, 0, 0, 0);
         when(translationStateCacheImpl.getDocumentStatistics(docId, localeId))
             .thenReturn(stats);
@@ -197,8 +198,6 @@ public class DocumentServiceImplTest {
 
     @Test
     public void documentMilestoneEventApprovedNot100Test() {
-        DocumentServiceImpl spyService = Mockito.spy(documentService);
-
         WordStatistic stats = new WordStatistic(9, 0, 0, 1, 0);
         when(translationStateCacheImpl.getDocumentStatistics(docId, localeId))
             .thenReturn(stats);
@@ -219,7 +218,6 @@ public class DocumentServiceImplTest {
 
     @Test
     public void documentMilestoneEventSameStateTest1() {
-        DocumentServiceImpl spyService = Mockito.spy(documentService);
         WordStatistic stats = new WordStatistic(10, 0, 0, 0, 0);
         when(translationStateCacheImpl.getDocumentStatistics(docId, localeId))
             .thenReturn(stats);
@@ -240,7 +238,6 @@ public class DocumentServiceImplTest {
 
     @Test
     public void documentMilestoneEventSameStateTest2() {
-        DocumentServiceImpl spyService = Mockito.spy(documentService);
         WordStatistic stats = new WordStatistic(0, 0, 0, 10, 0);
 
         when(translationStateCacheImpl.getDocumentStatistics(docId, localeId))

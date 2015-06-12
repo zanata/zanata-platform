@@ -69,7 +69,7 @@ public class ResourceUtilsJpaTest extends ZanataJpaTest {
         // TODO check the results in 'to'
     }
 
-    @Ignore
+    @Ignore("slow test")
     // This should be executed manually in IDE
     @Test
     @SlowTest

@@ -42,7 +42,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.TestRule;
-import org.junit.runner.RunWith;
 import org.zanata.PerformanceProfiling;
 import org.zanata.SlowTest;
 import org.zanata.common.ContentState;
@@ -311,8 +310,8 @@ public class CopyTransServiceImplPerformanceTest extends ZanataTest {
                         FixedValueMaker.EMPTY_STRING_MAKER);
     }
 
+    @Ignore("slow test")
     @Test
-    @Ignore
     @SlowTest
     @PerformanceProfiling
     public void testCopyTransForDocument() throws Exception {

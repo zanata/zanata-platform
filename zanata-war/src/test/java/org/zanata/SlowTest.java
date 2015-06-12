@@ -26,6 +26,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * (Currently not handled by test framework: please use
+ * <code>@Ignore("slow test")</code> as well.)
  * Marker annotation to identify tests that might be potentially slow to run.
  *
  * @author Carlos Munoz <a
