@@ -21,14 +21,9 @@
 
 package org.zanata.service.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import lombok.Getter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
@@ -60,6 +55,10 @@ import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.tm.TransMemoryUnit;
+import org.zanata.rest.editor.dto.suggestion.Suggestion;
+import org.zanata.rest.editor.dto.suggestion.SuggestionDetail;
+import org.zanata.rest.editor.dto.suggestion.TextFlowSuggestionDetail;
+import org.zanata.rest.editor.dto.suggestion.TransMemoryUnitSuggestionDetail;
 import org.zanata.search.LevenshteinTokenUtil;
 import org.zanata.search.LevenshteinUtil;
 import org.zanata.service.TranslationMemoryService;
@@ -75,8 +74,6 @@ import com.google.common.collect.Lists;
 
 import static com.google.common.collect.Collections2.filter;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.annotation.Nullable;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -219,6 +216,14 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         return results;
     }
 
+    @Override
+    public List<Suggestion> searchTransMemoryWithDetails(
+            LocaleId targetLocaleId, LocaleId sourceLocaleId,
+            TransMemoryQuery transMemoryQuery) {
+        return new QueryMatchProcessor(transMemoryQuery, sourceLocaleId, targetLocaleId)
+                .process();
+    }
+
     private TransMemoryQuery buildTMQuery(HTextFlow textFlow,
             HasSearchType.SearchType searchType, boolean checkContext,
             boolean checkDocument, boolean checkProject,
@@ -305,9 +310,9 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                     Lists.newArrayList(textFlowTarget.getContents());
             TransMemoryResultItem.MatchType matchType =
                     fromContentState(textFlowTarget.getState());
-            addOrIncrementResultItem(transMemoryQuery, matchesMap, match,
-                    matchType, textFlowContents, targetContents, textFlowTarget
-                            .getTextFlow().getId(), "");
+            TransMemoryResultItem item = createOrGetResultItem(transMemoryQuery, matchesMap, match, matchType,
+                    textFlowContents, targetContents);
+            addTextFlowTargetToResultMatches(textFlowTarget, item);
         } else if (entity instanceof TransMemoryUnit) {
             TransMemoryUnit transUnit = (TransMemoryUnit) entity;
             ArrayList<String> sourceContents =
@@ -316,10 +321,9 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             ArrayList<String> targetContents =
                     Lists.newArrayList(transUnit.getTransUnitVariants()
                             .get(targetLocaleId.getId()).getPlainTextSegment());
-            addOrIncrementResultItem(transMemoryQuery, matchesMap, match,
-                    TransMemoryResultItem.MatchType.Imported, sourceContents,
-                    targetContents, transUnit.getId(), transUnit
-                            .getTranslationMemory().getSlug());
+            TransMemoryResultItem item = createOrGetResultItem(transMemoryQuery, matchesMap, match,
+                    TransMemoryResultItem.MatchType.Imported, sourceContents, targetContents);
+            addTransMemoryUnitToResultMatches(item, transUnit);
         }
     }
 
@@ -370,11 +374,16 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         }
     }
 
-    private void addOrIncrementResultItem(TransMemoryQuery transMemoryQuery,
-            Map<TMKey, TransMemoryResultItem> matchesMap, Object[] match,
-            TransMemoryResultItem.MatchType matchType,
-            ArrayList<String> sourceContents, ArrayList<String> targetContents,
-            Long sourceId, String origin) {
+    /**
+     * Look up the result item for the given source and target contents.
+     *
+     * If no item is found, a new one is added to the map and returned.
+     *
+     * @return the item for the given source and target contents, which may be newly created.
+     */
+    private TransMemoryResultItem createOrGetResultItem(TransMemoryQuery transMemoryQuery, Map<TMKey,
+            TransMemoryResultItem> matchesMap, Object[] match, TransMemoryResultItem.MatchType matchType,
+                                                        ArrayList<String> sourceContents, ArrayList<String> targetContents) {
         TMKey key = new TMKey(sourceContents, targetContents);
         TransMemoryResultItem item = matchesMap.get(key);
         if (item == null) {
@@ -387,9 +396,29 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                             matchType, score, percent);
             matchesMap.put(key, item);
         }
+        return item;
+    }
+
+    private void addTransMemoryUnitToResultMatches(TransMemoryResultItem item, TransMemoryUnit transMemoryUnit) {
         item.incMatchCount();
-        item.addOrigin(origin);
-        item.addSourceId(sourceId);
+        item.addOrigin(transMemoryUnit.getTranslationMemory().getSlug());
+    }
+
+    private void addTextFlowTargetToResultMatches(HTextFlowTarget textFlowTarget, TransMemoryResultItem item) {
+        item.incMatchCount();
+
+        // TODO change sourceId to include type, then include the id of imported matches
+        item.addSourceId(textFlowTarget.getTextFlow().getId());
+
+        // Workaround: since Imported does not have a details view in the current editor,
+        //             I am treating it as the lowest priority, so will be overwritten by
+        //             other match types.
+        //             A better fix is to have the DTO hold all the match types so the editor
+        //             can show them in whatever way is most sensible.
+        ContentState state = textFlowTarget.getState();
+        if (state == ContentState.Approved || item.getMatchType() == TransMemoryResultItem.MatchType.Imported) {
+            item.setMatchType(fromContentState(state));
+        }
     }
 
     /**
@@ -780,6 +809,207 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                 return true;
             }
             return true;
+        }
+    }
+
+    /**
+     * Responsible for running a query and collating the results.
+     *
+     * I am using a class to avoid having to pass several arguments through
+     * all the helper methods, since that makes the code very hard to read.
+     */
+    private class QueryMatchProcessor {
+        public static final boolean SORT_BY_DATE = false;
+
+        private final TransMemoryQuery query;
+        private final LocaleId srcLocale;
+        private final LocaleId transLocale;
+        private final Map<TMKey, Suggestion> suggestions;
+        private boolean processed;
+
+        public QueryMatchProcessor(TransMemoryQuery query, LocaleId srcLocale, LocaleId transLocale) {
+            this.query = query;
+            this.srcLocale = srcLocale;
+            this.transLocale = transLocale;
+            suggestions = new HashMap<>();
+            processed = false;
+        }
+
+        /**
+         * Run the query, process and collate the results.
+         *
+         * Results are cached, so subsequent calls will return cached results
+         * without running the query again.
+         *
+         * @return the collated results of the query.
+         */
+        public List<Suggestion> process() {
+            if (!processed) {
+                runQueryAndCacheSuggestions();
+            }
+            return new ArrayList<>(suggestions.values());
+        }
+
+        /**
+         * When this has run, suggestions contains all the results of the query.
+         */
+        private void runQueryAndCacheSuggestions() {
+            for (Object[] resultRow : runQuery()) {
+                processResultRow(resultRow);
+            }
+            processed = true;
+        }
+
+        /**
+         * Convert a result row to a match (if possible) then process the match.
+         *
+         * If the row does not contain an appropriate entity, an error is logged
+         * and the row is skipped.
+         *
+         * @param resultRow in the form [Float score, Object entity]
+         */
+        private void processResultRow(Object[] resultRow) {
+            try {
+                final QueryMatch match = fromResultRow(resultRow);
+                processMatch(match);
+            } catch (IllegalArgumentException e) {
+                log.error(
+                        "Skipped result row because it does not contain " +
+                                "an expected entity type: {}", resultRow, e);
+            }
+        }
+
+        /**
+         * Run the full-text query.
+         * @return collection of [float, entity] where float is the match score
+         *         and entity is a HTextFlowTarget or TransMemoryUnit.
+         */
+        private Collection<Object[]> runQuery() {
+            return findMatchingTranslation(transLocale, srcLocale, query,
+                    SEARCH_MAX_RESULTS, SORT_BY_DATE,
+                    HTextFlowTarget.class, TransMemoryUnit.class);
+        }
+
+        /**
+         * Ensure there is a suggestion item for a match row and add a
+         * detail item to the suggestion.
+         *
+         * Note: this updates this.suggestions
+         *
+         * @param match the row to add
+         */
+        private void processMatch(QueryMatch match) {
+            TMKey key = match.getKey();
+            Suggestion suggestion = suggestions.get(key);
+            if (suggestion == null) {
+                suggestion = createSuggestion(match);
+                suggestions.put(key, suggestion);
+            }
+            suggestion.getMatchDetails().add(match.createDetails());
+        }
+
+        /**
+         * Generate and return a suggestion object for the given match.
+         * @param match providing the contents and score for the suggestion
+         * @return the created suggestion object
+         */
+        private Suggestion createSuggestion(QueryMatch match) {
+            double similarity = calculateSimilarityPercentage(query, match.getSourceContents());
+            return new Suggestion(match.getScore(), similarity, match.getSourceContents(), match.getTargetContents());
+        }
+
+        private QueryMatch fromResultRow(Object[] match) {
+            // matches are [Float score, Object entity], see #runQuery()
+            float score = (Float) match[0];
+            Object entity = match[1];
+
+            if (entity instanceof HTextFlowTarget) {
+                return new TextFlowTargetQueryMatch(score, (HTextFlowTarget) entity);
+            }
+            if (entity instanceof TransMemoryUnit) {
+                return new TransMemoryUnitQueryMatch(score, (TransMemoryUnit) entity);
+            }
+
+            throw new IllegalArgumentException("Result type must be TextFlowTarget or TransMemoryUnit, but was neither");
+        }
+
+        /**
+         * Represents a single row of results from a full-text query,
+         * abstracting the type of entity returned in the row.
+         */
+        private abstract class QueryMatch {
+            @Getter
+            private float score;
+
+            protected QueryMatch(float score) {
+                this.score = score;
+            }
+
+            public TMKey getKey() {
+                return new TMKey(getSourceContents(), getTargetContents());
+            }
+
+            public abstract List<String> getSourceContents();
+
+            public abstract List<String> getTargetContents();
+
+            public abstract SuggestionDetail createDetails();
+        }
+
+        /**
+         * Represents a single row of results containing a text flow target.
+         */
+        private class TextFlowTargetQueryMatch extends QueryMatch {
+
+            @Getter
+            private final List<String> sourceContents;
+
+            @Getter
+            private final List<String> targetContents;
+
+            private final HTextFlowTarget target;
+
+            public TextFlowTargetQueryMatch(float score, HTextFlowTarget textFlowTarget) {
+                super(score);
+                target = textFlowTarget;
+                sourceContents = Lists.newArrayList(textFlowTarget.getTextFlow().getContents());
+                targetContents = Lists.newArrayList(textFlowTarget.getContents());
+            }
+
+            @Override
+            public SuggestionDetail createDetails() {
+                return new TextFlowSuggestionDetail(target);
+            }
+        }
+
+        /**
+         * Represents a single row of results containing a trans memory unit.
+         */
+        private class TransMemoryUnitQueryMatch extends QueryMatch {
+
+            @Getter
+            private final List<String> sourceContents;
+
+            @Getter
+            private final List<String> targetContents;
+
+            private TransMemoryUnit tmUnit;
+
+            public TransMemoryUnitQueryMatch(float score, TransMemoryUnit transMemoryUnit) {
+                super(score);
+                tmUnit = transMemoryUnit;
+                sourceContents = getContents(srcLocale);
+                targetContents = getContents(transLocale);
+            }
+
+            private ArrayList<String> getContents(LocaleId locale) {
+                return Lists.newArrayList(tmUnit.getTransUnitVariants().get(locale.getId()).getPlainTextSegment());
+            }
+
+            @Override
+            public SuggestionDetail createDetails() {
+                return new TransMemoryUnitSuggestionDetail(tmUnit);
+            }
         }
     }
 }

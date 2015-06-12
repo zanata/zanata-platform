@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -263,8 +264,14 @@ public class LocaleServiceImpl implements LocaleService {
     }
 
     @Override
+    @Nullable
     public HLocale getByLocaleId(@Nonnull String localeId) {
-        return this.getByLocaleId(new LocaleId(localeId));
+        try {
+            return this.getByLocaleId(new LocaleId(localeId));
+        } catch (IllegalArgumentException e) {
+            log.warn("Tried to look up a locale with a malformed id", e);
+            return null;
+        }
     }
 
     @Override

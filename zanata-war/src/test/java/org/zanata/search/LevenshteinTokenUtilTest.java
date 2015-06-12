@@ -120,4 +120,64 @@ public class LevenshteinTokenUtilTest {
         assert thefoobar.length == 2;
     }
 
+    @Test
+    public void testStopWordsIgnoredWhenOtherWordsPresent() {
+        assertDifferentStringSimilarity("The foo is not bar", "A foo bar", 1.0);
+        assertDifferentStringSimilarity("An bar is an baz", "My bar is foo", 0.5);
+    }
+
+    /**
+     * TODO review this behaviour, it is confusing to users.
+     */
+    @Test
+    public void testStopWordsOnlyAlwaysHaveZeroSimilarity() {
+        assertDifferentStringSimilarity("The is not", "A", 0.0);
+        assertDifferentStringSimilarity("The not is and", "It not is but", 0.0);
+    }
+
+    @Test
+    public void testIdenticalStringsSimilarity() {
+        assertIdenticalStringsAreSimilar(
+                "I am the very model of a modern major general");
+    }
+
+    @Test
+    public void testEmptyListOfStringsSimilarity() {
+        double similarity = LevenshteinTokenUtil.getSimilarity(
+                Arrays.<String>asList(), Arrays.<String>asList());
+        assertThat(similarity).isEqualTo(1.0, DELTA);
+    }
+
+    @Test
+    public void testEmptyStringsSimilarity() {
+        assertIdenticalStringsAreSimilar("");
+    }
+
+    /**
+     * Asserts that getSimilarity gives 1.00 when matching the given string
+     * against itself.
+     *
+     * @param s the string to test
+     */
+    private void assertIdenticalStringsAreSimilar(String s) {
+        double similarity = LevenshteinTokenUtil.getSimilarity(Arrays.asList(s),
+                Arrays.asList(s));
+        assertThat(similarity).isEqualTo(1.0, DELTA);
+    }
+
+    /**
+     * Asserts that getSimilarity gives the expected value when matching the
+     * given strings against each other.
+     *
+     * @param s1 the first string to test
+     * @param s2 the other string to test
+     */
+    private void assertDifferentStringSimilarity(String s1, String s2,
+            double expected) {
+        double similarity = LevenshteinTokenUtil
+                .getSimilarity(Arrays.asList(s1), Arrays.asList(s2));
+        assertThat(similarity).isEqualTo(expected, DELTA);
+    }
+
+
 }

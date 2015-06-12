@@ -110,6 +110,10 @@ public class TransMemoryResultItem extends SearchResultItem implements
         return targetContents;
     }
 
+    public void setMatchType(MatchType matchType) {
+        this.matchType = matchType;
+    }
+
     public MatchType getMatchType() {
         return matchType;
     }

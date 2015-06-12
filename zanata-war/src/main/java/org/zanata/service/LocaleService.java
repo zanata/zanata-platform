@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.zanata.common.LocaleId;
 import org.zanata.exception.ZanataServiceException;
@@ -52,6 +53,7 @@ public interface LocaleService {
 
     HLocale getByLocaleId(@Nonnull LocaleId locale);
 
+    @Nullable
     HLocale getByLocaleId(@Nonnull String localeId);
 
     @Nonnull
