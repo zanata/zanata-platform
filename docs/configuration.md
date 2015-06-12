@@ -1,6 +1,4 @@
-# Configuring the Client
-
-zanata-cli requires User Configuration and Project-Version Configuration.
+Zanata-cli requires User Configuration and Project-Version Configuration.
 
 ## User Configuration
 
@@ -13,7 +11,7 @@ To add configuration for a Zanata server:
  1. Use your favourite text editor to create or open `zanata.ini` in `~/.config/`.
  1. Sign into the Zanata server and navigate to the user settings page
  1. Ensure that an API Key is shown. If you do not have an API Key, click 'Generate API Key' now.
-![User settings page](images/302-user-settings.png)
+![User settings page](/images/302-user-settings.png)
 
  1. Copy the contents of the text-box labeled 'Configuration [zanata.ini]'.
  1. Paste the copied lines into `zanata.ini` and save the file.
@@ -29,14 +27,14 @@ To add project-version configuration to your project directory:
 
  1. Sign into the Zanata server and navigate to the appropriate version of your project.
  1. Click the `Download config file` link to initiate download of `zanata.xml`.
-![Download config file link on version page](images/350-version-config-file.png)
+![Download config file link on version page](/images/350-version-config-file.png)
 
  1. Save `zanata.xml` in your project directory.
 
 
 These steps should be repeated for each project-version before using any zanata-cli commands for the project-version.
 
-You can customize `zanata.xml` with command hooks so that other tools will automatically run before or after Zanata commands. Read about command hooks at the [command hook](command-hook).
+You can customize `zanata.xml` with command hooks so that other tools will automatically run before or after Zanata commands. Read about command hooks at the [command hook](command-hook.md).
 
 ## Source directory and translation directory
 
@@ -142,7 +140,7 @@ As the rule is defined as `{locale}/{path}/{filename}.po`, for locale `de-DE`,
 
 You can also replace `{locale}` with `{locale_with_underscore}` if you want all your locales to use underscore instead of hyphen. e.g. `de-DE` will become `de_DE` which results in translation files written to or read from `{projectRoot}/de_DE/messages/kdeedu/kalzium.po`.
 
-The mapping rules configuration is optional in zanata.xml. If not specified, standard rules are applied according to your [project type](http://docs.zanata.org/en/latest/user-guide/projects/project-types/index.html).
+The mapping rules configuration is optional in zanata.xml. If not specified, standard rules are applied according to your [project type](http://docs.zanata.org/en/latest/user-guide/projects/project-types).
 
  1. gettext: `{path}/{locale_with_underscore}.po`
  1. podir: `{locale}/{path}/{filename}.po`

@@ -17,7 +17,12 @@ This is done by specifying the full plugin id including version on the command l
 mvn org.zanata:zanata-maven-plugin:<PLUGIN_VERSION>:help
 ```
 
-The instructions in other sections will assume that you are using the concise form of the command, so if you choose to use the verbose form you should use `mvn org.zanata:zanata-maven-plugin:<PLUGIN_VERSION>:` anywhere you see `mvn zanata:` in the instructions.
+The instructions in other sections will assume that you are using the concise form of the command, so if you choose to use the verbose form you should use 
+
+```
+mvn org.zanata:zanata-maven-plugin:<PLUGIN_VERSION>:
+```
+anywhere you see `mvn zanata:` in the instructions.
 
 ## Concise Command
 
@@ -27,4 +32,4 @@ Using global or per-project setup will allow the use of the concise form of the 
 mvn zanata:help
 ```
 
-See "Global Command Configuration" under [Configuring the Maven Plugin](maven-plugin/configuration) for details.
+See "Global Command Configuration" under [Configuring the Maven Plugin](/maven-plugin/configuration) for details.

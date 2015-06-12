@@ -1,6 +1,6 @@
 To use the Maven Plugin, some Zanata configuration files and an installation of Apache Maven are needed. Some additional configuration will let you use a shorter command to run the Maven Plugin.
 
-For Apache Maven installation, see [Installing the Maven Plugin](maven-plugin/installation).
+For Apache Maven installation, see [Installing the Maven Plugin](/maven-plugin/installation).
 
 
 ## Zanata Project Configuration

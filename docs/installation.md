@@ -13,7 +13,7 @@ sudo yum install zanata-client
 
 ## Installation with Ivy
 
-See [Ivy installation](ivy/installation) for more information.
+See [Ivy installation](/ivy/installation) for more information.
 
 ## Manual Installation
 
