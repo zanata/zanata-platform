@@ -144,9 +144,9 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
         return val;
     }
 
-    @Ignore("slow test")
     @Test
     @UseDataProvider("copyTransParams")
+    // (about 2 seconds)
     @SlowTest
     public void testCopyTrans(CopyTransExecution execution) {
         // Prepare Execution
