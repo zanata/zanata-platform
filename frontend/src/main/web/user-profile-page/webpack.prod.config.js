@@ -31,7 +31,11 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({ "global.GENTLY": false }),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    new webpack.optimize.UglifyJsPlugin(),
+    new webpack.optimize.UglifyJsPlugin({
+        compress: {
+            warnings: false
+        }
+    }),
     new webpack.optimize.DedupePlugin(),
     new webpack.DefinePlugin({
       "process.env": {
