@@ -200,8 +200,8 @@
       <!--</plugin>-->
 
       <plugin>
-        <groupId>com.ning.maven.plugins</groupId>
-        <artifactId>maven-duplicate-finder-plugin</artifactId>
+        <groupId>org.basepom.maven</groupId>
+        <artifactId>duplicate-finder-maven-plugin</artifactId>
         <configuration>
           <ignoredDependencies>
             <dependency>
@@ -209,16 +209,18 @@
               <artifactId>gwt-user</artifactId>
             </dependency>
           </ignoredDependencies>
-          <ignoredResources>
+          <ignoredResourcePatterns>
             <!-- many, many jars -->
-            <ignoredResource>META-INF/.*</ignoredResource>
+            <ignoredResourcePattern>META-INF/.*</ignoredResourcePattern>
             <!-- iText and JavaMelody -->
-            <ignoredResource>com/lowagie/text/pdf/fonts/cmap_info.txt</ignoredResource>
+            <ignoredResourcePattern>com/lowagie/text/pdf/fonts/cmap_info.txt</ignoredResourcePattern>
             <!-- drools and quartz -->
-            <ignoredResource>build.properties</ignoredResource>
+            <ignoredResourcePattern>build.properties</ignoredResourcePattern>
             <!-- Seam -->
-            <ignoredResource>seam.properties</ignoredResource>
-          </ignoredResources>
+            <ignoredResourcePattern>seam.properties</ignoredResourcePattern>
+            <!-- jboss-metadata-common and zanata-adapter-xliff -->
+            <ignoredResourcePattern>schema/xml.xsd</ignoredResourcePattern>
+          </ignoredResourcePatterns>
         </configuration>
       </plugin>
 
