@@ -12,7 +12,7 @@ process.argv.forEach(function(arg) {
 module.exports = {
   context: __dirname,
   entry: [
-    './index.js',
+    './index.js'
   ],
   output: {
     path: bundleDest,
