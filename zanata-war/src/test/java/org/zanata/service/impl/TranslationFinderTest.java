@@ -5,6 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 import static org.zanata.service.impl.ExecutionHelper.cartesianProduct;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -73,6 +76,7 @@ public class TranslationFinderTest extends ImmutableDbunitJpaTest {
                 .use("session", new FullTextSessionImpl(getSession()))
                 .useImpl(IndexingServiceImpl.class)
                 .ignoreNonResolvable();
+        // TODO this is too expensive to do 64 times!
         seam.autowire(SearchIndexManager.class).reindex(true, true, false);
         LocaleDAO localeDAO = seam.autowire(LocaleDAO.class);
 
@@ -143,6 +147,8 @@ public class TranslationFinderTest extends ImmutableDbunitJpaTest {
     }
 
     @Test
+    // currently 64 combinations
+    // TODO reduce the combinations, or reduce the cost per execution
     @UseDataProvider("copyTransCombinations")
     public void testTextFlowTargetDAO(Execution execution) {
         testExecution(TextFlowTargetDAO.class, execution);
@@ -150,6 +156,8 @@ public class TranslationFinderTest extends ImmutableDbunitJpaTest {
 
 
     @Test
+    // currently 64 combinations
+    // TODO reduce the combinations, or reduce the cost per execution
     @UseDataProvider("copyTransCombinations")
     public void testTranslationMemoryServiceImpl(Execution execution) {
         testExecution(TranslationMemoryServiceImpl.class, execution);
@@ -224,6 +232,7 @@ public class TranslationFinderTest extends ImmutableDbunitJpaTest {
     }
 
     @DataProvider
+    // currently 64 combinations
     public static Object[][] copyTransCombinations() {
         Set<Execution> expandedExecutions = generateAllExecutions();
 
@@ -240,17 +249,25 @@ public class TranslationFinderTest extends ImmutableDbunitJpaTest {
         Set<Execution> allExecutions =
                 new HashSet<Execution>();
         List<Boolean> booleans = asList(true, false);
-        Set<Object[]> paramsSet =
-                cartesianProduct(booleans, booleans, booleans, booleans,
-                        booleans, booleans, booleans);
-
-        for (Object[] params : paramsSet) {
-            Execution exec =
-                    new Execution(
-                            (Boolean) params[0], (Boolean) params[1],
-                            (Boolean) params[2], (Boolean) params[3],
-                            (Boolean) params[4], (Boolean) params[5]);
-            allExecutions.add(exec);
+        // NB 2 ^ 6 = 64 combinations
+        Iterable[] colls = { booleans, booleans, booleans, booleans,
+                booleans, booleans };
+        try {
+            // The use of reflection is a little clumsy, but it helps
+            // to ensure that we get the number of constructor arguments
+            // correct for the cartesian product generator.
+            Class[] paramTypes = new Class[colls.length];
+            Arrays.fill(paramTypes, Boolean.TYPE);
+            Constructor ctor =
+                    Execution.class.getConstructor(paramTypes);
+            Set<Object[]> paramsSet = cartesianProduct(colls);
+            for (Object[] params : paramsSet) {
+                Execution exec =
+                        (Execution) ctor.newInstance(params);
+                allExecutions.add(exec);
+            }
+        } catch (NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
         return allExecutions;
     }
