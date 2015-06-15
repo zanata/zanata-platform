@@ -21,6 +21,7 @@
 package org.zanata.webtrans.shared.validation.action;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -37,8 +38,7 @@ import org.zanata.webtrans.shared.validation.AbstractValidationAction;
  * each argument index is used with the same FormatType.
  *
  * @author David Mason, damason@redhat.com
- * @see http
- *      ://docs.oracle.com/javase/1.4.2/docs/api/java/text/MessageFormat.html
+ * @see http://docs.oracle.com/javase/7/docs/api/java/text/MessageFormat.html
  **/
 public class JavaVariablesValidation extends AbstractValidationAction {
     public JavaVariablesValidation(ValidationId id, ValidationMessages messages) {
@@ -88,6 +88,14 @@ public class JavaVariablesValidation extends AbstractValidationAction {
                 added.add("{" + targetVar + "}");
             }
         }
+
+        // Sort variable lists to ensure consistent ordering of variables
+        // in error messages:
+        Collections.sort(missing);
+        Collections.sort(missingQuoted);
+        Collections.sort(added);
+        Collections.sort(addedQuoted);
+        Collections.sort(different);
 
         boolean looksLikeMessageFormatString = !sourceInfo.varCounts.isEmpty();
 

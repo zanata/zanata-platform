@@ -93,8 +93,8 @@ public class JavaVariablesValidationTest {
         List<String> errorList =
                 javaVariablesValidation.validate(source, target);
 
-        assertThat(errorList, hasItem(messages.varsMissing(Arrays.asList("{2}",
-                "{1}", "{0}"))));
+        assertThat(errorList, hasItem(messages.varsMissing(Arrays.asList("{0}",
+                "{1}", "{2}"))));
         assertThat(errorList.size(), is(1));
     }
 
@@ -117,7 +117,7 @@ public class JavaVariablesValidationTest {
                 javaVariablesValidation.validate(source, target);
 
         assertThat(errorList,
-                hasItem(messages.varsAdded(Arrays.asList("{2}", "{1}", "{0}"))));
+                hasItem(messages.varsAdded(Arrays.asList("{0}", "{1}", "{2}"))));
         assertThat(errorList.size(), is(1));
     }
 
@@ -144,8 +144,8 @@ public class JavaVariablesValidationTest {
         List<String> errorList =
                 javaVariablesValidation.validate(source, target);
 
-        assertThat(errorList, hasItem(messages.varsMissing(Arrays.asList("{2}",
-                "{1}", "{0}"))));
+        assertThat(errorList, hasItem(messages.varsMissing(Arrays.asList("{0}",
+                "{1}", "{2}"))));
         assertThat(errorList.size(), is(1));
     }
 
@@ -157,7 +157,7 @@ public class JavaVariablesValidationTest {
                 javaVariablesValidation.validate(source, target);
 
         assertThat(errorList,
-                hasItem(messages.varsMissing(Arrays.asList("{1}", "{0}"))));
+                hasItem(messages.varsMissing(Arrays.asList("{0}", "{1}"))));
         assertThat(errorList.size(), is(1));
     }
 
