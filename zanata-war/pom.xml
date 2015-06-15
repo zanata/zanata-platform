@@ -413,7 +413,7 @@
                <forkCount>1.5C</forkCount>
            -->
           <forkCount>1</forkCount>
-          <reuseForks>false</reuseForks>
+          <reuseForks>true</reuseForks>
           <includes>
             <include>**/*Test.groovy</include>
             <include>**/*Test.java</include>
