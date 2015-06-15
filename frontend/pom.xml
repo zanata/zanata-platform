@@ -103,7 +103,7 @@
                 <argument>${npm.cli.script}</argument>
                 <argument>run</argument>
                 <argument>build</argument>
-                <argument>bundleDest=${bundle.dest}</argument>
+                <argument>--env.bundleDest=${bundle.dest}</argument>
               </arguments>
             </configuration>
           </execution>
