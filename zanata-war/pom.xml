@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>3.7.0-SNAPSHOT</version>
+    <version>3.8.0-SNAPSHOT</version>
   </parent>
   <artifactId>zanata-war</artifactId>
   <packaging>war</packaging>
@@ -88,7 +88,7 @@
               <scripts>
                 <script>
                   def props = new Properties()
-                  project.artifacts.each { a ->
+                  project.artifacts.each { a -&gt;
                     def coord = a.groupId + ":" + a.artifactId + ":" + a.type + (a.classifier ? ":" + a.classifier : "")
                     // Make version available to the build:
                     project.properties.put "version." + coord, a.version
@@ -103,7 +103,7 @@
                   def genDir = new File(project.build.directory,
                     'generated-resources/deps')
                   genDir.mkdirs()
-                  new File(genDir, 'dependencies.properties').withWriter { out ->
+                  new File(genDir, 'dependencies.properties').withWriter { out -&gt;
                     props.store out, 'Zanata dependency versions'
                   }
                 </script>

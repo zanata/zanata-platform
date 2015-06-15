@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>3.7.0-SNAPSHOT</version>
+    <version>3.8.0-SNAPSHOT</version>
   </parent>
   <artifactId>functional-test</artifactId>
   <!--if we want to use pom packaging, we need to explicitly enable some plugins and various things-->
@@ -824,7 +824,7 @@
                 <echo>NB: cargo.basename needs to match the basename of the file given in cargo.installation.</echo>
                 <echo>For example, if cargo.installation is http://example.com/download/jboss-6.4.0.zip, cargo.basename should be jboss-6.4.0.</echo>
                 <echo>appserver.dir.name is top-level dir inside zip.  For jbosseap6, default is jboss-eap-6.3.  Override for later versions.</echo>
-                <echo/>
+                <echo />
                 <echo>-DallFuncTests to enable all functional tests (defaults to smoke tests)</echo>
                 <echo />
                 <echo>-Dcargo.debug.jvm.args : If not set by default will listen to port 8787. Need to set to empty on jenkins</echo>
