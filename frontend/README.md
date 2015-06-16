@@ -21,3 +21,10 @@ The following Maven properties can be overridden on the command line with ```-Dk
 
 By default it will try to install npm modules from npm registry (default cache TTL is 10 seconds).
 If you activate profile ```-DnpmOffline``` the cache-min option will become 9999999 which means it will try to install npm modules from cache first.
+
+## NPM shrinkwrap
+
+Currently the user profile page module has been "shrinkwrapped" which means its npm module dependencies has been fixed to certain version. If you want to add or upgrade an individual version, you will need to consult [npm shrinkwrap documentation](https://docs.npmjs.com/cli/shrinkwrap#building-shrinkwrapped-packages) for detail instruction.
+
+Since we use maven to copy our source to target/ then run npm from maven, you will need to run above commands under target/ then copy the new npm-shrinkwrap.json file back to src/.
+
