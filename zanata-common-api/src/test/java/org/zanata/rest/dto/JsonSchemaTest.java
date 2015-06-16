@@ -82,8 +82,8 @@ public class JsonSchemaTest {
                 // this one cuases stack overflow in schema generation
                 // { ContainerTranslationStatistics.class },
                 // This one has @XmlTransient on some of the getters and jackson
-                // will pick them up regardless. There is no way we can be
-                // backward compatible.
+                // will pick them up if JAXB annotation is used. There is no way
+                // we can be backward compatible (except turning jaxb off).
                 // { TranslationStatistics.class },
                 { Account.class },
                 { CopyTransStatus.class },
