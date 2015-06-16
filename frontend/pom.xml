@@ -14,8 +14,7 @@
     <node.version>v0.12.2</node.version>
     <npm.version>2.7.6</npm.version>
     <web.target>${project.build.directory}/web</web.target>
-    <bundle.output>${project.build.directory}/build</bundle.output>
-    <bundle.dest>${bundle.output}/META-INF/resources</bundle.dest>
+    <bundle.dest>${project.build.outputDirectory}/META-INF/resources</bundle.dest>
     <node.install.directory>${download.dir}/zanata-frontend/node-${node.version}-npm-${npm.version}</node.install.directory>
     <npm.cli.script>${node.install.directory}/node/npm/bin/npm-cli.js</npm.cli.script>
     <!-- in seconds. 10 is the default value -->
@@ -118,13 +117,6 @@
         </configuration>
       </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <classesDirectory>${bundle.output}</classesDirectory>
-        </configuration>
-      </plugin>
     </plugins>
   </build>
 
