@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -46,6 +47,7 @@ public class TextFlowTarget extends TextContainer implements Serializable,
     }
 
     @XmlElement(name = "person", namespace = Namespaces.ZANATA_API)
+    @JsonProperty("translator")
     public Person getTranslator() {
         return translator;
     }
@@ -109,6 +111,7 @@ public class TextFlowTarget extends TextContainer implements Serializable,
 
     @XmlAttribute(name = "res-id", required = true)
     @NotEmpty
+    @JsonProperty("resId")
     public String getResId() {
         return resId;
     }

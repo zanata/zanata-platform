@@ -15,6 +15,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
@@ -131,6 +132,7 @@ public class Project implements Serializable, HasCollectionSample<Project>,
     }
 
     @XmlElement(name = "link", namespace = Namespaces.ZANATA_API)
+    @JsonProperty("links")
     public Links getLinks() {
         return links;
     }
@@ -149,6 +151,7 @@ public class Project implements Serializable, HasCollectionSample<Project>,
     @XmlElementWrapper(name = "project-iterations",
             namespace = Namespaces.ZANATA_OLD)
     @XmlElementRef(namespace = Namespaces.ZANATA_OLD)
+    @JsonProperty("iterations")
     public List<ProjectIteration> getIterations() {
         return iterations;
     }

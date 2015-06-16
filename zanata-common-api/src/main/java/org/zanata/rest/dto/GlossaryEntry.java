@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.LocaleId;
@@ -58,6 +59,7 @@ public class GlossaryEntry implements Serializable {
     private String sourcereference;
 
     @XmlElement(name = "glossary-term", namespace = Namespaces.ZANATA_OLD)
+    @JsonProperty("glossaryTerms")
     public List<GlossaryTerm> getGlossaryTerms() {
         if (glossaryTerms == null) {
             glossaryTerms = new ArrayList<GlossaryTerm>();
@@ -71,6 +73,7 @@ public class GlossaryEntry implements Serializable {
 
     @XmlAttribute(name = "src-lang")
     @XmlJavaTypeAdapter(type = LocaleId.class, value = LocaleIdAdapter.class)
+    @JsonProperty("srcLang")
     public LocaleId getSrcLang() {
         return srcLang;
     }
@@ -81,6 +84,7 @@ public class GlossaryEntry implements Serializable {
 
     @XmlElement(name = "source-reference", required = false,
             namespace = Namespaces.ZANATA_OLD)
+    @JsonProperty("sourcereference")
     public String getSourcereference() {
         return sourcereference;
     }

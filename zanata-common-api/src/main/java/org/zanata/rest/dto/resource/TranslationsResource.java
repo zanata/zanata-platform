@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.Namespaces;
@@ -62,6 +63,7 @@ public class TranslationsResource implements Serializable,
     @XmlElementWrapper(name = "targets", required = false,
             namespace = Namespaces.ZANATA_OLD)
     @XmlElement(name = "text-flow-target", namespace = Namespaces.ZANATA_API)
+    @JsonProperty("textFlowTargets")
     public List<TextFlowTarget> getTextFlowTargets() {
         if (textFlowTargets == null) {
             textFlowTargets = new ArrayList<TextFlowTarget>();

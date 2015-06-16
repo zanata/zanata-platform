@@ -29,6 +29,8 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /**
  * Generic type to represent the status of a process.
  *
@@ -84,6 +86,7 @@ public class ProcessStatus {
 
     @XmlElement(name = "message")
     @XmlElementWrapper(name = "messages", required = true)
+    @JsonProperty("messages")
     public List<String> getMessages() {
         if (messages == null) {
             messages = new ArrayList<String>();
