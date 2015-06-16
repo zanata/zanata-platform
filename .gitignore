@@ -4,6 +4,10 @@
 .classpath
 .project
 .settings
-*.iml
 */bin/
 test-output/
+.zanata-cache/
+
+# idea
+*.idea/
+*.iml

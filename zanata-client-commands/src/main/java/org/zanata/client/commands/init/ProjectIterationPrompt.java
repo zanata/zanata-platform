@@ -20,25 +20,31 @@
  */
 package org.zanata.client.commands.init;
 
-import java.util.List;
-
-import org.jboss.resteasy.client.ClientResponse;
-import org.zanata.client.commands.ConsoleInteractor;
-import org.zanata.common.EntityStatus;
-import org.zanata.rest.client.ZanataProxyFactory;
-import org.zanata.rest.dto.Project;
-import org.zanata.rest.dto.ProjectIteration;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Confirmation;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Hint;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
 import static org.zanata.client.commands.ConsoleInteractorImpl.AnswerValidatorImpl.expect;
 import static org.zanata.client.commands.Messages._;
+
+import java.util.List;
+
+import org.zanata.client.commands.ConsoleInteractor;
+import org.zanata.client.commands.ConsoleInteractorImpl;
+import org.zanata.common.EntityStatus;
+import org.zanata.rest.client.ProjectClient;
+import org.zanata.rest.client.ProjectIterationClient;
+import org.zanata.rest.client.RestClientFactory;
+import org.zanata.rest.dto.Project;
+import org.zanata.rest.dto.ProjectIteration;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.sun.jersey.api.client.UniformInterfaceException;
 
 /**
  * @author Patrick Huang <a
@@ -47,13 +53,13 @@ import static org.zanata.client.commands.Messages._;
 class ProjectIterationPrompt {
     private final ConsoleInteractor consoleInteractor;
     private final InitOptions opts;
-    private final ZanataProxyFactory proxyFactory;
+    private final RestClientFactory clientFactory;
 
     ProjectIterationPrompt(ConsoleInteractor consoleInteractor,
-            InitOptions opts, ZanataProxyFactory proxyFactory) {
+            InitOptions opts, RestClientFactory clientFactory) {
         this.consoleInteractor = consoleInteractor;
         this.opts = opts;
-        this.proxyFactory = proxyFactory;
+        this.clientFactory = clientFactory;
     }
 
     public void selectOrCreateNewVersion() {
@@ -74,8 +80,7 @@ class ProjectIterationPrompt {
 
     @VisibleForTesting
     protected void selectVersion() {
-        Project project = proxyFactory.getProject(opts.getProj()).get()
-                .getEntity(Project.class);
+        Project project = clientFactory.getProjectClient(opts.getProj()).get();
         consoleInteractor.printfln(_("available.versions"), project.getName());
         int oneBasedIndex = 1;
         List<String> versionIndexes = Lists.newArrayList();
@@ -87,15 +92,33 @@ class ProjectIterationPrompt {
             consoleInteractor
                     .printf("%d)", oneBasedIndex)
                     .printfln(Hint, iteration.getId());
+            oneBasedIndex++;
         }
         consoleInteractor.printf(Question, _("select.version.prompt"));
         String selection =
                 consoleInteractor.expectAnswerWithRetry(expect(versionIndexes));
-        String versionId =
-                Iterables.get(activeIterations,
-                        (Integer.valueOf(selection) - 1))
-                        .getId();
+        ProjectIteration projectIteration = Iterables.get(activeIterations,
+                (Integer.parseInt(selection) - 1));
+        String versionId = projectIteration.getId();
         opts.setProjectVersion(versionId);
+        opts.setProjectType(resolveProjectType(project, projectIteration));
+    }
+
+    private String resolveProjectType(Project project,
+            ProjectIteration projectIteration) {
+        if (!isNullOrEmpty(projectIteration.getProjectType())) {
+            return projectIteration.getProjectType().toLowerCase();
+        } else if (!isNullOrEmpty(project.getDefaultType())) {
+            return project.getDefaultType().toLowerCase();
+        } else {
+            String projectTypes =
+                    Joiner.on(", ").join(ProjectPrompt.PROJECT_TYPE_LIST);
+            consoleInteractor.printfln(Question, _("project.type.prompt"),
+                    projectTypes);
+            return consoleInteractor.expectAnswerWithRetry(
+                    ConsoleInteractorImpl.AnswerValidatorImpl
+                            .expect(ProjectPrompt.PROJECT_TYPE_LIST));
+        }
     }
 
     @VisibleForTesting
@@ -104,14 +127,13 @@ class ProjectIterationPrompt {
         String versionId = consoleInteractor.expectAnyAnswer();
         ProjectIteration iteration = new ProjectIteration(versionId);
         iteration.setProjectType(opts.getProjectType());
-        ClientResponse response =
-                proxyFactory.getProjectIteration(opts.getProj(), versionId)
-                        .put(iteration);
-        if (response.getStatus() >= 399) {
-            InitCommand.offerRetryOnServerError(response, consoleInteractor);
+        try {
+            clientFactory.getProjectIterationClient(opts.getProj(), versionId)
+                    .put(iteration);
+        } catch (UniformInterfaceException ex) {
+            InitCommand.offerRetryOnServerError(ex, consoleInteractor);
             createNewVersion();
         }
-        response.releaseConnection();
         opts.setProjectVersion(versionId);
         consoleInteractor.printfln(Confirmation, _("project.version.created"));
 

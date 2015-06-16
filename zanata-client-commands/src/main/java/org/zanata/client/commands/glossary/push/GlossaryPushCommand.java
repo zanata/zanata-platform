@@ -31,7 +31,6 @@ import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.adapter.glossary.AbstractGlossaryPushReader;
@@ -41,9 +40,8 @@ import org.zanata.client.commands.ConfigurableCommand;
 import org.zanata.client.commands.OptionsUtil;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.LocaleId;
-import org.zanata.rest.client.ClientUtility;
-import org.zanata.rest.client.IGlossaryResource;
-import org.zanata.rest.client.ZanataProxyFactory;
+import org.zanata.rest.client.GlossaryClient;
+import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.dto.Glossary;
 
 /**
@@ -58,21 +56,17 @@ public class GlossaryPushCommand extends
 
     private static final Map<String, AbstractGlossaryPushReader> glossaryReaders =
             new HashMap<String, AbstractGlossaryPushReader>();
-    private final IGlossaryResource glossaryResource;
+    private final GlossaryClient client;
 
     public GlossaryPushCommand(GlossaryPushOptions opts,
-            ZanataProxyFactory factory, IGlossaryResource glossaryResource) {
-        super(opts, factory);
-        this.glossaryResource = glossaryResource;
+            RestClientFactory clientFactory) {
+        super(opts, clientFactory);
+        client = getClientFactory().getGlossaryClient();
     }
 
-    private GlossaryPushCommand(GlossaryPushOptions opts,
-            ZanataProxyFactory factory) {
-        this(opts, factory, factory.getGlossaryResource());
-    }
 
     public GlossaryPushCommand(GlossaryPushOptions opts) {
-        this(opts, OptionsUtil.createRequestFactory(opts));
+        this(opts, OptionsUtil.createClientFactory(opts));
 
         glossaryReaders.put("po", new GlossaryPoReader(
                 getLocaleFromMap(getOpts().getSourceLang()),
@@ -162,9 +156,7 @@ public class GlossaryPushCommand extends
         int totalDone = 0;
         for (Glossary glossary : glossaries) {
             log.debug(glossary.toString());
-            ClientResponse<String> response = glossaryResource.put(glossary);
-            ClientUtility.checkResult(response);
-            response.releaseConnection();
+            client.put(glossary);
             totalDone = totalDone + glossary.getGlossaryEntries().size();
             log.info("Pushed " + totalDone + " of " + totalEntries + " entries");
         }

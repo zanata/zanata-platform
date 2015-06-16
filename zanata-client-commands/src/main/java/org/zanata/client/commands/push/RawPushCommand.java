@@ -27,35 +27,51 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import com.google.common.collect.ImmutableList;
+import javax.annotation.Nullable;
+
 import org.apache.commons.codec.binary.Hex;
-import org.jboss.resteasy.client.ClientResponse;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.client.commands.ConsoleInteractor;
+import org.zanata.client.commands.ConsoleInteractorImpl;
+import org.zanata.client.commands.Messages;
 import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.commands.PushPullType;
 import org.zanata.client.commands.push.RawPushStrategy.TranslationFilesVisitor;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.exceptions.ConfigException;
+import org.zanata.client.exceptions.InvalidUserInputException;
 import org.zanata.client.util.ConsoleUtils;
+import org.zanata.common.DocumentType;
 import org.zanata.rest.DocumentFileUploadForm;
-import org.zanata.rest.StringSet;
-import org.zanata.rest.client.IFileResource;
-import org.zanata.rest.client.ISourceDocResource;
-import org.zanata.rest.client.ITranslatedDocResource;
-import org.zanata.rest.client.ZanataProxyFactory;
+import org.zanata.rest.client.FileResourceClient;
+import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.dto.ChunkUploadResponse;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableList;
+
+import static org.zanata.client.commands.ConsoleInteractor.DisplayMode;
 
 /**
  * Command to send files directly to the server without parsing on the client.
@@ -68,24 +84,173 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
     private static final Logger log = LoggerFactory
             .getLogger(PushCommand.class);
 
-    protected final IFileResource fileResource;
+    private static final Pattern fileNameExtensionsPattern = Pattern.compile(
+        "(?:([^\\[]*)?(?:\\[(.*?)\\])?)");
+
+    private final ConsoleInteractor consoleInteractor;
+
+    private FileResourceClient client;
 
     public RawPushCommand(PushOptions opts) {
         super(opts);
-        this.fileResource = getRequestFactory().getFileResource();
+        client = getClientFactory().getFileResourceClient();
+        consoleInteractor = new ConsoleInteractorImpl(opts);
     }
 
-    public RawPushCommand(PushOptions opts, ZanataProxyFactory factory,
-            ISourceDocResource sourceDocResource,
-            ITranslatedDocResource translationResources, URI uri) {
-        super(opts, factory, sourceDocResource, translationResources, uri);
-        this.fileResource = factory.getFileResource();
+    public RawPushCommand(PushOptions opts, RestClientFactory clientFactory) {
+        super(opts, clientFactory);
+        client = getClientFactory().getFileResourceClient();
+        consoleInteractor = new ConsoleInteractorImpl(opts);
+    }
+
+    @VisibleForTesting
+    protected RawPushCommand(PushOptions opts, RestClientFactory clientFactory,
+        ConsoleInteractor console) {
+        super(opts, clientFactory);
+        client = getClientFactory().getFileResourceClient();
+        this.consoleInteractor = console;
+    }
+
+    /**
+     * Extract extensions from input string
+     */
+    public List<String> extractExtensions(String typeWithExtension) {
+        Matcher matcher = fileNameExtensionsPattern.matcher(typeWithExtension);
+        if (matcher.find()) {
+            String rawExtensions = matcher.group(2);
+            if (!StringUtils.isEmpty(rawExtensions)) {
+                return Arrays.asList(rawExtensions.split(";"));
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    /**
+     * Extract fileType from input string
+     * input pattern: fileType[extension;extension], [extension;extension]
+     *
+     * @param typeWithExtension
+     * @return result[0] - type, result[1] - extensions. e.g [txt,html]
+     */
+    public @Nullable String extractType(String typeWithExtension) {
+        Matcher matcher = fileNameExtensionsPattern.matcher(typeWithExtension);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return null;
+    }
+
+    /**
+     * Validate inputFileType to make sure it's not empty
+     *
+     * @param inputFileType
+     * @param inputExtensions
+     * @param acceptedTypes
+     */
+    private void validateInputFileType(String inputFileType,
+            List<String> inputExtensions, List<DocumentType> acceptedTypes) {
+        if (StringUtils.isNotBlank(inputFileType)) {
+            return;
+        }
+        if (inputExtensions.isEmpty()) {
+            //throw error if inputFileType and inputExtensions is empty
+            throw new InvalidUserInputException(
+                    "Invalid expression for '--file-types' option");
+        } else {
+            //suggest --file-types options for this extension
+            for (DocumentType docType: acceptedTypes) {
+                for (String extension: docType.getSourceExtensions()) {
+                    if (inputExtensions.contains(extension)) {
+                        String msg =
+                                Messages.format(
+                                        "file.type.suggestFromExtension",
+                                        docType,
+                            extension, docType);
+                        throw new InvalidUserInputException(msg);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Return map of validated type with set of extensions
+     *
+     * Validate user input file types against server accepted file types
+     *
+     * Valid input - properties_utf8,properties[txt],plain_text[md;markdown]
+     *
+     * - Each file type is only input once - e.g.
+     *    - valid: "html,properties,txt"
+     *    - invalid: "html,properties,html"
+     * - Same file extension cannot be in multiple file type - e.g. plain_text[txt],properties[txt]
+     *
+     * @param acceptedTypes
+     * @param inputFileTypes
+     */
+    private Map<DocumentType, Set<String>> validateFileTypes(
+            List<DocumentType> acceptedTypes, List<String> inputFileTypes) {
+
+        Map<DocumentType, Set<String>> filteredFileTypes = new HashMap<>();
+
+        for (String typeWithExtension : inputFileTypes) {
+            String fileType = extractType(typeWithExtension);
+            List<String> extensions = extractExtensions(typeWithExtension);
+
+            validateInputFileType(fileType, extensions, acceptedTypes);
+
+            DocumentType inputFileType = DocumentType.getByName(fileType);
+
+            //skip file type if its not supported
+            if (inputFileType == null) {
+                String msg = Messages.format("file.type.typeNotSupported", fileType);
+                consoleInteractor.printfln(DisplayMode.Warning, msg);
+                continue;
+            }
+
+            //throw error if file type is input more than once
+            if (filteredFileTypes.containsKey(inputFileType)) {
+                String msg =
+                        Messages.format("file.type.duplicateFileType", fileType);
+                log.error(msg);
+                throw new RuntimeException(msg);
+            }
+
+            Set<String> filteredExtensions = new HashSet<>(extensions);
+
+            /**
+             * Use the extensions from typeWithExtension input if exists,
+             * otherwise, use the extensions from server.
+             */
+            filteredExtensions =
+                filteredExtensions.isEmpty() ? inputFileType.getSourceExtensions()
+                            : filteredExtensions;
+
+            //throw error if same file extension found in multiple file type
+            for (Map.Entry<DocumentType, Set<String>> entry: filteredFileTypes.entrySet()) {
+                for (String filteredExtension: entry.getValue()) {
+                    if (filteredExtensions.contains(filteredExtension)) {
+                        String msg =
+                            Messages.format(
+                                "file.type.conflictExtension",
+                                fileType, entry.getKey().name(),
+                                filteredExtension);
+                        log.error(msg);
+                        throw new RuntimeException(msg);
+                    }
+                }
+            }
+            filteredFileTypes.put(inputFileType, filteredExtensions);
+        }
+        return filteredFileTypes;
     }
 
     @Override
     public void run() throws IOException {
         PushCommand.logOptions(log, getOpts());
-        log.warn("Using EXPERIMENTAL project type 'file'.");
+
+        consoleInteractor.printfln(DisplayMode.Warning,
+            "Using EXPERIMENTAL project type 'file'.");
 
         // only supporting single module for now
 
@@ -94,7 +259,9 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
             boolean enableModules = getOpts().getEnableModules();
             // TODO remove when modules implemented
             if (enableModules) {
-                log.warn("enableModules=true but multi-modules not yet supported for this command. Using single module push.");
+                consoleInteractor
+                        .printfln(DisplayMode.Warning,
+                            "enableModules=true but multi-modules not yet supported for this command. Using single module push.");
             }
 
             throw new RuntimeException("directory '" + sourceDir
@@ -105,38 +272,34 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         RawPushStrategy strat = new RawPushStrategy();
         strat.setPushOptions(getOpts());
 
-        ImmutableList.Builder<String> builder = ImmutableList.builder();
-
-        ClientResponse<String> response = fileResource.acceptedFileTypes();
         @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-        StringSet serverAcceptedTypes = new StringSet(response.getEntity());
-        for (String type : getOpts().getFileTypes()) {
-            if (serverAcceptedTypes.contains(type)) {
-                builder.add(type);
-            } else {
-                log.warn(
-                        "Requested type '{}' is not supported by the target server and will be ignored.",
-                        type);
-            }
-        }
+        List<DocumentType> serverAcceptedTypes = client.acceptedFileTypes();
 
-        ImmutableList<String> types = builder.build();
+        Map<DocumentType, Set<String>> filteredDocTypes =
+            validateFileTypes(serverAcceptedTypes, getOpts().getFileTypes());
 
-        if (types.isEmpty()) {
+        if (filteredDocTypes.isEmpty()) {
             log.info("no valid types specified; nothing to do");
             return;
         }
 
+        ImmutableList.Builder<String> sourceFileExtensionsBuilder = ImmutableList.builder();
+        for (Set<String> filteredSourceExtensions : filteredDocTypes.values()) {
+            sourceFileExtensionsBuilder.addAll(filteredSourceExtensions);
+        }
+
         String[] srcFiles =
                 strat.getSrcFiles(sourceDir, getOpts().getIncludes(), getOpts()
-                        .getExcludes(), types, true, getOpts()
+                        .getExcludes(), sourceFileExtensionsBuilder.build(), true, getOpts()
                         .getCaseSensitive());
 
         SortedSet<String> localDocNames =
                 new TreeSet<String>(Arrays.asList(srcFiles));
 
         // TODO handle obsolete document deletion
-        log.warn("Obsolete document removal is not yet implemented, no documents will be removed from the server.");
+        consoleInteractor
+                .printfln(DisplayMode.Warning,
+                    "Obsolete document removal is not yet implemented, no documents will be removed from the server.");
 
         SortedSet<String> docsToPush = localDocNames;
         if (getOpts().getFromDoc() != null) {
@@ -159,12 +322,17 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
                     .getCurrentModule());
             return;
         } else {
-            log.info("Found source documents:");
+            consoleInteractor.printfln("Found source documents:");
             for (String docName : localDocNames) {
                 if (docsToPush.contains(docName)) {
-                    log.info("           {}", docName);
+                    DocumentType fileType = getFileType(filteredDocTypes,
+                        FilenameUtils.getExtension(docName));
+                    consoleInteractor.printfln("           "
+                            + Messages.format("push.info.documentToPush",
+                                    docName, fileType.name()));
                 } else {
-                    log.info("(to skip)  {}", docName);
+                    consoleInteractor.printfln(
+                        Messages.format("push.info.skipDocument", docName));
                 }
             }
         }
@@ -174,17 +342,13 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
             if (getOpts().getLocaleMapList() == null)
                 throw new ConfigException("pushType set to '"
                         + getOpts().getPushType()
-                        + "', but zanata.xml contains no <locales>");
-            log.warn("pushType set to '"
-                    + getOpts().getPushType()
-                    + "': existing translations on server may be overwritten/deleted");
+                        + "', but project has no locales configured");
+            consoleInteractor.printfln(DisplayMode.Warning, Messages.format(
+                    "push.warn.overrideTranslations", getOpts().getPushType()));
 
             if (getOpts().getPushType() == PushPullType.Both) {
-                confirmWithUser("This will overwrite existing documents AND TRANSLATIONS on the server.\n"); // ,
-                                                                                                             // and
-                                                                                                             // delete
-                                                                                                             // obsolete
-                                                                                                             // documents.\n");
+                confirmWithUser("This will overwrite existing documents AND TRANSLATIONS on the server.\n");
+                // , and delete obsolete documents.\n");
             } else if (getOpts().getPushType() == PushPullType.Trans) {
                 confirmWithUser("This will overwrite existing TRANSLATIONS on the server.\n");
             }
@@ -197,16 +361,17 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
 
         for (final String localDocName : docsToPush) {
             try {
-                final String fileType = getExtensionFor(localDocName);
+                final String srcExtension = FilenameUtils.getExtension(localDocName);
+                final DocumentType fileType = getFileType(filteredDocTypes,
+                    srcExtension);
                 final String qualifiedDocName = qualifiedDocName(localDocName);
-                boolean sourcePushed;
                 if (getOpts().getPushType() == PushPullType.Source
                         || getOpts().getPushType() == PushPullType.Both) {
                     if (!getOpts().isDryRun()) {
-                        sourcePushed =
+                        boolean sourcePushed =
                                 pushSourceDocumentToServer(sourceDir,
                                         localDocName, qualifiedDocName,
-                                        fileType);
+                                        fileType.name());
                         // ClientUtility.checkResult(putResponse, uri);
                         if (!sourcePushed) {
                             hasErrors = true;
@@ -220,6 +385,10 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
 
                 if (getOpts().getPushType() == PushPullType.Trans
                         || getOpts().getPushType() == PushPullType.Both) {
+
+                    Optional translationFileExtension =
+                            getTranslationFileExtension(fileType, srcExtension);
+
                     strat.visitTranslationFiles(localDocName,
                             new TranslationFilesVisitor() {
 
@@ -230,14 +399,14 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
                                             locale.getLocale(),
                                             qualifiedDocName);
                                     pushDocumentToServer(qualifiedDocName,
-                                            fileType, locale.getLocale(),
+                                            fileType.name(), locale.getLocale(),
                                             translatedDoc);
                                 }
-                            });
+                            }, translationFileExtension);
                 }
             } catch (IOException | RuntimeException e) {
                 log.error(
-                        "Operation failed: "+e.getMessage()+"\n\n"
+                        "Operation failed: " + e.getMessage() + "\n\n"
                         + "    To retry from the last document, please add the option: {}\n",
                         getOpts().buildFromDocArgument(localDocName));
                 throw new RuntimeException(e.getMessage(), e);
@@ -252,16 +421,35 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
     }
 
     /**
-     * @param localDocName
-     * @return extension of document (all characters after final '.'), or null
-     *         if no characters after a final . are found.
+     * Get translation file extension in given docType with the srcExtension.
+     * If no extension found, return source file extension.
+     *
+     * @param docType
+     * @param srcExtension
      */
-    private String getExtensionFor(final String localDocName) {
-        if (localDocName == null || localDocName.length() == 0
-                || localDocName.endsWith(".") || !localDocName.contains(".")) {
-            return null;
+    private Optional<String> getTranslationFileExtension(DocumentType docType,
+            String srcExtension) {
+        String transFileExtension = docType.getExtensions().get(srcExtension);
+
+        return StringUtils.isEmpty(transFileExtension) ? Optional
+                .of(srcExtension) : Optional.of(transFileExtension);
+    }
+
+    /**
+     * Search and return file type with given source file extension
+     *
+     * @param fileTypes
+     * @param srcExtension
+     */
+    private @Nullable DocumentType getFileType(Map<DocumentType, Set<String>> fileTypes,
+            String srcExtension) {
+        for (Map.Entry<DocumentType, Set<String>> entry : fileTypes.entrySet()) {
+
+            if (entry.getValue().contains(srcExtension)) {
+                return entry.getKey();
+            }
         }
-        return localDocName.substring(localDocName.lastIndexOf('.') + 1);
+        return null;
     }
 
     /**
@@ -303,16 +491,14 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
                     DocumentFileUploadForm uploadForm =
                             generateUploadForm(true, true, fileType, md5hash,
                                     docFile.length(), fileStream);
-                    ClientResponse<ChunkUploadResponse> response =
-                            uploadDocumentPart(docId, locale, uploadForm);
-                    checkChunkUploadStatus(response);
+                    uploadDocumentPart(docId, locale, uploadForm);
                 }
             } else {
                 try (StreamChunker chunker = new StreamChunker(docFile,
                         getOpts().getChunkSize())) {
                     log.info("    transmitting file [{}] as {} chunks",
                             docFile.getAbsolutePath(), chunker.totalChunks());
-                    ClientResponse<ChunkUploadResponse> uploadResponse;
+                    ChunkUploadResponse uploadResponse;
                     DocumentFileUploadForm uploadForm;
                     Long uploadId = null;
 
@@ -332,9 +518,8 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
                         }
                         uploadResponse =
                                 uploadDocumentPart(docId, locale, uploadForm);
-                        checkChunkUploadStatus(uploadResponse);
                         if (isFirst) {
-                            uploadId = uploadResponse.getEntity().getUploadId();
+                            uploadId = uploadResponse.getUploadId();
                             if (uploadId == null) {
                                 throw new RuntimeException(
                                         "server did not return upload id");
@@ -345,15 +530,6 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private void checkChunkUploadStatus(
-            ClientResponse<ChunkUploadResponse> uploadResponse) {
-        if (uploadResponse.getStatus() >= 300) {
-            throw new RuntimeException("Server returned error status: "
-                    + uploadResponse.getStatus() + ". Error message: "
-                    + uploadResponse.getEntity().getErrorMessage());
         }
     }
 
@@ -370,21 +546,21 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         return uploadForm;
     }
 
-    private ClientResponse<ChunkUploadResponse> uploadDocumentPart(
+    private ChunkUploadResponse uploadDocumentPart(
             String docName, String locale, DocumentFileUploadForm uploadForm) {
         ConsoleUtils.startProgressFeedback();
-        ClientResponse<ChunkUploadResponse> response;
+        ChunkUploadResponse response;
         if (locale == null) {
             response =
-                    fileResource.uploadSourceFile(getOpts().getProj(),
+                    client.uploadSourceFile(getOpts().getProj(),
                             getOpts().getProjectVersion(), docName, uploadForm);
         } else {
             response =
-                    fileResource.uploadTranslationFile(getOpts().getProj(),
+                    client.uploadTranslationFile(getOpts().getProj(),
                             getOpts().getProjectVersion(), locale, docName,
                             getOpts().getMergeType(), uploadForm);
         }
-        log.debug("response from server: {}", response.getEntity());
+        log.debug("response from server: {}", response);
         ConsoleUtils.endProgressFeedback();
         return response;
     }
@@ -457,11 +633,6 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         }
 
         private InputStream getNextChunk() {
-            if (chunksRetrieved == totalChunkCount) {
-                throw new IllegalStateException(
-                        "getNextChunk() must not be called after all chunks have been retrieved");
-            }
-
             try {
                 actualChunkSize = fileStream.read(buffer);
             } catch (IOException e) {
@@ -493,7 +664,12 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
 
                 @Override
                 public InputStream next() {
-                    return getNextChunk();
+                    if (hasNext()) {
+                        return getNextChunk();
+                    } else {
+                        throw new NoSuchElementException(
+                                "getNextChunk() must not be called after all chunks have been retrieved");
+                    }
                 }
 
                 @Override

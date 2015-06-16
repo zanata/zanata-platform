@@ -87,7 +87,8 @@ public class RawPushStrategyTest {
                 tempFileRule.createTransFileRelativeToTransDir(
                         "zh-Hans/src/test.odt");
 
-        strategy.visitTranslationFiles("src/test.odt", visitor);
+        strategy.visitTranslationFiles("src/test.odt", visitor,
+            Optional.<String>absent());
 
         verify(visitor).visit(eq(deMapping), fileCaptor.capture());
         assertThat(fileCaptor.getValue(), equalTo(deTransFile));
@@ -121,7 +122,8 @@ public class RawPushStrategyTest {
                 new FileMappingRule("**/*.odt",
                         "{locale}/{filename}.{extension}")));
 
-        strategy.visitTranslationFiles("src/test.odt", visitor);
+        strategy.visitTranslationFiles("src/test.odt", visitor,
+            Optional.<String>absent());
 
         verify(visitor).visit(eq(deMapping), fileCaptor.capture());
         assertThat(fileCaptor.getValue(), equalTo(deTransFile));

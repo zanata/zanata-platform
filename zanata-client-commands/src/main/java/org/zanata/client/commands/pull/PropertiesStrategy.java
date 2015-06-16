@@ -54,7 +54,7 @@ public class PropertiesStrategy extends AbstractPullStrategy {
 
     @Override
     public void writeSrcFile(Resource doc) throws IOException {
-        PropWriter.write(doc, getOpts().getSrcDir());
+        PropWriter.writeSource(doc, getOpts().getSrcDir(), PropWriter.CHARSET.Latin1);
     }
 
     @Override
@@ -62,14 +62,9 @@ public class PropertiesStrategy extends AbstractPullStrategy {
             LocaleMapping localeMapping, TranslationsResource targetDoc)
             throws IOException {
         boolean createSkeletons = getOpts().getCreateSkeletons();
-        if (createSkeletons) {
-            PropWriter.write(doc, targetDoc, getOpts().getTransDir(), docName,
-                    localeMapping.getJavaLocale(), true);
-        } else {
-            PropWriter.write(null, targetDoc, getOpts().getTransDir(), docName,
-                    localeMapping.getJavaLocale(), false);
-        }
-
+        PropWriter.writeTranslations(createSkeletons ? doc : null, targetDoc,
+            getOpts().getTransDir(), docName,
+            localeMapping.getJavaLocale(), PropWriter.CHARSET.Latin1, createSkeletons);
         return null;
     }
 

@@ -28,8 +28,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.google.common.collect.ImmutableList;
+
+import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FilenameUtils;
 import org.zanata.adapter.properties.PropReader;
+import org.zanata.adapter.properties.PropWriter;
 import org.zanata.client.commands.TransFileResolver;
 import org.zanata.client.commands.UnqualifiedSrcDocName;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
@@ -49,17 +52,17 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  */
 public class PropertiesStrategy extends AbstractPushStrategy {
     // "8859_1" is used in Properties.java...
-    private static final String ISO_8859_1 = "ISO-8859-1";
+//    private static final String ISO_8859_1 = "ISO-8859-1";
 
     private PropReader propReader;
 
-    private final String charset;
+    private final PropWriter.CHARSET charset;
 
     public PropertiesStrategy() {
-        this(ISO_8859_1);
+        this(PropWriter.CHARSET.Latin1);
     }
 
-    public PropertiesStrategy(String charset) {
+    public PropertiesStrategy(PropWriter.CHARSET charset) {
         super(new StringSet("comment"), ".properties");
         this.charset = charset;
     }

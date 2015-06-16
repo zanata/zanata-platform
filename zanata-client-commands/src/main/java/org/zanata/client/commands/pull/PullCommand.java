@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,10 +11,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.PushPullCommand;
@@ -27,13 +24,16 @@ import org.zanata.client.exceptions.ConfigException;
 import org.zanata.common.LocaleId;
 import org.zanata.common.io.FileDetails;
 import org.zanata.rest.RestUtil;
-import org.zanata.rest.client.ClientUtility;
-import org.zanata.rest.client.ISourceDocResource;
-import org.zanata.rest.client.ITranslatedDocResource;
-import org.zanata.rest.client.ZanataProxyFactory;
+import org.zanata.rest.client.ClientUtil;
+import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.HashUtil;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
+import com.sun.jersey.api.client.ClientResponse;
 
 /**
  * @author Sean Flanigan <a
@@ -62,10 +62,8 @@ public class PullCommand extends PushPullCommand<PullOptions> {
         super(opts);
     }
 
-    public PullCommand(PullOptions opts, ZanataProxyFactory factory,
-            ISourceDocResource sourceDocResource,
-            ITranslatedDocResource translationResources, URI uri) {
-        super(opts, factory, sourceDocResource, translationResources, uri);
+    public PullCommand(PullOptions opts, RestClientFactory clientFactory) {
+        super(opts, clientFactory);
     }
 
     public PullStrategy createStrategy(PullOptions opts)
@@ -128,12 +126,16 @@ public class PullCommand extends PushPullCommand<PullOptions> {
             logger.info("Pulling target documents (translations) only");
             logger.info("Target-language base directory (translations): {}",
                     opts.getTransDir());
+            logger.info("Minimum accepted translation percentage (message based): {}%",
+                    opts.getMinDocPercent());
         } else {
             logger.info("Pulling source and target (translation) documents");
             logger.info("Source-language directory (originals): {}",
                     opts.getSrcDir());
             logger.info("Target-language base directory (translations): {}",
                     opts.getTransDir());
+            logger.info("Minimum accepted translation percentage (message based): {}%",
+                    opts.getMinDocPercent());
         }
     }
 
@@ -142,10 +144,10 @@ public class PullCommand extends PushPullCommand<PullOptions> {
         logOptions();
 
         LocaleList locales = getOpts().getLocaleMapList();
-        if (locales == null && (getOpts().getPullType() != PushPullType.Source))
+        if (locales == null && (getOpts().getPullType() != PushPullType.Source)) {
             throw new ConfigException("no locales specified");
-        PullStrategy strat = createStrategy(
-                getOpts());
+        }
+        PullStrategy strat = createStrategy(getOpts());
 
         if (strat.isTransOnly()
                 && getOpts().getPullType() == PushPullType.Source) {
@@ -197,18 +199,26 @@ public class PullCommand extends PushPullCommand<PullOptions> {
             pullSrc = false;
         }
 
+        if (needToGetStatistics(pullTarget)) {
+            log.info("Setting minimum document completion percentage may potentially increase the processing time.");
+        }
+
         if (pullSrc) {
             log.warn("Pull Type set to '"
                     + pullType
                     + "': existing source-language files may be overwritten/deleted");
             confirmWithUser("This will overwrite/delete any existing documents and translations in the above directories.\n");
         } else {
-            confirmWithUser("This will overwrite/delete any existing translations in the above directory.\n");
+            confirmWithUser(
+                    "This will overwrite/delete any existing translations in the above directory.\n");
         }
 
         if (getOpts().getPurgeCache()) {
             eTagCache.clear();
         }
+        Optional<Map<String, Map<LocaleId, TranslatedPercent>>> optionalStats =
+                prepareStatsIfApplicable(pullTarget, locales);
+
 
         for (String qualifiedDocName : docsToPull) {
             try {
@@ -219,11 +229,8 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                         RestUtil.convertToDocumentURIId(qualifiedDocName);
                 boolean createSkeletons = getOpts().getCreateSkeletons();
                 if (strat.needsDocToWriteTrans() || pullSrc || createSkeletons) {
-                    ClientResponse<Resource> resourceResponse =
-                            sourceDocResource.getResource(docUri,
-                                    strat.getExtensions());
-                    ClientUtility.checkResult(resourceResponse, uri);
-                    doc = resourceResponse.getEntity();
+                    doc = sourceDocResourceClient.getResource(docUri,
+                            strat.getExtensions());
                     doc.setName(localDocName);
                 }
                 if (pullSrc) {
@@ -231,88 +238,25 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                 }
 
                 if (pullTarget) {
+                    List<LocaleId> skippedLocales = Lists.newArrayList();
                     for (LocaleMapping locMapping : locales) {
                         LocaleId locale = new LocaleId(locMapping.getLocale());
-                        String eTag = null;
                         File transFile =
                                 strat.getTransFileToWrite(localDocName,
                                         locMapping);
-                        ETagCacheEntry eTagCacheEntry =
-                                eTagCache.findEntry(localDocName,
-                                        locale.getId());
 
-                        if (getOpts().getUseCache() && eTagCacheEntry != null) {
-                            // Check the last updated date on the file matches
-                            // what's in the cache
-                            // only then use the cached ETag
-                            if (transFile.exists()
-                                    && Long.toString(transFile.lastModified())
-                                            .equals(eTagCacheEntry
-                                                    .getLocalFileTime())) {
-                                eTag = eTagCacheEntry.getServerETag();
-                            }
-                        }
-
-                        ClientResponse<TranslationsResource> transResponse =
-                                translationResources.getTranslations(docUri,
-                                        locale, strat.getExtensions(),
-                                        createSkeletons, eTag);
-
-                        // ignore 404 (no translation yet for specified
-                        // document)
-                        if (transResponse.getResponseStatus() == Response.Status.NOT_FOUND) {
-                            if (!createSkeletons) {
-                                log.info(
-                                        "No translations found in locale {} for document {}",
-                                        locale, localDocName);
-                                // We need to release connection.
-                                // see
-                                // http://stackoverflow.com/questions/4612573/exception-using-httprequest-execute-invalid-use-of-singleclientconnmanager-c
-                                transResponse.releaseConnection();
-                            } else {
-                                // Write the skeleton
-                                writeTargetDoc(strat, localDocName, locMapping,
-                                    doc, null,
-                                    transResponse.getResponseHeaders()
-                                        .getFirst(HttpHeaders.ETAG));
-                            }
-                        }
-                        // 304 NOT MODIFIED (the document can stay the same)
-                        else if (transResponse.getResponseStatus() == Response.Status.NOT_MODIFIED) {
-                            log.info(
-                                    "No changes in translations for locale {} and document {}",
-                                    locale, localDocName);
-
-                            // Check the file's MD5 matches what's stored in the
-                            // cache. If not, it needs to be fetched again (with
-                            // no etag)
-                            String fileChecksum =
-                                    HashUtil.getMD5Checksum(transFile);
-                            if (!fileChecksum.equals(eTagCacheEntry
-                                    .getLocalFileMD5())) {
-                                transResponse =
-                                        translationResources.getTranslations(
-                                                docUri, locale,
-                                                strat.getExtensions(),
-                                                createSkeletons, null);
-                                ClientUtility.checkResult(transResponse, uri);
-                                // rewrite the target document
-                                writeTargetDoc(strat, localDocName, locMapping,
-                                    doc, transResponse.getEntity(),
-                                    transResponse.getResponseHeaders()
-                                        .getFirst(HttpHeaders.ETAG));
-                            }
+                        if (shouldPullThisLocale(optionalStats, localDocName, locale)) {
+                            pullDocForLocale(strat, doc, localDocName, docUri,
+                                    createSkeletons, locMapping, transFile);
                         } else {
-                            ClientUtility.checkResult(transResponse, uri);
-                            TranslationsResource targetDoc =
-                                transResponse.getEntity();
-
-                            // Write the target document
-                            writeTargetDoc(strat, localDocName, locMapping,
-                                    doc, targetDoc,
-                                    transResponse.getResponseHeaders()
-                                            .getFirst(HttpHeaders.ETAG));
+                            skippedLocales.add(locale);
                         }
+
+                    }
+                    if (!skippedLocales.isEmpty()) {
+                        log.info(
+                                "Translation file for document {} for locales {} are skipped due to insufficient completed percentage",
+                                localDocName, skippedLocales);
                     }
 
                     // write the cache
@@ -321,7 +265,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
 
             } catch (RuntimeException e) {
                 String message =
-                        "Operation failed: "+e.getMessage()+"\n\n"
+                        "Operation failed: " + e.getMessage() + "\n\n"
                                 + "    To retry from the last document, please set the following option(s):\n\n"
                                 + "        ";
                 if (getOpts().getEnableModules()) {
@@ -341,6 +285,86 @@ public class PullCommand extends PushPullCommand<PullOptions> {
             }
         }
 
+    }
+
+    @VisibleForTesting
+    protected void pullDocForLocale(PullStrategy strat, Resource doc,
+            String localDocName, String docUri, boolean createSkeletons,
+            LocaleMapping locMapping,
+            File transFile) throws IOException {
+        LocaleId locale = new LocaleId(locMapping.getLocale());
+        String eTag = null;
+        ETagCacheEntry eTagCacheEntry =
+                eTagCache.findEntry(localDocName,
+                        locale.getId());
+
+        if (getOpts().getUseCache() && eTagCacheEntry != null) {
+            // Check the last updated date on the file matches
+            // what's in the cache
+            // only then use the cached ETag
+            if (transFile.exists()
+                    && Long.toString(transFile.lastModified())
+                            .equals(eTagCacheEntry
+                                    .getLocalFileTime())) {
+                eTag = eTagCacheEntry.getServerETag();
+            }
+        }
+
+        ClientResponse transResponse =
+                transDocResourceClient.getTranslations(docUri,
+                        locale, strat.getExtensions(),
+                        createSkeletons, eTag);
+
+        // ignore 404 (no translation yet for specified
+        // document)
+        if (transResponse.getClientResponseStatus() == ClientResponse.Status.NOT_FOUND) {
+            if (!createSkeletons) {
+                log.info(
+                        "No translations found in locale {} for document {}",
+                        locale, localDocName);
+            } else {
+                // Write the skeleton
+                writeTargetDoc(strat, localDocName, locMapping,
+                    doc, null,
+                    transResponse.getHeaders()
+                        .getFirst(HttpHeaders.ETAG));
+            }
+        } else if (transResponse.getClientResponseStatus() == ClientResponse.Status.NOT_MODIFIED) {
+            // 304 NOT MODIFIED (the document can stay the same)
+            log.info(
+                    "No changes in translations for locale {} and document {}",
+                    locale, localDocName);
+
+            // Check the file's MD5 matches what's stored in the
+            // cache. If not, it needs to be fetched again (with
+            // no etag)
+            String fileChecksum =
+                    HashUtil.getMD5Checksum(transFile);
+            if (!fileChecksum.equals(eTagCacheEntry
+                    .getLocalFileMD5())) {
+                transResponse =
+                        transDocResourceClient.getTranslations(
+                                docUri, locale,
+                                strat.getExtensions(),
+                                createSkeletons, null);
+                ClientUtil.checkResult(transResponse);
+                // rewrite the target document
+                writeTargetDoc(strat, localDocName, locMapping,
+                    doc, transResponse.getEntity(TranslationsResource.class),
+                    transResponse.getHeaders()
+                        .getFirst(HttpHeaders.ETAG));
+            }
+        } else {
+            ClientUtil.checkResult(transResponse);
+            TranslationsResource targetDoc =
+                transResponse.getEntity(TranslationsResource.class);
+
+            // Write the target document
+            writeTargetDoc(strat, localDocName, locMapping,
+                    doc, targetDoc,
+                    transResponse.getHeaders()
+                            .getFirst(HttpHeaders.ETAG));
+        }
     }
 
     /**

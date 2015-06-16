@@ -39,6 +39,7 @@ import org.zanata.client.TempTransFileRule;
 import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleMapping;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 public class RawPullStrategyTest {
@@ -64,7 +65,7 @@ public class RawPullStrategyTest {
         when(transFile.read(any(byte[].class))).thenReturn(-1);
 
         strategy.writeTransFile("foo/test.odt", new LocaleMapping("de"),
-                transFile);
+            transFile, Optional.<String>absent());
 
         assertThat(
                 new File(tempTransFileRule.getTransDir(), "de/foo/test.odt").exists(),
@@ -78,7 +79,7 @@ public class RawPullStrategyTest {
         when(transFile.read(any(byte[].class))).thenReturn(-1);
 
         strategy.writeTransFile("foo/test.odt", new LocaleMapping("de"),
-                transFile);
+                transFile, Optional.<String>absent());
 
         assertThat(
                 new File(tempTransFileRule.getTransDir(), "de/test.odt").exists(),

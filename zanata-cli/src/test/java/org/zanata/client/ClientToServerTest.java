@@ -47,7 +47,7 @@ public class ClientToServerTest {
         String project = "iok";
         String version = "6.4";
         client.processArgs(command, "--url", url, "--project", project,
-                "--project-version", version, "--disable-ssl-cert");
+                "--project-version", version, "--disable-ssl-cert", "--details");
     }
 
     @Test
@@ -56,27 +56,26 @@ public class ClientToServerTest {
         HTTPMockContainer mockContainer =
             HTTPMockContainer.notOkResponse(Status.SERVICE_UNAVAILABLE);
         ContainerServer server = new ContainerServer(mockContainer);
-        SocketConnection connection = new SocketConnection(server);
-        try {
-            InetSocketAddress address = (InetSocketAddress) connection.connect(new InetSocketAddress(0));
+        try (SocketConnection connection = new SocketConnection(server)) {
+            InetSocketAddress address = (InetSocketAddress) connection
+                    .connect(new InetSocketAddress(0));
             int port = address.getPort();
 
             String command = "stats";
-            String url = "http://localhost:"+port+"/";
+            String url = "http://localhost:" + port + "/";
             String project = "iok";
             String version = "6.4";
-    //        client.setErrors(true);
+            //        client.setErrors(true);
             client.processArgs(command, "--url", url, "--project", project,
-                    "--project-version", version, "--username", "admin", "--key",
+                    "--project-version", version, "--username", "admin",
+                    "--key",
                     "abcdeabcdeabcdeabcdeabcdeabcde12");
 
             server.stop();
             Mockito.verify(mockAbortStrategy).abort(throwableCapture.capture());
             assertThat("Client will display meaningful message for 503",
                     throwableCapture.getValue().getMessage()
-                            .contains("Service is currently unavailable"));
-        } finally {
-            connection.close();
+                            .contains("503 Service Unavailable"));
         }
     }
 }

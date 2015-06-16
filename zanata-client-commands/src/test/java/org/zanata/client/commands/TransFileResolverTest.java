@@ -1,6 +1,7 @@
 package org.zanata.client.commands;
 
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,14 +36,15 @@ public class TransFileResolverTest {
                 "{path}/{filename}_{locale_with_underscore}.{extension}")));
         File gettext =
             resolver.resolveTransFile(QualifiedSrcDocName.from(
-                    "gcc/po/gcc.pot"), new LocaleMapping("de-DE"));
+                    "gcc/po/gcc.pot"), new LocaleMapping("de-DE"), Optional
+                .<String>absent());
 
         assertThat(gettext.getPath(), equalTo("./gcc/po/de_DE.po"));
 
         File prop = resolver
             .resolveTransFile(QualifiedSrcDocName.from(
                             "src/main/resources/messages.properties"),
-                    new LocaleMapping("zh"));
+                    new LocaleMapping("zh"), Optional.<String>absent());
         assertThat(prop.getPath(), equalTo(
             "./src/main/resources/messages_zh.properties"));
     }
@@ -53,7 +55,7 @@ public class TransFileResolverTest {
         opts.setProjectType("file");
         File noMatching = resolver
                 .resolveTransFile(QualifiedSrcDocName.from(
-                        "doc/marketing.odt"), new LocaleMapping("ja"));
+                        "doc/marketing.odt"), new LocaleMapping("ja"), Optional.<String>absent());
         assertThat(noMatching.getPath(), equalTo("./ja/doc/marketing.odt"));
     }
 

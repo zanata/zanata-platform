@@ -40,6 +40,7 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
     private static final boolean DEF_CASE_SENSITIVE = true;
     private static final boolean DEF_EXCLUDE_LOCALES = true;
     private static final boolean DEF_COPYTRANS = true;
+    private static final boolean DEF_MY_TRANS = false;
     private static final int DEF_CHUNK_SIZE = 1024 * 1024;
     /** @see org.zanata.common.MergeType for options */
     private static final String DEF_MERGE_TYPE = "AUTO";
@@ -58,6 +59,7 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
     private String sourceLang = "en-US";
 
     private String validate;
+    private boolean myTrans = DEF_MY_TRANS;
 
     @Override
     public ZanataCommand initCommand() {
@@ -92,7 +94,7 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
     @Option(aliases = { "-l" }, name = "--locales",
             metaVar = "LOCALE1,LOCALE2,...",
             usage = "Locales to push to the server.\n"
-                    + "By default all locales in zanata.xml will be pushed.")
+                    + "By default all locales configured will be pushed.")
     public void setLocales(String locales) {
         this.locales = locales.split(",");
     }
@@ -187,8 +189,27 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
         return fileTypes;
     }
 
+    private static final String fileTypeHelp = "File types to locate and transmit to the server. \n" +
+        "Default file extension will be used unless it is being specified. \n" +
+        "Pattern: TYPE[extension;extension],TYPE[extension] \n" +
+        "Supported types: \n" +
+        "\t XML_DOCUMENT_TYPE_DEFINITION[xml] \n" +
+        "\t PLAIN_TEXT[txt] \n" +
+        "\t IDML[idml] \n" +
+        "\t HTML[html;htm] \n" +
+        "\t OPEN_DOCUMENT_TEXT[odt] \n" +
+        "\t OPEN_DOCUMENT_PRESENTATION[odp] \n" +
+        "\t OPEN_DOCUMENT_GRAPHICS[odg] \n" +
+        "\t OPEN_DOCUMENT_SPREADSHEET[ods] \n" +
+        "\t SUBTITLE[srt;sbt;sub;vtt] \n" +
+        "\t GETTEXT[pot] \n" +
+        "\t PROPERTIES[properties] \n" +
+        "\t PROPERTIES_UTF8[properties] \n" +
+        "\t XLIFF[xml] \n" +
+        "Usage --file-types \"XML_DOCUMENT_TYPE_DEFINITION,IDML[txt]\"";
+
     @Option(name = "--file-types", metaVar = "TYPES",
-            usage = "File types to locate and transmit to the server.")
+            usage = fileTypeHelp)
     public void setFileTypes(String fileTypes) {
         this.fileTypes = ImmutableList.copyOf(StringUtil.split(fileTypes, ","));
     }
@@ -216,8 +237,8 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
     @Option(
             name = "--exclude-locale-filenames",
             handler = BooleanValueHandler.class,
-            usage = "Exclude filenames which match locales in zanata.xml (other than the\n"
-                    + "source locale).  For instance, if zanata.xml includes de and fr,\n"
+            usage = "Exclude filenames which match project configured locales (other than the\n"
+                    + "source locale).  For instance, if project includes de and fr,\n"
                     + "then the files messages_de.properties and messages_fr.properties\n"
                     + "will not be treated as source files.\n"
                     + "NB: This parameter will be ignored for some project types which use\n"
@@ -242,4 +263,15 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
         this.validate = validate;
     }
 
+    @Override
+    public boolean isMyTrans() {
+        return myTrans;
+    }
+
+    @Option(
+            name = "--my-trans",
+            usage = "Indicates all uploaded translations were translated by you ")
+    public void setMyTrans(boolean myTrans) {
+        this.myTrans = myTrans;
+    }
 }

@@ -26,6 +26,7 @@ import org.zanata.client.commands.AbstractPushPullOptionsImpl;
 import org.zanata.client.commands.BooleanValueHandler;
 import org.zanata.client.commands.ZanataCommand;
 import org.zanata.client.commands.PushPullType;
+import com.google.common.base.Preconditions;
 
 /**
  * @author Sean Flanigan <a
@@ -50,6 +51,7 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
     private boolean useCache = DEFAULT_USE_CACHE;
     private boolean purgeCache = DEFAULT_PURGE_CACHE;
     private boolean continueAfterError = DEFAULT_CONTINUE_AFTER_ERROR;
+    private int minDocPercent = 0;
 
     @Override
     public ZanataCommand initCommand() {
@@ -73,7 +75,7 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
     @Option(aliases = { "-l" }, name = "--locales",
             metaVar = "LOCALE1,LOCALE2",
             usage = "Locales to pull from the server.\n"
-                    + "By default all locales in zanata.xml will be pulled.")
+                    + "By default all locales configured will be pulled.")
     public void setLocales(String locales) {
         this.locales = locales.split(",");
     }
@@ -166,7 +168,36 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
     }
 
     @Override
+    public int getMinDocPercent() {
+        return this.minDocPercent;
+    }
+
+    @Option(name = "--min-doc-percent", metaVar = "PERCENT",
+            usage = "Accepts integer from 0 to 100. Only pull translation documents which are at least PERCENT % (message based) completed.\n" +
+                    "Please note specifying this option may cause longer time to pull for a large project")
+    public void setMinDocPercent(int minDocPercent) {
+        Preconditions
+                .checkArgument(minDocPercent >= 0 && minDocPercent <= 100,
+                        "--min-doc-percent should be an integer from 0 to 100");
+        this.minDocPercent = minDocPercent;
+    }
+
+    @Override
     public boolean isAuthRequired() {
         return false;
+    }
+
+    @Option(name = "--use-cache", usage = "Whether to use an Entity cache when fetching documents.\n" +
+            "When using the cache, documents that have been retrieved previously and have not changed since then will not be retrieved again.\n" +
+            "Default is " + DEFAULT_USE_CACHE + ".")
+    public void setUseCache(boolean useCache) {
+        this.useCache = useCache;
+    }
+
+    @Option(name = "--purge-cache", usage = "Whether to purge the cache before performing the pull operation.\n" +
+            "This means that all documents will be fetched from the server anew.\n" +
+            "Default is " + DEFAULT_PURGE_CACHE + ".")
+    public void setPurgeCache(boolean purgeCache) {
+        this.purgeCache = purgeCache;
     }
 }

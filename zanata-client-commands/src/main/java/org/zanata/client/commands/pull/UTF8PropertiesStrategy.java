@@ -42,7 +42,7 @@ public class UTF8PropertiesStrategy extends PropertiesStrategy {
 
     @Override
     public void writeSrcFile(Resource doc) throws IOException {
-        PropWriter.writeUTF8(doc, getOpts().getSrcDir());
+        PropWriter.writeSource(doc, getOpts().getSrcDir(), PropWriter.CHARSET.UTF8);
     }
 
     @Override
@@ -50,14 +50,10 @@ public class UTF8PropertiesStrategy extends PropertiesStrategy {
             LocaleMapping localeMapping, TranslationsResource targetDoc)
             throws IOException {
         boolean createSkeletons = getOpts().getCreateSkeletons();
-        if (createSkeletons) {
-            PropWriter.writeUTF8(doc, targetDoc, getOpts().getTransDir(),
-                    docName, localeMapping.getJavaLocale(), true);
-        } else {
-            PropWriter.writeUTF8(null, targetDoc, getOpts().getTransDir(),
-                    docName, localeMapping.getJavaLocale(), false);
-        }
-
+        PropWriter.writeTranslations(createSkeletons ? doc : null, targetDoc,
+            getOpts().getTransDir(),
+            docName, localeMapping.getJavaLocale(),
+            PropWriter.CHARSET.UTF8, createSkeletons);
         return null;
     }
 

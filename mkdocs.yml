@@ -1,0 +1,24 @@
+site_name: Zanata Client
+docs_dir: docs
+repo_name: GitHub
+repo_url: http://www.github.com/zanata/zanata-client
+theme: readthedocs
+# theme_dir: For custom themes
+
+pages:
+- Home: 'index.md'
+- User Guide:
+  - Installation: 'installation.md'
+  - Configuration: 'configuration.md'
+  - Command Hook: 'command-hook.md'
+- Ivy:
+  - Installation: 'ivy/installation.md'
+  - Setup: 'ivy/setup.md'
+- Maven Plugin:
+  - Installation: 'maven-plugin/installation.md'
+  - Configuration: 'maven-plugin/configuration.md'
+  - Commands: 'maven-plugin/commands.md'
+- Commands:
+  - init: 'commands/init.md'
+  - push: 'commands/push.md'
+  - pull: 'commands/pull.md'

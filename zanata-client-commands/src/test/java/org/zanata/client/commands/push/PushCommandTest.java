@@ -1,34 +1,31 @@
 package org.zanata.client.commands.push;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.notNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import static org.zanata.client.TestUtils.fileFromClasspath;
 
 import java.io.File;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.core.Response.Status;
-
-import org.jboss.resteasy.client.ClientResponse;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.zanata.client.commands.DummyResponse;
+import org.zanata.client.TestUtils;
 import org.zanata.client.commands.OptionsUtil;
 import org.zanata.client.commands.ZanataCommand;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.StringSet;
-import org.zanata.rest.client.IAsynchronousProcessResource;
-import org.zanata.rest.client.ICopyTransResource;
-import org.zanata.rest.client.ISourceDocResource;
-import org.zanata.rest.client.ITranslatedDocResource;
-import org.zanata.rest.client.ZanataProxyFactory;
+import org.zanata.rest.client.AsyncProcessClient;
+import org.zanata.rest.client.CopyTransClient;
+import org.zanata.rest.client.RestClientFactory;
+import org.zanata.rest.client.SourceDocResourceClient;
 import org.zanata.rest.dto.CopyTransStatus;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
@@ -38,18 +35,22 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 
 public class PushCommandTest {
     @Mock
-    ZanataProxyFactory mockRequestFactory;
+    private RestClientFactory clientFactory;
     @Mock
-    ISourceDocResource mockSourceDocResource;
+    private SourceDocResourceClient sourceDocResourceClient;
     @Mock
-    ITranslatedDocResource mockTranslationResources;
+    private AsyncProcessClient asyncProcessClient;
     @Mock
-    ICopyTransResource mockCopyTransResource;
-    @Mock
-    IAsynchronousProcessResource mockAsynchronousProcessResource;
+    private CopyTransClient copyTransClient;
 
-    public PushCommandTest() throws Exception {
+    @Before
+    public void setUp() {
         initMocks(this);
+        when(clientFactory.getSourceDocResourceClient(anyString(), anyString()))
+                .thenReturn(sourceDocResourceClient);
+        when(clientFactory.getAsyncProcessClient()).thenReturn(
+                asyncProcessClient);
+        when(clientFactory.getCopyTransClient()).thenReturn(copyTransClient);
     }
 
     @Test
@@ -130,13 +131,13 @@ public class PushCommandTest {
         opts.setProj(projectSlug);
         String versionSlug = "1.0";
         opts.setProjectVersion(versionSlug);
-        opts.setSrcDir(new File("src/test/resources/test1/pot"));
+        opts.setSrcDir(fileFromClasspath("test1/pot"));
         if (pushTrans) {
             opts.setPushType("both");
         } else {
             opts.setPushType("source");
         }
-        opts.setTransDir(new File("src/test/resources/test1"));
+        opts.setTransDir(fileFromClasspath("test1"));
         opts.setProjectType("podir");
         // opts.setNoCopyTrans(false);
         opts.setCopyTrans(true);
@@ -153,27 +154,19 @@ public class PushCommandTest {
         opts.setLocaleMapList(locales);
         OptionsUtil.applyConfigFiles(opts);
 
-        when(mockRequestFactory.getCopyTransResource()).thenReturn(
-                mockCopyTransResource);
-        when(mockRequestFactory.getAsynchronousProcessResource()).thenReturn(
-                mockAsynchronousProcessResource);
-
-        return new PushCommand(opts, mockRequestFactory, mockSourceDocResource,
-                mockTranslationResources, new URI("http://example.com/"));
+        return new PushCommand(opts,
+                clientFactory.getCopyTransClient(),
+                clientFactory.getAsyncProcessClient(), clientFactory);
     }
 
     private void push(boolean pushTrans, boolean mapLocale) throws Exception {
         List<ResourceMeta> resourceMetaList = new ArrayList<ResourceMeta>();
         resourceMetaList.add(new ResourceMeta("obsolete"));
         resourceMetaList.add(new ResourceMeta("RPM"));
-        when(mockSourceDocResource.get(null)).thenReturn(
-                new DummyResponse<List<ResourceMeta>>(Status.OK,
-                        resourceMetaList));
-
-        final ClientResponse<String> okResponse =
-                new DummyResponse<String>(Status.OK, null);
-        when(mockSourceDocResource.deleteResource("obsolete")).thenReturn(
-                okResponse);
+        when(sourceDocResourceClient.getResourceMeta(null)).thenReturn(
+                        resourceMetaList);
+        when(sourceDocResourceClient.deleteResource("obsolete")).thenReturn(
+                null);
         StringSet extensionSet = new StringSet("gettext;comment");
         // TODO These calls now use a false copyTrans value (2.0) but they
         // invoke the copy Trans resource. Still need to add Copy Trans resource
@@ -186,23 +179,23 @@ public class PushCommandTest {
         mockStatus.setStatusCode(ProcessStatus.ProcessStatusCode.Finished);
         mockStatus.setMessages(new ArrayList<String>());
         when(
-                mockAsynchronousProcessResource.startSourceDocCreationOrUpdate(
+                asyncProcessClient.startSourceDocCreationOrUpdate(
                         eq("RPM"), anyString(), anyString(),
-                        (Resource) notNull(), eq(extensionSet), eq(false)))
+                        any(Resource.class), eq(extensionSet), eq(false)))
                 .thenReturn(mockStatus);
         when(
-                mockAsynchronousProcessResource.startSourceDocCreationOrUpdate(
+                asyncProcessClient.startSourceDocCreationOrUpdate(
                         eq("sub,RPM"), anyString(), anyString(),
-                        (Resource) notNull(), eq(extensionSet), eq(false)))
+                        any(Resource.class), eq(extensionSet), eq(false)))
                 .thenReturn(mockStatus);
-        when(mockAsynchronousProcessResource.getProcessStatus(anyString()))
+        when(asyncProcessClient.getProcessStatus(anyString()))
                 .thenReturn(mockStatus);
 
         CopyTransStatus mockCopyTransStatus = new CopyTransStatus();
         mockCopyTransStatus.setInProgress(false);
         mockCopyTransStatus.setPercentageComplete(100);
         when(
-                mockCopyTransResource.getCopyTransStatus(anyString(),
+                copyTransClient.getCopyTransStatus(anyString(),
                         anyString(), anyString())).thenReturn(
                 mockCopyTransStatus);
 
@@ -214,13 +207,13 @@ public class PushCommandTest {
                 expectedLocale = new LocaleId("ja-JP");
             }
             when(
-                    mockAsynchronousProcessResource
+                    asyncProcessClient
                             .startTranslatedDocCreationOrUpdate(eq("RPM"),
                                     anyString(), anyString(),
                                     eq(expectedLocale),
-                                    (TranslationsResource) notNull(),
-                                    eq(extensionSet), eq("auto"))).thenReturn(
-                    mockStatus);
+                                    any(TranslationsResource.class),
+                                    eq(extensionSet), eq("auto"), eq(false))).
+                                    thenReturn(mockStatus);
             // when(mockTranslationResources.putTranslations(eq("RPM"),
             // eq(expectedLocale), (TranslationsResource) notNull(),
             // eq(extensionSet), eq("auto")))

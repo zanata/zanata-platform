@@ -131,8 +131,9 @@ public abstract class AbstractPushPullMojo<O extends PushPullOptions> extends
     private String fromDoc;
 
     /**
-     * Locales to push to/pull from the server. By default all locales in
-     * zanata.xml will be pushed/pulled. Usage:
+     * Locales to push to/pull from the server. By default all locales
+     * configured for the project will be pushed/pulled.
+     * Usage:
      * -Dzanata.locales=locale1,locale2,locale3
      *
      * @parameter expression="${zanata.locales}"

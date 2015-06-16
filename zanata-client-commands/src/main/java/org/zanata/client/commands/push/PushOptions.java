@@ -54,4 +54,6 @@ public interface PushOptions extends PushPullOptions {
 
     public String getValidate();
 
+    public boolean isMyTrans();
+
 }

@@ -40,7 +40,6 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
-import org.jboss.resteasy.client.ClientResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.ConfigurableCommand;
@@ -50,11 +49,13 @@ import org.zanata.client.commands.ConsoleInteractorImpl;
 import org.zanata.client.commands.OptionsUtil;
 import org.zanata.client.config.ZanataConfig;
 import org.zanata.client.util.VersionComparator;
-import org.zanata.rest.client.ZanataProxyFactory;
+import org.zanata.rest.client.ProjectIterationClient;
+import org.zanata.rest.client.RestClientFactory;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
 
 /**
  * @author Patrick Huang <a
@@ -63,31 +64,31 @@ import com.google.common.base.Strings;
 public class InitCommand extends ConfigurableCommand<InitOptions> {
     private static final Logger log = LoggerFactory
             .getLogger(InitCommand.class);
-    private static final ZanataProxyFactory mockFactory =
-            MockZanataProxyFactory.mockFactory;
     private static final String ITERATION_URL = "%siteration/view/%s/%s";
     private ConsoleInteractor console;
-    private ZanataProxyFactory requestFactory;
     private ProjectConfigHandler projectConfigHandler;
     private UserConfigHandler userConfigHandler;
 
     public InitCommand(InitOptions opts) {
-        // we don't have all mandatory information yet. Can't create a real
-        // proxy factory.
-        super(opts, mockFactory);
-        console = new ConsoleInteractorImpl();
+        // we don't have all mandatory information yet (server URL etc)
+        super(opts, new RestClientFactory() {});
+        console = new ConsoleInteractorImpl(opts);
         projectConfigHandler =
                 new ProjectConfigHandler(console, getOpts());
         userConfigHandler = new UserConfigHandler(console, getOpts());
     }
 
     @VisibleForTesting
+    protected InitCommand(InitOptions opts, ConsoleInteractor console) {
+        this(opts, console, new RestClientFactory() {});
+    }
+
+    @VisibleForTesting
     protected InitCommand(InitOptions opts,
             ConsoleInteractor console,
-            ZanataProxyFactory requestFactory) {
-        super(opts, mockFactory);
+            RestClientFactory restClientFactory) {
+        super(opts, restClientFactory);
         this.console = console;
-        this.requestFactory = requestFactory;
         projectConfigHandler =
                 new ProjectConfigHandler(console, getOpts());
         userConfigHandler = new UserConfigHandler(console, getOpts());
@@ -98,6 +99,8 @@ public class InitCommand extends ConfigurableCommand<InitOptions> {
         // Search for zanata.ini
         userConfigHandler.verifyUserConfig();
 
+        setClientFactory(OptionsUtil.createClientFactory(getOpts()));
+
         ensureServerVersion();
 
         // If there's a zanata.xml, ask the user
@@ -105,9 +108,8 @@ public class InitCommand extends ConfigurableCommand<InitOptions> {
 
         // Select or create a project and version
         new ProjectPrompt(console, getOpts(),
-                getRequestFactory(),
                 new ProjectIterationPrompt(console, getOpts(),
-                        getRequestFactory()))
+                        getClientFactory()), getClientFactory())
                 .selectOrCreateNewProjectAndVersion();
 
         advancedSettingsReminder();
@@ -137,7 +139,7 @@ public class InitCommand extends ConfigurableCommand<InitOptions> {
     @VisibleForTesting
     protected void ensureServerVersion() {
         String serverVersion =
-                getRequestFactory().getServerVersionInfo().getVersionNo();
+                getClientFactory().getServerVersionInfo().getVersionNo();
 
         if (new VersionComparator().compare(serverVersion, "3.4.0") < 0) {
             console.printfln(Warning, _("server.incompatible"));
@@ -205,22 +207,12 @@ public class InitCommand extends ConfigurableCommand<InitOptions> {
     }
 
 
-    public static void offerRetryOnServerError(ClientResponse response,
+    public static void offerRetryOnServerError(Exception e,
             ConsoleInteractor consoleInteractor) {
         consoleInteractor.printfln(Warning, _("server.error"),
-                response.getEntity(String.class));
+                Throwables.getRootCause(e).getMessage());
         consoleInteractor.printf(Question, _("server.error.try.again"));
         consoleInteractor.expectYes();
-    }
-
-    public ZanataProxyFactory getRequestFactory() {
-        if (requestFactory != null) {
-            return requestFactory;
-        } else {
-            requestFactory = OptionsUtil.createRequestFactory(getOpts());
-            console.blankLine();
-            return requestFactory;
-        }
     }
 
     /**
@@ -236,20 +228,23 @@ public class InitCommand extends ConfigurableCommand<InitOptions> {
     @VisibleForTesting
     protected void downloadZanataXml(String projectId, String iterationId,
             File configFileDest) throws IOException {
-        ClientResponse response =
-                getRequestFactory().getProjectIteration(projectId, iterationId)
-                        .sampleConfiguration();
-        if (response.getStatus() >= 399) {
-            offerRetryOnServerError(response, console);
+        ProjectIterationClient projectIterationClient = getClientFactory()
+                .getProjectIterationClient(projectId, iterationId);
+
+        String content;
+        try {
+            content = projectIterationClient.sampleConfiguration();
+        } catch (Exception e) {
+            offerRetryOnServerError(e, console);
             downloadZanataXml(projectId, iterationId, configFileDest);
             return;
         }
+
         boolean created = configFileDest.createNewFile();
         Preconditions.checkState(created,
                 "Can not create %s. Make sure permission is writable.",
                 configFileDest);
 
-        String content = (String) response.getEntity(String.class);
         log.debug("project config from the server:\n{}", content);
         FileUtils.write(configFileDest, content, UTF_8);
         getOpts().setProjectConfig(configFileDest);
@@ -281,13 +276,4 @@ public class InitCommand extends ConfigurableCommand<InitOptions> {
                 getOpts().getProjectConfig());
     }
 
-    // we don't have all mandatory information yet
-    private static class MockZanataProxyFactory extends ZanataProxyFactory {
-        private static final MockZanataProxyFactory mockFactory =
-                new MockZanataProxyFactory();
-
-        private MockZanataProxyFactory() {
-            super();
-        }
-    }
 }

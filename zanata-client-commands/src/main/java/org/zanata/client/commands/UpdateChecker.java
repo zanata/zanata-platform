@@ -20,19 +20,17 @@
  */
 package org.zanata.client.commands;
 
-import java.io.BufferedReader;
+import static org.zanata.client.commands.ConsoleInteractorImpl.AnswerValidator;
+import static org.zanata.client.commands.Messages._;
+import static org.zanata.util.VersionUtility.getVersionInfo;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.fedorahosted.openprops.Properties;
@@ -43,15 +41,16 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
-
-import static org.zanata.client.commands.ConsoleInteractorImpl.*;
-import static org.zanata.client.commands.Messages._;
-import static org.zanata.util.VersionUtility.getVersionInfo;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
 
 /**
  * This class checks whether there is newer version of client available. It will
@@ -189,8 +188,7 @@ public class UpdateChecker {
             props.setProperty(LAST_CHECKED, today);
             props.store(new BufferedWriter(new FileWriterWithEncoding(
                     updateMarker, Charsets.UTF_8)), null);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             log.warn("failed to load file {}", updateMarker);
         }
     }
@@ -202,19 +200,23 @@ public class UpdateChecker {
      * @return latest version of client in sonatype oss
      */
     private Optional<String> checkLatestVersion(ConsoleInteractor console) {
-        Response response;
+        ClientResponse response;
         try {
-            Client client = ClientBuilder.newBuilder().build();
-            WebTarget target =
-                    client.target(sonatypeRestUrl)
+            DefaultClientConfig clientConfig =
+                    new DefaultClientConfig();
+
+            Client client = com.sun.jersey.api.client.Client.create(
+                    clientConfig);
+            WebResource target =
+                    client.resource(sonatypeRestUrl)
                             .path("artifact/maven/resolve")
                             .queryParam("g", "org.zanata")
                             .queryParam("a", "client")
                             .queryParam("p", "pom")
                             .queryParam("v", "LATEST")
                             .queryParam("r", "releases");
-            response = target.request().get();
-            if (response.getStatus() != Response.Status.OK.getStatusCode()) {
+            response = target.get(ClientResponse.class);
+            if (response.getClientResponseStatus() != ClientResponse.Status.OK) {
                 log.debug(
                         "Failed to resolve latest client artifact [status {}]. Ignored",
                         response.getStatus());
@@ -228,7 +230,7 @@ public class UpdateChecker {
         }
         // cheap xml parsing
         String payload =
-                response.readEntity(String.class).replaceAll("\\n", "");
+                response.getEntity(String.class).replaceAll("\\n", "");
         Pattern pattern = Pattern.compile("^.+<version>(.+)</version>.+");
         Matcher matcher = pattern.matcher(payload);
         return matcher.matches() ? Optional.of(matcher.group(1)) : Optional

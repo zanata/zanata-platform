@@ -21,9 +21,16 @@
 
 package org.zanata.client;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+
+import org.apache.commons.codec.Charsets;
+import org.apache.commons.io.IOUtils;
 import org.zanata.client.commands.ConfigurableProjectOptions;
 import org.zanata.client.config.LocaleMapping;
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 
 /**
  * @author Patrick Huang
@@ -42,5 +49,25 @@ public class TestUtils {
         }
         opts.getLocaleMapList().add(mapping);
         return mapping;
+    }
+
+    public static String readFromClasspath(String relativePath)
+            throws IOException {
+        URL resource = loadFromClasspath(relativePath);
+        return IOUtils.toString(resource, Charsets.UTF_8);
+    }
+
+    public static File fileFromClasspath(String relativePath) {
+        URL url = loadFromClasspath(relativePath);
+        return new File(url.getFile());
+    }
+
+    private static URL loadFromClasspath(String relativePath) {
+        URL resource =
+                Thread.currentThread().getContextClassLoader()
+                        .getResource(relativePath);
+        Preconditions.checkArgument(resource != null, "%s not found",
+                relativePath);
+        return resource;
     }
 }

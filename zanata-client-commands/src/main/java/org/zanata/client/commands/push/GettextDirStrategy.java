@@ -45,7 +45,7 @@ public class GettextDirStrategy extends AbstractGettextPushStrategy {
 
         LocaleList localeListInConfig = getOpts().getLocaleMapList();
         if (localeListInConfig == null || localeListInConfig.isEmpty()) {
-            log.warn("No locale list in configuration (check zanata.xml)");
+            log.warn("No locale list in configuration (check your server settings)");
             return localesFoundOnDisk;
         }
 
@@ -62,7 +62,7 @@ public class GettextDirStrategy extends AbstractGettextPushStrategy {
         if (localesFoundOnDisk.size() == 0) {
             log.warn(
                     "'pushType' is set to '{}', but none of the configured locale "
-                            + "files was found (check zanata.xml)", getOpts()
+                            + "files was found (check your server settings)", getOpts()
                             .getPushType());
         }
 
@@ -85,7 +85,7 @@ public class GettextDirStrategy extends AbstractGettextPushStrategy {
             String warningMsg =
                     "Found source file path starting with pot, perhaps you want to set source directory to pot?";
             ConsoleInteractorImpl console =
-                    new ConsoleInteractorImpl();
+                    new ConsoleInteractorImpl(getOpts());
             log.warn(warningMsg);
             if (isInteractive) {
                 console.printfln(warningMsg);

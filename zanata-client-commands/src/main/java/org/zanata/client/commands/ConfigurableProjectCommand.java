@@ -21,7 +21,7 @@
 package org.zanata.client.commands;
 
 import org.zanata.client.exceptions.ConfigException;
-import org.zanata.rest.client.ZanataProxyFactory;
+import org.zanata.rest.client.RestClientFactory;
 
 /**
  * Base class for commands which supports configuration by the user's zanata.ini
@@ -41,8 +41,12 @@ public abstract class ConfigurableProjectCommand<O extends ConfigurableProjectOp
     protected static final String PROJECT_TYPE_XLIFF = "xliff";
     protected static final String PROJECT_TYPE_XML = "xml";
 
-    public ConfigurableProjectCommand(O opts, ZanataProxyFactory factory) {
-        super(opts, factory);
+    public ConfigurableProjectCommand(O opts) {
+        super(opts, null);
+        validateMandatoryOptions(opts);
+    }
+
+    private void validateMandatoryOptions(O opts) {
         if (opts.getProj() == null)
             throw new ConfigException("Project must be specified");
         if (opts.getProjectVersion() == null)
@@ -51,8 +55,9 @@ public abstract class ConfigurableProjectCommand<O extends ConfigurableProjectOp
             throw new ConfigException("Project type must be specified");
     }
 
-    public ConfigurableProjectCommand(O opts) {
-        this(opts, null);
+    public ConfigurableProjectCommand(O opts, RestClientFactory restClientFactory) {
+        super(opts, restClientFactory);
+        validateMandatoryOptions(opts);
     }
 
     protected String getProjectType() {

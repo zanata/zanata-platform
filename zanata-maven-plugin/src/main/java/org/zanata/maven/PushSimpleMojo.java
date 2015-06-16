@@ -41,6 +41,7 @@ public class PushSimpleMojo extends AbstractPushMojo implements PushOptions {
 
     @Override
     public boolean getDeleteObsoleteModules() {
-        return false; // False for Simple push
+        // False for Simple push
+        return false;
     }
 }

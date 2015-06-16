@@ -211,10 +211,9 @@ public class ZanataClient extends BasicOptionsImpl {
         out.println();
         out.println("Available commands:");
         for (String cmd : OPTIONS.keySet()) {
-            out.println("  " + cmd /*
-                                    * + ": " + OPTIONS.get(cmd).newInstance().
-                                    * getCommandDescription()
-                                    */);
+            out.println("  " + cmd);
+            // + ": " + OPTIONS.get(cmd).newInstance().
+            // getCommandDescription()
         }
     }
 
