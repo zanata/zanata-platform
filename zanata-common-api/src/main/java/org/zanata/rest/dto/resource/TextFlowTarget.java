@@ -239,6 +239,7 @@ public class TextFlowTarget extends TextContainer implements Serializable,
     }
 
     @XmlAttribute(name = "resourceRevision", required = false)
+    @JsonProperty("textFlowRevision")
     public Integer getTextFlowRevision() {
         return textFlowRevision;
     }
