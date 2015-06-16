@@ -1,13 +1,8 @@
 var webpack = require('webpack');
 var path = require('path');
 
-// default destination
-var bundleDest = __dirname;
-process.argv.forEach(function(arg) {
-  if (/^bundleDest=.+$/.test(arg)) {
-    bundleDest = arg.split('=')[1];
-  }
-});
+// bundle destination (default is current directory)
+var bundleDest = process.env.npm_config_env_bundleDest || __dirname;
 
 module.exports = {
   context: __dirname,
