@@ -49,7 +49,7 @@ public class CommonMarkRenderer {
     private static final String VER = Dependencies.getVersion(
             "org.webjars.bower:commonmark:jar");
     private static final String SCRIPT_NAME = "commonmark/" +
-            VER + "/dist/commonmark.js";
+            VER + "/dist/commonmark.min.js";
     private static final String VER_SANITIZER = Dependencies.getVersion(
             "org.webjars.bower:google-caja:jar");
     private static final String SCRIPT_NAME_SANITIZER = "google-caja/" +
