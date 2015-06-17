@@ -50,11 +50,16 @@ public class CommonMarkRenderer {
             "org.webjars.bower:commonmark:jar");
     private static final String SCRIPT_NAME = "commonmark/" +
             VER + "/dist/commonmark.js";
+    private static final String VER_SANITIZER = Dependencies.getVersion(
+            "org.webjars.bower:google-caja:jar");
+    private static final String SCRIPT_NAME_SANITIZER = "google-caja/" +
+            VER_SANITIZER + "/html-sanitizer-minified.js";
     private static final String RESOURCE_NAME = "META-INF/resources/webjars/" +
             SCRIPT_NAME;
 
     public CommonMarkRenderer() {
         log.info("Using commonmark.js version {}", VER);
+        log.info("Using Google Caja version {}", VER_SANITIZER);
     }
 
     // ScriptEngine is expensive, but not really threadsafe (even in Rhino).
@@ -76,6 +81,20 @@ public class CommonMarkRenderer {
      */
     public String getOutputScriptName() {
         return SCRIPT_NAME;
+    }
+
+    /**
+     * Return the name of the sanitizer script for JSF h:outputScript.
+     *
+     * You can use it like this:
+     * <pre>
+     * {@code <h:outputScript target="body" library="webjars"
+     *     name="${commonMarkRenderer.outputScriptNameSanitizer}"/>}
+     * </pre>
+     * @return
+     */
+    public String getOutputScriptNameSanitizer() {
+        return SCRIPT_NAME_SANITIZER;
     }
 
     /**

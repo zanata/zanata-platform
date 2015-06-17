@@ -2213,6 +2213,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.webjars.bower</groupId>
+      <artifactId>google-caja</artifactId>
+      <version>5669.0.0</version>
+    </dependency>
+
+    <dependency>
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
       <scope>provided</scope>
