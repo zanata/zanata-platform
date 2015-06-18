@@ -11,9 +11,46 @@ sudo yum install zanata-client
 
 *Note:* If you are not running the latest version of Fedora, the latest version of the client may not be available, so you might want to try the Ivy version (below).
 
-## Installation with Ivy
+## Installation with Ivy (Recommended)
 
-See [Ivy installation](/ivy/installation) for more information.
+The Ivy distribution of the client is a small script that will download the client the first time it is run. This distribution requires Apache Ivy to run.
+
+1. See [Setup Ivy](/ivy/setup) for Apache Ivy installation.
+2. Save [this script](https://raw.github.com/zanata/zanata-client-ivy/master/zanata-cli) somewhere on your path, and make sure it is executable. For example, assuming you have `~/bin in $PATH`,
+
+```
+cd ~/bin
+wget https://raw.github.com/zanata/zanata-client-ivy/master/zanata-cli
+chmod 755 zanata-cli
+```
+
+*Note:* It's a good idea to check for a new version of zanata-cli once in a while (especially when a new version of Zanata server is released).
+
+
+## Installation with 0install
+
+The 0install distribution of the client is to allow zanata-cli to be available on multiple platform. This distribution requires [0install](http://0install.net/) to run.
+
+1. See [Setup 0install](/0install/setup) for 0install installation.
+2. To run `zanata-cli`:
+```
+0launch http://zanata.org/files/0install/zanata-cli.xml {command}
+```
+
+To install `zanata-cli` as an alias in your machine run:
+```
+0install -c add zanata-cli http://zanata.org/files/0install/zanata-cli.xml
+```
+Now you can run `zanata-cli --help` for more options. If you have installed `zanata-cli` previously through another method, you need to uninstall that for this to work.
+
+#### Update 0install Zanata-CLI
+
+To update Zanata CLI, run
+
+```
+0install update http://zanata.org/files/0install/zanata-cli.xml
+```
+
 
 ## Manual Installation
 
