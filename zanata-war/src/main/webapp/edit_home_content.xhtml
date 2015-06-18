@@ -41,8 +41,11 @@
 
       </div>
 
+      <ui:remove><!--
+        Preview disabled due to https://bugzilla.redhat.com/show_bug.cgi?id=1232541
         <h:outputScript target="body" library="webjars" name="${commonMarkRenderer.outputScriptName}"/>
         <h:outputScript target="body" library="script" name="commonmark-preview.js"/>
+      --></ui:remove>
 
     </h:form>
   </ui:define>
