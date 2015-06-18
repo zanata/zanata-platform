@@ -32,6 +32,14 @@ import static org.zanata.util.HtmlUtil.*;
 public class HtmlUtilTest {
 
     @Test
+    public void sanitiseLinkAddNoFollow() {
+        String input = "<p>Untrusted link: <a href=\"http://spam.example.com/\">Click here!</a></p>";
+        String expected = "<p>Untrusted link: <a href=\"http://spam.example.com/\" rel=\"nofollow\">Click here!</a></p>";
+        String actual = SANITIZER.sanitize(input);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
     public void sanitisePlainText() {
         String input = "some text";
         String actual = SANITIZER.sanitize(input);
