@@ -333,9 +333,8 @@ public class SourceDocumentUpload {
             DocumentFileUploadForm uploadForm) {
         // real upload filename not available, but the service only cares about
         // the suffix.
-        String uploadFileName = "." + uploadForm.getFileType();
         Resource doc = translationFileServiceImpl.parseUpdatedPotFile(potStream,
-                        id.getDocId(), uploadFileName,
+                        id.getDocId(), ".pot",
                         useOfflinePo(id));
         doc.setLang(LocaleId.EN_US);
         // TODO Copy Trans values
