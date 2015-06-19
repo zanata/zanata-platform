@@ -1184,7 +1184,7 @@
       <plugin>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-maven-plugin</artifactId>
-        <version>3.6.0</version>
+        <version>${zanata.client.version}</version>
         <configuration>
           <srcDir>.</srcDir>
           <transDir>.</transDir>
