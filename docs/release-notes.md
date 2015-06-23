@@ -30,6 +30,7 @@ Example usage in html file: `<link rel="shortcut icon" href="#{assets['img/logo/
 
 
 <h5>Bug fixes</h5>
+* [1203521](https://bugzilla.redhat.com/show_bug.cgi?id=1203521) - Alpha Editor doesn't escape reserved characters
 * [1194543](https://bugzilla.redhat.com/show_bug.cgi?id=1194543) - Manual document re-upload makes previous translations fuzzy
 * [1029734](https://bugzilla.redhat.com/show_bug.cgi?id=1029734) - po header contains invalid entry will cause upload/push failure
 * [895881](https://bugzilla.redhat.com/show_bug.cgi?id=895881) - 'Restore Defaults' in editor options does not properly restore defaults
