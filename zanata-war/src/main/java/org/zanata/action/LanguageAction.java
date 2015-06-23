@@ -47,7 +47,9 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
+import org.zanata.rest.editor.dto.Locale;
 import org.zanata.rest.service.ResourceUtils;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LanguageTeamService;
 import org.zanata.service.LocaleService;
 import org.zanata.ui.faces.FacesMessages;
@@ -82,6 +84,9 @@ public class LanguageAction implements Serializable {
 
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
+
+    @In
+    private ZanataIdentity identity;
 
     @In
     private Messages msgs;
@@ -234,11 +239,15 @@ public class LanguageAction implements Serializable {
             return;
         }
 
-        boolean isSupported =
-                localeServiceImpl.localeSupported(new LocaleId(language));
-        if(!isSupported) {
+        LocaleId localeId = new LocaleId(language);
+        HLocale locale = localeServiceImpl.getByLocaleId(localeId);
+
+        if(locale == null) {
             redirectToLanguageHome();
-            return;
+        }
+
+        if(!locale.isActive() && !identity.hasRole("admin")) {
+            redirectToLanguageHome();
         }
     }
 
