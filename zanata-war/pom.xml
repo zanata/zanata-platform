@@ -399,7 +399,7 @@
           <excludes>**/*_default.properties</excludes>
         </configuration>
         <artifactId>zanata-maven-plugin</artifactId>
-        <version>3.3.0</version>
+        <version>${zanata.client.version}</version>
       </plugin>
 
       <plugin>
