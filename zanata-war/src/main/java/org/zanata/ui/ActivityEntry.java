@@ -35,6 +35,7 @@ import org.zanata.i18n.Messages;
 import org.zanata.model.Activity;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.type.EntityType;
 import org.zanata.service.ActivityService;
@@ -206,10 +207,13 @@ public class ActivityEntry {
             HProjectIteration version = (HProjectIteration) context;
             HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
 
-            return urlUtil.editorTransUnitUrl(version.getProject().getSlug(),
-                    version.getSlug(), tft.getLocaleId(), tft.getTextFlow()
+            if (tft != null) {
+                return urlUtil
+                    .editorTransUnitUrl(version.getProject().getSlug(),
+                        version.getSlug(), tft.getLocaleId(), tft.getTextFlow()
                             .getLocale(), tft.getTextFlow().getDocument()
                             .getDocId(), tft.getTextFlow().getId());
+            }
         } else if (activity.getActivityType() == ActivityType.UPLOAD_SOURCE_DOCUMENT) {
             // not supported for upload source action
         } else if (activity.getActivityType() == ActivityType.UPLOAD_TRANSLATION_DOCUMENT) {
@@ -360,7 +364,10 @@ public class ActivityEntry {
 
         if (isTranslationUpdateActivity(activity.getActivityType())) {
             HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
-            docName = tft.getTextFlow().getDocument().getName();
+            HTextFlow tf = tft.getTextFlow();
+            if(tf != null) {
+                docName = tf.getDocument().getName();
+            }
         } else if (activity.getActivityType() == UPLOAD_SOURCE_DOCUMENT
             || activity.getActivityType() == UPLOAD_TRANSLATION_DOCUMENT) {
             HDocument document = (HDocument) lastTarget;
@@ -377,7 +384,9 @@ public class ActivityEntry {
 
         if (isTranslationUpdateActivity(activity.getActivityType())) {
             HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
-            name = tft.getLocaleId().getId();
+            if (tft.getLocale() != null) {
+                name = tft.getLocaleId().getId();
+            }
         } else if (activity.getActivityType() == UPLOAD_SOURCE_DOCUMENT) {
             // not supported for upload source action
         } else if (activity.getActivityType() == UPLOAD_TRANSLATION_DOCUMENT) {
@@ -401,7 +410,10 @@ public class ActivityEntry {
 
         if (isTranslationUpdateActivity(activity.getActivityType())) {
             HTextFlowTarget tft = (HTextFlowTarget) lastTarget;
-            content = tft.getTextFlow().getContents().get(0);
+            HTextFlow tf = tft.getTextFlow();
+            if(tf != null) {
+                content = tf.getContents().get(0);
+            }
         }
 
         return ShortString.shorten(content);
