@@ -72,13 +72,13 @@ For instance, if one of your files is called `myfile/es.po` and your project in 
 ### Translation files mapping rules
 
 You can also customize the way translation files are found when pushing, as well as the location they will be saved to when pulling.
-{% highlight xml %}
+```xml
 <!-- example rules definition in zanata.xml -->
 <rules>
   <rule pattern="**/pot/*.pot">{locale}/{path}/{filename}.po</rule>
   <rule pattern="**/po/*.pot">{path}/{locale_with_underscore}.po</rule>
 </rules>
-{% endhighlight %}
+```
 
 In the example above, `pattern` identifies a source file, and the contents of the `rule` element specify how translation files will be stored.
 
@@ -110,22 +110,22 @@ For example, if you have the following file structure (where `{projectRoot}` is 
 Here we have two source documents (with "pot" extension) and two translation documents (with "po" extension) for the locale "de-DE".
 
 You can then use below configuration:
-{% highlight xml %}
+```xml
 <src-dir>templates</src-dir>
 <trans-dir>.</trans-dir>
 <rules>
     <rule pattern="**/*.pot">{locale}/{path}/{filename}.po</rule>
 </rules>
-{% endhighlight %}
+```
 
 Explanation: Since you have defined `<src-dir>` as `templates`, the source document `templates/messages/kdeedu/kalzium.pot` will have its path extracted relative to `{projectRoot}/templates`, which gives the relative path `messages/kdeedu/kalzium.pot`. The relative path then will be partitioned into several tokens to form the following variables:
 
 ```
-{path}						        = 'messages/kdeedu/'
-{filename}					      = 'kalzium'
-{locale}					        = 'de-DE'
-{locale_with_underscore}	= 'de_DE'
-{extension}					      = 'pot'
+{path}                          = 'messages/kdeedu/'
+{filename}                      = 'kalzium'
+{locale}                        = 'de-DE'
+{locale_with_underscore}        = 'de_DE'
+{extension}                     = 'pot'
 ```
 
 > **NOTE** the relative path `messages/kdeedu/kalzium.pot` will be the document's unique identifier inside Zanata. 
