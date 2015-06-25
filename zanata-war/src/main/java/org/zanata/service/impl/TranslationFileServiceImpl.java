@@ -230,7 +230,11 @@ public class TranslationFileServiceImpl implements TranslationFileService {
     @Override
     public Set<DocumentType> getDocumentTypes(String fileNameOrExtension) {
         String extension = FilenameUtils.getExtension(fileNameOrExtension);
-        return DocumentType.fromSourceExtension(extension);
+        Set<DocumentType> documentTypes =
+                DocumentType.fromSourceExtension(extension);
+        documentTypes
+                .addAll(DocumentType.fromTranslationExtension(extension));
+        return documentTypes;
     }
 
     @Override
