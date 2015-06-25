@@ -11,9 +11,8 @@ pages:
   - Installation: 'installation.md'
   - Configuration: 'configuration.md'
   - Command Hook: 'command-hook.md'
-- Ivy:
-  - Installation: 'ivy/installation.md'
-  - Setup: 'ivy/setup.md'
+- Ivy setup: 'ivy/setup.md'
+- 0install setup: '0install/setup.md'
 - Maven Plugin:
   - Installation: 'maven-plugin/installation.md'
   - Configuration: 'maven-plugin/configuration.md'
