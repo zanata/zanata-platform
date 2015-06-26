@@ -154,8 +154,6 @@
             <usedDependency>org.hibernate:hibernate-testing</usedDependency>
             <usedDependency>org.jboss.arquillian.junit:arquillian-junit-container</usedDependency>
             <usedDependency>org.jboss.arquillian.protocol:arquillian-protocol-servlet</usedDependency>
-            <!-- Used by JSON (RestEasy) -->
-            <usedDependency>org.jboss.resteasy:resteasy-jackson-provider</usedDependency>
             <usedDependency>org.codehaus.jackson:jackson-xc</usedDependency>
             <!-- Used in arquillian test - zanata-war/arquillian/components.properties -->
             <usedDependency>org.jboss.seam:jboss-seam-debug</usedDependency>
@@ -1410,10 +1408,6 @@
     <!-- RestEasy dependencies -->
 
     <dependency>
-      <groupId>org.jboss.seam</groupId>
-      <artifactId>jboss-seam-resteasy</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
       <version>${resteasy.version}</version>
@@ -1455,6 +1449,10 @@
       <artifactId>resteasy-multipart-provider</artifactId>
       <scope>${resteasy.scope}</scope>
       <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>javax.servlet</groupId>
           <artifactId>servlet-api</artifactId>
@@ -2148,18 +2146,10 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpcore</artifactId>
-      <version>4.2.4</version>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
-      <version>4.2.5</version>
-      <exclusions>
-        <exclusion>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <!-- openid4java -->

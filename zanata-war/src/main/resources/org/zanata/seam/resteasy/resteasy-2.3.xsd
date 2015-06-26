@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified"
+  targetNamespace="http://jboss.org/schema/seam/resteasy"
+  xmlns:resteasy="http://jboss.org/schema/seam/resteasy"
+  xmlns:components="http://jboss.org/schema/seam/components"
+  attributeFormDefault="unqualified">
+
+  <xs:import namespace="http://jboss.org/schema/seam/components"
+    schemaLocation="components-2.3.xsd" />
+
+  <xs:element name="application">
+    <xs:annotation>
+      <xs:documentation>
+        An implementation of JAX-RS Application with additional properties for RESTEasy.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType mixed="true">
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1"
+          name="provider-class-names" type="components:multiValuedProperty">
+          <xs:annotation>
+            <xs:documentation>
+              List of provider classes.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element minOccurs="0" maxOccurs="1"
+          name="resource-class-names" type="components:multiValuedProperty">
+          <xs:annotation>
+            <xs:documentation>
+              List of resource classes.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element minOccurs="0" maxOccurs="1"
+          name="media-type-mappings" type="components:mapProperty">
+          <xs:annotation>
+            <xs:documentation>
+              Maps media type URI extensions to Accept header, see RESTEasy documentation and JAX-RS (JSR 311).
+            </xs:documentation>
+          </xs:annotation>
+        </xs:element>
+        <xs:element minOccurs="0" maxOccurs="1"
+          name="language-mappings" type="components:mapProperty">
+          <xs:annotation>
+            <xs:documentation>
+              Maps language URI extension to Accept header, see RESTEasy documentation and JAX-RS (JSR 311).
+            </xs:documentation>
+          </xs:annotation>
+        </xs:element>
+      </xs:sequence>
+      <xs:attributeGroup ref="components:attlist.component" />
+      <xs:attributeGroup ref="resteasy:attlist.application" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="resource-home">
+    <xs:annotation>
+      <xs:documentation>
+        Allows you to expose an entity home component as a
+        REST resource.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" name="media-types"
+          type="components:multiValuedProperty" />
+      </xs:sequence>
+      <xs:attributeGroup ref="components:attlist.component" />
+      <xs:attributeGroup ref="resteasy:attlist.resourceHome" />
+      <xs:attributeGroup ref="resteasy:attlist.abstractResource" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="resource-query">
+    <xs:annotation>
+      <xs:documentation>
+        Allows you to expose an entity query component as a
+        REST resource.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="1" name="media-types"
+          type="components:multiValuedProperty" />
+      </xs:sequence>
+      <xs:attributeGroup ref="components:attlist.component" />
+      <xs:attributeGroup ref="resteasy:attlist.resourceQuery" />
+      <xs:attributeGroup ref="resteasy:attlist.abstractResource" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:attributeGroup name="attlist.application">
+    <xs:attribute name="scan-providers" type="components:boolean">
+      <xs:annotation>
+        <xs:documentation>
+          Enable automatic discovery of classes annoated with JAX-RS @Provider, defaults to 'true'.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="scan-resources" type="components:boolean">
+      <xs:annotation>
+        <xs:documentation>
+          Enable automatic discovery of classes annoated with JAX-RS @Path, defaults to 'true'.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="use-builtin-providers" type="components:boolean">
+      <xs:annotation>
+        <xs:documentation>
+          Enable RESTEasy built-in providers, defaults to 'true'.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="destroy-session-after-request"
+      type="components:boolean">
+      <xs:annotation>
+        <xs:documentation>
+          Destroy the HttpSession after a REST request if it was created for that request (it is a
+          new session), defaults to 'true'.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="resource-path-prefix" type="components:string">
+      <xs:annotation>
+        <xs:documentation>
+          Append this prefix to any request path, after the SeamResourceServlet
+          url-pattern prefix (configured in web.xml). Defaults to "/rest".
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="strip-seam-resource-path" type="components:boolean">
+      <xs:annotation>
+        <xs:documentation>
+          (DEPRECATED) Has no effect, remove from configuration.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="attlist.abstractResource">
+    <xs:attribute name="path" type="xs:string" use="required">
+      <xs:annotation>
+        <xs:documentation>
+          Location of the resource. For example /user
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="media-types" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>
+          Media type this resource will operate on. Defaults to application/xml.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="attlist.resourceHome">
+    <xs:attribute name="entity-id-class" type="xs:string"
+      use="required">
+      <xs:annotation>
+        <xs:documentation>
+          Entity identifier class.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="entity-home" type="components:elType"
+      use="required">
+      <xs:annotation>
+        <xs:documentation>
+          EntityHome component that will be used for operating database.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="readonly" type="xs:boolean" default="false">
+      <xs:annotation>
+        <xs:documentation>
+          Disable "write" operations on this resource. Resource will only allow GET
+          method.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="attlist.resourceQuery">
+    <xs:attribute name="entity-class" type="xs:string" use="required">
+      <xs:annotation>
+        <xs:documentation>
+          Entity class.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="entity-query" type="components:elType">
+      <xs:annotation>
+        <xs:documentation>
+          EntityQuery component that will be used for
+          listing operation (GET on path). If not set, it will be created
+          automatically.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:attributeGroup>
+</xs:schema>

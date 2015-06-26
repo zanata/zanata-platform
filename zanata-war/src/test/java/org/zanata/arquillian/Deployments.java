@@ -33,6 +33,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.asset.FileAsset;
+import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.RejectDependenciesStrategy;
@@ -63,9 +64,13 @@ public class Deployments {
                 .resolve()
                 .using(
                 // JavaMelody's ServletFilter/Listener interfere with test
-                // deployments
+                // deployments.
+                // google-collections gets pulled in by arquillian and
+                // conflict with guava.
                 new RejectDependenciesStrategy(false,
-                        "net.bull.javamelody:javamelody-core")).asFile();
+                        "net.bull.javamelody:javamelody-core",
+                        "com.google.collections:google-collections"))
+                .asFile();
     }
 
     @Deployment(name = "zanata.war")
@@ -89,6 +94,9 @@ public class Deployments {
         archive.addAsResource("pluralforms.properties");
         archive.addAsResource(new ClassLoaderAsset("META-INF/orm.xml"),
                 "META-INF/orm.xml");
+        archive.addAsResource(new ClassLoaderAsset(
+                "META-INF/seam-deployment.properties"),
+                "META-INF/seam-deployment.properties");
         archive.addAsResource(
                 new FileAsset(
                         new File(

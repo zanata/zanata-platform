@@ -6,9 +6,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.jboss.resteasy.core.ResourceInvoker;
+import org.jboss.resteasy.mock.MockHttpRequest;
+import org.jboss.resteasy.mock.MockHttpResponse;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.HttpResponse;
-import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
+import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +22,7 @@ import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataTest;
 import org.zanata.limits.RateLimitingProcessor;
 import org.zanata.model.HAccount;
+import org.zanata.seam.resteasy.SeamResteasyProviderFactory;
 import org.zanata.util.HttpUtil;
 
 import static org.mockito.Mockito.*;
@@ -40,8 +43,8 @@ public class RestLimitingSynchronousDispatcherTest extends ZanataTest {
     private HttpResponse response;
     @Mock
     private RateLimitingProcessor processor;
-    @Mock
-    private SeamResteasyProviderFactory providerFactory;
+    //@Mock
+    private ResteasyProviderFactory providerFactory = SeamResteasyProviderFactory.getInstance();
     @Captor
     private ArgumentCaptor<Runnable> taskCaptor;
     @Mock
@@ -59,6 +62,7 @@ public class RestLimitingSynchronousDispatcherTest extends ZanataTest {
         MockitoAnnotations.initMocks(this);
         when(request.getHttpHeaders().getRequestHeaders())
                 .thenReturn(headers);
+        when(request.getMutableHeaders()).thenReturn(headers);
         when(request.getHttpMethod()).thenReturn("GET");
         when(headers.getFirst(HttpUtil.X_AUTH_TOKEN_HEADER)).thenReturn(
             API_KEY);

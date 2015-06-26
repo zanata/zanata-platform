@@ -70,7 +70,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
 
         // register Exception Mappers
         for (Class<? extends ExceptionMapper<? extends Throwable>> mapper : exceptionMappers) {
-            dispatcher.getProviderFactory().addExceptionMapper(mapper);
+            dispatcher.getProviderFactory().registerProvider(mapper);
         }
 
         // register Providers

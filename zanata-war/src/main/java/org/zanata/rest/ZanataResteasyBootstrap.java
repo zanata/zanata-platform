@@ -15,8 +15,8 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.deployment.AnnotationDeploymentHandler;
 import org.jboss.seam.deployment.HotDeploymentStrategy;
-import org.jboss.seam.resteasy.ResteasyBootstrap;
-import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
+import org.zanata.seam.resteasy.ResteasyBootstrap;
+import org.zanata.seam.resteasy.SeamResteasyProviderFactory;
 
 @Name("org.jboss.seam.resteasy.bootstrap")
 @Scope(ScopeType.APPLICATION)
@@ -45,17 +45,6 @@ public class ZanataResteasyBootstrap extends ResteasyBootstrap {
             registerResources(seamComponents,
                     findResources(hotDeploymentHandler));
         }
-    }
-
-    @Override
-    protected void initDispatcher() {
-        super.initDispatcher();
-                getDispatcher().getProviderFactory()
-                .getServerPreProcessInterceptorRegistry()
-                .register(ZanataRestSecurityInterceptor.class);
-        getDispatcher().getProviderFactory()
-                .getServerPreProcessInterceptorRegistry()
-                .register(ZanataRestVersionInterceptor.class);
     }
 
     @Override

@@ -11,12 +11,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.MessageBodyReader;
 
+import org.jboss.resteasy.core.Headers;
+import org.jboss.resteasy.core.ServerResponse;
 import org.jboss.resteasy.spi.NoLogWebApplicationException;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.resteasy.SeamResteasyProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.seam.resteasy.SeamResteasyProviderFactory;
 
 @Name("restUtils")
 public class RestUtils {
@@ -24,6 +26,19 @@ public class RestUtils {
 
     @In
     Validator validator;
+
+    public static ServerResponse copyIfNotServerResponse(Response response) {
+        if (response instanceof ServerResponse) {
+            return (ServerResponse) response;
+        }
+        Object entity = response.getEntity();
+        int status = response.getStatus();
+        Headers<Object> metadata = new Headers<>();
+        if (response.getMetadata() != null) {
+            metadata.putAll(response.getMetadata());
+        }
+        return new ServerResponse(entity, status, metadata);
+    }
 
     /**
      * Validate Hibernate Validator based constraints.
@@ -76,7 +91,7 @@ public class RestUtils {
                             requestHeaders, is);
         } catch (Exception e) {
             log.debug("Bad Request: Unable to read request body:", e);
-            throw new NoLogWebApplicationException(Response
+            throw new NoLogWebApplicationException(e, Response
                     .status(Status.BAD_REQUEST)
                     .entity("Unable to read request body: " + e.getMessage())
                     .build());

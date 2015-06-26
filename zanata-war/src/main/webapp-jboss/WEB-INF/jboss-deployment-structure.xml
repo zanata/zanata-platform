@@ -3,12 +3,15 @@
 <!-- https://access.redhat.com/knowledge/docs/en-US/JBoss_Enterprise_Application_Platform/6/html/Development_Guide/Included_Modules1.html -->
 <jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.2">
   <deployment>
-    <!-- These exclusions let us use RESTEasy 2 instead of the
+    <!-- These exclusions let us use the war file's RESTEasy instead of the
          container's version -->
     <exclude-subsystems>
       <subsystem name="jaxrs" />
     </exclude-subsystems>
     <exclusions>
+      <module name="javax.ws.rs.api" />
+      <module name="javaee.api" />
+      <module name="org.jboss.as.jaxrs" />
     </exclusions>
     <dependencies>
       <module name="org.infinispan" />
@@ -17,6 +20,7 @@
       <module name="javax.annotation.api" />
       <!-- not needed for wildfly: -->
       <module name="javax.ejb.api" />
+      <module name="javax.inject.api" />
       <module name="javax.el.api" />
       <module name="javax.faces.api" />
       <!-- not needed for wildfly: -->
@@ -27,6 +31,7 @@
       <module name="javax.validation.api" />
       <!-- not needed for wildfly: -->
       <module name="javax.xml.bind.api" />
+      <!-- not needed for wildfly: -->
       <module name="org.antlr" />
       <module name="org.apache.commons.logging" />
       <module name="org.apache.log4j" />

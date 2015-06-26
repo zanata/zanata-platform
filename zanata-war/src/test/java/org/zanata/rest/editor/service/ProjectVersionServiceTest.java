@@ -126,11 +126,8 @@ public class ProjectVersionServiceTest {
         Response response = service.getLocales("about-fedora", "master");
 
         assertThat(response.getStatus()).isEqualTo(200);
-        assertThat(response.getEntity()).isInstanceOf(
-                GenericEntity.class);
         List<Locale> iterationList =
-                ((GenericEntity<List<Locale>>) response.getEntity())
-                        .getEntity();
+                (List<Locale>) response.getEntity();
         assertThat(iterationList).extracting("localeId")
                 .contains(LocaleId.DE, LocaleId.ES);
     }
@@ -228,10 +225,8 @@ public class ProjectVersionServiceTest {
         Response response = service.getDocuments("about-fedora", "master");
 
         assertThat(response.getStatus()).isEqualTo(200);
-        assertThat(response.getEntity()).isInstanceOf(GenericEntity.class);
         List<ResourceMeta> docList =
-                ((GenericEntity<List<ResourceMeta>>) response.getEntity())
-                        .getEntity();
+                (List<ResourceMeta>) response.getEntity();
         assertThat(docList).extracting("name").contains("pot/authors");
     }
 

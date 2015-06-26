@@ -23,6 +23,7 @@ package org.zanata.util;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.HttpMethod;
+import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.spi.HttpRequest;
@@ -53,8 +54,11 @@ public final class HttpUtil {
             .getProperty("ZANATA_PROXY_HEADER");
 
     public static String getApiKey(HttpRequest request) {
-        return request.getHttpHeaders().getRequestHeaders()
-                .getFirst(X_AUTH_TOKEN_HEADER);
+        return getApiKey(request.getMutableHeaders());
+    }
+
+    public static String getApiKey(MultivaluedMap<String, String> headers) {
+        return headers.getFirst(X_AUTH_TOKEN_HEADER);
     }
 
     @VisibleForTesting
@@ -63,8 +67,11 @@ public final class HttpUtil {
     }
 
     public static String getUsername(HttpRequest request) {
-        return request.getHttpHeaders().getRequestHeaders()
-                .getFirst(X_AUTH_USER_HEADER);
+        return getUsername(request.getMutableHeaders());
+    }
+
+    public static String getUsername(MultivaluedMap<String, String> headers) {
+        return headers.getFirst(X_AUTH_USER_HEADER);
     }
 
     /**

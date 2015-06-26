@@ -56,6 +56,5 @@ public class StatisticsServiceTest {
         Response response =
                 service.getDocumentStatistics("a", "1", "authors", "de");
         assertThat(response.getStatus()).isEqualTo(200);
-        assertThat(response.getEntity()).isInstanceOf(GenericEntity.class);
     }
 }

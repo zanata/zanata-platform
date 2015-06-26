@@ -1,48 +1,44 @@
 package org.zanata.rest;
 
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.ext.Provider;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.annotations.interception.SecurityPrecedence;
 import org.jboss.resteasy.annotations.interception.ServerInterceptor;
-import org.jboss.resteasy.core.ResourceMethod;
-import org.jboss.resteasy.core.ServerResponse;
-import org.jboss.resteasy.spi.Failure;
-import org.jboss.resteasy.spi.HttpRequest;
-import org.jboss.resteasy.spi.interception.PreProcessInterceptor;
 import org.zanata.security.SecurityFunctions;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.util.HttpUtil;
 
+import java.io.IOException;
+
+@Provider
 @SecurityPrecedence
-@ServerInterceptor
 @Slf4j
-public class ZanataRestSecurityInterceptor implements PreProcessInterceptor {
+public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
 
     @Override
-    public ServerResponse
-            preProcess(HttpRequest request, ResourceMethod method)
-                    throws Failure, WebApplicationException {
-
-        String username = HttpUtil.getUsername(request);
-        String apiKey = HttpUtil.getApiKey(request);
-        if (StringUtils.isNotEmpty(username)|| StringUtils.isNotEmpty(apiKey)) {
+    public void filter(ContainerRequestContext context)
+            throws IOException {
+        String username = HttpUtil.getUsername(context.getHeaders());
+        String apiKey = HttpUtil.getApiKey(context.getHeaders());
+        if (StringUtils.isNotEmpty(username) || StringUtils.isNotEmpty(apiKey)) {
             ZanataIdentity.instance().getCredentials().setUsername(username);
             ZanataIdentity.instance().setApiKey(apiKey);
             ZanataIdentity.instance().tryLogin();
             if (!SecurityFunctions.canAccessRestPath(ZanataIdentity.instance(),
-                    request.getHttpMethod(), request.getPreprocessedPath())) {
+                    context.getMethod(), context.getUriInfo().getPath())) {
                 log.info(InvalidApiKeyUtil.getMessage(username, apiKey));
-                return ServerResponse.copyIfNotServerResponse(Response.status(
-                    Status.UNAUTHORIZED).entity(
-                    InvalidApiKeyUtil.getMessage(username, apiKey))
-                    .build());
+                context.abortWith(Response.status(Status.UNAUTHORIZED)
+                        .entity(InvalidApiKeyUtil.getMessage(username, apiKey))
+                        .build());
             }
         }
-        return null;
+
     }
 }
