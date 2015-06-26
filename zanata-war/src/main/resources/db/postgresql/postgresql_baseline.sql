@@ -34,7 +34,7 @@ CREATE TABLE DATABASECHANGELOG
 CREATE TABLE DATABASECHANGELOGLOCK
 (
     ID INT PRIMARY KEY NOT NULL,
-    LOCKED SMALLINT NOT NULL,
+    LOCKED BOOLEAN NOT NULL,
     LOCKGRANTED TIMESTAMP WITHOUT TIME ZONE,
     LOCKEDBY VARCHAR(255)
 );
@@ -45,7 +45,7 @@ CREATE TABLE HAccount
     lastChanged TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     versionNum INT NOT NULL,
     apiKey VARCHAR(32),
-    enabled BIT NOT NULL,
+    enabled BOOLEAN NOT NULL,
     passwordHash VARCHAR(255),
     username VARCHAR(255),
     mergedInto BIGINT
@@ -80,7 +80,7 @@ CREATE TABLE HAccountResetPasswordKey
 CREATE TABLE HAccountRole
 (
     id BIGSERIAL PRIMARY KEY NOT NULL,
-    conditional BIT NOT NULL,
+    conditional BOOLEAN NOT NULL,
     name VARCHAR(255),
     roleType CHAR(1) NOT NULL
 );
@@ -129,7 +129,7 @@ CREATE TABLE HDocument
     contentType VARCHAR(255) NOT NULL,
     docId VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
-    obsolete BIT NOT NULL,
+    obsolete BOOLEAN NOT NULL,
     path VARCHAR(255) NOT NULL,
     revision INT NOT NULL,
     last_modified_by_id BIGINT,
@@ -144,7 +144,7 @@ CREATE TABLE HDocumentHistory
     docId VARCHAR(255) NOT NULL,
     lastChanged TIMESTAMP WITHOUT TIME ZONE,
     name VARCHAR(255),
-    obsolete BIT NOT NULL,
+    obsolete BOOLEAN NOT NULL,
     path VARCHAR(255),
     revision INT,
     document_id BIGINT,
@@ -224,7 +224,7 @@ CREATE TABLE HLocale
     creationDate TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     lastChanged TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     versionNum INT NOT NULL,
-    active BIT NOT NULL,
+    active BOOLEAN NOT NULL,
     localeId VARCHAR(255) NOT NULL,
     enabledByDefault BOOLEAN DEFAULT FALSE,
     pluralForms VARCHAR(100),
@@ -236,8 +236,8 @@ CREATE TABLE HLocale_Member
     personId BIGINT NOT NULL,
     supportedLanguageId BIGINT NOT NULL,
     isCoordinator BOOLEAN DEFAULT FALSE NOT NULL,
-    isReviewer BIT DEFAULT b'0' NOT NULL,
-    isTranslator BIT DEFAULT b'0' NOT NULL,
+    isReviewer BOOLEAN DEFAULT FALSE NOT NULL,
+    isTranslator BOOLEAN DEFAULT FALSE NOT NULL,
     PRIMARY KEY (supportedLanguageId, personId)
 );
 CREATE TABLE HPerson
@@ -316,7 +316,7 @@ CREATE TABLE HProjectIteration
     overrideLocales BOOLEAN NOT NULL,
     status CHAR(1),
     projectType VARCHAR(255),
-    requireTranslationReview BIT DEFAULT b'0'
+    requireTranslationReview BOOLEAN DEFAULT FALSE
 );
 CREATE TABLE HProjectIteration_Locale
 (
@@ -408,7 +408,7 @@ CREATE TABLE HTermComment
 CREATE TABLE HTextFlow
 (
     id BIGSERIAL PRIMARY KEY NOT NULL,
-    obsolete BIT NOT NULL,
+    obsolete BOOLEAN NOT NULL,
     pos INT NOT NULL,
     resId VARCHAR(255) NOT NULL,
     revision INT NOT NULL,
@@ -435,7 +435,7 @@ CREATE TABLE HTextFlowContentHistory
 CREATE TABLE HTextFlowHistory
 (
     id BIGSERIAL PRIMARY KEY NOT NULL,
-    obsolete BIT NOT NULL,
+    obsolete BOOLEAN NOT NULL,
     pos INT,
     revision INT,
     tf_id BIGINT
