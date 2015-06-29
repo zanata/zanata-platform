@@ -1,0 +1,78 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
+
+  <div class="panel">
+    <div class="panel__header">
+      <div class="panel__header__actions">
+        <zanata:sortlist id="user-sorting"
+          sortAction="#{zanataSearch.sortUserList()}"
+          render="search-user_form, userFilter-pager, userFilter-page-info, userFilterBottom-pager, userFilterBottom-page-info"
+          sortingList="#{zanataSearch.userSortingList}"
+          onbegin="clearHTML('#{rich:clientId('search-user_form')}')"
+          status="users-loader"/>
+      </div>
+      <h2 class="panel__heading">#{msgs['jsf.Users']}</h2>
+    </div>
+
+    <div class="panel__sub-header js-reveal">
+      <zanata:list-filter status="users-loader"
+        bottomPanel="true"
+        listId="search-user_form"
+        placeholder="#{msgs['jsf.user.search.placeholder']}"
+        iconClass="i--users"
+        render="search-user_form, userFilterBottom-pager, userFilterBottom-page-info"
+        id="userFilter"
+        actionBean="#{zanataSearch.userTabUserFilter}"/>
+    </div>
+
+    <a4j:status name="users-loader">
+      <f:facet name="start">
+        <zanata:loader/>
+      </f:facet>
+    </a4j:status>
+
+    <h:form id="search-user_form" styleClass="l--push-bottom-1">
+      <s:div styleClass="l--pad-all-half"
+        rendered="#{zanataSearch.getTotalUserCount() ge 0 and empty zanataSearch.userTabUserFilter.currentPage}">
+        <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
+      </s:div>
+
+      <s:fragment
+        rendered="#{not empty zanataSearch.userTabUserFilter.currentPage}">
+        <ul class="list--stats">
+          <ui:repeat value="#{zanataSearch.userTabUserFilter.currentPage}"
+            var="account">
+            <li class="l--pad-all-half">
+              <a href="#{request.contextPath}/profile/view/#{account.username}">
+                <span class="w--r-1 bx--round l--push-right-quarter">
+                  <img
+                    src="#{gravatarServiceImpl.getUserImageUrl(48, account.person.email)}"
+                    alt="#{account.person.name}"/>
+                </span>
+                #{account.person.name}
+                <span class="txt--meta">@#{account.username}</span>
+              </a>
+            </li>
+          </ui:repeat>
+        </ul>
+      </s:fragment>
+    </h:form>
+
+    <zanata:list-filter status="users-loader"
+      listId="search-user_form"
+      placeholder="#{msgs['jsf.language.search.placeholder']}"
+      iconClass="i--users" bottomPanel="true"
+      render="search-user_form, userFilter-pager, userFilter-page-info"
+      id="userFilterBottom"
+      actionBean="#{zanataSearch.userTabUserFilter}"/>
+  </div>
+
+</ui:composition>

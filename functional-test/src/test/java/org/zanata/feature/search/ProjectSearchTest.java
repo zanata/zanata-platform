@@ -32,6 +32,7 @@ import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.page.BasePage;
 import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.page.projects.ProjectsPage;
+import org.zanata.page.search.SearchPage;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
@@ -72,13 +73,13 @@ public class ProjectSearchTest extends ZanataTestCase {
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void unsuccessfulProjectSearch() throws Exception {
-        ProjectsPage projectsPage = new BasicWorkFlow()
+        SearchPage searchPage = new BasicWorkFlow()
                 .goToHome()
                 .enterSearch("arodef")
                 .expectSearchListContains("Search Zanata for 'arodef'")
                 .submitSearch();
 
-        assertThat(projectsPage.getProjectNamesOnCurrentPage().isEmpty())
+        assertThat(searchPage.getProjectNamesOnSearchPage().isEmpty())
                 .isTrue()
                 .as("No projects are displayed");
     }

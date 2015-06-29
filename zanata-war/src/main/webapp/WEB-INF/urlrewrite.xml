@@ -24,6 +24,12 @@
     <to last="true">/dashboard/home.seam$3</to>
   </rule>
 
+  <!-- Search Rules -->
+  <rule>
+    <from casesensitive="true">^/search/([^/]+)/([^/]+)?$</from>
+    <to last="true">/search.seam\?query=$1</to>
+  </rule>
+
   <!-- Admin Rules -->
   <rule>
     <from casesensitive="true">^/admin/([^/\?\.]+)(\?.*)?$</from>

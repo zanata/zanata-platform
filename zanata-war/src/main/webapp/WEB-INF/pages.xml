@@ -17,7 +17,7 @@
 
   <!-- Project Search -->
   <page view-id="/search.xhtml">
-    <param name="query" value="#{projectSearch.projectAutocomplete.query}" />
+    <param name="query" value="#{zanataSearch.autocomplete.query}" />
     <action execute="#{breadcrumbs.clear}" />
     <action
       execute="#{breadcrumbs.addLocation('', msgs['jsf.SearchProjects'])}" />

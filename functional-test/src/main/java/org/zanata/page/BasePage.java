@@ -39,6 +39,7 @@ import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.page.languages.LanguagesPage;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.page.projects.ProjectsPage;
+import org.zanata.page.search.SearchPage;
 import org.zanata.page.utility.ContactAdminFormPage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.WebElementUtil;
@@ -246,10 +247,10 @@ public class BasePage extends CorePage {
         return new BasePage(getDriver());
     }
 
-    public ProjectsPage submitSearch() {
-        log.info("Press Enter on Project search");
+    public SearchPage submitSearch() {
+        log.info("Press Enter on Zanata search");
         existingElement(searchInput).sendKeys(Keys.ENTER);
-        return new ProjectsPage(getDriver());
+        return new SearchPage(getDriver());
     }
 
     public BasePage expectSearchListContains(final String expected) {

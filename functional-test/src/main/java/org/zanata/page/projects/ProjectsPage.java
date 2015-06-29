@@ -28,6 +28,7 @@ import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
 import org.zanata.util.WebElementUtil;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

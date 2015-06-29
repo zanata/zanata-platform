@@ -1,0 +1,90 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
+
+  <div class="panel">
+    <div class="panel__header">
+      <div class="panel__header__actions">
+        <zanata:sortlist id="project-sorting"
+          sortAction="#{zanataSearch.sortProjectList()}"
+          render="search-project_form, projectFilter-pager, projectFilter-page-info, projectFilterBottom-pager, projectFilterBottom-page-info"
+          sortingList="#{zanataSearch.projectSortingList}"
+          onbegin="clearHTML('#{rich:clientId('search-project_form')}')"
+          status="projects-loader"/>
+      </div>
+      <h2 class="panel__heading">#{msgs['jsf.Projects']}</h2>
+    </div>
+
+    <div class="panel__sub-header js-reveal">
+      <zanata:list-filter status="projects-loader"
+        bottomPanel="true"
+        listId="search-project_form"
+        placeholder="#{msgs['jsf.project.search.placeholder']}"
+        iconClass="i--project"
+        render="search-project_form, projectFilterBottom-pager, projectFilterBottom-page-info"
+        id="projectFilter"
+        actionBean="#{zanataSearch.projectTabProjectFilter}"/>
+    </div>
+
+    <a4j:status name="projects-loader">
+      <f:facet name="start">
+        <zanata:loader/>
+      </f:facet>
+    </a4j:status>
+
+    <h:form id="search-project_form" styleClass="l--push-bottom-1">
+      <s:div styleClass="l--pad-all-half"
+        rendered="#{zanataSearch.getTotalProjectCount() ge 0 and empty zanataSearch.projectTabProjectFilter.currentPage}">
+        <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
+      </s:div>
+
+      <s:fragment
+        rendered="#{not empty zanataSearch.projectTabProjectFilter.currentPage}">
+        <ul class="list--stats">
+          <ui:repeat value="#{zanataSearch.projectTabProjectFilter.currentPage}"
+            var="project">
+            <li class="l--pad-all-half">
+              <a href="#{request.contextPath}/project/view/#{project.slug}">
+                <div class="list__item">
+                  <div class="list__item__info">
+                    <h3 class="list__title"><zanata:project-label
+                      project="#{project}"/></h3>
+
+                    <div class="list__item__meta">
+                      <i class="i i--version"
+                        title="#{msgs['jsf.Versions']}"></i> #{project.projectIterations.size}
+                    </div>
+                  </div>
+                  <div class="list__item__actions">
+                              <span class="txt--understated"
+                                title="#{msgs['jsf.CreationDate']}: #{zanataSearch.formatDate(project.creationDate)}">
+                                <i
+                                  class="i i--clock"></i> #{zanataSearch.getHowLongAgoDescription(project.creationDate)}
+                              </span>
+                  </div>
+                </div>
+              </a>
+            </li>
+          </ui:repeat>
+        </ul>
+      </s:fragment>
+
+    </h:form>
+
+    <zanata:list-filter status="projects-loader"
+      listId="search-project_form"
+      placeholder="#{msgs['jsf.language.search.placeholder']}"
+      iconClass="i--language" bottomPanel="true"
+      render="search-project_form, projectFilter-pager, projectFilter-page-info"
+      id="projectFilterBottom"
+      actionBean="#{zanataSearch.projectTabProjectFilter}"/>
+  </div>
+
+</ui:composition>

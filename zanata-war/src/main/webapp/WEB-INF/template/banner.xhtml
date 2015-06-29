@@ -32,7 +32,7 @@
           #{msgs['jsf.Search']}
         </label>
 
-        <zanata:autocomplete actionBean="#{projectSearch.projectAutocomplete}"
+        <zanata:autocomplete actionBean="#{zanataSearch.autocomplete}"
           maxlength="100" minlength="1" id="projectAutocomplete"
           fetchValue="#{result.project.slug}"
           placeholder="#{msgs['jsf.Search']}"
@@ -54,8 +54,8 @@
 
           <s:link view="/search.xhtml" rendered="#{result.isProjectNull() and result.isUserNull()}">
             <i class="i i--search"></i> Search Zanata for
-            '#{projectSearch.projectAutocomplete.query}'
-            <f:param name="query" value="#{projectSearch.projectAutocomplete.query}"/>
+            '#{zanataSearch.autocomplete.query}'
+            <f:param name="query" value="#{zanataSearch.autocomplete.query}"/>
           </s:link>
 
         </zanata:autocomplete>

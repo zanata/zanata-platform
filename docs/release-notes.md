@@ -1,3 +1,13 @@
+## 3.8
+
+<h5>Bug fixes</h5>
+* [1233524](https://bugzilla.redhat.com/show_bug.cgi?id=1233524) - Update project search page to include user
+
+-----------------------
+
+<h5>New Features</h5>
+
+
 ## 3.7
 
 <h5>Deployment</h5>
