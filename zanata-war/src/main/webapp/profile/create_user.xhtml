@@ -66,6 +66,7 @@
           <div class="l--push-top-half form__item">
             <h:outputLabel for="email">
               #{msgs['jsf.Email']}
+              <s:span styleClass="txt--required">*</s:span>
             </h:outputLabel>
             <s:decorate id="emailField" template="../WEB-INF/layout/field.xhtml">
               <h:inputText id="email" required="false"
