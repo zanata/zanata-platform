@@ -34,8 +34,8 @@
     <failIfNoTests>true</failIfNoTests>
 
     <deltaspike.version>1.4.1</deltaspike.version>
-    <cdi.runtime>provided</cdi.runtime>
-    <cdi.compile>provided</cdi.compile>
+    <cdi.runtime>runtime</cdi.runtime>
+    <cdi.compile>compile</cdi.compile>
     <picketlink.version>2.5.4.SP4</picketlink.version>
     <infinispan.version>6.0.2.Final</infinispan.version>
     <weld.version>1.1.29.Final</weld.version>
