@@ -16,6 +16,8 @@
   <suppress checks=".*" files="db/.*_baseline\.sql$" />
   <suppress checks="FileTabCharacter|RegexpSingleline" files="/LICENSE.*\.txt$" />
   <suppress checks="FileTabCharacter" files="/src/test/.*\.(xml|po|pot)$" />
+  <!-- Allow indented here documents -->
+  <suppress checks="FileTabCharacter" files="\.sh$" />
   <suppress checks="JavadocMethodCheck|JavadocTypeCheck" files="\.java$" />
   <suppress checks="MagicNumberCheck" files="Test\.java$" />
   <suppress checks="NewlineAtEndOfFile" files="\.properties$" />
