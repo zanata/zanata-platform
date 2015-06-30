@@ -1,0 +1,58 @@
+<!--
+  Copyright 2015, Red Hat, Inc. and individual contributors
+  as indicated by the @author tags. See the copyright.txt file in the
+  distribution for a full listing of individual contributors.
+
+  This is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation; either version 2.1 of
+  the License, or (at your option) any later version.
+
+  This software is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this software; if not, write to the Free
+  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:a4j="http://richfaces.org/a4j">
+
+<a4j:jsFunction name="bindCopyTransValue"
+    action="#{projectHome.updateCopyTrans(action, value)}">
+  <a4j:param name="val1" assignTo="#{action}"/>
+  <a4j:param name="val2" assignTo="#{value}"/>
+</a4j:jsFunction>
+
+<h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
+  #{msgs['jsf.Translation']}
+</h2>
+
+<h:form id="settings-translation-form" styleClass="l--push-bottom-0">
+
+  <h3 class="heading--secondary">#{msgs['jsf.Validation']}</h3>
+  <p>#{msgs['jsf.Validation.messages']}</p>
+  <ui:include src="validation-settings-block.xhtml"/>
+
+  <hr/>
+
+  <h3 class="heading--secondary">#{msgs['jsf.CopyTrans']}</h3>
+
+  <p>#{msgs['jsf.Copytrans.message']}
+    <a href="http://zanata.org/help/reuse/copytrans-explained/"
+        target="_blank"
+        title="#{msgs['jsf.project.CopyTransOpts.tooltip']}">
+      <i class="i i--help"></i>
+    </a>
+  </p>
+
+  <p class="message--highlight">#{msgs['jsf.Copytrans.message2']}</p>
+  <ui:include src="/WEB-INF/layout/copy_trans_inline.xhtml"/>
+</h:form>
+
+</ui:composition>

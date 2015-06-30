@@ -1,0 +1,124 @@
+<!--
+  Copyright 2015, Red Hat, Inc. and individual contributors
+  as indicated by the @author tags. See the copyright.txt file in the
+  distribution for a full listing of individual contributors.
+
+  This is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation; either version 2.1 of
+  the License, or (at your option) any later version.
+
+  This software is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this software; if not, write to the Free
+  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:s="http://jboss.org/schema/seam/taglib">
+
+<script type="text/javascript">
+  //<![CDATA[
+  function onValidationOptionChange(validationId) {
+    var value = validationId.split('-');
+    bindValidationValue(value[0], value[1]);
+  }
+  //]]>
+</script>
+
+<a4j:jsFunction name="bindValidationValue"
+    action="#{projectHome.updateValidationOption(name, state)}"
+    render="validation-list">
+  <a4j:param name="val1" assignTo="#{name}"/>
+  <a4j:param name="val2" assignTo="#{state}"/>
+</a4j:jsFunction>
+
+<s:div id="validation-list">
+  <ul class="list--slat">
+    <ui:repeat value="#{projectHome.validationList}"
+        var="validationAction">
+      <li class="js-example js-reveal">
+        <div class="g--tight">
+          <div class="g__item w--7-12">
+            <label class="l--push-bottom-0">
+              #{validationAction.id.displayName}
+            </label>
+
+            <p class="txt--meta l--push-bottom-quarter">
+              #{validationAction.description}
+              <a href="#"
+                  class="button--link js-reveal__toggle"
+                  data-target="##{validationAction.id.name()}-example"
+                  data-toggle-title="#{msgs['jsf.tooltip.HideExample']}"
+                  title="#{msgs['jsf.tooltip.ShowExample']}">
+                <span class="js-reveal__toggle__text"
+                    data-toggle-value="Less">
+                  #{msgs['jsf.tooltip.More']}
+                </span>…
+              </a>
+            </p>
+          </div>
+          <div class="g__item w--5-12">
+            <div class="button--group txt--align-right">
+              <ui:repeat
+                  value="#{projectHome.validationStates}"
+                  var="state">
+                <s:fragment
+                    rendered="#{validationAction.state == state}">
+                  <input name="#{validationAction.id.name()}"
+                      id="#{validationAction.id.name()}-#{state}"
+                      checked="true"
+                      onchange="onValidationOptionChange(this.id)"
+                      type="radio"
+                      class="form__item__input js-example__setter"
+                      data-example=""/>
+                </s:fragment>
+                <s:fragment
+                    rendered="#{validationAction.state != state}">
+                  <input name="#{validationAction.id.name()}"
+                      id="#{validationAction.id.name()}-#{state}"
+                      onchange="onValidationOptionChange(this.id)"
+                      type="radio"
+                      class="form__item__input js-example__setter"
+                      data-example=""/>
+                </s:fragment>
+                <label for="#{validationAction.id.name()}-#{state}"
+                    class="button button--#{state.name() == 'Error'?'danger':state}">#{state}</label>
+              </ui:repeat>
+            </div>
+          </div>
+        </div>
+        <div class="g--tight l--push-bottom-half is-hidden"
+            id="#{validationAction.id.name()}-example">
+          <div class="g__item w--1-2 l--push-top-quarter">
+            <h4 class="zeta heading--secondary txt--uppercase">
+              #{msgs['jsf.validation.source']}
+            </h4>
+            <pre class="l--push-all-0"><code class="txt--mini">
+              <h:outputText value="#{validationAction.sourceExample}"
+                  escape="false"/>
+            </code></pre>
+          </div>
+          <div class="g__item w--1-2 l--push-top-quarter">
+            <h4 class="zeta heading--secondary txt--uppercase">
+              #{msgs['jsf.validation.target']}
+            </h4>
+            <pre class="l--push-all-0"><code class="txt--mini">
+              <h:outputText value="#{validationAction.targetExample}"
+                  escape="false"/>
+            </code></pre>
+          </div>
+        </div>
+      </li>
+    </ui:repeat>
+  </ul>
+</s:div>
+
+</ui:composition>

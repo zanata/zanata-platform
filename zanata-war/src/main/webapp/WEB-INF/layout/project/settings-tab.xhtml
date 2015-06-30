@@ -9,11 +9,6 @@
 
 <script type="text/javascript">
   //<![CDATA[
-  function onValidationOptionChange(validationId) {
-    var value = validationId.split('-');
-    bindValidationValue(value[0], value[1]);
-  }
-
   function onRestrictedByRoleValueChanged(key, checked) {
     bindRestrictedByRoleValue(key, checked);
   }
@@ -36,7 +31,6 @@
     jQuery(ele).children('i').addClass('is-hidden');
     zanata.loader.activate(jQuery(ele).children('#loader'));
   }
-
   //]]>
 </script>
 
@@ -46,19 +40,6 @@
   action="#{projectHome.addWebHook(url)}"
   render="settings-webhooks-list">
   <a4j:param name="val1" assignTo="#{url}"/>
-</a4j:jsFunction>
-
-<a4j:jsFunction name="bindValidationValue"
-  action="#{projectHome.updateValidationOption(name, state)}"
-  render="validation-list">
-  <a4j:param name="val1" assignTo="#{name}"/>
-  <a4j:param name="val2" assignTo="#{state}"/>
-</a4j:jsFunction>
-
-<a4j:jsFunction name="bindCopyTransValue"
-  action="#{projectHome.updateCopyTrans(action, value)}">
-  <a4j:param name="val1" assignTo="#{action}"/>
-  <a4j:param name="val2" assignTo="#{value}"/>
 </a4j:jsFunction>
 
 <a4j:jsFunction name="bindRestrictedByRoleValue" render="user-roles"
@@ -240,105 +221,7 @@
   <ui:include src="settings-tab-languages.xhtml" />
 </li>
 <li id="settings-translation">
-  <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
-    #{msgs['jsf.Translation']}
-  </h2>
-
-  <h:form id="settings-translation-form" styleClass="l--push-bottom-0">
-    <h3 class="heading--secondary">#{msgs['jsf.Validation']}</h3>
-
-    <p>#{msgs['jsf.Validation.messages']}</p>
-
-    <s:div id="validation-list">
-      <ul class="list--slat">
-        <ui:repeat
-          value="#{projectHome.validationList}" var="validationAction">
-          <li class="js-example js-reveal">
-            <div class="g--tight">
-              <div class="g__item w--7-12">
-                <label class="l--push-bottom-0">
-                  #{validationAction.id.displayName}
-                </label>
-
-                <p class="txt--meta l--push-bottom-quarter">
-                  #{validationAction.description}
-                  <a href="#" class="button--link js-reveal__toggle"
-                    data-target="##{validationAction.id.name()}-example"
-                    data-toggle-title="#{msgs['jsf.tooltip.HideExample']}"
-                    title="#{msgs['jsf.tooltip.ShowExample']}">
-                    <span class="js-reveal__toggle__text"
-                      data-toggle-value="Less">
-                      #{msgs['jsf.tooltip.More']}
-                    </span>…
-                  </a>
-                </p>
-              </div>
-              <div class="g__item w--5-12">
-                <div class="button--group txt--align-right">
-                  <ui:repeat value="#{projectHome.validationStates}"
-                    var="state">
-                    <s:fragment rendered="#{validationAction.state == state}">
-                      <input name="#{validationAction.id.name()}"
-                        id="#{validationAction.id.name()}-#{state}"
-                        checked="true"
-                        onchange="onValidationOptionChange(this.id)"
-                        type="radio"
-                        class="form__item__input js-example__setter"
-                        data-example=""/>
-                    </s:fragment>
-                    <s:fragment rendered="#{validationAction.state != state}">
-                      <input name="#{validationAction.id.name()}"
-                        id="#{validationAction.id.name()}-#{state}"
-                        onchange="onValidationOptionChange(this.id)"
-                        type="radio"
-                        class="form__item__input js-example__setter"
-                        data-example=""/>
-                    </s:fragment>
-                    <label for="#{validationAction.id.name()}-#{state}"
-                      class="button button--#{state.name() == 'Error'?'danger':state}">#{state}</label>
-                  </ui:repeat>
-                </div>
-              </div>
-            </div>
-            <div class="g--tight l--push-bottom-half is-hidden"
-              id="#{validationAction.id.name()}-example">
-              <div class="g__item w--1-2 l--push-top-quarter">
-                <h4 class="zeta heading--secondary txt--uppercase">
-                  #{msgs['jsf.validation.source']}
-                </h4>
-              <pre class="l--push-all-0"><code class="txt--mini">
-                <h:outputText value="#{validationAction.sourceExample}"
-                  escape="false"/>
-              </code></pre>
-              </div>
-              <div class="g__item w--1-2 l--push-top-quarter">
-                <h4 class="zeta heading--secondary txt--uppercase">
-                  #{msgs['jsf.validation.target']}
-                </h4>
-              <pre class="l--push-all-0"><code class="txt--mini">
-                <h:outputText value="#{validationAction.targetExample}"
-                  escape="false"/>
-              </code></pre>
-              </div>
-            </div>
-          </li>
-        </ui:repeat>
-      </ul>
-    </s:div>
-    <hr/>
-    <h3 class="heading--secondary">#{msgs['jsf.CopyTrans']}</h3>
-
-    <p>#{msgs['jsf.Copytrans.message']}
-      <a href="http://zanata.org/help/reuse/copytrans-explained/"
-        target="_blank"
-        title="#{msgs['jsf.project.CopyTransOpts.tooltip']}">
-        <i class="i i--help"></i>
-      </a>
-    </p>
-
-    <p class="message--highlight">#{msgs['jsf.Copytrans.message2']}</p>
-    <ui:include src="/WEB-INF/layout/copy_trans_inline.xhtml"/>
-  </h:form>
+  <ui:include src="settings-tab-translation.xhtml" />
 </li>
 
 <li id="settings-permissions">
