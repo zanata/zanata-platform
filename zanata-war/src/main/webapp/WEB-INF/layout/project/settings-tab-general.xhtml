@@ -1,0 +1,130 @@
+<!--
+  Copyright 2015, Red Hat, Inc. and individual contributors
+  as indicated by the @author tags. See the copyright.txt file in the
+  distribution for a full listing of individual contributors.
+
+  This is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation; either version 2.1 of
+  the License, or (at your option) any later version.
+
+  This software is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this software; if not, write to the Free
+  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:a4j="http://richfaces.org/a4j"
+        xmlns:rich="http://richfaces.org/rich"
+        xmlns:s="http://jboss.org/schema/seam/taglib">
+
+<h2 class="l--push-all-0 gamma d--bottom">#{msgs['jsf.General']}</h2>
+
+<h:form id="settings-general-form" styleClass="l--constrain-large">
+  <ui:include src="edit_form.xhtml"/>
+
+  <h3 class="heading--secondary">#{msgs['jsf.project.SourceCode']}</h3>
+
+  <div class="g--tight l--push-top-half">
+    <div class="g__item w--1-2">
+      <div class="form__item">
+        <h:outputLabel for="homePage">#{msgs['jsf.project.HomePage']}
+          <span class="txt--meta">#{msgs['jsf.field.optional']}</span>
+        </h:outputLabel>
+        <s:decorate id="homePageField" template="../field.xhtml">
+          <h:inputText id="homePage" required="false"
+              value="#{projectHome.instance.sourceViewURL}">
+            <rich:placeholder value="http://" styleClass="txt--neutral"/>
+            <a4j:ajax event="blur" render="homePageField" execute="@this"/>
+          </h:inputText>
+        </s:decorate>
+
+        <p class="txt--meta">
+          <h:outputText escape="false"
+              value="#{msgs['jsf.Project.sourceurl.message']}"/>
+        </p>
+      </div>
+    </div>
+    <div class="g__item w--1-2">
+      <div class="form__item">
+        <h:outputLabel for="repo">#{msgs['jsf.field.repository']}
+          <span class="txt--meta">#{msgs['jsf.field.optional']}</span>
+        </h:outputLabel>
+        <s:decorate id="repoField" template="../field.xhtml">
+          <h:inputText id="repo" required="false"
+              value="#{projectHome.instance.sourceCheckoutURL}">
+            <a4j:ajax event="blur" render="repoField" execute="@this"/>
+          </h:inputText>
+        </s:decorate>
+
+        <p class="txt--meta">
+          <h:outputText
+              escape="false" value="#{msgs['jsf.Project.repo.message']}"/>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="l--push-top-1">
+    <a4j:commandLink value="#{msgs['jsf.UpdateGeneralSettings']}"
+        id="button-update-settings"
+        action="#{projectHome.update}"
+        rendered="#{projectHome.managed}"
+        render="project-info"
+        styleClass="l--push-right-half button--primary"/>
+  </div>
+
+  <hr/>
+
+  <s:div styleClass="g--tight" id="status">
+    <s:div styleClass="g__item w--1-2 l--push-bottom-1"
+        rendered="#{projectHome.instance.status eq 'ACTIVE'}">
+      <a4j:commandLink styleClass="button--warning l--push-bottom-half"
+          id="button-lock-project"
+          action="#{projectHome.updateStatus('R')}" render="status">
+        <i class="i--left i--lock"></i> #{msgs['jsf.project.readonly']}
+      </a4j:commandLink>
+
+      <p class="txt--meta">#{msgs['jsf.project.readonly.Message']}</p>
+    </s:div>
+    <s:div styleClass="g__item w--1-2 l--push-bottom-1"
+        rendered="#{projectHome.instance.status ne 'ACTIVE'}">
+      <s:fragment rendered="#{projectHome.instance.status eq 'OBSOLETE'}">
+        <button class="button--success l--push-bottom-half" disabled="disabled">
+          <i class="i--left i--lock"></i> #{msgs['jsf.project.writable']}
+        </button>
+      </s:fragment>
+      <a4j:commandLink styleClass="button--success l--push-bottom-half"
+          id="button-unlock-project"
+          rendered="#{projectHome.instance.status == 'READONLY'}"
+          action="#{projectHome.updateStatus('A')}" render="status">
+        <i class="i--left i--lock"></i> #{msgs['jsf.project.writable']}
+      </a4j:commandLink>
+
+      <p class="txt--meta">#{msgs['jsf.project.writable.Message']}</p>
+    </s:div>
+
+    <s:fragment
+        rendered="#{s:hasPermission(projectHome.instance, 'mark-obsolete')}">
+      <s:div styleClass="g__item w--1-2"
+          rendered="#{projectHome.instance.status ne 'OBSOLETE'}">
+        <a href="javascript:void(0)" id="button-archive-project"
+            class="button--danger l--push-bottom-half"
+            onclick="zanata.modal.show('#delete-confirmation-modal')">
+          #{msgs['jsf.DeleteThisProject']} <i class="i--left i--trash"></i>
+        </a>
+
+        <p class="txt--meta">#{msgs['jsf.DeleteProject.Message']}</p>
+      </s:div>
+    </s:fragment>
+  </s:div>
+</h:form>
+
+</ui:composition>
