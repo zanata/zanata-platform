@@ -56,9 +56,6 @@ import com.google.common.collect.Lists;
  */
 @org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
 @Named("jsfMessages")
-@Install(precedence = APPLICATION,
-        classDependencies = "javax.faces.context.FacesContext")
-
 @BypassInterceptors
 public class FacesMessages {
 

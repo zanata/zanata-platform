@@ -33,6 +33,9 @@ import org.zanata.webtrans.shared.model.*;
 import org.zanata.webtrans.shared.model.ValidationAction.*;
 import org.zanata.webtrans.shared.rpc.*;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>

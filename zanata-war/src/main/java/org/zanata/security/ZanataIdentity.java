@@ -66,9 +66,8 @@ import org.zanata.util.ServiceLocator;
 
 import com.google.common.collect.Lists;
 
-@Named("org.jboss.seam.security.identity")
+@Named("zanataIdentity")
 @javax.enterprise.context.SessionScoped
-@Install(precedence = APPLICATION)
 @BypassInterceptors
 /* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
 public class ZanataIdentity implements Identity, Serializable {

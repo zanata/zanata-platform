@@ -184,7 +184,7 @@ public class ServerConfigurationService {
 
         Event<ConfigurationChanged> event =
                 ServiceLocator.instance().getInstance(Event.class);
-        event.fireAfterSuccess(new ConfigurationChanged(key));
+        event.fire(new ConfigurationChanged(key));
     }
 
     private boolean isConfigKeyValid(String configKey) {

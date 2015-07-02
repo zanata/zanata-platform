@@ -129,8 +129,7 @@ public class TranslationServiceImpl implements TranslationService {
     @Inject
     private ValidationService validationServiceImpl;
 
-    @Inject(value = ZanataJpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION,
-            required = false)
+    @Inject
     private HAccount authenticatedAccount;
 
     @Inject
@@ -321,7 +320,7 @@ public class TranslationServiceImpl implements TranslationService {
             // new DocumentId(document.getId(), document.getDocId()), hasError,
             // hTextFlowTarget.getLastChanged(),
             // hTextFlowTarget.getLastModifiedBy().getAccount().getUsername());
-            textFlowTargetStateEvent.fireAfterSuccess(
+            textFlowTargetStateEvent.fire(
                     new TextFlowTargetStateEvent(actorId, versionId,
                             documentId, textFlow.getId(), hTextFlowTarget
                             .getLocale().getLocaleId(), hTextFlowTarget

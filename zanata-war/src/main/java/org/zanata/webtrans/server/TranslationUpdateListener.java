@@ -175,7 +175,7 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
                             "unknown", -1),
                             TransUnitUpdated.UpdateType.NonEditorSave);
         }
-        textFlowTargetUpdatedEvent.fireAfterSuccess(
+        textFlowTargetUpdatedEvent.fire(
                 new TextFlowTargetUpdatedEvent(workspaceOptional.get(),
                         target.getId(), updated));
     }

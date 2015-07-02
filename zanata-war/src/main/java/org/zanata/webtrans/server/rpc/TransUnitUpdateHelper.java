@@ -43,6 +43,8 @@ import lombok.RequiredArgsConstructor;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
