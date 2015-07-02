@@ -48,6 +48,7 @@ import org.zanata.exception.ChunkUploadException;
 import org.zanata.model.HDocumentUpload;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.ChunkUploadResponse;
@@ -83,7 +84,7 @@ public class TranslationDocumentUpload {
     public Response
             tryUploadTranslationFile(GlobalDocumentId id, String localeId,
                     String mergeType, boolean assignCreditToUploader,
-            DocumentFileUploadForm uploadForm) {
+            DocumentFileUploadForm uploadForm, TranslationSourceType translationSourceType) {
         try {
             failIfTranslationUploadNotValid(id, localeId, uploadForm);
 
@@ -156,7 +157,7 @@ public class TranslationDocumentUpload {
                             id.getProjectSlug(), id.getVersionSlug(),
                             id.getDocId(), locale.getLocaleId(), transRes,
                             extensions, mergeTypeFromString(mergeType),
-                            assignCreditToUploader);
+                            assignCreditToUploader, translationSourceType);
 
             return transUploadResponse(totalChunks, warnings);
         } catch (FileNotFoundException e) {

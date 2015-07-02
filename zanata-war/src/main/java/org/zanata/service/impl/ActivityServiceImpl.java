@@ -54,12 +54,6 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.IsEntityWithType;
 import org.zanata.model.type.EntityType;
 import org.zanata.service.ActivityService;
-import org.zanata.util.DateUtil;
-import org.zanata.util.StatisticsUtil;
-
-import com.google.common.collect.Lists;
-
-import com.google.common.collect.Lists;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -156,7 +150,7 @@ public class ActivityServiceImpl implements ActivityService {
         if (context != null && activityType != null) {
             Date currentActionTime = new Date();
             Activity activity =
-                    findActivity(actorId, context.getEntityType(),
+                    findActivity(actorId, context.getType(),
                             context.getId(), activityType, currentActionTime);
             if (activity != null) {
                 activity.updateActivity(currentActionTime, target, wordCount);

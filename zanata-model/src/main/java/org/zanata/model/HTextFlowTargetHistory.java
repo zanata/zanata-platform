@@ -29,6 +29,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -37,17 +40,26 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.PostLoad;
+import javax.persistence.PostPersist;
+import javax.persistence.PostUpdate;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 
 import org.hibernate.annotations.AccessType;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 import org.zanata.common.ContentState;
+import org.zanata.model.type.TranslationEntityType;
+import org.zanata.model.type.TranslationSourceType;
 
 import com.google.common.base.Objects;
 import lombok.Getter;
 import lombok.Setter;
+import org.zanata.model.type.TranslationSourceTypeType;
 
 @Entity
 @Immutable
@@ -76,6 +88,8 @@ import lombok.Setter;
                 name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY + 6,
                 query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = :tft and size(t.contents) = :contentCount "
                         + "and contents[0] = :content0 and contents[1] = :content1 and contents[2] = :content2 and contents[3] = :content3 and contents[4] = :content4 and contents[5] = :content5") })
+@TypeDef(name = "sourceType", typeClass = TranslationSourceTypeType.class)
+@EntityListeners({ HTextFlowTargetHistory.EntityListener.class })
 public class HTextFlowTargetHistory extends HTextContainer implements
         Serializable, ITextFlowTargetHistory {
     static final String QUERY_MATCHING_HISTORY =
@@ -107,6 +121,20 @@ public class HTextFlowTargetHistory extends HTextContainer implements
 
     private HPerson reviewer;
 
+    @Setter
+    private TranslationEntityType entityType;
+
+    @Getter
+    @Setter
+    private Long entityId;
+
+    @Setter
+    private TranslationSourceType sourceType;
+
+    @Getter
+    @Setter
+    private Boolean automatedEntry;
+
     @Getter
     @Setter
     private String revisionComment;
@@ -125,7 +153,10 @@ public class HTextFlowTargetHistory extends HTextContainer implements
         this.reviewer = target.getReviewer();
         this.setContents(target.getContents());
         this.revisionComment = target.getRevisionComment();
-
+        this.automatedEntry = target.getAutomatedEntry();
+        this.sourceType = target.getSourceType();
+        this.entityId = target.getEntityId();
+        this.entityType = target.getEntityType();
     }
 
     @Id
@@ -238,6 +269,35 @@ public class HTextFlowTargetHistory extends HTextContainer implements
         this.reviewer = reviewer;
     }
 
+    @Type(type = "sourceType")
+    public TranslationSourceType getSourceType() {
+        return sourceType;
+    }
+
+    @Enumerated(EnumType.STRING)
+    public TranslationEntityType getEntityType() {
+        return entityType;
+    }
+
+    public static class EntityListener {
+        @PreUpdate
+        private void preUpdate(HTextFlowTargetHistory tfth) {
+            setAutomatedEntry(tfth);
+        }
+
+        @PrePersist
+        private void prePersist(HTextFlowTargetHistory tfth) {
+            setAutomatedEntry(tfth);
+        }
+
+        private void setAutomatedEntry(HTextFlowTargetHistory tfth) {
+            if (tfth.getSourceType() == null) {
+                tfth.setSourceType(TranslationSourceType.UNKNOWN);
+            }
+            tfth.setAutomatedEntry(tfth.getSourceType().isAutomatedEntry());
+        }
+    }
+
     /**
      * Determines whether a Text Flow Target has changed when compared to this
      * history object.
@@ -261,6 +321,8 @@ public class HTextFlowTargetHistory extends HTextContainer implements
                 || !Objects.equal(current.getTextFlow().getId(),
                         this.textFlowTarget.getId())
                 || !Objects.equal(current.getVersionNum(), this.versionNum)
-                || !Objects.equal(current.getRevisionComment(), this.revisionComment);
+                || !Objects.equal(current.getRevisionComment(), this.revisionComment)
+                || !Objects.equal(current.getEntityId(), this.entityId)
+                || !Objects.equal(current.getEntityType(), this.entityType);
     }
 }

@@ -275,7 +275,8 @@ public class TransUnitsTablePresenter extends
                                 .toString(), updatedTransUnit.getTargets(),
                                 updatedTransUnit.getStatus(),
                                 updatedTransUnit.getLastModifiedBy(),
-                                updatedTransUnit.getLastModifiedTime());
+                                updatedTransUnit.getLastModifiedTime(),
+                                updatedTransUnit.getRevisionComment());
                 translationHistoryPresenter.displayEntries(latest,
                         Collections.<TransHistoryItem> emptyList(),
                         Collections.<ReviewComment> emptyList());

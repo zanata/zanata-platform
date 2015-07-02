@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2015, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,39 +18,30 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.model;
 
-import java.util.Date;
-import java.util.List;
+package org.zanata.model.type;
 
-import org.zanata.common.ContentState;
-import org.zanata.model.type.TranslationEntityType;
+import org.junit.Test;
 
-public interface ITextFlowTargetHistory {
+import static org.assertj.core.api.Assertions.assertThat;
 
-    ContentState getState();
+/**
+ * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
+ */
+public class TranslationSourceTypeTest {
 
-    Integer getTextFlowRevision();
+    @Test
+    public void testGetFromAbbr() {
+        for (TranslationSourceType type : TranslationSourceType.values()) {
+            TranslationSourceType.getValueOf(type.getAbbr());
+            assertThat(TranslationSourceType.getValueOf(type.getAbbr()))
+                    .isEqualTo(type);
+        }
+    }
 
-    HPerson getLastModifiedBy();
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetFromAbbrException() {
+        TranslationSourceType.getValueOf("non-exist-abbr");
+    }
 
-    List<String> getContents();
-
-    Date getLastChanged();
-
-    Integer getVersionNum();
-
-    HPerson getTranslator();
-
-    HPerson getReviewer();
-
-    Long getId();
-
-    Long getEntityId();
-
-    TranslationEntityType getEntityType();
-
-    void setEntityType(TranslationEntityType entityType);
-
-    void setEntityId(Long id);
 }

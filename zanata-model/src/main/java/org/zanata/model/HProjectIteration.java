@@ -164,7 +164,7 @@ public class HProjectIteration extends SlugEntityBase implements
 
     @Override
     @Transient
-    public EntityType getEntityType() {
+    public EntityType getType() {
         return EntityType.HProjectIteration;
     }
 

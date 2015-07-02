@@ -39,6 +39,7 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.rest.dto.ProcessStatus;
@@ -156,6 +157,18 @@ public class AsynchronousProcessResourceService implements
                                                     // progress
     }
 
+    /**
+     *
+     * @param idNoSlash
+     * @param projectSlug
+     * @param iterationSlug
+     * @param locale
+     * @param translatedDoc
+     * @param extensions
+     * @param merge
+     * @param assignCreditToUploader
+     * @return
+     */
     @Override
     public ProcessStatus startTranslatedDocCreationOrUpdate(
             final String idNoSlash, final String projectSlug,
@@ -187,7 +200,8 @@ public class AsynchronousProcessResourceService implements
         Serializable taskId = asyncTaskHandleManager.registerTaskHandle(handle);
         translationServiceImpl.translateAllInDocAsync(projectSlug,
                 iterationSlug, id, locale, translatedDoc, extensions,
-                finalMergeType, assignCreditToUploader, true, handle);
+                finalMergeType, assignCreditToUploader, true, handle,
+                TranslationSourceType.API_UPLOAD);
 
         return this.getProcessStatus(taskId.toString());
     }

@@ -40,6 +40,7 @@ import org.zanata.ZanataTest;
 import org.zanata.file.GlobalDocumentId;
 import org.zanata.file.SourceDocumentUpload;
 import org.zanata.file.TranslationDocumentUpload;
+import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.seam.SeamAutowire;
 
@@ -117,7 +118,7 @@ public class FileServiceTest extends ZanataTest {
     public void translationUploadParamsHandledCorrectly() {
         when(
                 transUploader.tryUploadTranslationFile(eq(id), eq(LOCALE),
-                        eq(MERGE), eq(false), formCaptor.capture()))
+                        eq(MERGE), eq(false), formCaptor.capture(), eq(TranslationSourceType.API_UPLOAD)))
                 .thenReturn(okResponse);
         fileService.uploadTranslationFile(PROJ_SLUG, VER_SLUG, LOCALE, DOC_ID,
                 MERGE, form);
@@ -126,7 +127,7 @@ public class FileServiceTest extends ZanataTest {
 
     @Test
     public void translationUploadResponseReturnedDirectly() {
-        when(transUploader.tryUploadTranslationFile(id, LOCALE, MERGE, false, form))
+        when(transUploader.tryUploadTranslationFile(id, LOCALE, MERGE, false, form, TranslationSourceType.API_UPLOAD))
                 .thenReturn(okResponse);
         response =
                 fileService.uploadTranslationFile(PROJ_SLUG, VER_SLUG, LOCALE,

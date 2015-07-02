@@ -32,6 +32,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.type.TranslationSourceType;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -98,7 +99,8 @@ public class TransMemoryMergeStatusResolverTest {
 
     private static TransMemoryMerge mergeTMAction(MergeOptions mergeOptions) {
         TransUnitUpdateRequest updateRequest =
-                new TransUnitUpdateRequest(new TransUnitId(1), null, null, 0);
+                new TransUnitUpdateRequest(new TransUnitId(1), null, null, 0,
+                    TranslationSourceType.TM_MERGE.getAbbr());
         return new TransMemoryMerge(80, Lists.newArrayList(updateRequest),
                 mergeOptions);
     }

@@ -148,6 +148,11 @@ public class TransMemoryMergePresenter extends
         });
     }
 
+    /**
+     * See {@link org.zanata.model.type.TranslationSourceType#TM_MERGE}
+     */
+    private final String sourceType = "TM";
+
     private TransMemoryMerge prepareTMMergeAction(
             Collection<TransUnit> untranslatedTUs, int threshold,
             MergeOptions mergeOptions) {
@@ -157,7 +162,7 @@ public class TransMemoryMergePresenter extends
                             @Override
                             public TransUnitUpdateRequest apply(TransUnit from) {
                                 return new TransUnitUpdateRequest(from.getId(),
-                                        null, null, from.getVerNum());
+                                        null, null, from.getVerNum(), sourceType);
                             }
                         }));
         return new TransMemoryMerge(threshold, updateRequests, mergeOptions);

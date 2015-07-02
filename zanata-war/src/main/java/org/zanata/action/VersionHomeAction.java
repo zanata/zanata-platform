@@ -64,6 +64,7 @@ import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
+import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.extensions.ExtensionType;
 import org.zanata.rest.dto.resource.Resource;
@@ -1009,7 +1010,8 @@ public class VersionHomeAction extends AbstractSortAction implements
                             translationFileUpload.isMergeTranslations() ?
                                     MergeType.AUTO
                                     : MergeType.IMPORT,
-                            translationFileUpload.isAssignCreditToUploader());
+                            translationFileUpload.isAssignCreditToUploader(),
+                            TranslationSourceType.WEB_UPLOAD);
 
             StringBuilder infoMsg =
                     new StringBuilder("File ").append(

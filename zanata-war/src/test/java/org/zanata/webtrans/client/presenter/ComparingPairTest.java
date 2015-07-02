@@ -47,7 +47,7 @@ public class ComparingPairTest {
 
     private static TransHistoryItem newItem(String versionNum) {
         return new TransHistoryItem(versionNum, Lists.newArrayList("a"),
-                ContentState.Approved, "", new Date());
+                ContentState.Approved, "", new Date(), "");
     }
 
     @Test

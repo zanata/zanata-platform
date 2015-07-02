@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2015, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,39 +18,34 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.model;
 
-import java.util.Date;
-import java.util.List;
+package org.zanata.model.type;
 
-import org.zanata.common.ContentState;
-import org.zanata.model.type.TranslationEntityType;
+import lombok.Getter;
+import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.HTextFlowTargetHistory;
+import org.zanata.model.tm.TransMemoryUnit;
 
-public interface ITextFlowTargetHistory {
+import java.io.Serializable;
 
-    ContentState getState();
+/**
+ * Entity type of origin for translation copied.
+ *
+ * Usage {@link org.zanata.model.HTextFlowTarget.entityType} and
+ * {@link org.zanata.model.HTextFlowTargetHistory.entityType}
+ *
+ * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
+ */
+public enum TranslationEntityType implements Serializable {
+    TMX(TransMemoryUnit.class),
+    TFT(HTextFlowTarget.class),
+    TTH(HTextFlowTargetHistory.class);
+    //    MT(null);
 
-    Integer getTextFlowRevision();
+    @Getter
+    private final Class clazz;
 
-    HPerson getLastModifiedBy();
-
-    List<String> getContents();
-
-    Date getLastChanged();
-
-    Integer getVersionNum();
-
-    HPerson getTranslator();
-
-    HPerson getReviewer();
-
-    Long getId();
-
-    Long getEntityId();
-
-    TranslationEntityType getEntityType();
-
-    void setEntityType(TranslationEntityType entityType);
-
-    void setEntityId(Long id);
+    private TranslationEntityType(Class clazz) {
+        this.clazz = clazz;
+    }
 }

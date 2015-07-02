@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.zanata.exception.ChunkUploadException;
+import org.zanata.model.type.TranslationSourceType;
 
 public class TranslationDocumentUploadTest extends DocumentUploadTest {
 
@@ -63,7 +64,7 @@ public class TranslationDocumentUploadTest extends DocumentUploadTest {
                 conf.uploadForm);
         response =
                 transUpload.tryUploadTranslationFile(conf.id, ANY_LOCALE,
-                        ANY_MERGETYPE, false, conf.uploadForm);
+                        ANY_MERGETYPE, false, conf.uploadForm, TranslationSourceType.API_UPLOAD);
         assertResponseHasStatus(NOT_ACCEPTABLE);
         assertResponseHasErrorMessage("Test message");
         assertUploadTerminated();

@@ -22,13 +22,15 @@ public class TransHistoryItem extends ComparableByDate implements
     private String modifiedBy;
     private Date modifiedDate;
     private String optionalTag = "";
+    private String revisionComment;
 
     @SuppressWarnings("unused")
     private TransHistoryItem() {
     }
 
     public TransHistoryItem(String versionNum, List<String> contents,
-            ContentState status, String modifiedBy, Date modifiedDate) {
+            ContentState status, String modifiedBy, Date modifiedDate,
+            String revisionComment) {
         this.versionNum = versionNum;
         // targetHistory.getContents will return Hibernate persistentList which
         // RPC can't handle
@@ -36,6 +38,7 @@ public class TransHistoryItem extends ComparableByDate implements
         this.status = status;
         this.modifiedBy = modifiedBy;
         this.modifiedDate = modifiedDate;
+        this.revisionComment = revisionComment;
     }
 
     public String getVersionNum() {
@@ -58,6 +61,10 @@ public class TransHistoryItem extends ComparableByDate implements
         return modifiedDate;
     }
 
+    public String getRevisionComment() {
+        return revisionComment;
+    }
+
     @Override
     protected Date getDate() {
         return modifiedDate;
@@ -72,6 +79,7 @@ public class TransHistoryItem extends ComparableByDate implements
             add("status", status).
             add("modifiedBy", modifiedBy).
             add("modifiedDate", modifiedDate).
+            add("revisionComment", revisionComment).
             toString();
       // @formatter:on
     }

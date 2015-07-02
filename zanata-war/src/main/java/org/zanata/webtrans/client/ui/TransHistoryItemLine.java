@@ -26,6 +26,9 @@ import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.util.ContentStateToStyleUtil;
 import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
+
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.base.Strings;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -65,6 +68,9 @@ public class TransHistoryItemLine extends Composite {
     Anchor copyIntoEditor;
     @UiField
     SpanElement icon;
+    @UiField(provided = true)
+    InlineHTML revisionComment;
+
 
     public TransHistoryItemLine(TransHistoryItem item,
             TranslationHistoryDisplay.Listener listener,
@@ -85,9 +91,21 @@ public class TransHistoryItemLine extends Composite {
         targetContents =
                 new InlineHTML(template.targetContent(TextContentsDisplay
                         .asSyntaxHighlight(item.getContents()).toSafeHtml()));
-        revision =
+        if(!Strings.isNullOrEmpty(item.getOptionalTag())) {
+            revision =
                 new InlineHTML(template.targetRevision(item.getVersionNum(),
-                        item.getOptionalTag()));
+                    item.getOptionalTag()));
+        } else {
+            revision = new InlineHTML("");
+        }
+
+        if(!Strings.isNullOrEmpty(item.getRevisionComment())) {
+            revisionComment = new InlineHTML(template.revisionComment(
+                    item.getRevisionComment()));
+        } else {
+            revisionComment = new InlineHTML("");
+        }
+
         initWidget(ourUiBinder.createAndBindUi(this));
 
         if (item.getStatus() == ContentState.Approved
@@ -132,5 +150,8 @@ public class TransHistoryItemLine extends Composite {
 
         @Template("<span class='txt--neutral'>{0}</span>")
         SafeHtml anonymousUser(String anonymous);
+
+        @Template("<span class='txt--meta'>{0}</span>")
+        SafeHtml revisionComment(String comment);
     }
 }

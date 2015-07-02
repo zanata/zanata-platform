@@ -36,12 +36,15 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.tm.TransMemoryUnit;
+import org.zanata.model.type.TranslationEntityType;
+import org.zanata.model.type.TranslationSourceType;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SecurityService;
 import org.zanata.service.TransMemoryMergeService;
 import org.zanata.service.TranslationMemoryService;
 import org.zanata.service.TranslationService;
 import org.zanata.util.Event;
+import org.zanata.util.TranslationUtil;
 import org.zanata.webtrans.server.rpc.TransMemoryMergeStatusResolver;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
@@ -182,13 +185,17 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
 
         Long tmSourceId = tmResult.getSourceIdList().get(0);
         ContentState statusToSet;
-        String comment;
+        String comment, revisionComment, entityType;
+        Long entityId;
         if (tmResult.getMatchType() == TransMemoryResultItem.MatchType.Imported) {
             TransMemoryUnit tu = transMemoryUnitDAO.findById(tmSourceId);
             statusToSet =
                     TransMemoryMergeStatusResolver.newInstance().decideStatus(
                             action, tmResult, oldTarget);
             comment = buildTargetComment(tu);
+            revisionComment = TranslationUtil.getTMMergeMessage(tu);
+            entityId = tu.getId();
+            entityType = TranslationEntityType.TMX.name();
         } else {
             HTextFlow tmSource = textFlowDAO.findById(tmSourceId, false);
             TransMemoryDetails tmDetail =
@@ -199,16 +206,24 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                             action, hTextFlowToBeFilled, tmDetail, tmResult,
                             oldTarget);
             comment = buildTargetComment(tmDetail);
+            revisionComment = TranslationUtil.getTMMergeMessage(tmDetail);
+
+            HTextFlowTarget target = tmSource.getTargets().get(hLocale.getId());
+            entityId = TranslationUtil.getEntityId(target);
+            entityType = TranslationUtil.getEntityType(target).name();
         }
 
         if (statusToSet != null) {
             TransUnitUpdateRequest unfilledRequest =
                     requestMap.get(hTextFlowToBeFilled.getId());
+
             TransUnitUpdateRequest request =
                     new TransUnitUpdateRequest(
                             unfilledRequest.getTransUnitId(),
                             tmResult.getTargetContents(), statusToSet,
-                            unfilledRequest.getBaseTranslationVersion());
+                            unfilledRequest.getBaseTranslationVersion(),
+                            revisionComment, entityId, entityType,
+                            TranslationSourceType.TM_MERGE.getAbbr());
             request.addTargetComment(comment);
             log.debug("auto translate from translation memory {}", request);
             return request;

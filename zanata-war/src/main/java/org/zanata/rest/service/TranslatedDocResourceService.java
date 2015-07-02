@@ -54,6 +54,7 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
@@ -271,7 +272,8 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
         List<String> warnings =
                 this.translationServiceImpl.translateAllInDoc(projectSlug,
                         iterationSlug, id, locale, messageBody, extensions,
-                        mergeType, assignCreditToUploader);
+                        mergeType, assignCreditToUploader,
+                        TranslationSourceType.API_UPLOAD);
 
         // Regenerate etag in case it has changed
         etag =

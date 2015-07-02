@@ -28,5 +28,5 @@ import org.zanata.model.type.EntityType;
 public interface IsEntityWithType {
     Long getId();
 
-    EntityType getEntityType();
+    EntityType getType();
 }

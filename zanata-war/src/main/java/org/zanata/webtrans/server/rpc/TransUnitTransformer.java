@@ -82,16 +82,16 @@ public class TransUnitTransformer {
                         .setPlural(hTextFlow.isPlural())
                         .setSources(sourceContents)
                         .setSourceComment(
-                                commentToString(hTextFlow.getComment()))
+                            commentToString(hTextFlow.getComment()))
                         .setTargets(targetContents)
                         .setTargetComment(
-                                target == null ? null : commentToString(target
-                                        .getComment()))
+                            target == null ? null : commentToString(target
+                                .getComment()))
                         .setMsgContext(msgContext)
                         .setRowIndex(hTextFlow.getPos())
                         .setVerNum(
-                                target == null ? NULL_TARGET_VERSION_NUM
-                                        : target.getVersionNum())
+                            target == null ? NULL_TARGET_VERSION_NUM
+                                : target.getVersionNum())
                         .setCommentsCount(getCommentCount(target));
 
         if (target != null) {
@@ -100,6 +100,7 @@ public class TransUnitTransformer {
                 builder.setLastModifiedBy(target.getLastModifiedBy().getName());
             }
             builder.setLastModifiedTime(target.getLastChanged());
+            builder.setRevisionComment(target.getRevisionComment());
         }
         return builder.build();
     }

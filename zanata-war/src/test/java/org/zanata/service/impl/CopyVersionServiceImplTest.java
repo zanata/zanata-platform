@@ -59,10 +59,12 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
 import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.model.po.HPoTargetHeader;
+import org.zanata.model.type.TranslationSourceType;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataCredentials;
 import org.zanata.security.ZanataIdentity;
 import com.google.common.collect.Lists;
+import org.zanata.util.TranslationUtil;
 
 public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
     private SeamAutowire seam = SeamAutowire.instance();
@@ -423,6 +425,12 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
                     existingHistory.getTextFlowRevision());
             assertThat(newHistory.getState()).isEqualTo(
                     existingHistory.getState());
+            assertThat(newHistory.getEntityId()).isEqualTo(
+                TranslationUtil.getEntityId(existingHistory));
+            assertThat(newHistory.getEntityType()).isEqualTo(
+                TranslationUtil.getEntityType(existingHistory));
+            assertThat(newHistory.getSourceType()).isEqualTo(
+                TranslationSourceType.COPY_VERSION);
             assertThat(newHistory.getVersionNum()).isEqualTo(
                     existingHistory.getVersionNum());
         }
@@ -571,6 +579,12 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
                 existingTarget.getLocale());
         assertThat(newTarget.getLastModifiedBy()).isEqualTo(
                 existingTarget.getLastModifiedBy());
+        assertThat(newTarget.getEntityId()).isEqualTo(
+            TranslationUtil.getEntityId(existingTarget));
+        assertThat(newTarget.getEntityType()).isEqualTo(
+            TranslationUtil.getEntityType(existingTarget));
+        assertThat(newTarget.getSourceType()).isEqualTo(
+            TranslationSourceType.COPY_VERSION);
         if (existingTarget.getTranslator() != null) {
             assertThat(newTarget.getTranslator()).isEqualToIgnoringGivenFields(
                     existingTarget.getTranslator(), "id");

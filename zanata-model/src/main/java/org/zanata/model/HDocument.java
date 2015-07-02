@@ -303,7 +303,7 @@ public class HDocument extends ModelEntityBase implements DocumentWithId,
 
     @Override
     @Transient
-    public EntityType getEntityType() {
+    public EntityType getType() {
         return EntityType.HDocument;
     }
 

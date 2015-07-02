@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
+
+  <changeSet id="1" author="aeng@redhat.com">
+    <comment>Add entityType, entityId, sourceType and automatedEntry to HTextFlowTarget</comment>
+    <addColumn tableName="HTextFlowTarget">
+      <column name="entityType" type="char(3)">
+        <constraints nullable="true" />
+      </column>
+    </addColumn>
+    <addColumn tableName="HTextFlowTarget">
+      <column name="entityId" type="longtext">
+        <constraints nullable="true" />
+      </column>
+    </addColumn>
+    <addColumn tableName="HTextFlowTarget">
+      <column name="sourceType" type="char(3)" defaultValue="UNK"/>
+    </addColumn>
+    <addColumn tableName="HTextFlowTarget">
+      <column name="automatedEntry" type="boolean" defaultValueBoolean="false"/>
+    </addColumn>
+    <createIndex tableName="HTextFlowTarget" indexName="Idx_AutomatedEntry">
+      <column name="automatedEntry"/>
+    </createIndex>
+  </changeSet>
+
+  <changeSet id="2" author="aeng@redhat.com">
+    <comment>Add entityType, entityId, sourceType and automatedEntry to HTextFlowTargetHistory</comment>
+    <addColumn tableName="HTextFlowTargetHistory">
+      <column name="entityType" type="char(3)">
+        <constraints nullable="true" />
+      </column>
+    </addColumn>
+    <addColumn tableName="HTextFlowTargetHistory">
+      <column name="entityId" type="longtext">
+        <constraints nullable="true" />
+      </column>
+    </addColumn>
+    <addColumn tableName="HTextFlowTargetHistory">
+      <column name="sourceType" type="char(3)" defaultValue="UNK"/>
+    </addColumn>
+    <addColumn tableName="HTextFlowTargetHistory">
+      <column name="automatedEntry" type="boolean" defaultValueBoolean="false"/>
+    </addColumn>
+    <createIndex tableName="HTextFlowTargetHistory" indexName="Idx_AutomatedEntry">
+      <column name="automatedEntry"/>
+    </createIndex>
+  </changeSet>
+
+</databaseChangeLog>
