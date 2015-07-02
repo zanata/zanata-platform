@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2010-2015, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -32,6 +32,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -44,25 +45,56 @@ import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
+
+import javax.inject.Inject;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.ArrayUtils;
-import javax.inject.Inject;
-import org.jboss.seam.annotations.Logger;
-import com.google.common.base.Preconditions;
+import org.zanata.util.AutowireLocator;
+
+import com.google.common.collect.Lists;
 
 /**
  * Helps with Auto-wiring of Seam components for integrated tests without the
  * need for a full Seam environment. It's a singleton class that upon first use
- * will change the way Seam's {@link org.jboss.seam.Component} class works by
+ * will change the way the {@link org.zanata.util.ServiceLocator} class works by
  * returning its own auto-wired components.
- *
- * Supports components injected using: {@link In} {@link Logger}
- * {@link org.jboss.seam.Component#getInstance(String)} and similar methods...
- * and that have no-arg constructors
+ * <p>
+ * Note: If CDI-Unit is active, the modified ServiceLocator will attempt
+ * to use real CDI beans first, otherwise falling back on Autowire
+ * components if available.
+ * </p>
+ * <p>
+ * Supports components injected using: {@link javax.inject.Inject},
+ * {@link org.zanata.util.ServiceLocator#getInstance(String, Class)} and similar methods...
+ * and which have no-arg constructors.
+ * </p>
+ * <p>
+ * Limitations:
+ * <ul>
+ *     <li>Injection by name is only supported where use(String, Object)
+ *     has been called beforehand. Otherwise, injection will be done by
+ *     class/interface.</li>
+ *     <li>Injection by class or interface is only supported where
+ *     useImpl(Class) has been called beforehand.</li>
+ *     <li>Injection by class or interface creates a new instance of the
+ *     bean class at each injection point.</li>
+ *     <li>There is only one, global, scope.  All scope annotations are
+ *     ignored.</li>
+ *     <li>Lifecycle methods are ignored.</li>
+ *     <li>Injection of unnamed beans may not work (Seam components
+ *     always have names).</li>
+ *     <li>CDI qualifiers are ignored with a warning.</li>
+ *     <li>Beans with the same name or interfaces will silently overwrite
+ *     each other in the autowire scope.</li>
+ * </ul>
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
 public class SeamAutowire {
@@ -70,9 +102,13 @@ public class SeamAutowire {
     private static final Object PLACEHOLDER = new Object();
 
     private static SeamAutowire instance;
+    public static boolean useRealServiceLocator = false;
 
     private Map<String, Object> namedComponents = new HashMap<String, Object>();
 
+    /**
+     * key is an interface Class, values is the concrete component Class
+     */
     private Map<Class<?>, Class<?>> componentImpls =
             new HashMap<Class<?>, Class<?>>();
 
@@ -81,9 +117,7 @@ public class SeamAutowire {
     private boolean allowCycles;
 
     static {
-        rewireSeamComponentClass();
-        rewireSeamTransactionClass();
-        rewireSeamContextsClass();
+        rewireServiceLocatorClass();
     }
 
     protected SeamAutowire() {
@@ -99,7 +133,7 @@ public class SeamAutowire {
      *
      * @return The Singleton instance of the SeamAutowire class.
      */
-    public static final SeamAutowire instance() {
+    public static SeamAutowire instance() {
         if (instance == null) {
             instance = new SeamAutowire();
         }
@@ -142,7 +176,7 @@ public class SeamAutowire {
      *
      * @param name
      *            The name of the component. When another component injects
-     *            using <code>@In(value = "name")</code> or
+     *            using <code>@Inject(value = "name")</code> or
      *            <code>@Inject varName</code>, the provided component will be used.
      * @param component
      *            The component instance to use under the provided name.
@@ -152,6 +186,9 @@ public class SeamAutowire {
             throw new RuntimeException("Component "+name+" was already created.  You should register it before it is resolved.");
         }
         namedComponents.put(name, component);
+        // we could register the parent interfaces, but note that
+        // getComponent(Class) currently constructs a new instance every time
+//        this.registerInterfaces(component.getClass());
         return this;
     }
 
@@ -163,9 +200,9 @@ public class SeamAutowire {
      *            The class to register.
      */
     public SeamAutowire useImpl(Class<?> cls) {
-        if (cls.isInterface()) {
+        if (Modifier.isAbstract(cls.getModifiers())) {
             throw new RuntimeException("Class " + cls.getName()
-                    + " is an interface.");
+                    + " is abstract.");
         }
         this.registerInterfaces(cls);
 
@@ -194,11 +231,21 @@ public class SeamAutowire {
         return namedComponents.get(name);
     }
 
+    public <T> T getComponent(Class<T> componentClass, Annotation... qualifiers) {
+        if (qualifiers.length != 0) {
+            log.warn(
+                    "Qualifiers currently not supported by SeamAutowire.  Try CDI-Unit and CdiUnitRunner. Class:{}, Qualifiers:{}",
+                    componentClass,
+                    Lists.newArrayList(qualifiers));
+        }
+        return autowire(componentClass);
+    }
+
     /**
      * Creates (but does not autowire) the component instance for the provided
      * class.
      *
-     * @param componentClass
+     * @param fieldClass
      *            The component class to create - may be an interface if useImpl
      *            was called, otherwise must have a no-arg constructor per Seam
      *            spec.
@@ -244,13 +291,14 @@ public class SeamAutowire {
     private <T> Class<T> getImplClass(Class<T> fieldClass) {
         // If the component type is an interface, try to find a declared
         // implementation
-        // TODO field class might be abstract, or a concrete superclass
+        // TODO field class might a concrete superclass
         // of the impl class
-        if (fieldClass.isInterface()
+        if (Modifier.isAbstract(fieldClass.getModifiers())
                 && this.componentImpls.containsKey(fieldClass)) {
             fieldClass = (Class<T>) this.componentImpls.get(fieldClass);
         }
-        return fieldClass;
+
+        return (Class<T>) fieldClass;
     }
 
     /**
@@ -263,6 +311,10 @@ public class SeamAutowire {
      * @return The autowired component.
      */
     public <T> T autowire(Class<T> componentClass) {
+        // We could use getComponentName(Class) to simulate Seam's lookup
+        // (by the @Named annotation on the injection point's class), but
+        // this would just move us further away from CDI semantics.
+        // TODO don't create multiple instances of a class
         Predicate<Object> predicate = Predicates.instanceOf(componentClass);
         Optional<Object> namedOptional = Iterables.tryFind(
                 namedComponents.values(), predicate);
@@ -294,32 +346,17 @@ public class SeamAutowire {
         // Resolve injected Components
         for (ComponentAccessor accessor : getAllComponentAccessors(component)) {
             // Another annotated component
-            In inAnnotation = accessor.getAnnotation(In.class);
+            Inject inAnnotation = accessor.getAnnotation(Inject.class);
             if (inAnnotation != null) {
                 Object fieldVal = null;
                 String compName = accessor.getComponentName();
                 Class<?> compType = accessor.getComponentType();
+                Set<Annotation> qualifiers = accessor.getQualifiers();
                 Class<?> implType = getImplClass(compType);
 
                 // TODO stateless components should not / need not be cached
                 // autowire the component if not done yet
                 if (!namedComponents.containsKey(compName)) {
-                    boolean required = inAnnotation.required();
-                    boolean autoCreate = implType.isAnnotationPresent(AutoCreate.class);
-                    Scope scopeAnn = implType.getAnnotation(Scope.class);
-                    boolean stateless = false;
-                    if (scopeAnn != null) {
-                        stateless = scopeAnn.value() == ScopeType.STATELESS;
-                    }
-                    boolean mayCreate = inAnnotation.create() || autoCreate || stateless;
-                    if (required && !mayCreate) {
-                        String msg = "Not allowed to create required component "+compName+" with impl "+implType+". Try or @In(create=true).";
-                        if (ignoreNonResolvable) {
-                            log.warn(msg);
-                        } else {
-                            throw new RuntimeException(msg);
-                        }
-                    }
                     Object newComponent = null;
                     try {
                         newComponent = create(compType);
@@ -377,9 +414,6 @@ public class SeamAutowire {
                         throw e;
                     }
                 }
-            } else if (accessor.getAnnotation(Logger.class) != null) {
-                // Logs
-                throw new RuntimeException("Please use Slf4j, not Seam Logger");
             }
         }
 
@@ -387,6 +421,34 @@ public class SeamAutowire {
         invokePostConstructMethod(component);
 
         return component;
+    }
+
+    private static void rewireServiceLocatorClass() {
+        try {
+            ClassPool pool = ClassPool.getDefault();
+            CtClass locatorCls = pool.get("org.zanata.util.ServiceLocator");
+
+            // Commonly used CtClasses
+            final CtClass stringCls = pool.get("java.lang.String");
+            final CtClass objectCls = pool.get("java.lang.Object");
+            final CtClass classCls = pool.get("java.lang.Class");
+
+            // Replace Component's method bodies with the ones in
+            // AutowireComponent
+            CtClass[] emptyArgs = {};
+            CtMethod methodToReplace =
+                    locatorCls.getDeclaredMethod("instance", emptyArgs);
+            methodToReplace.setBody("{return org.zanata.util.AutowireLocator.instance(); }");
+
+            locatorCls.toClass();
+        } catch (NotFoundException e) {
+            throw new RuntimeException(
+                    "Problem rewiring Seam's Component class", e);
+        } catch (CannotCompileException e) {
+            throw new RuntimeException(
+                    "Problem rewiring Seam's Component class", e);
+        }
+
     }
 
     private static void rewireSeamContextsClass() {
@@ -397,7 +459,8 @@ public class SeamAutowire {
             // Replace Component's method bodies with the ones in
             // AutowireComponent
             contextsCls.getDeclaredMethod("isSessionContextActive")
-                    .setBody("{ return org.zanata.seam.AutowireContexts.isSessionContextActive(); }");
+                    .setBody(
+                            "{ return org.zanata.seam.AutowireContexts.isSessionContextActive(); }");
 
             contextsCls.getDeclaredMethod("isEventContextActive")
                     .setBody("{ return org.zanata.seam.AutowireContexts.isEventContextActive(); }");
@@ -426,28 +489,14 @@ public class SeamAutowire {
 
             // Commonly used CtClasses
             final CtClass stringCls = pool.get("java.lang.String");
-            final CtClass booleanCls = pool.get("boolean");
             final CtClass objectCls = pool.get("java.lang.Object");
-            final CtClass scopeTypeCls = pool.get("org.jboss.seam.ScopeType");
             final CtClass classCls = pool.get("java.lang.Class");
 
             // Replace Component's method bodies with the ones in
             // AutowireComponent
-            replaceGetInstance(pool, componentCls, stringCls, booleanCls,
-                    booleanCls);
-            replaceGetInstance(pool, componentCls, stringCls, scopeTypeCls,
-                    booleanCls, booleanCls);
-            replaceGetInstance(pool, componentCls, classCls);
-            replaceGetInstance(pool, componentCls, classCls, scopeTypeCls);
-            try {
-                // Seam 2.2.2
-                replaceGetInstance(pool, componentCls, stringCls, booleanCls,
-                        booleanCls, objectCls, scopeTypeCls);
-            } catch (NotFoundException e) {
-                // Seam 2.2.0
-                replaceGetInstance(pool, componentCls, stringCls, booleanCls,
-                        booleanCls, objectCls);
-            }
+            replaceGetInstance(pool, componentCls, stringCls, classCls);
+            replaceGetInstance(pool, componentCls, stringCls, objectCls,
+                    classCls);
 
             componentCls.toClass();
         } catch (NotFoundException e) {
@@ -470,16 +519,24 @@ public class SeamAutowire {
      *            Class that represents the jboss Component class.
      * @param params
      *            Parameters for the getComponent method that will be replaced
-     * @throws NotFoundException
-     * @throws CannotCompileException
+     * @throws javassist.NotFoundException
+     * @throws javassist.CannotCompileException
      */
     private static void replaceGetInstance(ClassPool pool,
             CtClass componentCls, CtClass... params) throws NotFoundException,
             CannotCompileException {
         CtMethod methodToReplace =
                 componentCls.getDeclaredMethod("getInstance", params);
-        methodToReplace.setBody(pool.get(AutowireComponent.class.getName())
+        methodToReplace.setBody(pool.get(AutowireLocator.class.getName())
                 .getDeclaredMethod("getInstance", params), null);
+    }
+
+    private static void replaceGetDependent(ClassPool pool, CtClass locatorCls, CtClass... params) throws
+            NotFoundException, CannotCompileException {
+        CtMethod methodToReplace =
+                locatorCls.getDeclaredMethod("getDependent", params);
+        methodToReplace.setBody(pool.get(AutowireLocator.class.getName())
+                .getDeclaredMethod("getDependent", params), null);
     }
 
     private static void rewireSeamTransactionClass() {
@@ -492,7 +549,8 @@ public class SeamAutowire {
             CtMethod methodToReplace =
                     cls.getDeclaredMethod("instance", new CtClass[] {});
             methodToReplace
-                    .setBody("{ return org.zanata.seam.AutowireTransaction.instance(); }");
+                    .setBody(
+                            "{ return org.zanata.seam.AutowireTransaction.instance(); }");
 
             cls.toClass();
         } catch (NotFoundException e) {
@@ -510,14 +568,12 @@ public class SeamAutowire {
                 new ArrayList<ComponentAccessor>();
 
         for (Field f : getAllComponentFields(component)) {
-            if (f.getAnnotation(In.class) != null
-                    || f.getAnnotation(Logger.class) != null) {
+            if (f.getAnnotation(Inject.class) != null) {
                 props.add(ComponentAccessor.newInstance(f));
             }
         }
         for (Method m : getAllComponentMethods(component)) {
-            if (m.getAnnotation(In.class) != null
-                    || m.getAnnotation(Logger.class) != null) {
+            if (m.getAnnotation(Inject.class) != null) {
                 props.add(ComponentAccessor.newInstance(m));
             }
         }
@@ -554,7 +610,7 @@ public class SeamAutowire {
     }
 
     private void registerInterfaces(Class<?> cls) {
-        assert !cls.isInterface();
+        assert !Modifier.isAbstract(cls.getModifiers());
         // register all interfaces registered by this component
         for (Class<?> iface : getAllInterfaces(cls)) {
             this.componentImpls.put(iface, cls);
@@ -575,8 +631,6 @@ public class SeamAutowire {
     /**
      * Invokes a single method (the first found) annotated with
      * {@link javax.annotation.PostConstruct},
-     * {@link org.jboss.seam.annotations.intercept.PostConstruct}, or
-     * {@link javax.annotation.PostConstruct} annotations.
      */
     private static void invokePostConstructMethod(Object component) {
         Class<?> compClass = component.getClass();
@@ -585,9 +639,7 @@ public class SeamAutowire {
         for (Method m : compClass.getDeclaredMethods()) {
             // Call the first Post Constructor found. Per the spec, there should
             // be only one
-            if (m.getAnnotation(javax.annotation.PostConstruct.class) != null
-                    || m.getAnnotation(org.jboss.seam.annotations.intercept.PostConstruct.class) != null
-                    || m.getAnnotation(javax.annotation.PostConstruct.class) != null) {
+            if (m.getAnnotation(javax.annotation.PostConstruct.class) != null) {
                 if (postConstructAlreadyFound) {
                     log.warn("More than one PostConstruct method found for class "
                             + compClass.getName()
@@ -596,6 +648,7 @@ public class SeamAutowire {
                 }
 
                 try {
+                    m.setAccessible(true);
                     m.invoke(component); // there should be no params
                     postConstructAlreadyFound = true;
                 } catch (IllegalAccessException e) {
@@ -611,11 +664,15 @@ public class SeamAutowire {
         }
     }
 
-    public static String getComponentName(Class componentClass) {
-        Annotation name = componentClass.getAnnotation(Name.class);
-        Preconditions.checkNotNull(name);
-        return ((Name) name).value();
-    }
-
+//    public static String getComponentName(Class<?> clazz) {
+//        Named named = clazz.getAnnotation(Named.class);
+//        if (named == null) {
+//            return null;
+//        }
+//        if (named.value().isEmpty()) {
+//            return StringUtils.uncapitalize(clazz.getSimpleName());
+//        }
+//        return named.value();
+//    }
 
 }

@@ -23,6 +23,7 @@ package org.zanata.seam;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Set;
 
 /**
  * Represents a component accessor in a class.
@@ -48,4 +49,6 @@ abstract class ComponentAccessor {
     public abstract String getComponentName();
 
     public abstract Class<?> getComponentType();
+
+    public abstract Set<Annotation> getQualifiers();
 }

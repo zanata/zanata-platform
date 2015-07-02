@@ -20,28 +20,32 @@
  */
 package org.zanata.seam;
 
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+
 import org.hamcrest.Matchers;
-import org.jboss.seam.Component;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.zanata.ZanataDbunitJpaTest;
-import org.zanata.dao.ProjectDAO;
+import org.zanata.dao.AccountDAO;
+import org.zanata.seam.test.ComponentWithChildCycle;
+import org.zanata.seam.test.ComponentWithNonRequiredBrokenChild;
 import org.zanata.seam.test.ComponentWithNonRequiredChild;
 import org.zanata.seam.test.ComponentWithRequiredAutoCreateChild;
 import org.zanata.seam.test.ComponentWithRequiredBrokenChild;
-import org.zanata.seam.test.ComponentWithRequiredNoCreateChild;
-import org.zanata.seam.test.ComponentWithChildCycle;
-import org.zanata.seam.test.ComponentWithNonRequiredBrokenChild;
 import org.zanata.seam.test.ComponentWithRequiredCreateChild;
-import org.zanata.service.CopyTransService;
-import org.zanata.service.impl.CopyTransServiceImpl;
+import org.zanata.seam.test.ConcreteClass;
+import org.zanata.seam.test.CopyTransService;
+import org.zanata.seam.test.CopyTransServiceImpl;
+import org.zanata.seam.test.InterfaceForConcreteClass;
+import org.zanata.util.ServiceLocator;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import com.tngtech.java.junit.dataprovider.DataProvider;
+import com.tngtech.java.junit.dataprovider.DataProviderRunner;
+import com.tngtech.java.junit.dataprovider.UseDataProvider;
 
 /**
  * Tests for the {@link SeamAutowire} component. Also useful as a template for
@@ -63,29 +67,19 @@ public class SeamAutowireTest extends ZanataDbunitJpaTest {
 
     @Test
     public void autowireSession() {
-        ProjectDAO dao =
+        AccountDAO dao =
                 SeamAutowire.instance().ignoreNonResolvable()
                         .use("session", getSession())
-                        .autowire(ProjectDAO.class);
+                        .autowire(AccountDAO.class);
 
-        int t = dao.getTotalProjectCount();
-        // System.out.println("Total Projects: " + t);
+        int t = dao.getUserCount("a");
+//         System.out.println("Total user: " + t);
     }
 
-    @Test
-    public void autowireProvided() {
-        ProjectDAO dao = new ProjectDAO();
-        dao =
-                SeamAutowire.instance().ignoreNonResolvable()
-                        .use("session", getSession()).autowire(dao);
-
-        int t = dao.getTotalProjectCount();
-        // System.out.println("Total Projects: " + t);
-    }
 
     @Test
     public void interfaceImplementations() {
-        SeamAutowire.instance().ignoreNonResolvable()
+        SeamAutowire.instance().ignoreNonResolvable().allowCycles()
                 .autowire(CopyTransServiceImpl.class);
 
         CopyTransService copyTrans =
@@ -97,7 +91,8 @@ public class SeamAutowireTest extends ZanataDbunitJpaTest {
     public void testComponentInvocation() {
         SeamAutowire.instance().use("component", "This is the component!");
 
-        String val = (String) Component.getInstance("component");
+        String val =
+                ServiceLocator.instance().getInstance("component", String.class);
 
         assertThat(val, is("This is the component!"));
     }
@@ -105,7 +100,8 @@ public class SeamAutowireTest extends ZanataDbunitJpaTest {
     @Test(expected = RuntimeException.class)
 //            expectedExceptionsMessageRegExp = "Could not auto-wire component of type .*. No no-args constructor."
     public void brokenChild() {
-        SeamAutowire.instance().autowire(ComponentWithNonRequiredBrokenChild.class);
+        SeamAutowire.instance().autowire(
+                ComponentWithNonRequiredBrokenChild.class);
     }
 
     @Test
@@ -123,6 +119,31 @@ public class SeamAutowireTest extends ZanataDbunitJpaTest {
                         .autowire(ComponentWithRequiredAutoCreateChild.class);
 
         assertThat(test.isPostConstructInvoked(), is(true));
+    }
+
+    @Test
+    public void testUnregisteredClass() {
+        SeamAutowire autowire = SeamAutowire.instance();
+        assertThat(autowire.getComponent(ConcreteClass.class), notNullValue());
+    }
+
+    @Test
+    public void testRegisteredClassByInterface() {
+        SeamAutowire autowire = SeamAutowire.instance();
+        autowire.useImpl(ConcreteClass.class);
+        assertThat(autowire.getComponent(InterfaceForConcreteClass.class),
+                notNullValue());
+        assertThat(autowire.getComponent(ConcreteClass.class), notNullValue());
+    }
+
+    @Test
+    public void testRegisteredInstanceByName() {
+        SeamAutowire autowire = SeamAutowire.instance();
+        autowire.use("concrete", new ConcreteClass());
+//        assertThat(autowire.getComponent(InterfaceForConcreteClass.class),
+//                notNullValue());
+//        assertThat(autowire.getComponent(ConcreteClass.class), notNullValue());
+        assertThat(autowire.getComponent("concrete"), notNullValue());
     }
 
     @Test
@@ -150,8 +171,7 @@ public class SeamAutowireTest extends ZanataDbunitJpaTest {
     @DataProvider
     public static Object[][] brokenComponents() {
         return new Object[][] {
-                {ComponentWithRequiredBrokenChild.class},
-                {ComponentWithRequiredNoCreateChild.class}
+                {ComponentWithRequiredBrokenChild.class}
         };
     }
 

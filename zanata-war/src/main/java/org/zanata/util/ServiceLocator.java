@@ -18,61 +18,100 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.zanata.util;
 
+import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.enterprise.inject.Default;
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-
-import org.jboss.seam.Component;
-import javax.inject.Named;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
+import java.lang.annotation.Annotation;
 
 /**
- * Service Locator for Seam components, intended for obtaining short-lived
+ * Service Locator for CDI beans, intended for obtaining short-lived
  * components to use inside methods of long-lived components, such as DAOs
  * inside application scope singletons.
+ * <p>
+ * NOTE: BeanProvider will log a warning (via JUL) if getInstance returns a
+ * dependent bean (you should use getDependent instead to for correct
+ * lifecycle handling).
  * <p>
  * It's still an anti-pattern, but at least this way callers don't use
  * Component.getInstance() directly, and ServiceLocator can be subclassed
  * to return mock objects for testing.
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- *
+ * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Default
+public class ServiceLocator implements IServiceLocator {
+    private static Logger log = LoggerFactory.getLogger(ServiceLocator.class);
 
-@BypassInterceptors
-@Named("serviceLocator")
-@javax.enterprise.context.Dependent
-public class ServiceLocator {
+    protected static final ServiceLocator INSTANCE = new ServiceLocator();
 
-    public static ServiceLocator instance() {
-        return (ServiceLocator) Component.getInstance(ServiceLocator.class);
+    public static IServiceLocator instance() {
+        return INSTANCE;
     }
 
-    public <T> T getInstance(Class<T> clazz) {
-        return (T) Component.getInstance(clazz);
+    private ServiceLocator() {
     }
 
+    /**
+     * @deprecated Use class and/or qualifiers, not name
+     */
+    @Override
+    @Deprecated
+    public <T> BeanHolder<T> getDependent(String name, Class<T> clazz) {
+        log.warn("Still using name in getDependent({}, {})", name, clazz);
+        return new BeanHolder<T>(BeanProvider.<T>getDependent(name));
+    }
+
+    @Override
+    public <T> BeanHolder<T> getDependent(Class<T> clazz,
+            Annotation... qualifiers) {
+        return new BeanHolder<T>(BeanProvider.getDependent(clazz, qualifiers));
+    }
+
+    /**
+     * @deprecated Use class and/or qualifiers, not name
+     */
+    @Override
+    @Deprecated
     public <T> T getInstance(String name, Class<T> clazz) {
-        return (T) Component.getInstance(name);
+        log.warn("Still using name in getInstance({}, {})", name, clazz);
+        return BeanProvider.getContextualReference(name, false, clazz);
     }
 
-    public <T> T getInstance(String name, ScopeType scope, Class<T> clazz) {
-        return (T) Component.getInstance(name, scope);
+    @Override
+    public <T> T getInstance(Class<T> clazz, Annotation... qualifiers) {
+        return BeanProvider.getContextualReference(clazz, qualifiers);
     }
 
+    /**
+     * @deprecated Use class and/or qualifiers, not name
+     */
+    @Override
+    @Deprecated
+    public <T> T getInstance(String name, Object scope, Class<T> clazz) {
+        log.warn("Ignoring scope in getInstance({}, {}, {})", name, scope, clazz);
+        return (T) getInstance(name, clazz);
+    }
+
+    @Override
     public EntityManager getEntityManager() {
-        return (EntityManager) Component.getInstance("entityManager");
+        return getInstance(EntityManager.class);
     }
 
+    @Override
     public EntityManagerFactory getEntityManagerFactory() {
-        return (EntityManagerFactory) Component.getInstance("entityManagerFactory");
+        return getInstance(EntityManagerFactory.class);
     }
 
+    @Override
     public <T> T getJndiComponent(String jndiName, Class<T> clazz)
             throws NamingException {
         Context ctx = new InitialContext();

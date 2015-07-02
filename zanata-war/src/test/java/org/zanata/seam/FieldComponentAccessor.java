@@ -20,10 +20,15 @@
  */
 package org.zanata.seam;
 
-import javax.inject.Inject;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.util.Set;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.util.AnnotationLiteral;
+import javax.inject.Inject;
+
+import com.google.common.collect.Sets;
 
 /**
  * Property Accessor that relies on a field.
@@ -48,10 +53,14 @@ class FieldComponentAccessor extends ComponentAccessor {
     }
 
     @Override
-    public void setValue(Object instance, Object value) {
+    public void setValue(Object instance, final Object value) {
         field.setAccessible(true);
         try {
-            field.set(instance, value);
+            if (field.getType().equals(Instance.class)) {
+                field.set(instance, new AutowireInstance(value));
+            } else {
+                field.set(instance, value);
+            }
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Error accessing field "
                     + field.getName() + " on instance of type "
@@ -66,25 +75,29 @@ class FieldComponentAccessor extends ComponentAccessor {
 
     @Override
     public String getComponentName() {
-        String compName = null;
-        In inAnnot = field.getAnnotation(In.class);
-
-        if (inAnnot != null) {
-            if (!inAnnot.value().trim().isEmpty()) {
-                compName = inAnnot.value();
-            }
-        }
-
-        // by default component name is the field name
-        if (compName == null) {
-            compName = field.getName();
-        }
-
-        return compName;
+        return field.getName();
     }
 
     @Override
-    public Class getComponentType() {
-        return field.getType();
+    public Class<?> getComponentType() {
+
+        Class<?> type = field.getType();
+        if (type.equals(Instance.class)) {
+            ParameterizedType genericType =
+                    (ParameterizedType) field.getGenericType();
+            // should only have one generic argument
+            return (Class<?>) genericType.getActualTypeArguments()[0];
+
+        }
+        return type;
     }
+
+    @Override
+    public Set<Annotation> getQualifiers() {
+        Set<Annotation> annotations =
+                Sets.newHashSet(field.getAnnotations());
+        annotations.remove(new AnnotationLiteral<Inject>() {});
+        return annotations;
+    }
+
 }

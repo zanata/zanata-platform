@@ -57,6 +57,7 @@ import org.zanata.ui.faces.FacesMessages;
 import javax.enterprise.event.Event;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.InMemoryListFilter;
+import org.zanata.util.IServiceLocator;
 import org.zanata.util.ServiceLocator;
 
 import lombok.Getter;
@@ -131,7 +132,7 @@ public class LanguageAction implements Serializable {
             new InMemoryListFilter<HLocaleMember>() {
                 @Override
                 protected List<HLocaleMember> fetchAll() {
-                    ServiceLocator serviceLocator = ServiceLocator.instance();
+                    IServiceLocator serviceLocator = ServiceLocator.instance();
                     LocaleMemberDAO localeMemberDAO =
                             serviceLocator.getInstance(LocaleMemberDAO.class);
 

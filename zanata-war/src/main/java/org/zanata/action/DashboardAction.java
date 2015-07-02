@@ -50,6 +50,7 @@ import org.zanata.ui.AbstractListFilter;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.service.LanguageTeamService;
 import org.zanata.util.DateUtil;
+import org.zanata.util.IServiceLocator;
 import org.zanata.util.ServiceLocator;
 
 import javax.annotation.Nullable;
@@ -220,7 +221,7 @@ public class DashboardAction implements Serializable {
         @Override
         protected List<HProject> fetchRecords(int start, int max,
                 String filter) {
-            ServiceLocator serviceLocator = ServiceLocator.instance();
+            IServiceLocator serviceLocator = ServiceLocator.instance();
             ProjectDAO projectDAO =
                     serviceLocator.getInstance(ProjectDAO.class);
             HAccount authenticatedAccount =
@@ -233,7 +234,7 @@ public class DashboardAction implements Serializable {
 
         @Override
         protected long fetchTotalRecords(String filter) {
-            ServiceLocator serviceLocator = ServiceLocator.instance();
+            IServiceLocator serviceLocator = ServiceLocator.instance();
             ProjectDAO projectDAO =
                     serviceLocator.getInstance(ProjectDAO.class);
             HAccount authenticatedAccount =
