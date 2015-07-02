@@ -55,7 +55,6 @@ import lombok.extern.slf4j.Slf4j;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
-@Named("sampleProjectProfile")
 @javax.enterprise.context.ApplicationScoped
 
 @Transactional
