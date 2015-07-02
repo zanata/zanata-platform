@@ -51,7 +51,11 @@ public class VersionGroupPage extends BasePage {
             .id("settings-projects-form:group-add-new-project-button");
     private final By newVersionList = By
             .id("settings-projects-form:newVersionField:newVersionItems");
+
+    private By languageForm = By.id("languages-language_form");
     private By groupNameLabel = By.id("group-info");
+
+    private By groupLanguagesList = By.id("languages-language_list");
 
     private By languagesTab = By.id("languages_tab");
     private By projectsTab = By.id("projects_tab");
@@ -256,4 +260,55 @@ public class VersionGroupPage extends BasePage {
         return new VersionGroupPage(getDriver());
     }
 
+    public VersionGroupPage clickAddLanguagesButton() {
+        log.info("Click Add Languages Button");
+        // parent
+        readyElement(existingElement(languageForm),
+                By.id("addLanguagesButton")).click();
+        return new VersionGroupPage(getDriver());
+    }
+
+    public VersionGroupPage activateLanguageList() {
+        log.info("Activate language list");
+        readyElement(By.id("languageAutocomplete-autocomplete__input"))
+                .sendKeys("");
+        return new VersionGroupPage(getDriver());
+    }
+
+    public VersionGroupPage selectLanguage(final String searchEntry) {
+        log.info("Click language {}", searchEntry);
+        waitForAMoment().until(
+                new Predicate<WebDriver>() {
+                    @Override
+                    public boolean apply(WebDriver driver) {
+                        List<WebElement> items = WebElementUtil
+                                .getSearchAutocompleteResults(driver,
+                                        "settings-languages-form",
+                                        "languageAutocomplete");
+                        for (WebElement item : items) {
+                            if (item.getText().equals(searchEntry)) {
+                                item.click();
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                });
+        return new VersionGroupPage(getDriver());
+    }
+
+    public List<String> getLanguagesForGroup() {
+        log.info("Query Group languages");
+        List<WebElement> elements = WebElementUtil
+                .getListItems(getDriver(), groupLanguagesList);
+
+        List<String> result = new ArrayList<String>();
+
+        for (WebElement element : elements) {
+            result.add(element
+                    .findElement(By.className("list__item__info"))
+                    .getText());
+        }
+        return result;
+    }
 }

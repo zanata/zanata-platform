@@ -49,6 +49,8 @@ import org.zanata.webtrans.shared.rpc.WorkspaceContextUpdate;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
+import javax.persistence.EntityManager;
+
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -72,6 +74,8 @@ public class TranslationWorkspaceManagerImplTest extends ZanataTest {
     private ArgumentCaptor<ExitWorkspace> eventCaptor;
     private Optional<String> oldProjectSlug = Optional.absent();
     private Optional<String> oldIterationSlug = Optional.absent();
+    @Mock
+    private EntityManager entityManager;
 
     @Before
     public void beforeMethod() {
@@ -84,6 +88,7 @@ public class TranslationWorkspaceManagerImplTest extends ZanataTest {
             .use("projectIterationDAO", projectIterationDAO)
             .use("localeServiceImpl", localeServiceImpl)
             .use("validationServiceImpl", validationServiceImpl)
+            .use("entityManager", entityManager)
             .ignoreNonResolvable()
             .autowire(TranslationWorkspaceManagerImpl.class);
       // @formatter:on
@@ -243,6 +248,10 @@ public class TranslationWorkspaceManagerImplTest extends ZanataTest {
         project.getProjectIterations().add(master);
         project.getProjectIterations().add(iteration1);
         project.getProjectIterations().add(iteration2);
+
+        when(entityManager.find(HProject.class, project.getId()))
+                .thenReturn(project);
+
 
         TranslationWorkspaceManagerImpl spy = spy(manager);
         doNothing().when(spy).projectIterationUpdate(

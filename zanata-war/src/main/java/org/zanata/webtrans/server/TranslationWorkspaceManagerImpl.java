@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.event.Observes;
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountDAO;
+import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.events.Logout;
 import org.zanata.events.ProjectIterationUpdate;
@@ -103,6 +105,10 @@ public class TranslationWorkspaceManagerImpl implements
     ProjectIterationDAO getProjectIterationDAO() {
         return ServiceLocator.instance().getInstance("projectIterationDAO",
                 ProjectIterationDAO.class);
+    }
+
+    EntityManager getEntityManager() {
+        return ServiceLocator.instance().getEntityManager();
     }
 
     // TODO Requesting component by name for testability. This should be fixed
@@ -199,6 +205,8 @@ public class TranslationWorkspaceManagerImpl implements
     }
 
     void projectUpdate(HProject project, String oldProjectSlug) {
+        // need to reload the entity since it's in separate thread/transaction
+        project = getEntityManager().find(HProject.class, project.getId());
         String projectSlug = project.getSlug();
         log.info("Project newSlug={}, oldSlug={} updated, status={}",
                 projectSlug, oldProjectSlug, project.getStatus());

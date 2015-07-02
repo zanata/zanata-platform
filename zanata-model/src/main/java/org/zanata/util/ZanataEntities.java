@@ -89,9 +89,10 @@ public class ZanataEntities {
         // documents
         builder.add(HDocumentHistory.class, HDocument.class);
         builder.add(HPoHeader.class);
+        // iteration group (references locales)
+        builder.add(HIterationGroup.class);
         // locales
         builder.add(HLocaleMember.class, HLocale.class);
-        builder.add(HIterationGroup.class);
         // project
         builder.add(HProjectIteration.class, WebHook.class, HProject.class);
         // account

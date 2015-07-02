@@ -27,6 +27,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import javax.faces.application.FacesMessage;
 import javax.faces.event.ValueChangeEvent;
+import javax.xml.ws.Service;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
@@ -302,6 +303,9 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
         private VersionGroupService versionGroupServiceImpl = ServiceLocator
                 .instance().getInstance(VersionGroupServiceImpl.class);
 
+        private ZanataIdentity identity = ServiceLocator.instance()
+                .getInstance(ZanataIdentity.class);
+
         @Override
         public List<HProjectIteration> suggest() {
             List<HProjectIteration> versionList =
@@ -328,10 +332,14 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
                 return;
             }
 
+            identity.checkPermission(instance, "update");
             HProjectIteration version =
                     projectIterationDAO.findById(new Long(getSelectedItem()));
             getInstance().getProjectIterations().add(version);
-            update(conversationScopeMessages);
+
+            VersionGroupHome versionGroupHome =
+                    getVersionGroupHomeFromServiceLocator();
+            versionGroupHome.update(conversationScopeMessages);
             reset();
 
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
@@ -340,7 +348,14 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
         }
     }
 
+    private static VersionGroupHome getVersionGroupHomeFromServiceLocator() {
+        return ServiceLocator.instance()
+                        .getInstance("versionGroupHome", VersionGroupHome.class);
+    }
+
     private class GroupLocaleAutocomplete extends LocaleAutocomplete {
+        private ZanataIdentity identity = ServiceLocator.instance()
+                .getInstance(ZanataIdentity.class);
 
         @Override
         protected Set<HLocale> getLocales() {
@@ -376,11 +391,15 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
             if (StringUtils.isEmpty(getSelectedItem())) {
                 return;
             }
+            identity.checkPermission(instance, "update");
+
             HLocale locale = localeServiceImpl.getByLocaleId(getSelectedItem());
 
             getInstance().getActiveLocales().add(locale);
 
-            update(conversationScopeMessages);
+            VersionGroupHome versionGroupHome =
+                    getVersionGroupHomeFromServiceLocator();
+            versionGroupHome.update(conversationScopeMessages);
             reset();
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                     msgs.format("jsf.LanguageAddedToGroup",

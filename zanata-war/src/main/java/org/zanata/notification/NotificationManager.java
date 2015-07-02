@@ -22,7 +22,9 @@ package org.zanata.notification;
 
 import java.io.Serializable;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 import javax.jms.QueueSender;
@@ -52,6 +54,7 @@ import com.google.common.base.Throwables;
  */
 @Name("notificationManager")
 @Scope(ScopeType.APPLICATION)
+// see below Observer method comment
 @Startup
 @Slf4j
 @NoArgsConstructor
@@ -61,9 +64,11 @@ public class NotificationManager implements Serializable {
 
     // JMS EmailQueue Producer.
     @In
+    @EmailQueueSender
     private QueueSender mailQueueSender;
 
     @In
+    @InVMJMS
     private QueueSession queueSession;
 
 
@@ -79,6 +84,7 @@ public class NotificationManager implements Serializable {
         }
     }
 
+    // Once migrated to CDI events, CDI will instantiate NotificationManager bean for us. This will remove the need of Seam @Startup
     @Observer(LanguageTeamPermissionChangedEvent.EVENT_NAME)
     public
             void onLanguageTeamPermissionChanged(
