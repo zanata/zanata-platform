@@ -65,7 +65,7 @@ public class ScreenshotEnabledTestRunListener extends RunListener {
 
     private static void enableScreenshotForTest(String testDisplayName)
             throws Exception {
-        WebDriverFactory.INSTANCE.updateListenerTestName(testDisplayName);
+        WebDriverFactory.INSTANCE.registerScreenshotListener(testDisplayName);
         String date = new Date().toString();
         log.debug("[TEST] {}:{}", testDisplayName, date);
     }
@@ -73,6 +73,7 @@ public class ScreenshotEnabledTestRunListener extends RunListener {
     private static void deleteScreenshots(String testDisplayName) {
         File testDir = ScreenshotDirForTest.screenshotForTest(testDisplayName);
         try {
+            log.info("Deleting screenshots for {}", testDisplayName);
             FileUtils.deleteDirectory(testDir);
         } catch (IOException e) {
             log.warn("error deleting screenshot base directory: {}",
@@ -81,6 +82,6 @@ public class ScreenshotEnabledTestRunListener extends RunListener {
     }
 
     private static void unregisterScreenshot() {
-        WebDriverFactory.INSTANCE.unregisterScreenshot();
+        WebDriverFactory.INSTANCE.unregisterScreenshotListener();
     }
 }

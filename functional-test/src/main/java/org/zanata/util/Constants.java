@@ -55,20 +55,4 @@ public enum Constants {
         return value;
     }
 
-    public static Map<String, String> projectTypeOptions() {
-        Map<String, String> projectTypeOptions = new HashMap<String, String>();
-        projectTypeOptions.put("None", "-- No selection --");
-        projectTypeOptions.put("File",
-                "File. For plain text, LibreOffice, InDesign, HTML.");
-        projectTypeOptions.put("Gettext",
-                "Gettext. For gettext software strings.");
-        projectTypeOptions.put("Podir", "Podir. For publican/docbook strings.");
-        projectTypeOptions.put("Properties",
-                "Properties. For Java properties files.");
-        projectTypeOptions.put("Utf8Properties",
-                "Utf8Properties. For UTF8-encoded Java properties.");
-        projectTypeOptions.put("Xliff", "Xliff. For supported XLIFF files.");
-        projectTypeOptions.put("Xml", "Xml. For XML from the Zanata REST API.");
-        return projectTypeOptions;
-    }
 }

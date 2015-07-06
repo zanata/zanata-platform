@@ -22,10 +22,8 @@ package org.zanata.page;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.firefox.FirefoxBinary;
@@ -35,7 +33,6 @@ import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
-import org.openqa.selenium.logging.Logs;
 import org.openqa.selenium.remote.Augmenter;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -50,8 +47,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.zanata.util.ScreenshotDirForTest;
 import org.zanata.util.TestEventForScreenshotListener;
 
-import static org.zanata.util.Constants.chrome;
-import static org.zanata.util.Constants.firefox;
 import static org.zanata.util.Constants.webDriverType;
 import static org.zanata.util.Constants.webDriverWait;
 import static org.zanata.util.Constants.zanataInstance;
@@ -60,33 +55,47 @@ import static org.zanata.util.Constants.zanataInstance;
 public enum WebDriverFactory {
     INSTANCE;
 
-    private volatile WebDriver driver = createDriver();
+    private volatile EventFiringWebDriver driver = createDriver();
     private DriverService driverService;
     private TestEventForScreenshotListener eventListener;
     private int webdriverWait;
+
     public WebDriver getDriver() {
         return driver;
     }
 
-    private WebDriver createDriver() {
-        WebDriver driver = createPlainDriver();
+    private EventFiringWebDriver createDriver() {
+        String driverType = PropertiesHolder.getProperty(webDriverType.value());
+        EventFiringWebDriver newDriver;
+        switch (driverType.toLowerCase()) {
+            case "chrome":
+                newDriver = configureChromeDriver();
+                break;
+            case "firefox":
+                newDriver = configureFirefoxDriver();
+                break;
+            default:
+                throw new UnsupportedOperationException("only support chrome " +
+                        "and firefox driver");
+        }
         webdriverWait = Integer.parseInt(PropertiesHolder
                 .getProperty(webDriverWait.value()));
         Runtime.getRuntime().addShutdownHook(new ShutdownHook());
-        return driver;
+        return newDriver;
     }
 
+    /**
+     * List the WebDriver log types
+     *
+     * LogType.CLIENT doesn't seem to log anything
+     * LogType.DRIVER, LogType.PERFORMANCE are too verbose
+     * LogType PROFILER and LogType.SERVER don't seem to work
+     *
+     * @return String array of log types
+     */
     private String[] getLogTypes() {
         return new String[]{
-                LogType.BROWSER,
-                // CLIENT doesn't seem to log anything
-//                LogType.CLIENT,
-                // useful, but verbose:
-//                LogType.DRIVER,
-//                LogType.PERFORMANCE,
-                // PROFILER and SERVER don't seem to work
-//                LogType.PROFILER,
-//                LogType.SERVER
+                LogType.BROWSER
         };
     }
 
@@ -96,9 +105,7 @@ public enum WebDriverFactory {
      *             (but they don't all seem to work)
      */
     public LogEntries getLogs(String type) {
-        Logs logs = getDriver().manage().logs();
-        LogEntries logEntries = logs.get(type);
-        return logEntries;
+        return getDriver().manage().logs().get(type);
     }
 
     /**
@@ -139,42 +146,26 @@ public enum WebDriverFactory {
         return webdriverWait;
     }
 
-    public void updateListenerTestName(String testName) {
+    public void registerScreenshotListener(String testName) {
+        log.info("Enabling screenshot module...");
         if (eventListener == null && ScreenshotDirForTest.isScreenshotEnabled()) {
             eventListener  = new TestEventForScreenshotListener(driver);
         }
-        enableScreenshots();
+        driver.register(eventListener);
         eventListener.updateTestID(testName);
     }
 
-    private WebDriver enableScreenshots() {
-        log.debug("Enabling screenshot module...");
-        return EventFiringWebDriver.class.cast(driver).register(eventListener);
+    public void unregisterScreenshotListener() {
+        log.info("Deregistering screenshot module...");
+        driver.unregister(eventListener);
     }
 
-    public void unregisterScreenshot() {
-        EventFiringWebDriver.class.cast(driver).unregister(eventListener);
-    }
-
-    private WebDriver createPlainDriver() {
-        String driverType =
-                PropertiesHolder.getProperty(webDriverType.value(), chrome.value());
-        if (driverType.equalsIgnoreCase(chrome.value())) {
-            return configureChromeDriver();
-        } else if (driverType.equalsIgnoreCase(firefox.value())) {
-            return configureFirefoxDriver();
-        } else {
-            throw new UnsupportedOperationException("only support chrome and firefox driver");
-        }
-    }
-
-    private WebDriver configureChromeDriver() {
+    private EventFiringWebDriver configureChromeDriver() {
         System.setProperty(ChromeDriverService.CHROME_DRIVER_LOG_PROPERTY,
                 PropertiesHolder.getProperty("webdriver.log"));
         driverService = ChromeDriverService.createDefaultService();
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
-        capabilities
-                .setCapability("chrome.binary", PropertiesHolder.properties
+        capabilities.setCapability("chrome.binary", PropertiesHolder.properties
                         .getProperty("webdriver.chrome.bin"));
         enableLogging(capabilities);
 
@@ -183,18 +174,16 @@ public enum WebDriverFactory {
         } catch (IOException e) {
             throw new RuntimeException("fail to start chrome driver service");
         }
-        return new EventFiringWebDriver(
-                new Augmenter().augment(new RemoteWebDriver(driverService
-                        .getUrl(),
-                                capabilities)));
+        return new EventFiringWebDriver(new Augmenter().augment(
+                new RemoteWebDriver(driverService.getUrl(), capabilities)));
     }
 
-    private WebDriver configureFirefoxDriver() {
+    private EventFiringWebDriver configureFirefoxDriver() {
         final String pathToFirefox =
                 Strings.emptyToNull(PropertiesHolder.properties
                         .getProperty("firefox.path"));
 
-        FirefoxBinary firefoxBinary = null;
+        FirefoxBinary firefoxBinary;
         if (pathToFirefox != null) {
             firefoxBinary = new FirefoxBinary(new File(pathToFirefox));
         } else {
@@ -202,12 +191,8 @@ public enum WebDriverFactory {
         }
         DesiredCapabilities capabilities = DesiredCapabilities.firefox();
         enableLogging(capabilities);
-
-        /*
-         * TODO: Evaluate current timeout Timeout the connection in 30 seconds
-         * firefoxBinary.setTimeout(TimeUnit.SECONDS.toMillis(30));
-         */
-        return new FirefoxDriver(firefoxBinary, makeFirefoxProfile(), capabilities);
+        return new EventFiringWebDriver(new FirefoxDriver(firefoxBinary,
+                makeFirefoxProfile(), capabilities));
     }
 
     private void enableLogging(DesiredCapabilities capabilities) {
@@ -225,14 +210,6 @@ public enum WebDriverFactory {
             // TODO - look at FirefoxDriver.getProfile().
         }
         final FirefoxProfile firefoxProfile = new FirefoxProfile();
-
-        /*
-         * TODO: Evaluate need for this Disable unnecessary connection to
-         * sb-ssl.google.com
-         * firefoxProfile.setPreference("browser.safebrowsing.malware.enabled",
-         * false);
-         */
-
         firefoxProfile.setAlwaysLoadNoFocusLib(true);
         firefoxProfile.setEnableNativeEvents(true);
         firefoxProfile.setAcceptUntrustedCertificates(true);

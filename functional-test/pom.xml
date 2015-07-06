@@ -842,6 +842,7 @@
                 <echo>-Dwebdriver.chrome.bin=full path to chrome binary.</echo>
                 <echo>-Dwebdriver.chrome.driver=full path to chromedriver binary. Default is chromedriver on $PATH</echo>
                 <echo>-Dwebdriver.wait=global wait time in seconds for element searches. Default is 10.</echo>
+                <echo>-Dwebdriver.screenshot.dir=location to store screenshots during test execution.Default is ${project.build.directory}/screenshots</echo>
                 <echo>NB: set env var DISPLAY to run test browser in alternative display, for Xnest/Xvfb/Xvnc. eg: xvfb-run -e mvn verify -Dappserver=wildfly8</echo>
                 <echo>==========================================================</echo>
                 <echo>to ask cargo to start up then wait so that tests can be run manually: mvn clean package cargo:run -Dappserver=wildfly8 -Dmysql.port=13306</echo>

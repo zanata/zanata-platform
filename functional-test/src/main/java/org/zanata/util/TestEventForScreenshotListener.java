@@ -67,7 +67,10 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
         File testIDDir = null;
         try {
             testIDDir = ScreenshotDirForTest.screenshotForTest(testId);
-            testIDDir.mkdirs();
+            if (!testIDDir.exists()) {
+                log.info("Creating screenshot dir {}", testIDDir.getAbsolutePath());
+                assert (testIDDir.mkdirs());
+            }
             File screenshotFile =
                     ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
             FileUtils.copyFile(screenshotFile,
