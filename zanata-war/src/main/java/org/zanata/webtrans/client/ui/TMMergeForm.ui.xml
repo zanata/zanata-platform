@@ -4,32 +4,6 @@
     type="org.zanata.webtrans.client.resources.UiMessages" />
   <ui:with field="enumMessages"
     type="org.zanata.webtrans.client.resources.EnumMessages" />
-  <ui:style field="style"
-    type="org.zanata.webtrans.client.ui.TMMergeForm.Styles">
-
-    .ignore_action, .downgrade_action, .approved_action, .reject_action {
-      text-align: center;
-      width: 7em;
-      display: block;
-    }
-
-    .ignore_action {
-      background-color: #a2b4c3;
-    }
-
-    .downgrade_action {
-      background-color: #e0c350;
-    }
-
-    .approved_action {
-      background-color: #70a98b;
-    }
-
-    .reject_action {
-      background-color: #e3824e;
-    }
-  </ui:style>
-
   <g:HTMLPanel styleName="new-zanata">
     <table>
       <thead>
@@ -60,7 +34,7 @@
             <ui:text from="{messages.differentContent}" />
           </td>
           <td>
-            <g:InlineLabel styleName="{style.reject_action}"
+            <g:InlineLabel styleName="label--danger l--pad-v-quarter l--pad-h-half"
               text="{enumMessages.rejectMerge}"
               ui:field="differentContentStatus" />
           </td>
@@ -123,7 +97,7 @@
             <ui:text from="{messages.otherwise}" />
           </td>
           <td>
-            <g:InlineLabel styleName="{style.approved_action}"
+            <g:InlineLabel styleName="label--success l--pad-v-quarter l--pad-h-half"
               text="{enumMessages.approvedStatus}" />
           </td>
         </tr>

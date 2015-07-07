@@ -50,6 +50,7 @@ public class Breadcrumb extends Composite implements HasClickHandlers {
 
         if (isAnchorReadOnly) {
             link.setStyleName(style.readOnlyLink());
+            link.addStyleName("txt--important txt--neutral");
         }
 
         if (!Strings.isNullOrEmpty(href)) {

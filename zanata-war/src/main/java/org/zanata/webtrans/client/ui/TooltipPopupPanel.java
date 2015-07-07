@@ -236,33 +236,8 @@ public class TooltipPopupPanel extends PopupPanel {
     interface Styles extends CssResource {
         String transUnitCountTooltip();
 
-        String total();
-
         String table();
 
-        String translated();
-
-        @ClassName("approved-header")
-        String approvedHeader();
-
-        String approved();
-
-        String draft();
-
-        @ClassName("draft-header")
-        String draftHeader();
-
         String sideHeader();
-
-        String untranslated();
-
-        @ClassName("rejected-header")
-        String rejectedHeader();
-
-        @ClassName("untranslated-header")
-        String untranslatedHeader();
-
-        @ClassName("translated-header")
-        String translatedHeader();
     }
 }

@@ -35,23 +35,23 @@
     }
 
     .translated {
-      border-left: 3px solid #70a98b;
+      border-left: 3px solid #5CCA7B;
     }
 
     .fuzzy {
-      border-left: 3px solid #e0c350;
+      border-left: 3px solid #E9DF1B;
     }
 
     .untranslated {
-      border-left: 3px solid #c6d2db;
+      border-left: 3px solid #bcd4db;
     }
 
     .approved {
-      border-left: 3px solid #4e9fdd;
+      border-left: 3px solid #03A6D7;
     }
 
     .rejected {
-      border-left: 3px solid #e3824e;
+      border-left: 3px solid #FFA800;
     }
 
     .hasError {
