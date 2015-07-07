@@ -45,6 +45,7 @@ public final class QueryBuilder {
     private String leftJoin;
     private String withClause;
     private boolean isExistsSubQuery = false;
+    private boolean isNotExistsSubQuery = false;
     private String orderBy;
 
     protected QueryBuilder() {
@@ -60,6 +61,13 @@ public final class QueryBuilder {
     public static QueryBuilder exists() {
         QueryBuilder builder = new QueryBuilder();
         builder.isExistsSubQuery = true;
+        return builder;
+    }
+
+    // TODO this and with only works in HQL.
+    public static QueryBuilder notExists() {
+        QueryBuilder builder = new QueryBuilder();
+        builder.isNotExistsSubQuery = true;
         return builder;
     }
 
@@ -101,10 +109,12 @@ public final class QueryBuilder {
 
     public String toQueryString() {
         StringBuilder stringBuilder = new StringBuilder();
-        if (select != null && !isExistsSubQuery) {
+        if (select != null && !isExistsSubQuery && !isNotExistsSubQuery) {
             stringBuilder.append("SELECT ").append(select);
-        } else {
+        } else if (isExistsSubQuery) {
             stringBuilder.append(" EXISTS (");
+        } else {
+            stringBuilder.append(" NOT EXISTS (");
         }
         stringBuilder.append(" FROM ").append(from);
         if (!Strings.isNullOrEmpty(leftJoin)) {
@@ -114,7 +124,7 @@ public final class QueryBuilder {
             }
         }
         stringBuilder.append(" WHERE ").append(where);
-        if (isExistsSubQuery) {
+        if (isExistsSubQuery || isNotExistsSubQuery) {
             stringBuilder.append(")");
         }
         if (!Strings.isNullOrEmpty(orderBy)) {

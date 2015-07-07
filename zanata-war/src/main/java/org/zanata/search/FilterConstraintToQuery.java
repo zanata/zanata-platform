@@ -3,6 +3,9 @@ package org.zanata.search;
 import java.util.Collection;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.criterion.MatchMode;
 import org.joda.time.DateTime;
@@ -18,6 +21,8 @@ import lombok.Setter;
 
 import static org.zanata.search.FilterConstraintToQuery.Parameters.*;
 import static org.zanata.util.HqlCriterion.eq;
+import static org.zanata.util.HqlCriterion.ne;
+import static org.zanata.util.HqlCriterion.isNull;
 import static org.zanata.util.HqlCriterion.escapeWildcard;
 import static org.zanata.util.HqlCriterion.ilike;
 import static org.zanata.util.HqlCriterion.match;
@@ -158,6 +163,11 @@ public class FilterConstraintToQuery {
                 .or(searchInSourceCondition, searchInTargetCondition);
     }
 
+
+    protected boolean needToQueryNullTarget() {
+        return isExcludeSearchTerm(constraints.getLastModifiedByUser());
+    }
+
     protected String buildSourceConditionsOtherThanSearch() {
         List<String> sourceConjunction = Lists.newArrayList();
         addToJunctionIfNotNull(sourceConjunction,
@@ -181,11 +191,27 @@ public class FilterConstraintToQuery {
         if (targetConjunction.isEmpty()) {
             return null;
         }
-        targetConjunction.add(eq("textFlow", "tf"));
-        targetConjunction.add(eq("locale", Locale.placeHolder()));
+        String textFlowTargetJoin = eq("tft.textFlow", "tf");
+        String localeJoin = eq("tft.locale", Locale.placeHolder());
 
-        return QueryBuilder.exists().from("HTextFlowTarget")
-                .where(and(targetConjunction)).toQueryString();
+        targetConjunction.add(textFlowTargetJoin);
+        targetConjunction.add(localeJoin);
+
+        String existQuery =
+                QueryBuilder.exists().from("HTextFlowTarget tft").leftJoin(
+                        "tft.lastModifiedBy.account acc")
+                        .where(and(targetConjunction)).toQueryString();
+
+        if(!needToQueryNullTarget()) {
+            return existQuery;
+        }
+
+        String notExistQuery =
+                QueryBuilder.notExists().from("HTextFlowTarget tft").leftJoin(
+                    "tft.lastModifiedBy.account acc")
+                    .where(and(textFlowTargetJoin, localeJoin)).toQueryString();
+
+        return QueryBuilder.or(existQuery, notExistQuery);
     }
 
     private static boolean addToJunctionIfNotNull(List<String> junction,
@@ -222,7 +248,7 @@ public class FilterConstraintToQuery {
         if (Strings.isNullOrEmpty(transComment)) {
             return null;
         }
-        return ilike("comment.comment", TargetComment.placeHolder());
+        return ilike("tft.comment.comment", TargetComment.placeHolder());
     }
 
     private String buildLastModifiedDateCondition() {
@@ -235,12 +261,12 @@ public class FilterConstraintToQuery {
         String changedBefore = null;
         if (changedAfterTime != null) {
             changedAfter =
-                    HqlCriterion.gt("lastChanged",
+                    HqlCriterion.gt("tft.lastChanged",
                             LastChangedAfter.placeHolder());
         }
         if (changedBeforeTime != null) {
             changedBefore =
-                    HqlCriterion.lt("lastChanged",
+                    HqlCriterion.lt("tft.lastChanged",
                             LastChangedBefore.placeHolder());
         }
         return QueryBuilder.and(changedAfter, changedBefore);
@@ -283,8 +309,29 @@ public class FilterConstraintToQuery {
         if (Strings.isNullOrEmpty(constraints.getLastModifiedByUser())) {
             return null;
         }
-        return eq("lastModifiedBy.account.username",
-                LastModifiedBy.placeHolder());
+        if(!isExcludeSearchTerm(constraints.getLastModifiedByUser())) {
+            return eq("acc.username", LastModifiedBy.placeHolder());
+        }
+
+        String nullLastModifiedByCondition = isNull("tft.lastModifiedBy");
+        String excludeUsernameCondition = ne("acc.username",
+            LastModifiedBy.placeHolder());
+        return QueryBuilder.or(nullLastModifiedByCondition,
+                        excludeUsernameCondition);
+    }
+
+    // check if the term have exclude sign '-'
+    private boolean isExcludeSearchTerm(@Nonnull String term) {
+        return StringUtils.isEmpty(term) ? false
+                : (term.startsWith("-") && term.length() > 1);
+    }
+
+    // remove exclude sign '-' from term
+    private String getExcludeSearchTerm(@Nonnull String term) {
+        if(isExcludeSearchTerm(term)) {
+            return term.substring(1); //remove '-' sign in front
+        }
+        return term;
     }
 
     public Query setQueryParameters(Query textFlowQuery, HLocale hLocale) {
@@ -312,8 +359,11 @@ public class FilterConstraintToQuery {
                 constraints.getSourceComment(), SourceComment);
         addWildcardSearchParamIfPresent(textFlowQuery,
                 constraints.getTransComment(), TargetComment);
-        addExactMatchParamIfPresent(textFlowQuery,
-                constraints.getLastModifiedByUser(), LastModifiedBy);
+        String lastModifiedByUser = getExcludeSearchTerm(
+                constraints.getLastModifiedByUser());
+
+        addExactMatchParamIfPresent(textFlowQuery, lastModifiedByUser,
+            LastModifiedBy);
         if (constraints.getChangedAfter() != null) {
             textFlowQuery.setParameter(LastChangedAfter.namedParam(),
                     constraints.getChangedAfter().toDate());
@@ -339,7 +389,7 @@ public class FilterConstraintToQuery {
             String escapedAndLowered =
                     HqlCriterion.escapeWildcard(filterProperty.toLowerCase());
             textFlowQuery.setParameter(filterParam.namedParam(),
-                    HqlCriterion.match(escapedAndLowered, MatchMode.ANYWHERE));
+                HqlCriterion.match(escapedAndLowered, MatchMode.ANYWHERE));
         }
         return textFlowQuery;
     }

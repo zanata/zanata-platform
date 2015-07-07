@@ -7,7 +7,7 @@
 -----------------------
 
 <h5>New Features</h5>
-
+* [1224912] (https://bugzilla.redhat.com/show_bug.cgi?id=1224912) - Filter "Last modified by translators other than <user>"
 
 
 ## 3.7

@@ -13,6 +13,14 @@ public class HqlCriterion {
         return property + "=" + namedParam;
     }
 
+    public static String ne(String property, String namedParam) {
+        return property + "<>" + namedParam;
+    }
+
+    public static String isNull(String property) {
+        return property + " is null";
+    }
+
     public static String ilike(String property, String namedParam) {
         return "lower(" + property + ") like " + namedParam +"";
     }
