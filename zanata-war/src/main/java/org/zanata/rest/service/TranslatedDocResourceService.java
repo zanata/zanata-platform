@@ -42,7 +42,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
@@ -191,9 +190,9 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
     }
 
     @Override
-    @Restrict("#{s:hasPermission(translatedDocResourceService.securedIteration.project, 'modify-translation')}")
     public
             Response deleteTranslations(String idNoSlash, LocaleId locale) {
+        identity.checkPermission(getSecuredIteration().getProject(), "modify-translation");
         String id = URIHelper.convertFromDocumentURIId(idNoSlash);
         HProjectIteration hProjectIteration =
                 restSlugValidator.retrieveAndCheckIteration(projectSlug,

@@ -75,9 +75,12 @@ import com.google.common.collect.Lists;
 import static com.google.common.collect.Collections2.filter;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.enterprise.inject.Alternative;
+
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
+@Alternative
 @Name("translationMemoryServiceImpl")
 @Scope(ScopeType.STATELESS)
 @Slf4j

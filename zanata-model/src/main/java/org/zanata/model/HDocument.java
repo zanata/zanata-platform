@@ -313,8 +313,7 @@ public class HDocument extends ModelEntityBase implements DocumentWithId,
             if (Contexts.isSessionContextActive()) {
                 HAccount account =
                         (HAccount) Component.getInstance(
-                                JpaIdentityStore.AUTHENTICATED_USER,
-                                ScopeType.SESSION);
+                                JpaIdentityStore.AUTHENTICATED_USER);
                 // TODO In some cases there is no session ( such as when pushing
                 // async )
                 if (account != null) {

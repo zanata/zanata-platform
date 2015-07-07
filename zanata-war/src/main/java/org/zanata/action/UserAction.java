@@ -98,8 +98,7 @@ public class UserAction extends
     private AbstractListFilter<String> userFilter =
             new AbstractListFilter<String>() {
                 AccountDAO accountDAO =
-                        (AccountDAO) Component.getInstance(AccountDAO.class,
-                                ScopeType.STATELESS);
+                        (AccountDAO) Component.getInstance(AccountDAO.class);
 
                 @Override
                 protected List<String> fetchRecords(int start, int max,

@@ -29,7 +29,6 @@ import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 import org.zanata.async.handle.CopyTransTaskHandle;
@@ -38,6 +37,7 @@ import org.zanata.i18n.Messages;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HProjectIteration;
 import org.zanata.seam.scope.ConversationScopeMessages;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.impl.CopyTransOptionFactory;
 import org.zanata.ui.CopyAction;
 import org.zanata.util.DateUtil;
@@ -71,6 +71,9 @@ public class CopyTransAction extends CopyAction implements Serializable {
 
     @In
     private CopyTransOptionsModel copyTransOptionsModel;
+
+    @In
+    private ZanataIdentity identity;
 
     @Getter
     @Setter
@@ -132,9 +135,8 @@ public class CopyTransAction extends CopyAction implements Serializable {
         return projectIteration;
     }
 
-    @Restrict("#{s:hasPermission(copyTransAction.projectIteration, 'copy-trans')}")
-    public
-            void startCopyTrans() {
+    public void startCopyTrans() {
+        identity.checkPermission(projectIteration, "copy-trans");
         if (isInProgress()) {
             return;
         } else if (getProjectIteration().getDocuments().size() <= 0) {

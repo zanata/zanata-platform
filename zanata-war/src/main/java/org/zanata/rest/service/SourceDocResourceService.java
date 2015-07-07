@@ -44,7 +44,6 @@ import org.jboss.resteasy.util.GenericType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
@@ -60,6 +59,7 @@ import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TextFlow;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
 
@@ -105,6 +105,9 @@ public class SourceDocResourceService implements SourceDocResource {
     @In
     private ETagUtils eTagUtils;
 
+    @In
+    private ZanataIdentity identity;
+
     @Override
     public Response head() {
         HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
@@ -148,10 +151,10 @@ public class SourceDocResourceService implements SourceDocResource {
     }
 
     @Override
-    @Restrict("#{s:hasPermission(sourceDocResourceService.securedIteration, 'import-template')}")
     public
             Response post(Resource resource, Set<String> extensions,
                     boolean copytrans) {
+        identity.checkPermission(getSecuredIteration(), "import-template");
         HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
 
         resourceUtils.validateExtensions(extensions); // gettext, comment
@@ -245,10 +248,10 @@ public class SourceDocResourceService implements SourceDocResource {
     }
 
     @Override
-    @Restrict("#{s:hasPermission(sourceDocResourceService.securedIteration, 'import-template')}")
     public
             Response putResource(String idNoSlash, Resource resource,
                     Set<String> extensions, boolean copytrans) {
+        identity.checkPermission(getSecuredIteration(), "import-template");
         log.debug("start put resource");
         String id = URIHelper.convertFromDocumentURIId(idNoSlash);
         Response.ResponseBuilder response;
@@ -278,9 +281,9 @@ public class SourceDocResourceService implements SourceDocResource {
     }
 
     @Override
-    @Restrict("#{s:hasPermission(sourceDocResourceService.securedIteration, 'import-template')}")
     public
             Response deleteResource(String idNoSlash) {
+        identity.checkPermission(getSecuredIteration(), "import-template");
         String id = URIHelper.convertFromDocumentURIId(idNoSlash);
         HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
 
@@ -334,10 +337,10 @@ public class SourceDocResourceService implements SourceDocResource {
     }
 
     @Override
-    @Restrict("#{s:hasPermission(sourceDocResourceService.securedIteration, 'import-template')}")
     public
             Response putResourceMeta(String idNoSlash,
                     ResourceMeta messageBody, Set<String> extensions) {
+        identity.checkPermission(getSecuredIteration(), "import-template");
         log.debug("start to put resource meta");
         String id = URIHelper.convertFromDocumentURIId(idNoSlash);
         HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);

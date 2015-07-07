@@ -41,9 +41,9 @@ import org.zanata.service.ConfigurationService;
 @Slf4j
 public class ConfigurationAction implements Serializable {
     private static final long serialVersionUID = 1L;
-    @RequestParameter
+    @RequestParameter("iterationSlug")
     private String iterationSlug;
-    @RequestParameter
+    @RequestParameter("projectSlug")
     private String projectSlug;
 
     @In

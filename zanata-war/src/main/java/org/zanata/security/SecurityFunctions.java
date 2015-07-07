@@ -382,8 +382,7 @@ public class SecurityFunctions {
 
     private static final Optional<HAccount> getAuthenticatedAccount() {
         return Optional.fromNullable(ServiceLocator.instance().getInstance(
-                JpaIdentityStore.AUTHENTICATED_USER, ScopeType.SESSION,
-                HAccount.class));
+                JpaIdentityStore.AUTHENTICATED_USER, HAccount.class));
     }
 
     private static final <T> T extractTarget(Object[] array, Class<T> type) {

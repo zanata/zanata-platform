@@ -166,8 +166,8 @@ public class LanguageAction implements Serializable {
 
     }
 
-    @Restrict("#{s:hasPermission(languageAction.locale, 'manage-language-team')}")
     public void addSelected() {
+        identity.checkPermission(locale, "manage-language-team");
         for (SelectablePerson selectablePerson : getSearchResults()) {
             if (selectablePerson.isSelected()) {
                 addTeamMember(selectablePerson.getPerson().getId(),
@@ -308,8 +308,8 @@ public class LanguageAction implements Serializable {
                 getLocale().retrieveNativeName()));
     }
 
-    @Restrict("#{s:hasPermission(languageAction.locale, 'manage-language-team')}")
     public void saveTeamCoordinator(HLocaleMember member) {
+        identity.checkPermission(locale, "manage-language-team");
         savePermission(member, msgs.get("jsf.Coordinator"), member.isCoordinator());
         HPerson doneByPerson = authenticatedAccount.getPerson();
         LanguageTeamPermissionChangedEvent changedEvent =
@@ -320,8 +320,8 @@ public class LanguageAction implements Serializable {
         languageTeamPermissionChangedEvent.fire(changedEvent);
     }
 
-    @Restrict("#{s:hasPermission(languageAction.locale, 'manage-language-team')}")
     public void saveTeamReviewer(HLocaleMember member) {
+        identity.checkPermission(locale, "manage-language-team");
         savePermission(member, msgs.get("jsf.Reviewer"), member.isReviewer());
         HPerson doneByPerson = authenticatedAccount.getPerson();
         LanguageTeamPermissionChangedEvent changedEvent =
@@ -332,8 +332,8 @@ public class LanguageAction implements Serializable {
         languageTeamPermissionChangedEvent.fire(changedEvent);
     }
 
-    @Restrict("#{s:hasPermission(languageAction.locale, 'manage-language-team')}")
     public void saveTeamTranslator(HLocaleMember member) {
+        identity.checkPermission(locale, "manage-language-team");
         savePermission(member, msgs.get("jsf.Translator"), member.isTranslator());
         HPerson doneByPerson = authenticatedAccount.getPerson();
         LanguageTeamPermissionChangedEvent changedEvent =
@@ -369,9 +369,8 @@ public class LanguageAction implements Serializable {
                 isCoordinator);
     }
 
-    @Restrict("#{s:hasPermission(languageAction.locale, 'manage-language-team')}")
-    public
-            void removeMembership(HLocaleMember member) {
+    public void removeMembership(HLocaleMember member) {
+        identity.checkPermission(locale, "manage-language-team");
         this.languageTeamServiceImpl.leaveLanguageTeam(this.language, member
                 .getPerson().getId());
         resetLocale();

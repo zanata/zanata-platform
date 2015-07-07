@@ -17,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.model.HGlossaryEntry;
@@ -26,6 +25,7 @@ import org.zanata.model.HTermComment;
 import org.zanata.rest.dto.Glossary;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.GlossaryTerm;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GlossaryFileService;
 
 @Name("glossaryService")
@@ -51,6 +51,9 @@ public class GlossaryService implements GlossaryResource {
 
     @In
     private GlossaryFileService glossaryFileServiceImpl;
+
+    @In
+    private ZanataIdentity identity;
 
     @Override
     public Response getEntries() {
@@ -84,8 +87,8 @@ public class GlossaryService implements GlossaryResource {
     }
 
     @Override
-    @Restrict("#{s:hasPermission('', 'glossary-insert')}")
     public Response put(Glossary glossary) {
+        identity.checkPermission("", "glossary-insert");
         ResponseBuilder response;
 
         // must be a create operation
@@ -101,8 +104,8 @@ public class GlossaryService implements GlossaryResource {
     }
 
     @Override
-    @Restrict("#{s:hasPermission('', 'glossary-delete')}")
     public Response deleteGlossary(LocaleId targetLocale) {
+        identity.checkPermission("", "glossary-delete");
         ResponseBuilder response = request.evaluatePreconditions();
         if (response != null) {
             return response.build();
@@ -115,8 +118,8 @@ public class GlossaryService implements GlossaryResource {
     }
 
     @Override
-    @Restrict("#{s:hasPermission('', 'glossary-delete')}")
     public Response deleteGlossaries() {
+        identity.checkPermission("", "glossary-delete");
         ResponseBuilder response = request.evaluatePreconditions();
         if (response != null) {
             return response.build();

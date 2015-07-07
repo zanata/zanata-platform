@@ -33,6 +33,13 @@
     <!-- Applies to surefire and failsafe (if enabled) -->
     <failIfNoTests>true</failIfNoTests>
 
+    <deltaspike.version>1.4.1</deltaspike.version>
+    <cdi.runtime>provided</cdi.runtime>
+    <cdi.compile>provided</cdi.compile>
+    <picketlink.version>2.5.4.SP4</picketlink.version>
+    <infinispan.version>6.0.2.Final</infinispan.version>
+    <weld.version>1.1.29.Final</weld.version>
+    <weld.se.version>${weld.version}</weld.se.version>
     <guava.version>18.0</guava.version>
     <gwt.version>2.6.1</gwt.version>
     <icu4j.version>50.1.1</icu4j.version>
@@ -110,6 +117,70 @@
   <dependencyManagement>
     <dependencies>
 
+      <!-- See https://issues.jboss.org/browse/WFK2-674
+ For some warnings in the console. It happens when deltaspike-jsf
+ doesn't run against jsf 2.1 (eap) -->
+      <dependency>
+        <groupId>org.apache.deltaspike.core</groupId>
+        <artifactId>deltaspike-core-api</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>${cdi.compile}</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.core</groupId>
+        <artifactId>deltaspike-core-impl</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>${cdi.runtime}</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-servlet-module-api</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>${cdi.compile}</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-servlet-module-impl</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>${cdi.runtime}</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-jsf-module-api</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>${cdi.compile}</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-jsf-module-impl</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>${cdi.runtime}</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-security-module-api</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>${cdi.compile}</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-security-module-impl</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>${cdi.runtime}</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-jpa-module-api</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>${cdi.compile}</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-jpa-module-impl</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>${cdi.runtime}</scope>
+      </dependency>
+
       <dependency>
         <groupId>org.jboss.shrinkwrap</groupId>
         <artifactId>shrinkwrap-api</artifactId>
@@ -135,6 +206,44 @@
       </dependency>
 
       <dependency>
+        <groupId>org.picketlink</groupId>
+        <artifactId>picketlink-api</artifactId>
+        <version>${picketlink.version}</version>
+        <scope>${cdi.compile}</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.picketlink</groupId>
+        <artifactId>picketlink-impl</artifactId>
+        <version>${picketlink.version}</version>
+        <scope>${cdi.runtime}</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.picketlink</groupId>
+        <artifactId>picketlink-idm-api</artifactId>
+        <version>${picketlink.version}</version>
+        <scope>${cdi.compile}</scope>
+      </dependency>
+      <!--<dependency>-->
+      <!--<groupId>org.picketlink</groupId>-->
+      <!--<artifactId>picketlink-deltaspike</artifactId>-->
+      <!--<version>${picketlink.version}</version>-->
+      <!--<scope>${cdi.compile}</scope>-->
+      <!--</dependency>-->
+      <!--<dependency>-->
+      <!--<groupId>org.picketlink</groupId>-->
+      <!--<artifactId>picketlink-social</artifactId>-->
+      <!--<version>${picketlink.version}</version>-->
+      <!--<scope>${cdi.compile}</scope>-->
+      <!--</dependency>-->
+      <!--<dependency>-->
+      <!--<groupId>org.picketlink</groupId>-->
+      <!--<artifactId>picketlink-web</artifactId>-->
+      <!--<version>2.0.3.Final</version>-->
+      <!--<scope>provided</scope>-->
+      <!--</dependency>-->
+
+      <dependency>
         <groupId>org.richfaces</groupId>
         <artifactId>richfaces</artifactId>
         <version>${richfaces.version}</version>
@@ -144,6 +253,13 @@
             <artifactId>jboss-el-api_3.0_spec</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jul-to-slf4j</artifactId>
+        <version>${slf4j.version}</version>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -389,6 +505,36 @@
         <artifactId>jboss-marshalling-river</artifactId>
         <version>1.4.6.Final</version>
         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jglue.cdi-unit</groupId>
+        <artifactId>cdi-unit</artifactId>
+        <version>3.1.2</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se-core</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.weld.se</groupId>
+        <artifactId>weld-se-core</artifactId>
+        <version>${weld.se.version}</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.el</groupId>
+            <artifactId>el-api</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <!-- Liquibase Dependencies -->
@@ -1589,7 +1735,7 @@
           <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
-            <version>1.1</version>
+            <version>1.0-SP4</version>
             <exclusions>
               <exclusion>
                 <groupId>javax.annotation</groupId>

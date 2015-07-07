@@ -34,7 +34,6 @@ import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectIterationDAO;
@@ -45,6 +44,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
 import org.zanata.seam.scope.ConversationScopeMessages;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.SlugEntityService;
 import org.zanata.service.VersionGroupService;
 import org.zanata.service.impl.VersionGroupServiceImpl;
@@ -89,6 +89,9 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
 
     @In
     private ConversationScopeMessages conversationScopeMessages;
+
+    @In
+    private ZanataIdentity identity;
 
     @Getter
     private GroupMaintainerAutocomplete maintainerAutocomplete =
@@ -141,8 +144,8 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
     }
 
     @Override
-    @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
     public String persist() {
+        identity.checkPermission(instance, "update");
         if (!validateSlug(getInstance().getSlug(), "slug"))
             return null;
 
@@ -153,8 +156,8 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
     }
 
     @Override
-    @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
     public String update() {
+        identity.checkPermission(instance, "update");
         return super.update();
     }
 
@@ -176,8 +179,8 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
         getInstance().setStatus(EntityStatus.valueOf(initial));
     }
 
-    @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
     public void removeLanguage(HLocale locale) {
+        identity.checkPermission(instance, "update");
         getInstance().getActiveLocales().remove(locale);
         update();
         conversationScopeMessages.setMessage(
@@ -186,8 +189,8 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
                         locale.retrieveDisplayName()));
     }
 
-    @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
     public void removeVersion(HProjectIteration version) {
+        identity.checkPermission(instance, "update");
         getInstance().getProjectIterations().remove(version);
         update();
         conversationScopeMessages.setMessage(
@@ -196,8 +199,8 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
                         version.getProject().getSlug()));
     }
 
-    @Restrict("#{s:hasPermission(versionGroupHome.instance, 'update')}")
     public void removeMaintainer(HPerson maintainer) {
+        identity.checkPermission(instance, "update");
         if (getInstance().getMaintainers().size() <= 1) {
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                     msgs.get("jsf.group.NeedAtLeastOneMaintainer"));

@@ -43,6 +43,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.security.Restrict;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
+import org.zanata.i18n.Messages;
 import org.zanata.model.HLocale;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.service.LocaleService;
@@ -73,7 +74,7 @@ public class LanguageManagerAction extends AbstractAutocomplete<HLocale>
     private ResourceUtils resourceUtils;
 
     @In
-    private Map<String, String> msgs;
+    private Messages msgs;
 
     @Getter
     @Setter

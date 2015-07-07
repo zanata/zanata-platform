@@ -42,8 +42,8 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.util.Hex;
 import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.common.DocumentType;
@@ -623,8 +623,8 @@ public class VersionHomeAction extends AbstractSortAction implements
                 || getVersion().getStatus() == EntityStatus.ACTIVE;
     }
 
-    @Restrict("#{versionHomeAction.documentRemovalAllowed}")
     public void deleteDocument(Long docId) {
+        checkDocumentRemovalAllowed();
         HDocument doc = documentDAO.getById(docId);
         documentServiceImpl.makeObsolete(doc);
         resetPageData();
@@ -642,6 +642,12 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     public String getFormattedDate(HDocument hdoc) {
         return DateUtil.formatShortDate(hdoc.getLastChanged());
+    }
+
+    public void checkDocumentRemovalAllowed() {
+        if (!isDocumentRemovalAllowed()) {
+            throw new AuthorizationException("Current user is not allowed to delete document");
+        }
     }
 
     public boolean isDocumentRemovalAllowed() {

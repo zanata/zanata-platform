@@ -54,6 +54,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.ITextFlow;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnit;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.LockManagerService;
 import org.zanata.tmx.TMXParser;
@@ -85,6 +86,8 @@ public class TranslationMemoryResourceService implements
     private TransMemoryDAO transMemoryDAO;
     @In
     private TMXParser tmxParser;
+    @In
+    private ZanataIdentity identity;
 
     @Override
     @Restrict("#{s:hasRole('admin')}")
@@ -100,9 +103,9 @@ public class TranslationMemoryResourceService implements
     }
 
     @Override
-    @Restrict("#{s:hasPermission('', 'download-tmx')}")
     public Response getProjectTranslationMemory(@Nonnull String projectSlug,
             @Nullable LocaleId locale) {
+        identity.checkPermission("", "download-tmx");
         log.debug("exporting TMX for project {}, locale {}", projectSlug,
                 locale);
         HProject hProject =
@@ -119,10 +122,10 @@ public class TranslationMemoryResourceService implements
     }
 
     @Override
-    @Restrict("#{s:hasPermission('', 'download-tmx')}")
     public Response getProjectIterationTranslationMemory(
             @Nonnull String projectSlug, @Nonnull String iterationSlug,
             @Nullable LocaleId locale) {
+        identity.checkPermission("", "download-tmx");
         log.debug("exporting TMX for project {}, iteration {}, locale {}",
                 projectSlug, iterationSlug, locale);
         HProjectIteration hProjectIteration =
