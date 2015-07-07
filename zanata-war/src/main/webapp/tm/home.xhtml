@@ -8,7 +8,7 @@
   xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
-  template="../WEB-INF/template/template.xhtml">
+  template="/WEB-INF/template/template.xhtml">
 
 <ui:define name="page_title">#{msgs['jsf.transmemory.Title']}</ui:define>
 
@@ -93,15 +93,14 @@
       jQuery("[name='uploadedFile']").prop('disabled', true);
     }
   </script>
+</ui:define>
+
+<ui:define name="center_content">
   <h:form styleClass="l--push-bottom-0" id="processResultForm">
     <a4j:poll id="processResultPoll" interval="3000"
       render="processResultPoll,processResult"
       enabled="#{translationMemoryAction.processErrorPollEnabled}"/>
   </h:form>
-
-</ui:define>
-
-<ui:define name="center_content">
   <div class="g--centered">
     <div class="g__item w--1-m w--1-2-l w--1-2 l--push-bottom-half">
       <p class="txt--meta l--push-all-0">
@@ -280,6 +279,35 @@
 
   <div class="modal" id="uploadFileDialog" tabindex="-1" role="dialog"
     aria-labelledby="myModalLabel" aria-hidden="true">
+
+    <script>
+      jQuery(document).ready(function() {
+        getTMImportFile().change(function() {
+          toggleTMImportButton();
+        });
+      });
+
+      function toggleTMImportButton() {
+        var isFileSelected = getTMImportFilename() != '';
+        getTMImportButton().prop('disabled', !isFileSelected);
+      }
+
+      function getTMImportButton() {
+        return getTMImportForm().find('#tm-import-button');
+      }
+
+      function getTMImportForm() {
+        return jQuery('#uploadFileForm');
+      }
+
+      function getTMImportFilename() {
+        return getTMImportFile().val();
+      }
+
+      function getTMImportFile() {
+        return getTMImportForm().find('#tm-import-file');
+      }
+    </script>
     <div class="modal__dialog l--constrain-medium">
       <header class="modal__header">
         <h2 class="modal__title">#{msgs['jsf.transmemory.Import.Header']}</h2>
@@ -291,7 +319,7 @@
 
       <form id="uploadFileForm" action="/" method="post" class="l--push-bottom-0">
         <div class="modal__content l--pad-h-1 l--pad-v-half">
-          <input type="file" name="uploadedFile"/>
+          <input type="file" name="uploadedFile" id="tm-import-file"/>
         </div>
 
         <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
@@ -302,8 +330,8 @@
                 class="cancel button button--link l--push-right-half" data-dismiss="modal">
               </input>
 
-              <input type="button" name="uploadBtn" class="button button--primary"
-                value="#{msgs['jsf.transmemory.Import']}"
+              <input id="tm-import-button" type="button" name="uploadBtn" class="button button--primary"
+                value="#{msgs['jsf.transmemory.Import']}" disabled="disabled"
                 onclick="submitUpload()"/>
 
               <div id="uploadProgress">
