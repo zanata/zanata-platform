@@ -69,8 +69,6 @@ public class TMMergeForm extends Composite implements
     @UiField
     EnumMessages enumMessages;
     @UiField
-    Styles style;
-    @UiField
     InlineLabel differentContentStatus;
     @UiField
     Label differentContentLabel;
@@ -163,11 +161,11 @@ public class TMMergeForm extends Composite implements
     @UiHandler("matchThreshold")
     public void onThresholdPercentChange(ChangeEvent event) {
         if (getSelectedMatchThreshold() == 100) {
-            differentContentStatus.setStyleName(style.reject_action());
+            differentContentStatus.setStyleName("label--danger l--pad-v-quarter l--pad-h-half");
             differentContentStatus.setText(enumMessages.rejectMerge());
             differentContentLabel.setText(enumMessages.rejectMerge());
         } else {
-            differentContentStatus.setStyleName(style.downgrade_action());
+            differentContentStatus.setStyleName("label--warning l--pad-v-quarter l--pad-h-half");
             differentContentStatus.setText(enumMessages.downgradeToFuzzy());
             differentContentLabel.setText(enumMessages.downgradeToFuzzy());
         }
@@ -178,7 +176,7 @@ public class TMMergeForm extends Composite implements
         OptionType optionType = OptionType.valueOf(groupName);
         InlineLabel statusLabel = getStatusLabelFor(optionType);
         statusLabel.setText(mergeStatusRenderer.render(option));
-        statusLabel.setStyleName(resolveStyle(option) + " l--pad-all-quarter");
+        statusLabel.setStyleName(resolveStyle(option));
     }
 
     private InlineLabel getStatusLabelFor(OptionType optionType) {
@@ -199,26 +197,16 @@ public class TMMergeForm extends Composite implements
     private String resolveStyle(MergeRule option) {
         switch (option) {
         case FUZZY:
-            return style.downgrade_action();
+            return "label--unsure l--pad-v-quarter l--pad-h-half";
         case REJECT:
-            return style.reject_action();
+            return "label--danger l--pad-v-quarter l--pad-h-half";
         case IGNORE_CHECK:
-            return style.ignore_action();
+            return "label--neutral l--pad-v-quarter l--pad-h-half";
         }
-        return style.approved_action();
+        return "label--success l--pad-v-quarter l--pad-h-half";
     }
 
     interface TMMergeFormUiBinder extends UiBinder<Widget, TMMergeForm> {
-    }
-
-    interface Styles extends CssResource {
-        String reject_action();
-
-        String approved_action();
-
-        String ignore_action();
-
-        String downgrade_action();
     }
 
     enum OptionType {

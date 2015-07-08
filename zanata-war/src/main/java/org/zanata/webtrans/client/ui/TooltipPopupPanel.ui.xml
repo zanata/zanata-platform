@@ -10,121 +10,68 @@
     type="org.zanata.webtrans.client.ui.TooltipPopupPanel.Styles">
     .transUnitCountTooltip {
       background-color: #fff;
-      text-align: center;
-      padding: 2px;
+      padding: 0.25em;
       z-index: 100;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     }
 
     .table td {
       width: 75px;
-      border: 1px solid;
-    }
-
-    .topHeader {
-      border: none !important;
-      white-space: nowrap;
-    }
-
-    .translated-header {
-      color: #70a98b;
-    }
-
-    .rejected-header {
-      color: #e3824e;
-    }
-
-    .approved-header {
-      color: #4e9fdd;
-    }
-
-    .draft-header {
-      color: #e0c350;
-    }
-
-    .untranslated-header {
-      color: #c6d2db;
+      border: 2px solid transparent;
     }
 
     td.sideHeader {
       white-space: nowrap;
       width: 40px;
-      border: none !important;
     }
-
-    .total {
-      border: none !important;
-      color: #4F4F4F;
-    }
-
-    .translated {
-      background: #70a98b;
-      color: #fff;
-    }
-
-    .approved {
-      background: #4e9fdd;
-      color: #fff;
-    }
-
-    .draft {
-      background: #e0c350;
-      color: #fff;
-    }
-
-    .untranslated {
-      background: #c6d2db;
-      color: #fff;
-    }
-
   </ui:style>
 
   <g:HTMLPanel styleName="new-zanata">
-    <g:Grid styleName="{style.table}" cellPadding="2" ui:field="grid">
+    <g:Grid styleName="{style.table}" ui:field="grid">
       <g:row>
         <g:cell styleName="{style.sideHeader}" />
-        <g:cell styleName="{style.approved-header} {style.topHeader}">Approved</g:cell>
-        <g:cell styleName="{style.translated-header} {style.topHeader}">Translated</g:cell>
-        <g:cell styleName="{style.draft-header} {style.topHeader}">Draft</g:cell>
-        <g:cell styleName="{style.untranslated-header} {style.topHeader}">Untranslated</g:cell>
-        <g:cell styleName="{style.total}">Total</g:cell>
+        <g:cell styleName="txt--highlight">Approved</g:cell>
+        <g:cell styleName="txt--success">Translated</g:cell>
+        <g:cell styleName="txt--unsure">Draft</g:cell>
+        <g:cell styleName="txt--neutral">Untranslated</g:cell>
+        <g:cell styleName="txt--understated">Total</g:cell>
 
       </g:row>
 
       <g:row>
         <g:cell styleName="{style.sideHeader} txt--understated">Words</g:cell>
-        <g:customCell styleName="{style.approved}">
+        <g:customCell styleName="message--highlight">
           <g:InlineLabel ui:field="wordApproved" />
         </g:customCell>
-        <g:customCell styleName="{style.translated}">
+        <g:customCell styleName="message--success">
           <g:InlineLabel ui:field="wordTranslated" />
         </g:customCell>
-        <g:customCell styleName="{style.draft}">
+        <g:customCell styleName="message--unsure">
           <g:InlineLabel ui:field="wordDraft" />
         </g:customCell>
-        <g:customCell styleName="{style.untranslated}">
+        <g:customCell styleName="message--neutral">
           <g:InlineLabel ui:field="wordUntranslated" />
         </g:customCell>
-        <g:customCell styleName="{style.total}">
+        <g:customCell styleName="txt--understated">
           <g:InlineLabel ui:field="wordTotal" />
         </g:customCell>
       </g:row>
 
       <g:row>
         <g:cell styleName="{style.sideHeader} txt--understated">Msg</g:cell>
-        <g:customCell styleName="{style.approved}">
+        <g:customCell styleName="message--highlight">
           <g:InlineLabel ui:field="msgApproved" />
         </g:customCell>
-        <g:customCell styleName="{style.translated}">
+        <g:customCell styleName="message--success">
           <g:InlineLabel ui:field="msgTranslated" />
         </g:customCell>
-        <g:customCell styleName="{style.draft}">
+        <g:customCell styleName="message--unsure">
           <g:InlineLabel ui:field="msgDraft" />
         </g:customCell>
-        <g:customCell styleName="{style.untranslated}">
+        <g:customCell styleName="message--neutral">
           <g:InlineLabel ui:field="msgUntranslated" />
         </g:customCell>
-        <g:customCell styleName="{style.total}">
+        <g:customCell styleName="txt--understated">
           <g:InlineLabel ui:field="msgTotal" />
         </g:customCell>
       </g:row>

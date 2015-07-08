@@ -6,25 +6,13 @@
     type="org.zanata.webtrans.client.resources.Resources" />
 
   <ui:style type="org.zanata.webtrans.client.ui.Breadcrumb.Styles">
-    .container {
-      display: inline-block;
-    }
-
     a.readOnlyLink, a.readOnlyLink:hover {
-      font-weight: bold;
-      color: #416988;
       text-decoration: none;
       cursor: default;
     }
-
-    .divider {
-      color: rgba(0, 0, 0, 0.8);
-      font-size: 0.75em;
-    }
-
   </ui:style>
 
-  <g:HTMLPanel styleName="{style.container}">
+  <g:HTMLPanel styleName="bx--inline-block">
     <g:HTMLPanel tag="i" ui:field="rightChevron"
       styleName="i i--arrow-right" />
     <g:Anchor ui:field="link"/>

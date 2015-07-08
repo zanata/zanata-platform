@@ -9,13 +9,13 @@
 
   <ui:style type="org.zanata.webtrans.client.view.TransMemoryView.Styles">
     .translated {
-      border-left: 2px solid #70a98b;
-      border-right: 2px solid #70a98b;
+      border-left: 2px solid #5CCA7B;
+      border-right: 2px solid #5CCA7B;
     }
 
     .approved {
-      border-left: 2px solid #4e9fdd;
-      border-right: 2px solid #4e9fdd;
+      border-left: 2px solid #03A6D7;
+      border-right: 2px solid #03A6D7;
     }
 
     .container input {

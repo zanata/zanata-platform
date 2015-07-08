@@ -409,10 +409,10 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("Description")
     String description();
 
-    @DefaultMessage("Blue color")
-    String blueColor();
+    @DefaultMessage("Green color")
+    String greenColor();
 
-    @DefaultMessage("Red color + crossed out")
+    @DefaultMessage("Red color")
     String redColorCrossedOut();
 
     @DefaultMessage("Plain text")

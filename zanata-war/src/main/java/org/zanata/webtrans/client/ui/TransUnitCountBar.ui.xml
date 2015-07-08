@@ -6,30 +6,6 @@
       height: 1.2em;
     }
 
-    .approved {
-      background: #4e9fdd;
-      z-index: 0;
-    }
-
-    .draft {
-      background: #e0c350;
-      z-index: 0;
-    }
-
-    .untranslated {
-      background: #c6d2db;
-      z-index: 0;
-    }
-
-    .translated {
-      background: #70a98b;
-      z-index: 0;
-    }
-
-    .undefined {
-      z-index: 0;
-    }
-
     .label {
       z-index: 0;
     }
@@ -37,20 +13,20 @@
   </ui:style>
   <g:LayoutPanel ui:field='layoutPanel' styleName="{style.unitStatus} new-zanata">
     <g:layer left='0' width='0'>
-      <g:FlowPanel ui:field='approvedPanel' styleName="{style.approved}" />
+      <g:FlowPanel ui:field='approvedPanel' styleName="progress-bar__approved" />
     </g:layer>
     <g:layer left='0' width='0'>
-      <g:FlowPanel ui:field='translatedPanel' styleName="{style.translated}" />
+      <g:FlowPanel ui:field='translatedPanel' styleName="progress-bar__translated" />
     </g:layer>
     <g:layer left='0' width='0'>
-      <g:FlowPanel ui:field='draftPanel' styleName="{style.draft}" />
+      <g:FlowPanel ui:field='draftPanel' styleName="progress-bar__fuzzy" />
     </g:layer>
     <g:layer left='0' width='0'>
       <g:FlowPanel ui:field='untranslatedPanel'
-        styleName="{style.untranslated}" />
+        styleName="progress-bar__untranslated" />
     </g:layer>
     <g:layer left='0' width='100%'>
-      <g:FlowPanel ui:field='undefinedPanel' styleName="{style.undefined}" />
+      <g:FlowPanel ui:field='undefinedPanel' styleName="progress-bar__untranslated" />
     </g:layer>
     <g:layer left='102px' width="120px">
       <g:Label ui:field='label' styleName='{style.label} txt--align-left txt--understated' />

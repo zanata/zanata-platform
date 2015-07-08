@@ -9,64 +9,51 @@
   <ui:style field="style"
     type="org.zanata.webtrans.client.ui.DiffColorLegendPanel.Styles">
     .diffLegendPanel {
-      background: #454545;
-      padding: 2em 3em;
+      background-color: rgba(0, 0, 0, 0.2);
+      padding: 1em;
       border-radius: 3px;
-    }
-
-    .insertLabel {
-      color: #454545;
-      background: #9CF;
-    }
-
-    .deleteLabel {
-      color: #454545;
-      background: #F99;
-      text-decoration: line-through;
-    }
-
-    .table td {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
   </ui:style>
 
   <g:HTMLPanel styleName="new-zanata">
-    <table class="{style.table}">
-      <tr class="txt--invert">
-        <th>
-          <ui:text from="{messages.style}" />
-        </th>
-        <th>
-          <ui:text from="{messages.description}" />
-        </th>
-      </tr>
+    <div class="bg--neutral l--pad-all-quarter txt--understated">
+      <table>
+        <tr>
+          <th>
+            <ui:text from="{messages.style}" />
+          </th>
+          <th>
+            <ui:text from="{messages.description}" />
+          </th>
+        </tr>
 
-      <tr>
-        <td class="{style.insertLabel}">
-          <ui:text from="{messages.blueColor}" />
-        </td>
-        <td class="txt--invert">
-          <g:Label ui:field="insDescription" />
-        </td>
-      </tr>
+        <tr>
+          <td class="diff-insert">
+            <ui:text from="{messages.greenColor}" />
+          </td>
+          <td>
+            <g:Label ui:field="insDescription" />
+          </td>
+        </tr>
 
-      <tr>
-        <td class="{style.deleteLabel}">
-          <ui:text from="{messages.redColorCrossedOut}" />
-        </td>
-        <td class="txt--invert">
-          <g:Label ui:field="delDescription" />
-        </td>
-      </tr>
+        <tr>
+          <td class="diff-delete">
+            <ui:text from="{messages.redColorCrossedOut}" />
+          </td>
+          <td>
+            <g:Label ui:field="delDescription" />
+          </td>
+        </tr>
 
-      <tr class="txt--invert">
-        <td>
-          <ui:text from="{messages.plainText}" />
-        </td>
-        <td>
-          <g:Label ui:field="containDescription" />
-        </td>
-      </tr>
-    </table>
+        <tr>
+          <td class="diff-equal">
+            <ui:text from="{messages.plainText}" />
+          </td>
+          <td>
+            <g:Label ui:field="containDescription" />
+          </td>
+        </tr>
+      </table>
+    </div>
   </g:HTMLPanel>
 </ui:UiBinder>

@@ -14,15 +14,15 @@
     }
 
     .fuzzyUntranslated {
-      color: #c6d2db !important;
+      color: #bcd4db !important;
     }
 
     .fuzzy {
-      color: #e0c350 !important;
+      color: #E9DF1B !important;
     }
 
     .untranslated {
-      color: #c6d2db !important;
+      color: #bcd4db !important;
     }
 
   </ui:style>
