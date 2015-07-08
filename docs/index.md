@@ -43,4 +43,4 @@ License
 -------
 Zanata is Free software, licensed under the [LGPL](http://www.gnu.org/licenses/lgpl-2.1.html).
 
-Copyright &copy; 2015, <a href="http//www.redhat.com">Red Hat, Inc</a>.
+Copyright &copy; 2015, <a href="http://www.redhat.com">Red Hat, Inc</a>.
