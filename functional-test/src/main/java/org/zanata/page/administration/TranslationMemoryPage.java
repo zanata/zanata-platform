@@ -46,7 +46,7 @@ public class TranslationMemoryPage extends BasePage {
     private By createTmLink = By.id("createTmLink");
     private By tmList = By.id("tmList");
     private By filenameInput = By.name("uploadedFile");
-    private By uploadButton = By.name("uploadBtn");
+    private By uploadButton = By.id("tm-import-button");
     private By listDropDownMenu = By.className("dropdown__toggle");
     private By listImportButton = By.linkText("Import");
     private By listExportButton = By.linkText("Export");
@@ -94,6 +94,11 @@ public class TranslationMemoryPage extends BasePage {
         log.info("Click Upload");
         clickElement(uploadButton);
         return switchToAlert();
+    }
+
+    public boolean isImportButtonEnabled() {
+        WebElement element = existingElement(uploadButton);
+        return element.isEnabled();
     }
 
     public TranslationMemoryPage clickClearTMAndAccept(String tmName) {

@@ -141,6 +141,9 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
                 .as("The Translation Memory has one entry");
     }
 
+    /**
+     * Updated to test import button is disabled if not file is selected.
+     */
     @Feature(summary = "The system rejects empty TMX data files",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -148,20 +151,11 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
         String rejectTMId = "rejectemptytmtest";
 
         TranslationMemoryPage tmMemoryPage = new TranslationMemoryWorkFlow()
-                .createTranslationMemory(rejectTMId)
-                .clickOptions(rejectTMId)
-                .clickImport(rejectTMId);
-        Alert uploadError = tmMemoryPage.expectFailedUpload();
+            .createTranslationMemory(rejectTMId)
+            .clickOptions(rejectTMId)
+            .clickImport(rejectTMId);
 
-        assertThat(uploadError.getText()
-                .startsWith(TranslationMemoryPage.UPLOAD_ERROR)).isTrue()
-                .as("Error is displayed");
-
-        tmMemoryPage = tmMemoryPage.dismissError();
-
-        assertThat(tmMemoryPage.getNumberOfEntries(rejectTMId))
-                .isEqualTo("0")
-                .as("No change is recorded");
+        assertThat(tmMemoryPage.isImportButtonEnabled()).isEqualTo(false);
     }
 
     @Feature(summary = "The administrator can delete a translation memory entry",
