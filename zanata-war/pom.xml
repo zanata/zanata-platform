@@ -2250,7 +2250,7 @@
     <dependency>
       <groupId>org.webjars.bower</groupId>
       <artifactId>commonmark</artifactId>
-      <version>0.19.0</version>
+      <version>0.20.0</version>
     </dependency>
 
     <dependency>
