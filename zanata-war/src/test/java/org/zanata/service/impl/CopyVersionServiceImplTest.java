@@ -31,10 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.infinispan.manager.CacheContainer;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -59,10 +57,12 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
 import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.model.po.HPoTargetHeader;
+import org.zanata.model.type.TranslationSourceType;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataCredentials;
 import org.zanata.security.ZanataIdentity;
 import com.google.common.collect.Lists;
+import org.zanata.util.TranslationUtil;
 
 public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
     private SeamAutowire seam = SeamAutowire.instance();
@@ -423,6 +423,12 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
                     existingHistory.getTextFlowRevision());
             assertThat(newHistory.getState()).isEqualTo(
                     existingHistory.getState());
+            assertThat(newHistory.getCopiedEntityId()).isEqualTo(
+                TranslationUtil.getCopiedEntityId(existingHistory));
+            assertThat(newHistory.getCopiedEntityType()).isEqualTo(
+                TranslationUtil.getCopiedEntityType(existingHistory));
+            assertThat(newHistory.getSourceType()).isEqualTo(
+                TranslationSourceType.COPY_VERSION);
             assertThat(newHistory.getVersionNum()).isEqualTo(
                     existingHistory.getVersionNum());
         }
@@ -571,6 +577,12 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
                 existingTarget.getLocale());
         assertThat(newTarget.getLastModifiedBy()).isEqualTo(
                 existingTarget.getLastModifiedBy());
+        assertThat(newTarget.getCopiedEntityId()).isEqualTo(
+            TranslationUtil.getCopiedEntityId(existingTarget));
+        assertThat(newTarget.getEntityType()).isEqualTo(
+            TranslationUtil.getCopiedEntityType(existingTarget));
+        assertThat(newTarget.getSourceType()).isEqualTo(
+            TranslationSourceType.COPY_VERSION);
         if (existingTarget.getTranslator() != null) {
             assertThat(newTarget.getTranslator()).isEqualToIgnoringGivenFields(
                     existingTarget.getTranslator(), "id");

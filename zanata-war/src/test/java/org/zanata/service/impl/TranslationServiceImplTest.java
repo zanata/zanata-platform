@@ -37,6 +37,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
+import org.zanata.model.type.TranslationSourceType;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationService;
@@ -102,7 +103,8 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest {
         newContents.add("translated 2");
         TransUnitUpdateRequest translateReq =
                 new TransUnitUpdateRequest(transUnitId, newContents,
-                        ContentState.Approved, 1);
+                    ContentState.Approved, 1,
+                    TranslationSourceType.UNKNOWN.getAbbr());
 
         List<TranslationResult> result =
                 transService.translate(new LocaleId("de"),
@@ -114,6 +116,8 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest {
                 is(ContentState.Translated));
         assertThat(result.get(0).getTranslatedTextFlowTarget().getVersionNum(),
                 is(2)); // moved up a version
+        assertThat(result.get(0).getTranslatedTextFlowTarget().getSourceType(),
+            is(TranslationSourceType.UNKNOWN));
     }
 
     @Test
@@ -130,7 +134,8 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest {
         newContents.add("translated 1");
         newContents.add("translated 2");
         translationReqs.add(new TransUnitUpdateRequest(transUnitId,
-                newContents, ContentState.Approved, 1));
+                newContents, ContentState.Approved, 1,
+                TranslationSourceType.COPY_VERSION.getAbbr()));
 
         // Request 2 (different documents)
         transUnitId = new TransUnitId(2L);
@@ -138,7 +143,8 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest {
         newContents.add("translated 1");
         newContents.add("translated 2");
         translationReqs.add(new TransUnitUpdateRequest(transUnitId,
-                newContents, ContentState.NeedReview, 0));
+                newContents, ContentState.NeedReview, 0,
+                TranslationSourceType.COPY_TRANS.getAbbr()));
 
         List<TranslationResult> results =
                 transService.translate(new LocaleId("de"), translationReqs);
@@ -147,25 +153,23 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest {
         TranslationResult result = results.get(0);
         assertThat(result.isTranslationSuccessful(), is(true));
         assertThat(result.getBaseVersionNum(), is(1));
-        assertThat(result.getBaseContentState(), is(ContentState.Translated)); // there
-                                                                               // was
-                                                                               // a
-                                                                               // prvious
-                                                                               // translation
-        assertThat(result.getTranslatedTextFlowTarget().getVersionNum(), is(2)); // moved
-                                                                                 // up
-                                                                                 // a
-                                                                                 // version
+        assertThat(result.getBaseContentState(), is(ContentState.Translated));
+
+        //there was a previous translation, moved up to a version
+        assertThat(result.getTranslatedTextFlowTarget().getVersionNum(), is(2));
+        assertThat(result.getTranslatedTextFlowTarget().getSourceType(),
+            is(TranslationSourceType.COPY_VERSION));
 
         // Second result
         result = results.get(1);
         assertThat(result.isTranslationSuccessful(), is(true));
         assertThat(result.getBaseVersionNum(), is(0));
-        assertThat(result.getBaseContentState(), is(ContentState.New)); // no
-                                                                        // previous
-                                                                        // translation
-        assertThat(result.getTranslatedTextFlowTarget().getVersionNum(), is(1)); // first
-                                                                                 // version
+        assertThat(result.getBaseContentState(), is(ContentState.New));
+
+        //no previous translation, first version
+        assertThat(result.getTranslatedTextFlowTarget().getVersionNum(), is(1));
+        assertThat(result.getTranslatedTextFlowTarget().getSourceType(),
+            is(TranslationSourceType.COPY_TRANS));
     }
 
     @Test
@@ -179,7 +183,8 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest {
         newContents.add("translated 2");
         TransUnitUpdateRequest translateReq =
                 new TransUnitUpdateRequest(transUnitId, newContents,
-                        ContentState.Approved, 1);
+                        ContentState.Approved, 1,
+                        TranslationSourceType.MERGE_VERSION.getAbbr());
 
         // Should not pass as the base version (1) does not match
         List<TransUnitUpdateRequest> translationRequests =
@@ -199,7 +204,8 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest {
         TransUnitId transUnitId = new TransUnitId(3L);
         TransUnitUpdateRequest translateReq =
                 new TransUnitUpdateRequest(transUnitId, Lists.newArrayList("a",
-                        "b"), ContentState.Approved, 0);
+                        "b"), ContentState.Approved, 0,
+                        TranslationSourceType.MERGE_VERSION.getAbbr());
 
         List<TranslationResult> result =
                 transService.translate(new LocaleId("de"),
@@ -213,5 +219,7 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest {
                 is(1)); // moved up only one version
         assertThat(result.get(0).getTranslatedTextFlowTarget().getState(),
                 is(ContentState.Approved));
+        assertThat(result.get(0).getTranslatedTextFlowTarget().getSourceType(),
+            is(TranslationSourceType.MERGE_VERSION));
     }
 }

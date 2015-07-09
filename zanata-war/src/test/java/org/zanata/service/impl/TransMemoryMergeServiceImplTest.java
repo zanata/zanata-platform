@@ -39,7 +39,6 @@ import net.customware.gwt.dispatch.shared.ActionException;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -54,6 +53,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.TestFixture;
 import org.zanata.model.tm.TransMemoryUnit;
+import org.zanata.model.type.TranslationSourceType;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SecurityService;
@@ -150,7 +150,8 @@ public class TransMemoryMergeServiceImplTest extends ZanataTest {
         List<TransUnitUpdateRequest> requests = newArrayList();
         for (long tranUnitId : tranUnitIds) {
             requests.add(new TransUnitUpdateRequest(
-                    new TransUnitId(tranUnitId), null, null, 0));
+                    new TransUnitId(tranUnitId), null, null, 0,
+                TranslationSourceType.TM_MERGE.getAbbr()));
         }
         // we have TransMemoryMergeStatusResolverTest to cover various different
         // merge options so here we don't test that
@@ -271,6 +272,8 @@ public class TransMemoryMergeServiceImplTest extends ZanataTest {
         TransUnitUpdateRequest transUnitUpdateRequest = updateRequest.get(0);
         assertThat(transUnitUpdateRequest.getNewContents(),
                 Matchers.equalTo(mostSimilarTM.getTargetContents()));
+        assertThat(transUnitUpdateRequest.getSourceType(),
+            Matchers.equalTo(TranslationSourceType.TM_MERGE.getAbbr()));
         assertThat(
                 transUnitUpdateRequest.getTargetComment(),
                 Matchers.equalTo("auto translated by TM merge from project: project a, version: master, DocId: pot/msg.pot"));
@@ -410,6 +413,13 @@ public class TransMemoryMergeServiceImplTest extends ZanataTest {
                 Matchers.equalTo(tm90.get().getTargetContents()));
         assertThat(updateRequest.get(2).getNewContents(),
                 Matchers.equalTo(tm80.get().getTargetContents()));
+
+        assertThat(updateRequest.get(0).getSourceType(),
+            Matchers.equalTo(TranslationSourceType.TM_MERGE.getAbbr()));
+        assertThat(updateRequest.get(1).getSourceType(),
+            Matchers.equalTo(TranslationSourceType.TM_MERGE.getAbbr()));
+        assertThat(updateRequest.get(2).getSourceType(),
+            Matchers.equalTo(TranslationSourceType.TM_MERGE.getAbbr()));
     }
 
     @Test
@@ -473,5 +483,7 @@ public class TransMemoryMergeServiceImplTest extends ZanataTest {
         assertThat(
                 transUnitUpdateRequest.getTargetComment(),
                 Matchers.equalTo("auto translated by TM merge from translation memory: test-tm, unique id: uid10"));
+        assertThat(transUnitUpdateRequest.getSourceType(),
+            Matchers.equalTo(TranslationSourceType.TM_MERGE.getAbbr()));
     }
 }

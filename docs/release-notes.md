@@ -1,3 +1,11 @@
+## 3.7.1
+
+<h5>Bug fixes</h5>
+
+* [1235070](https://bugzilla.redhat.com/show_bug.cgi?id=1235070) - Copied translations (using copy trans) should not be taken into account as contributions in the stats
+
+-----------------------
+
 ## 3.7
 
 <h5>Deployment</h5>

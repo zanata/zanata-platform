@@ -96,7 +96,7 @@ public class TranslationHistoryPresenterTest {
 
     private static TransHistoryItem historyItem(String versionNum) {
         return new TransHistoryItem(versionNum, Lists.newArrayList("a"),
-                ContentState.Approved, "admin", new Date());
+                ContentState.Approved, "admin", new Date(), "comment");
     }
 
     @Test
@@ -232,10 +232,10 @@ public class TranslationHistoryPresenterTest {
         // items in time order
         TransHistoryItem latest =
                 new TransHistoryItem("5", Lists.newArrayList("a"),
-                        ContentState.Approved, "admin", new Date(now - 1000));
+                        ContentState.Approved, "admin", new Date(now - 1000), "comment");
         TransHistoryItem item =
                 new TransHistoryItem("4", Lists.newArrayList("a"),
-                        ContentState.Approved, "admin", new Date(now - 2000));
+                        ContentState.Approved, "admin", new Date(now - 2000), "comment");
         ReviewComment comment =
                 new ReviewComment(new ReviewCommentId(1L), "comment", "admin",
                         new Date(now), 5);

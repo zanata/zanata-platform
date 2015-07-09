@@ -78,25 +78,28 @@ public class TextFlowTargetHistoryDAO extends
      */
     @NativeQuery
     public List<Object[]> getUserContributionStatisticInVersion(
-            Long versionId, Long personId, Date from, Date to) {
+            Long versionId, Long personId, Date fromDate, Date toDate) {
 
         StringBuilder queryString = new StringBuilder();
         queryString
                 .append("select sum(wordCount), state, localeId from ")
                     .append("(select wordCount, id, state, localeId from ")
-                        .append("(select h.state, tft.id, h.translated_by_id, tf.wordCount, locale.localeId ")
+                        .append(
+                            "(select h.state, tft.id, h.translated_by_id, tf.wordCount, locale.localeId ")
                         .append("from HTextFlowTargetHistory h ")
                         .append("JOIN HTextFlowTarget tft ON tft.id = h.target_id ")
                         .append("JOIN HLocale locale ON locale.id = tft.locale ")
                         .append("JOIN HTextFlow tf ON tf.id = tft.tf_id ")
                         .append("JOIN HDocument doc ON doc.id = tf.document_Id ")
                         .append("where doc.project_iteration_id =:versionId ")
-                        .append("and h.state <> 0 ")
+                        .append("and h.state <> :untranslated ")
                         .append("and h.translated_by_id =:personId ")
-                        .append("and h.lastChanged between :from and :to ")
+                        .append("and h.lastChanged between :fromDate and :toDate ")
+                        .append("and h.automatedEntry =:automatedEntry ")
                         .append("and tft.translated_by_id <> h.translated_by_id ")
                         .append("and h.lastChanged = ")
-                            .append("(select max(lastChanged) from HTextFlowTargetHistory where h.target_id = target_id) ")
+                            .append(
+                                "(select max(lastChanged) from HTextFlowTargetHistory where h.target_id = target_id) ")
                         .append("union all ")
                         .append("select tft.state, tft.id, tft.translated_by_id, tf.wordCount, locale.localeId ")
                         .append("from HTextFlowTarget tft ")
@@ -104,9 +107,10 @@ public class TextFlowTargetHistoryDAO extends
                         .append("JOIN HTextFlow tf ON tf.id = tft.tf_id ")
                         .append("JOIN HDocument doc ON doc.id = tf.document_Id ")
                         .append("where doc.project_iteration_id =:versionId ")
-                        .append("and tft.state <> 0 ")
+                        .append("and tft.state <> :untranslated ")
+                        .append("and tft.automatedEntry =:automatedEntry ")
                         .append("and tft.translated_by_id =:personId ")
-                        .append("and tft.lastChanged between :from and :to ")
+                        .append("and tft.lastChanged between :fromDate and :toDate ")
                         .append(") as target_history_union ")
                     .append("group by state, id, localeId, wordCount) as target_history_group ")
                 .append("group by state, localeId");
@@ -115,8 +119,10 @@ public class TextFlowTargetHistoryDAO extends
         Query query = getSession().createSQLQuery(queryString.toString());
         query.setParameter("versionId", versionId);
         query.setParameter("personId", personId);
-        query.setTimestamp("from", from);
-        query.setTimestamp("to", to);
+        query.setInteger("untranslated", ContentState.New.ordinal());
+        query.setBoolean("automatedEntry", false);
+        query.setTimestamp("fromDate", fromDate);
+        query.setTimestamp("toDate", toDate);
         query.setComment("textFlowTargetHistoryDAO.getUserContributionStatisticInVersion");
         return query.list();
     }
@@ -211,7 +217,7 @@ public class TextFlowTargetHistoryDAO extends
                 "    join HProjectIteration iter on iter.id = doc.project_iteration_id " +
                 "  where history.lastChanged >= :fromDate and history.lastChanged <= :toDate " +
                 "    and history.last_modified_by_id = :user and (history.translated_by_id is not null or history.reviewed_by_id is not null)" +
-                "    and history.state <> :untranslated and history.state <> :rejected";
+                "    and history.state <> :untranslated and history.state <> :rejected and history.automatedEntry =:automatedEntry";
 
         String queryTarget = "select tft.id, iter.id as iteration, tft.locale as locale, tf.wordCount as wordCount, tft.state as state, tft.lastChanged as lastChanged " +
                 "  from HTextFlowTarget tft " +
@@ -220,7 +226,7 @@ public class TextFlowTargetHistoryDAO extends
                 "    join HProjectIteration iter on iter.id = doc.project_iteration_id " +
                 "  where tft.lastChanged >= :fromDate and tft.lastChanged <= :toDate " +
                 "    and tft.last_modified_by_id = :user and (tft.translated_by_id is not null or tft.reviewed_by_id is not null)" +
-                "    and tft.state <> :untranslated and tft.state <> :rejected";
+                "    and tft.state <> :untranslated and tft.state <> :rejected and tft.automatedEntry =:automatedEntry";
 
         String convertedLastChanged = convertTimeZoneFunction("lastChanged",
                 userZoneOpt, systemZone);
@@ -234,12 +240,13 @@ public class TextFlowTargetHistoryDAO extends
                         "  group by " + dateOfLastChanged + ", iteration, locale, state " +
                         "  order by lastChanged, iteration, locale, state";
         Query query = getSession().createSQLQuery(queryString)
-                .setParameter("user", user.getId())
-                .setInteger("untranslated", ContentState.New.ordinal())
+            .setParameter("user", user.getId())
+            .setInteger("untranslated", ContentState.New.ordinal())
                 .setInteger("rejected", ContentState.Rejected.ordinal())
-                .setTimestamp("fromDate", fromDate.toDate())
-                .setTimestamp("toDate", toDate.toDate())
-                .setResultTransformer(resultTransformer);
+            .setBoolean("automatedEntry", false)
+            .setTimestamp("fromDate", fromDate.toDate())
+            .setTimestamp("toDate", toDate.toDate())
+            .setResultTransformer(resultTransformer);
         return query.list();
     }
 

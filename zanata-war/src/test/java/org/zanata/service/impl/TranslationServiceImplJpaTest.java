@@ -30,6 +30,7 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowBuilder;
 import org.zanata.model.HTextFlowTargetHistory;
+import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.seam.SeamAutowire;
@@ -123,7 +124,7 @@ public class TranslationServiceImplJpaTest extends ZanataJpaTest {
         log.info("==== start translateAllInDoc");
         service.translateAllInDoc(projectSlug, versionSlug, document.getDocId(),
                 transLocale.getLocaleId(), translations,
-                extensions, MergeType.AUTO, false);
+                extensions, MergeType.AUTO, false, TranslationSourceType.API_UPLOAD);
         log.info("==== stop translateAllInDoc: {}", mon.stop());
         getEm().getTransaction().commit();
         getEm().getTransaction().begin();

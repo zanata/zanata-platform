@@ -42,6 +42,10 @@ public class TransUnitUpdateRequest implements IsSerializable {
     private ContentState newContentState;
     private int baseTranslationVersion;
     private String targetComment;
+    private String revisionComment;
+    private Long copiedEntityId;
+    private String copiedEntityType; //abbreviation
+    private String sourceType; //abbreviation
 
     // required for GWT rpc serialization
     @SuppressWarnings("unused")
@@ -50,11 +54,22 @@ public class TransUnitUpdateRequest implements IsSerializable {
 
     public TransUnitUpdateRequest(TransUnitId transUnitId,
             List<String> newContents, ContentState newContentState,
-            int baseTranslationVersion) {
+            int baseTranslationVersion, String sourceType) {
         this.transUnitId = transUnitId;
         this.newContents = newContents;
         this.newContentState = newContentState;
         this.baseTranslationVersion = baseTranslationVersion;
+        this.sourceType = sourceType;
+    }
+
+    public TransUnitUpdateRequest(TransUnitId transUnitId,
+            List<String> newContents, ContentState newContentState,
+            int baseTranslationVersion, String revisionComment, Long copiedEntityId,
+            String copiedEntityType, String sourceType) {
+        this(transUnitId, newContents, newContentState, baseTranslationVersion, sourceType);
+        this.revisionComment = revisionComment;
+        this.copiedEntityId = copiedEntityId;
+        this.copiedEntityType = copiedEntityType;
     }
 
     public TransUnitUpdateRequest addTargetComment(String comment) {
@@ -78,6 +93,22 @@ public class TransUnitUpdateRequest implements IsSerializable {
         return baseTranslationVersion;
     }
 
+    public String getRevisionComment() {
+        return revisionComment;
+    }
+
+    public Long getCopiedEntityId() {
+        return copiedEntityId;
+    }
+
+    public String getCopiedEntityType() {
+        return copiedEntityType;
+    }
+
+    public String getSourceType() {
+        return sourceType;
+    }
+
     public boolean hasTargetComment() {
         return !Strings.isNullOrEmpty(targetComment);
     }
@@ -95,6 +126,10 @@ public class TransUnitUpdateRequest implements IsSerializable {
             add("newContentState", newContentState).
             add("baseTranslationVersion", baseTranslationVersion).
             add("targetComment", targetComment).
+            add("revisionComment", revisionComment).
+            add("copiedEntityId", copiedEntityId).
+            add("copiedEntityType", copiedEntityType).
+            add("sourceType", sourceType).
             toString();
       // @formatter:on
     }

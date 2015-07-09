@@ -32,6 +32,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -41,6 +43,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.PostLoad;
 import javax.persistence.PostPersist;
 import javax.persistence.PostUpdate;
+import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -53,6 +56,9 @@ import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.AnalyzerDiscriminator;
 import org.hibernate.search.annotations.Field;
@@ -69,10 +75,13 @@ import org.zanata.hibernate.search.LocaleIdBridge;
 import org.zanata.hibernate.search.StringListBridge;
 import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
 import org.zanata.model.type.EntityType;
+import org.zanata.model.type.EntityTypeType;
+import org.zanata.model.type.TranslationSourceType;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
+import org.zanata.model.type.TranslationSourceTypeType;
 
 /**
  * Represents a flow of translated text that should be processed as a
@@ -85,6 +94,10 @@ import com.google.common.collect.Lists;
 @Entity
 @EntityListeners({ HTextFlowTarget.EntityListener.class })
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@TypeDefs({
+    @TypeDef(name = "sourceType", typeClass = TranslationSourceTypeType.class),
+    @TypeDef(name = "entityType", typeClass = EntityTypeType.class)
+})
 @Indexed
 @Setter
 @NoArgsConstructor
@@ -121,11 +134,27 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
     @Getter
     private String revisionComment;
 
+    private EntityType copiedEntityType;
+
+    @Getter
+    private Long copiedEntityId;
+
+    private TranslationSourceType sourceType;
+
+    @Getter
+    @Setter(AccessLevel.PRIVATE)
+    private Boolean automatedEntry;
+
     private boolean revisionCommentSet = false;
 
     // Only for internal use (persistence transient)
     @Setter(AccessLevel.PRIVATE)
     private Integer oldVersionNum;
+
+    @Type(type = "sourceType")
+    public TranslationSourceType getSourceType() {
+        return sourceType;
+    }
 
     public void setRevisionComment(String revisionComment) {
         this.revisionComment = revisionComment;
@@ -240,6 +269,11 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
     @Transient
     public void setContent(String content) {
         this.setContents(Arrays.asList(content));
+    }
+
+    @Type(type = "entityType")
+    public EntityType getCopiedEntityType() {
+        return copiedEntityType;
     }
 
     @Override
@@ -416,6 +450,10 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
         setLastModifiedBy(null);
         setTranslator(null);
         setReviewer(null);
+        setRevisionComment(null);
+        setSourceType(null);
+        setCopiedEntityId(null);
+        setCopiedEntityType(null);
     }
 
     protected boolean logPersistence() {
@@ -433,11 +471,29 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
         private void preUpdate(HTextFlowTarget tft) {
             // insert history if this has changed from its initial state
             if (tft.initialState != null && tft.initialState.hasChanged(tft)) {
+                if (tft.initialState.getSourceType() == null) {
+                    tft.initialState.setSourceType(TranslationSourceType.UNKNOWN);
+                }
+                tft.initialState.setAutomatedEntry(tft.initialState
+                        .getSourceType().isAutomatedEntry());
                 tft.getHistory().put(tft.oldVersionNum, tft.initialState);
                 if (!tft.isRevisionCommentSet()) {
                     tft.setRevisionComment(null);
                 }
             }
+            setAutomatedEntry(tft);
+        }
+
+        @PrePersist
+        private void prePersist(HTextFlowTarget tft) {
+            setAutomatedEntry(tft);
+        }
+
+        private void setAutomatedEntry(HTextFlowTarget tft) {
+            if (tft.getSourceType() == null) {
+                tft.setSourceType(TranslationSourceType.UNKNOWN);
+            }
+            tft.setAutomatedEntry(tft.getSourceType().isAutomatedEntry());
         }
 
         @PostUpdate

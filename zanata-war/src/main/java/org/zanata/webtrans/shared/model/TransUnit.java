@@ -32,6 +32,7 @@ public class TransUnit implements IsSerializable, HasTransUnitId {
     private int verNum;
     private String targetComment;
     private int commentsCount;
+    private String revisionComment;
 
     // for GWT
     @SuppressWarnings("unused")
@@ -54,6 +55,7 @@ public class TransUnit implements IsSerializable, HasTransUnitId {
         this.verNum = builder.verNum;
         this.targetComment = builder.targetComment;
         this.commentsCount = builder.commentsCount;
+        this.revisionComment = builder.revisionComment;
     }
 
     @Override
@@ -172,6 +174,14 @@ public class TransUnit implements IsSerializable, HasTransUnitId {
         this.commentsCount = commentsCount;
     }
 
+    public String getRevisionComment() {
+        return revisionComment;
+    }
+
+    public void setRevisionComment(String revisionComment) {
+        this.revisionComment = revisionComment;
+    }
+
     public String debugString() {
         // @formatter:off
         return Objects.toStringHelper(this)
@@ -208,6 +218,7 @@ public class TransUnit implements IsSerializable, HasTransUnitId {
         private int verNum = -1; // to fail check if not set before build
         private String targetComment;
         private int commentsCount;
+        private String revisionComment;
 
         private Builder(TransUnit transUnit) {
             this.status = transUnit.status;
@@ -224,6 +235,7 @@ public class TransUnit implements IsSerializable, HasTransUnitId {
             this.rowIndex = transUnit.rowIndex;
             this.verNum = transUnit.verNum;
             this.commentsCount = transUnit.commentsCount;
+            this.revisionComment = transUnit.revisionComment;
         }
 
         private Builder() {
@@ -347,6 +359,11 @@ public class TransUnit implements IsSerializable, HasTransUnitId {
 
         public Builder setCommentsCount(int commentsCount) {
             this.commentsCount = commentsCount;
+            return this;
+        }
+
+        public Builder setRevisionComment(String revisionComment) {
+            this.revisionComment = revisionComment;
             return this;
         }
     }

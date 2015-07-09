@@ -54,6 +54,7 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.type.TranslationSourceType;
 import org.zanata.seam.AutowireTransaction;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.service.CopyTransService;
@@ -62,6 +63,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.common.ContentState.Approved;
 import static org.zanata.common.ContentState.NeedReview;
 import static org.zanata.common.ContentState.New;
@@ -225,7 +228,10 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
                         .getSingleResult();
         // Id: 3L for Locale de
         HTextFlowTarget target = targetTextFlow.getTargets().get(3L);
-
+        if(target != null) {
+            assertThat(target.getSourceType())
+                .isEqualTo(TranslationSourceType.COPY_TRANS);
+        }
         if (execution.isExpectUntranslated()) {
             if (target != null && target.getState() != ContentState.New) {
                 throw new AssertionError(

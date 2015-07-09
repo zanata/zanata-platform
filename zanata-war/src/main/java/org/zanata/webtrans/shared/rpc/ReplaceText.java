@@ -34,6 +34,11 @@ public class ReplaceText extends UpdateTransUnit {
     private String replaceText;
     private boolean caseSensitive;
 
+    /**
+     * See {@link org.zanata.model.type.TranslationSourceType#GWT_EDITOR_ENTRY}
+     */
+    private String sourceType = "GWT";
+
     private ReplaceText() {
         super(UpdateType.NonEditorSave);
     }
@@ -52,7 +57,7 @@ public class ReplaceText extends UpdateTransUnit {
         this.replaceText = replaceText;
         for (TransUnit tu : transUnits) {
             addTransUnit(new TransUnitUpdateRequest(tu.getId(),
-                    tu.getTargets(), tu.getStatus(), tu.getVerNum()));
+                    tu.getTargets(), tu.getStatus(), tu.getVerNum(), sourceType));
         }
     }
 

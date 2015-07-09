@@ -62,6 +62,7 @@ import org.zanata.file.SourceDocumentUpload;
 import org.zanata.file.TranslationDocumentUpload;
 import org.zanata.model.HDocument;
 import org.zanata.model.HRawDocument;
+import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
@@ -153,7 +154,8 @@ public class FileService implements FileResource {
         GlobalDocumentId id =
                 new GlobalDocumentId(projectSlug, iterationSlug, docId);
         return translationUploader.tryUploadTranslationFile(id, localeId,
-            merge, assignCreditToUploader, uploadForm);
+            merge, assignCreditToUploader, uploadForm,
+            TranslationSourceType.API_UPLOAD);
     }
 
     @Override

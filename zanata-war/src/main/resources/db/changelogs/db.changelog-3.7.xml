@@ -54,11 +54,27 @@
         <changeSetExecuted id="3" author="aeng@redhat.com" changeLogFile="db/changelogs/db.changelog-3.7.xml"/>
       </not>
     </preConditions>
-    <comment>Add revisionComment to HTextFlowTarget</comment>
+    <comment>Add copiedEntityType, copiedEntityId, sourceType, automatedEntry, revisionComment to HTextFlowTarget</comment>
     <addColumn tableName="HTextFlowTarget">
       <column name="revisionComment" type="longtext">
         <constraints nullable="true" />
       </column>
+    </addColumn>
+    <addColumn tableName="HTextFlowTarget">
+      <column name="copiedEntityType" type="char(3)">
+        <constraints nullable="true" />
+      </column>
+    </addColumn>
+    <addColumn tableName="HTextFlowTarget">
+      <column name="copiedEntityId" type="longtext">
+        <constraints nullable="true" />
+      </column>
+    </addColumn>
+    <addColumn tableName="HTextFlowTarget">
+      <column name="sourceType" type="char(3)" defaultValue="UNK"/>
+    </addColumn>
+    <addColumn tableName="HTextFlowTarget">
+      <column name="automatedEntry" type="boolean" defaultValueBoolean="false"/>
     </addColumn>
   </changeSet>
 
@@ -68,11 +84,27 @@
         <changeSetExecuted id="3" author="aeng@redhat.com" changeLogFile="db/changelogs/db.changelog-3.7.xml"/>
       </not>
     </preConditions>
-    <comment>Add revisionComment to HTextFlowTargetHistory</comment>
+    <comment>Add copiedEntityType, copiedEntityId, sourceType, automatedEntry, revisionComment to HTextFlowTargetHistory</comment>
     <addColumn tableName="HTextFlowTargetHistory">
       <column name="revisionComment" type="longtext">
         <constraints nullable="true" />
       </column>
+    </addColumn>
+    <addColumn tableName="HTextFlowTargetHistory">
+      <column name="copiedEntityType" type="char(3)">
+        <constraints nullable="true" />
+      </column>
+    </addColumn>
+    <addColumn tableName="HTextFlowTargetHistory">
+      <column name="copiedEntityId" type="longtext">
+        <constraints nullable="true" />
+      </column>
+    </addColumn>
+    <addColumn tableName="HTextFlowTargetHistory">
+      <column name="sourceType" type="char(3)" defaultValue="UNK"/>
+    </addColumn>
+    <addColumn tableName="HTextFlowTargetHistory">
+      <column name="automatedEntry" type="boolean" defaultValueBoolean="false"/>
     </addColumn>
   </changeSet>
 
@@ -145,6 +177,20 @@
     <comment>add lastModifiedBy index to HTextFlowTarget table</comment>
     <createIndex tableName="HTextFlowTarget" indexName="Idx_lastModifiedBy">
       <column name="last_modified_by_id"/>
+    </createIndex>
+  </changeSet>
+
+  <changeSet id="5" author="aeng@redhat.com">
+    <comment>add automatedEntry index to HTextFlowTarget</comment>
+    <createIndex tableName="HTextFlowTarget" indexName="Idx_AutomatedEntry">
+      <column name="automatedEntry"/>
+    </createIndex>
+  </changeSet>
+
+  <changeSet id="6" author="aeng@redhat.com">
+    <comment>add automatedEntry index to HTextFlowTargetHistory</comment>
+    <createIndex tableName="HTextFlowTargetHistory" indexName="Idx_AutomatedEntry">
+      <column name="automatedEntry"/>
     </createIndex>
   </changeSet>
 

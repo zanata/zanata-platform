@@ -1,5 +1,5 @@
 /*
- * Copyright 2013, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2015, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,23 +18,30 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.model;
 
-import org.zanata.model.type.EntityType;
+package org.zanata.model.type;
+
+import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-public interface IsEntityWithType {
+public class TranslationSourceTypeTest {
 
-    /**
-     * Return Entity id
-     */
-    Long getId();
+    @Test
+    public void testGetFromAbbr() {
+        for (TranslationSourceType type : TranslationSourceType.values()) {
+            TranslationSourceType.getValueOf(type.getAbbr());
+            assertThat(TranslationSourceType.getValueOf(type.getAbbr()))
+                    .isEqualTo(type);
+        }
+    }
 
-    /**
-     * Return the type of Entity class.
-     * Use in {@link org.zanata.model.Activity} to identify Entity of the id.
-     */
-    EntityType getEntityType();
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetFromAbbrException() {
+        TranslationSourceType.getValueOf("non-exist-abbr");
+    }
+
 }

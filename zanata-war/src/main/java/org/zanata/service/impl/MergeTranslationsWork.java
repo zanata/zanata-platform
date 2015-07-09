@@ -34,10 +34,11 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.type.TranslationSourceType;
 import org.zanata.service.TranslationStateCache;
-import org.zanata.util.MessageGenerator;
 
 import com.google.common.base.Stopwatch;
+import org.zanata.util.TranslationUtil;
 
 /**
  * Merge translation and persist in transaction.
@@ -137,8 +138,10 @@ public class MergeTranslationsWork extends Work<Integer> {
             }
             hComment.setComment(sourceTft.getComment().getComment());
         }
-        targetTft.setRevisionComment(MessageGenerator
+        targetTft.setRevisionComment(TranslationUtil
             .getMergeTranslationMessage(sourceTft));
+        targetTft.setSourceType(TranslationSourceType.MERGE_VERSION);
+        TranslationUtil.copyEntity(sourceTft, targetTft);
 
         raiseSuccessEvent(targetTft, oldState);
     }

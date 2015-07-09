@@ -101,7 +101,8 @@ public class GetTranslationHistoryHandler
                             GwtRpcUtil.getTargetContentsWithPadding(hTextFlow,
                                     hTextFlowTarget, nPlurals),
                             hTextFlowTarget.getState(), lastModifiedBy,
-                            hTextFlowTarget.getLastChanged());
+                            hTextFlowTarget.getLastChanged(),
+                            hTextFlowTarget.getRevisionComment());
             // history translation
             history = hTextFlowTarget.getHistory();
         }
@@ -162,7 +163,8 @@ public class GetTranslationHistoryHandler
                     .toString(), targetHistory.getContents(),
                     targetHistory.getState(),
                     nameOrEmptyString(targetHistory.getLastModifiedBy()),
-                    targetHistory.getLastChanged());
+                    targetHistory.getLastChanged(),
+                    targetHistory.getRevisionComment());
         }
     }
 }

@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.zanata.common.ContentState;
+import org.zanata.model.type.EntityType;
 
 public interface ITextFlowTargetHistory {
 
@@ -42,4 +43,14 @@ public interface ITextFlowTargetHistory {
     HPerson getTranslator();
 
     HPerson getReviewer();
+
+    Long getId();
+
+    Long getCopiedEntityId();
+
+    EntityType getCopiedEntityType();
+
+    void setCopiedEntityType(EntityType entityType);
+
+    void setCopiedEntityId(Long id);
 }

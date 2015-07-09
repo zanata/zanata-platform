@@ -74,6 +74,11 @@ public class TranslationService implements TranslationResource {
     @In
     private LocaleService localeServiceImpl;
 
+    /**
+     * See {@link org.zanata.model.type.TranslationSourceType#JS_EDITOR_ENTRY}
+     */
+    private final String sourceType = "JS";
+
     @Override
     public Response get(String localeId, String ids) {
         TransUnits transUnits = new TransUnits();
@@ -129,7 +134,8 @@ public class TranslationService implements TranslationResource {
         TransUnitUpdateRequest request =
                 new TransUnitUpdateRequest(new TransUnitId(requestData.getId()
                         .longValue()), requestData.getContents(),
-                        requestData.getStatus(), requestData.getRevision());
+                        requestData.getStatus(), requestData.getRevision(),
+                        sourceType);
 
         List<TranslationResult> translationResults =
                 translationServiceImpl.translate(new LocaleId(localeId),
