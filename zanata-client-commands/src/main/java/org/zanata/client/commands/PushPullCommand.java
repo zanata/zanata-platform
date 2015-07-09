@@ -108,7 +108,7 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
 
     protected void debug(Object jaxbElement) {
         try {
-            if (getOpts().isDebugSet()) {
+            if (getOpts().isDebugSet() && getOpts().getLogHttp()) {
                 StringWriter writer = new StringWriter();
                 getMarshaller().marshal(jaxbElement, writer);
                 log.debug("{}", writer);
