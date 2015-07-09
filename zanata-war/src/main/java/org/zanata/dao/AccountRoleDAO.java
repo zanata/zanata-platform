@@ -58,6 +58,21 @@ public class AccountRoleDAO extends AbstractDAOImpl<HAccountRole, Integer> {
         return role;
     }
 
+    public HAccountRole updateIncludeRoles(String roleName,
+        String... includesRoles) {
+        HAccountRole role = findByName(roleName);
+        for (String includeRole : includesRoles) {
+            Set<HAccountRole> groups = role.getGroups();
+            if (groups == null) {
+                groups = new HashSet<HAccountRole>();
+                role.setGroups(groups);
+            }
+            groups.add(findByName(includeRole));
+        }
+        makePersistent(role);
+        return role;
+    }
+
     public List<HAccount> listMembers(String roleName) {
         HAccountRole role = findByName(roleName);
         return listMembers(role);

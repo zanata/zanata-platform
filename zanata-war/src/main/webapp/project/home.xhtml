@@ -12,7 +12,9 @@
   <ui:define name="page_title">#{msgs['jsf.Projects']}</ui:define>
 
   <ui:define name="right_content">
-    <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
+    <ui:param name="hasActions"
+      value="#{identity.loggedIn and (s:hasPermission(projectHome.instance, 'insert') or s:hasRole('admin'))}"/>
+    <rich:panel id="loggedIn" rendered="#{hasActions}">
       <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
       <s:link id="createProjectLink" styleClass="action_link"
         rendered="#{s:hasPermission(projectHome.instance, 'insert')}"

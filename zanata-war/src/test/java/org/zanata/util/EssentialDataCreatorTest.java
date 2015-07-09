@@ -70,19 +70,20 @@ public class EssentialDataCreatorTest {
 
     @Test
     public void canCreateAllRoles() {
-        givenRolesDoNotExists("admin", "user", "glossarist", "glossary-admin");
+        givenRolesDoNotExists("admin", "user", "glossarist", "glossary-admin", "project-creator");
 
         creator.prepare();
 
-        verify(accountRoleDAO).create("user", HAccountRole.RoleType.MANUAL);
+        verify(accountRoleDAO).create("user", HAccountRole.RoleType.MANUAL, "project-creator");
         verify(accountRoleDAO).create("glossarist", HAccountRole.RoleType.MANUAL);
         verify(accountRoleDAO).create("glossary-admin", HAccountRole.RoleType.MANUAL, "glossarist");
         verify(accountRoleDAO).create("admin", HAccountRole.RoleType.MANUAL, "user", "glossary-admin");
+        verify(accountRoleDAO).create("project-creator", HAccountRole.RoleType.MANUAL);
     }
 
     @Test
     public void willNotCreateRolesIfTheyExists() {
-        givenRolesDoExists("admin", "user", "glossarist", "glossary-admin");
+        givenRolesDoExists("admin", "user", "glossarist", "glossary-admin", "project-creator");
 
         creator.prepare();
 

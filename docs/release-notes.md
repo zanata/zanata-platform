@@ -10,7 +10,9 @@
 
 <h5>New Features</h5>
 * [1224912] (https://bugzilla.redhat.com/show_bug.cgi?id=1224912) - Filter "Last modified by translators other than <user>"
+* [1214502](https://bugzilla.redhat.com/show_bug.cgi?id=1214502) -  RFE: Grant project creation permission to certain sets of users
 
+-----------------------
 
 ## 3.7
 
@@ -91,7 +93,9 @@ Example usage in html file: `<link rel="shortcut icon" href="#{assets['img/logo/
 * [1211849](https://bugzilla.redhat.com/show_bug.cgi?id=1211849) - Project maintainer can change project/version slug
 * [1082840](https://bugzilla.redhat.com/show_bug.cgi?id=1082840) - Project maintainer can delete a project or project version
 * [1209669](https://bugzilla.redhat.com/show_bug.cgi?id=1209669) - New REST endpoint for editor suggestions.
-*
+
+-----------------------
+
 
 ## 3.6.3
 
