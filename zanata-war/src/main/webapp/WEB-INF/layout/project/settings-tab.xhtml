@@ -282,7 +282,7 @@
   <h:outputScript target="body" library="script" name="commonmark-preview.js"/>
 
   <ui:include src="/WEB-INF/layout/delete_confirmation_modal.xhtml">
-    <ui:param name="entityType" value="#{msgs['jsf.Project']}" />
+    <ui:param name="copiedEntityType" value="#{msgs['jsf.Project']}" />
     <ui:param name="entityName" value="#{projectHome.instance.name}" />
   </ui:include>
 </ui:composition>

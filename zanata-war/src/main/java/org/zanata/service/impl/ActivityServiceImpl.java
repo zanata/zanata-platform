@@ -150,7 +150,7 @@ public class ActivityServiceImpl implements ActivityService {
         if (context != null && activityType != null) {
             Date currentActionTime = new Date();
             Activity activity =
-                    findActivity(actorId, context.getType(),
+                    findActivity(actorId, context.getEntityType(),
                             context.getId(), activityType, currentActionTime);
             if (activity != null) {
                 activity.updateActivity(currentActionTime, target, wordCount);

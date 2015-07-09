@@ -29,7 +29,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
-import org.zanata.model.type.TranslationEntityType;
+import org.zanata.model.type.EntityType;
 import org.zanata.model.type.TranslationSourceType;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -79,41 +79,41 @@ public class TextFlowTargetDAOTest extends ZanataDbunitJpaTest {
         HTextFlowTarget target = textFlowTargetDAO.findById(1L);
 
         //create revision = 1
-        TranslationEntityType entityType1 = TranslationEntityType.TFT;
+        EntityType entityType1 = EntityType.HTexFlowTarget;
         TranslationSourceType sourceType1 = TranslationSourceType.COPY_TRANS;
-        Long entityId1 = 2L;
+        Long copiedEntityId1 = 2L;
 
-        target.setEntityType(entityType1);
+        target.setCopiedEntityType(entityType1);
         target.setSourceType(sourceType1);
-        target.setEntityId(entityId1);
+        target.setCopiedEntityId(copiedEntityId1);
 
         target = textFlowTargetDAO.makePersistent(target);
         textFlowTargetDAO.flush();
 
         assertThat(target.getEntityType()).isEqualTo(entityType1);
         assertThat(target.getSourceType()).isEqualTo(sourceType1);
-        assertThat(target.getEntityId()).isEqualTo(entityId1);
+        assertThat(target.getCopiedEntityId()).isEqualTo(copiedEntityId1);
 
         //Create new revision = 2
         TranslationSourceType sourceType2 = TranslationSourceType.COPY_VERSION;
 
         target.setContents("new content");
         target.setSourceType(sourceType2);
-        target.setEntityId(null);
-        target.setEntityType(null);
+        target.setCopiedEntityId(null);
+        target.setCopiedEntityType(null);
 
         textFlowTargetDAO.makePersistent(target);
         textFlowTargetDAO.flush();
 
         target = textFlowTargetDAO.findById(1L);
 
-        assertThat(target.getEntityType()).isEqualTo(null);
-        assertThat(target.getEntityId()).isEqualTo(null);
+        assertThat(target.getCopiedEntityType()).isEqualTo(null);
+        assertThat(target.getCopiedEntityId()).isEqualTo(null);
         assertThat(target.getSourceType()).isEqualTo(sourceType2);
 
         HTextFlowTargetHistory history1 = target.getHistory().get(2);
-        assertThat(history1.getEntityType()).isEqualTo(entityType1);
+        assertThat(history1.getCopiedEntityType()).isEqualTo(entityType1);
         assertThat(history1.getSourceType()).isEqualTo(sourceType1);
-        assertThat(history1.getEntityId()).isEqualTo(entityId1);
+        assertThat(history1.getCopiedEntityId()).isEqualTo(copiedEntityId1);
     }
 }

@@ -39,8 +39,6 @@
     file="changelogs/db.changelog-3.6.xml" />
   <include relativeToChangelogFile="true"
     file="changelogs/db.changelog-3.7.xml" />
-  <include relativeToChangelogFile="true"
-    file="changelogs/db.changelog-3.8.xml" />
 
   <!-- NB: triggers and validations must appear after all table changes -->
   <!-- If the Liquibase version is being updated, please refer to the

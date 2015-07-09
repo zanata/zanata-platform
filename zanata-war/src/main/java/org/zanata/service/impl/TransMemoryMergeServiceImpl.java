@@ -36,7 +36,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.tm.TransMemoryUnit;
-import org.zanata.model.type.TranslationEntityType;
+import org.zanata.model.type.EntityType;
 import org.zanata.model.type.TranslationSourceType;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SecurityService;
@@ -195,7 +195,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
             comment = buildTargetComment(tu);
             revisionComment = TranslationUtil.getTMMergeMessage(tu);
             entityId = tu.getId();
-            entityType = TranslationEntityType.TMX.name();
+            entityType = EntityType.TMX.getAbbr();
         } else {
             HTextFlow tmSource = textFlowDAO.findById(tmSourceId, false);
             TransMemoryDetails tmDetail =
@@ -209,8 +209,8 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
             revisionComment = TranslationUtil.getTMMergeMessage(tmDetail);
 
             HTextFlowTarget target = tmSource.getTargets().get(hLocale.getId());
-            entityId = TranslationUtil.getEntityId(target);
-            entityType = TranslationUtil.getEntityType(target).name();
+            entityId = TranslationUtil.getCopiedEntityId(target);
+            entityType = TranslationUtil.getCopiedEntityType(target).getAbbr();
         }
 
         if (statusToSet != null) {

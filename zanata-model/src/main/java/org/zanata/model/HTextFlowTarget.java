@@ -58,6 +58,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.AnalyzerDiscriminator;
 import org.hibernate.search.annotations.Field;
@@ -74,7 +75,7 @@ import org.zanata.hibernate.search.LocaleIdBridge;
 import org.zanata.hibernate.search.StringListBridge;
 import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
 import org.zanata.model.type.EntityType;
-import org.zanata.model.type.TranslationEntityType;
+import org.zanata.model.type.EntityTypeType;
 import org.zanata.model.type.TranslationSourceType;
 
 import com.google.common.base.MoreObjects;
@@ -93,7 +94,10 @@ import org.zanata.model.type.TranslationSourceTypeType;
 @Entity
 @EntityListeners({ HTextFlowTarget.EntityListener.class })
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@TypeDef(name = "sourceType", typeClass = TranslationSourceTypeType.class)
+@TypeDefs({
+    @TypeDef(name = "sourceType", typeClass = TranslationSourceTypeType.class),
+    @TypeDef(name = "entityType", typeClass = EntityTypeType.class)
+})
 @Indexed
 @Setter
 @NoArgsConstructor
@@ -130,10 +134,10 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
     @Getter
     private String revisionComment;
 
-    private TranslationEntityType entityType;
+    private EntityType copiedEntityType;
 
     @Getter
-    private Long entityId;
+    private Long copiedEntityId;
 
     private TranslationSourceType sourceType;
 
@@ -267,9 +271,9 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
         this.setContents(Arrays.asList(content));
     }
 
-    @Enumerated(EnumType.STRING)
-    public TranslationEntityType getEntityType() {
-        return entityType;
+    @Type(type = "entityType")
+    public EntityType getCopiedEntityType() {
+        return copiedEntityType;
     }
 
     @Override
@@ -448,8 +452,8 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
         setReviewer(null);
         setRevisionComment(null);
         setSourceType(null);
-        setEntityId(null);
-        setEntityType(null);
+        setCopiedEntityId(null);
+        setCopiedEntityType(null);
     }
 
     protected boolean logPersistence() {
@@ -458,7 +462,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
 
     @Override
     @Transient
-    public EntityType getType() {
+    public EntityType getEntityType() {
         return EntityType.HTexFlowTarget;
     }
 

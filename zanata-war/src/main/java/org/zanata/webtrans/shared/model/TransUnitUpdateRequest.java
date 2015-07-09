@@ -43,9 +43,9 @@ public class TransUnitUpdateRequest implements IsSerializable {
     private int baseTranslationVersion;
     private String targetComment;
     private String revisionComment;
-    private Long entityId;
-    private String entityType;
-    private String sourceType;
+    private Long copiedEntityId;
+    private String copiedEntityType; //abbreviation
+    private String sourceType; //abbreviation
 
     // required for GWT rpc serialization
     @SuppressWarnings("unused")
@@ -53,8 +53,8 @@ public class TransUnitUpdateRequest implements IsSerializable {
     }
 
     public TransUnitUpdateRequest(TransUnitId transUnitId,
-        List<String> newContents, ContentState newContentState,
-        int baseTranslationVersion, String sourceType) {
+            List<String> newContents, ContentState newContentState,
+            int baseTranslationVersion, String sourceType) {
         this.transUnitId = transUnitId;
         this.newContents = newContents;
         this.newContentState = newContentState;
@@ -64,12 +64,12 @@ public class TransUnitUpdateRequest implements IsSerializable {
 
     public TransUnitUpdateRequest(TransUnitId transUnitId,
             List<String> newContents, ContentState newContentState,
-            int baseTranslationVersion, String revisionComment, Long entityId,
-            String entityType, String sourceType) {
+            int baseTranslationVersion, String revisionComment, Long copiedEntityId,
+            String copiedEntityType, String sourceType) {
         this(transUnitId, newContents, newContentState, baseTranslationVersion, sourceType);
         this.revisionComment = revisionComment;
-        this.entityId = entityId;
-        this.entityType = entityType;
+        this.copiedEntityId = copiedEntityId;
+        this.copiedEntityType = copiedEntityType;
     }
 
     public TransUnitUpdateRequest addTargetComment(String comment) {
@@ -97,12 +97,12 @@ public class TransUnitUpdateRequest implements IsSerializable {
         return revisionComment;
     }
 
-    public Long getEntityId() {
-        return entityId;
+    public Long getCopiedEntityId() {
+        return copiedEntityId;
     }
 
-    public String getEntityType() {
-        return entityType;
+    public String getCopiedEntityType() {
+        return copiedEntityType;
     }
 
     public String getSourceType() {
@@ -127,8 +127,8 @@ public class TransUnitUpdateRequest implements IsSerializable {
             add("baseTranslationVersion", baseTranslationVersion).
             add("targetComment", targetComment).
             add("revisionComment", revisionComment).
-            add("entityId", entityId).
-            add("entityType", entityType).
+            add("copiedEntityId", copiedEntityId).
+            add("copiedEntityType", copiedEntityType).
             add("sourceType", sourceType).
             toString();
       // @formatter:on

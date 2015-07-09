@@ -23,34 +23,36 @@ package org.zanata.model.type;
 
 import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.AbstractTypeDescriptor;
-import org.zanata.common.ContentType;
 
-public class TranslationSourceTypeTypeDescriptor extends
-        AbstractTypeDescriptor<TranslationSourceType> {
-    private static final long serialVersionUID = 1L;
-    public static final TranslationSourceTypeTypeDescriptor INSTANCE =
-            new TranslationSourceTypeTypeDescriptor();
+/**
+ * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
+ */
+public class EntityTypeTypeDescriptor extends
+        AbstractTypeDescriptor<EntityType> {
 
-    public TranslationSourceTypeTypeDescriptor() {
-        super(TranslationSourceType.class);
+    public static final EntityTypeTypeDescriptor INSTANCE =
+        new EntityTypeTypeDescriptor();
+
+    public EntityTypeTypeDescriptor() {
+        super(EntityType.class);
     }
 
     @Override
-    public TranslationSourceType fromString(String string) {
+    public EntityType fromString(String string) {
         if (string == null) {
             return null;
         } else {
-            return TranslationSourceType.getValueOf(string);
+            return EntityType.getValueOf(string);
         }
     }
 
     @Override
-    public String toString(TranslationSourceType value) {
+    public String toString(EntityType value) {
         return value.getAbbr();
     }
 
     @Override
-    public <X> X unwrap(TranslationSourceType value, Class<X> type,
+    public <X> X unwrap(EntityType value, Class<X> type,
             WrapperOptions options) {
         if (value == null) {
             return null;
@@ -62,12 +64,12 @@ public class TranslationSourceTypeTypeDescriptor extends
     }
 
     @Override
-    public <X> TranslationSourceType wrap(X value, WrapperOptions options) {
+    public <X> EntityType wrap(X value, WrapperOptions options) {
         if (value == null) {
             return null;
         }
         if (String.class.isInstance(value)) {
-            return TranslationSourceType.getValueOf((String) value);
+            return EntityType.getValueOf((String) value);
         }
         throw unknownWrap(value.getClass());
     }

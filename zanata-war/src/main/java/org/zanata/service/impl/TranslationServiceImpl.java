@@ -73,7 +73,7 @@ import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
-import org.zanata.model.type.TranslationEntityType;
+import org.zanata.model.type.EntityType;
 import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -334,26 +334,26 @@ public class TranslationServiceImpl implements TranslationService {
 
     public class TranslationDetails {
         private final String revisionComment;
-        private final TranslationEntityType entityType;
+        private final EntityType copiedEntityType;
         private final TranslationSourceType sourceType;
-        private final Long entityId;
+        private final Long copiedEntityId;
 
         public TranslationDetails(String revisionComment,
-            TranslationEntityType entityType, TranslationSourceType sourceType,
-            Long entityId) {
+            EntityType copiedEntityType, TranslationSourceType sourceType,
+            Long copiedEntityId) {
             this.revisionComment = revisionComment;
-            this.entityType = entityType;
             this.sourceType = sourceType;
-            this.entityId = entityId;
+            this.copiedEntityType = copiedEntityType;
+            this.copiedEntityId = copiedEntityId;
         }
 
         public TranslationDetails(TransUnitUpdateRequest request) {
             this.revisionComment = request.getRevisionComment();
-            this.entityId = request.getEntityId();
-            entityType =
-                    StringUtils.isEmpty(request.getEntityType()) ? null
-                            : TranslationEntityType.valueOf(request
-                                    .getEntityType());
+            this.copiedEntityId = request.getCopiedEntityId();
+            copiedEntityType =
+                    StringUtils.isEmpty(request.getCopiedEntityType()) ? null
+                            : EntityType.getValueOf(request
+                                    .getCopiedEntityType());
             sourceType =
                     StringUtils.isEmpty(request.getSourceType()) ? null
                             : TranslationSourceType.getValueOf(request
@@ -364,16 +364,16 @@ public class TranslationServiceImpl implements TranslationService {
             return revisionComment;
         }
 
-        public TranslationEntityType getEntityType() {
-            return entityType;
+        public EntityType getCopiedEntityType() {
+            return copiedEntityType;
         }
 
         public TranslationSourceType getSourceType() {
             return sourceType;
         }
 
-        public Long getEntityId() {
-            return entityId;
+        public Long getCopiedEntityId() {
+            return copiedEntityId;
         }
     }
 
@@ -394,9 +394,9 @@ public class TranslationServiceImpl implements TranslationService {
             hTextFlowTarget.setLastModifiedBy(authenticatedAccount.getPerson());
 
             hTextFlowTarget.setRevisionComment(details.getRevisionComment());
-            hTextFlowTarget.setEntityType(details.getEntityType());
+            hTextFlowTarget.setCopiedEntityType(details.getCopiedEntityType());
             hTextFlowTarget.setSourceType(details.getSourceType());
-            hTextFlowTarget.setEntityId(details.getEntityId());
+            hTextFlowTarget.setCopiedEntityId(details.getCopiedEntityId());
 
             log.debug("last modified by :{}", authenticatedAccount.getPerson()
                     .getName());
@@ -897,8 +897,8 @@ public class TranslationServiceImpl implements TranslationService {
                             actorId = null;
                         }
                         hTarget.setSourceType(translationSourceType);
-                        hTarget.setEntityId(null);
-                        hTarget.setEntityId(null);
+                        hTarget.setCopiedEntityId(null);
+                        hTarget.setCopiedEntityId(null);
                         textFlowTargetDAO.makePersistent(hTarget);
                         signalPostTranslateEvent(actorId, hTarget, currentState);
                     }
@@ -1006,8 +1006,8 @@ public class TranslationServiceImpl implements TranslationService {
                                 new TransUnitUpdateRequest(tuId, oldContents,
                                         oldState, versionNum,
                                         oldTarget.getRevisionComment(),
-                                        oldTarget.getEntityId(), oldTarget
-                                                .getEntityType().name(),
+                                        oldTarget.getCopiedEntityId(), oldTarget
+                                                .getCopiedEntityType().getAbbr(),
                                         oldTarget.getSourceType().getAbbr());
                         // add to list
                         updateRequests.add(request);

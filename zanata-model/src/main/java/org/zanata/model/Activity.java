@@ -100,9 +100,9 @@ public class Activity extends ModelEntityBase implements Serializable {
     public Activity(HPerson actor, IsEntityWithType context,
             IsEntityWithType target, ActivityType activityType, int wordCount) {
         this.actor = actor;
-        this.contextType = context.getType();
+        this.contextType = context.getEntityType();
         this.contextId = context.getId();
-        this.lastTargetType = target.getType();
+        this.lastTargetType = target.getEntityType();
         this.lastTargetId = target.getId();
         this.activityType = activityType;
         this.wordCount = wordCount;
@@ -113,7 +113,7 @@ public class Activity extends ModelEntityBase implements Serializable {
         this.endOffsetMillis = currentTime.getTime() - approxTime.getTime();
         this.wordCount += wordCount;
         this.eventCount++;
-        this.lastTargetType = target.getType();
+        this.lastTargetType = target.getEntityType();
         this.lastTargetId = target.getId();
     }
 

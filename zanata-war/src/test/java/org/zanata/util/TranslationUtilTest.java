@@ -24,7 +24,7 @@ package org.zanata.util;
 import org.junit.Test;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
-import org.zanata.model.type.TranslationEntityType;
+import org.zanata.model.type.EntityType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,7 +35,7 @@ public class TranslationUtilTest {
 
     @Test
     public void getEntityIdNullTarget() {
-        assertThat(TranslationUtil.getEntityId(null)).isNull();
+        assertThat(TranslationUtil.getCopiedEntityId(null)).isNull();
     }
 
     @Test
@@ -44,7 +44,7 @@ public class TranslationUtilTest {
         Long entityId = null;
 
         HTextFlowTarget target = generateTarget(id, entityId);
-        assertThat(TranslationUtil.getEntityId(target)).isEqualTo(id);
+        assertThat(TranslationUtil.getCopiedEntityId(target)).isEqualTo(id);
     }
 
     @Test
@@ -53,33 +53,33 @@ public class TranslationUtilTest {
         Long entityId = 1L;
 
         HTextFlowTarget target = generateTarget(id, entityId);
-        assertThat(TranslationUtil.getEntityId(target)).isEqualTo(entityId);
+        assertThat(TranslationUtil.getCopiedEntityId(target)).isEqualTo(entityId);
     }
 
     @Test
     public void getEntityTypeNullTarget() {
-        assertThat(TranslationUtil.getEntityType(null)).isNull();
+        assertThat(TranslationUtil.getCopiedEntityType(null)).isNull();
     }
 
     @Test
     public void getEntityTypeNullType() {
         Long id = 10L;
         Long entityId = 1L;
-        TranslationEntityType entityType = null;
+        EntityType entityType = null;
 
         HTextFlowTarget target = generateTarget(id, entityId, entityType);
-        assertThat(TranslationUtil.getEntityType(target)).isEqualTo(
-            TranslationEntityType.TFT);
+        assertThat(TranslationUtil.getCopiedEntityType(target)).isEqualTo(
+            EntityType.HTexFlowTarget);
     }
 
     @Test
     public void getEntityType() {
         Long id = 10L;
         Long entityId = 1L;
-        TranslationEntityType entityType = TranslationEntityType.TMX;
+        EntityType entityType = EntityType.TMX;
 
         HTextFlowTarget target = generateTarget(id, entityId, entityType);
-        assertThat(TranslationUtil.getEntityType(target)).isEqualTo(
+        assertThat(TranslationUtil.getCopiedEntityType(target)).isEqualTo(
             entityType);
     }
 
@@ -89,8 +89,8 @@ public class TranslationUtilTest {
         Long entityId = 1L;
 
         HTextFlowTarget target = generateTarget(id, entityId, null);
-        assertThat(TranslationUtil.getEntityType(target)).isEqualTo(
-            TranslationEntityType.TFT);
+        assertThat(TranslationUtil.getCopiedEntityType(target)).isEqualTo(
+            EntityType.HTexFlowTarget);
     }
 
     @Test
@@ -98,43 +98,43 @@ public class TranslationUtilTest {
         Long entityId = 1L;
 
         HTextFlowTargetHistory history = generateTargetHistory(entityId, null);
-        assertThat(TranslationUtil.getEntityType(history)).isEqualTo(
-            TranslationEntityType.TTH);
+        assertThat(TranslationUtil.getCopiedEntityType(history)).isEqualTo(
+            EntityType.HTextFlowTargetHistory);
     }
 
     @Test
     public void copyHTextFlowTargetEntity() {
         Long id = 10L;
         Long entityId = 1L;
-        TranslationEntityType entityType = TranslationEntityType.TMX;
+        EntityType entityType = EntityType.TMX;
 
         HTextFlowTarget from = generateTarget(id, entityId, entityType);
         HTextFlowTarget to = new HTextFlowTarget();
 
         TranslationUtil.copyEntity(from, to);
-        assertThat(to.getEntityId()).isEqualTo(entityId);
-        assertThat(to.getEntityType()).isEqualTo(entityType);
+        assertThat(to.getCopiedEntityId()).isEqualTo(entityId);
+        assertThat(to.getCopiedEntityType()).isEqualTo(entityType);
     }
 
     public HTextFlowTarget generateTarget(Long id, Long entityId) {
         HTextFlowTarget target = new HTextFlowTarget();
-        target.setEntityId(entityId);
+        target.setCopiedEntityId(entityId);
         target.setId(id);
         return target;
     }
 
     public HTextFlowTarget generateTarget(Long id, Long entityId,
-            TranslationEntityType entityType) {
+        EntityType entityType) {
         HTextFlowTarget target = generateTarget(id, entityId);
-        target.setEntityType(entityType);
+        target.setCopiedEntityType(entityType);
         return target;
     }
 
     public HTextFlowTargetHistory generateTargetHistory(Long entityId,
-        TranslationEntityType entityType) {
+        EntityType entityType) {
         HTextFlowTargetHistory history = new HTextFlowTargetHistory();
-        history.setEntityId(entityId);
-        history.setEntityType(entityType);
+        history.setCopiedEntityId(entityId);
+        history.setCopiedEntityType(entityType);
         return history;
     }
 }

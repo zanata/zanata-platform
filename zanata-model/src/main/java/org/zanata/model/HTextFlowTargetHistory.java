@@ -30,8 +30,6 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -40,9 +38,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.PostLoad;
-import javax.persistence.PostPersist;
-import javax.persistence.PostUpdate;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
@@ -52,8 +47,10 @@ import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
 import org.zanata.common.ContentState;
-import org.zanata.model.type.TranslationEntityType;
+import org.zanata.model.type.EntityType;
+import org.zanata.model.type.EntityTypeType;
 import org.zanata.model.type.TranslationSourceType;
 
 import com.google.common.base.Objects;
@@ -88,7 +85,11 @@ import org.zanata.model.type.TranslationSourceTypeType;
                 name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY + 6,
                 query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = :tft and size(t.contents) = :contentCount "
                         + "and contents[0] = :content0 and contents[1] = :content1 and contents[2] = :content2 and contents[3] = :content3 and contents[4] = :content4 and contents[5] = :content5") })
-@TypeDef(name = "sourceType", typeClass = TranslationSourceTypeType.class)
+
+@TypeDefs({
+    @TypeDef(name = "sourceType", typeClass = TranslationSourceTypeType.class),
+    @TypeDef(name = "entityType", typeClass = EntityTypeType.class)
+})
 @EntityListeners({ HTextFlowTargetHistory.EntityListener.class })
 public class HTextFlowTargetHistory extends HTextContainer implements
         Serializable, ITextFlowTargetHistory {
@@ -122,11 +123,11 @@ public class HTextFlowTargetHistory extends HTextContainer implements
     private HPerson reviewer;
 
     @Setter
-    private TranslationEntityType entityType;
+    private EntityType copiedEntityType;
 
     @Getter
     @Setter
-    private Long entityId;
+    private Long copiedEntityId;
 
     @Setter
     private TranslationSourceType sourceType;
@@ -155,8 +156,8 @@ public class HTextFlowTargetHistory extends HTextContainer implements
         this.revisionComment = target.getRevisionComment();
         this.automatedEntry = target.getAutomatedEntry();
         this.sourceType = target.getSourceType();
-        this.entityId = target.getEntityId();
-        this.entityType = target.getEntityType();
+        this.copiedEntityId = target.getCopiedEntityId();
+        this.copiedEntityType = target.getCopiedEntityType();
     }
 
     @Id
@@ -274,9 +275,9 @@ public class HTextFlowTargetHistory extends HTextContainer implements
         return sourceType;
     }
 
-    @Enumerated(EnumType.STRING)
-    public TranslationEntityType getEntityType() {
-        return entityType;
+    @Type(type = "entityType")
+    public EntityType getCopiedEntityType() {
+        return copiedEntityType;
     }
 
     public static class EntityListener {
@@ -322,7 +323,7 @@ public class HTextFlowTargetHistory extends HTextContainer implements
                         this.textFlowTarget.getId())
                 || !Objects.equal(current.getVersionNum(), this.versionNum)
                 || !Objects.equal(current.getRevisionComment(), this.revisionComment)
-                || !Objects.equal(current.getEntityId(), this.entityId)
-                || !Objects.equal(current.getEntityType(), this.entityType);
+                || !Objects.equal(current.getCopiedEntityId(), this.copiedEntityId)
+                || !Objects.equal(current.getCopiedEntityType(), this.copiedEntityType);
     }
 }
