@@ -75,7 +75,7 @@ public class FileMappingRule implements Serializable {
     /**
      * Represents glob pattern to files that are applicable for this rule.
      */
-    @XmlAttribute(name = "apply-to", required = false)
+    @XmlAttribute(name = "pattern", required = false)
     @XmlJavaTypeAdapter(StringTrimAdapter.class)
     public String getPattern() {
         return pattern;
