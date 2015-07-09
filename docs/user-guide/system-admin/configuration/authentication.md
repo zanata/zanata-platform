@@ -182,7 +182,12 @@ The principal and keyTab attributes in the example above should be replaced with
 
 ## OpenID
 
-Make sure `standalone.xml` has the following jndi property 
+Important note: If you are running your server on Java 1.7, it will not be able to contact some OpenID providers (eg Fedora's) unless you upgrade the security provider.  See the section "Upgrading the Java security provider".
+
+Java 1.8 on *some* Fedora-based systems has a similar problem contacting some OpenID providers (related to https://bugzilla.redhat.com/show_bug.cgi?id=1167153).  See the section "Disabling the SunEC provider".
+
+
+Make sure `standalone.xml` has the following jndi property:
 
 ```xml
 <simple name="java:global/zanata/security/auth-policy-names/openid" value="zanata.openid"/>
@@ -220,3 +225,35 @@ It's possible to configure Zanata to use a single pre-defined Open Id authentica
        </security-domain>
       ...
 ```
+
+### Upgrading the Java security provider (for OpenID on Java 1.7)
+
+Java 1.7 is unable to connect to some websites, such as the [Fedora OpenID provider](https://id.fedoraproject.org/).  See [Fedora bug 1163501](https://bugzilla.redhat.com/show_bug.cgi?id=1163501) for details.
+
+**If you have the option, you will probably find it easier to use Java 1.8 for your server.**
+
+This workaround should allow Zanata to contact such OpenID providers.  You will need to know your JAVA_HOME, which may be `/usr/lib/jvm/jre-1.7.0/` or similar.
+
+1. Obtain Bouncy Castle and any dependencies: the package/jar you need may be named `bouncycastle`, `bcprov`, `bcprov-jdk15on` or similar.  For instance:
+
+       yum install bouncycastle
+
+2. Put a copy of (or link to) bcprov.jar into $JAVA_HOME/jre/lib/ext`.  For instance:
+
+       ln -s /usr/share/java/bcprov.jar /usr/lib/jvm/jre-1.7.0/jre/lib/ext/
+
+3. Add a reference to Bouncy Castle in the file `$JAVA_HOME/jre/lib/security/java.security`.  Assuming the last `security.provider` entry was `security.provider.9`, add this line:
+
+       security.provider.10=org.bouncycastle.jce.provider.BouncyCastleProvider
+
+### Disabling the SunEC provider (for Java 1.8 on some Fedora-based systems)
+
+#### Option 1:
+
+Delete sunec.jar from the Java installation, for instance `$JAVA_HOME/jre/lib/ext/sunec.jar`.
+
+#### Option 2:
+
+Add this line to $JBOSS_HOME/bin/standalone.conf:
+
+    JAVA_OPTS="$JAVA_OPTS -Dcom.sun.net.ssl.enableECC=false"
