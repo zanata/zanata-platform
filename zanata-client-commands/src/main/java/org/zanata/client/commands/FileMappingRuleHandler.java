@@ -90,6 +90,8 @@ public class FileMappingRuleHandler {
         File srcFile =
                 new File(opts.getSrcDir(),
                         qualifiedSrcDocName.getFullName());
+        log.debug("trying to match pattern: {} to file: {}",
+                mappingRule.getPattern(), srcFile.getPath());
         return matcher.matches(Paths.get(srcFile.getPath()));
     }
 
