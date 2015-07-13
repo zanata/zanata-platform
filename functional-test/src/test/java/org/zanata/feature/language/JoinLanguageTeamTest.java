@@ -66,8 +66,9 @@ public class JoinLanguageTeamTest extends ZanataTestCase {
         assertThat(languagePage.getMemberUsernames())
                 .contains("translator")
                 .as("Translator is a listed member of the pl team");
-        assertThat(hasEmailRule.emailsArrivedWithinTimeout(1, 5,
+        assertThat(hasEmailRule.emailsArrivedWithinTimeout(1, 30,
                 TimeUnit.SECONDS))
+                .as("The email arrived within thirty seconds")
                 .isTrue();
         WiserMessage emailMessage = hasEmailRule.getMessages().get(0);
         assertThat(getEmailContent(emailMessage))
