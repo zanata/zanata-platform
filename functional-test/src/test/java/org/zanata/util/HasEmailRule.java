@@ -59,6 +59,7 @@ public class HasEmailRule extends ExternalResource {
 
     @Override
     protected void after() {
+        log.info("Clearing email queue");
         wiser.getMessages().clear();
         super.after();
     }
@@ -82,6 +83,7 @@ public class HasEmailRule extends ExternalResource {
      */
     public boolean emailsArrivedWithinTimeout(final int expectedEmailNum,
             final long timeoutDuration, final TimeUnit timeoutUnit) {
+        log.info("waiting for email count to be {}", expectedEmailNum);
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
         // poll every half second
@@ -97,8 +99,8 @@ public class HasEmailRule extends ExternalResource {
                 while (wiser.getMessages().size() < expectedEmailNum
                         && slept < timeoutTime) {
 
-                    log.debug("current arrived email:{}", wiser.getMessages()
-                            .size());
+                    log.info("Number of arrived emails: {}",
+                            wiser.getMessages().size());
                     Uninterruptibles.sleepUninterruptibly(sleepFor, sleepUnit);
                     slept += sleepTime;
                 }
@@ -115,6 +117,7 @@ public class HasEmailRule extends ExternalResource {
     }
 
     public static String getEmailContent(WiserMessage wiserMessage) {
+        log.info("Query message content");
         try {
             return ((MimeMultipart) wiserMessage.getMimeMessage().getContent())
                     .getBodyPart(0).getContent().toString();
