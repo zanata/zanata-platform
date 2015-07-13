@@ -20,8 +20,12 @@
  */
 package org.zanata.page.dashboard.dashboardsettings;
 
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.dashboard.DashboardBasePage;
 
@@ -44,7 +48,29 @@ public class DashboardClientTab extends DashboardBasePage {
     public DashboardClientTab pressApiKeyGenerateButton() {
         log.info("Press Generate API Key");
         clickElement(generateApiKeyButton);
-        getDriver().switchTo().alert().accept();
+        slightPause();
+        Alert alert = waitForAMoment().withMessage("Alert dialog not displayed")
+                .until(new Function<WebDriver, Alert>() {
+            @Override
+            public Alert apply(WebDriver input) {
+                return input.switchTo().alert();
+            }
+        });
+        log.info("Press OK on alert to generate API key");
+        alert.accept();
+        waitForAMoment().withMessage("Alert not dismissed")
+                .until(new Predicate<WebDriver>() {
+                    @Override
+                    public boolean apply(WebDriver input) {
+                        try {
+                            getDriver().switchTo().alert();
+                        } catch (NoAlertPresentException nape) {
+                            return true;
+                        }
+                        log.info("Alert still present");
+                        return false;
+                    }
+                });
         return new DashboardClientTab(getDriver());
     }
 
