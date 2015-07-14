@@ -370,8 +370,8 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     }
 
     public void copyVersion() {
-        getInstance().setStatus(EntityStatus.READONLY);
         getInstance().setSlug(inputSlugValue);
+        getInstance().setStatus(EntityStatus.READONLY);
 
         // create basic version here
         HProject project = getProject();
