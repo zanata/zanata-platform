@@ -307,8 +307,8 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
                             wordStatistic2.getUntranslated());
                 }
             } else {
-                return o1.getProject().getName().toLowerCase()
-                        .compareTo(o2.getProject().getName().toLowerCase());
+                return ComparatorUtil.compareStringIgnoreCase(
+                        o1.getProject().getName(), o2.getProject().getName());
             }
             return 0;
         }

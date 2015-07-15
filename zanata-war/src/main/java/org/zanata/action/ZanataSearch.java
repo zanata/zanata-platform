@@ -17,8 +17,10 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.common.EntityStatus;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectDAO;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HProject;
 
@@ -26,6 +28,7 @@ import com.google.common.collect.Lists;
 import org.zanata.ui.AbstractAutocomplete;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.InMemoryListFilter;
+import org.zanata.util.ComparatorUtil;
 import org.zanata.util.DateUtil;
 import org.zanata.util.ServiceLocator;
 
@@ -33,7 +36,7 @@ import org.zanata.util.ServiceLocator;
  * This will search both projects and people.
  */
 @Name("zanataSearch")
-@Scope(ScopeType.CONVERSATION)
+@Scope(ScopeType.PAGE)
 @AutoCreate
 public class ZanataSearch implements Serializable {
 
@@ -43,6 +46,9 @@ public class ZanataSearch implements Serializable {
 
     @In
     private ProjectDAO projectDAO;
+
+    @In
+    private ProjectIterationDAO projectIterationDAO;
 
     @In
     private AccountDAO accountDAO;
@@ -70,6 +76,10 @@ public class ZanataSearch implements Serializable {
 
     private final UserComparator userComparator =
         new UserComparator(getUserSortingList());
+
+    private List<HProject> projects;
+
+    private List<HAccount> accounts;
 
     @AllArgsConstructor
     @NoArgsConstructor
@@ -103,7 +113,7 @@ public class ZanataSearch implements Serializable {
         @Override
         public List<SearchResult> suggest() {
             List<SearchResult> result = Lists.newArrayList();
-            if (StringUtils.isEmpty(getQuery())) {
+            if (StringUtils.isBlank(getQuery())) {
                 return result;
             }
             try {
@@ -126,7 +136,6 @@ public class ZanataSearch implements Serializable {
             } catch (ParseException pe) {
                 return result;
             }
-
         }
 
         /**
@@ -146,9 +155,6 @@ public class ZanataSearch implements Serializable {
     @Getter
     private final AbstractListFilter<HProject> projectTabProjectFilter =
         new InMemoryListFilter<HProject>() {
-
-            private ProjectDAO projectDAO = ServiceLocator.instance()
-                .getInstance(ProjectDAO.class);
             /**
              * Fetches all records.
              *
@@ -156,18 +162,10 @@ public class ZanataSearch implements Serializable {
              */
             @Override
             protected List<HProject> fetchAll() {
-                if (StringUtils.isEmpty(getAutocomplete().getQuery())) {
+                if (StringUtils.isBlank(getAutocomplete().getQuery())) {
                     return Collections.emptyList();
                 }
-                try {
-                    List<HProject> projects =
-                            projectDAO.searchProjects(getAutocomplete()
-                                    .getQuery(), -1, 0, includeObsolete);
-                    Collections.sort(projects, projectComparator);
-                    return projects;
-                } catch (ParseException e) {
-                    return Collections.emptyList();
-                }
+                return getProjects();
             }
 
             /**
@@ -186,9 +184,6 @@ public class ZanataSearch implements Serializable {
     @Getter
     private final AbstractListFilter<HAccount> userTabUserFilter =
         new InMemoryListFilter<HAccount>() {
-            private AccountDAO accountDAO = ServiceLocator.instance()
-                .getInstance(AccountDAO.class);
-
             /**
              * Fetches all records.
              *
@@ -199,11 +194,7 @@ public class ZanataSearch implements Serializable {
                 if (StringUtils.isEmpty(getAutocomplete().getQuery())) {
                     return Collections.emptyList();
                 }
-                List<HAccount> hAccounts =
-                    accountDAO.searchQuery(getAutocomplete().getQuery(),
-                        -1, 0);
-                Collections.sort(hAccounts, userComparator);
-                return hAccounts;
+                return getAccounts();
             }
 
             /**
@@ -219,6 +210,39 @@ public class ZanataSearch implements Serializable {
             }
         };
 
+    public List<HProject> getProjects()  {
+        if (projects == null) {
+            ProjectDAO projectDAO =
+                ServiceLocator.instance().getInstance(ProjectDAO.class);
+            try {
+                projects = projectDAO.searchProjects(getAutocomplete()
+                    .getQuery(), -1, 0, includeObsolete);
+                Collections.sort(projects,
+                        ComparatorUtil.PROJECT_NAME_COMPARATOR);
+            } catch (ParseException e) {
+                return Collections.emptyList();
+            }
+        }
+        return projects;
+    }
+
+    public List<HAccount> getAccounts() {
+        if (accounts == null) {
+            AccountDAO accountDAO =
+                ServiceLocator.instance().getInstance(AccountDAO.class);
+
+            accounts = accountDAO.searchQuery(getAutocomplete().getQuery(),
+                    -1, 0);
+            Collections.sort(accounts,
+                ComparatorUtil.ACCOUNT_NAME_COMPARATOR);
+        }
+        return accounts;
+    }
+
+    public int getVersionSize(String projectSlug) {
+        return projectIterationDAO.getByProjectSlug(projectSlug,
+                EntityStatus.ACTIVE, EntityStatus.READONLY).size();
+    }
 
     public int getTotalProjectCount() {
         if(StringUtils.isEmpty(getAutocomplete().getQuery())) {
@@ -252,10 +276,12 @@ public class ZanataSearch implements Serializable {
      * Sort project list
      */
     public void sortProjectList() {
+        Collections.sort(projects, projectComparator);
         projectTabProjectFilter.reset();
     }
 
     public void sortUserList() {
+        Collections.sort(accounts, userComparator);
         userTabUserFilter.reset();
     }
 
@@ -278,10 +304,11 @@ public class ZanataSearch implements Serializable {
             }
 
             if (selectedSortOption.equals(SortingType.SortOption.CREATED_DATE)) {
-                return o1.getCreationDate().compareTo(o2.getCreationDate());
+                return ComparatorUtil.compareDate(o1.getCreationDate(),
+                        o2.getCreationDate());
             } else {
-                return o1.getName().toLowerCase().compareTo(
-                    o2.getName().toLowerCase());
+                return ComparatorUtil.compareStringIgnoreCase(o1.getName(),
+                        o2.getName());
             }
         }
     }
@@ -303,8 +330,8 @@ public class ZanataSearch implements Serializable {
                 o1 = o2;
                 o2 = temp;
             }
-            return o1.getPerson().getName().toLowerCase().compareTo(
-                o2.getPerson().getName().toLowerCase());
+            return ComparatorUtil.compareStringIgnoreCase(
+                    o1.getPerson().getName(), o2.getPerson().getName());
         }
     }
 }

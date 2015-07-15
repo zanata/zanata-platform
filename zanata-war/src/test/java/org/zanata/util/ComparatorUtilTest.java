@@ -97,13 +97,13 @@ public class ComparatorUtilTest {
         HProjectIteration hProjectIteration3 = new HProjectIteration();
         hProjectIteration3.setProject(hProject3);
 
-        assertThat(ComparatorUtil.PROJECT_NAME_COMPARATOR
+        assertThat(ComparatorUtil.VERSION_PROJECT_NAME_COMPARATOR
                 .compare(hProjectIteration1, hProjectIteration1)).isEqualTo(0);
-        assertThat(ComparatorUtil.PROJECT_NAME_COMPARATOR
+        assertThat(ComparatorUtil.VERSION_PROJECT_NAME_COMPARATOR
                 .compare(hProjectIteration2, hProjectIteration3)).isEqualTo(0);
-        assertThat(ComparatorUtil.PROJECT_NAME_COMPARATOR
+        assertThat(ComparatorUtil.VERSION_PROJECT_NAME_COMPARATOR
                 .compare(hProjectIteration1, hProjectIteration3)).isEqualTo(-1);
-        assertThat(ComparatorUtil.PROJECT_NAME_COMPARATOR
+        assertThat(ComparatorUtil.VERSION_PROJECT_NAME_COMPARATOR
                 .compare(hProjectIteration3, hProjectIteration1)).isEqualTo(1);
     }
 
