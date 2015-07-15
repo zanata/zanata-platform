@@ -20,7 +20,9 @@
 
 -----------------------
 
-## 3.7
+## 3.7.0
+
+(Non public release. Database migrations executed directly by this release will not be compatible with future releases.)
 
 <h5>Deployment</h5>
 
