@@ -9,6 +9,7 @@
   <artifactId>zanata-war</artifactId>
   <packaging>war</packaging>
   <name>Zanata web application</name>
+  <description>Zanata translation platform</description>
 
   <!-- Should be the same as zanata-server/pom.xml -->
   <scm>
@@ -37,6 +38,8 @@
 
     <groovy.version>2.1.5</groovy.version>
     <zanata.web.assets.version>7</zanata.web.assets.version>
+    <jboss.as.standalone.version>7.5.0</jboss.as.standalone.version>
+    <rpm.name>${project.build.finalName}</rpm.name>
 
     <as7.skip.deploy.marker>${jboss.home}/standalone/deployments/zanata.war.skipdeploy</as7.skip.deploy.marker>
     <as7.dodeploy.marker>${jboss.home}/standalone/deployments/zanata.war.dodeploy</as7.dodeploy.marker>
@@ -1245,6 +1248,82 @@
       </dependencies>
     </profile>
 
+    <profile>
+      <id>rpm</id>
+      <activation>
+        <property>
+          <name>rpm</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>rpm-maven-plugin</artifactId>
+            <version>2.1.3</version>
+            <executions>
+              <execution>
+                <id>attach-rpm</id>
+                <goals>
+                  <goal>attached-rpm</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <name>${rpm.name}</name>
+              <group>Applications/Text</group>
+              <license>GNU Lesser General Public License v2.1</license>
+
+              <!-- Make the rpm compatible with RHEL 5 -->
+              <defineStatements>
+                <defineStatement>_source_filedigest_algorithm md5</defineStatement>
+                <defineStatement>_binary_filedigest_algorithm md5</defineStatement>
+                <defineStatement>_source_payload w9.gzdio</defineStatement>
+                <defineStatement>_binary_payload w9.gzdio</defineStatement>
+              </defineStatements>
+
+              <defaultUsername>jboss</defaultUsername>
+              <defaultGroupname>jboss</defaultGroupname>
+              <defaultDirmode>755</defaultDirmode>
+              <defaultFilemode>644</defaultFilemode>
+              <mappings>
+                <mapping>
+                  <directory>/usr/share/webapps/${rpm.name}/${rpm.name}-${project.version}.war/</directory>
+                  <sources>
+                    <source>
+                      <location>target/${project.build.finalName}</location>
+                    </source>
+                  </sources>
+                </mapping>
+                <mapping>
+                  <directory>/usr/share/webapps/${rpm.name}/</directory>
+                  <sources>
+                    <softlinkSource>
+                      <location>${rpm.name}-${project.version}.war</location>
+                      <destination>${rpm.name}.war</destination>
+                    </softlinkSource>
+                  </sources>
+                </mapping>
+                <mapping>
+                  <directory>/var/lib/${rpm.name}/</directory>
+                </mapping>
+                <mapping>
+                  <directory>/var/lib/${rpm.name}/index/</directory>
+                </mapping>
+                <mapping>
+                  <directory>/var/lib/${rpm.name}/stats/</directory>
+                </mapping>
+              </mappings>
+              <autoProvides>false</autoProvides>
+              <autoRequires>false</autoRequires>
+              <requires>
+                <require>jbossas-standalone &gt;= ${jboss.as.standalone.version}</require>
+              </requires>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
   <dependencies>
