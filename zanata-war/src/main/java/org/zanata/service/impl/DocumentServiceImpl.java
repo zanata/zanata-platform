@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.Future;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -31,7 +32,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.core.Events;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.async.Async;
@@ -39,6 +39,7 @@ import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.common.ContentState;
+import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.events.DocumentMilestoneEvent;
@@ -67,6 +68,7 @@ import org.zanata.util.StatisticsUtil;
 import com.google.common.annotations.VisibleForTesting;
 import lombok.extern.slf4j.Slf4j;
 import org.zanata.util.Event;
+import org.zanata.util.UrlUtil;
 
 import javax.enterprise.event.Observes;
 
@@ -111,6 +113,9 @@ public class DocumentServiceImpl implements DocumentService {
 
     @In
     private ApplicationConfiguration applicationConfiguration;
+
+    @In
+    private UrlUtil urlUtil;
 
     @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION,
             required = false)
@@ -266,10 +271,16 @@ public class DocumentServiceImpl implements DocumentService {
 
                 if (shouldPublish) {
                     HDocument document = documentDAO.getById(event.getDocumentId());
+
+                    String editorUrl =
+                            urlUtil.fullEditorDocumentUrl(project.getSlug(),
+                                version.getSlug(), event.getLocaleId(),
+                                LocaleId.EN_US, document.getDocId());
+
                     DocumentMilestoneEvent milestoneEvent =
                             new DocumentMilestoneEvent(project.getSlug(),
                                     version.getSlug(), document.getDocId(),
-                                    event.getLocaleId(), message);
+                                    event.getLocaleId(), message, editorUrl);
                     for (WebHook webHook : project.getWebHooks()) {
                         publishDocumentMilestoneEvent(webHook, milestoneEvent);
                     }
@@ -280,7 +291,8 @@ public class DocumentServiceImpl implements DocumentService {
 
     public void publishDocumentMilestoneEvent(WebHook webHook,
             DocumentMilestoneEvent milestoneEvent) {
-        WebHooksPublisher.publish(webHook.getUrl(), milestoneEvent);
+        WebHooksPublisher.publish(webHook.getUrl(), milestoneEvent,
+                Optional.fromNullable(webHook.getSecret()));
         log.info("firing webhook: {}:{}:{}:{}",
                 webHook.getUrl(), milestoneEvent.getProject(),
                 milestoneEvent.getVersion(), milestoneEvent.getDocId());
@@ -334,10 +346,13 @@ public class DocumentServiceImpl implements DocumentService {
     @VisibleForTesting
     public void init(ProjectIterationDAO projectIterationDAO,
             DocumentDAO documentDAO,
-        TranslationStateCache translationStateCacheImpl, Messages msgs) {
+            TranslationStateCache translationStateCacheImpl, UrlUtil urlUtil,
+            ApplicationConfiguration applicationConfiguration, Messages msgs) {
         this.projectIterationDAO = projectIterationDAO;
         this.documentDAO = documentDAO;
         this.translationStateCacheImpl = translationStateCacheImpl;
+        this.urlUtil = urlUtil;
+        this.applicationConfiguration = applicationConfiguration;
         this.msgs = msgs;
     }
 }

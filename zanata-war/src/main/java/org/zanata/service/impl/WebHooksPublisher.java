@@ -22,37 +22,70 @@
 package org.zanata.service.impl;
 
 import javax.annotation.Nonnull;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
-import org.zanata.events.JSONType;
+import org.apache.commons.lang.StringUtils;
+import org.jboss.resteasy.client.jaxrs.ResteasyClient;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+import org.zanata.events.WebhookEventType;
 
+import com.google.common.base.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.util.HmacUtil;
 
 /**
+ * Do http post for webhook event
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Slf4j
 public class WebHooksPublisher {
 
-    private static ClientResponse publish(@Nonnull String url,
-            @Nonnull String data, @Nonnull MediaType acceptType,
-            @Nonnull MediaType mediaType) {
-        try {
-            ClientRequest request = new ClientRequest(url);
-            request.accept(acceptType);
-            request.body(mediaType, data);
-            return request.post();
-        } catch (Exception e) {
-            log.error("Error on webHooks post {}", e, url);
-            return null;
-        }
+    public static final String WEBHOOK_HEADER = "X-Zanata-Webhook";
+
+    public static Response publish(@Nonnull String callbackURL,
+        @Nonnull WebhookEventType event, Optional<String> secretKey) {
+        return publish(callbackURL, event.getJSON(), MediaType.APPLICATION_JSON_TYPE,
+            MediaType.APPLICATION_JSON_TYPE, secretKey);
     }
 
-    public static ClientResponse publish(@Nonnull String url,
-        @Nonnull JSONType event) {
-        return publish(url, event.getJSON(), MediaType.APPLICATION_JSON_TYPE,
-                MediaType.APPLICATION_JSON_TYPE);
+    protected static Response publish(@Nonnull String callbackURL,
+            @Nonnull String data, @Nonnull MediaType acceptType,
+            @Nonnull MediaType mediaType, Optional<String> secretKey) {
+        try {
+            ResteasyClient client = new ResteasyClientBuilder().build();
+            ResteasyWebTarget target = client.target(callbackURL);
+
+            Invocation.Builder postBuilder =
+                    target.request().accept(acceptType);
+
+            if (secretKey.isPresent() &&
+                    StringUtils.isNotBlank(secretKey.get())) {
+                String sha =
+                        signWebhookHeader(data, secretKey.get(), callbackURL);
+                postBuilder.header(WEBHOOK_HEADER, sha);
+            }
+            return postBuilder.post(Entity.entity(data, mediaType));
+        } catch (Exception e) {
+            log.error("Error on webhooks post {}, {}", callbackURL, e);
+        }
+        return null;
+    }
+
+    protected static String signWebhookHeader(String data, String key,
+            String callbackURL) {
+        String valueToDigest = data + callbackURL;
+        try {
+            return HmacUtil
+                .hmacSha1(key, HmacUtil.hmacSha1(key, valueToDigest));
+        } catch (IllegalArgumentException e) {
+            log.error("Unable to generate hmac sha1 for {} {}", key, valueToDigest);
+            throw new IllegalArgumentException(e);
+        }
     }
 }
+

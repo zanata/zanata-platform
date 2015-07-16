@@ -15,30 +15,24 @@
   function getUserRoleId() {
     return "[id='#{rich:clientId('user-roles')}']";
   }
-
-  function onPayloadInputKeyDown(input, event) {
-      if(isEnterKey(event)) {
-        event.preventDefault();
-        if(jQuery(input).val()) {
-          addWebhook(jQuery(input).val());
-        }
-        return false;
-      }
-  }
-
-  function onRemoveWebHook(ele) {
-    jQuery(ele).children('i').addClass('is-hidden');
-    zanata.loader.activate(jQuery(ele).children('#loader'));
-  }
   //]]>
 </script>
 
+<a4j:jsFunction name="removeWebhook"
+  onbegin="zanata.loader.activate('#remove-webhook-#{componentId}');"
+  action="#{projectHome.removeWebHook(webhookId)}"
+  render="settings-webhooks-list">
+  <a4j:param name="val1" assignTo="#{componentId}"/>
+  <a4j:param name="val2" assignTo="#{webhookId}"/>
+</a4j:jsFunction>
+
 <a4j:jsFunction name="addWebhook"
-  onbegin="zanata.loader.activate('#add-url-loader')"
-  oncomplete="zanata.loader.deactivate('#add-url-loader');"
-  action="#{projectHome.addWebHook(url)}"
+  onbegin="zanata.loader.activate('#add-webhook-button');jQuery('#add-webhook-button').removeClass('button--primary')"
+  oncomplete="zanata.loader.deactivate('#add-webhook-button');jQuery('#add-webhook-button').addClass('button--primary')"
+  action="#{projectHome.addWebHook(url, secret)}"
   render="settings-webhooks-list">
   <a4j:param name="val1" assignTo="#{url}"/>
+  <a4j:param name="val2" assignTo="#{secret}"/>
 </a4j:jsFunction>
 
 <a4j:jsFunction name="bindRestrictedByRoleValue" render="user-roles"
@@ -200,42 +194,51 @@
 </li>
 <li id="settings-webhooks" class="js-tabs-content">
   <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
-      #{msgs['jsf.project.WebHooks']}
+    #{msgs['jsf.project.WebHooks']}
+    <span class="txt--meta">
+      <a href="http://docs.zanata.org/en/release/user-guide/projects/project-settings/#webhooks"
+        title="#{msgs['jsf.project.Webhooks.help.message']}">
+        <i class="i i--help"></i>
+      </a>
+    </span>
   </h2>
   <h:form  id="settings-webhooks-list" onclick="return false">
     <ul class="list--slat list--highlight l--push-top-half">
       <ui:repeat value="#{projectHome.instance.webHooks}" var="webhook">
         <li class="list-item">
-            #{webhook.url}
-            <a4j:commandLink onbegin="onRemoveWebHook(this)"
-              action="#{projectHome.removeWebHook(webhook)}"
-              styleClass="l--float-right txt--danger"
-              render="settings-webhooks-list">
+          #{webhook.url}
+          <button id="remove-webhook-#{webhook.id}"
+            class="loader button--link l--float-right txt--danger"
+            onclick="removeWebhook(this.id, '#{webhook.id}')">
+            <span class="loader__label">
               <i class="i--large i--remove"></i>
-              <zanata:loader layout="inline" type="loader--small"
-                jsHandle="true" id="loader" visible="false"/>
-            </a4j:commandLink>
+            </span>
+          </button>
         </li>
       </ui:repeat>
-      <zanata:loader id="add-url-loader" type="loader--large" visible="false"/>
       <li class="list--highlight__item--none">
-        <label for="payloadUrlInput">
+        <h3 class="heading--secondary l--push-top-half">
           #{msgs['jsf.project.AddWebhook']}
-        </label>
-
-        <div class="form--inline">
+        </h3>
+        <div class="form__item">
+          <label for="payloadUrlInput">#{msgs['jsf.project.PayloadURL']}
+            <s:span styleClass="txt--required">*</s:span>
+          </label>
           <input type="text" id="payloadUrlInput" autocomplete="off"
             placeholder="#{msgs['jsf.project.PayloadURL']}"
-            onkeydown="onPayloadInputKeyDown(this, event)"
             class="form--inline__input"/>
-
-          <div class="form--inline__suffix">
-            <button class="form--inline__addon button--primary"
-              onclick="addWebhook(jQuery('#payloadUrlInput').val())">
-              #{msgs['jsf.project.AddWebhook']}
-            </button>
-          </div>
         </div>
+        <div class="form__item">
+          <label for="secretInput">#{msgs['jsf.project.WebHooks.secret']}</label>
+          <input type="password" id="secretInput" autocomplete="off" maxlength="255"
+            placeholder="#{msgs['jsf.project.WebHooks.secret.placeholder']}"
+            value="#{webhook.secret}"/>
+        </div>
+
+        <button id="add-webhook-button" class="l--push-top-1 button--primary button loader"
+          onclick="addWebhook(jQuery('#payloadUrlInput').val(), jQuery('#secretInput').val())">
+          <span class="loader__label">#{msgs['jsf.project.AddWebhook']}</span>
+        </button>
       </li>
     </ul>
   </h:form>

@@ -1001,10 +1001,11 @@ public class ProjectHome extends SlugHome<HProject> implements
         return sortedList;
     }
 
-    public void addWebHook(String url) {
+    public void addWebHook(String url, String secret) {
         identity.checkPermission(instance, "update");
         if (isValidUrl(url)) {
-            WebHook webHook = new WebHook(this.getInstance(), url);
+            secret = StringUtils.isBlank(secret) ? null : secret;
+            WebHook webHook = new WebHook(this.getInstance(), url, secret);
             getInstance().getWebHooks().add(webHook);
             update();
             facesMessages.addGlobal(
@@ -1012,12 +1013,15 @@ public class ProjectHome extends SlugHome<HProject> implements
         }
     }
 
-    public void removeWebHook(WebHook webHook) {
+    public void removeWebHook(Long webhookId) {
         identity.checkPermission(instance, "update");
-        getInstance().getWebHooks().remove(webHook);
-        webHookDAO.makeTransient(webHook);
-        facesMessages.addGlobal(
-            msgs.format("jsf.project.RemoveWebhook", webHook.getUrl()));
+        WebHook webHook = webHookDAO.findById(webhookId);
+        if (webHook != null) {
+            getInstance().getWebHooks().remove(webHook);
+            webHookDAO.makeTransient(webHook);
+            facesMessages.addGlobal(
+                msgs.format("jsf.project.RemoveWebhook", webHook.getUrl()));
+        }
     }
 
     private boolean isValidUrl(String url) {

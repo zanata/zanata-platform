@@ -303,7 +303,7 @@ public class ActivityEntryTest {
         String expectedUrl = "http://localhost/goes/to/document/list";
         when(urlUtil.editorDocumentListUrl(project.getSlug(),
                 iteration.getSlug(), targetLocale.getLocaleId(),
-                textFlow.getLocale())).thenReturn(
+                textFlow.getLocale(), false)).thenReturn(
                 expectedUrl);
 
         Assertions.assertThat(activityEntry
@@ -342,7 +342,7 @@ public class ActivityEntryTest {
         String expectedUrl = "http://localhost/goes/to/editor";
         when(urlUtil.editorDocumentListUrl(project.getSlug(),
                 iteration.getSlug(), targetLocale.getLocaleId(),
-                textFlow.getLocale())).thenReturn(
+                textFlow.getLocale(), false)).thenReturn(
                 expectedUrl);
 
         Assertions.assertThat(activityEntry

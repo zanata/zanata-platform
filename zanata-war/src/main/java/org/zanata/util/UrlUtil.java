@@ -34,9 +34,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.ServletLifecycle;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 
 /**
@@ -53,6 +55,9 @@ public class UrlUtil implements Serializable {
     private static final long serialVersionUID = 1L;
     private final static String ENCODING = "UTF-8";
     private static String contextPath;
+
+    @In
+    private ApplicationConfiguration applicationConfiguration;
 
     public static String getContextPath() {
         if (contextPath == null) {
@@ -121,8 +126,11 @@ public class UrlUtil implements Serializable {
     }
 
     public String editorDocumentListUrl(String projectSlug, String versionSlug,
-            LocaleId targetLocaleId, LocaleId sourceLocaleId) {
-        return getContextPath() + "/webtrans/translate?project=" + projectSlug
+            LocaleId targetLocaleId, LocaleId sourceLocaleId, boolean fullPath) {
+        String prefix = fullPath ? applicationConfiguration.getServerPath()
+                        : getContextPath();
+
+        return prefix + "/webtrans/translate?project=" + projectSlug
                 + "&iteration=" + versionSlug + "&localeId=" + targetLocaleId
                 + "&locale=" + sourceLocaleId;
     }
@@ -130,7 +138,13 @@ public class UrlUtil implements Serializable {
     public String editorDocumentUrl(String projectSlug, String versionSlug,
             LocaleId targetLocaleId, LocaleId sourceLocaleId, String docId) {
         return editorDocumentListUrl(projectSlug, versionSlug, targetLocaleId,
-                sourceLocaleId) + " #view:doc;doc:" + docId;
+                sourceLocaleId, false) + "#view:doc;doc:" + docId;
+    }
+
+    public String fullEditorDocumentUrl(String projectSlug, String versionSlug,
+        LocaleId targetLocaleId, LocaleId sourceLocaleId, String docId) {
+        return editorDocumentListUrl(projectSlug, versionSlug, targetLocaleId,
+                sourceLocaleId, true) + "#view:doc;doc:" + docId;
     }
 
     public String editorTransUnitUrl(String projectSlug, String versionSlug,

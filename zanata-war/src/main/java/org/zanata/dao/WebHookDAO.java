@@ -10,7 +10,7 @@ import org.zanata.model.WebHook;
 @Name("webHookDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
-public class WebHookDAO extends AbstractDAOImpl<WebHook, Integer> {
+public class WebHookDAO extends AbstractDAOImpl<WebHook, Long> {
 
     public WebHookDAO() {
         super(WebHook.class);

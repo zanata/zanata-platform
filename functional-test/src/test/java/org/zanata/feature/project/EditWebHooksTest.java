@@ -61,11 +61,12 @@ public class EditWebHooksTest extends ZanataTestCase {
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addWebHook() throws Exception {
         String testUrl = "http://www.example.com";
+        String key = "secret_key";
         ProjectWebHooksTab projectWebHooksTab = new ProjectWorkFlow()
                 .goToProjectByName("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsWebHooksTab()
-                .enterUrl(testUrl)
+                .enterUrl(testUrl, key)
                 .expectWebHooksContains(testUrl);
 
         assertThat(projectWebHooksTab.getWebHooks())
@@ -78,11 +79,12 @@ public class EditWebHooksTest extends ZanataTestCase {
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void removeWebHook() throws Exception {
         String testUrl = "http://www.example.com";
+        String key = "secret_key";
         ProjectWebHooksTab projectWebHooksTab = new ProjectWorkFlow()
                 .goToProjectByName("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsWebHooksTab()
-                .enterUrl(testUrl)
+                .enterUrl(testUrl, key)
                 .expectWebHooksContains(testUrl)
                 .clickRemoveOn(testUrl)
                 .expectWebHooksNotContains(testUrl);

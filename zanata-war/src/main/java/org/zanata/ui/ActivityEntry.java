@@ -304,7 +304,7 @@ public class ActivityEntry {
             url =
                 urlUtil.editorDocumentListUrl(version.getProject()
                         .getSlug(), version.getSlug(), tft.getLocaleId(),
-                    tft.getTextFlow().getLocale());
+                    tft.getTextFlow().getLocale(), false);
         } else if (activity.getActivityType() == UPLOAD_SOURCE_DOCUMENT) {
             // not supported for upload source action
         } else if (activity.getActivityType() == UPLOAD_TRANSLATION_DOCUMENT) {
@@ -317,7 +317,7 @@ public class ActivityEntry {
                 url =
                     urlUtil.editorDocumentListUrl(version.getProject()
                         .getSlug(), version.getSlug(), tft
-                        .getLocaleId(), tft.getTextFlow().getLocale());
+                        .getLocaleId(), tft.getTextFlow().getLocale(), false);
             }
         }
         return url;

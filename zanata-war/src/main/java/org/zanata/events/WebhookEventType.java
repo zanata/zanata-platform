@@ -29,7 +29,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-public abstract class JSONType implements Serializable {
+public abstract class WebhookEventType implements Serializable {
 
     public abstract String getEventType();
 

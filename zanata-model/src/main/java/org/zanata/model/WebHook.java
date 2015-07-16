@@ -24,11 +24,13 @@ package org.zanata.model;
 import java.io.Serializable;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.Size;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -56,9 +58,17 @@ public class WebHook implements Serializable {
     @Url
     private String url;
 
-    public WebHook(HProject project, String url) {
+    /**
+     * Secret key used to generate webhook header in hmac-sha1 encryption.
+     */
+    @Size(max = 255)
+    @Column(nullable = true)
+    private String secret;
+
+    public WebHook(HProject project, String url, String secret) {
         this.project = project;
         this.url = url;
+        this.secret = secret;
     }
 
     @Id

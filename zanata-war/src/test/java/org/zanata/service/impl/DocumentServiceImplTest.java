@@ -21,8 +21,10 @@
 
 package org.zanata.service.impl;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,6 +36,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
@@ -51,6 +54,7 @@ import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.StatisticsUtil;
 
 import com.google.common.collect.Lists;
+import org.zanata.util.UrlUtil;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -69,6 +73,12 @@ public class DocumentServiceImplTest {
     @Mock
     private Messages msgs;
 
+    @Mock
+    private UrlUtil urlUtil;
+
+    @Mock
+    private ApplicationConfiguration applicationConfiguration;
+
     private DocumentServiceImpl documentService;
 
     private Long docId = 1L, versionId = 1L, tfId = 1L;
@@ -81,20 +91,24 @@ public class DocumentServiceImplTest {
 
     List<WebHook> webHooks = Lists.newArrayList();
 
+    private String testUrl = "http://localhost/test/doc/url";
+
+    private String key = null;
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         documentService = new DocumentServiceImpl();
         documentService.init(projectIterationDAO, documentDAO,
-            translationStateCacheImpl, msgs);
+            translationStateCacheImpl, urlUtil, applicationConfiguration, msgs);
 
         HProjectIteration version = Mockito.mock(HProjectIteration.class);
         HProject project = Mockito.mock(HProject.class);
         HDocument document = Mockito.mock(HDocument.class);
 
         webHooks = Lists.newArrayList();
-        webHooks.add(new WebHook(project, "http://test.example.com"));
-        webHooks.add(new WebHook(project, "http://test1.example.com"));
+        webHooks.add(new WebHook(project, "http://test.example.com", key));
+        webHooks.add(new WebHook(project, "http://test1.example.com", key));
 
         when(projectIterationDAO.findById(versionId)).thenReturn(version);
         when(version.getProject()).thenReturn(project);
@@ -103,6 +117,10 @@ public class DocumentServiceImplTest {
         when(project.getWebHooks()).thenReturn(webHooks);
         when(documentDAO.getById(docId)).thenReturn(document);
         when(document.getDocId()).thenReturn(docIdString);
+
+        when(urlUtil.fullEditorDocumentUrl(anyString(), anyString(),
+                any(LocaleId.class), any(LocaleId.class), anyString()))
+                .thenReturn(testUrl);
     }
 
     @Test
@@ -119,7 +137,7 @@ public class DocumentServiceImplTest {
                 new DocumentMilestoneEvent(projectSlug, versionSlug,
                         docIdString, localeId,
                         msgs.format("jsf.webhook.response.state", milestone,
-                                ContentState.Translated));
+                                ContentState.Translated), testUrl);
 
         verify(spyService).publishDocumentMilestoneEvent(webHooks.get(0),
                 milestoneEvent);
@@ -139,7 +157,7 @@ public class DocumentServiceImplTest {
 
         DocumentMilestoneEvent milestoneEvent =
                 new DocumentMilestoneEvent(projectSlug, versionSlug,
-                        docIdString, localeId,
+                        docIdString, localeId, testUrl,
                         msgs.format("jsf.webhook.response.state", milestone,
                                 ContentState.Translated));
 
@@ -163,7 +181,7 @@ public class DocumentServiceImplTest {
                 new DocumentMilestoneEvent(projectSlug,
                         versionSlug, docIdString,
                         localeId, msgs.format("jsf.webhook.response.state",
-                                milestone, ContentState.Approved));
+                                milestone, ContentState.Approved), testUrl);
         verify(spyService).publishDocumentMilestoneEvent(webHooks.get(0),
                 milestoneEvent);
         verify(spyService).publishDocumentMilestoneEvent(webHooks.get(1),
@@ -184,7 +202,7 @@ public class DocumentServiceImplTest {
                 new DocumentMilestoneEvent(projectSlug, versionSlug,
                         docIdString, localeId, msgs.format(
                                 "jsf.webhook.response.state", milestone,
-                                ContentState.Approved));
+                                ContentState.Approved), testUrl);
 
         verify(spyService, never()).publishDocumentMilestoneEvent(
                 webHooks.get(0), milestoneEvent);
@@ -206,7 +224,7 @@ public class DocumentServiceImplTest {
                 new DocumentMilestoneEvent(projectSlug, versionSlug,
                         docIdString, localeId, msgs.format(
                                 "jsf.webhook.response.state", milestone,
-                                ContentState.Approved));
+                                ContentState.Approved), testUrl);
         verify(spyService, never()).publishDocumentMilestoneEvent(
                 webHooks.get(0), milestoneEvent);
         verify(spyService, never()).publishDocumentMilestoneEvent(
@@ -228,7 +246,7 @@ public class DocumentServiceImplTest {
                 new DocumentMilestoneEvent(projectSlug, versionSlug,
                         docIdString, localeId, msgs.format(
                                 "jsf.webhook.response.state", milestone,
-                                ContentState.Translated));
+                                ContentState.Translated), testUrl);
         verify(spyService, never()).publishDocumentMilestoneEvent(
                 webHooks.get(0), milestoneEvent);
         verify(spyService, never()).publishDocumentMilestoneEvent(

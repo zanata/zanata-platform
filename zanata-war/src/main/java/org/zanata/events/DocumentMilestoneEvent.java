@@ -27,30 +27,59 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
-import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 
-import java.util.Collection;
-
 /**
+ *
+ * Event for when a document in a language reached a milestone in translations.
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonPropertyOrder({ "project", "version", "docId", "locale", "milestone"})
+@JsonPropertyOrder({ "project", "version", "docId", "locale", "editorDocumentUrl", "milestone"})
 @EqualsAndHashCode
-public class DocumentMilestoneEvent extends JSONType {
+public class DocumentMilestoneEvent extends WebhookEventType {
 
     public static final String EVENT_NAME =
         "org.zanata.events.DocumentMilestoneEvent";
 
+    /**
+     * Target project slug.
+     * {@link org.zanata.model.HProject#slug}
+     */
     private String project;
+
+    /**
+     * Target project version slug.
+     * {@link org.zanata.model.HProjectIteration#slug}
+     */
     private String version;
+
+    /**
+     * Target document full path id.
+     * {@link org.zanata.model.HDocument#docId}
+     */
     private String docId;
+
+    /**
+     * Target locale id.
+     * {@link org.zanata.common.LocaleId}
+     */
     private LocaleId locale;
+
+    /**
+     * Message for milestone reached.
+     */
     private String milestone;
+
+    /**
+     * Editor url in target document.
+     * {@link org.zanata.util.UrlUtil#fullEditorDocumentUrl}
+     */
+    private String editorDocumentUrl;
 
     @Override
     public String getEventType() {
