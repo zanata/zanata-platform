@@ -27,7 +27,6 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import javax.faces.application.FacesMessage;
 import javax.faces.event.ValueChangeEvent;
-import javax.xml.ws.Service;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
@@ -235,7 +234,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
         List<HProjectIteration> list =
                 Lists.newArrayList(getInstance().getProjectIterations());
 
-        Collections.sort(list, ComparatorUtil.PROJECT_NAME_COMPARATOR);
+        Collections.sort(list, ComparatorUtil.VERSION_PROJECT_NAME_COMPARATOR);
 
         return list;
     }

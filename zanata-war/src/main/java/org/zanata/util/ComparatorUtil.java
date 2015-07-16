@@ -23,8 +23,11 @@
 package org.zanata.util;
 
 import java.util.Comparator;
+import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.zanata.common.ProjectType;
+import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
@@ -49,22 +52,19 @@ public class ComparatorUtil {
             new Comparator<HPerson>() {
                 @Override
                 public int compare(HPerson hPerson, HPerson hPerson2) {
-                    return hPerson.getName().compareTo(hPerson2.getName());
-                }
+                    return compareStringIgnoreCase(hPerson.getName(),
+                            hPerson2.getName());
+        }
             };
 
-    public static final Comparator<HProjectIteration> PROJECT_NAME_COMPARATOR =
+    public static final Comparator<HProjectIteration> VERSION_PROJECT_NAME_COMPARATOR =
             new Comparator<HProjectIteration>() {
                 @Override
                 public int compare(HProjectIteration version1,
                         HProjectIteration version2) {
-                    return version1
-                            .getProject()
-                            .getName()
-                            .toLowerCase()
-                            .compareTo(
-                                    version2.getProject().getName()
-                                            .toLowerCase());
+                    return compareStringIgnoreCase(
+                            version1.getProject().getName(),
+                            version2.getProject().getName());
                 }
             };
 
@@ -73,7 +73,8 @@ public class ComparatorUtil {
             new Comparator<HProjectIteration>() {
                 @Override
                 public int compare(HProjectIteration o1, HProjectIteration o2) {
-                    return o2.getCreationDate().compareTo(o1.getCreationDate());
+                    return compareDate(o2.getCreationDate(),
+                            o1.getCreationDate());
                 }
             };
 
@@ -81,9 +82,18 @@ public class ComparatorUtil {
             new Comparator<HProject>() {
                 @Override
                 public int compare(HProject o1, HProject o2) {
-                    return o2.getCreationDate().compareTo(o1.getCreationDate());
+                    return compareDate(o2.getCreationDate(),
+                            o1.getCreationDate());
                 }
             };
+
+    public static final Comparator<HProject> PROJECT_NAME_COMPARATOR =
+        new Comparator<HProject>() {
+            @Override
+            public int compare(HProject o1, HProject o2) {
+                return compareStringIgnoreCase(o1.getName(), o2.getName());
+            }
+        };
 
     public static final Comparator<HAccountRole> ACCOUNT_ROLE_COMPARATOR =
             new Comparator<HAccountRole>() {
@@ -106,4 +116,33 @@ public class ComparatorUtil {
                     return o1.toString().compareTo(o2.toString());
                 }
             };
+
+    public static final Comparator<HAccount> ACCOUNT_NAME_COMPARATOR =
+            new Comparator<HAccount>() {
+                @Override
+                public int compare(HAccount o1, HAccount o2) {
+                    return compareStringIgnoreCase(o1.getPerson().getName(), o2
+                            .getPerson().getName());
+                }
+            };
+
+    public static int compareDate(Date date1, Date date2) {
+        if (date1 == null) {
+            return -1;
+        }
+        if (date2 == null) {
+            return 1;
+        }
+        return date1.compareTo(date2);
+    }
+
+    public static final int compareStringIgnoreCase(String str1, String str2) {
+        if (StringUtils.isBlank(str1)) {
+            return -1;
+        }
+        if (StringUtils.isBlank(str2)) {
+            return 1;
+        }
+        return str1.toLowerCase().compareTo(str2.toLowerCase());
+    }
 }
