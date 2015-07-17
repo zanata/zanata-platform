@@ -23,8 +23,11 @@ package org.zanata.service.impl;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -126,6 +129,8 @@ public class DocumentServiceImplTest {
     @Test
     public void documentMilestoneEventTranslatedTest() {
         DocumentServiceImpl spyService = Mockito.spy(documentService);
+        doNothing().when(spyService).publishDocumentMilestoneEvent(
+                any(WebHook.class), any(DocumentMilestoneEvent.class));
 
         WordStatistic stats = new WordStatistic(0, 0, 0, 10, 0);
         when(translationStateCacheImpl.getDocumentStatistics(docId, localeId))
@@ -170,6 +175,8 @@ public class DocumentServiceImplTest {
     @Test
     public void documentMilestoneEventApprovedTest() {
         DocumentServiceImpl spyService = Mockito.spy(documentService);
+        doNothing().when(spyService).publishDocumentMilestoneEvent(
+            any(WebHook.class), any(DocumentMilestoneEvent.class));
 
         WordStatistic stats = new WordStatistic(10, 0, 0, 0, 0);
         when(translationStateCacheImpl.getDocumentStatistics(docId, localeId))
