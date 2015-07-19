@@ -13,74 +13,16 @@
 
 <ui:define name="head">
   <script type="text/javascript">
-    function openUploadPanel() {
-      #{rich:component('uploadPanel')}
-    .
-      show();
-    }
-
-    function hideUploadPanel() {
-      #{rich:component('uploadPanel')}
-    .
-      hide();
-    }
-
-    function getFileExtension(fileName) {
-      var extensionIndex = fileName.lastIndexOf('.') + 1;
-      var fileExtension = "";
-      if (extensionIndex &lt; fileName.length) {
-        fileExtension = fileName.substring(extensionIndex, fileName.length);
-      }
-      return fileExtension;
-    }
-
-    function updateForm(fileName) {
-      var fileExtension = getFileExtension(fileName).toUpperCase();
-      if (fileExtension == "CSV") {
-        document.getElementById('langDiv').style.visibility = "hidden";
-        document.getElementById('commentColsDiv').style.visibility = "visible";
-        document.getElementById('treatCommentSameDiv').style.visibility = "visible";
-        document.getElementById('#{rich:clientId('uploadButton')}').removeAttribute("disabled")
-      }
-      else if (fileExtension == "PO") {
-        document.getElementById('langDiv').style.visibility = "visible";
-        document.getElementById('commentColsDiv').style.visibility = "hidden";
-        document.getElementById('treatCommentSameDiv').style.visibility = "visible";
-        document.getElementById('#{rich:clientId('uploadButton')}').removeAttribute("disabled");
-      }
-      else {
-        document.getElementById('langDiv').style.visibility = "hidden";
-        document.getElementById('commentColsDiv').style.visibility = "hidden";
-        document.getElementById('treatCommentSameDiv').style.visibility = "hidden";
-        document.getElementById('#{rich:clientId('uploadButton')}').setAttribute("disabled",
-          true);
-      }
-    }
-
-    function showLoading(show) {
-      if (show == true) {
-        document.getElementById("#{rich:clientId('fileUploading')}").style.visibility =
-          'visible';
-      }
-      else {
-        document.getElementById("#{rich:clientId('fileUploading')}").style.visibility =
-          'hidden';
-      }
-    }
-
     function confirmDelete(msg) {
       return confirm(msg);
     }
-
   </script>
-
 
   <a4j:jsFunction name="deleteGlossary" action="#{glossaryAction.deleteGlossary(localeId)}" status="glossaryLoader"
     render="glossary_form, glossarySearch-pager, glossarySearch-page-info,glossarySearchBottom-pager, glossarySearchBottom-page-info">
     <a4j:param name="val1" assignTo="#{localeId}"/>
   </a4j:jsFunction>
 </ui:define>
-
 
 <ui:define name="page_title">#{msgs['jsf.Glossary']}</ui:define>
 <ui:define name="center_content">
@@ -111,7 +53,7 @@
                 <s:fragment
                   rendered="#{s:hasPermission('', 'glossary-insert')}">
                   <li>
-                    <a href="#" onclick="openUploadPanel(); return false;">
+                    <a href="#" data-toggle="modal" data-target="#glossaryUploadDialog">
                       #{msgs['jsf.Glossary.upload']}
                       <i class="i i--import i__item__icon"></i>
                     </a>
@@ -146,7 +88,7 @@
           <s:fragment
             rendered="#{s:hasPermission('', 'glossary-insert')}">
             <p>
-              <a href="#" onclick="openUploadPanel(); return false;"
+              <a href="#" data-toggle="modal" data-target="#glossaryUploadDialog"
                 class="button--primary">
                 #{msgs['jsf.Glossary.upload']}
                 <i class="i i--plus i__item__icon"></i>
@@ -233,83 +175,7 @@
   </div>
 </div>
 
-
-<rich:popupPanel id="uploadPanel" moveable="#{true}"
-  resizeable="#{false}" autosized="#{true}">
-  <f:facet name="header">
-    <h:outputText value="#{msgs['jsf.Upload']}"/>
-  </f:facet>
-  <h:form id="uploadForm" enctype="multipart/form-data">
-    <div>
-      <h:outputLabel value="#{msgs['jsf.Glossary.supportedFileFormat']}"
-        class="glossarySupportedFileLabel"/>
-    </div>
-
-    <s:fileUpload id="fileUpload" accept="*"
-      data="#{glossaryAction.glossaryFileUpload.fileContents}"
-      fileName="#{glossaryAction.glossaryFileUpload.fileName}"
-      onchange="updateForm(this.value)">
-    </s:fileUpload>
-
-    <div id="langDiv" style="visibility:hidden">
-      <div title="#{msgs['jsf.Glossary.SourceLocale.Title']}"
-        class="glosaryFileUploadDialog">
-        <h:outputLabel value="#{msgs['jsf.SourceLanguage']}"/>
-        <h:selectOneMenu
-          value="#{glossaryAction.glossaryFileUpload.sourceLang}">
-          <s:selectItems value="#{glossaryAction.availableLocales}"
-            var="locale"
-            label="#{locale.localeId.id}  -  #{locale.retrieveNativeName()}"
-            itemValue="#{locale.localeId.id}" escape="true"/>
-
-        </h:selectOneMenu>
-      </div>
-      <div title="#{msgs['jsf.Glossary.TargetLocale.Title']}"
-        class="glosaryFileUploadDialog">
-        <h:outputLabel value="#{msgs['jsf.TargetLanguage']}"/>
-        <h:selectOneMenu
-          value="#{glossaryAction.glossaryFileUpload.transLang}">
-          <s:selectItems value="#{glossaryAction.availableLocales}"
-            var="locale"
-            label="#{locale.localeId.id}  -  #{locale.retrieveNativeName()}"
-            itemValue="#{locale.localeId.id}" escape="true"/>
-
-        </h:selectOneMenu>
-      </div>
-    </div>
-
-    <div class="glosaryFileUploadDialog" id="treatCommentSameDiv"
-      style="visibility:hidden">
-      <h:outputText
-        value="#{msgs['jsf.Glossary.TreatSourceCommentsAsTarget']}"
-        title="#{msgs['jsf.Glossary.TreatSourceCommentsAsTarget.Title']}"/>
-      <h:selectBooleanCheckbox
-        value="#{glossaryAction.glossaryFileUpload.treatSourceCommentsAsTarget}"
-        title="#{msgs['jsf.Glossary.TreatSourceCommentsAsTarget.Title']}"/>
-    </div>
-
-    <div class="glosaryFileUploadDialog" id="commentColsDiv"
-      style="visibility:hidden">
-      <h:outputText value="#{msgs['jsf.Glossary.CommentColumnNames']}"
-        title="#{msgs['jsf.Glossary.CommentColumnNames.Title']}"/>
-      <h:inputText
-        value="#{glossaryAction.glossaryFileUpload.commentCols}"
-        title="#{msgs['jsf.Glossary.CommentColumnNames.Title']}"/>
-    </div>
-
-
-    <div align="right" class="glosaryFileUploadDialog">
-      <h:graphicImage value="/images/loading.gif" id="fileUploading"
-        style="visibility:hidden"/>
-      <h:commandButton value="#{msgs['jsf.Upload']}"
-        action="#{glossaryAction.uploadFile}" id="uploadButton"
-        onclick="showLoading(true)"/>
-      <h:commandButton value="#{msgs['jsf.Cancel']}"
-        onclick="showLoading(false);hideUploadPanel();return false;"/>
-    </div>
-  </h:form>
-</rich:popupPanel>
-
+  <ui:include src="/WEB-INF/layout/glossary/upload_glossary_modal.xhtml"/>
 
 </ui:define>
 </ui:composition>
