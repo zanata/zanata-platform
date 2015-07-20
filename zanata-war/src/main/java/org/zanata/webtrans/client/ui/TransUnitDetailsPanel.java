@@ -11,6 +11,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DisclosurePanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 
@@ -23,47 +24,57 @@ public class TransUnitDetailsPanel extends Composite {
     @UiField
     Label headerLabel;
     @UiField
-    InlineLabel resId, msgContext, sourceComment, lastModifiedBy, lastModifiedTime;
+    InlineLabel resId, msgContext, refs, flags, sourceComment, lastModifiedBy,
+            lastModifiedTime;
     @UiField
     DisclosurePanel disclosurePanel;
     @UiField
     Styles style;
-    private String metaInfo;
+    @UiField
+    HTMLPanel lastModified;
+    private String metaInfo = "";
+
 
     public TransUnitDetailsPanel() {
         initWidget(uiBinder.createAndBindUi(this));
         // this is to remove the .header class so that it won't get style from
         // menu.css
-        disclosurePanel.getHeader().getParent().setStyleName("l--pad-h-quarter txt--important txt--mini");
+        disclosurePanel.getHeader().getParent().setStyleName("l--pad-left-quarter txt--mini");
     }
 
     public void setDetails(TransUnit transUnit) {
         resId.setText(transUnit.getResId());
 
         String context = Strings.nullToEmpty(transUnit.getMsgContext());
-        msgContext.setText(context);
+        setSourceMetaData(msgContext, context);
+
+        String reference = Strings.nullToEmpty(transUnit.getSourceRefs());
+        setSourceMetaData(refs, reference);
 
         String comment = Strings.nullToEmpty(transUnit.getSourceComment());
-        sourceComment.setText(comment);
+        setSourceMetaData(sourceComment, comment);
 
-        String person = transUnit.getLastModifiedBy();
-        if (Strings.isNullOrEmpty(person)) {
-            lastModifiedBy.setText("");
-            lastModifiedTime.setText("");
-        } else {
-            lastModifiedBy.setText(person);
-            lastModifiedTime.setText(DateUtil.formatShortDate(transUnit
-                    .getLastModifiedTime()));
+        flags.setText(Strings.nullToEmpty(transUnit.getSourceFlags()));
+        setSourceMetaData(flags, transUnit.getSourceFlags());
+
+        String person = Strings.nullToEmpty(transUnit.getLastModifiedBy());
+        lastModifiedBy.setText(person);
+
+        String date =
+                transUnit.getLastModifiedTime() != null ? DateUtil
+                        .formatShortDate(transUnit
+                                .getLastModifiedTime()) : "";
+
+        lastModifiedTime.setText(date);
+
+        if (Strings.isNullOrEmpty(person)
+                || Strings.isNullOrEmpty(date)) {
+            lastModified.addStyleName("is-hidden");
         }
 
-        StringBuilder headerSummary = new StringBuilder();
-        if (!context.isEmpty()) {
-            headerSummary.append(" MsgCtx: ").append(context);
-        }
-        if (!comment.isEmpty()) {
-            headerSummary.append(" Comment: ").append(comment);
-        }
-        metaInfo = headerSummary.toString();
+        metaInfo = append(metaInfo, getHeader("MsgCtx", context));
+        metaInfo = append(metaInfo, getHeader("Comment", comment));
+        metaInfo = append(metaInfo, getHeader("Refs", reference));
 
         String transUnitId = "";
         if (!GWT.isProdMode()) {
@@ -72,6 +83,30 @@ public class TransUnitDetailsPanel extends Composite {
         headerLabel.setText(transUnitId
                 + messages.transUnitDetailsHeadingWithInfo(
                         transUnit.getRowIndex(), metaInfo));
+    }
+
+    private void setSourceMetaData(Label label, String value) {
+        if(Strings.isNullOrEmpty(value)) {
+            label.addStyleName("label");
+            label.setText("No content");
+        } else {
+            label.setText(value);
+        }
+    }
+
+    private String append(String str, String valueToAppend) {
+        if(Strings.isNullOrEmpty(str)) {
+            return valueToAppend;
+        } else {
+            return str + ", " + valueToAppend;
+        }
+    }
+
+    private String getHeader(String header, String value) {
+        if(Strings.isNullOrEmpty(value)) {
+            return "";
+        }
+        return header + ": " + value;
     }
 
     public boolean hasNoMetaInfo() {

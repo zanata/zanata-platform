@@ -26,6 +26,8 @@ public class TransUnit implements IsSerializable, HasTransUnitId {
     private String sourceComment;
     private List<String> targets;
     private String msgContext;
+    private String sourceRefs;
+    private String sourceFlags;
     private String lastModifiedBy;
     private Date lastModifiedTime;
     private int rowIndex;
@@ -51,6 +53,8 @@ public class TransUnit implements IsSerializable, HasTransUnitId {
         this.lastModifiedBy = builder.lastModifiedBy;
         this.lastModifiedTime = builder.lastModifiedTime;
         this.msgContext = builder.msgContext;
+        this.sourceRefs = builder.sourceRefs;
+        this.sourceFlags = builder.sourceFlags;
         this.rowIndex = builder.rowIndex;
         this.verNum = builder.verNum;
         this.targetComment = builder.targetComment;
@@ -124,6 +128,22 @@ public class TransUnit implements IsSerializable, HasTransUnitId {
 
     void setMsgContext(String msgContext) {
         this.msgContext = msgContext;
+    }
+
+    public String getSourceRefs() {
+        return sourceRefs;
+    }
+
+    void setSourceRefs(String sourceRefs) {
+        this.sourceRefs = sourceRefs;
+    }
+
+    public String getSourceFlags() {
+        return sourceFlags;
+    }
+
+    void setSourceFlags(String sourceFlags) {
+        this.sourceFlags = sourceFlags;
     }
 
     public int getRowIndex() {
@@ -212,6 +232,8 @@ public class TransUnit implements IsSerializable, HasTransUnitId {
         private String sourceComment;
         private List<String> targets = Lists.newArrayList();
         private String msgContext;
+        private String sourceRefs;
+        private String sourceFlags;
         private String lastModifiedBy;
         private Date lastModifiedTime;
         private int rowIndex;
@@ -230,6 +252,8 @@ public class TransUnit implements IsSerializable, HasTransUnitId {
             this.sourceComment = transUnit.sourceComment;
             this.targets = nullToEmpty(transUnit.targets);
             this.msgContext = transUnit.msgContext;
+            this.sourceRefs = transUnit.sourceRefs;
+            this.sourceFlags = transUnit.sourceFlags;
             this.lastModifiedBy = transUnit.lastModifiedBy;
             this.lastModifiedTime = transUnit.lastModifiedTime;
             this.rowIndex = transUnit.rowIndex;
@@ -329,6 +353,16 @@ public class TransUnit implements IsSerializable, HasTransUnitId {
 
         public Builder setMsgContext(String msgContext) {
             this.msgContext = msgContext;
+            return this;
+        }
+
+        public Builder setSourceRefs(String sourceRefs) {
+            this.sourceRefs = sourceRefs;
+            return this;
+        }
+
+        public Builder setSourceFlags(String sourceFlags) {
+            this.sourceFlags = sourceFlags;
             return this;
         }
 

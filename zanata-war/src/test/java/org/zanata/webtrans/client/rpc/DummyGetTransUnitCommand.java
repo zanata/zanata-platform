@@ -100,7 +100,10 @@ final class DummyGetTransUnitCommand implements Command {
                             .setSourceComment(sourceComment)
                             .setTargets(targets).setStatus(state)
                             .setLastModifiedBy("peter")
-                            .setMsgContext("msgContext").setRowIndex(i)
+                            .setMsgContext("msgContext")
+                            .setSourceRefs("srcRef")
+                            .setSourceFlags("srcFlag")
+                            .setRowIndex(i)
                             .setVerNum(1);
 
             units.add(builder.build());

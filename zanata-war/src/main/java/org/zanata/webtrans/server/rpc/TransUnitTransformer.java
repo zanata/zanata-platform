@@ -30,6 +30,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.po.HPotEntryData;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.webtrans.shared.model.TransUnit;
 import lombok.AllArgsConstructor;
@@ -60,9 +61,12 @@ public class TransUnitTransformer {
 
     public TransUnit transform(HTextFlow hTextFlow, HTextFlowTarget target,
             HLocale hLocale) {
-        String msgContext = null;
-        if (hTextFlow.getPotEntryData() != null) {
-            msgContext = hTextFlow.getPotEntryData().getContext();
+        HPotEntryData potEntryData = hTextFlow.getPotEntryData();
+        String msgContext = null, refs = null, flags = null;
+        if (potEntryData != null) {
+            msgContext = potEntryData.getContext();
+            refs = potEntryData.getReferences();
+            flags = potEntryData.getFlags();
         }
 
         int nPlurals =
@@ -81,18 +85,20 @@ public class TransUnitTransformer {
                         .setLocaleId(hLocale.getLocaleId())
                         .setPlural(hTextFlow.isPlural())
                         .setSources(sourceContents)
-                        .setSourceComment(
-                            commentToString(hTextFlow.getComment()))
-                        .setTargets(targetContents)
-                        .setTargetComment(
-                            target == null ? null : commentToString(target
-                                .getComment()))
-                        .setMsgContext(msgContext)
-                        .setRowIndex(hTextFlow.getPos())
-                        .setVerNum(
-                            target == null ? NULL_TARGET_VERSION_NUM
-                                : target.getVersionNum())
-                        .setCommentsCount(getCommentCount(target));
+                    .setSourceComment(
+                        commentToString(hTextFlow.getComment()))
+                    .setTargets(targetContents)
+                    .setTargetComment(
+                        target == null ? null : commentToString(target
+                            .getComment()))
+                    .setMsgContext(msgContext)
+                    .setSourceRefs(refs)
+                    .setSourceFlags(flags)
+                    .setRowIndex(hTextFlow.getPos())
+                    .setVerNum(
+                        target == null ? NULL_TARGET_VERSION_NUM
+                            : target.getVersionNum())
+                    .setCommentsCount(getCommentCount(target));
 
         if (target != null) {
             builder.setStatus(target.getState());

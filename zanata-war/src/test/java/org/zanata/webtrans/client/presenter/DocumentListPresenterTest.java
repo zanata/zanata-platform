@@ -204,7 +204,10 @@ public class DocumentListPresenterTest {
                         .setTargets(targets).setStatus(ContentState.Approved)
                         .setLastModifiedBy("lastModifiedBy")
                         .setLastModifiedTime(new Date())
-                        .setMsgContext("msgContext").setRowIndex(1)
+                        .setMsgContext("msgContext")
+                        .setSourceRefs("srcRef")
+                        .setSourceFlags("srcFlag")
+                        .setRowIndex(1)
                         .setVerNum(1).build();
         TransUnitUpdateInfo updateInfo =
                 new TransUnitUpdateInfo(true, true, new DocumentId(2222L,

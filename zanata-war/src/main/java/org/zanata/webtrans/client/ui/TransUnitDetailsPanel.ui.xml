@@ -17,31 +17,39 @@
     <g:customHeader>
       <g:Label ui:field="headerLabel" styleName="{style.headerLabel}" />
     </g:customHeader>
-    <g:HTMLPanel tag="ul" styleName="list--no-bullets">
-      <li>
-        <span class="txt--mini txt--understated txt--important">Resource ID:</span>
-        <g:InlineLabel ui:field="resId" styleName="txt--meta" />
+    <g:HTMLPanel tag="ul" styleName="list--no-bullets bg--pop-highest l--pad-all-quarter">
+      <li class="txt--meta">
+        <span>Resource ID:</span>
+        <g:InlineLabel ui:field="resId" styleName="l--push-left-quarter"/>
       </li>
 
-      <li>
-        <span class="txt--mini txt--understated txt--important">Message Context:</span>
-        <g:InlineLabel ui:field="msgContext" styleName="txt--meta" />
+      <li class="txt--meta">
+        <span>Message Context:</span>
+        <g:InlineLabel ui:field="msgContext" styleName="l--push-left-quarter"/>
       </li>
 
-      <li>
-        <span class="txt--mini txt--understated txt--important">Source Comment:</span>
-        <g:InlineLabel ui:field="sourceComment" styleName="txt--meta" />
+      <li class="txt--meta">
+        <span>Reference:</span>
+        <g:InlineLabel ui:field="refs" styleName="l--push-left-quarter"/>
       </li>
 
-      <li>
-        <span class="txt--mini txt--understated txt--important">Last Modified By:</span>
-        <g:InlineLabel ui:field="lastModifiedBy" styleName="txt--meta" />
+      <li class="txt--meta">
+        <span>Flags:</span>
+        <g:InlineLabel ui:field="flags" styleName="l--push-left-quarter"/>
       </li>
 
-      <li>
-        <span class="txt--mini txt--understated txt--important">Last Modified Time:</span>
-        <g:InlineLabel ui:field="lastModifiedTime" styleName="txt--meta" />
+      <li class="txt--meta">
+        <span>Source Comment:</span>
+        <g:InlineLabel ui:field="sourceComment" styleName="l--push-left-quarter"/>
       </li>
+
+      <g:HTMLPanel tag="li" styleName="txt--meta" ui:field="lastModified">
+        <span>Last Modified:</span>
+        <i class="i i--user l--push-left-quarter" title="Modified by"></i>
+        <g:InlineLabel ui:field="lastModifiedBy"/>
+        <i class="i i--clock l--push-left-quarter" title="Modified date"></i>
+        <g:InlineLabel ui:field="lastModifiedTime"/>
+      </g:HTMLPanel>
     </g:HTMLPanel>
   </g:DisclosurePanel>
 </ui:UiBinder>
