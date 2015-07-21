@@ -43,6 +43,7 @@ public class TransUnitDetailsPanel extends Composite {
     }
 
     public void setDetails(TransUnit transUnit) {
+        metaInfo = "";
         resId.setText(transUnit.getResId());
 
         String context = Strings.nullToEmpty(transUnit.getMsgContext());

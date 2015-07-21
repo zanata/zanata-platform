@@ -56,6 +56,7 @@ import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.ChunkUploadResponse;
 import org.zanata.rest.dto.extensions.ExtensionType;
+import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.service.VirusScanner;
 import org.zanata.security.ZanataIdentity;
@@ -338,9 +339,12 @@ public class SourceDocumentUpload {
                         useOfflinePo(id));
         doc.setLang(LocaleId.EN_US);
         // TODO Copy Trans values
+
+        StringSet extensions = new StringSet(ExtensionType.GetText.toString());
+        extensions.add(SimpleComment.ID);
+
         documentServiceImpl.saveDocument(id.getProjectSlug(),
-                id.getVersionSlug(), doc,
-                new StringSet(ExtensionType.GetText.toString()), false);
+                id.getVersionSlug(), doc, extensions, false);
     }
 
     private boolean useOfflinePo(GlobalDocumentId id) {
