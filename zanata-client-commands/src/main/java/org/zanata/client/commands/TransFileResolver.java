@@ -24,6 +24,8 @@ package org.zanata.client.commands;
 import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.ProjectType;
@@ -44,6 +46,8 @@ import static org.zanata.client.commands.Messages._;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class TransFileResolver {
+    private static final Logger log =
+            LoggerFactory.getLogger(TransFileResolver.class);
     private final ConfigurableProjectOptions opts;
     private static final Map<ProjectType, FileMappingRule>
             PROJECT_TYPE_FILE_MAPPING_RULES =
@@ -146,6 +150,11 @@ public class TransFileResolver {
                                 localeMapping, translationFileExtension);
                 return Optional.of(new File(opts.getTransDir(), relativePath));
             }
+        }
+        if (fileMappingRules.size() > 0) {
+            log.warn(
+                    "None of the file mapping rule is applicable for {}. Please make sure your mapping is correct.",
+                    qualifiedSrcDocName.getFullName());
         }
         return Optional.absent();
     }
