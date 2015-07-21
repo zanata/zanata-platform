@@ -82,13 +82,15 @@ You can also customize the way translation files are found when pushing, as well
 
 In the example above, `pattern` identifies a source file, and the contents of the `rule` element specify how translation files will be stored.
 
-The `pattern` attribute is a [glob](http://en.wikipedia.org/wiki/Glob_(programming)) matching pattern to your source document file(s). You can define more than one rule and apply each rule to a specific set of source documents using different patterns. The **first** matched rule will be applied to the file. 
+The `pattern` attribute is a [glob](http://en.wikipedia.org/wiki/Glob_(programming)) matching pattern to your source document file(s). You can define more than one rule and apply each rule to a specific set of source documents using different patterns. The **first** matched rule will be applied to the file.
+
+Please note `pattern` value will be tested against file path relative to project root, not src-dir.
 
 `pattern` is optional. If not specified, the rule will be applied to all source documents in your project.
 The actual rule consists of literal path and placeholders/variables.
 
 Supported placeholders/variables are:
- 
+
  1. **{path}** is the path between source document root (what you define as src-dir option) and the final file.
  1. **{filename}** the source document name without leading path and extension.
  1. **{locale}** the locale for the translation file. If you use "map-from" argument in your locale mapping, this will be the map-from value.
@@ -128,9 +130,9 @@ Explanation: Since you have defined `<src-dir>` as `templates`, the source docum
 {extension}					      = 'pot'
 ```
 
-> **NOTE** the relative path `messages/kdeedu/kalzium.pot` will be the document's unique identifier inside Zanata. 
-> If you change `src-dir` setting later, e.g. to ".", which results in a change of the relative path to `templates/messages/kdeedu/kalzium.pot`, 
-> pushing again will create a new document with the new path as its unique identifier, and the old document will be considered obsolete and will not be visible to anyone. 
+> **NOTE** the relative path `messages/kdeedu/kalzium.pot` will be the document's unique identifier inside Zanata.
+> If you change `src-dir` setting later, e.g. to ".", which results in a change of the relative path to `templates/messages/kdeedu/kalzium.pot`,
+> pushing again will create a new document with the new path as its unique identifier, and the old document will be considered obsolete and will not be visible to anyone.
 > The old document's translations will not be copied to the new document automatically, but they will appear as Translation Memory matches. This can be confusing and frustrating for translators.
 
 As the rule is defined as `{locale}/{path}/{filename}.po`, for locale `de-DE`,
