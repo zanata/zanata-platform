@@ -36,6 +36,8 @@ import org.zanata.common.EntityStatus;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HPerson;
 
+import com.google.common.collect.Lists;
+
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
@@ -51,23 +53,19 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long> {
         super(HIterationGroup.class, session);
     }
 
-    @SuppressWarnings("unchecked")
-    public List<HIterationGroup> getAllActiveVersionGroups() {
-        Query query =
-                getSession().createQuery(
-                        "from HIterationGroup g where g.status = :status");
-        query.setParameter("status", EntityStatus.ACTIVE);
-        query.setComment("VersionGroupDAO.getAllActiveVersionGroups");
-        return query.list();
-    }
+    public List<HIterationGroup> getAllGroups(EntityStatus... statuses) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("from HIterationGroup g ");
+        if (statuses != null && statuses.length >= 1) {
+            sb.append("where g.status in :statuses");
+        }
+        Query query = getSession().createQuery(sb.toString());
 
-    @SuppressWarnings("unchecked")
-    public List<HIterationGroup> getAllObsoleteVersionGroups() {
-        Query query =
-                getSession().createQuery(
-                        "from HIterationGroup g where g.status = :status");
-        query.setParameter("status", EntityStatus.OBSOLETE);
-        query.setComment("VersionGroupDAO.getAllObsoleteVersionGroups");
+        if (statuses != null && statuses.length >= 1) {
+            query.setParameterList("statuses", Lists.newArrayList(statuses));
+        }
+
+        query.setComment("VersionGroupDAO.getAllGroups");
         return query.list();
     }
 

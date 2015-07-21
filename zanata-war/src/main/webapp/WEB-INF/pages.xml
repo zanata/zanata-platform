@@ -258,7 +258,6 @@
   <!-- Version Group -->
 
   <page view-id="/version-group/home.xhtml">
-    <action execute="#{versionGroupAction.loadAllActiveGroupsOrIsMaintainer}" />
     <action execute="#{breadcrumbs.clear}" />
     <action execute="#{breadcrumbs.addLocation('', msgs['jsf.Groups'])}" />
   </page>

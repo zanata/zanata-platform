@@ -30,10 +30,8 @@ import java.util.Set;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
-import org.infinispan.manager.CacheContainer;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.LocaleId;
@@ -131,17 +129,6 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
         int totalMessageCount =
                 versionGroupServiceImpl.getTotalMessageCount(GROUP2_SLUG);
         assertThat(totalMessageCount, equalTo(0));
-    }
-
-    @Test
-    public void getAllActiveAndMaintainedGroupsTest() {
-        // personId = 1 is maintainers for group1 and group3(obsolote)
-        PersonDAO personDAO = new PersonDAO(getSession());
-        HPerson person = personDAO.findById(new Long(1));
-        List<HIterationGroup> result =
-                versionGroupServiceImpl.getAllActiveAndMaintainedGroups(person);
-
-        assertThat(result.size(), equalTo(3));
     }
 
     @Test

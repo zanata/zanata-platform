@@ -30,14 +30,6 @@
     <h:form id="groupForm">
       <s:div styleClass="float-right">
         <a4j:region>
-          <h:selectBooleanCheckbox
-            title="#{msgs['jsf.groups.ShowActiveGroups']}"
-            value="#{versionGroupAction.showActiveGroups}">
-            <a4j:ajax event="change" render="groupTable"/>
-          </h:selectBooleanCheckbox>
-          <h:outputText value="#{msgs['jsf.Active']}"/>
-
-          <h:outputText value="&#160;"/>
           <s:fragment
             rendered="#{s:hasPermission('HIterationGroup','view-obsolete')}">
             <h:selectBooleanCheckbox id="showObsolete"

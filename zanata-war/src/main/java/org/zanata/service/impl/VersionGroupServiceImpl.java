@@ -108,30 +108,8 @@ public class VersionGroupServiceImpl implements VersionGroupService {
     }
 
     @Override
-    public List<HIterationGroup>
-            getAllActiveAndMaintainedGroups(HPerson person) {
-        List<HIterationGroup> activeVersions = getAllActiveGroups();
-        if (person == null) {
-            return activeVersions;
-        }
-
-        List<HIterationGroup> obsoleteVersions =
-                versionGroupDAO.getAllObsoleteVersionGroups();
-
-        List<HIterationGroup> filteredList = Lists.newArrayList();
-        for (HIterationGroup obsoleteGroup : obsoleteVersions) {
-            if (obsoleteGroup.getMaintainers().contains(person)) {
-                filteredList.add(obsoleteGroup);
-            }
-        }
-        activeVersions.addAll(filteredList);
-
-        return activeVersions;
-    }
-
-    @Override
-    public List<HIterationGroup> getAllActiveGroups() {
-        return versionGroupDAO.getAllActiveVersionGroups();
+    public List<HIterationGroup> getAllGroups(EntityStatus... statuses) {
+        return versionGroupDAO.getAllGroups(statuses);
     }
 
     @Override

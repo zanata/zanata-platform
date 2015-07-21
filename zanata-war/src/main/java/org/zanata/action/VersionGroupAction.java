@@ -22,6 +22,7 @@ package org.zanata.action;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import lombok.Getter;
@@ -37,6 +38,8 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
 import org.zanata.service.VersionGroupService;
 
+import com.google.common.collect.Lists;
+
 @Name("versionGroupAction")
 @Scope(ScopeType.PAGE)
 public class VersionGroupAction implements Serializable {
@@ -48,52 +51,22 @@ public class VersionGroupAction implements Serializable {
     @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
 
-    @Setter
-    private List<HIterationGroup> allVersionGroups;
-
     @Getter
     @Setter
     private String groupNameFilter;
 
     @Getter
     @Setter
-    private boolean showActiveGroups = true;
-
-    @Getter
-    @Setter
     private boolean showObsoleteGroups = false;
 
-    public void loadAllActiveGroupsOrIsMaintainer() {
-        if (authenticatedAccount != null) {
-            allVersionGroups =
-                    versionGroupServiceImpl
-                            .getAllActiveAndMaintainedGroups(authenticatedAccount
-                                    .getPerson());
-        } else {
-            allVersionGroups = versionGroupServiceImpl.getAllActiveGroups();
-        }
-    }
-
-    private boolean filterGroupByStatus(HIterationGroup group) {
-        if (isShowActiveGroups() && isShowObsoleteGroups()) {
-            return true;
-        }
-
-        if (group.getStatus() == EntityStatus.OBSOLETE) {
-            return isShowObsoleteGroups();
-        } else if (group.getStatus() == EntityStatus.ACTIVE) {
-            return isShowActiveGroups();
-        }
-        return false;
-    }
-
     public List<HIterationGroup> getAllVersionGroups() {
-        List<HIterationGroup> result = new ArrayList<HIterationGroup>();
-        for (HIterationGroup group : allVersionGroups) {
-            if (filterGroupByStatus(group)) {
-                result.add(group);
-            }
+        List<EntityStatus> statusList = Lists.newArrayList(EntityStatus.ACTIVE);
+        if (authenticatedAccount != null && isShowObsoleteGroups()) {
+            statusList.add(EntityStatus.OBSOLETE);
         }
-        return result;
+        EntityStatus[] statuses =
+                statusList.toArray(new EntityStatus[statusList.size()]);
+
+        return versionGroupServiceImpl.getAllGroups(statuses);
     }
 }
