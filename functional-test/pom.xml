@@ -477,6 +477,16 @@
             </executions>
           </plugin>
           <plugin>
+            <groupId>org.codehaus.gmavenplus</groupId>
+            <artifactId>gmavenplus-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>extract-appserver</id>
+                <phase>prepare-package</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
             <artifactId>maven-dependency-plugin</artifactId>
             <executions>
               <execution>
@@ -585,10 +595,6 @@
               </deployables>
             </configuration>
             <executions>
-              <execution>
-                <id>cargo-install</id>
-                <phase>prepare-package</phase>
-              </execution>
               <execution>
                 <id>cargo-start</id>
                 <phase>pre-integration-test</phase>
@@ -819,11 +825,8 @@
                 <echo>-DskipArqTests : to skip Arquillian integration tests (if building zanata-war)</echo>
                 <echo />
                 <echo>Unless skipping tests, you must choose an appserver:</echo>
-                <echo>-Dappserver=jbosseap6 -Dcargo.installation=http://example.com/jbosseap640.zip -Dcargo.basename=jbosseap640</echo>
-                <echo>or -Dappserver=wildfly8</echo>
-                <echo>NB: cargo.basename needs to match the basename of the file given in cargo.installation.</echo>
-                <echo>For example, if cargo.installation is http://example.com/download/jboss-6.4.0.zip, cargo.basename should be jboss-6.4.0.</echo>
-                <echo>appserver.dir.name is top-level dir inside zip.  For jbosseap6, default is jboss-eap-6.3.  Override for later versions.</echo>
+                <echo>-Dappserver=jbosseap6 or -Dappserver=wildfly8</echo>
+                <echo>For jbosseap6, env var EAP6_URL should point to an EAP zip file.</echo>
                 <echo />
                 <echo>-DallFuncTests to enable all functional tests (defaults to smoke tests)</echo>
                 <echo />
@@ -854,7 +857,7 @@
             <configuration>
               <target unless="skipFuncTests">
                 <fail message="'appserver' property must be set to run integration tests (or else use -DskipFuncTests)" unless="appserver" />
-                <fail message="'cargo.installation' property must be set to run integration tests (or else use -DskipFuncTests)" unless="cargo.installation" />
+                <fail message="'cargo.installation' property is null (set env var EAP6_URL or else use -DskipFuncTests)" unless="cargo.installation" />
               </target>
             </configuration>
           </execution>
@@ -903,6 +906,7 @@
         <configuration>
           <container>
             <type>installed</type>
+            <home>${appserver.home}</home>
 
             <systemProperties>
               <ehcache.disk.store.dir>${project.build.directory}/ehcache</ehcache.disk.store.dir>
