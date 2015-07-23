@@ -12,9 +12,6 @@
 
   <inherits name="com.google.gwt.inject.Inject" />
 
-  <!-- This makes the GWT Designer happy -->
-  <inherits name="com.google.gwt.junit.JUnit" />
-
   <!--google guava collection goodies-->
   <inherits name='com.google.common.collect.Collect' />
 
