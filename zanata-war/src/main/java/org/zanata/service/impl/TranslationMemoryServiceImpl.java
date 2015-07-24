@@ -280,7 +280,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
 
             // filter out invalid target
             return Collections2.filter(matches,
-                    ValidTargetFilterPredicate.PREDICATE);
+                    ValidTargetFilterPredicate.INSTANCE);
 
         } catch (ParseException e) {
             if (transMemoryQuery.getSearchType() == HasSearchType.SearchType.RAW) {
@@ -570,16 +570,16 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
      * @param targetLocale
      * @param queryText
      * @param multiQueryText
-     * @param contentFields
+     * @param srcContentFields
      * @return
      * @throws ParseException
      */
     private Query generateQuery(TransMemoryQuery query, LocaleId sourceLocale,
             LocaleId targetLocale, String queryText, String[] multiQueryText,
-            String contentFields[]) throws ParseException {
+            String srcContentFields[]) throws ParseException {
         Query textFlowTargetQuery =
                 generateTextFlowTargetQuery(query, sourceLocale, targetLocale,
-                        queryText, multiQueryText, contentFields);
+                        queryText, multiQueryText, srcContentFields);
         if (query.getSearchType() == HasSearchType.SearchType.CONTENT_HASH) {
             return textFlowTargetQuery;
         } else {
@@ -604,19 +604,19 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
      * @param targetLocale
      * @param queryText
      * @param multiQueryText
-     * @param contentFields
+     * @param srcContentFields
      * @return
      * @throws ParseException
      */
     private Query generateTextFlowTargetQuery(TransMemoryQuery queryParams,
             LocaleId sourceLocale, LocaleId targetLocale, String queryText,
-            String[] multiQueryText, String[] contentFields)
+            String[] multiQueryText, String[] srcContentFields)
             throws ParseException {
         BooleanQuery query = new BooleanQuery();
 
         Query contentQuery =
                 buildContentQuery(queryParams, sourceLocale, queryText,
-                        multiQueryText, contentFields);
+                        multiQueryText, srcContentFields);
         query.add(contentQuery, BooleanClause.Occur.MUST);
 
         TermQuery localeQuery =
@@ -688,35 +688,36 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
 
     private Query buildContentQuery(TransMemoryQuery query,
             LocaleId sourceLocale, String queryText, String[] multiQueryText,
-            String[] contentFields) throws ParseException {
+            String[] srcContentFields) throws ParseException {
 
         if (query.getSearchType() == HasSearchType.SearchType.CONTENT_HASH) {
             return new TermQuery(new Term(IndexFieldLabels.TF_CONTENT_HASH,
                     queryText));
         } else {
-            // Analyzer determined by the language
+            // Analyzer is determined by the source language,
+            // because we are querying the source text.
             String analyzerDefName =
                     TextContainerAnalyzerDiscriminator
                             .getAnalyzerDefinitionName(sourceLocale.getId());
-            Analyzer analyzer =
+            Analyzer sourceAnalyzer =
                     entityManager.getSearchFactory().getAnalyzer(
                             analyzerDefName);
 
             if (query.getSearchType() == HasSearchType.SearchType.FUZZY_PLURAL) {
                 int queriesSize = multiQueryText.length;
-                if (queriesSize > contentFields.length) {
+                if (queriesSize > srcContentFields.length) {
                     log.warn("query contains {} fields, but we only index {}",
-                            queriesSize, contentFields.length);
+                            queriesSize, srcContentFields.length);
                 }
                 String[] searchFields = new String[queriesSize];
-                System.arraycopy(contentFields, 0, searchFields, 0, queriesSize);
+                System.arraycopy(srcContentFields, 0, searchFields, 0, queriesSize);
 
                 return MultiFieldQueryParser.parse(LUCENE_VERSION,
-                        multiQueryText, searchFields, analyzer);
+                        multiQueryText, searchFields, sourceAnalyzer);
             } else {
                 MultiFieldQueryParser parser =
                         new MultiFieldQueryParser(LUCENE_VERSION,
-                                contentFields, analyzer);
+                                srcContentFields, sourceAnalyzer);
                 return parser.parse(queryText);
             }
         }
@@ -786,28 +787,37 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         }
     }
 
-    private static enum ValidTargetFilterPredicate implements
+    private static class ValidTargetFilterPredicate implements
             Predicate<Object[]> {
-        PREDICATE;
+        public static final ValidTargetFilterPredicate INSTANCE = new ValidTargetFilterPredicate();
         @Override
         public boolean apply(Object[] input) {
             Object entity = input[1];
             if (entity instanceof HTextFlowTarget) {
                 HTextFlowTarget target = (HTextFlowTarget) entity;
 
-                if (target == null || !target.getState().isTranslated()) {
+                if (!target.getState().isTranslated()) {
+                    log.warn("Unexpected TFT with state {}: {}",
+                            target.getState(), entity);
                     return false;
                 } else {
                     HProjectIteration version =
                             target.getTextFlow().getDocument()
                                     .getProjectIteration();
-                    if (version.getStatus() == EntityStatus.OBSOLETE
-                            || version.getProject().getStatus() == EntityStatus.OBSOLETE) {
+                    if (version.getStatus() == EntityStatus.OBSOLETE) {
+                        log.debug("Discarding TFT result from obsolete iteration {}: {}",
+                                version, entity);
+                        return false;
+                    } else if (version.getProject().getStatus() ==
+                            EntityStatus.OBSOLETE) {
+                        log.debug("Discarding TFT result from obsolete project {}: {}",
+                                version.getProject(), entity);
                         return false;
                     }
                 }
                 return true;
             }
+            log.warn("Unexpected query result of type {}: {}", entity.getClass().getName(), entity);
             return true;
         }
     }
