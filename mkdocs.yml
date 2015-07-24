@@ -8,16 +8,17 @@ theme: readthedocs
 pages:
 - Home: 'index.md'
 - User Guide:
-  - Installation: 'installation.md'
+  - Linux Installation: 'installation/linux-installation.md'
+  - OS X Installation: 'installation/osx-installation.md'
+  - Windows Installation: 'installation/windows-installation.md'
+  - Manual Installation: 'installation/manual-installation.md'
   - Configuration: 'configuration.md'
   - Command Hook: 'command-hook.md'
-- Ivy setup: 'ivy/setup.md'
-- 0install setup: '0install/setup.md'
-- Maven Plugin:
-  - Installation: 'maven-plugin/installation.md'
-  - Configuration: 'maven-plugin/configuration.md'
-  - Commands: 'maven-plugin/commands.md'
 - Commands:
   - init: 'commands/init.md'
   - push: 'commands/push.md'
   - pull: 'commands/pull.md'
+- Maven Plugin:
+  - Installation: 'maven-plugin/installation.md'
+  - Configuration: 'maven-plugin/configuration.md'
+  - Commands: 'maven-plugin/commands.md'

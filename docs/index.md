@@ -19,7 +19,11 @@ Features
 Installation
 ------------
 
-For installation instructions please see the [Installation Section](installation)
+For installation instructions, see:
+
+- [Linux Installation](installation/linux-installation)
+- [OS X Installation](installation/osx-installation)
+- [Windows Installation](installation/windows-installation)
 
 Contribute
 ----------
