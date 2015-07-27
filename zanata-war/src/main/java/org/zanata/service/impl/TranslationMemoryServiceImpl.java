@@ -62,6 +62,7 @@ import org.zanata.rest.editor.dto.suggestion.TransMemoryUnitSuggestionDetail;
 import org.zanata.search.LevenshteinTokenUtil;
 import org.zanata.search.LevenshteinUtil;
 import org.zanata.service.TranslationMemoryService;
+import org.zanata.util.SysProperties;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
@@ -82,6 +83,9 @@ import lombok.extern.slf4j.Slf4j;
 @Scope(ScopeType.STATELESS)
 @Slf4j
 public class TranslationMemoryServiceImpl implements TranslationMemoryService {
+
+    private static final int SEARCH_MAX_RESULTS = SysProperties.getInt(
+            SysProperties.TM_MAX_RESULTS, 20);
 
     @In
     private FullTextEntityManager entityManager;
@@ -545,6 +549,8 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                 generateQuery(query, sourceLocale, targetLocale, queryText,
                         multiQueryText, IndexFieldLabels.TF_CONTENT_FIELDS);
 
+        log.info("Executing Lucene query: {}", textQuery.toString());
+
         FullTextQuery ftQuery =
                 entityManager.createFullTextQuery(textQuery, entities);
 
@@ -558,7 +564,13 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             ftQuery.setSort(lastChangedSort);
         }
 
-        return (List<Object[]>) ftQuery.getResultList();
+        List<Object[]> resultList = (List<Object[]>) ftQuery.getResultList();
+        if (!resultList.isEmpty() && resultList.size() == maxResult) {
+            log.info(
+                    "Lucene query returned exactly {} results.  Increasing {} might produce more matches.",
+                    resultList.size(), SysProperties.TM_MAX_RESULTS);
+        }
+        return resultList;
     }
 
     /**
