@@ -21,7 +21,7 @@
 package org.zanata.rest.editor.service;
 
 import com.google.common.base.Joiner;
-import com.googlecode.totallylazy.Either;
+import com.google.common.base.Optional;
 import com.googlecode.totallylazy.Option;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -33,7 +33,6 @@ import org.zanata.rest.editor.service.resource.SuggestionsResource;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationMemoryService;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
-import org.zanata.webtrans.shared.rpc.HasSearchType;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.Path;
@@ -61,7 +60,8 @@ public class SuggestionsService implements SuggestionsResource {
     private LocaleService localeService;
 
     @Override
-    public Response query(List<String> query, String sourceLocaleString, String transLocaleString, String searchTypeString) {
+    public Response query(List<String> query, String sourceLocaleString,
+            String transLocaleString, String searchTypeString, long textFlowTargetId) {
 
         Option<SearchType> searchType = getSearchType(searchTypeString);
         if (searchType.isEmpty()) {
@@ -82,8 +82,14 @@ public class SuggestionsService implements SuggestionsResource {
                     .build();
         }
 
+        Optional<Long> tft;
+        if (textFlowTargetId < 0) {
+            tft = Optional.absent();
+        } else {
+            tft = Optional.of(textFlowTargetId);
+        }
         List<Suggestion> suggestions = transMemoryService.searchTransMemoryWithDetails(transLocale.get(),
-                sourceLocale.get(), new TransMemoryQuery(query, searchType.get()));
+                sourceLocale.get(), new TransMemoryQuery(query, searchType.get()), tft);
 
         // Wrap in generic entity to prevent type erasure, so that an
         // appropriate MessageBodyReader can be used.

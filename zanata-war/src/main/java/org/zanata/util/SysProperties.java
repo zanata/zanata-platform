@@ -31,14 +31,30 @@ public class SysProperties {
      * Maximum number of Lucene results to be considered in TM searches.
      */
     public static final String TM_MAX_RESULTS = "zanata.tm.max.results";
-/*
+    /**
+     * Override Lucene boost value for text contents
+     */
     public static final String TM_BOOST_CONTENT = "zanata.tm.boost.content";
+    /**
+     * Override Lucene value for textflowtarget (id)
+     */
     public static final String TM_BOOST_TFTID = "zanata.tm.boost.tftid";
+    /**
+     * Override Lucene value for project (slug)
+     */
     public static final String TM_BOOST_PROJECT = "zanata.tm.boost.project";
+    /**
+     * Override Lucene value for document name (docId)
+     */
     public static final String TM_BOOST_DOCID = "zanata.tm.boost.docid";
+    /**
+     * Override Lucene value for textflow (resId)
+     */
     public static final String TM_BOOST_RESID = "zanata.tm.boost.resid";
+    /**
+     * Override Lucene value for project iteration (slug)
+     */
     public static final String TM_BOOST_ITERATION = "zanata.tm.boost.iteration";
-*/
 
     /**
      * Gets the value of a system property as a float if available,
