@@ -155,7 +155,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
 
         Collection<Object[]> matches =
                 findMatchingTranslation(targetLocaleId, sourceLocaleId, query,
-                        0, true, HTextFlowTarget.class);
+                        0, HTextFlowTarget.class);
 
         if (matches.isEmpty()) {
             return Optional.<HTextFlowTarget> absent();
@@ -208,7 +208,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
 
         Collection<Object[]> matches =
                 findMatchingTranslation(targetLocaleId, sourceLocaleId,
-                        transMemoryQuery, SEARCH_MAX_RESULTS, false,
+                        transMemoryQuery, SEARCH_MAX_RESULTS,
                         HTextFlowTarget.class, TransMemoryUnit.class);
 
         Map<TMKey, TransMemoryResultItem> matchesMap =
@@ -275,7 +275,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
     private Collection<Object[]> findMatchingTranslation(
             LocaleId targetLocaleId, LocaleId sourceLocaleId,
             TransMemoryQuery transMemoryQuery, int maxResults,
-            boolean sortByDate, Class<?>... entities) {
+            Class<?>... entities) {
         try {
             if (entities == null || entities.length < 1) {
                 throw new RuntimeException(
@@ -283,7 +283,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             }
             List<Object[]> matches =
                     getSearchResult(transMemoryQuery, sourceLocaleId,
-                            targetLocaleId, maxResults, sortByDate, entities);
+                            targetLocaleId, maxResults, entities);
 
             // filter out invalid target
             return Collections2.filter(matches,
@@ -494,7 +494,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
 
     private List<Object[]> getSearchResult(TransMemoryQuery query,
             LocaleId sourceLocale, LocaleId targetLocale, int maxResult,
-            boolean sortByDate, Class<?>... entities) throws ParseException {
+            Class<?>... entities) throws ParseException {
         String queryText = null;
         String[] multiQueryText = null;
 
@@ -563,9 +563,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             ftQuery.setMaxResults(maxResult);
         }
 
-        if (sortByDate) {
-            ftQuery.setSort(lastChangedSort);
-        }
+        ftQuery.setSort(lastChangedSort);
 
         List<Object[]> resultList = (List<Object[]>) ftQuery.getResultList();
         if (!resultList.isEmpty() && resultList.size() == maxResult) {
@@ -911,7 +909,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
          */
         private Collection<Object[]> runQuery() {
             return findMatchingTranslation(transLocale, srcLocale, query,
-                    SEARCH_MAX_RESULTS, SORT_BY_DATE,
+                    SEARCH_MAX_RESULTS,
                     HTextFlowTarget.class, TransMemoryUnit.class);
         }
 
