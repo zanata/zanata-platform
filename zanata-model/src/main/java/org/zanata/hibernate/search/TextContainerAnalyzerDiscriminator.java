@@ -20,7 +20,6 @@
  */
 package org.zanata.hibernate.search;
 
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.hibernate.search.analyzer.Discriminator;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HTextFlow;
@@ -37,7 +36,7 @@ import com.ibm.icu.util.ULocale;
  * This is a replacement for Lucene's
  * {@link org.hibernate.search.annotations.AnalyzerDef} annotations as they
  * cannot be used with concrete Analyzer implementations (e.g.
- * {@link StandardAnalyzer}).
+ * {@link DefaultAnalyzer}).
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -82,10 +81,10 @@ public class TextContainerAnalyzerDiscriminator implements Discriminator {
 
         if (langCode.equalsIgnoreCase("zh") || langCode.equalsIgnoreCase("ja")
                 || langCode.equalsIgnoreCase("ko")) {
-            return "UnigramAnalyzer";
+            return Analyzers.UNIGRAM;
         } else {
             // All other languages
-            return "StandardAnalyzer";
+            return Analyzers.DEFAULT;
         }
     }
 }
