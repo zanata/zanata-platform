@@ -38,8 +38,6 @@ import com.google.common.base.Optional;
  */
 public interface TranslationMemoryService extends TranslationFinder {
 
-    public static final int SEARCH_MAX_RESULTS = 10;
-
     TransMemoryDetails getTransMemoryDetail(HLocale hLocale, HTextFlow tf);
 
     Optional<HTextFlowTarget> searchBestMatchTransMemory(HTextFlow textFlow,
