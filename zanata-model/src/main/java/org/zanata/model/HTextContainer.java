@@ -41,6 +41,7 @@ import org.hibernate.search.annotations.Parameter;
 import org.hibernate.search.annotations.TokenFilterDef;
 import org.hibernate.search.annotations.TokenizerDef;
 import org.zanata.common.HasContents;
+import org.zanata.hibernate.search.Analyzers;
 import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.hibernate.search.StringListBridge;
 import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
@@ -49,15 +50,24 @@ import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
+ * @see Analyzers
  */
 @AnalyzerDefs({
-        @AnalyzerDef(name = "StandardAnalyzer", tokenizer = @TokenizerDef(
+        /**
+         * IMPORTANT: make sure this matches the code in
+         * {@link org.zanata.hibernate.search.DefaultAnalyzer}
+         */
+        @AnalyzerDef(name = Analyzers.DEFAULT, tokenizer = @TokenizerDef(
                 factory = StandardTokenizerFactory.class), filters = {
                 @TokenFilterDef(factory = StandardFilterFactory.class),
                 @TokenFilterDef(factory = LowerCaseFilterFactory.class)
         // @TokenFilterDef(factory = StopFilterFactory.class)
                 }),
-        @AnalyzerDef(name = "UnigramAnalyzer", tokenizer = @TokenizerDef(
+        /**
+         * IMPORTANT: make sure this matches the code in
+         * {@link org.zanata.hibernate.search.UnigramAnalyzer}
+         */
+        @AnalyzerDef(name = Analyzers.UNIGRAM, tokenizer = @TokenizerDef(
                 factory = NGramTokenizerFactory.class, params = {
                         @Parameter(name = "minGramSize", value = "1"),
                         @Parameter(name = "maxGramSize", value = "1") }),
