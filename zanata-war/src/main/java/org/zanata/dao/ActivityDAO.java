@@ -152,6 +152,10 @@ public class ActivityDAO extends AbstractDAOImpl<Activity, Long> {
         return totalCount.intValue();
     }
 
+    private enum STATS_BY {
+        TRANSLATOR, REVIEWER;
+    }
+
     /**
      * Return int[0]: Words translated, int[1]: Messages translated, int[2]:
      * Documents translated
@@ -159,40 +163,11 @@ public class ActivityDAO extends AbstractDAOImpl<Activity, Long> {
      * @param personId
      * @param startDate
      * @param endDate
-     * @return
      */
     public int[]
             getTranslatedStats(Long personId, Date startDate, Date endDate) {
-        StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder
-                .append("select sum(tft.textFlow.wordCount),count(tft.textFlow)," +
-                        "count(distinct tft.textFlow.document) " +
-                        "from HTextFlowTarget tft ");
-        queryBuilder.append("where tft.translator.id = :personId ");
-        queryBuilder
-                .append("and tft.lastChanged BETWEEN :startDate AND :endDate ");
-
-        Query q = getSession().createQuery(queryBuilder.toString());
-        q.setParameter("personId", personId);
-        q.setParameter("startDate", startDate);
-        q.setParameter("endDate", endDate);
-        q.setCacheable(true);
-        q.setComment("activityDAO.getTranslatedStats");
-
-        Object[] objects = (Object[]) q.uniqueResult();
-
-        int[] results = new int[] { 0, 0, 0 };
-        if (objects.length < 1) {
-            return results;
-        }
-
-        for (int i = 0; i < results.length; i++) {
-            if (objects.length >= i) {
-                Long count = (Long) objects[i];
-                results[i] = count == null ? 0 : count.intValue();
-            }
-        }
-        return results;
+        return getTranslationStatistic(personId, startDate, endDate,
+                STATS_BY.TRANSLATOR);
     }
 
     /**
@@ -202,33 +177,57 @@ public class ActivityDAO extends AbstractDAOImpl<Activity, Long> {
      * @param personId
      * @param startDate
      * @param endDate
-     * @return
      */
     public int[] getReviewedStats(Long personId, Date startDate, Date endDate) {
+        return getTranslationStatistic(personId, startDate, endDate,
+            STATS_BY.REVIEWER);
+    }
+
+    /**
+     * Return int[0]: Words, int[1]: Messages, int[2]: Documents
+     *
+     * @param personId
+     * @param startDate
+     * @param endDate
+     */
+    private int[] getTranslationStatistic(Long personId, Date startDate,
+        Date endDate, STATS_BY statsBy) {
         StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder
-                .append("select sum(tf.wordCount),count(tf),count(distinct doc) from HTextFlow tf, HTextFlowTarget tft, HDocument doc ");
-        queryBuilder.append("where tft.reviewer.id = :personId ");
+        queryBuilder.append("select sum(tft.textFlow.wordCount),")
+                .append("count(tft.textFlow),")
+                .append("count(distinct tft.textFlow.document)")
+                .append("from HTextFlowTarget tft ");
+
+        if (statsBy == STATS_BY.REVIEWER) {
+            queryBuilder.append("where tft.reviewer.id = :personId ");
+        } else {
+            queryBuilder.append("where tft.translator.id = :personId ");
+        }
         queryBuilder
                 .append("and tft.lastChanged BETWEEN :startDate AND :endDate ");
-        queryBuilder.append("and tf.id = tft.textFlow.id ");
-        queryBuilder.append("and tf.document.id = doc.id ");
 
         Query q = getSession().createQuery(queryBuilder.toString());
         q.setParameter("personId", personId);
         q.setParameter("startDate", startDate);
         q.setParameter("endDate", endDate);
+
+        if(statsBy == STATS_BY.REVIEWER) {
+            q.setComment("activityDAO.getReviewedStats");
+        } else {
+            q.setComment("activityDAO.getTranslatedStats");
+        }
+
         q.setCacheable(true);
-        q.setComment("activityDAO.getReviewedStats");
 
         Object[] objects = (Object[]) q.uniqueResult();
 
         int[] results = new int[] { 0, 0, 0 };
-        if (objects.length < 1) {
+
+        if (objects == null || objects.length == 0) {
             return results;
         }
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < results.length; i++) {
             if (objects.length >= i) {
                 Long count = (Long) objects[i];
                 results[i] = count == null ? 0 : count.intValue();
