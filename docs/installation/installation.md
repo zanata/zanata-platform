@@ -1,3 +1,5 @@
+# Deprecated
+
 The Zanata client (zanata-cli) can be installed on most systems. Installation is easiest under Fedora, other systems can use Apache Ivy for installation. Manual installation is also possible.
 
 
