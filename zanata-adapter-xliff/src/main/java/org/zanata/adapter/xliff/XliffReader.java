@@ -116,9 +116,6 @@ public class XliffReader extends XliffCommon {
             throws FileNotFoundException {
         assert document != null || transDoc != null;
         if (validationType == ValidationType.XSD) {
-            InputSource inputSource =
-                    new InputSource(new FileInputStream(file));
-            inputSource.setEncoding("utf8");
             validateXliffFile(new StreamSource(file));
         }
 
