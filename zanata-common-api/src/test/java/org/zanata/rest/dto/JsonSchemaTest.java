@@ -70,6 +70,7 @@ public class JsonSchemaTest {
             .withAppendedAnnotationIntrospector(
                     jaxbAnnotationIntrospector);
 
+    // TODO may use scannotation(XmlRootElement) to gather all the DTO classes
     @Parameterized.Parameters(name = "{index}: DTO ({0})")
     public static Iterable<Object[]> data() {
         return Arrays.asList(new Object[][] {
@@ -85,7 +86,7 @@ public class JsonSchemaTest {
                 { TranslationsResource.class },
                 { ContributionStatistics.class },
                 { LocaleStatistics.class },
-                // this one cuases stack overflow in schema generation. Will
+                // this one causes stack overflow in schema generation. Will
                 // cover it in DTOSampleMarshallingTest
                 // { ContainerTranslationStatistics.class },
                 { TranslationStatistics.class },
@@ -119,7 +120,13 @@ public class JsonSchemaTest {
         JsonSchema jsonSchemaWithJaxb = mixedMapper.generateJsonSchema(
                 dtoClass,
                 mixedConfig);
-
+        // this is to test, if any dto javabean property has a name that is
+        // different from the name in @XmlElement, we have a corresponding
+        // @JsonProperty to make sure the JSON name is controlled. At this
+        // stage, it's okay not to have a @JsonProperty as long as the javabean
+        // name is the same as @XmlElement name. It also ensures if you have
+        // @XmlTransient, there must be a @JsonIgnore or @JsonIgnoreProperties
+        // at class level to ignore that property.
         log.debug("jackson only schema: {}", jsonSchemaWithJackson);
         log.debug("jackson and jaxb mixed schema: {}", jsonSchemaWithJaxb);
         assertThat(jsonSchemaWithJackson.toString(),
