@@ -11,8 +11,8 @@
       <h1 class="txt--meta l--push-all-0">#{msgs['jsf.Administration']}</h1>
       <ul class="g g--tighter l--push-top-1">
         <li class="g__item w--1-3-l w--1-2-m w--1-5 l--push-bottom-1">
-          <s:link id="Admin_Server_configuration_home"
-            view="/admin/server_configuration.xhtml" propagation="none"
+          <h:link id="Admin_Server_configuration_home"
+            outcome="/admin/server_configuration.xhtml"
             styleClass="bg--pop-high bg--highest--hover bx--block">
           <div class="l--pad-all-half">
             <i class="i i--settings gamma"></i>
@@ -20,12 +20,12 @@
               #{msgs['jsf.ServerConfiguration']}
             </span>
           </div>
-          </s:link>
+          </h:link>
         </li>
 
         <li class="g__item w--1-3-l w--1-2-m w--1-5 l--push-bottom-1">
-          <s:link id="Admin_Manage_users_home"
-            view="/admin/usermanager.xhtml" propagation="none"
+          <h:link id="Admin_Manage_users_home"
+            outcome="/admin/usermanager.xhtml"
             styleClass="bg--pop-high bg--highest--hover bx--block">
             <div class="l--pad-all-half">
               <i class="i i--users gamma"></i>
@@ -33,12 +33,12 @@
               #{msgs['jsf.ManageUsers']}
             </span>
             </div>
-          </s:link>
+          </h:link>
         </li>
 
         <li class="g__item w--1-3-l w--1-2-m w--1-5 l--push-bottom-1">
-          <s:link id="Admin_Manage_roles_home"
-            view="/admin/rolemanager.xhtml" propagation="none"
+          <h:link id="Admin_Manage_roles_home"
+            outcome="/admin/rolemanager.xhtml"
             styleClass="bg--pop-high bg--highest--hover bx--block">
             <div class="l--pad-all-half">
               <i class="i i--user gamma"></i>
@@ -46,12 +46,12 @@
                 #{msgs['jsf.ManageRoles']}
               </span>
             </div>
-          </s:link>
+          </h:link>
         </li>
 
         <li class="g__item w--1-3-l w--1-2-m w--1-5 l--push-bottom-1">
-          <s:link id="Admin_Manage_search_home"
-            view="/admin/search.xhtml" propagation="none"
+          <h:link id="Admin_Manage_search_home"
+            outcome="/admin/search.xhtml"
             styleClass="bg--pop-high bg--highest--hover bx--block">
             <div class="l--pad-all-half">
               <i class="i i--search gamma"></i>
@@ -59,12 +59,12 @@
                 #{msgs['jsf.ManageSearch']}
               </span>
             </div>
-          </s:link>
+          </h:link>
         </li>
 
         <li class="g__item w--1-3-l w--1-2-m w--1-5 l--push-bottom-1">
-          <s:link id="Admin_Role_Assignment_Rules_home"
-            view="/admin/rolerules.xhtml" propagation="none"
+          <h:link id="Admin_Role_Assignment_Rules_home"
+            outcome="/admin/rolerules.xhtml"
             styleClass="bg--pop-high bg--highest--hover bx--block">
             <div class="media l--pad-h-half l--pad-v-quarter">
               <div class="media__item--left">
@@ -75,12 +75,12 @@
                 <span class="zeta">#{msgs['jsf.RoleAssignmentRules']}</span>
               </div>
             </div>
-          </s:link>
+          </h:link>
         </li>
 
         <li class="g__item w--1-3-l w--1-2-m w--1-5 l--push-bottom-1">
-          <s:link id="Translation_Memory_home"
-            view="/tm/home.xhtml" propagation="none"
+          <h:link id="Translation_Memory_home"
+            outcome="/tm/home.xhtml"
             styleClass="bg--pop-high bg--highest--hover bx--block">
             <div class="media l--pad-h-half l--pad-v-quarter">
               <div class="media__item--left">
@@ -91,12 +91,12 @@
                 <span class="zeta">#{msgs['jsf.transmemory.Title']}</span>
               </div>
             </div>
-          </s:link>
+          </h:link>
         </li>
 
         <li class="g__item w--1-3-l w--1-2-m w--1-5 l--push-bottom-1">
-          <s:link id="Process_Management_home"
-            view="/admin/processmanager.xhtml" propagation="none"
+          <h:link id="Process_Management_home"
+            outcome="/admin/processmanager.xhtml"
             styleClass="bg--pop-high bg--highest--hover bx--block">
             <div class="l--pad-all-half">
               <i class="i i--clock gamma"></i>
@@ -104,12 +104,12 @@
                 #{msgs['jsf.ProcessManager']}
               </span>
             </div>
-          </s:link>
+          </h:link>
         </li>
 
         <li class="g__item w--1-3-l w--1-2-m w--1-5 l--push-bottom-1">
-          <s:link id="Admin_Manage_stats_home"
-            view="/admin/stats.xhtml" propagation="none"
+          <h:link id="Admin_Manage_stats_home"
+            outcome="/admin/stats.xhtml"
             styleClass="bg--pop-high bg--highest--hover bx--block">
             <div class="media l--pad-h-half l--pad-v-quarter">
               <div class="media__item--left">
@@ -120,12 +120,12 @@
                 <span class="zeta">#{msgs['jsf.OverallStatistics']}</span>
               </div>
             </div>
-          </s:link>
+          </h:link>
         </li>
 
         <li class="g__item w--1-3-l w--1-2-m w--1-5 l--push-bottom-1">
-          <s:link id="Admin_Monitoring_home"
-            view="/admin/monitoring" propagation="none"
+          <h:link id="Admin_Monitoring_home"
+            outcome="/admin/monitoring"
             styleClass="bg--pop-high bg--highest--hover bx--block">
             <div class="media l--pad-h-half l--pad-v-quarter">
               <div class="media__item--left">
@@ -135,7 +135,7 @@
                 <span class="zeta">#{msgs['jsf.ServerMonitoring']}</span>
               </div>
             </div>
-          </s:link>
+          </h:link>
         </li>
 
       </ul>

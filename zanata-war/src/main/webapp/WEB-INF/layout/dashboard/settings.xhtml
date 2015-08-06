@@ -182,9 +182,9 @@
           <hr/>
           <h:form>
             <p>
-              <s:link styleClass="button button--warning" view="/profile/merge_account.xhtml">
+              <h:link styleClass="button button--warning" outcome="/profile/merge_account.xhtml">
                 #{msgs['jsf.dashboard.settings.mergeAccounts.label']}
-              </s:link>
+              </h:link>
             </p>
             <small class="txt--meta">
               #{msgs['jsf.dashboard.settings.mergeAccount.info.label'] }
@@ -254,9 +254,9 @@
               </li>
             </ui:repeat>
           </ul>
-          <s:link styleClass="button"
+          <h:link styleClass="button"
             value="#{msgs['jsf.dashboard.settings.joinLangTeam.message']}"
-            view="/language/home.xhtml"/>
+            outcome="/language/home.xhtml"/>
         </h:form>
       </li>
       <li id="client">

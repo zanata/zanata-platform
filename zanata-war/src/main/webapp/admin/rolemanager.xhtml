@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:a4j="http://richfaces.org/a4j"
   xmlns:s="http://jboss.org/schema/seam/taglib">
 
 <ui:composition template="../WEB-INF/template/template.xhtml">
@@ -10,6 +11,8 @@
   <ui:define name="page_title">#{msgs['jsf.ManageRoles']}</ui:define>
 
   <ui:define name="center_content">
+    <a4j:jsFunction name="createRole" action="#{zanataRoleAction.createRole}"/>
+
     <script type="text/javascript">
       function confirmDelete() {
         return confirm("#{msgs['jsf.AreYouSureYouWishToDeleteThisRoleThisActionCannotBeUndone']}");
@@ -18,7 +21,7 @@
     <div class="g--centered">
       <div class="g__item w--1-m w--1-2-l w--1-2 l--push-bottom-half">
         <p class="txt--meta l--push-all-0">
-          <s:link view="/admin/home.xhtml" propagation="none"
+          <h:link outcome="/admin/home.xhtml"
             value="#{msgs['jsf.Administration']}"/>
         </p>
 
@@ -37,11 +40,12 @@
                   role="content"
                   aria-labelledby="dropdownContent">
                   <li>
-                    <s:link action="#{zanataRoleAction.createRole}" styleClass="i__item--right"
+                    <h:link styleClass="i__item--right"
+                      onclick="createRole()"
                       rendered="#{identity.hasPermission('seam.account', 'create', null)}"
                       value="#{msgs['jsf.CreateRole']}">
                       <i class="i i--plus i__item__icon"></i>
-                    </s:link>
+                    </h:link>
                   </li>
                 </ul>
               </div>

@@ -68,7 +68,7 @@
             <ul class="list--stats">
               <ui:repeat value="#{languagesAction.currentPage}" var="language">
                 <li class="l--pad-all-quarter #{not language.active ? 'is-disabled' : ''}">
-                  <s:link view="/language/language.xhtml" propagation="none">
+                  <h:link outcome="/language/language.xhtml">
                     <f:param name="id" value="#{language.localeId.id}"/>
 
                     <div class="list__item__content">
@@ -99,7 +99,7 @@
                         </span>
                       </div>
                     </div>
-                  </s:link>
+                  </h:link>
                 </li>
               </ui:repeat>
             </ul>

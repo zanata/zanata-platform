@@ -8,21 +8,21 @@
   xmlns:rich="http://richfaces.org/rich">
 
   <h:form>
-    <s:link view="/home.xhtml" propagation="none"
+    <h:link outcome="/home.xhtml"
       rendered="#{not empty breadcrumbs.locations}"
       styleClass="breadcrumbs_home">
       <span class="icon-home-1" title="#{msgs['jsf.Zanata']}"/>
-    </s:link>
+    </h:link>
 
     <c:forEach items="#{breadcrumbs.locations}" var="breadcrumb">
       <span class="icon-right-open breadcrumbs-seperator"/>
-      <s:link value="#{breadcrumb.display}" view="#{breadcrumb.location}"
+      <h:link value="#{breadcrumb.display}" outcome="#{breadcrumb.location}"
         styleClass="breadcrumbs_link"
         rendered="#{not empty breadcrumb.location}">
         <c:forEach items="#{breadcrumb.params.keySet()}" var="param">
           <f:param name="#{param}" value="#{breadcrumb.params.get(param)}"/>
         </c:forEach>
-      </s:link>
+      </h:link>
       <s:span styleClass="breadcrumbs_display"
         rendered="#{empty breadcrumb.location}">#{breadcrumb.display}</s:span>
     </c:forEach>

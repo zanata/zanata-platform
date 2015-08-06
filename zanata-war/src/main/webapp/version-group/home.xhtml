@@ -16,8 +16,8 @@
     <rich:panel
         rendered="#{identity.loggedIn and identity.hasPermission(versionGroupHome.instance, 'insert')}">
       <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
-      <s:link styleClass="action_link" id="group-create"
-        view="/version-group/create_version_group.xhtml"
+      <h:link styleClass="action_link" id="group-create"
+        outcome="/version-group/create_version_group.xhtml"
         rendered="#{identity.hasPermission(versionGroupHome.instance, 'insert')}"
         value="#{msgs['jsf.NewGroup.Label']}"/>
     </rich:panel>
@@ -59,19 +59,18 @@
               </h:inputText>
             </h:panelGroup>
           </f:facet>
-          <s:link id="versionGroup" styleClass="table_link"
-            value="#{group.name}" propagation="none"
-            view="/version-group/version_group.xhtml"
+          <h:link id="versionGroup" styleClass="table_link"
+            value="#{group.name}"
+            outcome="/version-group/version_group.xhtml"
             rendered="#{group.status == 'ACTIVE'}">
             <f:param name="versionGroupSlug" value="#{group.slug}"/>
-          </s:link>
-          <s:link id="versionGroup_obsolete"
+          </h:link>
+          <h:link id="versionGroup_obsolete"
             styleClass="table_link obsolete_link" value="#{group.name}"
-            propagation="none"
-            view="/version-group/version_group.xhtml"
+            outcome="/version-group/version_group.xhtml"
             rendered="#{group.status == 'OBSOLETE'}">
             <f:param name="versionGroupSlug" value="#{group.slug}"/>
-          </s:link>
+          </h:link>
 
         </rich:column>
         <rich:column>

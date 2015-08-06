@@ -22,7 +22,7 @@
     <div class="g--centered">
       <div class="g__item w--1-s w--1-2 l--push-bottom-half">
         <p class="txt--meta l--push-all-0">
-          <s:link view="/admin/home.xhtml" propagation="none"
+          <h:link outcome="/admin/home.xhtml"
             value="#{msgs['jsf.Administration']}"/>
         </p>
 
@@ -42,10 +42,10 @@
                   role="content"
                   aria-labelledby="dropdownContent">
                   <li>
-                    <s:link value="#{msgs['jsf.rolerules.CreateRule']}"
-                      view="/admin/roleruledetails.xhtml" styleClass="i__item--right">
+                    <h:link value="#{msgs['jsf.rolerules.CreateRule']}"
+                      outcome="/admin/roleruledetails.xhtml" styleClass="i__item--right">
                       <i class="i i--plus i__item__icon"></i>
-                    </s:link>
+                    </h:link>
                   </li>
                 </ul>
               </div>
@@ -57,11 +57,10 @@
             rendered="#{empty roleAssignmentRuleAction.allRules}">
             <p class="txt--meta">#{msgs['jsf.rolerules.norules']}</p>
             <p>
-              <s:link value="#{msgs['jsf.rolerules.CreateRule']}"
-                propagation="none"
-                view="/admin/roleruledetails.xhtml" styleClass="button button--primary">
+              <h:link value="#{msgs['jsf.rolerules.CreateRule']}"
+                outcome="/admin/roleruledetails.xhtml" styleClass="button button--primary">
                 <i class="i i--plus i__item__icon"></i>
-              </s:link>
+              </h:link>
             </p>
           </s:div>
 

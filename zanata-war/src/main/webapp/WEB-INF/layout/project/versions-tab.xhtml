@@ -56,12 +56,12 @@
         <ul class="dropdown__content js-dropdown__content" role="content"
           aria-labelledby="dropdownContent">
           <li>
-            <s:link id="new-version-link" propagation="none"
+            <h:link id="new-version-link"
               value="#{msgs['jsf.project.NewVersion']}"
-              view="/project/add_iteration.xhtml">
+              outcome="/project/add_iteration.xhtml">
               <f:param name="projectSlug" value="#{projectHomeAction.slug}"/>
               <i class="i i--plus i__item__icon"></i>
-            </s:link>
+            </h:link>
           </li>
         </ul>
       </div>
@@ -92,12 +92,12 @@
     <s:fragment
       rendered="#{identity.hasPermission(projectHome.instance, 'update')}">
       <p>
-        <s:link styleClass="button--primary" propagation="none"
+        <h:link styleClass="button--primary"
           value="#{msgs['jsf.project.NewVersion']}"
-          view="/project/add_iteration.xhtml">
+          outcome="/project/add_iteration.xhtml">
           <f:param name="projectSlug" value="#{projectHomeAction.slug}"/>
           <i class="i i--plus i__item__icon"></i>
-        </s:link>
+        </h:link>
       </p>
     </s:fragment>
   </s:div>
@@ -142,15 +142,15 @@
                   <s:fragment
                     rendered="#{identity.hasPermission(projectHome.instance, 'update')}">
                     <li>
-                      <s:link view="/project/add_iteration.xhtml"
-                        propagation="none" styleClass="i__item--right"
+                      <h:link outcome="/project/add_iteration.xhtml"
+                        styleClass="i__item--right"
                         value="#{msgs['jsf.copyVersion.versionPage.label']}">
                         <f:param name="projectSlug"
                           value="#{projectHome.slug}"/>
                         <f:param name="copyFromVersionSlug"
                           value="#{version.slug}"/>
                         <i class="i i--plus i__item__icon"></i>
-                      </s:link>
+                      </h:link>
                     </li>
                   </s:fragment>
                   <ui:repeat
@@ -188,7 +188,7 @@
               </div>
             </s:div>
 
-            <s:link view="/iteration/view.xhtml" propagation="none"
+            <h:link outcome="/iteration/view.xhtml"
               disabled="#{projectHomeAction.isVersionCopying(version.project.slug, version.slug)}">
               <f:param name="projectSlug" value="#{projectHomeAction.slug}"/>
               <f:param name="iterationSlug" value="#{version.slug}"/>
@@ -250,7 +250,7 @@
               <zanata:statistic
                 value="#{projectHomeAction.getStatisticForVersion(version.slug)}"
                 rendered="#{projectHomeAction.pageRendered}"/>
-            </s:link>
+            </h:link>
           </s:div>
         </li>
       </ui:repeat>

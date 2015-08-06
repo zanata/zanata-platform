@@ -16,11 +16,11 @@
       value="#{identity.loggedIn and (identity.hasPermission(projectHome.instance, 'insert') or identity.hasRole('admin'))}"/>
     <rich:panel id="loggedIn" rendered="#{hasActions}">
       <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
-      <s:link id="createProjectLink" styleClass="action_link"
+      <h:link id="createProjectLink" styleClass="action_link"
         rendered="#{identity.hasPermission(projectHome.instance, 'insert')}"
         value="#{msgs['jsf.NewProject.Label']}"
-        view="/project/create_project.xhtml"
-        propagation="none"/>
+        outcome="/project/create_project.xhtml"
+        />
       <h:outputLink id="exportTMXAllLink" styleClass="action_link"
         rendered="#{identity.hasRole('admin')}"
         onclick="return confirm('#{msgs['jsf.ConfirmExportTMXAll']}')"
@@ -103,18 +103,18 @@
               <f:facet name="header">#{msgs['jsf.ProjectName']}
               </f:facet>
 
-              <s:link id="project" styleClass="table_link"
-                value="#{project.name}" propagation="none"
-                view="/project/project.xhtml"
+              <h:link id="project" styleClass="table_link"
+                value="#{project.name}"
+                outcome="/project/project.xhtml"
                 rendered="#{project.status == 'ACTIVE'}">
                 <f:param name="slug" value="#{project.slug}"/>
-              </s:link>
-              <s:link id="readonlyProject" styleClass="table_link readonly_link"
-                value="#{project.name}" propagation="none"
-                view="/project/project.xhtml"
+              </h:link>
+              <h:link id="readonlyProject" styleClass="table_link readonly_link"
+                value="#{project.name}"
+                outcome="/project/project.xhtml"
                 rendered="#{project.status == 'READONLY'}">
                 <f:param name="slug" value="#{project.slug}"/>
-              </s:link>
+              </h:link>
             </rich:column>
             <rich:column width="270px">
               <f:facet name="header">#{msgs['jsf.Description']}</f:facet>

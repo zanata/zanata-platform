@@ -103,7 +103,7 @@
   <div class="g--centered">
     <div class="g__item w--1-m w--1-2-l w--1-2 l--push-bottom-half">
       <p class="txt--meta l--push-all-0">
-        <s:link view="/admin/home.xhtml" propagation="none"
+        <h:link outcome="/admin/home.xhtml"
           value="#{msgs['jsf.Administration']}"/>
       </p>
 
@@ -128,11 +128,11 @@
               <ul class="dropdown__content js-dropdown__content"
                 role="content" aria-labelledby="dropdownContent">
                 <li>
-                  <s:link id="createTmLink" styleClass="i__item--right"
+                  <h:link id="createTmLink" styleClass="i__item--right"
                     value="#{msgs['jsf.transmemory.CreateNew']}"
-                    view="/tm/create.xhtml" propagation="none">
+                    outcome="/tm/create.xhtml">
                     <i class="i i--plus i__item__icon"></i>
-                  </s:link>
+                  </h:link>
                 </li>
               </ul>
             </div>
@@ -149,11 +149,11 @@
             rendered="#{empty translationMemoryAction.allTranslationMemories}">
             <p class="txt--meta">#{msgs['jsf.transmemory.NoTransMemories']}</p>
             <p>
-              <s:link styleClass="button--primary" propagation="none"
+              <h:link styleClass="button--primary"
                 value="#{msgs['jsf.transmemory.CreateNew']}"
-                view="/tm/create.xhtml">
+                outcome="/tm/create.xhtml">
                 <i class="i i--plus i__item__icon"></i>
-              </s:link>
+              </h:link>
             </p>
           </s:div>
 

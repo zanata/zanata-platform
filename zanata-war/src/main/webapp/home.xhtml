@@ -1,7 +1,6 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
@@ -18,10 +17,10 @@
   <ui:define name="right_content">
     <rich:panel id="loggedIn" rendered="#{identity.hasRole('admin')}">
       <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
-      <s:link styleClass="action_link"
+      <h:link styleClass="action_link"
         value="#{msgs['jsf.server.EditHomePage.label']}"
-        view="/edit_home_content.xhtml" propagation="none">
-      </s:link>
+        outcome="/edit_home_content.xhtml">
+      </h:link>
     </rich:panel>
   </ui:define>
 

@@ -12,9 +12,9 @@
   <ui:define name="center_content">
 
     <div class="header__logo-only">
-      <s:link view="/home.xhtml" propagation="none" id="home" tabindex="1">
+      <h:link outcome="/home.xhtml" id="home" tabindex="1">
         <img src="#{assets['img/logo/logo.svg']}" alt="Zanata"/>
-      </s:link>
+      </h:link>
     </div>
 
     <div class="g--centered">
@@ -61,11 +61,11 @@
                   <h:outputLabel for="password"
                     styleClass="l--float-left">#{msgs['jsf.Password']}</h:outputLabel>
                   <span class="txt--meta l--float-right">
-                    <s:link view="/account/password_reset_request.xhtml"
-                      propagation="none" tabindex="4"
+                    <h:link outcome="/account/password_reset_request.xhtml"
+                      tabindex="4"
                       rendered="#{applicationConfiguration.internalAuth}">
                       #{msgs['jsf.ForgotYourPassword']}
-                    </s:link>
+                    </h:link>
                   </span>
                 </div>
                 <h:inputSecret id="password" value="#{loginAction.password}"
@@ -81,8 +81,8 @@
                     rendered="#{applicationConfiguration.internalAuth}">
                     <div
                       class="txt--align-center txt--align-center-s l--push-top-half">
-                      #{msgs['jsf.login.DontHaveAnAccount.label']} <s:link
-                      view="/account/register.xhtml"
+                      #{msgs['jsf.login.DontHaveAnAccount.label']} <h:link
+                      outcome="/account/register.xhtml"
                       value="#{msgs['jsf.SignUp']}"/>
                     </div>
                   </s:fragment>
@@ -112,9 +112,9 @@
                       styleClass="button--full button--fedora" value="Fedora"/>
                   </li>
                   <li class="l--push-top-half">
-                    <s:link value="Google" styleClass="button--full button--google"
-                      view="/account/google_password_reset_request.xhtml" propagation="none">
-                    </s:link>
+                    <h:link value="Google" styleClass="button--full button--google"
+                      outcome="/account/google_password_reset_request.xhtml">
+                    </h:link>
                   </li>
                   <li class="l--push-top-half">
                     <h:commandLink action="#{loginAction.openIdLogin('Yahoo')}"

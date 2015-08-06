@@ -13,10 +13,10 @@
   </script>
 
   <h1 class="header__title">
-    <s:link view="/home.xhtml" propagation="none" id="home">
+    <h:link outcome="/home.xhtml"  id="home">
       <img class="header__site-logo" src="#{assets['img/logo/logo.svg']}"/>
       #{msgs['jsf.Zanata']}
-    </s:link>
+    </h:link>
   </h1>
 
   <nav id="nav-main" class="header__main-nav js-dropdown">
@@ -40,53 +40,53 @@
           onSelectItem="selectItem"
           inputClass="form--search__input js-form--search__input">
 
-          <s:link propagation="none" view="/project/project.xhtml"
+          <h:link  outcome="/project/project.xhtml"
             rendered="#{!result.isProjectNull()}">
             <i class="i i--project"></i> #{result.project.name}
             <f:param name="slug" value="#{result.project.slug}"/>
-          </s:link>
+          </h:link>
 
-          <s:link propagation="none" view="/profile/home.xhtml"
+          <h:link  outcome="/profile/home.xhtml"
             rendered="#{!result.isUserNull()}">
             <i class="i i--user"></i> #{result.account.username}
             <f:param name="username" value="#{result.account.username}"/>
-          </s:link>
+          </h:link>
 
-          <s:link view="/search.xhtml" rendered="#{result.isProjectNull() and result.isUserNull()}">
+          <h:link outcome="/search.xhtml" rendered="#{result.isProjectNull() and result.isUserNull()}">
             <i class="i i--search"></i> Search Zanata for
             '#{zanataSearch.autocomplete.query}'
             <f:param name="query" value="#{zanataSearch.autocomplete.query}"/>
-          </s:link>
+          </h:link>
 
         </zanata:autocomplete>
 
       </h:form>
       <ul class="header__main-nav__menu">
         <li>
-          <s:link id="projects_link" view="/project/home.xhtml"
-            propagation="none">#{msgs['jsf.Projects']}
+          <h:link id="projects_link" outcome="/project/home.xhtml"
+            >#{msgs['jsf.Projects']}
             <i class="is-hidden--m-up l--float-right i--inline i--project"></i>
-          </s:link>
+          </h:link>
         </li>
         <li>
-          <s:link id="version-groups_link" view="/version-group/home.xhtml"
-            propagation="none">#{msgs['jsf.Groups']}
+          <h:link id="version-groups_link" outcome="/version-group/home.xhtml"
+            >#{msgs['jsf.Groups']}
             <i class="is-hidden--m-up l--float-right i--inline i--group"></i>
-          </s:link>
+          </h:link>
         </li>
         <li>
-          <s:link id="languages_link" view="/language/home.xhtml"
-            propagation="none">#{msgs['jsf.Languages']}
+          <h:link id="languages_link" outcome="/language/home.xhtml"
+            >#{msgs['jsf.Languages']}
             <i class="is-hidden--m-up l--float-right i--inline i--language"></i>
-          </s:link>
+          </h:link>
         </li>
         <s:fragment rendered="#{identity.loggedIn}">
           <li>
-            <s:link id="glossary_link" view="/glossary/view.xhtml"
-              propagation="none">#{msgs['jsf.Glossary']}
+            <h:link id="glossary_link" outcome="/glossary/view.xhtml"
+              >#{msgs['jsf.Glossary']}
               <i
                 class="is-hidden--m-up l--float-right i--inline i--glossary"></i>
-            </s:link>
+            </h:link>
           </li>
         </s:fragment>
 
@@ -115,11 +115,11 @@
       </a>
       <ul id="nav-user" class="header__user-nav__menu js-dropdown__content">
         <li>
-          <s:link id="dashboard" view="/dashboard/home.xhtml"
-            propagation="none">
+          <h:link id="dashboard" outcome="/dashboard/home.xhtml"
+            >
             #{msgs['jsf.Dashboard']} <i
             class="l--float-right i--inline i--dashboard"></i>
-          </s:link>
+          </h:link>
         </li>
         <li>
           <a href="#{request.contextPath}/dashboard/settings">
@@ -129,11 +129,11 @@
         </li>
         <s:fragment rendered="#{identity.hasRole('admin')}">
           <li>
-            <s:link id="administration" view="/admin/home.xhtml"
-              propagation="none">
+            <h:link id="administration" outcome="/admin/home.xhtml"
+              >
               #{msgs['jsf.Administration']} <i
               class="l--float-right i--inline i--admin"></i>
-            </s:link>
+            </h:link>
           </li>
         </s:fragment>
         <li>
@@ -149,9 +149,9 @@
 
   <s:fragment rendered="#{not identity.loggedIn}">
     <s:div styleClass="header__login l--float-right">
-      <s:link id="register_link_internal_auth" view="/account/register.xhtml"
+      <h:link id="register_link_internal_auth" outcome="/account/register.xhtml"
         value="#{msgs['jsf.Signup']}"
-        propagation="none" styleClass="is-hidden--s button"
+         styleClass="is-hidden--s button"
         rendered="#{applicationConfiguration.internalAuth}"/>
 
       <s:fragment

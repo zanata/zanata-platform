@@ -32,12 +32,12 @@
         <s:fragment
           rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
           <p>
-            <s:link styleClass="button--primary"
+            <h:link styleClass="button--primary"
               value="#{msgs['jsf.group.FindGroup']}"
-              view="/version-group/home.xhtml"
-              propagation="none">
+              outcome="/version-group/home.xhtml"
+              >
               <i class="i i--plus i__item__icon"></i>
-            </s:link>
+            </h:link>
           </p>
         </s:fragment>
       </s:div>
@@ -51,10 +51,10 @@
         <ui:repeat value="#{versionHomeAction.groupFilter.currentPage}"
           var="group">
           <li class="l--pad-all-half">
-            <s:link value="#{group.name}" propagation="none"
-              view="/version-group/version_group.xhtml">
+            <h:link value="#{group.name}"
+              outcome="/version-group/version_group.xhtml">
               <f:param name="versionGroupSlug" value="#{group.slug}"/>
-            </s:link>
+            </h:link>
           </li>
         </ui:repeat>
       </ul>
