@@ -3,6 +3,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:c="http://java.sun.com/jsf/core"
   template="../WEB-INF/template/template.xhtml"
   xmlns:h="http://java.sun.com/jsf/html">
 
@@ -32,9 +33,10 @@
               enclose="true">
               <h:selectOneMenu id="policyName"
                 value="#{roleAssignmentRuleAction.instance.policyName}">
-                <s:selectItems value="#{roleAssignmentRuleAction.availablePolicyNames}"
-                  var="policy" label="#{policy}"
-                  noSelectionLabel=""/>
+                <c:selectItem noSelectionOption="true" itemLabel="" />
+                <c:selectItems value="#{roleAssignmentRuleAction.availablePolicyNames}"
+                  var="policy" itemLabel="#{policy}"
+                  />
               </h:selectOneMenu>
             </s:decorate>
           </div>
@@ -63,8 +65,8 @@
               enclose="true">
               <h:selectOneMenu id="roles"
                 value="#{roleAssignmentRuleAction.roleToAssign}">
-                <s:selectItems value="#{identityManager.listGrantableRoles()}"
-                  var="role" label="#{role}"/>
+                <c:selectItems value="#{identityManager.listGrantableRoles()}"
+                  var="role" itemLabel="#{role}"/>
               </h:selectOneMenu>
             </s:decorate>
           </div>

@@ -466,13 +466,13 @@
     <br/>
     <h:selectOneMenu
       value="#{versionHomeAction.sourceFileUpload.sourceLang}">
-      <f:selectItem itemLabel="#{msgs['jsf.upload.selectDocType']}"
+      <f:selectItem itemLabel="#{msgs['jsf.SelectALanguageFromList']}"
         itemValue="#{null}" noSelectionOption="false" />
-      <s:selectItems
+      <f:selectItems
         value="#{versionHomeAction.availableSourceLocales}" var="locale"
-        label="#{locale.retrieveNativeName()}"
+        itemLabel="#{locale.retrieveNativeName()}" itemLabelEscaped="true"
         itemValue="#{locale.localeId.toString()}"
-        escape="true"/>
+        />
       <h:outputLabel value="#{msgs['jsf.SourceLanguage']}"/>
     </h:selectOneMenu>
 

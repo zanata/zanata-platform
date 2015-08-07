@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsf/core"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:s="http://jboss.org/schema/seam/taglib">
 
@@ -52,8 +53,8 @@
             <s:decorate id="groupsField" template="../WEB-INF/layout/field.xhtml" enclose="true">
               <h:selectManyCheckbox id="groups" value="#{zanataRoleAction.groups}"
                 layout="pageDirection" styleClass="groups">
-                <s:selectItems value="#{identityManager.listRoles()}" var="role"
-                  label="#{role}"/>
+                <c:selectItems value="#{identityManager.listRoles()}" var="role"
+                  itemLabel="#{role}"/>
               </h:selectManyCheckbox>
             </s:decorate>
           </div>

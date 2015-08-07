@@ -1,5 +1,6 @@
 <div xmlns="http://www.w3.org/1999/xhtml"
   xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsf/core"
   xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:rich="http://richfaces.org/rich"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
@@ -128,10 +129,10 @@
             </label>
             <h:selectOneMenu
               value="#{glossaryAction.glossaryFileUpload.sourceLang}">
-              <s:selectItems value="#{glossaryAction.availableLocales}"
+              <c:selectItems value="#{glossaryAction.availableLocales}"
                 var="locale"
-                label="#{locale.localeId.id}  -  #{locale.retrieveNativeName()}"
-                itemValue="#{locale.localeId.id}" escape="true"/>
+                itemLabel="#{locale.localeId.id}  -  #{locale.retrieveNativeName()}"
+                itemValue="#{locale.localeId.id}" itemLabelEscaped="true"/>
             </h:selectOneMenu>
           </div>
           <div>
@@ -143,10 +144,10 @@
             </label>
             <h:selectOneMenu
               value="#{glossaryAction.glossaryFileUpload.transLang}">
-              <s:selectItems value="#{glossaryAction.availableLocales}"
+              <c:selectItems value="#{glossaryAction.availableLocales}"
                 var="locale"
-                label="#{locale.localeId.id}  -  #{locale.retrieveNativeName()}"
-                itemValue="#{locale.localeId.id}" escape="true"/>
+                itemLabel="#{locale.localeId.id}  -  #{locale.retrieveNativeName()}"
+                itemValue="#{locale.localeId.id}" itemLabelEscaped="true"/>
             </h:selectOneMenu>
           </div>
         </div>

@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsf/core"
   xmlns:s="http://jboss.org/schema/seam/taglib">
 
 <ui:composition template="../WEB-INF/template/template.xhtml">
@@ -84,8 +85,8 @@
             <s:decorate id="rolesField" template="../WEB-INF/layout/field.xhtml" enclose="true">
               <h:selectManyCheckbox id="roles" value="#{userAction.roles}"
                 layout="pageDirection" styleClass="checkbox">
-                <s:selectItems value="#{identityManager.listGrantableRoles()}" var="role"
-                  label="#{role}"/>
+                <c:selectItems value="#{identityManager.listGrantableRoles()}" var="role"
+                  itemLabel="#{role}"/>
               </h:selectManyCheckbox>
             </s:decorate>
           </div>
