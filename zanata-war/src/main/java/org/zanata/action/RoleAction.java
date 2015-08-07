@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jboss.seam.annotations.Begin;
+import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
@@ -95,8 +96,14 @@ public class RoleAction implements Serializable {
             }
         }
 
+        // TODO [CDI] need to end conversation or equivalent scope in CDI
         Conversation.instance().end();
         return "success";
+    }
+
+    @End
+    public String cancel() {
+        return "/admin/rolemanager";
     }
 
     public String getRole() {

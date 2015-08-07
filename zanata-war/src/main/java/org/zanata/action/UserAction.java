@@ -30,6 +30,7 @@ import javax.persistence.PersistenceException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.seam.Component;
 import org.jboss.seam.annotations.Begin;
+import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
@@ -255,6 +256,11 @@ public class UserAction implements Serializable {
             // pass
             return true;
         }
+    }
+
+    @End
+    public String cancel() {
+        return "/admin/usermanager";
     }
 
     public String getUsername() {

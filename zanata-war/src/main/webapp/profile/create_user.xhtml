@@ -11,6 +11,7 @@
     name="page_title">#{msgs['jsf.Profile']}:#{msgs['jsf.NewUser.Label']}</ui:define>
 
   <ui:define name="center_content">
+    <a4j:jsFunction name="cancelCreateUser" action="#{newProfileAction.cancel}" />
     <div class="g--centered">
       <div class="g__item w--1-2-m w--3-8-l w--1-3 l--push-bottom-1">
 
@@ -87,9 +88,8 @@
               value="#{msgs['jsf.Save']}"
               action="#{newProfileAction.createUser}"
               styleClass="l--push-right-half button--primary"/>
-            <s:button id="user-create-cancel" styleClass="button button-link"
-              value="#{msgs['jsf.Cancel']}"
-              action="#{newProfileAction.cancel}"/>
+            <h:button id="user-create-cancel" styleClass="button button-link"
+              value="#{msgs['jsf.Cancel']}" onclick="cancelCreateUser()"/>
           </div>
         </h:form>
       </div>

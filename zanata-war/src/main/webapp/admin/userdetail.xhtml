@@ -100,8 +100,8 @@
           <h:commandButton id="userdetailSave" value="#{msgs['jsf.Save']}"
             action="#{userAction.save}" styleClass="button--primary"/>
 
-          <s:button id="userdetailCancel" view="/admin/usermanager.xhtml"
-            value="#{msgs['jsf.Cancel']}" propagation="end"
+          <h:commandLink id="userdetailCancel"
+            value="#{msgs['jsf.Cancel']}" action="#{userAction.cancel}"
             styleClass="button button--link l--push-left-half"/>
 
         </h:form>

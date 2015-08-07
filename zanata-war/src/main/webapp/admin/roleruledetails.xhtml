@@ -81,10 +81,9 @@
             action="#{roleAssignmentRuleAction.update}"
             rendered="#{roleAssignmentRuleAction.managed}"/>
 
-          <s:button id="cancel" styleClass="button button--link l--push-left-half"
+          <h:button id="cancel" styleClass="button button--link l--push-left-half"
             value="#{msgs['jsf.Cancel']}"
-            propagation="none"
-            view="/admin/rolerules.xhtml"/>
+            outcome="/admin/rolerules.xhtml"/>
         </h:form>
 
       </div>

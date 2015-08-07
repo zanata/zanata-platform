@@ -78,6 +78,7 @@
                       </ul>
                     </div>
                   </div>
+                  <!-- TODO [CDI] change this to pass selected role as param to zanataRoleAction so that we don't need to use conversation scope -->
                   <h:commandLink
                     action="#{zanataRoleAction.editRole(zanataRoleSearch.selectedRole)}"
                     disabled="#{not identity.hasPermission('seam.role', 'update') or accountRoleDAO.findByName(role).roleType.toString() eq 'AUTO'}">

@@ -61,8 +61,9 @@
 
           <h:commandButton value="#{msgs['jsf.Save']}"
             action="#{zanataRoleAction.save}" styleClass="button button--primary"/>
-          <s:button view="/admin/rolemanager.xhtml"
-            value="#{msgs['jsf.Cancel']}" propagation="end" styleClass="button button--link l--push-left-half"/>
+          <h:commandLink action="#{zanataRoleAction.cancel}"
+            value="#{msgs['jsf.Cancel']}"
+            styleClass="button button--link l--push-left-half" />
         </h:form>
       </div>
     </div>

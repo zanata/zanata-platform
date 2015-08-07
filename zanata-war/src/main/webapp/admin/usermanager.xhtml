@@ -11,6 +11,7 @@
 <ui:composition template="../WEB-INF/template/template.xhtml">
   <ui:define name="page_title">#{msgs['jsf.ManageUsers']}</ui:define>
   <ui:define name="center_content">
+    <!-- TODO [CDI] change this to pass selected role as param to zanataUserAction so that we don't need to use conversation scope -->
     <a4j:jsFunction name="editUser" action="#{userAction.editUser(username)}">
       <a4j:param name="val1" assignTo="#{username}"/>
     </a4j:jsFunction>
