@@ -12,9 +12,9 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.security.Identity;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.async.handle.CopyVersionTaskHandle;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyVersionService;
 
 /**
@@ -27,6 +27,7 @@ import org.zanata.service.CopyVersionService;
 @Scope(ScopeType.STATELESS)
 @Slf4j
 public class CopyVersionManager implements Serializable {
+    private static final long serialVersionUID = 3414395834255069870L;
     @In
     private AsyncTaskHandleManager asyncTaskHandleManager;
 
@@ -34,7 +35,7 @@ public class CopyVersionManager implements Serializable {
     private CopyVersionService copyVersionServiceImpl;
 
     @In
-    private Identity identity;
+    private ZanataIdentity identity;
 
     /**
      * Copy existing version to new version

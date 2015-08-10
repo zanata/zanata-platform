@@ -24,7 +24,9 @@ import org.jboss.resteasy.util.GenericType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.annotations.security.Restrict;
+import org.zanata.security.annotations.CheckLoggedIn;
+import org.zanata.security.annotations.CheckPermission;
+import org.zanata.security.annotations.CheckRole;
 import org.zanata.common.Namespaces;
 import org.zanata.dao.ApplicationConfigurationDAO;
 import org.zanata.events.ConfigurationChanged;
@@ -37,6 +39,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.util.Event;
 import org.zanata.util.ServiceLocator;
 
@@ -51,7 +54,8 @@ import org.zanata.util.ServiceLocator;
 @Produces({"application/xml", "application/json"})
 @Consumes({"application/xml", "application/json"})
 @Transactional
-@Restrict("#{s:hasRole('admin')}")
+@ZanataSecured
+@CheckRole("admin")
 @Slf4j
 @Beta
 public class ServerConfigurationService {

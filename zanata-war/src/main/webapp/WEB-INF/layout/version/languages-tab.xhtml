@@ -36,7 +36,7 @@
         status="languageTab-languagesLoader"/>
 
       <s:fragment
-        rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
+        rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
         <div
           class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown">
           <a class="dropdown__toggle js-dropdown__toggle" href="#"
@@ -78,7 +78,7 @@
       rendered="#{empty versionHomeAction.supportedLocale}">
       <p class="txt--meta">#{msgs['jsf.NoActiveLanguages']}</p>
       <s:fragment
-        rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
+        rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
         <p>
           <a class="button--primary" href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/settings/languages"
             onclick="changeBrowserUrl(this.href, true);return false">
@@ -264,7 +264,7 @@
       rendered="#{empty versionHomeAction.documents}">
       <p class="txt--meta">#{msgs['jsf.iteration.NoDocumentInVersion']}</p>
       <s:fragment
-        rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
+        rendered="#{identity.hasPermission(versionGroupHome.instance, 'update')}">
         <p>
           <a class="button--primary" href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/settings/documents"
             onclick="changeBrowserUrl(this.href, true);return false;">

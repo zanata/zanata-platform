@@ -27,7 +27,6 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.security.Identity;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.dao.ProjectIterationDAO;
@@ -78,7 +77,7 @@ public class DownloadAllFilesHandler extends
             try {
                 translationArchiveServiceImpl.startBuildingTranslationFileArchive(
                         action.getProjectSlug(), action.getVersionSlug(),
-                        action.getLocaleId(), Identity.instance().getCredentials()
+                        action.getLocaleId(), ZanataIdentity.instance().getCredentials()
                                 .getUsername(), handle);
             } catch (Exception e) {
                 throw new ActionException(e);

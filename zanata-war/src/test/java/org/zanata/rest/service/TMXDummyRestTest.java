@@ -3,7 +3,6 @@ package org.zanata.rest.service;
 import javax.ws.rs.core.Response;
 
 import org.hibernate.Session;
-import org.jboss.seam.security.Identity;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -26,7 +25,7 @@ public class TMXDummyRestTest extends ZanataRestTest {
 
     @BeforeClass
     public static void disableSecurity() {
-        Identity.setSecurityEnabled(false);
+        ZanataIdentity.setSecurityEnabled(false);
     }
 
     @Before

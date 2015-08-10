@@ -32,11 +32,11 @@ import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
-import org.jboss.seam.core.Events;
-import org.jboss.seam.security.Identity;
 import org.jboss.security.SecurityContextAssociation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.events.AlreadyLoggedInEvent;
+import org.zanata.util.Event;
 import org.zanata.util.ServiceLocator;
 
 @Name("org.jboss.seam.security.spNegoIdentity")
@@ -54,9 +54,7 @@ public class SpNegoIdentity implements Serializable {
         ZanataIdentity identity =
                 ServiceLocator.instance().getInstance(ZanataIdentity.class);
         if (identity.isLoggedIn()) {
-            if (Events.exists()) {
-                Events.instance().raiseEvent(Identity.EVENT_ALREADY_LOGGED_IN);
-            }
+            getAlreadyLoggedInEvent().fire(new AlreadyLoggedInEvent());
             return;
         }
 
@@ -79,23 +77,24 @@ public class SpNegoIdentity implements Serializable {
         identity.setPreAuthenticated(true);
     }
 
+    private Event<AlreadyLoggedInEvent> getAlreadyLoggedInEvent() {
+        return ServiceLocator.instance().getInstance("event", Event.class);
+    }
+
     public void login() {
         try {
             ZanataIdentity identity =
                     ServiceLocator.instance().getInstance(ZanataIdentity.class);
             if (identity.isLoggedIn()) {
-                if (Events.exists()) {
-                    Events.instance().raiseEvent(
-                            Identity.EVENT_ALREADY_LOGGED_IN);
-                }
+                getAlreadyLoggedInEvent().fire(new AlreadyLoggedInEvent());
                 return;
             }
 
-            Field field = Identity.class.getDeclaredField(PRINCIPAL);
+            Field field = ZanataIdentity.class.getDeclaredField(PRINCIPAL);
             field.setAccessible(true);
             field.set(identity, SecurityContextAssociation.getPrincipal());
 
-            field = Identity.class.getDeclaredField(SUBJECT);
+            field = ZanataIdentity.class.getDeclaredField(SUBJECT);
             field.setAccessible(true);
             field.set(identity, SecurityContextAssociation.getSubject());
         } catch (Exception e) {

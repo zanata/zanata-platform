@@ -40,12 +40,15 @@ import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.security.Restrict;
+import org.zanata.security.annotations.CheckLoggedIn;
+import org.zanata.security.annotations.CheckPermission;
+import org.zanata.security.annotations.CheckRole;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HLocale;
 import org.zanata.rest.service.ResourceUtils;
+import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.LocaleService;
 import org.zanata.ui.AbstractAutocomplete;
 import org.zanata.ui.FilterUtil;
@@ -59,6 +62,7 @@ import com.ibm.icu.util.ULocale;
 
 @Name("languageManagerAction")
 @Scope(ScopeType.PAGE)
+@ZanataSecured
 public class LanguageManagerAction extends AbstractAutocomplete<HLocale>
         implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -107,7 +111,7 @@ public class LanguageManagerAction extends AbstractAutocomplete<HLocale>
         }
     }
 
-    @Restrict("#{s:hasRole('admin')}")
+    @CheckRole("admin")
     public String save() {
         if (!isLanguageNameValid()) {
             return null; // not success

@@ -12,9 +12,9 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.security.Identity;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.MergeTranslationsService;
 
 /**
@@ -27,6 +27,7 @@ import org.zanata.service.MergeTranslationsService;
 @Scope(ScopeType.STATELESS)
 @Slf4j
 public class MergeTranslationsManager implements Serializable {
+    private static final long serialVersionUID = -8717740654253262530L;
     @In
     private AsyncTaskHandleManager asyncTaskHandleManager;
 
@@ -34,7 +35,7 @@ public class MergeTranslationsManager implements Serializable {
     private MergeTranslationsService mergeTranslationsServiceImpl;
 
     @In
-    private Identity identity;
+    private ZanataIdentity identity;
 
     /**
      * Merge translations from an existing version to another.

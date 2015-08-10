@@ -13,7 +13,6 @@ import javax.persistence.EntityManager;
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
 import org.hibernate.Session;
-import org.jboss.seam.security.Identity;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -23,6 +22,7 @@ import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
+import org.zanata.security.ZanataIdentity;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
@@ -56,7 +56,7 @@ public class DocumentJPATest extends ZanataDbunitJpaTest {
 
     @BeforeClass
     public static void disableSecurity() {
-        Identity.setSecurityEnabled(false);
+        ZanataIdentity.setSecurityEnabled(false);
     }
 
     @Before

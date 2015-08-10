@@ -51,6 +51,16 @@ public class ManageUserPage extends BasePage {
     private WebElement findRowByUserName(final String username) {
         for (WebElement listItem : getRows()) {
             if (getListItemUsername(listItem).equals(username)) {
+                // TODO this is ugly but seems to work in firefox
+                List<WebElement> linksUnderneath =
+                        listItem.findElements(By.tagName("a"));
+                for (WebElement link : linksUnderneath) {
+                    String onclickCallback = link.getAttribute("onclick");
+                    if (onclickCallback != null
+                            && onclickCallback.contains("editUser")) {
+                        return link;
+                    }
+                }
                 return listItem;
             }
         }

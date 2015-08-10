@@ -29,11 +29,11 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.security.Identity;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.security.AuthenticationType;
 import org.zanata.security.ZanataCredentials;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.security.openid.FedoraOpenIdProvider;
 import org.zanata.security.openid.GoogleOpenIdProvider;
 import org.zanata.security.openid.OpenIdProviderType;
@@ -52,7 +52,7 @@ public class LoginAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @In
-    private Identity identity;
+    private ZanataIdentity identity;
 
     @In
     private ZanataCredentials credentials;

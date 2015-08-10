@@ -26,7 +26,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.dao.TextFlowTargetReviewCommentsDAO;
 import org.zanata.model.HAccount;
@@ -70,7 +70,7 @@ public class AddReviewCommentHandler extends
     @In
     private TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO;
 
-    @In(value = JpaIdentityStore.AUTHENTICATED_USER)
+    @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
 
     @In

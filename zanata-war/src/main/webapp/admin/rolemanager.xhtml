@@ -37,8 +37,8 @@
                   role="content"
                   aria-labelledby="dropdownContent">
                   <li>
-                    <s:link action="#{roleAction.createRole}" styleClass="i__item--right"
-                      rendered="#{s:hasPermission('seam.account', 'create', null)}"
+                    <s:link action="#{zanataRoleAction.createRole}" styleClass="i__item--right"
+                      rendered="#{identity.hasPermission('seam.account', 'create', null)}"
                       value="#{msgs['jsf.CreateRole']}">
                       <i class="i i--plus i__item__icon"></i>
                     </s:link>
@@ -61,10 +61,10 @@
                       </a>
                       <ul class="dropdown__content js-dropdown__content">
                         <s:fragment
-                          rendered="#{s:hasPermission('seam.role', 'delete') and accountRoleDAO.findByName(role).roleType.toString() ne 'AUTO'}">
+                          rendered="#{identity.hasPermission('seam.role', 'delete') and accountRoleDAO.findByName(role).roleType.toString() ne 'AUTO'}">
                           <li>
                             <h:commandLink
-                              action="#{identityManager.deleteRole(roleSearch.selectedRole)}"
+                              action="#{identityManager.deleteRole(zanataRoleSearch.selectedRole)}"
                               onclick="return confirmDelete()"
                               styleClass="i__item--right txt--danger">#{msgs['jsf.Delete']}
                               <i class="i i--remove i__item__icon"></i>
@@ -75,13 +75,13 @@
                     </div>
                   </div>
                   <h:commandLink
-                    action="#{roleAction.editRole(roleSearch.selectedRole)}"
-                    disabled="#{not s:hasPermission('seam.role', 'update') or accountRoleDAO.findByName(role).roleType.toString() eq 'AUTO'}">
+                    action="#{zanataRoleAction.editRole(zanataRoleSearch.selectedRole)}"
+                    disabled="#{not identity.hasPermission('seam.role', 'update') or accountRoleDAO.findByName(role).roleType.toString() eq 'AUTO'}">
                     <div class="list__item__content">
                       <div class="list__item__info">
                         <h3 class="list__title">#{role}
-                        <s:span rendered="#{not roleSearch.getRoleGroups(role).isEmpty()}"
-                          styleClass="txt--meta l--push-left-half">[#{roleSearch.getRoleGroups(role)}]</s:span>
+                        <s:span rendered="#{not zanataRoleSearch.getRoleGroups(role).isEmpty()}"
+                          styleClass="txt--meta l--push-left-half">[#{zanataRoleSearch.getRoleGroups(role)}]</s:span>
                         </h3>
                       </div>
                     </div>

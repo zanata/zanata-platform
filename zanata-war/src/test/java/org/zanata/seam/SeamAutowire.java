@@ -21,6 +21,10 @@
 package org.zanata.seam;
 
 
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Iterables;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
@@ -119,11 +123,20 @@ public class SeamAutowire {
     }
 
     /**
-     * Indicates if the prescence of a session context will be simulated.
+     * Indicates if the presence of a session context will be simulated.
      * By default contexts are not simulated.
      */
     public SeamAutowire simulateSessionContext(boolean simulate) {
         AutowireContexts.simulateSessionContext(simulate);
+        return this;
+    }
+
+    /**
+     * Indicates if the presence of an event context will be simulated.
+     * By default contexts are not simulated.
+     */
+    public SeamAutowire simulateEventContext(boolean simulate) {
+        AutowireContexts.simulateEventContext(simulate);
         return this;
     }
 
@@ -253,6 +266,17 @@ public class SeamAutowire {
      * @return The autowired component.
      */
     public <T> T autowire(Class<T> componentClass) {
+        Predicate<Object> predicate = Predicates.instanceOf(componentClass);
+        Optional<Object> namedOptional = Iterables.tryFind(
+                namedComponents.values(), predicate);
+        if (namedOptional.isPresent()) {
+            return (T) namedOptional.get();
+        }
+        Optional<Class<?>> implOptional =
+                Iterables.tryFind(componentImpls.values(), predicate);
+        if (implOptional.isPresent()) {
+            return (T) implOptional.get();
+        }
         return autowire(create(componentClass));
     }
 
@@ -377,6 +401,15 @@ public class SeamAutowire {
             // AutowireComponent
             contextsCls.getDeclaredMethod("isSessionContextActive")
                     .setBody("{ return org.zanata.seam.AutowireContexts.isSessionContextActive(); }");
+
+            contextsCls.getDeclaredMethod("isEventContextActive")
+                    .setBody("{ return org.zanata.seam.AutowireContexts.isEventContextActive(); }");
+
+            contextsCls.getDeclaredMethod("getEventContext")
+                    .setBody("{ return org.zanata.seam.AutowireContexts.getInstance().getEventContext(); }");
+
+            contextsCls.getDeclaredMethod("getSessionContext")
+                    .setBody("{ return org.zanata.seam.AutowireContexts.getInstance().getSessionContext(); }");
 
             contextsCls.toClass();
         } catch (NotFoundException e) {
@@ -586,5 +619,6 @@ public class SeamAutowire {
         Preconditions.checkNotNull(name);
         return ((Name) name).value();
     }
+
 
 }

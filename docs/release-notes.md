@@ -1,4 +1,6 @@
 ## 3.8
+<h5>Infrastructure Changes</h5>
+* In wildfly or EAP standalone.xml, change all occurrences of "org.jboss.seam.security.jaas.SeamLoginModule" to "org.zanata.security.jaas.InternalLoginModule"
 
 <h5>Infrastructure Changes</h5>
 

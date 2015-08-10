@@ -24,15 +24,10 @@
   </page>
 
 
-  <page view-id="/dashboard/*" login-required="true">
-    <restrict>#{identity.loggedIn}</restrict>
-  </page>
-
   <page view-id="/edit_home_content.xhtml">
     <action execute="#{breadcrumbs.clear}" />
     <action
       execute="#{breadcrumbs.addLocation('', msgs['jsf.server.EditHomePage.label'])}" />
-    <restrict>#{s:hasRole('admin')}</restrict>
   </page>
 
   <!-- Landing page for open id authentication -->
@@ -136,13 +131,12 @@
     <action execute="#{activate.activate}" />
   </page>
 
-  <page view-id="/account/email_validation.xhtml" login-required="true">
+  <page view-id="/account/email_validation.xhtml">
     <param name="key" value="#{validateEmail.activationKey}" />
     <action execute="#{validateEmail.validate}" />
   </page>
 
   <page view-id="/account/password_reset.xhtml">
-    <restrict>#{applicationConfiguration.internalAuth}</restrict>
     <param name="key" value="#{passwordReset.activationKey}" />
     <action execute="#{passwordReset.validateActivationKey}" />
   </page>
@@ -166,7 +160,6 @@
   </page>
 
   <page view-id="/account/inactive_account.xhtml">
-    <restrict>#{authenticationManager.isAuthenticatedAccountWaitingForActivation()}</restrict>
     <navigation from-action="#{inactiveAccountAction.sendActivationEmail}">
       <end-conversation />
       <redirect view-id="/home.xhtml" />
@@ -180,31 +173,23 @@
   </page>
 
 
-  <!-- Glossary -->
-  <page view-id="/glossary/view.xhtml">
-    <restrict>#{identity.loggedIn}</restrict>
-  </page>
-
   <!-- Admin -->
-
-  <page view-id="/admin/*" login-required="true">
-    <restrict>#{s:hasRole('admin')}</restrict>
-  </page>
+  <!-- TODO [CDI] find a way to secure a url pattern in CDI -->
+  <page view-id="/admin/*" action="#{identity.checkRole('admin')}"></page>
 
   <page view-id="/admin/roledetail.xhtml">
-    <navigation from-action="#{roleAction.save}">
+    <navigation from-action="#{zanataRoleAction.save}">
       <rule if-outcome="success">
         <redirect view-id="/admin/rolemanager.xhtml" />
       </rule>
     </navigation>
   </page>
 
-  <page view-id="/admin/rolemanager.xhtml" action="#{roleSearch.loadRoles}">
-    <restrict>#{s:hasPermission('seam.role', 'read')}</restrict>
-    <navigation from-action="#{roleAction.createRole}">
+  <page view-id="/admin/rolemanager.xhtml" action="#{zanataRoleSearch.loadRoles}">
+    <navigation from-action="#{zanataRoleAction.createRole}">
       <redirect view-id="/admin/roledetail.xhtml" />
     </navigation>
-    <navigation from-action="#{roleAction.editRole(roleSearch.selectedRole)}">
+    <navigation from-action="#{zanataRoleAction.editRole(zanataRoleSearch.selectedRole)}">
       <redirect view-id="/admin/roledetail.xhtml" />
     </navigation>
   </page>
@@ -218,7 +203,6 @@
   </page>
 
   <page view-id="/admin/usermanager.xhtml" action="#{userSearch.loadUsers}">
-    <restrict>#{s:hasPermission('seam.user', 'read')}</restrict>
     <navigation from-action="#{userAction.editUser(username)}">
       <redirect view-id="/admin/userdetail.xhtml" />
     </navigation>
@@ -262,8 +246,9 @@
     <action execute="#{breadcrumbs.addLocation('', msgs['jsf.Groups'])}" />
   </page>
 
-  <page view-id="/version-group/create_version_group.xhtml">
-    <restrict>#{s:hasPermission(versionGroupHome.instance, 'insert')}</restrict>
+  <!--TODO [CDI] we need to find a way to secure this page's access in CDI (the actual perist method is already secured) -->
+  <page view-id="/version-group/create_version_group.xhtml"
+    action="#{identity.checkPermission(versionGroupHome.instance, 'insert')}">
     <navigation from-action="#{versionGroupHome.persist}">
       <rule if="#{versionGroupHome.managed}">
         <redirect view-id="/version-group/home.xhtml" />
@@ -281,7 +266,6 @@
   </page>
 
   <page view-id="/profile/create_user.xhtml">
-    <restrict>#{identity.preAuthenticated}</restrict>
     <navigation from-action="#{newProfileAction.createUser}">
       <redirect view-id="/home.xhtml" />
     </navigation>
@@ -290,7 +274,7 @@
     </navigation>
   </page>
 
-  <page view-id="/profile/merge_account.xhtml" login-required="true">
+  <page view-id="/profile/merge_account.xhtml">
     <action execute="#{accountMergeAction.validateAccounts}" />
 
     <navigation from-action="#{accountMergeAction.cancel}">
@@ -327,7 +311,6 @@
   </page>
 
   <page view-id="/project/create_project.xhtml">
-    <restrict>#{s:hasPermission(projectHome.instance, 'insert')}</restrict>
     <action execute="#{projectHome.createNew}" />
     <navigation from-action="#{projectHome.persist}">
       <redirect view-id="/project/project.xhtml">
@@ -337,7 +320,6 @@
   </page>
 
   <page view-id="/project/add_iteration.xhtml">
-    <restrict>#{s:hasPermission(projectHome.instance, 'insert')}</restrict>
     <param name="projectSlug" value="#{versionHome.projectSlug}" />
     <param name="copyFromVersionSlug" value="#{versionHome.copyFromVersionSlug}" />
     <action execute="#{versionHome.validateProjectSlug}" />
@@ -433,12 +415,8 @@
   </page>
 
   <!-- Translation Memory -->
-  <page view-id="/tm/home.xhtml">
-    <restrict>#{s:hasRole('admin')}</restrict>
-  </page>
-
-  <page view-id="/tm/create.xhtml">
-    <restrict>#{s:hasRole('admin')}</restrict>
+  <!-- TODO [CDI] find CDI way to secure access of this page (this page is shared by both insert and update) -->
+  <page view-id="/tm/create.xhtml" action="#{identity.checkPermission(translationMemoryHome.instance, 'insert')}">
     <navigation from-action="#{translationMemoryHome.persist}">
       <rule if-outcome="persisted">
         <redirect view-id="/tm/home.xhtml" />
@@ -462,6 +440,7 @@
     </navigation>
   </page>
 
+  <!-- TODO [CDI] we will probably use something like this http://stackoverflow.com/a/18411362/345718 -->
   <!-- Exceptions -->
   <exception class="org.zanata.exception.KeyNotFoundException"
     log-level="warn">
@@ -508,7 +487,7 @@
     </redirect>
   </exception>
 
-  <exception class="org.jboss.seam.security.AuthorizationException"
+  <exception class="org.zanata.exception.AuthorizationException"
     log-level="debug">
     <redirect view-id="/error.xhtml">
       <message
@@ -517,7 +496,7 @@
     </redirect>
   </exception>
 
-  <exception class="org.jboss.seam.security.NotLoggedInException"
+  <exception class="org.zanata.exception.NotLoggedInException"
     log-level="debug">
     <redirect view-id="/account/login.xhtml">
       <message severity="warn">#{msgs['org.jboss.seam.NotLoggedIn']}

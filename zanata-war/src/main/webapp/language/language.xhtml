@@ -107,7 +107,7 @@
                     </li>
 
                     <s:fragment rendered="#{not languageAction.isUserInTeam()}">
-                      <s:fragment rendered="#{not s:hasRole('admin')}">
+                      <s:fragment rendered="#{not identity.hasRole('admin')}">
                         <li>
                           <a href="#" class="i__item--right"
                             data-toggle="modal"
@@ -117,7 +117,7 @@
                           </a>
                         </li>
                       </s:fragment>
-                      <s:fragment rendered="#{s:hasRole('admin')}">
+                      <s:fragment rendered="#{identity.hasRole('admin')}">
                         <li>
                           <a4j:commandLink id="joinTeam"
                             action="#{languageAction.joinLanguageTeam}"
@@ -150,7 +150,7 @@
               </li>
             </s:fragment>
 
-            <s:fragment rendered="#{s:hasRole('admin')}">
+            <s:fragment rendered="#{identity.hasRole('admin')}">
               <li class="tab__end">
                 <a id="settings_tab" href="#{languageURL}/settings"
                   class="js-url-mod" data-content="#settings">
@@ -168,7 +168,7 @@
               <ui:include src="/WEB-INF/layout/language/members-tab.xhtml"/>
             </li>
 
-            <s:fragment rendered="#{s:hasRole('admin')}">
+            <s:fragment rendered="#{identity.hasRole('admin')}">
               <li id="settings">
                 <ui:include src="/WEB-INF/layout/language/settings-tab.xhtml"/>
               </li>

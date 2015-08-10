@@ -43,13 +43,13 @@ import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.security.Identity;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.rest.dto.ProjectIteration;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ConfigurationService;
 
 import com.google.common.base.Objects;
@@ -94,7 +94,7 @@ public class ProjectIterationService implements ProjectIterationResource {
     ETagUtils eTagUtils;
 
     @In
-    Identity identity;
+    private ZanataIdentity identity;
 
     @In
     private ConfigurationService configurationServiceImpl;

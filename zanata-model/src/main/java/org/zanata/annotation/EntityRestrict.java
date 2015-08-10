@@ -26,7 +26,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.jboss.seam.security.EntityAction;
+import org.zanata.security.EntityAction;
+
 
 /**
  * This annotation is a complement to Seam's

@@ -7,7 +7,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.core.Events;
-import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.LocaleMemberDAO;
@@ -34,7 +34,7 @@ public class LanguageTeamServiceImpl implements LanguageTeamService {
     @In
     private LocaleMemberDAO localeMemberDAO;
 
-    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION)
+    @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION)
     private HAccount authenticatedAccount;
 
     @In("event")

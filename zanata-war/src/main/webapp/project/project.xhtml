@@ -176,7 +176,7 @@
         </a>
       </li>
       <s:fragment
-        rendered="#{s:hasPermission(projectHome.instance, 'update')}">
+        rendered="#{identity.hasPermission(projectHome.instance, 'update')}">
         <li class="tab__end">
           <div
             class="dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown">
@@ -223,7 +223,7 @@
           listSize="#{projectHome.instanceMaintainers.size}"
           filterActionBean="#{projectHome.maintainerFilter}"
           settingsUrl="#settings-permissions"
-          PermissionToUpdate="#{s:hasPermission(projectHome.instance, 'update')}"/>
+          PermissionToUpdate="#{identity.hasPermission(projectHome.instance, 'update')}"/>
       </li>
 
       <li id="about">
@@ -240,7 +240,7 @@
       </li>
 
       <s:fragment
-        rendered="#{s:hasPermission(projectHome.instance, 'update')}">
+        rendered="#{identity.hasPermission(projectHome.instance, 'update')}">
         <li id="settings">
           <ui:include
             src="../WEB-INF/layout/project/settings-tab.xhtml"/>

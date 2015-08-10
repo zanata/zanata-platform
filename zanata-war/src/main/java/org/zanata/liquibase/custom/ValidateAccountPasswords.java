@@ -24,8 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.jboss.seam.security.management.PasswordHash;
-
+import org.zanata.util.PasswordUtil;
 import liquibase.change.custom.CustomTaskChange;
 import liquibase.database.Database;
 import liquibase.database.jvm.JdbcConnection;
@@ -69,8 +68,7 @@ public class ValidateAccountPasswords implements CustomTaskChange {
                 // Deprecated, but it's the same method used to generate
                 // passwords on the rest of Zanata
                 String emptyPasswordHash =
-                        new PasswordHash().generateSaltedHash("", username,
-                                PasswordHash.ALGORITHM_MD5);
+                        PasswordUtil.generateSaltedHash("", username);
 
                 if (emptyPasswordHash.equals(passwordHash)) {
                     emptyPasswordsFound++;

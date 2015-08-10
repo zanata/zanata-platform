@@ -29,6 +29,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
+import org.zanata.exception.AuthorizationException;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.i18n.Messages;
 import org.zanata.security.AuthenticationType;
@@ -67,6 +68,9 @@ public class NewProfileAction extends AbstractProfileAction implements Serializa
 
     @Create
     public void onCreate() {
+        if (!identity.isPreAuthenticated()) {
+            throw new AuthorizationException("Need to be in pre authenticated state");
+        }
         if (identity.getCredentials().getAuthType() != AuthenticationType.OPENID) {
             // Open id user names are url's so they don't make good defaults
             username = identity.getCredentials().getUsername();

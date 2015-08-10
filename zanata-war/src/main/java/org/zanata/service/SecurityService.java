@@ -41,8 +41,8 @@ public interface SecurityService {
      *
      * @param translationAction
      *            translation action enum (at the moment only supports MODIFY)
-     * @throws org.jboss.seam.security.AuthorizationException
-     *             , org.jboss.seam.security.NotLoggedInException
+     * @throws org.zanata.exception.AuthorizationException
+     *             , org.zanata.exception.NotLoggedInException
      *             org.zanata.webtrans.shared.NoSuchWorkspaceException
      */
     void checkWorkspaceAction(WorkspaceId workspaceId,

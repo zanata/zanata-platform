@@ -112,7 +112,7 @@
     </s:div>
 
     <s:fragment
-        rendered="#{s:hasPermission(projectHome.instance, 'mark-obsolete')}">
+        rendered="#{identity.hasPermission(projectHome.instance, 'mark-obsolete')}">
       <s:div styleClass="g__item w--1-2"
           rendered="#{projectHome.instance.status ne 'OBSOLETE'}">
         <a href="javascript:void(0)" id="button-archive-project"

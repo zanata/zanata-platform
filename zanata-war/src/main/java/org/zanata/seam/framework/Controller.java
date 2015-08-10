@@ -28,7 +28,6 @@ import org.jboss.seam.faces.Validation;
 import org.jboss.seam.international.Messages;
 import org.jboss.seam.international.StatusMessages;
 import org.jboss.seam.log.Log;
-import org.jboss.seam.security.Identity;
 import org.jboss.seam.transaction.Transaction;
 import org.jboss.seam.web.Session;
 
@@ -75,10 +74,6 @@ public abstract class Controller implements Serializable {
 
     protected StatusMessages getStatusMessages() {
         return StatusMessages.instance();
-    }
-
-    protected Identity getIdentity() {
-        return Identity.instance();
     }
 
     protected Cookie getCookie(String name) {

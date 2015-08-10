@@ -24,7 +24,6 @@ import org.jboss.resteasy.util.HttpHeaderNames;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.security.Identity;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectDAO;
@@ -36,6 +35,7 @@ import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
+import org.zanata.security.ZanataIdentity;
 
 import com.google.common.base.Objects;
 
@@ -64,7 +64,7 @@ public class ProjectService implements ProjectResource {
     AccountDAO accountDAO;
 
     @In
-    Identity identity;
+    ZanataIdentity identity;
 
     @In
     ETagUtils eTagUtils;

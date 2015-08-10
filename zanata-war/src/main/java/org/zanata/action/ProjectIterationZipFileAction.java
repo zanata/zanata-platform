@@ -11,7 +11,6 @@ import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.security.Identity;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.dao.ProjectIterationDAO;
@@ -56,7 +55,7 @@ public class ProjectIterationZipFileAction implements Serializable {
         asyncTaskHandleManager.registerTaskHandle(zipFilePrepHandle);
         try {
             translationArchiveServiceImpl.startBuildingTranslationFileArchive(
-                    projectSlug, versionSlug, localeId, Identity.instance()
+                    projectSlug, versionSlug, localeId, ZanataIdentity.instance()
                             .getCredentials().getUsername(), zipFilePrepHandle);
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -22,7 +22,7 @@ package org.zanata.security;
 
 import com.google.common.base.Optional;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
@@ -382,7 +382,7 @@ public class SecurityFunctions {
 
     private static final Optional<HAccount> getAuthenticatedAccount() {
         return Optional.fromNullable(ServiceLocator.instance().getInstance(
-                JpaIdentityStore.AUTHENTICATED_USER, HAccount.class));
+                ZanataJpaIdentityStore.AUTHENTICATED_USER, HAccount.class));
     }
 
     private static final <T> T extractTarget(Object[] array, Class<T> type) {

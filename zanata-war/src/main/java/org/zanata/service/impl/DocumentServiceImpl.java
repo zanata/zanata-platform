@@ -32,7 +32,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
@@ -117,7 +117,7 @@ public class DocumentServiceImpl implements DocumentService {
     @In
     private UrlUtil urlUtil;
 
-    @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION,
+    @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION,
             required = false)
     private HAccount authenticatedAccount;
 

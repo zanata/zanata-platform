@@ -28,13 +28,16 @@ import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.security.annotations.CheckLoggedIn;
+import org.zanata.security.annotations.CheckPermission;
+import org.zanata.security.annotations.CheckRole;
+import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.email.ContactAdminAnonymousEmailStrategy;
 import org.zanata.email.ContactAdminEmailStrategy;
 import org.zanata.email.EmailStrategy;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
+import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.EmailService;
 
 import lombok.Getter;
@@ -54,9 +57,10 @@ import javax.servlet.http.HttpServletRequest;
 @Name("contactAdminAction")
 @Scope(ScopeType.PAGE)
 @Slf4j
+@ZanataSecured
 public class ContactAdminAction implements Serializable {
 
-    @In(value = JpaIdentityStore.AUTHENTICATED_USER, required = false)
+    @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER, required = false)
     private HAccount authenticatedAccount;
 
     @In
@@ -79,7 +83,7 @@ public class ContactAdminAction implements Serializable {
     /**
      * Send email to admin by registered user.
      */
-    @Restrict("#{identity.loggedIn}")
+    @CheckLoggedIn
     public void send() {
         String fromName = authenticatedAccount.getPerson().getName();
         String fromLoginName = authenticatedAccount.getUsername();

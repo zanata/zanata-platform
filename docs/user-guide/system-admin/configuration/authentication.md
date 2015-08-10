@@ -2,7 +2,7 @@
 
 # Introduction
 
-## Configure Zanata security 
+## Configure Zanata security
 Open `$JBOSS_HOME/standalone/configuration/standalone.xml` and look for the `naming` subsystem. Add the following sections to the `bindings` section:
 
 ```xml
@@ -63,7 +63,7 @@ After this, you will need to configure one (or more) of the following modules fo
 
 ## Internal Authentication
 
-Make sure `standalone.xml` has the following jndi property 
+Make sure `standalone.xml` has the following jndi property
 
 ```xml
 <simple name="java:global/zanata/security/auth-policy-names/internal" value="zanata.internal"/>
@@ -78,7 +78,7 @@ standalone.xml
       <security-domain name="zanata.internal">
          <authentication>
             <login-module
-               code="org.jboss.seam.security.jaas.SeamLoginModule"
+               code="org.zanata.security.jaas.InternalLoginModule"
                flag="required">
             </login-module>
          </authentication>
@@ -88,7 +88,7 @@ standalone.xml
 
 ## Pure JAAS
 
-Make sure `standalone.xml` has the following jndi property 
+Make sure `standalone.xml` has the following jndi property
 
 ```xml
 <simple name="java:global/zanata/security/auth-policy-names/jaas" value="zanata.jaas"/>
@@ -120,7 +120,7 @@ standalone.xml:
 Kerberos authentication allows for both ticket based and form based authentication. Zanata will first check for a valid Kerberos ticket (if the browser supports it). If it is not possible to obtain a valid ticket, then Zanata will show a form to enter a user name and password to be authenticated using Kerberos.
 **Note:** It is recommended to use SSL when dealing with form based Kerberos authentication.
 
-Make sure `standalone.xml` has the following jndi property 
+Make sure `standalone.xml` has the following jndi property
 
 ```xml
 <simple name="java:global/zanata/security/auth-policy-names/kerberos" value="zanata.kerberos"/>
@@ -162,7 +162,7 @@ standalone.xml:
           </login-module>
         <authentication>
       </security-domain>
-    
+
       <security-domain name="host">
         <authentication>
           <login-module code="com.sun.security.auth.module.Krb5LoginModule" flag="required">
@@ -176,7 +176,7 @@ standalone.xml:
       </security-domain>
       ...
 ```
-    
+
 
 The principal and keyTab attributes in the example above should be replaced with appropriate values for the principal as stored in the keytab and the location of the keytab file.
 

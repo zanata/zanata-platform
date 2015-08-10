@@ -20,11 +20,14 @@ import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.resteasy.util.GenericType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.annotations.security.Restrict;
+import org.zanata.security.annotations.CheckLoggedIn;
+import org.zanata.security.annotations.CheckPermission;
+import org.zanata.security.annotations.CheckRole;
 import org.zanata.common.Namespaces;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Link;
 import org.zanata.limits.RateLimitManager;
+import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.util.Introspectable;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Function;
@@ -46,7 +49,8 @@ import lombok.extern.slf4j.Slf4j;
 @Produces({ "application/xml" })
 @Consumes({ "application/xml" })
 @Transactional
-@Restrict("#{s:hasRole('admin')}")
+@ZanataSecured
+@CheckRole("admin")
 @Slf4j
 @Beta
 public class IntrospectableObjectMonitorService {

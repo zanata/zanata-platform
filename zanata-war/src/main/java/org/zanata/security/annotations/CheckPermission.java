@@ -35,14 +35,22 @@ import org.zanata.security.CheckPermissionDecisionVoter;
  * Annotates methods and checks for the given permissions.
  * The target of the permission check will be any method parameters annotated
  * with {@link PermissionTarget}
+ * <p/>
+ * NOTE: this annotation is not supported in Seam now.
+ * It was intended to a replacement for #{s:hasPermission...} but now we are
+ * calling identity.hasPermission explicitly in code. It will be used in CDI.
+ *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  * @see PermissionTarget
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD})
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Documented
 @Stereotype
 @Secured(CheckPermissionDecisionVoter.class)
 public @interface CheckPermission {
+    /**
+     * Permission/action name
+     */
     String value();
 }

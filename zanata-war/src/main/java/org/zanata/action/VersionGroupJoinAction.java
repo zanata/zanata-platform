@@ -36,9 +36,11 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.security.Restrict;
+import org.zanata.security.annotations.CheckLoggedIn;
+import org.zanata.security.annotations.CheckPermission;
+import org.zanata.security.annotations.CheckRole;
 import org.jboss.seam.international.LocaleSelector;
-import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.ProjectDAO;
@@ -50,6 +52,7 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.EmailService;
 import org.zanata.service.VersionGroupService;
 
@@ -62,6 +65,7 @@ import com.google.common.collect.Lists;
 @AutoCreate
 @Name("versionGroupJoinAction")
 @Scope(ScopeType.PAGE)
+@ZanataSecured
 @Slf4j
 public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
         implements Serializable {
@@ -79,7 +83,7 @@ public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
     @In
     private VersionGroupDAO versionGroupDAO;
 
-    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
+    @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
 
     @Getter
@@ -155,7 +159,7 @@ public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
         return maintainers;
     }
 
-    @Restrict("#{identity.loggedIn}")
+    @CheckLoggedIn
     public void send() {
         if (hasSelectedVersion()) {
             String fromName = authenticatedAccount.getPerson().getName();

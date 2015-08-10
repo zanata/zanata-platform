@@ -28,9 +28,12 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.security.Restrict;
+import org.zanata.security.annotations.CheckLoggedIn;
+import org.zanata.security.annotations.CheckPermission;
+import org.zanata.security.annotations.CheckRole;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
+import org.zanata.security.annotations.ZanataSecured;
 
 /**
  * @author Carlos Munoz <a
@@ -38,7 +41,8 @@ import org.zanata.async.AsyncTaskHandleManager;
  */
 @Name("processManagerAction")
 @Scope(ScopeType.EVENT)
-@Restrict("#{s:hasRole('admin')}")
+@ZanataSecured
+@CheckRole("admin")
 public class ProcessManagerAction {
     @In
     private AsyncTaskHandleManager asyncTaskHandleManager;

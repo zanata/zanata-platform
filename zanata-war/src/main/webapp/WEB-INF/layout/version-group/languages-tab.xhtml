@@ -19,7 +19,7 @@
         status="languageTab-languagesLoader"/>
 
       <s:fragment
-        rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
+        rendered="#{identity.hasPermission(versionGroupHome.instance, 'update')}">
         <div
           class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown">
           <a class="dropdown__toggle js-dropdown__toggle" href="#"
@@ -64,7 +64,7 @@
       rendered="#{empty versionGroupHomeAction.activeLocales}">
       <p class="txt--meta">#{msgs['jsf.NoActiveLanguages']}</p>
       <s:fragment
-        rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
+        rendered="#{identity.hasPermission(versionGroupHome.instance, 'update')}">
         <p>
           <a class="button--primary" id="addLanguagesButton"
             href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/languages"
@@ -195,7 +195,7 @@
         rendered="#{empty versionGroupHomeAction.projectIterations}">
         <p class="txt--meta">#{msgs['jsf.NoProjectsInGroup']}</p>
         <s:fragment
-          rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
+          rendered="#{identity.hasPermission(versionGroupHome.instance, 'update')}">
           <p>
             <a class="button--primary"
               href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/projects"

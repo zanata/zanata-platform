@@ -45,7 +45,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.TransactionPropagationType;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Events;
-import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.jboss.seam.util.Work;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
@@ -131,7 +131,7 @@ public class TranslationServiceImpl implements TranslationService {
     @In
     private ValidationService validationServiceImpl;
 
-    @In(value = JpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION,
+    @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION,
             required = false)
     private HAccount authenticatedAccount;
 

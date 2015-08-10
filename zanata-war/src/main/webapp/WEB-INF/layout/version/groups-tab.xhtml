@@ -30,7 +30,7 @@
         rendered="#{empty versionHomeAction.groups}">
         <p class="txt--meta">#{msgs['jsf.NoGroups']}</p>
         <s:fragment
-          rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
+          rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
           <p>
             <s:link styleClass="button--primary"
               value="#{msgs['jsf.group.FindGroup']}"

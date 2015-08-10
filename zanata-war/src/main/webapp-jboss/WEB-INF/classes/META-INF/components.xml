@@ -56,10 +56,7 @@
   <jms:managed-queue-sender name="mailQueueSender" auto-create="true" queue-jndi-name="jms/queue/MailsQueue" />
 
   <!-- Login and security -->
-  <security:identity jaas-config-name="zanata" />
   <web:identity-filter disabled="true" />
-
-  <security:rule-based-permission-resolver security-rules="#{securityRules}" />
 
   <!-- Persistence stuff -->
 
@@ -93,14 +90,11 @@
     entity-manager-factory="#{entityManagerFactory}"
     persistence-unit-jndi-name="java:/zanataEntityManagerFactory" />
 
-  <security:jpa-identity-store
-    user-class="org.zanata.model.HAccount"
-    role-class="org.zanata.model.HAccountRole" />
-
-  <event type="org.jboss.seam.security.notLoggedIn">
+  <!-- TODO [CDI] we need to find a CDI way of doing this -->
+  <event type="org.zanata.events.NotLoggedInEvent">
     <action execute="#{redirect.captureCurrentView}" />
   </event>
-  <event type="org.jboss.seam.security.loginSuccessful">
+  <event type="org.zanata.events.LoginSuccessfulEvent">
     <action execute="#{redirect.returnToCapturedView}" />
   </event>
 

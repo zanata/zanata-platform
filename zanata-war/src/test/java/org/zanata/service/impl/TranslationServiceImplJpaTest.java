@@ -8,12 +8,10 @@ import javax.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 
 import org.assertj.core.api.Assertions;
-import org.jboss.seam.security.management.JpaIdentityStore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.zanata.PerformanceProfiling;
@@ -34,6 +32,7 @@ import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.seam.SeamAutowire;
+import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.security.ZanataIdentity;
 
 import com.github.huangp.entityunit.entity.EntityMaker;
@@ -67,7 +66,7 @@ public class TranslationServiceImplJpaTest extends ZanataJpaTest {
         service = seam.reset()
                 .use("entityManager", getEm())
                 .use("session", getSession())
-                .use(JpaIdentityStore.AUTHENTICATED_USER,
+                .use(ZanataJpaIdentityStore.AUTHENTICATED_USER,
                         authenticatedUser)
                 .use("identity", identity)
                 .useImpl(LocaleServiceImpl.class)

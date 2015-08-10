@@ -21,6 +21,11 @@
 package org.zanata.seam;
 
 import com.google.common.collect.ImmutableMap;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.contexts.BasicContext;
+import org.jboss.seam.contexts.Context;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,12 +35,14 @@ import java.util.Map;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class AutowireContexts {
+    private static final Logger log = LoggerFactory.getLogger(AutowireContexts.class);
 
     private static boolean simulateSessionContext = false;
+    private static boolean simulateEventContext = false;
 
     public enum ContextType {
         // TODO implement other contexts as required
-        Request, Session;
+        Request, Session, Event;
     }
 
     private static final AutowireContexts instance = new AutowireContexts();
@@ -107,12 +114,46 @@ public class AutowireContexts {
         allContexts.put(ContextType.Session, new HashMap<String, Object>());
     }
 
+    public Context getEventContext() {
+        return new BasicContext(ScopeType.SESSION) {
+            @Override
+            public void set(String name, Object value) {
+                log.debug("trying to set value in dummy session context: {} -> {}", name, value);
+                if (!allContexts.containsKey(ContextType.Session)) {
+                    newSession();
+                }
+                allContexts.get(ContextType.Session).put(name, value);
+            }
+        };
+    }
+
+    public Context getSessionContext() {
+        return new BasicContext(ScopeType.EVENT) {
+            @Override
+            public void set(String name, Object value) {
+                log.debug("trying to set value in dummy event context: {} -> {}", name, value);
+                if (!allContexts.containsKey(ContextType.Event)) {
+                    allContexts.put(ContextType.Event, new HashMap<String, Object>());
+                }
+                allContexts.get(ContextType.Event).put(name, value);
+            }
+        };
+    }
+
     public static void simulateSessionContext(boolean simulate) {
         simulateSessionContext = simulate;
     }
 
     public static boolean isSessionContextActive() {
         return simulateSessionContext;
+    }
+
+    public static boolean isEventContextActive() {
+        return simulateEventContext;
+    }
+
+    public static void simulateEventContext(boolean simulate) {
+        simulateEventContext = simulate;
     }
 
 }

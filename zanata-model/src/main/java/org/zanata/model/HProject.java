@@ -20,16 +20,15 @@
  */
 package org.zanata.model;
 
-import static org.jboss.seam.security.EntityAction.DELETE;
-import static org.jboss.seam.security.EntityAction.INSERT;
-import static org.jboss.seam.security.EntityAction.UPDATE;
+import static org.zanata.security.EntityAction.DELETE;
+import static org.zanata.security.EntityAction.INSERT;
+import static org.zanata.security.EntityAction.UPDATE;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Nullable;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
@@ -52,14 +51,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
-import org.hibernate.annotations.Where;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;

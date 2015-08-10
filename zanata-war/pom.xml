@@ -61,6 +61,22 @@
         </includes>
       </resource>
     </resources>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>testProp.properties</include>
+        </includes>
+      </testResource>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>false</filtering>
+        <excludes>
+          <exclude>testProp.properties</exclude>
+        </excludes>
+      </testResource>
+    </testResources>
 
     <plugins>
       <plugin>
@@ -1171,6 +1187,7 @@
           <version>${jboss.as.version}</version>
           <scope>test</scope>
         </dependency>
+
       </dependencies>
     </profile>
 
@@ -2520,6 +2537,19 @@
       <groupId>de.christophkraemer</groupId>
       <artifactId>rhino-script-engine</artifactId>
       <version>1.1.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.scannotation</groupId>
+      <artifactId>scannotation</artifactId>
+      <version>1.0.3</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javassist</groupId>
+          <artifactId>javassist</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
   </dependencies>

@@ -22,6 +22,8 @@ import org.zanata.exception.ZanataServiceException;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HLocale;
 import org.zanata.rest.dto.Glossary;
+import org.zanata.security.annotations.CheckLoggedIn;
+import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.GlossaryFileService;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.InMemoryListFilter;
@@ -38,6 +40,8 @@ import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 @Name("glossaryAction")
 @Scope(ScopeType.PAGE)
+@ZanataSecured
+@CheckLoggedIn
 @Slf4j
 public class GlossaryAction implements Serializable {
     private static final long serialVersionUID = 1L;

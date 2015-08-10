@@ -71,7 +71,7 @@
                       </a>
                       <ul class="dropdown__content js-dropdown__content">
                         <s:fragment
-                          rendered="#{s:hasPermission('seam.user', 'delete')}">
+                          rendered="#{identity.hasPermission('seam.user', 'delete')}">
                           <li>
                             <a onclick="if(confirmDelete()){deleteUser('#{user}')};return false;"
                               class="i__item--right txt--danger">
@@ -85,7 +85,7 @@
                   </div>
 
                   <h:commandLink onclick="editUser('#{user}');return false"
-                    disabled="#{not s:hasPermission('seam.user', 'update')}">
+                    disabled="#{not identity.hasPermission('seam.user', 'update')}">
                     <div class="list__item__content">
                       <div class="list__item__info">
                         <h3 class="list__title">

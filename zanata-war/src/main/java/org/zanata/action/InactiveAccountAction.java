@@ -8,10 +8,12 @@ import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.Email;
 import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
+import org.zanata.exception.AuthorizationException;
 import org.zanata.action.validator.NotDuplicateEmail;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.dao.AccountDAO;
@@ -20,6 +22,7 @@ import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountActivationKey;
 import org.zanata.model.HPerson;
+import org.zanata.security.AuthenticationManager;
 import org.zanata.security.AuthenticationType;
 import org.zanata.security.ZanataCredentials;
 import org.zanata.security.ZanataOpenId;
@@ -53,6 +56,9 @@ public class InactiveAccountAction implements Serializable {
     @In
     private AccountActivationKeyDAO accountActivationKeyDAO;
 
+    @In
+    private AuthenticationManager authenticationManager;
+
     @Getter
     @Setter
     @Email
@@ -62,6 +68,14 @@ public class InactiveAccountAction implements Serializable {
     private HAccount account;
 
     private static final long serialVersionUID = 1L;
+
+
+    @Create
+    public void onCreate() {
+        if (!authenticationManager.isAuthenticatedAccountWaitingForActivation()) {
+            throw new AuthorizationException("Account is not waiting for activation");
+        }
+    }
 
     private HAccount getAccount() {
         if(account == null) {

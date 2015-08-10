@@ -251,7 +251,7 @@
   </s:div>
   <zanata:version-copy-action-loader id="copyTrans"
     oncomplete="onCopyTransComplete()"
-    canCancelProcess="#{s:hasPermission(versionHomeAction.version, 'update')}"
+    canCancelProcess="#{identity.hasPermission(versionHomeAction.version, 'update')}"
     header="#{msgs['jsf.CopyTrans']}"
     actionBean="#{copyTransAction}"
     cancelTooltip="#{msgs['jsf.CopyTrans.cancel']}"
@@ -260,7 +260,7 @@
 
   <zanata:version-copy-action-loader id="copyVersion"
     oncomplete="onCopyVersionComplete()"
-    canCancelProcess="#{s:hasPermission(versionHomeAction.version, 'update')}"
+    canCancelProcess="#{identity.hasPermission(versionHomeAction.version, 'update')}"
     header="#{msgs['jsf.CopyVersion']}"
     actionBean="#{versionHomeAction.copyVersionHandler}"
     onCancel="cancelCopyVersion()"
@@ -269,7 +269,7 @@
 
   <zanata:version-copy-action-loader id="mergeTrans"
     oncomplete="onMergeTransComplete()"
-    canCancelProcess="#{s:hasPermission(versionHomeAction.version, 'update')}"
+    canCancelProcess="#{identity.hasPermission(versionHomeAction.version, 'update')}"
     header="#{msgs['jsf.iteration.mergeTrans']}"
     actionBean="#{mergeTransAction}"
     onCancel="cancelMergeTrans()"
@@ -337,7 +337,7 @@
                 role="content" aria-labelledby="dropdownContent">
                 <s:fragment rendered="#{not versionHomeAction.isCopyActionsRunning()}">
                   <s:fragment
-                    rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
+                    rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
                     <li>
                       <a href="javascript:void(0)" class="i__item--right"
                         onclick="zanata.modal.show('#copy-trans-modal')">
@@ -356,7 +356,7 @@
                     </li>
                   </s:fragment>
                   <s:fragment
-                    rendered="#{s:hasPermission(versionHome.instance, 'insert')}">
+                    rendered="#{identity.hasPermission(versionHome.instance, 'insert')}">
                     <li>
                       <s:link view="/project/add_iteration.xhtml"
                         styleClass="i__item--right" propagation="none"
@@ -397,7 +397,7 @@
         </h:form>
       </li>
       <s:fragment
-        rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
+        rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
         <li class="tab__end">
           <a id="settings_tab"
             title="#{msgs['jsf.iteration.tooltip.VersionSettings']}"
@@ -431,7 +431,7 @@
       </s:fragment>
 
       <s:fragment
-        rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
+        rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
         <li id="settings">
           <ui:include
             src="../WEB-INF/layout/version/settings-tab.xhtml"/>
@@ -443,7 +443,7 @@
 </div>
 
   <s:fragment
-    rendered="#{s:hasPermission(versionHomeAction.version, 'update')}">
+    rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
     <ui:include src="../WEB-INF/layout/version/merge_trans_modal.xhtml"/>
   </s:fragment>
 

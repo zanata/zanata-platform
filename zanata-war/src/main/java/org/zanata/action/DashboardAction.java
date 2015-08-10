@@ -34,8 +34,8 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.seam.security.ZanataJpaIdentityStore;
+import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectDAO;
@@ -45,6 +45,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.ActivityService;
 import org.zanata.service.GravatarService;
 import org.zanata.ui.AbstractListFilter;
@@ -59,7 +60,8 @@ import lombok.Getter;
 
 @Name("dashboardAction")
 @Scope(ScopeType.PAGE)
-@Restrict("#{identity.loggedIn}")
+@ZanataSecured
+@CheckLoggedIn
 public class DashboardAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -84,7 +86,7 @@ public class DashboardAction implements Serializable {
     @In
     private Messages msgs;
 
-    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
+    @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
 
     @Getter
@@ -225,7 +227,7 @@ public class DashboardAction implements Serializable {
                     serviceLocator.getInstance(ProjectDAO.class);
             HAccount authenticatedAccount =
                     serviceLocator
-                            .getInstance(JpaIdentityStore.AUTHENTICATED_USER,
+                            .getInstance(ZanataJpaIdentityStore.AUTHENTICATED_USER,
                                     HAccount.class);
             return projectDAO.getProjectsForMaintainer(
                     authenticatedAccount.getPerson(), filter, start, max);
@@ -238,7 +240,7 @@ public class DashboardAction implements Serializable {
                     serviceLocator.getInstance(ProjectDAO.class);
             HAccount authenticatedAccount =
                     serviceLocator
-                            .getInstance(JpaIdentityStore.AUTHENTICATED_USER,
+                            .getInstance(ZanataJpaIdentityStore.AUTHENTICATED_USER,
                                     HAccount.class);
             return projectDAO.getMaintainedProjectCount(
                     authenticatedAccount.getPerson(), filter);

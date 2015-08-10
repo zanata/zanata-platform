@@ -23,7 +23,7 @@ package org.zanata.webtrans.server.rpc;
 
 import org.zanata.ZanataTest;
 import org.hamcrest.Matchers;
-import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -104,7 +104,7 @@ public class AddReviewCommentHandlerTest extends ZanataTest {
                         .use("textFlowTargetDAO", textFlowTargetDAO)
                         .use("textFlowTargetReviewCommentsDAO",
                                 textFlowTargetReviewCommentsDAO)
-                        .use(JpaIdentityStore.AUTHENTICATED_USER,
+                        .use(ZanataJpaIdentityStore.AUTHENTICATED_USER,
                                 authenticatedAccount)
                         .use("localeServiceImpl", localeService)
                         .use("translationWorkspaceManager",

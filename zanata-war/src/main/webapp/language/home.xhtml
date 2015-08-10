@@ -29,7 +29,7 @@
 
               <s:div
                 styleClass="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown"
-                id="more-actions" rendered="#{s:hasRole('admin')}">
+                id="more-actions" rendered="#{identity.hasRole('admin')}">
                 <a class="dropdown__toggle js-dropdown__toggle" href="#"
                   title="#{msgs['jsf.tooltip.MoreActions']}"><i
                   class="i i--ellipsis"></i></a>
@@ -114,7 +114,7 @@
             actionBean="#{languagesAction}"/>
         </div>
 
-        <s:fragment rendered="#{s:hasRole('admin')}">
+        <s:fragment rendered="#{identity.hasRole('admin')}">
           <ui:include src="../WEB-INF/layout/language/new_language_modal.xhtml"/>
         </s:fragment>
       </div>

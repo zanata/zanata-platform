@@ -28,15 +28,18 @@ import javax.security.auth.login.LoginException;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
+import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.security.Identity;
 import org.zanata.dao.PersonDAO;
 import org.zanata.exception.KeyNotFoundException;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.model.HPersonEmailValidationKey;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.CheckLoggedIn;
+import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.impl.EmailChangeService;
 import org.zanata.ui.faces.FacesMessages;
 
@@ -44,6 +47,7 @@ import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 @Name("validateEmail")
 @Slf4j
+@ZanataSecured
 public class ValidateEmailAction implements Serializable {
     private static final long serialVersionUID = 1L;
     private String activationKey;
@@ -52,7 +56,7 @@ public class ValidateEmailAction implements Serializable {
     PersonDAO personDAO;
 
     @In
-    Identity identity;
+    private ZanataIdentity identity;
 
     @In("jsfMessages")
     private FacesMessages facesMessages;
@@ -60,7 +64,13 @@ public class ValidateEmailAction implements Serializable {
     @In
     EmailChangeService emailChangeService;
 
+    @Create
+    public void onCreate() {
+        identity.checkLoggedIn();
+    }
+
     @Transactional
+    @CheckLoggedIn
     public String validate() throws LoginException {
         String returnUrl = "/home.xhtml";
 

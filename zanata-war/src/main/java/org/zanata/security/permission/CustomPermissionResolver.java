@@ -32,7 +32,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
-import org.jboss.seam.security.permission.PermissionResolver;
 import org.zanata.util.ServiceLocator;
 
 /**
@@ -49,10 +48,10 @@ import org.zanata.util.ServiceLocator;
 @BypassInterceptors
 @Install(precedence = BUILT_IN)
 @Startup
-public class CustomPermissionResolver implements PermissionResolver,
-        Serializable {
+public class CustomPermissionResolver implements Serializable {
 
-    @Override
+    private static final long serialVersionUID = 6302681723997573877L;
+
     public boolean hasPermission(Object target, String action) {
         Object[] targetArray;
         if (target instanceof MultiTargetList) {
@@ -71,13 +70,4 @@ public class CustomPermissionResolver implements PermissionResolver,
         return evaluator.checkPermission(action, targets);
     }
 
-    @Override
-    public void filterSetByAction(Set<Object> targets, String action) {
-        Iterator iter = targets.iterator();
-        while (iter.hasNext()) {
-            Object target = iter.next();
-            if (hasPermission(target, action))
-                iter.remove();
-        }
-    }
 }

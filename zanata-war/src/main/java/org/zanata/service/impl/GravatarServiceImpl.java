@@ -4,7 +4,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.model.HAccount;
 import org.zanata.service.GravatarService;
 import org.zanata.util.HashUtil;
@@ -14,7 +14,7 @@ import org.zanata.util.HashUtil;
 public class GravatarServiceImpl implements GravatarService {
     private static String GRAVATAR_URL = "//www.gravatar.com/avatar/";
 
-    @In(required = false, value = JpaIdentityStore.AUTHENTICATED_USER)
+    @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
     HAccount authenticatedAccount;
 
     @Override

@@ -10,7 +10,7 @@
     <div class="panel__header">
       <div class="panel__header__actions">
         <s:fragment
-          rendered="#{identity.loggedIn and s:hasPermission(languageAction.locale, 'manage-language-team')}">
+          rendered="#{identity.loggedIn and identity.hasPermission(languageAction.locale, 'manage-language-team')}">
           <a href="#" class="button button--snug l--push-all-half"
             id="add-team-member-button"
             data-toggle="modal"
@@ -43,7 +43,7 @@
         rendered="#{empty languageAction.localeMembers}">
         <p class="txt--meta">#{msgs['jsf.language.members.empty']}</p>
         <s:fragment
-          rendered="#{s:hasPermission(languageAction.locale, 'manage-language-team')}">
+          rendered="#{identity.hasPermission(languageAction.locale, 'manage-language-team')}">
           <p>
             <a id="addTeamMemberLink" href="#" class="button--primary"
               data-toggle="modal" onclick="return false;"
@@ -65,9 +65,9 @@
         <ul class="list--stats">
           <ui:repeat value="#{languageAction.membersFilter.currentPage}" var="member">
             <li
-              class="#{s:hasPermission(languageAction.locale, 'manage-language-team') ? 'list__item--actionable' : 'l--pad-all-quarter'}">
+              class="#{identity.hasPermission(languageAction.locale, 'manage-language-team') ? 'list__item--actionable' : 'l--pad-all-quarter'}">
               <s:div styleClass="list__item__action"
-                rendered="#{s:hasPermission(languageAction.locale, 'manage-language-team')}">
+                rendered="#{identity.hasPermission(languageAction.locale, 'manage-language-team')}">
                 <div
                   class="dropdown dropdown--small dropdown--inline dropdown--single list__item__dropdown js-dropdown">
                   <a href="#" title="Options"
@@ -93,7 +93,7 @@
                     #{member.person.name}
                   </h3>
               <span class="list__item__meta">
-                #{member.person.account.username}<s:span rendered="#{s:hasRole('admin')}"> [#{member.person.email}] </s:span>
+                #{member.person.account.username}<s:span rendered="#{identity.hasRole('admin')}"> [#{member.person.email}] </s:span>
               </span>
                 </div>
                 <div class="list__item__actions">
@@ -101,12 +101,12 @@
                     <li>
                       #{msgs['jsf.Translator']}
                       <h:selectBooleanCheckbox value="#{member.translator}"
-                        rendered="#{s:hasPermission(languageAction.locale, 'manage-language-team')}">
+                        rendered="#{identity.hasPermission(languageAction.locale, 'manage-language-team')}">
                         <a4j:ajax event="change" execute="@this"
                           listener="#{languageAction.saveTeamTranslator(member)}"/>
                       </h:selectBooleanCheckbox>
                       <s:fragment
-                        rendered="#{not s:hasPermission(languageAction.locale, 'manage-language-team')}">
+                        rendered="#{not identity.hasPermission(languageAction.locale, 'manage-language-team')}">
                         <s:fragment rendered="#{member.translator}">
                           <i class="i i--checkmark"></i>
                         </s:fragment>
@@ -118,12 +118,12 @@
                     <li>
                       #{msgs['jsf.Reviewer']}
                       <h:selectBooleanCheckbox value="#{member.reviewer}"
-                        rendered="#{s:hasPermission(languageAction.locale, 'manage-language-team')}">
+                        rendered="#{identity.hasPermission(languageAction.locale, 'manage-language-team')}">
                         <a4j:ajax event="change" execute="@this"
                           listener="#{languageAction.saveTeamReviewer(member)}"/>
                       </h:selectBooleanCheckbox>
                       <s:fragment
-                        rendered="#{not s:hasPermission(languageAction.locale, 'manage-language-team')}">
+                        rendered="#{not identity.hasPermission(languageAction.locale, 'manage-language-team')}">
                         <s:fragment rendered="#{member.reviewer}">
                           <i class="i i--checkmark"></i>
                         </s:fragment>
@@ -136,12 +136,12 @@
                     <li>
                       #{msgs['jsf.Coordinator']}
                       <h:selectBooleanCheckbox value="#{member.coordinator}"
-                        rendered="#{s:hasPermission(languageAction.locale, 'manage-language-team')}">
+                        rendered="#{identity.hasPermission(languageAction.locale, 'manage-language-team')}">
                         <a4j:ajax event="change" execute="@this"
                           listener="#{languageAction.saveTeamCoordinator(member)}"/>
                       </h:selectBooleanCheckbox>
                       <s:fragment
-                        rendered="#{not s:hasPermission(languageAction.locale, 'manage-language-team')}">
+                        rendered="#{not identity.hasPermission(languageAction.locale, 'manage-language-team')}">
                         <s:fragment rendered="#{member.coordinator}">
                           <i class="i i--checkmark"></i>
                         </s:fragment>
@@ -168,7 +168,7 @@
 
   </div>
   <s:fragment
-    rendered="#{s:hasPermission(languageAction.locale, 'manage-language-team')}">
+    rendered="#{identity.hasPermission(languageAction.locale, 'manage-language-team')}">
     <ui:include src="search_user_modal.xhtml"/>
   </s:fragment>
 

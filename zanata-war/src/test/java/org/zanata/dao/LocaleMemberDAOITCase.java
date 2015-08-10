@@ -7,13 +7,13 @@ import javax.persistence.EntityManager;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.seam.annotations.In;
-import org.jboss.seam.security.Identity;
 import org.junit.Test;
 import org.zanata.ArquillianTest;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.provider.DBUnitProvider.DataSetOperation;
+import org.zanata.security.ZanataIdentity;
 
 public class LocaleMemberDAOITCase extends ArquillianTest {
 
@@ -56,7 +56,7 @@ public class LocaleMemberDAOITCase extends ArquillianTest {
 
     @Test
     public void testSave() throws Exception {
-        Identity identity = Identity.instance();
+        ZanataIdentity identity = ZanataIdentity.instance();
         identity.getCredentials().setUsername("admin");
         identity.getCredentials().setPassword("admin");
         identity.login();

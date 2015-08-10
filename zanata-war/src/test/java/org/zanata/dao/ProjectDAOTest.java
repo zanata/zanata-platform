@@ -6,13 +6,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
-import org.jboss.seam.security.Identity;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.model.HProject;
+import org.zanata.security.ZanataIdentity;
 
 public class ProjectDAOTest extends ZanataDbunitJpaTest {
 
@@ -27,7 +27,7 @@ public class ProjectDAOTest extends ZanataDbunitJpaTest {
 
     @BeforeClass
     public static void disableSecurity() {
-        Identity.setSecurityEnabled(false);
+        ZanataIdentity.setSecurityEnabled(false);
     }
 
     @Before

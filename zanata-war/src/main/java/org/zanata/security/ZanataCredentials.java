@@ -21,6 +21,7 @@
 package org.zanata.security;
 
 import java.io.IOException;
+import java.io.Serializable;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
@@ -34,7 +35,6 @@ import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
-import org.jboss.seam.security.Credentials;
 import org.zanata.security.openid.OpenIdProviderType;
 
 import lombok.extern.slf4j.Slf4j;
@@ -45,14 +45,19 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
- * @see {@link Credentials}
  */
 @Name("org.jboss.seam.security.credentials")
 @Scope(SESSION)
 @Install(precedence = APPLICATION)
 @BypassInterceptors
 @Slf4j
-public class ZanataCredentials extends Credentials {
+public class ZanataCredentials implements Serializable {
+    private static final long serialVersionUID = 5520824011655916917L;
+    private String username;
+    private String password;
+    private boolean initialized;
+    private boolean invalid;
+
     private AuthenticationType authType;
 
     private OpenIdProviderType openIdProviderType;
@@ -73,19 +78,54 @@ public class ZanataCredentials extends Credentials {
         this.openIdProviderType = openIdProviderType;
     }
 
-    @Override
-    public boolean isInvalid() {
-        return false;
+    public boolean isSet() {
+        return getUsername() != null && password != null;
     }
 
-    @Override
+    public boolean isInvalid() {
+        return invalid;
+    }
+
     public void clear() {
-        super.clear();
+        username = null;
+        password = null;
         authType = null;
         openIdProviderType = null;
     }
 
-    @Override
+    public String getUsername() {
+        if (!isInitialized()) {
+            setInitialized(true);
+        }
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+        invalid = false;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+        invalid = false;
+    }
+
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    public void setInitialized(boolean initialized) {
+        this.initialized = initialized;
+    }
+
+    public void invalidate() {
+        invalid = true;
+    }
+
     public CallbackHandler createCallbackHandler() {
         return new CallbackHandler() {
             public void handle(Callback[] callbacks) throws IOException,

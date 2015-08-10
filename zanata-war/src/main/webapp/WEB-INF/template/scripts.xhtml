@@ -34,7 +34,7 @@
     try {
       var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php",
         #{applicationConfiguration.piwikIdSite});
-      var username = "#{identity.username}";
+      var username = "#{identity.accountUsername}";
       if (#{identity.loggedIn} == false
     )
       {

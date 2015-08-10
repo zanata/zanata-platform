@@ -397,7 +397,7 @@
         </security-domain>
         <security-domain name="zanata.internal">
           <authentication>
-            <login-module code="org.jboss.seam.security.jaas.SeamLoginModule"
+            <login-module code="org.zanata.security.jaas.InternalLoginModule"
               flag="required" />
           </authentication>
         </security-domain>

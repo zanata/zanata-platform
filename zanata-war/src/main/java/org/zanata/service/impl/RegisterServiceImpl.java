@@ -29,8 +29,6 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.security.RunAsOperation;
-import org.jboss.seam.security.management.IdentityStore;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.dao.AccountDAO;
@@ -45,7 +43,9 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.security.HCredentials;
 import org.zanata.model.security.HOpenIdCredentials;
+import org.zanata.seam.security.AbstractRunAsOperation;
 import org.zanata.security.AuthenticationType;
+import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.service.RegisterService;
 import org.zanata.util.HashUtil;
 
@@ -56,7 +56,7 @@ public class RegisterServiceImpl implements RegisterService {
     EntityManager entityManager;
 
     @In
-    IdentityStore identityStore;
+    ZanataJpaIdentityStore identityStore;
 
     @In
     AccountDAO accountDAO;
@@ -92,7 +92,7 @@ public class RegisterServiceImpl implements RegisterService {
     @Override
     public String register(final String username, final String name,
             String email) {
-        new RunAsOperation() {
+        new AbstractRunAsOperation() {
             public void execute() {
                 identityStore.createUser(username, null);
                 identityStore.disableUser(username);
@@ -119,7 +119,7 @@ public class RegisterServiceImpl implements RegisterService {
 
     public String register(final String username, final String password,
             String name, String email) {
-        new RunAsOperation() {
+        new AbstractRunAsOperation() {
             public void execute() {
                 identityStore.createUser(username, password);
                 identityStore.disableUser(username);
@@ -147,10 +147,10 @@ public class RegisterServiceImpl implements RegisterService {
     @Override
     public String register(final String username, final String externalId,
             AuthenticationType authType, String name, String email) {
-        new RunAsOperation() {
+        new AbstractRunAsOperation() {
             public void execute() {
                 identityStore.createUser(username, null); // no password
-                                                          // initially
+                // initially
                 identityStore.disableUser(username);
             }
         }.addRole("admin").run();
@@ -188,7 +188,7 @@ public class RegisterServiceImpl implements RegisterService {
     /**
      * Implements the RunAsOperation to run as a system op.
      */
-    private class MergeAccountsOperation extends RunAsOperation {
+    private class MergeAccountsOperation extends AbstractRunAsOperation {
         private HAccount active;
         private HAccount obsolete;
 

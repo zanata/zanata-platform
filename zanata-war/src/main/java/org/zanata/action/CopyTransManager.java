@@ -36,13 +36,13 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.security.Identity;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.async.handle.CopyTransTaskHandle;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
 
 /**
@@ -67,7 +67,7 @@ public class CopyTransManager implements Serializable {
     private CopyTransService copyTransServiceImpl;
 
     @In
-    private Identity identity;
+    private ZanataIdentity identity;
 
     public boolean isCopyTransRunning(@Nonnull Object target) {
         CopyTransProcessKey key;

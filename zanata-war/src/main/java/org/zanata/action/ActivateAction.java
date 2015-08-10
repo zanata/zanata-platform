@@ -30,12 +30,12 @@ import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.security.RunAsOperation;
-import org.jboss.seam.security.management.IdentityManager;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.exception.KeyNotFoundException;
 import org.zanata.exception.ActivationLinkExpiredException;
 import org.zanata.model.HAccountActivationKey;
+import org.zanata.seam.security.AbstractRunAsOperation;
+import org.zanata.seam.security.IdentityManager;
 import org.zanata.ui.faces.FacesMessages;
 
 @Name("activate")
@@ -95,7 +95,7 @@ public class ActivateAction implements Serializable {
     @End
     public String activate() {
 
-        new RunAsOperation() {
+        new AbstractRunAsOperation() {
             public void execute() {
                 identityManager.enableUser(key.getAccount().getUsername());
                 identityManager.grantRole(key.getAccount().getUsername(),

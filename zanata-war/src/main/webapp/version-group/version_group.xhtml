@@ -228,7 +228,7 @@
         </s:fragment>
 
         <s:fragment
-          rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
+          rendered="#{identity.hasPermission(versionGroupHome.instance, 'update')}">
           <li class="tab__end">
             <a id="settings_tab"
               href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings"
@@ -259,11 +259,11 @@
             listSize="#{versionGroupHome.instanceMaintainers.size}"
             filterActionBean="#{versionGroupHome.maintainerFilter}"
             settingsUrl="#settings-maintainers"
-            PermissionToUpdate="#{s:hasPermission(versionGroupHome.instance, 'update')}"/>
+            PermissionToUpdate="#{identity.hasPermission(versionGroupHome.instance, 'update')}"/>
         </li>
 
         <s:fragment
-          rendered="#{s:hasPermission(versionGroupHome.instance, 'update')}">
+          rendered="#{identity.hasPermission(versionGroupHome.instance, 'update')}">
           <li id="settings">
             <ui:include
               src="/WEB-INF/layout/version-group/settings-tab.xhtml"/>

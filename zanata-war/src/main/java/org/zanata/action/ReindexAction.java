@@ -13,11 +13,14 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.security.Restrict;
+import org.zanata.security.annotations.CheckLoggedIn;
+import org.zanata.security.annotations.CheckPermission;
+import org.zanata.security.annotations.CheckRole;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import org.zanata.async.AsyncTaskHandle;
+import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.SearchIndexManager;
 
 import com.google.common.base.Optional;
@@ -26,7 +29,8 @@ import com.google.common.base.Optional;
 @Name("reindexAction")
 @Slf4j
 @Scope(ScopeType.STATELESS)
-@Restrict("#{s:hasRole('admin')}")
+@ZanataSecured
+@CheckRole("admin")
 public class ReindexAction implements Serializable {
     private static final long serialVersionUID = 1L;
 

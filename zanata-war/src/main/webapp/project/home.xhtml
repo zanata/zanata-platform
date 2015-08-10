@@ -13,16 +13,16 @@
 
   <ui:define name="right_content">
     <ui:param name="hasActions"
-      value="#{identity.loggedIn and (s:hasPermission(projectHome.instance, 'insert') or s:hasRole('admin'))}"/>
+      value="#{identity.loggedIn and (identity.hasPermission(projectHome.instance, 'insert') or identity.hasRole('admin'))}"/>
     <rich:panel id="loggedIn" rendered="#{hasActions}">
       <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
       <s:link id="createProjectLink" styleClass="action_link"
-        rendered="#{s:hasPermission(projectHome.instance, 'insert')}"
+        rendered="#{identity.hasPermission(projectHome.instance, 'insert')}"
         value="#{msgs['jsf.NewProject.Label']}"
         view="/project/create_project.xhtml"
         propagation="none"/>
       <h:outputLink id="exportTMXAllLink" styleClass="action_link"
-        rendered="#{s:hasRole('admin')}"
+        rendered="#{identity.hasRole('admin')}"
         onclick="return confirm('#{msgs['jsf.ConfirmExportTMXAll']}')"
         value="#{request.contextPath}/rest/tm/all">
         <h:outputText value="#{msgs['jsf.ExportTMXAll']}"/>

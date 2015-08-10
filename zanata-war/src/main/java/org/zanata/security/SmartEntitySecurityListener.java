@@ -2,58 +2,56 @@ package org.zanata.security;
 
 import java.util.Arrays;
 import java.util.List;
+
 import javax.persistence.PostLoad;
 import javax.persistence.PrePersist;
 import javax.persistence.PreRemove;
 import javax.persistence.PreUpdate;
 
-import org.jboss.seam.security.EntityAction;
-import org.jboss.seam.security.EntitySecurityListener;
-import org.jboss.seam.security.Identity;
+import org.jboss.seam.contexts.Contexts;
 import org.zanata.annotation.EntityRestrict;
 
 /**
- * Overrides EntitySecurityListener to avoid calling
- * EntityPermissionChecker.instance() when security is disabled, which leads to
+ * Disable permission checking when security is disabled, which solves the
  * problems if there is no active Seam application context (in tests).
  *
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public class SmartEntitySecurityListener extends EntitySecurityListener {
+public class SmartEntitySecurityListener {
     @PostLoad
     public void postLoad(Object entity) {
-        if (Identity.isSecurityEnabled()) {
+        if (ZanataIdentity.isSecurityEnabled()) {
             if (isEntityRestricted(entity, EntityAction.READ)) {
-                super.postLoad(entity);
+                checkEntityPermission(entity, EntityAction.READ);
             }
         }
     }
 
     @PrePersist
     public void prePersist(Object entity) {
-        if (Identity.isSecurityEnabled()) {
+        if (ZanataIdentity.isSecurityEnabled()) {
             if (isEntityRestricted(entity, EntityAction.INSERT)) {
-                super.prePersist(entity);
+                checkEntityPermission(entity, EntityAction.INSERT);
             }
         }
     }
 
     @PreUpdate
     public void preUpdate(Object entity) {
-        if (Identity.isSecurityEnabled()) {
+        if (ZanataIdentity.isSecurityEnabled()) {
             if (isEntityRestricted(entity, EntityAction.UPDATE)) {
-                super.preUpdate(entity);
+                checkEntityPermission(entity, EntityAction.UPDATE);
             }
         }
     }
 
     @PreRemove
     public void preRemove(Object entity) {
-        if (Identity.isSecurityEnabled()) {
+        if (ZanataIdentity.isSecurityEnabled()) {
             if (isEntityRestricted(entity, EntityAction.DELETE)) {
-                super.preRemove(entity);
+                checkEntityPermission(entity, EntityAction.DELETE);
             }
         }
     }
@@ -71,8 +69,23 @@ public class SmartEntitySecurityListener extends EntitySecurityListener {
                 return false; // not restricted
             }
         } else {
-            return false; // restricted, just not specifically
+            return false; // not restricted, just not specifically
         }
+    }
+
+    public void checkEntityPermission(Object entity, EntityAction action) {
+        if (!ZanataIdentity.isSecurityEnabled()) {
+            return;
+        }
+
+        if (!Contexts.isSessionContextActive()) {
+            return;
+        }
+
+        ZanataIdentity identity = ZanataIdentity.instance();
+
+        identity.tryLogin();
+        identity.checkPermission(entity, action.toString().toLowerCase());
     }
 
 }

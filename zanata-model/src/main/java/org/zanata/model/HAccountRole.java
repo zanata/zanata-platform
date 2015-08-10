@@ -74,6 +74,7 @@ public class HAccountRole implements Serializable, HasUserFriendlyToString {
         return groups;
     }
 
+    // TODO [CDI] check whether we actually use this field (doesn't seem to in prod db and in code)
     @RoleConditional
     public boolean isConditional() {
         return conditional;

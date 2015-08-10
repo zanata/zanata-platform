@@ -127,7 +127,7 @@
             class="l--float-right i--inline i--settings"></i>
           </a>
         </li>
-        <s:fragment rendered="#{s:hasRole('admin')}">
+        <s:fragment rendered="#{identity.hasRole('admin')}">
           <li>
             <s:link id="administration" view="/admin/home.xhtml"
               propagation="none">

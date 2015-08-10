@@ -16,7 +16,7 @@
   </ui:define>
 
   <ui:define name="right_content">
-    <rich:panel id="loggedIn" rendered="#{s:hasRole('admin')}">
+    <rich:panel id="loggedIn" rendered="#{identity.hasRole('admin')}">
       <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
       <s:link styleClass="action_link"
         value="#{msgs['jsf.server.EditHomePage.label']}"

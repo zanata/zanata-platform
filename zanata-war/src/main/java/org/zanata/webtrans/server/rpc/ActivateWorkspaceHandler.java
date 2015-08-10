@@ -30,7 +30,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.jboss.seam.web.ServletContexts;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectDAO;
@@ -192,7 +192,7 @@ public class ActivateWorkspaceHandler extends
     protected Person retrievePerson() {
         HAccount authenticatedAccount =
                 (HAccount) Contexts.getSessionContext().get(
-                        JpaIdentityStore.AUTHENTICATED_USER);
+                        ZanataJpaIdentityStore.AUTHENTICATED_USER);
         return new Person(new PersonId(authenticatedAccount.getUsername()),
                 authenticatedAccount.getPerson().getName(),
                 gravatarServiceImpl.getUserImageUrl(16, authenticatedAccount

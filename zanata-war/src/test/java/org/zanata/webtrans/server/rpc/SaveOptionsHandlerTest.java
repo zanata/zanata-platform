@@ -10,10 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
-import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountOptionDAO;
@@ -52,7 +51,7 @@ public class SaveOptionsHandlerTest extends ZanataDbunitJpaTest {
         // @formatter:off
       handler = seam
             .reset()
-            .use(JpaIdentityStore.AUTHENTICATED_USER, authenticatedAccount)
+            .use(ZanataJpaIdentityStore.AUTHENTICATED_USER, authenticatedAccount)
             .use("accountDAO", new AccountDAO(getSession()))
             .use("accountOptionDAO", new AccountOptionDAO(getSession()))
             .ignoreNonResolvable()

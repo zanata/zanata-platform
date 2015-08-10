@@ -32,13 +32,9 @@ import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.core.Events;
+import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesManager;
 import org.jboss.seam.faces.Redirect;
-import org.jboss.seam.international.StatusMessage;
-import org.jboss.seam.security.Credentials;
-import org.jboss.seam.security.Identity;
-import org.jboss.seam.security.openid.OpenIdPrincipal;
 import org.openid4java.OpenIDException;
 import org.openid4java.consumer.ConsumerManager;
 import org.openid4java.consumer.VerificationResult;
@@ -52,7 +48,9 @@ import org.slf4j.LoggerFactory;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
 import org.zanata.events.LoginCompleted;
+import org.zanata.events.PostAuthenticateEvent;
 import org.zanata.model.HAccount;
+import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.security.openid.FedoraOpenIdProvider;
 import org.zanata.security.openid.GenericOpenIdProvider;
 import org.zanata.security.openid.GoogleOpenIdProvider;
@@ -83,7 +81,7 @@ public class ZanataOpenId implements OpenIdAuthCallback {
     private FacesMessages facesMessages;
 
     @In
-    private Credentials credentials;
+    private ZanataCredentials credentials;
 
     @In
     private UserRedirectBean userRedirect;
@@ -93,6 +91,9 @@ public class ZanataOpenId implements OpenIdAuthCallback {
 
     @In("event")
     private Event<LoginCompleted> loginCompletedEvent;
+
+    @In("event")
+    private Event<PostAuthenticateEvent> postAuthenticateEvent;
 
     private String id;
     private OpenIdAuthenticationResult authResult;
@@ -161,8 +162,8 @@ public class ZanataOpenId implements OpenIdAuthCallback {
 
     public boolean loginImmediately() {
         if (authResult.isAuthenticated()) {
-            Identity.instance().acceptExternallyAuthenticatedPrincipal(
-                    (new OpenIdPrincipal(authResult.getAuthenticatedId())));
+            ZanataIdentity.instance().acceptExternallyAuthenticatedPrincipal(
+                    (new SimplePrincipal(authResult.getAuthenticatedId())));
             return true;
         }
 
@@ -246,9 +247,12 @@ public class ZanataOpenId implements OpenIdAuthCallback {
 
     private void loginImmediate() {
         if (loginImmediately()) {
-            if (Events.exists()) {
-                Events.instance().raiseEvent(Identity.EVENT_POST_AUTHENTICATE,
-                        identity);
+            if (Contexts.isEventContextActive()) {
+                HAccount authenticatedAccount =
+                        (HAccount) Contexts.getEventContext()
+                                .get(ZanataJpaIdentityStore.AUTHENTICATED_USER);
+                postAuthenticateEvent.fire(new PostAuthenticateEvent(
+                        authenticatedAccount));
             }
             // Events.instance().raiseEvent(Identity.EVENT_LOGIN_SUCCESSFUL,
             // AuthenticationType.OPENID);
@@ -313,8 +317,8 @@ public class ZanataOpenId implements OpenIdAuthCallback {
             if (authenticatedAccount != null
                     && authenticatedAccount.isEnabled()) {
                 credentials.setUsername(authenticatedAccount.getUsername());
-                Identity.instance().acceptExternallyAuthenticatedPrincipal(
-                        (new OpenIdPrincipal(result.getAuthenticatedId())));
+                ZanataIdentity.instance().acceptExternallyAuthenticatedPrincipal(
+                        (new SimplePrincipal(result.getAuthenticatedId())));
                 this.loginImmediate();
             } else if(authenticatedAccount != null) {
                 credentials.setUsername(authenticatedAccount.getUsername());

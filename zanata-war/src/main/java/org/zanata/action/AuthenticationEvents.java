@@ -28,9 +28,8 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.security.Identity;
-import org.jboss.seam.security.management.JpaIdentityStore;
-import org.zanata.model.HAccount;
+import org.zanata.events.LoginSuccessfulEvent;
+import org.zanata.events.UserCreatedEvent;
 
 @Name("authenticationEvents")
 @Scope(ScopeType.STATELESS)
@@ -38,12 +37,12 @@ import org.zanata.model.HAccount;
 public class AuthenticationEvents implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Observer(JpaIdentityStore.EVENT_USER_CREATED)
-    public void createSuccessful(HAccount account) {
-        log.info("Account {} created", account.getUsername());
+    @Observer(UserCreatedEvent.EVENT_NAME)
+    public void createSuccessful(UserCreatedEvent userCreatedEvent) {
+        log.info("Account {} created", userCreatedEvent.getUser().getUsername());
     }
 
-    @Observer(Identity.EVENT_LOGIN_SUCCESSFUL)
+    @Observer(LoginSuccessfulEvent.EVENT_NAME)
     public void loginInSuccessful() {
         log.debug("Account logged in successfully");
     }

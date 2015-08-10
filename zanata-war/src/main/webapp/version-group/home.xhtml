@@ -14,11 +14,11 @@
 
   <ui:define name="right_content">
     <rich:panel
-        rendered="#{identity.loggedIn and s:hasPermission(versionGroupHome.instance, 'insert')}">
+        rendered="#{identity.loggedIn and identity.hasPermission(versionGroupHome.instance, 'insert')}">
       <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
       <s:link styleClass="action_link" id="group-create"
         view="/version-group/create_version_group.xhtml"
-        rendered="#{s:hasPermission(versionGroupHome.instance, 'insert')}"
+        rendered="#{identity.hasPermission(versionGroupHome.instance, 'insert')}"
         value="#{msgs['jsf.NewGroup.Label']}"/>
     </rich:panel>
   </ui:define>
@@ -31,7 +31,7 @@
       <s:div styleClass="float-right">
         <a4j:region>
           <s:fragment
-            rendered="#{s:hasPermission('HIterationGroup','view-obsolete')}">
+            rendered="#{identity.hasPermission('HIterationGroup','view-obsolete')}">
             <h:selectBooleanCheckbox id="showObsolete"
               title="#{msgs['jsf.groups.ShowObsoleteGroups']}"
               value="#{versionGroupAction.showObsoleteGroups}">

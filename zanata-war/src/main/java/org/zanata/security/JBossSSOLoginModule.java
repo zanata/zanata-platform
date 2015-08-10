@@ -40,7 +40,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.jboss.seam.security.SimplePrincipal;
 import org.zanata.util.HashUtil;
 
 /**

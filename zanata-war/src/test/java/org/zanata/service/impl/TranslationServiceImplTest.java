@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
-import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -86,7 +86,7 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest {
         seam.reset()
                 .use("entityManager", getEm())
                 .use("session", getSession())
-                .use(JpaIdentityStore.AUTHENTICATED_USER,
+                .use(ZanataJpaIdentityStore.AUTHENTICATED_USER,
                         seam.autowire(AccountDAO.class).getByUsername("demo"))
                 .use("identity", identity).useImpl(LocaleServiceImpl.class)
                 .useImpl(ValidationServiceImpl.class).ignoreNonResolvable();

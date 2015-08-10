@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
-import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,13 +53,13 @@ public class LoadOptionsHandlerTest extends ZanataDbunitJpaTest {
         // @formatter:off
         handler = seam
             .reset()
-            .use(JpaIdentityStore.AUTHENTICATED_USER, authenticatedAccount)
+            .use(ZanataJpaIdentityStore.AUTHENTICATED_USER, authenticatedAccount)
             .use("accountDAO", accountDAO)
             .autowire(LoadOptionsHandler.class);
 
         saveHandler = SeamAutowire.instance()
             .reset()
-            .use(JpaIdentityStore.AUTHENTICATED_USER, authenticatedAccount)
+            .use(ZanataJpaIdentityStore.AUTHENTICATED_USER, authenticatedAccount)
             .use("accountDAO", accountDAO)
             .use("accountOptionDAO", accountOptionDAO)
             .autowire(SaveOptionsHandler.class);

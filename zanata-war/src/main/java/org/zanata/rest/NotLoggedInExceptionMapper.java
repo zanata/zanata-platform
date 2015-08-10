@@ -5,7 +5,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.jboss.seam.security.NotLoggedInException;
+import org.zanata.exception.NotLoggedInException;
 
 @Provider
 public class NotLoggedInExceptionMapper implements

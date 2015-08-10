@@ -31,7 +31,7 @@ import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.HttpResponse;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.spi.UnhandledException;
-import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.jboss.seam.web.ServletContexts;
 import org.zanata.dao.AccountDAO;
 import org.zanata.limits.RateLimitingProcessor;
@@ -168,7 +168,7 @@ class RestLimitingSynchronousDispatcher extends SynchronousDispatcher {
     @VisibleForTesting
     protected HAccount getAuthenticatedUser() {
         return ServiceLocator.instance().getInstance(
-                JpaIdentityStore.AUTHENTICATED_USER, HAccount.class);
+                ZanataJpaIdentityStore.AUTHENTICATED_USER, HAccount.class);
     }
 
     protected HAccount getUser(@Nonnull String apiKey) {

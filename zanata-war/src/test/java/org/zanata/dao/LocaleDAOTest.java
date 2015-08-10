@@ -5,7 +5,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
-import org.jboss.seam.security.Identity;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -15,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
+import org.zanata.security.ZanataIdentity;
 
 public class LocaleDAOTest extends ZanataDbunitJpaTest {
     private static final Logger log = LoggerFactory.getLogger(LocaleDAOTest.class);
@@ -30,7 +30,7 @@ public class LocaleDAOTest extends ZanataDbunitJpaTest {
 
     @BeforeClass
     public static void disableSecurity() {
-        Identity.setSecurityEnabled(false);
+        ZanataIdentity.setSecurityEnabled(false);
     }
 
     @Before

@@ -31,7 +31,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountOption;
@@ -53,7 +53,7 @@ import org.zanata.webtrans.shared.rpc.ThemesOption;
 @ActionHandlerFor(LoadOptionsAction.class)
 public class LoadOptionsHandler extends
         AbstractActionHandler<LoadOptionsAction, LoadOptionsResult> {
-    @In(value = JpaIdentityStore.AUTHENTICATED_USER)
+    @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
 
     @In

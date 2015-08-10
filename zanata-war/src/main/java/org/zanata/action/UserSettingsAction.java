@@ -43,9 +43,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Conversation;
-import org.jboss.seam.security.RunAsOperation;
-import org.jboss.seam.security.management.IdentityManager;
-import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.CredentialsDAO;
 import org.zanata.dao.PersonDAO;
@@ -55,7 +52,10 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.security.HCredentials;
 import org.zanata.model.security.HOpenIdCredentials;
+import org.zanata.seam.security.AbstractRunAsOperation;
 import org.zanata.security.AuthenticationManager;
+import org.zanata.seam.security.IdentityManager;
+import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.security.openid.FedoraOpenIdProvider;
 import org.zanata.security.openid.GoogleOpenIdProvider;
 import org.zanata.security.openid.OpenIdAuthCallback;
@@ -99,7 +99,7 @@ public class UserSettingsAction {
     @In
     private AccountDAO accountDAO;
 
-    @In
+    @In(create = true)
     private IdentityManager identityManager;
 
     @In
@@ -114,7 +114,7 @@ public class UserSettingsAction {
     @In
     private Messages msgs;
 
-    @In(value = JpaIdentityStore.AUTHENTICATED_USER)
+    @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
     HAccount authenticatedAccount;
 
     @Getter
@@ -189,7 +189,7 @@ public class UserSettingsAction {
             return;
         }
 
-        new RunAsOperation() {
+        new AbstractRunAsOperation() {
             public void execute() {
                 identityManager.changePassword(
                         authenticatedAccount.getUsername(), newPassword);

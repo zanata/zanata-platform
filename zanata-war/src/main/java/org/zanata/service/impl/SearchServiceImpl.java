@@ -25,9 +25,12 @@ import javax.ws.rs.QueryParam;
 
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.security.Restrict;
+import org.zanata.security.annotations.CheckLoggedIn;
+import org.zanata.security.annotations.CheckPermission;
+import org.zanata.security.annotations.CheckRole;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.rest.dto.ReindexStatus;
+import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.SearchIndexManager;
 import org.zanata.service.SearchService;
 
@@ -40,7 +43,8 @@ import org.zanata.service.SearchService;
  */
 @Name("searchServiceImpl")
 @Path("/search")
-@Restrict("#{s:hasRole('admin')}")
+@ZanataSecured
+@CheckRole("admin")
 public class SearchServiceImpl implements SearchService {
     @In
     private SearchIndexManager searchIndexManager;

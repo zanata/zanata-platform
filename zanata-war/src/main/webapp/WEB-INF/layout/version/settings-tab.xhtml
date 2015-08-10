@@ -142,7 +142,7 @@
       </s:div>
 
       <s:fragment
-        rendered="#{s:hasPermission(versionHome.instance, 'mark-obsolete')}">
+        rendered="#{identity.hasPermission(versionHome.instance, 'mark-obsolete')}">
         <s:div styleClass="g__item w--1-2"
           rendered="#{versionHome.instance.status ne 'OBSOLETE'}">
           <a href="javascript:void(0)" class="button--danger l--push-bottom-half"

@@ -26,9 +26,9 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.security.management.PasswordHash;
 import org.jboss.seam.util.Hex;
 import org.zanata.model.HAccount;
+import org.zanata.util.PasswordUtil;
 
 @Name("accountDAO")
 @AutoCreate
@@ -108,8 +108,8 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
         String saltPhrase = username;
         @SuppressWarnings("deprecation")
         String passwordHash =
-                PasswordHash.instance().generateSaltedHash(password,
-                        saltPhrase, PasswordHash.ALGORITHM_MD5);
+                PasswordUtil.generateSaltedHash(password,
+                        saltPhrase);
         account.setPasswordHash(passwordHash);
         account.setEnabled(enabled);
         makePersistent(account);

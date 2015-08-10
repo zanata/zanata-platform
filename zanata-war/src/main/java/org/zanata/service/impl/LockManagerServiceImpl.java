@@ -27,7 +27,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
-import org.jboss.seam.security.management.JpaIdentityStore;
+import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.lock.Lock;
 import org.zanata.lock.LockNotAcquiredException;
 import org.zanata.model.HAccount;
@@ -80,7 +80,7 @@ public class LockManagerServiceImpl implements LockManagerService {
     private String getCurrentUser() {
         HAccount user =
                 ServiceLocator.instance().getInstance(
-                        JpaIdentityStore.AUTHENTICATED_USER, HAccount.class);
+                        ZanataJpaIdentityStore.AUTHENTICATED_USER, HAccount.class);
         String newLocker = user != null ? user.getUsername() : "unknown";
         return newLocker;
     }
