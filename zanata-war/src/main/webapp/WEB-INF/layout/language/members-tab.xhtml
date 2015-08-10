@@ -93,7 +93,7 @@
                     #{member.person.name}
                   </h3>
               <span class="list__item__meta">
-                #{member.person.account.username}<s:span rendered="#{identity.hasRole('admin')}"> [#{member.person.email}] </s:span>
+                #{member.person.account.username}<h:panelGroup layout="span" rendered="#{identity.hasRole('admin')}"> [#{member.person.email}] </h:panelGroup>
               </span>
                 </div>
                 <div class="list__item__actions">

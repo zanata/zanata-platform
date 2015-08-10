@@ -85,8 +85,8 @@
                     <div class="list__item__content">
                       <div class="list__item__info">
                         <h3 class="list__title">#{role}
-                        <s:span rendered="#{not zanataRoleSearch.getRoleGroups(role).isEmpty()}"
-                          styleClass="txt--meta l--push-left-half">[#{zanataRoleSearch.getRoleGroups(role)}]</s:span>
+                        <h:panelGroup layout="span" rendered="#{not zanataRoleSearch.getRoleGroups(role).isEmpty()}"
+                          styleClass="txt--meta l--push-left-half">[#{zanataRoleSearch.getRoleGroups(role)}]</h:panelGroup>
                         </h3>
                       </div>
                     </div>

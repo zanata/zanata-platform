@@ -7,7 +7,7 @@
 
   <div class="l--push-top-half form__item">
     <h:outputLabel for="name">#{msgs['jsf.GroupName']}
-      <s:span styleClass="txt--required">*</s:span>
+      <span class="txt--required">*</span>
     </h:outputLabel>
     <s:decorate id="nameField" template="../field.xhtml" enclose="true">
       <h:inputText id="name" required="true" maxlength="80"
@@ -18,7 +18,7 @@
   </div>
   <div class="l--push-top-half form__item">
     <h:outputLabel for="slug">#{msgs['jsf.GroupId']}
-      <s:span styleClass="txt--required">*</s:span>
+      <span class="txt--required">*</span>
     </h:outputLabel>
     <s:decorate id="slugField" template="../field.xhtml" enclose="true">
       <h:inputText rendered="#{versionGroupHome.managed}"

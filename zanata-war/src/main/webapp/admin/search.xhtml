@@ -130,7 +130,7 @@
                           disabled="#{not reindexAction.canceled and reindexAction.inProgress}">
                           <a4j:ajax event="click" render="actions" execute="@this"/>
                         </h:selectBooleanCheckbox>
-                        <s:span styleClass="l--push-left-quarter">
+                        <span class="l--push-left-quarter">
                           #{msgs['jsf.manageSearch.purge']} <i class="i i--info txt--meta"></i>
                           <rich:tooltip showDelay="800">
                             <p>#{msgs['jsf.manageSearch.purge.Description']}</p>
@@ -139,14 +139,14 @@
 
                             <p>#{msgs['jsf.manageSearch.purge.RemoveByRunningOptimize']}</p>
                           </rich:tooltip>
-                        </s:span>
+                        </span>
                       </th>
                       <th class="l--pad-v-half">
                         <h:selectBooleanCheckbox value="#{reindexAction.reindexAll}" id="reindexAllChk"
                           disabled="#{not reindexAction.canceled and reindexAction.inProgress}">
                           <a4j:ajax event="click" render="actions" execute="@this"/>
                         </h:selectBooleanCheckbox>
-                        <s:span styleClass="l--push-left-quarter">
+                        <span class="l--push-left-quarter">
                           #{msgs['jsf.manageSearch.reindex']} <i class="i i--info txt--meta"></i>
                           <rich:tooltip showDelay="800">
                             <p>#{msgs['jsf.manageSearch.reindex.Description']}</p>
@@ -163,14 +163,14 @@
                               <em>#{msgs['jsf.manageSearch.reindex.RunDuringOffPeak']}</em>
                             </p>
                           </rich:tooltip>
-                        </s:span>
+                        </span>
                       </th>
                       <th class="l--pad-v-half">
                         <h:selectBooleanCheckbox value="#{reindexAction.optimizeAll}"
                           disabled="#{not reindexAction.canceled and reindexAction.inProgress}">
                           <a4j:ajax event="click" render="actions" execute="@this"/>
                         </h:selectBooleanCheckbox>
-                        <s:span styleClass="l--push-left-quarter">
+                        <span class="l--push-left-quarter">
                           #{msgs['jsf.manageSearch.optimize']} <i class="i i--info txt--meta"></i>
                           <rich:tooltip showDelay="800">
                             <p>#{msgs['jsf.manageSearch.optimize.Description']}</p>
@@ -183,7 +183,7 @@
                               <em>#{msgs['jsf.manageSearch.optimize.TempFileWarning']}</em>
                             </p>
                           </rich:tooltip>
-                        </s:span>
+                        </span>
                       </th>
                     </tr>
                   </thead>

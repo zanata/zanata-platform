@@ -23,8 +23,8 @@
           <f:param name="#{param}" value="#{breadcrumb.params.get(param)}"/>
         </c:forEach>
       </h:link>
-      <s:span styleClass="breadcrumbs_display"
-        rendered="#{empty breadcrumb.location}">#{breadcrumb.display}</s:span>
+      <h:panelGroup layout="span" styleClass="breadcrumbs_display"
+        rendered="#{empty breadcrumb.location}">#{breadcrumb.display}</h:panelGroup>
     </c:forEach>
   </h:form>
 </div>

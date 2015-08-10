@@ -98,10 +98,10 @@
                             </s:fragment>
                             #{user}
                           </span>
-                          <s:span styleClass="txt--meta l--push-h-quarter"
+                          <h:panelGroup layout="span" styleClass="txt--meta l--push-h-quarter"
                             rendered="#{not userSearch.getUserRoles(user).isEmpty()}">
                             [#{userSearch.getUserRoles(user)}]
-                          </s:span>
+                          </h:panelGroup>
                         </h3>
                         <span class="list__item__meta">
                           #{userAction.getEmail(user)}

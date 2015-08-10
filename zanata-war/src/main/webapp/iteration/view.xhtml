@@ -287,9 +287,9 @@
           <i class="i i--language"></i>
           <span class="is-hidden--s i__text--right">
             #{msgs['jsf.Languages']}
-            <s:span styleClass="txt--neutral" id="languages-size">
+            <h:panelGroup class="txt--neutral" id="languages-size">
               #{versionHomeAction.getSupportedLocale().size}
-            </s:span>
+            </h:panelGroup>
           </span>
         </a>
       </li>
@@ -300,10 +300,9 @@
           <i class="i i--document"></i>
           <span class="is-hidden--s i__text--right">
             #{msgs['jsf.Documents']}
-            <s:span styleClass="txt--neutral"
-              id="documents-size">
+            <h:panelGroup class="txt--neutral" id="documents-size">
               #{versionHomeAction.getDocuments().size}
-            </s:span>
+            </h:panelGroup>
           </span>
         </a>
       </li>
@@ -315,9 +314,9 @@
             <i class="i i--group"></i>
             <span class="is-hidden--s i__text--right">
               #{msgs['jsf.Groups']}
-              <s:span styleClass="txt--neutral" id="groups-size">
+              <h:panelGroup class="txt--neutral" id="groups-size">
                 #{versionHomeAction.groups.size}
-              </s:span>
+              </h:panelGroup>
             </span>
           </a>
         </li>

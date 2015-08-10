@@ -63,7 +63,7 @@
             styleClass="l--push-right-half button--primary"/>
         </div>
         <hr/>
-        <s:span id="status">
+        <h:panelGroup id="status">
           <s:fragment
             rendered="#{versionGroupHome.instance.status == 'ACTIVE'}">
             <p>
@@ -91,7 +91,7 @@
                 class="i--left i--archive"></i> #{msgs['jsf.ActivateGroupMessage']}
             </p>
           </s:fragment>
-        </s:span>
+        </h:panelGroup>
       </div>
     </h:form>
   </li>

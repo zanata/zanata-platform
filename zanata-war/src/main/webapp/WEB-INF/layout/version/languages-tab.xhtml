@@ -111,10 +111,12 @@
                       <i class="i--right i--translate txt--neutral"></i>
                     </s:fragment>
 
-                    <s:span rendered="#{not hLocale.active}" styleClass="label"
-                      title="#{msgs['jsf.Language.Disabled']}">
-                      #{msgs['jsf.Disabled']}
-                    </s:span>
+                    <h:panelGroup layout="span" rendered="#{not hLocale.active}" styleClass="label">
+                      <!-- TODO check whether title is necessary -->
+                      <span title="#{msgs['jsf.Language.Disabled']}">
+                        #{msgs['jsf.Disabled']}
+                      </span>
+                    </h:panelGroup>
                   </h3>
                   <span class="list__item__meta">#{hLocale.localeId}</span>
                 </div>
@@ -224,16 +226,17 @@
 
   <h2 class="panel__heading">
     <zanata:loader jsHandle="true" layout="inline" type="loader--small" id="languagesTab-language-label-loader" visible="false"/>
-    <s:span id="language-label">
-      <s:span
+    <h:panelGroup id="language-label">
+      <h:panelGroup layout="span"
         rendered="#{versionHomeAction.selectedLocale ne null and not versionHomeAction.selectedLocale.active}"
-        styleClass="label"
-        title="#{msgs['jsf.Language.Disabled']}">
-        #{msgs['jsf.Disabled']}
-      </s:span>
+        styleClass="label">
+        <span title="#{msgs['jsf.Language.Disabled']}">
+          #{msgs['jsf.Disabled']}
+        </span>
+      </h:panelGroup>
 
       #{versionHomeAction.selectedLocale.retrieveDisplayName()}
-    </s:span>
+    </h:panelGroup>
     #{msgs['jsf.Documents']}
   </h2>
 </div>

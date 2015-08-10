@@ -38,7 +38,7 @@
         <h:form id="profile-form">
           <div class="l--push-top-half form__item">
             <h:outputLabel for="name">#{msgs['jsf.Name']}
-              <s:span styleClass="txt--required">*</s:span>
+              <span class="txt--required">*</span>
             </h:outputLabel>
             <s:decorate id="nameField" template="../WEB-INF/layout/field.xhtml" enclose="true">
               <h:inputText id="name" value="#{newProfileAction.name}" required="true"
@@ -53,7 +53,7 @@
           </ui:remove>
           <s:div styleClass="l--push-top-half form__item">
           <h:outputLabel for="username">#{msgs['jsf.Username']}
-              <s:span styleClass="txt--required">*</s:span>
+              <span Class="txt--required">*</span>
             </h:outputLabel>
             <s:decorate id="usernameField" template="../WEB-INF/layout/field.xhtml" enclose="true">
               <h:inputText id="username" required="true" maxlength="80"
@@ -66,7 +66,7 @@
           <div class="l--push-top-half form__item">
             <h:outputLabel for="email">
               #{msgs['jsf.Email']}
-              <s:span styleClass="txt--required">*</s:span>
+              <span class="txt--required">*</span>
             </h:outputLabel>
             <s:decorate id="emailField" template="../WEB-INF/layout/field.xhtml">
               <h:inputText id="email" required="false"

@@ -3,6 +3,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
   template="/WEB-INF/template/template.xhtml">
 
   <ui:define
@@ -25,9 +26,9 @@
               <span class="is-hidden--s i__text--right">
                 #{msgs['jsf.Projects']}
               </span>
-                <s:span styleClass="txt--neutral" id="projects-size">
+                <h:panelGroup class="txt--neutral" id="projects-size">
                   #{zanataSearch.getTotalProjectCount()}
-                </s:span>
+                </h:panelGroup>
               </a>
             </li>
             <li>
@@ -38,9 +39,9 @@
               <span class="is-hidden--s i__text--right">
                 #{msgs['jsf.Users']}
               </span>
-                <s:span styleClass="txt--neutral" id="users-size">
+                <h:panelGroup class="txt--neutral" id="users-size">
                   #{zanataSearch.getTotalUserCount()}
-                </s:span>
+                </h:panelGroup>
               </a>
             </li>
           </ul>

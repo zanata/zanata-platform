@@ -84,13 +84,13 @@
                           <zanata:loader type="loader--small" layout="inline"/>
                         </s:fragment>
 
-                        <s:span styleClass="txt--understated" rendered="#{handle.done}">
+                        <h:panelGroup layout="span" styleClass="txt--understated" rendered="#{handle.done}">
                           <span
                             class="txt--hero">#{handle.executingTime}</span>
                           <span class="stats__unit txt--lowercase">
                             #{msgs['jsf.processmanager.miliseconds']}
                           </span>
-                        </s:span>
+                        </h:panelGroup>
                       </div>
                     </div>
                   </li>

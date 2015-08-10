@@ -8,7 +8,7 @@
 
     <s:label styleClass="name #{invalid?'errors':''}">
       <ui:insert name="label"/>
-      <s:span styleClass="required" rendered="#{required}">*</s:span>
+      <h:panelGroup layout="span" styleClass="required" rendered="#{required}">*</h:panelGroup>
     </s:label>
 
         <span class="value #{invalid?'errors':''}">
@@ -18,7 +18,7 @@
         </span>
 
         <span class="value #{invalid?'errors':''} errorsMessage">
-        <s:span styleClass="icon-cancel-circle-2 errors" rendered="#{invalid}"/>
+        <h:panelGroup layout="span" styleClass="icon-cancel-circle-2 errors" rendered="#{invalid}"/>
           <s:message styleClass="errors"/>
         </span>
   </div>

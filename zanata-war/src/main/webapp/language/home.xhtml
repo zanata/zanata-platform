@@ -75,15 +75,17 @@
                       <div class="list__item__info">
                         <h3 class="list__title">
                           #{language.retrieveDisplayName()}
-                          <s:span rendered="#{language.enabledByDefault}" styleClass="label"
+                          <h:panelGroup layout="span" rendered="#{language.enabledByDefault}" styleClass="label"
                             title="#{msgs['jsf.language.enableByDefault']}">
                             #{msgs['jsf.language.enabledByDefault']}
-                          </s:span>
+                          </h:panelGroup>
 
-                          <s:span rendered="#{not language.active}" styleClass="label"
-                            title="#{msgs['jsf.Disabled']}">
-                            #{msgs['jsf.Disabled']}
-                          </s:span>
+                          <h:panelGroup layout="span" rendered="#{not language.active}" styleClass="label">
+                            <!-- TODO h:panelGroup do not support title attribute. But do we really need a title here? -->
+                            <span title="#{msgs['jsf.Disabled']}">
+                              #{msgs['jsf.Disabled']}
+                            </span>
+                          </h:panelGroup>
 
                           <s:fragment rendered="#{languagesAction.isUserTeamMember(language)}">
                             <i class="i i--translate txt--neutral" title="#{msgs['jsf.language.member.joined']}"></i>

@@ -57,14 +57,19 @@
             </s:div>
           </div>
           <s:div rendered="#{not languageAction.locale.active or not languageAction.locale.enabledByDefault}">
-            <s:span styleClass="label" rendered="#{not languageAction.locale.active}"
-              title="#{msgs['jsf.Disabled']}">
-              #{msgs['jsf.Disabled']}
-            </s:span>
-            <s:span styleClass="label" rendered="#{not languageAction.locale.enabledByDefault}"
+            <h:panelGroup layout="span" styleClass="label" rendered="#{not languageAction.locale.active}">
+              <!-- TODO h:panelGroup do not support title attribute. But do we really need a title here? -->
+              <span title="#{msgs['jsf.Disabled']}">
+                #{msgs['jsf.Disabled']}
+              </span>
+            </h:panelGroup>
+            <h:panelGroup layout="span" styleClass="label" rendered="#{not languageAction.locale.enabledByDefault}"
               title="#{msgs['jsf.language.disableByDefault']}">
-              #{msgs['jsf.language.disableByDefault']}
-            </s:span>
+              <!-- TODO h:panelGroup do not support title attribute. But do we really need a title here? -->
+              <span title="#{msgs['jsf.language.disableByDefault']}">
+                #{msgs['jsf.language.disableByDefault']}
+              </span>
+            </h:panelGroup>
           </s:div>
 
         </s:div>
@@ -80,9 +85,9 @@
                 <i class="i i--users"></i>
               <span class="is-hidden--s i__text--right">
                 #{msgs['jsf.Members']}
-                <s:span styleClass="txt--neutral" id="members-size">
+                <h:panelGroup class="txt--neutral" id="members-size">
                   #{languageAction.localeMembers.size}
-                </s:span>
+                </h:panelGroup>
               </span>
               </a>
             </li>

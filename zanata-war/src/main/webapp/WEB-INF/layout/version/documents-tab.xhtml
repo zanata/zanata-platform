@@ -277,9 +277,9 @@
     <h2 class="panel__heading">
       <zanata:loader jsHandle="true" layout="inline" type="loader--small"
         visible="false" id="documentsTab-document-label-loader"/>
-      <s:span id="document-label">
+      <h:panelGroup id="document-label">
         #{versionHomeAction.selectedDocument.name}
-      </s:span>
+      </h:panelGroup>
       #{msgs['jsf.Languages']}
     </h2>
   </div>
@@ -345,11 +345,13 @@
                           rendered="#{hLocale.active and versionHomeAction.isUserAllowedToTranslateOrReview(hLocale)}">
                           <i class="i--right i--translate txt--neutral"></i>
                         </s:fragment>
-                        <s:span rendered="#{not hLocale.active}"
-                          styleClass="label"
-                          title="#{msgs['jsf.Language.Disabled']}">
-                          #{msgs['jsf.Disabled']}
-                        </s:span>
+                        <h:panelGroup layout="span" rendered="#{not hLocale.active}"
+                          styleClass="label">
+                          <!-- TODO check whether title is necessary -->
+                          <span title="#{msgs['jsf.Language.Disabled']}">
+                            #{msgs['jsf.Disabled']}
+                          </span>
+                        </h:panelGroup>
                       </h3>
                       <span class="list__item__meta">#{hLocale.localeId}</span>
                     </div>
@@ -380,11 +382,13 @@
                         rendered="#{hLocale.active and versionHomeAction.isUserAllowedToTranslateOrReview(hLocale)}">
                         <i class="i--right i--translate txt--neutral"></i>
                       </s:fragment>
-                      <s:span rendered="#{not hLocale.active}"
-                        styleClass="label--danger"
-                        title="#{msgs['jsf.Language.Disabled']}">
-                        #{msgs['jsf.Disabled']}
-                      </s:span>
+                      <h:panelGroup layout="span" rendered="#{not hLocale.active}"
+                        styleClass="label--danger">
+                        <!-- TODO check whether title is necessary -->
+                        <span title="#{msgs['jsf.Language.Disabled']}">
+                          #{msgs['jsf.Disabled']}
+                        </span>
+                      </h:panelGroup>
                     </h3>
                     <span class="list__item__meta">#{hLocale.localeId}</span>
                   </div>
