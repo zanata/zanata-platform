@@ -40,7 +40,7 @@
             onbegin="clearHTML('#{rich:clientId('glossary_form')}')"
             status="glossaryLoader"/>
 
-          <s:fragment
+          <ui:fragment
             rendered="#{identity.hasPermission('', 'glossary-delete') or identity.hasPermission('', 'glossary-insert')}">
             <div
               class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown"
@@ -50,7 +50,7 @@
                 class="i i--ellipsis"></i></a>
               <ul class="dropdown__content js-dropdown__content" role="content"
                 aria-labelledby="dropdownContent">
-                <s:fragment
+                <ui:fragment
                   rendered="#{identity.hasPermission('', 'glossary-insert')}">
                   <li>
                     <a href="#" data-toggle="modal" data-target="#glossaryUploadDialog">
@@ -58,10 +58,10 @@
                       <i class="i i--import i__item__icon"></i>
                     </a>
                   </li>
-                </s:fragment>
+                </ui:fragment>
               </ul>
             </div>
-          </s:fragment>
+          </ui:fragment>
         </div>
         <h2 class="panel__heading">#{msgs['jsf.Glossary.entries.label']}</h2>
       </div>
@@ -85,7 +85,7 @@
         <s:div styleClass="l--pad-all-half"
           rendered="#{empty glossaryAction.getEntries()}">
           <p class="txt--meta">#{msgs['jsf.Glossary.empty']}</p>
-          <s:fragment
+          <ui:fragment
             rendered="#{identity.hasPermission('', 'glossary-insert')}">
             <p>
               <a href="#" data-toggle="modal" data-target="#glossaryUploadDialog"
@@ -94,7 +94,7 @@
                 <i class="i i--plus i__item__icon"></i>
               </a>
             </p>
-          </s:fragment>
+          </ui:fragment>
         </s:div>
 
         <s:div styleClass="l--pad-all-half"
@@ -102,7 +102,7 @@
           <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
         </s:div>
 
-        <s:fragment
+        <ui:fragment
           rendered="#{!glossaryAction.glossaryFilter.currentPage.isEmpty()}">
           <ul class="list--stats">
             <ui:repeat
@@ -123,7 +123,7 @@
                       </span>
                     </a>
                     <ul class="dropdown__content js-dropdown__content">
-                      <s:fragment
+                      <ui:fragment
                         rendered="#{identity.hasPermission('', 'glossary-delete')}">
                         <li>
                           <a href="#" onclick="if(confirmDelete('#{glossaryAction.getDeleteConfirmationMessage(glossary.displayName)}')) {deleteGlossary('#{glossary.localeId}')}; return false;"
@@ -132,7 +132,7 @@
                             class="i i--remove i__item__icon"></i>
                           </a>
                         </li>
-                      </s:fragment>
+                      </ui:fragment>
                     </ul>
                   </div>
                 </s:div>
@@ -163,7 +163,7 @@
               </li>
             </ui:repeat>
           </ul>
-        </s:fragment>
+        </ui:fragment>
       </h:form>
 
       <zanata:list-filter listId="glossary_form"

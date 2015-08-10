@@ -75,7 +75,7 @@
           </a4j:status>
         </h:form>
         <hr/>
-        <s:fragment rendered="#{applicationConfiguration.internalAuth}">
+        <ui:fragment rendered="#{applicationConfiguration.internalAuth}">
           <h3 class="heading--secondary">
             <h:outputText rendered="#{not userSettingsAction.passwordSet}"
               value="#{msgs['jsf.dashboard.settings.setPassword.label']}"/>
@@ -83,7 +83,7 @@
               value="#{msgs['jsf.dashboard.settings.changePassword.label']}"/>
           </h3>
           <h:form id="passwordChangeForm" styleClass="l--constrain-large js-form-password-parent">
-            <s:fragment rendered="#{userSettingsAction.passwordSet}">
+            <ui:fragment rendered="#{userSettingsAction.passwordSet}">
               <div class="form__item">
                 <h:outputLabel for="oldPassword">#{msgs['jsf.OldPassword']}</h:outputLabel>
                 <s:decorate id="oldPasswordField" template=" ../field.xhtml" enclose="false">
@@ -91,7 +91,7 @@
                     maxlength="255"/>
                 </s:decorate>
               </div>
-            </s:fragment>
+            </ui:fragment>
             <div class="form__item l--push-bottom-1">
               <h:outputLabel for="newPassword">#{msgs['jsf.NewPassword']}</h:outputLabel>
               <s:decorate id="newPasswordField" template=" ../field.xhtml"
@@ -116,9 +116,9 @@
               <f:facet name="start"><zanata:loader layout="inline" type="loader--small"/></f:facet>
             </a4j:status>
           </h:form>
-        </s:fragment>
+        </ui:fragment>
         <hr/>
-        <s:fragment rendered="#{applicationConfiguration.multiAuth}">
+        <ui:fragment rendered="#{applicationConfiguration.multiAuth}">
           <h3 class="heading--secondary">
             #{msgs['jsf.dashboard.settings.connectedAccounts.label']}
           </h3>
@@ -193,7 +193,7 @@
               </span>
             </small>
           </h:form>
-        </s:fragment>
+        </ui:fragment>
       </li>
       <li id="profile-content">
         <h2 class="l--push-top-0 gamma d--bottom">
@@ -284,18 +284,18 @@
             <label for="apiKey">
               #{msgs['jsf.dashboard.settings.apiKey.label']}
             </label>
-            <s:fragment id="no_api_key"
+            <ui:fragment id="no_api_key"
               rendered="#{not userSettingsAction.apiKeyGenerated}">
                 <p>#{msgs['jsf.NotGenerated']}</p>
-            </s:fragment>
-            <s:fragment id="api_key"
+            </ui:fragment>
+            <ui:fragment id="api_key"
               rendered="#{userSettingsAction.apiKeyGenerated}">
               <p>#{msgs['jsf.YourCurrentApiKeyIs']}
                 <input id="apiKey" type="text" class="js-form__input--copyable"
                   value="#{userSettingsAction.accountApiKey}" readonly=""
                   size="30"/>
               </p>
-            </s:fragment>
+            </ui:fragment>
           </div>
           <script>
             function confirmGenerateApiKey() {

@@ -64,7 +64,7 @@
             rendered="#{empty languageAction.searchResults}"
             value="#{msgs['jsf.search.NoResult']}"/>
 
-          <s:fragment rendered="#{not empty languageAction.searchResults}">
+          <ui:fragment rendered="#{not empty languageAction.searchResults}">
             <ul class="list--slat">
               <ui:repeat value="#{languageAction.searchResults}"
                 var="selectablePerson">
@@ -97,7 +97,7 @@
                 </li>
               </ui:repeat>
             </ul>
-          </s:fragment>
+          </ui:fragment>
         </a4j:outputPanel>
       </h:form>
     </div>

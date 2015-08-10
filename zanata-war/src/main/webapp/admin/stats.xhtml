@@ -47,27 +47,27 @@
         <h1 class="l--push-all-0">#{msgs['jsf.Statistics']}</h1>
         <s:div styleClass="panel l--pad-all-half l--push-v-half"  id="userStats">
           <i class="i i--users delta l--push-right-quarter"></i>
-          <s:fragment rendered="#{not adminStatsAction.documentReady}">
+          <ui:fragment rendered="#{not adminStatsAction.documentReady}">
               <zanata:loader layout="inline"/>
-          </s:fragment>
+          </ui:fragment>
 
-          <s:fragment rendered="#{adminStatsAction.documentReady}">
+          <ui:fragment rendered="#{adminStatsAction.documentReady}">
             #{msgs['jsf.TotalTranslators']} <span class="badge">#{adminStatsAction.totalTranslator}</span>
 
             <span class="l--push-h-quarter">
               #{msgs['jsf.TotalReviewers']} <span class="badge">#{adminStatsAction.totalReviewer}</span>
             </span>
-          </s:fragment>
+          </ui:fragment>
         </s:div>
 
         <s:div styleClass="panel l--pad-all-half l--push-v-half" id="projectStats">
           <i class="i i--project delta l--push-right-quarter"></i>
           #{msgs['jsf.TotalProjects']}
-          <s:fragment rendered="#{not adminStatsAction.documentReady}">
+          <ui:fragment rendered="#{not adminStatsAction.documentReady}">
             <zanata:loader layout="inline"/>
-          </s:fragment>
+          </ui:fragment>
 
-          <s:fragment rendered="#{adminStatsAction.documentReady}">
+          <ui:fragment rendered="#{adminStatsAction.documentReady}">
             <span class="badge">#{adminStatsAction.totalProjectCount}</span>
 
             <div class="l--push-top-quarter">
@@ -83,18 +83,18 @@
                 #{msgs['jsf.Deleted']} <span class="badge--danger">#{adminStatsAction.totalObsoleteProjectCount}</span>
               </span>
             </div>
-          </s:fragment>
+          </ui:fragment>
         </s:div>
 
 
         <s:div styleClass="panel l--pad-all-half l--push-v-half" id="versionStats">
           <i class="i i--version delta l--push-right-quarter"></i>
           #{msgs['jsf.Versions']}
-          <s:fragment rendered="#{not adminStatsAction.documentReady}">
+          <ui:fragment rendered="#{not adminStatsAction.documentReady}">
             <zanata:loader layout="inline"/>
-          </s:fragment>
+          </ui:fragment>
 
-          <s:fragment rendered="#{adminStatsAction.documentReady}">
+          <ui:fragment rendered="#{adminStatsAction.documentReady}">
             <span class="badge">#{adminStatsAction.totalProjectIterCount}</span>
             <div class="l--push-top-quarter">
               <span class="l--push-h-quarter txt--meta">
@@ -109,17 +109,17 @@
                 #{msgs['jsf.Deleted']} <span class="badge--danger">#{adminStatsAction.totalObsoleteProjectIterCount}</span>
               </span>
             </div>
-          </s:fragment>
+          </ui:fragment>
         </s:div>
 
         <s:div styleClass="panel l--pad-all-half l--push-v-half" id="documentStats">
           <i class="i i--document delta l--push-right-quarter"></i>
           #{msgs['jsf.TotalDocuments']}
-          <s:fragment rendered="#{not adminStatsAction.documentReady}">
+          <ui:fragment rendered="#{not adminStatsAction.documentReady}">
             <zanata:loader layout="inline"/>
-          </s:fragment>
+          </ui:fragment>
 
-          <s:fragment rendered="#{adminStatsAction.documentReady}">
+          <ui:fragment rendered="#{adminStatsAction.documentReady}">
             <span class="badge">#{adminStatsAction.totalDocuments}</span>
             <div class="l--push-top-quarter">
               <span class="l--push-h-quarter txt--meta">
@@ -130,18 +130,18 @@
                 #{msgs['jsf.Deleted']} <span class="badge--danger">#{adminStatsAction.totalObsoleteDocuments}</span>
               </span>
             </div>
-          </s:fragment>
+          </ui:fragment>
         </s:div>
 
         <s:div styleClass="panel l--pad-all-half l--push-v-half" id="textFlowStats">
           <i class="i i--translate delta l--push-right-quarter"></i>
           #{msgs['jsf.TotalTextFlows']}
 
-          <s:fragment rendered="#{not adminStatsAction.documentReady}">
+          <ui:fragment rendered="#{not adminStatsAction.documentReady}">
             <zanata:loader layout="inline"/>
-          </s:fragment>
+          </ui:fragment>
 
-          <s:fragment rendered="#{adminStatsAction.documentReady}">
+          <ui:fragment rendered="#{adminStatsAction.documentReady}">
             <span class="badge">#{adminStatsAction.totalTextFlows}</span>
             <div class="l--push-top-quarter">
               <span class="l--push-h-quarter txt--meta">
@@ -152,17 +152,17 @@
                 #{msgs['jsf.Deleted']} <span class="badge--danger">#{adminStatsAction.totalObsoleteTextFlows}</span>
               </span>
             </div>
-          </s:fragment>
+          </ui:fragment>
         </s:div>
 
         <s:div styleClass="panel l--pad-all-half l--push-v-half" id="translationStats">
           <i class="i i--translate delta l--push-right-quarter"></i>
           #{msgs['jsf.TotalTextFlowTargets']}
-          <s:fragment rendered="#{not adminStatsAction.documentReady}">
+          <ui:fragment rendered="#{not adminStatsAction.documentReady}">
             <zanata:loader layout="inline"/>
-          </s:fragment>
+          </ui:fragment>
 
-          <s:fragment rendered="#{adminStatsAction.documentReady}">
+          <ui:fragment rendered="#{adminStatsAction.documentReady}">
             <span class="badge">#{adminStatsAction.totalTextFlowTargets}</span>
             <div class="l--push-top-quarter">
               <span class="l--push-h-quarter txt--meta">
@@ -187,7 +187,7 @@
                 #{msgs['jsf.Untranslated']} <span class="badge">#{adminStatsAction.totalUntranslatedTextFlowTargets}</span>
               </div>
             </div>
-          </s:fragment>
+          </ui:fragment>
         </s:div>
       </div>
     </div>

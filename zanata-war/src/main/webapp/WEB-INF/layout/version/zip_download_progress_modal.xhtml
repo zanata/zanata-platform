@@ -3,6 +3,7 @@
   xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
   class="modal" id="zipDownloadProgressDialog" tabindex="-1" role="dialog"
   aria-labelledby="myModalLabel" aria-hidden="true">
 
@@ -47,7 +48,7 @@
             id="downloadDialogMsg"></div>
 
           <s:div styleClass="l--pad-top-half form__item" id="download-progress">
-            <s:fragment
+            <ui:fragment
               rendered="#{projectIterationZipFileAction.zipFilePrepHandle ne null and not projectIterationZipFileAction.zipFilePrepHandle.done}">
               <a4j:poll render="download-progress" interval="500"
                 enabled="#{projectIterationZipFileAction.zipFilePrepHandle ne null and not projectIterationZipFileAction.zipFilePrepHandle.done}"/>
@@ -72,9 +73,9 @@
                   </div>
                 </li>
               </ul>
-            </s:fragment>
+            </ui:fragment>
 
-            <s:fragment
+            <ui:fragment
               rendered="#{projectIterationZipFileAction.zipFilePrepHandle.done}">
               <script type="text/javascript">
                 window.location =
@@ -82,7 +83,7 @@
                 enableDownload(true);
                 zanata.modal.hide('#zipDownloadProgressDialog');
               </script>
-            </s:fragment>
+            </ui:fragment>
           </s:div>
         </div>
 

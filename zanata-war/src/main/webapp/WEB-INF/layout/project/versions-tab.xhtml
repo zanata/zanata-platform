@@ -45,7 +45,7 @@
       onbegin="clearHTML('#{rich:clientId('versions_form')}')"
       status="versionTab-versionsLoader"/>
 
-    <s:fragment
+    <ui:fragment
       rendered="#{identity.hasPermission(projectHome.instance, 'update')}">
       <div
         class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown"
@@ -65,7 +65,7 @@
           </li>
         </ul>
       </div>
-    </s:fragment>
+    </ui:fragment>
   </div>
   <h2 class="panel__heading">#{msgs['jsf.Versions']}</h2>
 </div>
@@ -89,7 +89,7 @@
   <s:div styleClass="l--pad-all-half"
     rendered="#{empty projectHomeAction.projectVersions}">
     <p class="txt--meta">#{msgs['jsf.NoVersions']}</p>
-    <s:fragment
+    <ui:fragment
       rendered="#{identity.hasPermission(projectHome.instance, 'update')}">
       <p>
         <h:link styleClass="button--primary"
@@ -99,7 +99,7 @@
           <i class="i i--plus i__item__icon"></i>
         </h:link>
       </p>
-    </s:fragment>
+    </ui:fragment>
   </s:div>
 
   <s:div styleClass="l--pad-all-half"
@@ -107,7 +107,7 @@
     <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
   </s:div>
 
-  <s:fragment
+  <ui:fragment
     rendered="#{!projectHomeAction.versionFilter.currentPage.isEmpty()}">
     <ul class="list--stats">
       <ui:repeat
@@ -139,7 +139,7 @@
                     class="is-invisible">#{msgs['jsf.tooltip.TranslateOptions']}</span>
                 </a>
                 <ul class="dropdown__content js-dropdown__content">
-                  <s:fragment
+                  <ui:fragment
                     rendered="#{identity.hasPermission(projectHome.instance, 'update')}">
                     <li>
                       <h:link outcome="/project/add_iteration.xhtml"
@@ -152,7 +152,7 @@
                         <i class="i i--plus i__item__icon"></i>
                       </h:link>
                     </li>
-                  </s:fragment>
+                  </ui:fragment>
                   <ui:repeat
                     value="#{projectHomeAction.getUserJoinedLocales(version)}"
                     var="hLocale">
@@ -209,14 +209,14 @@
                         value="#{projectHomeAction.getCopyVersionCompletePercent(version.project.slug, version.slug)}"/>
                     </h:outputFormat>
                   </h:panelGroup>
-                  <s:fragment
+                  <ui:fragment
                     rendered="#{identity.hasPermission(projectHome.instance, 'update') and projectHomeAction.isVersionCopying(version.project.slug, version.slug)}">
                     <button class="button--danger txt--mini l--push-left-half"
                       title="#{msgs['jsf.copyVersion.cancel.message']}"
                       onclick="onCancelCopyVersion('#{version.project.slug}', '#{version.slug}');return false;">
                       #{msgs['jsf.copyVersion.stop']}
                     </button>
-                  </s:fragment>
+                  </ui:fragment>
                 </div>
 
                 <div class="list__item__stats">
@@ -227,7 +227,7 @@
                     </f:facet>
                   </a4j:status>
 
-                  <s:fragment
+                  <ui:fragment
                     rendered="#{projectHomeAction.pageRendered and not projectHomeAction.isVersionCopying(version.project.slug, version.slug)}">
                     <ui:param name="displayUnit"
                       value="#{projectHomeAction.getStatisticFigureForVersion(projectHomeAction.versionSortingList.selectedSortOption, version)}"/>
@@ -239,12 +239,12 @@
                             #{displayUnit.unit}
                           </span>
                         </span>
-                  </s:fragment>
+                  </ui:fragment>
 
-                  <s:fragment
+                  <ui:fragment
                     rendered="#{projectHomeAction.isVersionCopying(version.project.slug, version.slug)}">
                     <zanata:loader type="loader--small" layout="inline"/>
-                  </s:fragment>
+                  </ui:fragment>
                 </div>
               </div>
               <zanata:statistic
@@ -255,7 +255,7 @@
         </li>
       </ui:repeat>
     </ul>
-  </s:fragment>
+  </ui:fragment>
 </h:form>
 
 <zanata:list-filter listId="versions_form"

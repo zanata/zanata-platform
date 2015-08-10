@@ -69,14 +69,14 @@
         <h1 class="l--push-all-0">#{projectHome.instance.name}</h1>
 
         <p class="txt--understated">
-          <s:fragment
+          <ui:fragment
             rendered="#{not empty projectHome.instance.description}">
             #{projectHome.instance.description}
-          </s:fragment>
+          </ui:fragment>
         </p>
       </div>
 
-      <s:fragment
+      <ui:fragment
         rendered="#{not empty projectHome.instance.sourceCheckoutURL or not empty projectHome.instance.sourceViewURL}">
         <div class="d--top l--push-top-half l--pad-top-half">
           <h2 class="delta headding--secondary l--push-top-0">
@@ -85,7 +85,7 @@
           </h2>
 
           <ul class="list--no-bullets txt--meta l--push-top-quarter">
-            <s:fragment
+            <ui:fragment
               rendered="#{not empty projectHome.instance.sourceViewURL}">
               <li>
                 <span class="list__title">
@@ -96,8 +96,8 @@
                   class="i--small i--right i--external-link txt--neutral"></i>
                 </a>
               </li>
-            </s:fragment>
-            <s:fragment
+            </ui:fragment>
+            <ui:fragment
               rendered="#{not empty projectHome.instance.sourceCheckoutURL}">
               <li>
                 <div class="bx--table">
@@ -115,13 +115,13 @@
                   </div>
                 </div>
               </li>
-            </s:fragment>
+            </ui:fragment>
           </ul>
         </div>
-      </s:fragment>
+      </ui:fragment>
     </s:div>
 
-    <s:fragment rendered="#{identity.loggedIn}">
+    <ui:fragment rendered="#{identity.loggedIn}">
       <ui:param name="activities"
         value="#{projectHomeAction.getProjectLastActivity()}"/>
 
@@ -139,7 +139,7 @@
           </ui:repeat>
         </div>
       </s:div>
-    </s:fragment>
+    </ui:fragment>
 
 </div>
 <div class="g__item w--1-m w--5-8-l w--2-3">
@@ -181,7 +181,7 @@
               </span>
         </a>
       </li>
-      <s:fragment
+      <ui:fragment
         rendered="#{identity.hasPermission(projectHome.instance, 'update')}">
         <li class="tab__end">
           <div
@@ -215,7 +215,7 @@
             <i class="i i--settings"></i>
           </a>
         </li>
-      </s:fragment>
+      </ui:fragment>
     </ul>
 
     <ul class="tabs__content panels__container js-tabs-content l--push-top-1">
@@ -235,19 +235,19 @@
               rendered="#{not empty projectHome.instance.homeContent}"
               value="#{projectHome.aboutHtml}" escape="false" />
           </div>
-          <s:fragment rendered="#{empty projectHome.instance.homeContent}">
+          <ui:fragment rendered="#{empty projectHome.instance.homeContent}">
             #{msgs['jsf.project.NoHomeContent']}
-          </s:fragment>
+          </ui:fragment>
         </s:div>
       </li>
 
-      <s:fragment
+      <ui:fragment
         rendered="#{identity.hasPermission(projectHome.instance, 'update')}">
         <li id="settings">
           <ui:include
             src="/WEB-INF/layout/project/settings-tab.xhtml"/>
         </li>
-      </s:fragment>
+      </ui:fragment>
     </ul>
 
     </div>

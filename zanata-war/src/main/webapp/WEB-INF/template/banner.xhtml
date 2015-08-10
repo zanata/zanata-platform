@@ -4,6 +4,7 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:rich="http://richfaces.org/rich"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
   <script type="text/javascript">
@@ -80,7 +81,7 @@
             <i class="is-hidden--m-up l--float-right i--inline i--language"></i>
           </h:link>
         </li>
-        <s:fragment rendered="#{identity.loggedIn}">
+        <ui:fragment rendered="#{identity.loggedIn}">
           <li>
             <h:link id="glossary_link" outcome="/glossary/view.xhtml"
               >#{msgs['jsf.Glossary']}
@@ -88,7 +89,7 @@
                 class="is-hidden--m-up l--float-right i--inline i--glossary"></i>
             </h:link>
           </li>
-        </s:fragment>
+        </ui:fragment>
 
         <li>
           <a id="help_link" target="_blank" href="#{applicationConfigurationAction.helpUrl}">
@@ -100,7 +101,7 @@
     </div>
   </nav>
 
-  <s:fragment
+  <ui:fragment
     rendered="#{identity.loggedIn and authenticatedAccountHome.instance.enabled}">
     <nav class="header__user-nav js-dropdown">
       <a href="#nav-user" class="header__user-nav__toggle js-dropdown__toggle"
@@ -127,7 +128,7 @@
             class="l--float-right i--inline i--settings"></i>
           </a>
         </li>
-        <s:fragment rendered="#{identity.hasRole('admin')}">
+        <ui:fragment rendered="#{identity.hasRole('admin')}">
           <li>
             <h:link id="administration" outcome="/admin/home.xhtml"
               >
@@ -135,7 +136,7 @@
               class="l--float-right i--inline i--admin"></i>
             </h:link>
           </li>
-        </s:fragment>
+        </ui:fragment>
         <li>
           <a jsfc="s:link" id="right_menu_sign_out_link"
             view="/home.xhtml"
@@ -145,20 +146,20 @@
         </li>
       </ul>
     </nav>
-  </s:fragment>
+  </ui:fragment>
 
-  <s:fragment rendered="#{not identity.loggedIn}">
+  <ui:fragment rendered="#{not identity.loggedIn}">
     <s:div styleClass="header__login l--float-right">
       <h:link id="register_link_internal_auth" outcome="/account/register.xhtml"
         value="#{msgs['jsf.Signup']}"
          styleClass="is-hidden--s button"
         rendered="#{applicationConfiguration.internalAuth}"/>
 
-      <s:fragment
+      <ui:fragment
         rendered="#{applicationConfigurationAction.registrationLinkNeeded}">
         <a id="register_link" href="#{applicationConfiguration.registerPath}"
           class="is-hidden--s button">#{msgs['jsf.Signup']}</a>
-      </s:fragment>
+      </ui:fragment>
 
       <h:outputLink id="signin_link"
         value="#{request.contextPath}/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}"
@@ -182,6 +183,6 @@
         #{msgs['jsf.Login']}
       </h:outputLink>
     </s:div>
-  </s:fragment>
+  </ui:fragment>
 
 </header>

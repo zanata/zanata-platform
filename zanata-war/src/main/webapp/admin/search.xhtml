@@ -46,25 +46,25 @@
           </div>
 
           <div class="l--pad-all-half">
-            <s:fragment rendered="#{!reindexAction.inProgress}">
+            <ui:fragment rendered="#{!reindexAction.inProgress}">
               <p id="noOperationsRunning" class="txt--meta">
                 <h:outputText escape="false"
                   value="#{msgs['jsf.ManageSearch.NoOperationsRunning']}" />
               </p>
-            </s:fragment>
-            <s:fragment rendered="#{reindexAction.reindexedSinceServerRestart and !reindexAction.inProgress and !reindexAction.canceled and !reindexAction.error}">
+            </ui:fragment>
+            <ui:fragment rendered="#{reindexAction.reindexedSinceServerRestart and !reindexAction.inProgress and !reindexAction.canceled and !reindexAction.error}">
               <p id="completed" class="txt--meta">
                 <h:outputText
                   value="#{msgs.format('jsf.ManageSearch.Completed', reindexAction.elapsedTime)}" />
               </p>
-            </s:fragment>
-            <s:fragment rendered="#{reindexAction.canceled}">
+            </ui:fragment>
+            <ui:fragment rendered="#{reindexAction.canceled}">
               <p id="aborted" class="txt--meta">
                 <h:outputText escape="false"
                   value="#{msgs.format('jsf.ManageSearch.Aborted', reindexAction.elapsedTime)}" />
               </p>
-            </s:fragment>
-            <s:fragment rendered="#{reindexAction.error}">
+            </ui:fragment>
+            <ui:fragment rendered="#{reindexAction.error}">
               <p class="txt--meta txt--danger">
                 <h:outputText escape="false"
                   value="#{msgs['jsf.manageSearch.ErrorMessage']}" />
@@ -72,12 +72,12 @@
                 <h:outputText escape="false"
                   value="#{msgs['jsf.manageSearch.PleaseReindex']}" />
               </p>
-            </s:fragment>
+            </ui:fragment>
 
             <a4j:outputPanel layout="block">
               <a4j:poll render="progress,actions" enabled="#{reindexAction.inProgress}"/>
 
-              <s:fragment rendered="#{reindexAction.inProgress}">
+              <ui:fragment rendered="#{reindexAction.inProgress}">
                 <ul class="list--panel bg--higher">
                   <li>
                     <div class="list__item__content">
@@ -105,7 +105,7 @@
                     </div>
                   </li>
                 </ul>
-              </s:fragment>
+              </ui:fragment>
             </a4j:outputPanel>
           </div>
         </s:div>
@@ -220,7 +220,7 @@
                   </tbody>
                 </table>
 
-                <s:fragment rendered="#{not reindexAction.isAnyOptionSelected() or (not reindexAction.canceled and reindexAction.inProgress)}">
+                <ui:fragment rendered="#{not reindexAction.isAnyOptionSelected() or (not reindexAction.canceled and reindexAction.inProgress)}">
                   <button id="clearSelection" onclick="return false;"
                     class="button--link l--push-right-half" disabled="disabled">
                     #{msgs['jsf.ManageSearch.SelectNone']}
@@ -230,9 +230,9 @@
                     class="button button--primary" disabled="disabled">
                     #{msgs['jsf.ManageSearch.PerformSelectedActions']}
                   </button>
-                </s:fragment>
+                </ui:fragment>
 
-                <s:fragment rendered="#{reindexAction.isAnyOptionSelected() and (reindexAction.canceled or not reindexAction.inProgress)}">
+                <ui:fragment rendered="#{reindexAction.isAnyOptionSelected() and (reindexAction.canceled or not reindexAction.inProgress)}">
                   <button id="clearSelection" onclick="clearAllSelection();return false;"
                     class="button--link l--push-right-half">
                     #{msgs['jsf.ManageSearch.SelectNone']}
@@ -242,7 +242,7 @@
                     class="button button--primary ">
                     #{msgs['jsf.ManageSearch.PerformSelectedActions']}
                   </button>
-                </s:fragment>
+                </ui:fragment>
 
               </s:div>
         </h:form>

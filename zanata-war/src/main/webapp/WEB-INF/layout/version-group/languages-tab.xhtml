@@ -18,7 +18,7 @@
         onbegin="clearHTML('#{rich:clientId('languages-language_form')}')"
         status="languageTab-languagesLoader"/>
 
-      <s:fragment
+      <ui:fragment
         rendered="#{identity.hasPermission(versionGroupHome.instance, 'update')}">
         <div
           class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown">
@@ -37,7 +37,7 @@
             </li>
           </ul>
         </div>
-      </s:fragment>
+      </ui:fragment>
     </div>
 
     <h2 class="panel__heading">#{msgs['jsf.Languages']}</h2>
@@ -63,7 +63,7 @@
     <s:div styleClass="l--pad-all-half"
       rendered="#{empty versionGroupHomeAction.activeLocales}">
       <p class="txt--meta">#{msgs['jsf.NoActiveLanguages']}</p>
-      <s:fragment
+      <ui:fragment
         rendered="#{identity.hasPermission(versionGroupHome.instance, 'update')}">
         <p>
           <a class="button--primary" id="addLanguagesButton"
@@ -72,7 +72,7 @@
             #{msgs['jsf.AddLanguages']}
           </a>
         </p>
-      </s:fragment>
+      </ui:fragment>
     </s:div>
 
     <s:div styleClass="l--pad-all-half"
@@ -80,7 +80,7 @@
       <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
     </s:div>
 
-    <s:fragment
+    <ui:fragment
       rendered="#{not empty versionGroupHomeAction.languageTabLanguageFilter.currentPage}">
       <ul class="list--stats" id="languages-language_list">
         <ui:repeat
@@ -111,7 +111,7 @@
                     </f:facet>
                   </a4j:status>
 
-                  <s:fragment rendered="#{versionGroupHomeAction.pageRendered}">
+                  <ui:fragment rendered="#{versionGroupHomeAction.pageRendered}">
                     <ui:param name="displayUnit"
                       value="#{versionGroupHomeAction.getStatisticFigureForLocale(versionGroupHomeAction.languageSortingList.selectedSortOption, hLocale.localeId)}"/>
                      <span class="#{displayUnit.cssClass}"
@@ -119,7 +119,7 @@
                         <span class="stats__figure">#{displayUnit.figure}</span>
                         <span class="stats__unit">#{displayUnit.unit}</span>
                      </span>
-                  </s:fragment>
+                  </ui:fragment>
                 </div>
               </div>
 
@@ -130,7 +130,7 @@
           </li>
         </ui:repeat>
       </ul>
-    </s:fragment>
+    </ui:fragment>
   </h:form>
 
   <zanata:list-filter status="languageTab-languagesLoader"
@@ -191,11 +191,11 @@
       <p class="txt--meta">#{msgs['jsf.SelectALanguageFromList']}</p>
     </s:div>
 
-    <s:fragment rendered="#{versionGroupHomeAction.selectedLocale != null}">
+    <ui:fragment rendered="#{versionGroupHomeAction.selectedLocale != null}">
       <s:div styleClass="l--pad-all-half"
         rendered="#{empty versionGroupHomeAction.projectIterations}">
         <p class="txt--meta">#{msgs['jsf.NoProjectsInGroup']}</p>
-        <s:fragment
+        <ui:fragment
           rendered="#{identity.hasPermission(versionGroupHome.instance, 'update')}">
           <p>
             <a class="button--primary"
@@ -204,7 +204,7 @@
               #{msgs['jsf.AddProjectVersions']}
             </a>
           </p>
-        </s:fragment>
+        </ui:fragment>
       </s:div>
 
       <s:div styleClass="l--pad-all-half"
@@ -212,7 +212,7 @@
         <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
       </s:div>
 
-      <s:fragment
+      <ui:fragment
         rendered="#{not empty versionGroupHomeAction.languageTabVersionFilter.currentPage}">
         <ul class="list--stats">
           <ui:repeat
@@ -228,11 +228,11 @@
                         <i
                           class="txt--neutral i i--version"></i> <zanata:version-label version="#{version}"/>
 
-                        <s:fragment
+                        <ui:fragment
                           rendered="#{!versionGroupHomeAction.isLocaleActivatedInVersion(version, versionGroupHomeAction.selectedLocale.localeId)}">
                           <span
                             class="label--danger l--push-left-quarter">#{msgs['jsf.Missing']}</span>
-                        </s:fragment>
+                        </ui:fragment>
                       </span>
                   </div>
                   <div class="list__item__stats">
@@ -254,8 +254,8 @@
             </li>
           </ui:repeat>
         </ul>
-      </s:fragment>
-    </s:fragment>
+      </ui:fragment>
+    </ui:fragment>
   </h:form>
 
   <zanata:list-filter status="languageTab-projectsLoader"

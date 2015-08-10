@@ -20,12 +20,12 @@
           <p class="txt--meta l--push-all-0">#{msgs['jsf.Signup']}</p>
         </h:link>
 
-        <s:fragment
+        <ui:fragment
           rendered="#{not applicationConfiguration.internalAuth and not empty applicationConfiguration.registerPath}">
           <a href="#{applicationConfiguration.registerPath}">
             <p class="txt--meta l--push-all-0">#{msgs['jsf.Signup']}</p>
           </a>
-        </s:fragment>
+        </ui:fragment>
 
         <h1 class="l--push-all-0">#{msgs['jsf.NewUser.Label']}</h1>
 
@@ -76,12 +76,12 @@
             </s:decorate>
           </div>
 
-          <s:fragment rendered="#{not empty applicationConfiguration.termsOfUseUrl}">
+          <ui:fragment rendered="#{not empty applicationConfiguration.termsOfUseUrl}">
             <p class="txt--meta l--push-top-half">
               <h:outputText value="#{msgs.format('jsf.register.agreeToTOS',
                 applicationConfiguration.termsOfUseUrl)}" escape="false"/>
             </p>
-          </s:fragment>
+          </ui:fragment>
 
           <div class="l--push-top-1">
             <h:commandButton id="user-create-new"

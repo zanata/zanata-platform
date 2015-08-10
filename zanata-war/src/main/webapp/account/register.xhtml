@@ -32,10 +32,10 @@
             <s:div
               styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--1-2 w--1-m' : ''}"
               rendered="#{applicationConfiguration.internalAuth or applicationConfiguration.jaasAuth}">
-              <s:fragment rendered="#{applicationConfiguration.multiAuth}">
+              <ui:fragment rendered="#{applicationConfiguration.multiAuth}">
                 <h2
                   class="gamma heading--sub">#{msgs['jsf.register.WithZanata']}</h2>
-              </s:fragment>
+              </ui:fragment>
 
               <h:form id="loginForm"
                 styleClass="l--push-top-half l--pad-all-1 bg--pop-higher js-form-password-parent">
@@ -85,12 +85,12 @@
                 <h:inputText id="human" styleClass="is-hidden"
                   value="#{register.humanField}"/>
 
-                <s:fragment rendered="#{not empty applicationConfiguration.termsOfUseUrl}">
+                <ui:fragment rendered="#{not empty applicationConfiguration.termsOfUseUrl}">
                   <p class="txt--meta l--push-top-half">
                     <h:outputText value="#{msgs.format('jsf.register.agreeToTOS',
                       applicationConfiguration.termsOfUseUrl)}" escape="false"/>
                   </p>
-                </s:fragment>
+                </ui:fragment>
 
                 <div class="l--push-top-1">
                   <h:commandButton value="Sign Up" action="#{register.register}"
@@ -109,10 +109,10 @@
               styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--1-2 w--1-m' : ''}"
               rendered="#{applicationConfiguration.openIdAuth}">
               <h:form>
-                <s:fragment rendered="#{applicationConfiguration.multiAuth}">
+                <ui:fragment rendered="#{applicationConfiguration.multiAuth}">
                   <h2
                     class="gamma heading--sub">#{msgs['jsf.register.WithOther.label']}</h2>
-                </s:fragment>
+                </ui:fragment>
                 <ul class="list--no-bullets">
                   <li class="l--push-top-half">
                     <h:commandLink action="#{loginAction.openIdLogin('Fedora')}"

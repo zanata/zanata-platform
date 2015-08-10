@@ -45,20 +45,20 @@
           <div class="button--group">
             <ui:repeat value="#{copyTransOptionsModel.ruleActions}"
               var="ruleAction" varStatus="status">
-              <s:fragment
+              <ui:fragment
                 rendered="#{copyTransOptionsModel.contextMismatchAction ne ruleAction.action}">
                 <input id="#{status.index}:contextMismatch"
                   name="contextMismatch"
                   value="#{ruleAction.action}" type="radio"
                   class="form__item__input js-radio"/>
-              </s:fragment>
-              <s:fragment
+              </ui:fragment>
+              <ui:fragment
                 rendered="#{copyTransOptionsModel.contextMismatchAction eq ruleAction.action}">
                 <input id="#{status.index}:contextMismatch"
                   name="contextMismatch"
                   value="#{ruleAction.action}" type="radio"
                   class="form__item__input js-radio" checked="true"/>
-              </s:fragment>
+              </ui:fragment>
               <label for="#{status.index}:contextMismatch"
                 class="button button--small #{ruleAction.cssClass}">
                 #{ruleAction.displayText}
@@ -83,20 +83,20 @@
           <div class="button--group">
             <ui:repeat value="#{copyTransOptionsModel.ruleActions}"
               var="ruleAction" varStatus="status">
-              <s:fragment
+              <ui:fragment
                 rendered="#{copyTransOptionsModel.projectMismatchAction ne ruleAction.action}">
                 <input id="#{status.index}:projectMismatch"
                   name="projectMismatch"
                   value="#{ruleAction.action}" type="radio"
                   class="form__item__input js-radio"/>
-              </s:fragment>
-              <s:fragment
+              </ui:fragment>
+              <ui:fragment
                 rendered="#{copyTransOptionsModel.projectMismatchAction eq ruleAction.action}">
                 <input id="#{status.index}:projectMismatch"
                   name="projectMismatch"
                   value="#{ruleAction.action}" type="radio"
                   class="form__item__input js-radio" checked="true"/>
-              </s:fragment>
+              </ui:fragment>
               <label for="#{status.index}:projectMismatch"
                 class="button button--small #{ruleAction.cssClass}">
                 #{ruleAction.displayText}
@@ -123,20 +123,20 @@
           <div class="button--group">
             <ui:repeat value="#{copyTransOptionsModel.ruleActions}"
               var="ruleAction" varStatus="status">
-              <s:fragment
+              <ui:fragment
                 rendered="#{copyTransOptionsModel.docIdMismatchAction ne ruleAction.action}">
                 <input id="#{status.index}:docIdMismatch"
                   name="docIdMismatch"
                   value="#{ruleAction.action}" type="radio"
                   class="form__item__input js-radio"/>
-              </s:fragment>
-              <s:fragment
+              </ui:fragment>
+              <ui:fragment
                 rendered="#{copyTransOptionsModel.docIdMismatchAction eq ruleAction.action}">
                 <input id="#{status.index}:docIdMismatch"
                   name="docIdMismatch"
                   value="#{ruleAction.action}" type="radio"
                   class="form__item__input js-radio" checked="true"/>
-              </s:fragment>
+              </ui:fragment>
               <label for="#{status.index}:docIdMismatch"
                 class="button button--small #{ruleAction.cssClass}">
                 #{ruleAction.displayText}

@@ -18,12 +18,12 @@
                 target="_blank">#{msgs['jsf.Blog']}</a></li>
               <li><a href="#{applicationConfigurationAction.helpUrl}"
                 target="_blank">#{msgs['jsf.Help']}</a></li>
-              <s:fragment rendered="#{identity.loggedIn}">
+              <ui:fragment rendered="#{identity.loggedIn}">
                 <ui:include src="../layout/admin/contact_admin_modal.xhtml"/>
                 <li><a href="#"
                     data-toggle="modal" data-target="#contactAdminDialog">
                     #{msgs['jsf.ContactAdmin']}</a></li>
-              </s:fragment>
+              </ui:fragment>
               <li><a href="http://zanata.org/issues"
                 target="_blank">#{msgs['jsf.ReportAProblem']}</a>
               </li>

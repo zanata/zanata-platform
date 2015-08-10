@@ -17,7 +17,7 @@
   <div
     class="#{cc.attrs.type eq 'large' ? 'progress-bar--large' : 'progress-bar'}">
 
-    <s:fragment rendered="#{cc.attrs.value != null}">
+    <ui:fragment rendered="#{cc.attrs.value != null}">
       <ui:param name="translated" value="#{cc.attrs.value.translated}"/>
       <ui:param name="fuzzy" value="#{cc.attrs.value.needReview}"/>
       <ui:param name="rejected" value="#{cc.attrs.value.rejected}"/>
@@ -27,7 +27,7 @@
         value="#{cc.attrs.value.remainingHours}"/>
       <ui:param name="total" value="#{cc.attrs.value.total}"/>
 
-      <s:fragment rendered="#{total gt 0}">
+      <ui:fragment rendered="#{total gt 0}">
         <ui:param name="approved_percentage"
           value="#{statisticBar.formatPercentage(cc.attrs.value.percentApproved)}"/>
         <ui:param name="translated_percentage"
@@ -65,22 +65,22 @@
           <span
             class="is-invisible">#{msgs['jsf.stats.Untranslated']}</span>
         </span>
-      </s:fragment>
+      </ui:fragment>
 
-      <s:fragment rendered="#{total le 0}">
+      <ui:fragment rendered="#{total le 0}">
         <span class="progress-bar__item"
           title="#{msgs['jsf.NoContent']}" style="width: 100%;">
           <span class="is-invisible">#{msgs['jsf.NoContent']}</span>
         </span>
-      </s:fragment>
-    </s:fragment>
+      </ui:fragment>
+    </ui:fragment>
 
-    <s:fragment rendered="#{cc.attrs.value == null}">
+    <ui:fragment rendered="#{cc.attrs.value == null}">
       <span class="progress-bar__item"
         title="#{msgs['jsf.NoContent']}" style="width: 100%;">
           <span class="is-invisible">#{msgs['jsf.NoContent']}</span>
         </span>
-    </s:fragment>
+    </ui:fragment>
   </div>
 
 

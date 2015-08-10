@@ -87,9 +87,9 @@
                             </span>
                           </h:panelGroup>
 
-                          <s:fragment rendered="#{languagesAction.isUserTeamMember(language)}">
+                          <ui:fragment rendered="#{languagesAction.isUserTeamMember(language)}">
                             <i class="i i--translate txt--neutral" title="#{msgs['jsf.language.member.joined']}"></i>
-                          </s:fragment>
+                          </ui:fragment>
                         </h3>
                         <span
                           class="list__item__meta">#{language.localeId.id} [#{language.retrieveNativeName()}]</span>
@@ -116,9 +116,9 @@
             actionBean="#{languagesAction}"/>
         </div>
 
-        <s:fragment rendered="#{identity.hasRole('admin')}">
+        <ui:fragment rendered="#{identity.hasRole('admin')}">
           <ui:include src="../WEB-INF/layout/language/new_language_modal.xhtml"/>
-        </s:fragment>
+        </ui:fragment>
       </div>
     </div>
 

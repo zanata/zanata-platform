@@ -40,56 +40,56 @@
     </li>
     <ui:param name="docName"
       value="#{activityEntry.getDocumentName(cc.attrs.value)}"/>
-    <s:fragment rendered="#{docName != null and !docName.isEmpty()}">
+    <ui:fragment rendered="#{docName != null and !docName.isEmpty()}">
       <li class="#{cc.attrs.hideInfo ? 'reveal__target': ''}">
         <i aria-hidden="true" class="i i--document txt--neutral"
           title="#{msgs['jsf.Document']}"></i>
         <span class="is-invisible">#{msgs['jsf.Document']}</span>
-        <s:fragment rendered="#{not isVersionDeleted}">
+        <ui:fragment rendered="#{not isVersionDeleted}">
           <a
             href="#{activityEntry.getDocumentUrl(cc.attrs.value)}">#{docName}</a>
-        </s:fragment>
-        <s:fragment rendered="#{isVersionDeleted}">
+        </ui:fragment>
+        <ui:fragment rendered="#{isVersionDeleted}">
           <span class="txt--neutral">#{docName}</span>
-        </s:fragment>
+        </ui:fragment>
       </li>
-    </s:fragment>
+    </ui:fragment>
     <ui:param name="languageName"
       value="#{activityEntry.getLanguageName(cc.attrs.value)}"/>
-    <s:fragment
+    <ui:fragment
       rendered="#{languageName != null and !languageName.isEmpty()}">
       <li class="#{cc.attrs.hideInfo ? 'reveal__target': ''}">
         <i aria-hidden="true" class="i i--language txt--neutral"
           title="#{msgs['jsf.Language']}"></i>
         <span class="is-invisible">#{msgs['jsf.Language']}</span>
-        <s:fragment rendered="#{not isVersionDeleted}">
+        <ui:fragment rendered="#{not isVersionDeleted}">
           <a
             href="#{activityEntry.getDocumentListUrl(cc.attrs.value)}">#{languageName}</a>
-        </s:fragment>
-        <s:fragment rendered="#{isVersionDeleted}">
+        </ui:fragment>
+        <ui:fragment rendered="#{isVersionDeleted}">
           <span class="txt--neutral">#{languageName}</span>
-        </s:fragment>
+        </ui:fragment>
       </li>
-    </s:fragment>
+    </ui:fragment>
     <ui:param name="versionName"
       value="#{activityEntry.getVersionName(cc.attrs.value)}"/>
-    <s:fragment
+    <ui:fragment
       rendered="#{versionName != null and !versionName.isEmpty()}">
       <li class="#{cc.attrs.hideInfo ? 'reveal__target': ''}">
         <i aria-hidden="true" class="i i--version txt--neutral"
           title="#{msgs['jsf.Version']}">
           <span class="is-invisible">#{msgs['jsf.Version']}</span>
         </i>
-        <s:fragment rendered="#{not isVersionDeleted}">
+        <ui:fragment rendered="#{not isVersionDeleted}">
           <a href="#{activityEntry.getVersionUrl(cc.attrs.value)}">
             <zanata:version-label version="#{activityEntry.getVersion(cc.attrs.value)}"/>
           </a>
-        </s:fragment>
-        <s:fragment rendered="#{isVersionDeleted}">
+        </ui:fragment>
+        <ui:fragment rendered="#{isVersionDeleted}">
           <strong><zanata:version-label version="#{activityEntry.getVersion(cc.attrs.value)}"/></strong>
-        </s:fragment>
+        </ui:fragment>
       </li>
-    </s:fragment>
+    </ui:fragment>
   </ul>
 </composite:implementation>
 </html>

@@ -64,7 +64,7 @@
                         <span class="is-invisible">Options</span>
                       </a>
                       <ul class="dropdown__content js-dropdown__content">
-                        <s:fragment
+                        <ui:fragment
                           rendered="#{identity.hasPermission('seam.role', 'delete') and accountRoleDAO.findByName(role).roleType.toString() ne 'AUTO'}">
                           <li>
                             <h:commandLink
@@ -74,7 +74,7 @@
                               <i class="i i--remove i__item__icon"></i>
                             </h:commandLink>
                           </li>
-                        </s:fragment>
+                        </ui:fragment>
                       </ul>
                     </div>
                   </div>

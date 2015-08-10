@@ -9,12 +9,12 @@
   <ui:define name="page_title">#{msgs['jsf.Error']}</ui:define>
   <ui:param name="showGlobalMessages" value="false"/>
   <ui:define name="center_content">
-    <s:fragment
+    <ui:fragment
       rendered="#{empty org.jboss.seam.international.statusMessages.currentGlobalMessages}">
       <h2>#{msgs['jsf.NoErrors']}</h2>
-    </s:fragment>
+    </ui:fragment>
 
-    <s:fragment
+    <ui:fragment
       rendered="#{not empty org.jboss.seam.international.statusMessages.currentGlobalMessages}">
       <ul class="list--no-bullets">
         <li>
@@ -42,6 +42,6 @@
           </div>
         </li>
       </ul>
-    </s:fragment>
+    </ui:fragment>
   </ui:define>
 </ui:composition>

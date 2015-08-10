@@ -32,10 +32,10 @@
 
   <ui:define name="center_content">
     <s:decorate id="main_content">
-      <s:fragment rendered="#{projectAction.getEmpty()}">
+      <ui:fragment rendered="#{projectAction.getEmpty()}">
         <h:outputText value="#{msgs['jsf.NoProjectExists']}"/>
-      </s:fragment>
-      <s:fragment rendered="#{!projectAction.getEmpty()}">
+      </ui:fragment>
+      <ui:fragment rendered="#{!projectAction.getEmpty()}">
         <h:form id="form">
 
           <div style="text-align: center">
@@ -167,7 +167,7 @@
             </rich:dataScroller>
           </div>
         </h:form>
-      </s:fragment>
+      </ui:fragment>
     </s:decorate>
   </ui:define>
 

@@ -1,4 +1,4 @@
-<s:fragment
+<ui:fragment
   xmlns="http://www.w3.org/1999/xhtml"
   xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:f="http://java.sun.com/jsf/core"
@@ -83,18 +83,18 @@
       <li>
         <div class="form__radio js-form__radio"
           onclick="onProjectTypeChanged(this)">
-          <s:fragment
+          <ui:fragment
             rendered="#{projectHome.instance.defaultProjectType.name() eq projectType.name()}">
             <input type="radio" name="project-type"
               class="form__radio__input js-form__radio__input"
               id="project-type-#{projectType.name()}" checked="true"/>
-          </s:fragment>
-          <s:fragment
+          </ui:fragment>
+          <ui:fragment
             rendered="#{projectHome.instance.defaultProjectType.name() ne projectType.name()}">
             <input type="radio" name="project-type"
               class="form__radio__input js-form__radio__input"
               id="project-type-#{projectType.name()}"/>
-          </s:fragment>
+          </ui:fragment>
           <label for="project-type-#{projectType.name()}"
             class="form__radio__label">#{projectType.name()} <span
             class="txt--meta">#{msgs['jsf.projectType.detail.'.concat(projectType)]}</span>
@@ -103,7 +103,7 @@
       </li>
     </ui:repeat>
 
-    <s:fragment
+    <ui:fragment
       rendered="#{projectHome.managed and projectHome.instance.defaultProjectType eq null}">
       <li>
         <div class="form__radio js-form__radio"
@@ -118,6 +118,6 @@
           </label>
         </div>
       </li>
-    </s:fragment>
+    </ui:fragment>
   </ul>
-</s:fragment>
+</ui:fragment>

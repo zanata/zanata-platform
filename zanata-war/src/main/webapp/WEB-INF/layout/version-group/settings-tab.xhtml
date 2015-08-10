@@ -64,7 +64,7 @@
         </div>
         <hr/>
         <h:panelGroup id="status">
-          <s:fragment
+          <ui:fragment
             rendered="#{versionGroupHome.instance.status == 'ACTIVE'}">
             <p>
               <a4j:commandLink styleClass="button--danger"
@@ -74,9 +74,9 @@
             </p>
 
             <p class="txt--meta">#{msgs['jsf.ArchiveGroupMessage']}</p>
-          </s:fragment>
+          </ui:fragment>
 
-          <s:fragment
+          <ui:fragment
             rendered="#{versionGroupHome.instance.status != 'ACTIVE'}">
             <p>
               <a4j:commandLink styleClass="button--success"
@@ -90,7 +90,7 @@
               <i
                 class="i--left i--archive"></i> #{msgs['jsf.ActivateGroupMessage']}
             </p>
-          </s:fragment>
+          </ui:fragment>
         </h:panelGroup>
       </div>
     </h:form>
@@ -158,9 +158,9 @@
               <f:param name="projectSlug" value="#{version.project.slug}"/>
               <f:param name="iterationSlug" value="#{version.slug}"/>
               #{version.project.name} <i class="i i--version"></i> <zanata:version-label version="#{version}"/>
-              <s:fragment rendered="#{version.status == 'OBSOLETE'}">
+              <ui:fragment rendered="#{version.status == 'OBSOLETE'}">
                 <span class="txt--danger l--push-left-half">#{msgs['jsf.group.ArchivedVersionNotIncluded']}</span>
-              </s:fragment>
+              </ui:fragment>
             </h:link>
             <a4j:commandLink
               styleClass="button--link l--float-right reveal__target"

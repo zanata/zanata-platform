@@ -116,7 +116,7 @@
       </div>
     </s:div>
     <s:div id="overall_statistic" styleClass="progress-bar__expander">
-      <s:fragment rendered="#{versionGroupHomeAction.pageRendered}">
+      <ui:fragment rendered="#{versionGroupHomeAction.pageRendered}">
         <p class="d--top l--pad-top-half txt--mini">
           #{msgs['jsf.TotalSourceContains']}
           <strong>#{versionGroupHomeAction.overallStatistic.total}
@@ -149,7 +149,7 @@
             value="#{versionGroupHomeAction.overallStatistic}"
             type="large"/>
         </div>
-      </s:fragment>
+      </ui:fragment>
 
       <a4j:status name="statistic-loader">
         <f:facet name="start">
@@ -203,7 +203,7 @@
           </a>
         </li>
 
-        <s:fragment
+        <ui:fragment
           rendered="#{versionGroupHomeAction.isUserProjectMaintainer()}">
           <li class="tab__end">
             <div
@@ -225,9 +225,9 @@
               </ul>
             </div>
           </li>
-        </s:fragment>
+        </ui:fragment>
 
-        <s:fragment
+        <ui:fragment
           rendered="#{identity.hasPermission(versionGroupHome.instance, 'update')}">
           <li class="tab__end">
             <a id="settings_tab"
@@ -239,7 +239,7 @@
               <i class="i i--settings"></i>
             </a>
           </li>
-        </s:fragment>
+        </ui:fragment>
       </ul>
 
       <ul class="tabs__content panels__container js-tabs-content l--push-top-1">
@@ -262,21 +262,21 @@
             PermissionToUpdate="#{identity.hasPermission(versionGroupHome.instance, 'update')}"/>
         </li>
 
-        <s:fragment
+        <ui:fragment
           rendered="#{identity.hasPermission(versionGroupHome.instance, 'update')}">
           <li id="settings">
             <ui:include
               src="/WEB-INF/layout/version-group/settings-tab.xhtml"/>
           </li>
-        </s:fragment>
+        </ui:fragment>
       </ul>
     </div>
   </div>
 </div>
-  <s:fragment
+  <ui:fragment
     rendered="#{versionGroupHomeAction.isUserProjectMaintainer()}">
     <ui:include src="/WEB-INF/layout/version-group/request_join_modal.xhtml"/>
-  </s:fragment>
+  </ui:fragment>
 
 </ui:define>
 </ui:composition>

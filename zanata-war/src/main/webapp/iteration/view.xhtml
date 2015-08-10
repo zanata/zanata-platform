@@ -201,14 +201,14 @@
 
   <s:div styleClass="progress-bar--large__expander l--pad-bottom-half"
     id="overall_statistic">
-    <s:fragment rendered="#{versionHomeAction.pageRendered}">
+    <ui:fragment rendered="#{versionHomeAction.pageRendered}">
       <p class="d--top l--pad-top-half txt--mini">
         #{msgs['jsf.TotalSourceContains']}
         <strong>#{versionHomeAction.overallStatistic.total} words</strong>
       </p>
       <ul class="g--tight g--fit">
         <ui:param name="showApproved" value="#{versionHomeAction.overallStatistic.percentApproved ne 0 || versionHome.instance.requireTranslationReview}"/>
-          <s:fragment rendered="#{showApproved}">
+          <ui:fragment rendered="#{showApproved}">
           <li class="g__item l--push-bottom-half">
               <span class="stats txt--state-highlight">
                 <span class="stats__figure">
@@ -218,7 +218,7 @@
                   class="stats__unit txt--lowercase"> #{msgs['jsf.stats.Approved']}</span>
               </span>
           </li>
-        </s:fragment>
+        </ui:fragment>
 
         <li class="g__item l--push-bottom-half">
               <span
@@ -244,7 +244,7 @@
       <zanata:statistic
         value="#{versionHomeAction.overallStatistic}"
         type="large"/>
-    </s:fragment>
+    </ui:fragment>
 
     <zanata:loader type="loader--large"
       rendered="#{!versionHomeAction.pageRendered}"/>
@@ -306,7 +306,7 @@
           </span>
         </a>
       </li>
-      <s:fragment rendered="#{not empty versionHomeAction.groups}">
+      <ui:fragment rendered="#{not empty versionHomeAction.groups}">
         <li>
           <a id="groups_tab"
             href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/groups"
@@ -320,13 +320,13 @@
             </span>
           </a>
         </li>
-      </s:fragment>
+      </ui:fragment>
       <li class="tab__end">
         <h:form>
           <s:div
             styleClass="dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown"
             id="version-more-actions">
-            <s:fragment
+            <ui:fragment
               rendered="#{identity.loggedIn}">
               <a class="dropdown__toggle js-dropdown__toggle"
                 title="#{msgs['jsf.tooltip.MoreActions']}" href="#">
@@ -334,8 +334,8 @@
               </a>
               <ul class="dropdown__content js-dropdown__content"
                 role="content" aria-labelledby="dropdownContent">
-                <s:fragment rendered="#{not versionHomeAction.isCopyActionsRunning()}">
-                  <s:fragment
+                <ui:fragment rendered="#{not versionHomeAction.isCopyActionsRunning()}">
+                  <ui:fragment
                     rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
                     <li>
                       <a href="javascript:void(0)" class="i__item--right"
@@ -354,8 +354,8 @@
                         <i class="i i--import i__item__icon"></i>
                       </a>
                     </li>
-                  </s:fragment>
-                  <s:fragment
+                  </ui:fragment>
+                  <ui:fragment
                     rendered="#{identity.hasPermission(versionHome.instance, 'insert')}">
                     <li>
                       <h:link outcome="/project/add_iteration.xhtml"
@@ -368,8 +368,8 @@
                         <i class="i i--plus i__item__icon"></i>
                       </h:link>
                     </li>
-                  </s:fragment>
-                </s:fragment>
+                  </ui:fragment>
+                </ui:fragment>
                 <li>
                   <h:commandLink title="#{msgs['jsf.GenerateProjectConfig']}"
                     styleClass="i__item--right"
@@ -392,11 +392,11 @@
                   </h:outputLink>
                 </li>
               </ul>
-            </s:fragment>
+            </ui:fragment>
           </s:div>
         </h:form>
       </li>
-      <s:fragment
+      <ui:fragment
         rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
         <li class="tab__end">
           <a id="settings_tab"
@@ -409,7 +409,7 @@
             <i class="i i--settings"></i>
           </a>
         </li>
-      </s:fragment>
+      </ui:fragment>
     </ul>
 
     <ul class="tabs__content panels__container js-tabs-content l--push-top-1">
@@ -423,29 +423,29 @@
           src="../WEB-INF/layout/version/documents-tab.xhtml"/>
       </li>
 
-      <s:fragment rendered="#{!versionHomeAction.groups.isEmpty()}">
+      <ui:fragment rendered="#{!versionHomeAction.groups.isEmpty()}">
         <li id="groups">
           <ui:include
             src="../WEB-INF/layout/version/groups-tab.xhtml"/>
         </li>
-      </s:fragment>
+      </ui:fragment>
 
-      <s:fragment
+      <ui:fragment
         rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
         <li id="settings">
           <ui:include
             src="../WEB-INF/layout/version/settings-tab.xhtml"/>
         </li>
-      </s:fragment>
+      </ui:fragment>
     </ul>
   </div>
 </div>
 </div>
 
-  <s:fragment
+  <ui:fragment
     rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
     <ui:include src="../WEB-INF/layout/version/merge_trans_modal.xhtml"/>
-  </s:fragment>
+  </ui:fragment>
 
 <rich:popupPanel id="uploadSourcePanel"
   moveable="#{true}"
@@ -476,7 +476,7 @@
     </h:selectOneMenu>
 
     <s:div id="source-documentType-selection">
-      <s:fragment rendered="#{versionHomeAction.needDocumentTypeSelection(selectedSourceDocName)}">
+      <ui:fragment rendered="#{versionHomeAction.needDocumentTypeSelection(selectedSourceDocName)}">
         <h:outputLabel styleClass="l--push-top-half">#{msgs['jsf.iteration.documentType.select']}</h:outputLabel>
         <h:selectOneMenu id="sourceDocumentTypes" onchange="bindSourceDocumentType(jQuery(this).val())"
           value="#{versionHomeAction.sourceFileUpload.documentType}">
@@ -487,7 +487,7 @@
             itemLabel="#{documentType.name()}"
             itemValue="#{documentType.name()}"/>
         </h:selectOneMenu>
-      </s:fragment>
+      </ui:fragment>
     </s:div>
 
     <rich:collapsiblePanel

@@ -13,7 +13,7 @@
 
 <composite:implementation>
   <ui:repeat value="#{cc.attrs.value}" var="message">
-    <s:fragment
+    <ui:fragment
       rendered="#{message.severity.toString().startsWith('INFO')}">
       <li
         class="message--highlight message--removable js-message-removable">
@@ -22,8 +22,8 @@
           <i class="i i--remove"></i>
         </a>
       </li>
-    </s:fragment>
-    <s:fragment
+    </ui:fragment>
+    <ui:fragment
       rendered="#{message.severity.toString().startsWith('WARN')}">
       <li
         class="message--warning message--removable js-message-removable">
@@ -32,8 +32,8 @@
           <i class="i i--remove"></i>
         </a>
       </li>
-    </s:fragment>
-    <s:fragment
+    </ui:fragment>
+    <ui:fragment
       rendered="#{message.severity.toString().startsWith('ERROR') or message.severity.toString().startsWith('FATAL')}">
       <li class="message--danger message--removable js-message-removable app-error">
         #{message.summary}
@@ -41,7 +41,7 @@
           <i class="i i--remove"></i>
         </a>
       </li>
-    </s:fragment>
+    </ui:fragment>
   </ui:repeat>
 </composite:implementation>
 </html>

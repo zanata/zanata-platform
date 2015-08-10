@@ -3,7 +3,7 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:s="http://jboss.org/schema/seam/taglib">
-  <s:fragment
+  <ui:fragment
     rendered="#{not empty applicationConfiguration.piwikUrl and not empty applicationConfiguration.piwikIdSite}">
     <!-- Piwik -->
     <script type="text/javascript">
@@ -50,7 +50,7 @@
     //]]>
     </script>
     <!-- End Piwik Code -->
-  </s:fragment>
+  </ui:fragment>
 
   <ui:remove>
   <!--                                                                         -->

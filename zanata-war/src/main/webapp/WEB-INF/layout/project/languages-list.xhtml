@@ -27,11 +27,11 @@
     </h:inputText>
   </div>
 
-  <s:fragment rendered="#{empty languages}">
+  <ui:fragment rendered="#{empty languages}">
     <div id="#{id}-no-languages" class="txt--meta">
       #{noLanguagesPlaceholder}
     </div>
-  </s:fragment>
+  </ui:fragment>
 
   <div class="#{ empty languages ? 'is-hidden' : ''}">
 

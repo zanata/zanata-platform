@@ -49,7 +49,7 @@
     <h:form id="maintainers-form" styleClass="l--push-bottom-1">
       <s:div styleClass="l--pad-all-half" rendered="#{cc.attrs.listSize lt 1}">
         <p class="txt--meta">#{msgs['jsf.NoMaintainers']}</p>
-        <s:fragment rendered="#{cc.attrs.PermissionToUpdate}">
+        <ui:fragment rendered="#{cc.attrs.PermissionToUpdate}">
           <p>
             <a class="button--primary" href="#{cc.attrs.settingsUrl}"
               onclick="changeBrowserUrl(this.href, true);return false;">
@@ -57,7 +57,7 @@
               <i class="i i--plus i__item__icon"></i>
             </a>
           </p>
-        </s:fragment>
+        </ui:fragment>
       </s:div>
 
       <s:div styleClass="l--pad-all-half"
@@ -65,7 +65,7 @@
         <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
       </s:div>
 
-      <s:fragment
+      <ui:fragment
         rendered="#{not empty cc.attrs.filterActionBean.currentPage}">
         <ul class="list--slat">
           <ui:repeat value="#{cc.attrs.filterActionBean.currentPage}"
@@ -81,7 +81,7 @@
             </li>
           </ui:repeat>
         </ul>
-      </s:fragment>
+      </ui:fragment>
     </h:form>
 
     <zanata:list-filter status="maintainerTab-maintainersLoader"

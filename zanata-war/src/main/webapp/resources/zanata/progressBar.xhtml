@@ -4,6 +4,7 @@
   xmlns:composite="http://java.sun.com/jsf/composite"
   xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:rich="http://richfaces.org/rich">
 <composite:interface>
   <composite:attribute name="id" type="java.lang.String"
@@ -74,26 +75,26 @@
           value="#{cc.attrs.actionBean.completedPercentage}"/>
       </s:div>
 
-      <s:fragment rendered="#{cc.attrs.type eq 'large'}">
+      <ui:fragment rendered="#{cc.attrs.type eq 'large'}">
         <s:div styleClass="progress-bar progress-bar--large">
           <span class="progress-bar__translated" style="width: 0%;"/>
           <span class="progress-bar__item" style="width: 100%;margin-left: 0%"/>
         </s:div>
-      </s:fragment>
+      </ui:fragment>
 
-      <s:fragment rendered="#{cc.attrs.type eq 'full'}">
+      <ui:fragment rendered="#{cc.attrs.type eq 'full'}">
         <s:div styleClass="progress-bar progress-bar--full">
           <span class="progress-bar__translated" style="width: 0%;"/>
           <span class="progress-bar__item" style="width: 100%;margin-left: 0%"/>
         </s:div>
-      </s:fragment>
+      </ui:fragment>
 
-      <s:fragment rendered="#{cc.attrs.type eq ''}">
+      <ui:fragment rendered="#{cc.attrs.type eq ''}">
         <s:div styleClass="progress-bar">
           <span class="progress-bar__translated" style="width: 0%;"/>
           <span class="progress-bar__item" style="width: 100%;margin-left: 0%"/>
         </s:div>
-      </s:fragment>
+      </ui:fragment>
 
     </s:div>
   </s:div>

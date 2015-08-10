@@ -19,7 +19,7 @@
       onbegin="clearHTML('#{rich:clientId('documents-document_form')}')"
       status="documentsTab-documentsLoader"/>
 
-    <s:fragment
+    <ui:fragment
       rendered="#{versionHomeAction.documentUploadAllowed or identity.hasPermission(versionHomeAction.version, 'update')}">
       <div
         class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown">
@@ -28,7 +28,7 @@
           class="i i--ellipsis"></i></a>
         <ul class="dropdown__content js-dropdown__content" role="content"
           aria-labelledby="dropdownContent">
-          <s:fragment rendered="#{versionHomeAction.documentUploadAllowed}">
+          <ui:fragment rendered="#{versionHomeAction.documentUploadAllowed}">
             <li>
               <zanata:multi-file-upload styleClass="i__item--right"
                 id="doc-tab-file-upload-component"
@@ -41,9 +41,9 @@
                 <i class="i i--import i__item__icon"></i>
               </zanata:multi-file-upload>
             </li>
-          </s:fragment>
+          </ui:fragment>
 
-          <s:fragment
+          <ui:fragment
             rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
             <li>
               <a href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/settings/documents"
@@ -52,10 +52,10 @@
                 class="i i--settings i__item__icon"></i>
               </a>
             </li>
-          </s:fragment>
+          </ui:fragment>
         </ul>
       </div>
-    </s:fragment>
+    </ui:fragment>
   </div>
   <h2 class="panel__heading">#{msgs['jsf.Documents']}</h2>
 </div>
@@ -78,7 +78,7 @@
     rendered="#{empty versionHomeAction.documents}">
     <p
       class="txt--meta">#{msgs['jsf.iteration.NoDocumentInVersion']}</p>
-    <s:fragment
+    <ui:fragment
       rendered="#{versionHomeAction.documentUploadAllowed}">
       <p>
         <a href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/settings/documents"
@@ -86,7 +86,7 @@
           #{msgs['jsf.iteration.files.UploadNewSourceDocument']}
         </a>
       </p>
-    </s:fragment>
+    </ui:fragment>
   </s:div>
 
   <s:div styleClass="l--pad-all-half"
@@ -94,7 +94,7 @@
     <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
   </s:div>
 
-  <s:fragment
+  <ui:fragment
     rendered="#{not empty versionHomeAction.documentsTabDocumentFilter.currentPage}">
     <ul class="list--stats" id="documents-document_list">
       <ui:repeat
@@ -115,8 +115,8 @@
                   </span>
               </a>
               <ul class="dropdown__content js-dropdown__content">
-                <s:fragment rendered="#{versionHomeAction.version.projectType ne 'File'}"></s:fragment>
-                <s:fragment
+                <ui:fragment rendered="#{versionHomeAction.version.projectType ne 'File'}"></ui:fragment>
+                <ui:fragment
                   rendered="#{versionHomeAction.isPoDocument(document.docId) and versionHomeAction.version.projectType ne 'File'}">
                   <li>
                     <h:outputLink styleClass="i__item--right"
@@ -130,8 +130,8 @@
                       <i class="i i--export i__item__icon"></i>
                     </h:outputLink>
                   </li>
-                </s:fragment>
-                <s:fragment
+                </ui:fragment>
+                <ui:fragment
                   rendered="#{!versionHomeAction.isPoDocument(document.docId)}">
                   <li>
                     <h:outputLink styleClass="i__item--right"
@@ -146,9 +146,9 @@
                       <i class="i i--export i__item__icon"></i>
                     </h:outputLink>
                   </li>
-                </s:fragment>
+                </ui:fragment>
 
-                <s:fragment
+                <ui:fragment
                   rendered="#{versionHomeAction.hasOriginal(document.path, document.name)}">
                   <li>
                     <h:outputLink styleClass="i__item--right"
@@ -163,9 +163,9 @@
                       <i class="i i--export i__item__icon"></i>
                     </h:outputLink>
                   </li>
-                </s:fragment>
+                </ui:fragment>
 
-                <s:fragment
+                <ui:fragment
                   rendered="#{versionHomeAction.documentUploadAllowed}">
                   <li>
                     <a href="#" class="i__item--right"
@@ -174,8 +174,8 @@
                       <i class="i i--import i__item__icon"></i>
                     </a>
                   </li>
-                </s:fragment>
-                <s:fragment
+                </ui:fragment>
+                <ui:fragment
                   rendered="#{versionHomeAction.documentRemovalAllowed}">
                   <li>
                     <a4j:commandLink styleClass="i__item--right txt--danger"
@@ -187,7 +187,7 @@
                       <i class="i i--remove i__item__icon"></i>
                     </a4j:commandLink>
                   </li>
-                </s:fragment>
+                </ui:fragment>
               </ul>
             </div>
           </s:div>
@@ -205,7 +205,7 @@
                   </f:facet>
                 </a4j:status>
 
-                <s:fragment rendered="#{versionHomeAction.pageRendered}">
+                <ui:fragment rendered="#{versionHomeAction.pageRendered}">
                   <ui:param name="displayUnit"
                     value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.sourceDocumentSortingList.selectedSortOption, document)}"/>
                    <span class="#{displayUnit.cssClass}"
@@ -214,7 +214,7 @@
                         class="stats__figure">#{displayUnit.figure}</span>
                       <span class="stats__unit">#{displayUnit.unit}</span>
                    </span>
-                </s:fragment>
+                </ui:fragment>
               </div>
             </div>
             <zanata:statistic
@@ -224,7 +224,7 @@
         </li>
       </ui:repeat>
     </ul>
-  </s:fragment>
+  </ui:fragment>
 </h:form>
 
 <zanata:list-filter listId="documents-document_form"
@@ -247,7 +247,7 @@
         onbegin="clearHTML('#{rich:clientId('documents-language_list')}')"
         status="documentsTab-languagesLoader"/>
 
-      <s:fragment
+      <ui:fragment
         rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
         <div
           class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown">
@@ -265,7 +265,7 @@
             </li>
           </ul>
         </div>
-      </s:fragment>
+      </ui:fragment>
     </div>
 
     <a href="#" class="panel__header__back"
@@ -298,18 +298,18 @@
   </a4j:status>
 
   <h:form id="documents-language_list" styleClass="l--push-bottom-1">
-    <s:fragment rendered="#{versionHomeAction.selectedDocument == null}">
+    <ui:fragment rendered="#{versionHomeAction.selectedDocument == null}">
       <div class="l--pad-all-half">
         <p class="txt--meta">#{msgs['jsf.SelectADocumentFromList']}</p>
       </div>
-    </s:fragment>
+    </ui:fragment>
 
-    <s:fragment rendered="#{versionHomeAction.selectedDocument != null}">
+    <ui:fragment rendered="#{versionHomeAction.selectedDocument != null}">
       <s:div styleClass="l--pad-all-half"
         rendered="#{empty versionHomeAction.supportedLocale}">
         <p
           class="txt--meta">#{msgs['jsf.iteration.NoLanguagesInVersion']}</p>
-        <s:fragment
+        <ui:fragment
           rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
           <p>
             <a class="button--primary" href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/settings/languages"
@@ -318,7 +318,7 @@
               class="i i--settings i__item__icon"></i>
             </a>
           </p>
-        </s:fragment>
+        </ui:fragment>
       </s:div>
 
       <s:div styleClass="l--pad-all-half"
@@ -326,7 +326,7 @@
         <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
       </s:div>
 
-      <s:fragment
+      <ui:fragment
         rendered="#{not empty versionHomeAction.documentsTabLanguageFilter.currentPage}">
         <ul class="list--stats">
           <ui:repeat
@@ -334,17 +334,17 @@
             var="hLocale">
             <li class="progress-bar__expander">
 
-              <s:fragment rendered="#{hLocale.active}">
+              <ui:fragment rendered="#{hLocale.active}">
                 <a
                   href="#{request.contextPath}/webtrans/Application.seam?project=#{versionHomeAction.projectSlug}&amp;iteration=#{versionHomeAction.versionSlug}&amp;localeId=#{hLocale.localeId}&amp;locale=#{locale.language}#view:doc;doc:#{versionHomeAction.selectedDocument.docId}">
                   <div class="list__item">
                     <div class="list__item__info">
                       <h3 class="list__title">
                         #{hLocale.retrieveDisplayName()}
-                        <s:fragment
+                        <ui:fragment
                           rendered="#{hLocale.active and versionHomeAction.isUserAllowedToTranslateOrReview(hLocale)}">
                           <i class="i--right i--translate txt--neutral"></i>
-                        </s:fragment>
+                        </ui:fragment>
                         <h:panelGroup layout="span" rendered="#{not hLocale.active}"
                           styleClass="label">
                           <!-- TODO check whether title is necessary -->
@@ -372,16 +372,16 @@
                     rendered="#{versionHomeAction.pageRendered}"/>
                   <zanata:loader rendered="#{!versionHomeAction.pageRendered}"/>
                 </a>
-              </s:fragment>
-              <s:fragment rendered="#{not hLocale.active}">
+              </ui:fragment>
+              <ui:fragment rendered="#{not hLocale.active}">
                 <div class="list__item">
                   <div class="list__item__info">
                     <h3 class="list__title">
                       #{hLocale.retrieveDisplayName()}
-                      <s:fragment
+                      <ui:fragment
                         rendered="#{hLocale.active and versionHomeAction.isUserAllowedToTranslateOrReview(hLocale)}">
                         <i class="i--right i--translate txt--neutral"></i>
-                      </s:fragment>
+                      </ui:fragment>
                       <h:panelGroup layout="span" rendered="#{not hLocale.active}"
                         styleClass="label--danger">
                         <!-- TODO check whether title is necessary -->
@@ -407,12 +407,12 @@
                   value="#{versionHomeAction.getStatisticForDocument(versionHomeAction.selectedDocument.id, hLocale.localeId)}"
                   rendered="#{versionHomeAction.pageRendered}"/>
                 <zanata:loader rendered="#{!versionHomeAction.pageRendered}"/>
-              </s:fragment>
+              </ui:fragment>
             </li>
           </ui:repeat>
         </ul>
-      </s:fragment>
-    </s:fragment>
+      </ui:fragment>
+    </ui:fragment>
   </h:form>
 
   <zanata:list-filter status="documentsTab-languagesLoader"

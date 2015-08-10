@@ -1,4 +1,4 @@
-<s:fragment
+<ui:fragment
   xmlns="http://www.w3.org/1999/xhtml"
   xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:f="http://java.sun.com/jsf/core"
@@ -82,7 +82,7 @@
       value="#{versionHome.selectedProjectType}"
       valueChangeListener="#{versionHome.updateSelectedProjectType}"/>
 
-    <s:fragment rendered="#{not versionHome.copyFromVersion}">
+    <ui:fragment rendered="#{not versionHome.copyFromVersion}">
       <h3
         class="heading--secondary l--push-all-0">#{msgs['jsf.projectType']}</h3>
 
@@ -108,20 +108,20 @@
             <li>
               <div class="form__radio js-form__radio"
                 onclick="onProjectTypeChanged(this)">
-                <s:fragment
+                <ui:fragment
                   rendered="#{versionHome.selectedProjectType eq projectType.name()}">
                   <input type="radio" name="project-type"
                     value="#{projectType.name()}"
                     class="form__radio__input js-form__radio__input"
                     id="#{status.index}:project-type" checked="true"/>
-                </s:fragment>
-                <s:fragment
+                </ui:fragment>
+                <ui:fragment
                   rendered="#{versionHome.selectedProjectType ne projectType.name()}">
                   <input type="radio" name="project-type"
                     value="#{projectType.name()}"
                     class="form__radio__input js-form__radio__input"
                     id="#{status.index}:project-type"/>
-                </s:fragment>
+                </ui:fragment>
 
                 <label for="#{status.index}:project-type"
                   class="form__radio__label">#{projectType.name()} <span
@@ -130,7 +130,7 @@
               </div>
             </li>
           </ui:repeat>
-          <s:fragment
+          <ui:fragment
             rendered="#{(versionHome.isNewInstance() and versionHome.project.defaultProjectType eq null) or (versionHome.managed and versionHome.instance.projectType eq null)}">
             <li>
               <div class="form__radio js-form__radio"
@@ -146,17 +146,17 @@
                 </label>
               </div>
             </li>
-          </s:fragment>
+          </ui:fragment>
         </ul>
       </s:div>
-    </s:fragment>
+    </ui:fragment>
   </s:div>
 
   <s:div id="project-version" rendered="#{not versionHome.managed}">
     <h:inputHidden id="copyFromVersionSlug"
       value="#{versionHome.copyFromVersionSlug}"/>
 
-    <s:fragment
+    <ui:fragment
       rendered="#{versionHome.copyFromVersion and not empty versionHome.project.projectIterations}">
       <ul class="list--slat l--push-bottom-1">
         <ui:repeat value="#{versionHome.getOtherVersions()}"
@@ -164,16 +164,16 @@
           <li>
             <div class="form__radio js-form__radio"
               onclick="onCopyFromVersionChanged('#{versionItem.version.slug}')">
-              <s:fragment rendered="#{versionItem.selected}">
+              <ui:fragment rendered="#{versionItem.selected}">
                 <input type="radio" name="project-type" value="#{versionItem.version.slug}"
                   class="form__radio__input js-form__radio__input"
                   checked="true" id="#{status.index}:version:#{versionItem.version.slug}"/>
-              </s:fragment>
-              <s:fragment rendered="#{!versionItem.selected}">
+              </ui:fragment>
+              <ui:fragment rendered="#{!versionItem.selected}">
                 <input type="radio" name="project-type" value="#{versionItem.version.slug}"
                   class="form__radio__input js-form__radio__input"
                   id="#{status.index}:version:#{versionItem.version.slug}"/>
-              </s:fragment>
+              </ui:fragment>
               <label for="#{status.index}:version:#{versionItem.version.slug}"
                 class="form__radio__label"><zanata:version-label version="#{versionItem.version}"/>
                 <span class="txt--meta l--push-left-half">
@@ -187,8 +187,8 @@
           </li>
         </ui:repeat>
       </ul>
-    </s:fragment>
+    </ui:fragment>
   </s:div>
 
 
-</s:fragment>
+</ui:fragment>

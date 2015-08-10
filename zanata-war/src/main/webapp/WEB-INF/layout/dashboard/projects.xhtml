@@ -26,7 +26,7 @@
               <span class="is-invisible">#{msgs['jsf.dashboard.projects.maintainedProjects.label']}</span>
             </a>
           </li>
-          <s:fragment rendered="#{identity.hasPermission(projectHome.instance, 'insert')}">
+          <ui:fragment rendered="#{identity.hasPermission(projectHome.instance, 'insert')}">
             <li class="tab__end">
               <a href="#" jsfc="s:link"
                 id="create-project-link"
@@ -36,7 +36,7 @@
                 <span class="is-invisible">#{msgs['jsf.dashboard.projects.newProject.label']}</span>
               </a>
             </li>
-          </s:fragment>
+          </ui:fragment>
         </ul>
       </nav>
       <div class="tabs__content">

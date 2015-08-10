@@ -70,7 +70,7 @@
               <ui:repeat
                   value="#{projectHome.validationStates}"
                   var="state">
-                <s:fragment
+                <ui:fragment
                     rendered="#{validationAction.state == state}">
                   <input name="#{validationAction.id.name()}"
                       id="#{validationAction.id.name()}-#{state}"
@@ -79,8 +79,8 @@
                       type="radio"
                       class="form__item__input js-example__setter"
                       data-example=""/>
-                </s:fragment>
-                <s:fragment
+                </ui:fragment>
+                <ui:fragment
                     rendered="#{validationAction.state != state}">
                   <input name="#{validationAction.id.name()}"
                       id="#{validationAction.id.name()}-#{state}"
@@ -88,7 +88,7 @@
                       type="radio"
                       class="form__item__input js-example__setter"
                       data-example=""/>
-                </s:fragment>
+                </ui:fragment>
                 <label for="#{validationAction.id.name()}-#{state}"
                     class="button button--#{state.name() == 'Error'?'danger':state}">#{state}</label>
               </ui:repeat>

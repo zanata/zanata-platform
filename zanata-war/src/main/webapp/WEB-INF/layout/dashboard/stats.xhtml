@@ -1,9 +1,10 @@
-<s:fragment
+<ui:fragment
   xmlns="http://www.w3.org/1999/xhtml"
   xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:rich="http://richfaces.org/rich">
   <ul class="g">
     <li class="g__item w--1-2 w--1-2-s l--push-bottom-half">
@@ -14,7 +15,7 @@
           class="stats__unit">#{msgs['jsf.activity.wordsTranslated']}</span>
       </span>
     </li>
-    <s:fragment rendered="#{dashboardAction.isUserReviewer()}">
+    <ui:fragment rendered="#{dashboardAction.isUserReviewer()}">
       <li class="g__item w--1-2 w--1-2-s l--push-bottom-half">
       <span class="stats">
         <span
@@ -23,7 +24,7 @@
           class="stats__unit">#{msgs['jsf.activity.wordsReviewed']}</span>
       </span>
       </li>
-    </s:fragment>
+    </ui:fragment>
     <li class="g__item w--1-2 w--1-2-s l--push-bottom-half">
       <span class="stats">
         <span
@@ -32,7 +33,7 @@
           class="stats__unit">#{msgs['jsf.activity.messagesTranslated']}</span>
       </span>
     </li>
-    <s:fragment rendered="#{dashboardAction.isUserReviewer()}">
+    <ui:fragment rendered="#{dashboardAction.isUserReviewer()}">
       <li class="g__item w--1-2 w--1-2-s l--push-bottom-half">
       <span class="stats">
         <span
@@ -41,7 +42,7 @@
           class="stats__unit">#{msgs['jsf.activity.messagesReviewed']}</span>
       </span>
       </li>
-    </s:fragment>
+    </ui:fragment>
     <li class="g__item w--1-2 w--1-2-s l--push-bottom-half">
       <span class="stats">
         <span
@@ -50,7 +51,7 @@
           class="stats__unit">#{msgs['jsf.activity.documentsTranslated']}</span>
       </span>
     </li>
-    <s:fragment rendered="#{dashboardAction.isUserReviewer()}">
+    <ui:fragment rendered="#{dashboardAction.isUserReviewer()}">
       <li class="g__item w--1-2 w--1-2-s l--push-bottom-half">
       <span class="stats">
         <span
@@ -59,6 +60,6 @@
           class="stats__unit">#{msgs['jsf.activity.documentsReviewed']}</span>
       </span>
       </li>
-    </s:fragment>
+    </ui:fragment>
   </ul>
-</s:fragment>
+</ui:fragment>

@@ -29,7 +29,7 @@
       <s:div styleClass="l--pad-all-half"
         rendered="#{empty versionHomeAction.groups}">
         <p class="txt--meta">#{msgs['jsf.NoGroups']}</p>
-        <s:fragment
+        <ui:fragment
           rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
           <p>
             <h:link styleClass="button--primary"
@@ -39,7 +39,7 @@
               <i class="i i--plus i__item__icon"></i>
             </h:link>
           </p>
-        </s:fragment>
+        </ui:fragment>
       </s:div>
 
       <s:div styleClass="l--pad-all-half"

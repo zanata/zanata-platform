@@ -45,7 +45,7 @@
         <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
       </s:div>
 
-      <s:fragment
+      <ui:fragment
         rendered="#{not empty zanataSearch.userTabUserFilter.currentPage}">
         <ul class="list--stats">
           <ui:repeat value="#{zanataSearch.userTabUserFilter.currentPage}"
@@ -63,7 +63,7 @@
             </li>
           </ui:repeat>
         </ul>
-      </s:fragment>
+      </ui:fragment>
     </h:form>
 
     <zanata:list-filter status="users-loader"

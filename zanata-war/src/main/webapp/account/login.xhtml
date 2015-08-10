@@ -36,17 +36,17 @@
             <s:div
               styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--1-2 w--1-m' : ''}"
               rendered="#{applicationConfiguration.internalAuth or applicationConfiguration.jaasAuth or applicationConfiguration.kerberosAuth}">
-              <s:fragment rendered="#{applicationConfiguration.multiAuth}">
+              <ui:fragment rendered="#{applicationConfiguration.multiAuth}">
                 <h2
                   class="gamma heading--sub">#{msgs['jsf.login.WithZanata.label']}</h2>
-              </s:fragment>
-              <s:fragment rendered="#{applicationConfiguration.kerberosAuth}">
+              </ui:fragment>
+              <ui:fragment rendered="#{applicationConfiguration.kerberosAuth}">
                 <p class="txt--meta">
                   <h:outputText escape="false"
                     value="#{msgs['jsf.auth.KerberosNotice.label']}">
                   </h:outputText>
                 </p>
-              </s:fragment>
+              </ui:fragment>
 
               <h:form id="loginForm"
                 styleClass="l--push-top-half l--pad-all-1 bg--pop-higher">
@@ -77,7 +77,7 @@
                     value="#{msgs['jsf.Login']}"
                     styleClass="button--primary button--full"/>
 
-                  <s:fragment
+                  <ui:fragment
                     rendered="#{applicationConfiguration.internalAuth}">
                     <div
                       class="txt--align-center txt--align-center-s l--push-top-half">
@@ -85,13 +85,13 @@
                       outcome="/account/register.xhtml"
                       value="#{msgs['jsf.SignUp']}"/>
                     </div>
-                  </s:fragment>
-                  <s:fragment
+                  </ui:fragment>
+                  <ui:fragment
                     rendered="#{not applicationConfiguration.internalAuth and not empty applicationConfiguration.registerPath}">
                     <h:outputLink value="#{applicationConfiguration.registerPath}">
                       <h:outputText value="#{msgs['jsf.Signup']}"/>
                     </h:outputLink>
-                  </s:fragment>
+                  </ui:fragment>
                 </div>
               </h:form>
             </s:div>
@@ -102,10 +102,10 @@
               styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--1-2 w--1-m' : ''}"
               rendered="#{applicationConfiguration.openIdAuth}">
               <h:form>
-                <s:fragment rendered="#{applicationConfiguration.multiAuth}">
+                <ui:fragment rendered="#{applicationConfiguration.multiAuth}">
                   <h2
                     class="gamma heading--sub">#{msgs['jsf.login.OrLoginUsing.label']}</h2>
-                </s:fragment>
+                </ui:fragment>
                 <ul class="list--no-bullets">
                   <li class="l--push-top-half">
                     <h:commandLink action="#{loginAction.openIdLogin('Fedora')}"

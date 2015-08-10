@@ -114,7 +114,7 @@
                       </button>
                     </div>
                     <ul class="dropdown__content js-dropdown__content">
-                      <s:fragment rendered="#{not projectHome.hasLocaleAlias(locale)}">
+                      <ui:fragment rendered="#{not projectHome.hasLocaleAlias(locale)}">
                         <li>
                           <h:outputLink id="addLocaleAliasLink"
                             styleClass="dropdown__content__link button--link i__item--left"
@@ -124,8 +124,8 @@
                             #{msgs['jsf.languages.AddAlias']}
                           </h:outputLink>
                         </li>
-                      </s:fragment>
-                      <s:fragment rendered="#{projectHome.hasLocaleAlias(locale)}">
+                      </ui:fragment>
+                      <ui:fragment rendered="#{projectHome.hasLocaleAlias(locale)}">
                         <li>
                           <h:outputLink id="editLocaleAliasLink"
                             styleClass="dropdown__content__link button--link i__item--left"
@@ -135,8 +135,8 @@
                             #{msgs['jsf.languages.EditAlias']}
                           </h:outputLink>
                         </li>
-                      </s:fragment>
-                      <s:fragment rendered="#{projectHome.hasLocaleAlias(locale)}">
+                      </ui:fragment>
+                      <ui:fragment rendered="#{projectHome.hasLocaleAlias(locale)}">
                         <li>
                           <button
                             class="dropdown__content__link button--link txt--danger i__item--left"
@@ -145,7 +145,7 @@
                             #{msgs['jsf.languages.DeleteAlias']}
                           </button>
                         </li>
-                      </s:fragment>
+                      </ui:fragment>
                     </ul>
                   </div>
                 </div>

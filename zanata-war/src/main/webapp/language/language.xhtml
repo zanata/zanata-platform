@@ -92,7 +92,7 @@
               </a>
             </li>
 
-            <s:fragment rendered="#{identity.loggedIn}">
+            <ui:fragment rendered="#{identity.loggedIn}">
               <li class="tab__end">
                 <h:form styleClass="l--push-bottom-0 dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown"
                   id="language-more-actions">
@@ -111,8 +111,8 @@
                       </a>
                     </li>
 
-                    <s:fragment rendered="#{not languageAction.isUserInTeam()}">
-                      <s:fragment rendered="#{not identity.hasRole('admin')}">
+                    <ui:fragment rendered="#{not languageAction.isUserInTeam()}">
+                      <ui:fragment rendered="#{not identity.hasRole('admin')}">
                         <li>
                           <a href="#" class="i__item--right"
                             data-toggle="modal"
@@ -121,8 +121,8 @@
                             <i class="i i--plus i__item__icon"></i>
                           </a>
                         </li>
-                      </s:fragment>
-                      <s:fragment rendered="#{identity.hasRole('admin')}">
+                      </ui:fragment>
+                      <ui:fragment rendered="#{identity.hasRole('admin')}">
                         <li>
                           <a4j:commandLink id="joinTeam"
                             action="#{languageAction.joinLanguageTeam}"
@@ -134,10 +134,10 @@
                               value="#{languageAction.language}"/>
                           </a4j:commandLink>
                         </li>
-                      </s:fragment>
-                    </s:fragment>
+                      </ui:fragment>
+                    </ui:fragment>
 
-                    <s:fragment rendered="#{languageAction.isUserInTeam()}">
+                    <ui:fragment rendered="#{languageAction.isUserInTeam()}">
                       <li>
                         <a4j:commandLink id="leaveTeam"
                           styleClass="txt--danger i__item--right"
@@ -149,13 +149,13 @@
                             value="#{languageAction.language}"/>
                         </a4j:commandLink>
                       </li>
-                    </s:fragment>
+                    </ui:fragment>
                   </ul>
                 </h:form>
               </li>
-            </s:fragment>
+            </ui:fragment>
 
-            <s:fragment rendered="#{identity.hasRole('admin')}">
+            <ui:fragment rendered="#{identity.hasRole('admin')}">
               <li class="tab__end">
                 <a id="settings_tab" href="#{languageURL}/settings"
                   class="js-url-mod" data-content="#settings">
@@ -165,7 +165,7 @@
                   <i class="i i--settings"></i>
                 </a>
               </li>
-            </s:fragment>
+            </ui:fragment>
           </ul>
 
           <ul class="tabs__content panels__container js-tabs-content l--push-top-1">
@@ -173,20 +173,20 @@
               <ui:include src="/WEB-INF/layout/language/members-tab.xhtml"/>
             </li>
 
-            <s:fragment rendered="#{identity.hasRole('admin')}">
+            <ui:fragment rendered="#{identity.hasRole('admin')}">
               <li id="settings">
                 <ui:include src="/WEB-INF/layout/language/settings-tab.xhtml"/>
               </li>
-            </s:fragment>
+            </ui:fragment>
           </ul>
         </div>
       </div>
     </div>
-    <s:fragment rendered="#{identity.loggedIn}">
+    <ui:fragment rendered="#{identity.loggedIn}">
       <ui:include src="/WEB-INF/layout/language/contact_coordinator_modal.xhtml"/>
-      <s:fragment rendered="#{not languageAction.isUserInTeam()}">
+      <ui:fragment rendered="#{not languageAction.isUserInTeam()}">
         <ui:include src="/WEB-INF/layout/language/request_join_modal.xhtml"/>
-      </s:fragment>
-    </s:fragment>
+      </ui:fragment>
+    </ui:fragment>
   </ui:define>
 </ui:composition>

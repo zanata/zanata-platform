@@ -2,6 +2,7 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:rich="http://richfaces.org/rich"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   class="modal" id="joinLanguageDialog" tabindex="-1" role="dialog"
@@ -47,21 +48,21 @@
       <div class="modal__content l--pad-all-1">
         <div class="form__item" id="roles">
           <span class="l--push-bottom-quarter">#{msgs['jsf.RequestRoleAs']}</span>
-          <s:fragment rendered="#{!languageJoinAction.isTranslator()}">
+          <ui:fragment rendered="#{!languageJoinAction.isTranslator()}">
             <zanata:checkbox id="translatorChk" value="translator"
               checked="#{languageJoinAction.requestAsTranslator}"
               onValueChanged="bindRole" label="#{msgs['jsf.Translator']}"/>
-          </s:fragment>
+          </ui:fragment>
 
-          <s:fragment rendered="#{!languageJoinAction.isReviewer()}">
+          <ui:fragment rendered="#{!languageJoinAction.isReviewer()}">
             <zanata:checkbox value="reviewer" checked="#{languageJoinAction.requestAsReviewer}"
               onValueChanged="bindRole" label="#{msgs['jsf.Reviewer']}"/>
-          </s:fragment>
+          </ui:fragment>
 
-          <s:fragment rendered="#{!languageJoinAction.isCoordinator()}">
+          <ui:fragment rendered="#{!languageJoinAction.isCoordinator()}">
             <zanata:checkbox value="coordinator" checked="#{languageJoinAction.requestAsCoordinator}"
               onValueChanged="bindRole" label="#{msgs['jsf.Coordinator']}"/>
-          </s:fragment>
+          </ui:fragment>
         </div>
 
         <s:decorate id="messageField" template="/WEB-INF/layout/field.xhtml">

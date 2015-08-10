@@ -15,28 +15,28 @@
     </div>
     <ui:param name="activities" value="#{activityAction.getActivities()}"/>
     <h:form id="activity-list-form" styleClass="l--push-bottom-0">
-      <s:fragment rendered="#{activities.isEmpty()}">
+      <ui:fragment rendered="#{activities.isEmpty()}">
         <div class="l--pad-all-half bg--high">
           <p><em>#{msgs['jsf.YouHaveNoActivity']}</em></p>
 
           <p class="txt--meta">#{msgs['jsf.NoActivityMessage']}</p>
         </div>
-      </s:fragment>
-      <s:fragment rendered="#{not activities.isEmpty()}">
+      </ui:fragment>
+      <ui:fragment rendered="#{not activities.isEmpty()}">
         <ul id="activity-list" class="list--panel loader__container">
           <ui:repeat value="#{activities}" var="activity">
             <li class="l--pad-all-half bg--higher--hover bg--faint reveal">
               <zanata:activity-entry value="#{activity}" hideInfo="true"/>
             </li>
           </ui:repeat>
-          <s:fragment rendered="#{activityAction.hasMoreActivities()}">
+          <ui:fragment rendered="#{activityAction.hasMoreActivities()}">
             <a id="moreActivity" href="javascript:void(0)"
               class="d--top loader" onclick="loadNextActivity()">
               <span class="loader__label">#{msgs['jsf.moreActivity']}</span>
             </a>
-          </s:fragment>
+          </ui:fragment>
         </ul>
-      </s:fragment>
+      </ui:fragment>
     </h:form>
   </div>
 </ui:composition>

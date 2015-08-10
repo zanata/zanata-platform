@@ -5,6 +5,7 @@
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:rich="http://richfaces.org/rich"
   xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
   class="modal" id="mergeTransDialog" tabindex="-1" role="dialog"
   aria-labelledby="myModalLabel" aria-hidden="true">
 
@@ -94,12 +95,12 @@
             <i class="i i--project l--push-right-quarter"></i>
             <div id="project-static" class="bx--inline-block">
               #{mergeTransAction.sourceProject.name}
-              <s:fragment rendered="#{not empty mergeTransAction.projects}">
+              <ui:fragment rendered="#{not empty mergeTransAction.projects}">
                 <a href="#" class="txt--mini l--push-left-1"
                   onclick="displayProjectSelector(true)">
                   #{msgs['jsf.iteration.mergeTrans.chooseAnotherProject']}
                 </a>
-              </s:fragment>
+              </ui:fragment>
             </div>
             <h:selectOneMenu id="projectSelector" rendered="#{not empty mergeTransAction.projects}"
               styleClass="w--1-2 is-hidden" onchange="bindSourceProjectSlug(this.value)">
@@ -109,19 +110,19 @@
             </h:selectOneMenu>
           </div>
           <s:div id="sourceVersions">
-            <s:fragment rendered="#{empty mergeTransAction.sourceVersions}">
+            <ui:fragment rendered="#{empty mergeTransAction.sourceVersions}">
               <div class="bg--neutral l--pad-all-half">
                 <h3 class="epsilon">
                   #{msgs['jsf.iteration.mergeTrans.noVersionToMerge.heading']}
                 </h3>
-                <s:fragment rendered="#{not empty mergeTransAction.projects}">
+                <ui:fragment rendered="#{not empty mergeTransAction.projects}">
                   <p class="txt--meta">
                     #{msgs['jsf.iteration.mergeTrans.noVersionToMerge.description']}
                   </p>
-                </s:fragment>
+                </ui:fragment>
               </div>
-            </s:fragment>
-            <s:fragment rendered="#{not empty mergeTransAction.sourceVersions}">
+            </ui:fragment>
+            <ui:fragment rendered="#{not empty mergeTransAction.sourceVersions}">
               <i class="i i--version l--push-right-quarter"></i>
               <h:selectOneMenu styleClass="w--1-2"
                 onchange="bindSourceVersionSlug(this.value)">
@@ -129,7 +130,7 @@
                   var="version" itemLabel="#{version.slug}"
                   itemValue="#{version.slug}" itemLabelEscaped="true"/>
               </h:selectOneMenu>
-            </s:fragment>
+            </ui:fragment>
           </s:div>
 
           <div class="l--push-top-half">
@@ -157,10 +158,10 @@
               action="#{mergeTransAction.startMergeTranslations}"
               value="#{msgs['jsf.iteration.mergeTrans']}"/>
 
-            <s:fragment rendered="#{mergeTransAction.isCopyActionsRunning(mergeTransAction.targetProjectSlug, mergeTransAction.targetVersionSlug)}">
+            <ui:fragment rendered="#{mergeTransAction.isCopyActionsRunning(mergeTransAction.targetProjectSlug, mergeTransAction.targetVersionSlug)}">
               <zanata:loader type="loader--small" layout="inline" jsHandle="true"
                 id="merge-trans-loader"/>
-            </s:fragment>
+            </ui:fragment>
           </s:div>
         </div>
       </footer>

@@ -56,7 +56,7 @@
               <p class="txt--meta">#{msgs['jsf.processmanager.process.empty']}</p>
             </s:div>
 
-            <s:fragment rendered="#{not empty processManagerAction.runningProcesses}">
+            <ui:fragment rendered="#{not empty processManagerAction.runningProcesses}">
               <ul class="list--stats">
                 <ui:repeat value="#{processManagerAction.runningProcesses}" var="handle">
                   <li
@@ -71,18 +71,18 @@
                           rendered="#{not handle.done}" styleClass="button button--danger l--push-left-half l--push-bottom-quarter"/>
 
                         <span class="list__item__meta txt--warning">
-                          <s:fragment rendered="#{handle.done}">
+                          <ui:fragment rendered="#{handle.done}">
                             #{msgs['jsf.processmanager.status.Finished']}
-                          </s:fragment>
-                          <s:fragment rendered="#{not handle.done}">
+                          </ui:fragment>
+                          <ui:fragment rendered="#{not handle.done}">
                             #{msgs.format('jsf.processmanager.progress', handle.currentProgress, handle.maxProgress)}
-                          </s:fragment>
+                          </ui:fragment>
                         </span>
                       </div>
                       <div class="list__item__stats">
-                        <s:fragment rendered="#{not handle.done}">
+                        <ui:fragment rendered="#{not handle.done}">
                           <zanata:loader type="loader--small" layout="inline"/>
-                        </s:fragment>
+                        </ui:fragment>
 
                         <h:panelGroup layout="span" styleClass="txt--understated" rendered="#{handle.done}">
                           <span
@@ -96,7 +96,7 @@
                   </li>
                 </ui:repeat>
               </ul>
-            </s:fragment>
+            </ui:fragment>
           </h:form>
         </div>
       </div>

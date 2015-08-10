@@ -34,12 +34,12 @@
         </div>
       </div>
       <!-- user contribution matrix -->
-      <s:fragment rendered="#{identity.loggedIn}">
+      <ui:fragment rendered="#{identity.loggedIn}">
         <div class="g__item w--3-4 w--1-2-m">
           <div id="userMatrixRoot" class="bg--pop-highest l--pad-v-1"
             data-base-url="#{request.contextPath}/rest/stats/user/#{profileHome.username}/"></div>
         </div>
-      </s:fragment>
+      </ui:fragment>
     </div>
 
     <script type="text/javascript"

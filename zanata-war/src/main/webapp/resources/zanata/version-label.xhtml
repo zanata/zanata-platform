@@ -2,6 +2,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:s="http://jboss.org/schema/seam/taglib">
 
 <composite:interface>
@@ -13,23 +14,23 @@
 </composite:interface>
 
 <composite:implementation>
-  <s:fragment rendered="#{cc.attrs.version.status == 'ACTIVE'}">
+  <ui:fragment rendered="#{cc.attrs.version.status == 'ACTIVE'}">
     #{cc.attrs.version.slug}
-  </s:fragment>
-  <s:fragment rendered="#{cc.attrs.version.status == 'READONLY'}">
+  </ui:fragment>
+  <ui:fragment rendered="#{cc.attrs.version.status == 'READONLY'}">
     <span class="txt--neutral">#{cc.attrs.version.slug}
-      <s:fragment rendered="#{cc.attrs.showIcon}">
+      <ui:fragment rendered="#{cc.attrs.showIcon}">
         <i class="i--small i--right i--lock" title="#{msgs['jsf.iteration.tooltip.readonly']}"></i>
-      </s:fragment>
+      </ui:fragment>
     </span>
-  </s:fragment>
-  <s:fragment rendered="#{cc.attrs.version.status == 'OBSOLETE'}">
+  </ui:fragment>
+  <ui:fragment rendered="#{cc.attrs.version.status == 'OBSOLETE'}">
     <span class="txt--neutral">#{cc.attrs.version.slug}
-      <s:fragment rendered="#{cc.attrs.showIcon}">
+      <ui:fragment rendered="#{cc.attrs.showIcon}">
         <i class="i--small i--right i--trash" title="#{msgs['jsf.iteration.tooltip.obsolete']}"></i>
-      </s:fragment>
+      </ui:fragment>
     </span>
-  </s:fragment>
+  </ui:fragment>
 </composite:implementation>
 </html>
 

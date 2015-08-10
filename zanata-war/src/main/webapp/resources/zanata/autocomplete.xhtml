@@ -109,7 +109,7 @@
     });
 
 
-    <s:fragment rendered="#{not empty cc.attrs.activePlaceholder}">
+    <ui:fragment rendered="#{not empty cc.attrs.activePlaceholder}">
       jQuery(function() {
         jQuery('#' + '#{cc.attrs.id}-autocomplete__input').on('focus', function() {
           $(this).attr('placeholder', '#{cc.attrs.activePlaceholder}');
@@ -118,10 +118,10 @@
           $(this).attr('placeholder', '#{cc.attrs.placeholder}');
         });
       });
-    </s:fragment>
+    </ui:fragment>
   </script>
 
-  <s:fragment rendered="#{cc.attrs.onSelectItem == 'null'}">
+  <ui:fragment rendered="#{cc.attrs.onSelectItem == 'null'}">
     <a4j:jsFunction name="#{cc.attrs.id}SubmitSelected"
       action="#{cc.attrs.actionBean.onSelectItemAction()}"
       render="#{cc.attrs.render}"
@@ -129,13 +129,13 @@
       status="#{cc.attrs.onSelectStatus}">
       <a4j:param name="val" assignTo="#{cc.attrs.actionBean.selectedItem}"/>
     </a4j:jsFunction>
-  </s:fragment>
+  </ui:fragment>
 
-  <s:fragment rendered="#{cc.attrs.onSelectItem != 'null'}">
+  <ui:fragment rendered="#{cc.attrs.onSelectItem != 'null'}">
     <a4j:jsFunction name="#{cc.attrs.id}SubmitSelected" limitRender="true">
       <a4j:param name="val" assignTo="#{cc.attrs.actionBean.selectedItem}"/>
     </a4j:jsFunction>
-  </s:fragment>
+  </ui:fragment>
 
   <div class="autocomplete" id="#{cc.attrs.id}"
     onkeydown="onResultKeyPressed(this, event, #{cc.attrs.id}SubmitSelected, #{cc.attrs.onSelectItem})">
@@ -153,7 +153,7 @@
       <div id="#{cc.attrs.id}-loader" class="is-hidden autocomplete__results">
         <zanata:loader/>
       </div>
-      <s:fragment rendered="#{not empty resultList}">
+      <ui:fragment rendered="#{not empty resultList}">
         <ul class="js-autocomplete__results autocomplete__results">
           <ui:repeat value="#{resultList}" var="result">
             <li class="js-autocomplete__result autocomplete__result">
@@ -163,7 +163,7 @@
             </li>
           </ui:repeat>
         </ul>
-      </s:fragment>
+      </ui:fragment>
     </s:div>
   </div>
 </composite:implementation>

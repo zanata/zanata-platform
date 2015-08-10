@@ -96,11 +96,11 @@
     </s:div>
     <s:div styleClass="g__item w--1-2 l--push-bottom-1"
         rendered="#{projectHome.instance.status ne 'ACTIVE'}">
-      <s:fragment rendered="#{projectHome.instance.status eq 'OBSOLETE'}">
+      <ui:fragment rendered="#{projectHome.instance.status eq 'OBSOLETE'}">
         <button class="button--success l--push-bottom-half" disabled="disabled">
           <i class="i--left i--lock"></i> #{msgs['jsf.project.writable']}
         </button>
-      </s:fragment>
+      </ui:fragment>
       <a4j:commandLink styleClass="button--success l--push-bottom-half"
           id="button-unlock-project"
           rendered="#{projectHome.instance.status == 'READONLY'}"
@@ -111,7 +111,7 @@
       <p class="txt--meta">#{msgs['jsf.project.writable.Message']}</p>
     </s:div>
 
-    <s:fragment
+    <ui:fragment
         rendered="#{identity.hasPermission(projectHome.instance, 'mark-obsolete')}">
       <s:div styleClass="g__item w--1-2"
           rendered="#{projectHome.instance.status ne 'OBSOLETE'}">
@@ -124,7 +124,7 @@
 
         <p class="txt--meta">#{msgs['jsf.DeleteProject.Message']}</p>
       </s:div>
-    </s:fragment>
+    </ui:fragment>
   </s:div>
 </h:form>
 

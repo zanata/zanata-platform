@@ -71,7 +71,7 @@
                         <span class="is-invisible">Options</span>
                       </a>
                       <ul class="dropdown__content js-dropdown__content">
-                        <s:fragment
+                        <ui:fragment
                           rendered="#{identity.hasPermission('seam.user', 'delete')}">
                           <li>
                             <a onclick="if(confirmDelete()){deleteUser('#{user}')};return false;"
@@ -80,7 +80,7 @@
                               <i class="i i--remove i__item__icon"></i>
                             </a>
                           </li>
-                        </s:fragment>
+                        </ui:fragment>
                       </ul>
                     </div>
                   </div>
@@ -92,10 +92,10 @@
                         <h3 class="list__title">
                           <span
                             class="#{identityManager.isUserEnabled(user) ? '' : 'txt--danger'}">
-                            <s:fragment
+                            <ui:fragment
                               rendered="#{not identityManager.isUserEnabled(user)}">
                               <i class="i i--lock"></i>
-                            </s:fragment>
+                            </ui:fragment>
                             #{user}
                           </span>
                           <h:panelGroup layout="span" styleClass="txt--meta l--push-h-quarter"

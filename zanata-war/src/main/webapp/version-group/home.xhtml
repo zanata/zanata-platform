@@ -30,7 +30,7 @@
     <h:form id="groupForm">
       <s:div styleClass="float-right">
         <a4j:region>
-          <s:fragment
+          <ui:fragment
             rendered="#{identity.hasPermission('HIterationGroup','view-obsolete')}">
             <h:selectBooleanCheckbox id="showObsolete"
               title="#{msgs['jsf.groups.ShowObsoleteGroups']}"
@@ -38,7 +38,7 @@
               <a4j:ajax event="change" render="groupTable"/>
             </h:selectBooleanCheckbox>
             <h:outputText value="#{msgs['jsf.Obsolete']}"/>
-          </s:fragment>
+          </ui:fragment>
         </a4j:region>
       </s:div>
       <br/>
