@@ -24,7 +24,7 @@
     }
   </script>
 
-  <s:div id="zip-download-dialog">
+  <h:panelGroup layout="block"  id="zip-download-dialog">
     <a4j:jsFunction name="cancelDownload" oncomplete="enableDownload(true)"
       action="#{projectIterationZipFileAction.cancelFileDownload}"
       render="download-progress" limitRender="true"/>
@@ -47,7 +47,7 @@
           <div class="l--pad-top-half form__item txt--understated"
             id="downloadDialogMsg"></div>
 
-          <s:div styleClass="l--pad-top-half form__item" id="download-progress">
+          <h:panelGroup layout="block"  styleClass="l--pad-top-half form__item" id="download-progress">
             <ui:fragment
               rendered="#{projectIterationZipFileAction.zipFilePrepHandle ne null and not projectIterationZipFileAction.zipFilePrepHandle.done}">
               <a4j:poll render="download-progress" interval="500"
@@ -84,7 +84,7 @@
                 zanata.modal.hide('#zipDownloadProgressDialog');
               </script>
             </ui:fragment>
-          </s:div>
+          </h:panelGroup>
         </div>
 
         <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
@@ -109,5 +109,5 @@
         </footer>
       </h:form>
     </div>
-  </s:div>
+  </h:panelGroup>
 </div>

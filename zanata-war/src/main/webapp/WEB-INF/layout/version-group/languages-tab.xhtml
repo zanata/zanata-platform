@@ -60,7 +60,7 @@
   </a4j:status>
 
   <h:form id="languages-language_form" styleClass="l--push-bottom-1">
-    <s:div styleClass="l--pad-all-half"
+    <h:panelGroup layout="block"  styleClass="l--pad-all-half"
       rendered="#{empty versionGroupHomeAction.activeLocales}">
       <p class="txt--meta">#{msgs['jsf.NoActiveLanguages']}</p>
       <ui:fragment
@@ -73,12 +73,12 @@
           </a>
         </p>
       </ui:fragment>
-    </s:div>
+    </h:panelGroup>
 
-    <s:div styleClass="l--pad-all-half"
+    <h:panelGroup layout="block"  styleClass="l--pad-all-half"
       rendered="#{not empty versionGroupHomeAction.activeLocales and empty versionGroupHomeAction.languageTabLanguageFilter.currentPage}">
       <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
-    </s:div>
+    </h:panelGroup>
 
     <ui:fragment
       rendered="#{not empty versionGroupHomeAction.languageTabLanguageFilter.currentPage}">
@@ -186,13 +186,13 @@
   </a4j:status>
 
   <h:form id="languages-project_list" styleClass="l--push-bottom-1">
-    <s:div styleClass="l--pad-all-half"
+    <h:panelGroup layout="block"  styleClass="l--pad-all-half"
       rendered="#{versionGroupHomeAction.selectedLocale == null}">
       <p class="txt--meta">#{msgs['jsf.SelectALanguageFromList']}</p>
-    </s:div>
+    </h:panelGroup>
 
     <ui:fragment rendered="#{versionGroupHomeAction.selectedLocale != null}">
-      <s:div styleClass="l--pad-all-half"
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
         rendered="#{empty versionGroupHomeAction.projectIterations}">
         <p class="txt--meta">#{msgs['jsf.NoProjectsInGroup']}</p>
         <ui:fragment
@@ -205,12 +205,12 @@
             </a>
           </p>
         </ui:fragment>
-      </s:div>
+      </h:panelGroup>
 
-      <s:div styleClass="l--pad-all-half"
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
         rendered="#{not empty versionGroupHomeAction.projectIterations and empty versionGroupHomeAction.languageTabVersionFilter.currentPage}">
         <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
-      </s:div>
+      </h:panelGroup>
 
       <ui:fragment
         rendered="#{not empty versionGroupHomeAction.languageTabVersionFilter.currentPage}">

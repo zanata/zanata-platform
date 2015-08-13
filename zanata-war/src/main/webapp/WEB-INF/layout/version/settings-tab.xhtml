@@ -50,7 +50,7 @@
 
 <h1>#{msgs['jsf.iteration.VersionSettings']}</h1>
 
-<s:div styleClass="tabs--vertical js-tabs" id="version-settings">
+<h:panelGroup layout="block"  styleClass="tabs--vertical js-tabs" id="version-settings">
 <ui:fragment rendered="#{versionHomeAction.copyVersionHandler.inProgress}">
   <div class="bg--pop-highest l--pad-all-1">
     #{msgs['jsf.copyVersion.versionSettingsDisabled']}
@@ -107,8 +107,8 @@
         styleClass="l--push-right-half button--primary"/>
     </div>
     <hr/>
-    <s:div styleClass="g--tight" id="status">
-      <s:div styleClass="g__item w--1-2 l--push-bottom-1"
+    <h:panelGroup layout="block"  styleClass="g--tight" id="status">
+      <h:panelGroup layout="block"  styleClass="g__item w--1-2 l--push-bottom-1"
         rendered="#{versionHome.instance.status == 'ACTIVE'}">
         <a4j:commandLink
           styleClass="button--warning l--push-bottom-half"
@@ -120,8 +120,8 @@
 
         <p
           class="txt--meta">#{msgs['jsf.iteration.readonly.Message']}</p>
-      </s:div>
-      <s:div styleClass="g__item w--1-2 l--push-bottom-1"
+      </h:panelGroup>
+      <h:panelGroup layout="block"  styleClass="g__item w--1-2 l--push-bottom-1"
         rendered="#{versionHome.instance.status ne 'ACTIVE'}">
         <ui:fragment
           rendered="#{versionHome.instance.status eq 'OBSOLETE'}">
@@ -139,11 +139,11 @@
         </a4j:commandLink>
 
         <p class="txt--meta">#{msgs['jsf.iteration.writable.Message']}</p>
-      </s:div>
+      </h:panelGroup>
 
       <ui:fragment
         rendered="#{identity.hasPermission(versionHome.instance, 'mark-obsolete')}">
-        <s:div styleClass="g__item w--1-2"
+        <h:panelGroup layout="block"  styleClass="g__item w--1-2"
           rendered="#{versionHome.instance.status ne 'OBSOLETE'}">
           <a href="javascript:void(0)" class="button--danger l--push-bottom-half"
             onclick="zanata.modal.show('#delete-confirmation-modal')">
@@ -152,9 +152,9 @@
           </a>
           <p
             class="txt--meta">#{msgs['jsf.iteration.delete.Message']}</p>
-        </s:div>
+        </h:panelGroup>
       </ui:fragment>
-    </s:div>
+    </h:panelGroup>
   </h:form>
 </li>
 <li id="settings-documents">
@@ -368,7 +368,7 @@
 </li>
 </ul>
 </ui:fragment>
-</s:div>
+</h:panelGroup>
 
   <ui:include src="/WEB-INF/layout/delete_confirmation_modal.xhtml">
     <ui:param name="copiedEntityType" value="#{msgs['jsf.Version']}" />

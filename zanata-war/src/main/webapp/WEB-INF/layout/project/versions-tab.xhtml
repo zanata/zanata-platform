@@ -86,7 +86,7 @@
 </a4j:status>
 
 <h:form id="versions_form" styleClass="l--push-bottom-1">
-  <s:div styleClass="l--pad-all-half"
+  <h:panelGroup layout="block"  styleClass="l--pad-all-half"
     rendered="#{empty projectHomeAction.projectVersions}">
     <p class="txt--meta">#{msgs['jsf.NoVersions']}</p>
     <ui:fragment
@@ -100,12 +100,12 @@
         </h:link>
       </p>
     </ui:fragment>
-  </s:div>
+  </h:panelGroup>
 
-  <s:div styleClass="l--pad-all-half"
+  <h:panelGroup layout="block"  styleClass="l--pad-all-half"
     rendered="#{not empty projectHomeAction.projectVersions and empty projectHomeAction.versionFilter.currentPage}">
     <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
-  </s:div>
+  </h:panelGroup>
 
   <ui:fragment
     rendered="#{!projectHomeAction.versionFilter.currentPage.isEmpty()}">
@@ -128,8 +128,8 @@
             </h:outputScript>
           </h:panelGroup>
 
-          <s:div id="version-info">
-            <s:div styleClass="list__item__action"
+          <h:panelGroup layout="block"  id="version-info">
+            <h:panelGroup layout="block"  styleClass="list__item__action"
               rendered="#{hasActions and not projectHomeAction.isVersionCopying(version.project.slug, version.slug)}">
               <div
                 class="dropdown dropdown--small dropdown--inline dropdown--single list__item__dropdown js-dropdown">
@@ -186,7 +186,7 @@
                   </li>
                 </ul>
               </div>
-            </s:div>
+            </h:panelGroup>
 
             <h:link outcome="/iteration/view.xhtml"
               disabled="#{projectHomeAction.isVersionCopying(version.project.slug, version.slug)}">
@@ -251,7 +251,7 @@
                 value="#{projectHomeAction.getStatisticForVersion(version.slug)}"
                 rendered="#{projectHomeAction.pageRendered}"/>
             </h:link>
-          </s:div>
+          </h:panelGroup>
         </li>
       </ui:repeat>
     </ul>

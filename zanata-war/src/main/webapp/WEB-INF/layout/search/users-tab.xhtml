@@ -40,10 +40,10 @@
     </a4j:status>
 
     <h:form id="search-user_form" styleClass="l--push-bottom-1">
-      <s:div styleClass="l--pad-all-half"
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
         rendered="#{zanataSearch.getTotalUserCount() ge 0 and empty zanataSearch.userTabUserFilter.currentPage}">
         <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
-      </s:div>
+      </h:panelGroup>
 
       <ui:fragment
         rendered="#{not empty zanataSearch.userTabUserFilter.currentPage}">

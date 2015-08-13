@@ -47,7 +47,7 @@
     </a4j:status>
 
     <h:form id="maintainers-form" styleClass="l--push-bottom-1">
-      <s:div styleClass="l--pad-all-half" rendered="#{cc.attrs.listSize lt 1}">
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half" rendered="#{cc.attrs.listSize lt 1}">
         <p class="txt--meta">#{msgs['jsf.NoMaintainers']}</p>
         <ui:fragment rendered="#{cc.attrs.PermissionToUpdate}">
           <p>
@@ -58,12 +58,12 @@
             </a>
           </p>
         </ui:fragment>
-      </s:div>
+      </h:panelGroup>
 
-      <s:div styleClass="l--pad-all-half"
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
         rendered="#{cc.attrs.listSize gt 1 and empty cc.attrs.filterActionBean.currentPage}">
         <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
-      </s:div>
+      </h:panelGroup>
 
       <ui:fragment
         rendered="#{not empty cc.attrs.filterActionBean.currentPage}">

@@ -40,7 +40,7 @@
   <a4j:param name="val2" assignTo="#{state}"/>
 </a4j:jsFunction>
 
-<s:div id="validation-list">
+<h:panelGroup layout="block"  id="validation-list">
   <ul class="list--slat">
     <ui:repeat value="#{projectHome.validationList}"
         var="validationAction">
@@ -119,6 +119,6 @@
       </li>
     </ui:repeat>
   </ul>
-</s:div>
+</h:panelGroup>
 
 </ui:composition>

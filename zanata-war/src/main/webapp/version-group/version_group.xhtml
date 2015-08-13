@@ -104,7 +104,7 @@
       </h:link>
     </p>
 
-    <s:div styleClass="media l--push-bottom-half" id="group-info">
+    <h:panelGroup layout="block"  styleClass="media l--push-bottom-half" id="group-info">
       <div class="media__body">
         <h1 class="l--push-all-0">
           #{versionGroupHome.instance.name}
@@ -114,8 +114,8 @@
           #{versionGroupHome.instance.description}
         </p>
       </div>
-    </s:div>
-    <s:div id="overall_statistic" styleClass="progress-bar__expander">
+    </h:panelGroup>
+    <h:panelGroup layout="block"  id="overall_statistic" styleClass="progress-bar__expander">
       <ui:fragment rendered="#{versionGroupHomeAction.pageRendered}">
         <p class="d--top l--pad-top-half txt--mini">
           #{msgs['jsf.TotalSourceContains']}
@@ -156,7 +156,7 @@
           <zanata:loader type="loader--large"/>
         </f:facet>
       </a4j:status>
-    </s:div>
+    </h:panelGroup>
   </div>
 
 

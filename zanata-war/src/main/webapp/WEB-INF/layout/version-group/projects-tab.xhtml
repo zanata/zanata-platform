@@ -58,7 +58,7 @@
   </a4j:status>
 
   <h:form id="projects-project_form" styleClass="l--push-bottom-1">
-    <s:div styleClass="l--pad-all-half"
+    <h:panelGroup layout="block"  styleClass="l--pad-all-half"
       rendered="#{empty versionGroupHomeAction.projectIterations}">
       <p class="txt--meta">#{msgs['jsf.NoProjectsInGroup']}</p>
       <ui:fragment
@@ -70,12 +70,12 @@
           </a>
         </p>
       </ui:fragment>
-    </s:div>
+    </h:panelGroup>
 
-    <s:div styleClass="l--pad-all-half"
+    <h:panelGroup layout="block"  styleClass="l--pad-all-half"
       rendered="#{not empty versionGroupHomeAction.projectIterations and empty versionGroupHomeAction.projectTabVersionFilter.currentPage}">
       <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
-    </s:div>
+    </h:panelGroup>
 
     <ui:fragment
       rendered="#{not empty versionGroupHomeAction.projectTabVersionFilter.currentPage}">
@@ -192,7 +192,7 @@
     </ui:fragment>
 
     <ui:fragment rendered="#{versionGroupHomeAction.selectedVersion != null}">
-      <s:div styleClass="l--pad-all-half"
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
         rendered="#{empty versionGroupHomeAction.activeLocales}">
         <p class="txt--meta">#{msgs['jsf.NoActiveLanguages']}</p>
         <ui:fragment
@@ -204,12 +204,12 @@
             </a>
           </p>
         </ui:fragment>
-      </s:div>
+      </h:panelGroup>
 
-      <s:div styleClass="l--pad-all-half"
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
         rendered="#{not empty versionGroupHomeAction.activeLocales and empty versionGroupHomeAction.projectTabLanguageFilter.currentPage}">
         <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
-      </s:div>
+      </h:panelGroup>
 
       <ui:fragment
         rendered="#{not empty versionGroupHomeAction.projectTabLanguageFilter.currentPage}">

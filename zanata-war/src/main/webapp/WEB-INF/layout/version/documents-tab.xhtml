@@ -74,7 +74,7 @@
 </a4j:status>
 
 <h:form id="documents-document_form" styleClass="l--push-bottom-1">
-  <s:div styleClass="l--pad-all-half"
+  <h:panelGroup layout="block"  styleClass="l--pad-all-half"
     rendered="#{empty versionHomeAction.documents}">
     <p
       class="txt--meta">#{msgs['jsf.iteration.NoDocumentInVersion']}</p>
@@ -87,12 +87,12 @@
         </a>
       </p>
     </ui:fragment>
-  </s:div>
+  </h:panelGroup>
 
-  <s:div styleClass="l--pad-all-half"
+  <h:panelGroup layout="block"  styleClass="l--pad-all-half"
     rendered="#{not empty versionHomeAction.documents and empty versionHomeAction.documentsTabDocumentFilter.currentPage}">
     <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
-  </s:div>
+  </h:panelGroup>
 
   <ui:fragment
     rendered="#{not empty versionHomeAction.documentsTabDocumentFilter.currentPage}">
@@ -104,7 +104,7 @@
           value="#{versionHomeAction.isPoDocument(document.docId) or !versionHomeAction.isPoDocument(document.docId) or versionHomeAction.hasOriginal(document.path, document.name) or versionHomeAction.documentUploadAllowed or versionHomeAction.documentRemovalAllowed}"/>
         <li id="#{versionHomeAction.encodeDocId(document.docId)}"
           class="progress-bar__expander #{hasActions ? 'list__item--actionable' : ''}" >
-          <s:div styleClass="list__item__action" rendered="#{hasActions}">
+          <h:panelGroup layout="block"  styleClass="list__item__action" rendered="#{hasActions}">
             <div
               class="dropdown dropdown--small dropdown--inline dropdown--single js-dropdown">
               <a class="dropdown__toggle js-dropdown__toggle txt--meta"
@@ -190,7 +190,7 @@
                 </ui:fragment>
               </ul>
             </div>
-          </s:div>
+          </h:panelGroup>
           <a href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/documents/#{versionHomeAction.encodeDocId(document.docId)}"
             onclick="changeBrowserUrl(this.href, true);return false;">
             <div class="list__item__content">
@@ -305,7 +305,7 @@
     </ui:fragment>
 
     <ui:fragment rendered="#{versionHomeAction.selectedDocument != null}">
-      <s:div styleClass="l--pad-all-half"
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
         rendered="#{empty versionHomeAction.supportedLocale}">
         <p
           class="txt--meta">#{msgs['jsf.iteration.NoLanguagesInVersion']}</p>
@@ -319,12 +319,12 @@
             </a>
           </p>
         </ui:fragment>
-      </s:div>
+      </h:panelGroup>
 
-      <s:div styleClass="l--pad-all-half"
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
         rendered="#{not empty versionHomeAction.supportedLocale and empty versionHomeAction.documentsTabLanguageFilter.currentPage}">
         <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
-      </s:div>
+      </h:panelGroup>
 
       <ui:fragment
         rendered="#{not empty versionHomeAction.documentsTabLanguageFilter.currentPage}">
@@ -355,7 +355,7 @@
                       </h3>
                       <span class="list__item__meta">#{hLocale.localeId}</span>
                     </div>
-                    <s:div styleClass="list__item__stats"
+                    <h:panelGroup layout="block"  styleClass="list__item__stats"
                       rendered="#{versionHomeAction.pageRendered}">
                       <ui:param name="displayUnit"
                         value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.languageSortingList.selectedSortOption, hLocale.localeId, versionHomeAction.selectedDocument)}"/>
@@ -365,7 +365,7 @@
                             class="stats__figure">#{displayUnit.figure}</span>
                           <span class="stats__unit">#{displayUnit.unit}</span>
                        </span>
-                    </s:div>
+                    </h:panelGroup>
                   </div>
                   <zanata:statistic
                     value="#{versionHomeAction.getStatisticForDocument(versionHomeAction.selectedDocument.id, hLocale.localeId)}"
@@ -392,7 +392,7 @@
                     </h3>
                     <span class="list__item__meta">#{hLocale.localeId}</span>
                   </div>
-                  <s:div styleClass="list__item__stats"
+                  <h:panelGroup layout="block"  styleClass="list__item__stats"
                     rendered="#{versionHomeAction.pageRendered}">
                     <ui:param name="displayUnit"
                       value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.languageSortingList.selectedSortOption, hLocale.localeId, versionHomeAction.selectedDocument)}"/>
@@ -401,7 +401,7 @@
                       <span class="stats__figure">#{displayUnit.figure}</span>
                       <span class="stats__unit">#{displayUnit.unit}</span>
                    </span>
-                  </s:div>
+                  </h:panelGroup>
                 </div>
                 <zanata:statistic
                   value="#{versionHomeAction.getStatisticForDocument(versionHomeAction.selectedDocument.id, hLocale.localeId)}"

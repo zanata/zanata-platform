@@ -45,7 +45,7 @@
         </p>
 
         <h1 class="l--push-all-0">#{msgs['jsf.Statistics']}</h1>
-        <s:div styleClass="panel l--pad-all-half l--push-v-half"  id="userStats">
+        <h:panelGroup layout="block"  styleClass="panel l--pad-all-half l--push-v-half"  id="userStats">
           <i class="i i--users delta l--push-right-quarter"></i>
           <ui:fragment rendered="#{not adminStatsAction.documentReady}">
               <zanata:loader layout="inline"/>
@@ -58,9 +58,9 @@
               #{msgs['jsf.TotalReviewers']} <span class="badge">#{adminStatsAction.totalReviewer}</span>
             </span>
           </ui:fragment>
-        </s:div>
+        </h:panelGroup>
 
-        <s:div styleClass="panel l--pad-all-half l--push-v-half" id="projectStats">
+        <h:panelGroup layout="block"  styleClass="panel l--pad-all-half l--push-v-half" id="projectStats">
           <i class="i i--project delta l--push-right-quarter"></i>
           #{msgs['jsf.TotalProjects']}
           <ui:fragment rendered="#{not adminStatsAction.documentReady}">
@@ -84,10 +84,10 @@
               </span>
             </div>
           </ui:fragment>
-        </s:div>
+        </h:panelGroup>
 
 
-        <s:div styleClass="panel l--pad-all-half l--push-v-half" id="versionStats">
+        <h:panelGroup layout="block"  styleClass="panel l--pad-all-half l--push-v-half" id="versionStats">
           <i class="i i--version delta l--push-right-quarter"></i>
           #{msgs['jsf.Versions']}
           <ui:fragment rendered="#{not adminStatsAction.documentReady}">
@@ -110,9 +110,9 @@
               </span>
             </div>
           </ui:fragment>
-        </s:div>
+        </h:panelGroup>
 
-        <s:div styleClass="panel l--pad-all-half l--push-v-half" id="documentStats">
+        <h:panelGroup layout="block"  styleClass="panel l--pad-all-half l--push-v-half" id="documentStats">
           <i class="i i--document delta l--push-right-quarter"></i>
           #{msgs['jsf.TotalDocuments']}
           <ui:fragment rendered="#{not adminStatsAction.documentReady}">
@@ -131,9 +131,9 @@
               </span>
             </div>
           </ui:fragment>
-        </s:div>
+        </h:panelGroup>
 
-        <s:div styleClass="panel l--pad-all-half l--push-v-half" id="textFlowStats">
+        <h:panelGroup layout="block"  styleClass="panel l--pad-all-half l--push-v-half" id="textFlowStats">
           <i class="i i--translate delta l--push-right-quarter"></i>
           #{msgs['jsf.TotalTextFlows']}
 
@@ -153,9 +153,9 @@
               </span>
             </div>
           </ui:fragment>
-        </s:div>
+        </h:panelGroup>
 
-        <s:div styleClass="panel l--pad-all-half l--push-v-half" id="translationStats">
+        <h:panelGroup layout="block"  styleClass="panel l--pad-all-half l--push-v-half" id="translationStats">
           <i class="i i--translate delta l--push-right-quarter"></i>
           #{msgs['jsf.TotalTextFlowTargets']}
           <ui:fragment rendered="#{not adminStatsAction.documentReady}">
@@ -188,7 +188,7 @@
               </div>
             </div>
           </ui:fragment>
-        </s:div>
+        </h:panelGroup>
       </div>
     </div>
 

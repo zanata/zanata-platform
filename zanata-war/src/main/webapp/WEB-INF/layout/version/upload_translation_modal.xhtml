@@ -118,8 +118,8 @@
             fileName="#{versionHomeAction.translationFileUpload.fileName}"/>
         </div>
 
-        <s:div id="documentType-selection">
-          <s:div styleClass="l--pad-top-half form__item"
+        <h:panelGroup layout="block"  id="documentType-selection">
+          <h:panelGroup layout="block"  styleClass="l--pad-top-half form__item"
             rendered="#{versionHomeAction.needDocumentTypeSelection(fileName)}">
             <h:outputLabel>#{msgs['jsf.iteration.documentType.select']}</h:outputLabel>
             <h:selectOneMenu id="documentTypes" onchange="bindDocumentType(jQuery(this).val())"
@@ -131,8 +131,8 @@
                 itemLabel="#{documentType.name()}"
                 itemValue="#{documentType.name()}"/>
             </h:selectOneMenu>
-          </s:div>
-        </s:div>
+          </h:panelGroup>
+        </h:panelGroup>
 
         <div class="l--pad-top-half form__item">
           <ul class="list--horizontal">

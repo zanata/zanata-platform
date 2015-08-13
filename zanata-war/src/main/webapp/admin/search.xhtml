@@ -32,16 +32,16 @@
           </h1>
         </div>
 
-        <s:div styleClass="panel l--push-top-1" id="progress">
+        <h:panelGroup layout="block"  styleClass="panel l--push-top-1" id="progress">
           <div class="panel__header">
-            <s:div styleClass="panel__header__actions l--push-right-half l--push-bottom-0"
+            <h:panelGroup layout="block"  styleClass="panel__header__actions l--push-right-half l--push-bottom-0"
               rendered="#{reindexAction.inProgress and !reindexAction.canceled}">
               <h:form styleClass="l--push-bottom-0">
                 <a4j:commandLink id="cancel" styleClass="button--small button--link"
                   value="#{msgs['jsf.ManageSearch.Abort']}"
                   action="#{reindexAction.cancel}" render="actions,progress"/>
               </h:form>
-            </s:div>
+            </h:panelGroup>
             <h2 class="panel__heading--small">#{msgs['jsf.ManageSearch.CurrentProgress']}</h2>
           </div>
 
@@ -108,13 +108,13 @@
               </ui:fragment>
             </a4j:outputPanel>
           </div>
-        </s:div>
+        </h:panelGroup>
       </div>
 
       <div class="g__item w--1-m w--5-8-l w--2-3">
         <h:form id="form">
           <s:token allowMultiplePosts="true"/>
-            <s:div id="actions">
+            <h:panelGroup layout="block"  id="actions">
                 <table class="bg--pop-highest l--push-bottom-1">
                   <thead>
                     <tr>
@@ -244,7 +244,7 @@
                   </button>
                 </ui:fragment>
 
-              </s:div>
+              </h:panelGroup>
         </h:form>
       </div>
     </div>

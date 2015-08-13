@@ -27,7 +27,7 @@
                 onbegin="clearHTML('#{rich:clientId('languageForm')}')"
                 status="languageLoader"/>
 
-              <s:div
+              <h:panelGroup layout="block"
                 styleClass="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown"
                 id="more-actions" rendered="#{identity.hasRole('admin')}">
                 <a class="dropdown__toggle js-dropdown__toggle" href="#"
@@ -44,7 +44,7 @@
                     </a>
                   </li>
                 </ul>
-              </s:div>
+              </h:panelGroup>
             </div>
             <h2 class="panel__heading">#{msgs['jsf.Languages']}</h2>
           </div>

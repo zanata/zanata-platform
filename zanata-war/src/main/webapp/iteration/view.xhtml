@@ -195,11 +195,11 @@
     </h:link>
   </p>
 
-  <s:div styleClass="l--push-bottom-half" id="version-info">
+  <h:panelGroup layout="block"  styleClass="l--push-bottom-half" id="version-info">
     <h1 class="l--push-all-0"><zanata:version-label version="#{versionHome.instance}"/></h1>
-  </s:div>
+  </h:panelGroup>
 
-  <s:div styleClass="progress-bar--large__expander l--pad-bottom-half"
+  <h:panelGroup layout="block"  styleClass="progress-bar--large__expander l--pad-bottom-half"
     id="overall_statistic">
     <ui:fragment rendered="#{versionHomeAction.pageRendered}">
       <p class="d--top l--pad-top-half txt--mini">
@@ -248,7 +248,7 @@
 
     <zanata:loader type="loader--large"
       rendered="#{!versionHomeAction.pageRendered}"/>
-  </s:div>
+  </h:panelGroup>
   <zanata:version-copy-action-loader id="copyTrans"
     oncomplete="onCopyTransComplete()"
     canCancelProcess="#{identity.hasPermission(versionHomeAction.version, 'update')}"
@@ -323,7 +323,7 @@
       </ui:fragment>
       <li class="tab__end">
         <h:form>
-          <s:div
+          <h:panelGroup layout="block"
             styleClass="dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown"
             id="version-more-actions">
             <ui:fragment
@@ -393,7 +393,7 @@
                 </li>
               </ul>
             </ui:fragment>
-          </s:div>
+          </h:panelGroup>
         </h:form>
       </li>
       <ui:fragment
@@ -475,7 +475,7 @@
       <h:outputLabel value="#{msgs['jsf.SourceLanguage']}"/>
     </h:selectOneMenu>
 
-    <s:div id="source-documentType-selection">
+    <h:panelGroup layout="block"  id="source-documentType-selection">
       <ui:fragment rendered="#{versionHomeAction.needDocumentTypeSelection(selectedSourceDocName)}">
         <h:outputLabel styleClass="l--push-top-half">#{msgs['jsf.iteration.documentType.select']}</h:outputLabel>
         <h:selectOneMenu id="sourceDocumentTypes" onchange="bindSourceDocumentType(jQuery(this).val())"
@@ -488,7 +488,7 @@
             itemValue="#{documentType.name()}"/>
         </h:selectOneMenu>
       </ui:fragment>
-    </s:div>
+    </h:panelGroup>
 
     <rich:collapsiblePanel
       header="#{msgs['jsf.iteration.files.CustomParams']}"

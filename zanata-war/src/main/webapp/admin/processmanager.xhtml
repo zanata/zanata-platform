@@ -31,7 +31,7 @@
           </h1>
         </div>
 
-        <s:div styleClass="panel l--push-top-1" id="progress">
+        <h:panelGroup layout="block"  styleClass="panel l--push-top-1" id="progress">
           <div class="panel__header">
             <h2 class="panel__heading--small">
             #{msgs['jsf.processmanager.currentStates']}
@@ -44,17 +44,17 @@
               #{msgs['jsf.processmanager.TotalFinished']}<span class="l--push-left-quarter badge">
               #{processManagerAction.stoppedCount}</span>
           </div>
-        </s:div>
+        </h:panelGroup>
       </div>
 
       <div class="g__item w--1-m w--5-8-l w--2-3 l--push-top-1">
         <div class="panel">
 
           <h:form id="process_form" styleClass="l--push-bottom-0">
-            <s:div styleClass="l--pad-all-half"
+            <h:panelGroup layout="block"  styleClass="l--pad-all-half"
               rendered="#{empty processManagerAction.runningProcesses}">
               <p class="txt--meta">#{msgs['jsf.processmanager.process.empty']}</p>
-            </s:div>
+            </h:panelGroup>
 
             <ui:fragment rendered="#{not empty processManagerAction.runningProcesses}">
               <ul class="list--stats">

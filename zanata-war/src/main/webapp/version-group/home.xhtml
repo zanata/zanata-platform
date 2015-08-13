@@ -28,7 +28,7 @@
     <f:facet name="header">#{msgs['jsf.Groups']}</f:facet>
 
     <h:form id="groupForm">
-      <s:div styleClass="float-right">
+      <h:panelGroup layout="block"  styleClass="float-right">
         <a4j:region>
           <ui:fragment
             rendered="#{identity.hasPermission('HIterationGroup','view-obsolete')}">
@@ -40,7 +40,7 @@
             <h:outputText value="#{msgs['jsf.Obsolete']}"/>
           </ui:fragment>
         </a4j:region>
-      </s:div>
+      </h:panelGroup>
       <br/>
       <rich:dataTable id="groupTable"
         value="#{versionGroupAction.allVersionGroups}" var="group">

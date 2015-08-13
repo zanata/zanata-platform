@@ -29,7 +29,7 @@
               rendered="#{showGlobalMessages != 'false'}"/>
           </a4j:outputPanel>
           <div class="g">
-            <s:div
+            <h:panelGroup layout="block"
               styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--1-2 w--1-m' : ''}"
               rendered="#{applicationConfiguration.internalAuth or applicationConfiguration.jaasAuth}">
               <ui:fragment rendered="#{applicationConfiguration.multiAuth}">
@@ -104,8 +104,8 @@
                   </div>
                 </div>
               </h:form>
-            </s:div>
-            <s:div
+            </h:panelGroup>
+            <h:panelGroup layout="block"
               styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--1-2 w--1-m' : ''}"
               rendered="#{applicationConfiguration.openIdAuth}">
               <h:form>
@@ -139,7 +139,7 @@
                   </li>
                 </ul>
               </h:form>
-            </s:div>
+            </h:panelGroup>
           </div>
         </div>
       </div>

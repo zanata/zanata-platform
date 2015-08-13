@@ -51,7 +51,7 @@
           <ui:remove>
             <!-- User name field is only shown for new users (otherwise they aren't allowed to edit the user name) -->
           </ui:remove>
-          <s:div styleClass="l--push-top-half form__item">
+          <h:panelGroup layout="block"  styleClass="l--push-top-half form__item">
           <h:outputLabel for="username">#{msgs['jsf.Username']}
               <span Class="txt--required">*</span>
             </h:outputLabel>
@@ -61,7 +61,7 @@
                 <a4j:ajax event="blur" render="usernameField" execute="@this"/>
               </h:inputText>
             </s:decorate>
-          </s:div>
+          </h:panelGroup>
 
           <div class="l--push-top-half form__item">
             <h:outputLabel for="email">

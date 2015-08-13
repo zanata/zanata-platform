@@ -75,13 +75,13 @@
     </div>
   </ui:fragment>
 
-  <s:div
+  <h:panelGroup layout="block"
     styleClass="panel__results #{cc.attrs.bottomPanel ? 'panel__results--bottom' : ''}">
-    <s:div id="#{cc.attrs.id}-pager">
-      <s:div styleClass="panel__results__type"
+    <h:panelGroup layout="block"  id="#{cc.attrs.id}-pager">
+      <h:panelGroup layout="block"  styleClass="panel__results__type"
         rendered="#{not (cc.attrs.bottomPanel and cc.attrs.actionBean.totalRecords eq 0)}">
         <i class="i txt--neutral #{cc.attrs.iconClass}"></i>
-      </s:div>
+      </h:panelGroup>
       <ui:fragment
         rendered="#{cc.attrs.actionBean.totalRecords ge cc.attrs.actionBean.pageSize}">
         <ul class="panel__pager">
@@ -103,7 +103,7 @@
           </li>
         </ul>
       </ui:fragment>
-    </s:div>
+    </h:panelGroup>
     <span class="txt--meta">
       <h:panelGroup id="#{cc.attrs.id}-page-info">
         <ui:fragment
@@ -135,6 +135,6 @@
         </button>
       </ui:fragment>
     </span>
-  </s:div>
+  </h:panelGroup>
 </composite:implementation>
 </html>

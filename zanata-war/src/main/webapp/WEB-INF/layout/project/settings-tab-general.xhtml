@@ -83,8 +83,8 @@
 
   <hr/>
 
-  <s:div styleClass="g--tight" id="status">
-    <s:div styleClass="g__item w--1-2 l--push-bottom-1"
+  <h:panelGroup layout="block"  styleClass="g--tight" id="status">
+    <h:panelGroup layout="block"  styleClass="g__item w--1-2 l--push-bottom-1"
         rendered="#{projectHome.instance.status eq 'ACTIVE'}">
       <a4j:commandLink styleClass="button--warning l--push-bottom-half"
           id="button-lock-project"
@@ -93,8 +93,8 @@
       </a4j:commandLink>
 
       <p class="txt--meta">#{msgs['jsf.project.readonly.Message']}</p>
-    </s:div>
-    <s:div styleClass="g__item w--1-2 l--push-bottom-1"
+    </h:panelGroup>
+    <h:panelGroup layout="block"  styleClass="g__item w--1-2 l--push-bottom-1"
         rendered="#{projectHome.instance.status ne 'ACTIVE'}">
       <ui:fragment rendered="#{projectHome.instance.status eq 'OBSOLETE'}">
         <button class="button--success l--push-bottom-half" disabled="disabled">
@@ -109,11 +109,11 @@
       </a4j:commandLink>
 
       <p class="txt--meta">#{msgs['jsf.project.writable.Message']}</p>
-    </s:div>
+    </h:panelGroup>
 
     <ui:fragment
         rendered="#{identity.hasPermission(projectHome.instance, 'mark-obsolete')}">
-      <s:div styleClass="g__item w--1-2"
+      <h:panelGroup layout="block"  styleClass="g__item w--1-2"
           rendered="#{projectHome.instance.status ne 'OBSOLETE'}">
         <a href="javascript:void(0)" id="button-archive-project"
             class="button--danger l--push-bottom-half"
@@ -123,9 +123,9 @@
         </a>
 
         <p class="txt--meta">#{msgs['jsf.DeleteProject.Message']}</p>
-      </s:div>
+      </h:panelGroup>
     </ui:fragment>
-  </s:div>
+  </h:panelGroup>
 </h:form>
 
 </ui:composition>

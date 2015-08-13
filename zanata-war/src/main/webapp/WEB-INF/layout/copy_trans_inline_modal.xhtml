@@ -25,7 +25,7 @@
 
       <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
         <div class="g--tight">
-          <s:div styleClass="g__item txt--align-right"
+          <h:panelGroup layout="block"  styleClass="g__item txt--align-right"
             id="copy-trans-buttons">
             <button styleClass="button--primary" jsfc="a4j:commandButton"
               rendered="#{!copyTransAction.inProgress}"
@@ -34,7 +34,7 @@
             <button styleClass="button--danger" jsfc="a4j:commandButton"
               rendered="#{copyTransAction.inProgress}"
               onclick="cancelCopyTrans()" value="#{msgs['jsf.Cancel']}"></button>
-          </s:div>
+          </h:panelGroup>
         </div>
       </footer>
     </div>

@@ -49,7 +49,7 @@
               value="#{userAction.getEmail(userAction.username)}"/>
           </div>
 
-          <s:div styleClass="form__item l--push-top-1"
+          <h:panelGroup layout="block"  styleClass="form__item l--push-top-1"
             rendered="#{applicationConfiguration.internalAuth}">
             <h:outputLabel for="password">#{msgs['jsf.password.change']}</h:outputLabel>
             <s:decorate id="passwordField"
@@ -62,9 +62,9 @@
                 <a href="#" class="form__toggle js-form-password-toggle">Show</a>
               </div>
             </s:decorate>
-          </s:div>
+          </h:panelGroup>
 
-          <s:div styleClass="form__item l--push-top-1"
+          <h:panelGroup layout="block"  styleClass="form__item l--push-top-1"
             rendered="#{applicationConfiguration.internalAuth}">
             <h:outputLabel for="confirm">#{msgs['jsf.ConfirmPassword']}</h:outputLabel>
             <s:decorate id="passwordConfirmField"
@@ -77,7 +77,7 @@
                 <a href="#" class="form__toggle js-form-password-toggle">Show</a>
               </div>
             </s:decorate>
-          </s:div>
+          </h:panelGroup>
 
 
           <div class="form__item l--push-top-1">

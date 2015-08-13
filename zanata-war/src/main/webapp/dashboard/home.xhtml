@@ -1,7 +1,7 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:h="http://java.sun.com/jsf/html"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   template="../WEB-INF/template/template.xhtml">
 
@@ -35,7 +35,7 @@
           <p class="txt--meta l--push-all-0">#{msgs['jsf.Dashboard']}</p>
 
           <div class="g--loose">
-            <s:div id="profile-overview" styleClass="g__item w--1-2-m">
+            <h:panelGroup layout="block"  id="profile-overview" styleClass="g__item w--1-2-m">
               <div class="media l--push-bottom-half">
                 <div class="media__item--right bx--round">
                   <img
@@ -53,7 +53,7 @@
                   </ul>
                 </div>
               </div>
-            </s:div>
+            </h:panelGroup>
             <div class="g__item w--1-2-m">
               <div class="tabs--lined js-tabs">
                 <ul class="tabs__nav js-tabs-nav">

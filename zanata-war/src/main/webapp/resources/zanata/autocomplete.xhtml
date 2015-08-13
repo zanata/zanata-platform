@@ -148,7 +148,7 @@
 
     <input type="hidden" value="#{cc.attrs.minlength}"/>
     <input type="hidden" value="#{cc.attrs.searchWhenFocus}"/>
-    <s:div id="#{cc.attrs.id}-result">
+    <h:panelGroup layout="block"  id="#{cc.attrs.id}-result">
       <ui:param value="#{cc.attrs.actionBean.suggest()}" name="resultList"/>
       <div id="#{cc.attrs.id}-loader" class="is-hidden autocomplete__results">
         <zanata:loader/>
@@ -164,7 +164,7 @@
           </ui:repeat>
         </ul>
       </ui:fragment>
-    </s:div>
+    </h:panelGroup>
   </div>
 </composite:implementation>
 </html>

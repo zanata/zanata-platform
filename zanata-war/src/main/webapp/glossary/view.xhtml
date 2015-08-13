@@ -82,7 +82,7 @@
       </a4j:status>
 
       <h:form id="glossary_form" styleClass="l--push-bottom-1">
-        <s:div styleClass="l--pad-all-half"
+        <h:panelGroup layout="block"  styleClass="l--pad-all-half"
           rendered="#{empty glossaryAction.getEntries()}">
           <p class="txt--meta">#{msgs['jsf.Glossary.empty']}</p>
           <ui:fragment
@@ -95,12 +95,12 @@
               </a>
             </p>
           </ui:fragment>
-        </s:div>
+        </h:panelGroup>
 
-        <s:div styleClass="l--pad-all-half"
+        <h:panelGroup layout="block"  styleClass="l--pad-all-half"
           rendered="#{not empty glossaryAction.getEntries() and empty glossaryAction.glossaryFilter.currentPage}">
           <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
-        </s:div>
+        </h:panelGroup>
 
         <ui:fragment
           rendered="#{!glossaryAction.glossaryFilter.currentPage.isEmpty()}">
@@ -112,7 +112,7 @@
                 value="#{identity.hasPermission('', 'glossary-delete')}"/>
               <li
                 class="#{hasActions ? 'list__item--actionable' : ''}">
-                <s:div styleClass="list__item__action" rendered="#{hasActions}">
+                <h:panelGroup layout="block"  styleClass="list__item__action" rendered="#{hasActions}">
                   <div
                     class="dropdown dropdown--small dropdown--inline dropdown--single list__item__dropdown js-dropdown">
                     <a href="#"
@@ -135,7 +135,7 @@
                       </ui:fragment>
                     </ul>
                   </div>
-                </s:div>
+                </h:panelGroup>
 
                 <h:link outcome="/language/language.xhtml">
                   <f:param name="id" value="#{glossary.localeId}"/>

@@ -39,7 +39,7 @@
     </a4j:status>
 
     <h:form id="members-form" styleClass="l--push-bottom-1">
-      <s:div styleClass="l--pad-all-half"
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
         rendered="#{empty languageAction.localeMembers}">
         <p class="txt--meta">#{msgs['jsf.language.members.empty']}</p>
         <ui:fragment
@@ -53,12 +53,12 @@
             </a>
           </p>
         </ui:fragment>
-      </s:div>
+      </h:panelGroup>
 
-      <s:div styleClass="l--pad-all-half"
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
         rendered="#{not empty languageAction.localeMembers and empty languageAction.membersFilter.currentPage}">
         <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
-      </s:div>
+      </h:panelGroup>
 
 
       <ui:fragment rendered="#{not empty languageAction.membersFilter.currentPage}">
@@ -66,7 +66,7 @@
           <ui:repeat value="#{languageAction.membersFilter.currentPage}" var="member">
             <li
               class="#{identity.hasPermission(languageAction.locale, 'manage-language-team') ? 'list__item--actionable' : 'l--pad-all-quarter'}">
-              <s:div styleClass="list__item__action"
+              <h:panelGroup layout="block"  styleClass="list__item__action"
                 rendered="#{identity.hasPermission(languageAction.locale, 'manage-language-team')}">
                 <div
                   class="dropdown dropdown--small dropdown--inline dropdown--single list__item__dropdown js-dropdown">
@@ -85,7 +85,7 @@
                     </li>
                   </ul>
                 </div>
-              </s:div>
+              </h:panelGroup>
 
               <div class="list__item__content">
                 <div class="list__item__info">

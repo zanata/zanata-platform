@@ -149,7 +149,7 @@
   </ui:fragment>
 
   <ui:fragment rendered="#{not identity.loggedIn}">
-    <s:div styleClass="header__login l--float-right">
+    <h:panelGroup layout="block"  styleClass="header__login l--float-right">
       <h:link id="register_link_internal_auth" outcome="/account/register.xhtml"
         value="#{msgs['jsf.Signup']}"
          styleClass="is-hidden--s button"
@@ -182,7 +182,7 @@
         rendered="#{applicationConfiguration.kerberosAuth}">
         #{msgs['jsf.Login']}
       </h:outputLink>
-    </s:div>
+    </h:panelGroup>
   </ui:fragment>
 
 </header>

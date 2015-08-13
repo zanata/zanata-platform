@@ -53,7 +53,7 @@
             <h2 class="panel__heading">#{msgs['jsf.rolerules.title']}</h2>
           </div>
 
-          <s:div styleClass="l--pad-all-half"
+          <h:panelGroup layout="block"  styleClass="l--pad-all-half"
             rendered="#{empty roleAssignmentRuleAction.allRules}">
             <p class="txt--meta">#{msgs['jsf.rolerules.norules']}</p>
             <p>
@@ -62,7 +62,7 @@
                 <i class="i i--plus i__item__icon"></i>
               </h:link>
             </p>
-          </s:div>
+          </h:panelGroup>
 
 
           <h:form styleClass="l--push-bottom-0" id="roleRules"

@@ -140,8 +140,8 @@
               <a4j:ajax execute="@this" render="emailLogSettings"/>
              </h:selectBooleanCheckbox>
           </div>
-          <s:div id="emailLogSettings">
-            <s:div styleClass="l--push-top-half" rendered="#{serverConfigurationBean.enableLogEmail}">
+          <h:panelGroup layout="block"  id="emailLogSettings">
+            <h:panelGroup layout="block"  styleClass="l--push-top-half" rendered="#{serverConfigurationBean.enableLogEmail}">
               <h:outputLabel>#{msgs['jsf.config.LogEmailLevel']}
                 <span class="txt--meta l--push-right-quarter">
                   <i class="i i--info" title="#{msgs['jsf.config.LogEmailLevel.tooltip']}"></i>
@@ -154,8 +154,8 @@
                 <f:selectItem itemLabel="#{msgs['jsf.Error']}"
                   itemValue="ERROR"/>
               </h:selectOneMenu>
-            </s:div>
-            <s:div styleClass="l--push-top-half" rendered="#{serverConfigurationBean.enableLogEmail}">
+            </h:panelGroup>
+            <h:panelGroup layout="block"  styleClass="l--push-top-half" rendered="#{serverConfigurationBean.enableLogEmail}">
               <h:outputLabel for="logDestEml">#{msgs['jsf.config.LogDestEmail']}
               <span class="txt--meta">
                 <i class="i i--info" title="#{msgs['jsf.config.LogDestEmail.tooltip']}"></i>
@@ -168,8 +168,8 @@
                     styleClass="txt--neutral" />
                 </h:inputText>
               </s:decorate>
-            </s:div>
-          </s:div>
+            </h:panelGroup>
+          </h:panelGroup>
         </div>
 
         <div class="form__item l--push-top-1">

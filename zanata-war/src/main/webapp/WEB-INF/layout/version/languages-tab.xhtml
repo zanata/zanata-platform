@@ -74,7 +74,7 @@
   </a4j:status>
 
   <h:form id="languages-language_form" styleClass="l--push-bottom-1">
-    <s:div styleClass="l--pad-all-half"
+    <h:panelGroup layout="block"  styleClass="l--pad-all-half"
       rendered="#{empty versionHomeAction.supportedLocale}">
       <p class="txt--meta">#{msgs['jsf.NoActiveLanguages']}</p>
       <ui:fragment
@@ -86,12 +86,12 @@
           </a>
         </p>
       </ui:fragment>
-    </s:div>
+    </h:panelGroup>
 
-    <s:div styleClass="l--pad-all-half"
+    <h:panelGroup layout="block"  styleClass="l--pad-all-half"
       rendered="#{not empty versionHomeAction.supportedLocale and empty versionHomeAction.languageTabLanguageFilter.currentPage}">
       <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
-    </s:div>
+    </h:panelGroup>
 
     <ui:fragment
       rendered="#{not empty versionHomeAction.languageTabLanguageFilter.currentPage}">
@@ -172,7 +172,7 @@
 
     <h:form styleClass="l--push-bottom-0 bx--inline"
       id="languages-export_options">
-      <s:div
+      <h:panelGroup layout="block"
         styleClass="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown"
         rendered="#{identity.loggedIn and versionHomeAction.selectedLocale != null}">
         <a class="dropdown__toggle js-dropdown__toggle" href="#"
@@ -214,7 +214,7 @@
             </h:outputLink>
           </li>
         </ul>
-      </s:div>
+      </h:panelGroup>
     </h:form>
   </div>
 
@@ -257,13 +257,13 @@
 </a4j:status>
 
 <h:form id="languages-document_list" styleClass="l--push-bottom-1">
-  <s:div styleClass="l--pad-all-half"
+  <h:panelGroup layout="block"  styleClass="l--pad-all-half"
     rendered="#{versionHomeAction.selectedLocale == null}">
     <p class="txt--meta">#{msgs['jsf.SelectALanguageFromList']}</p>
-  </s:div>
+  </h:panelGroup>
 
   <ui:fragment rendered="#{versionHomeAction.selectedLocale != null}">
-    <s:div styleClass="l--pad-all-half"
+    <h:panelGroup layout="block"  styleClass="l--pad-all-half"
       rendered="#{empty versionHomeAction.documents}">
       <p class="txt--meta">#{msgs['jsf.iteration.NoDocumentInVersion']}</p>
       <ui:fragment
@@ -275,12 +275,12 @@
           </a>
         </p>
       </ui:fragment>
-    </s:div>
+    </h:panelGroup>
 
-    <s:div styleClass="l--pad-all-half"
+    <h:panelGroup layout="block"  styleClass="l--pad-all-half"
       rendered="#{not empty versionHomeAction.documents and empty versionHomeAction.languageTabDocumentFilter.currentPage}">
       <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
-    </s:div>
+    </h:panelGroup>
 
     <ui:fragment
       rendered="#{not empty versionHomeAction.languageTabDocumentFilter.currentPage}">
@@ -292,7 +292,7 @@
             value="#{versionHomeAction.selectedLocale.active and (identity.loggedIn or versionHomeAction.isPoDocument(document.docId) or (versionHomeAction.knownProjectType and !versionHomeAction.isPoDocument(document.docId)) or versionHomeAction.hasOriginal(document.path, document.name) or (versionHomeAction.isFileUploadAllowed(versionHomeAction.selectedLocale) and versionHomeAction.isUserAllowedToTranslateOrReview(versionHomeAction.selectedLocale)))}"/>
           <li
             class="progress-bar__expander #{hasActions ? 'list__item--actionable' : ''}">
-            <s:div styleClass="list__item__action" rendered="#{hasActions}">
+            <h:panelGroup layout="block"  styleClass="list__item__action" rendered="#{hasActions}">
               <div
                 class="dropdown dropdown--small dropdown--inline dropdown--single js-dropdown">
                 <a class="dropdown__toggle js-dropdown__toggle txt--meta"
@@ -379,7 +379,7 @@
                   </ui:fragment>
                 </ul>
               </div>
-            </s:div>
+            </h:panelGroup>
 
             <ui:fragment rendered="#{versionHomeAction.selectedLocale.active}">
               <a
@@ -390,7 +390,7 @@
                     <span class="list__item__meta">#{document.path}</span>
                   </div>
 
-                  <s:div styleClass="list__item__stats"
+                  <h:panelGroup layout="block"  styleClass="list__item__stats"
                     rendered="#{versionHomeAction.pageRendered}">
                     <ui:param name="displayUnit"
                       value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.documentSortingList.selectedSortOption, versionHomeAction.selectedLocale.localeId, document)}"/>
@@ -399,7 +399,7 @@
                         <span class="stats__figure">#{displayUnit.figure}</span>
                         <span class="stats__unit">#{displayUnit.unit}</span>
                      </span>
-                  </s:div>
+                  </h:panelGroup>
                 </div>
                 <zanata:statistic
                   value="#{versionHomeAction.getStatisticForDocument(document.id, versionHomeAction.selectedLocale.localeId)}"
@@ -416,7 +416,7 @@
                   <span class="list__item__meta">#{document.path}</span>
                 </div>
 
-                <s:div styleClass="list__item__stats"
+                <h:panelGroup layout="block"  styleClass="list__item__stats"
                   rendered="#{versionHomeAction.pageRendered}">
                   <ui:param name="displayUnit"
                     value="#{versionHomeAction.getStatisticFigureForDocument(versionHomeAction.documentSortingList.selectedSortOption, versionHomeAction.selectedLocale.localeId, document)}"/>
@@ -425,7 +425,7 @@
                       <span class="stats__figure">#{displayUnit.figure}</span>
                       <span class="stats__unit">#{displayUnit.unit}</span>
                    </span>
-                </s:div>
+                </h:panelGroup>
               </div>
               <zanata:statistic
                 value="#{versionHomeAction.getStatisticForDocument(document.id, versionHomeAction.selectedLocale.localeId)}"

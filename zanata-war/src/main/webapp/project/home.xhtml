@@ -77,7 +77,7 @@
             </rich:dataScroller>
           </div>
 
-          <s:div styleClass="float-right">
+          <h:panelGroup layout="block"  styleClass="float-right">
             <a4j:region>
               <h:selectBooleanCheckbox
                 title="#{msgs['jsf.FilterActiveProjects']}"
@@ -94,7 +94,7 @@
               </h:selectBooleanCheckbox>
               <h:outputText value="#{msgs['jsf.ReadOnly']}"/>
             </a4j:region>
-          </s:div>
+          </h:panelGroup>
           <br/>
           <rich:dataTable id="projectList"
             rows="#{projectAction.projectPagedListDataModel.pageSize}"

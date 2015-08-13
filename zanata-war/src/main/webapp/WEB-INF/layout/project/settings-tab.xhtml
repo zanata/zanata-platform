@@ -169,14 +169,14 @@
     </ul>
     <hr/>
 
-    <s:div styleClass="l--push-bottom-half" id="user-roles">
+    <h:panelGroup layout="block"  styleClass="l--push-bottom-half" id="user-roles">
       <zanata:checkbox label="#{msgs['jsf.RestrictRoleAccessMessage']}"
         onValueChanged="onRestrictedByRoleValueChanged"
         labelStyle="js-reveal__toggle l--push-bottom-0"
         styleClass="js-form__restricted-by-role"
         checked="#{projectHome.instance.isRestrictedByRoles()}"
         value="restrict-access"/>
-      <s:div styleClass="bg--high l--pad-top-quarter l--pad-h-quarter"
+      <h:panelGroup layout="block"  styleClass="bg--high l--pad-top-quarter l--pad-h-quarter"
         rendered="#{projectHome.instance.restrictedByRoles}">
         <ul class="g--tighter">
           <ui:repeat value="#{projectHome.availableRoles}" var="availableRole">
@@ -188,8 +188,8 @@
             </li>
           </ui:repeat>
         </ul>
-      </s:div>
-    </s:div>
+      </h:panelGroup>
+    </h:panelGroup>
   </h:form>
 </li>
 <li id="settings-webhooks" class="js-tabs-content">

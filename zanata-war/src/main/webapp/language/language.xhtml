@@ -38,7 +38,7 @@
             value="#{msgs['jsf.Languages']}"/>
         </p>
 
-        <s:div styleClass="l--push-bottom-half" id="language-info">
+        <h:panelGroup layout="block"  styleClass="l--push-bottom-half" id="language-info">
           <h1 class="l--push-all-0 #{not languageAction.locale.active or not languageAction.locale.enabledByDefault ? 'txt--neutral' : ''}">
             <i class="i i--language"></i> #{languageAction.locale.retrieveDisplayName()}
           </h1>
@@ -49,14 +49,14 @@
             <div>
               #{msgs['jsf.NativeName']}<span class="l--push-left-quarter label">#{languageAction.locale.retrieveNativeName()}</span>
             </div>
-            <s:div rendered="#{languageAction.locale.asULocale().country ne ''}">
+            <h:panelGroup layout="block"  rendered="#{languageAction.locale.asULocale().country ne ''}">
               #{msgs['jsf.CountryCode']}<span class="l--push-left-quarter label">#{languageAction.locale.asULocale().country}</span>
-            </s:div>
-            <s:div rendered="#{languageAction.locale.asULocale().variant ne ''}">
+            </h:panelGroup>
+            <h:panelGroup layout="block"  rendered="#{languageAction.locale.asULocale().variant ne ''}">
               #{msgs['jsf.Variant']}<span class="l--push-left-quarter label">#{languageAction.locale.asULocale().variant}</span>
-            </s:div>
+            </h:panelGroup>
           </div>
-          <s:div rendered="#{not languageAction.locale.active or not languageAction.locale.enabledByDefault}">
+          <h:panelGroup layout="block"  rendered="#{not languageAction.locale.active or not languageAction.locale.enabledByDefault}">
             <h:panelGroup layout="span" styleClass="label" rendered="#{not languageAction.locale.active}">
               <!-- TODO h:panelGroup do not support title attribute. But do we really need a title here? -->
               <span title="#{msgs['jsf.Disabled']}">
@@ -70,9 +70,9 @@
                 #{msgs['jsf.language.disableByDefault']}
               </span>
             </h:panelGroup>
-          </s:div>
+          </h:panelGroup>
 
-        </s:div>
+        </h:panelGroup>
       </div>
 
       <div class="g__item w--1-m w--5-8-l w--2-3">

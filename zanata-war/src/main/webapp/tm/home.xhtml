@@ -145,7 +145,7 @@
         </a4j:status>
 
         <h:form styleClass="l--push-bottom-0" id="tmList">
-          <s:div styleClass="l--pad-all-half"
+          <h:panelGroup layout="block"  styleClass="l--pad-all-half"
             rendered="#{empty translationMemoryAction.allTranslationMemories}">
             <p class="txt--meta">#{msgs['jsf.transmemory.NoTransMemories']}</p>
             <p>
@@ -155,14 +155,14 @@
                 <i class="i i--plus i__item__icon"></i>
               </h:link>
             </p>
-          </s:div>
+          </h:panelGroup>
 
-          <s:div rendered="#{not empty translationMemoryAction.allTranslationMemories}">
-            <s:div id="processResult">
+          <h:panelGroup layout="block"  rendered="#{not empty translationMemoryAction.allTranslationMemories}">
+            <h:panelGroup layout="block"  id="processResult">
               <h:panelGroup layout="span" styleClass="message--warning" rendered="#{not empty translationMemoryAction.processError}">
                 #{translationMemoryAction.processError}
               </h:panelGroup>
-            </s:div>
+            </h:panelGroup>
 
             <ul class="list--stats">
               <ui:repeat value="#{translationMemoryAction.allTranslationMemories}"
@@ -170,7 +170,7 @@
                 <li class="list__item--actionable">
 
                   <div class="list__item__action">
-                    <s:div
+                    <h:panelGroup layout="block"
                       styleClass="dropdown dropdown--small dropdown--inline dropdown--single list__item__dropdown js-dropdown" id="options">
                       <a href="#" title="Options"
                         class="dropdown__toggle js-dropdown__toggle txt--meta">
@@ -233,7 +233,7 @@
                           </h:commandLink>
                         </li>
                       </ul>
-                    </s:div>
+                    </h:panelGroup>
                   </div>
                   <div>
                     <div class="list__item__content">
@@ -247,7 +247,7 @@
                         </h3>
                         <span class="list__item__meta">#{tm.description}</span>
                       </div>
-                      <s:div styleClass="list__item__stats txt--mini" id="tm-status">
+                      <h:panelGroup layout="block"  styleClass="list__item__stats txt--mini" id="tm-status">
                         <a4j:poll interval="3000" limitRender="true"
                           render="processResultPoll, tm-size, tm-status, options"
                           enabled="#{translationMemoryAction.isTransMemoryBeingCleared(tm.slug)}"/>
@@ -266,13 +266,13 @@
                               </span>
                           </span>
                         </ui:fragment>
-                      </s:div>
+                      </h:panelGroup>
                     </div>
                   </div>
                 </li>
               </ui:repeat>
             </ul>
-          </s:div>
+          </h:panelGroup>
         </h:form>
       </div>
     </div>

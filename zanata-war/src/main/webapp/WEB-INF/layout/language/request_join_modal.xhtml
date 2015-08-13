@@ -76,7 +76,7 @@
       </div>
 
       <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
-        <s:div id="request-join-buttons" styleClass="txt--align-right">
+        <h:panelGroup layout="block"  id="request-join-buttons" styleClass="txt--align-right">
           <h:outputScript rendered="#{not languageJoinAction.hasSelectedRole()}">
             $(document).ready(function() {
               jQuery(getJoinLanguageForm()).find('#request-join-language-send-button').attr('disabled', true);
@@ -93,7 +93,7 @@
             onclick="sendJoinLanguageEmail();return false;">
             <span class="loader__label">#{msgs['jsf.email.Send']}</span>
           </button>
-        </s:div>
+        </h:panelGroup>
       </footer>
     </h:form>
   </div>

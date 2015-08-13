@@ -76,7 +76,7 @@
             <span class="txt--meta"> [#{result.slug}]</span>
           </zanata:autocomplete>
 
-          <s:div id="versions">
+          <h:panelGroup layout="block"  id="versions">
             <ui:fragment rendered="#{empty versionGroupJoinAction.versions and versionGroupJoinAction.projectSlug != null}">
               <div class="l--pad-all-quarter txt--understated">#{msgs['jsf.NoVersions']}</div>
             </ui:fragment>
@@ -91,7 +91,7 @@
                 </ui:repeat>
               </ul>
             </ui:fragment>
-          </s:div>
+          </h:panelGroup>
         </div>
 
         <s:decorate id="messageField" template="/WEB-INF/layout/field.xhtml">

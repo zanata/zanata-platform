@@ -33,7 +33,7 @@
             <ui:remove>
               <!--Internal, JAAS and Kerberos Login form-->
             </ui:remove>
-            <s:div
+            <h:panelGroup layout="block"
               styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--1-2 w--1-m' : ''}"
               rendered="#{applicationConfiguration.internalAuth or applicationConfiguration.jaasAuth or applicationConfiguration.kerberosAuth}">
               <ui:fragment rendered="#{applicationConfiguration.multiAuth}">
@@ -94,11 +94,11 @@
                   </ui:fragment>
                 </div>
               </h:form>
-            </s:div>
+            </h:panelGroup>
             <ui:remove>
               <!-- OpenId Login form-->
             </ui:remove>
-            <s:div
+            <h:panelGroup layout="block"
               styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--1-2 w--1-m' : ''}"
               rendered="#{applicationConfiguration.openIdAuth}">
               <h:form>
@@ -137,7 +137,7 @@
                   </li>
                 </ul>
               </h:form>
-            </s:div>
+            </h:panelGroup>
           </div>
         </div>
       </div>

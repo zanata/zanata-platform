@@ -26,7 +26,7 @@
     </a4j:status>
 
     <h:form id="groups-form" styleClass="l--push-bottom-1">
-      <s:div styleClass="l--pad-all-half"
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
         rendered="#{empty versionHomeAction.groups}">
         <p class="txt--meta">#{msgs['jsf.NoGroups']}</p>
         <ui:fragment
@@ -40,12 +40,12 @@
             </h:link>
           </p>
         </ui:fragment>
-      </s:div>
+      </h:panelGroup>
 
-      <s:div styleClass="l--pad-all-half"
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
         rendered="#{not empty versionHomeAction.groups and empty versionHomeAction.groupFilter.currentPage}">
         <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
-      </s:div>
+      </h:panelGroup>
 
       <ul class="list--slat">
         <ui:repeat value="#{versionHomeAction.groupFilter.currentPage}"

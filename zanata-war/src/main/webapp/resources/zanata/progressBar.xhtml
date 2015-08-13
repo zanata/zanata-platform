@@ -2,7 +2,7 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:composite="http://java.sun.com/jsf/composite"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:h="http://java.sun.com/jsf/html"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:rich="http://richfaces.org/rich">
@@ -64,39 +64,39 @@
     //]]>
   </script>
 
-  <s:div id="#{cc.attrs.id}" title="#{cc.attrs.title}">
-    <s:div id="#{cc.attrs.id}-content"
+  <h:panelGroup layout="block"  id="#{cc.attrs.id}" title="#{cc.attrs.title}">
+    <h:panelGroup layout="block"  id="#{cc.attrs.id}-content"
       styleClass="is-active #{cc.attrs.type eq 'large' ? 'progress-bar--large__expander' : 'progress-bar__expander'}">
 
-      <s:div id="#{cc.attrs.id}-var">
+      <h:panelGroup layout="block"  id="#{cc.attrs.id}-var">
         <input id="#{cc.attrs.id}-inProgress" type="hidden"
           value="#{cc.attrs.actionBean.inProgress}"/>
         <input id="#{cc.attrs.id}-completePercent" type="hidden"
           value="#{cc.attrs.actionBean.completedPercentage}"/>
-      </s:div>
+      </h:panelGroup>
 
       <ui:fragment rendered="#{cc.attrs.type eq 'large'}">
-        <s:div styleClass="progress-bar progress-bar--large">
+        <h:panelGroup layout="block"  styleClass="progress-bar progress-bar--large">
           <span class="progress-bar__translated" style="width: 0%;"/>
           <span class="progress-bar__item" style="width: 100%;margin-left: 0%"/>
-        </s:div>
+        </h:panelGroup>
       </ui:fragment>
 
       <ui:fragment rendered="#{cc.attrs.type eq 'full'}">
-        <s:div styleClass="progress-bar progress-bar--full">
+        <h:panelGroup layout="block"  styleClass="progress-bar progress-bar--full">
           <span class="progress-bar__translated" style="width: 0%;"/>
           <span class="progress-bar__item" style="width: 100%;margin-left: 0%"/>
-        </s:div>
+        </h:panelGroup>
       </ui:fragment>
 
       <ui:fragment rendered="#{cc.attrs.type eq ''}">
-        <s:div styleClass="progress-bar">
+        <h:panelGroup layout="block"  styleClass="progress-bar">
           <span class="progress-bar__translated" style="width: 0%;"/>
           <span class="progress-bar__item" style="width: 100%;margin-left: 0%"/>
-        </s:div>
+        </h:panelGroup>
       </ui:fragment>
 
-    </s:div>
-  </s:div>
+    </h:panelGroup>
+  </h:panelGroup>
 </composite:implementation>
 </html>

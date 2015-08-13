@@ -64,7 +64,7 @@
         value="#{msgs['jsf.Projects']}"/>
     </p>
 
-    <s:div styleClass="media l--push-bottom-half" id="project-info">
+    <h:panelGroup layout="block"  styleClass="media l--push-bottom-half" id="project-info">
       <div class="media__body">
         <h1 class="l--push-all-0">#{projectHome.instance.name}</h1>
 
@@ -119,13 +119,13 @@
           </ul>
         </div>
       </ui:fragment>
-    </s:div>
+    </h:panelGroup>
 
     <ui:fragment rendered="#{identity.loggedIn}">
       <ui:param name="activities"
         value="#{projectHomeAction.getProjectLastActivity()}"/>
 
-      <s:div styleClass="panel l--push-top-half" rendered="#{not empty activities}">
+      <h:panelGroup layout="block"  styleClass="panel l--push-top-half" rendered="#{not empty activities}">
         <div class="panel__header">
           <h2 class="panel__heading--small">
             #{msgs['jsf.YourLastActivity']}
@@ -138,7 +138,7 @@
             </div>
           </ui:repeat>
         </div>
-      </s:div>
+      </h:panelGroup>
     </ui:fragment>
 
 </div>
@@ -229,7 +229,7 @@
       </li>
 
       <li id="about">
-        <s:div id="project-about">
+        <h:panelGroup layout="block"  id="project-about">
           <div id="home-content-rendered" class="prose">
             <h:outputText
               rendered="#{not empty projectHome.instance.homeContent}"
@@ -238,7 +238,7 @@
           <ui:fragment rendered="#{empty projectHome.instance.homeContent}">
             #{msgs['jsf.project.NoHomeContent']}
           </ui:fragment>
-        </s:div>
+        </h:panelGroup>
       </li>
 
       <ui:fragment
