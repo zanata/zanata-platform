@@ -1,7 +1,6 @@
 <div xmlns="http://www.w3.org/1999/xhtml"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:c="http://java.sun.com/jsf/core"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:rich="http://richfaces.org/rich"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   class="modal" id="glossaryUploadDialog" tabindex="-1" role="dialog"
@@ -12,13 +11,13 @@
       zanata.loader.deactivate('#upload-glossary-loader');
       enableUploadGlossaryButton(false);
       enableWarningMessage(false);
-
-      getUploadGlossaryFileComponent().change(function() {
-        if (getUploadGlossaryFileName() != '') {
-          processDetailsSection(getUploadGlossaryFileName().toUpperCase());
-        }
-      });
     });
+
+    function onGlossaryFileSubmitted() {
+      if (getUploadGlossaryFileName() != '') {
+        processDetailsSection(getUploadGlossaryFileName().toUpperCase());
+      }
+    }
 
     function processDetailsSection(fileName) {
       var fileExtension = getFileExtension(fileName);
@@ -53,18 +52,13 @@
       }
     }
 
-    function getUploadGlossaryFileComponent() {
-      return jQuery('#' + jqSelector('#{rich:clientId('glossary-file-upload')}'));
-    }
-
     function getUploadGlossaryFileName() {
-      return getUploadGlossaryFileComponent().val();
+      return jQuery('.rf-fu-itm-lbl').text();
     }
 
     function cancelUploadGlossary() {
       enableUploadGlossaryButton(false);
       zanata.loader.deactivate('#upload-glossary-loader');
-      getUploadGlossaryFileComponent().val('');
       jQuery('#lang-selection').addClass('is-hidden');
     }
 
@@ -107,16 +101,19 @@
       </button>
     </header>
 
-    <h:form id="upload-glossary-form" styleClass="l--push-bottom-0" enctype="multipart/form-data">
+    <h:form id="upload-glossary-form" styleClass="l--push-bottom-0" >
       <div class="modal__content l--pad-all-1">
         <div class="form__item txt--understated" id="message">
           <span>#{msgs['jsf.Glossary.supportedFileFormat']}</span>
         </div>
         <div class="form__item">
-          <s:fileUpload id="glossary-file-upload" accept="*"
-            data="#{glossaryAction.glossaryFileUpload.fileContents}"
-            fileName="#{glossaryAction.glossaryFileUpload.fileName}">
-          </s:fileUpload>
+          <rich:fileUpload id="upload-file"
+            fileUploadListener="#{glossaryAction.glossaryFileUploaded}"
+            onfilesubmit="onGlossaryFileSubmitted()"
+            addControlLabel="Select file..." clearAllLabel="Clear all" clearLabel="Clear"
+            uploadLabel="upload" immediateUpload="true" maxFilesQuantity="1"
+            listHeight="100"
+            />
         </div>
 
         <div class="form__item is-hidden" id="lang-selection">

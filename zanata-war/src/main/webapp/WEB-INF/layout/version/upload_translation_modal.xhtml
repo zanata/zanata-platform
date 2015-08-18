@@ -1,6 +1,5 @@
 <div xmlns="http://www.w3.org/1999/xhtml"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:rich="http://richfaces.org/rich"
@@ -13,15 +12,13 @@
       zanata.loader.deactivate('#upload-translation-loader');
       setUploadTranslationDocButtonEnabled(false);
       setUploadTranslationDocButtonVisible(true);
-      getUploadFileComponent().change(function() {
-        var isFileSelected = getUploadFileName() != '';
-        if (isFileSelected) {
-          renderAdapterSelection(getUploadFileName());
-        }
-        setUploadTranslationDocButtonEnabled(isFileSelected);
-        setUploadTranslationDocButtonVisible(true);
-      });
     });
+
+    function onTranslationFileSubmitted() {
+      renderAdapterSelection(getUploadFileName());
+      setUploadTranslationDocButtonEnabled(true);
+      setUploadTranslationDocButtonVisible(true);
+    }
 
     function setUploadTranslationDocButtonEnabled(enable) {
       getUploadTranslationDocButton().prop('disabled', !enable);
@@ -35,16 +32,12 @@
       return jQuery('#' + jqSelector('#{rich:clientId('upload-button')}'));
     }
 
-    function getUploadFileComponent() {
-      return jQuery('#' + jqSelector('#{rich:clientId('upload-file')}'));
-    }
-
     function clearDocumentTypeSelection() {
       jQuery('#' + jqSelector('#{rich:clientId('documentType-selection')}')).html('');
     }
 
     function getUploadFileName() {
-      return getUploadFileComponent().val();
+      return jQuery('.rf-fu-itm-lbl').text();
     }
 
     function getDocTypeSelection() {
@@ -53,7 +46,6 @@
 
     function cancelUpload() {
       zanata.loader.deactivate('#upload-translation-loader');
-      getUploadFileComponent().val('');
       clearDocumentTypeSelection();
       setUploadTranslationDocButtonEnabled(false);
       setUploadTranslationDocButtonVisible(true);
@@ -105,7 +97,7 @@
       </button>
     </header>
 
-    <h:form id="uploadForm" styleClass="l--push-bottom-0" enctype="multipart/form-data">
+    <h:form id="uploadForm" styleClass="l--push-bottom-0">
       <h:inputHidden id="uploadDocId"
         value="#{versionHomeAction.translationFileUpload.docId}"/>
 
@@ -113,9 +105,14 @@
         <div class="l--pad-top-quarter form__item txt--understated" id="uploadPanelMsg"></div>
 
         <div class="form__item">
-          <s:fileUpload accept="*" id="upload-file"
-            data="#{versionHomeAction.translationFileUpload.fileContents}"
-            fileName="#{versionHomeAction.translationFileUpload.fileName}"/>
+          <rich:fileUpload id="upload-file"
+            fileUploadListener="#{versionHomeAction.transFileUploaded}"
+            onfilesubmit="onTranslationFileSubmitted()"
+            addControlLabel="Select file..." clearAllLabel="Clear all" clearLabel="Clear"
+            uploadLabel="upload" immediateUpload="true" maxFilesQuantity="1"
+            listHeight="100"
+            />
+
         </div>
 
         <h:panelGroup layout="block"  id="documentType-selection">

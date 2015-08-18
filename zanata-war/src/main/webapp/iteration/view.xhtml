@@ -2,7 +2,6 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
@@ -454,12 +453,13 @@
   <f:facet name="header">
     <h:outputText id="uploadSourcePanelHeader"/>
   </f:facet>
-  <h:form id="uploadSrcForm" enctype="multipart/form-data">
-    <s:fileUpload id="specificDocFileInput"
-      accept="*"
-      onchange="checkIfFileSelected();"
-      data="#{versionHomeAction.sourceFileUpload.fileContents}"
-      fileName="#{versionHomeAction.sourceFileUpload.fileName}"/>
+  <h:form id="uploadSrcForm" >
+    <rich:fileUpload
+      fileUploadListener="#{versionHomeAction.sourceFileUploaded}"
+      addControlLabel="Select file..." clearAllLabel="Clear all" clearLabel="Clear"
+      uploadLabel="upload" immediateUpload="true" maxFilesQuantity="1" listHeight="60"
+
+      />
     <h:inputHidden id="uploadSourceDocId"
       value="#{versionHomeAction.sourceFileUpload.docId}"/>
     <br/>
