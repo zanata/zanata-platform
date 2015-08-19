@@ -23,7 +23,8 @@
         xmlns:h="http://java.sun.com/jsf/html"
         xmlns:a4j="http://richfaces.org/a4j"
         xmlns:rich="http://richfaces.org/rich"
-        xmlns:s="http://jboss.org/schema/seam/taglib">
+        xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+        >
 
 <h2 class="l--push-all-0 gamma d--bottom">#{msgs['jsf.General']}</h2>
 
@@ -38,13 +39,13 @@
         <h:outputLabel for="homePage">#{msgs['jsf.project.HomePage']}
           <span class="txt--meta">#{msgs['jsf.field.optional']}</span>
         </h:outputLabel>
-        <s:decorate id="homePageField" template="../field.xhtml">
+        <zanata:decorate id="homePage" componentId="homePageField">
           <h:inputText id="homePage" required="false"
               value="#{projectHome.instance.sourceViewURL}">
             <rich:placeholder value="http://" styleClass="txt--neutral"/>
             <a4j:ajax event="blur" render="homePageField" execute="@this"/>
           </h:inputText>
-        </s:decorate>
+        </zanata:decorate>
 
         <p class="txt--meta">
           <h:outputText escape="false"
@@ -57,12 +58,12 @@
         <h:outputLabel for="repo">#{msgs['jsf.field.repository']}
           <span class="txt--meta">#{msgs['jsf.field.optional']}</span>
         </h:outputLabel>
-        <s:decorate id="repoField" template="../field.xhtml">
+        <zanata:decorate id="repo" componentId="repoField">
           <h:inputText id="repo" required="false"
               value="#{projectHome.instance.sourceCheckoutURL}">
             <a4j:ajax event="blur" render="repoField" execute="@this"/>
           </h:inputText>
-        </s:decorate>
+        </zanata:decorate>
 
         <p class="txt--meta">
           <h:outputText

@@ -5,6 +5,7 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   template="../WEB-INF/template/template_nobanner.xhtml">
 
   <ui:define name="page_title">#{msgs['jsf.Register']}</ui:define>
@@ -41,34 +42,34 @@
                 styleClass="l--push-top-half l--pad-all-1 bg--pop-higher js-form-password-parent">
                 <h:outputLabel
                   for="name">#{msgs['jsf.register.FullName.label']}</h:outputLabel>
-                <h:inputText id="name" value="#{register.person.name}"
-                  tabindex="2"/>
+                <zanata:decorate id="nameField">
+                  <h:inputText id="name" value="#{register.person.name}"
+                    tabindex="2"/>
+                </zanata:decorate>
+
 
                 <h:outputLabel
                   for="username">#{msgs['jsf.Username']}</h:outputLabel>
-                <s:decorate id="usernameField"
-                  template="../WEB-INF/layout/field.xhtml">
+                <zanata:decorate id="username" componentId="usernameField">
                   <h:inputText id="username" value="#{register.username}"
                     tabindex="3">
-                    <a4j:ajax event="blur" render="usernameField"
-                      execute="@this"/>
+                    <a4j:ajax event="blur" render="usernameField" />
                   </h:inputText>
-                </s:decorate>
+                </zanata:decorate>
+
 
                 <h:outputLabel
                   for="email">#{msgs['jsf.Email']}</h:outputLabel>
-                <s:decorate id="emailField"
-                  template="../WEB-INF/layout/field.xhtml">
+                <zanata:decorate id="email" componentId="emailField">
                   <h:inputText id="email" value="#{register.email}"
                     tabindex="4">
                     <a4j:ajax event="blur" render="emailField" execute="@this"/>
                   </h:inputText>
-                </s:decorate>
+                </zanata:decorate>
 
                 <h:outputLabel
                   for="password">#{msgs['jsf.Password']}</h:outputLabel>
-                <s:decorate id="passwordField"
-                  template="../WEB-INF/layout/field.xhtml">
+                <zanata:decorate id="passwordField">
                   <div class="form__password js-form-password">
                     <h:inputSecret id="password"
                       styleClass="js-form-password-input form__input"
@@ -78,7 +79,7 @@
                     <a href="#"
                       class="form__toggle js-form-password-toggle">Show</a>
                   </div>
-                </s:decorate>
+                </zanata:decorate>
 
                 <h:outputLabel for="human"
                   styleClass="is-hidden">If you are a human, do not fill in this field.</h:outputLabel>

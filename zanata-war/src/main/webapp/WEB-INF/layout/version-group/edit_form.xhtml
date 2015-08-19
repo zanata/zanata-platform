@@ -4,28 +4,29 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:a4j="http://richfaces.org/a4j">
 
   <div class="l--push-top-half form__item">
     <h:outputLabel for="name">#{msgs['jsf.GroupName']}
       <span class="txt--required">*</span>
     </h:outputLabel>
-    <s:decorate id="nameField" template="../field.xhtml" enclose="true">
+    <zanata:decorate id="name" componentId="nameField">
       <h:inputText id="name" required="true" maxlength="80"
         value="#{versionGroupHome.instance.name}">
         <a4j:ajax event="blur" render="nameField" execute="@this"/>
       </h:inputText>
-    </s:decorate>
+    </zanata:decorate>
   </div>
   <div class="l--push-top-half form__item">
     <h:outputLabel for="slug">#{msgs['jsf.GroupId']}
       <span class="txt--required">*</span>
     </h:outputLabel>
-    <s:decorate id="slugField" template="../field.xhtml" enclose="true">
-      <h:inputText rendered="#{versionGroupHome.managed}"
-        disabled="true"
-        value="#{versionGroupHome.instance.slug}">
-      </h:inputText>
+    <h:inputText rendered="#{versionGroupHome.managed}" id="slugReadOnly"
+      disabled="true"
+      value="#{versionGroupHome.instance.slug}">
+    </h:inputText>
+    <zanata:decorate id="slug" componentId="slugField">
       <h:inputText rendered="#{not versionGroupHome.managed}" maxlength="40"
         id="slug" required="true"
         value="#{versionGroupHome.instance.slug}"
@@ -33,18 +34,18 @@
         <a4j:ajax event="blur" render="slugField" execute="@this"/>
         <f:validateLength minimum="1"/>
       </h:inputText>
-    </s:decorate>
+    </zanata:decorate>
   </div>
   <div class="l--push-top-half form__item">
     <h:outputLabel for="description">
       #{msgs['jsf.GroupDescription']}
     </h:outputLabel>
-    <s:decorate id="descriptionField" template="../field.xhtml">
+    <zanata:decorate id="description" componentId="descriptionField">
       <h:inputTextarea id="description" required="false"
         value="#{versionGroupHome.instance.description}">
         <f:validateLength maximum="100"/>
         <a4j:ajax event="blur" render="descriptionField" execute="@this"/>
       </h:inputTextarea>
-    </s:decorate>
+    </zanata:decorate>
   </div>
 </ui:fragment>

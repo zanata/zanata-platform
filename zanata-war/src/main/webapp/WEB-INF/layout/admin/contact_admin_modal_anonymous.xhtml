@@ -3,6 +3,7 @@
   xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   class="modal" id="contactAdminDialogAnonymous" tabindex="-1" role="dialog"
   aria-labelledby="myModalLabel" aria-hidden="true">
 
@@ -58,10 +59,10 @@
       <div class="modal__content l--pad-all-1">
         <span>#{msgs['jsf.AdditionalInfo']}</span>
         <span class="txt--meta bx--block">#{msgs['jsf.passwordReset.google.AdditionalInfoMessage']}</span>
-        <s:decorate id="messageField" template="/WEB-INF/layout/field.xhtml">
+        <zanata:decorate id="messageField">
           <h:inputTextarea id="contact-admin-anonymous-message" value="#{contactAdminAction.message}"
             required="true"/>
-        </s:decorate>
+        </zanata:decorate>
       </div>
 
       <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">

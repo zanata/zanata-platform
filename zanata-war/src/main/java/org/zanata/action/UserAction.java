@@ -188,7 +188,7 @@ public class UserAction implements Serializable {
 
     private String saveNewUser() {
         if (password == null || !password.equals(confirm)) {
-            StatusMessages.instance().addToControl("password", "Passwords do not match");
+            facesMessages.addToControl("password", "Passwords do not match");
             return "failure";
         }
 
@@ -211,7 +211,7 @@ public class UserAction implements Serializable {
         // Check if a new password has been entered
         if (password != null && !"".equals(password)) {
             if (!password.equals(confirm)) {
-                StatusMessages.instance().addToControl("password", "Passwords do not match");
+                facesMessages.addToControl("password", "Passwords do not match");
                 return "failure";
             } else {
                 identityManager.changePassword(username, password);

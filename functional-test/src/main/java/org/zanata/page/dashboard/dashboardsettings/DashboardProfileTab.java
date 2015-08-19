@@ -32,7 +32,7 @@ import org.zanata.page.dashboard.DashboardBasePage;
 @Slf4j
 public class DashboardProfileTab extends DashboardBasePage {
 
-    private By accountNameField = By.id("profileForm:nameField:accountName");
+    private By accountNameField = By.id("profileForm:nameField:input:accountName");
     private By updateProfileButton = By.id("updateProfileButton");
 
     public DashboardProfileTab(WebDriver driver) {

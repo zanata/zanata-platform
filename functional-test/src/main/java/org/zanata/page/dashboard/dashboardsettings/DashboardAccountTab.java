@@ -42,10 +42,10 @@ public class DashboardAccountTab extends DashboardBasePage {
     public static final String EMAIL_TAKEN_ERROR =
             "This email address is already taken";
 
-    private By emailField = By.id("email-update-form:emailField:email");
+    private By emailField = By.id("email-update-form:emailField:input:email");
     private By updateEmailButton = By.id("email-update-form:updateEmailButton");
-    private By oldPasswordField = By.id("passwordChangeForm:oldPasswordField:oldPassword");
-    private By newPasswordField = By.id("passwordChangeForm:newPasswordField:newPassword");
+    private By oldPasswordField = By.id("passwordChangeForm:oldPasswordField:input:oldPassword");
+    private By newPasswordField = By.id("passwordChangeForm:newPasswordField:input:newPassword");
     private By changePasswordButton = By.id("passwordChangeForm:changePasswordButton");
 
     public DashboardAccountTab(WebDriver driver) {

@@ -1,0 +1,27 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:cc="http://java.sun.com/jsf/composite">
+
+  <cc:interface componentType="org.zanata.faces.InputContainer">
+    <cc:attribute name="styleClass" required="false"/>
+  </cc:interface>
+
+  <cc:implementation>
+
+    <div class="#{cc.attrs.invalid ? 'form__item--error' : ''} #{cc.attrs.styleClass}">
+      <f:validateBean >
+        <cc:insertChildren/>
+      </f:validateBean>
+      <h:panelGroup rendered="#{cc.attrs.invalid}" layout="block"
+        styleClass="message--danger app-error">
+        <h:message id="errorMessage" />
+      </h:panelGroup>
+    </div>
+  </cc:implementation>
+</ui:composition>

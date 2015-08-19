@@ -65,14 +65,14 @@
           </ui:fragment>
         </div>
 
-        <s:decorate id="messageField" template="/WEB-INF/layout/field.xhtml">
+        <zanata:decorate id="message" componentId="messageField">
           <span>#{msgs['jsf.AdditionalInfo']}</span>
           <span class="txt--meta bx--block">#{msgs['jsf.language.email.AdditionalInfoMessage']}</span>
           <h:inputTextarea id="request-join-message" value="#{languageJoinAction.message}"
             styleClass="l--push-bottom-0">
             <a4j:ajax event="blur" render="messageField" execute="@this"/>
           </h:inputTextarea>
-        </s:decorate>
+        </zanata:decorate>
       </div>
 
       <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">

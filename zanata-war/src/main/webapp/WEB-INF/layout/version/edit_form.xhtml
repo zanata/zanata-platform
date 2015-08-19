@@ -60,14 +60,14 @@
       <span class="txt--meta"><i class="i i--info"
         title="#{msgs['jsf.SlugExample']}"></i></span>
     </h:outputLabel>
-    <s:decorate id="slugField" template="../field.xhtml" enclose="true">
+    <zanata:decorate id="slug" componentId="slugField">
       <h:inputText maxlength="40"
         id="slug" required="true" value="#{versionHome.inputSlugValue}"
         valueChangeListener="#{versionHome.verifySlugAvailable}">
         <f:validateLength minimum="1"/>
         <a4j:ajax event="blur" render="slugField" execute="@this"/>
       </h:inputText>
-    </s:decorate>
+    </zanata:decorate>
   </div>
 
   <zanata:checkbox label="#{msgs['jsf.copyVersion.label']}" id="copy-from-version"

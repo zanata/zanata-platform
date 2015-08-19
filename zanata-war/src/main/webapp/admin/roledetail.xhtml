@@ -4,6 +4,7 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:c="http://java.sun.com/jsf/core"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:s="http://jboss.org/schema/seam/taglib">
 
@@ -39,24 +40,24 @@
 
           <div class="form__item l--push-top-1">
             <h:outputLabel for="role">#{msgs['jsf.Role']}</h:outputLabel>
-            <s:decorate id="roleField" template="../WEB-INF/layout/field.xhtml" enclose="true">
+            <zanata:decorate id="role" componentId="roleField">
               <h:inputText id="role" value="#{zanataRoleAction.role}"
                 readonly="#{identityManager.userExists(zanataRoleAction.role)}"
                 required="true">
-                <a4j:ajax event="blur" render="roleField" execute="@this"/>
+                <a4j:ajax event="blur" render="roleField" execute="@this" bypassUpdates="true"/>
               </h:inputText>
-            </s:decorate>
+            </zanata:decorate>
           </div>
 
           <div class="form__item l--push-top-1">
             <h:outputLabel>#{msgs['jsf.MemberOf']}</h:outputLabel>
-            <s:decorate id="groupsField" template="../WEB-INF/layout/field.xhtml" enclose="true">
+            <zanata:decorate id="groups" componentId="groupsField">
               <h:selectManyCheckbox id="groups" value="#{zanataRoleAction.groups}"
                 layout="pageDirection" styleClass="groups">
                 <c:selectItems value="#{identityManager.listRoles()}" var="role"
                   itemLabel="#{role}"/>
               </h:selectManyCheckbox>
-            </s:decorate>
+            </zanata:decorate>
           </div>
 
           <h:commandButton value="#{msgs['jsf.Save']}"

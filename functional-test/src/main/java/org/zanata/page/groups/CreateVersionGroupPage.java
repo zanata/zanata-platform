@@ -41,9 +41,9 @@ public class CreateVersionGroupPage extends BasePage {
             "must start and end with letter or number, and contain only " +
             "letters, numbers, periods, underscores and hyphens.";
 
-    private By groupIdField = By.id("group-form:slugField:slug");
-    public By groupNameField = By.id("group-form:nameField:name");
-    private By groupDescriptionField = By.id("group-form:descriptionField:description");
+    private By groupIdField = By.id("group-form:slug:input:slug");
+    public By groupNameField = By.id("group-form:name:input:name");
+    private By groupDescriptionField = By.id("group-form:description:input:description");
     private By saveButton = By.id("group-form:group-create-new");
     private By createNewButton = By.id("group-form:group-create-new");
 

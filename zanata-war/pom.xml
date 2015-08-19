@@ -160,7 +160,6 @@
             <usedDependency>com.google.guava:guava-gwt</usedDependency>
             <!-- Used for StringUtils lib -->
             <!-- Needed by ui rendering at runtime -->
-            <usedDependency>org.jboss.spec.javax.el:jboss-el-api_2.2_spec</usedDependency>
             <usedDependency>javax.servlet.jsp:jsp-api</usedDependency>
             <!-- Used for different content analyzers based on langugage for search. -->
             <usedDependency>org.apache.solr:solr-core</usedDependency>

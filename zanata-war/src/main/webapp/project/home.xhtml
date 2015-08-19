@@ -7,6 +7,7 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   template="../WEB-INF/template/template_2x.xhtml">
 
   <ui:define name="page_title">#{msgs['jsf.Projects']}</ui:define>
@@ -31,7 +32,7 @@
   </ui:define>
 
   <ui:define name="center_content">
-    <s:decorate id="main_content">
+    <h:panelGroup id="main_content" layout="block">
       <ui:fragment rendered="#{projectAction.getEmpty()}">
         <h:outputText value="#{msgs['jsf.NoProjectExists']}"/>
       </ui:fragment>
@@ -168,7 +169,7 @@
           </div>
         </h:form>
       </ui:fragment>
-    </s:decorate>
+    </h:panelGroup>
   </ui:define>
 
 </ui:composition>

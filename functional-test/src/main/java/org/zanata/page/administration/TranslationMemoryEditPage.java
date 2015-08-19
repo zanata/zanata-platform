@@ -32,8 +32,8 @@ import org.zanata.page.BasePage;
 @Slf4j
 public class TranslationMemoryEditPage extends BasePage {
 
-    private By idField = By.id("tmForm:slugField:slug");
-    private By descriptionField = By.id("tmForm:descriptionField:description");
+    private By idField = By.id("tmForm:slug:input:slug");
+    private By descriptionField = By.id("tmForm:description:input:description");
     private By saveButton = By.id("tmForm:save");
     private By cancelButton = By.id("tmForm:cancel");
 

@@ -46,9 +46,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class VersionGroupTest extends ZanataTestCase {
 
-//    @ClassRule
-//    public static AddUsersRule addUsersRule = new AddUsersRule();
-
     @ClassRule
     public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
 

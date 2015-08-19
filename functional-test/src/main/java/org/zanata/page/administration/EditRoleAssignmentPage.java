@@ -32,9 +32,9 @@ import org.zanata.page.BasePage;
 @Slf4j
 public class EditRoleAssignmentPage extends BasePage {
 
-    private By policySelect = By.id("role-rule-form:policyNameField:policyName");
-    private By patternField = By.id("role-rule-form:identityPatternField:identityPattern");
-    private By roleSelect = By.id("role-rule-form:roleField:roles");
+    private By policySelect = By.id("role-rule-form:policyName:input:policyName");
+    private By patternField = By.id("role-rule-form:identityPattern:input:identityPattern");
+    private By roleSelect = By.id("role-rule-form:role:input:roles");
     private By saveButton = By.id("role-rule-form:save");
     private By cancelButton = By.id("role-rule-form:cancel");
 

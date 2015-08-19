@@ -1,6 +1,6 @@
 <ui:fragment
   xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:a4j="http://richfaces.org/a4j"
@@ -24,11 +24,11 @@
     <div class="g__item w--1-2">
       <div class="form__item">
         <h:outputLabel for="name">#{msgs['jsf.ProjectName']}</h:outputLabel>
-        <s:decorate id="nameField" template="../field.xhtml" enclose="true">
+        <zanata:decorate id="name" componentId="nameField">
           <h:inputText id="name" required="true" maxlength="80"
             value="#{projectHome.instance.name}">
           </h:inputText>
-        </s:decorate>
+        </zanata:decorate>
       </div>
     </div>
     <div class="g__item w--1-2">
@@ -38,7 +38,7 @@
           <span class="txt--meta"><i class="i i--info"
             title="#{msgs['jsf.SlugExample']}"></i></span>
         </h:outputLabel>
-        <s:decorate id="slugField" template="../field.xhtml" enclose="true">
+        <zanata:decorate id="slug" componentId="slugField">
           <h:inputText maxlength="40"
             id="slug" required="true"
             value="#{projectHome.inputSlugValue}"
@@ -46,7 +46,7 @@
             <f:validateLength minimum="1"/>
             <a4j:ajax event="blur" render="slugField" execute="@this"/>
           </h:inputText>
-        </s:decorate>
+        </zanata:decorate>
         <h:inputHidden id="projectId" value="#{projectHome.projectId}"/>
       </div>
     </div>
@@ -56,12 +56,12 @@
     <h:outputLabel for="descriptionField">#{msgs['jsf.ProjectDescription']}
       <span class="txt--meta">#{msgs['jsf.field.optional']}</span>
     </h:outputLabel>
-    <s:decorate id="descriptionField" template="../field.xhtml">
+    <zanata:decorate id="description" componentId="descriptionField">
       <h:inputTextarea id="description" required="false"
         value="#{projectHome.instance.description}">
         <f:validateLength maximum="100"/>
       </h:inputTextarea>
-    </s:decorate>
+    </zanata:decorate>
   </div>
 
   <h3

@@ -4,6 +4,7 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:c="http://java.sun.com/jsf/core"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:s="http://jboss.org/schema/seam/taglib">
 
 <ui:composition template="../WEB-INF/template/template.xhtml">
@@ -52,8 +53,8 @@
           <h:panelGroup layout="block"  styleClass="form__item l--push-top-1"
             rendered="#{applicationConfiguration.internalAuth}">
             <h:outputLabel for="password">#{msgs['jsf.password.change']}</h:outputLabel>
-            <s:decorate id="passwordField"
-              template="../WEB-INF/layout/field.xhtml" enclose="true">
+            <zanata:decorate id="password"
+              componentId="passwordField">
               <div class="form__password js-form-password-parent">
                 <h:inputSecret id="password"
                   styleClass="js-form-password-input form__input"
@@ -61,14 +62,14 @@
                 </h:inputSecret>
                 <a href="#" class="form__toggle js-form-password-toggle">Show</a>
               </div>
-            </s:decorate>
+            </zanata:decorate>
           </h:panelGroup>
 
           <h:panelGroup layout="block"  styleClass="form__item l--push-top-1"
             rendered="#{applicationConfiguration.internalAuth}">
             <h:outputLabel for="confirm">#{msgs['jsf.ConfirmPassword']}</h:outputLabel>
-            <s:decorate id="passwordConfirmField"
-              template="../WEB-INF/layout/field.xhtml" enclose="true">
+            <zanata:decorate id="passwordConfirm"
+              componentId="passwordConfirmField">
               <div class="form__password js-form-password-parent">
                 <h:inputSecret id="confirm"
                   styleClass="js-form-password-input form__input"
@@ -76,19 +77,19 @@
                 </h:inputSecret>
                 <a href="#" class="form__toggle js-form-password-toggle">Show</a>
               </div>
-            </s:decorate>
+            </zanata:decorate>
           </h:panelGroup>
 
 
           <div class="form__item l--push-top-1">
             <h:outputLabel>#{msgs['jsf.MemberOf']}</h:outputLabel>
-            <s:decorate id="rolesField" template="../WEB-INF/layout/field.xhtml" enclose="true">
+            <zanata:decorate id="roles" componentId="rolesField">
               <h:selectManyCheckbox id="roles" value="#{userAction.roles}"
                 layout="pageDirection" styleClass="checkbox">
                 <c:selectItems value="#{identityManager.listGrantableRoles()}" var="role"
                   itemLabel="#{role}"/>
               </h:selectManyCheckbox>
-            </s:decorate>
+            </zanata:decorate>
           </div>
 
           <div class="form__item l--push-top-1 checkbox">

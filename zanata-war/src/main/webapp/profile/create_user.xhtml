@@ -3,7 +3,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:a4j="http://richfaces.org/a4j"
   template="../WEB-INF/template/template.xhtml">
 
@@ -40,12 +40,12 @@
             <h:outputLabel for="name">#{msgs['jsf.Name']}
               <span class="txt--required">*</span>
             </h:outputLabel>
-            <s:decorate id="nameField" template="../WEB-INF/layout/field.xhtml" enclose="true">
+            <zanata:decorate id="name" componentId="nameField">
               <h:inputText id="name" value="#{newProfileAction.name}" required="true"
                 maxlength="80">
                 <a4j:ajax event="blur" render="nameField" execute="@this"/>
               </h:inputText>
-            </s:decorate>
+            </zanata:decorate>
           </div>
 
           <ui:remove>
@@ -55,12 +55,12 @@
           <h:outputLabel for="username">#{msgs['jsf.Username']}
               <span Class="txt--required">*</span>
             </h:outputLabel>
-            <s:decorate id="usernameField" template="../WEB-INF/layout/field.xhtml" enclose="true">
+            <zanata:decorate id="username" componentId="usernameField">
               <h:inputText id="username" required="true" maxlength="80"
                 value="#{newProfileAction.username}">
                 <a4j:ajax event="blur" render="usernameField" execute="@this"/>
               </h:inputText>
-            </s:decorate>
+            </zanata:decorate>
           </h:panelGroup>
 
           <div class="l--push-top-half form__item">
@@ -68,12 +68,12 @@
               #{msgs['jsf.Email']}
               <span class="txt--required">*</span>
             </h:outputLabel>
-            <s:decorate id="emailField" template="../WEB-INF/layout/field.xhtml">
+            <zanata:decorate id="email" componentId="emailField">
               <h:inputText id="email" required="false"
                 value="#{newProfileAction.email}">
                 <a4j:ajax event="blur" render="emailField" execute="@this"/>
               </h:inputText>
-            </s:decorate>
+            </zanata:decorate>
           </div>
 
           <ui:fragment rendered="#{not empty applicationConfiguration.termsOfUseUrl}">
