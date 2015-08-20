@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.ws.rs.WebApplicationException;
@@ -77,9 +78,12 @@ import org.zanata.util.StringUtil;
 
 import com.google.common.base.Optional;
 
+import static org.apache.commons.lang.StringUtils.isEmpty;
+
 @Name("resourceUtils")
 @Scope(ScopeType.STATELESS)
 @Slf4j
+// TODO move plural logic out of ResourceUtils into a dedicated class
 public class ResourceUtils {
     /**
      * Newline character used for multi-line comments
@@ -111,6 +115,7 @@ public class ResourceUtils {
     private static final Pattern NPLURALS_PATTERN = Pattern
             .compile("nplurals=[0-9]+");
     private static final String PLURALS_FILE = "pluralforms.properties";
+    private static final int DEFAULT_NPLURALS = 1;
     private static final String DEFAULT_PLURAL_FORM = "nplurals=1; plural=0";
 
     public static final int MAX_TARGET_CONTENTS = 6;
@@ -1019,11 +1024,7 @@ public class ResourceUtils {
     public int getNumPlurals(HDocument document, HLocale hLocale) {
         HPoTargetHeader headers = document.getPoTargetHeaders().get(hLocale);
         String headerEntries = headers != null ? headers.getEntries() : "";
-        return getNPluralForms(headerEntries, hLocale);
-    }
-
-    private int getNPluralForms(String entries, HLocale targetLocale) {
-        return getNPluralForms(entries, targetLocale.getLocaleId());
+        return getNumPlurals(headerEntries, hLocale.getLocaleId());
     }
 
     /**
@@ -1032,50 +1033,55 @@ public class ResourceUtils {
      * 2) HLocale.plurals if available, else
      * 3) pluralforms.properties
      *
-     * @param entries - HPoTargetHeader.entries
+     * @param poHeaders - HPoTargetHeader.entries
      * @param localeId - locale identifier
      *
      */
-    int getNPluralForms(String entries, LocaleId localeId) {
-        String pluralForms;
+    int getNumPlurals(@Nullable String poHeaders, LocaleId localeId) {
+        String pluralForms = null;
         try {
-            if (entries == null || entries.isEmpty()) {
-                pluralForms = getPluralFormsFromDB(localeId);
-                return StringUtils.isEmpty(pluralForms) ?
-                    getNPluralForms(localeId) :
-                    getNPluralForms(pluralForms);
+            if (poHeaders != null && !poHeaders.isEmpty()) {
+                Properties headerList = new Properties();
+                headerList.load(new StringReader(poHeaders));
+
+                pluralForms = headerList.getProperty(PLURAL_FORMS_HDR);
+                if (pluralForms != null && pluralForms.isEmpty()) {
+                    // TODO return a warning to the user when uploading
+                    log.warn("Empty plural forms header; using defaults for locale {}; headers: {}",
+                            localeId, poHeaders);
+                    pluralForms = getPluralFormsForLocale(localeId);
+                }
             }
-
-            Properties headerList = new Properties();
-            headerList.load(new StringReader(entries));
-
-            if (!headerList.containsKey(PLURAL_FORMS_HDR)) {
-                pluralForms = getPluralFormsFromDB(localeId);
-                return StringUtils.isEmpty(pluralForms) ?
-                    getNPluralForms(localeId) :
-                    getNPluralForms(pluralForms);
+            if (pluralForms == null) {
+                pluralForms = getPluralFormsForLocale(localeId);
             }
-
-            pluralForms = headerList.getProperty(PLURAL_FORMS_HDR);
-
-            if (StringUtils.isEmpty(pluralForms)) {
-                log.error("No plural forms for locale {} found in {}",
-                        localeId, PLURALS_FILE);
-                throw new RuntimeException(
-                        "No plural forms found; contact admin. Locale: "
-                                + localeId);
-            }
-            return getNPluralForms(pluralForms);
+            return extractNPlurals(pluralForms);
         } catch (Exception e) {
-            log.error("Error getting nPlurals:" + entries);
+            log.error("Error getting nplurals; using defaults; headers: " + poHeaders, e);
+            return DEFAULT_NPLURALS;
         }
-        return 1;
+    }
+
+    /**
+     * Returns HLocale.plurals if available, else value in
+     * pluralforms.properties
+     * @param localeId id of the locale
+     * @return the plural forms string
+     * @throws RuntimeException if no plural forms are found
+     */
+    private @Nonnull String getPluralFormsForLocale(LocaleId localeId) {
+        String pluralForms;
+        pluralForms = getPluralFormsFromDB(localeId);
+        if (isEmpty(pluralForms)) {
+            pluralForms = getPluralFormsFromFile(localeId);
+        }
+        return pluralForms;
     }
 
     /**
      * @return plural forms from HLocale, null if not found
      */
-    String getPluralFormsFromDB(LocaleId localeId) {
+    @Nullable String getPluralFormsFromDB(LocaleId localeId) {
         HLocale hLocale = localeDAO.findByLocaleId(localeId);
         if(hLocale != null && StringUtils.isNotEmpty(hLocale.getPluralForms())) {
             return hLocale.getPluralForms();
@@ -1084,21 +1090,21 @@ public class ResourceUtils {
     }
 
     /**
-     * Get plurals count from pluralforms.properties
+     * Get plural forms from pluralforms.properties
      *
      * @param localeId
      */
-    int getNPluralForms(@Nonnull LocaleId localeId) {
+    @Nonnull String getPluralFormsFromFile(@Nonnull LocaleId localeId) {
         String pluralForms = getPluralForms(localeId);
 
         if (pluralForms == null) {
-            log.error("No plural forms for locale {} found in {}",
+            log.warn("No plural forms for locale {} found in {}",
                     localeId, PLURALS_FILE);
             throw new RuntimeException(
                     "No plural forms found; contact admin. Locale: "
                             + localeId);
         }
-        return getNPluralForms(pluralForms);
+        return pluralForms;
     }
 
     /**
@@ -1106,7 +1112,7 @@ public class ResourceUtils {
      *
      * @param pluralForms
      */
-    int getNPluralForms(@Nonnull String pluralForms) {
+    int extractNPlurals(@Nonnull String pluralForms) {
         int nPlurals = 1;
 
         Matcher nPluralsMatcher = NPLURALS_PATTERN.matcher(pluralForms);
@@ -1149,7 +1155,7 @@ public class ResourceUtils {
                 int count = Integer.parseInt(nPluralsString);
                 return count >= 1 && count <= MAX_TARGET_CONTENTS;
             }
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             //invalid string for integer
         }
         return false;

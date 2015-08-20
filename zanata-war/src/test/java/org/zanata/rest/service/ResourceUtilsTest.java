@@ -352,7 +352,7 @@ public class ResourceUtilsTest extends ZanataTest {
             LocaleId localeId = LocaleId.fromJavaName(propKey);
             resourceUtils.getPluralForms(localeId, true, false);
             verify(mockLocaleDAO).findByLocaleId(localeId);
-            resourceUtils.getNPluralForms(null, localeId);
+            resourceUtils.getNumPlurals(null, localeId);
         }
     }
 
