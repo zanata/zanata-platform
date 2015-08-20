@@ -21,6 +21,7 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import javax.annotation.Nonnull;
 import javax.faces.application.FacesMessage;
 
 import org.jboss.seam.ScopeType;
@@ -36,6 +37,7 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HProjectIteration;
+import org.zanata.rest.NoSuchEntityException;
 import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.impl.CopyTransOptionFactory;
@@ -127,10 +129,16 @@ public class CopyTransAction extends CopyAction implements Serializable {
                 .getCopyTransProcessHandle(getProjectIteration());
     }
 
-    public HProjectIteration getProjectIteration() {
+    @Nonnull
+    private HProjectIteration getProjectIteration() {
+        // TODO share code with ProjectVersionService.retrieveAndCheckIteration?
         if (projectIteration == null) {
             projectIteration =
                     projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+            if (projectIteration == null) {
+                throw new NoSuchEntityException("Project version '" + projectSlug
+                        + ":" + iterationSlug + "' not found.");
+            }
         }
         return projectIteration;
     }
