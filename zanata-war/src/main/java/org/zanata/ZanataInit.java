@@ -434,12 +434,27 @@ public class ZanataInit {
 
     private void logBanner(VersionInfo ver) {
         log.info("============================================");
-        log.info("   _____                     _              ");
-        log.info("  /__  /  ____ _____  ____ _/ /_____ _      ");
-        log.info("    / /  / __ `/ __ \\/ __ `/ __/ __ `/      ");
-        log.info("   / /__/ /_/ / / / / /_/ / /_/ /_/ /       ");
-        log.info("  /____/\\__,_/_/ /_/\\__,_/\\__/\\__,_/        ");
-        log.info("  Application version: " + ver.getVersionNo());
+        log.info("        &(                             ");
+        log.info("       (((((& (((((((((((              ");
+        log.info("     ((((((((((((((((((((((((          ");
+        log.info("   #((((((((((((((         (((((       ");
+        log.info("  (((((((((((((((((((        #((((     ");
+        log.info(" ((((((((((((((((((((((#       ((((    ");
+        log.info("   (((((((((((((((((((((((#      (((   ");
+        log.info("  (((&   #(((((((((((((((((((    &(((  ");
+        log.info("  (((         ((((((((((((((      (((  ");
+        log.info("  ((#          (((((((((((        (((  ");
+        log.info("  ((#        ((((((((((((         (((  ");
+        log.info("  (((       ((((((((((((          (((  ");
+        log.info("  (((      (((((((((((&           (((  ");
+        log.info("   (((      ((((((((((((         (((   ");
+        log.info("    (((         ((((((((((      (((    ");
+        log.info("     ((((          #((((((((  ((((     ");
+        log.info("       (((((           (((((((((       ");
+        log.info("         &(((((((%   %((((((((((       ");
+        log.info("             #(((((((((((#     ((#     ");
+        log.info("");
+        log.info("  Zanata version: " + ver.getVersionNo());
         log.info("  SCM: " + ver.getScmDescribe());
         log.info("  Red Hat Inc 2008-{}",
                 Calendar.getInstance().get(Calendar.YEAR));
