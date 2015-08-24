@@ -726,7 +726,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
                     msgs.get("jsf.LocaleAlias.NoAliasesToRemove"));
         } else if (removed.size() == 1) {
             facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
-                msgs.format("jsf.LocaleAlias.AliasRemoved", removed.get(0)));
+                    msgs.format("jsf.LocaleAlias.AliasRemoved", removed.get(0)));
         } else {
             facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
                     msgs.format("jsf.LocaleAlias.AliasesRemoved",
@@ -772,7 +772,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
                         msgs.format("jsf.LocaleAlias.AliasRemoved", localeId));
             } else {
                 facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
-                    msgs.format("jsf.LocaleAlias.NoAliasToRemove", localeId));
+                        msgs.format("jsf.LocaleAlias.NoAliasToRemove", localeId));
             }
         } else {
             facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
@@ -861,7 +861,6 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         }
 
         List<LocaleId> removed = Lists.newArrayList();
-        
         for(LocaleId localeId: toRemove) {
             boolean wasEnabled = disableLocaleSilently(localeId);
             if (wasEnabled) {
