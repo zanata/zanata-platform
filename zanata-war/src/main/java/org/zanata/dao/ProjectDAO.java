@@ -91,11 +91,10 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
 
     public int getFilterProjectSize(boolean filterOutActive,
             boolean filterOutReadOnly, boolean filterOutObsolete) {
-        String query =
-                "select count(*) from HProject p "
-                        + constructFilterCondition(filterOutActive,
-                                filterOutReadOnly, filterOutObsolete);
-        Query q = getSession().createQuery(query.toString());
+        String condition = constructFilterCondition(filterOutActive,
+                filterOutReadOnly, filterOutObsolete);
+        String query = "select count(*) from HProject p " + condition;
+        Query q = getSession().createQuery(query);
         q.setCacheable(true).setComment("ProjectDAO.getFilterProjectSize");
         Long totalCount = (Long) q.uniqueResult();
 
