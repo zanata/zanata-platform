@@ -1,4 +1,9 @@
-## RHEL/Fedora
+## RHEL 7
+
+1. Download binary package from [0Install v2.9](https://downloads.sourceforge.net/project/zero-install/0install/2.9/0install-linux-x86_64-2.9.tar.bz2)
+2. Unpack it, and run the `install.sh` script inside. You'll need libcurl installed (most systems have it by default).
+
+## RHEL 6/Fedora
 
 Install EPEL repository for RHEL 6
 ```
@@ -9,13 +14,6 @@ rpm -ivh epel-release-6-8.noarch.rpm
 ## RHEL/CentOS 6 64-Bit ##
 wget http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
 rpm -ivh epel-release-6-8.noarch.rpm
-```
-
-Install EPEL repository for RHEL 7
-```
-## RHEL/CentOS 7 64-Bit ##
-wget http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
-rpm -ivh epel-release-7-5.noarch.rpm
 ```
 
 1. To install 0Install,
