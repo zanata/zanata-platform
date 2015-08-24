@@ -64,11 +64,11 @@
     <okapi.version>0.22</okapi.version>
 
     <zanata.assets.version>7.4-SNAPSHOT</zanata.assets.version>
-    <zanata.api.version>3.7.4-SNAPSHOT</zanata.api.version>
+    <zanata.api.version>3.8.0-SNAPSHOT</zanata.api.version>
     <!-- This should always be the previous version of the used api version above (but only 3.0.1 or later will work) -->
     <zanata.api.compat.version>3.4.1</zanata.api.compat.version>
     <zanata.client.version>3.8.0-SNAPSHOT</zanata.client.version>
-    <zanata.common.version>3.7.3-SNAPSHOT</zanata.common.version>
+    <zanata.common.version>3.8.0-SNAPSHOT</zanata.common.version>
 
     <richfaces.version>4.5.4.Final</richfaces.version>
 
@@ -89,7 +89,7 @@
      http://in.relation.to/Bloggers/HibernateSearchWeekendReleasesFromBothMaintenanceBranches
      -->
     <!-- 4.4.5.Final is not in Central -->
-    <hibernate.search.version>4.4.4.Final</hibernate.search.version>
+    <hibernate.search.version>4.4.6.Final</hibernate.search.version>
     <hibernate.entitymanager.version>${hibernate.version}</hibernate.entitymanager.version>
     <war_bundles_jsf_impl>false</war_bundles_jsf_impl>
     <hibernate.validator.version>4.3.2.Final</hibernate.validator.version>
