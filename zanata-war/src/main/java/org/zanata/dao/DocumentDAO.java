@@ -522,13 +522,13 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
         if (doc == null) {
             return "";
         }
-        // NB: This method uses a native SQL query tested on mysql and h2
-        // databases.
+        // NB: This method uses a native SQL query tested on postgresql databases
+        // databases. Function nullif has a different meaning in H2.
         String sql =
                 "select greatest(\n" + "  d.lastChanged,\n"
-                        + "  max(ifnull(tft.lastChanged, {d '1753-01-01'})),\n"
-                        + "  max(ifnull(c.lastChanged, {d '1753-01-01'})),\n"
-                        + "  max(ifnull(poth.lastChanged, {d '1753-01-01'}))\n"
+                        + "  max(nullif(tft.lastChanged, '1753-01-01')),\n"
+                        + "  max(nullif(c.lastChanged, '1753-01-01')),\n"
+                        + "  max(nullif(poth.lastChanged, '1753-01-01'))\n"
                         + ") as latest\n" + "from HDocument d\n"
                         + "  left outer join HTextFlow tf\n"
                         + "    on d.id = tf.document_id\n"
