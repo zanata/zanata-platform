@@ -87,6 +87,11 @@ public class ContactAdminTest extends ZanataTestCase {
                 .contains("You are an administrator")
                 .contains("I love Zanata");
 
+        /**
+         * Check disabled due to concurrency issue with host url in
+         * server config. Should enable this when we have rules to clean database
+         * on each test.
+         *
         // contains instance url (without last slash)
         String instanceUrl = PropertiesHolder.getProperty(
                 Constants.zanataInstance.value()).replaceAll("/$", "");
@@ -94,6 +99,7 @@ public class ContactAdminTest extends ZanataTestCase {
         assertThat(content)
                 .contains(instanceUrl)
                 .as("The email origin (server) is correct");
+         */
     }
 
 }

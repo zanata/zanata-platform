@@ -44,7 +44,7 @@ public class ServerConfigurationPage extends BasePage {
     private By enableLogCheck = By.id("serverConfigForm:enableLogCheck");
     private By logLevelSelect = By.id("serverConfigForm:logEmailLvl");
     private By emailDestinationField = By.id("serverConfigForm:logDestEmailField:logDestEml");
-    private By helpUrlField = By.id("serverConfigForm:helpUrlField");
+    private By helpUrlField = By.id("serverConfigForm:helpUrlField:helpInput");
     private By termsUrlField = By.id("serverConfigForm:termsOfUseUrlField");
     private By piwikUrl = By.id("serverConfigForm:piwikUrlField:piwikUrlEml");
     private By piwikId = By.id("serverConfigForm:piwikIdSiteEml");
