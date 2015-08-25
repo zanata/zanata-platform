@@ -34,6 +34,10 @@
       height: 100%;
     }
 
+    .paddingBottom {
+      padding-bottom: 30px;
+    }
+
   </ui:style>
 
   <g:LayoutPanel>
@@ -97,7 +101,7 @@
     </g:layer>
     <g:layer top='96px' bottom='0'>
       <g:ScrollPanel styleName='projectWideSearchResultsPanel'>
-        <g:VerticalPanel ui:field='searchResultsPanel' width="100%" />
+        <g:VerticalPanel ui:field='searchResultsPanel' width="100%" styleName="{style.paddingBottom}" />
       </g:ScrollPanel>
     </g:layer>
 

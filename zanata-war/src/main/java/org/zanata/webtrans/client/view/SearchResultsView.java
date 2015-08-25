@@ -41,6 +41,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -291,7 +292,10 @@ public class SearchResultsView extends Composite implements
         noResultsLabel.removeFromParent();
         addDocumentLabel(docName, viewDocClickHandler, searchDocClickHandler,
                 infoClickHandler);
+        SimplePager simplePager = new SimplePager();
+        simplePager.setDisplay(table);
         searchResultsPanel.add(table);
+        searchResultsPanel.add(simplePager);
         table.addStyleName("projectWideSearchResultsDocumentBody");
 
         ListDataProvider<TransUnitReplaceInfo> dataProvider =
