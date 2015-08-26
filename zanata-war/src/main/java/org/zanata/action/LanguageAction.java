@@ -246,11 +246,9 @@ public class LanguageAction implements Serializable {
         LocaleId localeId = new LocaleId(language);
         HLocale locale = localeServiceImpl.getByLocaleId(localeId);
 
-        if(locale == null) {
+        if (locale == null) {
             redirectToLanguageHome();
-        }
-
-        if(!locale.isActive() && !identity.hasRole("admin")) {
+        } else if (!locale.isActive() && !identity.hasRole("admin")) {
             redirectToLanguageHome();
         }
     }
