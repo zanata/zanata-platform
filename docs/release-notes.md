@@ -18,6 +18,8 @@ Zanata now requires JBoss EAP 6.4.2.GA or later (recommended), or WildFly versio
 * [1243251](https://bugzilla.redhat.com/show_bug.cgi?id=1243251) - Project search does not sort correctly by date over multiple pages
 * [1243682](https://bugzilla.redhat.com/show_bug.cgi?id=1243682) - When uploading POT file using web UI, source comments are being ignored
 * [1243688](https://bugzilla.redhat.com/show_bug.cgi?id=1243688) - Groups filter by archived not working
+* [ZNTA-615](https://zanata.atlassian.net/browse/ZNTA-615) - Fix glossary permission
+* [ZNTA-643](https://zanata.atlassian.net/browse/ZNTA-643) - Fix concurrent map modification issue in language page
 
 
 -----------------------
