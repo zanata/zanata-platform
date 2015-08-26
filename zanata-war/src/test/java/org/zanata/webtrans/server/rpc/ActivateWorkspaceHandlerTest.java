@@ -149,7 +149,7 @@ public class ActivateWorkspaceHandlerTest extends ZanataTest {
                 hProjectIteration);
         when(identity.hasPermission("modify-translation", hProject, hLocale))
                 .thenReturn(true);
-        when(identity.hasPermission("glossary-update", "")).thenReturn(true);
+        when(identity.hasPermission("", "glossary-update")).thenReturn(true);
         LoadOptionsResult optionsResult =
                 new LoadOptionsResult(new UserConfigHolder().getState());
         when(

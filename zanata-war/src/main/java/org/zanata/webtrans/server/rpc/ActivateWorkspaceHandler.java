@@ -170,7 +170,7 @@ public class ActivateWorkspaceHandler extends
     }
 
     private boolean hasGlossaryUpdatePermission() {
-        return identity.hasPermission("glossary-update", "");
+        return identity.hasPermission("", "glossary-update");
     }
 
     private boolean hasReviewerPermission(HLocale locale, HProject project) {
