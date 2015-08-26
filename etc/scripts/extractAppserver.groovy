@@ -32,6 +32,10 @@ String downloadDir = project.properties.get('download.dir') // ~/Downloads
 String cargoExtractDir = project.properties.get('cargo.extract.dir') // target/cargo/installs
 String url = project.properties.get('cargo.installation') // http://example.com/jbosseap6.zip
 
+if (downloadDir == null || cargoExtractDir == null || url == null) {
+    throw new Exception('Missing appserver properties.  Please invoke mvn with -Dappserver=jbosseap6 or -Dappserver=wildfly8')
+}
+
 String filename = url.substring(url.lastIndexOf('/')+1)
 String filePath = "${downloadDir}/${filename}"
 String basename = filename.substring(0, filename.lastIndexOf('.'))
