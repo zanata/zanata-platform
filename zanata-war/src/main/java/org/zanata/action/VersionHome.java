@@ -851,14 +851,20 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
     public void disableSelectedLocales() {
         identity.checkPermission(instance, "update");
-        List<LocaleId> removed = new ArrayList<>();
+        List<LocaleId> toRemove = Lists.newArrayList();
+
         for (Map.Entry<LocaleId, Boolean> entry :
             getSelectedEnabledLocales().entrySet()) {
             if (entry.getValue()) {
-                boolean wasEnabled = disableLocaleSilently(entry.getKey());
-                if (wasEnabled) {
-                    removed.add(entry.getKey());
-                }
+                toRemove.add(entry.getKey());
+            }
+        }
+
+        List<LocaleId> removed = Lists.newArrayList();
+        for(LocaleId localeId: toRemove) {
+            boolean wasEnabled = disableLocaleSilently(localeId);
+            if (wasEnabled) {
+                removed.add(localeId);
             }
         }
 
