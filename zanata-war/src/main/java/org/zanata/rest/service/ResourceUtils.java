@@ -773,7 +773,7 @@ public class ResourceUtils {
         }
 
         headerEntry = containedHeaders.get(PLURAL_FORMS_HDR);
-        if (headerEntry == null) {
+        if (headerEntry == null || headerEntry.getValue().isEmpty()) {
             headerEntry =
                     new HeaderEntry(PLURAL_FORMS_HDR,
                             this.getPluralForms(locale));
