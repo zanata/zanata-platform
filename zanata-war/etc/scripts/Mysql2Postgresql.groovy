@@ -118,7 +118,7 @@ def initialize(args) {
     def options = cli.parse(args)
 
     def cliArgs = options.arguments()
-    if(options.help) {
+    if(options.help || args.length <= 0) {
         println cli.usage()
         return false
     }
