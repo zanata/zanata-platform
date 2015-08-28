@@ -78,6 +78,7 @@ import org.zanata.util.StringUtil;
 
 import com.google.common.base.Optional;
 
+import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isEmpty;
 
 @Name("resourceUtils")
@@ -773,7 +774,7 @@ public class ResourceUtils {
         }
 
         headerEntry = containedHeaders.get(PLURAL_FORMS_HDR);
-        if (headerEntry == null || headerEntry.getValue().isEmpty()) {
+        if (headerEntry == null || isBlank(headerEntry.getValue())) {
             headerEntry =
                     new HeaderEntry(PLURAL_FORMS_HDR,
                             this.getPluralForms(locale));
@@ -1040,7 +1041,7 @@ public class ResourceUtils {
     int getNumPlurals(@Nullable String poHeaders, LocaleId localeId) {
         String pluralForms = null;
         try {
-            if (poHeaders != null && !poHeaders.isEmpty()) {
+            if (!isEmpty(poHeaders)) {
                 Properties headerList = new Properties();
                 headerList.load(new StringReader(poHeaders));
 
