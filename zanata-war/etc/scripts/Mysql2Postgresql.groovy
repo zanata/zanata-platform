@@ -119,7 +119,7 @@ def initialize(args) {
 
     def cliArgs = options.arguments()
     if(options.help || args.length <= 0) {
-        println cli.usage()
+        cli.usage()
         return false
     }
 
@@ -136,10 +136,14 @@ def initialize(args) {
     def psqlpassword = options.psqlpassword ?: ""
 
     if(!mysqlschema) {
-        throw new Exception("You must provide a mysql schema to migrate")
+        println "You must provide a mysql schema to migrate from"
+        cli.usage()
+        return false
     }
     if(!psqldb) {
-        throw new Exception("You must provide a PostgreSql schema to migrate into")
+        println "You must provide a PostgreSql schema to migrate into"
+        cli.usage()
+        return false
     }
 
     mysqldb = Sql.newInstance("jdbc:mysql://${mysqlhost}:${mysqlport}/${mysqlschema}",
