@@ -23,6 +23,7 @@ import org.zanata.seam.SeamAutowire;
 import org.zanata.search.FilterConstraints;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
+import org.zanata.util.query.H2NativeQueryHelper;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
 import static org.hamcrest.MatcherAssert.*;
@@ -56,7 +57,8 @@ public class TextFlowSearchServiceImplTest extends ZanataDbunitJpaTest {
         // @formatter:off
         seam.reset()
             .use("localeServiceImpl", localeService)
-            .use("documentDAO", new DocumentDAO(getSession()))
+            .use("documentDAO", new DocumentDAO(getSession(),
+                    new H2NativeQueryHelper()))
             .use("projectIterationDAO", new ProjectIterationDAO(getSession()))
             .use("entityManager", new FullTextEntityManagerImpl(getEm()))
             .use("session", new FullTextSessionImpl(getSession()));

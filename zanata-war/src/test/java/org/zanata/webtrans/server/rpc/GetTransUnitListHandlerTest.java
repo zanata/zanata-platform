@@ -36,6 +36,7 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.impl.TextFlowSearchServiceImpl;
 import org.zanata.service.impl.TranslationStateCacheImpl;
 import org.zanata.service.impl.ValidationServiceImpl;
+import org.zanata.util.query.H2NativeQueryHelper;
 import org.zanata.webtrans.client.service.GetTransUnitActionContext;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -82,7 +83,8 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
         TransUnitTransformer transUnitTransformer =
                 seam.autowire(TransUnitTransformer.class);
         seam.use("localeServiceImpl", localeService)
-                        .use("documentDAO", new DocumentDAO(getSession()))
+                        .use("documentDAO", new DocumentDAO(getSession(),
+                                new H2NativeQueryHelper()))
                         .use("projectIterationDAO",
                                 new ProjectIterationDAO(getSession()))
                         .use("entityManager",

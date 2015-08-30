@@ -44,6 +44,7 @@ import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.model.Activity;
 import org.zanata.model.type.EntityType;
 import org.zanata.seam.SeamAutowire;
+import org.zanata.util.query.H2NativeQueryHelper;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -82,7 +83,8 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
     public void initializeSeam() {
         seam.reset().use("activityDAO", new ActivityDAO(getSession()))
                 .use("textFlowTargetDAO", new TextFlowTargetDAO(getSession()))
-                .use("documentDAO", new DocumentDAO(getSession()))
+                .use("documentDAO", new DocumentDAO(getSession(),
+                        new H2NativeQueryHelper()))
                 .use("session", getSession()).ignoreNonResolvable();
 
         activityService = seam.autowire(ActivityServiceImpl.class);

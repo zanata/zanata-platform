@@ -21,6 +21,7 @@
 package org.zanata.dao;
 
 import java.math.BigInteger;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -30,6 +31,7 @@ import org.hibernate.Session;
 import org.hibernate.transform.ResultTransformer;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.joda.time.DateTime;
@@ -41,12 +43,16 @@ import org.zanata.model.HTextFlowTargetHistory;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
+import org.zanata.util.query.NativeQueryHelper;
 
 @Name("textFlowTargetHistoryDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
 public class TextFlowTargetHistoryDAO extends
         AbstractDAOImpl<HTextFlowTargetHistory, Long> {
+
+    @In
+    private NativeQueryHelper nativeQueryHelper;
 
     public TextFlowTargetHistoryDAO() {
         super(HTextFlowTargetHistory.class);
@@ -228,8 +234,9 @@ public class TextFlowTargetHistoryDAO extends
                 "    and tft.last_modified_by_id = :user and (tft.translated_by_id is not null or tft.reviewed_by_id is not null)" +
                 "    and tft.state <> :untranslated and tft.state <> :rejected and tft.automatedEntry =:automatedEntry";
 
-        String convertedLastChanged = convertTimeZoneFunction("lastChanged",
-                userZoneOpt, systemZone);
+        String convertedLastChanged = nativeQueryHelper.convertTz("lastChanged",
+                getOffsetAsString(userZoneOpt.get()),
+                getOffsetAsString(systemZone));
         // @formatter:on
         String dateOfLastChanged = stripTimeFromDateTimeFunction(convertedLastChanged);
         String queryString =

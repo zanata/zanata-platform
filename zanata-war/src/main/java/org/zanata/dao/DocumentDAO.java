@@ -1,5 +1,6 @@
 package org.zanata.dao;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,6 +15,7 @@ import org.hibernate.Session;
 import org.hibernate.type.TimestampType;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.zanata.common.ContentState;
@@ -35,18 +37,24 @@ import org.zanata.util.StatisticsUtil;
 import com.google.common.base.Optional;
 
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.util.query.NativeQueryHelper;
 
 @Name("documentDAO")
 @AutoCreate
 @Scope(ScopeType.STATELESS)
 @Slf4j
 public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
+
+    @In
+    private NativeQueryHelper nativeQueryHelper;
+
     public DocumentDAO() {
         super(HDocument.class);
     }
 
-    public DocumentDAO(Session session) {
+    public DocumentDAO(Session session, NativeQueryHelper nativeQueryHelper) {
         super(HDocument.class, session);
+        this.nativeQueryHelper = nativeQueryHelper;
     }
 
     public @Nullable
@@ -522,13 +530,11 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
         if (doc == null) {
             return "";
         }
-        // NB: This method uses a native SQL query tested on postgresql databases
-        // databases. Function nullif has a different meaning in H2.
         String sql =
                 "select greatest(\n" + "  d.lastChanged,\n"
-                        + "  max(nullif(tft.lastChanged, '1753-01-01')),\n"
-                        + "  max(nullif(c.lastChanged, '1753-01-01')),\n"
-                        + "  max(nullif(poth.lastChanged, '1753-01-01'))\n"
+                        + "  max(" + nativeQueryHelper.ifnull("tft.lastChanged", "1753-01-01") + "),\n"
+                        + "  max(" + nativeQueryHelper.ifnull("c.lastChanged", "1753-01-01") + "),\n"
+                        + "  max(" + nativeQueryHelper.ifnull("poth.lastChanged", "1753-01-01") + ")\n"
                         + ") as latest\n" + "from HDocument d\n"
                         + "  left outer join HTextFlow tf\n"
                         + "    on d.id = tf.document_id\n"

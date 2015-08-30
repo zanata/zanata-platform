@@ -38,6 +38,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 
 import com.google.common.base.Function;
+import org.zanata.util.query.H2NativeQueryHelper;
 
 /**
  * @author Carlos Munoz <a
@@ -59,7 +60,8 @@ public class DocumentDAOTest extends ZanataDbunitJpaTest {
 
     @Before
     public void setup() {
-        documentDAO = new DocumentDAO(getSession());
+        // Use a H2 specific query helper
+        documentDAO = new DocumentDAO(getSession(), new H2NativeQueryHelper());
         localeDAO = new LocaleDAO(getSession());
         as = localeDAO.findByLocaleId(new LocaleId("as"));
         de = localeDAO.findByLocaleId(new LocaleId("de"));

@@ -63,6 +63,7 @@ import org.zanata.security.ZanataCredentials;
 import org.zanata.security.ZanataIdentity;
 import com.google.common.collect.Lists;
 import org.zanata.util.TranslationUtil;
+import org.zanata.util.query.H2NativeQueryHelper;
 
 public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
     private SeamAutowire seam = SeamAutowire.instance();
@@ -112,7 +113,7 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
         when(credentials.getUsername()).thenReturn("mock user");
 
         projectIterationDAO = new ProjectIterationDAO(getSession());
-        documentDAO = new DocumentDAO(getSession());
+        documentDAO = new DocumentDAO(getSession(), new H2NativeQueryHelper());
         textFlowTargetDAO = new TextFlowTargetDAO(getSession());
         textFlowDAO = new TextFlowDAO(getSession());
         rawDocumentDAO = new RawDocumentDAO((getSession()));
