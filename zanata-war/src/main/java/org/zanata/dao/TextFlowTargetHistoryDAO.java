@@ -244,7 +244,7 @@ public class TextFlowTargetHistoryDAO extends
                         "  from (" +
                         "  (" + queryHistory + ") union (" + queryTarget + ")" +
                         "  ) as all_translation" +
-                        "  group by " + dateOfLastChanged + ", iteration, locale, state " +
+                        "  group by lastChanged, iteration, locale, state " +
                         "  order by lastChanged, iteration, locale, state";
         Query query = getSession().createSQLQuery(queryString)
             .setParameter("user", user.getId())
@@ -263,7 +263,8 @@ public class TextFlowTargetHistoryDAO extends
         if (userZoneOpt.isPresent()) {
             String userOffset = getOffsetAsString(userZoneOpt.get());
             String systemOffset = getOffsetAsString(systemZone);
-            return String.format("CONVERT_TZ(%s, '%s', '%s')", columnName, systemOffset, userOffset);
+            return nativeQueryHelper.convertTz(columnName,
+                    userOffset, systemOffset);
         }
         // no need to convert timezone
         return columnName;
