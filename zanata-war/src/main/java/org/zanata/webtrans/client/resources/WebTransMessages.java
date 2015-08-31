@@ -148,6 +148,9 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("Failed to fetch preview")
     String previewFailed();
 
+    @DefaultMessage("Select all found occurrences of searched term (all pages)")
+    String selectAllDescription();
+
     @DefaultMessage("Replace")
     String replace();
 
