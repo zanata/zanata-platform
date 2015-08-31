@@ -267,10 +267,6 @@ public class ServerConfigurationBean implements Serializable {
         }
     }
 
-    public String cancel() {
-        return "cancel";
-    }
-
     /**
      * Associates a field of type T with a HApplicationConfiguration key,
      * allowing abstraction around setting fields only if keys are bound.

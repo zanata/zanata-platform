@@ -72,7 +72,7 @@ public class ServerConfigurationPage extends BasePage {
     }
 
     public boolean expectFieldValue(final By by, final String expectedValue) {
-        log.info("Wait for field {} value", by.toString(), expectedValue);
+        log.info("Wait for field {} value {}", by.toString(), expectedValue);
         return waitForAMoment().withMessage("text present: " + by.toString()).until(
                 ExpectedConditions.textToBePresentInElementValue(existingElement(by), expectedValue));
     }

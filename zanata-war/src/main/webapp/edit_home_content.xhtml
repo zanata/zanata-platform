@@ -11,8 +11,6 @@
 
   <ui:define name="page_title">#{msgs['jsf.EditHomePage']}</ui:define>
   <ui:define name="center_content">
-    <!-- TODO pahuang do we need this? -->
-    <a4j:jsFunction name="cancelEditHomeContent" action="#{serverConfigurationBean.cancel()}" />
     <h1>#{msgs['jsf.HomepageContent']}</h1>
 
     <h:form id="homeContentForm">
@@ -32,8 +30,7 @@
             value="#{msgs['jsf.Update']}"
             action="#{serverConfigurationBean.updateHomeContent}"/>
           <h:button id="cancel" outcome="/home.xhtml"
-            value="#{msgs['jsf.Cancel']}"
-            onclick="cancelEditHomeContent()"/>
+            value="#{msgs['jsf.Cancel']}"/>
         </div>
 
         <hr/>
