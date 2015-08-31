@@ -185,6 +185,7 @@ public class SearchResultsView extends Composite implements
 
     @Override
     public HasValue<Boolean> getSelectAllChk() {
+        selectAllChk.setTitle(messages.selectAllDescription());
         return selectAllChk;
     }
 
