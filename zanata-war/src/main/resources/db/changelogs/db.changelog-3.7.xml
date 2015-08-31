@@ -48,10 +48,13 @@
     <customChange class="org.zanata.liquibase.custom.ChangePositionalResIdToContentHash" />
   </changeSet>
 
-  <changeSet id="3-split" author="aeng@redhat.com">
+  <changeSet id="3-split-merged" author="aeng@redhat.com">
     <preConditions onFail="MARK_RAN">
       <not>
-        <changeSetExecuted id="3" author="aeng@redhat.com" changeLogFile="db/changelogs/db.changelog-3.7.xml"/>
+        <or>
+          <changeSetExecuted id="3" author="aeng@redhat.com" changeLogFile="db/changelogs/db.changelog-3.7.xml"/>
+          <changeSetExecuted id="3-split" author="aeng@redhat.com" changeLogFile="db/changelogs/db.changelog-3.7.xml"/>
+        </or>
       </not>
     </preConditions>
     <comment>Add copiedEntityType, copiedEntityId, sourceType, automatedEntry, revisionComment to HTextFlowTarget</comment>
@@ -59,29 +62,24 @@
       <column name="revisionComment" type="longtext">
         <constraints nullable="true" />
       </column>
-    </addColumn>
-    <addColumn tableName="HTextFlowTarget">
       <column name="copiedEntityType" type="char(3)">
         <constraints nullable="true" />
       </column>
-    </addColumn>
-    <addColumn tableName="HTextFlowTarget">
       <column name="copiedEntityId" type="longtext">
         <constraints nullable="true" />
       </column>
-    </addColumn>
-    <addColumn tableName="HTextFlowTarget">
       <column name="sourceType" type="char(3)" defaultValue="UNK"/>
-    </addColumn>
-    <addColumn tableName="HTextFlowTarget">
       <column name="automatedEntry" type="boolean" defaultValueBoolean="false"/>
     </addColumn>
   </changeSet>
 
-  <changeSet id="4" author="aeng@redhat.com">
+  <changeSet id="4-merged" author="aeng@redhat.com">
     <preConditions onFail="MARK_RAN">
       <not>
-        <changeSetExecuted id="3" author="aeng@redhat.com" changeLogFile="db/changelogs/db.changelog-3.7.xml"/>
+        <or>
+          <changeSetExecuted id="3" author="aeng@redhat.com" changeLogFile="db/changelogs/db.changelog-3.7.xml"/>
+          <changeSetExecuted id="4" author="aeng@redhat.com" changeLogFile="db/changelogs/db.changelog-3.7.xml"/>
+        </or>
       </not>
     </preConditions>
     <comment>Add copiedEntityType, copiedEntityId, sourceType, automatedEntry, revisionComment to HTextFlowTargetHistory</comment>
@@ -89,21 +87,13 @@
       <column name="revisionComment" type="longtext">
         <constraints nullable="true" />
       </column>
-    </addColumn>
-    <addColumn tableName="HTextFlowTargetHistory">
       <column name="copiedEntityType" type="char(3)">
         <constraints nullable="true" />
       </column>
-    </addColumn>
-    <addColumn tableName="HTextFlowTargetHistory">
       <column name="copiedEntityId" type="longtext">
         <constraints nullable="true" />
       </column>
-    </addColumn>
-    <addColumn tableName="HTextFlowTargetHistory">
       <column name="sourceType" type="char(3)" defaultValue="UNK"/>
-    </addColumn>
-    <addColumn tableName="HTextFlowTargetHistory">
       <column name="automatedEntry" type="boolean" defaultValueBoolean="false"/>
     </addColumn>
   </changeSet>
