@@ -13,6 +13,7 @@ import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.TextFlowTargetHistoryDAO;
+import org.zanata.util.query.H2NativeQueryHelper;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -26,7 +27,8 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest {
     @Before
     public void beforeMethod() {
         localeDAO = new LocaleDAO((Session) em.getDelegate());
-        historyDAO = new TextFlowTargetHistoryDAO((Session) em.getDelegate());
+        historyDAO = new TextFlowTargetHistoryDAO((Session) em.getDelegate(),
+                new H2NativeQueryHelper());
         en_US = localeDAO.findByLocaleId(LocaleId.EN_US);
         de_DE = localeDAO.findByLocaleId(new LocaleId("de"));
     }

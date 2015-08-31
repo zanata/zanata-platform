@@ -90,12 +90,4 @@ public class NativeQueryHelperTest extends ZanataDbunitJpaTest {
                         .getNativeQueryHelper(postgresqlSessionMock);
         assertThat(helper).isInstanceOf(PostgresqlNativeQueryHelper.class);
     }
-
-    @Test
-    public void getNullifFunction() throws Exception {
-        NativeQueryHelper helper =
-                nativeQueryHelperFactory.getNativeQueryHelper(getEm());
-        // Make sure this is the right invocation for the H2 database
-        assertThat(helper.ifnull("column", "aDate")).contains("ifnull");
-    }
 }

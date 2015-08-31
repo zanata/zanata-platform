@@ -34,10 +34,10 @@ public class H2NativeQueryHelper implements NativeQueryHelper {
     }
 
     @Override
-    public String convertTz(String value, String systemOffset,
-            String userOffset) {
-        // TODO convert_tz in H2
-        throw new UnsupportedOperationException();
+    public String convertTz(String value, String fromOffset,
+            String toOffset) {
+        return String.format("convert_tz(%s, '%s', '%s')", value, fromOffset,
+                toOffset);
     }
 
     @Override

@@ -32,6 +32,7 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 
 import lombok.RequiredArgsConstructor;
+import org.zanata.util.query.H2NativeQueryHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -50,13 +51,8 @@ public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
     public void setUp() throws Exception {
         resultTransformer = new StatisticsServiceImpl.UserMatrixResultTransformer(getEm(),
                 dateFormatter);
-        historyDAO = new TextFlowTargetHistoryDAO(getSession()) {
-            @Override
-            protected String stripTimeFromDateTimeFunction(String columnName) {
-                // we override mysql function with a h2 one
-                return "formatdatetime(" + columnName + ", 'yyyy-MM-dd')";
-            }
-        };
+        historyDAO = new TextFlowTargetHistoryDAO(getSession(),
+                new H2NativeQueryHelper());
         deleteAllTables();
         hLocale = new HLocale(LocaleId.DE);
         getEm().persist(hLocale);
@@ -220,7 +216,7 @@ public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
     }
 
     @Test
-    public void canConvertTimeZoneIfUSerSuppliedDifferentZone() {
+    public void canConvertTimeZoneIfUserSuppliedDifferentZone() {
         String result = historyDAO.convertTimeZoneFunction("lastChanged",
                 Optional.of(DateTimeZone.forID("Australia/Brisbane")),
                 DateTimeZone.forID("America/Chicago"));

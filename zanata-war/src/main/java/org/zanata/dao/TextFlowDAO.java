@@ -129,7 +129,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
         Query q =
                 getSession()
                         .createQuery(
-                                "select sum(tf.wordCount) from HTextFlow tf where tf.obsolete=0");
+                                "select sum(tf.wordCount) from HTextFlow tf where tf.obsolete=false");
         q.setCacheable(true).setComment("TextFlowDAO.getTotalWords");
         Long totalCount = (Long) q.uniqueResult();
         return totalCount == null ? 0 : totalCount.intValue();
@@ -146,7 +146,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
         Query q =
                 getSession()
                         .createQuery(
-                                "select count(*) from HTextFlow tf where tf.obsolete=0");
+                                "select count(*) from HTextFlow tf where tf.obsolete=false");
         q.setCacheable(true).setComment("TextFlowDAO.getTotalActiveTextFlows");
         Long totalCount = (Long) q.uniqueResult();
         return totalCount == null ? 0 : totalCount.intValue();
@@ -156,7 +156,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
         Query q =
                 getSession()
                         .createQuery(
-                                "select count(*) from HTextFlow tf where tf.obsolete=1");
+                                "select count(*) from HTextFlow tf where tf.obsolete=true");
         q.setCacheable(true)
                 .setComment("TextFlowDAO.getTotalObsoleteTextFlows");
         Long totalCount = (Long) q.uniqueResult();
@@ -167,7 +167,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
         Query q =
                 getSession()
                         .createQuery(
-                                "select count(*) from HTextFlow tf where tf.obsolete=0 and tf.document.id = :documentId");
+                                "select count(*) from HTextFlow tf where tf.obsolete=false and tf.document.id = :documentId");
         q.setParameter("documentId", documentId);
         q.setCacheable(true).setComment(
                 "TextFlowDAO.countActiveTextFlowsInDocument");
@@ -180,7 +180,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
         Query q =
                 getSession()
                         .createQuery(
-                                "from HTextFlow tf where tf.obsolete=0 and tf.document.id = :documentId order by tf.pos");
+                                "from HTextFlow tf where tf.obsolete=false and tf.document.id = :documentId order by tf.pos");
         q.setParameter("documentId", documentId);
 
         if (offset != null) {
@@ -257,8 +257,8 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
 
     public long countActiveTextFlowsInProjectIteration(Long versionId) {
         String query =
-                "select count(*) from HTextFlow tf where tf.obsolete = 0 " +
-                        "and tf.document.obsolete = 0 " +
+                "select count(*) from HTextFlow tf where tf.obsolete = false " +
+                        "and tf.document.obsolete = false " +
                         "and tf.document.projectIteration.id=:versionId";
 
         Query q = getSession().createQuery(query);

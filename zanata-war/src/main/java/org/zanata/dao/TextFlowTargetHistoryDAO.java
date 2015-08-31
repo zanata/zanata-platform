@@ -58,8 +58,10 @@ public class TextFlowTargetHistoryDAO extends
         super(HTextFlowTargetHistory.class);
     }
 
-    public TextFlowTargetHistoryDAO(Session session) {
+    public TextFlowTargetHistoryDAO(Session session,
+            NativeQueryHelper nativeQueryHelper) {
         super(HTextFlowTargetHistory.class, session);
+        this.nativeQueryHelper = nativeQueryHelper;
     }
 
     /**
@@ -264,7 +266,7 @@ public class TextFlowTargetHistoryDAO extends
             String userOffset = getOffsetAsString(userZoneOpt.get());
             String systemOffset = getOffsetAsString(systemZone);
             return nativeQueryHelper.convertTz(columnName,
-                    userOffset, systemOffset);
+                    systemOffset, userOffset);
         }
         // no need to convert timezone
         return columnName;
@@ -273,7 +275,7 @@ public class TextFlowTargetHistoryDAO extends
     // This is so we can override it in test and be able to test it against h2
     @VisibleForTesting
     protected String stripTimeFromDateTimeFunction(String columnName) {
-        return "date(" + columnName + ")";
+        return nativeQueryHelper.date(columnName);
     }
 
     @SuppressWarnings("unchecked")

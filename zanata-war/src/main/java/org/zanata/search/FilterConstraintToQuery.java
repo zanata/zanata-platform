@@ -102,7 +102,7 @@ public class FilterConstraintToQuery {
 
     private String buildQuery(String selectStatement, String docIdCondition) {
 
-        String obsoleteCondition = eq("tf.obsolete", "0");
+        String obsoleteCondition = eq("tf.obsolete", "false");
         String searchCondition = buildSearchCondition();
         String stateCondition = buildStateCondition();
         String otherSourceCondition = buildSourceConditionsOtherThanSearch();
