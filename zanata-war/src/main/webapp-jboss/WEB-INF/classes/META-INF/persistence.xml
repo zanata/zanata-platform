@@ -68,6 +68,10 @@
       <property name="hibernate.connection.provider_class"
         value="org.zanata.database.WrappedDatasourceConnectionProvider" />
 
+      <!-- Custom Postgresql Dialect -->
+      <property name="hibernate.dialect"
+        value="org.zanata.database.CustomPostgreSQLDialect" />
+
       <!-- Logging -->
       <property name="hibernate.show_sql" value="${env.hibernate.show_sql}" />
       <property name="hibernate.use_sql_comments" value="true" />

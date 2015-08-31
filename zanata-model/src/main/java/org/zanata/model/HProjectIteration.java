@@ -108,7 +108,7 @@ public class HProjectIteration extends SlugEntityBase implements
 
     @OneToMany(mappedBy = "projectIteration", cascade = CascadeType.ALL)
     @MapKey(name = "docId")
-    @Where(clause = "obsolete = 'false'") // TODO This works in psql, check H2
+    @Where(clause = "obsolete = false")
     // TODO add an index for path, name
     @OrderBy("path, name")
     private Map<String, HDocument> documents = Maps.newHashMap();

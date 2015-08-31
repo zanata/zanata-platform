@@ -2,8 +2,18 @@ package org.zanata.database;
 
 import org.hibernate.dialect.H2Dialect;
 
-// This class is a workaround for https://hibernate.atlassian.net/browse/HHH-7002
+// This class is a workaround for:
+// https://hibernate.atlassian.net/browse/HHH-7002
+// https://hibernate.atlassian.net/browse/HHH-2775
 public class CustomH2Dialect extends H2Dialect {
+
+    public CustomH2Dialect() {
+        super();
+        // Register SQL spec literals
+        registerKeyword("true");
+        registerKeyword("false");
+        registerKeyword("unknown");
+    }
 
     @Override
     public String getDropSequenceString(String sequenceName) {
