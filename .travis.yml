@@ -1,17 +1,35 @@
+# use http://docs.travis-ci.com/user/workers/container-based-infrastructure/
+sudo: false
+
+# cache local Maven repo: http://docs.travis-ci.com/user/caching/
+cache:
+  directories:
+  - $HOME/.m2/repository
+
 language: java
 
-# http://docs.travis-ci.com/user/languages/java/#Dependency-Management
-# http://docs.travis-ci.com/user/build-timeouts/#Build-times-out-because-no-output-was-received
-# Installing the dependencies here saves many log lines (Travis limit is 10000)
-install: travis_wait mvn clean verify -Dmaven.main.skip -Dmaven.test.skip -Dgwt.compiler.skip --quiet
+# Use the 'true' command to avoid up-front dependency fetching, for faster builds
+# See http://docs.travis-ci.com/user/languages/java/#Dependency-Management
+install: /bin/true
+
+# Travis build logs need to be small (aim for less than 4MB or 10,000 lines),
+# so we try to minimise unwanted logging. However, Travis will kill the build
+# if nothing is logged for 10 minutes (20 with travis_wait), so we do need
+# some logging.
 
 script: |
-  mvn test \
-    --batch-mode \
-    --settings .travis-settings.xml \
-    -Darquillian.jboss.home=/dev/null \
-    -Dgwt.validateOnly \
-    -DstaticAnalysis
+  mvn verify \
+  --batch-mode \
+  --settings .travis-settings.xml \
+  -Dgwt.validateOnly \
+  -Dappserver=wildfly8 \
+  -DskipFuncTests \
+  -Dmaven.test.redirectTestOutputToFile \
+  -DstaticAnalysis | \
+  egrep -v \
+  '^(\[INFO\] Download|'\
+  '\[WARNING\] Could not validate integrity of download from|'\
+  '\[WARNING\] Checksum validation failed, no checksums available for)'
 
 jdk:
   - openjdk7
@@ -20,5 +38,3 @@ jdk:
 
 matrix:
   fast_finish: true
-  allow_failures:
-    - jdk: oraclejdk8
