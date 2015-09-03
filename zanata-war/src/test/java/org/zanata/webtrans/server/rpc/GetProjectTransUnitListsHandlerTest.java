@@ -15,6 +15,7 @@ import org.zanata.ZanataTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.exception.ZanataServiceException;
+import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.TestFixture;
@@ -33,6 +34,7 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.shared.ActionException;
 import static org.hamcrest.MatcherAssert.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -51,6 +53,8 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
     private ZanataIdentity identity;
     @Mock
     private LocaleService localeService;
+    @Mock
+    private ResourceUtils resourceUtils;
     @Mock
     private TextFlowSearchService textFlowSearchServiceImpl;
     private List<HTextFlow> textFlows;
@@ -77,27 +81,27 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
     @Before
     @SuppressWarnings("unchecked")
     public void beforeMethod() {
-        SeamAutowire.instance().reset();
+        SeamAutowire seam = SeamAutowire.instance().reset();
         MockitoAnnotations.initMocks(this);
-        ResourceUtils resourceUtils = new ResourceUtils();
-        resourceUtils.create(); // postConstruct
+        // must create before transUnitTransformer
+        seam.use("resourceUtils", resourceUtils);
         TransUnitTransformer transUnitTransformer =
-                SeamAutowire.instance().use("resourceUtils", resourceUtils)
-                        .autowire(TransUnitTransformer.class);
+                seam.autowire(TransUnitTransformer.class);
         // @formatter:off
-      handler = SeamAutowire.instance()
+        handler = seam
             .use("identity", identity)
             .use("localeServiceImpl", localeService)
             .use("transUnitTransformer", transUnitTransformer)
             .use("textFlowSearchServiceImpl", textFlowSearchServiceImpl)
             .ignoreNonResolvable()
             .autowire(GetProjectTransUnitListsHandler.class);
-      // @formatter:on
+        // @formatter:on
         when(
                 localeService.validateLocaleByProjectIteration(localeId,
                         workspaceId.getProjectIterationId().getProjectSlug(),
                         workspaceId.getProjectIterationId().getIterationSlug()))
                 .thenReturn(hLocale);
+        when(resourceUtils.getNumPlurals(any(HDocument.class), any(HLocale.class))).thenReturn(1);
     }
 
     private HTextFlow textFlow(long id, String sourceContent,

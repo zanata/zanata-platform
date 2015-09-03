@@ -43,6 +43,8 @@ import com.google.common.collect.Lists;
 public class RevertTransUnitUpdatesHandlerTest extends ZanataTest {
     private RevertTransUnitUpdatesHandler handler;
     @Mock
+    private ResourceUtils resourceUtils;
+    @Mock
     private TranslationService translationServiceImpl;
     @Mock
     private SecurityService securityServiceImpl;
@@ -52,13 +54,14 @@ public class RevertTransUnitUpdatesHandlerTest extends ZanataTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
+        SeamAutowire seam = SeamAutowire.instance().reset();
+        // must create before transUnitTransformer
+        seam.use("resourceUtils", resourceUtils);
         TransUnitTransformer transUnitTransformer =
-                SeamAutowire.instance().reset()
-                        .use("resourceUtils", new ResourceUtils())
-                        .autowire(TransUnitTransformer.class);
+                seam.autowire(TransUnitTransformer.class);
         // @formatter:off
-      handler = SeamAutowire.instance()
-            .use("translationServiceImpl", translationServiceImpl)
+        handler = seam
+                .use("translationServiceImpl", translationServiceImpl)
             .use("transUnitTransformer", transUnitTransformer)
             .use("securityServiceImpl", securityServiceImpl)
             .ignoreNonResolvable()
