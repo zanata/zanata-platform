@@ -15,20 +15,6 @@
     </navigation>
   </page>
 
-  <!-- Project Search -->
-  <page view-id="/search.xhtml">
-    <param name="query" value="#{zanataSearch.autocomplete.query}" />
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', msgs['jsf.SearchProjects'])}" />
-  </page>
-
-
-  <page view-id="/edit_home_content.xhtml">
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', msgs['jsf.server.EditHomePage.label'])}" />
-  </page>
 
   <!-- Landing page for open id authentication -->
   <page view-id="/openid.xhtml">
@@ -65,10 +51,9 @@
 
   <!-- Landing page for Kerberos ticket-based Authentication -->
   <page view-id="/account/klogin.xhtml">
+    <!-- TODO [CDI] may need to do this http://stackoverflow.com/a/20264171/345718 -->
     <header name="Cache-Control"
       value="no-cache, no-store, max-age=0, must-revalidate" />
-    <param name="continue" value="#{userRedirect.encodedUrl}" />
-    <action execute="#{authenticationManager.kerberosLogin}" />
     <navigation evaluate="#{authenticationManager.authenticationRedirect}">
       <rule if-outcome="login">
         <redirect view-id="/account/login.xhtml" />
@@ -95,11 +80,10 @@
   <!-- Landing page for Internal, JAAS and Kerberos form-based
        authentication -->
   <page view-id="/account/login.xhtml">
+    <!-- TODO [CDI] may need to do this http://stackoverflow.com/a/20264171/345718 -->
     <header name="Cache-Control"
       value="no-cache, no-store, max-age=0, must-revalidate" />
-    <param name="continue" value="#{userRedirect.encodedUrl}" />
 
-    <action execute="#{loginAction.getLoginPageRedirect()}" />
     <navigation from-action="#{loginAction.getLoginPageRedirect()}">
       <rule if-outcome="dashboard">
         <redirect view-id="/dashboard/home.xhtml" />
@@ -125,22 +109,6 @@
     </navigation>
   </page>
 
-  <page view-id="/account/activate.xhtml">
-    <param name="key" value="#{activate.activationKey}" />
-    <action execute="#{activate.validateActivationKey}" />
-    <action execute="#{activate.activate}" />
-  </page>
-
-  <page view-id="/account/email_validation.xhtml">
-    <param name="key" value="#{validateEmail.activationKey}" />
-    <action execute="#{validateEmail.validate}" />
-  </page>
-
-  <page view-id="/account/password_reset.xhtml">
-    <param name="key" value="#{passwordReset.activationKey}" />
-    <action execute="#{passwordReset.validateActivationKey}" />
-  </page>
-
   <page view-id="/account/password_reset_request.xhtml">
     <navigation from-action="#{passwordResetRequest.requestReset}">
       <rule if-outcome="home">
@@ -151,7 +119,6 @@
   </page>
 
   <page view-id="/account/register.xhtml">
-    <action execute="#{identity.isLoggedIn()}" />
     <navigation from-action="#{identity.isLoggedIn()}">
       <rule if-outcome="true">
         <redirect view-id="/dashboard/home.xhtml" />
@@ -192,7 +159,7 @@
     </navigation>
   </page>
 
-  <page view-id="/admin/rolemanager.xhtml" action="#{zanataRoleSearch.loadRoles}">
+  <page view-id="/admin/rolemanager.xhtml">
     <navigation from-action="#{zanataRoleAction.createRole}">
       <redirect view-id="/admin/roledetail.xhtml" />
     </navigation>
@@ -216,7 +183,7 @@
     </navigation>
   </page>
 
-  <page view-id="/admin/usermanager.xhtml" action="#{userSearch.loadUsers}">
+  <page view-id="/admin/usermanager.xhtml">
     <navigation from-action="#{userAction.editUser(username)}">
       <redirect view-id="/admin/userdetail.xhtml" />
     </navigation>
@@ -254,15 +221,7 @@
   </page>
 
   <!-- Version Group -->
-
-  <page view-id="/version-group/home.xhtml">
-    <action execute="#{breadcrumbs.clear}" />
-    <action execute="#{breadcrumbs.addLocation('', msgs['jsf.Groups'])}" />
-  </page>
-
-  <!--TODO [CDI] we need to find a way to secure this page's access in CDI (the actual perist method is already secured) -->
-  <page view-id="/version-group/create_version_group.xhtml"
-    action="#{identity.checkPermission(versionGroupHome.instance, 'insert')}">
+  <page view-id="/version-group/create_version_group.xhtml">
     <navigation from-action="#{versionGroupHome.persist}">
       <rule if="#{versionGroupHome.managed}">
         <redirect view-id="/version-group/home.xhtml" />
@@ -273,10 +232,6 @@
   <page view-id="/version-group/version_group.xhtml">
     <header name="Cache-Control"
       value="no-cache, no-store, max-age=0, must-revalidate" />
-    <param name="versionGroupSlug" value="#{versionGroupHomeAction.slug}" />
-    <param name="versionGroupSlug" value="#{versionGroupHome.slug}" />
-    <param name="versionGroupSlug" value="#{versionGroupJoinAction.slug}" />
-    <action execute="#{versionGroupHome.validateSuppliedId}" />
   </page>
 
   <page view-id="/profile/create_user.xhtml">
@@ -289,32 +244,16 @@
   </page>
 
   <page view-id="/profile/merge_account.xhtml">
-    <action execute="#{accountMergeAction.validateAccounts}" />
-
     <navigation from-action="#{accountMergeAction.cancel}">
       <redirect view-id="/dashboard/home.xhtml" />
     </navigation>
   </page>
 
-  <!-- User profile -->
-  <page view-id="/profile/home.xhtml">
-    <action execute="#{breadcrumbs.clear}" />
-    <param name="username" value="#{profileHome.username}" />
-  </page>
-
   <!-- Project -->
-  <page view-id="/project/home.xhtml">
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', msgs['jsf.Projects'])}" />
-  </page>
 
   <page view-id="/project/project.xhtml">
     <header name="Cache-Control"
       value="no-cache, no-store, max-age=0, must-revalidate" />
-    <param name="slug" value="#{projectHome.slug}" />
-    <param name="slug" value="#{projectHomeAction.slug}" />
-    <action execute="#{projectHome.initialize}" />
     <navigation from-action="#{projectHome.update}">
       <rule if-outcome="projectSlugUpdated">
         <redirect view-id="/project/project.xhtml">
@@ -325,7 +264,6 @@
   </page>
 
   <page view-id="/project/create_project.xhtml">
-    <action execute="#{projectHome.createNew}" />
     <navigation from-action="#{projectHome.persist}">
       <redirect view-id="/project/project.xhtml">
         <param name="slug" value="#{projectHome.instance.slug}" />
@@ -334,10 +272,6 @@
   </page>
 
   <page view-id="/project/add_iteration.xhtml">
-    <param name="projectSlug" value="#{versionHome.projectSlug}" />
-    <param name="copyFromVersionSlug" value="#{versionHome.copyFromVersionSlug}" />
-    <action execute="#{versionHome.validateProjectSlug}" />
-    <action execute="#{versionHome.init(true)}" />
 
     <navigation from-action="#{versionHome.createVersion}">
       <rule if-outcome="invalid-slug">
@@ -361,20 +295,6 @@
   <page view-id="/iteration/view.xhtml">
     <header name="Cache-Control"
       value="no-cache, no-store, max-age=0, must-revalidate" />
-    <param name="projectSlug" value="#{versionHomeAction.projectSlug}" />
-    <param name="iterationSlug" value="#{versionHomeAction.versionSlug}" />
-
-    <param name="projectSlug" value="#{versionHome.projectSlug}" />
-    <param name="iterationSlug" value="#{versionHome.slug}" />
-
-    <param name="projectSlug" value="#{copyTransAction.projectSlug}" />
-    <param name="iterationSlug" value="#{copyTransAction.iterationSlug}" />
-
-    <param name="projectSlug" value="#{mergeTransAction.targetProjectSlug}" />
-    <param name="iterationSlug" value="#{mergeTransAction.targetVersionSlug}" />
-
-    <action execute="#{versionHome.init(false)}" />
-    <action execute="#{versionHome.validateSuppliedId}" />
 
     <navigation from-action="#{versionHomeAction.uploadSourceFile}">
       <redirect view-id="/iteration/view.xhtml">
@@ -420,17 +340,8 @@
     </navigation>
   </page>
 
-  <page view-id="/language/language.xhtml">
-    <param name="id" value="#{languageAction.language}" />
-    <param name="id" value="#{languageJoinAction.language}" />
-    <param name="id" value="#{languageContactCoordinatorAction.localeId}" />
-
-    <action execute="#{languageAction.validateLanguage}" />
-  </page>
-
   <!-- Translation Memory -->
-  <!-- TODO [CDI] find CDI way to secure access of this page (this page is shared by both insert and update) -->
-  <page view-id="/tm/create.xhtml" action="#{identity.checkPermission(translationMemoryHome.instance, 'insert')}">
+  <page view-id="/tm/create.xhtml">
     <navigation from-action="#{translationMemoryHome.persist}">
       <rule if-outcome="persisted">
         <redirect view-id="/tm/home.xhtml" />

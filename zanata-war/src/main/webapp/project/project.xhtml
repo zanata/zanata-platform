@@ -2,11 +2,18 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:rich="http://richfaces.org/rich"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   template="/WEB-INF/template/template.xhtml">
+
+  <f:metadata>
+    <f:viewParam name="slug" value="#{projectHome.slug}"/>
+    <f:viewParam name="slug" value="#{projectHomeAction.slug}"/>
+    <f:event type="preRenderView" listener="#{projectHome.initialize}"/>
+  </f:metadata>
 
 <ui:define name="page_title">
   #{msgs['jsf.Projects']} - #{projectHome.instance.name}

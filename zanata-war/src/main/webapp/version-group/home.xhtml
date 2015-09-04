@@ -9,6 +9,11 @@
   xmlns:fn="http://java.sun.com/jsp/jstl/functions"
   template="../WEB-INF/template/template_2x.xhtml">
 
+  <f:metadata>
+    <f:event type="preRenderView" listener="#{breadcrumbs.clear}"/>
+    <f:event type="preRenderView" listener="#{breadcrumbs.addLocation('', msgs['jsf.Groups'])}"/>
+  </f:metadata>
+
   <ui:define name="page_title">#{msgs['jsf.Groups']}</ui:define>
 
   <ui:define name="right_content">

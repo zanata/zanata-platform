@@ -8,6 +8,10 @@
   xmlns:s="http://jboss.org/schema/seam/taglib">
 
 <ui:composition template="../WEB-INF/template/template.xhtml">
+  <f:metadata>
+    <f:viewParam name="username" value="#{userAction.username}" />
+    <f:event type="preRenderView" listener="#{userAction.loadUser()}"/>
+  </f:metadata>
 
   <ui:define name="head">
     <style type="text/css">

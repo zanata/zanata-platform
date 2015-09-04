@@ -9,6 +9,13 @@
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   template="/WEB-INF/template/template.xhtml">
 
+  <f:metadata>
+    <f:viewParam name="versionGroupSlug" value="#{versionGroupHomeAction.slug}"/>
+    <f:viewParam name="versionGroupSlug" value="#{versionGroupHome.slug}"/>
+    <f:viewParam name="versionGroupSlug" value="#{versionGroupJoinAction.slug}"/>
+    <f:event type="preRenderView" listener="#{versionGroupHome.validateSuppliedId}"/>
+  </f:metadata>
+
 <ui:define name="page_title">
   #{msgs['jsf.Groups']} - #{versionGroupHome.instance.name}
 </ui:define>

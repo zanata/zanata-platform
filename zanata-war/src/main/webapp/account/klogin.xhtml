@@ -1,7 +1,19 @@
-<ui:remove xmlns:ui="http://java.sun.com/jsf/facelets">
-  <!--
-  This is a "virtual" view to perform kerberos authentication.
-  This is necessary in Seam 2.3 / JSF 2 because JSF actually checks for the existence of the physical view.
-  See: https://issues.jboss.org/browse/JBSEAM-4939
-  -->
-</ui:remove>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  template="/WEB-INF/template/template_2x.xhtml">
+
+  <f:metadata>
+    <f:event type="preRenderView" listener="#{authenticationManager.kerberosLogin}"/>
+    <f:viewParam name="continue" value="#{userRedirect.encodedUrl}"/>
+  </f:metadata>
+  <ui:remove xmlns:ui="http://java.sun.com/jsf/facelets">
+    <!--
+    This is a "virtual" view to perform kerberos authentication.
+    This is necessary in Seam 2.3 / JSF 2 because JSF actually checks for the existence of the physical view.
+    See: https://issues.jboss.org/browse/JBSEAM-4939
+    -->
+  </ui:remove>
+</ui:composition>
+
+

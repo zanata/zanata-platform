@@ -64,4 +64,18 @@
       <renderer-class>org.zanata.ui.input.TextInputRenderer</renderer-class>
     </renderer>
   </render-kit>
+
+  <navigation-rule>
+    <from-view-id>*</from-view-id>
+    <navigation-case>
+      <from-action>#{identity.logout}</from-action>
+      <to-view-id>/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <from-outcome>home</from-outcome>
+      <to-view-id>/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
 </faces-config>
