@@ -100,9 +100,9 @@
     <!-- JBoss version for Arquillian dependencies -->
     <jboss.as.version>7.2.0.Final</jboss.as.version>
 
-    <jdbc.groupId>mysql</jdbc.groupId>
-    <jdbc.artifactId>mysql-connector-java</jdbc.artifactId>
-    <jdbc.version>5.1.26</jdbc.version>
+    <jdbc.groupId>org.postgresql</jdbc.groupId>
+    <jdbc.artifactId>postgresql</jdbc.artifactId>
+    <jdbc.version>9.4-1202-jdbc42</jdbc.version>
 
     <resteasy.scope>compile</resteasy.scope>
     <resteasy.version>3.0.11.Final</resteasy.version>
