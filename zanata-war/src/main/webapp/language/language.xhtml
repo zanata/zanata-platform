@@ -3,9 +3,17 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:a4j="http://richfaces.org/a4j"
   template="/WEB-INF/template/template.xhtml">
+
+  <f:metadata>
+    <f:viewParam name="id" value="#{languageAction.language}" />
+    <f:viewParam name="id" value="#{languageJoinAction.language}" />
+    <f:viewParam name="id" value="#{languageContactCoordinatorAction.localeId}" />
+    <f:event type="preRenderView" listener="#{languageAction.validateLanguage}"/>
+  </f:metadata>
 
   <ui:define name="page_title">#{msgs.format('jsf.LanguageTeamTitle',
     languageAction.locale.retrieveDisplayName())}</ui:define>

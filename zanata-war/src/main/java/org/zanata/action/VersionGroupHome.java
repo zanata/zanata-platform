@@ -32,8 +32,12 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Begin;
+import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectIterationDAO;
@@ -67,6 +71,7 @@ import lombok.Setter;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Name("versionGroupHome")
+@Scope(ScopeType.CONVERSATION)
 public class VersionGroupHome extends SlugHome<HIterationGroup> {
     private static final long serialVersionUID = 1L;
 
@@ -261,6 +266,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
         return slug;
     }
 
+    @Begin(join = true)
     public void validateSuppliedId() {
         getInstance(); // this will raise an EntityNotFound exception
         // when id is invalid and conversation will not
@@ -395,6 +401,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
 
             getVersionGroupHome().update(conversationScopeMessages);
             reset();
+            maintainerFilter.reset();
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                     msgs.format("jsf.LanguageAddedToGroup",
                             locale.retrieveDisplayName()));
