@@ -1246,6 +1246,12 @@
                 <exclude>org.jboss.spec.javax.annotation:jboss-annotations-api_1.2_spec</exclude>
               </excludes>
             </bannedDependencies>
+            <enforceBytecodeVersion>
+              <ignoredScopes>
+                <!-- Newer bytecode is allowed for system:jdk-tools and similar -->
+                <ignoredScope>system</ignoredScope>
+              </ignoredScopes>
+            </enforceBytecodeVersion>
             <requireNoRepositories>
               <allowedRepositories combine.children="append">
                 <allowedRepository>jboss-public-repository-group</allowedRepository>

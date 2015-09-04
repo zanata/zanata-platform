@@ -14,6 +14,8 @@
 package org.zanata.servlet;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,6 +29,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.collect.ImmutableList;
 import org.slf4j.MDC;
 
 /**
@@ -47,6 +50,24 @@ public class MDCInsertingServletFilter implements Filter {
     public static final String REQUEST_QUERY_STRING = "req.queryString";
     public static final String REQUEST_REQUEST_URL = "req.requestURL";
     public static final String REQUEST_X_FORWARDED_FOR = "req.xForwardedFor";
+    /**
+     * This MDC value is set by LoggingFilter
+     */
+    public static final String USERNAME = "username";
+
+    public static final ImmutableList<String> mdcKeys = ImmutableList.of(
+            REQUEST_REMOTE_HOST_MDC_KEY,
+            REQUEST_USER_AGENT_MDC_KEY,
+            REQUEST_REQUEST_URI,
+            REQUEST_QUERY_STRING,
+            REQUEST_REQUEST_URL,
+            REQUEST_X_FORWARDED_FOR,
+            USERNAME
+    );
+
+    public static ImmutableList<String> getMDCKeys() {
+        return mdcKeys;
+    }
 
     public void destroy() {
         // do nothing
