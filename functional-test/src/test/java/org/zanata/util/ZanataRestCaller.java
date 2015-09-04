@@ -26,13 +26,13 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.concurrent.Callable;
 
-import javax.ws.rs.core.Response;
-
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import org.jboss.resteasy.client.ClientRequest;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.rest.client.AsyncProcessClient;
 import org.zanata.rest.client.CopyTransClient;
 import org.zanata.rest.client.ProjectClient;
@@ -67,6 +67,9 @@ public class ZanataRestCaller {
             EnumSet.of(ProcessStatus.ProcessStatusCode.Failed,
                     ProcessStatus.ProcessStatusCode.Finished,
                     ProcessStatus.ProcessStatusCode.NotAccepted);
+    private final String username;
+    private final String apiKey;
+    private final String baseUrl;
 
     /**
      * Rest client as user admin.
@@ -85,11 +88,12 @@ public class ZanataRestCaller {
      *            user api key
      */
     public ZanataRestCaller(String username, String apiKey) {
+        this.username = username;
+        this.apiKey = apiKey;
+        this.baseUrl = PropertiesHolder.getProperty(Constants.zanataInstance
+                        .value());
+        VersionInfo versionInfo = VersionUtility.getAPIVersionInfo();
         try {
-            VersionInfo versionInfo = VersionUtility.getAPIVersionInfo();
-            String baseUrl =
-                    PropertiesHolder.getProperty(Constants.zanataInstance
-                            .value());
             restClientFactory =
                     new RestClientFactory(new URI(baseUrl), username, apiKey,
                             versionInfo, true, false);
@@ -263,5 +267,30 @@ public class ZanataRestCaller {
         log.info("finished async translation({}-{}) push: {}", projectSlug,
                 iterationSlug, processStatus.getStatusCode());
     }
+
+    private void postTest(String uri, String testClass, String methodName) {
+        // see also org.zanata.RestTest.signalBeforeTest()
+        // see also org.zanata.RestTest.signalAfterTest()
+        ClientRequest clientRequest = new ClientRequest(uri);
+        clientRequest.header("X-Auth-User", username);
+        clientRequest.header("X-Auth-Token", apiKey);
+        try {
+            clientRequest
+                    .queryParameter("c", testClass)
+                    .queryParameter("m", methodName)
+                    .post();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void signalBeforeTest(String testClass, String methodName) {
+        postTest(baseUrl + "test/remote/signal/before", testClass, methodName);
+    }
+
+    public void signalAfterTest(String testClass, String methodName) {
+        postTest(baseUrl + "test/remote/signal/after", testClass, methodName);
+    }
+
 }
 

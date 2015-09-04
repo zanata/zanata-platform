@@ -34,6 +34,7 @@ import org.junit.rules.TestName;
 import org.zanata.page.WebDriverFactory;
 import org.zanata.util.EnsureLogoutRule;
 import org.zanata.util.SampleProjectRule;
+import org.zanata.util.ZanataRestCaller;
 
 /**
  * Global application of rules to Zanata functional tests
@@ -48,7 +49,7 @@ public class ZanataTestCase {
     public final static int MAX_LONG_TEST_DURATION = 600000;
 
     @Rule
-    public TestName testName = new TestName();
+    public final TestName testName = new TestName();
 
     @Rule
     public RuleChain theOneRule = RuleChain
@@ -64,6 +65,8 @@ public class ZanataTestCase {
 
     public DateTime testFunctionStart;
 
+    private ZanataRestCaller zanataRestCaller = new ZanataRestCaller();
+
     private String getTestDescription() {
         return this.getClass().getCanonicalName()
                 .concat(".")
@@ -75,11 +78,13 @@ public class ZanataTestCase {
         log.info("Starting ".concat(getTestDescription()));
         testFunctionStart = new DateTime();
         WebDriverFactory.INSTANCE.testEntry();
+        zanataRestCaller.signalBeforeTest(getClass().getName(), testName.getMethodName());
     }
 
     @After
     public final void testExit() {
         WebDriverFactory.INSTANCE.logLogs();
+        zanataRestCaller.signalAfterTest(getClass().getName(), testName.getMethodName());
         Duration duration = new Duration(testFunctionStart, new DateTime());
         PeriodFormatter periodFormatter = new PeriodFormatterBuilder()
                 .appendLiteral("Finished "

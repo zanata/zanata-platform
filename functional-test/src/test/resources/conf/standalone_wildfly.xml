@@ -104,13 +104,13 @@
         <level name="WARN"/>
       </logger>
       <!-- JDBC connection allocation/release will be logged to server.log -->
-      <logger category="org.hibernate.engine.jdbc.internal.LogicalConnectionImpl">
-        <level name="DEBUG"/>
-      </logger>
+      <!--<logger category="org.hibernate.engine.jdbc.internal.LogicalConnectionImpl">-->
+        <!--<level name="DEBUG"/>-->
+      <!--</logger>-->
       <!-- More info about JDBC connections will be logged to server.log -->
-      <logger category="org.hibernate.engine.jdbc.internal.JdbcCoordinatorImpl">
-        <level name="DEBUG"/>
-      </logger>
+      <!--<logger category="org.hibernate.engine.jdbc.internal.JdbcCoordinatorImpl">-->
+        <!--<level name="DEBUG"/>-->
+      <!--</logger>-->
       <logger category="org.jboss.as.config">
         <level name="DEBUG"/>
       </logger>
