@@ -25,13 +25,58 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
-  <changeSet id="1" author="aeng@redhat.com">
-    <comment>WebhookKey to WebHook</comment>
-    <addColumn tableName="WebHook">
-      <column name="secret" type="varchar(255)">
-        <constraints nullable="true" />
-      </column>
-    </addColumn>
+  <changeSet author="camunoz@redhat.com" id="mysql_baseline_3.7" dbms="mysql">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <changeSetExecuted id="mysql_baseline" author="flies" changeLogFile="db/changelogs/db.changelog-1.0.xml"/>
+      </not>
+    </preConditions>
+    <comment>mysql baseline schema</comment>
+    <sqlFile path="db/mysql/mysql_baseline.sql" stripComments="true" />
+  </changeSet>
+
+  <!--
+  1.0base: Executed 1.0 baseline
+  last3.7: Executed most recent 3.7 changeset, ie webhook
+
+  if 1.0base && last3.7  => do nothing
+     1.0base && !last3.7 => HALT (Zanata is not up to date)
+     !1.0base      => run new baseline (empty database)
+
+
+     changeset newOrUpTo3.7
+       precond=(!1.0base | last3.7)
+       onFail=HALT (please update to 3.7 out of band)
+
+     changeset ensure3.7base
+       precondition=!1.0base
+       onFail=MARK_RAN
+       change=3.7base
+  -->
+  <changeSet id="new_or_up_to_3.7.1" author="camunoz@redhat.com">
+    <preConditions onFail="HALT" onFailMessage="Please update this database to 3.7 before attempting to run this version">
+      <or>
+        <!-- Baseline 1.0 must not have been executed (i.e. it's empty) -->
+        <not>
+          <changeSetExecuted id="mysql_baseline" author="flies" changeLogFile="db/changelogs/db.changelog-1.0.xml"/>
+        </not>
+        <!--  Or, latest 3.7 change (before the cutoff for postgresql) must not have been executed -->
+        <changeSetExecuted id="1" author="aeng@redhat.com" changeLogFile="db/changelogs/db.changelog-3.8.xml"/>
+      </or>
+    </preConditions>
+    <comment>Validate that the database is either new (empty) or up to version 3.7.1</comment>
+  </changeSet>
+
+  <changeSet author="camunoz@redhat.com" id="ensure_3.7_base" dbms="postgresql">
+    <preConditions onFail="MARK_RAN">
+      <!-- Make sure the mysql baseline has not been executed -->
+      <not>
+        <changeSetExecuted id="mysql_baseline" author="flies" changeLogFile="db/changelogs/db.changelog-1.0.xml"/>
+      </not>
+    </preConditions>
+    <comment>Postgresql baseline schema</comment>
+    <sqlFile path="db/postgresql/postgresql_baseline.sql" stripComments="true"
+      splitStatements="false" />
   </changeSet>
 
   <changeSet id="1" author="damason@redhat.com">

@@ -22,6 +22,10 @@ import java.sql.ResultSet
 
 @Field DatabaseMetaData mysqlMetadata
 
+// Indicates if the script should generate a DDL instead of doing a migration
+@Field boolean generateDDL = false
+@Field BufferedWriter ddlFile
+
 // Global list of already created indexes (for collision detection)
 @Field List createdIdxs = []
 
@@ -57,23 +61,26 @@ while(mysqlTables.next()) {
 }
 mysqlTables.close()
 
-// Create data
-mysqlTables = mysqlMetadata.getTables(null, null, null, ['TABLE'] as String[])
-while(mysqlTables.next()) {
-    def tableName = mysqlTables.getString(3)
-    try {
-        extractDataForTable(tableName)
-    }
-    catch (Exception ex){
+// Create data (only if migrating directly to a DB)
+if(!generateDDL) {
+    mysqlTables =
+        mysqlMetadata.getTables(null, null, null, ['TABLE'] as String[])
+    while (mysqlTables.next()) {
+        def tableName = mysqlTables.getString(3)
         try {
-            throw ex.nextException
+            extractDataForTable(tableName)
         }
-        catch(MissingPropertyException mpex) {
-            throw ex
+        catch (Exception ex) {
+            try {
+                throw ex.nextException
+            }
+            catch (MissingPropertyException mpex) {
+                throw ex
+            }
         }
     }
+    mysqlTables.close()
 }
-mysqlTables.close()
 
 // Create All Foreign Keys
 mysqlTables = mysqlMetadata.getTables(null, null, null, ['TABLE'] as String[])
@@ -87,11 +94,13 @@ while(mysqlTables.next()) {
 }
 mysqlTables.close()
 
-// Create Triigers
+// Create Triggers
 createTriggers()
 
-// Manually increment sequences
-updateAutoIncrementSequences(autoIncrementSeqs)
+// Manually increment sequences (only if migrating directly to a DB)
+if(!generateDDL) {
+    updateAutoIncrementSequences(autoIncrementSeqs)
+}
 
 // ========================= Helper Functions =========================
 
@@ -113,6 +122,7 @@ def initialize(args) {
     cli.psqluser(args:1, argName: 'psqluser', 'User for the portgresql database (default: "")')
     cli.psqlpassword(args:1, argName: 'psqlpassword', 'Password for the postgresql database (default: "")')
 
+    cli.script(args:1, argName: 'script', 'Script file with the PostgreSQL DDL')
     cli.h(longOpt: 'help', 'Print this message')
 
     def options = cli.parse(args)
@@ -121,6 +131,12 @@ def initialize(args) {
     if(options.help || args.length <= 0) {
         cli.usage()
         return false
+    }
+
+    // If the option to generate a script are given
+    if(options.script) {
+        generateDDL = true
+        ddlFile = new File(options.script).newWriter()
     }
 
     def mysqlhost = options.mysqlhost ?: "localhost"
@@ -140,7 +156,7 @@ def initialize(args) {
         cli.usage()
         return false
     }
-    if(!psqldb) {
+    if(!psqldb && !generateDDL) {
         println "You must provide a PostgreSql schema to migrate into"
         cli.usage()
         return false
@@ -150,8 +166,33 @@ def initialize(args) {
         "${mysqluser}", "${mysqlpassword}", "com.mysql.jdbc.Driver")
     mysqlMetadata = mysqldb.connection.metaData
 
-    postgresdb = Sql.newInstance("jdbc:postgresql://${psqlhost}:${psqlport}/${psqldb}",
-        "${psqluser}", "${psqlpassword}", "org.postgresql.Driver")
+    if(generateDDL) {
+        // Nothing to do
+    }
+    else {
+        postgresdb = Sql.newInstance(
+            "jdbc:postgresql://${psqlhost}:${psqlport}/${psqldb}",
+            "${psqluser}", "${psqlpassword}", "org.postgresql.Driver")
+    }
+    return true
+}
+
+// Writes the statement on a destination, which could be a DDL file or a
+// PotgreSQL database.
+def executeOnDestination(String statement) {
+    // Write to filepsq /res
+    if(generateDDL) {
+        // Append a delimiter, if not already present
+        if(!statement.trim().endsWith(";")) {
+            statement = statement + ";"
+        }
+        ddlFile << statement + "\n"
+        ddlFile.flush()
+    }
+    // Write to postresql
+    else {
+        postgresdb.execute(statement)
+    }
 }
 
 def createTable(String tableName, ResultSet columns) {
@@ -182,7 +223,7 @@ def createTable(String tableName, ResultSet columns) {
     createTableSql.append("\n " + primaryKey(mysqlMetadata, tableName))
     createTableSql.append("\n)")
 
-    postgresdb.execute(createTableSql.toString())
+    executeOnDestination(createTableSql.toString())
 }
 
 // Translates a mysql data type name to postgresql's type name
@@ -269,7 +310,7 @@ def createForeignKeys(String tableName, ResultSet foreignKeys) {
 //        def fkData = fkMap[fkName]
 
         def foreignKeyStmt = "ALTER TABLE $fkTableName ADD CONSTRAINT $fkName FOREIGN KEY (${translateColumnName(fkColName)}) REFERENCES $pkTableName(${translateColumnName(pkColName)})"
-        postgresdb.execute(foreignKeyStmt.toString())
+        executeOnDestination(foreignKeyStmt.toString())
         createdFKs << fkName
     }
 }
@@ -305,7 +346,7 @@ def createIndexes(String tableName, ResultSet indexes) {
         }
 
         def indexStmt = "CREATE ${v.isUnique ? 'UNIQUE' : ''} INDEX ${idxName} ON $tableName ( ${v.cols.join(',')} )"
-        postgresdb.execute(indexStmt.toString())
+        executeOnDestination(indexStmt.toString())
         createdIdxs << idxName
     }
 }
@@ -383,7 +424,7 @@ def createTriggers() {
 
     // NB: Because this is so DB specific, and there is but a single trigger,
     // they are hard-coded
-    postgresdb.execute("""
+    executeOnDestination("""
     CREATE FUNCTION add_document_history() RETURNS trigger AS \$add_document_history\$
        BEGIN
           IF NEW.revision != OLD.revision THEN
