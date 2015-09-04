@@ -59,7 +59,7 @@ public class SampleProjectProfile {
                 .entitiesForRemoval());
 
         ULocale uLocale = new ULocale(LocaleId.EN_US.getId());
-        enUSLocale = makeLanguage(false, LocaleId.EN_US);
+        enUSLocale = makeLanguage(false, LocaleId.EN_US, "nplurals=2; plural=(n != 1);");
 
         List<HApplicationConfiguration> configurations = entityManager
                 .createQuery("from HApplicationConfiguration",
@@ -92,39 +92,41 @@ public class SampleProjectProfile {
     }
 
     public void makeSampleLanguages() {
-        makeLanguage(true, LocaleId.FR);
+        makeLanguage(true, LocaleId.FR, "nplurals=2; plural=(n > 1);");
 
-        makeLanguage(true, new LocaleId("hi"));
+        makeLanguage(true, new LocaleId("hi"), "nplurals=2; plural=(n != 1);");
 
-        makeLanguage(true, new LocaleId("pl"));
+        makeLanguage(true, new LocaleId("pl"), "nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");
     }
 
     public HLocale makeLanguage(boolean enabledByDefault, LocaleId localeId,
-            String displayName, String nativeName) {
-        return forLocale(enabledByDefault, localeId, displayName, nativeName)
+            String displayName, String nativeName, String pluralForms) {
+        return forLocale(enabledByDefault, localeId, displayName, nativeName, pluralForms)
                 .makeAndPersist(entityManager,
                     HLocale.class);
     }
 
-    public HLocale makeLanguage(boolean enabledByDefault, LocaleId localeId) {
+    public HLocale makeLanguage(boolean enabledByDefault, LocaleId localeId, String pluralForms) {
         ULocale uLocale = new ULocale(localeId.getId());
         return forLocale(enabledByDefault, localeId, uLocale.getDisplayName(),
-            uLocale.getDisplayName(uLocale)).makeAndPersist(entityManager,
-            HLocale.class);
+            uLocale.getDisplayName(uLocale), pluralForms).makeAndPersist(entityManager,
+                HLocale.class);
     }
 
     private static EntityMaker forLocale(boolean enabledByDefault,
-            LocaleId localeId, String displayName, String nativeName) {
+            LocaleId localeId, String displayName, String nativeName, String pluralForms) {
         return EntityMakerBuilder
                 .builder()
                 .addFieldOrPropertyMaker(HLocale.class, "active",
                     FixedValueMaker.ALWAYS_TRUE_MAKER)
                 .addFieldOrPropertyMaker(HLocale.class, "displayName",
-                    FixedValueMaker.fix(displayName))
+                        FixedValueMaker.fix(displayName))
                 .addFieldOrPropertyMaker(HLocale.class, "nativeName",
                     FixedValueMaker.fix(nativeName))
+                .addFieldOrPropertyMaker(HLocale.class, "pluralForms",
+                    FixedValueMaker.fix(pluralForms))
                 .addFieldOrPropertyMaker(HLocale.class, "enabledByDefault",
-                    FixedValueMaker.fix(enabledByDefault))
+                        FixedValueMaker.fix(enabledByDefault))
                 .addConstructorParameterMaker(HLocale.class, 0,
                     FixedValueMaker.fix(localeId)).build();
     }
