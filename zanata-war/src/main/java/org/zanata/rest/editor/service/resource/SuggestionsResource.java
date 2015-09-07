@@ -63,8 +63,9 @@ public interface SuggestionsResource {
      */
     @POST
     @Produces({ MediaTypes.APPLICATION_ZANATA_SUGGESTIONS_JSON, MediaType.APPLICATION_JSON })
-    public Response query(List<String> query,
-                          @QueryParam("from") String sourceLocale,
-                          @QueryParam("to") String transLocale,
-                          @QueryParam("searchType") @DefaultValue("FUZZY_PLURAL") String searchType);
+    Response query(List<String> query,
+            @QueryParam("from") String sourceLocale,
+            @QueryParam("to") String transLocale,
+            @QueryParam("searchType") @DefaultValue("FUZZY_PLURAL") String searchType,
+            @QueryParam("textFlowTargetId") @DefaultValue("-1") long textFlowTargetId);
 }
