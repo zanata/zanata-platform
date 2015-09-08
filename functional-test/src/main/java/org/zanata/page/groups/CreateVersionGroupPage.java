@@ -53,7 +53,7 @@ public class CreateVersionGroupPage extends BasePage {
 
     public CreateVersionGroupPage inputGroupId(String groupId) {
         log.info("Enter Group ID {}", groupId);
-        readyElement(groupIdField).sendKeys(groupId);
+        enterText(readyElement(groupIdField), groupId);
         return new CreateVersionGroupPage(getDriver());
     }
 
@@ -64,13 +64,13 @@ public class CreateVersionGroupPage extends BasePage {
 
     public CreateVersionGroupPage inputGroupName(String groupName) {
         log.info("Enter Group name {}", groupName);
-        readyElement(groupNameField).sendKeys(groupName);
+        enterText(readyElement(groupNameField), groupName);
         return new CreateVersionGroupPage(getDriver());
     }
 
     public CreateVersionGroupPage inputGroupDescription(String desc) {
         log.info("Enter Group description {}", desc);
-        readyElement(groupDescriptionField).sendKeys(desc);
+        enterText(readyElement(groupDescriptionField), desc);
         return this;
     }
 

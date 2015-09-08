@@ -64,25 +64,25 @@ public class RegisterPage extends CorePage {
 
     public RegisterPage enterName(String name) {
         log.info("Enter name {}", name);
-        readyElement(nameField).sendKeys(name);
+        enterText(readyElement(nameField), name);
         return new RegisterPage(getDriver());
     }
 
     public RegisterPage enterUserName(String userName) {
         log.info("Enter username {}", userName);
-        readyElement(usernameField).sendKeys(userName);
+        enterText(readyElement(usernameField), userName);
         return new RegisterPage(getDriver());
     }
 
     public RegisterPage enterEmail(String email) {
         log.info("Enter email {}", email);
-        readyElement(emailField).sendKeys(email);
+        enterText(readyElement(emailField), email);
         return new RegisterPage(getDriver());
     }
 
     public RegisterPage enterPassword(String password) {
         log.info("Enter password {}", password);
-        readyElement(passwordField).sendKeys(password);
+        enterText(readyElement(passwordField), password);
         return new RegisterPage(getDriver());
     }
 

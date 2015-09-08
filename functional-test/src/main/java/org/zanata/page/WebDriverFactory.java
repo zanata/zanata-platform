@@ -160,6 +160,12 @@ public enum WebDriverFactory {
         driver.unregister(eventListener);
     }
 
+    public void injectScreenshot(String tag) {
+        if (null != eventListener) {
+            eventListener.customEvent(tag);
+        }
+    }
+
     private EventFiringWebDriver configureChromeDriver() {
         System.setProperty(ChromeDriverService.CHROME_DRIVER_LOG_PROPERTY,
                 PropertiesHolder.getProperty("webdriver.log"));

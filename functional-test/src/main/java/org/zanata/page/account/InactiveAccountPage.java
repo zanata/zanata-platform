@@ -43,8 +43,7 @@ public class InactiveAccountPage extends BasePage {
     }
 
     public InactiveAccountPage enterNewEmail(String email) {
-        readyElement(By.id("inactiveAccountForm:emailField:email"))
-                .sendKeys(email);
+        enterText(readyElement(By.id("inactiveAccountForm:emailField:email")), email);
         return new InactiveAccountPage(getDriver());
     }
 

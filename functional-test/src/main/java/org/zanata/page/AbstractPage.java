@@ -30,6 +30,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -341,12 +342,17 @@ public class AbstractPage {
     /**
      * Convenience function for clicking elements.  Removes obstructing
      * elements, scrolls the item into view and clicks it when it is ready.
-     * @param findby
+     * @param findby locator for element to be clicked
      */
     public void clickElement(By findby) {
         clickElement(readyElement(findby));
     }
 
+    /**
+     * Convenience function for clicking elements.  Removes obstructing
+     * elements, scrolls the item into view and clicks it when it is ready.
+     * @param element element to be clicked
+     */
     public void clickElement(final WebElement element) {
         removeNotifications();
         waitForNotificationsGone();
@@ -354,6 +360,69 @@ public class AbstractPage {
         waitForAMoment().withMessage("clickable: " + element.toString()).until(
                 ExpectedConditions.elementToBeClickable(element));
         element.click();
+    }
+
+    /**
+     * Convenience function for enter text (common case)
+     *
+     * @param element element to pass text to
+     * @param text text to be entered
+     */
+    public void enterText(final WebElement element, final String text) {
+        enterText(element, text, true, false, true);
+    }
+
+    /**
+     * Enter text into an element.
+     *
+     * Waits for notifications to be dismissed and element to be ready and visible before entering
+     * the text.
+     * If no checking is performed, the resulting screenshot may not be accurate.
+     * @param element element to pass text to
+     * @param text text to be entered
+     * @param clear clear the element's text before entering new text
+     * @param inject use sendKeys rather than the Actions chain (direct injection)
+     * @param check check the 'value' attribute for success, and accurate screenshot delay
+     */
+    public void enterText(final WebElement element, final String text, boolean clear,
+                          boolean inject, final boolean check) {
+        removeNotifications();
+        waitForNotificationsGone();
+        scrollIntoView(element);
+        triggerScreenshot("_pretext");
+        waitForAMoment().withMessage("editable: " + element.toString()).until(
+                ExpectedConditions.elementToBeClickable(element));
+        if (inject) {
+            if (clear) {
+                element.clear();
+            }
+            element.sendKeys(text);
+        } else {
+            Actions enterTextAction = new Actions(getDriver()).moveToElement(element);
+            enterTextAction = enterTextAction.click();
+            if (clear) {
+                enterTextAction = enterTextAction.sendKeys(Keys.chord(Keys.CONTROL, "a")).sendKeys(Keys.DELETE);
+            }
+            enterTextAction.sendKeys(text).perform();
+        }
+        if (check) {
+            waitForAMoment().withMessage("Text equal to entered")
+                    .until(new Predicate<WebDriver>() {
+                        @Override
+                        public boolean apply(WebDriver input) {
+                            String text = element.getAttribute("value");
+                            if (!text.equals(text)) {
+                                log.info("Found: {}", text);
+                                triggerScreenshot("_textWaiting");
+                                return false;
+                            }
+                            return true;
+                        }
+                    });
+        } else {
+            log.info("Not checking text entered");
+        }
+        triggerScreenshot("_text");
     }
 
     private void waitForElementReady(final WebElement element) {
@@ -482,6 +551,10 @@ public class AbstractPage {
     public String getHtmlSource(WebElement webElement) {
         return (String) getExecutor().executeScript(
                 "return arguments[0].innerHTML;", webElement);
+    }
+
+    public void triggerScreenshot(String tag) {
+        WebElementUtil.triggerScreenshot(tag);
     }
 
     // TODO: Deprecated functions, remove after 3.7

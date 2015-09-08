@@ -40,7 +40,7 @@ public class ContactTeamPage extends BasePage {
 
     public ContactTeamPage enterMessage(String message) {
         log.info("Enter message {}", message);
-        readyElement(messageField).sendKeys(message);
+        enterText(readyElement(messageField), message);
         return new ContactTeamPage(getDriver());
     }
 

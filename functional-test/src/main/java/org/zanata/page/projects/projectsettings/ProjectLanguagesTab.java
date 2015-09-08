@@ -77,7 +77,7 @@ public class ProjectLanguagesTab extends ProjectBasePage {
      */
     public ProjectLanguagesTab enterSearchLanguage(String languageQuery) {
         log.info("Enter language search {}", languageQuery);
-        readyElement(disabledLocalesFilter).sendKeys(languageQuery);
+        enterText(readyElement(disabledLocalesFilter), languageQuery);
         return new ProjectLanguagesTab(getDriver());
     }
 

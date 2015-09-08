@@ -45,13 +45,13 @@ public class GoogleAccountPage extends AbstractPage {
 
     public GoogleAccountPage enterGoogleEmail(String email) {
         log.info("Enter email {}", email);
-        readyElement(emailField).sendKeys(email);
+        enterText(readyElement(emailField), email);
         return new GoogleAccountPage(getDriver());
     }
 
     public GoogleAccountPage enterGooglePassword(String password) {
         log.info("Enter password {}", password);
-        readyElement(passwordField).sendKeys(password);
+        enterText(readyElement(passwordField), password);
         return new GoogleAccountPage(getDriver());
     }
 

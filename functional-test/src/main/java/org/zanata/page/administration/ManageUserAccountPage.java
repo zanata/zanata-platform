@@ -58,13 +58,13 @@ public class ManageUserAccountPage extends BasePage {
 
     public ManageUserAccountPage enterPassword(String password) {
         log.info("Enter password {}", password);
-        readyElement(passwordField).sendKeys(password);
+        enterText(readyElement(passwordField), password);
         return new ManageUserAccountPage(getDriver());
     }
 
     public ManageUserAccountPage enterConfirmPassword(String confirmPassword) {
         log.info("Enter confirm password {}", confirmPassword);
-        readyElement(passwordConfirmField).sendKeys(confirmPassword);
+        enterText(readyElement(passwordConfirmField), confirmPassword);
         return new ManageUserAccountPage(getDriver());
     }
 

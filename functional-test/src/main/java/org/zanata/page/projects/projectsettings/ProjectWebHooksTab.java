@@ -48,8 +48,8 @@ public class ProjectWebHooksTab extends ProjectBasePage {
     }
 
     public ProjectWebHooksTab enterUrl(String url, String key) {
-        readyElement(urlInputField).sendKeys(url);
-        readyElement(secretInputField).sendKeys(key);
+        enterText(readyElement(urlInputField), url);
+        enterText(readyElement(secretInputField), key);
         readyElement(saveWebhookButton).click();
         return new ProjectWebHooksTab(getDriver());
     }

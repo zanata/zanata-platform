@@ -44,13 +44,13 @@ public class ContactAdminFormPage extends BasePage {
     public ContactAdminFormPage inputSubject(String subject) {
         log.info("Enter subject {}", subject);
         readyElement(subjectField).clear();
-        readyElement(subjectField).sendKeys(subject);
+        enterText(readyElement(subjectField), subject);
         return new ContactAdminFormPage(getDriver());
     }
 
     public ContactAdminFormPage inputMessage(String message) {
         log.info("Enter message {}", message);
-        readyElement(messageField).sendKeys(message);
+        enterText(readyElement(messageField), message);
         return new ContactAdminFormPage(getDriver());
     }
 

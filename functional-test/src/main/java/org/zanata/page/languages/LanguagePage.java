@@ -157,7 +157,7 @@ public class LanguagePage extends BasePage {
 
     private LanguagePage enterUsername(String username) {
         log.info("Enter username search {}", username);
-        readyElement(addUserSearchInput).sendKeys(username);
+        enterText(readyElement(addUserSearchInput), username);
         return new LanguagePage(getDriver());
     }
 

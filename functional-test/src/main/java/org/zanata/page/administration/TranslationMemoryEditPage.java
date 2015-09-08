@@ -43,13 +43,13 @@ public class TranslationMemoryEditPage extends BasePage {
 
     public TranslationMemoryEditPage enterMemoryID(String id) {
         log.info("Enter TM ID {}", id);
-        readyElement(idField).sendKeys(id);
+        enterText(readyElement(idField), id);
         return new TranslationMemoryEditPage(getDriver());
     }
 
     public TranslationMemoryEditPage enterMemoryDescription(String description) {
         log.info("Enter TM description {}", description);
-        readyElement(descriptionField).sendKeys(description);
+        enterText(readyElement(descriptionField), description);
         return new TranslationMemoryEditPage(getDriver());
     }
 

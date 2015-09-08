@@ -51,7 +51,7 @@ public class EditRoleAssignmentPage extends BasePage {
     public EditRoleAssignmentPage enterIdentityPattern(String pattern) {
         log.info("Enter identity pattern {}", pattern);
         readyElement(patternField).clear();
-        readyElement(patternField).sendKeys(pattern);
+        enterText(readyElement(patternField), pattern);
         return new EditRoleAssignmentPage(getDriver());
     }
 

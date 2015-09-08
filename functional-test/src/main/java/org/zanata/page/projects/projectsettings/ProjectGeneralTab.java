@@ -74,7 +74,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
     public ProjectGeneralTab enterProjectSlug(String projectSlug) {
         log.info("Enter project slug {}", projectSlug);
         readyElement(projectIdField).clear();
-        readyElement(projectIdField).sendKeys(projectSlug);
+        enterText(readyElement(projectIdField), projectSlug);
         defocus(projectIdField);
         return new ProjectGeneralTab(getDriver());
     }
@@ -88,7 +88,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
     public ProjectGeneralTab enterProjectName(final String projectName) {
         log.info("Enter project name {}", projectName);
         readyElement(projectNameField).clear();
-        readyElement(projectNameField).sendKeys(projectName);
+        enterText(readyElement(projectNameField), projectName);
         defocus(projectNameField);
         return new ProjectGeneralTab(getDriver());
     }
@@ -101,7 +101,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
     public ProjectGeneralTab enterDescription(String projectDescription) {
         log.info("Enter project description {}", projectDescription);
         readyElement(descriptionField).clear();
-        readyElement(descriptionField).sendKeys(projectDescription);
+        enterText(readyElement(descriptionField), projectDescription);
         defocus(descriptionField);
         return new ProjectGeneralTab(getDriver());
     }
@@ -182,7 +182,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
     public ProjectGeneralTab enterProjectNameToConfirmDelete(String projectName) {
         log.info("Input project name again to confirm");
         readyElement(confirmDeleteInput).clear();
-        readyElement(confirmDeleteInput).sendKeys(projectName);
+        enterText(readyElement(confirmDeleteInput), projectName);
         waitForPageSilence();
         return this;
     }
@@ -225,7 +225,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
     public ProjectGeneralTab enterHomePage(String homepage) {
         log.info("Enter home page {}", homepage);
         readyElement(homepageField).clear();
-        readyElement(homepageField).sendKeys(homepage);
+        enterText(readyElement(homepageField), homepage);
         return new ProjectGeneralTab(getDriver());
     }
 
@@ -237,7 +237,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
     public ProjectGeneralTab enterRepository(String repo) {
         log.info("Enter repository {}", repo);
         readyElement(repoField).clear();
-        readyElement(repoField).sendKeys(repo);
+        enterText(readyElement(repoField), repo);
         return new ProjectGeneralTab(getDriver());
     }
 

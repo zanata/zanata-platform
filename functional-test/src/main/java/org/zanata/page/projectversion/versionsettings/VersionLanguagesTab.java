@@ -110,7 +110,7 @@ public class VersionLanguagesTab extends VersionBasePage {
     public VersionLanguagesTab enterSearchLanguage(String localeQuery) {
         log.info("Enter language search {}", localeQuery);
         readyElement(disabledLocalesFilter).clear();
-        readyElement(disabledLocalesFilter).sendKeys(localeQuery);
+        enterText(readyElement(disabledLocalesFilter), localeQuery);
         return new VersionLanguagesTab(getDriver());
     }
 

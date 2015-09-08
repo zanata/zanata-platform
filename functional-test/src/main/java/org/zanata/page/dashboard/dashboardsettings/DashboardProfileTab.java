@@ -49,7 +49,7 @@ public class DashboardProfileTab extends DashboardBasePage {
     public DashboardProfileTab enterName(String name) {
         log.info("Enter name {}", name);
         readyElement(accountNameField).clear();
-        readyElement(accountNameField).sendKeys(name);
+        enterText(readyElement(accountNameField), name);
         return new DashboardProfileTab(getDriver());
     }
 

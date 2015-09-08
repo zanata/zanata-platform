@@ -41,7 +41,7 @@ public class VersionGeneralTab extends VersionBasePage {
     public VersionGeneralTab enterVersionID(String newSlug) {
         log.info("Enter project version slug {}", newSlug);
         readyElement(versionIdField).clear();
-        readyElement(versionIdField).sendKeys(newSlug);
+        enterText(readyElement(versionIdField), newSlug);
         defocus(versionIdField);
         return new VersionGeneralTab(getDriver());
     }

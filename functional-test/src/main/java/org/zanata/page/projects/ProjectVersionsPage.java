@@ -138,7 +138,7 @@ public class ProjectVersionsPage extends ProjectBasePage {
 
     public ProjectVersionsPage enterVersionSearch(String searchTerm) {
         log.info("Enter version search {}", searchTerm);
-        readyElement(versionSearchInput).sendKeys(searchTerm);
+        enterText(readyElement(versionSearchInput), searchTerm);
         return new ProjectVersionsPage(getDriver());
     }
 }

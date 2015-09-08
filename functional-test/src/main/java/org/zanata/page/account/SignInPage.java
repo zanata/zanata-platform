@@ -49,13 +49,13 @@ public class SignInPage extends CorePage {
 
     public SignInPage enterUsername(String username) {
         log.info("Enter username {}", username);
-        readyElement(usernameField).sendKeys(username);
+        enterText(readyElement(usernameField), username);
         return new SignInPage(getDriver());
     }
 
     public SignInPage enterPassword(String password) {
         log.info("Enter password {}", password);
-        readyElement(passwordField).sendKeys(password);
+        enterText(readyElement(passwordField), password);
         return new SignInPage(getDriver());
     }
 

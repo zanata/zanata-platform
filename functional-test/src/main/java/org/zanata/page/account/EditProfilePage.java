@@ -46,7 +46,7 @@ public class EditProfilePage extends BasePage {
     public EditProfilePage enterName(String name) {
         log.info("Enter name {}", name);
         readyElement(nameField).clear();
-        readyElement(nameField).sendKeys(name);
+        enterText(readyElement(nameField), name);
         defocus(nameField);
         return new EditProfilePage(getDriver());
     }
@@ -54,14 +54,14 @@ public class EditProfilePage extends BasePage {
     public EditProfilePage enterUserName(String userName) {
         log.info("Enter username {}", userName);
         readyElement(usernameField).clear();
-        readyElement(usernameField).sendKeys(userName);
+        enterText(readyElement(usernameField), userName);
         return new EditProfilePage(getDriver());
     }
 
     public EditProfilePage enterEmail(String email) {
         log.info("Enter email {}", email);
         readyElement(emailField).clear();
-        readyElement(emailField).sendKeys(email);
+        enterText(readyElement(emailField), email);
         defocus(emailField);
         return new EditProfilePage(getDriver());
     }

@@ -80,7 +80,7 @@ public class VersionGroupPage extends BasePage {
 
     public List<WebElement> searchProject(final String projectName,
             final int expectedResultNum) {
-        readyElement(projectSearchField).sendKeys(projectName);
+        enterText(readyElement(projectSearchField), projectName);
 
         return refreshPageUntil(this,
                 new Function<WebDriver, List<WebElement>>() {
@@ -228,8 +228,7 @@ public class VersionGroupPage extends BasePage {
      */
     public VersionGroupPage enterProjectVersion(String projectVersion) {
         log.info("Enter project version {}", projectVersion);
-        readyElement(By.id("versionAutocomplete-autocomplete__input"))
-                .sendKeys(projectVersion);
+        enterText(readyElement(By.id("versionAutocomplete-autocomplete__input")), projectVersion);
         return new VersionGroupPage(getDriver());
     }
 

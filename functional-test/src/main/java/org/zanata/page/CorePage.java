@@ -163,6 +163,8 @@ public class CorePage extends AbstractPage {
                         for (WebElement message : messages) {
                             notifications.add(message.getText().trim());
                         }
+                        triggerScreenshot("_notify");
+                        log.info("Notifications: {}", notifications);
                         return notifications.contains(notification);
                     }
                 });

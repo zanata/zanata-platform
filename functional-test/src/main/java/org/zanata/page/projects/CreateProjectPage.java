@@ -43,19 +43,19 @@ public class CreateProjectPage extends BasePage {
 
     public CreateProjectPage enterProjectId(String projectId) {
         log.info("Enter project ID {}", projectId);
-        readyElement(idField).sendKeys(projectId);
+        enterText(readyElement(idField), projectId);
         return new CreateProjectPage(getDriver());
     }
 
     public CreateProjectPage enterProjectName(final String projectName) {
         log.info("Enter project name {}", projectName);
-        readyElement(nameField).sendKeys(projectName);
+        enterText(readyElement(nameField), projectName);
         return new CreateProjectPage(getDriver());
     }
 
     public CreateProjectPage enterDescription(String projectDescription) {
         log.info("Enter project description {}", projectDescription);
-        readyElement(descriptionField).sendKeys(projectDescription);
+        enterText(readyElement(descriptionField), projectDescription);
         return new CreateProjectPage(getDriver());
     }
 

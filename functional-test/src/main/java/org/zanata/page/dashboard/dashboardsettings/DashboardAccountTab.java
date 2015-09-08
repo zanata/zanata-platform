@@ -55,7 +55,7 @@ public class DashboardAccountTab extends DashboardBasePage {
     public DashboardAccountTab typeNewAccountEmailAddress(String emailAddress) {
         log.info("Enter email {}", emailAddress);
         readyElement(emailField).clear();
-        readyElement(emailField).sendKeys(emailAddress);
+        enterText(readyElement(emailField), emailAddress);
         return new DashboardAccountTab(getDriver());
     }
 
@@ -68,14 +68,14 @@ public class DashboardAccountTab extends DashboardBasePage {
     public DashboardAccountTab typeOldPassword(String oldPassword) {
         log.info("Enter old password {}", oldPassword);
         readyElement(oldPasswordField).clear();
-        readyElement(oldPasswordField).sendKeys(oldPassword);
+        enterText(readyElement(oldPasswordField), oldPassword);
         return new DashboardAccountTab(getDriver());
     }
 
     public DashboardAccountTab typeNewPassword(String newPassword) {
         log.info("Enter new password {}", newPassword);
         readyElement(newPasswordField).clear();
-        readyElement(newPasswordField).sendKeys(newPassword);
+        enterText(readyElement(newPasswordField), newPassword);
         return new DashboardAccountTab(getDriver());
     }
 

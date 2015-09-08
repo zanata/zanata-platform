@@ -91,7 +91,7 @@ public class EditorPage extends BasePage {
             }
         });
         readyElement(glossarySearchInput).clear();
-        readyElement(glossarySearchInput).sendKeys(term);
+        enterText(readyElement(glossarySearchInput), term);
         clickElement(By.id("gwt-debug-glossarySearchButton"));
         return new EditorPage(getDriver());
     }
@@ -457,7 +457,7 @@ public class EditorPage extends BasePage {
     public EditorPage inputFilterQuery(String query) {
         log.info("Enter filter query {}", query);
         readyElement(editorFilterField).clear();
-        readyElement(editorFilterField).sendKeys(query + Keys.ENTER);
+        enterText(readyElement(editorFilterField), query + Keys.ENTER);
         return new EditorPage(getDriver());
     }
 

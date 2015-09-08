@@ -42,7 +42,7 @@ public class ResetPasswordPage extends BasePage {
 
     public ResetPasswordPage enterUserNameEmail(String usernameEmail) {
         log.info("Enter username or email {}", usernameEmail);
-        readyElement(usernameEmailField).sendKeys(usernameEmail);
+        enterText(readyElement(usernameEmailField), usernameEmail);
         return new ResetPasswordPage(getDriver());
     }
 

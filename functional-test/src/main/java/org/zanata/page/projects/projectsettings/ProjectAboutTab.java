@@ -42,7 +42,7 @@ public class ProjectAboutTab extends ProjectBasePage {
 
     public ProjectAboutTab enterAboutText(String aboutText) {
         log.info("Enter About text {}", aboutText);
-        readyElement(aboutTextField).sendKeys(aboutText);
+        enterText(readyElement(aboutTextField), aboutText);
         return new ProjectAboutTab(getDriver());
     }
 

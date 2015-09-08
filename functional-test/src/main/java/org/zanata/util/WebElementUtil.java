@@ -334,4 +334,7 @@ public class WebElementUtil {
         return resultsText;
     }
 
+    public static void triggerScreenshot(final String tag) {
+        WebDriverFactory.INSTANCE.injectScreenshot(tag);
+    }
 }
