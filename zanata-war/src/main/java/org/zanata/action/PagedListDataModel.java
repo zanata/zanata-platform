@@ -90,28 +90,33 @@ public abstract class PagedListDataModel<E> extends DataModel implements
 
     public Object getRowData() {
         if (rowIndex < 0) {
-            throw new ZanataServiceException("Invalid rowIndex" + rowIndex
-                    + "for PagedListDataModel");
+            throw new IllegalArgumentException("Invalid rowIndex (< 0): " + rowIndex);
         }
+        boolean alreadyFetched;
         if (page == null) {
             page = fetchPage(rowIndex, pageSize);
+            alreadyFetched = true;
+        } else {
+            alreadyFetched = false;
         }
         int datasetSize = page.getDatasetSize();
-        int startRow = page.getStartRow();
-        int count = page.getData().size();
-        int endRow = startRow + count;
+        int pageStartRow = page.getStartRow();
+        int pageRowCount = page.getData().size();
+        // actually it's end row plus one
+        int pageEndRow = pageStartRow + pageRowCount;
         if (rowIndex >= datasetSize) {
-            throw new ZanataServiceException("Invalid rowIndex" + rowIndex
-                    + "for PagedListDataModel");
+            throw new IllegalArgumentException("Invalid rowIndex (>= dataSetSize): " + rowIndex);
         }
-        if (rowIndex < startRow) {
-            page = fetchPage(rowIndex, pageSize);
-            startRow = page.getStartRow();
-        } else if (rowIndex >= endRow) {
-            page = fetchPage(rowIndex, pageSize);
-            startRow = page.getStartRow();
+        if (rowIndex < pageStartRow || rowIndex >= pageEndRow) {
+            if (alreadyFetched) {
+                throw new RuntimeException("Fetched page range ["+pageStartRow+","+pageEndRow+") does not include rowIndex " + rowIndex);
+            } else {
+                page = fetchPage(rowIndex, pageSize);
+                pageStartRow = page.getStartRow();
+            }
         }
-        return page.getData().get(rowIndex - startRow);
+        assert pageStartRow <= rowIndex && rowIndex < pageEndRow;
+        return page.getData().get(rowIndex - pageStartRow);
     }
 
     public Object getWrappedData() {

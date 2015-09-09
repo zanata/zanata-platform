@@ -49,7 +49,7 @@ public class ProjectPagedListDataModel extends PagedListDataModel<HProject>
         List<HProject> proj =
                 projectDAO.getOffsetListOrderByName(startRow, pageSize,
                         filterActive, filterReadOnly, filterObsolete);
-
+        // NB we may get weird results if the two queries don't agree
         int projectSize =
                 projectDAO.getFilterProjectSize(filterActive, filterReadOnly,
                         filterObsolete);

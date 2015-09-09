@@ -26,11 +26,9 @@ import java.util.List;
 public class DataPage<E> implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private int datasetSize;
-
-    private int startRow;
-
-    private List<E> data;
+    private final int datasetSize;
+    private final int startRow;
+    private final List<E> data;
 
     public DataPage(int datasetSize, int startRow, List<E> data) {
 
