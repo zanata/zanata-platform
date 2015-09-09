@@ -22,6 +22,7 @@ package org.zanata.feature.testharness;
 
 import org.junit.experimental.categories.Categories;
 import org.junit.runner.RunWith;
+import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 
 /**
@@ -31,6 +32,6 @@ import org.zanata.feature.testharness.TestPlan.DetailedTest;
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @RunWith(Categories.class)
-@Categories.IncludeCategory(DetailedTest.class)
+@Categories.IncludeCategory({DetailedTest.class, BasicAcceptanceTest.class})
 public class DetailedTestSuite extends TestPlan {
 }
