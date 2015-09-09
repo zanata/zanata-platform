@@ -17,6 +17,7 @@ import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.ZanataSecured;
 
 import static org.jboss.seam.ScopeType.CONVERSATION;
+import static org.jboss.seam.ScopeType.PAGE;
 import static org.jboss.seam.annotations.Install.APPLICATION;
 
 /**
@@ -24,7 +25,7 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Name("zanataRoleAction")
-@Scope(CONVERSATION)
+@Scope(PAGE)
 @Install(precedence = APPLICATION)
 @ZanataSecured
 @CheckLoggedIn
@@ -40,16 +41,14 @@ public class RoleAction implements Serializable {
     @In
     ZanataIdentity identity;
 
-    @Begin
-    public void createRole() {
-        groups = new ArrayList<>();
-    }
-
-    @Begin
-    public void editRole(String role) {
-        this.originalRole = role;
-        this.role = role;
-        groups = identityManager.getRoleGroups(role);
+    public void loadRole() {
+        if (role == null) {
+            // creating new role
+            groups = new ArrayList<>();
+        } else {
+            this.originalRole = role;
+            groups = identityManager.getRoleGroups(role);
+        }
     }
 
     public String save() {
@@ -73,7 +72,6 @@ public class RoleAction implements Serializable {
                 identityManager.addRoleToGroup(role, r);
             }
 
-            Conversation.instance().end();
         }
 
         return "success";
@@ -96,14 +94,11 @@ public class RoleAction implements Serializable {
             }
         }
 
-        // TODO [CDI] need to end conversation or equivalent scope in CDI
-        Conversation.instance().end();
         return "success";
     }
 
-    @End
     public String cancel() {
-        return "/admin/rolemanager";
+        return "success";
     }
 
     public String getRole() {

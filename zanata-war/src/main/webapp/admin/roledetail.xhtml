@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:c="http://java.sun.com/jsf/core"
+  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:s="http://jboss.org/schema/seam/taglib">
@@ -54,7 +54,7 @@
             <zanata:decorate id="groups" componentId="groupsField">
               <h:selectManyCheckbox id="groups" value="#{zanataRoleAction.groups}"
                 layout="pageDirection" styleClass="groups">
-                <c:selectItems value="#{identityManager.listRoles()}" var="role"
+                <f:selectItems value="#{identityManager.listRoles()}" var="role"
                   itemLabel="#{role}"/>
               </h:selectManyCheckbox>
             </zanata:decorate>

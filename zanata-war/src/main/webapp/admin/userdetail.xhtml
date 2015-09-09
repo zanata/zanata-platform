@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:c="http://java.sun.com/jsf/core"
+  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:s="http://jboss.org/schema/seam/taglib">
 
@@ -86,7 +86,7 @@
             <zanata:decorate id="roles" componentId="rolesField">
               <h:selectManyCheckbox id="roles" value="#{userAction.roles}"
                 layout="pageDirection" styleClass="checkbox">
-                <c:selectItems value="#{identityManager.listGrantableRoles()}" var="role"
+                <f:selectItems value="#{identityManager.listGrantableRoles()}" var="role"
                   itemLabel="#{role}"/>
               </h:selectManyCheckbox>
             </zanata:decorate>

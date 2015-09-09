@@ -30,7 +30,6 @@ import javax.persistence.PersistenceException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.seam.Component;
 import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
@@ -49,7 +48,7 @@ import lombok.Getter;
 import org.zanata.ui.faces.FacesMessages;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
-import static org.jboss.seam.ScopeType.CONVERSATION;
+import static org.jboss.seam.ScopeType.PAGE;
 import static org.jboss.seam.annotations.Install.APPLICATION;
 
 /**
@@ -60,7 +59,7 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Name("org.jboss.seam.security.management.userAction")
-@Scope(CONVERSATION)
+@Scope(PAGE)
 @Install(precedence = APPLICATION)
 public class UserAction implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -85,8 +84,6 @@ public class UserAction implements Serializable {
 
     @In
     private PersonDAO personDAO;
-
-    private boolean newUserFlag;
 
     private String originalUsername;
 
@@ -136,18 +133,9 @@ public class UserAction implements Serializable {
         return personDAO.findByUsername(username).getName();
     }
 
-    @Begin
-    public void createUser() {
-        roles = new ArrayList<>();
-        newUserFlag = true;
-    }
-
-    @Begin
-    public void editUser(String username) {
-        this.username = username;
+    public void loadUser() {
         roles = identityManager.getGrantedRoles(username);
         enabled = identityManager.isUserEnabled(username);
-        newUserFlag = false;
         originalUsername = username;
     }
 
@@ -156,7 +144,7 @@ public class UserAction implements Serializable {
         String newUsername = getUsername();
 
         // Allow user name changes when editing
-        if (!newUserFlag && !originalUsername.equals(newUsername)) {
+        if (!originalUsername.equals(newUsername)) {
             if (isNewUsernameValid(newUsername)) {
                 userAccountServiceImpl.editUsername(originalUsername,
                         newUsername);
@@ -171,11 +159,8 @@ public class UserAction implements Serializable {
         }
 
         String saveResult;
-        if (newUserFlag) {
-            saveResult = saveNewUser();
-        } else {
-            saveResult = saveExistingUser();
-        }
+
+        saveResult = saveExistingUser();
 
         if (usernameChanged) {
             String email = getEmail(newUsername);
@@ -184,27 +169,6 @@ public class UserAction implements Serializable {
             facesMessages.addGlobal(message);
         }
         return saveResult;
-    }
-
-    private String saveNewUser() {
-        if (password == null || !password.equals(confirm)) {
-            facesMessages.addToControl("password", "Passwords do not match");
-            return "failure";
-        }
-
-        boolean success = identityManager.createUser(username, password);
-
-        if (success) {
-            for (String role : roles) {
-                identityManager.grantRole(username, role);
-            }
-            if (!enabled) {
-                identityManager.disableUser(username);
-            }
-            Conversation.instance().end();
-            return "success";
-        }
-        return "failure";
     }
 
     private String saveExistingUser() {
@@ -238,7 +202,6 @@ public class UserAction implements Serializable {
             identityManager.disableUser(username);
         }
 
-        Conversation.instance().end();
         return "success";
     }
 
@@ -258,9 +221,8 @@ public class UserAction implements Serializable {
         }
     }
 
-    @End
     public String cancel() {
-        return "/admin/usermanager";
+        return "success";
     }
 
     public String getUsername() {
