@@ -48,45 +48,7 @@
     </navigation>
   </page>
 
-  <!-- Project Iteration -->
-  <page view-id="/iteration/view.xhtml">
 
-    <navigation from-action="#{versionHomeAction.uploadSourceFile}">
-      <redirect view-id="/iteration/view.xhtml">
-        <param name="projectSlug"
-          value="#{versionHome.projectSlug}" />
-        <param name="iterationSlug"
-          value="#{versionHome.instance.slug}" />
-      </redirect>
-    </navigation>
-    <navigation
-      from-action="#{versionHomeAction.uploadTranslationFile(versionHomeAction.selectedLocale)}">
-      <redirect view-id="/iteration/view.xhtml">
-        <param name="projectSlug"
-          value="#{versionHome.projectSlug}" />
-        <param name="iterationSlug"
-          value="#{versionHome.instance.slug}" />
-      </redirect>
-    </navigation>
-    <navigation from-action="#{mergeTransAction.startMergeTranslations}">
-      <redirect view-id="/iteration/view.xhtml">
-        <param name="projectSlug"
-          value="#{versionHome.projectSlug}" />
-        <param name="iterationSlug"
-          value="#{versionHome.instance.slug}" />
-      </redirect>
-    </navigation>
-    <navigation from-action="#{versionHome.update}">
-      <rule if-outcome="versionSlugUpdated">
-        <redirect view-id="/iteration/view.xhtml">
-          <param name="projectSlug"
-            value="#{versionHome.projectSlug}" />
-          <param name="iterationSlug"
-            value="#{versionHome.instance.slug}" />
-        </redirect>
-      </rule>
-    </navigation>
-  </page>
 
   <!-- Language -->
   <page view-id="/language/home.xhtml">

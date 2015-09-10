@@ -354,4 +354,68 @@
     </navigation-case>
   </navigation-rule>
 
+  <!-- Project Iteration -->
+  <navigation-rule>
+    <from-view-id>/iteration/view.xhtml</from-view-id>
+    <navigation-case>
+      <from-action>#{versionHomeAction.uploadSourceFile}</from-action>
+      <from-outcome>success</from-outcome>
+      <to-view-id>/iteration/view.xhtml</to-view-id>
+      <redirect>
+        <view-param>
+          <name>projectSlug</name>
+          <value>#{versionHome.projectSlug}</value>
+        </view-param>
+        <view-param>
+          <name>iterationSlug</name>
+          <value>#{versionHome.instance.slug}</value>
+        </view-param>
+      </redirect>
+    </navigation-case>
+    <navigation-case>
+      <from-action>#{versionHomeAction.uploadTranslationFile(versionHomeAction.selectedLocale)}</from-action>
+      <from-outcome>success</from-outcome>
+      <to-view-id>/iteration/view.xhtml</to-view-id>
+      <redirect>
+        <view-param>
+          <name>projectSlug</name>
+          <value>#{versionHome.projectSlug}</value>
+        </view-param>
+        <view-param>
+          <name>iterationSlug</name>
+          <value>#{versionHome.instance.slug}</value>
+        </view-param>
+      </redirect>
+    </navigation-case>
+    <navigation-case>
+      <from-outcome>merge-translation</from-outcome>
+      <to-view-id>/iteration/view.xhtml</to-view-id>
+      <redirect>
+        <view-param>
+          <name>projectSlug</name>
+          <value>#{versionHome.projectSlug}</value>
+        </view-param>
+        <view-param>
+          <name>iterationSlug</name>
+          <value>#{versionHome.instance.slug}</value>
+        </view-param>
+      </redirect>
+    </navigation-case>
+    <navigation-case>
+      <from-action>#{versionHome.update}</from-action>
+      <from-outcome>versionSlugUpdated</from-outcome>
+      <to-view-id>/iteration/view.xhtml</to-view-id>
+      <redirect>
+        <view-param>
+          <name>projectSlug</name>
+          <value>#{versionHome.projectSlug}</value>
+        </view-param>
+        <view-param>
+          <name>iterationSlug</name>
+          <value>#{versionHome.instance.slug}</value>
+        </view-param>
+      </redirect>
+    </navigation-case>
+  </navigation-rule>
+
 </faces-config>
