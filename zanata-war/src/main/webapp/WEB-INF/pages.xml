@@ -47,15 +47,7 @@
       <redirect view-id="/admin/rolerules.xhtml" />
     </navigation>
   </page>
-
-  <!-- Version Group -->
-  <page view-id="/version-group/create_version_group.xhtml">
-    <navigation from-action="#{versionGroupHome.persist}">
-      <rule if="#{versionGroupHome.managed}">
-        <redirect view-id="/version-group/home.xhtml" />
-      </rule>
-    </navigation>
-  </page>
+  
 
   <page view-id="/profile/create_user.xhtml">
     <navigation from-action="#{newProfileAction.createUser}">

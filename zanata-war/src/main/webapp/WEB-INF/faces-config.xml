@@ -251,7 +251,15 @@
     </navigation-case>
   </navigation-rule>
 
-
-
+  <!-- Version Group -->
+  <navigation-rule>
+    <from-view-id>/version-group/create_version_group.xhtml</from-view-id>
+    <navigation-case>
+      <from-action>#{versionGroupHome.persist}</from-action>
+      <if>#{versionGroupHome.managed}</if>
+      <to-view-id>/version-group/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
 
 </faces-config>
