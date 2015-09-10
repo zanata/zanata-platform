@@ -730,7 +730,7 @@ public class VersionHomeAction extends AbstractSortAction implements
         return Optional.of(type);
     }
 
-    public void uploadSourceFile() {
+    public String uploadSourceFile() {
         identity.checkPermission("import-template", getVersion());
 
         if (sourceFileUpload.getFileName().endsWith(".pot")) {
@@ -756,6 +756,7 @@ public class VersionHomeAction extends AbstractSortAction implements
                 throw new IllegalArgumentException(summary);
             }
         }
+        return "success";
     }
 
     public boolean isPoDocument(String docId) {
@@ -991,7 +992,7 @@ public class VersionHomeAction extends AbstractSortAction implements
         return urlUtil.encodeString(docId);
     }
 
-    public void uploadTranslationFile(HLocale hLocale) {
+    public String uploadTranslationFile(HLocale hLocale) {
         identity.checkPermission("modify-translation", hLocale, getVersion()
                 .getProject());
         try {
@@ -1057,6 +1058,7 @@ public class VersionHomeAction extends AbstractSortAction implements
                     translationFileUpload.getFileName() + "-" + e.getMessage());
         }
         resetPageData();
+        return "success";
     }
 
     public void sourceFileUploaded(FileUploadEvent event) throws IOException {
