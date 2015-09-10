@@ -139,9 +139,10 @@ public class AccountMergeAction implements Serializable {
         facesMessages.addGlobal("Your accounts have been merged.");
     }
 
-    public void cancel() {
-        // see pages.xml
+    public String cancel() {
+        // see faces-config.xml
         obsoleteAccount = null;
+        return "cancel";
     }
 
     private static class AccountMergeAuthCallback implements

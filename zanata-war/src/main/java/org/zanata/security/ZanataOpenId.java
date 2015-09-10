@@ -213,7 +213,7 @@ public class ZanataOpenId implements OpenIdAuthCallback {
             if (callback != null) {
                 callback.afterOpenIdAuth(authResult);
                 if (callback.getRedirectToUrl() != null) {
-                    userRedirect.setLocalUrl(callback.getRedirectToUrl());
+                    userRedirect.setUrl(callback.getRedirectToUrl());
                 }
             }
 

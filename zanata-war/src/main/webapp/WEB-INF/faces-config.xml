@@ -262,4 +262,29 @@
     </navigation-case>
   </navigation-rule>
 
+  <!-- User profile -->
+  <navigation-rule>
+    <from-view-id>/profile/create_user.xhtml</from-view-id>
+    <navigation-case>
+      <from-outcome>success</from-outcome>
+      <to-view-id>/home.xhtml</to-view-id>
+      <!-- TODO If we redirect, the global message will be lost. -->
+      <!--<redirect/>-->
+    </navigation-case>
+    <navigation-case>
+      <from-outcome>failure</from-outcome>
+      <to-view-id>/profile/create_user.xhtml</to-view-id>
+    </navigation-case>
+  </navigation-rule>
+
+  <navigation-rule>
+    <from-view-id>/profile/merge_account.xhtml</from-view-id>
+    <navigation-case>
+      <from-action>#{accountMergeAction.cancel}</from-action>
+      <from-outcome>cancel</from-outcome>
+      <to-view-id>/dashboard/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+
 </faces-config>
