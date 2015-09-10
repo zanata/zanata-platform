@@ -20,6 +20,7 @@
  */
 package org.zanata.security;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -44,6 +45,8 @@ import org.zanata.util.ServiceLocator;
 
 import javax.enterprise.event.Observes;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Centralizes all attempts to authenticate locally or externally.
  *
@@ -57,6 +60,7 @@ import javax.enterprise.event.Observes;
 @Name("authenticationManager")
 @Scope(ScopeType.STATELESS)
 @AutoCreate
+@Slf4j
 public class AuthenticationManager {
     @In
     private ZanataIdentity identity;
@@ -273,8 +277,8 @@ public class AuthenticationManager {
      * Performs operations after a successful login is completed. Currently runs
      * the role assignment rules on the logged in account.
      *
-     * @param authType
-     *            Authentication type that was used to login.
+     * @param payload
+     *            contains Authentication type that was used to login.
      */
     @Observer(LoginCompleted.EVENT_NAME)
     public void onLoginCompleted(@Observes LoginCompleted payload) {
