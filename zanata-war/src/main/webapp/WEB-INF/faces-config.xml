@@ -287,4 +287,71 @@
     </navigation-case>
   </navigation-rule>
 
+  <!-- Project -->
+  <navigation-rule>
+    <from-view-id>/project/project.xhtml</from-view-id>
+    <navigation-case>
+      <from-outcome>projectSlugUpdated</from-outcome>
+      <to-view-id>/project/project.xhtml</to-view-id>
+      <redirect>
+        <view-param>
+          <name>slug</name>
+          <value>#{projectHome.instance.slug}</value>
+        </view-param>
+      </redirect>
+    </navigation-case>
+  </navigation-rule>
+
+  <navigation-rule>
+    <from-view-id>/project/create_project.xhtml</from-view-id>
+    <navigation-case>
+      <from-action>#{projectHome.persist}</from-action>
+      <to-view-id>/project/project.xhtml</to-view-id>
+      <redirect>
+        <view-param>
+          <name>slug</name>
+          <value>#{projectHome.instance.slug}</value>
+        </view-param>
+      </redirect>
+    </navigation-case>
+  </navigation-rule>
+
+  <navigation-rule>
+    <from-view-id>/project/add_iteration.xhtml</from-view-id>
+    <navigation-case>
+      <from-action>#{versionHome.createVersion}</from-action>
+      <from-outcome>invalid-slug</from-outcome>
+      <to-view-id>/project/add_iteration.xhtml</to-view-id>
+      <redirect>
+        <view-param>
+          <name>projectSlug</name>
+          <value>#{versionHome.projectSlug}</value>
+        </view-param>
+      </redirect>
+    </navigation-case>
+    <navigation-case>
+      <from-outcome>copy-version</from-outcome>
+      <to-view-id>/project/project.xhtml</to-view-id>
+      <redirect>
+        <view-param>
+          <name>slug</name>
+          <value>#{versionHome.projectSlug}</value>
+        </view-param>
+      </redirect>
+    </navigation-case>
+    <navigation-case>
+      <to-view-id>/iteration/view.xhtml</to-view-id>
+      <redirect>
+        <view-param>
+          <name>projectSlug</name>
+          <value>#{versionHome.projectSlug}</value>
+        </view-param>
+        <view-param>
+          <name>iterationSlug</name>
+          <value>#{versionHome.instance.slug}</value>
+        </view-param>
+      </redirect>
+    </navigation-case>
+  </navigation-rule>
+
 </faces-config>
