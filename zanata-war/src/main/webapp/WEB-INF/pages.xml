@@ -49,21 +49,6 @@
   </page>
   
 
-  <page view-id="/profile/create_user.xhtml">
-    <navigation from-action="#{newProfileAction.createUser}">
-      <redirect view-id="/home.xhtml" />
-    </navigation>
-    <navigation from-action="#{newProfileAction.cancel}">
-      <redirect view-id="/home.xhtml" />
-    </navigation>
-  </page>
-
-  <page view-id="/profile/merge_account.xhtml">
-    <navigation from-action="#{accountMergeAction.cancel}">
-      <redirect view-id="/dashboard/home.xhtml" />
-    </navigation>
-  </page>
-
   <!-- Project -->
 
   <page view-id="/project/project.xhtml">

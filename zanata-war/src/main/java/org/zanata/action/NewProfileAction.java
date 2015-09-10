@@ -88,13 +88,13 @@ public class NewProfileAction extends AbstractProfileAction implements Serializa
     }
 
     @Transactional
-    public void createUser() {
+    public String createUser() {
         this.valid = true;
         validateEmail(this.email);
         validateUsername(username);
 
         if (!this.isValid()) {
-            return;
+            return "failure";
         }
 
         String key;
@@ -112,10 +112,12 @@ public class NewProfileAction extends AbstractProfileAction implements Serializa
                 emailServiceImpl.sendActivationEmail(this.name, this.email, key);
         identity.unAuthenticate();
         facesMessages.addGlobal(message);
+        return "success";
     }
 
-    public void cancel() {
+    public String cancel() {
         identity.logout();
+        return "success";
     }
 
 }
