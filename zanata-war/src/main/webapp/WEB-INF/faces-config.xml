@@ -78,4 +78,180 @@
       <redirect/>
     </navigation-case>
   </navigation-rule>
+
+  <!-- Landing page for open id authentication -->
+  <navigation-rule>
+    <from-view-id>/openid.xhtml</from-view-id>
+    <navigation-case>
+      <if>#{authenticationManager.authenticated and authenticationManager.newUser}</if>
+      <to-view-id>/profile/create_user.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <if>#{!identity.isLoggedIn() and authenticationManager.authenticatedAccountWaitingForActivation}</if>
+      <to-view-id>/account/inactive_account.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <if>#{!identity.loggedIn and applicationConfiguration.singleOpenIdProvider}</if>
+      <to-view-id>/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <if>#{identity.loggedIn and userRedirect.shouldRedirectToDashboard()}</if>
+      <to-view-id>/dashboard/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <if>#{!identity.loggedIn}</if>
+      <to-view-id>/account/login.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <!-- FIXME [CDI] this will not work if continue url is /project/list, it can not find this as view id (url rewrite)-->
+      <if>#{identity.loggedIn and userRedirect.redirect}</if>
+      <to-view-id>#{userRedirect.url}</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <!-- Default redirection after a log in is to the dashboard -->
+      <if>#{identity.loggedIn}</if>
+      <to-view-id>/dashboard/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+
+  <!-- Landing page for Kerberos ticket-based Authentication -->
+  <navigation-rule>
+    <from-view-id>/account/klogin.xhtml</from-view-id>
+    <navigation-case>
+      <if>#{authenticationManager.authenticationRedirect eq 'login'}</if>
+      <to-view-id>/account/login.xhtml</to-view-id>
+      <redirect />
+    </navigation-case>
+    <navigation-case>
+      <if>#{authenticationManager.authenticationRedirect eq 'edit'}</if>
+      <to-view-id>/profile/create_user.xhtml</to-view-id>
+      <redirect />
+    </navigation-case>
+    <navigation-case>
+      <if>#{authenticationManager.authenticationRedirect eq 'inactive'}</if>
+      <to-view-id>/account/inactive_account.xhtml</to-view-id>
+      <redirect />
+    </navigation-case>
+    <navigation-case>
+      <if>#{authenticationManager.authenticationRedirect eq 'dashboard'}</if>
+      <to-view-id>/dashboard/home.xhtml</to-view-id>
+      <redirect />
+    </navigation-case>
+    <navigation-case>
+      <if>#{authenticationManager.authenticationRedirect eq 'home'}</if>
+      <to-view-id>/home.xhtml</to-view-id>
+      <redirect />
+    </navigation-case>
+  </navigation-rule>
+
+  <!-- Landing page for Internal, JAAS and Kerberos form-based
+       authentication -->
+  <navigation-rule>
+    <from-view-id>/account/login.xhtml</from-view-id>
+    <navigation-case>
+      <from-action>#{loginAction.getLoginPageRedirect()}</from-action>
+      <from-outcome>dashboard</from-outcome>
+      <to-view-id>/dashboard/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <from-outcome>dashboard</from-outcome>
+      <to-view-id>/dashboard/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <from-outcome>createUser</from-outcome>
+      <to-view-id>/profile/create_user.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <from-outcome>inactive</from-outcome>
+      <to-view-id>/account/inactive_account.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <from-outcome>continue</from-outcome>
+      <to-view-id>#{userRedirect.url}</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+
+  <!--<navigation-rule>
+    <from-view-id>/account/password_reset_request.xhtml</from-view-id>
+    <navigation-case>
+      <from-outcome>home</from-outcome>
+      <to-view-id>/home.xhtml</to-view-id>
+      &lt;!&ndash; TODO [CDI] end conversation (it will lose notification message) &ndash;&gt;
+      &lt;!&ndash;<end-conversation />&ndash;&gt;
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>-->
+
+  <navigation-rule>
+    <from-view-id>/account/register.xhtml</from-view-id>
+    <navigation-case>
+      <from-outcome>true</from-outcome>
+      <to-view-id>/dashboard/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+
+  <!-- TODO [CDI] it uses conversation scoped facesMessages -->
+  <!--<navigation-rule>
+    <from-view-id>/account/inactive_account.xhtml</from-view-id>
+    <navigation-case>
+      <from-action>#{inactiveAccountAction.sendActivationEmail}</from-action>
+      &lt;!&ndash; TODO [CDI] end conversation &ndash;&gt;
+      &lt;!&ndash;<end-conversation />&ndash;&gt;
+      <to-view-id>/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <from-action>#{inactiveAccountAction.changeEmail}</from-action>
+      &lt;!&ndash; TODO [CDI] end conversation &ndash;&gt;
+      &lt;!&ndash;<end-conversation />&ndash;&gt;
+      <to-view-id>/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+
+  </navigation-rule-->>
+
+  <!-- Admin -->
+  <navigation-rule>
+    <from-view-id>/admin/roledetail.xhtml</from-view-id>
+    <navigation-case>
+      <from-outcome>success</from-outcome>
+      <to-view-id>/admin/rolemanager.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+
+  <navigation-rule>
+    <from-view-id>/admin/userdetail.xhtml</from-view-id>
+    <navigation-case>
+      <from-outcome>success</from-outcome>
+      <to-view-id>/admin/usermanager.xhtml</to-view-id>
+    </navigation-case>
+  </navigation-rule>
+
+  <navigation-rule>
+    <from-view-id>/admin/server_configuration.xhtml</from-view-id>
+    <navigation-case>
+      <from-action>#{serverConfigurationBean.update}</from-action>
+      <from-outcome>success</from-outcome>
+      <to-view-id>/admin/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+
+
+
+
 </faces-config>
