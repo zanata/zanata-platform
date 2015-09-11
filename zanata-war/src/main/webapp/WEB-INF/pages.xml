@@ -50,13 +50,6 @@
 
 
 
-  <!-- Language -->
-  <page view-id="/language/home.xhtml">
-    <navigation from-action="#{languageManagerAction.save}">
-      <redirect view-id="/language/home.xhtml"/>
-    </navigation>
-  </page>
-
   <!-- Translation Memory -->
   <page view-id="/tm/create.xhtml">
     <navigation from-action="#{translationMemoryHome.persist}">
