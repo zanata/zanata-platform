@@ -418,4 +418,14 @@
     </navigation-case>
   </navigation-rule>
 
+  <!-- Language -->
+  <navigation-rule>
+    <from-view-id>/language/home.xhtml</from-view-id>
+    <navigation-case>
+      <from-action>#{languageManagerAction.save}</from-action>
+      <to-view-id>/language/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+
 </faces-config>
