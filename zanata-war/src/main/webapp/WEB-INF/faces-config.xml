@@ -428,4 +428,37 @@
     </navigation-case>
   </navigation-rule>
 
+  <!-- Translation Memory -->
+  <!-- TODO [CDI] EntityHome messages are conversation scoped which can not be migrated to faces-config yet -->
+  <!--<navigation-rule>
+    <from-view-id>/tm/create.xhtml</from-view-id>
+    <navigation-case>
+      <from-action>#{translationMemoryHome.persist}</from-action>
+      <from-outcome>persisted</from-outcome>
+      <to-view-id>/tm/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <from-action>#{translationMemoryHome.update}</from-action>
+      <from-outcome>updated</from-outcome>
+      <to-view-id>/tm/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>-->
+
+  <!-- we need to explicitly secure webtrans after removing seam remoting -->
+  <navigation-rule>
+    <from-view-id>/webtrans/Application.xhtml</from-view-id>
+    <navigation-case>
+      <if>#{identity.isLoggedIn()}</if>
+      <to-view-id>/account/login.xhtml</to-view-id>
+      <redirect>
+        <view-param>
+          <name>continue</name>
+          <value>#{userRedirect.encodedUrl}</value>
+        </view-param>
+      </redirect>
+    </navigation-case>
+  </navigation-rule>
+
 </faces-config>
