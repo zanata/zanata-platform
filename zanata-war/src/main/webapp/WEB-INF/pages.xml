@@ -3,8 +3,6 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd"
   no-conversation-view-id="/home.xhtml" login-view-id="/account/login.xhtml">
-  
-
 
   <!-- TODO [CDI] uses conversation scope facesMessages. if migrated to faces-config, it will lose notification message -->
   <page view-id="/account/password_reset_request.xhtml">
@@ -51,6 +49,7 @@
 
 
   <!-- Translation Memory -->
+  <!-- TODO [CDI] the backed bean is conversation scope (EntityHome) which can not be migrated to faces-config.xml (messages missing) -->
   <page view-id="/tm/create.xhtml">
     <navigation from-action="#{translationMemoryHome.persist}">
       <rule if-outcome="persisted">
@@ -60,17 +59,6 @@
     <navigation from-action="#{translationMemoryHome.update}">
       <rule if-outcome="updated">
         <redirect view-id="/tm/home.xhtml" />
-      </rule>
-    </navigation>
-  </page>
-
-  <!-- we need to explicitly secure webtrans after removing seam remoting -->
-  <page view-id="/webtrans/Application.xhtml" conversation-required="false">
-    <navigation evaluate="#{identity.isLoggedIn()}">
-      <rule if-outcome="false">
-        <redirect view-id="/account/sign_in">
-          <param name="continue" value="#{userRedirect.encodedUrl}" />
-        </redirect>
       </rule>
     </navigation>
   </page>
