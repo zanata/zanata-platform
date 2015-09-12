@@ -31,7 +31,7 @@
     <ds.database>zanata</ds.database>
     <ds.username>zanata</ds.username>
     <ds.password>zanata</ds.password>
-    <ds.connection.url>jdbc:postgresql://localhost:5432/${ds.database}</ds.connection.url>
+    <ds.connection.url>jdbc:postgresql://localhost:${postgresql.port}/${ds.database}</ds.connection.url>
     <ds.driver.class>com.postgresql.Driver</ds.driver.class>
 
     <!-- mysql-dist 5.5.34 is the default version, but 5.6.14 may also work.
@@ -470,7 +470,7 @@
                 <phase>generate-test-resources</phase>
                 <configuration>
                   <portNames>
-                    <portName>mysql.port</portName>
+                    <portName>postgresql.port</portName>
                   </portNames>
                 </configuration>
               </execution>
@@ -486,7 +486,44 @@
               </execution>
             </executions>
           </plugin>
-          <!-- Postgresql database should already be running on port 5432 -->
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <executions>
+              <!-- Start a postgresql container before tests -->
+              <execution>
+                <id>start-postgresql-container</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>${project.basedir}/etc/start-postgresql-container.sh</executable>
+                  <arguments>
+                    <!-- Unique container name -->
+                    <argument>${maven.build.timestamp}</argument>
+                    <!-- Postgresql port to use -->
+                    <argument>${postgresql.port}</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+              <!-- Stop the postgresql container after tests -->
+              <execution>
+                <id>stop-postgresql-container</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>${project.basedir}/etc/stop-postgresql-container.sh</executable>
+                  <arguments>
+                    <!-- Unique container name (to stop it) -->
+                    <argument>${maven.build.timestamp}</argument>
+                  </arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
@@ -762,7 +799,7 @@
                 <echo>-Dwebdriver.screenshot.dir=location to store screenshots during test execution.Default is ${project.build.directory}/screenshots</echo>
                 <echo>NB: set env var DISPLAY to run test browser in alternative display, for Xnest/Xvfb/Xvnc. eg: xvfb-run -e mvn verify -Dappserver=wildfly8</echo>
                 <echo>==========================================================</echo>
-                <echo>to ask cargo to start up then wait so that tests can be run manually: mvn clean package cargo:run -Dappserver=wildfly8 -Dmysql.port=13306</echo>
+                <echo>to ask cargo to start up then wait so that tests can be run manually: mvn clean package cargo:run -Dappserver=wildfly8 -Dpostgresql.port=13306</echo>
                 <!-- placeholder. Actual content should be populated by running server/etc/scripts/functional-test-db-snapshot.sh -->
                 <touch file="${project.build.directory}/database.sql" />
               </target>
