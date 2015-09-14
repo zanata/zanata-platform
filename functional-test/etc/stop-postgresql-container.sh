@@ -6,4 +6,4 @@
 # =============================================
 
 echo "Stopping Postgresql container $1"
-docker stop $1
+sudo docker stop $1

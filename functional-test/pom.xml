@@ -823,7 +823,7 @@
         <configuration>
           <usedDependencies combine.children="append">
             <usedDependency>mysql:mysql-connector-java</usedDependency>
-            <usedDependency>org.postgresql:postgresql:9.4-1202-jdbc42</usedDependency>
+            <usedDependency>org.postgresql:postgresql:9.4-1202-jdbc41</usedDependency>
             <usedDependency>org.codehaus.groovy:groovy-all</usedDependency>
             <usedDependency>org.projectlombok:lombok</usedDependency>
           </usedDependencies>
