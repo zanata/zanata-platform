@@ -1,3 +1,17 @@
+## 3.7.2
+
+<h5>Improvements</h5>
+* [ZNTA-653](https://zanata.atlassian.net/browse/ZNTA-653) - Include MDC values in log emails
+* [ZNTA-665](https://zanata.atlassian.net/browse/ZNTA-665) - liquibase merge addColumn changes 
+  It helps to reduce the database migration time.
+
+<h5>Bug fixes</h5>
+* [ZNTA-594](https://zanata.atlassian.net/browse/ZNTA-594) - Project-wide search and replace only shows 15 results per document
+* [ZNTA-615](https://zanata.atlassian.net/browse/ZNTA-615) - Glossarist/-admin not getting glossary-update permission
+* [ZNTA-643](https://zanata.atlassian.net/browse/ZNTA-643) - javax.servlet.ServletException: java.util.ConcurrentModificationException , Caused by: javax.faces.el.EvaluationException: java.util.ConcurrentModificationException
+
+-----------------------
+
 ## 3.7.1
 
 <h5>Bug fixes</h5>
