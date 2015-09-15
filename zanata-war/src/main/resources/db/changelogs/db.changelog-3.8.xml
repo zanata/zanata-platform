@@ -1,4 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+  Copyright 2015, Red Hat, Inc. and individual contributors
+  as indicated by the @author tags. See the copyright.txt file in the
+  distribution for a full listing of individual contributors.
+
+  This is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation; either version 2.1 of
+  the License, or (at your option) any later version.
+
+  This software is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this software; if not, write to the Free
+  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
+
 <databaseChangeLog
   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -11,6 +32,66 @@
         <constraints nullable="true" />
       </column>
     </addColumn>
+  </changeSet>
+
+  <changeSet id="1" author="damason@redhat.com">
+    <comment>Add allowGlobalTranslation column to HProject.</comment>
+    <addColumn tableName="HProject">
+      <column name="allowGlobalTranslation" type="boolean"
+          valueBoolean="true" defaultValueBoolean="true"
+          remarks="Whether translators not part of the project team can translate.">
+        <constraints nullable="false" />
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="2" author="damason@redhat.com">
+    <comment>Add table HProject_Member.</comment>
+    <createTable tableName="HProject_Member">
+      <column name="projectId" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="personId" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="role" type="char"
+          remarks="Single character comes from ProjectRole enum constructor argument.">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="3" author="damason@redhat.com">
+    <comment>Migrate all HProject_Maintainer to HProject_Member with role "maintainer" (M).</comment>
+    <sql>
+      INSERT INTO HProject_Member (projectId, personId, role)
+      SELECT projectId, personId, 'M'
+      FROM HProject_Maintainer
+    </sql>
+  </changeSet>
+
+  <changeSet id="4" author="damason@redhat.com">
+    <comment>Drop the obsolete HProject_Maintainer table.</comment>
+    <dropTable tableName="HProject_Maintainer" cascadeConstraints="true" />
+  </changeSet>
+
+  <changeSet id="5" author="damason@redhat.com">
+    <comment>Add table HProject_LocaleMember.</comment>
+    <createTable tableName="HProject_LocaleMember">
+      <column name="projectId" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="localeId" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="personId" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="role" type="char"
+          remarks="Single character comes from LocaleRole enum constructor argument.">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
   </changeSet>
 
 </databaseChangeLog>

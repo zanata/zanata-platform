@@ -1,3 +1,23 @@
+/*
+ * Copyright 2015, Red Hat, Inc. and individual contributors
+ * as indicated by the @author tags. See the copyright.txt file in the
+ * distribution for a full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 package org.zanata.dao;
 
 import java.util.Date;
@@ -7,16 +27,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.lucene.analysis.StopAnalyzer;
-import org.apache.lucene.analysis.WhitespaceAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.util.Version;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -34,6 +50,7 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.ProjectRole;
 
 @Name("projectDAO")
 @AutoCreate
@@ -57,19 +74,6 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                     .using("slug", slug).load();
         }
         return null;
-    }
-
-    @SuppressWarnings("unchecked")
-    public List<HPerson> getProjectMaintainerBySlug(String slug) {
-        Query q =
-                getSession()
-                        .createQuery(
-                                "select p.maintainers from HProject as p where p.slug = :slug");
-        q.setParameter("slug", slug);
-        // http://stackoverflow.com/questions/9060403/hibernate-query-cache-issue
-        // q.setCacheable(true)
-        q.setComment("ProjectDAO.getProjectMaintainerBySlug");
-        return q.list();
     }
 
     @SuppressWarnings("unchecked")
@@ -404,37 +408,36 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     public List<HProject> getProjectsForMaintainer(HPerson maintainer,
             String filter, int firstResult, int maxResults) {
         final String sqlFilter = filter == null ? "" : filter;
-        Query q =
-                getSession()
-                        .createQuery(
-                                "from HProject p " +
-                                "where :maintainer in elements(p.maintainers) " +
-                                "and p.status <> " +
-                                "'" + EntityStatus.OBSOLETE.getInitial() + "' " +
-                                "and (p.name like :filter " +
-                                    "or p.slug like :filter) " +
-                                "order by p.name")
-                        .setParameter("maintainer", maintainer)
-                        .setParameter("filter", "%" + sqlFilter + "%")
-                        .setFirstResult(firstResult)
-                        .setMaxResults(maxResults);
+        Query q = getSession().createQuery(
+                "select m.project from HProjectMember m " +
+                        "where m.person = :maintainer " +
+                        "and m.role = :role " +
+                        "and m.project.status <> :obsolete " +
+                        "and (m.project.name like :filter " +
+                        "or m.project.slug like :filter) " +
+                        "order by m.project.name")
+                .setParameter("maintainer", maintainer)
+                .setParameter("role", ProjectRole.Maintainer)
+                .setParameter("obsolete", EntityStatus.OBSOLETE)
+                .setParameter("filter", "%" + sqlFilter + "%")
+                .setFirstResult(firstResult)
+                .setMaxResults(maxResults);
         return q.list();
     }
 
     public int getMaintainedProjectCount(HPerson maintainer, String filter) {
         final String sqlFilter = filter == null ? "" : filter;
-        Query q =
-                getSession()
-                        .createQuery(
-                                "select count(p) from HProject p " +
-                                "where :maintainer in elements(p.maintainers) " +
-                                "and p.status <> " +
-                                "'" + EntityStatus.OBSOLETE.getInitial() + "' " +
-                                "and (p.name like :filter " +
-                                    "or p.slug like :filter) "
-                        )
-                        .setParameter("maintainer", maintainer)
-                        .setParameter("filter", "%" + sqlFilter + "%");
+        Query q = getSession().createQuery(
+                "select count(m) from HProjectMember m " +
+                        "where m.person = :maintainer " +
+                        "and m.role = :role " +
+                        "and m.project.status <> :obsolete " +
+                        "and (m.project.name like :filter " +
+                        "or m.project.slug like :filter)")
+                .setParameter("maintainer", maintainer)
+                .setParameter("role", ProjectRole.Maintainer)
+                .setParameter("obsolete", EntityStatus.OBSOLETE)
+                .setParameter("filter", "%" + sqlFilter + "%");
         return ((Long) q.uniqueResult()).intValue();
     }
 }

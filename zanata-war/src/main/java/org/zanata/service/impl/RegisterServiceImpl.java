@@ -224,12 +224,13 @@ public class RegisterServiceImpl implements RegisterService {
             }
 
             // Merge all Maintained Projects
+            // TODO merge all other project roles when they are added.
             List<HProject> maintainedProjects =
                     new ArrayList<HProject>(
                             obsoletePerson.getMaintainerProjects());
             for (HProject proj : maintainedProjects) {
-                proj.getMaintainers().add(activePerson);
-                proj.getMaintainers().remove(obsoletePerson);
+                proj.addMaintainer(activePerson);
+                proj.removeMaintainer(obsoletePerson);
             }
 
             // Merge all maintained Version Groups

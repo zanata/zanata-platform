@@ -20,6 +20,7 @@
  */
 package org.zanata.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -36,6 +37,9 @@ public class SlugEntityBaseTest {
 
     private static final String DELETED_SUFFIX = "_.-1234567890";
 
+    // all ModelEntityBase descendants must override equals and hashcode to check
+    // their types.
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     static class SlugClass extends SlugEntityBase {
         public SlugClass(String slug) {

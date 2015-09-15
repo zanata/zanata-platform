@@ -32,6 +32,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.zanata.dao.ProjectMemberDAO;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
@@ -66,6 +67,9 @@ import lombok.Setter;
 public class VersionGroupHomeAction extends AbstractSortAction implements
         Serializable {
     private static final long serialVersionUID = 1L;
+
+    @In
+    private ProjectMemberDAO projectMemberDAO;
 
     @In
     private VersionGroupService versionGroupServiceImpl;
@@ -316,7 +320,7 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
 
     public boolean isUserProjectMaintainer() {
         return authenticatedAccount != null
-                && authenticatedAccount.getPerson().isMaintainerOfProjects();
+                && projectMemberDAO.isMaintainerOfAnyProject(authenticatedAccount.getPerson());
     }
 
     /**

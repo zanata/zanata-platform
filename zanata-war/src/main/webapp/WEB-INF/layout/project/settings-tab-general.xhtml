@@ -117,7 +117,8 @@
           rendered="#{projectHome.instance.status ne 'OBSOLETE'}">
         <a href="javascript:void(0)" id="button-archive-project"
             class="button--danger l--push-bottom-half"
-            onclick="zanata.modal.show('#delete-confirmation-modal')">
+            data-toggle="modal"
+            data-target="#delete-confirmation-modal">
           #{msgs['jsf.DeleteThisProject']} <i class="i--left i--trash"></i>
         </a>
 

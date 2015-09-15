@@ -340,7 +340,8 @@
                     rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
                     <li>
                       <a href="javascript:void(0)" class="i__item--right"
-                        onclick="zanata.modal.show('#copy-trans-modal')">
+                          data-toggle="modal"
+                          data-target="#copy-trans-modal">
                         #{msgs['jsf.CopyTrans']}
                         <i class="i i--translate i__item__icon"></i>
                       </a>
@@ -515,6 +516,8 @@
     </div>
   </h:form>
 </rich:popupPanel>
+
+<ui:include src="/WEB-INF/layout/copy_trans_inline_modal.xhtml"/>
 
 </ui:define>
 

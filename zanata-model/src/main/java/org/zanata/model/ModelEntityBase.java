@@ -38,6 +38,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
@@ -47,6 +48,7 @@ import org.zanata.hibernate.search.DateBridge;
 
 import com.google.common.annotations.VisibleForTesting;
 
+@Slf4j
 @EntityListeners({ ModelEntityBase.EntityListener.class })
 @MappedSuperclass
 public class ModelEntityBase implements Serializable, HashableState {
@@ -114,11 +116,11 @@ public class ModelEntityBase implements Serializable, HashableState {
         result =
                 prime
                         * result
-                        + ((creationDate == null) ? 0 : creationDate.hashCode());
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
+                        + ((getCreationDate() == null) ? 0 : getCreationDate().hashCode());
+        result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result =
                 prime * result
-                        + ((lastChanged == null) ? 0 : lastChanged.hashCode());
+                        + ((getLastChanged() == null) ? 0 : getLastChanged().hashCode());
         return result;
     }
 
@@ -128,25 +130,39 @@ public class ModelEntityBase implements Serializable, HashableState {
             return true;
         if (obj == null)
             return false;
-        if (getClass() != obj.getClass())
-            return false;
+        // Subclasses *must* override equals to check that their class is a
+        // match for the object they are comparing. Simple comparison of the
+        // result of getClass() is not possible here because the compared object
+        // may be a Hibernate proxy. Hibernate proxies are a subclass of the
+        // class that they are proxying.
+        assert overridesEquals(this);
+        assert overridesEquals(obj);
         ModelEntityBase other = (ModelEntityBase) obj;
-        if (creationDate == null) {
-            if (other.creationDate != null)
+        if (getCreationDate() == null) {
+            if (other.getCreationDate() != null)
                 return false;
-        } else if (!creationDate.equals(other.creationDate))
+        } else if (!getCreationDate().equals(other.getCreationDate()))
             return false;
-        if (id == null) {
-            if (other.id != null)
+        if (getId() == null) {
+            if (other.getId() != null)
                 return false;
-        } else if (!id.equals(other.id))
+        } else if (!getId().equals(other.getId()))
             return false;
-        if (lastChanged == null) {
-            if (other.lastChanged != null)
+        if (getLastChanged() == null) {
+            if (other.getLastChanged() != null)
                 return false;
-        } else if (!lastChanged.equals(other.lastChanged))
+        } else if (!getLastChanged().equals(other.getLastChanged()))
             return false;
         return true;
+    }
+
+    private boolean overridesEquals(Object obj) {
+        try {
+            return obj.getClass().getDeclaredMethod("equals", Object.class) != null;
+        } catch (NoSuchMethodException e) {
+            log.error("class does not override equals: " + obj.getClass(), e);
+            return false;
+        }
     }
 
     @Override

@@ -172,7 +172,7 @@ public class ProjectService implements ProjectResource {
                     accountDAO.getByUsername(identity.getCredentials()
                             .getUsername());
             if (hAccount != null && hAccount.getPerson() != null) {
-                hProject.getMaintainers().add(hAccount.getPerson());
+                hProject.addMaintainer(hAccount.getPerson());
             }
         }
 

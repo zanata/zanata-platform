@@ -15,12 +15,11 @@
 <ui:define name="head">
   <a4j:jsFunction name="refreshDataTable" render="tmList"/>
   <script type="text/javascript">
-    function showUploadPanel(tmSlug) {
+    function resetUploadPanel(tmSlug) {
       var formAction = "#{request.contextPath}/rest/tm/" + tmSlug;
       jQuery("#uploadFileForm").attr("action", formAction);
       jQuery("#uploadProgress #message").html("");
       jQuery("#uploadProgress").hide();
-      zanata.modal.show('#uploadFileDialog');
       return false;
     }
 
@@ -179,9 +178,11 @@
                       </a>
                       <ul class="dropdown__content js-dropdown__content">
                         <li>
-                          <a href="#" class="i__item--right"
+                          <a href="javascript:void(0)" class="i__item--right"
                             title="#{msgs['jsf.transmemory.Import.Title']}"
-                            onclick="return showUploadPanel('#{tm.slug}')">
+                            data-toggle="modal"
+                            data-target="#uploadFileDialog"
+                            onclick="return resetUploadPanel('#{tm.slug}')">
                             #{msgs['jsf.transmemory.Import']}
                             <i class="i i--import i__item__icon"></i>
                           </a>

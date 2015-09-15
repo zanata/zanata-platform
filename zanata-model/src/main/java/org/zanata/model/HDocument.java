@@ -43,6 +43,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -86,6 +87,7 @@ import com.google.common.collect.ImmutableList;
 @TypeDef(name = "contentType", typeClass = ContentTypeType.class)
 @Setter
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true, of = {})
 @ToString(of = { "name", "path", "docId", "locale", "revision" })
 public class HDocument extends ModelEntityBase implements DocumentWithId,
         IDocumentHistory, Serializable, Iterable<ITextFlow>, IsEntityWithType {

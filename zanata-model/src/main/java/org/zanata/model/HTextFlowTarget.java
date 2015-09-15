@@ -49,6 +49,7 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -101,6 +102,7 @@ import org.zanata.model.type.TranslationSourceTypeType;
 @Indexed
 @Setter
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class HTextFlowTarget extends ModelEntityBase implements HasContents,
         HasSimpleComment, ITextFlowTargetHistory, Serializable,
         ITextFlowTarget, IsEntityWithType {

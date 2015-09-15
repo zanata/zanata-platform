@@ -3,7 +3,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:composite="http://java.sun.com/jsf/composite"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:s="http://jboss.org/schema/seam/taglib"
@@ -26,7 +25,7 @@
     default="false"/>
 
   <composite:attribute name="id" type="java.lang.String"
-    shortDescription="id of component (java naming)" required="true"/>
+    shortDescription="id of component. Must be a valid JavaScript identifier." required="true"/>
 
   <composite:attribute name="fetchValue" required="true" type="java.lang.String"
     shortDescription="A value to use when submit to server using onselectItem action"/>

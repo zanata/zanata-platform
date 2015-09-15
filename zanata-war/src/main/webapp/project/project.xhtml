@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:s="http://jboss.org/schema/seam/taglib"
@@ -7,7 +7,7 @@
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:rich="http://richfaces.org/rich"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
-  template="../WEB-INF/template/template.xhtml">
+  template="/WEB-INF/template/template.xhtml">
 
 <ui:define name="page_title">
   #{msgs['jsf.Projects']} - #{projectHome.instance.name}
@@ -28,6 +28,11 @@
     crossroads.addRoute(':pre*:/project/view/{slug}/:section:',
       function (pre, slug, section) {
         section = section || 'versions';
+        // maintainers tab is replaced with people tab, so links to maintainers
+        // tab should direct to the people tab
+        if (section === 'maintainers') {
+          section = 'people';
+        }
         section = validateTab('#' + section + "_tab", section, "versions");
         zanata.tabs.activate(jQuery('#' + section + "_tab"))
       });
@@ -49,6 +54,7 @@
       oncomplete="refreshTooltip('#{rich:clientId('versions_form')}')"
       render="versions_form"
       action="#{projectHomeAction.setPageRendered(true)}"/>
+
   </h:form>
 
 <div class="g">
@@ -153,14 +159,14 @@
         </a>
       </li>
       <li>
-        <a id="maintainers_tab"
-          href="#{request.contextPath}/project/view/#{projectHomeAction.slug}/maintainers"
-          class="js-url-mod" data-content="#maintainers">
+        <a id="people_tab"
+          href="#{request.contextPath}/project/view/#{projectHomeAction.slug}/people"
+          class="js-url-mod" data-content="#people">
           <i class="i i--users"></i>
               <span class="is-hidden--s i__text--right">
-                #{msgs['jsf.Maintainers']}
-                <s:span styleClass="txt--neutral" id="maintainers-size">
-                  #{projectHome.instance.maintainers.size}
+                #{msgs['jsf.People']}
+                <s:span styleClass="txt--neutral" id="people-size">
+                  #{projectHomeAction.allMembers.size}
                 </s:span>
               </span>
         </a>
@@ -215,15 +221,11 @@
     <ul class="tabs__content panels__container js-tabs-content l--push-top-1">
       <li id="versions">
         <ui:include
-          src="../WEB-INF/layout/project/versions-tab.xhtml"/>
+          src="/WEB-INF/layout/project/versions-tab.xhtml"/>
       </li>
 
-      <li id="maintainers">
-        <zanata:maintainers-tab
-          listSize="#{projectHome.instanceMaintainers.size}"
-          filterActionBean="#{projectHome.maintainerFilter}"
-          settingsUrl="#settings-permissions"
-          PermissionToUpdate="#{identity.hasPermission(projectHome.instance, 'update')}"/>
+      <li id="people">
+        <ui:include src="/WEB-INF/layout/project/people-tab.xhtml"/>
       </li>
 
       <li id="about">
@@ -243,7 +245,7 @@
         rendered="#{identity.hasPermission(projectHome.instance, 'update')}">
         <li id="settings">
           <ui:include
-            src="../WEB-INF/layout/project/settings-tab.xhtml"/>
+            src="/WEB-INF/layout/project/settings-tab.xhtml"/>
         </li>
       </s:fragment>
     </ul>

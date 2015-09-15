@@ -11,7 +11,7 @@ When a project is selected, you will be taken to an overall view of the project.
 
 The different views for a project offer more information about it.
 
-- **Maintainers** shows the project Maintainers.
+- **People** shows the project Maintainers, Translators and Reviewers.
 - **About** shows more information about the project.
 - **Settings** _(This is only available to Project Maintainers)_ allows the user to change project settings.
 

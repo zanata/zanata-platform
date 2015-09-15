@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:composite="http://java.sun.com/jsf/composite"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:z="http://java.sun.com/jsf/composite/zanata"
+  xmlns:f="http://java.sun.com/jsf/core">
+
+<composite:interface>
+  <composite:attribute name="person" type="org.zanata.model.HPerson"
+    shortDescription="person" required="true"/>
+
+  <composite:attribute name="project" type="org.zanata.model.HProject"
+    shortDescription="project" required="true"/>
+
+  <composite:attribute name="canManageMembers" type="java.lang.Boolean"
+    shortDescription="whether the current user is allowed to manage members" default="false"/>
+
+  <composite:attribute name="roleNames" type="java.util.Collection"
+    shortDescription="List of role display names to show" required="true"/>
+
+  <composite:attribute name="managePermissionsRender" type="java.lang.String"
+    shortDescription="component to re-render when manage permissions is clicked"/>
+
+  <composite:attribute name="managePermissionsModal" type="java.lang.String"
+    shortDescription="id of modal to show after person has been set for manage permissions (without leading #)"/>
+</composite:interface>
+
+<composite:implementation>
+  <li>
+    <div class="g g--tighter">
+      <div class="g__item w--4-12">
+        <z:person-tile person="#{cc.attrs.person}"/>
+      </div>
+      <div class="g__item #{cc.attrs.canManageMembers ? 'w--4-12' : 'w--7-12'}">
+        <ui:repeat value="#{cc.attrs.roleNames}" var="role">
+          <div class="txt--understated">#{role}</div>
+        </ui:repeat>
+      </div>
+      <div class="g__item w--4-12 txt--align-right">
+        <ui:fragment rendered="#{cc.attrs.canManageMembers}">
+            <z:ajax-command-button
+                styleClass="button button--small"
+                action="#{projectPermissionDialog.setData(cc.attrs.project, cc.attrs.person)}"
+                render="#{cc.attrs.managePermissionsRender}"
+                oncomplete="zanata.modal.show(jQuery('##{cc.attrs.managePermissionsModal}'));jQuery('##{cc.attrs.managePermissionsModal}').scrollTop(0)">
+              <i class="i i--settings"></i> #{msgs['jsf.projectPermissions.ManagePermissions']}
+              <f:facet name="loading">
+                <i class="i i--settings"></i> #{msgs['jsf.projectPermissions.ManagePermissions']}
+              </f:facet>
+            </z:ajax-command-button>
+        </ui:fragment>
+      </div>
+    </div>
+  </li>
+</composite:implementation>
+</html>

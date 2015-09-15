@@ -33,19 +33,24 @@ import java.util.List;
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Slf4j
-public class ProjectMaintainersPage extends ProjectBasePage {
+public class ProjectPeoplePage extends ProjectBasePage {
 
-    private By maintainersList = By.id("maintainers");
-    public ProjectMaintainersPage(WebDriver driver) {
+    private By peopleList = By.id("people");
+    public ProjectPeoplePage(WebDriver driver) {
         super(driver);
     }
 
-    public List<String> getMaintainers() {
+    public List<String> getPeople() {
         log.info("Query maintainers list");
         List<String> names = new ArrayList<String>();
-        for (WebElement row : readyElement(maintainersList)
+        for (WebElement row : readyElement(peopleList)
                 .findElements(By.tagName("li"))) {
-            names.add(row.getText());
+            String username = row.findElement(By.tagName("a")).getText().trim();
+            String roles = "";
+            for (WebElement role : row.findElements(By.className("txt--understated"))) {
+                roles = roles.concat(role.getText().trim() + ";");
+            }
+            names.add(username + "|" + roles);
         }
         return names;
     }

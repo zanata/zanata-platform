@@ -9,6 +9,7 @@
     description="An example Project"
     homeContent=""
     name="Sample Project"
+    allowGlobalTranslation="TRUE"
     overrideLocales="FALSE"
     restrictedByRoles="FALSE"
     status="A"
@@ -33,8 +34,9 @@
     overrideLocales="FALSE"
     status="A"
     />
-  <HProject_Maintainer personId="3"
+  <HProject_Member personId="3"
     projectId="1"
+    role="M"
     />
 
   <!-- Retired Project -->
@@ -47,6 +49,7 @@
     description="An example retired Project"
     homeContent=""
     name="Sample Retired Project"
+    allowGlobalTranslation="TRUE"
     overrideLocales="FALSE"
     restrictedByRoles="FALSE"
     status="R"
@@ -72,6 +75,7 @@
     description="An example obsolete Project"
     homeContent=""
     name="Sample Obsolete Project"
+    allowGlobalTranslation="TRUE"
     overrideLocales="FALSE"
     restrictedByRoles="FALSE"
     status="O"
@@ -97,6 +101,7 @@
     description="A current Project"
     homeContent=""
     name="Sample Current Project"
+    allowGlobalTranslation="TRUE"
     overrideLocales="FALSE"
     restrictedByRoles="FALSE"
     status="A"

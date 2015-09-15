@@ -21,6 +21,7 @@
 package org.zanata.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,6 +36,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import lombok.ToString;
@@ -53,8 +57,7 @@ import org.zanata.rest.dto.Person;
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Setter
-@EqualsAndHashCode(callSuper = true, of = { "id", "email", "name" },
-        doNotUseGetters = true)
+@EqualsAndHashCode(callSuper = true, of = { "id", "email", "name" })
 @ToString(callSuper = true, of = "name")
 public class HPerson extends ModelEntityBase implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -68,6 +71,8 @@ public class HPerson extends ModelEntityBase implements Serializable {
     private Set<HIterationGroup> maintainerVersionGroups;
 
     private Set<HLocaleMember> languageTeamMemberships;
+
+    private Set<HProjectMember> projectMemberships;
 
     public HPerson() {
     }
@@ -96,17 +101,13 @@ public class HPerson extends ModelEntityBase implements Serializable {
         return email;
     }
 
-    /*
-     * This is a read-only side of the relationship. Changes to this collection
-     * are allowed but will not be persisted.
-     */
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "maintainers",
-            cascade = CascadeType.ALL)
+    @Transient
     public Set<HProject> getMaintainerProjects() {
-        if (maintainerProjects == null) {
-            maintainerProjects = new HashSet<HProject>();
-        }
-        return maintainerProjects;
+        Set<HProjectMember> maintainerMemberships =
+                Sets.filter(getProjectMemberships(), HProjectMember.IS_MAINTAINER);
+        Collection<HProject> projects =
+                Collections2.transform(maintainerMemberships, HProjectMember.TO_PROJECT);
+        return ImmutableSet.copyOf(projects);
     }
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "maintainers",
@@ -133,6 +134,14 @@ public class HPerson extends ModelEntityBase implements Serializable {
             this.languageTeamMemberships = new HashSet<HLocaleMember>();
         }
         return languageTeamMemberships;
+    }
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "person")
+    protected Set<HProjectMember> getProjectMemberships() {
+        if (projectMemberships == null) {
+            projectMemberships = Sets.newHashSet();
+        }
+        return projectMemberships;
     }
 
     @Transient

@@ -1,6 +1,8 @@
 A Language Team groups translators together through a common language. Language Teams can work simultaneously on translating a single document into their respective languages. All translations and all revisions are kept with each respective Language Team without affecting any other Team.
 
-Translators can also join more than one Language Team.
+Translators can join more than one Language Team.
+
+Translators can also join a [project team](/user-guide/projects/project-team/) so that they can translate that project without having to join the global Language Team.
 
 ------------
 

@@ -21,7 +21,29 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:a4j="http://richfaces.org/a4j">
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:z="http://java.sun.com/jsf/composite/zanata">
+
+<script type="text/javascript">
+  //<![CDATA[
+
+  // Checkbox refresh does not appear to work as expected when given a function
+  // defined as an a4j:jsFunction. It works properly with this wrapper.
+  function inviteOnlyValueChangedWrapper(key, checked) {
+    inviteOnlyValueChanged(checked);
+  }
+
+  function getInviteOnlySettingId() {
+    return "[id='#{rich:clientId('invite-only-setting')}']";
+  }
+  //]]>
+</script>
+
+<a4j:jsFunction name="inviteOnlyValueChanged" render="invite-only-setting"
+    oncomplete="zanata.form.appendCheckboxes(getInviteOnlySettingId())"
+    action="#{projectHome.setInviteOnly(checked)}">
+  <a4j:param name="val1" assignTo="#{checked}"/>
+</a4j:jsFunction>
 
 <a4j:jsFunction name="bindCopyTransValue"
     action="#{projectHome.updateCopyTrans(action, value)}">
@@ -34,6 +56,18 @@
 </h2>
 
 <h:form id="settings-translation-form" styleClass="l--push-bottom-0">
+
+  <h:panelGroup layout="block" styleClass="l--push-bottom-half" id="invite-only-setting">
+    <z:checkbox label="#{msgs['jsf.translation.permission.inviteOnly']}"
+        onValueChanged="inviteOnlyValueChangedWrapper"
+        labelStyle="js-reveal__toggle l--push-bottom-0"
+        checked="#{!projectHome.instance.isAllowGlobalTranslation()}"
+        value="allow-global-translation"/>
+  </h:panelGroup>
+
+  <p>#{msgs['jsf.translation.permission.inviteOnly.detail']}</p>
+
+  <hr/>
 
   <h3 class="heading--secondary">#{msgs['jsf.Validation']}</h3>
   <p>#{msgs['jsf.Validation.messages']}</p>

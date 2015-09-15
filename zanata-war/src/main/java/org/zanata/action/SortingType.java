@@ -23,6 +23,11 @@ public class SortingType implements Serializable {
         this.sortOptions = sortOptions;
     }
 
+    public SortingType(List<SortOption> sortOptions, SortOption defaultSort) {
+        this.sortOptions = sortOptions;
+        this.selectedSortOption = defaultSort;
+    }
+
     public void setSelectedSortOption(SortOption selectedSortOption) {
         if (this.selectedSortOption.equals(selectedSortOption)) {
             selectedSortOption.setAscending(!selectedSortOption.isAscending());
@@ -38,7 +43,8 @@ public class SortingType implements Serializable {
         LAST_TRANSLATED("Last translated", false), LAST_UPDATED_BY_YOU(
                 "Last updated by you", false), Entry("Entry", false),
         LOCALE_ID("Locale code", true), MEMBERS("Members", true),
-        CREATED_DATE("Created date", true);
+        CREATED_DATE("Created date", true), NAME("Name", true),
+        ROLE("Role", true);
 
         @Getter
         String display;

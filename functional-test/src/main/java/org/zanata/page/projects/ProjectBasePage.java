@@ -40,12 +40,12 @@ import org.zanata.page.projects.projectsettings.ProjectWebHooksTab;
 public class ProjectBasePage extends BasePage {
 
     private By versionsTab = By.id("versions_tab");
-    private By maintainersTab = By.id("maintainers_tab");
+    private By peopleTab = By.id("people_tab");
     private By aboutTab = By.id("about_tab");
     private By settingsTab = By.id("settings_tab");
 
     private By versionsTabBody = By.id("versions");
-    private By maintainersTabBody = By.id("maintainers");
+    private By peopleTabBody = By.id("people");
     private By aboutTabBody = By.id("about");
     private By settingsTabBody = By.id("settings");
 
@@ -76,12 +76,12 @@ public class ProjectBasePage extends BasePage {
         return new ProjectVersionsPage(getDriver());
     }
 
-    public ProjectMaintainersPage gotoMaintainersTab() {
-        log.info("Click Maintainers tab");
-        existingElement(maintainersTabBody);
-        clickWhenTabEnabled(readyElement(maintainersTab));
-        readyElement(By.id("maintainers"));
-        return new ProjectMaintainersPage(getDriver());
+    public ProjectPeoplePage gotoPeopleTab() {
+        log.info("Click People tab");
+        existingElement(peopleTabBody);
+        clickWhenTabEnabled(readyElement(peopleTab));
+        readyElement(peopleTabBody);
+        return new ProjectPeoplePage(getDriver());
     }
 
     public ProjectAboutPage gotoAboutTab() {

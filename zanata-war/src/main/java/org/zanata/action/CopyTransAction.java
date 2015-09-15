@@ -144,7 +144,7 @@ public class CopyTransAction extends CopyAction implements Serializable {
     }
 
     public void startCopyTrans() {
-        identity.checkPermission(projectIteration, "copy-trans");
+        identity.checkPermission(getProjectIteration(), "copy-trans");
         if (isInProgress()) {
             return;
         } else if (getProjectIteration().getDocuments().size() <= 0) {

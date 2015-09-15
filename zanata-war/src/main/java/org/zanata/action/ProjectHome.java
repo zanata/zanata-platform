@@ -39,6 +39,7 @@ import javax.persistence.EntityNotFoundException;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -140,6 +141,9 @@ public class ProjectHome extends SlugHome<HProject> implements
 
     @In
     private Messages msgs;
+
+    @In
+    private PersonDAO personDAO;
 
     @In
     private AccountRoleDAO accountRoleDAO;
@@ -623,6 +627,16 @@ public class ProjectHome extends SlugHome<HProject> implements
         update();
     }
 
+    public void setInviteOnly(boolean inviteOnly) {
+        identity.checkPermission(getInstance(), "update");
+        getInstance().setAllowGlobalTranslation(!inviteOnly);
+        update();
+        String message = inviteOnly
+                ? msgs.get("jsf.translation.permission.inviteOnly.Active")
+                : msgs.get("jsf.translation.permission.inviteOnly.Inactive");
+        facesMessages.addGlobal(FacesMessage.SEVERITY_INFO, message);
+    }
+
     @Override
     protected HProject loadInstance() {
         Session session = (Session) getEntityManager().getDelegate();
@@ -777,7 +791,11 @@ public class ProjectHome extends SlugHome<HProject> implements
         updateProjectType();
 
         if (authenticatedAccount != null) {
-            getInstance().addMaintainer(authenticatedAccount.getPerson());
+            // authenticatedAccount person is a detached entity, so fetch a copy
+            // that is attached to the current session.
+            HPerson creator = personDAO.findById(
+                    authenticatedAccount.getPerson().getId());
+            getInstance().addMaintainer(creator);
             getInstance().getCustomizedValidations().clear();
             for (ValidationAction validationAction : validationServiceImpl
                     .getValidationActions("")) {
@@ -815,7 +833,7 @@ public class ProjectHome extends SlugHome<HProject> implements
             facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
                 msgs.get("jsf.project.NeedAtLeastOneMaintainer"));
         } else {
-            getInstance().getMaintainers().remove(person);
+            getInstance().removeMaintainer(person);
             maintainerFilter.reset();
             update();
 
@@ -905,13 +923,10 @@ public class ProjectHome extends SlugHome<HProject> implements
     }
 
     private List<HProjectIteration> fetchVersions() {
-        List<HProjectIteration> results = new ArrayList<HProjectIteration>();
+        List<HProjectIteration> results = Lists.newArrayList(Iterables.filter(
+                getInstance().getProjectIterations(),
+                IS_NOT_OBSOLETE));
 
-        for (HProjectIteration iteration : getInstance().getProjectIterations()) {
-            if (iteration.getStatus() != EntityStatus.OBSOLETE) {
-                results.add(iteration);
-            }
-        }
         Collections.sort(results, new Comparator<HProjectIteration>() {
             @Override
             public int compare(HProjectIteration o1, HProjectIteration o2) {
@@ -932,16 +947,18 @@ public class ProjectHome extends SlugHome<HProject> implements
                     }
                     return -1;
                 }
-
-                if (fromStatus.equals(EntityStatus.OBSOLETE)) {
-                    return 1;
-                }
-
                 return 0;
             }
         });
         return results;
     }
+
+    private final Predicate IS_NOT_OBSOLETE = new Predicate<HProjectIteration>() {
+        @Override
+        public boolean apply(HProjectIteration input) {
+            return input.getStatus() != EntityStatus.OBSOLETE;
+        }
+    };
 
     @Override
     public boolean isIdDefined() {

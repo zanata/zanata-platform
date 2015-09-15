@@ -25,6 +25,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -37,6 +38,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class HAccountOption extends ModelEntityBase {
     private static final long serialVersionUID = 1L;
 

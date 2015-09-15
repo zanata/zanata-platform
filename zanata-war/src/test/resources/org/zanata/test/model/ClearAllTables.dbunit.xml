@@ -26,7 +26,8 @@
   <HProject />
   <HProject_Locale />
   <HProjectIteration_Locale />
-  <HProject_Maintainer />
+  <HProject_Member />
+  <HProject_LocaleMember />
   <HProject_Validation />
   <HProjectIteration />
   <HProjectIteration_Locale />

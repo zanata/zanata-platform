@@ -1,0 +1,203 @@
+<!--
+  Copyright 2015, Red Hat, Inc. and individual contributors
+  as indicated by the @author tags. See the copyright.txt file in the
+  distribution for a full listing of individual contributors.
+
+  This is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation; either version 2.1 of
+  the License, or (at your option) any later version.
+
+  This software is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this software; if not, write to the Free
+  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:z="http://java.sun.com/jsf/composite/zanata"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:a4j="http://richfaces.org/a4j"
+        xmlns:rich="http://richfaces.org/rich">
+
+<ui:param name="canManageMembers" value="#{identity.hasPermission(projectHome.instance, 'manage-members')
+    or identity.hasPermission(projectHome.instance, 'manage-translation-members')}"/>
+
+  <div class="panel l--push-top-1">
+
+    <!-- Header row -->
+    <div class="panel__header">
+      <div class="panel__header__actions">
+        <ui:fragment rendered="#{canManageMembers}">
+
+          <h:form styleClass="bx--inline">
+            <z:ajax-command-button
+                styleClass="button button--primary panel__header__button"
+                action="#{projectPermissionDialog.setData(projectHome.instance, null)}"
+                render="modalManagePermissions-content"
+                oncomplete="zanata.modal.show(jQuery('#modalManagePermissions'));jQuery('#modalManagePermissions').scrollTop(0)">
+                <i class="i i--plus"></i> #{msgs['jsf.people.AddSomeone']}
+              <f:facet name="loading">
+                <i class="i i--plus"></i> #{msgs['jsf.people.AddSomeone']}
+              </f:facet>
+            </z:ajax-command-button>
+          </h:form>
+
+        </ui:fragment>
+        <z:sortlist id="project-people_sorting"
+          sortAction="#{projectHomeAction.peopleFilterComparator.sortPeopleList()}"
+          render="people_form, peopleSearch-pager, peopleSearch-page-info, peopleSearchBottom-pager, peopleSearchBottom-page-info"
+          oncomplete="refreshTooltip('#{rich:clientId('people_form')}')"
+          sortingList="#{projectHomeAction.peopleSortingList}"
+          onbegin="clearHTML('#{rich:clientId('people_form')}')"
+          status="peopleTab-peopleLoader"/>
+      </div>
+      <h2 class="panel__heading">#{msgs['jsf.People']}
+        <a4j:status name="peopleTab-peopleLoader">
+          <f:facet name="start">
+            <z:loader layout="inline" type="loader--small"/>
+          </f:facet>
+        </a4j:status>
+      </h2>
+    </div>
+
+    <!-- Search row -->
+    <div class="panel__sub-header js-reveal">
+      <z:list-filter status="peopleTab-peopleLoader"
+        listId="people_form" iconClass="i--users"
+        render="people_form, peopleSearchBottom-pager, peopleSearchBottom-page-info"
+        id="peopleSearch"
+        placeholder="#{msgs['jsf.people.SearchPlaceholder']}"
+        actionBean="#{projectHomeAction.peopleFilterComparator}"/>
+    </div>
+
+    <!-- List of people -->
+    <h:form id="people_form" styleClass="l--push-bottom-1">
+
+      <!-- No people message -->
+      <h:panelGroup layout="block" styleClass="l--pad-all-half"
+        rendered="#{empty projectHomeAction.allMembers}">
+        <p class="txt--meta">#{msgs['jsf.NoPeople']}</p>
+        <ui:fragment rendered="#{canManageMembers}">
+          <p>
+            <z:ajax-command-button
+                styleClass="button button--primary panel__header__button"
+                action="#{projectPermissionDialog.setData(projectHome.instance, null)}"
+                render="modalManagePermissions-content"
+                oncomplete="zanata.modal.show(jQuery('#modalManagePermissions'));jQuery('#modalManagePermissions').scrollTop(0)">
+              <i class="i i--plus"></i> #{msgs['jsf.people.AddSomeone']}
+              <f:facet name="loading">
+                <i class="i i--plus"></i> #{msgs['jsf.people.AddSomeone']}
+              </f:facet>
+            </z:ajax-command-button>
+          </p>
+        </ui:fragment>
+      </h:panelGroup>
+
+      <!-- Alphabetical people list -->
+      <ui:fragment rendered="#{not projectHomeAction.peopleFilterComparator.isShowMembersInGroup()}">
+        <h:panelGroup layout="block" styleClass="l--pad-all-half"
+          rendered="#{not empty projectHomeAction.allMembers and empty projectHomeAction.peopleFilterComparator.currentPage}">
+          <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
+        </h:panelGroup>
+
+        <ui:fragment
+          rendered="#{not projectHomeAction.peopleFilterComparator.currentPage.isEmpty()}">
+          <ul class="list--slat l--push-all-half">
+            <ui:repeat value="#{projectHomeAction.peopleFilterComparator.currentPage}" var="person">
+              <z:person-permission-entry person="#{person}"
+                project="#{projectHomeAction.project}"
+                roleNames="#{projectHomeAction.allRoleDisplayNames(person)}"
+                canManageMembers="#{canManageMembers}"
+                managePermissionsRender="modalManagePermissions-content"
+                managePermissionsModal="modalManagePermissions"/>
+            </ui:repeat>
+          </ul>
+        </ui:fragment>
+      </ui:fragment>
+
+      <!-- People list grouped by role -->
+      <ui:fragment rendered="#{projectHomeAction.peopleFilterComparator.isShowMembersInGroup()}">
+        <ui:param name="maintainers" value="#{projectHomeAction.peopleFilterComparator.getMaintainers()}"/>
+        <ui:param name="localesWithMembers" value="#{projectHomeAction.peopleFilterComparator.getLocalesWithMembers()}"/>
+
+        <h:panelGroup layout="block" styleClass="l--pad-all-half"
+          rendered="#{not empty projectHomeAction.allMembers and empty maintainers and empty localesWithMembers}">
+          <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
+        </h:panelGroup>
+
+        <!-- Project roles (Maintainers and Translation Maintainers) -->
+        <h:panelGroup layout="block" styleClass="l--pad-h-half l--push-bottom-1" rendered="#{not empty maintainers}">
+          <h3 class="heading--secondary l--push-bottom-quarter">
+            #{msgs['jsf.project.peoplelist.project.label']}
+            <span class="txt--mini l--push-left-quarter">
+              <span class="badge">#{maintainers.size}</span>
+            </span>
+          </h3>
+          <ul class="list--slat">
+            <ui:repeat value="#{maintainers}" var="person">
+              <z:person-permission-entry person="#{person}"
+                project="#{projectHomeAction.project}"
+                roleNames="#{projectHomeAction.projectRoleDisplayNames(person)}"
+                canManageMembers="#{canManageMembers}"
+                managePermissionsRender="modalManagePermissions-content"
+                managePermissionsModal="modalManagePermissions"/>
+            </ui:repeat>
+          </ul>
+        </h:panelGroup>
+
+        <!-- Translation roles, grouped by locale -->
+        <h:panelGroup layout="block" styleClass="l--pad-h-half" rendered="#{not empty localesWithMembers}">
+          <h3 class="heading--secondary l--push-bottom-quarter">
+            #{msgs['jsf.project.peoplelist.translation.label']}
+            <span class="txt--mini l--push-left-quarter">
+              <span class="badge">#{localesWithMembers.size}</span>
+            </span>
+          </h3>
+          <!-- cannot use name var="locale" as that overwrites an existing param with that name and causes errors -->
+          <ui:repeat value="#{localesWithMembers}" var="localeGrouping">
+            <ui:param name="localeMembers" value="#{projectHomeAction.peopleFilterComparator.getMembersByLocale().get(localeGrouping)}"/>
+            <h4 class="heading--sub delta">
+              #{localeGrouping.retrieveDisplayName()}
+              <span class="txt--mini l--push-left-quarter">
+                <span class="badge">#{localeMembers.size}</span>
+              </span>
+            </h4>
+            <ul class="list--slat l--push-bottom-1">
+              <ui:repeat value="#{localeMembers}" var="person">
+                <z:person-permission-entry person="#{person}"
+                  project="#{projectHomeAction.project}"
+                  roleNames="#{projectHomeAction.rolesDisplayForLocale(person, localeGrouping)}"
+                  canManageMembers="#{canManageMembers}"
+                  managePermissionsRender="modalManagePermissions-content"
+                  managePermissionsModal="modalManagePermissions"/>
+              </ui:repeat>
+            </ul>
+          </ui:repeat>
+        </h:panelGroup>
+      </ui:fragment>
+    </h:form>
+
+    <!-- people count at bottom -->
+    <z:list-filter status="peopleTab-peopleLoader"
+      listId="people_form" iconClass="i--users"
+      render="people_form, peopleSearch-pager, peopleSearch-page-info"
+      id="peopleSearchBottom" bottomPanel="true"
+      placeholder="#{msgs['jsf.people.SearchPlaceholder']}"
+      actionBean="#{projectHomeAction.peopleFilterComparator}"/>
+  </div>
+
+  <ui:include src="person-permissions-modal.xhtml">
+    <ui:param name="id" value="modalManagePermissions"/>
+      <ui:param name="dialogBean" value="#{projectPermissionDialog}"/>
+  </ui:include>
+
+</ui:composition>

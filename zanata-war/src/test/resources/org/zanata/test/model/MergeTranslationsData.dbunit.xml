@@ -4,6 +4,7 @@
     creationDate="2009-09-01 20:30:16" lastChanged="2009-09-01 20:30:16"
     slug="sample-project" description="An example Project" homeContent=""
     name="Sample Project" overrideLocales="FALSE" restrictedByRoles="FALSE"
+    allowGlobalTranslation="TRUE"
     status="A" />
 
   <HProjectIteration id="1" versionNum="1" slug="1.0"

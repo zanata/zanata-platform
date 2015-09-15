@@ -1,0 +1,325 @@
+<!--
+  Copyright 2015, Red Hat, Inc. and individual contributors
+  as indicated by the @author tags. See the copyright.txt file in the
+  distribution for a full listing of individual contributors.
+
+  This is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as
+  published by the Free Software Foundation; either version 2.1 of
+  the License, or (at your option) any later version.
+
+  This software is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public
+  License along with this software; if not, write to the Free
+  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  -->
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:z="http://java.sun.com/jsf/composite/zanata"
+        xmlns:a4j="http://richfaces.org/a4j"
+        xmlns:f="http://java.sun.com/jsf/core">
+
+  <a4j:jsFunction name="savePermissionDialog" action="#{projectHomeAction.clearCachedMembershipData()}"
+      status="peopleTab-peopleLoader"
+      render="people-size, people_form, peopleSearch-pager, peopleSearch-page-info, peopleSearchBottom-pager, peopleSearchBottom-page-info"
+      oncomplete="console.log('savePermissionDialog -> oncomplete')">
+    <!-- actionListener executes before the action -->
+    <f:actionListener binding="#{projectPermissionDialog.saveSelections()}"/>
+  </a4j:jsFunction>
+
+  <a4j:jsFunction name="bindProjectPermissionRole"
+      action="#{projectPermissionDialog.bindProjectRole(key, checked)}"
+      render="#{id}-submit-buttons"
+      limitRender="true">
+    <a4j:param name="val1" assignTo="#{key}"/>
+    <a4j:param name="val2" assignTo="#{checked}"/>
+  </a4j:jsFunction>
+
+  <a4j:jsFunction name="bindTranslationPermissionRole"
+      action="#{projectPermissionDialog.bindTranslationRole(key, checked)}"
+      render="#{id}-submit-buttons"
+      limitRender="true">
+    <a4j:param name="val1" assignTo="#{key}"/>
+    <a4j:param name="val2" assignTo="#{checked}"/>
+  </a4j:jsFunction>
+
+
+  <ui:param name="person" value="#{projectPermissionDialog.data.person}"/>
+  <ui:param name="memberSelected" value="#{(not empty person) and projectHomeAction.isMember(person)}"/>
+
+  <div class="modal" id="#{id}" tabindex="-1" role="dialog" aria-hidden="true">
+    <h:panelGroup layout="block" id="#{id}-content" styleClass="modal__dialog l--constrain-medium">
+      <header class="modal__header">
+        <h2 class="modal__title">
+          <ui:fragment rendered="#{not memberSelected}">
+            #{msgs['jsf.people.AddSomeone']}
+          </ui:fragment>
+          <ui:fragment rendered="#{memberSelected}">
+            #{msgs['jsf.projectPermissions.ManagePermissions']}
+          </ui:fragment>
+        </h2>
+        <button class="modal__close button--link" data-dismiss="modal">
+          <i class="i i--huge i--cancel"></i>
+        </button>
+      </header>
+      <div class="modal__content">
+        <h:form>
+          <div class="l--pad-all-1">
+            <h3 class="l--push-top-0">#{msgs['jsf.people.SelectUser']}</h3>
+
+            <ui:fragment rendered="#{empty person}">
+              <z:autocomplete actionBean="#{dialogBean}"
+                  fetchValue="#{result.account.username}"
+                  id="#{id}Autocomplete"
+                  render="#{id}-content"
+                  minlength="1"
+                  placeholder="#{msgs['jsf.SearchNameOrUsername']}">
+                <span class="w--r-1 bx--round l--push-right-quarter">
+                  <img src="#{gravatarServiceImpl.getUserImageUrl(48, result.email)}" alt=""/>
+                </span>
+                <h:outputText value="#{result.account.username}"/>
+              </z:autocomplete>
+            </ui:fragment>
+
+            <ui:fragment rendered="#{not empty person}">
+              <p class="txt--lead">
+                <z:person-tile person="#{person}"/>
+                <z:ajax-command-button
+                    styleClass="button button--link link--neutral bx--inline-block"
+                    action="#{projectPermissionDialog.setData(projectHome.instance, null)}"
+                    render="modalManagePermissions-content"
+                    oncomplete="zanata.modal.show(jQuery('#modalManagePermissions'))">
+                  <span title="#{msgs['jsf.projectPermissions.SelectDifferentPerson']}">
+                    <i class="i i--small i--cross"></i>
+                    <span class="is-sr-only">#{msgs['jsf.projectPermissions.SelectDifferentPerson']}</span>
+                  </span>
+                  <f:facet name="loading">
+                    <span title="#{msgs['jsf.projectPermissions.SelectDifferentPerson']}">
+                      <i class="i i--small i--cross"></i>
+                      <span class="is-sr-only">#{msgs['jsf.projectPermissions.SelectDifferentPerson']}</span>
+                    </span>
+                  </f:facet>
+                </z:ajax-command-button>
+
+                <!-- without this, the above button only works the second time it is clicked -->
+                <h:outputScript library="script" name="jsf-ajax-viewstate-fix.js" target="head"/>
+              </p>
+
+              <hr/>
+
+              <h3>#{msgs['jsf.ProjectPermissions']}</h3>
+              <div class="g--tight">
+                <div class="g__item w--1-3">
+                  <label class="l--push-bottom-0">#{msgs['jsf.ProjectPermissions']}</label>
+                </div>
+                <div class="g__item w--2-3">
+                  <ul id="#{id}-project-permissions"
+                      class="list--horizontal">
+                    <li>
+                      <z:checkbox
+                          label="#{msgs['jsf.projectPermissions.ManageTranslators']}"
+                          labelStyle="form__checkbox__label js-form__checkbox__label"
+                          checked="#{projectPermissionDialog.data.translationMaintainer}"
+                          onValueChanged="bindProjectPermissionRole"
+                          value="TranslationMaintainer"/>
+                    </li>
+                    <li>
+                      <z:checkbox
+                          label="#{msgs['jsf.projectPermissions.MaintainProject']}"
+                          labelStyle="form__checkbox__label js-form__checkbox__label"
+                          checked="#{projectPermissionDialog.data.maintainer}"
+                          onValueChanged="bindProjectPermissionRole"
+                          value="Maintainer"/>
+                    </li>
+                  </ul>
+
+                  <ui:fragment rendered="#{not identity.hasPermission(projectHome.instance, 'manage-members')}">
+                    <p class="txt--meta l--push-top-half">
+                      #{msgs['jsf.projectPermissions.YouCannotModify']}
+                    </p>
+                  </ui:fragment>
+
+                  <ui:fragment rendered="#{identity.hasPermission(projectHome.instance, 'manage-members') and projectPermissionDialog.lastMaintainerSelected()}">
+                    <p class="txt--meta l--push-top-half">
+                        <i class="i i--info"></i> <h:outputText
+                            value="#{msgs.format('jsf.projectPermissions.CannotRemoveOnlyMaintainer',
+                                       person.account.username)}"
+                            escape="false"/>
+
+                    </p>
+                  </ui:fragment>
+
+                  <p id="#{id}-translation-maintainer-disabled-message"
+                      class="is-hidden txt--meta l--push-top-half">
+                    <i class="i i--info"></i> <h:outputText
+                        value="#{msgs.format('jsf.projectPermissions.IncludedPermissionExplanation',
+                                   msgs['jsf.projectPermissions.MaintainProject'],
+                                   msgs['jsf.projectPermissions.ManageTranslators'])}"
+                        escape="false"/>
+                  </p>
+
+                  <p id="#{id}-translation-maintainer-info" class="txt--meta l--push-top-half is-hidden">
+                    <h:outputText
+                        value="#{msgs.format('jsf.projectPermissions.TranslationMaintainerPermissionDetails',
+                                   person.account.username)}"
+                        escape="false"/>
+                  </p>
+
+                  <p id="#{id}-maintainer-info" class="txt--meta l--push-top-half is-hidden">
+                    <h:outputText
+                        value="#{msgs.format('jsf.projectPermissions.MaintainerPermissionDetails',
+                                   person.account.username)}"
+                        escape="false"/>
+                  </p>
+                </div>
+              </div>
+
+              <hr/>
+
+              <h3>#{msgs['jsf.projectPermissions.TranslationPermissions']}</h3>
+              <ui:fragment rendered="#{empty projectPermissionDialog.data.localeRoles.toArray()}">
+                <p>#{msgs['jsf.languages.NoLanguagesEnabled']}</p>
+              </ui:fragment>
+              <ul class="list--slat">
+                <!-- TODO add filtering for list -->
+                <ui:repeat value="#{projectPermissionDialog.data.sortedLocaleRoles}" var="roles">
+                  <li>
+                    <div class="g--tight">
+                      <div class="g__item w--1-3">
+                        <label class="l--push-bottom-0">
+                          #{roles.locale.retrieveDisplayName()}
+                        </label>
+                      </div>
+                      <div class="g__item w--2-3">
+                        <ul class="list--horizontal">
+                          <li>
+                            <z:checkbox
+                                label="#{msgs['jsf.Translate']}"
+                                labelStyle="form__checkbox__label js-form__checkbox__label"
+                                onValueChanged="bindTranslationPermissionRole"
+                                value="#{roles.locale.localeId}:Translator"
+                                checked="#{roles.translator}"/>
+                          </li>
+                          <li>
+                            <z:checkbox
+                                label="#{msgs['jsf.label.review']}"
+                                labelStyle="form__checkbox__label js-form__checkbox__label"
+                                onValueChanged="bindTranslationPermissionRole"
+                                value="#{roles.locale.localeId}:Reviewer"
+                                checked="#{roles.reviewer}"/>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </li>
+                </ui:repeat>
+              </ul>
+            </ui:fragment>
+          </div>
+
+          <div class="modal__footer l--pad-h-1 l--pad-v-half bg--highest txt--align-right">
+            <button onclick="return false;" class="button--link h--1-1-4 l--push-right-half" data-dismiss="modal">
+              #{msgs['jsf.Cancel']}</button>
+            <h:panelGroup id="#{id}-submit-buttons">
+              <a4j:commandButton value="#{msgs['jsf.people.AddPerson']}"
+                  rendered="#{not memberSelected}"
+                  disabled="#{empty person or not projectPermissionDialog.anySelected()}"
+                  onclick="savePermissionDialog();zanata.modal.hide(jQuery('##{id}'));return false;">
+              </a4j:commandButton>
+              <a4j:commandButton value="#{msgs['jsf.people.RemovePerson']}"
+                  rendered="#{memberSelected and not projectPermissionDialog.anySelected()}"
+                  onclick="savePermissionDialog();zanata.modal.hide(jQuery('##{id}'));return false;">
+              </a4j:commandButton>
+              <a4j:commandButton value="#{msgs['jsf.projectPermissions.SavePermissions']}"
+                  rendered="#{memberSelected and projectPermissionDialog.anySelected()}"
+                  onclick="savePermissionDialog();zanata.modal.hide(jQuery('##{id}'));return false;">
+              </a4j:commandButton>
+            </h:panelGroup>
+          </div>
+        </h:form>
+      </div>
+      <script type="text/javascript">
+        //<![CDATA[
+        zanata.form.appendCheckboxes(jQuery('##{id}-content').element);
+        //]]>
+      </script>
+      <ui:fragment rendered="#{projectPermissionDialog.lastMaintainerSelected() or not identity.hasPermission(projectPermissionDialog.project, 'manage-members')}">
+        <script type="text/javascript">
+          //<![CDATA[
+          jQuery('##{id}-project-permissions')
+                  .find(' input')
+                  .trigger('disable');
+          //]]>
+        </script>
+      </ui:fragment>
+      <ui:fragment rendered="#{identity.hasPermission(projectPermissionDialog.project, 'manage-members') and not projectPermissionDialog.lastMaintainerSelected()}">
+        <!-- disable the TranslationMaintainer checkbox when Maintainer is checked,
+             (not needed if the user has no permission, since both are permanently disabled )-->
+        <script type="text/javascript">
+          //<![CDATA[
+          (function () {
+            var checkboxes = jQuery('##{id}-project-permissions').find('input');
+            var translationMaintainerCheckbox = checkboxes.first();
+            var maintainerCheckbox = checkboxes.eq(1);
+            var translationMaintainerMessage = jQuery('##{id}-translation-maintainer-disabled-message');
+
+            var refreshCheckboxDisplay = function () {
+              var checked = maintainerCheckbox.prop('checked');
+
+              if (checked && !translationMaintainerCheckbox.prop('checked')) {
+                // zanata checkbox element behaviour is bound to clicking on the
+                // parent div rather than the input element itself.
+                // (ideal would be if it used oninput on the actual checkbox, then
+                // this could just set the checked state on the input).
+                translationMaintainerCheckbox.closest('.js-form__checkbox').click();
+              }
+
+              translationMaintainerCheckbox.trigger(checked ? 'disable' : 'enable');
+              translationMaintainerMessage.toggleClass('is-hidden', !checked);
+            };
+
+            jQuery(maintainerCheckbox).change(refreshCheckboxDisplay);
+
+            // make sure the initial state is right
+            refreshCheckboxDisplay();
+            })();
+          //]]>
+        </script>
+      </ui:fragment>
+      <script type="text/javascript">
+        //<![CDATA[
+        (function () {
+          var checkboxes = jQuery('##{id}-project-permissions').find('input');
+          var translationMaintainerCheckbox = checkboxes.first();
+          var maintainerCheckbox = checkboxes.eq(1);
+
+          var maintainerInfo = jQuery('##{id}-maintainer-info');
+          var translationMaintainerInfo = jQuery('##{id}-translation-maintainer-info');
+
+          checkboxes.change(refreshMaintainerMessages);
+
+          // make sure initial state is right
+          refreshMaintainerMessages();
+
+          function refreshMaintainerMessages () {
+            var isMaintainer = maintainerCheckbox.prop('checked');
+            var isTransMaintainer = translationMaintainerCheckbox.prop('checked');
+            maintainerInfo.toggleClass('is-hidden', !isMaintainer);
+            translationMaintainerInfo.toggleClass('is-hidden', isMaintainer || !isTransMaintainer);
+          }
+        })();
+        //]]>
+      </script>
+    </h:panelGroup>
+  </div>
+
+
+</ui:composition>

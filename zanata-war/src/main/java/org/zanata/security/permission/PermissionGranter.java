@@ -164,7 +164,7 @@ public class PermissionGranter {
 
     private Object findParameterForClass(Object[] params, Class<?> paramType) {
         for (Object p : params) {
-            if (p.getClass() == paramType)
+            if (paramType.isAssignableFrom(p.getClass()))
                 return p;
         }
         return null;

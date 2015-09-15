@@ -42,6 +42,8 @@
     <class>org.zanata.model.HPersonEmailValidationKey</class>
     <class>org.zanata.model.HProject</class>
     <class>org.zanata.model.HProjectIteration</class>
+    <class>org.zanata.model.HProjectLocaleMember</class>
+    <class>org.zanata.model.HProjectMember</class>
     <class>org.zanata.model.HRawDocument</class>
     <class>org.zanata.model.HRoleAssignmentRule</class>
     <class>org.zanata.model.HSimpleComment</class>

@@ -23,8 +23,14 @@ package org.zanata.model;
 import static org.zanata.security.EntityAction.DELETE;
 import static org.zanata.security.EntityAction.INSERT;
 import static org.zanata.security.EntityAction.UPDATE;
+import static org.zanata.model.LocaleRole.Coordinator;
+import static org.zanata.model.LocaleRole.Reviewer;
+import static org.zanata.model.LocaleRole.Translator;
+import static org.zanata.model.ProjectRole.Maintainer;
+import static org.zanata.model.ProjectRole.TranslationMaintainer;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,9 +50,13 @@ import javax.persistence.ManyToMany;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableSet;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -60,6 +70,7 @@ import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.jboss.seam.faces.FacesMessages;
 import org.zanata.annotation.EntityRestrict;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -67,6 +78,7 @@ import org.zanata.common.ProjectType;
 import org.zanata.hibernate.search.CaseInsensitiveWhitespaceAnalyzer;
 import org.zanata.model.type.EntityStatusType;
 import org.zanata.model.type.LocaleIdType;
+import org.zanata.model.type.ProjectRoleType;
 import org.zanata.model.validator.Url;
 import org.zanata.rest.dto.Project;
 
@@ -90,10 +102,12 @@ import com.google.common.collect.Sets;
 
 })
 @EntityRestrict({ INSERT, UPDATE, DELETE })
+@EqualsAndHashCode(callSuper = true, of = {})
 @Setter
 @Getter
 @Indexed
 @ToString(callSuper = true, of = "name")
+@TypeDef(name = "projectRole", typeClass = ProjectRoleType.class)
 public class HProject extends SlugEntityBase implements Serializable,
         HasEntityStatus, HasUserFriendlyToString {
     private static final long serialVersionUID = 1L;
@@ -119,6 +133,8 @@ public class HProject extends SlugEntityBase implements Serializable,
 
     private boolean restrictedByRoles = false;
 
+    private boolean allowGlobalTranslation = true;
+
     @OneToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "default_copy_trans_opts_id")
     private HCopyTransOptions defaultCopyTransOpts;
@@ -143,14 +159,30 @@ public class HProject extends SlugEntityBase implements Serializable,
     private ProjectType defaultProjectType;
 
     /**
+     * Immutable set of maintainers for this project.
+     *
+     * To change maintainers, use other methods in this class.
+     *
      * @see {@link #addMaintainer(HPerson)}
+     * @see {@link #removeMaintainer(HPerson)}
      */
-    @ManyToMany
-    @JoinTable(name = "HProject_Maintainer", joinColumns = @JoinColumn(
-            name = "projectId"), inverseJoinColumns = @JoinColumn(
-            name = "personId"))
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private Set<HPerson> maintainers = Sets.newHashSet();
+    @Transient
+    public ImmutableSet<HPerson> getMaintainers() {
+        Set<HProjectMember> maintainerMembers =
+                Sets.filter(members, HProjectMember.IS_MAINTAINER);
+        Collection<HPerson> maintainers =
+                Collections2.transform(maintainerMembers, HProjectMember.TO_PERSON);
+
+        return ImmutableSet.<HPerson>copyOf(maintainers);
+    }
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "project",
+            orphanRemoval = true)
+    private Set<HProjectMember> members = Sets.newHashSet();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "project",
+            orphanRemoval = true)
+    private Set<HProjectLocaleMember> localeMembers = Sets.newHashSet();
 
     @ManyToMany
     @JoinTable(name = "HProject_AllowedRole", joinColumns = @JoinColumn(
@@ -179,9 +211,109 @@ public class HProject extends SlugEntityBase implements Serializable,
         iteration.setProject(this);
     }
 
+    /**
+     * Add a maintainer to this project.
+     *
+     * @param maintainer person to add as a maintainer
+     * @see {@link #getMaintainers}
+     */
     public void addMaintainer(HPerson maintainer) {
-        this.getMaintainers().add(maintainer);
-        maintainer.getMaintainerProjects().add(this);
+        getMembers().add(asMember(maintainer, Maintainer));
+    }
+
+    /**
+     * Remove a maintainer from this project.
+     *
+     * @param maintainer person to remove as a maintainer
+     * @see {@link #getMaintainers}
+     */
+    public void removeMaintainer(HPerson maintainer) {
+        // business rule: every project must have at least one maintainer
+        // No need to check whether the person is the actual last maintainer. If
+        // there is only one maintainer then removal of any other person would
+        // do nothing anyway.
+        if (getMaintainers().size() > 1) {
+            getMembers().remove(asMember(maintainer, Maintainer));
+        }
+    }
+
+    /**
+     * Update all security settings for a person.
+     *
+     * The HPerson and HLocale entities in memberships must be attached to avoid
+     * persistence problems with Hibernate.
+     */
+    public void updateProjectPermissions(PersonProjectMemberships memberships) {
+        HPerson person = memberships.getPerson();
+
+        boolean wasMaintainer = getMaintainers().contains(memberships.getPerson());
+        boolean isLastMaintainer = wasMaintainer && getMaintainers().size() <= 1;
+        // business rule: every project must have at least one maintainer
+        boolean isMaintainer = isLastMaintainer || memberships.isMaintainer();
+
+        ensureMembership(isMaintainer, asMember(person, Maintainer));
+
+        // business rule: if someone is a Maintainer, they must also be a TranslationMaintainer
+        boolean isTranslationMaintainer = memberships.isMaintainer() ||
+                memberships.isTranslationMaintainer();
+
+        ensureMembership(isTranslationMaintainer, asMember(person, TranslationMaintainer));
+    }
+
+    public void updateLocalePermissions(PersonProjectMemberships memberships) {
+        HPerson person = memberships.getPerson();
+
+        for (PersonProjectMemberships.LocaleRoles localeRoles
+                : memberships.getLocaleRoles()) {
+            HLocale locale = localeRoles.getLocale();
+            ensureMembership(localeRoles.isTranslator(), asMember(locale, person, Translator));
+            ensureMembership(localeRoles.isReviewer(), asMember(locale, person, Reviewer));
+            ensureMembership(localeRoles.isCoordinator(), asMember(locale, person, Coordinator));
+        }
+    }
+
+    /**
+     * Get a person as a member object in this project for a role.
+     */
+    private HProjectMember asMember(HPerson person, ProjectRole role) {
+        return new HProjectMember(this, person, role);
+    }
+
+    /**
+     * Get a person as a member object in this project for a locale-specific role.
+     */
+    private HProjectLocaleMember asMember(HLocale locale, HPerson person, LocaleRole role) {
+        return new HProjectLocaleMember(this, locale, person, role);
+    }
+
+    /**
+     * Ensure the given membership is present or absent.
+     */
+    private void ensureMembership(boolean shouldBePresent, HProjectMember membership) {
+        final Set<HProjectMember> members = getMembers();
+        final boolean isPresent = members.contains(membership);
+        if (isPresent != shouldBePresent) {
+            if (shouldBePresent) {
+                members.add(membership);
+            } else {
+                members.remove(membership);
+            }
+        }
+    }
+
+    /**
+     * Ensure the given locale membership is present or absent.
+     */
+    private void ensureMembership(boolean shouldBePresent, HProjectLocaleMember membership) {
+        final Set<HProjectLocaleMember> members = getLocaleMembers();
+        final boolean isPresent = members.contains(membership);
+        if (isPresent != shouldBePresent) {
+            if (shouldBePresent) {
+                members.add(membership);
+            } else {
+                members.remove(membership);
+            }
+        }
     }
 
     @Override

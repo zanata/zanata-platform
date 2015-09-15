@@ -86,6 +86,13 @@ To remove a language from the list of available locales, first move the cursor o
 </figure>
 
 ------------
+### Invite only
+
+This setting determines which users will be allowed to translate your project.
+When it is inactive, any translator can translate your project into their language,
+as long as their language is enabled in your project. When the setting is active,
+only translators in your [project team](/user-guide/projects/project-team/) are allowed to translate your project.
+
 ### Validations
 
 Validations run in the translation editor and help translators to provide translations that are valid for your project. Validations set to `Warning` or `Error` in this list will be displayed in the translation editor when an invalid translation has been entered.
@@ -111,6 +118,8 @@ Refer to [the Copy Translations reference](/user-guide/translation-reuse/copy-tr
 <figcaption>Project Permissions Settings tab</figcaption>
 </figure>
 <br>
+
+Note: Maintainers can also be added and removed through the [project team](/user-guide/projects/project-team/).
 
 ### Add a Maintainer
 

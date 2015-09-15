@@ -25,6 +25,7 @@ pages:
 - Projects:
   - Project view: 'user-guide/projects/project-view.md'
   - Creating a project: 'user-guide/projects/create-project.md'
+  - Project team: 'user-guide/projects/project-team.md'
   - Project settings: 'user-guide/projects/project-settings.md'
   - Project types: 'user-guide/projects/project-types.md'
   - Validations: 'user-guide/projects/validations.md'
