@@ -11,6 +11,7 @@
     <exclusions>
       <module name="javax.ws.rs.api" />
       <module name="javaee.api" />
+      <module name="org.hibernate.search.orm" />
       <module name="org.jboss.as.jaxrs" />
     </exclusions>
     <dependencies>
