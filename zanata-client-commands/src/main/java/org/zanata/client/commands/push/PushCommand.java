@@ -127,6 +127,9 @@ public class PushCommand extends PushPullCommand<PushOptions> {
             copyTransMssg = "disabled since pushType=Trans";
         }
         logger.info("Copy previous translations: {}", copyTransMssg);
+        if (!opts.getCopyTrans() && opts.getPushType() != PushPullType.Trans) {
+            logger.warn("As of Zanata Client 3.8.0, copyTrans is disabled by default.");
+        }
 
         logger.info("Merge type: {}", opts.getMergeType());
         logger.info("Enable modules: {}", opts.getEnableModules());
