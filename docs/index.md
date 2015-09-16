@@ -31,6 +31,11 @@ Contribute
 - [Issue Tracker](http://bugzilla.redhat.com/buglist.cgi?product=Zanata)
 - [Source Code on GitHub](http://github.com/zanata-client)
 
+Release notes
+-------
+
+[Release notes](release-notes.md)
+
 Contact us
 -------
 
