@@ -56,4 +56,4 @@ You will need to [Create a project](/user-guide/projects/create-project) and [Cr
 
 ### From client
 
-See [Zanata-Client push command](http://zanata-client.readthedocs.org/en/latest/commands/push/) for more information.
+See [Zanata-Client push command](http://docs.zanata.org/projects/zanata-client/en/latest/commands/push/) for more information.

@@ -50,9 +50,9 @@ To join more language teams,
 ## Client
 
 API key is a unique identifier used for authentication between client and Zanata server.
-Both [Zanata CLI](http://zanata-client.readthedocs.org/en/latest/installation) and [Zanata Maven plugin](http://zanata-client.readthedocs.org/en/latest/maven-plugin/installation/) uses it.
+Both [Zanata CLI](http://docs.zanata.org/projects/zanata-client/en/latest/installation) and [Zanata Maven plugin](http://docs.zanata.org/projects/zanata-client/en/latest/maven-plugin/installation/) uses it.
 
  1. To generate an API Key, click on `Generate new API Key` button.
  1. The updated settings for your Zanata client are available in the text area below.
  
-For more information on setting up Zanata client, see [Zanata Client configuration](http://zanata-client.readthedocs.org/en/latest/configuration/).
+For more information on setting up Zanata client, see [Zanata Client configuration](http://docs.zanata.org/projects/zanata-client/en/latest/configuration/).

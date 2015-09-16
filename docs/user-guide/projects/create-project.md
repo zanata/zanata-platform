@@ -4,7 +4,7 @@ Anyone with an account can upload source strings to Zanata. The first step is to
  1. [Create a version](/user-guide/versions/create-version) under the project.
  1. Upload documents to the version:
    - Using the website
-   - Using the [command-line client push](http://zanata-client.readthedocs.org/en/latest/commands/push/) command
+   - Using the [command-line client push](http://docs.zanata.org/projects/zanata-client/en/latest/commands/push/) command
 
 ## Project creation through the website
 
