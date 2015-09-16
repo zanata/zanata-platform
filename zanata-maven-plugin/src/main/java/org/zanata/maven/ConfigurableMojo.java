@@ -25,8 +25,7 @@ import com.pyx4j.log4j.MavenLogAppender;
  */
 public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends
         AbstractMojo implements ConfigurableOptions {
-    private static final String BUG_URL =
-            "https://bugzilla.redhat.com/enter_bug.cgi?format=guided&product=Zanata";
+    private static final String BUG_URL = "https://zanata.atlassian.net/";
 
     // @formatter:off
    /*
