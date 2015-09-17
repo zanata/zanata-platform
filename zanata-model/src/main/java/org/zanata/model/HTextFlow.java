@@ -393,12 +393,9 @@ public class HTextFlow extends HTextContainer implements Serializable,
     @Override
     public ITextFlowTarget getTargetContents(LocaleId localeId) {
         // TODO performance: need efficient way to look up a target by LocaleId
-        Collection<HTextFlowTarget> targets = getTargets().values();
-        for (HTextFlowTarget tft : targets) {
-            if (tft.getLocaleId().equals(localeId))
-                return tft;
-        }
-        return null;
+        return getTargets().values().stream()
+                .filter(tft -> tft.getLocaleId().equals(localeId))
+                .findFirst().orElse(null);
     }
 
     @Transient
@@ -445,10 +442,10 @@ public class HTextFlow extends HTextContainer implements Serializable,
         String locale = toBCP47(document.getLocale());
         // TODO strip (eg) HTML tags before counting words. Needs more metadata
         // about the content type.
-        long count = 0;
-        for (String content : this.getContents()) {
-            count += OkapiUtil.countWords(content, locale);
-        }
+
+        long count = this.getContents().stream()
+                .mapToLong(s -> OkapiUtil.countWords(s, locale))
+                .sum();
         setWordCount(count);
     }
 
