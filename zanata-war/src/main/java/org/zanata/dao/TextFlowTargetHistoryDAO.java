@@ -236,9 +236,13 @@ public class TextFlowTargetHistoryDAO extends
                 "    and tft.last_modified_by_id = :user and (tft.translated_by_id is not null or tft.reviewed_by_id is not null)" +
                 "    and tft.state <> :untranslated and tft.state <> :rejected and tft.automatedEntry =:automatedEntry";
 
-        String convertedLastChanged = nativeQueryHelper.convertTz("lastChanged",
-                getOffsetAsString(userZoneOpt.get()),
-                getOffsetAsString(systemZone));
+        // Convert the lastChanged TimeZone to the requested one, if specified
+        String convertedLastChanged = "lastChanged";
+        if(userZoneOpt.isPresent()) {
+            convertedLastChanged = nativeQueryHelper.convertTz("lastChanged",
+                    getOffsetAsString(userZoneOpt.get()),
+                    getOffsetAsString(systemZone));
+        }
         // @formatter:on
         String dateOfLastChanged = stripTimeFromDateTimeFunction(convertedLastChanged);
         String queryString =

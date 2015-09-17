@@ -187,7 +187,7 @@ public class FilterConstraintToQueryTest {
         assertThat(
                 result,
                 Matchers.equalToIgnoringCase(QUERY_BEFORE_WHERE
-                        + "WHERE (tf.obsolete=0 AND tf.document.id=:documentId) ORDER BY tf.pos"));
+                        + "WHERE (tf.obsolete=false AND tf.document.id=:documentId) ORDER BY tf.pos"));
     }
 
     @Test
@@ -202,7 +202,7 @@ public class FilterConstraintToQueryTest {
         assertThat(
                 result,
                 Matchers.equalToIgnoringCase(QUERY_BEFORE_WHERE
-                        + "WHERE (tf.obsolete=0 AND tf.document.id in (:documentIdList)) ORDER BY tf.pos"));
+                        + "WHERE (tf.obsolete=false AND tf.document.id in (:documentIdList)) ORDER BY tf.pos"));
     }
 
     @Test
@@ -260,7 +260,7 @@ WHERE (
 ORDER BY tf.pos
  */
         assertThat(result, Matchers.equalToIgnoringCase(
-                "SELECT distinct tf FROM HTextFlow tf LEFT JOIN tf.targets tfts WITH tfts.index=:locale WHERE (tf.obsolete=0 AND tf.document.id=:documentId AND ((lower(tf.content0) like :searchString) OR  EXISTS ( FROM HTextFlowTarget WHERE ((lower(content0) like :searchString) AND textFlow=tf AND locale=:locale))) AND ( EXISTS ( FROM HTextFlowTarget WHERE ((textFlow=tf AND locale=:locale) AND state in (:ContentStateList))) OR (:locale not in indices(tf.targets) AND (lower(tf.content0) like :searchString)))) ORDER BY tf.pos"));
+                "SELECT distinct tf FROM HTextFlow tf LEFT JOIN tf.targets tfts WITH tfts.index=:locale WHERE (tf.obsolete=false AND tf.document.id=:documentId AND ((lower(tf.content0) like :searchString) OR  EXISTS ( FROM HTextFlowTarget WHERE ((lower(content0) like :searchString) AND textFlow=tf AND locale=:locale))) AND ( EXISTS ( FROM HTextFlowTarget WHERE ((textFlow=tf AND locale=:locale) AND state in (:ContentStateList))) OR (:locale not in indices(tf.targets) AND (lower(tf.content0) like :searchString)))) ORDER BY tf.pos"));
     }
 
     @Test
