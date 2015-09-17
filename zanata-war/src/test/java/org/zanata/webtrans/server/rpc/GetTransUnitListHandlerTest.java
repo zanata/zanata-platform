@@ -59,11 +59,12 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
     private LocaleService localeService;
     @Mock
     private GetTransUnitsNavigationService getTransUnitsNavigationService;
+    @Mock
+    private ResourceUtils resourceUtils;
 
     private final DocumentInfo document = TestFixture.documentInfo(1L, "");
     private final LocaleId localeId = new LocaleId("ja");
     private HLocale jaHLocale;
-    private SeamAutowire seam = SeamAutowire.instance();
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -75,13 +76,12 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        ResourceUtils resourceUtils = new ResourceUtils();
-        resourceUtils.create(); // postConstruct
+        SeamAutowire seam = SeamAutowire.instance().reset();
+        // must create resourceUtils before transUnitTransformer
+        seam.use("resourceUtils", resourceUtils);
         TransUnitTransformer transUnitTransformer =
-            seam.reset().use("resourceUtils", resourceUtils)
-                .autowire(TransUnitTransformer.class);
-
-            seam.use("localeServiceImpl", localeService)
+                seam.autowire(TransUnitTransformer.class);
+        seam.use("localeServiceImpl", localeService)
                         .use("documentDAO", new DocumentDAO(getSession()))
                         .use("projectIterationDAO",
                                 new ProjectIterationDAO(getSession()))
@@ -97,11 +97,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
                         .useImpl(TranslationStateCacheImpl.class)
                         .useImpl(TextFlowSearchServiceImpl.class)
                         .useImpl(ValidationServiceImpl.class).allowCycles();
-
-        // @formatter:off
-      handler = seam.autowire(GetTransUnitListHandler.class);
-      // @formatter:on
-
+        handler = seam.autowire(GetTransUnitListHandler.class);
         jaHLocale = getEm().find(HLocale.class, 3L);
     }
 
