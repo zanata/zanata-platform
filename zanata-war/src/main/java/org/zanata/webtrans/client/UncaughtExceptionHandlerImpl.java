@@ -69,11 +69,11 @@ class UncaughtExceptionHandlerImpl implements GWT.UncaughtExceptionHandler {
         // @formatter:off
         htmlBuilder
             .appendHtmlConstant("<h3>You may close this window and continue with your work</h3>")
-            .appendHtmlConstant("<div>If you want to let us know the error, Please recall your actions and take one of the following steps:</div>")
+            .appendHtmlConstant("<div>If you want to let us know the error, please recall your actions and take one of the following steps:</div>")
             .appendHtmlConstant("<ul>")
             .appendHtmlConstant("<li>Email administration; Or</li>")
-            .appendHtmlConstant("<li>Check if it's a <a href=\"https://bugzilla.redhat.com/buglist.cgi?product=Zanata&bug_status=__open__\" target=\"_blank\">known issue</a>; Or</li>")
-            .appendHtmlConstant("<li><a href=\"https://bugzilla.redhat.com/enter_bug.cgi?format=guided&product=Zanata\" target=\"_blank\">Report a problem</a>; Or</li>")
+            .appendHtmlConstant("<li>Check if it's a <a href=\"https://zanata.atlassian.net/issues/\" target=\"_blank\">known issue</a>; Or</li>")
+            .appendHtmlConstant("<li><a href=\"https://zanata.atlassian.net/\" target=\"_blank\">Report a problem</a>; Or</li>")
             .appendHtmlConstant("<li>Email <a href=\"mailto:zanata-users@redhat.com\">Zanata users mailing list</a></li>")
             .appendHtmlConstant("</ul>")
         // @formatter:on
