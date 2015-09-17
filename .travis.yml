@@ -18,7 +18,7 @@ install: /bin/true
 # some logging.
 
 script: |
-  travis_wait mvn verify \
+  mvn verify \
   --batch-mode \
   --settings .travis-settings.xml \
   -Dgwt.validateOnly \
