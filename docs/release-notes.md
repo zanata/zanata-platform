@@ -197,7 +197,7 @@ The Zanata installer's configuration now enables "connection debugging" to preve
 
 The editor prototype can be accessed via the **(Try the new alpha editor)** button at the top of the regular editor.  It showcases the look and feel, workflow and intended direction of Zanata.
 
-As it is a _prototype_, there are bound to be some bugs and sub-optimal behaviours - any suggestions or reports can be forwarded to our [bug tracker](https://bugzilla.redhat.com/enter_bug.cgi?product=Zanata).
+As it is a _prototype_, there are bound to be some bugs and sub-optimal behaviours - any suggestions or reports can be forwarded to our [bug tracker](https://zanata.atlassian.net/).
 
 * [1150373](https://bugzilla.redhat.com/show_bug.cgi?id=1150373) - Keyboard shortcuts
 * [1172437](https://bugzilla.redhat.com/show_bug.cgi?id=1172437) - Add plurals to the new editor
