@@ -21,20 +21,18 @@
 
 package org.zanata.feature.projectversion;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projectversion.versionsettings.VersionGeneralTab;
-import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * /**
@@ -43,9 +41,6 @@ import org.zanata.workflow.ProjectWorkFlow;
  */
 @Category(DetailedTest.class)
 public class EditVersionSlugTest extends ZanataTestCase {
-
-    @Rule
-    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     private ZanataRestCaller zanataRestCaller;
 

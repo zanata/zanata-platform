@@ -21,7 +21,7 @@
 package org.zanata.feature.document;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.experimental.categories.Category;
 import org.junit.experimental.theories.DataPoint;
@@ -33,7 +33,6 @@ import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projectversion.VersionDocumentsPage;
 import org.zanata.util.CleanDocumentStorageRule;
-import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.LoginWorkFlow;
@@ -53,13 +52,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FileTypeUploadTest extends ZanataTestCase {
 
     @ClassRule
-    public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
-
-    @ClassRule
     public static CleanDocumentStorageRule documentStorageRule;
 
-    @BeforeClass
-    public static void beforeClass() {
+    @Before
+    public void before() {
         documentStorageRule = new CleanDocumentStorageRule();
         new ZanataRestCaller().createProjectAndVersion("doctype-test",
                 "doctype-upload", "File");

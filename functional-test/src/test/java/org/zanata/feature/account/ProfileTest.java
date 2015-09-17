@@ -21,17 +21,15 @@
 package org.zanata.feature.account;
 
 import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.page.dashboard.dashboardsettings.DashboardAccountTab;
 import org.zanata.page.dashboard.dashboardsettings.DashboardClientTab;
 import org.zanata.page.dashboard.dashboardsettings.DashboardProfileTab;
-import org.zanata.util.AddUsersRule;
 import org.zanata.util.Constants;
 import org.zanata.util.PropertiesHolder;
 import org.zanata.workflow.LoginWorkFlow;
@@ -44,9 +42,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Category(DetailedTest.class)
 public class ProfileTest extends ZanataTestCase {
-
-    @Rule
-    public AddUsersRule addUsersRule = new AddUsersRule();
 
     private static final String adminsApiKey = "b6d7044e9ee3b2447c28fb7c50d86d98";
     private static final String serverUrl = PropertiesHolder

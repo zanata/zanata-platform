@@ -20,35 +20,6 @@
  */
 package org.zanata.feature.misc;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.ws.rs.core.MediaType;
-
-import lombok.extern.slf4j.Slf4j;
-
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.TestPlan.DetailedTest;
-import org.zanata.feature.testharness.ZanataTestCase;
-import org.zanata.page.administration.AdministrationPage;
-import org.zanata.page.administration.ServerConfigurationPage;
-import org.zanata.util.AddUsersRule;
-import org.zanata.util.Constants;
-import org.zanata.util.PropertiesHolder;
-import org.zanata.util.ZanataRestCaller;
-import org.zanata.workflow.LoginWorkFlow;
-
 import com.google.common.base.Function;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
@@ -57,6 +28,30 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.page.administration.AdministrationPage;
+import org.zanata.page.administration.ServerConfigurationPage;
+import org.zanata.util.Constants;
+import org.zanata.util.PropertiesHolder;
+import org.zanata.util.ZanataRestCaller;
+import org.zanata.workflow.LoginWorkFlow;
+
+import javax.ws.rs.core.MediaType;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Patrick Huang <a
@@ -68,9 +63,6 @@ import com.sun.jersey.api.client.WebResource;
 @Category(DetailedTest.class)
 @Slf4j
 public class RateLimitRestAndUITest extends ZanataTestCase {
-
-    @Rule
-    public AddUsersRule addUsersRule = new AddUsersRule();
 
     private static final String TRANSLATOR = "translator";
     private static final String TRANSLATOR_API =

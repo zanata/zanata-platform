@@ -20,19 +20,14 @@
  */
 package org.zanata.feature.misc;
 
-import java.util.concurrent.Callable;
-
-import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.rest.dto.resource.Resource;
-import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
@@ -53,8 +48,6 @@ import static org.zanata.workflow.BasicWorkFlow.PROJECT_VERSION_TEMPLATE;
 @Category(DetailedTest.class)
 public class ObsoleteTextTest extends ZanataTestCase {
 
-    @Rule
-    public SampleProjectRule rule = new SampleProjectRule();
     private ZanataRestCaller restCaller;
 
     @Before

@@ -29,8 +29,11 @@ import org.joda.time.format.PeriodFormatterBuilder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.rules.RuleChain;
 import org.junit.rules.TestName;
 import org.zanata.page.WebDriverFactory;
+import org.zanata.util.EnsureLogoutRule;
+import org.zanata.util.SampleProjectRule;
 
 /**
  * Global application of rules to Zanata functional tests
@@ -46,6 +49,11 @@ public class ZanataTestCase {
 
     @Rule
     public TestName testName = new TestName();
+
+    @Rule
+    public RuleChain theOneRule = RuleChain
+            .outerRule(new EnsureLogoutRule())
+            .around(new SampleProjectRule());
 
     /*
      * rhbz1096552 - disable test timeout for now
