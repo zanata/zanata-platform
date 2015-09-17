@@ -12,7 +12,7 @@ project-name
 ...
 ```
 
-Notice the presence of the `zanata.xml` file already there. This file will be generated for you by the Zanata client `init` command, or you can download it from the Zanata server. For more information see [Configuring the Client](http://zanata-client.readthedocs.org/en/latest/configuration/). This file will look something like this:
+Notice the presence of the `zanata.xml` file already there. This file will be generated for you by the Zanata client `init` command, or you can download it from the Zanata server. For more information see [Configuring the Client](http://docs.zanata.org/projects/zanata-client/en/latest/configuration/). This file will look something like this:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>

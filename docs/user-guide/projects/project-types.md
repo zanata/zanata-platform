@@ -23,11 +23,11 @@ Uses gettext format with multiple template (.pot) files. Translation files use t
 
 #### Properties `.properties`
 Handles normal java properties files using ISO-8859-1 encoding (Latin-1). Java properties files require non Latin-1 characters to be escaped with unicode escape characters (e.g. \uFEDC).<br>
-**_Note: Currently, properties files can only be uploaded using the [Zanata CLI Client](http://zanata-client.readthedocs.org/en/latest/commands/push/)_**
+**_Note: Currently, properties files can only be uploaded using the [Zanata CLI Client](http://docs.zanata.org/projects/zanata-client/en/latest/commands/push/)_**
 
 #### Utf8Properties `.properties`
 Handles non-standard java properties files that use UTF-8 encoding, and do not use unicode escape characters.<br>
-**_Note: Currently, properties files can only be uploaded using the [Zanata CLI Client](http://zanata-client.readthedocs.org/en/latest/commands/push/)_**
+**_Note: Currently, properties files can only be uploaded using the [Zanata CLI Client](http://docs.zanata.org/projects/zanata-client/en/latest/commands/push/)_**
 
 ### Partial / Limited Support
 

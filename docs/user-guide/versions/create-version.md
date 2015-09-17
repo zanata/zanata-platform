@@ -7,7 +7,7 @@ For simple projects, it is typical to create a single version named 'master'. Ot
  1. **Create a version under the project.**
  1. Upload documents to the version:
    - Using the website
-   - Using the [command-line client push command](http://zanata-client.readthedocs.org/en/latest/commands/push/)
+   - Using the [command-line client push command](http://docs.zanata.org/projects/zanata-client/en/latest/commands/push/)
 
 
 ## Version creation through the website
