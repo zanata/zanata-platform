@@ -1,10 +1,8 @@
 ## 3.8
 <h5>Infrastructure Changes</h5>
 * In wildfly or EAP standalone.xml, change all occurrences of "org.jboss.seam.security.jaas.SeamLoginModule" to "org.zanata.security.jaas.InternalLoginModule"
-
-<h5>Infrastructure Changes</h5>
-
-Zanata now requires JBoss EAP 6.4.2.GA or later (recommended), or WildFly version 9.0.1.Final or later.
+* Zanata now requires JBoss EAP 6.4.2.GA or later (recommended), or WildFly version 9.x.
+* Zanata now requires a Java 1.8 virtual machine.
 
 
 <h5>Bug fixes</h5>
