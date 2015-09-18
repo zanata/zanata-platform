@@ -24,6 +24,7 @@ package org.zanata.feature.security;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.rules.RuleChain;
 import org.openqa.selenium.By;
 import org.subethamail.wiser.WiserMessage;
 import org.zanata.feature.Feature;
@@ -46,15 +47,12 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Category(DetailedTest.class)
 public class SecurityTest extends ZanataTestCase {
-
     @Rule
     public HasEmailRule hasEmailRule = new HasEmailRule();
 
     @Rule
-    public EnsureLogoutRule ensureLogoutRule = new EnsureLogoutRule();
-
-    @Rule
-    public AddUsersRule addUsersRule = new AddUsersRule();
+    public RuleChain chain = RuleChain.outerRule(new AddUsersRule())
+            .around(new EnsureLogoutRule());
 
     @Feature(summary = "The user can log in",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86815)
