@@ -734,4 +734,3 @@ ALTER TABLE WebHook ADD CONSTRAINT FK_WebHook_HProject FOREIGN KEY (projectId) R
 
     CREATE TRIGGER HDocument_Update BEFORE UPDATE ON HDocument
        FOR EACH ROW EXECUTE PROCEDURE add_document_history();
-    

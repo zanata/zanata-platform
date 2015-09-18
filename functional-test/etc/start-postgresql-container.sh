@@ -10,6 +10,8 @@ DOCKER_CMD="sudo docker run -e POSTGRES_USER=zanata -e POSTGRES_PASSWORD=zanata 
 POSTGRESQL_CONTAINER_ID=$($DOCKER_CMD)
 echo "Started Postgresql container $POSTGRESQL_CONTAINER_ID"
 echo "with line '$DOCKER_CMD'"
+# Allow postgresql to startup
+sleep 10
 
 # PGQL_PORT=$(docker inspect -f '{{ (index (index .NetworkSettings.Ports "5432/tcp") 0).HostPort }}' $1)
 # echo "Postgresql port: $PGQL_PORT"
