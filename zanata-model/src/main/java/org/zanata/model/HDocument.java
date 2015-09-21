@@ -247,7 +247,7 @@ public class HDocument extends ModelEntityBase implements DocumentWithId,
     }
 
     @OneToMany(cascade = CascadeType.ALL)
-    @Where(clause = "obsolete=0")
+    @Where(clause = "obsolete=false")
     @IndexColumn(name = "pos", base = 0, nullable = false)
     @JoinColumn(name = "document_id", nullable = false)
     /**
