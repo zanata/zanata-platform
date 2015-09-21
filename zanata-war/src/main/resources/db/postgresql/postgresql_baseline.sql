@@ -723,14 +723,15 @@ ALTER TABLE TransMemoryUnitVariant ADD CONSTRAINT FK_TransUnitVariant_TransUnit 
 ALTER TABLE TransMemory_Metadata ADD CONSTRAINT FK_Metadata_TransMemory FOREIGN KEY (trans_memory_id) REFERENCES TransMemory(id);
 ALTER TABLE WebHook ADD CONSTRAINT FK_WebHook_HProject FOREIGN KEY (projectId) REFERENCES HProject(id);
 
-    CREATE FUNCTION add_document_history() RETURNS trigger AS $add_document_history$
-       BEGIN
-          IF NEW.revision != OLD.revision THEN
-             INSERT INTO HDocumentHistory(document_id,revision,contentType,docId,locale,name,path,lastChanged,last_modified_by_id,obsolete)
-                VALUES (OLD.id,OLD.revision,OLD.contentType,OLD.docId,OLD.locale,OLD.name,OLD.path,OLD.lastChanged,OLD.last_modified_by_id,OLD.obsolete);
-          END IF;
-       END;
-    $add_document_history$ LANGUAGE plpgsql;
+CREATE FUNCTION add_document_history() RETURNS trigger AS $add_document_history$
+   BEGIN
+      IF NEW.revision != OLD.revision THEN
+         INSERT INTO HDocumentHistory(document_id,revision,contentType,docId,locale,name,path,lastChanged,last_modified_by_id,obsolete)
+            VALUES (OLD.id,OLD.revision,OLD.contentType,OLD.docId,OLD.locale,OLD.name,OLD.path,OLD.lastChanged,OLD.last_modified_by_id,OLD.obsolete);
+      END IF;
+      RETURN NEW;
+   END;
+$add_document_history$ LANGUAGE plpgsql;
 
-    CREATE TRIGGER HDocument_Update BEFORE UPDATE ON HDocument
-       FOR EACH ROW EXECUTE PROCEDURE add_document_history();
+CREATE TRIGGER HDocument_Update BEFORE UPDATE ON HDocument
+   FOR EACH ROW EXECUTE PROCEDURE add_document_history();
