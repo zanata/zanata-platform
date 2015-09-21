@@ -26,8 +26,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import lombok.Getter;
 
@@ -64,34 +66,26 @@ public enum TranslationSourceType implements Serializable {
     @Getter
     private final String abbr;
 
-    private TranslationSourceType(String abbr) {
+    private static final Map<String, TranslationSourceType> allAbbreviations =
+            Maps.newHashMap();
+
+    /* static initializer */
+    static {
+        for (TranslationSourceType enumVal : values()) {
+            allAbbreviations.put(enumVal.getAbbr(), enumVal);
+        }
+    }
+
+    TranslationSourceType(String abbr) {
         this.abbr = abbr;
     }
 
     public static TranslationSourceType getValueOf(String abbr) {
-        switch (abbr) {
-            case "CT":
-                return TranslationSourceType.COPY_TRANS;
-            case "CV":
-                return TranslationSourceType.COPY_VERSION;
-            case "MV":
-                return TranslationSourceType.MERGE_VERSION;
-            case "TM":
-                return TranslationSourceType.TM_MERGE;
-            case "GWT":
-                return TranslationSourceType.GWT_EDITOR_ENTRY;
-            case "JS":
-                return TranslationSourceType.JS_EDITOR_ENTRY;
-            case "API":
-                return TranslationSourceType.API_UPLOAD;
-            case "WEB":
-                return TranslationSourceType.WEB_UPLOAD;
-            case "MT":
-                return TranslationSourceType.MACHINE_TRANS;
-            case "UNK":
-                return TranslationSourceType.UNKNOWN;
-            default:
-                throw new IllegalArgumentException(String.valueOf(abbr));
+        TranslationSourceType sourceType = allAbbreviations.get(abbr);
+        if (sourceType == null) {
+            throw new IllegalArgumentException("'" + abbr + "'");
+        } else {
+            return sourceType;
         }
     }
 

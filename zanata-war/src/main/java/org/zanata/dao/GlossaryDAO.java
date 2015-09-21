@@ -185,10 +185,11 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long> {
     public Map<HLocale, Integer> getGlossaryTermCountByLocale() {
         Map<HLocale, Integer> result = new HashMap<HLocale, Integer>();
 
+        // This query works on Postgres 9.1+
         Query query =
                 getSession()
                         .createQuery(
-                                "select term.locale, count(*) from HGlossaryTerm term GROUP BY term.locale.localeId");
+                                "select locale, count(term) from HGlossaryTerm term JOIN term.locale locale GROUP BY locale");
         query.setComment("GlossaryDAO.getGlossaryTermCountByLocale");
 
         @SuppressWarnings("unchecked")

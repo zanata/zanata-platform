@@ -67,7 +67,7 @@ public class TranslationSourceTypeTypeDescriptor extends
             return null;
         }
         if (String.class.isInstance(value)) {
-            return TranslationSourceType.getValueOf((String) value);
+            return TranslationSourceType.getValueOf(((String) value).trim());
         }
         throw unknownWrap(value.getClass());
     }
