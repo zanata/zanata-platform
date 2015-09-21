@@ -51,9 +51,6 @@
 
   <!-- Landing page for Kerberos ticket-based Authentication -->
   <page view-id="/account/klogin.xhtml">
-    <!-- TODO [CDI] may need to do this http://stackoverflow.com/a/20264171/345718 -->
-    <header name="Cache-Control"
-      value="no-cache, no-store, max-age=0, must-revalidate" />
     <navigation evaluate="#{authenticationManager.authenticationRedirect}">
       <rule if-outcome="login">
         <redirect view-id="/account/login.xhtml" />
@@ -80,10 +77,6 @@
   <!-- Landing page for Internal, JAAS and Kerberos form-based
        authentication -->
   <page view-id="/account/login.xhtml">
-    <!-- TODO [CDI] may need to do this http://stackoverflow.com/a/20264171/345718 -->
-    <header name="Cache-Control"
-      value="no-cache, no-store, max-age=0, must-revalidate" />
-
     <navigation from-action="#{loginAction.getLoginPageRedirect()}">
       <rule if-outcome="dashboard">
         <redirect view-id="/dashboard/home.xhtml" />
@@ -225,11 +218,6 @@
     </navigation>
   </page>
 
-  <page view-id="/version-group/version_group.xhtml">
-    <header name="Cache-Control"
-      value="no-cache, no-store, max-age=0, must-revalidate" />
-  </page>
-
   <page view-id="/profile/create_user.xhtml">
     <navigation from-action="#{newProfileAction.createUser}">
       <redirect view-id="/home.xhtml" />
@@ -248,8 +236,6 @@
   <!-- Project -->
 
   <page view-id="/project/project.xhtml">
-    <header name="Cache-Control"
-      value="no-cache, no-store, max-age=0, must-revalidate" />
     <navigation from-action="#{projectHome.update}">
       <rule if-outcome="projectSlugUpdated">
         <redirect view-id="/project/project.xhtml">
@@ -289,8 +275,6 @@
 
   <!-- Project Iteration -->
   <page view-id="/iteration/view.xhtml">
-    <header name="Cache-Control"
-      value="no-cache, no-store, max-age=0, must-revalidate" />
 
     <navigation from-action="#{versionHomeAction.uploadSourceFile}">
       <redirect view-id="/iteration/view.xhtml">
