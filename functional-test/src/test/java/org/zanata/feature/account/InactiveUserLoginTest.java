@@ -21,19 +21,16 @@
 package org.zanata.feature.account;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.subethamail.wiser.WiserMessage;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.account.InactiveAccountPage;
 import org.zanata.page.utility.HomePage;
-import org.zanata.util.AddUsersRule;
 import org.zanata.util.EmailQuery;
-import org.zanata.util.EnsureLogoutRule;
 import org.zanata.util.HasEmailRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
@@ -49,14 +46,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class InactiveUserLoginTest extends ZanataTestCase {
 
-    @ClassRule
-    public static AddUsersRule addUsersRule = new AddUsersRule();
-
     @Rule
     public HasEmailRule hasEmailRule = new HasEmailRule();
-
-    @Rule
-    public EnsureLogoutRule ensureLogoutRule = new EnsureLogoutRule();
 
     @Feature(summary = "The user needs to verify their account before they may " +
             "log in",
@@ -108,8 +99,7 @@ public class InactiveUserLoginTest extends ZanataTestCase {
                 .signInInactive(usernamepassword, usernamepassword)
                 .clickResendActivationEmail();
 
-        assertThat(homePage.getNotificationMessage())
-                .isEqualTo(HomePage.SIGNUP_SUCCESS_MESSAGE)
+        assertThat(homePage.expectNotification(HomePage.SIGNUP_SUCCESS_MESSAGE))
                 .as("The message sent notification is displayed");
 
         assertThat(hasEmailRule.getMessages().size())
@@ -155,8 +145,7 @@ public class InactiveUserLoginTest extends ZanataTestCase {
                 .enterNewEmail("newtester@example.com")
                 .clickUpdateEmail();
 
-        assertThat(homePage.getNotificationMessage())
-                .isEqualTo(HomePage.EMAILCHANGED_MESSAGE)
+        assertThat(homePage.expectNotification(HomePage.EMAILCHANGED_MESSAGE))
                 .as("The email changed notification is displayed");
 
         assertThat(hasEmailRule.getMessages().size())

@@ -22,14 +22,11 @@ package org.zanata.feature.glossary;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.junit.rules.TestRule;
-import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.webtrans.EditorPage;
-import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.ClientWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
@@ -48,9 +45,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 @Slf4j
 public class GlossaryDeleteTest extends ZanataTestCase {
-
-    @Rule
-    public TestRule sampleProjectRule = new SampleProjectRule();
 
     private ClientWorkFlow clientWorkFlow;
     private File projectRootPath;

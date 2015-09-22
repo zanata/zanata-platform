@@ -20,7 +20,7 @@
  */
 package org.zanata.feature.language;
 
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.subethamail.wiser.WiserMessage;
@@ -28,7 +28,6 @@ import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.languages.LanguagesPage;
-import org.zanata.util.AddUsersRule;
 import org.zanata.util.HasEmailRule;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -42,11 +41,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class ContactLanguageTeamTest extends ZanataTestCase {
 
-    @Rule
-    public AddUsersRule addUsersRule = new AddUsersRule();
-
-    @Rule
-    public HasEmailRule emailRule = new HasEmailRule();
+    @ClassRule
+    public static HasEmailRule emailRule = new HasEmailRule();
 
     @Feature(summary = "The user can contact a language team coordinator",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)

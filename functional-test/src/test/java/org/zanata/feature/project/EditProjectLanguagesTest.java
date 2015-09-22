@@ -21,25 +21,20 @@
 
 package org.zanata.feature.project;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
-
 import org.assertj.core.api.Assertions;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Ignore;
-import org.junit.Rule;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projects.projectsettings.ProjectLanguagesTab;
-import org.zanata.util.AddUsersRule;
-import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen
@@ -48,14 +43,8 @@ import org.zanata.workflow.ProjectWorkFlow;
 @Category(DetailedTest.class)
 public class EditProjectLanguagesTest extends ZanataTestCase {
 
-    @ClassRule
-    public static AddUsersRule addUsersRule = new AddUsersRule();
-
-    @Rule
-    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
-
-    @BeforeClass
-    public static void beforeClass() {
+    @Before
+    public void before() {
         assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
                 .isEqualTo("admin")
                 .as("Admin is logged in");

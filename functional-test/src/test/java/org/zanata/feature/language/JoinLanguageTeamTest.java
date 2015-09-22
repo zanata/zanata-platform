@@ -20,19 +20,18 @@
  */
 package org.zanata.feature.language;
 
-import java.util.concurrent.TimeUnit;
-
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.subethamail.wiser.WiserMessage;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.languages.LanguagePage;
 import org.zanata.util.HasEmailRule;
-import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
+
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.HasEmailRule.getEmailContent;
@@ -44,11 +43,8 @@ import static org.zanata.util.HasEmailRule.getEmailContent;
 @Category(DetailedTest.class)
 public class JoinLanguageTeamTest extends ZanataTestCase {
 
-    @Rule
-    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
-
-    @Rule
-    public HasEmailRule hasEmailRule = new HasEmailRule();
+    @ClassRule
+    public static HasEmailRule hasEmailRule = new HasEmailRule();
 
     @Feature(summary = "The administrator can add a member to a language team",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 181703)

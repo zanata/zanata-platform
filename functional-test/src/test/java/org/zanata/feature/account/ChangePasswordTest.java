@@ -22,16 +22,14 @@ package org.zanata.feature.account;
 
 import org.junit.Before;
 import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.dashboard.dashboardsettings.DashboardAccountTab;
-import org.zanata.util.AddUsersRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -43,9 +41,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Category(DetailedTest.class)
 public class ChangePasswordTest extends ZanataTestCase {
-
-    @Rule
-    public AddUsersRule addUsersRule = new AddUsersRule();
 
     @Before
     public void setUp() {

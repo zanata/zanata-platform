@@ -23,14 +23,12 @@ package org.zanata.feature.account;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.account.RegisterPage;
-import org.zanata.util.AddUsersRule;
 import org.zanata.workflow.BasicWorkFlow;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,9 +42,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class EmailValidationTest extends ZanataTestCase {
 
     private RegisterPage registerPage;
-
-    @ClassRule
-    public static AddUsersRule addUsersRule = new AddUsersRule();
 
     @BeforeClass
     public static void setUp() {

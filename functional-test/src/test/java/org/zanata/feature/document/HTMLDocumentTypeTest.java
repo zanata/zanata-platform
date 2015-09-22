@@ -20,26 +20,23 @@
  */
 package org.zanata.feature.document;
 
-import java.io.File;
-
-
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projectversion.VersionDocumentsPage;
 import org.zanata.page.projectversion.versionsettings.VersionDocumentsTab;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.Constants;
 import org.zanata.util.PropertiesHolder;
-import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
+
+import java.io.File;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -49,9 +46,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Category(DetailedTest.class)
 public class HTMLDocumentTypeTest extends ZanataTestCase {
-
-    @Rule
-    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     private TestFileGenerator testFileGenerator = new TestFileGenerator();
 

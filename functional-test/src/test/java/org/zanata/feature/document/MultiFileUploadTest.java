@@ -20,29 +20,22 @@
  */
 package org.zanata.feature.document;
 
-import java.io.File;
-
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.testharness.ZanataTestCase;
-import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
+import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projectversion.VersionDocumentsPage;
 import org.zanata.page.projectversion.versionsettings.VersionDocumentsTab;
-import org.zanata.util.AddUsersRule;
 import org.zanata.util.CleanDocumentStorageRule;
-import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
+
+import java.io.File;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -54,12 +47,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 public class MultiFileUploadTest extends ZanataTestCase {
 
-    @ClassRule
-    public static AddUsersRule addUsersRule = new AddUsersRule();
-
-    @Rule
-    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
-
     @Rule
     public CleanDocumentStorageRule documentStorageRule =
             new CleanDocumentStorageRule();
@@ -67,14 +54,10 @@ public class MultiFileUploadTest extends ZanataTestCase {
     private TestFileGenerator testFileGenerator = new TestFileGenerator();
     private String documentStorageDirectory;
 
-    @BeforeClass
-    public static void beforeClass() {
-        new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
-        new LoginWorkFlow().signIn("admin", "admin");
-    }
-
     @Before
     public void before() {
+        new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
+        new LoginWorkFlow().signIn("admin", "admin");
         new ZanataRestCaller().createProjectAndVersion("multi-upload",
                 "multi-upload", "file");
         documentStorageDirectory = CleanDocumentStorageRule
