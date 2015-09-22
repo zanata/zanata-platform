@@ -106,3 +106,4 @@ pages:
   - Email: 'user-guide/system-admin/configuration/email.md'
   - Caches: 'user-guide/system-admin/configuration/infinispan.md'
   - JMS Messaging: 'user-guide/system-admin/configuration/jms-messaging.md'
+  - Postgresql: 'user-guide/system-admin/configuration/postgresql.md'

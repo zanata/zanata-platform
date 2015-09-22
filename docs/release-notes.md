@@ -1,8 +1,10 @@
 ## 3.8
+
 <h5>Infrastructure Changes</h5>
 * In wildfly or EAP standalone.xml, change all occurrences of "org.jboss.seam.security.jaas.SeamLoginModule" to "org.zanata.security.jaas.InternalLoginModule"
 * Zanata now requires JBoss EAP 6.4.2.GA or later (recommended), or WildFly version 9.x.
 * Zanata now requires a Java 1.8 virtual machine.
+* Zanata now requires Postgresql as its datastore (migrated from MySQL). Please see [this section](user-guide/system-admin/configuration/postgresql.md) for details.
 
 
 <h5>Bug fixes</h5>
@@ -33,7 +35,7 @@
 
 <h5>Improvements</h5>
 * [ZNTA-653](https://zanata.atlassian.net/browse/ZNTA-653) - Include MDC values in log emails
-* [ZNTA-665](https://zanata.atlassian.net/browse/ZNTA-665) - liquibase merge addColumn changes 
+* [ZNTA-665](https://zanata.atlassian.net/browse/ZNTA-665) - liquibase merge addColumn changes
   It helps to reduce the database migration time.
 
 <h5>Bug fixes</h5>
@@ -64,11 +66,11 @@
             <property name="jboss.as.management.blocking.timeout" value="7200"/>
             ...
         </system-properties>
-      
-        
+
+
 * The Zanata administrator will also need to reindex HProject table via the Administration menu. See [Manage search](user-guide/admin/manage-search) for more information.
-    
-    
+
+
 <h5>Infrastructure Changes</h5>
 
 * Zanata now uses Infinispan as its cache provider, and the cache needs to be configured in Jboss' `standalone.xml` file. Please see the [Infinispan](user-guide/system-admin/configuration/infinispan) section for more information.
@@ -113,7 +115,7 @@ Example usage in html file: `<link rel="shortcut icon" href="#{assets['img/logo/
 * [1229940](https://bugzilla.redhat.com/show_bug.cgi?id=1229940) - When deleting a version or project remove links and replace icon from the activity feed
 * [1230424](https://bugzilla.redhat.com/show_bug.cgi?id=1230424) - Update message "Archived" to "Deleted" in activity table
 * [1231054](https://bugzilla.redhat.com/show_bug.cgi?id=1231054) - Exception when clicking "more activity" when there is no valid "editor url"
-* [1234687](https://bugzilla.redhat.com/show_bug.cgi?id=1234687) - [REGRESSION] can not upload pot file from web UI 
+* [1234687](https://bugzilla.redhat.com/show_bug.cgi?id=1234687) - [REGRESSION] can not upload pot file from web UI
 * [1235495](https://bugzilla.redhat.com/show_bug.cgi?id=1235495) - [REGRESSION] can not upload po file from web UI
 
 -----------------------
@@ -122,7 +124,7 @@ Example usage in html file: `<link rel="shortcut icon" href="#{assets['img/logo/
 * [1133989](https://bugzilla.redhat.com/show_bug.cgi?id=1133989) - Copy translations from existing version.
 * [1186972](https://bugzilla.redhat.com/show_bug.cgi?id=1186972) - Server-side file conversion and REST service.
     * File project type now supports XLIFF, PROPERTIES, PROPERTIES_UTF8, and GETTEXT
-* [1204982](https://bugzilla.redhat.com/show_bug.cgi?id=1204982) - Documentation update for zanata.org/help + readthedocs 
+* [1204982](https://bugzilla.redhat.com/show_bug.cgi?id=1204982) - Documentation update for zanata.org/help + readthedocs
 * [1209670](https://bugzilla.redhat.com/show_bug.cgi?id=1209670) - Improve review statistics - approved vs translated
 * [1211134](https://bugzilla.redhat.com/show_bug.cgi?id=1211134) - Review should be enabled in editor by default
 * [1198433](https://bugzilla.redhat.com/show_bug.cgi?id=1198433) - Replace Seam Text with CommonMark Markdown
@@ -946,4 +948,3 @@ Zanata now requires JMS to be configured in standalone.xml in order to queue up 
 
 ## flies-1.0
 * initial release
-
