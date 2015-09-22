@@ -46,6 +46,8 @@
     <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
     <lucene.version>3.6.2</lucene.version>
     <org.mock-server.version>3.9.17</org.mock-server.version>
+
+    <!-- NB: When changing this, be sure to update the rpm's spec file to match -->
     <required.java>1.8</required.java>
 
     <!--

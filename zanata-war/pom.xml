@@ -1335,6 +1335,7 @@
               <autoProvides>false</autoProvides>
               <autoRequires>false</autoRequires>
               <requires>
+                <require>java &gt;= 1:${required.java}</require>
                 <require>jbossas-standalone &gt;= ${jboss.as.standalone.version}</require>
               </requires>
             </configuration>
