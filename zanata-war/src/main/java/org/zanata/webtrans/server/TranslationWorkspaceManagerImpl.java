@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.PreDestroy;
 import javax.inject.Named;
-import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.util.Work;
 import org.jboss.seam.web.ServletContexts;
 import org.zanata.async.Async;
@@ -123,12 +122,10 @@ public class TranslationWorkspaceManagerImpl implements
                 ValidationService.class);
     }
 
-    @Observer(ServerStarted.EVENT_NAME)
     public void start(@Observes ServerStarted payload) {
         log.info("starting...");
     }
 
-    @Observer(Logout.EVENT_NAME)
     public void exitWorkspace(@Observes Logout payload) {
         exitWorkspace(payload.getUsername());
     }
@@ -180,7 +177,6 @@ public class TranslationWorkspaceManagerImpl implements
         return request.getSession().getId();
     }
 
-    @Observer(ProjectUpdate.EVENT_NAME)
     // transaction has already been committed and marked as rolled back only for
     // current thread. We have to open a new transaction to load any lazy
     // properties (otherwise exception like javax.resource.ResourceException:
@@ -215,7 +211,6 @@ public class TranslationWorkspaceManagerImpl implements
         }
     }
 
-    @Observer(ProjectIterationUpdate.EVENT_NAME)
     @Async
     public void projectIterationUpdate(@Observes ProjectIterationUpdate payload) {
         projectIterationUpdate(payload.getIteration(),

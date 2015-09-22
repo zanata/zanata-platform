@@ -33,8 +33,7 @@ import javax.persistence.EntityManager;
 import org.apache.commons.lang.time.DateUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.annotations.Observer;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.jboss.seam.annotations.Transactional;
 import org.zanata.action.DashboardUserStats;
 import org.zanata.common.ActivityType;
 import org.zanata.dao.ActivityDAO;
@@ -171,7 +170,6 @@ public class ActivityServiceImpl implements ActivityService {
      * Logs each text flow target translation immediately after successful
      * translation.
      */
-    @Observer(TextFlowTargetStateEvent.EVENT_NAME)
     @Transactional
     public void logTextFlowStateUpdate(@Observes(during = TransactionPhase.AFTER_SUCCESS) TextFlowTargetStateEvent event) {
         Long actorId = event.getActorId();
@@ -199,7 +197,6 @@ public class ActivityServiceImpl implements ActivityService {
     /**
      * Logs document upload immediately after successful upload.
      */
-    @Observer(DocumentUploadedEvent.EVENT_NAME)
     @Transactional
     public void onDocumentUploaded(@Observes(during = TransactionPhase.AFTER_SUCCESS) DocumentUploadedEvent event) {
         Lock lock = activityLockManager.getLock(event.getActorId());

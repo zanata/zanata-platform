@@ -22,7 +22,6 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
  */
 @Named("zanataRoleSearch")
 @javax.enterprise.context.SessionScoped
-@Install(precedence = APPLICATION)
 public class RoleSearch implements Serializable {
     private static final long serialVersionUID = 1734703030195353735L;
     @DataModel

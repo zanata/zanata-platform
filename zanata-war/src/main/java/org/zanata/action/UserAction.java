@@ -60,7 +60,6 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
  */
 @Named("org.jboss.seam.security.management.userAction")
 @javax.faces.bean.ViewScoped
-@Install(precedence = APPLICATION)
 public class UserAction implements Serializable {
     private static final long serialVersionUID = 1L;
 

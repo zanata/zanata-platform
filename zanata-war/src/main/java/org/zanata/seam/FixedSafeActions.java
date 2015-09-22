@@ -27,10 +27,7 @@ import org.zanata.util.ServiceLocator;
  *
  */
 @javax.enterprise.context.ApplicationScoped
-@BypassInterceptors
 @Named("org.jboss.seam.navigation.safeActions")
-@Install(precedence = DEPLOYMENT,
-        classDependencies = "javax.faces.context.FacesContext")
 // Implementation copied from
 // https://source.jboss.org/browse/Seam/branches/community/Seam_2_3/jboss-seam/src/main/java/org/jboss/seam/navigation/SafeActions.java?r=14141
 // following https://community.jboss.org/message/688860#688860

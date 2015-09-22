@@ -24,8 +24,8 @@ import java.io.Serializable;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.enterprise.event.Observes;
 import javax.inject.Named;
-import org.jboss.seam.annotations.Observer;
 import org.zanata.events.LoginSuccessfulEvent;
 import org.zanata.events.UserCreatedEvent;
 
@@ -35,14 +35,13 @@ import org.zanata.events.UserCreatedEvent;
 public class AuthenticationEvents implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Observer(UserCreatedEvent.EVENT_NAME)
-    public void createSuccessful(UserCreatedEvent userCreatedEvent) {
+    public void createSuccessful(@Observes UserCreatedEvent userCreatedEvent) {
         log.info("Account {} created", userCreatedEvent.getUser().getUsername());
     }
 
-    @Observer(LoginSuccessfulEvent.EVENT_NAME)
-    public void loginInSuccessful() {
+    public void loginInSuccessful(@Observes LoginSuccessfulEvent event) {
         log.debug("Account logged in successfully");
+        // TODO [CDI] may need to redirect users to captured view as in components.xml
     }
 
 }

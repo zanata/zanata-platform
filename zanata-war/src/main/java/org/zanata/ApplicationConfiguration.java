@@ -41,8 +41,6 @@ import org.apache.log4j.Level;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Startup;
 import org.zanata.util.Synchronized;
 import org.jboss.seam.web.ServletContexts;
 import org.zanata.config.DatabaseBackedConfig;
@@ -125,7 +123,6 @@ public class ApplicationConfiguration implements Serializable {
         this.loadJaasConfig();
     }
 
-    @Observer(ConfigurationChanged.EVENT_NAME)
     public void resetConfigValue(
             @Observes(during = TransactionPhase.AFTER_SUCCESS)
             ConfigurationChanged configChange) {

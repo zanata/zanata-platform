@@ -10,7 +10,6 @@ import com.google.common.annotations.VisibleForTesting;
 import lombok.AccessLevel;
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
-import org.jboss.seam.annotations.Observer;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.events.ConfigurationChanged;
 import org.zanata.util.Introspectable;
@@ -65,8 +64,6 @@ public class RateLimitManager implements Introspectable {
         maxActive = appConfig.getMaxActiveRequestsPerApiKey();
     }
 
-    @Observer(ConfigurationChanged.EVENT_NAME)
-    // TODO only do this if the relevant values have changed
     public void configurationChanged(
             @Observes(during = TransactionPhase.AFTER_SUCCESS)
             ConfigurationChanged payload) {

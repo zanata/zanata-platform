@@ -22,7 +22,6 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
  */
 @Named("org.jboss.seam.security.management.userSearch")
 @javax.enterprise.context.SessionScoped
-@Install(precedence = APPLICATION)
 @ZanataSecured
 public class UserSearch implements Serializable {
     private static final long serialVersionUID = -4792732235757055958L;

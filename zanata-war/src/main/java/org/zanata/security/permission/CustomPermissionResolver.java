@@ -30,8 +30,6 @@ import java.util.Set;
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
-import org.jboss.seam.annotations.Startup;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.zanata.util.ServiceLocator;
 
 /**
@@ -45,9 +43,6 @@ import org.zanata.util.ServiceLocator;
  */
 @Named("customPermissionResolver")
 @javax.enterprise.context.ApplicationScoped
-@BypassInterceptors
-@Install(precedence = BUILT_IN)
-/* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
 public class CustomPermissionResolver implements Serializable {
 
     private static final long serialVersionUID = 6302681723997573877L;

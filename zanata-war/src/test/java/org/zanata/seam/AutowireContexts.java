@@ -21,6 +21,7 @@
 package org.zanata.seam;
 
 import com.google.common.collect.ImmutableMap;
+import org.jboss.seam.ScopeType;
 import org.jboss.seam.contexts.BasicContext;
 import org.jboss.seam.contexts.Context;
 import org.slf4j.Logger;

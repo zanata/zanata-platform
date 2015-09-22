@@ -67,15 +67,13 @@ public class RevertTransUnitUpdatesHandler extends
         securityServiceImpl.checkWorkspaceAction(action.getWorkspaceId(),
                 SecurityService.TranslationAction.MODIFY);
 
-        if (Events.exists()) {
-            for (TransUnitUpdateInfo updateInfo : action.getUpdatesToRevert()) {
-                textFlowTargetUpdateContextEvent.fire(
-                        new TextFlowTargetUpdateContextEvent(
-                                updateInfo.getTransUnit().getId(),
-                                action.getWorkspaceId().getLocaleId(),
-                                action.getEditorClientId(),
-                                UpdateType.NonEditorSave));
-            }
+        for (TransUnitUpdateInfo updateInfo : action.getUpdatesToRevert()) {
+            textFlowTargetUpdateContextEvent.fire(
+                    new TextFlowTargetUpdateContextEvent(
+                            updateInfo.getTransUnit().getId(),
+                            action.getWorkspaceId().getLocaleId(),
+                            action.getEditorClientId(),
+                            UpdateType.NonEditorSave));
         }
 
         List<TranslationResult> revertResults =

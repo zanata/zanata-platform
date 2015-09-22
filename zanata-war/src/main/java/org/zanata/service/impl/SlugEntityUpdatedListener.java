@@ -2,6 +2,7 @@ package org.zanata.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
 import javax.inject.Inject;
@@ -55,7 +56,7 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
             slugFieldIndexInProject = getSlugFieldIndex(slugFieldIndexInProject, event);
             String oldSlug = event.getOldState()[slugFieldIndexInProject].toString();
             String newSlug = event.getState()[slugFieldIndexInProject].toString();
-            getProjectUpdateEvent().fire(new ProjectUpdate(project, oldSlug));
+            fireProjectUpdateEvent(project, oldSlug);
             reindexIfProjectSlugHasChanged(oldSlug, newSlug, project);
 
         } else if (slugEntityBase instanceof HProjectIteration) {
@@ -63,9 +64,19 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
                     (HProjectIteration) slugEntityBase;
             slugFieldIndexInIteration = getSlugFieldIndex(slugFieldIndexInIteration, event);
             String oldSlug = event.getOldState()[slugFieldIndexInIteration].toString();
-            getProjectIterationUpdateEvent().fire(new ProjectIterationUpdate(
-                    iteration, oldSlug));
+            fireProjectIterationUpdateEvent(iteration, oldSlug);
         }
+    }
+
+    private void fireProjectIterationUpdateEvent(HProjectIteration iteration,
+            String oldSlug) {
+        BeanManagerProvider.getInstance().getBeanManager().fireEvent(
+                new ProjectIterationUpdate(iteration, oldSlug));
+    }
+
+    private void fireProjectUpdateEvent(HProject project, String oldSlug) {
+        BeanManagerProvider.getInstance().getBeanManager().fireEvent(
+                new ProjectUpdate(project, oldSlug));
     }
 
     public void reindexIfProjectSlugHasChanged(String oldSlug, String newSlug,

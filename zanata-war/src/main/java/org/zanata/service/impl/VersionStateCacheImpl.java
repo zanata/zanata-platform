@@ -28,7 +28,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.annotations.Observer;
 import org.zanata.cache.CacheWrapper;
 import org.zanata.cache.InfinispanCacheWrapper;
 import org.zanata.common.LocaleId;
@@ -86,7 +85,6 @@ public class VersionStateCacheImpl implements VersionStateCache {
                         cacheContainer, versionStatisticLoader);
     }
 
-    @Observer(TextFlowTargetStateEvent.EVENT_NAME)
     @Override
     public void textFlowStateUpdated(@Observes(during = TransactionPhase.AFTER_SUCCESS) TextFlowTargetStateEvent event) {
         VersionLocaleKey key =

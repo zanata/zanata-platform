@@ -8,7 +8,6 @@ import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.util.Work;
 import org.jboss.seam.web.ServletContexts;
 import org.zanata.common.ContentState;
@@ -81,7 +80,6 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
      *
      * @param event
      */
-    @Observer(TextFlowTargetUpdateContextEvent.EVENT_NAME)
     public static void updateContext(@Observes TextFlowTargetUpdateContextEvent event) {
         updateContext
                 .put(new CacheKey(event.getTransUnitId(), event.getLocaleId()),

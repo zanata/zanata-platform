@@ -21,9 +21,11 @@
 package org.zanata.action;
 
 import lombok.extern.slf4j.Slf4j;
+
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.annotations.Observer;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.events.HomeContentChangedEvent;
 import org.zanata.util.CommonMarkRenderer;
@@ -53,16 +55,15 @@ public class HomePage {
      */
     public String getHtml() {
         if (html == null) {
-            updateHtml();
+            updateHtml(null);
         }
         return html;
     }
 
-    @Observer(HomeContentChangedEvent.EVENT_NAME)
     /**
      * Event handler to update the cached HTML based on the latest CommonMark home content.
      */
-    public void updateHtml() {
+    public void updateHtml(@Observes(during = TransactionPhase.AFTER_SUCCESS) HomeContentChangedEvent event) {
         String text = applicationConfiguration.getHomeContent();
         if (text == null) {
             html = "";

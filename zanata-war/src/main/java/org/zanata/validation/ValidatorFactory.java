@@ -37,7 +37,7 @@ import javax.inject.Named;
 public class ValidatorFactory {
     private javax.validation.ValidatorFactory beanValidatorFactory = Validation.buildDefaultValidatorFactory();
 
-    @Produces(/* TODO [CDI] check this: migrated from @Factory */scope = ScopeType.EVENT, autoCreate = true)
+    @Produces(/* TODO [CDI] check this: migrated from @Factory *//*scope = ScopeType.EVENT, autoCreate = true*/)
     public Validator getValidator() {
         return beanValidatorFactory.getValidator();
     }

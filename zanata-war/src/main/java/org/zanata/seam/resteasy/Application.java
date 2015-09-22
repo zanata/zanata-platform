@@ -39,8 +39,6 @@ import java.util.*;
  */
 @Named("org.jboss.seam.resteasy.application")
 @javax.enterprise.context.ApplicationScoped
-@Install(precedence = Install.BUILT_IN)
-
 public class Application extends javax.ws.rs.core.Application {
 
     final private Map<Class<?>, Set<Component>> providerClasses =

@@ -66,7 +66,6 @@ import org.jboss.seam.web.Session;
 @javax.enterprise.context.ApplicationScoped
 @Named("org.jboss.seam.resteasy.resourceAdapter")
 @BypassInterceptors
-@Install(precedence = BUILT_IN)
 public class ResteasyResourceAdapter extends AbstractResource {
 
     @Logger

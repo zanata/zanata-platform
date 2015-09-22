@@ -25,7 +25,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.core.Events;
+import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
 import org.jboss.seam.util.Work;
 import org.zanata.common.ContentState;
 import org.zanata.dao.TextFlowDAO;
@@ -148,16 +148,14 @@ public class MergeTranslationsWork extends Work<Integer> {
 
     private void raiseSuccessEvent(HTextFlowTarget targetTft,
             ContentState oldState) {
-        if (Events.exists()) {
+        if (BeanManagerProvider.isActive()) {
             TextFlowTargetStateEvent event =
                     new TextFlowTargetStateEvent(null, targetVersionId,
                             targetTft.getTextFlow().getDocument().getId(),
                             targetTft.getTextFlow().getId(),
                             targetTft.getLocale().getLocaleId(),
                             targetTft.getId(), targetTft.getState(), oldState);
-
-            Events.instance().raiseTransactionSuccessEvent(
-                    TextFlowTargetStateEvent.EVENT_NAME, event);
+            BeanManagerProvider.getInstance().getBeanManager().fireEvent(event);
         }
     }
 }

@@ -19,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.ws.Service;
 
+import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.resteasy.util.GenericType;
 import javax.inject.Inject;
@@ -69,6 +70,9 @@ public class ServerConfigurationService {
     private MediaType accept;
     @Inject
     private ApplicationConfigurationDAO applicationConfigurationDAO;
+
+    @Inject
+    private Event<ConfigurationChanged> configurationChangedEvent;
 
     /**
      * Retrieves all existing server configurations.
@@ -182,9 +186,8 @@ public class ServerConfigurationService {
             applicationConfigurationDAO.makePersistent(appConfig);
         }
 
-        Event<ConfigurationChanged> event =
-                ServiceLocator.instance().getInstance(Event.class);
-        event.fire(new ConfigurationChanged(key));
+        BeanManagerProvider.getInstance().getBeanManager().fireEvent(
+                new ConfigurationChanged(key));
     }
 
     private boolean isConfigKeyValid(String configKey) {

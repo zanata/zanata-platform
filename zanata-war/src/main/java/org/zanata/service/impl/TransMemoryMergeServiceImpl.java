@@ -149,7 +149,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         }
 
         if (updateRequests.isEmpty()) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
         for (TransUnitUpdateRequest updateRequest : updateRequests) {

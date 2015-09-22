@@ -28,9 +28,6 @@ import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
-import static org.jboss.seam.ScopeType.SESSION;
-import static org.jboss.seam.annotations.Install.APPLICATION;
-
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
@@ -48,8 +45,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Named("org.jboss.seam.security.credentials")
 @javax.enterprise.context.SessionScoped
-@Install(precedence = APPLICATION)
-@BypassInterceptors
 @Slf4j
 public class ZanataCredentials implements Serializable {
     private static final long serialVersionUID = 5520824011655916917L;

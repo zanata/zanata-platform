@@ -28,9 +28,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.annotations.Observer;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
@@ -231,7 +229,7 @@ public class DocumentServiceImpl implements DocumentService {
         clearStatsCacheForUpdatedDocument(document);
     }
 
-    @Observer(DocumentStatisticUpdatedEvent.EVENT_NAME)
+    // TODO [CDI] simulate async event (e.g. this event was fired asyncly in seam)
     public void documentStatisticUpdated(@Observes DocumentStatisticUpdatedEvent event) {
         processWebHookDocumentMilestoneEvent(event,
                 ContentState.TRANSLATED_STATES,

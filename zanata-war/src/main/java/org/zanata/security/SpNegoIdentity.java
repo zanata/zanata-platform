@@ -41,8 +41,6 @@ import org.zanata.util.ServiceLocator;
 
 @Named("org.jboss.seam.security.spNegoIdentity")
 @javax.enterprise.context.SessionScoped
-@Install(precedence = APPLICATION)
-@BypassInterceptors
 public class SpNegoIdentity implements Serializable {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(SpNegoIdentity.class);

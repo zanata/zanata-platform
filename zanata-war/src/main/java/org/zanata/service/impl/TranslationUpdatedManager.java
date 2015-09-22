@@ -1,9 +1,10 @@
 package org.zanata.service.impl;
 
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.core.Events;
+
+import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.events.DocumentStatisticUpdatedEvent;
 import org.zanata.events.TextFlowTargetStateEvent;
@@ -35,11 +36,12 @@ public class TranslationUpdatedManager {
     @Inject
     private TextFlowDAO textFlowDAO;
 
+
+
     /**
      * This method contains all logic to be run immediately after a Text Flow
      * Target has been successfully translated.
      */
-    @Observer(TextFlowTargetStateEvent.EVENT_NAME)
     public void textFlowStateUpdated(
             @Observes(during = TransactionPhase.AFTER_SUCCESS)
             TextFlowTargetStateEvent event) {
@@ -49,16 +51,16 @@ public class TranslationUpdatedManager {
 
     // Fire asynchronous event
     public void publishAsyncEvent(TextFlowTargetStateEvent event) {
-        if (Events.exists()) {
+        if (BeanManagerProvider.isActive()) {
             int wordCount = textFlowDAO.getWordCount(event.getTextFlowId());
 
-            Events.instance().raiseAsynchronousEvent(
-                    DocumentStatisticUpdatedEvent.EVENT_NAME,
+            BeanManagerProvider.getInstance().getBeanManager().fireEvent(
                     new DocumentStatisticUpdatedEvent(
                             event.getProjectIterationId(),
                             event.getDocumentId(), event.getLocaleId(),
                             wordCount,
-                            event.getPreviousState(), event.getNewState()));
+                            event.getPreviousState(), event.getNewState())
+            );
         }
     }
 

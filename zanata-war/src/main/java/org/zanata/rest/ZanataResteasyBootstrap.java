@@ -20,8 +20,8 @@ import org.zanata.seam.resteasy.SeamResteasyProviderFactory;
 @javax.enterprise.context.ApplicationScoped
 /* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
 
-@Install(classDependencies = "org.jboss.resteasy.spi.ResteasyProviderFactory",
-        precedence = Install.DEPLOYMENT)
+//@Install(classDependencies = "org.jboss.resteasy.spi.ResteasyProviderFactory",
+//        precedence = Install.DEPLOYMENT)
 @Slf4j
 public class ZanataResteasyBootstrap extends ResteasyBootstrap {
 

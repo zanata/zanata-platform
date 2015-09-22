@@ -59,6 +59,7 @@ import org.jboss.seam.deployment.DeploymentStrategy;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.util.EJB;
 import org.jboss.seam.util.Reflections;
+import org.slf4j.LoggerFactory;
 
 /**
  * Detects (through scanning and configuration) JAX-RS resources and providers,
@@ -83,12 +84,11 @@ import org.jboss.seam.util.Reflections;
 @javax.enterprise.context.ApplicationScoped
 /* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
 
-@Install(precedence = BUILT_IN,
-        classDependencies = "org.jboss.resteasy.spi.ResteasyProviderFactory")
+//@Install(precedence = BUILT_IN,
+//        classDependencies = "org.jboss.resteasy.spi.ResteasyProviderFactory")
 public class ResteasyBootstrap {
-
-    @Logger
-    Log log;
+    private static final org.slf4j.Logger log =
+            LoggerFactory.getLogger(ResteasyBootstrap.class);
 
     @Inject
     protected Application application;
@@ -97,7 +97,7 @@ public class ResteasyBootstrap {
     // Dispatcher instance
     protected Dispatcher dispatcher;
 
-    @Produces(/* TODO [CDI] check this: migrated from @Factory */"org.jboss.seam.resteasy.dispatcher")
+    @Produces(/* TODO [CDI] check this: migrated from @Factory *//*"org.jboss.seam.resteasy.dispatcher"*/)
     public Dispatcher getDispatcher() {
         return dispatcher;
     }
@@ -214,14 +214,15 @@ public class ResteasyBootstrap {
         Collection<Component> seamComponents = new HashSet();
         String[] applicationContextNames =
                 Contexts.getApplicationContext().getNames();
-        for (String applicationContextName : applicationContextNames) {
+        // TODO [CDI] the returned seam components do not seem to be used. Check whether we still need this.
+        /*for (String applicationContextName : applicationContextNames) {
             if (applicationContextName.endsWith(".component")) {
                 Component seamComponent =
                         (Component) Component.getInstance(
                                 applicationContextName, ScopeType.APPLICATION);
                 seamComponents.add(seamComponent);
             }
-        }
+        }*/
         return seamComponents;
     }
 

@@ -26,9 +26,6 @@ package org.zanata.webtrans.server.rpc;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import org.jboss.seam.*;
-import org.jboss.seam.annotations.*;
-import org.jboss.seam.annotations.Observer;
 import org.zanata.events.TextFlowTargetUpdatedEvent;
 import org.zanata.model.*;
 import org.zanata.service.*;
@@ -61,7 +58,6 @@ public class TransUnitUpdateHelper {
             .newBuilder().expireAfterAccess(1, TimeUnit.MILLISECONDS)
             .softValues().maximumSize(100).build();
 
-    @Observer(TextFlowTargetUpdatedEvent.EVENT_NAME)
     public void onTargetUpdatedSuccessful(@Observes(during = TransactionPhase.AFTER_SUCCESS) TextFlowTargetUpdatedEvent event) {
         TransUnitUpdated transUnitUpdated = event.getTransUnitUpdated();
         event.getWorkspace().publish(transUnitUpdated);

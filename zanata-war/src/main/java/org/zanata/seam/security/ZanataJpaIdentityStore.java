@@ -29,15 +29,15 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
-import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Startup;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.core.Events;
 import org.zanata.events.PostAuthenticateEvent;
@@ -59,21 +59,24 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 
-import static org.jboss.seam.ScopeType.APPLICATION;
 
 /**
  * This class is the replacement of seam's JpaIdentityStore. It no longer use seam's annotation. e.g. UserPrincipal, UserRoles etc.
  */
 @Named("org.jboss.seam.security.identityStore")
-@Install(precedence = Install.DEPLOYMENT, value = true)
 @javax.enterprise.context.ApplicationScoped
 /* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
-@BypassInterceptors
 @Slf4j
 public class ZanataJpaIdentityStore implements Serializable {
     public static final String AUTHENTICATED_USER = "org.jboss.seam.security.management.authenticatedUser";
 
     private static final long serialVersionUID = 1L;
+
+    @Inject
+    private Event<UserCreatedEvent> userCreatedEventEvent;
+
+    @Inject
+    private Event<PostAuthenticateEvent> postAuthenticateEventEvent;
 
     public boolean apiKeyAuthenticate(String username, String apiKey) {
         HAccount user = lookupUser(username);
@@ -137,11 +140,10 @@ public class ZanataJpaIdentityStore implements Serializable {
     }
 
     private Event<PostAuthenticateEvent> getPostAuthenticateEvent() {
-        return ServiceLocator.instance().getInstance("event", Event.class);
+        return postAuthenticateEventEvent;
     }
 
-    @Observer(PostAuthenticateEvent.EVENT_NAME)
-    public void setUserAccountForSession(PostAuthenticateEvent event) {
+    public void setUserAccountForSession(@Observes PostAuthenticateEvent event) {
         if (Contexts.isSessionContextActive()) {
             Contexts.getSessionContext().set(AUTHENTICATED_USER,
                     event.getAuthenticatedAccount());
@@ -237,7 +239,7 @@ public class ZanataJpaIdentityStore implements Serializable {
 
     // TODO [CDI] revisit
     private Event<UserCreatedEvent> getUserCreatedEvent() {
-        return ServiceLocator.instance().getInstance("event", Event.class);
+        return userCreatedEventEvent;
     }
 
     public boolean enableUser(String name) {

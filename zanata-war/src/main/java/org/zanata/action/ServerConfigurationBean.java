@@ -25,6 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.enterprise.event.Event;
 import javax.validation.constraints.Pattern;
 
 import lombok.Data;
@@ -74,6 +75,9 @@ public class ServerConfigurationBean implements Serializable {
 
     @Inject
     private ApplicationConfiguration applicationConfiguration;
+
+    @Inject
+    private Event<HomeContentChangedEvent> homeContentChangedEventEvent;
 
     @Url(canEndInSlash = true)
     @Getter
@@ -174,7 +178,7 @@ public class ServerConfigurationBean implements Serializable {
         applicationConfigurationDAO.flush();
 
         facesMessages.addGlobal("Home content was successfully updated.");
-        Events.instance().raiseTransactionSuccessEvent(HomeContentChangedEvent.EVENT_NAME);
+        homeContentChangedEventEvent.fire(new HomeContentChangedEvent());
         return "/home.xhtml";
     }
 

@@ -10,7 +10,6 @@ import javax.annotation.PostConstruct;
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.util.Strings;
 import org.zanata.security.ZanataIdentity;
@@ -29,9 +28,6 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
  */
 @javax.enterprise.context.RequestScoped
 @Named("org.jboss.seam.security.identityManager")
-@Install(precedence = APPLICATION)
-
-@BypassInterceptors
 @Slf4j
 public class IdentityManager implements Serializable {
     public static final String USER_PERMISSION_NAME = "seam.user";

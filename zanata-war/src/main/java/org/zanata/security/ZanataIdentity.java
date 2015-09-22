@@ -31,6 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Nullable;
+import javax.enterprise.inject.Any;
+import javax.inject.Inject;
 import javax.security.auth.Subject;
 import javax.security.auth.login.AppConfigurationEntry;
 import javax.security.auth.login.LoginContext;
@@ -42,8 +44,6 @@ import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
 import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Startup;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.contexts.Contexts;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.exception.NotLoggedInException;
@@ -68,7 +68,6 @@ import com.google.common.collect.Lists;
 
 @Named("zanataIdentity")
 @javax.enterprise.context.SessionScoped
-@BypassInterceptors
 /* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
 public class ZanataIdentity implements Identity, Serializable {
     private static final Logger log = LoggerFactory.getLogger(
@@ -97,6 +96,12 @@ public class ZanataIdentity implements Identity, Serializable {
     private ZanataCredentials credentials;
     private boolean authenticating;
     private String jaasConfigName = "zanata";
+
+    @Inject
+    private Event<LoginSuccessfulEvent> loginSuccessfulEventEvent;
+
+    @Inject
+    private Event<Logout> logoutEvent;
 
     @PostConstruct
     public void create() {
@@ -177,6 +182,7 @@ public class ZanataIdentity implements Identity, Serializable {
         this.principal = principal;
     }
 
+    // TODO [CDI] find CDI equivalent for org.jboss.seam.preDestroyContext.SESSION event
     @Observer("org.jboss.seam.preDestroyContext.SESSION")
     public void logout() {
         if (getCredentials() != null) {
@@ -189,7 +195,7 @@ public class ZanataIdentity implements Identity, Serializable {
     }
 
     private Event<Logout> getLogoutEvent() {
-        return ServiceLocator.instance().getInstance("event", Event.class);
+        return logoutEvent;
     }
 
     public boolean hasRole(String role) {
@@ -594,7 +600,7 @@ public class ZanataIdentity implements Identity, Serializable {
     }
 
     private Event<LoginSuccessfulEvent> getLoginSuccessfulEvent() {
-        return ServiceLocator.instance().getInstance("event", Event.class);
+        return loginSuccessfulEventEvent;
     }
 
     private Event<LoginFailedEvent> getLoginFailedEvent() {

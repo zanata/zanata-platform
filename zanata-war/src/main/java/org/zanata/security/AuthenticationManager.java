@@ -26,7 +26,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.annotations.Observer;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.CredentialsDAO;
@@ -277,7 +276,6 @@ public class AuthenticationManager {
      * @param payload
      *            contains Authentication type that was used to login.
      */
-    @Observer(LoginCompleted.EVENT_NAME)
     public void onLoginCompleted(@Observes LoginCompleted payload) {
         AuthenticationType authType = payload.getAuthType();
         identity.setPreAuthenticated(true);

@@ -30,11 +30,7 @@ import org.zanata.servlet.MDCInsertingServletFilter;
  */
 @javax.enterprise.context.ApplicationScoped
 @Named("org.jboss.seam.web.loggingFilter")
-@BypassInterceptors
-@Filter(within="org.jboss.seam.web.authenticationFilter")
-@Install(classDependencies="org.apache.log4j.Logger",
-        dependencies="org.jboss.seam.security.identity",
-        precedence=Install.APPLICATION)
+// TODO [CDI] use Servlet Filter not seam filter
 public class UsernameLoggingFilter extends AbstractFilter {
 
     @Override

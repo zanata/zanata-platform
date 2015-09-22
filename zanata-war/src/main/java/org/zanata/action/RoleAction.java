@@ -26,7 +26,6 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
  */
 @Named("zanataRoleAction")
 @javax.faces.bean.ViewScoped
-@Install(precedence = APPLICATION)
 @ZanataSecured
 @CheckLoggedIn
 public class RoleAction implements Serializable {
