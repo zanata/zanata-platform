@@ -24,18 +24,16 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.common.LocaleId;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.Constants;
 import org.zanata.util.PropertiesHolder;
-import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.ClientWorkFlow;
@@ -60,8 +58,6 @@ import static org.zanata.workflow.BasicWorkFlow.PROJECT_VERSION_TEMPLATE;
 @Category(DetailedTest.class)
 public class ProjectMaintainerTest extends ZanataTestCase {
 
-    @Rule
-    public SampleProjectRule rule = new SampleProjectRule();
     private ClientWorkFlow client = new ClientWorkFlow();
     private File projectRootPath = client.getProjectRootPath("plural");
     private String translatorConfig = ClientWorkFlow

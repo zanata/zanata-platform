@@ -20,8 +20,6 @@
  */
 package org.zanata.feature.editor;
 
-import java.io.File;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -33,16 +31,17 @@ import org.junit.experimental.theories.Theory;
 import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.CleanDocumentStorageRule;
-import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
+
+import java.io.File;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.FunctionalTestHelper.assumeFalse;
@@ -57,9 +56,6 @@ public class TranslateHTMLTest extends ZanataTestCase {
 
     @Rule
     public Timeout timeout = new Timeout(ZanataTestCase.MAX_LONG_TEST_DURATION);
-
-    @ClassRule
-    public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     @ClassRule
     public static CleanDocumentStorageRule documentStorageRule =
@@ -81,6 +77,10 @@ public class TranslateHTMLTest extends ZanataTestCase {
                 new File(CleanDocumentStorageRule.getDocumentStoragePath()
                         .concat(File.separator).concat("documents")
                         .concat(File.separator)).exists());
+    }
+
+    @Before
+    public void before() {
         assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
                 .isEqualTo("admin")
                 .as("Admin is logged in");

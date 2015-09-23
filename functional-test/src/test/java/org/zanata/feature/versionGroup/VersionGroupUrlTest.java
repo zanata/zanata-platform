@@ -21,16 +21,13 @@
 package org.zanata.feature.versionGroup;
 
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.groups.VersionGroupPage;
-import org.zanata.util.AddUsersRule;
-import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
@@ -55,14 +52,8 @@ import static org.hamcrest.Matchers.is;
 @Category(DetailedTest.class)
 public class VersionGroupUrlTest extends ZanataTestCase {
 
-    @ClassRule
-    public static AddUsersRule addUsersRule = new AddUsersRule();
-
-    @Rule
-    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
-
-    @BeforeClass
-    public static void beforeClass() {
+    @Before
+    public void before() {
         Assertions.assertThat(
                 new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
                 .isEqualTo("admin")

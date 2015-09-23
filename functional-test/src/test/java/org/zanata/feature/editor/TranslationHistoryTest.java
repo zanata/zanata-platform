@@ -28,7 +28,6 @@ import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.RetryRule;
-import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
 
@@ -42,9 +41,6 @@ public class TranslationHistoryTest extends ZanataTestCase {
 
     @Rule
     public RetryRule retryRule = new RetryRule(0);
-
-    @Rule
-    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     @Test
     public void showTranslationHistory() {

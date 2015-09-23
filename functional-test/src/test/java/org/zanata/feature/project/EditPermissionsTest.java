@@ -21,27 +21,23 @@
 
 package org.zanata.feature.project;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import org.junit.After;
 import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.page.projects.ProjectPeoplePage;
-import org.zanata.page.projects.projectsettings.ProjectPermissionsTab;
 import org.zanata.page.projects.ProjectVersionsPage;
+import org.zanata.page.projects.projectsettings.ProjectPermissionsTab;
 import org.zanata.util.Constants;
 import org.zanata.util.PropertiesHolder;
-import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
-import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen
@@ -52,13 +48,7 @@ public class EditPermissionsTest extends ZanataTestCase {
 
     private final String TRANSLATOR_KEY = PropertiesHolder
             .getProperty(Constants.zanataTranslatorKey.value());
-    @Rule
-    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
-    @After
-    public void after() {
-        new BasicWorkFlow().goToHome();
-    }
 
     @Feature(summary = "The user can view maintainers for a project",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)

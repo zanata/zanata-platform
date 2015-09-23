@@ -22,27 +22,20 @@ package org.zanata.feature.rest;
 
 import org.hamcrest.Matchers;
 import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.zanata.util.ZanataRestCaller.buildSourceResource;
-import static org.zanata.util.ZanataRestCaller.buildTextFlow;
-import static org.zanata.util.ZanataRestCaller.buildTextFlowTarget;
-import static org.zanata.util.ZanataRestCaller.buildTranslationResource;
+import static org.zanata.util.ZanataRestCaller.*;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class CopyTransTest {
-    @Rule
-    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     private boolean COPYTRANS = true;
 

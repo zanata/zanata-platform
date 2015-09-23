@@ -20,27 +20,21 @@
  */
 package org.zanata.feature.editor;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.zanata.util.ZanataRestCaller.buildSourceResource;
-import static org.zanata.util.ZanataRestCaller.buildTextFlow;
-
-import java.util.List;
-import java.util.concurrent.Callable;
-
-import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.rest.dto.resource.Resource;
-import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.zanata.util.ZanataRestCaller.buildSourceResource;
+import static org.zanata.util.ZanataRestCaller.buildTextFlow;
 
 /**
  * @author Patrick Huang <a
@@ -49,8 +43,6 @@ import org.zanata.workflow.LoginWorkFlow;
 @Category(DetailedTest.class)
 public class EditorFilterMessagesTest extends ZanataTestCase {
     private final String document = "messages";
-    @Rule
-    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     @Before
     public void setUp() {

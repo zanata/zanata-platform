@@ -20,29 +20,27 @@
  */
 package org.zanata.feature.clientserver;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.List;
-
+import com.google.common.collect.Lists;
+import com.google.common.io.Files;
 import org.fedorahosted.openprops.Properties;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.webtrans.EditorPage;
-import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.ClientWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
-import com.google.common.collect.Lists;
-import com.google.common.io.Files;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -53,8 +51,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class PropertiesRoundTripTest extends ZanataTestCase {
 
-    @Rule
-    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     private ClientWorkFlow client = new ClientWorkFlow();
     private ZanataRestCaller restCaller;

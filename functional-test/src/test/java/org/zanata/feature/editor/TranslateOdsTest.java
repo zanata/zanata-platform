@@ -20,23 +20,22 @@
  */
 package org.zanata.feature.editor;
 
-import java.io.File;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.CleanDocumentStorageRule;
-import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
+
+import java.io.File;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.FunctionalTestHelper.assumeFalse;
@@ -47,9 +46,6 @@ import static org.zanata.util.FunctionalTestHelper.assumeFalse;
  */
 @Category(DetailedTest.class)
 public class TranslateOdsTest extends ZanataTestCase {
-
-    @Rule
-    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     @Rule
     public CleanDocumentStorageRule documentStorageRule =

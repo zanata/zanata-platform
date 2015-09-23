@@ -21,7 +21,7 @@
 package org.zanata.feature.administration;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.testharness.TestPlan;
@@ -29,7 +29,6 @@ import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.page.administration.ServerConfigurationPage;
 import org.zanata.page.utility.HomePage;
-import org.zanata.util.AddUsersRule;
 import org.zanata.util.HasEmailRule;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.RegisterWorkFlow;
@@ -44,11 +43,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(TestPlan.DetailedTest.class)
 public class ServerSettingsTest extends ZanataTestCase {
 
-    @Rule
+    @ClassRule
     public HasEmailRule hasEmailRule = new HasEmailRule();
-
-    @Rule
-    public AddUsersRule addUsersRule = new AddUsersRule();
 
     @Test
     public void setServerURLTest() {

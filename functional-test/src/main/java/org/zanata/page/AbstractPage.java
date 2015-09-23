@@ -400,8 +400,12 @@ public class AbstractPage {
         } else {
             Actions enterTextAction = new Actions(getDriver()).moveToElement(element);
             enterTextAction = enterTextAction.click();
+            // Fields can 'blur' on click
+            waitForPageSilence();
             if (clear) {
                 enterTextAction = enterTextAction.sendKeys(Keys.chord(Keys.CONTROL, "a")).sendKeys(Keys.DELETE);
+                // Fields can 'blur' on clear
+                waitForPageSilence();
             }
             enterTextAction.sendKeys(text).perform();
         }

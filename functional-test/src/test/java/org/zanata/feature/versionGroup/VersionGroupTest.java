@@ -21,23 +21,20 @@
 package org.zanata.feature.versionGroup;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.page.groups.VersionGroupPage;
 import org.zanata.page.groups.VersionGroupsPage;
-import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
-import static org.zanata.util.FunctionalTestHelper.assumeTrue;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.zanata.util.FunctionalTestHelper.assumeTrue;
 
 /**
  * @author Damian Jansen <a
@@ -46,20 +43,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class VersionGroupTest extends ZanataTestCase {
 
-    @ClassRule
-    public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
-
     private VersionGroupsPage versionGroupsPageBase;
-
-    @BeforeClass
-    public static void beforeClass() {
-        assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
-                .isEqualTo("admin")
-                .as("Admin is logged in");
-    }
 
     @Before
     public void before() {
+        assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
+                .isEqualTo("admin")
+                .as("Admin is logged in");
         versionGroupsPageBase = new BasicWorkFlow().goToHome().goToGroups();
     }
 

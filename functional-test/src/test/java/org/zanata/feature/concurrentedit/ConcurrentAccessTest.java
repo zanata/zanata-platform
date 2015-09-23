@@ -20,39 +20,31 @@
  */
 package org.zanata.feature.concurrentedit;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.zanata.util.ZanataRestCaller.buildSourceResource;
-import static org.zanata.util.ZanataRestCaller.buildTextFlow;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.ws.rs.core.MediaType;
-
+import com.google.common.base.Function;
+import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.rest.dto.resource.Resource;
-import org.zanata.util.AddUsersRule;
 import org.zanata.util.Constants;
 import org.zanata.util.PropertiesHolder;
 import org.zanata.util.ZanataRestCaller;
 
-import com.google.common.base.Function;
-import com.google.common.base.Throwables;
-import com.google.common.collect.Lists;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
+import javax.ws.rs.core.MediaType;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.zanata.util.ZanataRestCaller.buildSourceResource;
+import static org.zanata.util.ZanataRestCaller.buildTextFlow;
 
 /**
  * @author Patrick Huang <a
@@ -60,9 +52,6 @@ import com.sun.jersey.api.client.WebResource;
  */
 @Category(DetailedTest.class)
 public class ConcurrentAccessTest extends ZanataTestCase {
-
-    @ClassRule
-    public static AddUsersRule addUsersRule = new AddUsersRule();
 
     @BeforeClass
     // Need to ensure that the correct concurrent slots are available

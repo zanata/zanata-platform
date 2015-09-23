@@ -20,37 +20,32 @@
  */
 package org.zanata.feature.dashboard;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.zanata.util.ZanataRestCaller.buildSourceResource;
-import static org.zanata.util.ZanataRestCaller.buildTextFlow;
-
 import lombok.extern.slf4j.Slf4j;
-
 import org.junit.Before;
 import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.dashboard.DashboardActivityTab;
 import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.dashboard.DashboardProjectsTab;
 import org.zanata.page.projects.CreateProjectPage;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.util.HasEmailRule;
-import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.LoginWorkFlow;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.zanata.util.ZanataRestCaller.buildSourceResource;
+import static org.zanata.util.ZanataRestCaller.buildTextFlow;
 
 @Category(DetailedTest.class)
 @Slf4j
 public class DashboardTest extends ZanataTestCase {
 
-    @Rule
-    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
     @ClassRule
     public static HasEmailRule emailRule = new HasEmailRule();
 

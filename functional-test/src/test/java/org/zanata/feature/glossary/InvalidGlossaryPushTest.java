@@ -23,14 +23,11 @@ package org.zanata.feature.glossary;
 import com.google.common.base.Joiner;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.junit.rules.TestRule;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
-import org.zanata.util.SampleProjectRule;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.workflow.ClientWorkFlow;
 
 import java.io.File;
@@ -47,9 +44,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 @Slf4j
 public class InvalidGlossaryPushTest extends ZanataTestCase {
-
-    @Rule
-    public TestRule sampleProjectRule = new SampleProjectRule();
 
     private String pushCommand = "mvn --batch-mode zanata:glossary-push -Dglossary.lang=fr -Dzanata.glossaryFile=compendium_fr_invalid.po -Dzanata.userConfig=";
     private ClientWorkFlow clientWorkFlow;
