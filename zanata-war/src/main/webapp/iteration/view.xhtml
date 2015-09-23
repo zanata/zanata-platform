@@ -74,6 +74,8 @@
   .
     show();
     checkIfFileSelected();
+
+    setUploadSourceButtonEnabled(false);
   }
 
   function hideUploadSourcePanel() {
@@ -454,11 +456,14 @@
     <h:outputText id="uploadSourcePanelHeader"/>
   </f:facet>
   <h:form id="uploadSrcForm" >
+    <a4j:jsFunction name="clearSourceUpload" action="#{versionHomeAction.sourceFileCleared}"/>
+
     <rich:fileUpload
       fileUploadListener="#{versionHomeAction.sourceFileUploaded}"
       addControlLabel="Select file..." clearAllLabel="Clear all" clearLabel="Clear"
       uploadLabel="upload" immediateUpload="true" maxFilesQuantity="1" listHeight="60"
-
+      onclear="clearSourceUpload();setUploadSourceButtonEnabled(false);"
+      onfilesubmit="setUploadSourceButtonEnabled(true);"
       />
     <h:inputHidden id="uploadSourceDocId"
       value="#{versionHomeAction.sourceFileUpload.docId}"/>

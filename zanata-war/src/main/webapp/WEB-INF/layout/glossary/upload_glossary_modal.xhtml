@@ -2,6 +2,7 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:c="http://java.sun.com/jsf/core"
   xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   class="modal" id="glossaryUploadDialog" tabindex="-1" role="dialog"
   aria-labelledby="myModalLabel" aria-hidden="true">
@@ -106,12 +107,15 @@
         <div class="form__item txt--understated" id="message">
           <span>#{msgs['jsf.Glossary.supportedFileFormat']}</span>
         </div>
+
+        <a4j:jsFunction name="clearSelection" action="#{glossaryAction.glossaryFileCleared}"/>
         <div class="form__item">
           <rich:fileUpload id="upload-file"
             fileUploadListener="#{glossaryAction.glossaryFileUploaded}"
             onfilesubmit="onGlossaryFileSubmitted()"
             addControlLabel="Select file..." clearAllLabel="Clear all" clearLabel="Clear"
             uploadLabel="upload" immediateUpload="true" maxFilesQuantity="1"
+            onclear="clearSelection();enableUploadGlossaryButton(false);"
             listHeight="100"
             />
         </div>

@@ -772,8 +772,8 @@ public class VersionHomeAction extends AbstractSortAction implements
     public String translationExtensionOf(String docPath, String docName) {
         return "."
             + translationFileServiceImpl.getTranslationFileExtension(
-            projectSlug,
-            versionSlug, docPath, docName);
+                projectSlug,
+                versionSlug, docPath, docName);
     }
 
     public boolean hasOriginal(String docPath, String docName) {
@@ -973,7 +973,7 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     public List<DocumentType> getDocumentTypes(String fileName) {
         return Lists.newArrayList(
-            translationFileServiceImpl.getDocumentTypes(fileName));
+                translationFileServiceImpl.getDocumentTypes(fileName));
     }
 
     public void setDefaultTranslationDocType(String fileName) {
@@ -1067,10 +1067,18 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     }
 
+    public void sourceFileCleared() {
+        sourceFileUpload = new SourceFileUploadHelper();
+    }
+
     public void transFileUploaded(FileUploadEvent event) throws IOException {
         UploadedFile uploadedFile = event.getUploadedFile();
         translationFileUpload.setFileName(uploadedFile.getName());
         translationFileUpload.setFileContents(uploadedFile.getInputStream());
+    }
+
+    public void transFileCleared() {
+        translationFileUpload = new TranslationFileUploadHelper();
     }
 
     private class DocumentFilter extends InMemoryListFilter<HDocument> {
