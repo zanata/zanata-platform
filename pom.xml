@@ -47,8 +47,25 @@
     <lucene.version>3.6.2</lucene.version>
     <org.mock-server.version>3.9.17</org.mock-server.version>
 
-    <!-- NB: When changing this, be sure to update the rpm's spec file to match -->
+    <!--
+    Version of java compiler used for building. (Specified as major.minor,
+    as used by javac -source and -target).
+    -->
     <required.java>1.8</required.java>
+    <!--
+      Version of Java used for runtime (major.minor) and for bytecode
+      generation. Should correspond with animal.sniffer.signature.
+    -->
+    <!-- NB: When changing this, be sure to update the rpm's spec file to match -->
+    <required.jvm>1.8</required.jvm>
+    <!--
+      Version of Java used for API compatibility checking. Should
+      correspond with required.jvm.
+    -->
+    <animal.sniffer.signature>java18</animal.sniffer.signature>
+
+    <!-- Not currently working for Java 1.8: https://github.com/mojohaus/animal-sniffer/issues/1 -->
+    <animal.sniffer.skip>true</animal.sniffer.skip>
 
     <!--
     Not used yet.
