@@ -1,8 +1,11 @@
+#!/usr/bin/env groovy
+import groovy.sql.GroovyResultSet
 import groovy.sql.Sql
 import groovy.transform.Field
 
 import java.sql.DatabaseMetaData
 import java.sql.ResultSet
+import java.sql.SQLException
 
 /**
  * This is a script to migrate a Zanata database from Mysql to Postgresql.
@@ -10,6 +13,7 @@ import java.sql.ResultSet
  * Usage: groovy Mysql2Postgresql -h
  *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @GrabConfig(systemClassLoader= true)
 @Grapes([
@@ -70,11 +74,10 @@ if(!generateDDL) {
         try {
             extractDataForTable(tableName)
         }
-        catch (Exception ex) {
-            try {
+        catch (SQLException ex) {
+            if (ex.nextException) {
                 throw ex.nextException
-            }
-            catch (MissingPropertyException mpex) {
+            } else {
                 throw ex
             }
         }
@@ -165,6 +168,9 @@ def initialize(args) {
     mysqldb = Sql.newInstance("jdbc:mysql://${mysqlhost}:${mysqlport}/${mysqlschema}",
         "${mysqluser}", "${mysqlpassword}", "com.mysql.jdbc.Driver")
     mysqlMetadata = mysqldb.connection.metaData
+    // tell mysql driver to conserve memory (streaming resultset)
+    mysqldb.resultSetConcurrency = ResultSet.CONCUR_READ_ONLY
+    mysqldb.withStatement{stmt -> stmt.fetchSize = Integer.MIN_VALUE }
 
     if(generateDDL) {
         // Nothing to do
@@ -189,7 +195,7 @@ def executeOnDestination(String statement) {
         ddlFile << statement + "\n"
         ddlFile.flush()
     }
-    // Write to postresql
+    // Write to postgresql
     else {
         postgresdb.execute(statement)
     }
@@ -351,11 +357,11 @@ def createIndexes(String tableName, ResultSet indexes) {
     }
 }
 
-// Translates the column name from mysql to postegresql
+// Translates the column name from mysql to postgresql
 // This will print some warnings when this happens
 def String translateColumnName(String mysqlColName) {
     if("user".equalsIgnoreCase(mysqlColName)) {
-        println "WARNING: Column $mysqlColName will be migrated as \"user\" as it's a reserved word in postresql"
+        println "WARNING: Column $mysqlColName will be migrated as \"user\" as it's a reserved word in postgresql"
         return "\"user\""
     }
 
@@ -369,9 +375,8 @@ def extractDataForTable(String tableName) {
 
     def tableCols = []
 
-    def rows = mysqldb.rows("select * from $tableName".toString()) { meta ->
+    def metaClosure = { meta ->
         int columnCount = meta.columnCount
-
         (1..columnCount).each { colIdx ->
             def colName = meta.getColumnName(colIdx)
             def colTypeName = meta.getColumnTypeName(colIdx)
@@ -381,6 +386,7 @@ def extractDataForTable(String tableName) {
                           type: colTypeName]
         }
     }
+    mysqldb.eachRow("select * from $tableName limit 1".toString(), metaClosure, {})
 
     StringBuffer insertStr = new StringBuffer("INSERT INTO $tableName (")
     insertStr.append( tableCols.collect { it.name }.join(",") )
@@ -388,25 +394,35 @@ def extractDataForTable(String tableName) {
     insertStr.append( tableCols.collect { ":${it.plainName}" }.join(",") )
     insertStr.append(")")
 
-    postgresdb.withBatch(50, insertStr.toString()) { ps ->
-        rows.each { row ->
-            ps.addBatch( transformDataForPsql(row, tableCols) )
+    postgresdb.withBatch(100, insertStr.toString()) { ps ->
+        def rowClosure = { row ->
+            Map<String, Object> transformed = transformDataForPsql(row, tableCols)
+            ps.addBatch( transformed )
         }
+
+        mysqldb.eachRow("select * from $tableName".toString(), {}, rowClosure)
     }
 }
 
-// Transforms a row map from mysql into a row map to be inserted into postegresql
-Map transformDataForPsql(Map mysqlRow, def columnDefs) {
-    mysqlRow.each { colName, value ->
+// Transforms a row map from mysql into a row map to be inserted into postgresql
+Map<String, Object> transformDataForPsql(GroovyResultSet mysqlRow, def columnDefs) {
+    def newRow = [:]
+    def rowResult = mysqlRow.toRowResult()
+    rowResult.each { colName, value ->
         def colDef = columnDefs.find { it.name == colName }
-
         // Tiny ints need to be turned to booleans
         if(value instanceof Integer && colDef.type == "TINYINT") {
-            mysqlRow.put(colName, value > 0 ? true : false)
+            newRow.put(colName, value > 0 ? true : false)
+        } else if (value instanceof String && value.indexOf('\0') >=0) {
+            println "WARNING: bad string at column $colName: $rowResult"
+            def fixedValue = value.replaceAll("\0", "")
+            newRow.put(colName, fixedValue)
+        } else {
+            newRow.put(colName, value)
         }
     }
 
-    mysqlRow
+    newRow
 }
 
 // Updates all sequences to their appropriate value
