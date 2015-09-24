@@ -437,7 +437,7 @@ Map<String, Object> transformDataForPsql(GroovyResultSet mysqlRow, def columnDef
             newRow.put(colName, value > 0 ? true : false)
         } else if (value instanceof String && value.indexOf('\0') >=0) {
             println "WARNING: bad string at column $colName: $rowResult"
-            def fixedValue = value.replaceAll("\0", "")
+            def fixedValue = value.replaceAll("\0", " ")
             newRow.put(colName, fixedValue)
         } else {
             newRow.put(colName, value)
