@@ -12,6 +12,7 @@
   <f:metadata>
     <f:viewParam name="role" value="#{zanataRoleAction.role}" />
     <f:event type="preRenderView" listener="#{zanataRoleAction.loadRole}"/>
+    <f:event type="preRenderView" listener="#{identity.checkRole('admin')}"/>
   </f:metadata>
 
   <ui:define name="head">

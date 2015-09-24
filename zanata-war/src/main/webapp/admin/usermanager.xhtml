@@ -12,6 +12,7 @@
   <f:metadata>
     <f:viewParam name="username" value="#{userAction.username}" />
     <f:event type="preRenderView" listener="#{userSearch.loadUsers}"/>
+    <f:event type="preRenderView" listener="#{identity.checkRole('admin')}"/>
   </f:metadata>
 
 

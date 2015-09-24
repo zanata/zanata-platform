@@ -10,6 +10,7 @@
 <ui:composition template="../WEB-INF/template/template.xhtml">
   <f:metadata>
     <f:event type="preRenderView" listener="#{zanataRoleSearch.loadRoles}"/>
+    <f:event type="preRenderView" listener="#{identity.checkRole('admin')}"/>
   </f:metadata>
 
   <ui:define name="page_title">#{msgs['jsf.ManageRoles']}</ui:define>
