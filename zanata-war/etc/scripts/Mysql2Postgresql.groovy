@@ -37,6 +37,14 @@ import java.sql.SQLException
 // Will be used to update their values after data insertion
 @Field List autoIncrementSeqs = []
 
+void printProgBar(int percent) {
+    int status = percent/2
+    def bar = (0..50).collect() {
+        (it <= status) ? ((it == status) ? ">" : "=") : " "
+    }
+    print("\r[${bar.join()}] ${percent}%")
+}
+
 // Initialize everything
 if(!initialize(args)) {
     return 0
@@ -171,6 +179,17 @@ def initialize(args) {
     // tell mysql driver to conserve memory (streaming resultset)
     mysqldb.resultSetConcurrency = ResultSet.CONCUR_READ_ONLY
     mysqldb.withStatement{stmt -> stmt.fetchSize = Integer.MIN_VALUE }
+
+    def count = mysqldb.firstRow('''
+        select count(*) as count from DATABASECHANGELOG
+        where filename='db/changelogs/db.changelog-3.8.xml\'
+        and author = 'aeng@redhat.com\'
+        and id = '1\'''').count
+    if (count == 0) {
+        println "ERROR: database is too old for migration to postgresql"
+        println "database must be updated to Zanata 3.7.1+ first"
+        return false
+    }
 
     if(generateDDL) {
         // Nothing to do
@@ -394,14 +413,23 @@ def extractDataForTable(String tableName) {
     insertStr.append( tableCols.collect { ":${it.plainName}" }.join(",") )
     insertStr.append(")")
 
+    int tableRows = mysqldb.firstRow("select count(*) as total from $tableName".toString()).total
+
+    int n = 0
+    int oldPercent = -1
     postgresdb.withBatch(100, insertStr.toString()) { ps ->
-        def rowClosure = { row ->
+        mysqldb.eachRow("select * from $tableName".toString(), {}) { row ->
             Map<String, Object> transformed = transformDataForPsql(row, tableCols)
             ps.addBatch( transformed )
+            ++n
+            int percent = n * 100 / tableRows
+            if (percent != oldPercent) {
+                printProgBar(percent)
+                oldPercent = percent
+            }
         }
-
-        mysqldb.eachRow("select * from $tableName".toString(), {}, rowClosure)
     }
+    println "\r"
 }
 
 // Transforms a row map from mysql into a row map to be inserted into postgresql
