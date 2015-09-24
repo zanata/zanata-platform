@@ -133,7 +133,7 @@ def initialize(args) {
     cli.psqluser(args:1, argName: 'psqluser', 'User for the portgresql database (default: "")')
     cli.psqlpassword(args:1, argName: 'psqlpassword', 'Password for the postgresql database (default: "")')
 
-    cli.script(args:1, argName: 'script', 'Script file with the PostgreSQL DDL')
+    cli.script(args:1, argName: 'script', 'Script file to generate with the PostgreSQL DDL (No data will be imported)')
     cli.h(longOpt: 'help', 'Print this message')
 
     def options = cli.parse(args)
@@ -144,7 +144,7 @@ def initialize(args) {
         return false
     }
 
-    // If the option to generate a script are given
+    // If the option to generate a script is given
     if(options.script) {
         generateDDL = true
         ddlFile = new File(options.script).newWriter()
@@ -327,12 +327,6 @@ def createForeignKeys(String tableName, ResultSet foreignKeys) {
         if(createdFKs.contains(fkName)) {
             fkName = "${fkName}_${fkTableName}"
         }
-
-//        def fkName = foreignKeys.getString(12)
-//        if(!fkMap.containsKey(fkName)) {
-//            fkMap[fkName] = ['pk']
-//        }
-//        def fkData = fkMap[fkName]
 
         def foreignKeyStmt = "ALTER TABLE $fkTableName ADD CONSTRAINT $fkName FOREIGN KEY (${translateColumnName(fkColName)}) REFERENCES $pkTableName(${translateColumnName(pkColName)})"
         executeOnDestination(foreignKeyStmt.toString())
