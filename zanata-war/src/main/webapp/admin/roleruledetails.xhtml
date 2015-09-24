@@ -2,10 +2,14 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:c="http://java.sun.com/jsf/core"
+  xmlns:f="http://java.sun.com/jsf/core"
   template="../WEB-INF/template/template.xhtml"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:h="http://java.sun.com/jsf/html">
+
+  <f:metadata>
+    <f:event type="preRenderView" listener="#{identity.checkRole('admin')}"/>
+  </f:metadata>
 
   <ui:define
     name="page_title">#{msgs['jsf.rolerules.EditRoleAssignmentRule']}</ui:define>
@@ -32,8 +36,8 @@
             <zanata:decorate id="policyName" componentId="policyNameField">
               <h:selectOneMenu id="policyName"
                 value="#{roleAssignmentRuleAction.instance.policyName}">
-                <c:selectItem noSelectionOption="true" itemLabel="" />
-                <c:selectItems value="#{roleAssignmentRuleAction.availablePolicyNames}"
+                <f:selectItem noSelectionOption="true" itemLabel="" />
+                <f:selectItems value="#{roleAssignmentRuleAction.availablePolicyNames}"
                   var="policy" itemLabel="#{policy}"
                   />
               </h:selectOneMenu>
@@ -62,7 +66,7 @@
             <zanata:decorate id="role" componentId="roleField">
               <h:selectOneMenu id="roles"
                 value="#{roleAssignmentRuleAction.roleToAssign}">
-                <c:selectItems value="#{identityManager.listGrantableRoles()}"
+                <f:selectItems value="#{identityManager.listGrantableRoles()}"
                   var="role" itemLabel="#{role}"/>
               </h:selectOneMenu>
             </zanata:decorate>

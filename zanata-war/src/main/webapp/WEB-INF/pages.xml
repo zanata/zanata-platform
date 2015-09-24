@@ -140,10 +140,6 @@
   </page>
 
 
-  <!-- Admin -->
-  <!-- TODO [CDI] find a way to secure a url pattern in CDI -->
-  <page view-id="/admin/*" action="#{identity.checkRole('admin')}"></page>
-
   <page view-id="/admin/roledetail.xhtml">
     <param name="role" value="#{zanataRoleAction.role}" />
     <action execute="#{zanataRoleAction.loadRole()}" />

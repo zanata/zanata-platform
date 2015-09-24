@@ -8,6 +8,9 @@
   >
 
 <ui:composition template="../WEB-INF/template/template.xhtml">
+  <f:metadata>
+    <f:event type="preRenderView" listener="#{identity.checkRole('admin')}"/>
+  </f:metadata>
 
   <ui:define
     name="page_title">#{msgs['jsf.RoleAssignmentRules']}</ui:define>
