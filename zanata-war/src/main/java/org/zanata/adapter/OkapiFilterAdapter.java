@@ -42,6 +42,7 @@ import net.sf.okapi.common.resource.TextUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.adapter.TranslatableSeparator.SplitString;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.HasContents;
@@ -212,7 +213,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
                 GenericContent.fromFragmentToLetterCoded(tu.getSource()
                         .getFirstContent(), true);
         if (separateNonTranslatable) {
-            return getPartitionedText(letterCodedText).get("str");
+            return getPartitionedText(letterCodedText).str;
         } else {
             return letterCodedText;
         }
@@ -223,7 +224,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
      *
      * @param tu
      */
-    private Map<String, String> getPartitionedText(TextUnit tu) {
+    private SplitString getPartitionedText(TextUnit tu) {
         return TranslatableSeparator.separate(GenericContent
                 .fromFragmentToLetterCoded(tu.getSource().getFirstContent(),
                         true));
@@ -234,7 +235,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
      *
      * @param letterCodedText
      */
-    private Map<String, String> getPartitionedText(String letterCodedText) {
+    private SplitString getPartitionedText(String letterCodedText) {
         return TranslatableSeparator.separate(letterCodedText);
     }
 
@@ -468,9 +469,9 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
 
     private String getFullTranslationText(TextUnit tu, String translated) {
         if (separateNonTranslatable) {
-            Map<String, String> partitionedContent = getPartitionedText(tu);
-            return partitionedContent.get("pre") + translated
-                    + partitionedContent.get("suf");
+            SplitString partitionedContent = getPartitionedText(tu);
+            return partitionedContent.pre + translated
+                    + partitionedContent.suf;
         } else {
             return translated;
         }
