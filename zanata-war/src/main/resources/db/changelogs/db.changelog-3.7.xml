@@ -184,6 +184,11 @@
     </createIndex>
   </changeSet>
 
+  <changeSet author="sflaniga@redhat.com" id="2" dbms="mysql">
+    <comment>add foreign keys which may be missing due to MyISAM</comment>
+    <sqlFile path="db/mysql/add_missing_fks.sql" stripComments="true" />
+  </changeSet>
+
   <!-- TODO Ensure any new 3.7 tables are converted to InnoDB (on dev machines).
        See db.changelog-3.6.xml -->
 
