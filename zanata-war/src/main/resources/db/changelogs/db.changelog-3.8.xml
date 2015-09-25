@@ -79,6 +79,15 @@
       splitStatements="false" />
   </changeSet>
 
+  <changeSet id="1" author="aeng@redhat.com">
+    <comment>WebhookKey to WebHook</comment>
+    <addColumn tableName="WebHook">
+      <column name="secret" type="varchar(255)">
+        <constraints nullable="true" />
+      </column>
+    </addColumn>
+  </changeSet>
+
   <changeSet id="1" author="damason@redhat.com">
     <comment>Add allowGlobalTranslation column to HProject.</comment>
     <addColumn tableName="HProject">
