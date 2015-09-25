@@ -105,7 +105,7 @@
         <div class="l--pad-top-quarter form__item txt--understated" id="uploadPanelMsg"></div>
 
         <div class="form__item">
-          <a4j:jsFunction name="clearTransFileUpload" action="#{versionHomeAction.transFileCleared}"/>
+          <a4j:jsFunction name="clearTransFileUpload" action="#{versionHomeAction.clearTransFileUpload}"/>
           <rich:fileUpload id="upload-file"
             fileUploadListener="#{versionHomeAction.transFileUploaded}"
             onfilesubmit="onTranslationFileSubmitted()"

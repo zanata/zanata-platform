@@ -166,7 +166,7 @@ public class GlossaryAction implements Serializable {
         glossaryFileUpload.setFileName(uploadedFile.getName());
     }
 
-    public void glossaryFileCleared() {
+    public void clearGlossaryUpload() {
         glossaryFileUpload = new GlossaryFileUploadHelper();
     }
 

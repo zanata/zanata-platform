@@ -456,7 +456,7 @@
     <h:outputText id="uploadSourcePanelHeader"/>
   </f:facet>
   <h:form id="uploadSrcForm" >
-    <a4j:jsFunction name="clearSourceUpload" action="#{versionHomeAction.sourceFileCleared}"/>
+    <a4j:jsFunction name="clearSourceUpload" action="#{versionHomeAction.clearSourceFileUpload}"/>
 
     <rich:fileUpload
       fileUploadListener="#{versionHomeAction.sourceFileUploaded}"

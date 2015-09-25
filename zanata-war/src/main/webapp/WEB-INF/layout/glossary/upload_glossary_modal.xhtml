@@ -108,7 +108,7 @@
           <span>#{msgs['jsf.Glossary.supportedFileFormat']}</span>
         </div>
 
-        <a4j:jsFunction name="clearSelection" action="#{glossaryAction.glossaryFileCleared}"/>
+        <a4j:jsFunction name="clearSelection" action="#{glossaryAction.clearGlossaryUpload}"/>
         <div class="form__item">
           <rich:fileUpload id="upload-file"
             fileUploadListener="#{glossaryAction.glossaryFileUploaded}"

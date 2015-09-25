@@ -1067,7 +1067,7 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     }
 
-    public void sourceFileCleared() {
+    public void clearSourceFileUpload() {
         sourceFileUpload = new SourceFileUploadHelper();
     }
 
@@ -1077,7 +1077,7 @@ public class VersionHomeAction extends AbstractSortAction implements
         translationFileUpload.setFileContents(uploadedFile.getInputStream());
     }
 
-    public void transFileCleared() {
+    public void clearTransFileUpload() {
         translationFileUpload = new TranslationFileUploadHelper();
     }
 
