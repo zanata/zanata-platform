@@ -6,7 +6,7 @@ repositories {
 }
 
 dependencies {
-    runtime "mysql:mysql-connector-java:5.1.29"
+    runtime "org.postgresql:postgresql:9.2-1004-jdbc41"
     runtime "org.codehaus.groovy:groovy-all:2.1.5"
 }
 
@@ -34,10 +34,10 @@ task 'package'(dependsOn: 'copyToLib') << {
         // Copy extra needed files
         ant.copy(todir: "$distroDir/standalone/deployments") {
             fileset(dir: "$BUILD_DIR/deps") {
-                include(name: "mysql-connector-java-*.jar")
+                include(name: "postgresql-*.jar")
             }
-            globmapper(from: "mysql-connector-java-*.jar",
-                to: "mysql-connector-java.jar")
+            globmapper(from: "postgresql-*.jar",
+                to: "postgresql-jdbc.jar")
         }
         ant.copy(todir: "$distroDir/bin/zanata-installer") {
             fileset(dir: "$BUILD_DIR/deps") {

@@ -166,16 +166,17 @@
                     </security>
                 </datasource>
                 <datasource jndi-name="java:jboss/datasources/zanataDatasource" pool-name="zanataDatasource" enabled="true" use-ccm="true">
-                    <connection-url>jdbc:mysql://localhost:3306/zanata?characterEncoding=UTF-8</connection-url>
-                    <driver-class>com.mysql.jdbc.Driver</driver-class>
-                    <driver>mysql-connector-java.jar</driver>
+                    <connection-url>jdbc:postgresql://localhost:5432/zanata</connection-url>
+                    <driver-class>org.postgresql.Driver</driver-class>
+                    <driver>postgresql-jdbc.jar</driver>
                     <pool>
                         <min-pool-size>0</min-pool-size>
                         <max-pool-size>20</max-pool-size>
                         <flush-strategy>FailingConnectionOnly</flush-strategy>
                     </pool>
                     <security>
-                        <user-name>root</user-name>
+                        <user-name><!-- Enter username --></user-name>
+                        <password><!-- Enter password --></password>
                     </security>
                     <statement>
                         <track-statements>NOWARN</track-statements>
