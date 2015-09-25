@@ -27,11 +27,15 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+import java.util.Stack;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
 import org.jboss.seam.ScopeType;
@@ -43,6 +47,7 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.core.Interpolator;
 import org.zanata.i18n.Messages;
 import org.zanata.util.ServiceLocator;
+import com.google.common.collect.Lists;
 
 /**
  * Utility to allow for easy handling of JSF messages. Serves as a replacement
@@ -87,25 +92,38 @@ public class FacesMessages {
      */
     private String getClientId(String id) {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        return getClientId(facesContext.getViewRoot(), id, facesContext);
+
+        // we search from backwards, so for a component tree A->B->C, we search
+        // id from C then B then A for a match of id. If we found
+        // C.getId().equals(id), we will use C.getClientId()
+        Stack<UIComponent> uiComponentStack = new Stack<>();
+        addComponentToStack(uiComponentStack, facesContext.getViewRoot());
+
+        while (!uiComponentStack.empty()) {
+            UIComponent pop = uiComponentStack.pop();
+            if (pop.getId() != null && id.equals(pop.getId())) {
+                return pop.getClientId();
+            }
+        }
+        return null;
     }
 
-    private static String getClientId(UIComponent component, String id,
-            FacesContext facesContext) {
-        String componentId = component.getId();
-        if (componentId != null && componentId.equals(id)) {
-            return component.getClientId(facesContext);
-        } else {
-            Iterator iter = component.getFacetsAndChildren();
-            while (iter.hasNext()) {
-                UIComponent child = (UIComponent) iter.next();
-                String clientId = getClientId(child, id, facesContext);
-                if (clientId != null)
-                    return clientId;
-            }
-            return null;
+    private void addComponentToStack(Stack<UIComponent> uiComponentStack,
+            UIComponent component) {
+        uiComponentStack.push(component);
+        Iterator<UIComponent> iter = component.getFacetsAndChildren();
+
+        Queue<UIComponent> children = new LinkedList<>();
+        while (iter.hasNext()) {
+            UIComponent next = iter.next();
+            uiComponentStack.push(next);
+            children.add(next);
+        }
+        for (UIComponent child : children) {
+            addComponentToStack(uiComponentStack, child);
         }
     }
+
 
     /**
      * Add a status message, looking up the message in the resource bundle using

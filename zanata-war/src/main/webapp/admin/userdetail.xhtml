@@ -3,6 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:s="http://jboss.org/schema/seam/taglib">
 
 <ui:composition template="../WEB-INF/template/template.xhtml">
@@ -21,13 +23,13 @@
     <div class="g--centered">
       <div class="g__item w--3-4-m w--5-8-l w--1-3 l--push-bottom-1">
         <p class="txt--meta l--push-all-0">
-          <s:link view="/admin/home.xhtml" propagation="none">
+          <h:link outcome="/admin/home.xhtml">
             #{msgs['jsf.Administration']}
-          </s:link>
+          </h:link>
           <i class="i i--arrow-right"></i>
-          <s:link view="/admin/usermanager.xhtml" propagation="none">
+          <h:link outcome="/admin/usermanager.xhtml">
             #{msgs['jsf.ManageUsers']}
-          </s:link>
+          </h:link>
         </p>
 
         <h1 class="l--push-all-0">#{msgs['jsf.AccountDetails']}</h1>
@@ -48,11 +50,11 @@
               value="#{userAction.getEmail(userAction.username)}"/>
           </div>
 
-          <s:div styleClass="form__item l--push-top-1"
+          <h:panelGroup layout="block"  styleClass="form__item l--push-top-1"
             rendered="#{applicationConfiguration.internalAuth}">
             <h:outputLabel for="password">#{msgs['jsf.password.change']}</h:outputLabel>
-            <s:decorate id="passwordField"
-              template="../WEB-INF/layout/field.xhtml" enclose="true">
+            <zanata:decorate id="password"
+              componentId="passwordField">
               <div class="form__password js-form-password-parent">
                 <h:inputSecret id="password"
                   styleClass="js-form-password-input form__input"
@@ -60,14 +62,14 @@
                 </h:inputSecret>
                 <a href="#" class="form__toggle js-form-password-toggle">Show</a>
               </div>
-            </s:decorate>
-          </s:div>
+            </zanata:decorate>
+          </h:panelGroup>
 
-          <s:div styleClass="form__item l--push-top-1"
+          <h:panelGroup layout="block"  styleClass="form__item l--push-top-1"
             rendered="#{applicationConfiguration.internalAuth}">
             <h:outputLabel for="confirm">#{msgs['jsf.ConfirmPassword']}</h:outputLabel>
-            <s:decorate id="passwordConfirmField"
-              template="../WEB-INF/layout/field.xhtml" enclose="true">
+            <zanata:decorate id="passwordConfirm"
+              componentId="passwordConfirmField">
               <div class="form__password js-form-password-parent">
                 <h:inputSecret id="confirm"
                   styleClass="js-form-password-input form__input"
@@ -75,19 +77,19 @@
                 </h:inputSecret>
                 <a href="#" class="form__toggle js-form-password-toggle">Show</a>
               </div>
-            </s:decorate>
-          </s:div>
+            </zanata:decorate>
+          </h:panelGroup>
 
 
           <div class="form__item l--push-top-1">
             <h:outputLabel>#{msgs['jsf.MemberOf']}</h:outputLabel>
-            <s:decorate id="rolesField" template="../WEB-INF/layout/field.xhtml" enclose="true">
+            <zanata:decorate id="roles" componentId="rolesField">
               <h:selectManyCheckbox id="roles" value="#{userAction.roles}"
                 layout="pageDirection" styleClass="checkbox">
-                <s:selectItems value="#{identityManager.listGrantableRoles()}" var="role"
-                  label="#{role}"/>
+                <f:selectItems value="#{identityManager.listGrantableRoles()}" var="role"
+                  itemLabel="#{role}"/>
               </h:selectManyCheckbox>
-            </s:decorate>
+            </zanata:decorate>
           </div>
 
           <div class="form__item l--push-top-1 checkbox">
@@ -99,8 +101,8 @@
           <h:commandButton id="userdetailSave" value="#{msgs['jsf.Save']}"
             action="#{userAction.save}" styleClass="button--primary"/>
 
-          <s:button id="userdetailCancel" view="/admin/usermanager.xhtml"
-            value="#{msgs['jsf.Cancel']}" propagation="end"
+          <h:commandLink id="userdetailCancel"
+            value="#{msgs['jsf.Cancel']}" action="#{userAction.cancel}"
             styleClass="button button--link l--push-left-half"/>
 
         </h:form>

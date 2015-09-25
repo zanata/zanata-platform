@@ -49,10 +49,10 @@ public class RegisterPage extends CorePage {
     public static final String USERNAME_LENGTH_ERROR =
             "size must be between 3 and 20";
 
-    private By nameField = By.id("loginForm:name");
-    private By emailField = By.id("loginForm:emailField:email");
-    public By usernameField = By.id("loginForm:usernameField:username");
-    private By passwordField = By.id("loginForm:passwordField:password");
+    private By nameField = By.id("loginForm:nameField:input:name");
+    private By emailField = By.id("loginForm:email:input:email");
+    public By usernameField = By.id("loginForm:username:input:username");
+    private By passwordField = By.id("loginForm:passwordField:input:password");
     private By signUpButton = By.xpath("//input[@value='Sign Up']");
     private By showHideToggleButton = By.className("js-form-password-toggle");
     private By loginLink = By.linkText("Log In");

@@ -1,7 +1,6 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
@@ -27,7 +26,7 @@
                 onbegin="clearHTML('#{rich:clientId('languageForm')}')"
                 status="languageLoader"/>
 
-              <s:div
+              <h:panelGroup layout="block"
                 styleClass="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown"
                 id="more-actions" rendered="#{identity.hasRole('admin')}">
                 <a class="dropdown__toggle js-dropdown__toggle" href="#"
@@ -44,7 +43,7 @@
                     </a>
                   </li>
                 </ul>
-              </s:div>
+              </h:panelGroup>
             </div>
             <h2 class="panel__heading">#{msgs['jsf.Languages']}</h2>
           </div>
@@ -68,26 +67,28 @@
             <ul class="list--stats">
               <ui:repeat value="#{languagesAction.currentPage}" var="language">
                 <li class="l--pad-all-quarter #{not language.active ? 'is-disabled' : ''}">
-                  <s:link view="/language/language.xhtml" propagation="none">
+                  <h:link outcome="/language/language.xhtml">
                     <f:param name="id" value="#{language.localeId.id}"/>
 
                     <div class="list__item__content">
                       <div class="list__item__info">
                         <h3 class="list__title">
                           #{language.retrieveDisplayName()}
-                          <s:span rendered="#{language.enabledByDefault}" styleClass="label"
+                          <h:panelGroup layout="span" rendered="#{language.enabledByDefault}" styleClass="label"
                             title="#{msgs['jsf.language.enableByDefault']}">
                             #{msgs['jsf.language.enabledByDefault']}
-                          </s:span>
+                          </h:panelGroup>
 
-                          <s:span rendered="#{not language.active}" styleClass="label"
-                            title="#{msgs['jsf.Disabled']}">
-                            #{msgs['jsf.Disabled']}
-                          </s:span>
+                          <h:panelGroup layout="span" rendered="#{not language.active}" styleClass="label">
+                            <!-- TODO h:panelGroup do not support title attribute. But do we really need a title here? -->
+                            <span title="#{msgs['jsf.Disabled']}">
+                              #{msgs['jsf.Disabled']}
+                            </span>
+                          </h:panelGroup>
 
-                          <s:fragment rendered="#{languagesAction.isUserTeamMember(language)}">
+                          <ui:fragment rendered="#{languagesAction.isUserTeamMember(language)}">
                             <i class="i i--translate txt--neutral" title="#{msgs['jsf.language.member.joined']}"></i>
-                          </s:fragment>
+                          </ui:fragment>
                         </h3>
                         <span
                           class="list__item__meta">#{language.localeId.id} [#{language.retrieveNativeName()}]</span>
@@ -99,7 +100,7 @@
                         </span>
                       </div>
                     </div>
-                  </s:link>
+                  </h:link>
                 </li>
               </ui:repeat>
             </ul>
@@ -114,9 +115,9 @@
             actionBean="#{languagesAction}"/>
         </div>
 
-        <s:fragment rendered="#{identity.hasRole('admin')}">
+        <ui:fragment rendered="#{identity.hasRole('admin')}">
           <ui:include src="../WEB-INF/layout/language/new_language_modal.xhtml"/>
-        </s:fragment>
+        </ui:fragment>
       </div>
     </div>
 

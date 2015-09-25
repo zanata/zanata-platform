@@ -34,11 +34,11 @@
     <div class="g" id="language-page">
       <div class="g__item w--1-m w--3-8-l w--1-3 l--push-bottom-half">
         <p class="txt--meta l--push-all-0">
-          <s:link view="/language/home.xhtml" propagation="none"
+          <h:link outcome="/language/home.xhtml"
             value="#{msgs['jsf.Languages']}"/>
         </p>
 
-        <s:div styleClass="l--push-bottom-half" id="language-info">
+        <h:panelGroup layout="block"  styleClass="l--push-bottom-half" id="language-info">
           <h1 class="l--push-all-0 #{not languageAction.locale.active or not languageAction.locale.enabledByDefault ? 'txt--neutral' : ''}">
             <i class="i i--language"></i> #{languageAction.locale.retrieveDisplayName()}
           </h1>
@@ -49,25 +49,30 @@
             <div>
               #{msgs['jsf.NativeName']}<span class="l--push-left-quarter label">#{languageAction.locale.retrieveNativeName()}</span>
             </div>
-            <s:div rendered="#{languageAction.locale.asULocale().country ne ''}">
+            <h:panelGroup layout="block"  rendered="#{languageAction.locale.asULocale().country ne ''}">
               #{msgs['jsf.CountryCode']}<span class="l--push-left-quarter label">#{languageAction.locale.asULocale().country}</span>
-            </s:div>
-            <s:div rendered="#{languageAction.locale.asULocale().variant ne ''}">
+            </h:panelGroup>
+            <h:panelGroup layout="block"  rendered="#{languageAction.locale.asULocale().variant ne ''}">
               #{msgs['jsf.Variant']}<span class="l--push-left-quarter label">#{languageAction.locale.asULocale().variant}</span>
-            </s:div>
+            </h:panelGroup>
           </div>
-          <s:div rendered="#{not languageAction.locale.active or not languageAction.locale.enabledByDefault}">
-            <s:span styleClass="label" rendered="#{not languageAction.locale.active}"
-              title="#{msgs['jsf.Disabled']}">
-              #{msgs['jsf.Disabled']}
-            </s:span>
-            <s:span styleClass="label" rendered="#{not languageAction.locale.enabledByDefault}"
+          <h:panelGroup layout="block"  rendered="#{not languageAction.locale.active or not languageAction.locale.enabledByDefault}">
+            <h:panelGroup layout="span" styleClass="label" rendered="#{not languageAction.locale.active}">
+              <!-- TODO h:panelGroup do not support title attribute. But do we really need a title here? -->
+              <span title="#{msgs['jsf.Disabled']}">
+                #{msgs['jsf.Disabled']}
+              </span>
+            </h:panelGroup>
+            <h:panelGroup layout="span" styleClass="label" rendered="#{not languageAction.locale.enabledByDefault}"
               title="#{msgs['jsf.language.disableByDefault']}">
-              #{msgs['jsf.language.disableByDefault']}
-            </s:span>
-          </s:div>
+              <!-- TODO h:panelGroup do not support title attribute. But do we really need a title here? -->
+              <span title="#{msgs['jsf.language.disableByDefault']}">
+                #{msgs['jsf.language.disableByDefault']}
+              </span>
+            </h:panelGroup>
+          </h:panelGroup>
 
-        </s:div>
+        </h:panelGroup>
       </div>
 
       <div class="g__item w--1-m w--5-8-l w--2-3">
@@ -80,14 +85,14 @@
                 <i class="i i--users"></i>
               <span class="is-hidden--s i__text--right">
                 #{msgs['jsf.Members']}
-                <s:span styleClass="txt--neutral" id="members-size">
+                <h:panelGroup styleClass="txt--neutral" id="members-size">
                   #{languageAction.localeMembers.size}
-                </s:span>
+                </h:panelGroup>
               </span>
               </a>
             </li>
 
-            <s:fragment rendered="#{identity.loggedIn}">
+            <ui:fragment rendered="#{identity.loggedIn}">
               <li class="tab__end">
                 <h:form styleClass="l--push-bottom-0 dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown"
                   id="language-more-actions">
@@ -106,8 +111,8 @@
                       </a>
                     </li>
 
-                    <s:fragment rendered="#{not languageAction.isUserInTeam()}">
-                      <s:fragment rendered="#{not identity.hasRole('admin')}">
+                    <ui:fragment rendered="#{not languageAction.isUserInTeam()}">
+                      <ui:fragment rendered="#{not identity.hasRole('admin')}">
                         <li>
                           <a href="#" class="i__item--right"
                             data-toggle="modal"
@@ -116,8 +121,8 @@
                             <i class="i i--plus i__item__icon"></i>
                           </a>
                         </li>
-                      </s:fragment>
-                      <s:fragment rendered="#{identity.hasRole('admin')}">
+                      </ui:fragment>
+                      <ui:fragment rendered="#{identity.hasRole('admin')}">
                         <li>
                           <a4j:commandLink id="joinTeam"
                             action="#{languageAction.joinLanguageTeam}"
@@ -129,10 +134,10 @@
                               value="#{languageAction.language}"/>
                           </a4j:commandLink>
                         </li>
-                      </s:fragment>
-                    </s:fragment>
+                      </ui:fragment>
+                    </ui:fragment>
 
-                    <s:fragment rendered="#{languageAction.isUserInTeam()}">
+                    <ui:fragment rendered="#{languageAction.isUserInTeam()}">
                       <li>
                         <a4j:commandLink id="leaveTeam"
                           styleClass="txt--danger i__item--right"
@@ -144,13 +149,13 @@
                             value="#{languageAction.language}"/>
                         </a4j:commandLink>
                       </li>
-                    </s:fragment>
+                    </ui:fragment>
                   </ul>
                 </h:form>
               </li>
-            </s:fragment>
+            </ui:fragment>
 
-            <s:fragment rendered="#{identity.hasRole('admin')}">
+            <ui:fragment rendered="#{identity.hasRole('admin')}">
               <li class="tab__end">
                 <a id="settings_tab" href="#{languageURL}/settings"
                   class="js-url-mod" data-content="#settings">
@@ -160,7 +165,7 @@
                   <i class="i i--settings"></i>
                 </a>
               </li>
-            </s:fragment>
+            </ui:fragment>
           </ul>
 
           <ul class="tabs__content panels__container js-tabs-content l--push-top-1">
@@ -168,20 +173,20 @@
               <ui:include src="/WEB-INF/layout/language/members-tab.xhtml"/>
             </li>
 
-            <s:fragment rendered="#{identity.hasRole('admin')}">
+            <ui:fragment rendered="#{identity.hasRole('admin')}">
               <li id="settings">
                 <ui:include src="/WEB-INF/layout/language/settings-tab.xhtml"/>
               </li>
-            </s:fragment>
+            </ui:fragment>
           </ul>
         </div>
       </div>
     </div>
-    <s:fragment rendered="#{identity.loggedIn}">
+    <ui:fragment rendered="#{identity.loggedIn}">
       <ui:include src="/WEB-INF/layout/language/contact_coordinator_modal.xhtml"/>
-      <s:fragment rendered="#{not languageAction.isUserInTeam()}">
+      <ui:fragment rendered="#{not languageAction.isUserInTeam()}">
         <ui:include src="/WEB-INF/layout/language/request_join_modal.xhtml"/>
-      </s:fragment>
-    </s:fragment>
+      </ui:fragment>
+    </ui:fragment>
   </ui:define>
 </ui:composition>

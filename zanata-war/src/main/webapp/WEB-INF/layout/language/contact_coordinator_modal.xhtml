@@ -1,6 +1,6 @@
 <div xmlns="http://www.w3.org/1999/xhtml"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
   class="modal" id="contactCoordinatorDialog" tabindex="-1" role="dialog"
@@ -50,12 +50,12 @@
     <h:form id="contactCoordinatorForm" styleClass="l--push-bottom-0">
 
       <div class="modal__content l--pad-all-1">
-        <s:decorate id="messageField" template="/WEB-INF/layout/field.xhtml">
+        <zanata:decorate id="messageField" componentId="message">
           <h:inputTextarea id="contact-coordinator-message" value="#{languageContactCoordinatorAction.message}"
             styleClass="l--push-bottom-0">
-            <a4j:ajax event="blur" execute="@this"/>
+            <a4j:ajax event="blur" render="message" execute="@this"/>
           </h:inputTextarea>
-        </s:decorate>
+        </zanata:decorate>
       </div>
 
       <a4j:jsFunction name="sendContactCoordinatorEmail" execute="@form"

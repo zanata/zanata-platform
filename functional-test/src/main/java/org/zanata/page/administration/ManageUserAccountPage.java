@@ -38,8 +38,8 @@ public class ManageUserAccountPage extends BasePage {
 
     public static String PASSWORD_ERROR = "Passwords do not match";
 
-    private By passwordField = By.id("userdetailForm:passwordField:password");
-    private By passwordConfirmField = By.id("userdetailForm:passwordConfirmField:confirm");
+    private By passwordField = By.id("userdetailForm:password:input:password");
+    private By passwordConfirmField = By.id("userdetailForm:passwordConfirm:input:confirm");
     private By enabledField = By.id("userdetailForm:enabled");
     private By saveButton = By.id("userdetailForm:userdetailSave");
     private By cancelButton = By.id("userdetailForm:userdetailCancel");
@@ -76,7 +76,7 @@ public class ManageUserAccountPage extends BasePage {
 
     public ManageUserAccountPage clickRole(String role) {
         log.info("Click role {}", role);
-        clickElement(readyElement(By.id("userdetailForm:rolesField:roles:"
+        clickElement(readyElement(By.id("userdetailForm:roles:input:roles:"
                 .concat(roleMap.get(role)))));
         return new ManageUserAccountPage(getDriver());
     }

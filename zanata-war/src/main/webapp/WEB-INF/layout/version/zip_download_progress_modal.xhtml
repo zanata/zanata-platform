@@ -1,8 +1,8 @@
 <div xmlns="http://www.w3.org/1999/xhtml"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
   class="modal" id="zipDownloadProgressDialog" tabindex="-1" role="dialog"
   aria-labelledby="myModalLabel" aria-hidden="true">
 
@@ -23,7 +23,7 @@
     }
   </script>
 
-  <s:div id="zip-download-dialog">
+  <h:panelGroup layout="block"  id="zip-download-dialog">
     <a4j:jsFunction name="cancelDownload" oncomplete="enableDownload(true)"
       action="#{projectIterationZipFileAction.cancelFileDownload}"
       render="download-progress" limitRender="true"/>
@@ -46,8 +46,8 @@
           <div class="l--pad-top-half form__item txt--understated"
             id="downloadDialogMsg"></div>
 
-          <s:div styleClass="l--pad-top-half form__item" id="download-progress">
-            <s:fragment
+          <h:panelGroup layout="block"  styleClass="l--pad-top-half form__item" id="download-progress">
+            <ui:fragment
               rendered="#{projectIterationZipFileAction.zipFilePrepHandle ne null and not projectIterationZipFileAction.zipFilePrepHandle.done}">
               <a4j:poll render="download-progress" interval="500"
                 enabled="#{projectIterationZipFileAction.zipFilePrepHandle ne null and not projectIterationZipFileAction.zipFilePrepHandle.done}"/>
@@ -72,9 +72,9 @@
                   </div>
                 </li>
               </ul>
-            </s:fragment>
+            </ui:fragment>
 
-            <s:fragment
+            <ui:fragment
               rendered="#{projectIterationZipFileAction.zipFilePrepHandle.done}">
               <script type="text/javascript">
                 window.location =
@@ -82,8 +82,8 @@
                 enableDownload(true);
                 zanata.modal.hide('#zipDownloadProgressDialog');
               </script>
-            </s:fragment>
-          </s:div>
+            </ui:fragment>
+          </h:panelGroup>
         </div>
 
         <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
@@ -108,5 +108,5 @@
         </footer>
       </h:form>
     </div>
-  </s:div>
+  </h:panelGroup>
 </div>

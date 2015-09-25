@@ -2,14 +2,13 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:a4j="http://richfaces.org/a4j">
 
   <div class="panel">
     <div class="panel__header">
       <div class="panel__header__actions">
-        <s:fragment
+        <ui:fragment
           rendered="#{identity.loggedIn and identity.hasPermission(languageAction.locale, 'manage-language-team')}">
           <a href="#" class="button button--snug l--push-all-half"
             id="add-team-member-button"
@@ -18,7 +17,7 @@
             title="#{msgs['jsf.AddTeamMember']}">
             <i class="i i--plus"></i>
           </a>
-        </s:fragment>
+        </ui:fragment>
       </div>
       <h2 class="panel__heading">#{msgs['jsf.Members']}</h2>
     </div>
@@ -39,10 +38,10 @@
     </a4j:status>
 
     <h:form id="members-form" styleClass="l--push-bottom-1">
-      <s:div styleClass="l--pad-all-half"
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
         rendered="#{empty languageAction.localeMembers}">
         <p class="txt--meta">#{msgs['jsf.language.members.empty']}</p>
-        <s:fragment
+        <ui:fragment
           rendered="#{identity.hasPermission(languageAction.locale, 'manage-language-team')}">
           <p>
             <a id="addTeamMemberLink" href="#" class="button--primary"
@@ -52,21 +51,21 @@
               <i class="i i--plus i__item__icon"></i>
             </a>
           </p>
-        </s:fragment>
-      </s:div>
+        </ui:fragment>
+      </h:panelGroup>
 
-      <s:div styleClass="l--pad-all-half"
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
         rendered="#{not empty languageAction.localeMembers and empty languageAction.membersFilter.currentPage}">
         <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
-      </s:div>
+      </h:panelGroup>
 
 
-      <s:fragment rendered="#{not empty languageAction.membersFilter.currentPage}">
+      <ui:fragment rendered="#{not empty languageAction.membersFilter.currentPage}">
         <ul class="list--stats">
           <ui:repeat value="#{languageAction.membersFilter.currentPage}" var="member">
             <li
               class="#{identity.hasPermission(languageAction.locale, 'manage-language-team') ? 'list__item--actionable' : 'l--pad-all-quarter'}">
-              <s:div styleClass="list__item__action"
+              <h:panelGroup layout="block"  styleClass="list__item__action"
                 rendered="#{identity.hasPermission(languageAction.locale, 'manage-language-team')}">
                 <div
                   class="dropdown dropdown--small dropdown--inline dropdown--single list__item__dropdown js-dropdown">
@@ -85,7 +84,7 @@
                     </li>
                   </ul>
                 </div>
-              </s:div>
+              </h:panelGroup>
 
               <div class="list__item__content">
                 <div class="list__item__info">
@@ -93,7 +92,7 @@
                     #{member.person.name}
                   </h3>
               <span class="list__item__meta">
-                #{member.person.account.username}<s:span rendered="#{identity.hasRole('admin')}"> [#{member.person.email}] </s:span>
+                #{member.person.account.username}<h:panelGroup layout="span" rendered="#{identity.hasRole('admin')}"> [#{member.person.email}] </h:panelGroup>
               </span>
                 </div>
                 <div class="list__item__actions">
@@ -105,15 +104,15 @@
                         <a4j:ajax event="change" execute="@this"
                           listener="#{languageAction.saveTeamTranslator(member)}"/>
                       </h:selectBooleanCheckbox>
-                      <s:fragment
+                      <ui:fragment
                         rendered="#{not identity.hasPermission(languageAction.locale, 'manage-language-team')}">
-                        <s:fragment rendered="#{member.translator}">
+                        <ui:fragment rendered="#{member.translator}">
                           <i class="i i--checkmark"></i>
-                        </s:fragment>
-                        <s:fragment rendered="#{not member.translator}">
+                        </ui:fragment>
+                        <ui:fragment rendered="#{not member.translator}">
                           <i class="i i--cancel"></i>
-                        </s:fragment>
-                      </s:fragment>
+                        </ui:fragment>
+                      </ui:fragment>
                     </li>
                     <li>
                       #{msgs['jsf.Reviewer']}
@@ -122,15 +121,15 @@
                         <a4j:ajax event="change" execute="@this"
                           listener="#{languageAction.saveTeamReviewer(member)}"/>
                       </h:selectBooleanCheckbox>
-                      <s:fragment
+                      <ui:fragment
                         rendered="#{not identity.hasPermission(languageAction.locale, 'manage-language-team')}">
-                        <s:fragment rendered="#{member.reviewer}">
+                        <ui:fragment rendered="#{member.reviewer}">
                           <i class="i i--checkmark"></i>
-                        </s:fragment>
-                        <s:fragment rendered="#{not member.reviewer}">
+                        </ui:fragment>
+                        <ui:fragment rendered="#{not member.reviewer}">
                           <i class="i i--cancel"></i>
-                        </s:fragment>
-                      </s:fragment>
+                        </ui:fragment>
+                      </ui:fragment>
                     </li>
 
                     <li>
@@ -140,15 +139,15 @@
                         <a4j:ajax event="change" execute="@this"
                           listener="#{languageAction.saveTeamCoordinator(member)}"/>
                       </h:selectBooleanCheckbox>
-                      <s:fragment
+                      <ui:fragment
                         rendered="#{not identity.hasPermission(languageAction.locale, 'manage-language-team')}">
-                        <s:fragment rendered="#{member.coordinator}">
+                        <ui:fragment rendered="#{member.coordinator}">
                           <i class="i i--checkmark"></i>
-                        </s:fragment>
-                        <s:fragment rendered="#{not member.coordinator}">
+                        </ui:fragment>
+                        <ui:fragment rendered="#{not member.coordinator}">
                           <i class="i i--cancel"></i>
-                        </s:fragment>
-                      </s:fragment>
+                        </ui:fragment>
+                      </ui:fragment>
                     </li>
                   </ul>
                 </div>
@@ -157,7 +156,7 @@
             </li>
           </ui:repeat>
         </ul>
-      </s:fragment>
+      </ui:fragment>
     </h:form>
 
     <zanata:list-filter listId="members-form"
@@ -167,9 +166,9 @@
       actionBean="#{languageAction.membersFilter}"/>
 
   </div>
-  <s:fragment
+  <ui:fragment
     rendered="#{identity.hasPermission(languageAction.locale, 'manage-language-team')}">
     <ui:include src="search_user_modal.xhtml"/>
-  </s:fragment>
+  </ui:fragment>
 
 </ui:composition>

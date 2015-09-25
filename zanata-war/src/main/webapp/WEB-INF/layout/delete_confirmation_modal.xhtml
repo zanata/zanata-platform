@@ -1,8 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:a4j="http://richfaces.org/a4j"
-  xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:s="http://jboss.org/schema/seam/taglib">
+  xmlns:h="http://java.sun.com/jsf/html">
 
 
 
@@ -48,7 +47,7 @@
 
       <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
         <div class="g--tight">
-          <s:div styleClass="g__item txt--align-right"
+          <h:panelGroup layout="block"  styleClass="g__item txt--align-right"
             id="delete-confirmation-buttons">
             <button id="cancelDelete" onclick="zanata.modal.hide('#delete-confirmation-modal');return false;"
               class="cancel button--link l--push-right-half" data-dismiss="modal">
@@ -57,7 +56,7 @@
 
             <button id="deleteButton" styleClass="button--danger" jsfc="a4j:commandButton" binding="#{deleteButton}" disabled="true"
               value="#{msgs['jsf.Delete']}"></button>
-          </s:div>
+          </h:panelGroup>
         </div>
       </footer>
     </div>

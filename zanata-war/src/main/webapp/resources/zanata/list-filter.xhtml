@@ -2,8 +2,9 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:composite="http://java.sun.com/jsf/composite"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:h="http://java.sun.com/jsf/html"
   xmlns:rich="http://richfaces.org/rich"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:a4j="http://richfaces.org/a4j">
 
 <composite:interface>
@@ -49,7 +50,7 @@
     limitRender="true">
   </a4j:jsFunction>
 
-  <s:fragment rendered="#{!cc.attrs.bottomPanel}">
+  <ui:fragment rendered="#{!cc.attrs.bottomPanel}">
     <a4j:jsFunction name="#{cc.attrs.id}FilterList"
       action="#{cc.attrs.actionBean.firstPage}" status="#{cc.attrs.status}"
       render="#{cc.attrs.id}-pager, #{cc.attrs.id}-page-info, #{cc.attrs.render}"
@@ -71,16 +72,16 @@
         data-target="##{cc.attrs.id}">#{msgs['jsf.Cancel']}
       </button>
     </div>
-  </s:fragment>
+  </ui:fragment>
 
-  <s:div
+  <h:panelGroup layout="block"
     styleClass="panel__results #{cc.attrs.bottomPanel ? 'panel__results--bottom' : ''}">
-    <s:div id="#{cc.attrs.id}-pager">
-      <s:div styleClass="panel__results__type"
+    <h:panelGroup layout="block"  id="#{cc.attrs.id}-pager">
+      <h:panelGroup layout="block"  styleClass="panel__results__type"
         rendered="#{not (cc.attrs.bottomPanel and cc.attrs.actionBean.totalRecords eq 0)}">
         <i class="i txt--neutral #{cc.attrs.iconClass}"></i>
-      </s:div>
-      <s:fragment
+      </h:panelGroup>
+      <ui:fragment
         rendered="#{cc.attrs.actionBean.totalRecords ge cc.attrs.actionBean.pageSize}">
         <ul class="panel__pager">
           <li>
@@ -100,26 +101,26 @@
             </button>
           </li>
         </ul>
-      </s:fragment>
-    </s:div>
+      </ui:fragment>
+    </h:panelGroup>
     <span class="txt--meta">
-      <s:span id="#{cc.attrs.id}-page-info">
-        <s:fragment
+      <h:panelGroup id="#{cc.attrs.id}-page-info">
+        <ui:fragment
           rendered="#{not (cc.attrs.bottomPanel and cc.attrs.actionBean.totalRecords eq 0)}">
-          <s:fragment
+          <ui:fragment
             rendered="#{cc.attrs.actionBean.totalRecords gt cc.attrs.actionBean.pageSize}">
             <strong>#{cc.attrs.actionBean.pageStartIdx+1}-#{cc.attrs.actionBean.pageEndIdx+1}</strong> of
             #{cc.attrs.actionBean.totalRecords}
-          </s:fragment>
-          <s:fragment
+          </ui:fragment>
+          <ui:fragment
             rendered="#{cc.attrs.actionBean.totalRecords le cc.attrs.actionBean.pageSize}">
             <strong>#{cc.attrs.actionBean.totalRecords}</strong>
-          </s:fragment>
-        </s:fragment>
-      </s:span>
+          </ui:fragment>
+        </ui:fragment>
+      </h:panelGroup>
 
 
-      <s:fragment rendered="#{!cc.attrs.bottomPanel}">
+      <ui:fragment rendered="#{!cc.attrs.bottomPanel}">
         <button
           class="button--link panel__search__reset js-reveal__reset is-hidden"
           data-target="##{cc.attrs.id}"
@@ -131,8 +132,8 @@
           data-target="##{cc.attrs.id}">
           #{msgs['jsf.Search']}<i class="i--right i--search"></i>
         </button>
-      </s:fragment>
+      </ui:fragment>
     </span>
-  </s:div>
+  </h:panelGroup>
 </composite:implementation>
 </html>

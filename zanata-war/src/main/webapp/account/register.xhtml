@@ -1,19 +1,19 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   template="../WEB-INF/template/template_nobanner.xhtml">
 
   <ui:define name="page_title">#{msgs['jsf.Register']}</ui:define>
   <ui:define name="center_content">
 
     <div class="header__logo-only">
-      <s:link view="/home.xhtml" propagation="none" id="home" tabindex="1">
+      <h:link outcome="/home.xhtml" id="home" tabindex="1">
         <img src="#{assets['img/logo/logo.svg']}" alt="Zanata"/>
-      </s:link>
+      </h:link>
     </div>
 
     <div class="g--centered">
@@ -29,46 +29,46 @@
               rendered="#{showGlobalMessages != 'false'}"/>
           </a4j:outputPanel>
           <div class="g">
-            <s:div
+            <h:panelGroup layout="block"
               styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--1-2 w--1-m' : ''}"
               rendered="#{applicationConfiguration.internalAuth or applicationConfiguration.jaasAuth}">
-              <s:fragment rendered="#{applicationConfiguration.multiAuth}">
+              <ui:fragment rendered="#{applicationConfiguration.multiAuth}">
                 <h2
                   class="gamma heading--sub">#{msgs['jsf.register.WithZanata']}</h2>
-              </s:fragment>
+              </ui:fragment>
 
               <h:form id="loginForm"
                 styleClass="l--push-top-half l--pad-all-1 bg--pop-higher js-form-password-parent">
                 <h:outputLabel
                   for="name">#{msgs['jsf.register.FullName.label']}</h:outputLabel>
-                <h:inputText id="name" value="#{register.person.name}"
-                  tabindex="2"/>
+                <zanata:decorate id="nameField">
+                  <h:inputText id="name" value="#{register.person.name}"
+                    tabindex="2"/>
+                </zanata:decorate>
+
 
                 <h:outputLabel
                   for="username">#{msgs['jsf.Username']}</h:outputLabel>
-                <s:decorate id="usernameField"
-                  template="../WEB-INF/layout/field.xhtml">
+                <zanata:decorate id="username" componentId="usernameField">
                   <h:inputText id="username" value="#{register.username}"
                     tabindex="3">
-                    <a4j:ajax event="blur" render="usernameField"
-                      execute="@this"/>
+                    <a4j:ajax event="blur" render="usernameField" />
                   </h:inputText>
-                </s:decorate>
+                </zanata:decorate>
+
 
                 <h:outputLabel
                   for="email">#{msgs['jsf.Email']}</h:outputLabel>
-                <s:decorate id="emailField"
-                  template="../WEB-INF/layout/field.xhtml">
+                <zanata:decorate id="email" componentId="emailField">
                   <h:inputText id="email" value="#{register.email}"
                     tabindex="4">
                     <a4j:ajax event="blur" render="emailField" execute="@this"/>
                   </h:inputText>
-                </s:decorate>
+                </zanata:decorate>
 
                 <h:outputLabel
                   for="password">#{msgs['jsf.Password']}</h:outputLabel>
-                <s:decorate id="passwordField"
-                  template="../WEB-INF/layout/field.xhtml">
+                <zanata:decorate id="passwordField">
                   <div class="form__password js-form-password">
                     <h:inputSecret id="password"
                       styleClass="js-form-password-input form__input"
@@ -78,19 +78,19 @@
                     <a href="#"
                       class="form__toggle js-form-password-toggle">Show</a>
                   </div>
-                </s:decorate>
+                </zanata:decorate>
 
                 <h:outputLabel for="human"
                   styleClass="is-hidden">If you are a human, do not fill in this field.</h:outputLabel>
                 <h:inputText id="human" styleClass="is-hidden"
                   value="#{register.humanField}"/>
 
-                <s:fragment rendered="#{not empty applicationConfiguration.termsOfUseUrl}">
+                <ui:fragment rendered="#{not empty applicationConfiguration.termsOfUseUrl}">
                   <p class="txt--meta l--push-top-half">
                     <h:outputText value="#{msgs.format('jsf.register.agreeToTOS',
                       applicationConfiguration.termsOfUseUrl)}" escape="false"/>
                   </p>
-                </s:fragment>
+                </ui:fragment>
 
                 <div class="l--push-top-1">
                   <h:commandButton value="Sign Up" action="#{register.register}"
@@ -98,21 +98,21 @@
 
                   <div
                     class="l--push-top-half txt--align-center txt--align-center-s">
-                    #{msgs['jsf.register.AlreadyHaveAccount.label']} <s:link
-                    view="/account/login.xhtml"
+                    #{msgs['jsf.register.AlreadyHaveAccount.label']} <h:link
+                    outcome="/account/login.xhtml"
                     value="#{msgs['jsf.register.LogIn.label']}"/>
                   </div>
                 </div>
               </h:form>
-            </s:div>
-            <s:div
+            </h:panelGroup>
+            <h:panelGroup layout="block"
               styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--1-2 w--1-m' : ''}"
               rendered="#{applicationConfiguration.openIdAuth}">
               <h:form>
-                <s:fragment rendered="#{applicationConfiguration.multiAuth}">
+                <ui:fragment rendered="#{applicationConfiguration.multiAuth}">
                   <h2
                     class="gamma heading--sub">#{msgs['jsf.register.WithOther.label']}</h2>
-                </s:fragment>
+                </ui:fragment>
                 <ul class="list--no-bullets">
                   <li class="l--push-top-half">
                     <h:commandLink action="#{loginAction.openIdLogin('Fedora')}"
@@ -139,7 +139,7 @@
                   </li>
                 </ul>
               </h:form>
-            </s:div>
+            </h:panelGroup>
           </div>
         </div>
       </div>

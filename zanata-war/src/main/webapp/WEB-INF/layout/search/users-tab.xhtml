@@ -1,7 +1,6 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
@@ -40,12 +39,12 @@
     </a4j:status>
 
     <h:form id="search-user_form" styleClass="l--push-bottom-1">
-      <s:div styleClass="l--pad-all-half"
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
         rendered="#{zanataSearch.getTotalUserCount() ge 0 and empty zanataSearch.userTabUserFilter.currentPage}">
         <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
-      </s:div>
+      </h:panelGroup>
 
-      <s:fragment
+      <ui:fragment
         rendered="#{not empty zanataSearch.userTabUserFilter.currentPage}">
         <ul class="list--stats">
           <ui:repeat value="#{zanataSearch.userTabUserFilter.currentPage}"
@@ -63,7 +62,7 @@
             </li>
           </ui:repeat>
         </ul>
-      </s:fragment>
+      </ui:fragment>
     </h:form>
 
     <zanata:list-filter status="users-loader"

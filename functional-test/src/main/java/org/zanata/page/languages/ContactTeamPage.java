@@ -31,7 +31,7 @@ import org.zanata.page.BasePage;
 @Slf4j
 public class ContactTeamPage extends BasePage {
 
-    private By messageField = By.id("contactCoordinatorForm:messageField:contact-coordinator-message");
+    private By messageField = By.id("contactCoordinatorForm:messageField:input:contact-coordinator-message");
     private By sendButton = By.id("contact-coordinator-send-button");
 
     public ContactTeamPage(WebDriver driver) {

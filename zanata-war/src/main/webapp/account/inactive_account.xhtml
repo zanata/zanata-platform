@@ -3,7 +3,7 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   template="../WEB-INF/template/template_nobanner.xhtml">
 
   <ui:define name="page_title">#{msgs['jsf.InactiveAccount']}</ui:define>
@@ -14,9 +14,9 @@
 
 
     <div class="header__logo-only">
-      <s:link view="/home.xhtml" propagation="none" id="home" tabindex="1">
+      <h:link outcome="/home.xhtml" id="home" tabindex="1">
         <img src="#{assets['img/logo/logo.svg']}" alt="Zanata"/>
-      </s:link>
+      </h:link>
     </div>
 
     <div class="g--centered">
@@ -35,12 +35,11 @@
 
               <h:outputText value="#{msgs['jsf.or']}"/>
 
-              <s:decorate id="emailField" template="../WEB-INF/layout/field.xhtml" styleClass="l--push-top-quarter">
+              <zanata:decorate id="email" styleClass="l--push-top-quarter" componentId="emailField">
                 <div class="form--inline">
                   <h:inputText id="email" styleClass="form--inline__input" value="#{inactiveAccountAction.email}"
                     placeholder="#{msgs['jsf.email.placeholder']}">
                     <a4j:ajax event="blur" render="emailField"/>
-                    <rich:placeholder value="#{msgs['jsf.email.placeholder']}" styleClass="txt--neutral"/>
                   </h:inputText>
 
                   <div class="form--inline__suffix">
@@ -49,7 +48,7 @@
                       action="#{inactiveAccountAction.changeEmail}"/>
                   </div>
                 </div>
-              </s:decorate>
+              </zanata:decorate>
             </h:form>
           </div>
         </div>

@@ -1,6 +1,5 @@
 <div xmlns="http://www.w3.org/1999/xhtml"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:ui="http://java.sun.com/jsf/facelets"
@@ -76,11 +75,11 @@
             <span class="txt--meta"> [#{result.slug}]</span>
           </zanata:autocomplete>
 
-          <s:div id="versions">
-            <s:fragment rendered="#{empty versionGroupJoinAction.versions and versionGroupJoinAction.projectSlug != null}">
+          <h:panelGroup layout="block"  id="versions">
+            <ui:fragment rendered="#{empty versionGroupJoinAction.versions and versionGroupJoinAction.projectSlug != null}">
               <div class="l--pad-all-quarter txt--understated">#{msgs['jsf.NoVersions']}</div>
-            </s:fragment>
-            <s:fragment rendered="#{not empty versionGroupJoinAction.versions}">
+            </ui:fragment>
+            <ui:fragment rendered="#{not empty versionGroupJoinAction.versions}">
               <ul class="list--slat" id="version-list">
                 <ui:repeat value="#{versionGroupJoinAction.versions}" var="version">
                   <li>
@@ -90,18 +89,18 @@
                   </li>
                 </ui:repeat>
               </ul>
-            </s:fragment>
-          </s:div>
+            </ui:fragment>
+          </h:panelGroup>
         </div>
 
-        <s:decorate id="messageField" template="/WEB-INF/layout/field.xhtml">
+        <zanata:decorate id="message" componentId="messageField" >
           <span>#{msgs['jsf.AdditionalInfo']}</span>
           <span class="txt--meta bx--block">#{msgs['jsf.group.email.AdditionalInfoMessage']}</span>
           <h:inputTextarea id="request-join-group-message" value="#{versionGroupJoinAction.message}"
             styleClass="l--push-bottom-0">
             <a4j:ajax event="blur" render="messageField" execute="@this"/>
           </h:inputTextarea>
-        </s:decorate>
+        </zanata:decorate>
       </div>
 
       <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">

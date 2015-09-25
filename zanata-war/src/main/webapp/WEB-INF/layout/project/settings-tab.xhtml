@@ -3,7 +3,6 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:rich="http://richfaces.org/rich"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
 <script type="text/javascript">
@@ -169,14 +168,14 @@
     </ul>
     <hr/>
 
-    <s:div styleClass="l--push-bottom-half" id="user-roles">
+    <h:panelGroup layout="block"  styleClass="l--push-bottom-half" id="user-roles">
       <zanata:checkbox label="#{msgs['jsf.RestrictRoleAccessMessage']}"
         onValueChanged="onRestrictedByRoleValueChanged"
         labelStyle="js-reveal__toggle l--push-bottom-0"
         styleClass="js-form__restricted-by-role"
         checked="#{projectHome.instance.isRestrictedByRoles()}"
         value="restrict-access"/>
-      <s:div styleClass="bg--high l--pad-top-quarter l--pad-h-quarter"
+      <h:panelGroup layout="block"  styleClass="bg--high l--pad-top-quarter l--pad-h-quarter"
         rendered="#{projectHome.instance.restrictedByRoles}">
         <ul class="g--tighter">
           <ui:repeat value="#{projectHome.availableRoles}" var="availableRole">
@@ -188,8 +187,8 @@
             </li>
           </ui:repeat>
         </ul>
-      </s:div>
-    </s:div>
+      </h:panelGroup>
+    </h:panelGroup>
   </h:form>
 </li>
 <li id="settings-webhooks" class="js-tabs-content">
@@ -222,7 +221,7 @@
         </h3>
         <div class="form__item">
           <label for="payloadUrlInput">#{msgs['jsf.project.PayloadURL']}
-            <s:span styleClass="txt--required">*</s:span>
+            <span class="txt--required">*</span>
           </label>
           <input type="text" id="payloadUrlInput" autocomplete="off"
             placeholder="#{msgs['jsf.project.PayloadURL']}"

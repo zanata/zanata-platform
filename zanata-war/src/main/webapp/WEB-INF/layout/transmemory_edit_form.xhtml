@@ -1,7 +1,7 @@
 <ui:composition
   xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:a4j="http://richfaces.org/a4j">
 
@@ -11,21 +11,21 @@
         title="#{msgs['jsf.transmemory.TransMemoryIdExample']}"></i>
       </span>
     </h:outputLabel>
-    <s:decorate id="slugField" template="field.xhtml" enclose="true">
+    <zanata:decorate id="slug" componentId="slugField">
       <h:inputText id="slug" required="true"
         value="#{translationMemoryHome.instance.slug}"
         valueChangeListener="#{translationMemoryHome.verifySlugAvailable}">
         <a4j:ajax event="blur" render="slugField" execute="@this"/>
       </h:inputText>
-    </s:decorate>
+    </zanata:decorate>
   </div>
 
   <div class="l--push-top-half form__item">
     <h:outputLabel for="description">#{msgs['jsf.Description']}</h:outputLabel>
-    <s:decorate id="descriptionField" template="field.xhtml" enclose="true">
+    <zanata:decorate id="description" componentId="descriptionField">
       <h:inputTextarea id="description" required="false"
         value="#{translationMemoryHome.instance.description}"/>
-    </s:decorate>
+    </zanata:decorate>
   </div>
 
   <div class="l--push-top-1">

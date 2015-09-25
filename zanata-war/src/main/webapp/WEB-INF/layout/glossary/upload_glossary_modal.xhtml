@@ -1,7 +1,8 @@
 <div xmlns="http://www.w3.org/1999/xhtml"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:c="http://java.sun.com/jsf/core"
   xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   class="modal" id="glossaryUploadDialog" tabindex="-1" role="dialog"
   aria-labelledby="myModalLabel" aria-hidden="true">
@@ -11,13 +12,13 @@
       zanata.loader.deactivate('#upload-glossary-loader');
       enableUploadGlossaryButton(false);
       enableWarningMessage(false);
-
-      getUploadGlossaryFileComponent().change(function() {
-        if (getUploadGlossaryFileName() != '') {
-          processDetailsSection(getUploadGlossaryFileName().toUpperCase());
-        }
-      });
     });
+
+    function onGlossaryFileSubmitted() {
+      if (getUploadGlossaryFileName() != '') {
+        processDetailsSection(getUploadGlossaryFileName().toUpperCase());
+      }
+    }
 
     function processDetailsSection(fileName) {
       var fileExtension = getFileExtension(fileName);
@@ -52,18 +53,13 @@
       }
     }
 
-    function getUploadGlossaryFileComponent() {
-      return jQuery('#' + jqSelector('#{rich:clientId('glossary-file-upload')}'));
-    }
-
     function getUploadGlossaryFileName() {
-      return getUploadGlossaryFileComponent().val();
+      return jQuery('.rf-fu-itm-lbl').text();
     }
 
     function cancelUploadGlossary() {
       enableUploadGlossaryButton(false);
       zanata.loader.deactivate('#upload-glossary-loader');
-      getUploadGlossaryFileComponent().val('');
       jQuery('#lang-selection').addClass('is-hidden');
     }
 
@@ -106,16 +102,22 @@
       </button>
     </header>
 
-    <h:form id="upload-glossary-form" styleClass="l--push-bottom-0" enctype="multipart/form-data">
+    <h:form id="upload-glossary-form" styleClass="l--push-bottom-0" >
       <div class="modal__content l--pad-all-1">
         <div class="form__item txt--understated" id="message">
           <span>#{msgs['jsf.Glossary.supportedFileFormat']}</span>
         </div>
+
+        <a4j:jsFunction name="clearSelection" action="#{glossaryAction.clearGlossaryUpload}"/>
         <div class="form__item">
-          <s:fileUpload id="glossary-file-upload" accept="*"
-            data="#{glossaryAction.glossaryFileUpload.fileContents}"
-            fileName="#{glossaryAction.glossaryFileUpload.fileName}">
-          </s:fileUpload>
+          <rich:fileUpload id="upload-file"
+            fileUploadListener="#{glossaryAction.glossaryFileUploaded}"
+            onfilesubmit="onGlossaryFileSubmitted()"
+            addControlLabel="Select file..." clearAllLabel="Clear all" clearLabel="Clear"
+            uploadLabel="upload" immediateUpload="true" maxFilesQuantity="1"
+            onclear="clearSelection();enableUploadGlossaryButton(false);"
+            listHeight="100"
+            />
         </div>
 
         <div class="form__item is-hidden" id="lang-selection">
@@ -128,10 +130,10 @@
             </label>
             <h:selectOneMenu
               value="#{glossaryAction.glossaryFileUpload.sourceLang}">
-              <s:selectItems value="#{glossaryAction.availableLocales}"
+              <c:selectItems value="#{glossaryAction.availableLocales}"
                 var="locale"
-                label="#{locale.localeId.id}  -  #{locale.retrieveNativeName()}"
-                itemValue="#{locale.localeId.id}" escape="true"/>
+                itemLabel="#{locale.localeId.id}  -  #{locale.retrieveNativeName()}"
+                itemValue="#{locale.localeId.id}" itemLabelEscaped="true"/>
             </h:selectOneMenu>
           </div>
           <div>
@@ -143,10 +145,10 @@
             </label>
             <h:selectOneMenu
               value="#{glossaryAction.glossaryFileUpload.transLang}">
-              <s:selectItems value="#{glossaryAction.availableLocales}"
+              <c:selectItems value="#{glossaryAction.availableLocales}"
                 var="locale"
-                label="#{locale.localeId.id}  -  #{locale.retrieveNativeName()}"
-                itemValue="#{locale.localeId.id}" escape="true"/>
+                itemLabel="#{locale.localeId.id}  -  #{locale.retrieveNativeName()}"
+                itemValue="#{locale.localeId.id}" itemLabelEscaped="true"/>
             </h:selectOneMenu>
           </div>
         </div>

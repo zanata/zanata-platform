@@ -516,6 +516,7 @@
               <classifier>mysql.classifier</classifier>
               <port>${mysql.port}</port>
               <socket>${mysql.socket}</socket>
+              <clearexistingdata>false</clearexistingdata>
             </configuration>
             <executions>
               <execution>

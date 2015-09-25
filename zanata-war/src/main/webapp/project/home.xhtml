@@ -1,12 +1,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   template="../WEB-INF/template/template_2x.xhtml">
 
   <ui:define name="page_title">#{msgs['jsf.Projects']}</ui:define>
@@ -16,11 +16,11 @@
       value="#{identity.loggedIn and (identity.hasPermission(projectHome.instance, 'insert') or identity.hasRole('admin'))}"/>
     <rich:panel id="loggedIn" rendered="#{hasActions}">
       <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
-      <s:link id="createProjectLink" styleClass="action_link"
+      <h:link id="createProjectLink" styleClass="action_link"
         rendered="#{identity.hasPermission(projectHome.instance, 'insert')}"
         value="#{msgs['jsf.NewProject.Label']}"
-        view="/project/create_project.xhtml"
-        propagation="none"/>
+        outcome="/project/create_project.xhtml"
+        />
       <h:outputLink id="exportTMXAllLink" styleClass="action_link"
         rendered="#{identity.hasRole('admin')}"
         onclick="return confirm('#{msgs['jsf.ConfirmExportTMXAll']}')"
@@ -31,11 +31,11 @@
   </ui:define>
 
   <ui:define name="center_content">
-    <s:decorate id="main_content">
-      <s:fragment rendered="#{projectAction.getEmpty()}">
+    <h:panelGroup id="main_content" layout="block">
+      <ui:fragment rendered="#{projectAction.getEmpty()}">
         <h:outputText value="#{msgs['jsf.NoProjectExists']}"/>
-      </s:fragment>
-      <s:fragment rendered="#{!projectAction.getEmpty()}">
+      </ui:fragment>
+      <ui:fragment rendered="#{!projectAction.getEmpty()}">
         <h:form id="form">
 
           <div style="text-align: center">
@@ -77,7 +77,7 @@
             </rich:dataScroller>
           </div>
 
-          <s:div styleClass="float-right">
+          <h:panelGroup layout="block"  styleClass="float-right">
             <a4j:region>
               <h:selectBooleanCheckbox
                 title="#{msgs['jsf.FilterActiveProjects']}"
@@ -94,7 +94,7 @@
               </h:selectBooleanCheckbox>
               <h:outputText value="#{msgs['jsf.ReadOnly']}"/>
             </a4j:region>
-          </s:div>
+          </h:panelGroup>
           <br/>
           <rich:dataTable id="projectList"
             rows="#{projectAction.projectPagedListDataModel.pageSize}"
@@ -103,18 +103,18 @@
               <f:facet name="header">#{msgs['jsf.ProjectName']}
               </f:facet>
 
-              <s:link id="project" styleClass="table_link"
-                value="#{project.name}" propagation="none"
-                view="/project/project.xhtml"
+              <h:link id="project" styleClass="table_link"
+                value="#{project.name}"
+                outcome="/project/project.xhtml"
                 rendered="#{project.status == 'ACTIVE'}">
                 <f:param name="slug" value="#{project.slug}"/>
-              </s:link>
-              <s:link id="readonlyProject" styleClass="table_link readonly_link"
-                value="#{project.name}" propagation="none"
-                view="/project/project.xhtml"
+              </h:link>
+              <h:link id="readonlyProject" styleClass="table_link readonly_link"
+                value="#{project.name}"
+                outcome="/project/project.xhtml"
                 rendered="#{project.status == 'READONLY'}">
                 <f:param name="slug" value="#{project.slug}"/>
-              </s:link>
+              </h:link>
             </rich:column>
             <rich:column width="270px">
               <f:facet name="header">#{msgs['jsf.Description']}</f:facet>
@@ -167,8 +167,8 @@
             </rich:dataScroller>
           </div>
         </h:form>
-      </s:fragment>
-    </s:decorate>
+      </ui:fragment>
+    </h:panelGroup>
   </ui:define>
 
 </ui:composition>
