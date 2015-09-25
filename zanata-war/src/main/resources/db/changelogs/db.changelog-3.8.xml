@@ -61,7 +61,7 @@
           <changeSetExecuted id="mysql_baseline" author="flies" changeLogFile="db/changelogs/db.changelog-1.0.xml"/>
         </not>
         <!--  Or, latest 3.7 change (before the cutoff for postgresql) must not have been executed -->
-        <changeSetExecuted id="1" author="aeng@redhat.com" changeLogFile="db/changelogs/db.changelog-3.8.xml"/>
+        <changeSetExecuted id="6" author="aeng@redhat.com" changeLogFile="db/changelogs/db.changelog-3.7.xml"/>
       </or>
     </preConditions>
     <comment>Validate that the database is either new (empty) or up to version 3.7.1</comment>

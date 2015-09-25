@@ -182,9 +182,9 @@ def initialize(args) {
 
     def count = mysqldb.firstRow('''
         select count(*) as count from DATABASECHANGELOG
-        where filename='db/changelogs/db.changelog-3.8.xml\'
+        where filename='db/changelogs/db.changelog-3.7.xml\'
         and author = 'aeng@redhat.com\'
-        and id = '1\'''').count
+        and id = '6\'''').count
     if (count == 0) {
         println "ERROR: database is too old for migration to postgresql"
         println "database must be updated to Zanata 3.7.1+ first"

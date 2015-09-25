@@ -16,21 +16,21 @@ CREATE TABLE Activity (
  ,  wordCount INT  NOT NULL 
  , PRIMARY KEY(  id)
 );
-CREATE TABLE IF NOT EXISTS DATABASECHANGELOG (
+CREATE TABLE DATABASECHANGELOG ( 
   ID VARCHAR(63)  NOT NULL 
  ,  AUTHOR VARCHAR(63)  NOT NULL 
  ,  FILENAME VARCHAR(200)  NOT NULL 
  ,  DATEEXECUTED TIMESTAMP  NOT NULL 
- ,  ORDEREXECUTED INT  NOT NULL 
- ,  EXECTYPE VARCHAR(10)  NOT NULL 
  ,  MD5SUM VARCHAR(35) 
  ,  DESCRIPTION VARCHAR(255) 
  ,  COMMENTS VARCHAR(255) 
  ,  TAG VARCHAR(255) 
  ,  LIQUIBASE VARCHAR(20) 
+ ,  ORDEREXECUTED INT  NOT NULL 
+ ,  EXECTYPE VARCHAR(10)  NOT NULL 
  , PRIMARY KEY(  AUTHOR, FILENAME, ID)
 );
-CREATE TABLE IF NOT EXISTS DATABASECHANGELOGLOCK (
+CREATE TABLE DATABASECHANGELOGLOCK ( 
   ID INT  NOT NULL 
  ,  LOCKED boolean  NOT NULL 
  ,  LOCKGRANTED TIMESTAMP 
@@ -377,18 +377,6 @@ CREATE TABLE HRoleAssignmentRule (
  ,  versionNum INT  NOT NULL 
  , PRIMARY KEY(  id)
 );
-CREATE TABLE HSI_LuceneIndexesData ( 
-  id VARCHAR(255)  NOT NULL 
- ,  datum BYTEA 
- ,  version BIGINT 
- , PRIMARY KEY(  id)
-);
-CREATE TABLE HSI_LuceneIndexesMetadata ( 
-  id VARCHAR(255)  NOT NULL 
- ,  datum BYTEA 
- ,  version BIGINT 
- , PRIMARY KEY(  id)
-);
 CREATE TABLE HSimpleComment ( 
   id BIGSERIAL  NOT NULL 
  ,  comment TEXT  NOT NULL 
@@ -551,7 +539,6 @@ CREATE TABLE WebHook (
   id BIGSERIAL  NOT NULL 
  ,  projectId BIGINT  NOT NULL 
  ,  url TEXT  NOT NULL 
- ,  secret VARCHAR(255) 
  , PRIMARY KEY(  id)
 );
 CREATE UNIQUE INDEX ukactivity ON Activity ( actor_id,approxTime,activityType,contextType,context_id );
@@ -639,7 +626,7 @@ CREATE  INDEX idx_automatedentry_HTextFlowTargetHistory ON HTextFlowTargetHistor
 CREATE  INDEX idx_lastchanged_HTextFlowTargetHistory ON HTextFlowTargetHistory ( lastChanged );
 CREATE  INDEX idx_lastmodifiedby_HTextFlowTargetHistory ON HTextFlowTargetHistory ( last_modified_by_id );
 CREATE  INDEX idx_reviewedby_HTextFlowTargetHistory ON HTextFlowTargetHistory ( reviewed_by_id );
-CREATE  INDEX idx_translatedby_HTextFlowTargetHistory ON HTextFlowTargetHistory ( reviewed_by_id );
+CREATE  INDEX idx_translatedby_HTextFlowTargetHistory ON HTextFlowTargetHistory ( translated_by_id );
 CREATE  INDEX fktarget_review_comment ON HTextFlowTargetReviewComment ( target_id );
 CREATE  INDEX fktarget_review_commenter ON HTextFlowTargetReviewComment ( commenter_id );
 CREATE  INDEX fk_iterationgroup_locale_hlocale ON IterationGroup_Locale ( locale_id );
@@ -647,16 +634,13 @@ CREATE UNIQUE INDEX slug_TransMemory ON TransMemory ( slug );
 CREATE UNIQUE INDEX uk_natural_id ON TransMemoryUnit ( tm_id,unique_id );
 CREATE  INDEX fk_transunitvariant_transunit ON TransMemoryUnitVariant ( trans_unit_id );
 CREATE  INDEX fk_webhook_hproject ON WebHook ( projectId );
-ALTER TABLE Activity ADD CONSTRAINT FKActivity_person FOREIGN KEY (actor_id) REFERENCES HPerson(id);
 ALTER TABLE HAccount ADD CONSTRAINT FK_HAccount_MergedIntoAccount FOREIGN KEY (mergedInto) REFERENCES HAccount(id);
 ALTER TABLE HAccountActivationKey ADD CONSTRAINT FK86E79CA4FA68C45F FOREIGN KEY (accountId) REFERENCES HAccount(id);
 ALTER TABLE HAccountMembership ADD CONSTRAINT FK9D5DB27B3E684F5E FOREIGN KEY (memberOf) REFERENCES HAccountRole(id);
 ALTER TABLE HAccountMembership ADD CONSTRAINT FK9D5DB27BFA68C45F FOREIGN KEY (accountId) REFERENCES HAccount(id);
-ALTER TABLE HAccountOption ADD CONSTRAINT FK_HAccountOption_HAccount FOREIGN KEY (account_id) REFERENCES HAccount(id);
 ALTER TABLE HAccountResetPasswordKey ADD CONSTRAINT FK85C9EFDAFA68C45F FOREIGN KEY (accountId) REFERENCES HAccount(id);
 ALTER TABLE HAccountRoleGroup ADD CONSTRAINT FK3321CC642DF53D7E FOREIGN KEY (roleId) REFERENCES HAccountRole(id);
 ALTER TABLE HAccountRoleGroup ADD CONSTRAINT FK3321CC643E684F5E FOREIGN KEY (memberOf) REFERENCES HAccountRole(id);
-ALTER TABLE HCredentials ADD CONSTRAINT FK_credentials_account FOREIGN KEY (account_id) REFERENCES HAccount(id);
 ALTER TABLE HDocument ADD CONSTRAINT FKEA766D83136CC025 FOREIGN KEY (poHeader_id) REFERENCES HPoHeader(id);
 ALTER TABLE HDocument ADD CONSTRAINT FKEA766D8351ED6DFD FOREIGN KEY (project_iteration_id) REFERENCES HProjectIteration(id);
 ALTER TABLE HDocument ADD CONSTRAINT FKEA766D836C9BADC1 FOREIGN KEY (last_modified_by_id) REFERENCES HPerson(id);
@@ -664,22 +648,12 @@ ALTER TABLE HDocument ADD CONSTRAINT FKEA766D83FEA3B54A FOREIGN KEY (locale) REF
 ALTER TABLE HDocumentHistory ADD CONSTRAINT FK279765915383E2F0 FOREIGN KEY (document_id) REFERENCES HDocument(id);
 ALTER TABLE HDocumentHistory ADD CONSTRAINT FK279765916C9BADC1 FOREIGN KEY (last_modified_by_id) REFERENCES HPerson(id);
 ALTER TABLE HDocumentHistory ADD CONSTRAINT FK27976591FEA3B54A FOREIGN KEY (locale) REFERENCES HLocale(id);
-ALTER TABLE HDocumentUpload ADD CONSTRAINT FK_HDocumentUpload_Locale FOREIGN KEY (localeId) REFERENCES HLocale(id);
-ALTER TABLE HDocumentUpload ADD CONSTRAINT FK_HDocumentUpload_ProjectIteration FOREIGN KEY (projectIterationId) REFERENCES HProjectIteration(id);
-ALTER TABLE HDocumentUploadPart ADD CONSTRAINT FK_HDocumentUploadPart_DocumentUpload FOREIGN KEY (documentUploadId) REFERENCES HDocumentUpload(id);
-ALTER TABLE HDocument_RawDocument ADD CONSTRAINT FK_HDocumentRawDocument_Document FOREIGN KEY (documentId) REFERENCES HDocument(id);
-ALTER TABLE HDocument_RawDocument ADD CONSTRAINT FK_HDocumentRawDocument_RawDocument FOREIGN KEY (rawDocumentId) REFERENCES HRawDocument(id);
 ALTER TABLE HGlossaryEntry ADD CONSTRAINT UKglossaryentry_srcLocaleId FOREIGN KEY (srcLocaleId) REFERENCES HLocale(id);
 ALTER TABLE HGlossaryTerm ADD CONSTRAINT UKglossaryterm_glossary_entry_id FOREIGN KEY (glossaryEntryId) REFERENCES HGlossaryEntry(id);
 ALTER TABLE HGlossaryTerm ADD CONSTRAINT UKglossaryterm_localeId FOREIGN KEY (localeId) REFERENCES HLocale(id);
-ALTER TABLE HIterationGroup_Maintainer ADD CONSTRAINT FKiterationGroupMaintainer_iterationGroupId FOREIGN KEY (iterationGroupId) REFERENCES HIterationGroup(id);
-ALTER TABLE HIterationGroup_Maintainer ADD CONSTRAINT FKiterationGroupMaintainer_personId FOREIGN KEY (personId) REFERENCES HPerson(id);
-ALTER TABLE HIterationGroup_ProjectIteration ADD CONSTRAINT FKiterationGroup_ProjectIteration_iterationGroupId FOREIGN KEY (iterationGroupId) REFERENCES HIterationGroup(id);
-ALTER TABLE HIterationGroup_ProjectIteration ADD CONSTRAINT FKiterationGroup_ProjectIteration_projectIterationId FOREIGN KEY (projectIterationId) REFERENCES HProjectIteration(id);
 ALTER TABLE HLocale_Member ADD CONSTRAINT FK82DF50D73A932491 FOREIGN KEY (supportedLanguageId) REFERENCES HLocale(id);
 ALTER TABLE HLocale_Member ADD CONSTRAINT FK82DF50D760C55B1B FOREIGN KEY (personId) REFERENCES HPerson(id);
 ALTER TABLE HPerson ADD CONSTRAINT FK6F0931BDFA68C45F FOREIGN KEY (accountId) REFERENCES HAccount(id);
-ALTER TABLE HPersonEmailValidationKey ADD CONSTRAINT FK_HPersonEmailValidationKey_HPerson FOREIGN KEY (personId) REFERENCES HPerson(id);
 ALTER TABLE HPoHeader ADD CONSTRAINT FK9A0ABDD4B7A40DF2 FOREIGN KEY (comment_id) REFERENCES HSimpleComment(id);
 ALTER TABLE HPoTargetHeader ADD CONSTRAINT FK1BC719855383E2F0 FOREIGN KEY (document_id) REFERENCES HDocument(id);
 ALTER TABLE HPoTargetHeader ADD CONSTRAINT FK1BC719857D208AD9 FOREIGN KEY (targetLanguage) REFERENCES HLocale(id);
@@ -691,47 +665,33 @@ ALTER TABLE HProjectIteration ADD CONSTRAINT FK31C1E42C5B1D181F FOREIGN KEY (par
 ALTER TABLE HProjectIteration_Locale ADD CONSTRAINT FKHPROJECTITELOCLOC FOREIGN KEY (localeId) REFERENCES HLocale(id);
 ALTER TABLE HProjectIteration_Locale ADD CONSTRAINT FKHPROJECTITELOCPRO FOREIGN KEY (projectIterationId) REFERENCES HProjectIteration(id);
 ALTER TABLE HProjectIteration_LocaleAlias ADD CONSTRAINT FK_HProjectIteration_LocaleAlias_HProjectIteration FOREIGN KEY (projectIterationId) REFERENCES HProjectIteration(id);
-ALTER TABLE HProjectIteration_Validation ADD CONSTRAINT FK_HProjectIteration_Validation_HProjectIteration FOREIGN KEY (projectIterationId) REFERENCES HProjectIteration(id);
-ALTER TABLE HProject_AllowedRole ADD CONSTRAINT FK_HProjectAllowedRole_Project FOREIGN KEY (projectId) REFERENCES HProject(id);
-ALTER TABLE HProject_AllowedRole ADD CONSTRAINT FK_HProjectAllowedRole_Role FOREIGN KEY (roleId) REFERENCES HAccountRole(id);
 ALTER TABLE HProject_Locale ADD CONSTRAINT FKHPROJECTLOCALELOC FOREIGN KEY (localeId) REFERENCES HLocale(id);
 ALTER TABLE HProject_Locale ADD CONSTRAINT FKHPROJECTLOCALEPRO FOREIGN KEY (projectId) REFERENCES HProject(id);
 ALTER TABLE HProject_LocaleAlias ADD CONSTRAINT FK_HProject_LocaleAlias_HProject FOREIGN KEY (projectId) REFERENCES HProject(id);
 ALTER TABLE HProject_Maintainer ADD CONSTRAINT FK1491F2E660C55B1B FOREIGN KEY (personId) REFERENCES HPerson(id);
 ALTER TABLE HProject_Maintainer ADD CONSTRAINT FK1491F2E665B5BB37 FOREIGN KEY (projectId) REFERENCES HProject(id);
-ALTER TABLE HProject_Validation ADD CONSTRAINT FK_HProject_Validation_HProject FOREIGN KEY (projectId) REFERENCES HProject(id);
-ALTER TABLE HRoleAssignmentRule ADD CONSTRAINT FK_HRoleAssignmentRule_HAccountRole FOREIGN KEY (role_to_assign_id) REFERENCES HAccountRole(id);
 ALTER TABLE HTermComment ADD CONSTRAINT UKtermComment_glossaryTerm FOREIGN KEY (glossaryTermId) REFERENCES HGlossaryTerm(id);
 ALTER TABLE HTextFlow ADD CONSTRAINT FK7B40F8635383E2F0 FOREIGN KEY (document_id) REFERENCES HDocument(id);
 ALTER TABLE HTextFlow ADD CONSTRAINT FK7B40F8638D8E70A5 FOREIGN KEY (potEntryData_id) REFERENCES HPotEntryData(id);
 ALTER TABLE HTextFlow ADD CONSTRAINT FK7B40F863B7A40DF2 FOREIGN KEY (comment_id) REFERENCES HSimpleComment(id);
-ALTER TABLE HTextFlowContentHistory ADD CONSTRAINT FKcontent_text_flow_history FOREIGN KEY (text_flow_history_id) REFERENCES HTextFlowHistory(id);
 ALTER TABLE HTextFlowHistory ADD CONSTRAINT FK46C4DEB1CCAD9D19 FOREIGN KEY (tf_id) REFERENCES HTextFlow(id);
 ALTER TABLE HTextFlowTarget ADD CONSTRAINT FK1E933FD46C9BADC1 FOREIGN KEY (last_modified_by_id) REFERENCES HPerson(id);
 ALTER TABLE HTextFlowTarget ADD CONSTRAINT FK1E933FD4B7A40DF2 FOREIGN KEY (comment_id) REFERENCES HSimpleComment(id);
 ALTER TABLE HTextFlowTarget ADD CONSTRAINT FK1E933FD4CCAD9D19 FOREIGN KEY (tf_id) REFERENCES HTextFlow(id);
 ALTER TABLE HTextFlowTarget ADD CONSTRAINT FK1E933FD4FEA3B54A FOREIGN KEY (locale) REFERENCES HLocale(id);
-ALTER TABLE HTextFlowTargetContentHistory ADD CONSTRAINT FKcontent_text_flow_target_history FOREIGN KEY (text_flow_target_history_id) REFERENCES HTextFlowTargetHistory(id);
 ALTER TABLE HTextFlowTargetHistory ADD CONSTRAINT FKF10986206C9BADC1 FOREIGN KEY (last_modified_by_id) REFERENCES HPerson(id);
 ALTER TABLE HTextFlowTargetHistory ADD CONSTRAINT FKF109862080727E8B FOREIGN KEY (target_id) REFERENCES HTextFlowTarget(id);
-ALTER TABLE HTextFlowTargetReviewComment ADD CONSTRAINT FKtarget_review_comment FOREIGN KEY (target_id) REFERENCES HTextFlowTarget(id);
-ALTER TABLE HTextFlowTargetReviewComment ADD CONSTRAINT FKtarget_review_commenter FOREIGN KEY (commenter_id) REFERENCES HPerson(id);
-ALTER TABLE IterationGroup_Locale ADD CONSTRAINT FK_IterationGroup_Locale_HIterationGroup FOREIGN KEY (iteration_group_id) REFERENCES HIterationGroup(id);
-ALTER TABLE IterationGroup_Locale ADD CONSTRAINT FK_IterationGroup_Locale_HLocale FOREIGN KEY (locale_id) REFERENCES HLocale(id);
-ALTER TABLE TransMemoryUnit ADD CONSTRAINT FK_tmunit_trans_memory FOREIGN KEY (tm_id) REFERENCES TransMemory(id);
-ALTER TABLE TransMemoryUnitVariant ADD CONSTRAINT FK_TransUnitVariant_TransUnit FOREIGN KEY (trans_unit_id) REFERENCES TransMemoryUnit(id);
-ALTER TABLE TransMemory_Metadata ADD CONSTRAINT FK_Metadata_TransMemory FOREIGN KEY (trans_memory_id) REFERENCES TransMemory(id);
 ALTER TABLE WebHook ADD CONSTRAINT FK_WebHook_HProject FOREIGN KEY (projectId) REFERENCES HProject(id);
 
-CREATE FUNCTION add_document_history() RETURNS trigger AS $add_document_history$
-   BEGIN
-      IF NEW.revision != OLD.revision THEN
-         INSERT INTO HDocumentHistory(document_id,revision,contentType,docId,locale,name,path,lastChanged,last_modified_by_id,obsolete)
-            VALUES (OLD.id,OLD.revision,OLD.contentType,OLD.docId,OLD.locale,OLD.name,OLD.path,OLD.lastChanged,OLD.last_modified_by_id,OLD.obsolete);
-      END IF;
-      RETURN NEW;
-   END;
-$add_document_history$ LANGUAGE plpgsql;
+    CREATE FUNCTION add_document_history() RETURNS trigger AS $add_document_history$
+       BEGIN
+          IF NEW.revision != OLD.revision THEN
+             INSERT INTO HDocumentHistory(document_id,revision,contentType,docId,locale,name,path,lastChanged,last_modified_by_id,obsolete)
+                VALUES (OLD.id,OLD.revision,OLD.contentType,OLD.docId,OLD.locale,OLD.name,OLD.path,OLD.lastChanged,OLD.last_modified_by_id,OLD.obsolete);
+          END IF;
+       END;
+    $add_document_history$ LANGUAGE plpgsql;
 
-CREATE TRIGGER HDocument_Update BEFORE UPDATE ON HDocument
-   FOR EACH ROW EXECUTE PROCEDURE add_document_history();
+    CREATE TRIGGER HDocument_Update BEFORE UPDATE ON HDocument
+       FOR EACH ROW EXECUTE PROCEDURE add_document_history();
+    
