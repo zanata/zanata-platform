@@ -105,9 +105,6 @@ while(mysqlTables.next()) {
 }
 mysqlTables.close()
 
-// Create Triggers
-createTriggers()
-
 // Manually increment sequences (only if migrating directly to a DB)
 if(!generateDDL) {
     updateAutoIncrementSequences(autoIncrementSeqs)
@@ -218,6 +215,7 @@ def executeOnDestination(String statement) {
     else {
         postgresdb.execute(statement)
     }
+    println "Note that triggers have not been migrated. They will be created when Zanata runs Liquibase at startup."
 }
 
 def createTable(String tableName, ResultSet columns) {
@@ -455,25 +453,3 @@ def updateAutoIncrementSequences(List seqs) {
         postgresdb.execute("SELECT setval('${s.seqName}', (select max(${s.colName}) from ${s.tableName}));".toString())
     }
 }
-
-// Create the necessary db triggers
-def createTriggers() {
-    println "Creating triggers"
-
-    // NB: Because this is so DB specific, and there is but a single trigger,
-    // they are hard-coded
-    executeOnDestination("""
-    CREATE FUNCTION add_document_history() RETURNS trigger AS \$add_document_history\$
-       BEGIN
-          IF NEW.revision != OLD.revision THEN
-             INSERT INTO HDocumentHistory(document_id,revision,contentType,docId,locale,name,path,lastChanged,last_modified_by_id,obsolete)
-                VALUES (OLD.id,OLD.revision,OLD.contentType,OLD.docId,OLD.locale,OLD.name,OLD.path,OLD.lastChanged,OLD.last_modified_by_id,OLD.obsolete);
-          END IF;
-       END;
-    \$add_document_history\$ LANGUAGE plpgsql;
-
-    CREATE TRIGGER HDocument_Update BEFORE UPDATE ON HDocument
-       FOR EACH ROW EXECUTE PROCEDURE add_document_history();
-    """.toString())
-}
-

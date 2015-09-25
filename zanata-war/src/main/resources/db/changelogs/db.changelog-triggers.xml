@@ -19,5 +19,11 @@
     <comment>h2 triggers</comment>
     <sqlFile path="db/h2/create_trigger.sql" stripComments="true" />
   </changeSet>
+  <changeSet author="zanata" id="postgresql_triggers" runOnChange="true"
+    dbms="postgresql">
+    <comment>postgresql triggers</comment>
+    <sqlFile path="db/postgresql/create_trigger.sql" stripComments="false"
+      endDelimiter=";;;" />
+  </changeSet>
 
 </databaseChangeLog>
