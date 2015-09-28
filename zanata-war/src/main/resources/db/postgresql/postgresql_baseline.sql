@@ -716,6 +716,7 @@ ALTER TABLE WebHook ADD CONSTRAINT FK_WebHook_HProject FOREIGN KEY (projectId) R
              INSERT INTO HDocumentHistory(document_id,revision,contentType,docId,locale,name,path,lastChanged,last_modified_by_id,obsolete)
                 VALUES (OLD.id,OLD.revision,OLD.contentType,OLD.docId,OLD.locale,OLD.name,OLD.path,OLD.lastChanged,OLD.last_modified_by_id,OLD.obsolete);
           END IF;
+          RETURN NEW;
        END;
     $add_document_history$ LANGUAGE plpgsql;
 
