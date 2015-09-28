@@ -17,6 +17,7 @@ import org.hibernate.jdbc.Work;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.ZanataDbunitJpaTest;
+import org.zanata.dao.StreamingEntityIterator;
 
 public class WrappedConnectionProviderTest extends ZanataDbunitJpaTest {
 
@@ -100,7 +101,7 @@ public class WrappedConnectionProviderTest extends ZanataDbunitJpaTest {
 
     private ScrollableResults streamQuery(String queryString) {
         Query q = session.createQuery(queryString);
-        q.setFetchSize(Integer.MIN_VALUE);
+        q.setFetchSize(StreamingEntityIterator.FETCH_SIZE);
         ScrollableResults scroll = q.scroll(ScrollMode.FORWARD_ONLY);
         return scroll;
     }

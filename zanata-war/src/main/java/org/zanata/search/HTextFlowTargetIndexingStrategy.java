@@ -28,6 +28,7 @@ import org.hibernate.ScrollableResults;
 import org.hibernate.search.FullTextSession;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.dao.HTextFlowTargetStreamingDAO;
+import org.zanata.dao.StreamingEntityIterator;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
@@ -65,7 +66,7 @@ public class HTextFlowTargetIndexingStrategy extends
                                         + "join fetch tft.textFlow.document.locale "
                                         + "join fetch tft.textFlow.document.projectIteration "
                                         + "join fetch tft.textFlow.document.projectIteration.project");
-        query.setFetchSize(Integer.MIN_VALUE);
+        query.setFetchSize(StreamingEntityIterator.FETCH_SIZE);
         return query.scroll(ScrollMode.FORWARD_ONLY);
     }
 

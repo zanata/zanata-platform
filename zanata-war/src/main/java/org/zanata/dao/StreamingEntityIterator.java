@@ -8,7 +8,7 @@ import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
 import org.zanata.util.CloseableIterator;
 
-class StreamingEntityIterator<E> implements CloseableIterator<E> {
+public class StreamingEntityIterator<E> implements CloseableIterator<E> {
     // MIN_VALUE gives a hint to mysql JDBC driver to stream results instead of
     // keeping everything in memory.
     // Note that this will tie up the JDBC connection until the ResultSet is
@@ -17,7 +17,10 @@ class StreamingEntityIterator<E> implements CloseableIterator<E> {
     // http://www.numerati.com/2012/06/26/reading-large-result-sets-with-hibernate-and-mysql/
     // and
     // http://dev.mysql.com/doc/refman/5.5/en/connector-j-reference-implementation-notes.html
-    private final int fetchSize = Integer.MIN_VALUE;
+    // for mysql, use negative value such as Integer.MIN_VALUE:
+//    private final int FETCH_SIZE = Integer.MIN_VALUE;
+    // for postgresql, just choose a reasonable batch size (eg 50)
+    public static final int FETCH_SIZE = 50;
 
     private final @Nonnull
     Session session;
@@ -66,7 +69,7 @@ class StreamingEntityIterator<E> implements CloseableIterator<E> {
 
     public void initQuery(Query q) {
         assert iter == null;
-        q.setFetchSize(fetchSize);
+        q.setFetchSize(FETCH_SIZE);
         q.setReadOnly(true);
         ScrollableResults scroll = q.scroll(ScrollMode.FORWARD_ONLY);
         iter = new ScrollableResultsIterator(scroll);

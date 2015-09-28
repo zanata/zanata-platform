@@ -76,7 +76,7 @@ public class HTextFlowTargetStreamingDAO extends
                                         "join fetch tft.textFlow.document.projectIteration "
                                         +
                                         "join fetch tft.textFlow.document.projectIteration.project");
-        query.setFetchSize(Integer.MIN_VALUE);
+        query.setFetchSize(StreamingEntityIterator.FETCH_SIZE);
         return query.scroll(ScrollMode.FORWARD_ONLY);
     }
 
@@ -101,7 +101,7 @@ public class HTextFlowTargetStreamingDAO extends
                                         "join fetch tft.textFlow.document.projectIteration "
                                         +
                                         "join fetch tft.textFlow.document.projectIteration.project p where p = :project");
-        return query.setFetchSize(Integer.MIN_VALUE)
+        return query.setFetchSize(StreamingEntityIterator.FETCH_SIZE)
                 .setParameter("project", project)
                 .scroll(ScrollMode.FORWARD_ONLY);
     }
@@ -128,7 +128,7 @@ public class HTextFlowTargetStreamingDAO extends
                                         "join fetch tft.textFlow.document.projectIteration iter "
                                         +
                                         "join fetch tft.textFlow.document.projectIteration.project where iter = :iteration");
-        return query.setFetchSize(Integer.MIN_VALUE)
+        return query.setFetchSize(StreamingEntityIterator.FETCH_SIZE)
                 .setParameter("iteration", iteration)
                 .scroll(ScrollMode.FORWARD_ONLY);
     }
