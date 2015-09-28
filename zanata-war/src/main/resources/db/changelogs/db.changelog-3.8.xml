@@ -148,4 +148,12 @@
     </createTable>
   </changeSet>
 
+  <changeSet id="1" author="sflaniga@redhat.com" dbms="postgresql">
+    <comment>Add composite index for glossary terms</comment>
+    <createIndex tableName="HGlossaryTerm" indexName="HGlossaryTerm_LocaleId_idx">
+      <column name="localeId"/>
+      <column name="content"/>
+    </createIndex>
+  </changeSet>
+
 </databaseChangeLog>
