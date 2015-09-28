@@ -24,6 +24,7 @@ import java.text.MessageFormat;
 import java.util.AbstractMap;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -34,9 +35,14 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.Contexts;
+import org.zanata.action.LocaleSelectorAction;
+import org.zanata.events.LocaleSelectedEvent;
 import org.zanata.util.EmptyEnumeration;
+import org.zanata.util.ServiceLocator;
 
 import javax.annotation.Nonnull;
+import javax.enterprise.event.Observes;
+import javax.faces.context.FacesContext;
 
 import static org.jboss.seam.ScopeType.EVENT;
 
@@ -64,7 +70,15 @@ public class Messages extends AbstractMap<String, String> {
      * @see org.jboss.seam.web.Locale
      */
     private static ResourceBundle getResourceBundle() {
-        return getResourceBundle(org.jboss.seam.core.Locale.instance());
+        // TODO [CDI] use producer to produce a session or request scope locale
+        if (Contexts.isSessionContextActive()) {
+            LocaleSelectorAction selectorAction = ServiceLocator.instance()
+                    .getInstance(LocaleSelectorAction.class);
+            Locale locale = selectorAction.getLocale();
+            return getResourceBundle(locale);
+        }
+
+        return getResourceBundle(Locale.getDefault());
     }
 
     /**
@@ -114,8 +128,8 @@ public class Messages extends AbstractMap<String, String> {
         this.resourceBundle = resourceBundle;
     }
 
-    @Observer("org.jboss.seam.localeSelected")
-    public void changeLocale(String localeString) {
+    @Observer(LocaleSelectedEvent.EVENT_NAME)
+    public void changeLocale(@Observes LocaleSelectedEvent event) {
         // we need to refresh the bean
         // see org.jboss.seam.international.LocaleSelector.select()
         Contexts.removeFromAllContexts("msgs");
