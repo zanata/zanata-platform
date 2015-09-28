@@ -1,5 +1,3 @@
-/* DELIMITER GO */
-
 CREATE OR REPLACE FUNCTION add_document_history() RETURNS trigger
     AS $add_document_history$
     BEGIN
