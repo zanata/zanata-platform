@@ -21,13 +21,12 @@ import java.lang.annotation.Target;
  * @author Gavin King
  * @author Sean Flanigan
  */
-@Target({METHOD, TYPE})
+@Target({TYPE})
 @Retention(RUNTIME)
 @Documented
 @Inherited
 @InterceptorBinding
-public @interface Synchronized
-{
+public @interface Synchronized {
     long DEFAULT_TIMEOUT = 1000;
 
     /**

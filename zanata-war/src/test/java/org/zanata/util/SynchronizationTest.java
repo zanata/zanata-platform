@@ -33,15 +33,15 @@ import net.jodah.concurrentunit.ConcurrentTestCase;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import org.apache.deltaspike.core.util.ProjectStageProducer;
 import org.jglue.cdiunit.AdditionalClasses;
+import org.jglue.cdiunit.CdiRunner;
 import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.bridge.SLF4JBridgeHandler;
-import org.zanata.test.CdiUnitRunner;
 
 @AdditionalClasses({ SynchronizationInterceptor.class})
 @SupportDeltaspikeCore
-@RunWith(CdiUnitRunner.class)
+@RunWith(CdiRunner.class)
 public class SynchronizationTest extends ConcurrentTestCase {
 
     static {
@@ -83,54 +83,6 @@ public class SynchronizationTest extends ConcurrentTestCase {
         }).start();
         new Thread(() -> {
             syncClassBean.blockingMethod();
-            resume();
-        }).start();
-        await(1000, 2);
-    }
-
-    @ApplicationScoped
-    @Slf4j
-    public static class SyncMethodBean {
-        volatile boolean executing;
-        @Synchronized
-        public void blockingMethod1() {
-            assertThat(executing).isFalse();
-            executing = true;
-            log.debug("starting to block");
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            log.debug("finished blocking");
-            executing = false;
-        }
-        @Synchronized
-        public void blockingMethod2() {
-            assertThat(executing).isFalse();
-            executing = true;
-            log.debug("starting to block");
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            log.debug("finished blocking");
-            executing = false;
-        }
-    }
-
-    @Inject
-    private SyncMethodBean syncMethodBean;
-
-    @Test
-    public void syncMethodBean() throws Exception {
-        new Thread(() -> {
-            syncMethodBean.blockingMethod1();
-            resume();
-        }).start();
-        new Thread(() -> {
-            syncMethodBean.blockingMethod2();
             resume();
         }).start();
         await(1000, 2);

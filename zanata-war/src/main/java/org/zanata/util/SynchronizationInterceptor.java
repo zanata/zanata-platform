@@ -29,12 +29,8 @@ public class SynchronizationInterceptor {
 
     @AroundInvoke
     public Object aroundInvoke(InvocationContext invocation) throws Exception {
-        Synchronized sa = invocation.getMethod()
+        Synchronized sa = invocation.getTarget().getClass()
                 .getAnnotation(Synchronized.class);
-        if (sa == null) {
-            sa = invocation.getTarget().getClass()
-                    .getAnnotation(Synchronized.class);
-        }
         long timeout = sa.timeout() != 0 ? sa.timeout() : defaultTimeout;
         log.debug("trying the lock");
         if (lock.tryLock(timeout, TimeUnit.MILLISECONDS)) {
