@@ -32,8 +32,6 @@ script: |
   '\[WARNING\] Checksum validation failed, no checksums available for)'
 
 jdk:
-  - openjdk7
-  - oraclejdk7
   - oraclejdk8
 
 matrix:
