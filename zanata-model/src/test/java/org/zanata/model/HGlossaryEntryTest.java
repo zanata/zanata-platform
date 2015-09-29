@@ -21,6 +21,7 @@
 package org.zanata.model;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -113,7 +114,8 @@ public class HGlossaryEntryTest {
 
     @Test
     public void hashMapDataTest() {
-        entry.getGlossaryTerms().clear();
+        Map<HLocale, HGlossaryTerm> glossaryTerms = entry.getGlossaryTerms();
+        glossaryTerms.clear();
 
         // Glossary Term 1 - EN_US
         setupTerm(1L, "TERM 1", LocaleId.EN_US, 1L);
@@ -124,11 +126,11 @@ public class HGlossaryEntryTest {
         // Glossary Term 3 - ES
         setupTerm(3L, "TERM 3", LocaleId.ES, 3L);
 
-        for (HLocale key : entry.getGlossaryTerms().keySet()) {
-            assertTrue(entry.getGlossaryTerms().containsKey(key));
-            assertNotNull(entry.getGlossaryTerms().get(key));
-        }
-
+        // TODO I'm not sure if this really tests anything:
+        glossaryTerms.forEach((locale, term) -> {
+            assertTrue(glossaryTerms.containsKey(locale));
+            assertNotNull(glossaryTerms.get(locale));
+        });
     }
 
     private HLocale setupTerm(Long id, String content, LocaleId locale,
