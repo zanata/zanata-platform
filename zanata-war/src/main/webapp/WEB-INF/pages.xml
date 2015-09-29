@@ -549,7 +549,7 @@
     </redirect>
   </exception>
 
-  <exception class="org.jboss.seam.web.FileUploadException" log-level="warn">
+  <exception class="org.richfaces.exception.FileUploadException" log-level="warn">
     <redirect view-id="/error.xhtml">
       <message severity="error">
         #{msgs['jsf.iteration.files.UploadFailed']} #{org.jboss.seam.handledException.message}
