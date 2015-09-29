@@ -18,6 +18,7 @@
 * [1243688](https://bugzilla.redhat.com/show_bug.cgi?id=1243688) - Groups filter by archived not working
 * [ZNTA-615](https://zanata.atlassian.net/browse/ZNTA-615) - Fix glossary permission
 * [ZNTA-643](https://zanata.atlassian.net/browse/ZNTA-643) - Fix concurrent map modification issue in language page
+* [ZNTA-696](https://zanata.atlassian.net/browse/ZNTA-696) - Fix user service for null authenticated user
 
 
 -----------------------
