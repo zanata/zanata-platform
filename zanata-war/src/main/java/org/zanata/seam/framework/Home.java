@@ -12,7 +12,6 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.core.Expressions.ValueExpression;
 import org.jboss.seam.framework.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +34,6 @@ public abstract class Home<T, E> extends MutableController<T> {
     private Object id;
     protected E instance;
     private Class<E> entityClass;
-    protected ValueExpression<T> newInstance;
 
 
     /**
@@ -171,9 +169,7 @@ public abstract class Home<T, E> extends MutableController<T> {
      * of the entity.
      */
     protected E createInstance() {
-        if (newInstance != null) {
-            return (E) newInstance.getValue();
-        } else if (getEntityClass() != null) {
+        if (getEntityClass() != null) {
             try {
                 return getEntityClass().newInstance();
             } catch (Exception e) {
@@ -262,24 +258,6 @@ public abstract class Home<T, E> extends MutableController<T> {
     public void setInstance(E instance) {
         setDirty(this.instance, instance);
         this.instance = instance;
-    }
-
-    /**
-     * {@link javax.el.ValueExpression} to execute to load a new instance. <br />
-     * Mainly used when configuring the {@link Home} components in
-     * <code>components.xml</code>.
-     */
-    public ValueExpression getNewInstance() {
-        return newInstance;
-    }
-
-    /**
-     * {@link javax.el.ValueExpression} to execute to load a new instance. <br />
-     * Mainly used when configuring the {@link Home} components in
-     * <code>components.xml</code>.
-     */
-    public void setNewInstance(ValueExpression newInstance) {
-        this.newInstance = newInstance;
     }
 
 }
