@@ -90,6 +90,9 @@ sed -i "$@" -f - <<-EOF
 	s/org.jboss.seam.annotations.Out/javax.enterprise.inject.Produces/g
 	s/org.jboss.seam.annotations.Unwrap/javax.enterprise.inject.Produces/g
 
+	# Seam's @Synchronized to ours
+	s/org.jboss.seam.annotations.Synchronized/org.zanata.util.Synchronized/g
+
 	# Seam's @Transactional to deltaspike's @Transactional
 	s/org.jboss.seam.annotations.Transactional/org.apache.deltaspike.jpa.api.transaction.Transactional/g
 
