@@ -37,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class SimpleClassIndexingStrategy<T> extends AbstractIndexingStrategy<T> {
-    public static final int MAX_QUERY_ROWS = 5000;
+    public static final int MAX_QUERY_ROWS = 100;
 
     public SimpleClassIndexingStrategy(Class<T> entityType) {
         super(entityType);
