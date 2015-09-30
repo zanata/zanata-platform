@@ -156,7 +156,30 @@
 
   <filter-mapping>
     <filter-name>gwtCacheControlFilter</filter-name>
-    <url-pattern>/*</url-pattern>
+    <url-pattern>/webtrans/*</url-pattern>
+  </filter-mapping>
+
+  <filter>
+    <filter-name>noCacheFilter</filter-name>
+    <filter-class>org.zanata.servlet.CacheControlFilter</filter-class>
+    <init-param>
+      <param-name>shouldCache</param-name>
+      <param-value>false</param-value>
+    </init-param>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>noCacheFilter</filter-name>
+    <url-pattern>/account/login.xhtml</url-pattern>
+    <url-pattern>/account/sign_in</url-pattern>
+    <url-pattern>/account/klogin.xhtml</url-pattern>
+    <url-pattern>/account/klogin</url-pattern>
+    <url-pattern>/version-group/version_group.xhtml</url-pattern>
+    <url-pattern>/version-group/view/*</url-pattern>
+    <url-pattern>/project/project.xhtml</url-pattern>
+    <url-pattern>/project/view/*</url-pattern>
+    <url-pattern>/iteration/view.xhtml</url-pattern>
+    <url-pattern>/iteration/view/*</url-pattern>
   </filter-mapping>
 
   <!--java melody for monitoring stats-->

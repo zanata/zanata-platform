@@ -20,18 +20,25 @@
  */
 package org.zanata.action;
 
+import java.io.IOException;
 import java.io.Serializable;
+
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.core.Conversation;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.security.AuthenticationType;
+import org.zanata.security.UserRedirectBean;
 import org.zanata.security.ZanataCredentials;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.openid.FedoraOpenIdProvider;
@@ -48,6 +55,7 @@ import org.zanata.security.openid.YahooOpenIdProvider;
  */
 @Name("loginAction")
 @Scope(ScopeType.PAGE)
+@Slf4j
 public class LoginAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -74,6 +82,9 @@ public class LoginAction implements Serializable {
     @Getter
     @Setter
     private String openId = "http://";
+
+    @In
+    private UserRedirectBean userRedirect;
 
     public String login() {
         credentials.setUsername(username);
@@ -105,7 +116,33 @@ public class LoginAction implements Serializable {
                     "login() only supports internal, jaas, or kerberos authentication");
         }
 
+        if ("loggedIn".equals(loginResult)) {
+            if (authenticationManager.isAuthenticated() && authenticationManager.isNewUser()) {
+                return "createUser";
+            }
+            if (authenticationManager.isAuthenticated() && !authenticationManager.isNewUser() && userRedirect.shouldRedirectToDashboard()) {
+                return "dashboard";
+            }
+            if (authenticationManager.isAuthenticated() && !authenticationManager.isNewUser() && userRedirect.isRedirect()) {
+                // TODO [CDI] seam will create a conversation when you return view id directly or redirect to external url
+                return continueToPreviousUrl();
+            }
+        } else if ("inactive".equals(loginResult)) {
+            Conversation.instance().end();
+            return "inactive";
+        }
         return loginResult;
+    }
+
+    private String continueToPreviousUrl() {
+        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+        try {
+            ec.redirect(userRedirect.getUrl());
+            return "continue";
+        } catch (IOException e) {
+            log.warn("error redirecting user to previous url: {}", userRedirect.getUrl(), e);
+            return "dashboard";
+        }
     }
 
     /**

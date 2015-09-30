@@ -6,6 +6,13 @@
   xmlns:h="http://java.sun.com/jsf/html"
   template="../WEB-INF/template/template.xhtml">
 
+  <f:metadata>
+    <f:viewParam name="projectSlug" value="#{versionHome.projectSlug}"/>
+    <f:viewParam name="copyFromVersionSlug" value="#{versionHome.copyFromVersionSlug}"/>
+    <f:event type="preRenderView" listener="#{versionHome.validateProjectSlug}"/>
+    <f:event type="preRenderView" listener="#{versionHome.init(true)}"/>
+  </f:metadata>
+
   <ui:define
     name="page_title">#{versionHome.project.name} - #{msgs['jsf.project.NewVersion']}</ui:define>
   <ui:define name="center_content">

@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.application.NavigationHandler;
+import javax.faces.context.FacesContext;
 
 import com.google.common.collect.Lists;
 import lombok.Getter;
@@ -184,6 +186,9 @@ public class MergeTransAction extends CopyAction implements Serializable {
         mergeTranslationsManager.start(sourceProjectSlug,
             sourceVersionSlug, targetProjectSlug, targetVersionSlug,
             !keepExistingTranslation);
+        FacesContext context = FacesContext.getCurrentInstance();
+        NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
+        navigationHandler.handleNavigation(context, null, "merge-translation");
     }
 
     // Check if copy-trans, copy version or merge-trans is running for the

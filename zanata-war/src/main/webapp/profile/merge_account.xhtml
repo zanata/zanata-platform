@@ -1,7 +1,12 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
   template="../WEB-INF/template/template.xhtml">
+
+  <f:metadata>
+    <f:event type="preRenderView" listener="#{accountMergeAction.validateAccounts}"/>
+  </f:metadata>
 
   <ui:define
     name="page_title">#{msgs['jsf.profile.MergeAccount']}

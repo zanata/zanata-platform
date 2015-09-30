@@ -4,143 +4,7 @@
   xsi:schemaLocation="http://jboss.org/schema/seam/pages http://jboss.org/schema/seam/pages-2.3.xsd"
   no-conversation-view-id="/home.xhtml" login-view-id="/account/login.xhtml">
 
-  <page view-id="*">
-    <navigation from-action="#{identity.logout}">
-      <redirect view-id="/home.xhtml" />
-    </navigation>
-    <navigation>
-      <rule if-outcome="home">
-        <redirect view-id="/home.xhtml" />
-      </rule>
-    </navigation>
-  </page>
-
-  <!-- Project Search -->
-  <page view-id="/search.xhtml">
-    <param name="query" value="#{zanataSearch.autocomplete.query}" />
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', msgs['jsf.SearchProjects'])}" />
-  </page>
-
-
-  <page view-id="/edit_home_content.xhtml">
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', msgs['jsf.server.EditHomePage.label'])}" />
-  </page>
-
-  <!-- Landing page for open id authentication -->
-  <page view-id="/openid.xhtml">
-    <navigation>
-      <rule
-        if="#{authenticationManager.authenticated and authenticationManager.newUser}">
-        <redirect view-id="/profile/create_user.xhtml" />
-      </rule>
-      <rule
-        if="#{!identity.isLoggedIn() and authenticationManager.authenticatedAccountWaitingForActivation}">
-        <redirect view-id="/account/inactive_account.xhtml" />
-      </rule>
-      <rule if="#{!identity.loggedIn and applicationConfiguration.singleOpenIdProvider}">
-        <redirect view-id="/home.xhtml" />
-      </rule>
-      <rule if="#{!identity.loggedIn}">
-        <redirect view-id="/account/login.xhtml" />
-      </rule>
-      <rule
-        if="#{identity.loggedIn and userRedirect.shouldRedirectToDashboard()}">
-        <redirect view-id="/dashboard/home.xhtml" />
-      </rule>
-      <rule
-        if="#{identity.loggedIn and userRedirect.redirect}">
-        <redirect url="#{userRedirect.url}" />
-      </rule>
-      <!-- Default redirection after a log in is to the dashboard -->
-      <rule if="#{identity.loggedIn}">
-        <redirect view-id="/dashboard/home.xhtml" />
-      </rule>
-    </navigation>
-  </page>
-
-
-  <!-- Landing page for Kerberos ticket-based Authentication -->
-  <page view-id="/account/klogin.xhtml">
-    <header name="Cache-Control"
-      value="no-cache, no-store, max-age=0, must-revalidate" />
-    <param name="continue" value="#{userRedirect.encodedUrl}" />
-    <action execute="#{authenticationManager.kerberosLogin}" />
-    <navigation evaluate="#{authenticationManager.authenticationRedirect}">
-      <rule if-outcome="login">
-        <redirect view-id="/account/login.xhtml" />
-      </rule>
-      <rule if-outcome="edit">
-        <redirect view-id="/profile/create_user.xhtml" />
-      </rule>
-      <rule if-outcome="inactive">
-        <redirect view-id="/account/inactive_account.xhtml" />
-      </rule>
-      <rule if-outcome="dashboard">
-        <redirect view-id="/dashboard/home.xhtml" />
-      </rule>
-      <rule if-outcome="home">
-        <redirect view-id="/home.xhtml" />
-      </rule>
-      <rule if-outcome="redirect">
-        <!-- TODO add login success message -->
-        <redirect url="#{userRedirect.url}" />
-      </rule>
-    </navigation>
-  </page>
-
-  <!-- Landing page for Internal, JAAS and Kerberos form-based
-       authentication -->
-  <page view-id="/account/login.xhtml">
-    <header name="Cache-Control"
-      value="no-cache, no-store, max-age=0, must-revalidate" />
-    <param name="continue" value="#{userRedirect.encodedUrl}" />
-
-    <action execute="#{loginAction.getLoginPageRedirect()}" />
-    <navigation from-action="#{loginAction.getLoginPageRedirect()}">
-      <rule if-outcome="dashboard">
-        <redirect view-id="/dashboard/home.xhtml" />
-      </rule>
-    </navigation>
-    <navigation from-action="#{loginAction.login}">
-      <rule
-        if="#{authenticationManager.authenticated and authenticationManager.newUser}">
-        <redirect view-id="/profile/create_user.xhtml" />
-      </rule>
-      <rule if-outcome="inactive">
-        <begin-conversation />
-        <redirect view-id="/account/inactive_account.xhtml" />
-      </rule>
-      <rule
-        if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.shouldRedirectToDashboard()}">
-        <redirect view-id="/dashboard/home.xhtml" />
-      </rule>
-      <rule
-        if="#{authenticationManager.authenticated and !authenticationManager.newUser and userRedirect.redirect}">
-        <redirect url="#{userRedirect.url}" />
-      </rule>
-    </navigation>
-  </page>
-
-  <page view-id="/account/activate.xhtml">
-    <param name="key" value="#{activate.activationKey}" />
-    <action execute="#{activate.validateActivationKey}" />
-    <action execute="#{activate.activate}" />
-  </page>
-
-  <page view-id="/account/email_validation.xhtml">
-    <param name="key" value="#{validateEmail.activationKey}" />
-    <action execute="#{validateEmail.validate}" />
-  </page>
-
-  <page view-id="/account/password_reset.xhtml">
-    <param name="key" value="#{passwordReset.activationKey}" />
-    <action execute="#{passwordReset.validateActivationKey}" />
-  </page>
-
+  <!-- TODO [CDI] uses conversation scope facesMessages. if migrated to faces-config, it will lose notification message -->
   <page view-id="/account/password_reset_request.xhtml">
     <navigation from-action="#{passwordResetRequest.requestReset}">
       <rule if-outcome="home">
@@ -150,15 +14,7 @@
     </navigation>
   </page>
 
-  <page view-id="/account/register.xhtml">
-    <action execute="#{identity.isLoggedIn()}" />
-    <navigation from-action="#{identity.isLoggedIn()}">
-      <rule if-outcome="true">
-        <redirect view-id="/dashboard/home.xhtml" />
-      </rule>
-    </navigation>
-  </page>
-
+  <!-- TODO [CDI] uses conversation scope facesMessages. if migrated to faces-config, it will lose notification message -->
   <page view-id="/account/inactive_account.xhtml">
     <navigation from-action="#{inactiveAccountAction.sendActivationEmail}">
       <end-conversation />
@@ -172,76 +28,13 @@
     </navigation>
   </page>
 
-
   <!-- Admin -->
-  <!-- TODO [CDI] find a way to secure a url pattern in CDI -->
-  <page view-id="/admin/*" action="#{identity.checkRole('admin')}"></page>
-
-  <page view-id="/admin/roledetail.xhtml">
-    <param name="role" value="#{zanataRoleAction.role}" />
-    <action execute="#{zanataRoleAction.loadRole()}" />
-    <navigation from-action="#{zanataRoleAction.save}">
-      <rule if-outcome="success">
-        <redirect view-id="/admin/rolemanager.xhtml" />
-      </rule>
-    </navigation>
-    <navigation from-action="#{zanataRoleAction.cancel}">
-      <rule if-outcome="success">
-        <redirect view-id="/admin/rolemanager.xhtml" />
-      </rule>
-    </navigation>
-  </page>
-
-  <page view-id="/admin/rolemanager.xhtml" action="#{zanataRoleSearch.loadRoles}">
-    <navigation from-action="#{zanataRoleAction.createRole}">
-      <redirect view-id="/admin/roledetail.xhtml" />
-    </navigation>
-    <navigation from-action="#{zanataRoleAction.editRole(zanataRoleSearch.selectedRole)}">
-      <redirect view-id="/admin/roledetail.xhtml" />
-    </navigation>
-  </page>
-
-  <page view-id="/admin/userdetail.xhtml">
-    <param name="username" value="#{userAction.username}" />
-    <action execute="#{userAction.loadUser()}"/>
-    <navigation from-action="#{userAction.save}">
-      <rule if-outcome="success">
-        <redirect view-id="/admin/usermanager.xhtml" />
-      </rule>
-    </navigation>
-    <navigation from-action="#{userAction.cancel}">
-      <rule if-outcome="success">
-        <redirect view-id="/admin/usermanager.xhtml" />
-      </rule>
-    </navigation>
-  </page>
-
-  <page view-id="/admin/usermanager.xhtml" action="#{userSearch.loadUsers}">
-    <navigation from-action="#{userAction.editUser(username)}">
-      <redirect view-id="/admin/userdetail.xhtml" />
-    </navigation>
-  </page>
-
-  <page view-id="/admin/server_configuration.xhtml">
-    <navigation from-action="#{serverConfigurationBean.update}">
-      <rule if-outcome="success">
-        <redirect view-id="/admin/home.xhtml" />
-      </rule>
-    </navigation>
-  </page>
-
-  <page view-id="/admin/languagemanager.xhtml">
-    <navigation from-action="#{languageManagerAction.save}">
-      <redirect view-id="/admin/languagemanager.xhtml"/>
-    </navigation>
-  </page>
-
+  <!-- TODO [CDI] the backed bean is conversation scope (EntityHome) which can not be migrated to faces-config.xml -->
   <page view-id="/admin/rolerules.xhtml">
     <navigation from-action="#{roleAssignmentRuleAction.edit(rule)}">
       <redirect view-id="/admin/roleruledetails.xhtml" />
     </navigation>
   </page>
-
   <page view-id="/admin/roleruledetails.xhtml">
     <navigation from-action="#{roleAssignmentRuleAction.update}">
       <end-conversation />
@@ -253,184 +46,11 @@
     </navigation>
   </page>
 
-  <!-- Version Group -->
 
-  <page view-id="/version-group/home.xhtml">
-    <action execute="#{breadcrumbs.clear}" />
-    <action execute="#{breadcrumbs.addLocation('', msgs['jsf.Groups'])}" />
-  </page>
-
-  <!--TODO [CDI] we need to find a way to secure this page's access in CDI (the actual perist method is already secured) -->
-  <page view-id="/version-group/create_version_group.xhtml"
-    action="#{identity.checkPermission(versionGroupHome.instance, 'insert')}">
-    <navigation from-action="#{versionGroupHome.persist}">
-      <rule if="#{versionGroupHome.managed}">
-        <redirect view-id="/version-group/home.xhtml" />
-      </rule>
-    </navigation>
-  </page>
-
-  <page view-id="/version-group/version_group.xhtml">
-    <header name="Cache-Control"
-      value="no-cache, no-store, max-age=0, must-revalidate" />
-    <param name="versionGroupSlug" value="#{versionGroupHomeAction.slug}" />
-    <param name="versionGroupSlug" value="#{versionGroupHome.slug}" />
-    <param name="versionGroupSlug" value="#{versionGroupJoinAction.slug}" />
-    <action execute="#{versionGroupHome.validateSuppliedId}" />
-  </page>
-
-  <page view-id="/profile/create_user.xhtml">
-    <navigation from-action="#{newProfileAction.createUser}">
-      <redirect view-id="/home.xhtml" />
-    </navigation>
-    <navigation from-action="#{newProfileAction.cancel}">
-      <redirect view-id="/home.xhtml" />
-    </navigation>
-  </page>
-
-  <page view-id="/profile/merge_account.xhtml">
-    <action execute="#{accountMergeAction.validateAccounts}" />
-
-    <navigation from-action="#{accountMergeAction.cancel}">
-      <redirect view-id="/dashboard/home.xhtml" />
-    </navigation>
-  </page>
-
-  <!-- User profile -->
-  <page view-id="/profile/home.xhtml">
-    <action execute="#{breadcrumbs.clear}" />
-    <param name="username" value="#{profileHome.username}" />
-  </page>
-
-  <!-- Project -->
-  <page view-id="/project/home.xhtml">
-    <action execute="#{breadcrumbs.clear}" />
-    <action
-      execute="#{breadcrumbs.addLocation('', msgs['jsf.Projects'])}" />
-  </page>
-
-  <page view-id="/project/project.xhtml">
-    <header name="Cache-Control"
-      value="no-cache, no-store, max-age=0, must-revalidate" />
-    <param name="slug" value="#{projectHome.slug}" />
-    <param name="slug" value="#{projectHomeAction.slug}" />
-    <action execute="#{projectHome.initialize}" />
-    <navigation from-action="#{projectHome.update}">
-      <rule if-outcome="projectSlugUpdated">
-        <redirect view-id="/project/project.xhtml">
-          <param name="slug" value="#{projectHome.slug}" />
-        </redirect>
-      </rule>
-    </navigation>
-  </page>
-
-  <page view-id="/project/create_project.xhtml">
-    <action execute="#{projectHome.createNew}" />
-    <navigation from-action="#{projectHome.persist}">
-      <redirect view-id="/project/project.xhtml">
-        <param name="slug" value="#{projectHome.instance.slug}" />
-      </redirect>
-    </navigation>
-  </page>
-
-  <page view-id="/project/add_iteration.xhtml">
-    <param name="projectSlug" value="#{versionHome.projectSlug}" />
-    <param name="copyFromVersionSlug" value="#{versionHome.copyFromVersionSlug}" />
-    <action execute="#{versionHome.validateProjectSlug}" />
-    <action execute="#{versionHome.init(true)}" />
-
-    <navigation from-action="#{versionHome.createVersion}">
-      <rule if-outcome="invalid-slug">
-        <redirect view-id="/project/add_iteration.xhtml">
-          <param name="projectSlug" value="#{versionHome.projectSlug}" />
-        </redirect>
-      </rule>
-      <rule if-outcome="copy-version">
-        <redirect view-id="/project/project.xhtml">
-          <param name="slug" value="#{versionHome.projectSlug}" />
-        </redirect>
-      </rule>
-      <redirect view-id="/iteration/view.xhtml">
-        <param name="projectSlug" value="#{versionHome.projectSlug}" />
-        <param name="iterationSlug" value="#{versionHome.instance.slug}" />
-      </redirect>
-    </navigation>
-  </page>
-
-  <!-- Project Iteration -->
-  <page view-id="/iteration/view.xhtml">
-    <header name="Cache-Control"
-      value="no-cache, no-store, max-age=0, must-revalidate" />
-    <param name="projectSlug" value="#{versionHomeAction.projectSlug}" />
-    <param name="iterationSlug" value="#{versionHomeAction.versionSlug}" />
-
-    <param name="projectSlug" value="#{versionHome.projectSlug}" />
-    <param name="iterationSlug" value="#{versionHome.slug}" />
-
-    <param name="projectSlug" value="#{copyTransAction.projectSlug}" />
-    <param name="iterationSlug" value="#{copyTransAction.iterationSlug}" />
-
-    <param name="projectSlug" value="#{mergeTransAction.targetProjectSlug}" />
-    <param name="iterationSlug" value="#{mergeTransAction.targetVersionSlug}" />
-
-    <action execute="#{versionHome.init(false)}" />
-    <action execute="#{versionHome.validateSuppliedId}" />
-
-    <navigation from-action="#{versionHomeAction.uploadSourceFile}">
-      <redirect view-id="/iteration/view.xhtml">
-        <param name="projectSlug"
-          value="#{versionHome.projectSlug}" />
-        <param name="iterationSlug"
-          value="#{versionHome.instance.slug}" />
-      </redirect>
-    </navigation>
-    <navigation
-      from-action="#{versionHomeAction.uploadTranslationFile(versionHomeAction.selectedLocale)}">
-      <redirect view-id="/iteration/view.xhtml">
-        <param name="projectSlug"
-          value="#{versionHome.projectSlug}" />
-        <param name="iterationSlug"
-          value="#{versionHome.instance.slug}" />
-      </redirect>
-    </navigation>
-    <navigation from-action="#{mergeTransAction.startMergeTranslations}">
-      <redirect view-id="/iteration/view.xhtml">
-        <param name="projectSlug"
-          value="#{versionHome.projectSlug}" />
-        <param name="iterationSlug"
-          value="#{versionHome.instance.slug}" />
-      </redirect>
-    </navigation>
-    <navigation from-action="#{versionHome.update}">
-      <rule if-outcome="versionSlugUpdated">
-        <redirect view-id="/iteration/view.xhtml">
-          <param name="projectSlug"
-            value="#{versionHome.projectSlug}" />
-          <param name="iterationSlug"
-            value="#{versionHome.instance.slug}" />
-        </redirect>
-      </rule>
-    </navigation>
-  </page>
-
-  <!-- Language -->
-  <page view-id="/language/home.xhtml">
-    <navigation from-action="#{languageManagerAction.save}">
-      <redirect view-id="/language/home.xhtml"/>
-    </navigation>
-  </page>
-
-  <page view-id="/language/language.xhtml">
-    <param name="id" value="#{languageAction.language}" />
-    <param name="id" value="#{languageJoinAction.language}" />
-    <param name="id" value="#{languageContactCoordinatorAction.localeId}" />
-
-    <action execute="#{languageAction.validateLanguage}" />
-  </page>
 
   <!-- Translation Memory -->
-  <!-- TODO [CDI] find CDI way to secure access of this page (this page is shared by both insert and update) -->
-  <page view-id="/tm/create.xhtml" action="#{identity.checkPermission(translationMemoryHome.instance, 'insert')}">
+  <!-- TODO [CDI] the backed bean is conversation scope (EntityHome) which can not be migrated to faces-config.xml (messages missing) -->
+  <page view-id="/tm/create.xhtml">
     <navigation from-action="#{translationMemoryHome.persist}">
       <rule if-outcome="persisted">
         <redirect view-id="/tm/home.xhtml" />
@@ -439,17 +59,6 @@
     <navigation from-action="#{translationMemoryHome.update}">
       <rule if-outcome="updated">
         <redirect view-id="/tm/home.xhtml" />
-      </rule>
-    </navigation>
-  </page>
-
-  <!-- we need to explicitly secure webtrans after removing seam remoting -->
-  <page view-id="/webtrans/Application.xhtml" conversation-required="false">
-    <navigation evaluate="#{identity.isLoggedIn()}">
-      <rule if-outcome="false">
-        <redirect view-id="/account/sign_in">
-          <param name="continue" value="#{userRedirect.encodedUrl}" />
-        </redirect>
       </rule>
     </navigation>
   </page>
