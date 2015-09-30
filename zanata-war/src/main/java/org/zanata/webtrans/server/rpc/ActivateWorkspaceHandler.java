@@ -27,9 +27,11 @@ import net.customware.gwt.dispatch.shared.ActionException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpSession;
+
+import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.jboss.seam.contexts.Contexts;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
-import org.jboss.seam.web.ServletContexts;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -88,6 +90,10 @@ public class ActivateWorkspaceHandler extends
 
     @Inject /* TODO [CDI] check this: migrated from @In(value = "webtrans.gwt.GetValidationRulesHandler", create = true) */
     private GetValidationRulesHandler getValidationRulesHandler;
+
+    @Inject
+    @DeltaSpike
+    private HttpSession session;
 
     private static long nextEditorClientIdNum = 0;
 
@@ -158,7 +164,7 @@ public class ActivateWorkspaceHandler extends
     }
 
     protected String getHttpSessionId() {
-        return ServletContexts.instance().getRequest().getSession().getId();
+        return session.getId();
     }
 
     private boolean hasWritePermission(HProject project, HLocale locale) {

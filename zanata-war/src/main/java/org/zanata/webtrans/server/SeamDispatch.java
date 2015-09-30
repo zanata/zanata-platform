@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import lombok.extern.slf4j.Slf4j;
@@ -17,12 +19,13 @@ import net.customware.gwt.dispatch.shared.Result;
 import net.customware.gwt.dispatch.shared.UnsupportedActionException;
 
 import javax.inject.Named;
-import org.jboss.seam.annotations.Startup;
+
+import org.apache.deltaspike.core.api.common.DeltaSpike;
+import org.apache.http.HttpRequest;
 import org.jboss.seam.deployment.HotDeploymentStrategy;
 import org.jboss.seam.deployment.StandardDeploymentStrategy;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.exception.NotLoggedInException;
-import org.jboss.seam.web.ServletContexts;
 import org.zanata.util.ServiceLocator;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.AuthorizationError;
@@ -36,6 +39,9 @@ import com.google.common.collect.Maps;
 /* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
 @Slf4j
 public class SeamDispatch implements Dispatch {
+    @Inject
+    @DeltaSpike
+    private HttpServletRequest request;
 
     @SuppressWarnings("rawtypes")
     private final Map<Class<? extends Action>, Class<? extends ActionHandler<?, ?>>> handlers =
@@ -122,8 +128,7 @@ public class SeamDispatch implements Dispatch {
                     + action.getClass());
         }
         WrappedAction<?> a = (WrappedAction<?>) action;
-        HttpSession session =
-                ServletContexts.instance().getRequest().getSession();
+        HttpSession session = request.getSession(false);
         if (session != null && !session.getId().equals(a.getCsrfToken())) {
             log.warn("Token mismatch. Client token: {}, Expected token: {}",
                     a.getCsrfToken(), session.getId());
@@ -184,8 +189,7 @@ public class SeamDispatch implements Dispatch {
                     + action.getClass());
         }
         WrappedAction<?> a = (WrappedAction<?>) action;
-        HttpSession session =
-                ServletContexts.instance().getRequest().getSession();
+        HttpSession session = request.getSession(false);
         if (session != null && !session.getId().equals(a.getCsrfToken())) {
             throw new SecurityException(
                     "Blocked action without session id (CSRF attack?)");

@@ -2,6 +2,7 @@ package org.zanata.webtrans.server;
 
 import java.util.concurrent.TimeUnit;
 
+import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostInsertEventListener;
 import org.hibernate.event.spi.PostUpdateEvent;
@@ -9,7 +10,6 @@ import org.hibernate.event.spi.PostUpdateEventListener;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.jboss.seam.util.Work;
-import org.jboss.seam.web.ServletContexts;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
@@ -43,6 +43,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.enterprise.event.Observes;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * Entity event listener for HTextFlowTarget.
@@ -73,6 +75,10 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
     @Inject
     private Event<TextFlowTargetUpdatedEvent>
             textFlowTargetUpdatedEvent;
+
+    @Inject
+    @DeltaSpike
+    private HttpServletRequest request;
 
     /**
      * Event raised by Text flow target update initiator containing update
@@ -158,11 +164,8 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
                     new TransUnitUpdated(updateInfo, context.editorClientId,
                             context.updateType);
             log.debug("about to publish trans unit updated event {}", updated);
-        } else if (ServletContexts.instance().getRequest() != null) {
-
-            String sessionId =
-                    ServletContexts.instance().getRequest().getSession()
-                            .getId();
+        } else if (getHttpSession() != null) {
+            String sessionId = getHttpSession().getId();
             EditorClientId editorClientId = new EditorClientId(sessionId, -1);
             updated =
                     new TransUnitUpdated(updateInfo, editorClientId,
@@ -176,6 +179,10 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
         textFlowTargetUpdatedEvent.fire(
                 new TextFlowTargetUpdatedEvent(workspaceOptional.get(),
                         target.getId(), updated));
+    }
+
+    HttpSession getHttpSession() {
+        return request.getSession(false);
     }
 
     private static TransUnitUpdateInfo createTransUnitUpdateInfo(

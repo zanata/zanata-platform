@@ -273,7 +273,7 @@ public class TranslationWorkspaceManagerImplTest extends ZanataTest {
         TranslationWorkspaceManagerImpl spy = spy(manager);
         doReturn(null).when(spy).getSessionId();
 
-        spy.exitWorkspace("admin");
+        spy.exitWorkspace("admin", "sessionId");
 
         verifyZeroInteractions(accountDAO);
     }
@@ -309,7 +309,7 @@ public class TranslationWorkspaceManagerImplTest extends ZanataTest {
         hAccount.setPerson(person);
         when(accountDAO.getByUsername("admin")).thenReturn(hAccount);
 
-        spy.exitWorkspace("admin");
+        spy.exitWorkspace("admin", "sessionId");
 
         verify(mockWorkspace).removeEditorClients("sessionId");
         verify(mockWorkspace, times(2)).publish(eventCaptor.capture());
@@ -353,7 +353,7 @@ public class TranslationWorkspaceManagerImplTest extends ZanataTest {
                 editorClientIds);
         spy.getOrRegisterWorkspace(workspaceId);
 
-        spy.exitWorkspace("admin");
+        spy.exitWorkspace("admin", "sessionId");
 
         verify(mockWorkspace).removeEditorClients("sessionId");
         verify(mockWorkspace, times(2)).publish(eventCaptor.capture());

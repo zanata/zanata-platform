@@ -6,21 +6,22 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.PreDestroy;
 import javax.inject.Named;
+import javax.servlet.http.HttpSession;
+
+import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.jboss.seam.util.Work;
-import org.jboss.seam.web.ServletContexts;
 import org.zanata.async.Async;
 import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountDAO;
-import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.events.Logout;
 import org.zanata.events.ProjectIterationUpdate;
@@ -126,12 +127,11 @@ public class TranslationWorkspaceManagerImpl implements
         log.info("starting...");
     }
 
-    public void exitWorkspace(@Observes Logout payload) {
-        exitWorkspace(payload.getUsername());
+    public void exitWorkspace(@Observes Logout payload, @DeltaSpike HttpSession session) {
+        exitWorkspace(payload.getUsername(), session.getId());
     }
 
-    void exitWorkspace(String username) {
-        String httpSessionId = getSessionId();
+    void exitWorkspace(String username, String httpSessionId) {
         if (httpSessionId == null) {
             log.debug("Logout: null session");
             return;
@@ -167,14 +167,6 @@ public class TranslationWorkspaceManagerImpl implements
                 workspace.publish(event);
             }
         }
-    }
-
-    protected String getSessionId() {
-        HttpServletRequest request = ServletContexts.instance().getRequest();
-        if (request == null) {
-            return null;
-        }
-        return request.getSession().getId();
     }
 
     // transaction has already been committed and marked as rolled back only for
