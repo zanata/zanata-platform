@@ -2,21 +2,22 @@
 
 package org.zanata.seam.framework;
 
-import static org.jboss.seam.international.StatusMessage.Severity.INFO;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+
+import javax.faces.application.FacesMessage;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.core.Expressions;
 import org.jboss.seam.core.Expressions.ValueExpression;
 import org.jboss.seam.framework.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.ui.faces.FacesMessages;
+import org.zanata.util.ServiceLocator;
 
 /**
  * Base class for components which provide persistence operations to a managed
@@ -36,9 +37,6 @@ public abstract class Home<T, E> extends MutableController<T> {
     private Class<E> entityClass;
     protected ValueExpression<T> newInstance;
 
-    private ValueExpression deletedMessage;
-    private ValueExpression createdMessage;
-    private ValueExpression updatedMessage;
 
     /**
      * Add a {@link javax.faces.application.FacesMessage} and log a message when
@@ -49,14 +47,15 @@ public abstract class Home<T, E> extends MutableController<T> {
      * bundle, from {@link #getUpdatedMessage()} and log the entity when the
      * managed entity is updated.
      *
-     * @see #getUpdatedMessage()
-     * @see #getUpdatedMessageKey()
      */
     protected void updatedMessage() {
         log.debug("updated entity {} {}", getEntityClass().getName(), getId());
-        getStatusMessages().addFromResourceBundleOrDefault(INFO,
-                getUpdatedMessageKey(),
-                getUpdatedMessage().getExpressionString());
+        getFacesMessages().addGlobal(
+                FacesMessage.SEVERITY_INFO, "Successfully updated");
+    }
+
+    private FacesMessages getFacesMessages() {
+        return ServiceLocator.instance().getInstance(FacesMessages.class);
     }
 
     /**
@@ -68,14 +67,12 @@ public abstract class Home<T, E> extends MutableController<T> {
      * bundle, from {@link #getDeletedMessage()} and log the entity when the
      * managed entity is deleted.
      *
-     * @see #getDeletedMessage()
-     * @see #getDeletedMessageKey()
      */
     protected void deletedMessage() {
         log.debug("deleted entity {} {}", getEntityClass().getName(), getId());
-        getStatusMessages().addFromResourceBundleOrDefault(INFO,
-                getDeletedMessageKey(),
-                getDeletedMessage().getExpressionString());
+        getFacesMessages().addGlobal(
+                FacesMessage.SEVERITY_INFO, "Successfully deleted");
+
     }
 
     /**
@@ -87,14 +84,12 @@ public abstract class Home<T, E> extends MutableController<T> {
      * bundle, from {@link #getUpdatedMessage()} and log the entity when the
      * managed entity is updated.
      *
-     * @see #getCreatedMessage()
-     * @see #getCreatedMessageKey()
      */
     protected void createdMessage() {
         log.debug("created entity {} {}", getEntityClass().getName(), getId());
-        getStatusMessages().addFromResourceBundleOrDefault(INFO,
-                getCreatedMessageKey(),
-                getCreatedMessage().getExpressionString());
+        getFacesMessages().addGlobal(
+                FacesMessage.SEVERITY_INFO, "Successfully created");
+
     }
 
     /**
@@ -106,23 +101,6 @@ public abstract class Home<T, E> extends MutableController<T> {
     public void create() {
         if (getEntityClass() == null) {
             throw new IllegalStateException("entityClass is null");
-        }
-        initDefaultMessages();
-    }
-
-    protected void initDefaultMessages() {
-        Expressions expressions = new Expressions();
-        if (createdMessage == null) {
-            createdMessage =
-                    expressions.createValueExpression("Successfully created");
-        }
-        if (updatedMessage == null) {
-            updatedMessage =
-                    expressions.createValueExpression("Successfully updated");
-        }
-        if (deletedMessage == null) {
-            deletedMessage =
-                    expressions.createValueExpression("Successfully deleted");
         }
     }
 
@@ -140,15 +118,6 @@ public abstract class Home<T, E> extends MutableController<T> {
             initInstance();
         }
         return instance;
-    }
-
-    /**
-     * Clear the managed entity (and id), allowing the {@link EntityHome} to be
-     * reused.
-     */
-    public void clearInstance() {
-        setInstance(null);
-        setId(null);
     }
 
     /**
@@ -253,15 +222,6 @@ public abstract class Home<T, E> extends MutableController<T> {
     }
 
     /**
-     * Set the class of the entity being managed. <br />
-     * Useful for configuring {@link Home} components from
-     * <code>components.xml</code>.
-     */
-    public void setEntityClass(Class<E> entityClass) {
-        this.entityClass = entityClass;
-    }
-
-    /**
      * Get the id of the object being managed.
      */
     public Object getId() {
@@ -271,7 +231,6 @@ public abstract class Home<T, E> extends MutableController<T> {
     /**
      * Set/change the entity being managed by id.
      *
-     * @see #assignId(Object)
      */
     public void setId(Object id) {
         if (setDirty(this.id, id))
@@ -284,7 +243,6 @@ public abstract class Home<T, E> extends MutableController<T> {
      * Does not alter the instance so used if the id of the managed object is
      * changed.
      *
-     * @see #setId(Object)
      */
     protected void assignId(Object id) {
         setDirty(this.id, id);
@@ -323,119 +281,5 @@ public abstract class Home<T, E> extends MutableController<T> {
     public void setNewInstance(ValueExpression newInstance) {
         this.newInstance = newInstance;
     }
-
-    /**
-     * Message displayed to user when the managed entity is created.
-     */
-    public ValueExpression getCreatedMessage() {
-        return createdMessage;
-    }
-
-    /**
-     * Message displayed to user when the managed entity is created.
-     */
-    public void setCreatedMessage(ValueExpression createdMessage) {
-        this.createdMessage = createdMessage;
-    }
-
-    /**
-     * Message displayed to user when the managed entity is deleted.
-     */
-    public ValueExpression getDeletedMessage() {
-        return deletedMessage;
-    }
-
-    /**
-     * Message displayed to user when the managed entity is deleted.
-     */
-    public void setDeletedMessage(ValueExpression deletedMessage) {
-        this.deletedMessage = deletedMessage;
-    }
-
-    /**
-     * Message displayed to user when the managed entity is updated.
-     */
-    public ValueExpression getUpdatedMessage() {
-        return updatedMessage;
-    }
-
-    /**
-     * Message displayed to user when the managed entity is updated.
-     */
-    public void setUpdatedMessage(ValueExpression updatedMessage) {
-        this.updatedMessage = updatedMessage;
-    }
-
-    /**
-     * The prefix of the key to look up messages in the Seam managed resource
-     * bundle. <br />
-     * By default the simple name of the class suffixed with an underscore.
-     */
-    protected String getMessageKeyPrefix() {
-        String className = getEntityClass().getName();
-        return className.substring(className.lastIndexOf('.') + 1) + '_';
-    }
-
-    /**
-     * The key to look up in the Seam managed resource bundle the message
-     * displayed when the managed entity is created. <br />
-     * By default the {@link #getMessageKeyPrefix()} suffixed with created.
-     */
-    protected String getCreatedMessageKey() {
-        return getMessageKeyPrefix() + "created";
-    }
-
-    /**
-     * The key to look up in the Seam managed resource bundle the message
-     * displayed when the managed entity is updated. <br />
-     * By default the {@link #getMessageKeyPrefix()} suffixed with updated.
-     */
-    protected String getUpdatedMessageKey() {
-        return getMessageKeyPrefix() + "updated";
-    }
-
-    /**
-     * The key to look up in the Seam managed resource bundle the message
-     * displayed when the managed entity is deleted. <br />
-     * By default the {@link #getMessageKeyPrefix()} suffixed with deleted.
-     */
-    protected String getDeletedMessageKey() {
-        return getMessageKeyPrefix() + "deleted";
-    }
-
-    /**
-     * Raise events when a CRUD operation succeeds. <br />
-     * Utility method to raise two events: an event of type
-     * <code>org.jboss.seam.afterTransactionSuccess</code> is raised, along with
-     * an event of type
-     * <code>org.jboss.seam.afterTransactionSuccess.&lt;entityName&gt;</code>.
-     */
-    protected void raiseAfterTransactionSuccessEvent() {
-        raiseTransactionSuccessEvent("org.jboss.seam.afterTransactionSuccess");
-        String simpleEntityName = getSimpleEntityName();
-        if (simpleEntityName != null) {
-            raiseTransactionSuccessEvent("org.jboss.seam.afterTransactionSuccess."
-                    + simpleEntityName);
-        }
-    }
-
-    /**
-     * The simple name of the managed entity
-     */
-    protected String getSimpleEntityName() {
-        String name = getEntityName();
-        if (name != null) {
-            return name.lastIndexOf(".") > 0
-                    && name.lastIndexOf(".") < name.length() ? name.substring(
-                    name.lastIndexOf(".") + 1, name.length()) : name;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Hook method to get the name of the managed entity
-     */
-    protected abstract String getEntityName();
 
 }

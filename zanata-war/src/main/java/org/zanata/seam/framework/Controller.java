@@ -4,11 +4,12 @@ package org.zanata.seam.framework;
 
 import java.io.Serializable;
 
+import javax.transaction.Status;
+
 import org.jboss.seam.Component;
 import org.jboss.seam.core.Conversation;
-import org.jboss.seam.core.Events;
-import org.jboss.seam.international.StatusMessages;
 import org.jboss.seam.transaction.Transaction;
+import org.jboss.seam.transaction.UserTransaction;
 
 /**
  * Base class for controller objects. Provides various helper methods that help
@@ -19,21 +20,8 @@ import org.jboss.seam.transaction.Transaction;
  */
 public abstract class Controller implements Serializable {
 
-    protected Events getEvents() {
-        return Events.instance();
-    }
-
     protected Conversation getConversation() {
         return Conversation.instance();
-    }
-
-    protected StatusMessages getStatusMessages() {
-        return StatusMessages.instance();
-    }
-
-    protected void raiseTransactionSuccessEvent(String type,
-            Object... parameters) {
-        getEvents().raiseTransactionSuccessEvent(type, parameters);
     }
 
     protected Object getComponentInstance(String name) {
@@ -42,10 +30,14 @@ public abstract class Controller implements Serializable {
 
     protected boolean isTransactionMarkedRollback() {
         try {
-            return Transaction.instance().isMarkedRollback();
+            return getTransaction().getStatus() == Status.STATUS_MARKED_ROLLBACK;
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private UserTransaction getTransaction() {
+        return Transaction.instance();
     }
 
 }

@@ -8,6 +8,8 @@ import javax.transaction.SystemException;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.persistence.PersistenceProvider;
 import org.jboss.seam.transaction.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for Home objects of JPA entities.
@@ -15,6 +17,7 @@ import org.jboss.seam.transaction.Transaction;
  * @author Gavin King
  */
 public class EntityHome<E> extends Home<EntityManager, E> {
+    private static final Logger log = LoggerFactory.getLogger(EntityHome.class);
     private static final long serialVersionUID = -3140094990727574632L;
 
     /**
@@ -48,15 +51,12 @@ public class EntityHome<E> extends Home<EntityManager, E> {
      * success event raised.
      *
      * @return "updated" if the update is successful
-     * @see Home#updatedMessage()
-     * @see Home#raiseAfterTransactionSuccessEvent()
      */
     @Transactional
     public String update() {
         joinTransaction();
         getEntityManager().flush();
         updatedMessage();
-        raiseAfterTransactionSuccessEvent();
         return "updated";
     }
 
@@ -67,8 +67,6 @@ public class EntityHome<E> extends Home<EntityManager, E> {
      * success event raised.
      *
      * @return "persisted" if the persist is successful
-     * @see Home#createdMessage()
-     * @see Home#raiseAfterTransactionSuccessEvent()
      */
     @Transactional
     public String persist() {
@@ -77,7 +75,6 @@ public class EntityHome<E> extends Home<EntityManager, E> {
         assignId(PersistenceProvider.instance().getId(getInstance(),
                 getEntityManager()));
         createdMessage();
-        raiseAfterTransactionSuccessEvent();
         return "persisted";
     }
 
@@ -88,15 +85,12 @@ public class EntityHome<E> extends Home<EntityManager, E> {
      * transaction success event raised.
      *
      * @return "removed" if the remove is successful
-     * @see Home#deletedMessage()
-     * @see Home#raiseAfterTransactionSuccessEvent()
      */
     @Transactional
     public String remove() {
         getEntityManager().remove(getInstance());
         getEntityManager().flush();
         deletedMessage();
-        raiseAfterTransactionSuccessEvent();
         return "removed";
     }
 
@@ -168,22 +162,6 @@ public class EntityHome<E> extends Home<EntityManager, E> {
     @Override
     protected String getPersistenceContextName() {
         return "entityManager";
-    }
-
-    /**
-     * Implementation of {@link Home#getEntityName() getEntityName()} for JPA
-     *
-     * @see Home#getEntityName()
-     */
-    @Override
-    protected String getEntityName() {
-        try {
-            return PersistenceProvider.instance().getName(getInstance(),
-                    getEntityManager());
-        } catch (IllegalArgumentException e) {
-            // Handle that the passed object may not be an entity
-            return null;
-        }
     }
 
 }
