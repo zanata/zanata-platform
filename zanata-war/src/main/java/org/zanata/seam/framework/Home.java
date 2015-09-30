@@ -15,6 +15,8 @@ import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Expressions;
 import org.jboss.seam.core.Expressions.ValueExpression;
 import org.jboss.seam.framework.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for components which provide persistence operations to a managed
@@ -26,6 +28,7 @@ import org.jboss.seam.framework.EntityNotFoundException;
  */
 @Scope(ScopeType.CONVERSATION)
 public abstract class Home<T, E> extends MutableController<T> {
+    private static final Logger log = LoggerFactory.getLogger(Home.class);
     private static final long serialVersionUID = -5462396456614090423L;
 
     private Object id;
@@ -50,7 +53,7 @@ public abstract class Home<T, E> extends MutableController<T> {
      * @see #getUpdatedMessageKey()
      */
     protected void updatedMessage() {
-        debug("updated entity #0 #1", getEntityClass().getName(), getId());
+        log.debug("updated entity {} {}", getEntityClass().getName(), getId());
         getStatusMessages().addFromResourceBundleOrDefault(INFO,
                 getUpdatedMessageKey(),
                 getUpdatedMessage().getExpressionString());
@@ -69,7 +72,7 @@ public abstract class Home<T, E> extends MutableController<T> {
      * @see #getDeletedMessageKey()
      */
     protected void deletedMessage() {
-        debug("deleted entity #0 #1", getEntityClass().getName(), getId());
+        log.debug("deleted entity {} {}", getEntityClass().getName(), getId());
         getStatusMessages().addFromResourceBundleOrDefault(INFO,
                 getDeletedMessageKey(),
                 getDeletedMessage().getExpressionString());
@@ -88,7 +91,7 @@ public abstract class Home<T, E> extends MutableController<T> {
      * @see #getCreatedMessageKey()
      */
     protected void createdMessage() {
-        debug("created entity #0 #1", getEntityClass().getName(), getId());
+        log.debug("created entity {} {}", getEntityClass().getName(), getId());
         getStatusMessages().addFromResourceBundleOrDefault(INFO,
                 getCreatedMessageKey(),
                 getCreatedMessage().getExpressionString());
