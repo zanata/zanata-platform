@@ -285,135 +285,101 @@ public class SearchResultsPresenter extends
         display.addSearchFieldsSelect("search source", "source");
 
         registerHandler(display.getSearchButton().addClickHandler(
-                new ClickHandler() {
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        updateSearch();
-                    }
-                }));
+                event -> updateSearch()));
 
         registerHandler(display.getReplacementTextBox().addValueChangeHandler(
-                new ValueChangeHandler<String>() {
-
-                    @Override
-                    public void onValueChange(ValueChangeEvent<String> event) {
-                        HistoryToken token = history.getHistoryToken();
-                        if (!event.getValue().equals(
-                                token.getProjectSearchReplacement())) {
-                            token.setProjectSearchReplacement(event.getValue());
-                            history.newItem(token);
-                        }
+                event -> {
+                    HistoryToken token = history.getHistoryToken();
+                    if (!event.getValue().equals(
+                            token.getProjectSearchReplacement())) {
+                        token.setProjectSearchReplacement(event.getValue());
+                        history.newItem(token);
                     }
                 }));
 
         registerHandler(display.getSelectAllChk().addValueChangeHandler(
-                new ValueChangeHandler<Boolean>() {
-
-                    @Override
-                    public void onValueChange(ValueChangeEvent<Boolean> event) {
-                        selectAllTextFlows(event.getValue());
-                    }
-                }));
+                event -> selectAllTextFlows(event.getValue())));
 
         registerHandler(display.getRequirePreviewChk().addValueChangeHandler(
-                new ValueChangeHandler<Boolean>() {
-
-                    @Override
-                    public void onValueChange(ValueChangeEvent<Boolean> event) {
-                        display.setRequirePreview(event.getValue());
-                        for (ListDataProvider<TransUnitReplaceInfo> provider : documentDataProviders
-                                .values()) {
-                            provider.refresh();
-                        }
-                        refreshReplaceAllButton();
+                event -> {
+                    display.setRequirePreview(event.getValue());
+                    for (ListDataProvider<TransUnitReplaceInfo> provider : documentDataProviders
+                            .values()) {
+                        provider.refresh();
                     }
+                    refreshReplaceAllButton();
                 }));
 
         registerHandler(display.getReplaceAllButton().addClickHandler(
-                new ClickHandler() {
-
-                    @Override
-                    public void onClick(ClickEvent event) {
-                        replaceSelected();
-                    }
-                }));
+                event -> replaceSelected()));
 
         registerHandler(eventBus.addHandler(TransUnitUpdatedEvent.getType(),
-                new TransUnitUpdatedEventHandler() {
-
-                    @Override
-                    public void onTransUnitUpdated(
-                            final TransUnitUpdatedEvent event) {
-                        TransUnitUpdateInfo updateInfo = event.getUpdateInfo();
-                        TransUnitReplaceInfo replaceInfo =
-                                allReplaceInfos.get(updateInfo.getTransUnit()
-                                        .getId());
-                        if (replaceInfo == null) {
-                            Log.debug("no matching TU in document for TU update, id: "
-                                    + updateInfo.getTransUnit().getId().getId());
-                            return;
-                        }
-                        Log.debug("found matching TU for TU update, id: "
+                event -> {
+                    TransUnitUpdateInfo updateInfo = event.getUpdateInfo();
+                    TransUnitReplaceInfo replaceInfo =
+                            allReplaceInfos.get(updateInfo.getTransUnit()
+                                    .getId());
+                    if (replaceInfo == null) {
+                        Log.debug("no matching TU in document for TU update, id: "
                                 + updateInfo.getTransUnit().getId().getId());
-
-                        if (replaceInfo.getReplaceState() == ReplacementState.Replaced
-                                && !(replaceInfo.getTransUnit().getVerNum()
-                                        .equals(updateInfo.getTransUnit()
-                                                .getVerNum()))) {
-                            // can't undo after additional update
-                            setReplaceState(replaceInfo,
-                                    ReplacementState.NotReplaced);
-                            replaceInfo.setReplaceInfo(null);
-                            replaceInfo
-                                    .setPreviewState(PreviewState.NotFetched);
-                            replaceInfo.setPreview(null);
-
-                            MultiSelectionModel<TransUnitReplaceInfo> selectionModel =
-                                    documentSelectionModels.get(updateInfo
-                                            .getDocumentId().getId());
-                            if (selectionModel == null) {
-                                Log.error("missing selection model for document, id: "
-                                        + updateInfo.getDocumentId().getId());
-                            } else {
-                                // clear selection to avoid accidental inclusion
-                                // in batch
-                                // operations
-                                selectionModel.setSelected(replaceInfo, false);
-                            }
-                        }
-                        replaceInfo.setTransUnit(updateInfo.getTransUnit());
-                        refreshInfoDisplay(replaceInfo);
+                        return;
                     }
+                    Log.debug("found matching TU for TU update, id: "
+                            + updateInfo.getTransUnit().getId().getId());
+
+                    if (replaceInfo.getReplaceState() == ReplacementState.Replaced
+                            && !(replaceInfo.getTransUnit().getVerNum()
+                                    .equals(updateInfo.getTransUnit()
+                                            .getVerNum()))) {
+                        // can't undo after additional update
+                        setReplaceState(replaceInfo,
+                                ReplacementState.NotReplaced);
+                        replaceInfo.setReplaceInfo(null);
+                        replaceInfo
+                                .setPreviewState(PreviewState.NotFetched);
+                        replaceInfo.setPreview(null);
+
+                        MultiSelectionModel<TransUnitReplaceInfo> selectionModel =
+                                documentSelectionModels.get(updateInfo
+                                        .getDocumentId().getId());
+                        if (selectionModel == null) {
+                            Log.error("missing selection model for document, id: "
+                                    + updateInfo.getDocumentId().getId());
+                        } else {
+                            // clear selection to avoid accidental inclusion
+                            // in batch
+                            // operations
+                            selectionModel.setSelected(replaceInfo, false);
+                        }
+                    }
+                    replaceInfo.setTransUnit(updateInfo.getTransUnit());
+                    refreshInfoDisplay(replaceInfo);
                 }));
 
         registerHandler(eventBus.addHandler(
                 WorkspaceContextUpdateEvent.getType(),
-                new WorkspaceContextUpdateEventHandler() {
-                    @Override
-                    public void onWorkspaceContextUpdated(
-                            WorkspaceContextUpdateEvent event) {
-                        userWorkspaceContext.setProjectActive(event
-                                .isProjectActive());
-                        userWorkspaceContext.getWorkspaceContext()
-                                .getWorkspaceId().getProjectIterationId()
-                                .setProjectType(event.getProjectType());
+                event -> {
+                    userWorkspaceContext.setProjectActive(event
+                            .isProjectActive());
+                    userWorkspaceContext.getWorkspaceContext()
+                            .getWorkspaceId().getProjectIterationId()
+                            .setProjectType(event.getProjectType());
 
-                        display.setReplaceAllButtonVisible(userWorkspaceContext
-                                .hasEditTranslationAccess());
+                    display.setReplaceAllButtonVisible(userWorkspaceContext
+                            .hasEditTranslationAccess());
 
-                        for (TransUnitReplaceInfo info : allReplaceInfos
-                                .values()) {
-                            if (userWorkspaceContext.hasReadOnlyAccess()) {
-                                setReplaceState(info,
-                                        ReplacementState.NotAllowed);
-                            } else if (info.getReplaceInfo() == null) {
-                                setReplaceState(info,
-                                        ReplacementState.NotReplaced);
-                            } else {
-                                setReplaceState(info, ReplacementState.Replaced);
-                            }
-                            refreshInfoDisplay(info);
+                    for (TransUnitReplaceInfo info : allReplaceInfos
+                            .values()) {
+                        if (userWorkspaceContext.hasReadOnlyAccess()) {
+                            setReplaceState(info,
+                                    ReplacementState.NotAllowed);
+                        } else if (info.getReplaceInfo() == null) {
+                            setReplaceState(info,
+                                    ReplacementState.NotReplaced);
+                        } else {
+                            setReplaceState(info, ReplacementState.Replaced);
                         }
+                        refreshInfoDisplay(info);
                     }
                 }));
 
@@ -421,57 +387,33 @@ public class SearchResultsPresenter extends
                 .addKey(new Keys(Keys.SHIFT_ALT_KEYS, 'A'))
                 .setContext(ShortcutContext.ProjectWideSearch)
                 .setDescription(messages.selectAllTextFlowsKeyShortcut())
-                .setHandler(new KeyShortcutEventHandler() {
-                    @Override
-                    public void onKeyShortcut(KeyShortcutEvent event) {
-                        display.getSelectAllChk().setValue(
-                                !display.getSelectAllChk().getValue(), true);
-                    }
-                }).build());
+                .setHandler(event -> display.getSelectAllChk().setValue(
+                        !display.getSelectAllChk().getValue(), true)).build());
 
         keyShortcutPresenter.register(KeyShortcut.Builder.builder()
                 .addKey(new Keys(Keys.ALT_KEY, 'P'))
                 .setContext(ShortcutContext.ProjectWideSearch)
                 .setDescription(messages.focusSearchPhraseKeyShortcut())
-                .setHandler(new KeyShortcutEventHandler() {
-                    @Override
-                    public void onKeyShortcut(KeyShortcutEvent event) {
-                        display.focusFilterTextBox();
-                    }
-                }).build());
+                .setHandler(event -> display.focusFilterTextBox()).build());
 
         keyShortcutPresenter.register(KeyShortcut.Builder.builder()
                 .addKey(new Keys(Keys.ALT_KEY, 'C'))
                 .setContext(ShortcutContext.ProjectWideSearch)
                 .setDescription(messages.focusReplacementPhraseKeyShortcut())
-                .setHandler(new KeyShortcutEventHandler() {
-                    @Override
-                    public void onKeyShortcut(KeyShortcutEvent event) {
-                        display.focusReplacementTextBox();
-                    }
-                }).build());
+                .setHandler(event -> display.focusReplacementTextBox()).build());
 
         keyShortcutPresenter.register(KeyShortcut.Builder.builder()
                 .addKey(new Keys(Keys.ALT_KEY, 'R'))
                 .setContext(ShortcutContext.ProjectWideSearch)
                 .setDescription(messages.replaceSelectedKeyShortcut())
-                .setHandler(new KeyShortcutEventHandler() {
-                    @Override
-                    public void onKeyShortcut(KeyShortcutEvent event) {
-                        replaceSelected();
-                    }
-                }).build());
+                .setHandler(event -> replaceSelected()).build());
 
         keyShortcutPresenter.register(KeyShortcut.Builder.builder()
                 .addKey(new Keys(Keys.ALT_KEY, 'W'))
                 .setContext(ShortcutContext.ProjectWideSearch)
                 .setDescription(messages.toggleRowActionButtons())
-                .setHandler(new KeyShortcutEventHandler() {
-                    @Override
-                    public void onKeyShortcut(KeyShortcutEvent event) {
-                        showRowActionButtons = !showRowActionButtons;
-                    }
-                }).build());
+                .setHandler(event ->
+                        showRowActionButtons = !showRowActionButtons).build());
 
         // TODO register key shortcuts:
         // Alt+Z undo last operation
@@ -559,14 +501,7 @@ public class SearchResultsPresenter extends
     }
 
     private Delegate<TransUnitReplaceInfo> buildReplaceButtonDelegate() {
-        return new Delegate<TransUnitReplaceInfo>() {
-
-            @Override
-            public void execute(TransUnitReplaceInfo info) {
-                fireReplaceTextEvent(Collections.singletonList(info));
-            }
-
-        };
+        return info -> fireReplaceTextEvent(Collections.singletonList(info));
     }
 
     private Delegate<TransUnitReplaceInfo> ensureUndoButtonDelegate() {
@@ -577,12 +512,7 @@ public class SearchResultsPresenter extends
     }
 
     private Delegate<TransUnitReplaceInfo> buildUndoButtonDelegate() {
-        return new Delegate<TransUnitReplaceInfo>() {
-            @Override
-            public void execute(final TransUnitReplaceInfo info) {
-                fireUndoEvent(Collections.singletonList(info.getReplaceInfo()));
-            }
-        };
+        return info -> fireUndoEvent(Collections.singletonList(info.getReplaceInfo()));
     }
 
     private Delegate<TransUnitReplaceInfo> ensurePreviewButtonDelegate() {
@@ -593,47 +523,39 @@ public class SearchResultsPresenter extends
     }
 
     private Delegate<TransUnitReplaceInfo> buildPreviewButtonDelegate() {
-        return new Delegate<TransUnitReplaceInfo>() {
-
-            @Override
-            public void execute(TransUnitReplaceInfo info) {
-                switch (info.getPreviewState()) {
-                case NotAllowed:
-                    break;
-                case Show:
-                    info.setPreviewState(PreviewState.Hide);
-                    refreshInfoDisplay(info);
-                    break;
-                default:
-                    firePreviewEvent(Collections.singletonList(info));
-                    break;
-                }
+        return info -> {
+            switch (info.getPreviewState()) {
+            case NotAllowed:
+                break;
+            case Show:
+                info.setPreviewState(PreviewState.Hide);
+                refreshInfoDisplay(info);
+                break;
+            default:
+                firePreviewEvent(Collections.singletonList(info));
+                break;
             }
-
         };
     }
 
     private Delegate<TransUnitReplaceInfo> ensureGoToEditorDelegate() {
         if (goToEditorDelegate == null) {
-            goToEditorDelegate = new Delegate<TransUnitReplaceInfo>() {
-                @Override
-                public void execute(TransUnitReplaceInfo info) {
-                    // in the case of editor still in filter mode or search
-                    // result,
-                    // requested text flow may not appear in result. We want to
-                    // make
-                    // sure it reloads everything for this document.
+            goToEditorDelegate = info -> {
+                // in the case of editor still in filter mode or search
+                // result,
+                // requested text flow may not appear in result. We want to
+                // make
+                // sure it reloads everything for this document.
 
-                    HistoryToken token = history.getHistoryToken();
-                    contextHolder.updateContext(null); // this will ensure
-                                                       // HistoryEventHandlerService
-                                                       // fire InitEditorEvent
-                    token.clearEditorFilterAndSearch();
-                    token.setView(MainView.Editor);
-                    token.setDocumentPath(docPaths.get(info.getDocId()));
-                    token.setTextFlowId(info.getTransUnit().getId().toString());
-                    history.newItem(token);
-                }
+                HistoryToken token = history.getHistoryToken();
+                contextHolder.updateContext(null); // this will ensure
+                                                   // HistoryEventHandlerService
+                                                   // fire InitEditorEvent
+                token.clearEditorFilterAndSearch();
+                token.setView(MainView.Editor);
+                token.setDocumentPath(docPaths.get(info.getDocId()));
+                token.setTextFlowId(info.getTransUnit().getId().toString());
+                history.newItem(token);
             };
         }
         return goToEditorDelegate;
@@ -643,21 +565,17 @@ public class SearchResultsPresenter extends
      * @return
      */
     private Handler buildSelectionChangeHandler() {
-        return new Handler() {
+        return event -> {
+            int selectedFlows = countSelectedFlows();
 
-            @Override
-            public void onSelectionChange(SelectionChangeEvent event) {
-                int selectedFlows = countSelectedFlows();
+            if (autoPreview) {
+                previewSelected(true, true);
+            }
 
-                if (autoPreview) {
-                    previewSelected(true, true);
-                }
-
-                if (selectedFlows == 0) {
-                    setUiForNothingSelected();
-                } else {
-                    refreshReplaceAllButton();
-                }
+            if (selectedFlows == 0) {
+                setUiForNothingSelected();
+            } else {
+                refreshReplaceAllButton();
             }
         };
     }
@@ -674,30 +592,27 @@ public class SearchResultsPresenter extends
     private Handler buildSelectionChangeDeselectHandler(final Long docId,
             final MultiSelectionModel<TransUnitReplaceInfo> selectionModel,
             final ListDataProvider<TransUnitReplaceInfo> dataProvider) {
-        return new Handler() {
-            @Override
-            public void onSelectionChange(SelectionChangeEvent event) {
-                boolean isAllSelected = true;
-                for (TransUnitReplaceInfo data : dataProvider.getList()) {
-                    if (!selectionModel.isSelected(data)) {
-                        isAllSelected = false;
-                        break;
-                    }
+        return event -> {
+            boolean isAllSelected = true;
+            for (TransUnitReplaceInfo data : dataProvider.getList()) {
+                if (!selectionModel.isSelected(data)) {
+                    isAllSelected = false;
+                    break;
                 }
-
-                if (selectAllDocList.containsKey(docId)) {
-                    selectAllDocList.get(docId).setValue(isAllSelected);
-                }
-
-                isAllSelected = true;
-                for (HasValue<Boolean> docSelectAll : selectAllDocList.values()) {
-                    if (!docSelectAll.getValue().booleanValue()) {
-                        isAllSelected = false;
-                        break;
-                    }
-                }
-                display.getSelectAllChk().setValue(isAllSelected);
             }
+
+            if (selectAllDocList.containsKey(docId)) {
+                selectAllDocList.get(docId).setValue(isAllSelected);
+            }
+
+            isAllSelected = true;
+            for (HasValue<Boolean> docSelectAll : selectAllDocList.values()) {
+                if (!docSelectAll.getValue().booleanValue()) {
+                    isAllSelected = false;
+                    break;
+                }
+            }
+            display.getSelectAllChk().setValue(isAllSelected);
         };
     }
 
@@ -854,7 +769,7 @@ public class SearchResultsPresenter extends
                     .noTextFlowsSelected()));
             return;
         }
-        List<TransUnit> transUnits = new ArrayList<TransUnit>();
+        List<TransUnit> transUnits = new ArrayList<>();
         for (TransUnitReplaceInfo info : toReplace) {
             switch (info.getReplaceState()) {
             case NotReplaced:

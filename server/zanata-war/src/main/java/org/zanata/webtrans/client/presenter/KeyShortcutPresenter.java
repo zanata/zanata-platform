@@ -149,19 +149,15 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay> {
     protected void onBind() {
         ensureActiveContexts().add(ShortcutContext.Application);
 
-        event.addNativePreviewHandler(new NativePreviewHandler() {
+        event.addNativePreviewHandler(nativeEvent -> {
+            NativeEvent evt = nativeEvent.getNativeEvent();
 
-            @Override
-            public void onPreviewNativeEvent(NativePreviewEvent nativeEvent) {
-                NativeEvent evt = nativeEvent.getNativeEvent();
-
-                if ((event.getTypeInt(nativeEvent) & (event.keyDownEvent() | event
-                        .keyUpEvent())) != 0) {
-                    if (isAttentionMode) {
-                        attentionKeyManager.processKeyEvent(evt);
-                    } else {
-                        shortcutManager.processKeyEvent(evt);
-                    }
+            if ((event.getTypeInt(nativeEvent) & (event.keyDownEvent() | event
+                    .keyUpEvent())) != 0) {
+                if (isAttentionMode) {
+                    attentionKeyManager.processKeyEvent(evt);
+                } else {
+                    shortcutManager.processKeyEvent(evt);
                 }
             }
         });
@@ -174,12 +170,9 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay> {
                         .setDescription(messages.closeShortcutView())
                         .setKeyEvent(KeyEvent.KEY_DOWN).setPreventDefault(true)
                         .setStopPropagation(true)
-                        .setHandler(new KeyShortcutEventHandler() {
-                            @Override
-                            public void onKeyShortcut(KeyShortcutEvent event) {
-                                if (display.isShowing()) {
-                                    display.hide(true);
-                                }
+                        .setHandler(event1 -> {
+                            if (display.isShowing()) {
+                                display.hide(true);
                             }
                         }).build();
         register(hideShortcutSummaryShortcut);
@@ -207,12 +200,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay> {
                         .addKey(new Keys(Keys.ALT_KEY, 'X'))
                         .setContext(ShortcutContext.Application)
                         .setKeyEvent(KeyEvent.KEY_DOWN)
-                        .setHandler(new KeyShortcutEventHandler() {
-                            @Override
-                            public void onKeyShortcut(KeyShortcutEvent event) {
-                                setAttentionMode(true);
-                            }
-                        }).build();
+                        .setHandler(event1 -> setAttentionMode(true)).build();
         attentionShortcutHandle = register(attentionKeyShortcut);
 
         KeyShortcut cancelAttentionShortcut =
@@ -221,21 +209,11 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay> {
                         .addAttentionKey(new Keys(KeyCodes.KEY_ESCAPE))
                         .setContext(ShortcutContext.Application)
                         .setKeyEvent(KeyEvent.KEY_DOWN)
-                        .setHandler(new KeyShortcutEventHandler() {
-                            @Override
-                            public void onKeyShortcut(KeyShortcutEvent event) {
-                                setAttentionMode(false);
-                            }
-                        }).build();
+                        .setHandler(event1 -> setAttentionMode(false)).build();
         register(cancelAttentionShortcut);
 
         Log.debug("creating attention timer");
-        attentionTimer = timers.create(new TimedAction() {
-            @Override
-            public void run() {
-                setAttentionMode(false);
-            }
-        });
+        attentionTimer = timers.create(() -> setAttentionMode(false));
     }
 
     @Override
@@ -314,7 +292,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay> {
         Set<SurplusKeyListener> listeners =
                 ensureSurplusKeyListenerMap().get(listener.getContext());
         if (listeners == null) {
-            listeners = new HashSet<SurplusKeyListener>();
+            listeners = new HashSet<>();
             ensureSurplusKeyListenerMap().put(listener.getContext(), listeners);
         }
         listeners.add(listener);
@@ -383,8 +361,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay> {
     private Map<ShortcutContext, Set<SurplusKeyListener>>
             ensureSurplusKeyListenerMap() {
         if (surplusKeyMap == null) {
-            surplusKeyMap =
-                    new HashMap<ShortcutContext, Set<SurplusKeyListener>>();
+            surplusKeyMap = new HashMap<>();
         }
         return surplusKeyMap;
     }
