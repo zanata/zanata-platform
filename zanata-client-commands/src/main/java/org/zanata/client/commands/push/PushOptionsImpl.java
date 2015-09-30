@@ -39,7 +39,7 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
     private static final boolean DEF_EXCLUDES = true;
     private static final boolean DEF_CASE_SENSITIVE = true;
     private static final boolean DEF_EXCLUDE_LOCALES = true;
-    private static final boolean DEF_COPYTRANS = true;
+    private static final boolean DEF_COPYTRANS = false;
     private static final boolean DEF_MY_TRANS = false;
     private static final int DEF_CHUNK_SIZE = 1024 * 1024;
     /** @see org.zanata.common.MergeType for options */

@@ -122,6 +122,12 @@
         <groupId>org.zanata</groupId>
         <artifactId>zanata-adapter-xliff</artifactId>
         <version>${zanata.common.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.zanata</groupId>
@@ -193,7 +199,7 @@
         <artifactId>httpclient</artifactId>
         <!-- When we upgrade to 4.3 again, please remove the SSLSocketFactory
              from ZanataProxyFactory -->
-        <version>4.2.5</version>
+        <version>4.2.6</version>
         <exclusions>
           <exclusion>
             <artifactId>commons-logging</artifactId>
