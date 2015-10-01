@@ -3,11 +3,11 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core">
 
-  <footer role="contentinfo" class="l--push--v-2">
-    <div class="l__wrapper">
-      <div class="l--pad-v-1 d--top">
+  <footer role="contentinfo" class="js-footer">
+    <div class="l__wrapper l--pad-top-1">
+      <div class="l--pad-v-half d--top">
         <div class="g">
-          <div class="g__item w--1-2 l--push-bottom-quarter">
+          <div class="g__item w--1-2">
             <ul class="list--horizontal txt--meta">
               <li><a href="#{applicationConfigurationAction.termOfUseUrl}"
                 target="_blank">#{msgs['jsf.TermsOfUse']}</a></li>
@@ -27,7 +27,7 @@
                 target="_blank">#{msgs['jsf.ReportAProblem']}</a>
               </li>
               <li>
-                <h:form id="localeSelector_form">
+                <h:form id="localeSelector_form" styleClass="l--push-bottom-0">
                   <h:selectOneMenu id="Select"
                     value="#{localeSelector.localeString}"
                     valueChangeListener="#{localeSelector.select}"

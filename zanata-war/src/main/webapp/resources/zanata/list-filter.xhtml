@@ -32,6 +32,9 @@
   <composite:attribute name="iconClass" type="java.lang.String"
     shortDescription="css class for icon display" default=""/>
 
+  <composite:attribute name="oncomplete"
+    shortDescription="The client-side script method to be called after the DOM is updated"/>
+
   <composite:attribute name="status" type="java.lang.String"
     shortDescription="Name of the request status component that will indicate the status of the Ajax request when filtering"/>
 
@@ -41,12 +44,14 @@
   <a4j:jsFunction name="#{cc.attrs.id}NextPage"
     action="#{cc.attrs.actionBean.nextPage}" status="#{cc.attrs.status}"
     render="#{cc.attrs.id}-page-info, #{cc.attrs.id}-pager, #{cc.attrs.render}"
+    oncomplete="#{cc.attrs.oncomplete}"
     limitRender="true">
   </a4j:jsFunction>
 
   <a4j:jsFunction name="#{cc.attrs.id}PreviousPage"
     action="#{cc.attrs.actionBean.previousPage}" status="#{cc.attrs.status}"
     render="#{cc.attrs.id}-page-info, #{cc.attrs.id}-pager, #{cc.attrs.render}"
+    oncomplete="#{cc.attrs.oncomplete}"
     limitRender="true">
   </a4j:jsFunction>
 
@@ -55,6 +60,7 @@
       action="#{cc.attrs.actionBean.firstPage}" status="#{cc.attrs.status}"
       render="#{cc.attrs.id}-pager, #{cc.attrs.id}-page-info, #{cc.attrs.render}"
       limitRender="true"
+      oncomplete="#{cc.attrs.oncomplete}"
       onbegin="clearHTML('#{rich:clientId(cc.attrs.listId)}')">
       <a4j:param name="val" assignTo="#{cc.attrs.actionBean.filter}"/>
       <a4j:attachQueue requestDelay="500"/>
@@ -68,14 +74,14 @@
         onkeyup="filterList(this, #{cc.attrs.id}FilterList)"
         class="form--search__input js-reveal__target__input"/>
       <button class="button--link panel__search__cancel js-reveal__cancel"
-        onclick="if(jQuery(#{cc.attrs.id}__input).val().length != 0) {#{cc.attrs.id}FilterList('')}"
+        onclick="if(jQuery(#{cc.attrs.id}__input).val().length != 0) {#{cc.attrs.id}FilterList('')} else {setTimeout(zanata.panel.init, 10)}"
         data-target="##{cc.attrs.id}">#{msgs['jsf.Cancel']}
       </button>
     </div>
   </ui:fragment>
 
   <h:panelGroup layout="block"
-    styleClass="panel__results #{cc.attrs.bottomPanel ? 'panel__results--bottom' : ''}">
+    styleClass="panel__results #{cc.attrs.bottomPanel ? 'panel__results--bottom js-panel__results--bottom' : ''}">
     <h:panelGroup layout="block"  id="#{cc.attrs.id}-pager">
       <h:panelGroup layout="block"  styleClass="panel__results__type"
         rendered="#{not (cc.attrs.bottomPanel and cc.attrs.actionBean.totalRecords eq 0)}">
@@ -129,6 +135,7 @@
           <i class="i--right i--cancel"></i>
         </button>
         <button class="button--link panel__search__button js-reveal__show"
+          onclick="setTimeout(zanata.panel.init, 10)"
           data-target="##{cc.attrs.id}">
           #{msgs['jsf.Search']}<i class="i--right i--search"></i>
         </button>
