@@ -34,8 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.annotations.TransactionPropagationType;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
@@ -67,7 +65,6 @@ import com.google.common.base.Optional;
 
 @Named("translationMemoryResource")
 @Path(TranslationMemoryResource.SERVICE_PATH)
-@Transactional(TransactionPropagationType.SUPPORTS)
 @Slf4j
 @ContainsAsyncMethods
 @ParametersAreNonnullByDefault

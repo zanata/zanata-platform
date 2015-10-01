@@ -40,7 +40,6 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.annotations.TransactionPropagationType;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.jboss.seam.core.Events;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
@@ -97,7 +96,6 @@ import com.google.common.collect.Lists;
 
 @Named("translationServiceImpl")
 @javax.enterprise.context.Dependent
-@Transactional
 @ContainsAsyncMethods
 @Slf4j
 public class TranslationServiceImpl implements TranslationService {
@@ -147,6 +145,7 @@ public class TranslationServiceImpl implements TranslationService {
     @Inject
     private Event<TextFlowTargetStateEvent> textFlowTargetStateEvent;
 
+    @Transactional
     @Override
     public List<TranslationResult> translate(LocaleId localeId,
             List<TransUnitUpdateRequest> translationRequests) {
@@ -541,7 +540,6 @@ public class TranslationServiceImpl implements TranslationService {
     @Override
     // This will not run in a transaction. Instead, transactions are controlled
     // within the method itself.
-    @Transactional(TransactionPropagationType.NEVER)
     @Async
     public
     Future<List<String>> translateAllInDocAsync(String projectSlug,
@@ -625,6 +623,7 @@ public class TranslationServiceImpl implements TranslationService {
             final Set<String> extensions, final MergeType mergeType,
             final boolean assignCreditToUploader, AsyncTaskHandle handle,
             final TranslationSourceType translationSourceType) {
+        assert !entityManager.getTransaction().isActive();
         final HProjectIteration hProjectIteration =
                 projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 
