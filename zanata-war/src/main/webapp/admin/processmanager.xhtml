@@ -1,7 +1,6 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:a4j="http://richfaces.org/a4j"
@@ -20,7 +19,7 @@
     <div class="g">
       <div class="g__item w--1-m w--3-8-l w--1-3 l--push-bottom-half">
         <p class="txt--meta l--push-all-0">
-          <s:link view="/admin/home.xhtml" propagation="none"
+          <h:link outcome="/admin/home.xhtml"
             value="#{msgs['jsf.Administration']}"/>
         </p>
 
@@ -31,7 +30,7 @@
           </h1>
         </div>
 
-        <s:div styleClass="panel l--push-top-1" id="progress">
+        <h:panelGroup layout="block"  styleClass="panel l--push-top-1" id="progress">
           <div class="panel__header">
             <h2 class="panel__heading--small">
             #{msgs['jsf.processmanager.currentStates']}
@@ -44,19 +43,19 @@
               #{msgs['jsf.processmanager.TotalFinished']}<span class="l--push-left-quarter badge">
               #{processManagerAction.stoppedCount}</span>
           </div>
-        </s:div>
+        </h:panelGroup>
       </div>
 
       <div class="g__item w--1-m w--5-8-l w--2-3 l--push-top-1">
         <div class="panel">
 
           <h:form id="process_form" styleClass="l--push-bottom-0">
-            <s:div styleClass="l--pad-all-half"
+            <h:panelGroup layout="block"  styleClass="l--pad-all-half"
               rendered="#{empty processManagerAction.runningProcesses}">
               <p class="txt--meta">#{msgs['jsf.processmanager.process.empty']}</p>
-            </s:div>
+            </h:panelGroup>
 
-            <s:fragment rendered="#{not empty processManagerAction.runningProcesses}">
+            <ui:fragment rendered="#{not empty processManagerAction.runningProcesses}">
               <ul class="list--stats">
                 <ui:repeat value="#{processManagerAction.runningProcesses}" var="handle">
                   <li
@@ -71,32 +70,32 @@
                           rendered="#{not handle.done}" styleClass="button button--danger l--push-left-half l--push-bottom-quarter"/>
 
                         <span class="list__item__meta txt--warning">
-                          <s:fragment rendered="#{handle.done}">
+                          <ui:fragment rendered="#{handle.done}">
                             #{msgs['jsf.processmanager.status.Finished']}
-                          </s:fragment>
-                          <s:fragment rendered="#{not handle.done}">
+                          </ui:fragment>
+                          <ui:fragment rendered="#{not handle.done}">
                             #{msgs.format('jsf.processmanager.progress', handle.currentProgress, handle.maxProgress)}
-                          </s:fragment>
+                          </ui:fragment>
                         </span>
                       </div>
                       <div class="list__item__stats">
-                        <s:fragment rendered="#{not handle.done}">
+                        <ui:fragment rendered="#{not handle.done}">
                           <zanata:loader type="loader--small" layout="inline"/>
-                        </s:fragment>
+                        </ui:fragment>
 
-                        <s:span styleClass="txt--understated" rendered="#{handle.done}">
+                        <h:panelGroup layout="span" styleClass="txt--understated" rendered="#{handle.done}">
                           <span
                             class="txt--hero">#{handle.executingTime}</span>
                           <span class="stats__unit txt--lowercase">
                             #{msgs['jsf.processmanager.miliseconds']}
                           </span>
-                        </s:span>
+                        </h:panelGroup>
                       </div>
                     </div>
                   </li>
                 </ui:repeat>
               </ul>
-            </s:fragment>
+            </ui:fragment>
           </h:form>
         </div>
       </div>

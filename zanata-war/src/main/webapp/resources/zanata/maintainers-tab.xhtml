@@ -3,7 +3,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:composite="http://java.sun.com/jsf/composite"
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:a4j="http://richfaces.org/a4j"
@@ -47,9 +46,9 @@
     </a4j:status>
 
     <h:form id="maintainers-form" styleClass="l--push-bottom-1">
-      <s:div styleClass="l--pad-all-half" rendered="#{cc.attrs.listSize lt 1}">
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half" rendered="#{cc.attrs.listSize lt 1}">
         <p class="txt--meta">#{msgs['jsf.NoMaintainers']}</p>
-        <s:fragment rendered="#{cc.attrs.PermissionToUpdate}">
+        <ui:fragment rendered="#{cc.attrs.PermissionToUpdate}">
           <p>
             <a class="button--primary" href="#{cc.attrs.settingsUrl}"
               onclick="changeBrowserUrl(this.href, true);return false;">
@@ -57,15 +56,15 @@
               <i class="i i--plus i__item__icon"></i>
             </a>
           </p>
-        </s:fragment>
-      </s:div>
+        </ui:fragment>
+      </h:panelGroup>
 
-      <s:div styleClass="l--pad-all-half"
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
         rendered="#{cc.attrs.listSize gt 1 and empty cc.attrs.filterActionBean.currentPage}">
         <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
-      </s:div>
+      </h:panelGroup>
 
-      <s:fragment
+      <ui:fragment
         rendered="#{not empty cc.attrs.filterActionBean.currentPage}">
         <ul class="list--slat">
           <ui:repeat value="#{cc.attrs.filterActionBean.currentPage}"
@@ -81,7 +80,7 @@
             </li>
           </ui:repeat>
         </ul>
-      </s:fragment>
+      </ui:fragment>
     </h:form>
 
     <zanata:list-filter status="maintainerTab-maintainersLoader"

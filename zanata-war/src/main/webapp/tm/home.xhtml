@@ -1,7 +1,6 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
@@ -103,7 +102,7 @@
   <div class="g--centered">
     <div class="g__item w--1-m w--1-2-l w--1-2 l--push-bottom-half">
       <p class="txt--meta l--push-all-0">
-        <s:link view="/admin/home.xhtml" propagation="none"
+        <h:link outcome="/admin/home.xhtml"
           value="#{msgs['jsf.Administration']}"/>
       </p>
 
@@ -128,11 +127,11 @@
               <ul class="dropdown__content js-dropdown__content"
                 role="content" aria-labelledby="dropdownContent">
                 <li>
-                  <s:link id="createTmLink" styleClass="i__item--right"
+                  <h:link id="createTmLink" styleClass="i__item--right"
                     value="#{msgs['jsf.transmemory.CreateNew']}"
-                    view="/tm/create.xhtml" propagation="none">
+                    outcome="/tm/create.xhtml">
                     <i class="i i--plus i__item__icon"></i>
-                  </s:link>
+                  </h:link>
                 </li>
               </ul>
             </div>
@@ -145,24 +144,24 @@
         </a4j:status>
 
         <h:form styleClass="l--push-bottom-0" id="tmList">
-          <s:div styleClass="l--pad-all-half"
+          <h:panelGroup layout="block"  styleClass="l--pad-all-half"
             rendered="#{empty translationMemoryAction.allTranslationMemories}">
             <p class="txt--meta">#{msgs['jsf.transmemory.NoTransMemories']}</p>
             <p>
-              <s:link styleClass="button--primary" propagation="none"
+              <h:link styleClass="button--primary"
                 value="#{msgs['jsf.transmemory.CreateNew']}"
-                view="/tm/create.xhtml">
+                outcome="/tm/create.xhtml">
                 <i class="i i--plus i__item__icon"></i>
-              </s:link>
+              </h:link>
             </p>
-          </s:div>
+          </h:panelGroup>
 
-          <s:div rendered="#{not empty translationMemoryAction.allTranslationMemories}">
-            <s:div id="processResult">
-              <s:span styleClass="message--warning" rendered="#{not empty translationMemoryAction.processError}">
+          <h:panelGroup layout="block"  rendered="#{not empty translationMemoryAction.allTranslationMemories}">
+            <h:panelGroup layout="block"  id="processResult">
+              <h:panelGroup layout="span" styleClass="message--warning" rendered="#{not empty translationMemoryAction.processError}">
                 #{translationMemoryAction.processError}
-              </s:span>
-            </s:div>
+              </h:panelGroup>
+            </h:panelGroup>
 
             <ul class="list--stats">
               <ui:repeat value="#{translationMemoryAction.allTranslationMemories}"
@@ -170,7 +169,7 @@
                 <li class="list__item--actionable">
 
                   <div class="list__item__action">
-                    <s:div
+                    <h:panelGroup layout="block"
                       styleClass="dropdown dropdown--small dropdown--inline dropdown--single list__item__dropdown js-dropdown" id="options">
                       <a href="#" title="Options"
                         class="dropdown__toggle js-dropdown__toggle txt--meta">
@@ -198,13 +197,13 @@
                         </li>
 
                         <li>
-                          <s:fragment rendered="#{translationMemoryAction.isTranslationMemoryEmpty(tm.slug) or translationMemoryAction.isTransMemoryBeingCleared(tm.slug)}">
+                          <ui:fragment rendered="#{translationMemoryAction.isTranslationMemoryEmpty(tm.slug) or translationMemoryAction.isTransMemoryBeingCleared(tm.slug)}">
                             <a href="#" title="#{msgs['jsf.transmemory.Clear.Title']}"
                               class="i__item--right txt--danger" disabled="true">
                               #{msgs['jsf.Clear']}
                               <i class="i i--remove i__item__icon"></i>
                             </a>
-                          </s:fragment>
+                          </ui:fragment>
 
                           <a4j:commandLink value="#{msgs['jsf.Clear']}"
                             rendered="#{not translationMemoryAction.isTransMemoryBeingCleared(tm.slug) and not translationMemoryAction.isTranslationMemoryEmpty(tm.slug)}"
@@ -217,13 +216,13 @@
                         </li>
 
                         <li>
-                          <s:fragment rendered="#{translationMemoryAction.deleteTransMemoryDisabled(tm.slug)}">
+                          <ui:fragment rendered="#{translationMemoryAction.deleteTransMemoryDisabled(tm.slug)}">
                             <a href="#" title="#{msgs['jsf.transmemory.Delete.Title']}"
                               class="i__item--right txt--danger" disabled="true">
                               #{msgs['jsf.Delete']}
                               <i class="i i--remove i__item__icon"></i>
                             </a>
-                          </s:fragment>
+                          </ui:fragment>
 
                           <h:commandLink value="#{msgs['jsf.Delete']}" rendered="#{not translationMemoryAction.deleteTransMemoryDisabled(tm.slug)}"
                             action="#{translationMemoryAction.deleteTransMemory(tm.slug)}"
@@ -233,46 +232,46 @@
                           </h:commandLink>
                         </li>
                       </ul>
-                    </s:div>
+                    </h:panelGroup>
                   </div>
                   <div>
                     <div class="list__item__content">
                       <div class="list__item__info">
                         <h3 class="list__title">
                           #{tm.slug}
-                          <s:span styleClass="badge l--push-left-quarter" id="tm-size"
+                          <h:panelGroup styleClass="badge l--push-left-quarter" id="tm-size"
                             title="#{msgs['jsf.transmemory.NoOfEntries']}">
                             #{translationMemoryAction.getTranslationMemorySize(tm.slug)}
-                          </s:span>
+                          </h:panelGroup>
                         </h3>
                         <span class="list__item__meta">#{tm.description}</span>
                       </div>
-                      <s:div styleClass="list__item__stats txt--mini" id="tm-status">
+                      <h:panelGroup layout="block"  styleClass="list__item__stats txt--mini" id="tm-status">
                         <a4j:poll interval="3000" limitRender="true"
                           render="processResultPoll, tm-size, tm-status, options"
                           enabled="#{translationMemoryAction.isTransMemoryBeingCleared(tm.slug)}"/>
 
-                        <s:fragment rendered="#{translationMemoryAction.isTransMemoryBeingCleared(tm.slug)}">
+                        <ui:fragment rendered="#{translationMemoryAction.isTransMemoryBeingCleared(tm.slug)}">
                           <span>#{msgs['jsf.transmemory.Clearing.Message']}</span>
                           <zanata:loader type="loader--small" layout="inline"/>
-                        </s:fragment>
-                        <s:fragment rendered="#{not translationMemoryAction.isTransMemoryBeingCleared(tm.slug)}">
-                          <s:span styleClass="txt--understated">
+                        </ui:fragment>
+                        <ui:fragment rendered="#{not translationMemoryAction.isTransMemoryBeingCleared(tm.slug)}">
+                          <span class="txt--understated">
                             #{msgs['jsf.transmemory.createdOn']}
                               <span class="stats__unit">
                                  <h:outputText value="#{tm.creationDate}">
                                    <f:convertDateTime type="date" dateStyle="default"/>
                                  </h:outputText>
                               </span>
-                          </s:span>
-                        </s:fragment>
-                      </s:div>
+                          </span>
+                        </ui:fragment>
+                      </h:panelGroup>
                     </div>
                   </div>
                 </li>
               </ui:repeat>
             </ul>
-          </s:div>
+          </h:panelGroup>
         </h:form>
       </div>
     </div>

@@ -1,15 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:s="http://jboss.org/schema/seam/taglib">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:f="http://java.sun.com/jsf/core">
 
 <ui:composition template="../WEB-INF/template/template.xhtml">
 
   <ui:define name="page_title">#{msgs['jsf.ManageRoles']}</ui:define>
 
   <ui:define name="center_content">
+
     <script type="text/javascript">
       function confirmDelete() {
         return confirm("#{msgs['jsf.AreYouSureYouWishToDeleteThisRoleThisActionCannotBeUndone']}");
@@ -18,7 +20,7 @@
     <div class="g--centered">
       <div class="g__item w--1-m w--1-2-l w--1-2 l--push-bottom-half">
         <p class="txt--meta l--push-all-0">
-          <s:link view="/admin/home.xhtml" propagation="none"
+          <h:link outcome="/admin/home.xhtml"
             value="#{msgs['jsf.Administration']}"/>
         </p>
 
@@ -37,11 +39,12 @@
                   role="content"
                   aria-labelledby="dropdownContent">
                   <li>
-                    <s:link action="#{zanataRoleAction.createRole}" styleClass="i__item--right"
+                    <h:link styleClass="i__item--right"
+                      outcome="/admin/roledetail.xhtml"
                       rendered="#{identity.hasPermission('seam.account', 'create', null)}"
                       value="#{msgs['jsf.CreateRole']}">
                       <i class="i i--plus i__item__icon"></i>
-                    </s:link>
+                    </h:link>
                   </li>
                 </ul>
               </div>
@@ -60,7 +63,7 @@
                         <span class="is-invisible">Options</span>
                       </a>
                       <ul class="dropdown__content js-dropdown__content">
-                        <s:fragment
+                        <ui:fragment
                           rendered="#{identity.hasPermission('seam.role', 'delete') and accountRoleDAO.findByName(role).roleType.toString() ne 'AUTO'}">
                           <li>
                             <h:commandLink
@@ -70,22 +73,22 @@
                               <i class="i i--remove i__item__icon"></i>
                             </h:commandLink>
                           </li>
-                        </s:fragment>
+                        </ui:fragment>
                       </ul>
                     </div>
                   </div>
-                  <h:commandLink
-                    action="#{zanataRoleAction.editRole(zanataRoleSearch.selectedRole)}"
+                  <h:link outcome="/admin/roledetail.xhtml"
                     disabled="#{not identity.hasPermission('seam.role', 'update') or accountRoleDAO.findByName(role).roleType.toString() eq 'AUTO'}">
                     <div class="list__item__content">
                       <div class="list__item__info">
                         <h3 class="list__title">#{role}
-                        <s:span rendered="#{not zanataRoleSearch.getRoleGroups(role).isEmpty()}"
-                          styleClass="txt--meta l--push-left-half">[#{zanataRoleSearch.getRoleGroups(role)}]</s:span>
+                        <h:panelGroup layout="span" rendered="#{not zanataRoleSearch.getRoleGroups(role).isEmpty()}"
+                          styleClass="txt--meta l--push-left-half">[#{zanataRoleSearch.getRoleGroups(role)}]</h:panelGroup>
                         </h3>
                       </div>
                     </div>
-                  </h:commandLink>
+                    <f:param name="role" value="#{zanataRoleSearch.selectedRole}" />
+                  </h:link>
                 </li>
               </ui:repeat>
             </ul>

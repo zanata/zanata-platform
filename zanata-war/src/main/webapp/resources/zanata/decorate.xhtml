@@ -1,0 +1,32 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  xmlns:cc="http://java.sun.com/jsf/composite">
+
+  <cc:interface>
+    <!-- Based on seam's migration demo project at https://github.com/seam/migration.-->
+    <!-- NOTE if you define an id, componentId must be different from the id otherwise it won't work -->
+    <cc:attribute name="componentId" required="false"
+      shortDescription="a component id for reference in other jsf events. It must be different from the id you defined on the component otherwise it will not work properly. e.g. ajax blur event triggering a validation re-render"/>
+    <cc:attribute name="rendered" required="false"/>
+    <cc:attribute name="styleClass" required="false"/>
+  </cc:interface>
+
+  <cc:implementation>
+    <h:panelGroup
+      id="#{not empty cc.attrs.componentId ? cc.attrs.componentId : 'Panel'}"
+      rendered="#{cc.attrs.rendered}">
+      <zanata:field styleClass="#{cc.attrs.styleClass}" id="input">
+        <cc:insertChildren/>
+      </zanata:field>
+    </h:panelGroup>
+
+
+  </cc:implementation>
+</ui:composition>

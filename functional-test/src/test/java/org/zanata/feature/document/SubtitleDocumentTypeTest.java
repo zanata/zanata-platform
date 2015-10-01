@@ -20,6 +20,7 @@
  */
 package org.zanata.feature.document;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -29,7 +30,6 @@ import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projectversion.versionsettings.VersionDocumentsTab;
 import org.zanata.page.webtrans.EditorPage;
 import org.zanata.util.CleanDocumentStorageRule;
-import org.zanata.util.SampleProjectRule;
 import org.zanata.util.TestFileGenerator;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.LoginWorkFlow;
@@ -51,9 +51,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SubtitleDocumentTypeTest extends ZanataTestCase {
 
     @ClassRule
-    public static SampleProjectRule sampleProjectRule = new SampleProjectRule();
-
-    @ClassRule
     public static CleanDocumentStorageRule documentStorageRule =
             new CleanDocumentStorageRule();
 
@@ -63,8 +60,8 @@ public class SubtitleDocumentTypeTest extends ZanataTestCase {
     private final static String PROJECTID = "subtitle-test";
     private final static String VERSIONID = "subtitles";
 
-    @BeforeClass
-    public static void beforeClass() {
+    @Before
+    public void beforeClass() {
         new ZanataRestCaller().createProjectAndVersion(
                 PROJECTID, VERSIONID, "file");
         assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())

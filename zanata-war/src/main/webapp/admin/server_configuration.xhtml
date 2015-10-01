@@ -1,11 +1,11 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:rich="http://richfaces.org/rich"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:a4j="http://richfaces.org/a4j"
   template="../WEB-INF/template/template.xhtml">
 
@@ -15,7 +15,7 @@
   <div class="g--centered">
     <div class="g__item w--3-4-m w--5-8-l w--1-3 l--push-bottom-1">
       <p class="txt--meta l--push-all-0">
-        <s:link view="/admin/home.xhtml" propagation="none"
+        <h:link outcome="/admin/home.xhtml"
           value="#{msgs['jsf.Administration']}"/>
       </p>
 
@@ -28,12 +28,12 @@
               <i class="i i--info" title="#{msgs['jsf.UrlToolTip']}"></i>
             </span>
           </h:outputLabel>
-          <s:decorate id="urlField" template="../WEB-INF/layout/field.xhtml" enclose="true">
+          <zanata:decorate id="url" componentId="urlField">
             <h:inputText id="url" value="#{serverConfigurationBean.serverUrl}">
               <a4j:ajax event="blur" render="urlField" execute="@this"/>
               <rich:placeholder value="#{msgs['jsf.Url.placeholder']}" styleClass="txt--neutral" />
             </h:inputText>
-          </s:decorate>
+          </zanata:decorate>
         </div>
 
         <div class="form__item l--push-top-1">
@@ -42,13 +42,13 @@
               <i class="i i--info" title="#{msgs['jsf.RegisterUrlToolTip']}"></i>
             </span>
           </h:outputLabel>
-          <s:decorate id="registerField" template="../WEB-INF/layout/field.xhtml" enclose="true">
+          <zanata:decorate id="register" componentId="registerField">
             <h:inputText id="registerUrl" value="#{serverConfigurationBean.registerUrl}">
               <a4j:ajax event="blur" render="registerField" execute="@this"/>
               <rich:placeholder value="#{msgs['jsf.RegisterUrl.placeholder']}"
                 styleClass="txt--neutral" />
             </h:inputText>
-          </s:decorate>
+          </zanata:decorate>
         </div>
 
         <div class="form__item l--push-top-1">
@@ -57,13 +57,13 @@
               <i class="i i--info" title="#{msgs['jsf.EmailDomainNameToolTip']}"></i>
             </span>
           </h:outputLabel>
-          <s:decorate id="emailDomainField" template="../WEB-INF/layout/field.xhtml" enclose="true">
+          <zanata:decorate id="emailDomain" componentId="emailDomainField">
             <h:inputText id="emailDomain" value="#{serverConfigurationBean.emailDomain}">
               <a4j:ajax event="blur" render="emailDomainField" execute="@this"/>
               <rich:placeholder value="#{msgs['jsf.email.domainName.placeholder']}"
                 styleClass="txt--neutral" />
             </h:inputText>
-          </s:decorate>
+          </zanata:decorate>
         </div>
 
         <div class="form__item l--push-top-1">
@@ -72,13 +72,13 @@
               <i class="i i--info" title="#{msgs['jsf.config.AdminEmail.tooltip']} #{msgs['jsf.config.AdminEmail.DoesNotChangeUserEmail']}"></i>
             </span>
           </h:outputLabel>
-          <s:decorate id="adminEmailField" template="../WEB-INF/layout/field.xhtml" enclose="true">
+          <zanata:decorate id="adminEmail" componentId="adminEmailField" >
             <h:inputText id="adminEml" value="#{serverConfigurationBean.adminEmail}">
               <a4j:ajax event="blur" render="adminEmailField" execute="@this"/>
               <rich:placeholder value="#{msgs['jsf.email.placeholder']} #{msgs['jsf.email.list.placeholder']}"
                 styleClass="txt--neutral" />
             </h:inputText>
-          </s:decorate>
+          </zanata:decorate>
         </div>
 
         <div class="form__item l--push-top-1">
@@ -87,14 +87,13 @@
               <i class="i i--info" title="#{msgs['jsf.config.FromEmailAddr.tooltip']}"></i>
             </span>
           </h:outputLabel>
-          <s:decorate id="fromEmailField" template="../WEB-INF/layout/field.xhtml"
-            enclose="true">
+          <zanata:decorate id="fromEmail" componentId="fromEmailField">
             <h:inputText id="fromEml" value="#{serverConfigurationBean.fromEmailAddr}">
               <a4j:ajax event="blur" render="fromEmailField" execute="@this"/>
               <rich:placeholder value="#{msgs['jsf.email.placeholder']}"
                 styleClass="txt--neutral" />
             </h:inputText>
-          </s:decorate>
+          </zanata:decorate>
         </div>
 
         <div class="form__item l--push-top-1">
@@ -103,13 +102,13 @@
             <i class="i i--info" title="#{msgs['jsf.config.TermsOfUseUrltooltip']}"></i>
           </span>
           </h:outputLabel>
-          <s:decorate id="termsOfUseUrlField" template="../WEB-INF/layout/field.xhtml" enclose="true">
+          <zanata:decorate id="termsOfUseUrl" componentId="termsOfUseUrlField">
             <h:inputText id="termsOfUseUrlEml" value="#{serverConfigurationBean.termsOfUseUrl}">
               <a4j:ajax event="blur" render="termsOfUseUrlField" execute="@this"/>
               <rich:placeholder value="#{msgs.format('jsf.config.TermsOfUseUrl.placeholder', serverConfigurationBean.defaultTermOfUseUrl)}"
                 styleClass="txt--neutral" />
             </h:inputText>
-          </s:decorate>
+          </zanata:decorate>
         </div>
 
         <div class="form__item l--push-top-1">
@@ -118,13 +117,13 @@
             <i class="i i--info" title="#{msgs['jsf.config.HelpUrltooltip']}"></i>
           </span>
           </h:outputLabel>
-          <s:decorate id="helpUrlField" template="../WEB-INF/layout/field.xhtml" enclose="true">
+          <zanata:decorate id="helpUrl" componentId="helpUrlField">
             <h:inputText id="helpInput" value="#{serverConfigurationBean.helpUrl}">
               <a4j:ajax event="blur" render="helpUrlField" execute="@this"/>
               <rich:placeholder value="#{msgs.format('jsf.config.HelpUrl.placeholder', serverConfigurationBean.defaultHelpUrl)}"
                 styleClass="txt--neutral" />
             </h:inputText>
-          </s:decorate>
+          </zanata:decorate>
         </div>
 
         <div class="form__item l--push-top-1">
@@ -140,8 +139,8 @@
               <a4j:ajax execute="@this" render="emailLogSettings"/>
              </h:selectBooleanCheckbox>
           </div>
-          <s:div id="emailLogSettings">
-            <s:div styleClass="l--push-top-half" rendered="#{serverConfigurationBean.enableLogEmail}">
+          <h:panelGroup layout="block"  id="emailLogSettings">
+            <h:panelGroup layout="block"  styleClass="l--push-top-half" rendered="#{serverConfigurationBean.enableLogEmail}">
               <h:outputLabel>#{msgs['jsf.config.LogEmailLevel']}
                 <span class="txt--meta l--push-right-quarter">
                   <i class="i i--info" title="#{msgs['jsf.config.LogEmailLevel.tooltip']}"></i>
@@ -154,22 +153,22 @@
                 <f:selectItem itemLabel="#{msgs['jsf.Error']}"
                   itemValue="ERROR"/>
               </h:selectOneMenu>
-            </s:div>
-            <s:div styleClass="l--push-top-half" rendered="#{serverConfigurationBean.enableLogEmail}">
+            </h:panelGroup>
+            <h:panelGroup layout="block"  styleClass="l--push-top-half" rendered="#{serverConfigurationBean.enableLogEmail}">
               <h:outputLabel for="logDestEml">#{msgs['jsf.config.LogDestEmail']}
               <span class="txt--meta">
                 <i class="i i--info" title="#{msgs['jsf.config.LogDestEmail.tooltip']}"></i>
               </span>
               </h:outputLabel>
-              <s:decorate id="logDestEmailField" template="../WEB-INF/layout/field.xhtml" enclose="true">
+              <zanata:decorate id="logDestEmail" componentId="logDestEmailField">
                 <h:inputText id="logDestEml" value="#{serverConfigurationBean.logDestinationEmails}">
                   <a4j:ajax event="blur" render="logDestEmailField" execute="@this"/>
                   <rich:placeholder value="#{msgs['jsf.email.placeholder']} #{msgs['jsf.email.list.placeholder']}"
                     styleClass="txt--neutral" />
                 </h:inputText>
-              </s:decorate>
-            </s:div>
-          </s:div>
+              </zanata:decorate>
+            </h:panelGroup>
+          </h:panelGroup>
         </div>
 
         <div class="form__item l--push-top-1">
@@ -177,13 +176,13 @@
           <p>#{msgs['jsf.config.Piwiktooltip']}</p>
           <div class="g--tight">
             <div class="w--3-4 w--s-3-4 g__item">
-              <s:decorate id="piwikUrlField" template="../WEB-INF/layout/field.xhtml" enclose="true">
+              <zanata:decorate id="piwikUrl" componentId="piwikUrlField">
                 <h:inputText id="piwikUrlEml" value="#{serverConfigurationBean.piwikUrl}">
                   <a4j:ajax event="blur" render="piwikUrlField" execute="@this"/>
                   <rich:placeholder value="#{msgs['jsf.config.Piwik.url.placeholder']}"
                     styleClass="txt--neutral" />
                 </h:inputText>
-              </s:decorate>
+              </zanata:decorate>
             </div>
             <div class="w--1-4 w--s-1-4 g__item">
               <h:inputText id="piwikIdSiteEml"
@@ -203,43 +202,43 @@
               <i class="i i--info" title="#{msgs['jsf.config.MaxConcurrentRequestsPerApiKeytooltip']}"></i>
             </span>
           </h:outputLabel>
-          <s:decorate id="maxConcurrentPerApiKeyField" template="../WEB-INF/layout/field.xhtml" enclose="true">
+          <zanata:decorate id="maxConcurrentPerApiKey" componentId="maxConcurrentPerApiKeyField">
             <h:inputText id="maxConcurrentPerApiKeyEml" value="#{serverConfigurationBean.maxConcurrentRequestsPerApiKey}">
               <a4j:ajax event="blur" render="maxConcurrentPerApiKeyField" execute="@this"/>
               <rich:placeholder value="default is 6" styleClass="txt--neutral" />
             </h:inputText>
-          </s:decorate>
+          </zanata:decorate>
 
           <h:outputLabel for="maxActiveRequestsPerApiKeyEml">#{msgs['jsf.config.MaxActiveRequestsPerApiKey']}
             <span class="txt--meta">
               <i class="i i--info" title="#{msgs['jsf.config.MaxActiveRequestsPerApiKeytooltip']}"></i>
             </span>
           </h:outputLabel>
-          <s:decorate id="maxActiveRequestsPerApiKeyField" template="../WEB-INF/layout/field.xhtml" enclose="true">
+          <zanata:decorate id="maxActiveRequestsPerApiKey" componentId="maxActiveRequestsPerApiKeyField">
             <h:inputText id="maxActiveRequestsPerApiKeyEml" value="#{serverConfigurationBean.maxActiveRequestsPerApiKey}">
               <a4j:ajax event="blur" render="maxActiveRequestsPerApiKeyField" execute="@this"/>
               <rich:placeholder value="default is 2" styleClass="txt--neutral" />
             </h:inputText>
-          </s:decorate>
+          </zanata:decorate>
 
           <h:outputLabel for="maxFilesPerUploadFieldInput">#{msgs['jsf.config.MaxFilesPerUpload']}
             <span class="txt--meta">
               <i class="i i--info" title="#{msgs['jsf.config.MaxFilesPerUploadTooltip']}"></i>
             </span>
           </h:outputLabel>
-          <s:decorate id="maxFilesPerUploadField" template="../WEB-INF/layout/field.xhtml" enclose="true">
+          <zanata:decorate id="maxFilesPerUpload" componentId="maxFilesPerUploadField">
             <h:inputText id="maxFilesPerUploadFieldInput" value="#{serverConfigurationBean.maxFilesPerUpload}">
               <a4j:ajax event="blur" render="maxFilesPerUploadField" execute="@this"/>
               <rich:placeholder value="#{msgs['jsf.config.MaxFilesPerUploadDefault']}"
                 styleClass="txt--neutral" />
             </h:inputText>
-          </s:decorate>
+          </zanata:decorate>
         </div>
 
         <h:commandButton value="#{msgs['jsf.Save']}" id="save" styleClass="button--primary"
             action="#{serverConfigurationBean.update}"/>
-        <s:button view="/admin/home.xhtml" value="#{msgs['jsf.Cancel']}" id="cancel"
-            propagation="none" styleClass="button button--link l--push-left-half"/>
+        <h:button outcome="/admin/home.xhtml" value="#{msgs['jsf.Cancel']}" id="cancel"
+            styleClass="button button--link l--push-left-half"/>
       </h:form>
     </div>
   </div>

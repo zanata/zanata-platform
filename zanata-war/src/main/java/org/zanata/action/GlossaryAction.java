@@ -1,5 +1,6 @@
 package org.zanata.action;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Collections;
@@ -15,6 +16,8 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.richfaces.event.FileUploadEvent;
+import org.richfaces.model.UploadedFile;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.dao.LocaleDAO;
@@ -155,6 +158,16 @@ public class GlossaryAction implements Serializable {
             this.glossaryDAO = glossaryDAO;
         }
         return getEntries();
+    }
+
+    public void glossaryFileUploaded(FileUploadEvent event) throws IOException {
+        UploadedFile uploadedFile = event.getUploadedFile();
+        glossaryFileUpload.setFileContents(uploadedFile.getInputStream());
+        glossaryFileUpload.setFileName(uploadedFile.getName());
+    }
+
+    public void clearGlossaryUpload() {
+        glossaryFileUpload = new GlossaryFileUploadHelper();
     }
 
     /**

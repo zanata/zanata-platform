@@ -20,17 +20,13 @@
  */
 package org.zanata.feature.administration;
 
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.utility.HomePage;
-import org.zanata.util.AddUsersRule;
-import org.zanata.util.SampleProjectRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -43,14 +39,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class EditHomePageTest extends ZanataTestCase {
 
-    @ClassRule
-    public static AddUsersRule addUsersRule = new AddUsersRule();
-
-    @Rule
-    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
-
-    @BeforeClass
-    public static void beforeClass() {
+    @Before
+    public void before() {
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
         assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
                 .isEqualTo("admin")

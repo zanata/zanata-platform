@@ -20,14 +20,12 @@
  */
 package org.zanata.feature.administration;
 
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.administration.RoleAssignmentsPage;
-import org.zanata.util.AddUsersRule;
 import org.zanata.workflow.LoginWorkFlow;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,9 +36,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Category(DetailedTest.class)
 public class AutoRoleAssignmentTest extends ZanataTestCase {
-
-    @Rule
-    public AddUsersRule addUsersRule = new AddUsersRule();
 
     @Feature(summary = "The administrator can create a rule to assign roles " +
             "at user sign in",

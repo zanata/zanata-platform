@@ -21,8 +21,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:a4j="http://richfaces.org/a4j"
-  xmlns:s="http://jboss.org/schema/seam/taglib">
+  xmlns:a4j="http://richfaces.org/a4j">
 
 <script type="text/javascript">
   //<![CDATA[
@@ -40,7 +39,7 @@
   <a4j:param name="val2" assignTo="#{state}"/>
 </a4j:jsFunction>
 
-<s:div id="validation-list">
+<h:panelGroup layout="block"  id="validation-list">
   <ul class="list--slat">
     <ui:repeat value="#{projectHome.validationList}"
         var="validationAction">
@@ -70,7 +69,7 @@
               <ui:repeat
                   value="#{projectHome.validationStates}"
                   var="state">
-                <s:fragment
+                <ui:fragment
                     rendered="#{validationAction.state == state}">
                   <input name="#{validationAction.id.name()}"
                       id="#{validationAction.id.name()}-#{state}"
@@ -79,8 +78,8 @@
                       type="radio"
                       class="form__item__input js-example__setter"
                       data-example=""/>
-                </s:fragment>
-                <s:fragment
+                </ui:fragment>
+                <ui:fragment
                     rendered="#{validationAction.state != state}">
                   <input name="#{validationAction.id.name()}"
                       id="#{validationAction.id.name()}-#{state}"
@@ -88,7 +87,7 @@
                       type="radio"
                       class="form__item__input js-example__setter"
                       data-example=""/>
-                </s:fragment>
+                </ui:fragment>
                 <label for="#{validationAction.id.name()}-#{state}"
                     class="button button--#{state.name() == 'Error'?'danger':state}">#{state}</label>
               </ui:repeat>
@@ -119,6 +118,6 @@
       </li>
     </ui:repeat>
   </ul>
-</s:div>
+</h:panelGroup>
 
 </ui:composition>

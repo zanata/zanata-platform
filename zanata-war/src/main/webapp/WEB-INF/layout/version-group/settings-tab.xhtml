@@ -3,7 +3,6 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:rich="http://richfaces.org/rich"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
@@ -63,8 +62,8 @@
             styleClass="l--push-right-half button--primary"/>
         </div>
         <hr/>
-        <s:span id="status">
-          <s:fragment
+        <h:panelGroup id="status">
+          <ui:fragment
             rendered="#{versionGroupHome.instance.status == 'ACTIVE'}">
             <p>
               <a4j:commandLink styleClass="button--danger"
@@ -74,9 +73,9 @@
             </p>
 
             <p class="txt--meta">#{msgs['jsf.ArchiveGroupMessage']}</p>
-          </s:fragment>
+          </ui:fragment>
 
-          <s:fragment
+          <ui:fragment
             rendered="#{versionGroupHome.instance.status != 'ACTIVE'}">
             <p>
               <a4j:commandLink styleClass="button--success"
@@ -90,8 +89,8 @@
               <i
                 class="i--left i--archive"></i> #{msgs['jsf.ActivateGroupMessage']}
             </p>
-          </s:fragment>
-        </s:span>
+          </ui:fragment>
+        </h:panelGroup>
       </div>
     </h:form>
   </li>
@@ -154,14 +153,14 @@
           value="#{versionGroupHome.getSortedInstanceProjectIterations()}"
           var="version" varStatus="status">
           <li class="reveal">
-            <s:link view="/iteration/view.xhtml">
+            <h:link outcome="/iteration/view.xhtml">
               <f:param name="projectSlug" value="#{version.project.slug}"/>
               <f:param name="iterationSlug" value="#{version.slug}"/>
               #{version.project.name} <i class="i i--version"></i> <zanata:version-label version="#{version}"/>
-              <s:fragment rendered="#{version.status == 'OBSOLETE'}">
+              <ui:fragment rendered="#{version.status == 'OBSOLETE'}">
                 <span class="txt--danger l--push-left-half">#{msgs['jsf.group.ArchivedVersionNotIncluded']}</span>
-              </s:fragment>
-            </s:link>
+              </ui:fragment>
+            </h:link>
             <a4j:commandLink
               styleClass="button--link l--float-right reveal__target"
               action="#{versionGroupHome.removeVersion(version)}"

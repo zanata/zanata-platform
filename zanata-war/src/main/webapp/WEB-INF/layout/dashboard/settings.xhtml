@@ -1,5 +1,4 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
@@ -58,11 +57,11 @@
         <h:form id="email-update-form" styleClass="l--constrain-large l--push-top-1">
           <div class="form__item l--push-bottom-1">
               <h:outputLabel for="email">#{msgs['jsf.Email']}</h:outputLabel>
-              <s:decorate id="emailField" template=" ../field.xhtml" enclose="true">
+              <zanata:decorate id="emailField" componentId="email">
                 <h:inputText id="email" value="#{userSettingsAction.emailAddress}"
                   maxlength="255">
                 </h:inputText>
-              </s:decorate>
+              </zanata:decorate>
           </div>
           <input id="updateEmailButton" type="submit"
             value="Update email"
@@ -75,7 +74,7 @@
           </a4j:status>
         </h:form>
         <hr/>
-        <s:fragment rendered="#{applicationConfiguration.internalAuth}">
+        <ui:fragment rendered="#{applicationConfiguration.internalAuth}">
           <h3 class="heading--secondary">
             <h:outputText rendered="#{not userSettingsAction.passwordSet}"
               value="#{msgs['jsf.dashboard.settings.setPassword.label']}"/>
@@ -83,19 +82,18 @@
               value="#{msgs['jsf.dashboard.settings.changePassword.label']}"/>
           </h3>
           <h:form id="passwordChangeForm" styleClass="l--constrain-large js-form-password-parent">
-            <s:fragment rendered="#{userSettingsAction.passwordSet}">
+            <ui:fragment rendered="#{userSettingsAction.passwordSet}">
               <div class="form__item">
                 <h:outputLabel for="oldPassword">#{msgs['jsf.OldPassword']}</h:outputLabel>
-                <s:decorate id="oldPasswordField" template=" ../field.xhtml" enclose="false">
+                <zanata:decorate id="oldPasswordField" componentId="oldPassword">
                   <h:inputSecret id="oldPassword" value="#{userSettingsAction.oldPassword}"
                     maxlength="255"/>
-                </s:decorate>
+                </zanata:decorate>
               </div>
-            </s:fragment>
+            </ui:fragment>
             <div class="form__item l--push-bottom-1">
               <h:outputLabel for="newPassword">#{msgs['jsf.NewPassword']}</h:outputLabel>
-              <s:decorate id="newPasswordField" template=" ../field.xhtml"
-                enclose="false">
+              <zanata:decorate id="newPasswordField" componentId="newPassword">
                 <div class="form__password js-form-password">
                   <h:inputSecret id="newPassword"
                     value="#{userSettingsAction.newPassword}"
@@ -104,7 +102,7 @@
                   <a href="#"
                     class="form__toggle js-form-password-toggle">Show</a>
                 </div>
-              </s:decorate>
+              </zanata:decorate>
             </div>
             <input id="changePasswordButton" type="submit"
               value="Update password" styleClass="button"
@@ -116,9 +114,9 @@
               <f:facet name="start"><zanata:loader layout="inline" type="loader--small"/></f:facet>
             </a4j:status>
           </h:form>
-        </s:fragment>
+        </ui:fragment>
         <hr/>
-        <s:fragment rendered="#{applicationConfiguration.multiAuth}">
+        <ui:fragment rendered="#{applicationConfiguration.multiAuth}">
           <h3 class="heading--secondary">
             #{msgs['jsf.dashboard.settings.connectedAccounts.label']}
           </h3>
@@ -182,9 +180,9 @@
           <hr/>
           <h:form>
             <p>
-              <s:link styleClass="button button--warning" view="/profile/merge_account.xhtml">
+              <h:link styleClass="button button--warning" outcome="/profile/merge_account.xhtml">
                 #{msgs['jsf.dashboard.settings.mergeAccounts.label']}
-              </s:link>
+              </h:link>
             </p>
             <small class="txt--meta">
               #{msgs['jsf.dashboard.settings.mergeAccount.info.label'] }
@@ -193,7 +191,7 @@
               </span>
             </small>
           </h:form>
-        </s:fragment>
+        </ui:fragment>
       </li>
       <li id="profile-content">
         <h2 class="l--push-top-0 gamma d--bottom">
@@ -211,11 +209,11 @@
           </div>
           <div class="form__item">
             <h:outputLabel for="nameField">#{msgs['jsf.Name']}</h:outputLabel>
-            <s:decorate id="nameField" template=" ../field.xhtml" enclose="true">
+            <zanata:decorate id="nameField" componentId="name">
               <h:inputText id="accountName" value="#{userSettingsAction.accountName}"
                 maxlength="80">
               </h:inputText>
-            </s:decorate>
+            </zanata:decorate>
           </div>
           <a4j:jsFunction name="updateProfile"
             action="#{userSettingsAction.updateProfile}"
@@ -254,9 +252,9 @@
               </li>
             </ui:repeat>
           </ul>
-          <s:link styleClass="button"
+          <h:link styleClass="button"
             value="#{msgs['jsf.dashboard.settings.joinLangTeam.message']}"
-            view="/language/home.xhtml"/>
+            outcome="/language/home.xhtml"/>
         </h:form>
       </li>
       <li id="client">
@@ -284,18 +282,18 @@
             <label for="apiKey">
               #{msgs['jsf.dashboard.settings.apiKey.label']}
             </label>
-            <s:fragment id="no_api_key"
+            <ui:fragment id="no_api_key"
               rendered="#{not userSettingsAction.apiKeyGenerated}">
                 <p>#{msgs['jsf.NotGenerated']}</p>
-            </s:fragment>
-            <s:fragment id="api_key"
+            </ui:fragment>
+            <ui:fragment id="api_key"
               rendered="#{userSettingsAction.apiKeyGenerated}">
               <p>#{msgs['jsf.YourCurrentApiKeyIs']}
                 <input id="apiKey" type="text" class="js-form__input--copyable"
                   value="#{userSettingsAction.accountApiKey}" readonly=""
                   size="30"/>
               </p>
-            </s:fragment>
+            </ui:fragment>
           </div>
           <script>
             function confirmGenerateApiKey() {

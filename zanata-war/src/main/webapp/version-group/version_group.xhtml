@@ -1,7 +1,6 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
@@ -99,12 +98,12 @@
 <div class="g">
   <div class="g__item w--1-m w--3-8-l w--1-3 l--push-bottom-half">
     <p class="txt--meta l--push-all-0">
-      <s:link view="/version-group/home.xhtml" propagation="none">
+      <h:link outcome="/version-group/home.xhtml">
         #{msgs['jsf.Groups']}
-      </s:link>
+      </h:link>
     </p>
 
-    <s:div styleClass="media l--push-bottom-half" id="group-info">
+    <h:panelGroup layout="block"  styleClass="media l--push-bottom-half" id="group-info">
       <div class="media__body">
         <h1 class="l--push-all-0">
           #{versionGroupHome.instance.name}
@@ -114,9 +113,9 @@
           #{versionGroupHome.instance.description}
         </p>
       </div>
-    </s:div>
-    <s:div id="overall_statistic" styleClass="progress-bar__expander">
-      <s:fragment rendered="#{versionGroupHomeAction.pageRendered}">
+    </h:panelGroup>
+    <h:panelGroup layout="block"  id="overall_statistic" styleClass="progress-bar__expander">
+      <ui:fragment rendered="#{versionGroupHomeAction.pageRendered}">
         <p class="d--top l--pad-top-half txt--mini">
           #{msgs['jsf.TotalSourceContains']}
           <strong>#{versionGroupHomeAction.overallStatistic.total}
@@ -149,14 +148,14 @@
             value="#{versionGroupHomeAction.overallStatistic}"
             type="large"/>
         </div>
-      </s:fragment>
+      </ui:fragment>
 
       <a4j:status name="statistic-loader">
         <f:facet name="start">
           <zanata:loader type="loader--large"/>
         </f:facet>
       </a4j:status>
-    </s:div>
+    </h:panelGroup>
   </div>
 
 
@@ -171,9 +170,9 @@
               <span class="is-hidden--s i__text--right">
                 #{msgs['jsf.Languages']}
               </span>
-            <s:span styleClass="txt--neutral" id="languages-size">
+            <h:panelGroup styleClass="txt--neutral" id="languages-size">
               #{versionGroupHomeAction.activeLocales.size}
-            </s:span>
+            </h:panelGroup>
           </a>
         </li>
         <li>
@@ -197,13 +196,13 @@
               <span class="is-hidden--s i__text--right">
                 #{msgs['jsf.Maintainers']}
               </span>
-            <s:span styleClass="txt--neutral" id="maintainers-size">
+            <h:panelGroup styleClass="txt--neutral" id="maintainers-size">
               #{versionGroupHome.instance.maintainers.size}
-            </s:span>
+            </h:panelGroup>
           </a>
         </li>
 
-        <s:fragment
+        <ui:fragment
           rendered="#{versionGroupHomeAction.isUserProjectMaintainer()}">
           <li class="tab__end">
             <div
@@ -225,9 +224,9 @@
               </ul>
             </div>
           </li>
-        </s:fragment>
+        </ui:fragment>
 
-        <s:fragment
+        <ui:fragment
           rendered="#{identity.hasPermission(versionGroupHome.instance, 'update')}">
           <li class="tab__end">
             <a id="settings_tab"
@@ -239,7 +238,7 @@
               <i class="i i--settings"></i>
             </a>
           </li>
-        </s:fragment>
+        </ui:fragment>
       </ul>
 
       <ul class="tabs__content panels__container js-tabs-content l--push-top-1">
@@ -262,21 +261,21 @@
             PermissionToUpdate="#{identity.hasPermission(versionGroupHome.instance, 'update')}"/>
         </li>
 
-        <s:fragment
+        <ui:fragment
           rendered="#{identity.hasPermission(versionGroupHome.instance, 'update')}">
           <li id="settings">
             <ui:include
               src="/WEB-INF/layout/version-group/settings-tab.xhtml"/>
           </li>
-        </s:fragment>
+        </ui:fragment>
       </ul>
     </div>
   </div>
 </div>
-  <s:fragment
+  <ui:fragment
     rendered="#{versionGroupHomeAction.isUserProjectMaintainer()}">
     <ui:include src="/WEB-INF/layout/version-group/request_join_modal.xhtml"/>
-  </s:fragment>
+  </ui:fragment>
 
 </ui:define>
 </ui:composition>

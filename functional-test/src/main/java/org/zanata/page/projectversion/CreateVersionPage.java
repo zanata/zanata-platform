@@ -37,7 +37,7 @@ public class CreateVersionPage extends BasePage {
             "must start and end with letter or number, and contain only " +
                     "letters, numbers, periods, underscores and hyphens.";
 
-    public By projectVersionID = By.id("create-version-form:slugField:slug");
+    public By projectVersionID = By.id("create-version-form:slug:input:slug");
     private By projectTypeSelection = By.id("create-version-form:project-type");
     private By saveButton = By.id("create-version-form:button-create");
     private By copyFromPreviousVersionChk = By.id("create-version-form:copy-from-version");

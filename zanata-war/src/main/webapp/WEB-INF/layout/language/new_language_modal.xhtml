@@ -2,7 +2,6 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:a4j="http://richfaces.org/a4j"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:rich="http://richfaces.org/rich"
   class="modal" id="newLanguageDialog" tabindex="-1" role="dialog"
   aria-labelledby="myModalLabel" aria-hidden="true">
@@ -82,7 +81,7 @@
 
         </zanata:autocomplete>
 
-        <s:div id="localeNameMsgs" styleClass="txt--warning">
+        <h:panelGroup layout="block"  id="localeNameMsgs" styleClass="txt--warning">
           <h:outputText
             value="#{languageManagerAction.languageNameValidationMessage}"
             rendered="#{not languageManagerAction.getQuery().contains('_')}"
@@ -97,7 +96,7 @@
             value="#{languageManagerAction.languageNameWarningMessage}"
             rendered="#{languageManagerAction.languageNameWarningMessage != null}"
             styleClass="txt--warning"/>
-        </s:div>
+        </h:panelGroup>
 
         <div class="form__item l--push-top-half checkbox">
           <h:outputLabel
@@ -106,7 +105,7 @@
             value="#{languageManagerAction.enabledByDefault}"/>
         </div>
 
-        <s:div id="output" styleClass="txt--mini l--push-v-half">
+        <h:panelGroup layout="block"  id="output" styleClass="txt--mini l--push-v-half">
           <div class="l--push-top-half">
             #{msgs['jsf.CountryCode']}<span
             class="txt--meta l--push-h-half">#{languageManagerAction.ULocale.country}</span>
@@ -127,7 +126,7 @@
             #{msgs['jsf.NativeName']}<span
             class="txt--meta l--push-h-half">#{languageManagerAction.ULocale.getDisplayName(languageManagerAction.ULocale)}</span>
           </div>
-        </s:div>
+        </h:panelGroup>
       </div>
 
       <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">

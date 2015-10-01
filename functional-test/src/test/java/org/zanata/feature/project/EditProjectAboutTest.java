@@ -21,15 +21,13 @@
 
 package org.zanata.feature.project;
 
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
+import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projects.ProjectAboutPage;
 import org.zanata.page.projects.projectsettings.ProjectAboutTab;
-import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
@@ -42,9 +40,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Category(DetailedTest.class)
 public class EditProjectAboutTest extends ZanataTestCase {
-
-    @Rule
-    public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 
     @Feature(summary = "The administrator can change a project about content",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)

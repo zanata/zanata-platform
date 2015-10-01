@@ -31,9 +31,9 @@ import org.zanata.page.BasePage;
 @Slf4j
 public class CreateProjectPage extends BasePage {
 
-    private By idField = By.id("project-form:slugField:slug");
-    private By nameField = By.id("project-form:nameField:name");
-    private By descriptionField = By.id("project-form:descriptionField:description");
+    private By idField = By.id("project-form:slug:input:slug");
+    private By nameField = By.id("project-form:name:input:name");
+    private By descriptionField = By.id("project-form:description:input:description");
     private By projectTypeList = By.id("project-types");
     private By createButton = By.id("project-form:create-new");
 

@@ -19,12 +19,16 @@ var _state = {
   dateRangeOption: DateRanges[0],
   selectedDay: null,
   contentStateOption: ContentStates[0],
+  loading: false,
   dateRange: function(option) {
     return utilsDate.getDateRangeFromOption(option);
   }
 };
 
 function loadFromServer() {
+  _state.loading = true;
+  UserMatrixStore.emitChange();
+
   var dateRangeOption = _state['dateRangeOption'],
     dateRange = utilsDate.getDateRangeFromOption(dateRangeOption),
     url = Configs.baseUrl + dateRange.fromDate + '..' + dateRange.toDate;
@@ -46,6 +50,7 @@ function loadFromServer() {
         } else {
           resolve(res['body']);
         }
+        _state.loading = false;
       }));
   });
 }

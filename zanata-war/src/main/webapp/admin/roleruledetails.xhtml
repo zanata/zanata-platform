@@ -1,9 +1,10 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:c="http://java.sun.com/jsf/core"
   template="../WEB-INF/template/template.xhtml"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:h="http://java.sun.com/jsf/html">
 
   <ui:define
@@ -13,10 +14,10 @@
     <div class="g--centered">
       <div class="g__item w--1-2-m w--3-8-l w--1-3 l--push-bottom-1">
         <p class="txt--meta l--push-all-0">
-          <s:link view="/admin/home.xhtml" propagation="none"
+          <h:link outcome="/admin/home.xhtml"
             value="#{msgs['jsf.Administration']}"/>
           <i class="i i--arrow-right"></i>
-          <s:link view="/admin/rolerules.xhtml" propagation="none"
+          <h:link outcome="/admin/rolerules.xhtml"
             value="#{msgs['jsf.RoleAssignmentRules']}"/>
         </p>
 
@@ -28,15 +29,15 @@
               title="#{msgs['jsf.rolerules.PolicyName.tooltip']}"></i>
             </span>
             </h:outputLabel>
-            <s:decorate id="policyNameField" template="/WEB-INF/layout/field.xhtml"
-              enclose="true">
+            <zanata:decorate id="policyName" componentId="policyNameField">
               <h:selectOneMenu id="policyName"
                 value="#{roleAssignmentRuleAction.instance.policyName}">
-                <s:selectItems value="#{roleAssignmentRuleAction.availablePolicyNames}"
-                  var="policy" label="#{policy}"
-                  noSelectionLabel=""/>
+                <c:selectItem noSelectionOption="true" itemLabel="" />
+                <c:selectItems value="#{roleAssignmentRuleAction.availablePolicyNames}"
+                  var="policy" itemLabel="#{policy}"
+                  />
               </h:selectOneMenu>
-            </s:decorate>
+            </zanata:decorate>
           </div>
 
           <div class="form__item l--push-top-1">
@@ -46,11 +47,10 @@
                 title="#{msgs['jsf.rolerules.IdentityPattern.tooltip']}"></i>
               </span>
             </h:outputLabel>
-            <s:decorate id="identityPatternField" template="/WEB-INF/layout/field.xhtml"
-              enclose="true">
+            <zanata:decorate id="identityPattern" componentId="identityPatternField">
               <h:inputText id="identityPattern"
                 value="#{roleAssignmentRuleAction.instance.identityRegExp}"/>
-            </s:decorate>
+            </zanata:decorate>
           </div>
 
           <div class="form__item l--push-top-1">
@@ -59,14 +59,13 @@
               title="#{msgs['jsf.rolerules.RoleToAssign.tooltip']}"></i>
             </span>
             </h:outputLabel>
-            <s:decorate id="roleField" template="/WEB-INF/layout/field.xhtml"
-              enclose="true">
+            <zanata:decorate id="role" componentId="roleField">
               <h:selectOneMenu id="roles"
                 value="#{roleAssignmentRuleAction.roleToAssign}">
-                <s:selectItems value="#{identityManager.listGrantableRoles()}"
-                  var="role" label="#{role}"/>
+                <c:selectItems value="#{identityManager.listGrantableRoles()}"
+                  var="role" itemLabel="#{role}"/>
               </h:selectOneMenu>
-            </s:decorate>
+            </zanata:decorate>
           </div>
 
           <h:commandButton id="save" styleClass="button button--primary"
@@ -79,10 +78,9 @@
             action="#{roleAssignmentRuleAction.update}"
             rendered="#{roleAssignmentRuleAction.managed}"/>
 
-          <s:button id="cancel" styleClass="button button--link l--push-left-half"
+          <h:button id="cancel" styleClass="button button--link l--push-left-half"
             value="#{msgs['jsf.Cancel']}"
-            propagation="none"
-            view="/admin/rolerules.xhtml"/>
+            outcome="/admin/rolerules.xhtml"/>
         </h:form>
 
       </div>

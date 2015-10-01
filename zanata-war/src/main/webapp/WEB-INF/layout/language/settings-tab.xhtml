@@ -1,7 +1,6 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
@@ -30,13 +29,13 @@
             <i class="i i--info"
               title="#{msgs.format('jsf.language.displayName.placeholder',languageAction.locale.retrieveDefaultDisplayName())}"></i>
           </span>
-          <s:decorate id="nameField" template="../field.xhtml" enclose="true">
+          <zanata:decorate id="name" componentId="nameField">
             <h:inputText id="name" placeholder="#{msgs.format('jsf.language.displayName.placeholder',languageAction.locale.retrieveDefaultDisplayName())}"
               maxlength="100" value="#{languageAction.locale.displayName}">
               <rich:placeholder value="#{msgs.format('jsf.language.displayName.placeholder',languageAction.locale.retrieveDefaultDisplayName())}" styleClass="txt--neutral"/>
               <a4j:ajax event="blur" render="nameField" execute="@this" limitRender="true"/>
             </h:inputText>
-          </s:decorate>
+          </zanata:decorate>
         </div>
 
         <div class="quarter form__item">
@@ -45,13 +44,13 @@
             <i class="i i--info"
               title="#{msgs.format('jsf.language.nativeName.placeholder',languageAction.locale.retrieveDefaultNativeName())}"></i>
           </span>
-          <s:decorate id="nativeNameField" template="../field.xhtml" enclose="true">
+          <zanata:decorate id="nativeName" componentId="nativeNameField">
             <h:inputText id="nativeName" placeholder="#{msgs.format('jsf.language.nativeName.placeholder',languageAction.locale.retrieveDefaultNativeName())}"
               maxlength="100" value="#{languageAction.locale.nativeName}">
               <rich:placeholder value="#{msgs.format('jsf.language.nativeName.placeholder',languageAction.locale.retrieveDefaultNativeName())}" styleClass="txt--neutral"/>
               <a4j:ajax event="blur" render="nativeNameField" execute="@this" limitRender="true"/>
             </h:inputText>
-          </s:decorate>
+          </zanata:decorate>
         </div>
 
         <div class="l--push-top-quarter form__item">
@@ -82,14 +81,14 @@
             title="#{msgs['jsf.language.plurals.help']}" target="_blank">
             <i class="i i--help"></i>
           </a>
-          <s:decorate id="pluralFormsField" template="../field.xhtml" enclose="true">
+          <zanata:decorate id="pluralForms" componentId="pluralFormsField">
             <h:inputText id="pluralForms" placeholder="#{languageAction.pluralsPlaceholder}"
               maxlength="100" value="#{languageAction.locale.pluralForms}"
               valueChangeListener="#{languageAction.validatePluralForms}">
               <rich:placeholder value="#{languageAction.pluralsPlaceholder}" styleClass="txt--neutral"/>
               <a4j:ajax event="blur" render="pluralFormsField" execute="@this" limitRender="true"/>
             </h:inputText>
-          </s:decorate>
+          </zanata:decorate>
         </div>
 
         <div class="l--push-top-quarter form__item">

@@ -6,8 +6,7 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:a4j="http://richfaces.org/a4j"
-  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
-  xmlns:s="http://jboss.org/schema/seam/taglib">
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
   <!--[if lt IE 7]>      <html class="no-js new-zanata lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
   <!--[if IE 7]>         <html class="no-js new-zanata lt-ie9 lt-ie8"> <![endif]-->
   <!--[if IE 8]>         <html class="no-js new-zanata lt-ie9"> <![endif]-->
@@ -85,7 +84,7 @@
   <h:body styleClass="new-zanata">
     <ui:include src="banner.xhtml"/>
     <a4j:outputPanel layout="block" ajaxRendered="true" id="messages">
-      <s:fragment rendered="#{showGlobalMessages != 'false'}">
+      <ui:fragment rendered="#{showGlobalMessages != 'false'}">
         <ul class="list--no-bullets message--global">
           <zanata:global-messages value="#{jsfMessages.globalMessagesList}"
             rendered="#{not facesContext.validationFailed and not empty jsfMessages.globalMessagesList}"/>
@@ -96,7 +95,7 @@
           rendered="#{conversationScopeMessages.hasMessages() or (not facesContext.validationFailed and not empty jsfMessages.globalMessagesList)}">
           startGlobalMessageTimer();
         </h:outputScript>
-      </s:fragment>
+      </ui:fragment>
     </a4j:outputPanel>
 
     <main role="main" class="l--pad-v-1">

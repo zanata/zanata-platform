@@ -3,7 +3,6 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:rich="http://richfaces.org/rich"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
@@ -50,13 +49,13 @@
 
 <h1>#{msgs['jsf.iteration.VersionSettings']}</h1>
 
-<s:div styleClass="tabs--vertical js-tabs" id="version-settings">
-<s:fragment rendered="#{versionHomeAction.copyVersionHandler.inProgress}">
+<h:panelGroup layout="block"  styleClass="tabs--vertical js-tabs" id="version-settings">
+<ui:fragment rendered="#{versionHomeAction.copyVersionHandler.inProgress}">
   <div class="bg--pop-highest l--pad-all-1">
     #{msgs['jsf.copyVersion.versionSettingsDisabled']}
   </div>
-</s:fragment>
-<s:fragment rendered="#{not versionHomeAction.copyVersionHandler.inProgress}">
+</ui:fragment>
+<ui:fragment rendered="#{not versionHomeAction.copyVersionHandler.inProgress}">
 <ul class="tabs__nav js-tabs-nav">
   <li>
     <a id="settings-general_tab"
@@ -107,8 +106,8 @@
         styleClass="l--push-right-half button--primary"/>
     </div>
     <hr/>
-    <s:div styleClass="g--tight" id="status">
-      <s:div styleClass="g__item w--1-2 l--push-bottom-1"
+    <h:panelGroup layout="block"  styleClass="g--tight" id="status">
+      <h:panelGroup layout="block"  styleClass="g__item w--1-2 l--push-bottom-1"
         rendered="#{versionHome.instance.status == 'ACTIVE'}">
         <a4j:commandLink
           styleClass="button--warning l--push-bottom-half"
@@ -120,16 +119,16 @@
 
         <p
           class="txt--meta">#{msgs['jsf.iteration.readonly.Message']}</p>
-      </s:div>
-      <s:div styleClass="g__item w--1-2 l--push-bottom-1"
+      </h:panelGroup>
+      <h:panelGroup layout="block"  styleClass="g__item w--1-2 l--push-bottom-1"
         rendered="#{versionHome.instance.status ne 'ACTIVE'}">
-        <s:fragment
+        <ui:fragment
           rendered="#{versionHome.instance.status eq 'OBSOLETE'}">
           <button class="button--success l--push-bottom-half" disabled="true">
             <i class="i--left i--lock"></i>
             #{msgs['jsf.iteration.writable']}
           </button>
-        </s:fragment>
+        </ui:fragment>
         <a4j:commandLink
           styleClass="button--success l--push-bottom-half"
           rendered="#{versionHome.instance.status eq 'READONLY'}"
@@ -139,11 +138,11 @@
         </a4j:commandLink>
 
         <p class="txt--meta">#{msgs['jsf.iteration.writable.Message']}</p>
-      </s:div>
+      </h:panelGroup>
 
-      <s:fragment
+      <ui:fragment
         rendered="#{identity.hasPermission(versionHome.instance, 'mark-obsolete')}">
-        <s:div styleClass="g__item w--1-2"
+        <h:panelGroup layout="block"  styleClass="g__item w--1-2"
           rendered="#{versionHome.instance.status ne 'OBSOLETE'}">
           <a href="javascript:void(0)" class="button--danger l--push-bottom-half"
             onclick="zanata.modal.show('#delete-confirmation-modal')">
@@ -152,9 +151,9 @@
           </a>
           <p
             class="txt--meta">#{msgs['jsf.iteration.delete.Message']}</p>
-        </s:div>
-      </s:fragment>
-    </s:div>
+        </h:panelGroup>
+      </ui:fragment>
+    </h:panelGroup>
   </h:form>
 </li>
 <li id="settings-documents">
@@ -319,21 +318,21 @@
             <div class="g__item w--5-12">
               <div class="button--group txt--align-right">
                 <ui:repeat value="#{versionHome.validationStates}" var="state">
-                  <s:fragment rendered="#{validationAction.state eq state}">
+                  <ui:fragment rendered="#{validationAction.state eq state}">
                     <input name="#{validationAction.id.name()}"
                       id="#{validationAction.id.name()}-#{state}"
                       checked="true" type="radio"
                       onchange="onValidationOptionChange(this.id)"
                       class="form__item__input js-example__setter"
                       data-example=""/>
-                  </s:fragment>
-                  <s:fragment rendered="#{validationAction.state ne state}">
+                  </ui:fragment>
+                  <ui:fragment rendered="#{validationAction.state ne state}">
                     <input name="#{validationAction.id.name()}"
                       id="#{validationAction.id.name()}-#{state}"
                       onchange="onValidationOptionChange(this.id)"
                       type="radio" data-example=""
                       class="form__item__input js-example__setter"/>
-                  </s:fragment>
+                  </ui:fragment>
                   <label for="#{validationAction.id.name()}-#{state}"
                     class="button button--#{state.name() == 'Error'?'danger':state}">#{state}</label>
                 </ui:repeat>
@@ -367,8 +366,8 @@
   </h:form>
 </li>
 </ul>
-</s:fragment>
-</s:div>
+</ui:fragment>
+</h:panelGroup>
 
   <ui:include src="/WEB-INF/layout/delete_confirmation_modal.xhtml">
     <ui:param name="copiedEntityType" value="#{msgs['jsf.Version']}" />

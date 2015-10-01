@@ -2,7 +2,6 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:a4j="http://richfaces.org/a4j"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
@@ -13,7 +12,7 @@
   </h2>
 
   <h:form id="settings-languages-form" styleClass="l--push-bottom-0">
-    <s:div id="settings-languages-list">
+    <h:panelGroup layout="block"  id="settings-languages-list">
 
       <button styleClass="button--small l--push-bottom-half" jsfc="a4j:commandButton"
         value="#{msgs['jsf.iteration.inheriteLanguage.label']}"
@@ -114,7 +113,7 @@
                       </button>
                     </div>
                     <ul class="dropdown__content js-dropdown__content">
-                      <s:fragment rendered="#{not versionHome.hasLocaleAlias(locale)}">
+                      <ui:fragment rendered="#{not versionHome.hasLocaleAlias(locale)}">
                         <li>
                           <h:outputLink id="addLocaleAliasLink"
                             styleClass="dropdown__content__link button--link i__item--left"
@@ -124,8 +123,8 @@
                             #{msgs['jsf.languages.AddAlias']}
                           </h:outputLink>
                         </li>
-                      </s:fragment>
-                      <s:fragment rendered="#{versionHome.hasLocaleAlias(locale)}">
+                      </ui:fragment>
+                      <ui:fragment rendered="#{versionHome.hasLocaleAlias(locale)}">
                         <li>
                           <h:outputLink id="editLocaleAliasLink"
                             styleClass="dropdown__content__link button--link i__item--left"
@@ -135,8 +134,8 @@
                             #{msgs['jsf.languages.EditAlias']}
                           </h:outputLink>
                         </li>
-                      </s:fragment>
-                      <s:fragment rendered="#{versionHome.hasLocaleAlias(locale)}">
+                      </ui:fragment>
+                      <ui:fragment rendered="#{versionHome.hasLocaleAlias(locale)}">
                         <li>
                           <button
                             class="dropdown__content__link button--link txt--danger i__item--left"
@@ -145,7 +144,7 @@
                             #{msgs['jsf.languages.DeleteAlias']}
                           </button>
                         </li>
-                      </s:fragment>
+                      </ui:fragment>
                     </ul>
                   </div>
                 </div>
@@ -270,7 +269,7 @@
 
       </ui:decorate>
 
-    </s:div>
+    </h:panelGroup>
   </h:form>
 
 </ui:composition>

@@ -5,8 +5,6 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:composite="http://java.sun.com/jsf/composite"
-  xmlns:rich="http://richfaces.org/rich"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:h="http://java.sun.com/jsf/html">
 
@@ -38,20 +36,20 @@
 
 <composite:implementation>
   <div id="#{cc.clientId}">
-    <s:div id="#{cc.clientId}-content" styleClass="panel l--push-top-1 #{cc.attrs.actionBean.inProgress ? '' : 'is-hidden'}">
-      <s:div styleClass="panel__header"
+    <h:panelGroup layout="block"  id="#{cc.clientId}-content" styleClass="panel l--push-top-1 #{cc.attrs.actionBean.inProgress ? '' : 'is-hidden'}">
+      <h:panelGroup layout="block"  styleClass="panel__header"
         rendered="#{cc.attrs.actionBean.inProgress}">
-        <s:div
+        <h:panelGroup layout="block"
           styleClass="panel__header__actions l--push-right-half l--push-bottom-0"
           rendered="#{cc.attrs.canCancelProcess}">
           <a href="javascript:void(0)"
             onclick="if(confirm('#{cc.attrs.cancelConfirmationMessage}')) {#{cc.attrs.onCancel}};"
             title="#{cc.attrs.cancelTooltip}"
             class="button--small button--link">#{msgs['jsf.Cancel']}</a>
-        </s:div>
+        </h:panelGroup>
 
         <h2 class="panel__heading--small">#{cc.attrs.header}</h2>
-      </s:div>
+      </h:panelGroup>
 
       <div class="l--pad-all-half l--push-top-quarter">
         <zanata:progressBar id="#{cc.clientId}ProgressBar"
@@ -59,16 +57,16 @@
           render="#{cc.clientId}-progress-messages"
           oncomplete="#{cc.attrs.oncomplete}"/>
 
-        <s:div id="#{cc.clientId}-progress-messages"
+        <h:panelGroup layout="block"  id="#{cc.clientId}-progress-messages"
           styleClass="txt--meta l--push-top-quarter">
           <zanata:loader layout="inline" type="loader--small"
             rendered="#{cc.attrs.actionBean.inProgress}"/>
         <span>
           <h:outputText value="#{cc.attrs.actionBean.progressMessage}"/>
         </span>
-        </s:div>
+        </h:panelGroup>
       </div>
-    </s:div>
+    </h:panelGroup>
   </div>
 </composite:implementation>
 </html>

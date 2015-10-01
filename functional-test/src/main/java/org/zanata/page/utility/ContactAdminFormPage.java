@@ -34,7 +34,7 @@ import org.zanata.page.BasePage;
 public class ContactAdminFormPage extends BasePage {
 
     private By subjectField = By.id("contactAdminForm:subjectField:subject");
-    private By messageField = By.id("contactAdminForm:messageField:contact-admin-message");
+    private By messageField = By.id("contactAdminForm:messageField:input:contact-admin-message");
     private By sendButton = By.id("contact-admin-send-button");
 
     public ContactAdminFormPage(WebDriver driver) {

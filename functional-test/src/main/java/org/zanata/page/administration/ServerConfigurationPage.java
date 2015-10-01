@@ -34,20 +34,20 @@ import org.zanata.page.BasePage;
 @Slf4j
 public class ServerConfigurationPage extends BasePage {
 
-    private By urlField = By.id("serverConfigForm:urlField:url");
-    public static By registerUrlField = By.id("serverConfigForm:registerField:registerUrl");
+    private By urlField = By.id("serverConfigForm:url:input:url");
+    public static By registerUrlField = By.id("serverConfigForm:register:input:registerUrl");
     private By emailDomainField = By.id("serverConfigForm:emailDomainField:emailDomain");
-    private By adminEmailField = By.id("serverConfigForm:adminEmailField:adminEml");
-    public static By fromEmailField = By.id("serverConfigForm:fromEmailField:fromEml");
+    private By adminEmailField = By.id("serverConfigForm:adminEmail:input:adminEml");
+    public static By fromEmailField = By.id("serverConfigForm:fromEmail:input:fromEml");
     private By enableLogCheck = By.id("serverConfigForm:enableLogCheck");
     private By logLevelSelect = By.id("serverConfigForm:logEmailLvl");
-    private By emailDestinationField = By.id("serverConfigForm:logDestEmailField:logDestEml");
-    private By helpUrlField = By.id("serverConfigForm:helpUrlField:helpInput");
-    private By termsUrlField = By.id("serverConfigForm:termsOfUseUrlField:termsOfUseUrlEml");
-    private By piwikUrl = By.id("serverConfigForm:piwikUrlField:piwikUrlEml");
+    private By emailDestinationField = By.id("serverConfigForm:logDestEmail:input:logDestEml");
+    private By helpUrlField = By.id("serverConfigForm:helpUrl:input:helpInput");
+    private By termsUrlField = By.id("serverConfigForm:termsOfUseUrl:input:termsOfUseUrlEml");
+    private By piwikUrl = By.id("serverConfigForm:piwikUrl:input:piwikUrlEml");
     private By piwikId = By.id("serverConfigForm:piwikIdSiteEml");
-    private By maxConcurrentField = By.id("serverConfigForm:maxConcurrentPerApiKeyField:maxConcurrentPerApiKeyEml");
-    private By maxActiveField = By.id("serverConfigForm:maxActiveRequestsPerApiKeyField:maxActiveRequestsPerApiKeyEml");
+    private By maxConcurrentField = By.id("serverConfigForm:maxConcurrentPerApiKey:input:maxConcurrentPerApiKeyEml");
+    private By maxActiveField = By.id("serverConfigForm:maxActiveRequestsPerApiKey:input:maxActiveRequestsPerApiKeyEml");
     private By saveButton = By.id("serverConfigForm:save");
 
     public ServerConfigurationPage(WebDriver driver) {
@@ -72,7 +72,7 @@ public class ServerConfigurationPage extends BasePage {
     }
 
     public boolean expectFieldValue(final By by, final String expectedValue) {
-        log.info("Wait for field {} value", by.toString(), expectedValue);
+        log.info("Wait for field {} value {}", by.toString(), expectedValue);
         return waitForAMoment().withMessage("text present: " + by.toString()).until(
                 ExpectedConditions.textToBePresentInElementValue(existingElement(by), expectedValue));
     }

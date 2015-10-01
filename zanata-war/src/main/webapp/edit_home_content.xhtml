@@ -29,10 +29,8 @@
           <h:commandButton id="update"
             value="#{msgs['jsf.Update']}"
             action="#{serverConfigurationBean.updateHomeContent}"/>
-          <s:button id="cancel" view="/home.xhtml"
-            value="#{msgs['jsf.Cancel']}"
-            propagation="none"
-            action="#{serverConfigurationBean.cancel}"/>
+          <h:button id="cancel" outcome="/home.xhtml"
+            value="#{msgs['jsf.Cancel']}"/>
         </div>
 
         <hr/>

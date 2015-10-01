@@ -6,8 +6,7 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
-  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
-  xmlns:s="http://jboss.org/schema/seam/taglib">
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
 <ui:composition template="../WEB-INF/template/template.xhtml">
 
@@ -40,7 +39,7 @@
             onbegin="clearHTML('#{rich:clientId('glossary_form')}')"
             status="glossaryLoader"/>
 
-          <s:fragment
+          <ui:fragment
             rendered="#{identity.hasPermission('', 'glossary-delete') or identity.hasPermission('', 'glossary-insert')}">
             <div
               class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown"
@@ -50,7 +49,7 @@
                 class="i i--ellipsis"></i></a>
               <ul class="dropdown__content js-dropdown__content" role="content"
                 aria-labelledby="dropdownContent">
-                <s:fragment
+                <ui:fragment
                   rendered="#{identity.hasPermission('', 'glossary-insert')}">
                   <li>
                     <a href="#" data-toggle="modal" data-target="#glossaryUploadDialog">
@@ -58,10 +57,10 @@
                       <i class="i i--import i__item__icon"></i>
                     </a>
                   </li>
-                </s:fragment>
+                </ui:fragment>
               </ul>
             </div>
-          </s:fragment>
+          </ui:fragment>
         </div>
         <h2 class="panel__heading">#{msgs['jsf.Glossary.entries.label']}</h2>
       </div>
@@ -82,10 +81,10 @@
       </a4j:status>
 
       <h:form id="glossary_form" styleClass="l--push-bottom-1">
-        <s:div styleClass="l--pad-all-half"
+        <h:panelGroup layout="block"  styleClass="l--pad-all-half"
           rendered="#{empty glossaryAction.getEntries()}">
           <p class="txt--meta">#{msgs['jsf.Glossary.empty']}</p>
-          <s:fragment
+          <ui:fragment
             rendered="#{identity.hasPermission('', 'glossary-insert')}">
             <p>
               <a href="#" data-toggle="modal" data-target="#glossaryUploadDialog"
@@ -94,15 +93,15 @@
                 <i class="i i--plus i__item__icon"></i>
               </a>
             </p>
-          </s:fragment>
-        </s:div>
+          </ui:fragment>
+        </h:panelGroup>
 
-        <s:div styleClass="l--pad-all-half"
+        <h:panelGroup layout="block"  styleClass="l--pad-all-half"
           rendered="#{not empty glossaryAction.getEntries() and empty glossaryAction.glossaryFilter.currentPage}">
           <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
-        </s:div>
+        </h:panelGroup>
 
-        <s:fragment
+        <ui:fragment
           rendered="#{!glossaryAction.glossaryFilter.currentPage.isEmpty()}">
           <ul class="list--stats">
             <ui:repeat
@@ -112,7 +111,7 @@
                 value="#{identity.hasPermission('', 'glossary-delete')}"/>
               <li
                 class="#{hasActions ? 'list__item--actionable' : ''}">
-                <s:div styleClass="list__item__action" rendered="#{hasActions}">
+                <h:panelGroup layout="block"  styleClass="list__item__action" rendered="#{hasActions}">
                   <div
                     class="dropdown dropdown--small dropdown--inline dropdown--single list__item__dropdown js-dropdown">
                     <a href="#"
@@ -123,7 +122,7 @@
                       </span>
                     </a>
                     <ul class="dropdown__content js-dropdown__content">
-                      <s:fragment
+                      <ui:fragment
                         rendered="#{identity.hasPermission('', 'glossary-delete')}">
                         <li>
                           <a href="#" onclick="if(confirmDelete('#{glossaryAction.getDeleteConfirmationMessage(glossary.displayName)}')) {deleteGlossary('#{glossary.localeId}')}; return false;"
@@ -132,12 +131,12 @@
                             class="i i--remove i__item__icon"></i>
                           </a>
                         </li>
-                      </s:fragment>
+                      </ui:fragment>
                     </ul>
                   </div>
-                </s:div>
+                </h:panelGroup>
 
-                <s:link view="/language/language.xhtml">
+                <h:link outcome="/language/language.xhtml">
                   <f:param name="id" value="#{glossary.localeId}"/>
                   <div class="list__item__content">
                     <div class="list__item__info">
@@ -159,11 +158,11 @@
                       </span>
                     </div>
                   </div>
-                </s:link>
+                </h:link>
               </li>
             </ui:repeat>
           </ul>
-        </s:fragment>
+        </ui:fragment>
       </h:form>
 
       <zanata:list-filter listId="glossary_form"

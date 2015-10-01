@@ -178,7 +178,14 @@
   <page view-id="/admin/*" action="#{identity.checkRole('admin')}"></page>
 
   <page view-id="/admin/roledetail.xhtml">
+    <param name="role" value="#{zanataRoleAction.role}" />
+    <action execute="#{zanataRoleAction.loadRole()}" />
     <navigation from-action="#{zanataRoleAction.save}">
+      <rule if-outcome="success">
+        <redirect view-id="/admin/rolemanager.xhtml" />
+      </rule>
+    </navigation>
+    <navigation from-action="#{zanataRoleAction.cancel}">
       <rule if-outcome="success">
         <redirect view-id="/admin/rolemanager.xhtml" />
       </rule>
@@ -195,7 +202,14 @@
   </page>
 
   <page view-id="/admin/userdetail.xhtml">
+    <param name="username" value="#{userAction.username}" />
+    <action execute="#{userAction.loadUser()}"/>
     <navigation from-action="#{userAction.save}">
+      <rule if-outcome="success">
+        <redirect view-id="/admin/usermanager.xhtml" />
+      </rule>
+    </navigation>
+    <navigation from-action="#{userAction.cancel}">
       <rule if-outcome="success">
         <redirect view-id="/admin/usermanager.xhtml" />
       </rule>

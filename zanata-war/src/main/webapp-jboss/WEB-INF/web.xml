@@ -242,6 +242,12 @@
     <param-value>*.xhtml</param-value>
   </context-param>
 
+  <context-param>
+    <param-name>org.richfaces.fileUpload.maxRequestSize</param-name>
+    <!-- bytes -->
+    <param-value>10000000</param-value>
+  </context-param>
+
   <!-- This would eliminate ViewExpiredException when sessions expire, but may hurt performance:
     <context-param>
         <param-name>javax.faces.STATE_SAVING_METHOD</param-name>

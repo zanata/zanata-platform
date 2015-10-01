@@ -1,7 +1,6 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:a4j="http://richfaces.org/a4j"
@@ -12,9 +11,9 @@
   <ui:define name="center_content">
 
     <div class="header__logo-only">
-      <s:link view="/home.xhtml" propagation="none" id="home" tabindex="1">
+      <h:link outcome="/home.xhtml" id="home" tabindex="1">
         <img src="#{assets['img/logo/logo.svg']}" alt="Zanata"/>
-      </s:link>
+      </h:link>
     </div>
 
     <div class="g--centered">
@@ -33,20 +32,20 @@
             <ui:remove>
               <!--Internal, JAAS and Kerberos Login form-->
             </ui:remove>
-            <s:div
+            <h:panelGroup layout="block"
               styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--1-2 w--1-m' : ''}"
               rendered="#{applicationConfiguration.internalAuth or applicationConfiguration.jaasAuth or applicationConfiguration.kerberosAuth}">
-              <s:fragment rendered="#{applicationConfiguration.multiAuth}">
+              <ui:fragment rendered="#{applicationConfiguration.multiAuth}">
                 <h2
                   class="gamma heading--sub">#{msgs['jsf.login.WithZanata.label']}</h2>
-              </s:fragment>
-              <s:fragment rendered="#{applicationConfiguration.kerberosAuth}">
+              </ui:fragment>
+              <ui:fragment rendered="#{applicationConfiguration.kerberosAuth}">
                 <p class="txt--meta">
                   <h:outputText escape="false"
                     value="#{msgs['jsf.auth.KerberosNotice.label']}">
                   </h:outputText>
                 </p>
-              </s:fragment>
+              </ui:fragment>
 
               <h:form id="loginForm"
                 styleClass="l--push-top-half l--pad-all-1 bg--pop-higher">
@@ -61,11 +60,11 @@
                   <h:outputLabel for="password"
                     styleClass="l--float-left">#{msgs['jsf.Password']}</h:outputLabel>
                   <span class="txt--meta l--float-right">
-                    <s:link view="/account/password_reset_request.xhtml"
-                      propagation="none" tabindex="4"
+                    <h:link outcome="/account/password_reset_request.xhtml"
+                      tabindex="4"
                       rendered="#{applicationConfiguration.internalAuth}">
                       #{msgs['jsf.ForgotYourPassword']}
-                    </s:link>
+                    </h:link>
                   </span>
                 </div>
                 <h:inputSecret id="password" value="#{loginAction.password}"
@@ -77,44 +76,44 @@
                     value="#{msgs['jsf.Login']}"
                     styleClass="button--primary button--full"/>
 
-                  <s:fragment
+                  <ui:fragment
                     rendered="#{applicationConfiguration.internalAuth}">
                     <div
                       class="txt--align-center txt--align-center-s l--push-top-half">
-                      #{msgs['jsf.login.DontHaveAnAccount.label']} <s:link
-                      view="/account/register.xhtml"
+                      #{msgs['jsf.login.DontHaveAnAccount.label']} <h:link
+                      outcome="/account/register.xhtml"
                       value="#{msgs['jsf.SignUp']}"/>
                     </div>
-                  </s:fragment>
-                  <s:fragment
+                  </ui:fragment>
+                  <ui:fragment
                     rendered="#{not applicationConfiguration.internalAuth and not empty applicationConfiguration.registerPath}">
                     <h:outputLink value="#{applicationConfiguration.registerPath}">
                       <h:outputText value="#{msgs['jsf.Signup']}"/>
                     </h:outputLink>
-                  </s:fragment>
+                  </ui:fragment>
                 </div>
               </h:form>
-            </s:div>
+            </h:panelGroup>
             <ui:remove>
               <!-- OpenId Login form-->
             </ui:remove>
-            <s:div
+            <h:panelGroup layout="block"
               styleClass="l--push-top-half g__item #{applicationConfiguration.multiAuth ? 'w--1-2 w--1-m' : ''}"
               rendered="#{applicationConfiguration.openIdAuth}">
               <h:form>
-                <s:fragment rendered="#{applicationConfiguration.multiAuth}">
+                <ui:fragment rendered="#{applicationConfiguration.multiAuth}">
                   <h2
                     class="gamma heading--sub">#{msgs['jsf.login.OrLoginUsing.label']}</h2>
-                </s:fragment>
+                </ui:fragment>
                 <ul class="list--no-bullets">
                   <li class="l--push-top-half">
                     <h:commandLink action="#{loginAction.openIdLogin('Fedora')}"
                       styleClass="button--full button--fedora" value="Fedora"/>
                   </li>
                   <li class="l--push-top-half">
-                    <s:link value="Google" styleClass="button--full button--google"
-                      view="/account/google_password_reset_request.xhtml" propagation="none">
-                    </s:link>
+                    <h:link value="Google" styleClass="button--full button--google"
+                      outcome="/account/google_password_reset_request.xhtml">
+                    </h:link>
                   </li>
                   <li class="l--push-top-half">
                     <h:commandLink action="#{loginAction.openIdLogin('Yahoo')}"
@@ -137,7 +136,7 @@
                   </li>
                 </ul>
               </h:form>
-            </s:div>
+            </h:panelGroup>
           </div>
         </div>
       </div>

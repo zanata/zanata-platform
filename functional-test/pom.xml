@@ -505,6 +505,7 @@
                     <!-- Postgresql port to use -->
                     <argument>${postgresql.port}</argument>
                   </arguments>
+              <clearexistingdata>false</clearexistingdata>
                 </configuration>
               </execution>
               <!-- Stop the postgresql container after tests -->
