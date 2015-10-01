@@ -4,12 +4,15 @@ package org.zanata.seam.framework;
 
 import javax.persistence.EntityManager;
 import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.persistence.PersistenceProvider;
 import org.jboss.seam.transaction.Transaction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.zanata.model.ModelEntityBase;
+import org.zanata.util.ServiceLocator;
+
+import static javax.transaction.Status.STATUS_ACTIVE;
+import static javax.transaction.Status.STATUS_MARKED_ROLLBACK;
 
 /**
  * Base class for Home objects of JPA entities.
@@ -17,7 +20,6 @@ import org.slf4j.LoggerFactory;
  * @author Gavin King
  */
 public class EntityHome<E> extends Home<EntityManager, E> {
-    private static final Logger log = LoggerFactory.getLogger(EntityHome.class);
     private static final long serialVersionUID = -3140094990727574632L;
 
     /**
@@ -72,8 +74,16 @@ public class EntityHome<E> extends Home<EntityManager, E> {
     public String persist() {
         getEntityManager().persist(getInstance());
         getEntityManager().flush();
-        assignId(PersistenceProvider.instance().getId(getInstance(),
-                getEntityManager()));
+        E instance = getInstance();
+        if (instance instanceof ModelEntityBase) {
+            Long id = ((ModelEntityBase) instance).getId();
+            assignId(id);
+        } else {
+            // this should not happen. We don't have an EntityHome<E> where E is
+            // not a subclass of ModelEntityBase
+            throw new RuntimeException("can not get id from entity");
+        }
+
         createdMessage();
         return "persisted";
     }
@@ -133,35 +143,28 @@ public class EntityHome<E> extends Home<EntityManager, E> {
     protected void joinTransaction() {
         if (getEntityManager().isOpen()) {
             try {
-                Transaction.instance().enlist(getEntityManager());
+                UserTransaction transaction = getTransaction();
+                int status = transaction.getStatus();
+                boolean isActiveOrMarkedRollback = status == STATUS_ACTIVE || status == STATUS_MARKED_ROLLBACK;
+                if (isActiveOrMarkedRollback) {
+                    getEntityManager().joinTransaction();
+                }
             } catch (SystemException se) {
                 throw new RuntimeException("could not join transaction", se);
             }
         }
     }
 
+    // TODO [CDI] inject UserTransaction
+    private UserTransaction getTransaction() {
+        return Transaction.instance();
+    }
+
     /**
      * The Seam Managed Persistence Context used by this Home component
      */
     public EntityManager getEntityManager() {
-        return getPersistenceContext();
-    }
-
-    /**
-     * The Seam Managed Persistence Context used by this Home component.
-     */
-    public void setEntityManager(EntityManager entityManager) {
-        setPersistenceContext(entityManager);
-    }
-
-    /**
-     * The name the Seam component managing the Persistence Context. <br />
-     * Override this or {@link #getEntityManager()} if your persistence context
-     * is not named <code>entityManager</code>.
-     */
-    @Override
-    protected String getPersistenceContextName() {
-        return "entityManager";
+        return ServiceLocator.instance().getEntityManager();
     }
 
 }
