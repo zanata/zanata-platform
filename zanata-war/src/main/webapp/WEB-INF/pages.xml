@@ -472,7 +472,7 @@
     </redirect>
   </exception>
 
-  <exception class="org.jboss.seam.framework.EntityNotFoundException"
+  <exception class="javax.persistence.EntityNotFoundException"
     log-level="warn">
     <redirect view-id="/error.xhtml">
       <message severity="warn">#{msgs['jsf.RecordNotFound']}</message>

@@ -12,7 +12,7 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.framework.EntityNotFoundException;
+import javax.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.ui.faces.FacesMessages;
@@ -160,7 +160,8 @@ public abstract class Home<T, E> extends MutableController<T> {
      * Persistence Context.
      */
     protected E handleNotFound() {
-        throw new EntityNotFoundException(getId(), getEntityClass());
+        throw new EntityNotFoundException(String.format(
+                "entity not found: %s#%s", getEntityClass(), getId()));
     }
 
     /**
