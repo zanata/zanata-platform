@@ -12,6 +12,8 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.rest.editor.dto.User;
 import org.zanata.rest.editor.service.resource.UserResource;
+import org.zanata.security.annotations.CheckLoggedIn;
+import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.GravatarService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -25,6 +27,8 @@ import lombok.NoArgsConstructor;
 @Transactional
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@ZanataSecured
+@CheckLoggedIn
 public class UserService implements UserResource {
 
     @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
