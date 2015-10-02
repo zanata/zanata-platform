@@ -20,10 +20,7 @@
  */
 package org.zanata.config;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 
 /**
@@ -32,9 +29,9 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("systemPropertyConfigStore")
-@Scope(ScopeType.STATELESS)
-@AutoCreate
+@Named("systemPropertyConfigStore")
+@javax.enterprise.context.Dependent
+
 @BypassInterceptors
 public class SystemPropertyConfigStore implements ConfigStore {
 

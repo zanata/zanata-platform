@@ -28,10 +28,8 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.log.CommonsLogLogChute;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.jboss.seam.international.LocaleSelector;
 import org.jboss.seam.mail.MailSession;
 import org.zanata.ApplicationConfiguration;
@@ -51,9 +49,9 @@ import static org.jboss.seam.ScopeType.STATELESS;
  * template and send it via the default JavaMail Transport.
  */
 @AllArgsConstructor
-@AutoCreate
-@Name("emailBuilder")
-@Scope(STATELESS)
+
+@Named("emailBuilder")
+@javax.enterprise.context.Dependent
 @Slf4j
 public class EmailBuilder {
     // Use this if you want emails logged on stderr
@@ -67,11 +65,11 @@ public class EmailBuilder {
 
     // it seems to be impossible to inject this in Seam 2:
     private final Session mailSession;
-    @In
+    @Inject
     private Context emailContext;
-    @In
+    @Inject
     private MessagesFactory messagesFactory;
-    @In
+    @Inject
     private LocaleSelector localeSelector;
 
     private static VelocityEngine makeVelocityEngine() {
@@ -212,11 +210,11 @@ public class EmailBuilder {
      * A Seam component which can inject the required configuration and
      * components needed to create EmailBuilder at runtime.
      */
-    @AutoCreate
-    @Name("emailContext")
-    @Scope(EVENT)
+
+    @Named("emailContext")
+    @javax.enterprise.context.RequestScoped
     public static class Context {
-        @In
+        @Inject
         private ApplicationConfiguration applicationConfiguration;
         String getServerPath() {
             return applicationConfiguration.getServerPath();

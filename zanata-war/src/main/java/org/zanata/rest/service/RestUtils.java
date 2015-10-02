@@ -14,17 +14,17 @@ import javax.ws.rs.ext.MessageBodyReader;
 import org.jboss.resteasy.core.Headers;
 import org.jboss.resteasy.core.ServerResponse;
 import org.jboss.resteasy.spi.NoLogWebApplicationException;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.seam.resteasy.SeamResteasyProviderFactory;
 
-@Name("restUtils")
+@Named("restUtils")
 public class RestUtils {
     private static final Logger log = LoggerFactory.getLogger(RestUtils.class);
 
-    @In
+    @Inject
     Validator validator;
 
     public static ServerResponse copyIfNotServerResponse(Response response) {

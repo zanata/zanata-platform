@@ -27,9 +27,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HTextFlow;
@@ -44,16 +44,16 @@ import lombok.NoArgsConstructor;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("editor.textFlowService")
+@Named("editor.textFlowService")
 @Path(TextFlowResource.SERVICE_PATH)
 @Transactional
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class TextFlowService implements TextFlowResource {
-    @In
+    @Inject
     private TextFlowDAO textFlowDAO;
 
-    @In
+    @Inject
     private TransUnitUtils transUnitUtils;
 
     @Override

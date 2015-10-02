@@ -24,10 +24,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.service.SecurityService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
@@ -39,16 +37,16 @@ import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-@Name("webtrans.gwt.ReplaceTextHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.ReplaceTextHandler")
+@javax.enterprise.context.Dependent
 @ActionHandlerFor(ReplaceText.class)
 @Slf4j
 public class ReplaceTextHandler extends
         AbstractActionHandler<ReplaceText, UpdateTransUnitResult> {
-    @In(value = "webtrans.gwt.UpdateTransUnitHandler", create = true)
+    @Inject /* TODO [CDI] check this: migrated from @In(value = "webtrans.gwt.UpdateTransUnitHandler", create = true) */
     UpdateTransUnitHandler updateTransUnitHandler;
 
-    @In
+    @Inject
     SecurityService securityServiceImpl;
 
     @Override

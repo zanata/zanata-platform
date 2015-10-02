@@ -27,12 +27,10 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Out;
-import org.jboss.seam.annotations.Scope;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.enterprise.inject.Produces;
 import org.jboss.seam.contexts.Contexts;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.dao.AccountDAO;
@@ -50,35 +48,35 @@ import org.zanata.util.ServiceLocator;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("accountMergeAction")
-@Scope(ScopeType.PAGE)
+@Named("accountMergeAction")
+@javax.faces.bean.ViewScoped
 public class AccountMergeAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
+    @Inject /* TODO [CDI] check this: migrated from @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
     private HAccount authenticatedAccount;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
-    @In
+    @Inject
     private AuthenticationManager authenticationManager;
 
-    @In
+    @Inject
     private RegisterService registerServiceImpl;
 
     @Getter
     @Setter
     private String openId = "http://";
 
-    @In(required = false, scope = ScopeType.SESSION)
-    @Out(required = false, scope = ScopeType.SESSION)
+    @Inject /* TODO [CDI] check this: migrated from @In(required = false, scope = ScopeType.SESSION) */
+    @Produces /* FIXME [CDI] check this: migrated from @Out */(required = false, scope = ScopeType.SESSION)
     @Getter
     private HAccount obsoleteAccount;
 
     private boolean accountsValid;
 
-    @Create
+    @PostConstruct
     public void onCreate() {
         ZanataIdentity.instance().checkLoggedIn();
     }

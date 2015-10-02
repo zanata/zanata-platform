@@ -25,10 +25,7 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -38,9 +35,9 @@ import org.zanata.webtrans.shared.model.TransUnitId;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Name("textFlowTargetReviewCommentsDAO")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("textFlowTargetReviewCommentsDAO")
+
+@javax.enterprise.context.Dependent
 public class TextFlowTargetReviewCommentsDAO extends
         AbstractDAOImpl<HTextFlowTargetReviewComment, Long> {
     @SuppressWarnings("unused")

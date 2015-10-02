@@ -41,10 +41,8 @@ import org.apache.lucene.util.Version;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
@@ -72,18 +70,18 @@ import com.google.common.collect.Lists;
  * @author David Mason, <a
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  */
-@Name("textFlowSearchServiceImpl")
-@Scope(ScopeType.STATELESS)
+@Named("textFlowSearchServiceImpl")
+@javax.enterprise.context.Dependent
 @Slf4j
 public class TextFlowSearchServiceImpl implements TextFlowSearchService {
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In
+    @Inject
     private DocumentDAO documentDAO;
 
-    @In
+    @Inject
     private FullTextSession session;
 
     @Override

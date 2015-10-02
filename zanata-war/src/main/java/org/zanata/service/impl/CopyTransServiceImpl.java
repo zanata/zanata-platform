@@ -23,10 +23,8 @@ package org.zanata.service.impl;
 import java.util.List;
 import java.util.concurrent.Future;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.ContainsAsyncMethods;
@@ -53,8 +51,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.constraints.NotNull;
 
-@Name("copyTransServiceImpl")
-@Scope(ScopeType.STATELESS)
+@Named("copyTransServiceImpl")
+@javax.enterprise.context.Dependent
 @Slf4j
 @ContainsAsyncMethods
 @AllArgsConstructor
@@ -63,19 +61,19 @@ public class CopyTransServiceImpl implements CopyTransService {
 
     private static final int COPY_TRANS_BATCH_SIZE = 20;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
-    @In
+    @Inject
     private ProjectDAO projectDAO;
-    @In
+    @Inject
     private DocumentDAO documentDAO;
-    @In
+    @Inject
     private CopyTransWorkFactory copyTransWorkFactory;
-    @In
+    @Inject
     private TextFlowTargetDAO textFlowTargetDAO;
-    @In
+    @Inject
     private TranslationStateCache translationStateCacheImpl;
-    @In
+    @Inject
     private TextFlowDAO textFlowDAO;
 
     /**

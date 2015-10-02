@@ -22,10 +22,8 @@ package org.zanata.service.impl;
 
 import java.util.List;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
@@ -38,23 +36,23 @@ import org.zanata.service.VersionStateCache;
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Name("copyTransWorkFactory")
-@Scope(ScopeType.STATELESS)
+@Named("copyTransWorkFactory")
+@javax.enterprise.context.Dependent
 public class CopyTransWorkFactory {
 
     // Inject textFlowTargetDAO for Hibernate-based query
     // Inject translationMemoryServiceImpl for Hibernate Search query
-    @In("textFlowTargetDAO")
-//    @In("translationMemoryServiceImpl")
+    @Inject
+//    @Inject
     private TranslationFinder translationFinder;
 
-    @In("textFlowTargetDAO")
+    @Inject
     private TextFlowTargetDAO textFlowTargetDAO;
 
-    @In
+    @Inject
     private ValidationService validationServiceImpl;
 
-    @In
+    @Inject
     private VersionStateCache versionStateCacheImpl;
 
     public CopyTransWork createCopyTransWork(HLocale targetLocale,

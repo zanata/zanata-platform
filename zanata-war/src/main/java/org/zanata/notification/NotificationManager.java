@@ -35,12 +35,10 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.zanata.events.LanguageTeamPermissionChangedEvent;
 
@@ -52,10 +50,10 @@ import com.google.common.base.Throwables;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Name("notificationManager")
-@Scope(ScopeType.APPLICATION)
+@Named("notificationManager")
+@javax.enterprise.context.ApplicationScoped
 // see below Observer method comment
-@Startup
+/* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
 @Slf4j
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -63,16 +61,16 @@ public class NotificationManager implements Serializable {
     private static final long serialVersionUID = -1L;
 
     // JMS EmailQueue Producer.
-    @In
+    @Inject
     @EmailQueueSender
     private QueueSender mailQueueSender;
 
-    @In
+    @Inject
     @InVMJMS
     private QueueSession queueSession;
 
 
-    @Create
+    @PostConstruct
     public void onCreate() {
         try {
             mailQueueSender.getQueue();
@@ -84,7 +82,7 @@ public class NotificationManager implements Serializable {
         }
     }
 
-    // Once migrated to CDI events, CDI will instantiate NotificationManager bean for us. This will remove the need of Seam @Startup
+    // Once migrated to CDI events, CDI will instantiate NotificationManager bean for us. This will remove the need of Seam /* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
     @Observer(LanguageTeamPermissionChangedEvent.EVENT_NAME)
     public
             void onLanguageTeamPermissionChanged(

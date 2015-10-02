@@ -118,7 +118,7 @@ public class HPotEntryData implements Serializable {
      * Gettext message references, delimited by ',' (comma)
      */
     @Column(name = "refs")
-    @Type(type = "text")
+    @javax.persistence.Lob
     public String getReferences() {
         return references;
     }

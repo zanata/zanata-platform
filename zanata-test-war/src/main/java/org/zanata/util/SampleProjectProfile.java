@@ -6,12 +6,9 @@ import javax.persistence.EntityManagerFactory;
 
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.model.Activity;
@@ -58,16 +55,16 @@ import lombok.extern.slf4j.Slf4j;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
-@Name("sampleProjectProfile")
-@Scope(ScopeType.APPLICATION)
-@AutoCreate
+@Named("sampleProjectProfile")
+@javax.enterprise.context.ApplicationScoped
+
 @Transactional
 public class SampleProjectProfile {
 
-    @In
+    @Inject
     private EntityManager entityManager;
 
-    @In
+    @Inject
     private EntityManagerFactory entityManagerFactory;
 
     private HLocale enUSLocale;

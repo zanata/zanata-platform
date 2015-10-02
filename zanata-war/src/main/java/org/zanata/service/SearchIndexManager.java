@@ -7,13 +7,11 @@ import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.jboss.seam.annotations.Startup;
-import org.jboss.seam.annotations.Synchronized;
+import org.zanata.util.Synchronized;
 import org.zanata.ServerConstants;
 import org.zanata.action.ReindexClassOptions;
 import org.zanata.async.AsyncTaskHandle;
@@ -26,18 +24,18 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.tm.TransMemoryUnit;
 
-@Name("searchIndexManager")
-@Scope(ScopeType.APPLICATION)
-@Startup
+@Named("searchIndexManager")
+@javax.enterprise.context.ApplicationScoped
+/* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
 @Synchronized(timeout = ServerConstants.DEFAULT_TIMEOUT)
 @Slf4j
 public class SearchIndexManager implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @In
+    @Inject
     private AsyncTaskHandleManager asyncTaskHandleManager;
 
-    @In
+    @Inject
     private IndexingService indexingServiceImpl;
 
     // we use a list to ensure predictable order
@@ -49,7 +47,7 @@ public class SearchIndexManager implements Serializable {
 
     private AsyncTaskHandle<Void> handle;
 
-    @Create
+    @PostConstruct
     public void create() {
         // TODO get the list of classes from Hibernate Search
         // ie FullTextSession.getSearchFactory().getStatistics().getIndexedClassNames()

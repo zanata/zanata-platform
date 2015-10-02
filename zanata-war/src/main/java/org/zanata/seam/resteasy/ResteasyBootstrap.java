@@ -42,17 +42,15 @@ import org.jboss.resteasy.spi.Registry;
 import org.jboss.resteasy.spi.ResourceFactory;
 import org.jboss.resteasy.spi.StringConverter;
 import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.Seam;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Factory;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Install;
+import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import org.jboss.seam.annotations.JndiName;
 import org.jboss.seam.annotations.Logger;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.core.Init;
@@ -81,10 +79,10 @@ import org.jboss.seam.util.Reflections;
  *
  * @author Christian Bauer
  */
-@Name("org.jboss.seam.resteasy.bootstrap")
-@Scope(ScopeType.APPLICATION)
-@Startup
-@AutoCreate
+@Named("org.jboss.seam.resteasy.bootstrap")
+@javax.enterprise.context.ApplicationScoped
+/* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
+
 @Install(precedence = BUILT_IN,
         classDependencies = "org.jboss.resteasy.spi.ResteasyProviderFactory")
 public class ResteasyBootstrap {
@@ -92,19 +90,19 @@ public class ResteasyBootstrap {
     @Logger
     Log log;
 
-    @In
+    @Inject
     protected Application application;
 
     // The job of this class is to initialize and configure the RESTEasy
     // Dispatcher instance
     protected Dispatcher dispatcher;
 
-    @Factory("org.jboss.seam.resteasy.dispatcher")
+    @Produces(/* TODO [CDI] check this: migrated from @Factory */"org.jboss.seam.resteasy.dispatcher")
     public Dispatcher getDispatcher() {
         return dispatcher;
     }
 
-    @Create
+    @PostConstruct
     public void init() {
         log.info("bootstrapping JAX-RS application");
 

@@ -39,10 +39,8 @@ import javax.validation.ConstraintViolationException;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.jboss.seam.faces.FacesMessages;
 import org.richfaces.event.FileUploadEvent;
 import org.richfaces.model.UploadedFile;
@@ -107,56 +105,56 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-@Name("versionHomeAction")
-@Scope(ScopeType.PAGE)
+@Named("versionHomeAction")
+@javax.faces.bean.ViewScoped
 @Slf4j
 public class VersionHomeAction extends AbstractSortAction implements
         Serializable {
     private static final long serialVersionUID = 1L;
 
-    @In
+    @Inject
     private CopyVersionManager copyVersionManager;
 
-    @In
+    @Inject
     private MergeTranslationsManager mergeTranslationsManager;
 
-    @In
+    @Inject
     private CopyTransManager copyTransManager;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private DocumentDAO documentDAO;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In
+    @Inject
     private VersionStateCache versionStateCacheImpl;
 
-    @In
+    @Inject
     private TranslationStateCache translationStateCacheImpl;
 
-    @In
+    @Inject
     private Messages msgs;
 
-    @In
+    @Inject
     private DocumentService documentServiceImpl;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private TranslationFileService translationFileServiceImpl;
 
-    @In
+    @Inject
     private VirusScanner virusScanner;
 
-    @In
+    @Inject
     private LocaleDAO localeDAO;
 
-    @In
+    @Inject
     private TranslationService translationServiceImpl;
 
     @Getter
@@ -177,13 +175,13 @@ public class VersionHomeAction extends AbstractSortAction implements
     @Getter
     private HDocument selectedDocument;
 
-    @In
+    @Inject
     private ConversationScopeMessages conversationScopeMessages;
 
-    @In("filePersistService")
+    @Inject
     private FilePersistService filePersistService;
 
-    @In
+    @Inject
     private UrlUtil urlUtil;
 
     private List<HLocale> supportedLocale;

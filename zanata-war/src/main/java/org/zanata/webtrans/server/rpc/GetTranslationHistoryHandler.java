@@ -7,10 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetReviewCommentsDAO;
 import org.zanata.exception.ZanataServiceException;
@@ -39,26 +37,26 @@ import com.google.common.collect.Maps;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Name("webtrans.gwt.GetTranslationHistoryHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.GetTranslationHistoryHandler")
+@javax.enterprise.context.Dependent
 @ActionHandlerFor(GetTranslationHistoryAction.class)
 @Slf4j
 public class GetTranslationHistoryHandler
         extends
         AbstractActionHandler<GetTranslationHistoryAction, GetTranslationHistoryResult> {
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In
+    @Inject
     private TextFlowDAO textFlowDAO;
 
-    @In
+    @Inject
     private TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO;
 
-    @In
+    @Inject
     private ResourceUtils resourceUtils;
 
     @Override

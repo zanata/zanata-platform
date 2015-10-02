@@ -24,9 +24,9 @@ import javax.faces.event.ValueChangeEvent;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
@@ -42,16 +42,16 @@ import org.zanata.ui.faces.FacesMessages;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("translationMemoryHome")
+@Named("translationMemoryHome")
 @ZanataSecured
 @CheckRole("admin")
 @Slf4j
 public class TranslationMemoryHome extends EntityHome<TransMemory> {
     private static final long serialVersionUID = -8557363011909155662L;
-    @In
+    @Inject
     private SlugEntityService slugEntityServiceImpl;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
     public void verifySlugAvailable(ValueChangeEvent e) {

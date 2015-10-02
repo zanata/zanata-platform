@@ -100,7 +100,7 @@ public class HTextFlowHistory extends HTextContainer implements Serializable,
     }
 
     @NotEmpty
-    @Type(type = "text")
+    @javax.persistence.Lob
     @AccessType("field")
     @ElementCollection(fetch = FetchType.EAGER)
     @JoinTable(name = "HTextFlowContentHistory", joinColumns = @JoinColumn(

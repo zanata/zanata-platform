@@ -58,7 +58,6 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.Where;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.ContentType;

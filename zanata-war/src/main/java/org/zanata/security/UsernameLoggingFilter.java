@@ -12,10 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.MDC;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import javax.inject.Named;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.annotations.web.Filter;
 import org.jboss.seam.web.AbstractFilter;
@@ -29,8 +28,8 @@ import org.zanata.servlet.MDCInsertingServletFilter;
  *
  * @author Eric Trautman
  */
-@Scope(ScopeType.APPLICATION)
-@Name("org.jboss.seam.web.loggingFilter")
+@javax.enterprise.context.ApplicationScoped
+@Named("org.jboss.seam.web.loggingFilter")
 @BypassInterceptors
 @Filter(within="org.jboss.seam.web.authenticationFilter")
 @Install(classDependencies="org.apache.log4j.Logger",

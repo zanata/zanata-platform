@@ -27,9 +27,9 @@ import javax.ws.rs.core.Response;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.TextFlowDAO;
@@ -51,27 +51,27 @@ import com.google.common.collect.Lists;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("editor.translationService")
+@Named("editor.translationService")
 @Path(TranslationResource.SERVICE_PATH)
 @Slf4j
 @Transactional
 public class TranslationService implements TranslationResource {
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private TextFlowDAO textFlowDAO;
 
-    @In
+    @Inject
     private LocaleDAO localeDAO;
 
-    @In
+    @Inject
     private TransUnitUtils transUnitUtils;
 
-    @In
+    @Inject
     private org.zanata.service.TranslationService translationServiceImpl;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
     /**

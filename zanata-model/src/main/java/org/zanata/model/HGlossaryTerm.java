@@ -80,7 +80,7 @@ public class HGlossaryTerm extends ModelEntityBase {
     }
 
     @NotNull
-    @Type(type = "text")
+    @javax.persistence.Lob
     @Field(analyzer = @Analyzer(impl = StandardAnalyzer.class))
     public String getContent() {
         return content;

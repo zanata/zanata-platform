@@ -2,10 +2,8 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.model.HLocale;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
@@ -20,15 +18,15 @@ import com.google.common.collect.Lists;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-@Name("webtrans.gwt.GetLocaleListHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.GetLocaleListHandler")
+@javax.enterprise.context.Dependent
 @ActionHandlerFor(GetLocaleList.class)
 public class GetLocaleListHandler extends
         AbstractActionHandler<GetLocaleList, GetLocaleListResult> {
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
     @Override

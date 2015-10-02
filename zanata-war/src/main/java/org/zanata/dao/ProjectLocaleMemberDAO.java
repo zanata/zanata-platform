@@ -22,10 +22,7 @@ package org.zanata.dao;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
@@ -38,9 +35,9 @@ import java.util.Set;
 /**
  * Provides methods to access data related to membership in a locale for a project.
  */
-@Name("projectLocaleMemberDAO")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("projectLocaleMemberDAO")
+
+@javax.enterprise.context.Dependent
 public class ProjectLocaleMemberDAO
         extends AbstractDAOImpl<HProjectLocaleMember, HProjectLocaleMember.HProjectLocaleMemberPK> {
 

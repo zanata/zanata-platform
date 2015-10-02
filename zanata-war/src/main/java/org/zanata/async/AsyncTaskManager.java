@@ -30,13 +30,10 @@ import javax.security.auth.Subject;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.jboss.seam.contexts.Lifecycle;
 import org.zanata.action.AuthenticationEvents;
 import org.zanata.config.AsyncConfig;
@@ -53,24 +50,24 @@ import com.google.common.util.concurrent.ListenableFuture;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("asyncTaskManager")
-@Scope(ScopeType.APPLICATION)
-@AutoCreate
+@Named("asyncTaskManager")
+@javax.enterprise.context.ApplicationScoped
+
 @Slf4j
 public class AsyncTaskManager {
 
     private ExecutorService scheduler;
 
-    @In
+    @Inject
     private AsyncConfig asyncConfig;
 
-    @Create
+    @PostConstruct
     public void init() {
         scheduler =
                 Executors.newFixedThreadPool(asyncConfig.getThreadPoolSize());
     }
 
-    @Destroy
+    @PreDestroy
     public void cleanup() {
         scheduler.shutdown();
     }

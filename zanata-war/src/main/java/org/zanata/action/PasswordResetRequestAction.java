@@ -6,11 +6,9 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.End;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.dao.AccountDAO;
 import org.zanata.i18n.Messages;
@@ -24,29 +22,29 @@ import org.zanata.ui.faces.FacesMessages;
 import java.io.Serializable;
 import java.util.Date;
 
-@Name("passwordResetRequest")
+@Named("passwordResetRequest")
 @NoArgsConstructor
-@Scope(ScopeType.EVENT)
+@javax.enterprise.context.RequestScoped
 @Slf4j
 public class PasswordResetRequestAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
-    @In
+    @Inject
     private AccountDAO accountDAO;
 
-    @In
+    @Inject
     private EmailService emailServiceImpl;
 
-    @In
+    @Inject
     private UserAccountService userAccountServiceImpl;
 
-    @In
+    @Inject
     private Messages msgs;
 
-    @In
+    @Inject
     private AccountActivationKeyDAO accountActivationKeyDAO;
 
     @Setter

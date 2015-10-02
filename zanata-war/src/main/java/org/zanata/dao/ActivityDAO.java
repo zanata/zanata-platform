@@ -25,10 +25,7 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.zanata.common.ActivityType;
 import org.zanata.model.Activity;
 import org.zanata.model.type.EntityType;
@@ -36,9 +33,9 @@ import org.zanata.model.type.EntityType;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("activityDAO")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("activityDAO")
+
+@javax.enterprise.context.Dependent
 public class ActivityDAO extends AbstractDAOImpl<Activity, Long> {
     private static final long serialVersionUID = 1L;
 

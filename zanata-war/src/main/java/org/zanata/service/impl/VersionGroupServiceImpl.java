@@ -25,10 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.ProjectIterationDAO;
@@ -50,20 +48,20 @@ import com.google.common.collect.Maps;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("versionGroupServiceImpl")
-@Scope(ScopeType.STATELESS)
+@Named("versionGroupServiceImpl")
+@javax.enterprise.context.Dependent
 public class VersionGroupServiceImpl implements VersionGroupService {
 
-    @In
+    @Inject
     private VersionGroupDAO versionGroupDAO;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private VersionStateCache versionStateCacheImpl;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
     @Override

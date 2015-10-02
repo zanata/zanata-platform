@@ -6,12 +6,9 @@ import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostInsertEventListener;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.util.Work;
 import org.jboss.seam.web.ServletContexts;
 import org.zanata.common.ContentState;
@@ -23,7 +20,7 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.util.Event;
+import javax.enterprise.event.Event;
 import org.zanata.util.ServiceLocator;
 import org.zanata.webtrans.server.rpc.TransUnitTransformer;
 import org.zanata.webtrans.shared.auth.EditorClientId;
@@ -54,9 +51,9 @@ import javax.enterprise.event.Observes;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Name("translationUpdateListener")
-@Scope(ScopeType.APPLICATION)
-@AutoCreate
+@Named("translationUpdateListener")
+@javax.enterprise.context.ApplicationScoped
+
 @Slf4j
 public class TranslationUpdateListener implements PostUpdateEventListener,
         PostInsertEventListener {
@@ -68,13 +65,13 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
                     .expireAfterAccess(1, TimeUnit.SECONDS).maximumSize(1000)
                     .build();
 
-    @In(create = true)
+    @Inject
     private TranslationWorkspaceManager translationWorkspaceManager;
 
-    @In
+    @Inject
     private ServiceLocator serviceLocator;
 
-    @In("event")
+    @Inject
     private Event<TextFlowTargetUpdatedEvent>
             textFlowTargetUpdatedEvent;
 

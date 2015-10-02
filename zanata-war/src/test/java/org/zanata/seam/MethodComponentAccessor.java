@@ -20,7 +20,7 @@
  */
 package org.zanata.seam;
 
-import org.jboss.seam.annotations.In;
+import javax.inject.Inject;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;

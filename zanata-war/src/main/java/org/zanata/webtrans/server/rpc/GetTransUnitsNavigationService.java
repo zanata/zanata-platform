@@ -26,10 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.hibernate.transform.ResultTransformer;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.zanata.common.ContentState;
@@ -45,12 +43,12 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Name("webtrans.gwt.GetTransUnitsNavigationHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.GetTransUnitsNavigationHandler")
+@javax.enterprise.context.Dependent
 @Slf4j
 public class GetTransUnitsNavigationService {
 
-    @In
+    @Inject
     private TextFlowDAO textFlowDAO;
 
     protected GetTransUnitsNavigationResult getNavigationIndexes(

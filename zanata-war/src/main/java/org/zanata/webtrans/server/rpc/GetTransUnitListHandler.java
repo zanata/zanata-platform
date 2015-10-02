@@ -26,10 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -55,28 +53,28 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
-@Name("webtrans.gwt.GetTransUnitListHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.GetTransUnitListHandler")
+@javax.enterprise.context.Dependent
 @ActionHandlerFor(GetTransUnitList.class)
 @Slf4j
 public class GetTransUnitListHandler extends
         AbstractActionHandler<GetTransUnitList, GetTransUnitListResult> {
-    @In
+    @Inject
     private TransUnitTransformer transUnitTransformer;
 
-    @In
+    @Inject
     private TextFlowDAO textFlowDAO;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private ValidationService validationServiceImpl;
 
-    @In(value = "webtrans.gwt.GetTransUnitsNavigationHandler", create = true)
+    @Inject /* TODO [CDI] check this: migrated from @In(value = "webtrans.gwt.GetTransUnitsNavigationHandler", create = true) */
     private GetTransUnitsNavigationService getTransUnitsNavigationService;
 
     private DateTimeFormatter dateFormatter =

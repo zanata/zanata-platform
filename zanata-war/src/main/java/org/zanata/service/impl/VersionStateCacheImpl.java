@@ -24,13 +24,11 @@ package org.zanata.service.impl;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.infinispan.manager.CacheContainer;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
 import org.zanata.cache.CacheWrapper;
 import org.zanata.cache.InfinispanCacheWrapper;
 import org.zanata.common.LocaleId;
@@ -53,8 +51,8 @@ import javax.enterprise.event.TransactionPhase;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("versionStateCacheImpl")
-@Scope(ScopeType.APPLICATION)
+@Named("versionStateCacheImpl")
+@javax.enterprise.context.ApplicationScoped
 public class VersionStateCacheImpl implements VersionStateCache {
     private static final String BASE = VersionStateCacheImpl.class.getName();
 
@@ -64,10 +62,10 @@ public class VersionStateCacheImpl implements VersionStateCache {
     private CacheWrapper<VersionLocaleKey, WordStatistic> versionStatisticCache;
     private CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader;
 
-    @In
+    @Inject
     private CacheContainer cacheContainer;
 
-    @In
+    @Inject
     private ServiceLocator serviceLocator;
 
     // constructor for Seam
@@ -81,7 +79,7 @@ public class VersionStateCacheImpl implements VersionStateCache {
         this.versionStatisticLoader = versionStatisticLoader;
     }
 
-    @Create
+    @PostConstruct
     public void create() {
         versionStatisticCache =
                 InfinispanCacheWrapper.create(VERSION_STATISTIC_CACHE_NAME,

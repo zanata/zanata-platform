@@ -69,7 +69,7 @@ public class HTextFlowTargetReviewComment extends ModelEntityBase {
     private HTextFlowTarget textFlowTarget;
 
     @NotEmpty
-    @Type(type = "text")
+    @javax.persistence.Lob
     @Getter
     private String comment;
 

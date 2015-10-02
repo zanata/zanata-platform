@@ -23,12 +23,10 @@
  */
 package org.zanata.seam.resteasy;
 
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.Component;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Install;
+import javax.inject.Named;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 
 import javax.ws.rs.core.MediaType;
 import java.util.*;
@@ -39,10 +37,10 @@ import java.util.*;
  *
  * @author Christian Bauer
  */
-@Name("org.jboss.seam.resteasy.application")
-@Scope(ScopeType.APPLICATION)
+@Named("org.jboss.seam.resteasy.application")
+@javax.enterprise.context.ApplicationScoped
 @Install(precedence = Install.BUILT_IN)
-@AutoCreate
+
 public class Application extends javax.ws.rs.core.Application {
 
     final private Map<Class<?>, Set<Component>> providerClasses =

@@ -30,7 +30,7 @@ import javax.ws.rs.Path;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.arquillian.seam2.ReflectionHelper;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Named;
 import org.zanata.arquillian.RemoteAfter;
 import org.zanata.arquillian.RemoteBefore;
 
@@ -42,7 +42,7 @@ import org.zanata.arquillian.RemoteBefore;
  * @see RemoteTestSignaler
  */
 @Path("/test/remote/signal")
-@Name("remoteTestSignalerImpl")
+@Named("remoteTestSignalerImpl")
 @Slf4j
 public class RemoteTestSignalerImpl implements RemoteTestSignaler {
     @Override

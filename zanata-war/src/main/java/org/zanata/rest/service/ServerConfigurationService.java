@@ -21,9 +21,9 @@ import javax.xml.ws.Service;
 
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.resteasy.util.GenericType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
@@ -40,7 +40,7 @@ import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.zanata.security.annotations.ZanataSecured;
-import org.zanata.util.Event;
+import javax.enterprise.event.Event;
 import org.zanata.util.ServiceLocator;
 
 /**
@@ -49,7 +49,7 @@ import org.zanata.util.ServiceLocator;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Name("serverConfigurationResource")
+@Named("serverConfigurationResource")
 @Path("/configurations")
 @Produces({"application/xml", "application/json"})
 @Consumes({"application/xml", "application/json"})
@@ -67,7 +67,7 @@ public class ServerConfigurationService {
     @DefaultValue(MediaType.APPLICATION_JSON)
     @Context
     private MediaType accept;
-    @In
+    @Inject
     private ApplicationConfigurationDAO applicationConfigurationDAO;
 
     /**

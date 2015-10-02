@@ -36,7 +36,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
-import org.jboss.seam.annotations.Create;
+import javax.annotation.PostConstruct;
 import org.jboss.seam.framework.EntityQuery;
 import org.jboss.seam.framework.Query;
 
@@ -63,7 +63,7 @@ public class ResourceQuery<T> extends AbstractResource<T> {
     /**
      * Called at component instantiation.
      */
-    @Create
+    @PostConstruct
     public void create() {
         this.entityQuery = getEntityQuery();
         if (entityQuery == null) {

@@ -21,9 +21,9 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.util.HttpHeaderNames;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectDAO;
@@ -39,7 +39,7 @@ import org.zanata.security.ZanataIdentity;
 
 import com.google.common.base.Objects;
 
-@Name("projectService")
+@Named("projectService")
 @Path(ProjectResource.SERVICE_PATH)
 @Transactional
 public class ProjectService implements ProjectResource {
@@ -57,16 +57,16 @@ public class ProjectService implements ProjectResource {
     @Context
     private Request request;
 
-    @In
+    @Inject
     ProjectDAO projectDAO;
 
-    @In
+    @Inject
     AccountDAO accountDAO;
 
-    @In
+    @Inject
     ZanataIdentity identity;
 
-    @In
+    @Inject
     ETagUtils eTagUtils;
 
     @SuppressWarnings("null")

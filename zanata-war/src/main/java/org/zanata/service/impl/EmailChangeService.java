@@ -23,19 +23,17 @@ package org.zanata.service.impl;
 import java.util.Date;
 
 import org.apache.commons.lang.time.DateUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.dao.PersonEmailValidationKeyDAO;
 import org.zanata.model.HPerson;
 import org.zanata.model.HPersonEmailValidationKey;
 import org.zanata.util.HashUtil;
 
-@Name("emailChangeService")
-@Scope(ScopeType.STATELESS)
+@Named("emailChangeService")
+@javax.enterprise.context.Dependent
 public class EmailChangeService {
-    @In
+    @Inject
     PersonEmailValidationKeyDAO personEmailValidationKeyDAO;
 
     public static class KeyParameter {

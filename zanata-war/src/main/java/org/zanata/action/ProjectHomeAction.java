@@ -37,10 +37,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Ordering;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.common.EntityStatus;
@@ -92,8 +90,8 @@ import static org.zanata.model.ProjectRole.TranslationMaintainer;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("projectHomeAction")
-@Scope(ScopeType.PAGE)
+@Named("projectHomeAction")
+@javax.faces.bean.ViewScoped
 @Slf4j
 public class ProjectHomeAction extends AbstractSortAction implements
         Serializable {
@@ -101,44 +99,44 @@ public class ProjectHomeAction extends AbstractSortAction implements
     public static final Ordering<LocaleRole>
             LOCALE_ROLE_ORDERING = Ordering.explicit(LocaleRole.Translator,
             LocaleRole.Reviewer, LocaleRole.Coordinator);
-    @In
+    @Inject
     private ActivityService activityServiceImpl;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In
+    @Inject
     private VersionStateCache versionStateCacheImpl;
 
-    @In
+    @Inject
     private LocaleMemberDAO localeMemberDAO;
 
-    @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
+    @Inject /* TODO [CDI] check this: migrated from @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
     private HAccount authenticatedAccount;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private CopyVersionManager copyVersionManager;
 
-    @In
+    @Inject
     private Messages msgs;
 
     @Setter
     @Getter
     private String slug;
 
-    @In
+    @Inject
     private PersonDAO personDAO;
 
-    @In
+    @Inject
     private ProjectDAO projectDAO;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private ConversationScopeMessages conversationScopeMessages;
 
     @Getter

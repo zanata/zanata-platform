@@ -39,9 +39,9 @@ import javax.ws.rs.core.UriInfo;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
@@ -66,7 +66,7 @@ import com.google.common.base.Optional;
  * This service allows clients to push and pull both source documents and
  * translations.
  */
-@Name("translatedDocResourceService")
+@Named("translatedDocResourceService")
 @Path(TranslatedDocResource.SERVICE_PATH)
 @Slf4j
 @Transactional
@@ -99,39 +99,39 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
     @Context
     private UriInfo uri;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private ApplicationConfiguration applicationConfiguration;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private ProjectDAO projectDAO;
 
-    @In
+    @Inject
     private DocumentDAO documentDAO;
 
-    @In
+    @Inject
     private TextFlowTargetDAO textFlowTargetDAO;
 
-    @In
+    @Inject
     private ResourceUtils resourceUtils;
 
-    @In
+    @Inject
     private ETagUtils eTagUtils;
 
-    @In
+    @Inject
     private CopyTransService copyTransServiceImpl;
-    @In
+    @Inject
     private RestSlugValidator restSlugValidator;
 
-    @In
+    @Inject
     private TranslationService translationServiceImpl;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
     @Override

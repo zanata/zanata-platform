@@ -20,10 +20,7 @@
  */
 package org.zanata.util;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.jboss.seam.core.Events;
 
 import java.lang.reflect.Field;
@@ -35,9 +32,9 @@ import java.lang.reflect.Field;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  * @see javax.enterprise.event.Event
  */
-@AutoCreate
-@Name("event")
-@Scope(ScopeType.STATELESS)
+
+@Named("event")
+@javax.enterprise.context.Dependent
 public class Event<P> {
 
     public void fire(P payload) {

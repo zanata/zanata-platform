@@ -2,13 +2,14 @@ package org.zanata.security;
 
 import javax.faces.context.FacesContext;
 
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
+import javax.annotation.PostConstruct;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import javax.inject.Named;
 import org.jboss.seam.ui.ClientUidSelector;
 import org.jboss.seam.util.RandomStringUtils;
 
-@Name("org.jboss.seam.ui.clientUidSelector")
+@Named("org.jboss.seam.ui.clientUidSelector")
 @Install(precedence = Install.DEPLOYMENT)
 /**
  * Workaround for https://jira.jboss.org/browse/JBSEAM-4503
@@ -20,7 +21,7 @@ public class FixedClientUidSelector extends ClientUidSelector {
     private static final long serialVersionUID = -4923235748771706010L;
     private String clientUid;
 
-    @Create
+    @PostConstruct
     public void onCreate() {
         String requestContextPath =
                 FacesContext.getCurrentInstance().getExternalContext()

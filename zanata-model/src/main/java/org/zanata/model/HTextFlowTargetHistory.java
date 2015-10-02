@@ -195,7 +195,7 @@ public class HTextFlowTargetHistory extends HTextContainer implements
     }
 
     @Override
-    @Type(type = "text")
+    @javax.persistence.Lob
     @AccessType("field")
     @ElementCollection(fetch = FetchType.EAGER)
     @JoinTable(name = "HTextFlowTargetContentHistory",

@@ -25,9 +25,7 @@ import lombok.NoArgsConstructor;
 
 import org.hibernate.Query;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.util.CloseableIterator;
@@ -39,8 +37,8 @@ import org.zanata.util.CloseableIterator;
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Name("transMemoryStreamingDAO")
-@Scope(ScopeType.EVENT)
+@Named("transMemoryStreamingDAO")
+@javax.enterprise.context.RequestScoped
 @NoArgsConstructor
 /**
  * Note: unless the find* methods throw an exception, the caller is

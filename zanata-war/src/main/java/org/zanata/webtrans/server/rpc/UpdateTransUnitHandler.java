@@ -22,16 +22,14 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.LocaleId;
 import org.zanata.events.TextFlowTargetUpdateContextEvent;
 import org.zanata.service.SecurityService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.TranslationService.TranslationResult;
-import org.zanata.util.Event;
+import javax.enterprise.event.Event;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
@@ -44,21 +42,21 @@ import com.google.common.collect.Iterables;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-@Name("webtrans.gwt.UpdateTransUnitHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.UpdateTransUnitHandler")
+@javax.enterprise.context.Dependent
 @ActionHandlerFor(UpdateTransUnit.class)
 public class UpdateTransUnitHandler extends
         AbstractActionHandler<UpdateTransUnit, UpdateTransUnitResult> {
-    @In(value = "webtrans.gwt.TransUnitUpdateHelper", create = true)
+    @Inject /* TODO [CDI] check this: migrated from @In(value = "webtrans.gwt.TransUnitUpdateHelper", create = true) */
     private TransUnitUpdateHelper transUnitUpdateHelper;
 
-    @In
+    @Inject
     private TranslationService translationServiceImpl;
 
-    @In
+    @Inject
     private SecurityService securityServiceImpl;
 
-    @In("event")
+    @Inject
     private Event<TextFlowTargetUpdateContextEvent>
             textFlowTargetUpdateContextEvent;
 

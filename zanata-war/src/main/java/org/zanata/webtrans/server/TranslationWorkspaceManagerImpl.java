@@ -11,11 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.Name;
+import javax.annotation.PreDestroy;
+import javax.inject.Named;
 import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.util.Work;
 import org.jboss.seam.web.ServletContexts;
 import org.zanata.async.Async;
@@ -65,8 +63,8 @@ import de.novanic.eventservice.service.registry.EventRegistryFactory;
 import de.novanic.eventservice.service.registry.user.UserManager;
 import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 
-@Scope(ScopeType.APPLICATION)
-@Name("translationWorkspaceManager")
+@javax.enterprise.context.ApplicationScoped
+@Named("translationWorkspaceManager")
 @Slf4j
 @ContainsAsyncMethods
 public class TranslationWorkspaceManagerImpl implements
@@ -318,7 +316,7 @@ public class TranslationWorkspaceManagerImpl implements
                 .equals(EntityStatus.ACTIVE));
     }
 
-    @Destroy
+    @PreDestroy
     public void stop() {
         log.info("stopping...");
         log.info("closing down {} workspaces: ", workspaceMap.size());

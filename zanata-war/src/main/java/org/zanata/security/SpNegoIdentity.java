@@ -28,19 +28,19 @@ import java.lang.reflect.Field;
 
 import javax.faces.context.FacesContext;
 
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import javax.inject.Named;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.security.SecurityContextAssociation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.events.AlreadyLoggedInEvent;
-import org.zanata.util.Event;
+import javax.enterprise.event.Event;
 import org.zanata.util.ServiceLocator;
 
-@Name("org.jboss.seam.security.spNegoIdentity")
-@Scope(SESSION)
+@Named("org.jboss.seam.security.spNegoIdentity")
+@javax.enterprise.context.SessionScoped
 @Install(precedence = APPLICATION)
 @BypassInterceptors
 public class SpNegoIdentity implements Serializable {

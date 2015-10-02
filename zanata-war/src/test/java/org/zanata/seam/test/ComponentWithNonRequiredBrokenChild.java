@@ -20,9 +20,9 @@
  */
 package org.zanata.seam.test;
 
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * This is a correctly defined Seam component. It contains dependencies to
@@ -31,14 +31,14 @@ import org.jboss.seam.annotations.Name;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("componentWithNonRequiredBrokenChild")
+@Named("componentWithNonRequiredBrokenChild")
 public class ComponentWithNonRequiredBrokenChild {
-    @In(required = false)
+    @Inject /* TODO [CDI] check this: migrated from @In(required = false) */
     private ChildBroken unbuildableTestComponent;
 
     private boolean postConstructInvoked = false;
 
-    @Create
+    @PostConstruct
     public void postConstruct() {
         this.postConstructInvoked = true;
     }

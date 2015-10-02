@@ -21,12 +21,9 @@
 package org.zanata.action;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.events.HomeContentChangedEvent;
 import org.zanata.util.CommonMarkRenderer;
@@ -36,16 +33,16 @@ import org.zanata.util.CommonMarkRenderer;
  *
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@AutoCreate
-@Name("homePage")
-@Scope(ScopeType.APPLICATION)
+
+@Named("homePage")
+@javax.enterprise.context.ApplicationScoped
 @Slf4j
 public class HomePage {
 
-    @In
+    @Inject
     private ApplicationConfiguration applicationConfiguration;
 
-    @In("commonMarkRenderer")
+    @Inject
     private CommonMarkRenderer renderer;
 
     private String html;

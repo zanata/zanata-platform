@@ -24,10 +24,7 @@ import javax.security.auth.login.AppConfigurationEntry;
 import javax.security.auth.login.Configuration;
 import javax.security.auth.spi.LoginModule;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 
 /**
@@ -36,10 +33,10 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("jaasConfig")
-@AutoCreate
+@Named("jaasConfig")
+
 @BypassInterceptors
-@Scope(ScopeType.APPLICATION)
+@javax.enterprise.context.ApplicationScoped
 public class JaasConfig {
 
     /**

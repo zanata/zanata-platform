@@ -28,10 +28,10 @@ import javax.security.auth.login.LoginException;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.PersonDAO;
 import org.zanata.exception.KeyNotFoundException;
 import org.zanata.model.HAccount;
@@ -45,26 +45,26 @@ import org.zanata.ui.faces.FacesMessages;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
-@Name("validateEmail")
+@Named("validateEmail")
 @Slf4j
 @ZanataSecured
 public class ValidateEmailAction implements Serializable {
     private static final long serialVersionUID = 1L;
     private String activationKey;
 
-    @In
+    @Inject
     PersonDAO personDAO;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
-    @In
+    @Inject
     EmailChangeService emailChangeService;
 
-    @Create
+    @PostConstruct
     public void onCreate() {
         identity.checkLoggedIn();
     }

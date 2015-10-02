@@ -28,10 +28,7 @@ import java.util.concurrent.TimeUnit;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.transform.ResultTransformer;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.zanata.common.ContentState;
@@ -42,9 +39,9 @@ import org.zanata.model.HTextFlowTargetHistory;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 
-@Name("textFlowTargetHistoryDAO")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("textFlowTargetHistoryDAO")
+
+@javax.enterprise.context.Dependent
 public class TextFlowTargetHistoryDAO extends
         AbstractDAOImpl<HTextFlowTargetHistory, Long> {
 

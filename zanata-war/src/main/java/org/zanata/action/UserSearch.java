@@ -3,10 +3,10 @@ package org.zanata.action;
 import java.io.Serializable;
 import java.util.List;
 
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import javax.inject.Named;
 import org.jboss.seam.annotations.datamodel.DataModel;
 import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.zanata.seam.security.IdentityManager;
@@ -20,8 +20,8 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Name("org.jboss.seam.security.management.userSearch")
-@Scope(SESSION)
+@Named("org.jboss.seam.security.management.userSearch")
+@javax.enterprise.context.SessionScoped
 @Install(precedence = APPLICATION)
 @ZanataSecured
 public class UserSearch implements Serializable {
@@ -32,7 +32,7 @@ public class UserSearch implements Serializable {
     @DataModelSelection
     String selectedUser;
 
-    @In
+    @Inject
     IdentityManager identityManager;
 
     @CheckRole("admin")

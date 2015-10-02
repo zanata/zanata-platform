@@ -23,16 +23,14 @@ package org.zanata.job;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import javax.inject.Named;
 import org.jboss.seam.annotations.Startup;
-import org.jboss.seam.annotations.Synchronized;
+import org.zanata.util.Synchronized;
 import org.jboss.seam.async.QuartzTriggerHandle;
 import org.zanata.ServerConstants;
 
@@ -42,28 +40,28 @@ import org.zanata.ServerConstants;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("zanataJobScheduler")
-@Scope(ScopeType.APPLICATION)
-@AutoCreate
-@Startup
-@Install(false)
+@Named("zanataJobScheduler")
+@javax.enterprise.context.ApplicationScoped
+
+/* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
+@Exclude(ifProjectStage = ProjectStage.UnitTest.class) /* TODO [CDI] Set ProjectStage for unit tests */
 @Synchronized(timeout = ServerConstants.DEFAULT_TIMEOUT)
 public class ZanataJobScheduler {
 
     // TODO have jobs schedule themselves after injecting this bean
-    @In(create = true)
+    @Inject
     private DownloadFileCleanupJob downloadFileCleanupJob;
 
     private Set<QuartzTriggerHandle> triggerHandles =
             new HashSet<QuartzTriggerHandle>();
 
-    @Create
+    @PostConstruct
     public void scheduleJobs() {
         this.triggerHandles.add(this.downloadFileCleanupJob
                 .startJob("0 0 0 * * ?"));
     }
 
-    @Destroy
+    @PreDestroy
     public void unscheduleAllJobs() throws Exception {
         for (QuartzTriggerHandle handle : this.triggerHandles) {
             handle.cancel();

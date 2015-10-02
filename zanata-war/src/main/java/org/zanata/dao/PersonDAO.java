@@ -26,18 +26,15 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 
-@Name("personDAO")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("personDAO")
+
+@javax.enterprise.context.Dependent
 public class PersonDAO extends AbstractDAOImpl<HPerson, Long> {
 
     public PersonDAO() {

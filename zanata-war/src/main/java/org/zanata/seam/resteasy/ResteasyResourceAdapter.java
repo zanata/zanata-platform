@@ -46,12 +46,11 @@ import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.HttpResponse;
 import org.jboss.resteasy.spi.ResteasyUriInfo;
 import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Install;
+import javax.annotation.PostConstruct;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import org.jboss.seam.annotations.Logger;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.servlet.ContextualHttpServletRequest;
@@ -64,8 +63,8 @@ import org.jboss.seam.web.Session;
  *
  * @author Christian Bauer
  */
-@Scope(ScopeType.APPLICATION)
-@Name("org.jboss.seam.resteasy.resourceAdapter")
+@javax.enterprise.context.ApplicationScoped
+@Named("org.jboss.seam.resteasy.resourceAdapter")
 @BypassInterceptors
 @Install(precedence = BUILT_IN)
 public class ResteasyResourceAdapter extends AbstractResource {
@@ -76,7 +75,7 @@ public class ResteasyResourceAdapter extends AbstractResource {
     protected Dispatcher dispatcher;
     protected Application application;
 
-    @Create
+    @PostConstruct
     public void init() {
         // No injection, so lookup on first request
         dispatcher =

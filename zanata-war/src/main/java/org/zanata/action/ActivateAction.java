@@ -24,12 +24,10 @@ import java.io.Serializable;
 import java.util.Date;
 
 import org.apache.commons.lang.time.DateUtils;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.End;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.exception.KeyNotFoundException;
 import org.zanata.exception.ActivationLinkExpiredException;
@@ -38,19 +36,19 @@ import org.zanata.seam.security.AbstractRunAsOperation;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.ui.faces.FacesMessages;
 
-@Name("activate")
-@Scope(ScopeType.CONVERSATION)
+@Named("activate")
+@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
 public class ActivateAction implements Serializable {
 
     private static final long serialVersionUID = -8079131168179421345L;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
-    @In
+    @Inject
     private AccountActivationKeyDAO accountActivationKeyDAO;
 
-    @In
+    @Inject
     private IdentityManager identityManager;
 
     private String activationKey;

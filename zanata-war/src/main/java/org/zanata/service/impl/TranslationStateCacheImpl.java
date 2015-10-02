@@ -32,13 +32,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import org.infinispan.manager.CacheContainer;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.cache.CacheWrapper;
 import org.zanata.cache.InfinispanCacheWrapper;
 import org.zanata.common.LocaleId;
@@ -68,10 +65,10 @@ import com.google.common.cache.CacheLoader;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("translationStateCacheImpl")
+@Named("translationStateCacheImpl")
 // TODO split into APPLICATION and STATELESS beans
-@Scope(ScopeType.APPLICATION)
-@AutoCreate
+@javax.enterprise.context.ApplicationScoped
+
 public class TranslationStateCacheImpl implements TranslationStateCache {
     private static final String BASE = TranslationStateCacheImpl.class.getName();
 
@@ -93,19 +90,19 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     private CacheWrapper<Long, Map<ValidationId, Boolean>> targetValidationCache;
     private CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
 
-    @In
+    @Inject
     private CacheContainer cacheContainer;
 
-    @In
+    @Inject
     private TextFlowDAO textFlowDAO;
 
-    @In
+    @Inject
     private TextFlowTargetDAO textFlowTargetDAO;
 
-    @In
+    @Inject
     private DocumentDAO documentDAO;
 
-    @In
+    @Inject
     private LocaleDAO localeDAO;
 
     // constructor for Seam
@@ -125,7 +122,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
         this.targetValidationLoader = targetValidationLoader;
     }
 
-    @Create
+    @PostConstruct
     public void create() {
         documentStatisticCache =
                 InfinispanCacheWrapper.create(DOC_STATISTIC_CACHE_NAME,

@@ -16,9 +16,7 @@ import net.customware.gwt.dispatch.shared.ActionException;
 import net.customware.gwt.dispatch.shared.Result;
 import net.customware.gwt.dispatch.shared.UnsupportedActionException;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.deployment.HotDeploymentStrategy;
 import org.jboss.seam.deployment.StandardDeploymentStrategy;
@@ -33,9 +31,9 @@ import org.zanata.webtrans.shared.rpc.WrappedAction;
 
 import com.google.common.collect.Maps;
 
-@Name("seamDispatch")
-@Scope(ScopeType.APPLICATION)
-@Startup
+@Named("seamDispatch")
+@javax.enterprise.context.ApplicationScoped
+/* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
 @Slf4j
 public class SeamDispatch implements Dispatch {
 

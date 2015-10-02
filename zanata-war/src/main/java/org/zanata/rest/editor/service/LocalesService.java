@@ -28,9 +28,9 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.util.GenericType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.model.HLocale;
 import org.zanata.rest.editor.dto.Locale;
 import org.zanata.rest.editor.service.resource.LocalesResource;
@@ -41,12 +41,12 @@ import com.google.common.collect.Lists;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("editor.localesService")
+@Named("editor.localesService")
 @Path(LocalesResource.SERVICE_PATH)
 @Transactional
 public class LocalesService implements LocalesResource {
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
     @Override

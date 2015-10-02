@@ -38,12 +38,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.jboss.seam.annotations.TransactionPropagationType;
-import org.jboss.seam.annotations.Transactional;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.jboss.seam.core.Events;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.jboss.seam.util.Work;
@@ -84,7 +82,7 @@ import org.zanata.service.LockManagerService;
 import org.zanata.service.TranslationMergeService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.ValidationService;
-import org.zanata.util.Event;
+import javax.enterprise.event.Event;
 import org.zanata.util.ShortString;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
@@ -97,57 +95,57 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
-@Name("translationServiceImpl")
-@Scope(ScopeType.STATELESS)
+@Named("translationServiceImpl")
+@javax.enterprise.context.Dependent
 @Transactional
 @ContainsAsyncMethods
 @Slf4j
 public class TranslationServiceImpl implements TranslationService {
 
-    @In
+    @Inject
     private EntityManager entityManager;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private DocumentDAO documentDAO;
 
-    @In
+    @Inject
     private TextFlowDAO textFlowDAO;
 
-    @In
+    @Inject
     private TextFlowTargetDAO textFlowTargetDAO;
 
-    @In
+    @Inject
     private ResourceUtils resourceUtils;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In
+    @Inject
     private LockManagerService lockManagerServiceImpl;
 
-    @In
+    @Inject
     private ValidationService validationServiceImpl;
 
-    @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION,
+    @Inject(value = ZanataJpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION,
             required = false)
     private HAccount authenticatedAccount;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private TranslationMergeServiceFactory translationMergeServiceFactory;
 
-    @In
+    @Inject
     private Messages msgs;
 
-    @In("event")
+    @Inject
     private Event<DocumentUploadedEvent> documentUploadedEvent;
 
-    @In("event")
+    @Inject
     private Event<TextFlowTargetStateEvent> textFlowTargetStateEvent;
 
     @Override

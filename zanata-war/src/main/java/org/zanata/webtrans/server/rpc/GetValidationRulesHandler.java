@@ -38,13 +38,13 @@ import org.zanata.webtrans.shared.rpc.*;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
-@Name("webtrans.gwt.GetValidationRulesHandler")
+@Named("webtrans.gwt.GetValidationRulesHandler")
 @ActionHandlerFor(GetValidationRulesAction.class)
-@Scope(ScopeType.STATELESS)
+@javax.enterprise.context.Dependent
 public class GetValidationRulesHandler
         extends
         AbstractActionHandler<GetValidationRulesAction, GetValidationRulesResult> {
-    @In
+    @Inject
     private ValidationService validationServiceImpl;
 
     @Override

@@ -10,13 +10,12 @@ import javax.persistence.EntityManager;
 import com.google.common.annotations.VisibleForTesting;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import javax.inject.Named;
 import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
@@ -32,24 +31,24 @@ import org.zanata.model.HLocale;
  *
  * @author Sean Flanigan
  */
-@Name("essentialDataCreator")
-@Scope(ScopeType.STATELESS)
+@Named("essentialDataCreator")
+@javax.enterprise.context.Dependent
 @Slf4j
-@Install(false)
+@Exclude(ifProjectStage = ProjectStage.UnitTest.class) /* TODO [CDI] Set ProjectStage for unit tests */
 public class EssentialDataCreator {
 
-    @In
+    @Inject
     private ApplicationConfiguration applicationConfiguration;
 
     private boolean prepared;
 
-    @In
+    @Inject
     private AccountDAO accountDAO;
 
-    @In
+    @Inject
     private AccountRoleDAO accountRoleDAO;
 
-    @In
+    @Inject
     private LocaleDAO localeDAO;
 
     public EssentialDataCreator() {

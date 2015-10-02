@@ -44,10 +44,8 @@ import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.util.Version;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -93,8 +91,8 @@ import java.util.Map;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Alternative
-@Name("translationMemoryServiceImpl")
-@Scope(ScopeType.STATELESS)
+@Named("translationMemoryServiceImpl")
+@javax.enterprise.context.Dependent
 @Slf4j
 public class TranslationMemoryServiceImpl implements TranslationMemoryService {
 
@@ -122,7 +120,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
 //    private static final float BOOST_PROJITERSLUG = SysProperties.getFloat(
 //            SysProperties.TM_BOOST_PROJITERSLUG, 1.5f);
 
-    @In
+    @Inject
     private FullTextEntityManager entityManager;
 
     private static final Version LUCENE_VERSION = Version.LUCENE_29;

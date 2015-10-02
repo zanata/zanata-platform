@@ -6,22 +6,20 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.jboss.resteasy.core.Dispatcher;
 import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import javax.inject.Named;
 import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.deployment.AnnotationDeploymentHandler;
 import org.jboss.seam.deployment.HotDeploymentStrategy;
 import org.zanata.seam.resteasy.ResteasyBootstrap;
 import org.zanata.seam.resteasy.SeamResteasyProviderFactory;
 
-@Name("org.jboss.seam.resteasy.bootstrap")
-@Scope(ScopeType.APPLICATION)
-@Startup
-@AutoCreate
+@Named("org.jboss.seam.resteasy.bootstrap")
+@javax.enterprise.context.ApplicationScoped
+/* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
+
 @Install(classDependencies = "org.jboss.resteasy.spi.ResteasyProviderFactory",
         precedence = Install.DEPLOYMENT)
 @Slf4j

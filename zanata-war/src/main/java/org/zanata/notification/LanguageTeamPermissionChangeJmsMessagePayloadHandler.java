@@ -24,11 +24,8 @@ import java.io.Serializable;
 
 import javax.mail.internet.InternetAddress;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.email.Addresses;
 import org.zanata.email.EmailBuilder;
@@ -52,21 +49,21 @@ import lombok.extern.slf4j.Slf4j;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Name("languageTeamPermissionChangeJmsMessagePayloadHandler")
-@Scope(ScopeType.STATELESS)
-@AutoCreate
+@Named("languageTeamPermissionChangeJmsMessagePayloadHandler")
+@javax.enterprise.context.Dependent
+
 @Slf4j
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class LanguageTeamPermissionChangeJmsMessagePayloadHandler implements
         EmailQueueMessageReceiver.JmsMessagePayloadHandler {
-    @In
+    @Inject
     private EmailBuilder emailBuilder;
 
-    @In
+    @Inject
     private Messages msgs;
 
-    @In
+    @Inject
     private ApplicationConfiguration applicationConfiguration;
 
 

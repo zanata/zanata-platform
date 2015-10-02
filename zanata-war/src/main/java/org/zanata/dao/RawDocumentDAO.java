@@ -2,10 +2,7 @@ package org.zanata.dao;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.zanata.model.HRawDocument;
 
 import lombok.extern.slf4j.Slf4j;
@@ -13,9 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("rawDocumentDAO")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("rawDocumentDAO")
+
+@javax.enterprise.context.Dependent
 @Slf4j
 public class RawDocumentDAO extends AbstractDAOImpl<HRawDocument, Long> {
     public RawDocumentDAO() {

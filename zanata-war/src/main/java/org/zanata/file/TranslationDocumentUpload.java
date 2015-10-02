@@ -35,8 +35,8 @@ import javax.ws.rs.core.Response.Status;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -63,22 +63,22 @@ import com.google.common.base.Optional;
 
 //TODO damason: add thorough unit testing
 @Slf4j
-@Name("translationDocumentUploader")
+@Named("translationDocumentUploader")
 public class TranslationDocumentUpload {
 
-    @In(create = true, value = "documentUploadUtil")
+    @Inject /* TODO [CDI] check this: migrated from @In(create = true, value = "documentUploadUtil") */
     private DocumentUploadUtil util;
-    @In
+    @Inject
     private ZanataIdentity identity;
-    @In
+    @Inject
     private LocaleDAO localeDAO;
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
-    @In
+    @Inject
     private TranslationService translationServiceImpl;
-    @In
+    @Inject
     private TranslationFileService translationFileServiceImpl;
-    @In
+    @Inject
     private DocumentUploadDAO documentUploadDAO;
 
     public Response

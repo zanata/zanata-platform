@@ -38,14 +38,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.apache.log4j.Level;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
-import org.jboss.seam.annotations.Synchronized;
+import org.zanata.util.Synchronized;
 import org.jboss.seam.web.ServletContexts;
 import org.zanata.config.DatabaseBackedConfig;
 import org.zanata.config.JaasConfig;
@@ -62,9 +60,9 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.zanata.security.OpenIdLoginModule;
 
-@Name("applicationConfiguration")
-@Scope(ScopeType.APPLICATION)
-@Startup
+@Named("applicationConfiguration")
+@javax.enterprise.context.ApplicationScoped
+/* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
 @Synchronized(timeout = ServerConstants.DEFAULT_TIMEOUT)
 @Slf4j
 public class ApplicationConfiguration implements Serializable {
@@ -76,13 +74,13 @@ public class ApplicationConfiguration implements Serializable {
     @Getter
     private static final int defaultMaxFilesPerUpload = 100;
 
-    @In
+    @Inject
     private DatabaseBackedConfig databaseBackedConfig;
-    @In
+    @Inject
     private JndiBackedConfig jndiBackedConfig;
-    @In
+    @Inject
     private JaasConfig jaasConfig;
-    @In
+    @Inject
     private Messages msgs;
 
     private static final ZanataSMTPAppender smtpAppenderInstance =
@@ -118,7 +116,7 @@ public class ApplicationConfiguration implements Serializable {
 
     private String defaultServerPath;
 
-    @Create
+    @PostConstruct
     public void load() {
         log.info("Reloading configuration");
         this.loadLoginModuleNames();

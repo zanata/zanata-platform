@@ -12,9 +12,9 @@ import javax.ws.rs.core.Response;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.Identity;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
@@ -32,17 +32,17 @@ import com.google.common.util.concurrent.Uninterruptibles;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Path("/test/data/sample")
-@Name("sampleProjectResourceImpl")
+@Named("sampleProjectResourceImpl")
 @Slf4j
 public class SampleDataResourceImpl implements SampleDataResource {
 
-    @In(create = true)
+    @Inject
     private SampleProjectProfile sampleProjectProfile;
 
-    @In
+    @Inject
     private EntityManager entityManager;
 
-    @In(create = true)
+    @Inject
     private Identity identity;
 
     @Override

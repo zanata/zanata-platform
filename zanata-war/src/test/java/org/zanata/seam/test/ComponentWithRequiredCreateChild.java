@@ -20,18 +20,18 @@
  */
 package org.zanata.seam.test;
 
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
 
-@Name("ComponentWithRequiredCreateChild")
+@Named("ComponentWithRequiredCreateChild")
 public class ComponentWithRequiredCreateChild {
-    @In(required = true, create = true)
+    @Inject /* TODO [CDI] check this: migrated from @In(required = true, create = true) */
     private Child childComponent;
 
     private boolean postConstructInvoked = false;
 
-    @Create
+    @PostConstruct
     public void postConstruct() {
         this.postConstructInvoked = true;
     }

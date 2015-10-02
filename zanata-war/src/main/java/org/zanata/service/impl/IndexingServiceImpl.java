@@ -30,11 +30,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.action.ReindexClassOptions;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
@@ -53,17 +50,17 @@ import org.zanata.service.IndexingService;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("indexingServiceImpl")
-@Scope(ScopeType.STATELESS)
-@AutoCreate
+@Named("indexingServiceImpl")
+@javax.enterprise.context.Dependent
+
 @Slf4j
 @ContainsAsyncMethods
 public class IndexingServiceImpl implements IndexingService {
 
-    @In
+    @Inject
     private EntityManagerFactory entityManagerFactory;
 
-    @In
+    @Inject
     private HTextFlowTargetStreamingDAO hTextFlowTargetStreamingDAO;
 
     @Override

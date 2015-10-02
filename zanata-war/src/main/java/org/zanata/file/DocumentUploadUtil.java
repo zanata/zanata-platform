@@ -38,8 +38,8 @@ import javax.ws.rs.core.Response.Status;
 import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.Session;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.jboss.seam.util.Hex;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
@@ -60,24 +60,24 @@ import com.google.common.base.Optional;
 
 // TODO damason: add thorough unit testing
 @Slf4j
-@Name("documentUploadUtil")
+@Named("documentUploadUtil")
 public class DocumentUploadUtil {
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
     // TODO technical debt: use entityManager
-    @In
+    @Inject
     private Session session;
-    @In
+    @Inject
     private DocumentDAO documentDAO;
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
-    @In
+    @Inject
     private TranslationFileService translationFileServiceImpl;
-    @In("blobPersistService")
+    @Inject
     private UploadPartPersistService uploadPartPersistService;
-    @In
+    @Inject
     private DocumentUploadDAO documentUploadDAO;
 
     // TODO damason: move all validation checks to separate class

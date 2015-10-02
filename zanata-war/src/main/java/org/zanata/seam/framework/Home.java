@@ -8,10 +8,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
+import javax.annotation.PostConstruct;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.jboss.seam.core.Expressions;
 import org.jboss.seam.core.Expressions.ValueExpression;
 import org.jboss.seam.framework.EntityNotFoundException;
@@ -24,7 +22,7 @@ import org.jboss.seam.framework.EntityNotFoundException;
  *
  * @author Gavin King
  */
-@Scope(ScopeType.CONVERSATION)
+@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
 public abstract class Home<T, E> extends MutableController<T> {
     private static final long serialVersionUID = -5462396456614090423L;
 
@@ -99,7 +97,7 @@ public abstract class Home<T, E> extends MutableController<T> {
      * valid state. <br />
      * Validates that the class of the entity to be managed has been specified.
      */
-    @Create
+    @PostConstruct
     public void create() {
         if (getEntityClass() == null) {
             throw new IllegalStateException("entityClass is null");

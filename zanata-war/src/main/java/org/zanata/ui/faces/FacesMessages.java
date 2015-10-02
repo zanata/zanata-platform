@@ -38,11 +38,9 @@ import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import javax.inject.Named;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.core.Interpolator;
 import org.zanata.i18n.Messages;
@@ -56,11 +54,11 @@ import com.google.common.collect.Lists;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Scope(ScopeType.CONVERSATION)
-@Name("jsfMessages")
+@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
+@Named("jsfMessages")
 @Install(precedence = APPLICATION,
         classDependencies = "javax.faces.context.FacesContext")
-@AutoCreate
+
 @BypassInterceptors
 public class FacesMessages {
 

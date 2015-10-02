@@ -1,10 +1,8 @@
 package org.zanata.service.impl;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.core.Events;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.events.DocumentStatisticUpdatedEvent;
@@ -26,15 +24,15 @@ import javax.enterprise.event.TransactionPhase;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("translationUpdatedManager")
-@Scope(ScopeType.STATELESS)
+@Named("translationUpdatedManager")
+@javax.enterprise.context.Dependent
 @Slf4j
 public class TranslationUpdatedManager {
 
-    @In
+    @Inject
     private TranslationStateCache translationStateCacheImpl;
 
-    @In
+    @Inject
     private TextFlowDAO textFlowDAO;
 
     /**

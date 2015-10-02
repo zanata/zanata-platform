@@ -27,9 +27,8 @@ import lombok.NoArgsConstructor;
 import nu.xom.Element;
 import nu.xom.Elements;
 
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.dao.TransMemoryDAO;
 import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.model.tm.TransMemoryUnit;
@@ -45,14 +44,14 @@ import org.zanata.util.TMXParseException;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@Name("transMemoryAdapter")
-@AutoCreate
+@Named("transMemoryAdapter")
+
 @NoArgsConstructor
 public class TransMemoryAdapter {
-    @In
+    @Inject
     private EntityManager entityManager;
 
-    @In
+    @Inject
     private TransMemoryDAO transMemoryDAO;
 
     /**

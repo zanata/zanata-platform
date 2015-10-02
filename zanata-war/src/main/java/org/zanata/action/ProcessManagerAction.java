@@ -24,10 +24,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
@@ -39,12 +37,12 @@ import org.zanata.security.annotations.ZanataSecured;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("processManagerAction")
-@Scope(ScopeType.EVENT)
+@Named("processManagerAction")
+@javax.enterprise.context.RequestScoped
 @ZanataSecured
 @CheckRole("admin")
 public class ProcessManagerAction {
-    @In
+    @Inject
     private AsyncTaskHandleManager asyncTaskHandleManager;
 
     public Collection<AsyncTaskHandle> getRunningProcesses() {

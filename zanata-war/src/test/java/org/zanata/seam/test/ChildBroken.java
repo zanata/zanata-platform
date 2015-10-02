@@ -20,7 +20,7 @@
  */
 package org.zanata.seam.test;
 
-import org.jboss.seam.annotations.Name;
+import javax.inject.Named;
 
 /**
  * A component that cannot be built because it doesn't follow Seam's bean spec.
@@ -28,7 +28,7 @@ import org.jboss.seam.annotations.Name;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("childBroken")
+@Named("childBroken")
 public class ChildBroken {
     public ChildBroken(String unboundArgument) {
     }

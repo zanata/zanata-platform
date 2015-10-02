@@ -6,10 +6,8 @@ import java.util.Map;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HPerson;
 import org.zanata.security.ZanataIdentity;
@@ -24,21 +22,21 @@ import org.zanata.webtrans.shared.model.PersonSessionDetails;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
 
-@Name("webtrans.gwt.GetTranslatorListHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.GetTranslatorListHandler")
+@javax.enterprise.context.Dependent
 @ActionHandlerFor(GetTranslatorList.class)
 public class GetTranslatorListHandler extends
         AbstractActionHandler<GetTranslatorList, GetTranslatorListResult> {
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private TranslationWorkspaceManager translationWorkspaceManager;
 
-    @In
+    @Inject
     private AccountDAO accountDAO;
 
-    @In
+    @Inject
     private GravatarService gravatarServiceImpl;
 
     @Override

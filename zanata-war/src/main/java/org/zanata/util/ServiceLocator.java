@@ -29,10 +29,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 
 /**
@@ -46,10 +43,10 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@AutoCreate
+
 @BypassInterceptors
-@Name("serviceLocator")
-@Scope(ScopeType.STATELESS)
+@Named("serviceLocator")
+@javax.enterprise.context.Dependent
 public class ServiceLocator {
 
     public static ServiceLocator instance() {

@@ -26,9 +26,9 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import org.jboss.resteasy.spi.NotFoundException;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.common.EntityStatus;
@@ -65,34 +65,34 @@ import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("asynchronousProcessResourceService")
+@Named("asynchronousProcessResourceService")
 @Path(AsynchronousProcessResource.SERVICE_PATH)
 @Transactional
 @Slf4j
 public class AsynchronousProcessResourceService implements
         AsynchronousProcessResource {
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In
+    @Inject
     private DocumentService documentServiceImpl;
 
-    @In
+    @Inject
     private TranslationService translationServiceImpl;
 
-    @In
+    @Inject
     private AsyncTaskHandleManager asyncTaskHandleManager;
 
-    @In
+    @Inject
     private DocumentDAO documentDAO;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private ResourceUtils resourceUtils;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
     @Override

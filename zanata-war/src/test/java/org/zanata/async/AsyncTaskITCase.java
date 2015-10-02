@@ -28,9 +28,8 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.junit.Test;
 import org.zanata.ArquillianTest;
 
@@ -41,7 +40,7 @@ import com.google.common.collect.Lists;
  */
 public class AsyncTaskITCase extends ArquillianTest {
 
-    @In
+    @Inject
     TestAsyncBean testAsyncBean;
 
     @Override
@@ -120,8 +119,8 @@ public class AsyncTaskITCase extends ArquillianTest {
     }
 
 
-    @Name("testAsyncBean")
-    @AutoCreate
+    @Named("testAsyncBean")
+
     @ContainsAsyncMethods
     public static class TestAsyncBean {
 

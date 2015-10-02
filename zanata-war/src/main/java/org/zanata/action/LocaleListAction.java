@@ -28,19 +28,17 @@ import java.util.TreeMap;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Factory;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Out;
-import org.jboss.seam.annotations.Scope;
+import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.enterprise.inject.Produces;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HProject;
 import org.zanata.service.LocaleService;
 
-@Name("localeListAction")
-@Scope(ScopeType.PAGE)
+@Named("localeListAction")
+@javax.faces.bean.ViewScoped
 @Slf4j
 public class LocaleListAction implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -48,17 +46,17 @@ public class LocaleListAction implements Serializable {
     private List<String> availableList = new ArrayList<String>();
     private Map<String, String> globalItems;
     private Map<String, String> availableItems;
-    @Out(required = false)
+    @Produces /* FIXME [CDI] check this: migrated from @Out */(required = false)
     private Map<String, String> customizedItems;
-    @Out(required = false)
+    @Produces /* FIXME [CDI] check this: migrated from @Out */(required = false)
     private Boolean overrideLocales;
     private boolean setting;
-    @In
+    @Inject
     ProjectDAO projectDAO;
 
     private String slug;
 
-    @In
+    @Inject
     LocaleService localeServiceImpl;
 
     public void toCustomizedLocales() {
@@ -100,7 +98,7 @@ public class LocaleListAction implements Serializable {
         return customizedItems;
     }
 
-    @Factory("availableItems")
+    @Produces(/* TODO [CDI] check this: migrated from @Factory */"availableItems")
     public Map<String, String> loadItems() {
         availableItems = new TreeMap<String, String>();
         log.debug("loadProjectItems");
@@ -118,7 +116,7 @@ public class LocaleListAction implements Serializable {
         return availableItems;
     }
 
-    @Create
+    @PostConstruct
     public void loadGlobalItems() {
         globalItems = localeServiceImpl.getGlobalLocaleItems();
     }

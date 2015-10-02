@@ -25,10 +25,8 @@ import java.util.Map.Entry;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountOptionDAO;
@@ -43,18 +41,18 @@ import org.zanata.webtrans.shared.rpc.SaveOptionsResult;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("webtrans.gwt.SaveOptionsHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.SaveOptionsHandler")
+@javax.enterprise.context.Dependent
 @ActionHandlerFor(SaveOptionsAction.class)
 public class SaveOptionsHandler extends
         AbstractActionHandler<SaveOptionsAction, SaveOptionsResult> {
-    @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
+    @Inject /* TODO [CDI] check this: migrated from @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
     private HAccount authenticatedAccount;
 
-    @In
+    @Inject
     private AccountDAO accountDAO;
 
-    @In
+    @Inject
     private AccountOptionDAO accountOptionDAO;
 
     @Override

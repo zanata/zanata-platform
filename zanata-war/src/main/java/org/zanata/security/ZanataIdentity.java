@@ -37,11 +37,11 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
+import javax.annotation.PostConstruct;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import javax.inject.Named;
 import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.contexts.Contexts;
@@ -61,16 +61,16 @@ import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.security.jaas.InternalLoginModule;
 import org.zanata.security.permission.CustomPermissionResolver;
 import org.zanata.security.permission.MultiTargetList;
-import org.zanata.util.Event;
+import javax.enterprise.event.Event;
 import org.zanata.util.ServiceLocator;
 
 import com.google.common.collect.Lists;
 
-@Name("org.jboss.seam.security.identity")
-@Scope(SESSION)
+@Named("org.jboss.seam.security.identity")
+@javax.enterprise.context.SessionScoped
 @Install(precedence = APPLICATION)
 @BypassInterceptors
-@Startup
+/* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
 public class ZanataIdentity implements Identity, Serializable {
     private static final Logger log = LoggerFactory.getLogger(
             ZanataIdentity.class);
@@ -99,7 +99,7 @@ public class ZanataIdentity implements Identity, Serializable {
     private boolean authenticating;
     private String jaasConfigName = "zanata";
 
-    @Create
+    @PostConstruct
     public void create() {
         subject = new Subject();
 

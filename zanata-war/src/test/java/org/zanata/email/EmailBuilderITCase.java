@@ -20,7 +20,7 @@
  */
 package org.zanata.email;
 
-import org.jboss.seam.annotations.In;
+import javax.inject.Inject;
 import org.junit.Test;
 import org.zanata.ArquillianTest;
 
@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 public class EmailBuilderITCase extends ArquillianTest {
-    @In
+    @Inject
     private EmailBuilder emailBuilder;
 
     @Override

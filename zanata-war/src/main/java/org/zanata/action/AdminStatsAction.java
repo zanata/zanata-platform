@@ -24,10 +24,8 @@ import java.io.Serializable;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
@@ -40,30 +38,30 @@ import org.zanata.dao.TextFlowTargetDAO;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-@Name("adminStatsAction")
-@Scope(ScopeType.PAGE)
+@Named("adminStatsAction")
+@javax.faces.bean.ViewScoped
 public class AdminStatsAction implements Serializable {
     /**
     *
     */
     private static final long serialVersionUID = 1L;
 
-    @In
+    @Inject
     private ProjectDAO projectDAO;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private PersonDAO personDAO;
 
-    @In
+    @Inject
     private TextFlowDAO textFlowDAO;
 
-    @In
+    @Inject
     private TextFlowTargetDAO textFlowTargetDAO;
 
-    @In
+    @Inject
     private DocumentDAO documentDAO;
 
     @Getter

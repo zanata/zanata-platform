@@ -47,8 +47,8 @@ import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.util.GenericType;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.adapter.FileFormatAdapter;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.ContentState;
@@ -77,38 +77,38 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.io.ByteStreams;
 
-@Name("fileService")
+@Named("fileService")
 @Path(FileResource.SERVICE_PATH)
 @Slf4j
 public class FileService implements FileResource {
     private static final String FILE_TYPE_OFFLINE_PO = "offlinepo";
     private static final String FILE_TYPE_OFFLINE_PO_TEMPLATE = "offlinepot";
 
-    @In
+    @Inject
     private DocumentDAO documentDAO;
 
-    @In(create = true)
+    @Inject
     private TranslatedDocResourceService translatedDocResourceService;
 
-    @In
+    @Inject
     private FileSystemService fileSystemServiceImpl;
 
-    @In
+    @Inject
     private TranslationFileService translationFileServiceImpl;
 
-    @In
+    @Inject
     private ResourceUtils resourceUtils;
 
-    @In
+    @Inject
     private VirusScanner virusScanner;
 
-    @In(value = "sourceDocumentUploader", create = true)
+    @Inject /* TODO [CDI] check this: migrated from @In(value = "sourceDocumentUploader", create = true) */
     private SourceDocumentUpload sourceUploader;
 
-    @In(value = "translationDocumentUploader", create = true)
+    @Inject /* TODO [CDI] check this: migrated from @In(value = "translationDocumentUploader", create = true) */
     private TranslationDocumentUpload translationUploader;
 
-    @In("filePersistService")
+    @Inject
     private FilePersistService filePersistService;
 
     /**

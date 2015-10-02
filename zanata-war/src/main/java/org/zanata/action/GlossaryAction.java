@@ -12,10 +12,8 @@ import javax.faces.context.FacesContext;
 import javax.validation.ConstraintViolationException;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.richfaces.event.FileUploadEvent;
 import org.richfaces.model.UploadedFile;
 import org.zanata.common.LocaleId;
@@ -41,27 +39,27 @@ import lombok.extern.slf4j.Slf4j;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
-@Name("glossaryAction")
-@Scope(ScopeType.PAGE)
+@Named("glossaryAction")
+@javax.faces.bean.ViewScoped
 @ZanataSecured
 @CheckLoggedIn
 @Slf4j
 public class GlossaryAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @In
+    @Inject
     private GlossaryDAO glossaryDAO;
 
-    @In
+    @Inject
     private LocaleDAO localeDAO;
 
-    @In
+    @Inject
     private GlossaryFileService glossaryFileServiceImpl;
 
-    @In
+    @Inject
     private Messages msgs;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
     @Getter

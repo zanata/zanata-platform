@@ -27,27 +27,25 @@ import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.service.TransMemoryMergeService;
 import org.zanata.service.TranslationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
-@Name("webtrans.gwt.TransMemoryMergeHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.TransMemoryMergeHandler")
+@javax.enterprise.context.Dependent
 @ActionHandlerFor(TransMemoryMerge.class)
 @Slf4j
 public class TransMemoryMergeHandler extends
         AbstractActionHandler<TransMemoryMerge, UpdateTransUnitResult> {
 
-    @In
+    @Inject
     private TransMemoryMergeService transMemoryMergeServiceImpl;
 
-    @In(value = "webtrans.gwt.TransUnitUpdateHelper", create = true)
+    @Inject /* TODO [CDI] check this: migrated from @In(value = "webtrans.gwt.TransUnitUpdateHelper", create = true) */
     private TransUnitUpdateHelper transUnitUpdateHelper;
 
     @Override

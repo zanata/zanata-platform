@@ -31,13 +31,10 @@ import javax.enterprise.event.TransactionPhase;
 import javax.persistence.EntityManager;
 
 import org.apache.commons.lang.time.DateUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.action.DashboardUserStats;
 import org.zanata.common.ActivityType;
 import org.zanata.dao.ActivityDAO;
@@ -58,26 +55,26 @@ import org.zanata.service.ActivityService;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("activityServiceImpl")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("activityServiceImpl")
+
+@javax.enterprise.context.Dependent
 public class ActivityServiceImpl implements ActivityService {
-    @In
+    @Inject
     private ActivityDAO activityDAO;
 
-    @In
+    @Inject
     private TextFlowTargetDAO textFlowTargetDAO;
 
-    @In
+    @Inject
     private DocumentDAO documentDAO;
 
-    @In
+    @Inject
     private PersonDAO personDAO;
 
-    @In
+    @Inject
     private EntityManager entityManager;
 
-    @In
+    @Inject
     private ActivityLockManager activityLockManager;
 
     @Override

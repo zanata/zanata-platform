@@ -23,9 +23,7 @@ package org.zanata.i18n;
 import static org.jboss.seam.ScopeType.APPLICATION;
 
 import lombok.Getter;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 
 import java.util.Locale;
 
@@ -35,9 +33,9 @@ import java.util.Locale;
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@AutoCreate
-@Name("messagesFactory")
-@Scope(APPLICATION)
+
+@Named("messagesFactory")
+@javax.enterprise.context.ApplicationScoped
 public class MessagesFactory {
 
     /**

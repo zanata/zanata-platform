@@ -27,11 +27,9 @@ import java.util.List;
 import javax.faces.context.ExternalContext;
 import javax.servlet.http.HttpServletRequest;
 
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesManager;
 import org.jboss.seam.faces.Redirect;
@@ -61,12 +59,12 @@ import org.zanata.security.openid.OpenIdProvider;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.security.openid.YahooOpenIdProvider;
 import org.zanata.ui.faces.FacesMessages;
-import org.zanata.util.Event;
+import javax.enterprise.event.Event;
 import org.zanata.util.ServiceLocator;
 
-@Name("org.jboss.seam.security.zanataOpenId")
-@Scope(SESSION)
-@AutoCreate
+@Named("org.jboss.seam.security.zanataOpenId")
+@javax.enterprise.context.SessionScoped
+
 /*
  * based on org.jboss.seam.security.openid.OpenId class
  */
@@ -77,22 +75,22 @@ public class ZanataOpenId implements OpenIdAuthCallback {
     private ZanataIdentity identity;
     private ApplicationConfiguration applicationConfiguration;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
-    @In
+    @Inject
     private ZanataCredentials credentials;
 
-    @In
+    @Inject
     private UserRedirectBean userRedirect;
 
-    @In
+    @Inject
     private AccountDAO accountDAO;
 
-    @In("event")
+    @Inject
     private Event<LoginCompleted> loginCompletedEvent;
 
-    @In("event")
+    @Inject
     private Event<PostAuthenticateEvent> postAuthenticateEvent;
 
     private String id;
@@ -231,7 +229,7 @@ public class ZanataOpenId implements OpenIdAuthCallback {
         init();
     }
 
-    @Create
+    @PostConstruct
     public void init() {
         manager = new ConsumerManager();
         discovered = null;

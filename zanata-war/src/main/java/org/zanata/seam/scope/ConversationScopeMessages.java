@@ -26,20 +26,17 @@ import java.io.Serializable;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import com.google.common.collect.Lists;
 import org.zanata.util.ServiceLocator;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("conversationScopeMessages")
-@Scope(ScopeType.CONVERSATION)
-@AutoCreate
+@Named("conversationScopeMessages")
+@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
+
 public class ConversationScopeMessages implements Serializable {
 
     private List<FacesMessage> messages = Lists.newArrayList();

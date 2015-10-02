@@ -28,9 +28,7 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Properties;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.zanata.service.FileSystemService;
 
 /**
@@ -40,8 +38,8 @@ import org.zanata.service.FileSystemService;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("fileSystemServiceImpl")
-@Scope(ScopeType.STATELESS)
+@Named("fileSystemServiceImpl")
+@javax.enterprise.context.Dependent
 public class FileSystemServiceImpl implements FileSystemService {
     private static final File STAGING_DIR = new File(
             System.getProperty("java.io.tmpdir"));

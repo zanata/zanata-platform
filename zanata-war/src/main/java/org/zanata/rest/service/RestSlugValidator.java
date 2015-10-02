@@ -26,8 +26,8 @@ import javax.ws.rs.WebApplicationException;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.ProjectDAO;
@@ -45,14 +45,14 @@ import org.zanata.service.LocaleService;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@Name("restSlugValidator")
+@Named("restSlugValidator")
 @Slf4j
 public class RestSlugValidator {
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
-    @In
+    @Inject
     private ProjectDAO projectDAO;
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
     public @Nonnull

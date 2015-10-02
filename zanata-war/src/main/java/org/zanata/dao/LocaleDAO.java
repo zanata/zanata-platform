@@ -27,16 +27,13 @@ import javax.annotation.Nullable;
 
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 
-@Name("localeDAO")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("localeDAO")
+
+@javax.enterprise.context.Dependent
 public class LocaleDAO extends AbstractDAOImpl<HLocale, Long> {
 
     public LocaleDAO() {

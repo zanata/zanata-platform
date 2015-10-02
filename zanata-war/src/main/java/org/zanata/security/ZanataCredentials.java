@@ -31,9 +31,9 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import static org.jboss.seam.ScopeType.SESSION;
 import static org.jboss.seam.annotations.Install.APPLICATION;
 
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import javax.inject.Named;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.zanata.security.openid.OpenIdProviderType;
 
@@ -46,8 +46,8 @@ import lombok.extern.slf4j.Slf4j;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("org.jboss.seam.security.credentials")
-@Scope(SESSION)
+@Named("org.jboss.seam.security.credentials")
+@javax.enterprise.context.SessionScoped
 @Install(precedence = APPLICATION)
 @BypassInterceptors
 @Slf4j

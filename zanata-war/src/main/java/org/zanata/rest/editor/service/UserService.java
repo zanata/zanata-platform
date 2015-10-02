@@ -3,9 +3,9 @@ package org.zanata.rest.editor.service;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
@@ -20,20 +20,20 @@ import lombok.NoArgsConstructor;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("editor.userService")
+@Named("editor.userService")
 @Path(UserResource.SERVICE_PATH)
 @Transactional
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserService implements UserResource {
 
-    @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
+    @Inject /* TODO [CDI] check this: migrated from @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
     private HAccount authenticatedAccount;
 
-    @In
+    @Inject
     private GravatarService gravatarServiceImpl;
 
-    @In
+    @Inject
     private AccountDAO accountDAO;
 
     @Override

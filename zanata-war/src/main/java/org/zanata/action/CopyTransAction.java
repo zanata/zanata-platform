@@ -24,12 +24,10 @@ import java.io.Serializable;
 import javax.annotation.Nonnull;
 import javax.faces.application.FacesMessage;
 
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 import org.zanata.async.handle.CopyTransTaskHandle;
@@ -54,27 +52,27 @@ import lombok.Setter;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("copyTransAction")
-@Scope(ScopeType.CONVERSATION)
+@Named("copyTransAction")
+@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
 public class CopyTransAction extends CopyAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private CopyTransManager copyTransManager;
 
-    @In
+    @Inject
     private ConversationScopeMessages conversationScopeMessages;
 
-    @In
+    @Inject
     private Messages msgs;
 
-    @In
+    @Inject
     private CopyTransOptionsModel copyTransOptionsModel;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
     @Getter
@@ -87,7 +85,7 @@ public class CopyTransAction extends CopyAction implements Serializable {
 
     private HProjectIteration projectIteration;
 
-    @Create
+    @PostConstruct
     public void onCreate() {
         copyTransOptionsModel.setInstance(CopyTransOptionFactory
                 .getExplicitOptions());

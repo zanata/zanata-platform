@@ -28,10 +28,7 @@ import javax.annotation.Nonnull;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.zanata.common.EntityStatus;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HPerson;
@@ -41,9 +38,9 @@ import com.google.common.collect.Lists;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("versionGroupDAO")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("versionGroupDAO")
+
+@javax.enterprise.context.Dependent
 public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long> {
     public VersionGroupDAO() {
         super(HIterationGroup.class);

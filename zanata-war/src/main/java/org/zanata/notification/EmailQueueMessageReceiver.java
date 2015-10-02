@@ -36,8 +36,8 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.events.LanguageTeamPermissionChangedEvent;
 
 import com.google.common.base.Throwables;
@@ -65,7 +65,7 @@ import static org.zanata.notification.NotificationManager.MessagePropertiesKey;
                 propertyValue = "jms/queue/MailsQueue"
         )
 })
-@Name("emailQueueMessageReceiver")
+@Named("emailQueueMessageReceiver")
 @Slf4j
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -74,7 +74,7 @@ public class EmailQueueMessageReceiver implements MessageListener {
     private static Map<String, JmsMessagePayloadHandler> handlers = Collections
             .emptyMap();
 
-    @In("languageTeamPermissionChangeJmsMessagePayloadHandler")
+    @Inject /* TODO [CDI] check this: migrated from @In("languageTeamPermissionChangeJmsMessagePayloadHandler") */
     private LanguageTeamPermissionChangeJmsMessagePayloadHandler languageTeamHandler;
 
     @Override

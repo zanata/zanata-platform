@@ -20,11 +20,10 @@
  */
 package org.zanata.seam.test;
 
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Named;
 
-@Name("childAutoCreate")
-@AutoCreate
+@Named("childAutoCreate")
+
 public class ChildAutoCreate {
 
 }

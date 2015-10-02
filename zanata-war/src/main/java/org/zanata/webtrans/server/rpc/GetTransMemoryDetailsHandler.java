@@ -7,10 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
@@ -24,23 +22,23 @@ import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.rpc.GetTransMemoryDetailsAction;
 import org.zanata.webtrans.shared.rpc.TransMemoryDetailsList;
 
-@Name("webtrans.gwt.GetTransMemoryDetailsHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.GetTransMemoryDetailsHandler")
+@javax.enterprise.context.Dependent
 @ActionHandlerFor(GetTransMemoryDetailsAction.class)
 @Slf4j
 public class GetTransMemoryDetailsHandler
         extends
         AbstractActionHandler<GetTransMemoryDetailsAction, TransMemoryDetailsList> {
-    @In
+    @Inject
     private TextFlowDAO textFlowDAO;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private TranslationMemoryService translationMemoryServiceImpl;
 
     @Override

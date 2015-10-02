@@ -22,11 +22,8 @@
 package org.zanata;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.annotation.PostConstruct;
+import javax.inject.Named;
 
 import javax.faces.application.ResourceHandler;
 import javax.faces.context.FacesContext;
@@ -45,9 +42,9 @@ import java.util.Set;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@AutoCreate
-@Name("assets")
-@Scope(ScopeType.APPLICATION)
+
+@Named("assets")
+@javax.enterprise.context.ApplicationScoped
 public class WebAssetsConfiguration extends AbstractMap<String, String> {
 
     /**

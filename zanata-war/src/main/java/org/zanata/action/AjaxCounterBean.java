@@ -21,17 +21,16 @@
 package org.zanata.action;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@AutoCreate
-@Name("ajaxCounter")
+
+@Named("ajaxCounter")
 @Slf4j
 public class AjaxCounterBean {
     // http://stackoverflow.com/questions/4410218/trying-to-keep-track-of-number-of-outstanding-ajax-requests-in-firefox
@@ -71,7 +70,7 @@ public class AjaxCounterBean {
             "})(XMLHttpRequest);\n" +
             "</script>\n";
 
-    @In
+    @Inject
     private HttpServletRequest httpRequest;
 
     public String getAjaxCounterScript() {

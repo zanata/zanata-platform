@@ -29,10 +29,8 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Named;
 import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.Contexts;
 import org.zanata.util.EmptyEnumeration;
 
@@ -53,9 +51,9 @@ import static org.jboss.seam.ScopeType.EVENT;
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@AutoCreate
-@Name("msgs")
-@Scope(EVENT)
+
+@Named("msgs")
+@javax.enterprise.context.RequestScoped
 public class Messages extends AbstractMap<String, String> {
 
     /**

@@ -22,10 +22,7 @@ package org.zanata.dao;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectMember;
@@ -38,9 +35,9 @@ import java.util.Set;
 /**
  * Provides methods to access data related to membership in a project.
  */
-@Name("projectMemberDAO")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("projectMemberDAO")
+
+@javax.enterprise.context.Dependent
 public class ProjectMemberDAO
         extends AbstractDAOImpl<HProjectMember, HProjectMember.HProjectMemberPK> {
 

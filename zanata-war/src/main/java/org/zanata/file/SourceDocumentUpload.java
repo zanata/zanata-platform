@@ -35,8 +35,8 @@ import javax.ws.rs.core.Response.Status;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FilenameUtils;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -68,28 +68,28 @@ import com.google.common.base.Strings;
 
 //TODO damason: add thorough unit testing
 @Slf4j
-@Name("sourceDocumentUploader")
+@Named("sourceDocumentUploader")
 public class SourceDocumentUpload {
 
     private static final HLocale NULL_LOCALE = null;
 
-    @In(create = true, value = "documentUploadUtil")
+    @Inject /* TODO [CDI] check this: migrated from @In(create = true, value = "documentUploadUtil") */
     private DocumentUploadUtil util;
-    @In("filePersistService")
+    @Inject
     private FilePersistService filePersistService;
-    @In
+    @Inject
     private ZanataIdentity identity;
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
-    @In
+    @Inject
     private TranslationFileService translationFileServiceImpl;
-    @In
+    @Inject
     private VirusScanner virusScanner;
-    @In
+    @Inject
     private DocumentDAO documentDAO;
-    @In
+    @Inject
     private DocumentUploadDAO documentUploadDAO;
-    @In
+    @Inject
     private DocumentService documentServiceImpl;
 
     public Response tryUploadSourceFileWithoutHash(GlobalDocumentId id,

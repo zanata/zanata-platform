@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 
 import org.hibernate.Session;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
-import org.jboss.seam.annotations.In;
+import javax.inject.Inject;
 
 /**
  * This class uses Hibernate's StatelessSession to iterate over large query
@@ -39,7 +39,7 @@ import org.jboss.seam.annotations.In;
 @NoArgsConstructor
 public abstract class StreamingDAO<T> {
 
-    @In
+    @Inject
     private HibernateEntityManagerFactory entityManagerFactory;
 
     public StreamingDAO(HibernateEntityManagerFactory emf) {

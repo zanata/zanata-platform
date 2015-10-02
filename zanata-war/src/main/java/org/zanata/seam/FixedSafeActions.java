@@ -12,10 +12,9 @@ import java.util.Set;
 
 import javax.faces.context.FacesContext;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import javax.inject.Named;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.contexts.Contexts;
 import org.zanata.util.ServiceLocator;
@@ -27,9 +26,9 @@ import org.zanata.util.ServiceLocator;
  * @author Gavin King
  *
  */
-@Scope(ScopeType.APPLICATION)
+@javax.enterprise.context.ApplicationScoped
 @BypassInterceptors
-@Name("org.jboss.seam.navigation.safeActions")
+@Named("org.jboss.seam.navigation.safeActions")
 @Install(precedence = DEPLOYMENT,
         classDependencies = "javax.faces.context.FacesContext")
 // Implementation copied from

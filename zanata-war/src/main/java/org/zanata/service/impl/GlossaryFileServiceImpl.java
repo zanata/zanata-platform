@@ -28,10 +28,9 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.adapter.glossary.GlossaryCSVReader;
 import org.zanata.adapter.glossary.GlossaryPoReader;
 import org.zanata.common.LocaleId;
@@ -52,13 +51,13 @@ import org.zanata.service.LocaleService;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
-@Name("glossaryFileServiceImpl")
-@Scope(STATELESS)
+@Named("glossaryFileServiceImpl")
+@javax.enterprise.context.Dependent
 public class GlossaryFileServiceImpl implements GlossaryFileService {
-    @In
+    @Inject
     private GlossaryDAO glossaryDAO;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
     private final static int BATCH_SIZE = 50;

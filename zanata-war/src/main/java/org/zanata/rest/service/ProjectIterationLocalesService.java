@@ -20,8 +20,8 @@
  */
 package org.zanata.rest.service;
 
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HLocale;
@@ -36,7 +36,7 @@ import javax.ws.rs.core.Response.Status;
 import java.util.List;
 import java.util.Map;
 
-@Name("projectIterationLocalesService")
+@Named("projectIterationLocalesService")
 @Path(ProjectIterationLocalesService.SERVICE_PATH)
 public class ProjectIterationLocalesService extends LocalesService implements ProjectIterationLocalesResource {
     @PathParam("projectSlug")
@@ -45,10 +45,10 @@ public class ProjectIterationLocalesService extends LocalesService implements Pr
     @PathParam("iterationSlug")
     String iterationSlug;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
     @Override

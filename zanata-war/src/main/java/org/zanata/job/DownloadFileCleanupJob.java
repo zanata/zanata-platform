@@ -24,10 +24,8 @@ import java.io.File;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.service.FileSystemService;
 
 /**
@@ -36,11 +34,11 @@ import org.zanata.service.FileSystemService;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("downloadFileCleanupJob")
-@Scope(ScopeType.STATELESS)
+@Named("downloadFileCleanupJob")
+@javax.enterprise.context.Dependent
 @Slf4j
 public class DownloadFileCleanupJob extends ZanataSchedulableJob {
-    @In
+    @Inject
     private FileSystemService fileSystemServiceImpl;
 
     @Override

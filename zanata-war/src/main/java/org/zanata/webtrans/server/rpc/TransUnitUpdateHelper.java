@@ -47,12 +47,12 @@ import javax.enterprise.event.TransactionPhase;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("webtrans.gwt.TransUnitUpdateHelper")
-@Scope(ScopeType.APPLICATION)
-@AutoCreate
+@Named("webtrans.gwt.TransUnitUpdateHelper")
+@javax.enterprise.context.ApplicationScoped
+
 public class TransUnitUpdateHelper {
 
-    @In
+    @Inject
     private ServiceLocator serviceLocator;
 
     private static Cache<CacheKey, TransUnitUpdateInfo> cache = CacheBuilder

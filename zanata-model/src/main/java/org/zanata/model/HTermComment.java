@@ -74,7 +74,7 @@ public class HTermComment implements Serializable {
     }
 
     @NotNull
-    @Type(type = "text")
+    @javax.persistence.Lob
     public String getComment() {
         return comment;
     }

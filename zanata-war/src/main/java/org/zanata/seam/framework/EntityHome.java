@@ -5,7 +5,7 @@ package org.zanata.seam.framework;
 import javax.persistence.EntityManager;
 import javax.transaction.SystemException;
 
-import org.jboss.seam.annotations.Transactional;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.jboss.seam.persistence.PersistenceProvider;
 import org.jboss.seam.transaction.Transaction;
 

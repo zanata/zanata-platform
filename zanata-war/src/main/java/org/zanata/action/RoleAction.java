@@ -6,10 +6,10 @@ import java.util.List;
 
 import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.End;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import javax.inject.Named;
 import org.jboss.seam.core.Conversation;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.ZanataIdentity;
@@ -24,8 +24,8 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Name("zanataRoleAction")
-@Scope(PAGE)
+@Named("zanataRoleAction")
+@javax.faces.bean.ViewScoped
 @Install(precedence = APPLICATION)
 @ZanataSecured
 @CheckLoggedIn
@@ -35,10 +35,10 @@ public class RoleAction implements Serializable {
     private String role;
     private List<String> groups;
 
-    @In
+    @Inject
     IdentityManager identityManager;
 
-    @In
+    @Inject
     ZanataIdentity identity;
 
     public void loadRole() {

@@ -29,8 +29,8 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.util.GenericType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
@@ -49,12 +49,12 @@ import lombok.NoArgsConstructor;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("editor.statisticService")
+@Named("editor.statisticService")
 @Path(StatisticResource.SERVICE_PATH)
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class StatisticsService implements StatisticResource {
-    @In
+    @Inject
     private DocumentDAO documentDAO;
 
     @Override

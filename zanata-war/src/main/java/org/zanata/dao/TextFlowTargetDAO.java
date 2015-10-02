@@ -6,10 +6,7 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -23,9 +20,9 @@ import org.zanata.service.TranslationFinder;
 
 import com.google.common.base.Optional;
 
-@Name("textFlowTargetDAO")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("textFlowTargetDAO")
+
+@javax.enterprise.context.Dependent
 public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
         implements TranslationFinder {
 

@@ -34,7 +34,7 @@ import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.PumpStreamHandler;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Named;
 import org.zanata.exception.VirusDetectedException;
 
 import com.google.common.base.Stopwatch;
@@ -59,7 +59,7 @@ import com.google.common.base.Stopwatch;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@Name("virusScanner")
+@Named("virusScanner")
 @Slf4j
 public class VirusScanner {
     private static final boolean DISABLED;

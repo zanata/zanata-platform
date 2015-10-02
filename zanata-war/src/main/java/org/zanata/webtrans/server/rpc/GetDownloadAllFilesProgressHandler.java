@@ -25,10 +25,8 @@ import java.util.concurrent.ExecutionException;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.webtrans.server.ActionHandlerFor;
@@ -40,13 +38,13 @@ import org.zanata.webtrans.shared.rpc.GetDownloadAllFilesProgressResult;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
-@Name("webtrans.gwt.GetDownloadAllFilesProgressHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.GetDownloadAllFilesProgressHandler")
+@javax.enterprise.context.Dependent
 @ActionHandlerFor(GetDownloadAllFilesProgress.class)
 public class GetDownloadAllFilesProgressHandler
         extends
         AbstractActionHandler<GetDownloadAllFilesProgress, GetDownloadAllFilesProgressResult> {
-    @In
+    @Inject
     private AsyncTaskHandleManager asyncTaskHandleManager;
 
     @Override

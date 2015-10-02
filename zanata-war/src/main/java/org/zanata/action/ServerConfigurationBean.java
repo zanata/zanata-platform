@@ -34,12 +34,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.hibernate.validator.constraints.Email;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
@@ -56,25 +54,25 @@ import org.zanata.ui.faces.FacesMessages;
 
 import static org.zanata.model.HApplicationConfiguration.*;
 
-@Name("serverConfigurationBean")
-@Scope(ScopeType.PAGE)
+@Named("serverConfigurationBean")
+@javax.faces.bean.ViewScoped
 @ZanataSecured
 @CheckRole("admin")
 @Slf4j
 public class ServerConfigurationBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
     public static final String DEFAULT_HELP_URL = "http://zanata.org/help";
 
     public static final String DEFAULT_TERM_OF_USE_URL = "http://zanata.org/term";
 
-    @In
+    @Inject
     private ApplicationConfigurationDAO applicationConfigurationDAO;
 
-    @In
+    @Inject
     private ApplicationConfiguration applicationConfiguration;
 
     @Url(canEndInSlash = true)
@@ -180,7 +178,7 @@ public class ServerConfigurationBean implements Serializable {
         return "/home.xhtml";
     }
 
-    @Create
+    @PostConstruct
     public void onCreate() {
         setPropertiesFromConfigIfNotNull(commonStringProperties);
         setBooleanPropertyFromConfigIfNotNull(enableLogEmailProperty);

@@ -24,12 +24,9 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.CredentialsDAO;
@@ -57,39 +54,39 @@ import lombok.extern.slf4j.Slf4j;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("authenticationManager")
-@Scope(ScopeType.STATELESS)
-@AutoCreate
+@Named("authenticationManager")
+@javax.enterprise.context.Dependent
+
 @Slf4j
 public class AuthenticationManager {
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private ZanataJpaIdentityStore identityStore;
 
-    @In
+    @Inject
     private ZanataCredentials credentials;
 
-    @In
+    @Inject
     private ZanataOpenId zanataOpenId;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
-    @In
+    @Inject
     private UserAccountService userAccountServiceImpl;
 
-    @In
+    @Inject
     private CredentialsDAO credentialsDAO;
 
-    @In
+    @Inject
     private AccountDAO accountDAO;
 
-    @In
+    @Inject
     private UserRedirectBean userRedirect;
 
-    @In
+    @Inject
     private ApplicationConfiguration applicationConfiguration;
 
     /**

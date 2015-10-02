@@ -3,10 +3,8 @@ package org.zanata.webtrans.server.rpc;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
@@ -14,15 +12,15 @@ import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.rpc.ExitWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
 
-@Name("webtrans.gwt.ExitWorkspaceHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.ExitWorkspaceHandler")
+@javax.enterprise.context.Dependent
 @ActionHandlerFor(ExitWorkspaceAction.class)
 public class ExitWorkspaceHandler extends
         AbstractActionHandler<ExitWorkspaceAction, NoOpResult> {
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private TranslationWorkspaceManager translationWorkspaceManager;
 
     @Override

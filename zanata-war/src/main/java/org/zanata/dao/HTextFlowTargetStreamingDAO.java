@@ -26,10 +26,7 @@ import org.hibernate.Query;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
@@ -38,9 +35,9 @@ import org.zanata.model.HTextFlowTarget;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Name("hTextFlowTargetStreamingDAO")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("hTextFlowTargetStreamingDAO")
+
+@javax.enterprise.context.Dependent
 @Slf4j
 public class HTextFlowTargetStreamingDAO extends
         AbstractDAOImpl<HTextFlowTarget, Long> {

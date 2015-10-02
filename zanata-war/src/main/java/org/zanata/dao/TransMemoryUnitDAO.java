@@ -20,17 +20,15 @@
  */
 package org.zanata.dao;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.zanata.model.tm.TransMemoryUnit;
 
 /**
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("transMemoryUnitDAO")
-@Scope(ScopeType.STATELESS)
+@Named("transMemoryUnitDAO")
+@javax.enterprise.context.Dependent
 public class TransMemoryUnitDAO extends AbstractDAOImpl<TransMemoryUnit, Long> {
 
     public TransMemoryUnitDAO() {

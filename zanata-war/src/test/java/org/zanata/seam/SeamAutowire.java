@@ -25,10 +25,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -50,7 +47,7 @@ import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.jboss.seam.annotations.In;
+import javax.inject.Inject;
 import org.jboss.seam.annotations.Logger;
 import com.google.common.base.Preconditions;
 
@@ -146,7 +143,7 @@ public class SeamAutowire {
      * @param name
      *            The name of the component. When another component injects
      *            using <code>@In(value = "name")</code> or
-     *            <code>@In varName</code>, the provided component will be used.
+     *            <code>@Inject varName</code>, the provided component will be used.
      * @param component
      *            The component instance to use under the provided name.
      */
@@ -316,7 +313,7 @@ public class SeamAutowire {
                     }
                     boolean mayCreate = inAnnotation.create() || autoCreate || stateless;
                     if (required && !mayCreate) {
-                        String msg = "Not allowed to create required component "+compName+" with impl "+implType+". Try @AutoCreate or @In(create=true).";
+                        String msg = "Not allowed to create required component "+compName+" with impl "+implType+". Try or @In(create=true).";
                         if (ignoreNonResolvable) {
                             log.warn(msg);
                         } else {
@@ -579,7 +576,7 @@ public class SeamAutowire {
      * Invokes a single method (the first found) annotated with
      * {@link javax.annotation.PostConstruct},
      * {@link org.jboss.seam.annotations.intercept.PostConstruct}, or
-     * {@link org.jboss.seam.annotations.Create} annotations.
+     * {@link javax.annotation.PostConstruct} annotations.
      */
     private static void invokePostConstructMethod(Object component) {
         Class<?> compClass = component.getClass();
@@ -590,7 +587,7 @@ public class SeamAutowire {
             // be only one
             if (m.getAnnotation(javax.annotation.PostConstruct.class) != null
                     || m.getAnnotation(org.jboss.seam.annotations.intercept.PostConstruct.class) != null
-                    || m.getAnnotation(org.jboss.seam.annotations.Create.class) != null) {
+                    || m.getAnnotation(javax.annotation.PostConstruct.class) != null) {
                 if (postConstructAlreadyFound) {
                     log.warn("More than one PostConstruct method found for class "
                             + compClass.getName()

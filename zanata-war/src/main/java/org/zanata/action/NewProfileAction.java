@@ -23,12 +23,10 @@ package org.zanata.action;
 import java.io.Serializable;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.i18n.Messages;
@@ -42,31 +40,31 @@ import org.zanata.ui.faces.FacesMessages;
  * This action handles new user profile creation.
  *
  */
-@Name("newProfileAction")
-@Scope(ScopeType.PAGE)
+@Named("newProfileAction")
+@javax.faces.bean.ViewScoped
 @Slf4j
 public class NewProfileAction extends AbstractProfileAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @In
+    @Inject
     private ZanataOpenId zanataOpenId;
 
-    @In
+    @Inject
     private EmailService emailServiceImpl;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
-    @In
+    @Inject
     Messages msgs;
 
-    @In
+    @Inject
     RegisterService registerServiceImpl;
 
-    @In
+    @Inject
     ApplicationConfiguration applicationConfiguration;
 
-    @Create
+    @PostConstruct
     public void onCreate() {
         if (!identity.isPreAuthenticated()) {
             throw new AuthorizationException("Need to be in pre authenticated state");

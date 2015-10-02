@@ -4,7 +4,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.jboss.seam.annotations.In;
+import javax.inject.Inject;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
@@ -24,19 +24,19 @@ public abstract class AbstractProfileAction {
     protected boolean valid;
     private String activationKey;
 
-    @In
+    @Inject
     ZanataIdentity identity;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
-    @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
+    @Inject /* TODO [CDI] check this: migrated from @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
     HAccount authenticatedAccount;
 
-    @In
+    @Inject
     PersonDAO personDAO;
 
-    @In
+    @Inject
     AccountDAO accountDAO;
 
     protected void validateEmail(String email) {

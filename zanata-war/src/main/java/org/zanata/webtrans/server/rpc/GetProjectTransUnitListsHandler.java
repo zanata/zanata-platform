@@ -24,10 +24,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
@@ -53,23 +51,23 @@ import net.customware.gwt.dispatch.shared.ActionException;
  * @see GetProjectTransUnitLists
  * @author David Mason, damason@redhat.com
  */
-@Name("webtrans.gwt.GetProjectTransUnitListsHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.GetProjectTransUnitListsHandler")
+@javax.enterprise.context.Dependent
 @ActionHandlerFor(GetProjectTransUnitLists.class)
 @Slf4j
 public class GetProjectTransUnitListsHandler
         extends
         AbstractActionHandler<GetProjectTransUnitLists, GetProjectTransUnitListsResult> {
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In
+    @Inject
     private TextFlowSearchService textFlowSearchServiceImpl;
 
-    @In
+    @Inject
     private TransUnitTransformer transUnitTransformer;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
     @Override

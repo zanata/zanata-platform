@@ -22,10 +22,7 @@ package org.zanata.util;
 
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
@@ -40,9 +37,9 @@ import java.nio.charset.StandardCharsets;
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@AutoCreate
-@Name("commonMarkRenderer")
-@Scope(ScopeType.APPLICATION)
+
+@Named("commonMarkRenderer")
+@javax.enterprise.context.ApplicationScoped
 @Slf4j
 public class CommonMarkRenderer {
 

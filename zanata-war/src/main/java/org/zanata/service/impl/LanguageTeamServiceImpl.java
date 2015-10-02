@@ -2,10 +2,8 @@ package org.zanata.service.impl;
 
 import java.util.List;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.jboss.seam.core.Events;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.common.LocaleId;
@@ -20,24 +18,24 @@ import org.zanata.model.HLocaleMember;
 import org.zanata.model.HLocaleMember.HLocaleMemberPk;
 import org.zanata.model.HPerson;
 import org.zanata.service.LanguageTeamService;
-import org.zanata.util.Event;
+import javax.enterprise.event.Event;
 
-@Name("languageTeamServiceImpl")
-@Scope(ScopeType.STATELESS)
+@Named("languageTeamServiceImpl")
+@javax.enterprise.context.Dependent
 public class LanguageTeamServiceImpl implements LanguageTeamService {
-    @In
+    @Inject
     private PersonDAO personDAO;
 
-    @In
+    @Inject
     private LocaleDAO localeDAO;
 
-    @In
+    @Inject
     private LocaleMemberDAO localeMemberDAO;
 
-    @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION)
+    @Inject /* TODO [CDI] check this: migrated from @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION) */
     private HAccount authenticatedAccount;
 
-    @In("event")
+    @Inject
     private Event<LanguageTeamPermissionChangedEvent>
             languageTeamPermissionChangedEvent;
 

@@ -12,10 +12,7 @@ import org.hibernate.LobHelper;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.type.TimestampType;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
@@ -36,9 +33,9 @@ import com.google.common.base.Optional;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Name("documentDAO")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("documentDAO")
+
+@javax.enterprise.context.Dependent
 @Slf4j
 public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
     public DocumentDAO() {

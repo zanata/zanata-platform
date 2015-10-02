@@ -22,11 +22,8 @@ package org.zanata.config;
 
 import com.google.common.annotations.VisibleForTesting;
 import lombok.NoArgsConstructor;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * Holds all configuration values related to the asynchronous execution of
@@ -35,15 +32,15 @@ import org.jboss.seam.annotations.Scope;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("asyncConfig")
-@Scope(ScopeType.STATELESS)
-@AutoCreate
+@Named("asyncConfig")
+@javax.enterprise.context.Dependent
+
 @NoArgsConstructor
 public class AsyncConfig {
 
     public static final String THREAD_POOL_SIZE = "async.threadpool.size";
 
-    @In
+    @Inject
     private ConfigStore systemPropertyConfigStore;
 
     public AsyncConfig(ConfigStore systemPropertyConfigStore) {

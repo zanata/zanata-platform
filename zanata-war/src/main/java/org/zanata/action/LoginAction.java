@@ -30,10 +30,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.jboss.seam.core.Conversation;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.security.AuthenticationManager;
@@ -53,22 +51,22 @@ import org.zanata.security.openid.YahooOpenIdProvider;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("loginAction")
-@Scope(ScopeType.PAGE)
+@Named("loginAction")
+@javax.faces.bean.ViewScoped
 @Slf4j
 public class LoginAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private ZanataCredentials credentials;
 
-    @In
+    @Inject
     private AuthenticationManager authenticationManager;
 
-    @In
+    @Inject
     private ApplicationConfiguration applicationConfiguration;
 
     @Getter
@@ -83,7 +81,7 @@ public class LoginAction implements Serializable {
     @Setter
     private String openId = "http://";
 
-    @In
+    @Inject
     private UserRedirectBean userRedirect;
 
     public String login() {

@@ -3,10 +3,8 @@ package org.zanata.webtrans.server.rpc;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.exception.ZanataServiceException;
@@ -26,20 +24,20 @@ import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-@Name("webtrans.gwt.GetGlossaryDetailsHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.GetGlossaryDetailsHandler")
+@javax.enterprise.context.Dependent
 @ActionHandlerFor(GetGlossaryDetailsAction.class)
 @Slf4j
 public class GetGlossaryDetailsHandler
         extends
         AbstractActionHandler<GetGlossaryDetailsAction, GetGlossaryDetailsResult> {
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private GlossaryDAO glossaryDAO;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
     @Override

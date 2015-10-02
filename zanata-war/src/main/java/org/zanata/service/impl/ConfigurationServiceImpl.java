@@ -25,10 +25,8 @@ import static org.apache.commons.lang.StringUtils.join;
 
 import java.util.List;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.Namespaces;
 import org.zanata.common.ProjectType;
@@ -37,20 +35,20 @@ import org.zanata.model.HLocale;
 import org.zanata.service.ConfigurationService;
 import org.zanata.service.LocaleService;
 
-@Name("configurationServiceImpl")
-@Scope(ScopeType.STATELESS)
+@Named("configurationServiceImpl")
+@javax.enterprise.context.Dependent
 public class ConfigurationServiceImpl implements ConfigurationService {
     private static final String FILE_NAME = "zanata.xml";
 
     private static final String PROJECT_TYPE_OFFLINE_PO = "offlinepo";
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private ApplicationConfiguration applicationConfiguration;
 
     @Override

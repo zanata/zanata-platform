@@ -17,7 +17,7 @@ import org.zanata.seam.AutowireContexts;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.permission.CustomPermissionResolver;
 import org.zanata.security.permission.PermissionEvaluator;
-import org.zanata.util.Event;
+import javax.enterprise.event.Event;
 import org.zanata.util.PasswordUtil;
 
 import static org.assertj.core.api.Assertions.assertThat;

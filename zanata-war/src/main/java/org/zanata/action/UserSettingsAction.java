@@ -36,12 +36,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.jboss.seam.core.Conversation;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.CredentialsDAO;
@@ -83,38 +81,38 @@ import static javax.faces.application.FacesMessage.SEVERITY_INFO;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  * @see {@link org.zanata.action.ProfileAction}
  */
-@Name("userSettingsAction")
-@Scope(ScopeType.PAGE)
+@Named("userSettingsAction")
+@javax.faces.bean.ViewScoped
 @Slf4j
 public class UserSettingsAction {
 
-    @In
+    @Inject
     private EmailService emailServiceImpl;
-    @In
+    @Inject
     private EmailChangeService emailChangeService;
 
-    @In
+    @Inject
     private PersonDAO personDAO;
 
-    @In
+    @Inject
     private AccountDAO accountDAO;
 
-    @In(create = true)
+    @Inject
     private IdentityManager identityManager;
 
-    @In
+    @Inject
     private AuthenticationManager authenticationManager;
 
-    @In
+    @Inject
     private LanguageTeamService languageTeamServiceImpl;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
-    @In
+    @Inject
     private Messages msgs;
 
-    @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
+    @Inject /* TODO [CDI] check this: migrated from @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
     HAccount authenticatedAccount;
 
     @Getter
@@ -144,7 +142,7 @@ public class UserSettingsAction {
     @Size(min = 2, max = 80)
     private String accountName;
 
-    @Create
+    @PostConstruct
     public void onCreate() {
         HPerson person =
                 personDAO.findById(authenticatedAccount.getPerson().getId());

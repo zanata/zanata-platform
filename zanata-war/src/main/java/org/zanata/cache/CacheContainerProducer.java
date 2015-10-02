@@ -22,13 +22,10 @@ package org.zanata.cache;
 
 import lombok.extern.slf4j.Slf4j;
 import org.infinispan.manager.CacheContainer;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.annotation.PostConstruct;
+import javax.inject.Named;
 import org.jboss.seam.annotations.Startup;
-import org.jboss.seam.annotations.Unwrap;
+import javax.enterprise.inject.Produces;
 import org.zanata.util.ServiceLocator;
 
 import javax.naming.NamingException;
@@ -38,10 +35,10 @@ import javax.naming.NamingException;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("cacheContainer")
-@Scope(ScopeType.APPLICATION)
-@AutoCreate
-@Startup
+@Named("cacheContainer")
+@javax.enterprise.context.ApplicationScoped
+
+/* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
 @Slf4j
 public class CacheContainerProducer {
 
@@ -50,7 +47,7 @@ public class CacheContainerProducer {
 
     private CacheContainer container;
 
-    @Create
+    @PostConstruct
     public void initialize() {
         try {
             container =
@@ -66,7 +63,7 @@ public class CacheContainerProducer {
         }
     }
 
-    @Unwrap
+    @Produces /* FIXME [CDI] check this: migrated from @Unwrap */
     public CacheContainer getCacheContainer() {
         return container;
     }

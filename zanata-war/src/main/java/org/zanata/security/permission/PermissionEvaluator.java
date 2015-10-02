@@ -30,11 +30,8 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import org.apache.commons.lang.ArrayUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.annotation.PostConstruct;
+import javax.inject.Named;
 import org.jboss.seam.annotations.Startup;
 import org.zanata.security.SecurityFunctions;
 
@@ -47,10 +44,10 @@ import com.google.common.collect.Lists;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("permissions")
-@AutoCreate
-@Scope(ScopeType.APPLICATION)
-@Startup
+@Named("permissions")
+
+@javax.enterprise.context.ApplicationScoped
+/* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
 public class PermissionEvaluator {
 
     private static final String ALL_ACTION_GRANTER = "__**__";
@@ -58,7 +55,7 @@ public class PermissionEvaluator {
     private final Multimap<String, PermissionGranter> permissionGrantMethods =
             ArrayListMultimap.create();
 
-    @Create
+    @PostConstruct
     public void buildIndex() {
         registerPermissionGranters(SecurityFunctions.class);
     }

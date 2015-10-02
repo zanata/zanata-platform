@@ -21,11 +21,8 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.util.ArrayList;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.model.HLocale;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
@@ -36,15 +33,15 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-@Name("transUnitTransformer")
-@Scope(ScopeType.STATELESS)
-@AutoCreate
+@Named("transUnitTransformer")
+@javax.enterprise.context.Dependent
+
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransUnitTransformer {
     private static final int NULL_TARGET_VERSION_NUM = 0;
 
-    @In
+    @Inject
     private ResourceUtils resourceUtils;
 
     public TransUnit transform(HTextFlow hTextFlow, HLocale hLocale) {

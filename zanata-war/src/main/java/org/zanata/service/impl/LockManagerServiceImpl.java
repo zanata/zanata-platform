@@ -23,9 +23,7 @@ package org.zanata.service.impl;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.jboss.seam.annotations.Startup;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.lock.Lock;
@@ -41,9 +39,9 @@ import org.zanata.util.ServiceLocator;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("lockManagerServiceImpl")
-@Scope(ScopeType.APPLICATION)
-@Startup
+@Named("lockManagerServiceImpl")
+@javax.enterprise.context.ApplicationScoped
+/* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
 public class LockManagerServiceImpl implements LockManagerService {
     /**
      * Maps locks to their owners' usernames

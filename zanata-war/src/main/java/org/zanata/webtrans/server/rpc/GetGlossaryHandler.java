@@ -28,10 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.lucene.queryParser.ParseException;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.model.HGlossaryTerm;
@@ -49,8 +47,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-@Name("webtrans.gwt.GetGlossaryHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.GetGlossaryHandler")
+@javax.enterprise.context.Dependent
 @ActionHandlerFor(GetGlossary.class)
 @Slf4j
 public class GetGlossaryHandler extends
@@ -61,10 +59,10 @@ public class GetGlossaryHandler extends
     private static final Comparator<GlossaryResultItem> COMPARATOR =
             new GlossaryResultItemComparator();
 
-    @In
+    @Inject
     private GlossaryDAO glossaryDAO;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
     @Override

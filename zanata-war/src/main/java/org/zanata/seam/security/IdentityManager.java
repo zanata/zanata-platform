@@ -6,11 +6,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.annotation.PostConstruct;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import javax.inject.Named;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.util.Strings;
@@ -28,10 +27,10 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Scope(EVENT)
-@Name("org.jboss.seam.security.identityManager")
+@javax.enterprise.context.RequestScoped
+@Named("org.jboss.seam.security.identityManager")
 @Install(precedence = APPLICATION)
-@AutoCreate
+
 @BypassInterceptors
 @Slf4j
 public class IdentityManager implements Serializable {
@@ -46,7 +45,7 @@ public class IdentityManager implements Serializable {
 
     private ZanataJpaIdentityStore identityStore;
 
-    @Create
+    @PostConstruct
     public void create() {
         if (identityStore == null) {
             identityStore =

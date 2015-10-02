@@ -34,11 +34,8 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
@@ -50,11 +47,11 @@ import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-@Name("glossaryDAO")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("glossaryDAO")
+
+@javax.enterprise.context.Dependent
 public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long> {
-    @In
+    @Inject
     private FullTextEntityManager entityManager;
 
     public GlossaryDAO() {

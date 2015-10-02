@@ -20,8 +20,8 @@
  */
 package org.zanata.seam.test;
 
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * Parent component that forms a dependency cycle with
@@ -30,9 +30,9 @@ import org.jboss.seam.annotations.Name;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("ComponentWithChildCycle")
+@Named("ComponentWithChildCycle")
 public class ComponentWithChildCycle {
-    @In(required = true, create = true)
+    @Inject /* TODO [CDI] check this: migrated from @In(required = true, create = true) */
     private ChildWithCycle cyclicChildComponent;
 
     public ChildWithCycle getCyclicChildComponent() {

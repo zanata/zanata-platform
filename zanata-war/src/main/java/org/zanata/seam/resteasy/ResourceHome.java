@@ -46,7 +46,7 @@ import javax.ws.rs.ext.MessageBodyReader;
 
 import org.jboss.resteasy.core.StringParameterInjector;
 import org.jboss.seam.Entity;
-import org.jboss.seam.annotations.Create;
+import javax.annotation.PostConstruct;
 import org.jboss.seam.framework.Home;
 
 import static javax.ws.rs.core.Response.Status.UNSUPPORTED_MEDIA_TYPE;
@@ -87,7 +87,7 @@ public class ResourceHome<T, T2> extends AbstractResource<T> {
      * Called at component instantiation. EntityHome component must be set in
      * order for component to be created.
      */
-    @Create
+    @PostConstruct
     public void create() {
         setEntityHome(getEntityHome());
         if (entityHome == null) {

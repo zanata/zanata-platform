@@ -8,9 +8,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HProject;
 import org.zanata.rest.NoSuchEntityException;
@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("editor.projectService")
+@Named("editor.projectService")
 @Path(ProjectResource.SERVICE_PATH)
 @Transactional
 @NoArgsConstructor
@@ -34,10 +34,10 @@ public class ProjectService implements ProjectResource {
     @Context
     private Request request;
 
-    @In
+    @Inject
     private ETagUtils eTagUtils;
 
-    @In
+    @Inject
     private ProjectDAO projectDAO;
 
     @Override

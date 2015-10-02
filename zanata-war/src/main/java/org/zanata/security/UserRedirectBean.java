@@ -25,10 +25,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.jboss.seam.web.ServletContexts;
 
 /**
@@ -42,10 +39,10 @@ import org.jboss.seam.web.ServletContexts;
  * TODO Use {@link org.jboss.seam.faces.Redirect} instead of this class (by
  * extension or otherwise).
  */
-@Name("userRedirect")
+@Named("userRedirect")
 // TODO verify that SESSION scope will not persist this too long
-@Scope(ScopeType.SESSION)
-@AutoCreate
+@javax.enterprise.context.SessionScoped
+
 public class UserRedirectBean implements Serializable {
     private static final String HOME_URL = "/";
     private static final String REGISTER_URL = "/register";

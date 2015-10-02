@@ -7,12 +7,10 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.Email;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.action.validator.NotDuplicateEmail;
 import org.zanata.dao.AccountActivationKeyDAO;
@@ -29,34 +27,34 @@ import org.zanata.security.ZanataOpenId;
 import org.zanata.service.EmailService;
 import org.zanata.ui.faces.FacesMessages;
 
-@Name("inactiveAccountAction")
-@Scope(ScopeType.PAGE)
+@Named("inactiveAccountAction")
+@javax.faces.bean.ViewScoped
 public class InactiveAccountAction implements Serializable {
-    @In
+    @Inject
     private AccountDAO accountDAO;
 
-    @In
+    @Inject
     private PersonDAO personDAO;
 
-    @In
+    @Inject
     private EmailService emailServiceImpl;
 
-    @In
+    @Inject
     private ZanataCredentials credentials;
 
-    @In
+    @Inject
     private ZanataOpenId zanataOpenId;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
-    @In
+    @Inject
     private CredentialsDAO credentialsDAO;
 
-    @In
+    @Inject
     private AccountActivationKeyDAO accountActivationKeyDAO;
 
-    @In
+    @Inject
     private AuthenticationManager authenticationManager;
 
     @Getter
@@ -70,7 +68,7 @@ public class InactiveAccountAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
 
-    @Create
+    @PostConstruct
     public void onCreate() {
         if (!authenticationManager.isAuthenticatedAccountWaitingForActivation()) {
             throw new AuthorizationException("Account is not waiting for activation");

@@ -22,8 +22,8 @@ package org.zanata.rest.service;
 
 import javax.ws.rs.Path;
 
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.action.CopyTransManager;
 import org.zanata.async.handle.CopyTransTaskHandle;
 import org.zanata.dao.DocumentDAO;
@@ -36,16 +36,16 @@ import org.zanata.security.ZanataIdentity;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("copyTransResourceService")
+@Named("copyTransResourceService")
 @Path(CopyTransResource.SERVICE_PATH)
 public class CopyTransResourceService implements CopyTransResource {
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private CopyTransManager copyTransManager;
 
-    @In
+    @Inject
     private DocumentDAO documentDAO;
 
     @Override

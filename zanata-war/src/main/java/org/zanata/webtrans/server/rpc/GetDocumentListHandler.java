@@ -8,10 +8,8 @@ import java.util.Map;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.file.FilePersistService;
@@ -30,21 +28,21 @@ import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 
-@Name("webtrans.gwt.GetDocsListHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.GetDocsListHandler")
+@javax.enterprise.context.Dependent
 @ActionHandlerFor(GetDocumentList.class)
 public class GetDocumentListHandler extends
         AbstractActionHandler<GetDocumentList, GetDocumentListResult> {
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private DocumentDAO documentDAO;
 
-    @In
+    @Inject
     private TranslationFileService translationFileServiceImpl;
 
-    @In("filePersistService")
+    @Inject
     private FilePersistService filePersistService;
 
     @Override

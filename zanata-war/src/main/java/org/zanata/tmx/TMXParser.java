@@ -41,10 +41,9 @@ import nu.xom.Element;
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.jboss.seam.transaction.Transaction;
 import org.zanata.common.util.ElementBuilder;
 import org.zanata.model.tm.TransMemory;
@@ -57,16 +56,16 @@ import org.zanata.xml.TmxDtdResolver;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("tmxParser")
-@AutoCreate
+@Named("tmxParser")
+
 @Slf4j
 public class TMXParser {
     // Batch size to commit in a new transaction for long files
     private static final int BATCH_SIZE = 100;
 
-    @In
+    @Inject
     private Session session;
-    @In
+    @Inject
     private TransMemoryAdapter transMemoryAdapter;
 
     @Transactional

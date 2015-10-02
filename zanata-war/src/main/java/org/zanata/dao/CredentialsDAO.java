@@ -20,19 +20,16 @@
  */
 package org.zanata.dao;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.zanata.model.security.HCredentials;
 
 /**
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("credentialsDAO")
-@Scope(ScopeType.STATELESS)
-@AutoCreate
+@Named("credentialsDAO")
+@javax.enterprise.context.Dependent
+
 public class CredentialsDAO extends AbstractDAOImpl<HCredentials, Long> {
     public CredentialsDAO() {
         super(HCredentials.class);

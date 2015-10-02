@@ -23,10 +23,8 @@ package org.zanata.validation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Factory;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.enterprise.inject.Produces;
+import javax.inject.Named;
 
 /**
  * Singleton producer for Bean Validators.
@@ -34,12 +32,12 @@ import org.jboss.seam.annotations.Scope;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("validatorFactory")
-@Scope(ScopeType.APPLICATION)
+@Named("validatorFactory")
+@javax.enterprise.context.ApplicationScoped
 public class ValidatorFactory {
     private javax.validation.ValidatorFactory beanValidatorFactory = Validation.buildDefaultValidatorFactory();
 
-    @Factory(scope = ScopeType.EVENT, autoCreate = true)
+    @Produces(/* TODO [CDI] check this: migrated from @Factory */scope = ScopeType.EVENT, autoCreate = true)
     public Validator getValidator() {
         return beanValidatorFactory.getValidator();
     }

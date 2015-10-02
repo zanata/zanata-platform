@@ -32,10 +32,10 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import javax.inject.Named;
 import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
 import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.contexts.Contexts;
@@ -51,7 +51,7 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
 import org.zanata.security.SimplePrincipal;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.util.Event;
+import javax.enterprise.event.Event;
 import org.zanata.util.PasswordUtil;
 import org.zanata.util.ServiceLocator;
 
@@ -64,10 +64,10 @@ import static org.jboss.seam.ScopeType.APPLICATION;
 /**
  * This class is the replacement of seam's JpaIdentityStore. It no longer use seam's annotation. e.g. UserPrincipal, UserRoles etc.
  */
-@Name("org.jboss.seam.security.identityStore")
+@Named("org.jboss.seam.security.identityStore")
 @Install(precedence = Install.DEPLOYMENT, value = true)
-@Scope(APPLICATION)
-@Startup
+@javax.enterprise.context.ApplicationScoped
+/* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
 @BypassInterceptors
 @Slf4j
 public class ZanataJpaIdentityStore implements Serializable {

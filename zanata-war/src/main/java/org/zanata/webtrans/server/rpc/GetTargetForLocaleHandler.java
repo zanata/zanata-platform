@@ -4,10 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlowTarget;
@@ -18,15 +16,15 @@ import org.zanata.webtrans.shared.model.TextFlowTargetId;
 import org.zanata.webtrans.shared.rpc.GetTargetForLocale;
 import org.zanata.webtrans.shared.rpc.GetTargetForLocaleResult;
 
-@Name("webtrans.gwt.GetTargetForLocaleHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.GetTargetForLocaleHandler")
+@javax.enterprise.context.Dependent
 @ActionHandlerFor(GetTargetForLocale.class)
 @Slf4j
 public class GetTargetForLocaleHandler extends
         AbstractActionHandler<GetTargetForLocale, GetTargetForLocaleResult> {
-    @In
+    @Inject
     private ZanataIdentity identity;
-    @In
+    @Inject
     private TextFlowTargetDAO textFlowTargetDAO;
 
     @Override

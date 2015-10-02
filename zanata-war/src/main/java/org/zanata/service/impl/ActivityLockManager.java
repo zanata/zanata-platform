@@ -23,10 +23,7 @@ package org.zanata.service.impl;
 
 import java.util.concurrent.locks.Lock;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 
 import com.google.common.util.concurrent.Striped;
 
@@ -34,9 +31,9 @@ import com.google.common.util.concurrent.Striped;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@Name("activityLockManager")
-@AutoCreate
-@Scope(ScopeType.APPLICATION)
+@Named("activityLockManager")
+
+@javax.enterprise.context.ApplicationScoped
 public class ActivityLockManager {
     private static final int NUM_STRIPES = Runtime.getRuntime().availableProcessors() * 4;
     public ActivityLockManager() {

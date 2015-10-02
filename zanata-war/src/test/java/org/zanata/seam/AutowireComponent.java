@@ -20,7 +20,6 @@
  */
 package org.zanata.seam;
 
-import org.jboss.seam.ScopeType;
 
 /**
  * Replacement class for Seam's {@link org.jboss.seam.Component}. Tests that use

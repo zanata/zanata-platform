@@ -24,15 +24,13 @@ import java.io.Serializable;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Named;
 import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
 import org.zanata.events.LoginSuccessfulEvent;
 import org.zanata.events.UserCreatedEvent;
 
-@Name("authenticationEvents")
-@Scope(ScopeType.STATELESS)
+@Named("authenticationEvents")
+@javax.enterprise.context.Dependent
 @Slf4j
 public class AuthenticationEvents implements Serializable {
     private static final long serialVersionUID = 1L;

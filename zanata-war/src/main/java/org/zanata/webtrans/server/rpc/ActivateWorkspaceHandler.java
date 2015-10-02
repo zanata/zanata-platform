@@ -25,10 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.jboss.seam.contexts.Contexts;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.jboss.seam.web.ServletContexts;
@@ -61,34 +59,34 @@ import org.zanata.webtrans.shared.rpc.GetValidationRulesResult;
 import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 
-@Name("webtrans.gwt.ActivateWorkspaceHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.ActivateWorkspaceHandler")
+@javax.enterprise.context.Dependent
 @ActionHandlerFor(ActivateWorkspaceAction.class)
 @Slf4j
 public class ActivateWorkspaceHandler extends
         AbstractActionHandler<ActivateWorkspaceAction, ActivateWorkspaceResult> {
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private TranslationWorkspaceManager translationWorkspaceManager;
 
-    @In
+    @Inject
     private GravatarService gravatarServiceImpl;
 
-    @In
+    @Inject
     private ProjectDAO projectDAO;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In(value = "webtrans.gwt.LoadOptionsHandler", create = true)
+    @Inject /* TODO [CDI] check this: migrated from @In(value = "webtrans.gwt.LoadOptionsHandler", create = true) */
     private LoadOptionsHandler loadOptionsHandler;
 
-    @In(value = "webtrans.gwt.GetValidationRulesHandler", create = true)
+    @Inject /* TODO [CDI] check this: migrated from @In(value = "webtrans.gwt.GetValidationRulesHandler", create = true) */
     private GetValidationRulesHandler getValidationRulesHandler;
 
     private static long nextEditorClientIdNum = 0;

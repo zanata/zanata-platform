@@ -3,10 +3,8 @@ package org.zanata.webtrans.server.rpc;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.rest.service.StatisticsServiceImpl;
@@ -20,15 +18,15 @@ import org.zanata.webtrans.shared.rpc.GetDocumentStatsResult;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-@Name("webtrans.gwt.GetDocumentStatsHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.GetDocumentStatsHandler")
+@javax.enterprise.context.Dependent
 @ActionHandlerFor(GetDocumentStats.class)
 public class GetDocumentStatsHandler extends
         AbstractActionHandler<GetDocumentStats, GetDocumentStatsResult> {
-    @In
+    @Inject
     private StatisticsServiceImpl statisticsServiceImpl;
 
-    @In
+    @Inject
     private TranslationStateCache translationStateCacheImpl;
 
     @Override

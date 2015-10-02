@@ -23,11 +23,9 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
@@ -54,22 +52,22 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("contactAdminAction")
-@Scope(ScopeType.PAGE)
+@Named("contactAdminAction")
+@javax.faces.bean.ViewScoped
 @Slf4j
 @ZanataSecured
 public class ContactAdminAction implements Serializable {
 
-    @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER, required = false)
+    @Inject /* TODO [CDI] check this: migrated from @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER, required = false) */
     private HAccount authenticatedAccount;
 
-    @In
+    @Inject
     private EmailService emailServiceImpl;
 
-    @In
+    @Inject
     private Messages msgs;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
     @Getter

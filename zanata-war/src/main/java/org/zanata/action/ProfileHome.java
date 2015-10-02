@@ -30,10 +30,8 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.jboss.seam.faces.FacesMessages;
 import org.jboss.seam.international.StatusMessage;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
@@ -60,8 +58,8 @@ import static org.apache.commons.lang.StringUtils.abbreviate;
  * @see NewProfileAction for new user profile form page
  *
  */
-@Name("profileHome")
-@Scope(ScopeType.PAGE)
+@Named("profileHome")
+@javax.faces.bean.ViewScoped
 @Slf4j
 public class ProfileHome implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -76,17 +74,17 @@ public class ProfileHome implements Serializable {
     @Getter
     private String userLanguageTeams;
 
-    @In
+    @Inject
     ZanataIdentity identity;
-    @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
+    @Inject /* TODO [CDI] check this: migrated from @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
     HAccount authenticatedAccount;
-    @In
+    @Inject
     PersonDAO personDAO;
-    @In
+    @Inject
     AccountDAO accountDAO;
-    @In
+    @Inject
     private GravatarService gravatarServiceImpl;
-    @In
+    @Inject
     Messages msgs;
 
     private void init() {

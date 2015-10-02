@@ -25,11 +25,9 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountRoleDAO;
@@ -43,20 +41,20 @@ import org.zanata.security.annotations.ZanataSecured;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("roleAssignmentRuleAction")
-@Scope(ScopeType.CONVERSATION)
+@Named("roleAssignmentRuleAction")
+@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
 @ZanataSecured
 @CheckRole("admin")
 public class RoleAssignmentRuleAction extends EntityHome<HRoleAssignmentRule> {
     private static final long serialVersionUID = 1L;
 
-    @In
+    @Inject
     private RoleAssignmentRuleDAO roleAssignmentRuleDAO;
 
-    @In
+    @Inject
     private AccountRoleDAO accountRoleDAO;
 
-    @In
+    @Inject
     private ApplicationConfiguration applicationConfiguration;
 
     public List<HRoleAssignmentRule> getAllRules() {

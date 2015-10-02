@@ -40,10 +40,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.transform.ResultTransformer;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -88,33 +86,33 @@ import static org.apache.commons.lang.StringUtils.abbreviate;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("statisticsServiceImpl")
+@Named("statisticsServiceImpl")
 @Path(StatisticsResource.SERVICE_PATH)
-@Scope(ScopeType.STATELESS)
+@javax.enterprise.context.Dependent
 @Slf4j
 public class StatisticsServiceImpl implements StatisticsResource {
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private DocumentDAO documentDAO;
 
-    @In
+    @Inject
     private TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
 
-    @In
+    @Inject
     private LocaleServiceImpl localeServiceImpl;
 
-    @In
+    @Inject
     private ZPathService zPathService;
 
-    @In
+    @Inject
     private PersonDAO personDAO;
 
-    @In
+    @Inject
     private EntityManager entityManager;
 
-    @In
+    @Inject
     private TranslationStateCache translationStateCacheImpl;
 
     // TODO Need to refactor this method to get Message statistic by default.
