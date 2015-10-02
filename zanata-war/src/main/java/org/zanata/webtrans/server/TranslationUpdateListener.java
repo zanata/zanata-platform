@@ -1,8 +1,16 @@
 package org.zanata.webtrans.server;
 
+import static org.zanata.transaction.TransactionUtil.runInTransaction;
+
 import java.util.concurrent.TimeUnit;
 
+import javax.enterprise.event.Observes;
 import org.apache.deltaspike.core.api.common.DeltaSpike;
+
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostInsertEventListener;
 import org.hibernate.event.spi.PostUpdateEvent;
@@ -38,14 +46,8 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.enterprise.event.Observes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 /**
  * Entity event listener for HTextFlowTarget.
  *
@@ -102,20 +104,16 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
         final HTextFlowTarget target =
                 HTextFlowTarget.class.cast(event.getEntity());
         try {
-            new Work<Void>() {
-                @Override
-                protected Void work() throws Exception {
-                    ContentState oldContentState =
-                            (ContentState) Iterables.find(
-                                    Lists.newArrayList(event.getOldState()),
-                                    Predicates.instanceOf(ContentState.class));
+            runInTransaction(() -> {
+                ContentState oldContentState =
+                        (ContentState) Iterables.find(
+                                Lists.newArrayList(event.getOldState()),
+                                Predicates.instanceOf(ContentState.class));
 
 
-                    prepareTransUnitUpdatedEvent(target.getVersionNum() - 1,
-                            oldContentState, target);
-                    return null;
-                }
-            }.workInTransaction();
+                prepareTransUnitUpdatedEvent(target.getVersionNum() - 1,
+                        oldContentState, target);
+            });
         } catch (Exception e) {
             log.error("fail to publish TransUnitUpdate event", e);
         }
@@ -201,15 +199,8 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
         final HTextFlowTarget target =
                 HTextFlowTarget.class.cast(event.getEntity());
         try {
-            new Work<Void>() {
-
-                @Override
-                protected Void work() throws Exception {
-
-                    prepareTransUnitUpdatedEvent(0, ContentState.New, target);
-                    return null;
-                }
-            }.workInTransaction();
+            runInTransaction(() -> prepareTransUnitUpdatedEvent(0,
+                    ContentState.New, target));
         } catch (Exception e) {
             log.error("fail to publish TransUnitUpdate event", e);
         }

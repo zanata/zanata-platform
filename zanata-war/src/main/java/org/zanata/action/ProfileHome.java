@@ -86,7 +86,7 @@ public class ProfileHome implements Serializable {
     @Inject
     Messages msgs;
 
-    @In
+    @Inject
     private FacesMessages jsfMessages;
 
     private void init() {

@@ -41,6 +41,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationStateCache;
+import org.zanata.transaction.TransactionUtil;
 import org.zanata.util.ServiceLocator;
 import com.google.common.base.Optional;
 import com.google.common.base.Stopwatch;
@@ -50,6 +51,8 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.constraints.NotNull;
+
+import static org.zanata.transaction.TransactionUtil.runInTransaction;
 
 @Named("copyTransServiceImpl")
 @javax.enterprise.context.Dependent
@@ -184,10 +187,12 @@ public class CopyTransServiceImpl implements CopyTransService {
             List<HTextFlow> copyTargets =
                     docTextFlows.subList(batchStart, batchEnd);
             Integer numCopied =
-                    copyTransWorkFactory.createCopyTransWork(targetLocale,
-                            options, document, requireTranslationReview,
-                            copyTargets)
-                            .workInTransaction();
+                    runInTransaction(
+                            copyTransWorkFactory
+                                    .createCopyTransExecution(targetLocale,
+                                            options, document,
+                                            requireTranslationReview,
+                                            copyTargets));
             if (taskHandleOpt.isPresent()) {
                 taskHandleOpt.get().increaseProgress(batchSize);
             }

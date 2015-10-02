@@ -73,7 +73,7 @@ public class CopyTransAction extends CopyAction implements Serializable {
     @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private org.zanata.ui.faces.FacesMessages jsfMessages;
 
     @Getter

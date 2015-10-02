@@ -81,7 +81,7 @@ public class MergeTransAction extends CopyAction implements Serializable {
     @Inject /* TODO [CDI] check this: migrated from @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
     private HAccount authenticatedAccount;
 
-    @In
+    @Inject
     private FacesMessages jsfMessages;
 
     private HProjectIteration targetVersion;
