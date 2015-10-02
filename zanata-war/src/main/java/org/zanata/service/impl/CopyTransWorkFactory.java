@@ -26,6 +26,7 @@ import static org.zanata.common.ContentState.New;
 import static org.zanata.common.ContentState.Translated;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
+import static org.zanata.transaction.TransactionUtil.runInTransaction;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -81,11 +82,12 @@ public class CopyTransWorkFactory {
     @In
     private VersionStateCache versionStateCacheImpl;
 
-    public Callable<Integer> createCopyTransExecution(HLocale targetLocale,
+    public Integer runCopyTransInNewTx(HLocale targetLocale,
             HCopyTransOptions options, HDocument document,
-            boolean requireTranslationReview, List<HTextFlow> copyTargets) {
-        return () -> runCopyTrans(targetLocale, options, document,
-                requireTranslationReview, copyTargets);
+            boolean requireTranslationReview, List<HTextFlow> copyTargets)
+            throws Exception {
+        return runInTransaction(() -> runCopyTrans(targetLocale, options,
+                document, requireTranslationReview, copyTargets));
     }
 
     public Integer runCopyTrans(HLocale targetLocale,
