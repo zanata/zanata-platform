@@ -271,9 +271,8 @@ public class TranslationWorkspaceManagerImplTest extends ZanataTest {
     @Test
     public void testExitWorkspaceWithNullSessionId() throws Exception {
         TranslationWorkspaceManagerImpl spy = spy(manager);
-        doReturn(null).when(spy).getSessionId();
 
-        spy.exitWorkspace("admin", "sessionId");
+        spy.exitWorkspace("admin", null);
 
         verifyZeroInteractions(accountDAO);
     }
@@ -294,7 +293,6 @@ public class TranslationWorkspaceManagerImplTest extends ZanataTest {
                 .thenReturn(hLocale);
         TranslationWorkspaceManagerImpl spy = spy(manager);
         doReturn(mockWorkspace).when(spy).createWorkspace(workspaceId);
-        doReturn("sessionId").when(spy).getSessionId();
         ArrayList<EditorClientId> editorClientIds =
                 Lists.newArrayList(new EditorClientId("sessionId", 1L),
                         new EditorClientId("sessionId", 2L));
@@ -345,7 +343,6 @@ public class TranslationWorkspaceManagerImplTest extends ZanataTest {
                 .thenReturn(hLocale);
         TranslationWorkspaceManagerImpl spy = spy(manager);
         doReturn(mockWorkspace).when(spy).createWorkspace(workspaceId);
-        doReturn("sessionId").when(spy).getSessionId();
         ArrayList<EditorClientId> editorClientIds =
                 Lists.newArrayList(new EditorClientId("sessionId", 1L),
                         new EditorClientId("sessionId", 2L));
