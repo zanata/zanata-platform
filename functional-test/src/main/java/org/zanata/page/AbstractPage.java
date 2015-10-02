@@ -414,9 +414,9 @@ public class AbstractPage {
                     .until(new Predicate<WebDriver>() {
                         @Override
                         public boolean apply(WebDriver input) {
-                            String text = element.getAttribute("value");
-                            if (!text.equals(text)) {
-                                log.info("Found: {}", text);
+                            String foundText = element.getAttribute("value");
+                            if (!text.equals(foundText)) {
+                                log.info("Found: {}", foundText);
                                 triggerScreenshot("_textWaiting");
                                 return false;
                             }
