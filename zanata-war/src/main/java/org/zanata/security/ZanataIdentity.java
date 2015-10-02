@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Nullable;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 import javax.security.auth.Subject;
@@ -41,6 +42,8 @@ import javax.security.auth.login.LoginException;
 import com.google.common.annotations.VisibleForTesting;
 import javax.annotation.PostConstruct;
 import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.lifecycle.Destroyed;
+import org.apache.deltaspike.core.api.lifecycle.Initialized;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
 import org.jboss.seam.annotations.Observer;
@@ -62,6 +65,9 @@ import org.zanata.security.jaas.InternalLoginModule;
 import org.zanata.security.permission.CustomPermissionResolver;
 import org.zanata.security.permission.MultiTargetList;
 import javax.enterprise.event.Event;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSession;
+
 import org.zanata.util.ServiceLocator;
 
 import com.google.common.collect.Lists;
@@ -103,7 +109,10 @@ public class ZanataIdentity implements Identity, Serializable {
     @Inject
     private Event<Logout> logoutEvent;
 
-    @PostConstruct
+    public void onCreate(@Observes @Initialized HttpSession session) {
+        create();
+    }
+
     public void create() {
         subject = new Subject();
 
@@ -182,8 +191,10 @@ public class ZanataIdentity implements Identity, Serializable {
         this.principal = principal;
     }
 
-    // TODO [CDI] find CDI equivalent for org.jboss.seam.preDestroyContext.SESSION event
-    @Observer("org.jboss.seam.preDestroyContext.SESSION")
+    public void onDestroy(@Observes @Destroyed HttpSession session) {
+        logout();
+    }
+
     public void logout() {
         if (getCredentials() != null) {
             getLogoutEvent().fire(new Logout(getCredentials().getUsername()));

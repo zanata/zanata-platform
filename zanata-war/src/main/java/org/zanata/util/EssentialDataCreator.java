@@ -5,6 +5,7 @@ import static org.zanata.model.HAccountRole.RoleType.MANUAL;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.enterprise.event.Observes;
 import javax.persistence.EntityManager;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -12,8 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.lifecycle.Initialized;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
+
 import org.jboss.seam.annotations.Observer;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
@@ -66,7 +70,10 @@ public class EssentialDataCreator {
 
     // Do it when the application starts (but after everything else has been
     // loaded)
-    @Observer("org.jboss.seam.postInitialization")
+    public void onCreate(@Observes @Initialized ServletContext context) {
+        prepare();
+    }
+
     @Transactional
     public void prepare() {
         if (!prepared) {

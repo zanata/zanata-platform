@@ -37,6 +37,7 @@ import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.enterprise.event.Observes;
 import javax.management.AttributeNotFoundException;
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanException;
@@ -56,6 +57,7 @@ import javax.servlet.ServletContext;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.deltaspike.core.api.lifecycle.Initialized;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.jboss.seam.Component;
 import javax.annotation.PreDestroy;
@@ -110,7 +112,10 @@ public class ZanataInit {
     @Inject
     private EntityManagerFactory entityManagerFactory;
 
-    @Observer("org.jboss.seam.postInitialization")
+    public void onCreate(@Observes @Initialized ServletContext context) throws Exception {
+        initZanata();
+    }
+
     public void initZanata() throws Exception {
         checkAppServerVersion();
         ServletContext servletContext =

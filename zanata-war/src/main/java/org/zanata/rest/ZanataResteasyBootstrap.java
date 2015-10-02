@@ -18,32 +18,13 @@ import org.zanata.seam.resteasy.SeamResteasyProviderFactory;
 
 @Named("org.jboss.seam.resteasy.bootstrap")
 @javax.enterprise.context.ApplicationScoped
-/* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
+
+/* TODO [CDI] Ensure that RESTEasy 3 uses RestLimitingSynchronousDispatcher */
 
 //@Install(classDependencies = "org.jboss.resteasy.spi.ResteasyProviderFactory",
 //        precedence = Install.DEPLOYMENT)
 @Slf4j
 public class ZanataResteasyBootstrap extends ResteasyBootstrap {
-
-    @Observer("org.jboss.seam.postReInitialization")
-    public void registerHotDeployedClasses() {
-
-        Collection<Component> seamComponents = findSeamComponents();
-
-        // Also scan for hot deployed components
-        HotDeploymentStrategy hotDeployment = HotDeploymentStrategy.instance();
-        if (hotDeployment != null && hotDeployment.available()) {
-            log.info("scanning for hot deployable JAX-RS components");
-            AnnotationDeploymentHandler hotDeploymentHandler =
-                    (AnnotationDeploymentHandler) hotDeployment
-                            .getDeploymentHandlers().get(
-                                    AnnotationDeploymentHandler.NAME);
-            registerProviders(seamComponents,
-                    findProviders(hotDeploymentHandler));
-            registerResources(seamComponents,
-                    findResources(hotDeploymentHandler));
-        }
-    }
 
     @Override
     protected Dispatcher createDispatcher(
