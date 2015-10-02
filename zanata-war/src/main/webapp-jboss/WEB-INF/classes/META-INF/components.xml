@@ -113,11 +113,6 @@
     <property name="authenticatedSessionTimeoutMinutes">180</property>
   </component>
 
-  <!-- Zanata Background Job scheduler.
-       Comment out this line if you want to disable background jobs.
-   -->
-  <component name="zanataJobScheduler"
-    class="org.zanata.job.ZanataJobScheduler" />
 
   <!-- Maximum size of file uploads
       If you are using MySQL, don't forget their magic stuff:
