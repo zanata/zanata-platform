@@ -4,25 +4,18 @@ package org.zanata.seam.framework;
 
 import java.io.Serializable;
 
-import org.jboss.seam.core.Mutable;
-
 /**
  * Base class for controllers which implement the Mutable interface.
  *
  * @author Gavin King
  */
 public abstract class MutableController<T>
-        extends PersistenceController<T>
-        implements Serializable, Mutable {
+        extends Controller
+        implements Serializable {
+    private static final long serialVersionUID = -3074038114884198501L;
     // copy/paste from AbstractMutable
 
     private transient boolean dirty;
-
-    public boolean clearDirty() {
-        boolean result = dirty;
-        dirty = false;
-        return result;
-    }
 
     /**
      * Set the dirty flag if the value has changed. Call whenever a subclass
@@ -41,13 +34,6 @@ public abstract class MutableController<T>
                 );
         dirty = dirty || attributeDirty;
         return attributeDirty;
-    }
-
-    /**
-     * Set the dirty flag.
-     */
-    protected void setDirty() {
-        dirty = true;
     }
 
 }

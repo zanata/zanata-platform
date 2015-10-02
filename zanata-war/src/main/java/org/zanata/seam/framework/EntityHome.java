@@ -4,10 +4,15 @@ package org.zanata.seam.framework;
 
 import javax.persistence.EntityManager;
 import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.jboss.seam.persistence.PersistenceProvider;
 import org.jboss.seam.transaction.Transaction;
+import org.zanata.model.ModelEntityBase;
+import org.zanata.util.ServiceLocator;
+
+import static javax.transaction.Status.STATUS_ACTIVE;
+import static javax.transaction.Status.STATUS_MARKED_ROLLBACK;
 
 /**
  * Base class for Home objects of JPA entities.
@@ -48,15 +53,12 @@ public class EntityHome<E> extends Home<EntityManager, E> {
      * success event raised.
      *
      * @return "updated" if the update is successful
-     * @see Home#updatedMessage()
-     * @see Home#raiseAfterTransactionSuccessEvent()
      */
     @Transactional
     public String update() {
         joinTransaction();
         getEntityManager().flush();
         updatedMessage();
-        raiseAfterTransactionSuccessEvent();
         return "updated";
     }
 
@@ -67,17 +69,22 @@ public class EntityHome<E> extends Home<EntityManager, E> {
      * success event raised.
      *
      * @return "persisted" if the persist is successful
-     * @see Home#createdMessage()
-     * @see Home#raiseAfterTransactionSuccessEvent()
      */
     @Transactional
     public String persist() {
         getEntityManager().persist(getInstance());
         getEntityManager().flush();
-        assignId(PersistenceProvider.instance().getId(getInstance(),
-                getEntityManager()));
+        E instance = getInstance();
+        if (instance instanceof ModelEntityBase) {
+            Long id = ((ModelEntityBase) instance).getId();
+            assignId(id);
+        } else {
+            // this should not happen. We don't have an EntityHome<E> where E is
+            // not a subclass of ModelEntityBase
+            throw new RuntimeException("can not get id from entity");
+        }
+
         createdMessage();
-        raiseAfterTransactionSuccessEvent();
         return "persisted";
     }
 
@@ -88,15 +95,12 @@ public class EntityHome<E> extends Home<EntityManager, E> {
      * transaction success event raised.
      *
      * @return "removed" if the remove is successful
-     * @see Home#deletedMessage()
-     * @see Home#raiseAfterTransactionSuccessEvent()
      */
     @Transactional
     public String remove() {
         getEntityManager().remove(getInstance());
         getEntityManager().flush();
         deletedMessage();
-        raiseAfterTransactionSuccessEvent();
         return "removed";
     }
 
@@ -139,51 +143,28 @@ public class EntityHome<E> extends Home<EntityManager, E> {
     protected void joinTransaction() {
         if (getEntityManager().isOpen()) {
             try {
-                Transaction.instance().enlist(getEntityManager());
+                UserTransaction transaction = getTransaction();
+                int status = transaction.getStatus();
+                boolean isActiveOrMarkedRollback = status == STATUS_ACTIVE || status == STATUS_MARKED_ROLLBACK;
+                if (isActiveOrMarkedRollback) {
+                    getEntityManager().joinTransaction();
+                }
             } catch (SystemException se) {
                 throw new RuntimeException("could not join transaction", se);
             }
         }
     }
 
+    // TODO [CDI] inject UserTransaction
+    private UserTransaction getTransaction() {
+        return Transaction.instance();
+    }
+
     /**
      * The Seam Managed Persistence Context used by this Home component
      */
     public EntityManager getEntityManager() {
-        return getPersistenceContext();
-    }
-
-    /**
-     * The Seam Managed Persistence Context used by this Home component.
-     */
-    public void setEntityManager(EntityManager entityManager) {
-        setPersistenceContext(entityManager);
-    }
-
-    /**
-     * The name the Seam component managing the Persistence Context. <br />
-     * Override this or {@link #getEntityManager()} if your persistence context
-     * is not named <code>entityManager</code>.
-     */
-    @Override
-    protected String getPersistenceContextName() {
-        return "entityManager";
-    }
-
-    /**
-     * Implementation of {@link Home#getEntityName() getEntityName()} for JPA
-     *
-     * @see Home#getEntityName()
-     */
-    @Override
-    protected String getEntityName() {
-        try {
-            return PersistenceProvider.instance().getName(getInstance(),
-                    getEntityManager());
-        } catch (IllegalArgumentException e) {
-            // Handle that the passed object may not be an entity
-            return null;
-        }
+        return ServiceLocator.instance().getEntityManager();
     }
 
 }
