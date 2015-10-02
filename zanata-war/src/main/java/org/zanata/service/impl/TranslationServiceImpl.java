@@ -20,6 +20,8 @@
  */
 package org.zanata.service.impl;
 
+import static org.zanata.transaction.TransactionUtil.runInTransaction;
+
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,8 +34,6 @@ import java.util.concurrent.Future;
 import javax.annotation.Nonnull;
 import javax.persistence.EntityManager;
 
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
@@ -45,7 +45,6 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.TransactionPropagationType;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.core.Events;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.jboss.seam.util.Work;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
@@ -78,12 +77,14 @@ import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.ResourceUtils;
+import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.LockManagerService;
 import org.zanata.service.TranslationMergeService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.ValidationService;
+import org.zanata.transaction.TransactionUtil;
 import org.zanata.util.Event;
 import org.zanata.util.ShortString;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -665,19 +666,14 @@ public class TranslationServiceImpl implements TranslationService {
         }
 
         try {
-            changed |= new Work<Boolean>() {
-                @Override
-                protected Boolean work() throws Exception {
-                    // handle extensions
-                    boolean changed =
+            changed |= runInTransaction(() ->
+                            // handle extensions
                             resourceUtils
                                     .transferFromTranslationsResourceExtensions(
                                             translations.getExtensions(true),
                                             document, extensions, hLocale,
-                                            mergeType);
-                    return changed;
-                }
-            }.workInTransaction();
+                                            mergeType)
+            );
         } catch (Exception e) {
             log.error("exception in transferFromTranslationsResourceExtensions: {}", e.getMessage());
             throw new ZanataServiceException("Error during translation.", 500,
@@ -705,21 +701,16 @@ public class TranslationServiceImpl implements TranslationService {
 
         for (final List<TextFlowTarget> batch : batches) {
             try {
-                SaveBatchWork work = new SaveBatchWork();
-                work.setExtensions(extensions);
-                work.setWarnings(warnings);
-                work.setLocale(hLocale);
-                work.setDocument(document);
-                work.setMergeType(mergeType);
-                work.setRemovedTargets(removedTargets);
-                work.setHandleOp(handleOp);
-                work.setProjectIterationId(hProjectIteration.getId());
-                work.setBatch(batch);
-                work.setAssignCreditToUploader(assignCreditToUploader);
-                work.setTranslationSourceType(translationSourceType);
-                changed |= work.workInTransaction();
+                changed |=
+                        runInTransaction(() -> saveBatch(
+                                extensions, warnings, hLocale,
+                                document, mergeType, removedTargets, handleOp,
+                                hProjectIteration.getId(),
+                                batch, assignCreditToUploader,
+                                translationSourceType));
             } catch (Exception e) {
-                log.error("exception in SaveBatchWork:{}", e.getMessage());
+                log.error("exception saving translation batch: {}",
+                        e.getMessage());
                 throw new ZanataServiceException("Error during translation.",
                         500, e);
             }
@@ -728,22 +719,19 @@ public class TranslationServiceImpl implements TranslationService {
 
         if (changed || !removedTargets.isEmpty()) {
             try {
-                new Work<Void>() {
-                    @Override
-                    protected Void work() throws Exception {
-                        for (HTextFlowTarget target : removedTargets) {
-                            target =
-                                    textFlowTargetDAO.findById(target.getId(),
-                                            true); // need to refresh from
-                                                   // persistence
-                            target.clear();
-                        }
-                        textFlowTargetDAO.flush();
-
-                        documentDAO.flush();
-                        return null;
+                runInTransaction(() -> {
+                    for (HTextFlowTarget target : removedTargets) {
+                        target =
+                                textFlowTargetDAO.findById(target.getId(),
+                                        true); // need to refresh from
+                        // persistence
+                        target.clear();
                     }
-                }.workInTransaction();
+                    textFlowTargetDAO.flush();
+
+                    documentDAO.flush();
+                    return null;
+                });
 
                 Long actorId = authenticatedAccount.getPerson().getId();
                 documentUploadedEvent.fire(new DocumentUploadedEvent(
@@ -772,147 +760,141 @@ public class TranslationServiceImpl implements TranslationService {
         return nPlurals;
     }
 
-    @Getter
-    @Setter
-    private final class SaveBatchWork extends Work<Boolean> {
-        private Set<String> extensions;
-        private List<String> warnings;
-        private HLocale locale;
-        private HDocument document;
-        private MergeType mergeType;
-        private Collection<HTextFlowTarget> removedTargets;
-        private Optional<AsyncTaskHandle> handleOp;
-        private Long projectIterationId;
-        private List<TextFlowTarget> batch;
-        private boolean assignCreditToUploader;
-        private TranslationSourceType translationSourceType;
+    private Boolean saveBatch(
+            final Set<String> extensions,
+            final List<String> warnings,
+            final HLocale locale,
+            HDocument document,
+            final MergeType mergeType,
+            final Collection<HTextFlowTarget> removedTargets,
+            final Optional<AsyncTaskHandle> handleOp,
+            final Long projectIterationId,
+            final List<TextFlowTarget> batch,
+            final boolean assignCreditToUploader,
+            final TranslationSourceType translationSourceType) {
 
-        @Override
-        protected Boolean work() throws Exception {
-            // we need to call clear at the beginning because text flow target
-            // history rely on after commit callback.
-            textFlowTargetDAO.clear();
-            document = entityManager.find(HDocument.class, document.getId());
-            boolean changed = false;
+        // we need to call clear at the beginning because text flow target
+        // history rely on after commit callback.
+        textFlowTargetDAO.clear();
+        document = entityManager.find(HDocument.class, document.getId());
+        boolean changed = false;
 
-            // we need a fresh object in this session,
-            // so that it can lazily load associated objects
-            HProjectIteration iteration =
-                    projectIterationDAO.findById(projectIterationId);
-            Map<String, HTextFlow> resIdToTextFlowMap = textFlowDAO.getByDocumentAndResIds(document, Lists.transform(
-                    batch, new Function<TextFlowTarget, String>() {
+        // we need a fresh object in this session,
+        // so that it can lazily load associated objects
+        HProjectIteration iteration =
+                projectIterationDAO.findById(projectIterationId);
+        Map<String, HTextFlow> resIdToTextFlowMap = textFlowDAO.getByDocumentAndResIds(document, Lists.transform(
+                batch, new Function<TextFlowTarget, String>() {
 
-                        @Override
-                        public String apply(TextFlowTarget input) {
-                            return input.getResId();
-                        }
-                    }));
-            final int numPlurals = resourceUtils
-                    .getNumPlurals(document, locale);
-            for (TextFlowTarget incomingTarget : batch) {
-                String resId = incomingTarget.getResId();
-                String sourceHash = incomingTarget.getSourceHash();
-                HTextFlow textFlow = resIdToTextFlowMap.get(resId);
-                if (textFlow == null) {
-                    // return warning for unknown resId to caller
-                    String warning =
-                            "Could not find TextFlow for TextFlowTarget "
-                                    + resId + " with contents: "
-                                    + incomingTarget.getContents();
-                    warnings.add(warning);
-                    log.warn("skipping TextFlowTarget with unknown resId: {}",
-                            resId);
-                } else if (sourceHash != null
-                        && !sourceHash.equals(textFlow.getContentHash())) {
-                    String warning =
-                            MessageFormat
-                                    .format("TextFlowTarget {0} may be obsolete; "
-                                            + "associated source hash: {1}; "
-                                            + "expected hash is {2} for source: {3}",
-                                            resId, sourceHash,
-                                            textFlow.getContentHash(),
-                                            textFlow.getContents());
-                    warnings.add(warning);
-                    log.warn(
-                            "skipping TextFlowTarget {} with unknown sourceHash: {}",
-                            resId, sourceHash);
-                } else {
-                    String validationMessage =
-                            validateTranslations(incomingTarget.getState(),
-                                    iteration,
-                                    incomingTarget.getResId(),
-                                    textFlow.getContents(),
-                                    incomingTarget.getContents());
-
-                    if (!StringUtils.isEmpty(validationMessage)) {
-                        warnings.add(validationMessage);
-                        log.warn(validationMessage);
-                        continue;
+                    @Override
+                    public String apply(TextFlowTarget input) {
+                        return input.getResId();
                     }
+                }));
+        final int numPlurals = resourceUtils
+                .getNumPlurals(document, locale);
+        for (TextFlowTarget incomingTarget : batch) {
+            String resId = incomingTarget.getResId();
+            String sourceHash = incomingTarget.getSourceHash();
+            HTextFlow textFlow = resIdToTextFlowMap.get(resId);
+            if (textFlow == null) {
+                // return warning for unknown resId to caller
+                String warning =
+                        "Could not find TextFlow for TextFlowTarget "
+                                + resId + " with contents: "
+                                + incomingTarget.getContents();
+                warnings.add(warning);
+                log.warn("skipping TextFlowTarget with unknown resId: {}",
+                        resId);
+            } else if (sourceHash != null
+                    && !sourceHash.equals(textFlow.getContentHash())) {
+                String warning =
+                        MessageFormat
+                                .format("TextFlowTarget {0} may be obsolete; "
+                                                + "associated source hash: {1}; "
+                                                + "expected hash is {2} for source: {3}",
+                                        resId, sourceHash,
+                                        textFlow.getContentHash(),
+                                        textFlow.getContents());
+                warnings.add(warning);
+                log.warn(
+                        "skipping TextFlowTarget {} with unknown sourceHash: {}",
+                        resId, sourceHash);
+            } else {
+                String validationMessage =
+                        validateTranslations(incomingTarget.getState(),
+                                iteration,
+                                incomingTarget.getResId(),
+                                textFlow.getContents(),
+                                incomingTarget.getContents());
 
-                    int nPlurals = textFlow.isPlural() ? numPlurals : 1;
-                    // we have eagerly loaded all targets upfront
-                    HTextFlowTarget hTarget = textFlow.getTargets().get(locale.getId());
-                    ContentState currentState = ContentState.New;
-                    if (hTarget != null) {
-                        currentState = hTarget.getState();
-                    }
-
-                    if (mergeType == MergeType.IMPORT) {
-                        removedTargets.remove(hTarget);
-                    }
-
-                    TranslationMergeServiceFactory.MergeContext mergeContext =
-                            new TranslationMergeServiceFactory.MergeContext(
-                                    mergeType, textFlow, locale, hTarget,
-                                    nPlurals);
-                    TranslationMergeService mergeService =
-                            translationMergeServiceFactory
-                                    .getMergeService(mergeContext);
-
-                    boolean targetChanged =
-                            mergeService.merge(incomingTarget, hTarget,
-                                    extensions);
-                    if (hTarget == null) {
-                        // in case hTarget was null, we need to
-                        // retrieve it after merge
-                        hTarget = textFlow.getTargets().get(locale.getId());
-                    }
-                    targetChanged |=
-                            adjustContentsAndState(hTarget, nPlurals, warnings);
-                    // update translation information if applicable
-                    if (targetChanged) {
-                        hTarget.setVersionNum(hTarget.getVersionNum() + 1);
-
-                        changed = true;
-                        Long actorId;
-                        if (assignCreditToUploader){
-                            HPerson hPerson = authenticatedAccount.getPerson();
-                            hTarget.setTranslator(hPerson);
-                            hTarget.setLastModifiedBy(hPerson);
-                            actorId = hPerson.getId();
-                        } else {
-                            hTarget.setTranslator(null);
-                            hTarget.setLastModifiedBy(authenticatedAccount.getPerson());
-                            actorId = null;
-                        }
-                        hTarget.setSourceType(translationSourceType);
-                        hTarget.setCopiedEntityId(null);
-                        hTarget.setCopiedEntityId(null);
-                        textFlowTargetDAO.makePersistent(hTarget);
-                        signalPostTranslateEvent(actorId, hTarget, currentState);
-                    }
+                if (!StringUtils.isEmpty(validationMessage)) {
+                    warnings.add(validationMessage);
+                    log.warn(validationMessage);
+                    continue;
                 }
 
-                if (handleOp.isPresent()) {
-                    handleOp.get().increaseProgress(1);
+                int nPlurals = textFlow.isPlural() ? numPlurals : 1;
+                // we have eagerly loaded all targets upfront
+                HTextFlowTarget hTarget = textFlow.getTargets().get(locale.getId());
+                ContentState currentState = ContentState.New;
+                if (hTarget != null) {
+                    currentState = hTarget.getState();
+                }
+
+                if (mergeType == MergeType.IMPORT) {
+                    removedTargets.remove(hTarget);
+                }
+
+                TranslationMergeServiceFactory.MergeContext mergeContext =
+                        new TranslationMergeServiceFactory.MergeContext(
+                                mergeType, textFlow, locale, hTarget,
+                                nPlurals);
+                TranslationMergeService mergeService =
+                        translationMergeServiceFactory
+                                .getMergeService(mergeContext);
+
+                boolean targetChanged =
+                        mergeService.merge(incomingTarget, hTarget,
+                                extensions);
+                if (hTarget == null) {
+                    // in case hTarget was null, we need to
+                    // retrieve it after merge
+                    hTarget = textFlow.getTargets().get(locale.getId());
+                }
+                targetChanged |=
+                        adjustContentsAndState(hTarget, nPlurals, warnings);
+                // update translation information if applicable
+                if (targetChanged) {
+                    hTarget.setVersionNum(hTarget.getVersionNum() + 1);
+
+                    changed = true;
+                    Long actorId;
+                    if (assignCreditToUploader){
+                        HPerson hPerson = authenticatedAccount.getPerson();
+                        hTarget.setTranslator(hPerson);
+                        hTarget.setLastModifiedBy(hPerson);
+                        actorId = hPerson.getId();
+                    } else {
+                        hTarget.setTranslator(null);
+                        hTarget.setLastModifiedBy(authenticatedAccount.getPerson());
+                        actorId = null;
+                    }
+                    hTarget.setSourceType(translationSourceType);
+                    hTarget.setCopiedEntityId(null);
+                    hTarget.setCopiedEntityId(null);
+                    textFlowTargetDAO.makePersistent(hTarget);
+                    signalPostTranslateEvent(actorId, hTarget, currentState);
                 }
             }
-            textFlowTargetDAO.flush();
 
-            return changed;
+            if (handleOp.isPresent()) {
+                handleOp.get().increaseProgress(1);
+            }
         }
+        textFlowTargetDAO.flush();
 
+        return changed;
     }
 
     public static class TranslationResultImpl implements TranslationResult {

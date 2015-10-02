@@ -351,9 +351,9 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
             ContentState currentState) {
         if (currentState == New) {
             return currentState;
-        } else if (CopyTransWork.shouldReject(match, action)) {
+        } else if (CopyTransWorkFactory.shouldReject(match, action)) {
             return New;
-        } else if (CopyTransWork.shouldDowngradeToFuzzy(match, action)) {
+        } else if (CopyTransWorkFactory.shouldDowngradeToFuzzy(match, action)) {
             return NeedReview;
         } else {
             return currentState;

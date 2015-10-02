@@ -1,5 +1,7 @@
 package org.zanata.webtrans.server;
 
+import static org.zanata.transaction.TransactionUtil.runInTransaction;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
@@ -16,14 +18,12 @@ import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.util.Work;
 import org.jboss.seam.web.ServletContexts;
 import org.zanata.async.Async;
 import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountDAO;
-import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.events.Logout;
 import org.zanata.events.ProjectIterationUpdate;
@@ -190,14 +190,8 @@ public class TranslationWorkspaceManagerImpl implements
     @Async
     public void projectUpdate(@Observes final ProjectUpdate payload) {
         try {
-            new Work<Void>() {
-
-                @Override
-                protected Void work() throws Exception {
-                    projectUpdate(payload.getProject(), payload.getOldSlug());
-                    return null;
-                }
-            }.workInTransaction();
+            runInTransaction(() -> projectUpdate(payload.getProject(),
+                    payload.getOldSlug()));
         } catch (Exception e) {
             throw Throwables.propagate(e);
         }
