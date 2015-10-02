@@ -23,7 +23,6 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import javax.inject.Named;
-import org.jboss.seam.util.Hex;
 import org.zanata.model.HAccount;
 import org.zanata.util.PasswordUtil;
 
@@ -89,7 +88,7 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
             md5.reset();
             byte[] digest = md5.digest(salted);
 
-            return new String(Hex.encodeHex(digest));
+            return new String(PasswordUtil.encodeHex(digest));
 
         } catch (Exception exc) {
             throw new RuntimeException(exc);

@@ -29,11 +29,11 @@
               <li>
                 <h:form id="localeSelector_form">
                   <h:selectOneMenu id="Select"
-                    value="#{localeSelector.localeString}"
-                    valueChangeListener="#{localeSelector.select}"
+                    value="#{localeSelectorAction.localeString}"
+                    valueChangeListener="#{localeSelectorAction.select}"
                     onchange="submit()">
                     <f:selectItems
-                      value="#{localeSelector.supportedLocales}"/>
+                      value="#{localeSelectorAction.supportedLocales}"/>
                   </h:selectOneMenu>
                 </h:form>
               </li>

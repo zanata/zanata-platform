@@ -38,7 +38,7 @@ import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.web.FileUploadException;
+import org.richfaces.exception.FileUploadException;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;

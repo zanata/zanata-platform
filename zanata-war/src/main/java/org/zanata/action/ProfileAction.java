@@ -26,7 +26,6 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.jboss.seam.faces.FacesMessages;
 import org.zanata.model.HPerson;
 import org.zanata.service.impl.EmailChangeService;
 

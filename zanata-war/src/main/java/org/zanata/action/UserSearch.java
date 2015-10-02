@@ -7,8 +7,6 @@ import javax.inject.Inject;
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
-import org.jboss.seam.annotations.datamodel.DataModel;
-import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.security.annotations.ZanataSecured;
@@ -25,11 +23,7 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
 @ZanataSecured
 public class UserSearch implements Serializable {
     private static final long serialVersionUID = -4792732235757055958L;
-    @DataModel
-    List<String> users;
-
-    @DataModelSelection
-    String selectedUser;
+    private List<String> users;
 
     @Inject
     IdentityManager identityManager;
@@ -55,7 +49,7 @@ public class UserSearch implements Serializable {
         return sb.toString();
     }
 
-    public String getSelectedUser() {
-        return selectedUser;
+    public List<String> getUsers() {
+        return users;
     }
 }

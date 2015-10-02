@@ -41,7 +41,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.faces.FacesMessages;
 import org.richfaces.event.FileUploadEvent;
 import org.richfaces.model.UploadedFile;
 import org.zanata.exception.AuthorizationException;
@@ -84,6 +83,7 @@ import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.AbstractSortAction;
 import org.zanata.ui.CopyAction;
 import org.zanata.ui.InMemoryListFilter;
+import org.zanata.ui.faces.FacesMessages;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.DateUtil;
 import org.zanata.util.FileUtil;
@@ -343,8 +343,9 @@ public class VersionHomeAction extends AbstractSortAction implements
 
         @Override
         public void onComplete() {
-            FacesMessages.instance().add(FacesMessage.SEVERITY_INFO,
-                getMessages().format("jsf.copyVersion.Completed", versionSlug));
+            getFacesMessages().addGlobal(FacesMessage.SEVERITY_INFO,
+                    getMessages()
+                            .format("jsf.copyVersion.Completed", versionSlug));
         }
 
         public int getProcessedDocuments() {
@@ -370,6 +371,10 @@ public class VersionHomeAction extends AbstractSortAction implements
         private CopyVersionManager getCopyVersionManager() {
             return ServiceLocator.instance().getInstance(
                     CopyVersionManager.class);
+        }
+
+        private FacesMessages getFacesMessages() {
+            return ServiceLocator.instance().getInstance(FacesMessages.class);
         }
 
         protected CopyVersionTaskHandle getHandle() {

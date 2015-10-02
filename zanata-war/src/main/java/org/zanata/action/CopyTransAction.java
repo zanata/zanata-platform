@@ -28,8 +28,6 @@ import org.jboss.seam.annotations.Begin;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.international.StatusMessage;
 import org.zanata.async.handle.CopyTransTaskHandle;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.i18n.Messages;
@@ -75,6 +73,9 @@ public class CopyTransAction extends CopyAction implements Serializable {
     @Inject
     private ZanataIdentity identity;
 
+    @In
+    private org.zanata.ui.faces.FacesMessages jsfMessages;
+
     @Getter
     @Setter
     private String iterationSlug;
@@ -111,7 +112,7 @@ public class CopyTransAction extends CopyAction implements Serializable {
 
     @Override
     public void onComplete() {
-        FacesMessages.instance().add(StatusMessage.Severity.INFO,
+        jsfMessages.addGlobal(FacesMessage.SEVERITY_INFO,
                 msgs.format("jsf.iteration.CopyTrans.Completed",
                         getProjectSlug(), getIterationSlug()));
     }
