@@ -70,7 +70,7 @@
                   for="password">#{msgs['jsf.Password']}</h:outputLabel>
                 <zanata:decorate id="passwordField">
                   <div class="form__password js-form-password">
-                    <h:inputSecret id="password"
+                    <h:inputSecret id="password" redisplay="true"
                       styleClass="js-form-password-input form__input"
                       value="#{register.password}"
                       tabindex="5">
