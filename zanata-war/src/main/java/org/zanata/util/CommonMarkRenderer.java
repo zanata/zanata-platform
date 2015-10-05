@@ -62,7 +62,12 @@ public class CommonMarkRenderer {
             new ScriptEngineManager().getEngineByName("Nashorn");
     private static final CompiledScript compiledScript = compileScript();
     private static final ThreadLocal<Bindings> threadBindings =
-            ThreadLocal.withInitial(engine::createBindings);
+            ThreadLocal.withInitial(() -> {
+                Bindings bindings = engine.createBindings();
+                // libraries like commonmark.js assume the presence of 'window'
+                bindings.put("window", bindings);
+                return bindings;
+            });
 
     static {
         log.info("Using commonmark.js version {}", VER);
@@ -125,7 +130,6 @@ public class CommonMarkRenderer {
                     StandardCharsets.UTF_8);
             String initScript = "" +
                     "if (!mdRender) {" +
-                    "  window = this;" +
                     commonMarkScript +
                     "  var reader = new commonmark.Parser();" +
                     "  var writer = new commonmark.HtmlRenderer();" +
