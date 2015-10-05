@@ -21,6 +21,8 @@
 package org.zanata.util;
 
 import com.google.common.base.Throwables;
+import com.google.common.io.Resources;
+import jdk.nashorn.api.scripting.JSObject;
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -28,13 +30,13 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 
 import javax.script.Bindings;
+import javax.script.Compilable;
+import javax.script.CompiledScript;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -56,11 +58,11 @@ public class CommonMarkRenderer {
             VER_SANITIZER + "/html-sanitizer-minified.js";
     private static final String RESOURCE_NAME = "META-INF/resources/webjars/" +
             SCRIPT_NAME;
-
-    private final ScriptEngine engine = newEngine();
-
-    private ThreadLocal<Bindings> threadBindings =
-            ThreadLocal.withInitial(this::initBindings);
+    private static final ScriptEngine engine =
+            new ScriptEngineManager().getEngineByName("Nashorn");
+    private static final CompiledScript compiledScript = compileScript();
+    private static final ThreadLocal<Bindings> threadBindings =
+            ThreadLocal.withInitial(engine::createBindings);
 
     static {
         log.info("Using commonmark.js version {}", VER);
@@ -108,47 +110,38 @@ public class CommonMarkRenderer {
     public String renderToHtmlUnsafe(String commonMark) {
         try {
             Bindings bindings = threadBindings.get();
-            bindings.put("src", commonMark);
-            return (String) engine.eval("mdRender(src)", bindings);
-        } catch (ScriptException e) {
+            JSObject boundScript = (JSObject) compiledScript.eval(bindings);
+            return (String) boundScript.call(compiledScript, commonMark);
+        } catch (Exception e) {
             throw Throwables.propagate(e);
         }
     }
 
-    private Bindings initBindings() {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                getScriptAsStream(), StandardCharsets.UTF_8))) {
-            Bindings bindings = engine.createBindings();
-            engine.eval("window = this;", bindings);
-            engine.eval(reader, bindings);
+    private static CompiledScript compileScript() {
+        try {
             // Create a javascript function 'mdRender' which takes CommonMark
             // as a string and returns a rendered HTML string:
-            String initScript =
-                    "var reader = new commonmark.Parser();" +
-                            "var writer = new commonmark.HtmlRenderer();" +
-                            "function mdRender(src) {" +
-                            "  return writer.render(reader.parse(src));" +
-                            "};";
-            engine.eval(initScript, bindings);
-            return bindings;
-        } catch (IOException | ScriptException e) {
+            String commonMarkScript = Resources.toString(getScriptResource(),
+                    StandardCharsets.UTF_8);
+            String initScript = "" +
+                    "if (!mdRender) {" +
+                    "  window = this;" +
+                    commonMarkScript +
+                    "  var reader = new commonmark.Parser();" +
+                    "  var writer = new commonmark.HtmlRenderer();" +
+                    "  function mdRender(src) {" +
+                    "    return writer.render(reader.parse(src));" +
+                    "  };" +
+                    "}" +
+                    "mdRender";
+            return ((Compilable) engine).compile(initScript);
+        } catch (ScriptException | IOException e) {
             throw Throwables.propagate(e);
         }
     }
 
-    private static InputStream getScriptAsStream() {
-        InputStream stream =
-                CommonMarkRenderer.class.getClassLoader().getResourceAsStream(
-                        RESOURCE_NAME);
-        if (stream == null) {
-            throw new RuntimeException("Script "+ RESOURCE_NAME + " not found");
-        }
-        return stream;
-    }
-
-    private static ScriptEngine newEngine() {
-        ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
-        return scriptEngineManager.getEngineByName("JavaScript");
+    private static URL getScriptResource() {
+        return Resources.getResource(CommonMarkRenderer.class, "/" + RESOURCE_NAME);
     }
 
 }
