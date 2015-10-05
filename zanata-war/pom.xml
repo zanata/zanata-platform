@@ -2533,13 +2533,6 @@
 
     <!-- end of GWT related dependencies -->
 
-    <!-- Updated rhino for javax.script API (access by engine name "rhino17R5") -->
-    <dependency>
-      <groupId>de.christophkraemer</groupId>
-      <artifactId>rhino-script-engine</artifactId>
-      <version>1.1.1</version>
-    </dependency>
-
     <dependency>
       <groupId>org.scannotation</groupId>
       <artifactId>scannotation</artifactId>

@@ -149,13 +149,7 @@ public class CommonMarkRenderer {
 
     private ScriptEngine newEngine() {
         ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
-        ScriptEngine engine =
-                scriptEngineManager.getEngineByName("rhino17R5");
-        if (engine == null) {
-            log.warn("Falling back on generic JavaScript engine");
-            engine = scriptEngineManager.getEngineByName("JavaScript");
-        }
-        return engine;
+        return scriptEngineManager.getEngineByName("JavaScript");
     }
 
 }
