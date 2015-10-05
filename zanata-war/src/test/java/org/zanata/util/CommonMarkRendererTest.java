@@ -30,6 +30,9 @@ import static org.assertj.core.api.Assertions.*;
  */
 public class CommonMarkRendererTest {
 
+//    @Rule
+//    public RepeatRule repeatRule = new RepeatRule();
+
     private CommonMarkRenderer renderer = new CommonMarkRenderer();
 
     @Test
@@ -41,6 +44,7 @@ public class CommonMarkRendererTest {
     }
 
     @Test
+    @Repeat(times = 10_000)
     public void testRenderToHtmlUnsafe() throws Exception {
         String source = "This text contains an *unsafe* <script>script</script> element.";
         String expected = "<p>This text contains an <em>unsafe</em> <script>script</script> element.</p>\n";

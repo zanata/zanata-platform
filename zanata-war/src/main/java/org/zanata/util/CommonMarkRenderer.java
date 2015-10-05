@@ -27,7 +27,7 @@ import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 
-import javax.script.Invocable;
+import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -57,17 +57,15 @@ public class CommonMarkRenderer {
     private static final String RESOURCE_NAME = "META-INF/resources/webjars/" +
             SCRIPT_NAME;
 
-    public CommonMarkRenderer() {
+    private final ScriptEngine engine = newEngine();
+
+    private ThreadLocal<Bindings> threadBindings =
+            ThreadLocal.withInitial(this::initBindings);
+
+    static {
         log.info("Using commonmark.js version {}", VER);
         log.info("Using Google Caja version {}", VER_SANITIZER);
     }
-
-    // ScriptEngine is expensive, but not really threadsafe (even in Rhino).
-    // However, they are quite large, so it's probably not worth keeping
-    // one for every thread.  Instead, we keep one around, and synchronise
-    // access to it.
-    // Please ensure any methods which use this Invocable are synchronized!
-    private Invocable invocable = getInvocable();
 
     /**
      * Return the name of the implementation script for JSF h:outputScript.
@@ -107,21 +105,22 @@ public class CommonMarkRenderer {
         return HtmlUtil.SANITIZER.sanitize(unsafeHtml);
     }
 
-    public synchronized String renderToHtmlUnsafe(String commonMark) {
+    public String renderToHtmlUnsafe(String commonMark) {
         try {
-            return (String) invocable.invokeFunction("mdRender", commonMark);
-        } catch (ScriptException | NoSuchMethodException e) {
+            Bindings bindings = threadBindings.get();
+            bindings.put("src", commonMark);
+            return (String) engine.eval("mdRender(src)", bindings);
+        } catch (ScriptException e) {
             throw Throwables.propagate(e);
         }
     }
 
-    private Invocable getInvocable() {
+    private Bindings initBindings() {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(
                 getScriptAsStream(), StandardCharsets.UTF_8))) {
-
-            ScriptEngine engine = newEngine();
-            engine.eval("window = this;");
-            engine.eval(reader);
+            Bindings bindings = engine.createBindings();
+            engine.eval("window = this;", bindings);
+            engine.eval(reader, bindings);
             // Create a javascript function 'mdRender' which takes CommonMark
             // as a string and returns a rendered HTML string:
             String initScript =
@@ -130,16 +129,16 @@ public class CommonMarkRenderer {
                             "function mdRender(src) {" +
                             "  return writer.render(reader.parse(src));" +
                             "};";
-            engine.eval(initScript);
-            return (Invocable) engine;
+            engine.eval(initScript, bindings);
+            return bindings;
         } catch (IOException | ScriptException e) {
             throw Throwables.propagate(e);
         }
     }
 
-    private InputStream getScriptAsStream() {
+    private static InputStream getScriptAsStream() {
         InputStream stream =
-                getClass().getClassLoader().getResourceAsStream(
+                CommonMarkRenderer.class.getClassLoader().getResourceAsStream(
                         RESOURCE_NAME);
         if (stream == null) {
             throw new RuntimeException("Script "+ RESOURCE_NAME + " not found");
@@ -147,7 +146,7 @@ public class CommonMarkRenderer {
         return stream;
     }
 
-    private ScriptEngine newEngine() {
+    private static ScriptEngine newEngine() {
         ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
         return scriptEngineManager.getEngineByName("JavaScript");
     }
