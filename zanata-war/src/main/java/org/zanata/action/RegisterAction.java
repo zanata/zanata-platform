@@ -140,7 +140,7 @@ public class RegisterAction implements Serializable {
     }
 
     @NotEmpty
-    @Size(min = 6, max = 20)
+    @Size(min = 6, max = 1024)
     // @Pattern(regex="(?=^.{6,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$",
     // message="Password is not secure enough!")
             public

@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.application.NavigationHandler;
-import javax.faces.context.FacesContext;
 
 import com.google.common.collect.Lists;
 import lombok.Getter;
@@ -17,8 +15,6 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.international.StatusMessage;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.common.EntityStatus;
@@ -30,6 +26,7 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.ui.CopyAction;
 import org.zanata.util.FacesNavigationUtil;
+import org.zanata.ui.faces.FacesMessages;
 
 /**
  * Handles user interaction from merge_trans_modal.xhtml.
@@ -84,6 +81,9 @@ public class MergeTransAction extends CopyAction implements Serializable {
 
     @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
     private HAccount authenticatedAccount;
+
+    @In
+    private FacesMessages jsfMessages;
 
     private HProjectIteration targetVersion;
 
@@ -175,13 +175,13 @@ public class MergeTransAction extends CopyAction implements Serializable {
                 || StringUtils.isEmpty(sourceVersionSlug)
                 || StringUtils.isEmpty(targetProjectSlug)
                 || StringUtils.isEmpty(targetVersionSlug)) {
-            FacesMessages.instance().add(StatusMessage.Severity.ERROR,
-                msgs.get("jsf.iteration.mergeTrans.noSourceAndTarget"));
+            jsfMessages.addGlobal(FacesMessage.SEVERITY_ERROR,
+                    msgs.get("jsf.iteration.mergeTrans.noSourceAndTarget"));
             return;
         }
         if (isCopyActionsRunning()) {
-            FacesMessages.instance().add(StatusMessage.Severity.WARN,
-                msgs.get("jsf.iteration.mergeTrans.hasCopyActionRunning"));
+            jsfMessages.addGlobal(FacesMessage.SEVERITY_WARN,
+                    msgs.get("jsf.iteration.mergeTrans.hasCopyActionRunning"));
             return;
         }
         mergeTranslationsManager.start(sourceProjectSlug,
@@ -218,7 +218,7 @@ public class MergeTransAction extends CopyAction implements Serializable {
 
     @Override
     public void onComplete() {
-        FacesMessages.instance().add(StatusMessage.Severity.INFO,
+        jsfMessages.addGlobal(FacesMessage.SEVERITY_INFO,
                 msgs.format("jsf.iteration.mergeTrans.completed.message",
                         sourceProjectSlug, sourceVersionSlug,
                         targetProjectSlug, targetVersionSlug));
@@ -227,7 +227,7 @@ public class MergeTransAction extends CopyAction implements Serializable {
     public void cancel() {
         mergeTranslationsManager.cancel(targetProjectSlug,
             targetVersionSlug);
-        FacesMessages.instance().add(
+        jsfMessages.addGlobal(
                 FacesMessage.SEVERITY_INFO,
                 msgs.format("jsf.iteration.mergeTrans.cancel.message",
                         sourceProjectSlug, sourceVersionSlug,

@@ -24,18 +24,16 @@ import java.io.Serializable;
 import java.util.Set;
 
 import javax.annotation.Nullable;
+import javax.faces.application.FacesMessage;
 
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.faces.FacesMessages;
-import org.jboss.seam.international.StatusMessage;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
@@ -45,6 +43,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GravatarService;
+import org.zanata.ui.faces.FacesMessages;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -89,13 +88,15 @@ public class ProfileHome implements Serializable {
     @In
     Messages msgs;
 
+    @In
+    private FacesMessages jsfMessages;
+
     private void init() {
         HAccount account;
-        FacesMessages facesMessages = FacesMessages.instance();
         account = accountDAO.getByUsername(username);
         if (account == null) {
-            facesMessages.clear();
-            facesMessages.add(StatusMessage.Severity.ERROR,
+            jsfMessages.clear();
+            jsfMessages.addGlobal(FacesMessage.SEVERITY_ERROR,
                     msgs.format("jsf.UsernameNotAvailable", abbreviate(username,
                             24)));
             account = useAuthenticatedAccount();

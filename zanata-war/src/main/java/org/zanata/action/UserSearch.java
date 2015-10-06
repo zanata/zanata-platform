@@ -7,8 +7,6 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Install;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.datamodel.DataModel;
-import org.jboss.seam.annotations.datamodel.DataModelSelection;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.security.annotations.ZanataSecured;
@@ -26,11 +24,7 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
 @ZanataSecured
 public class UserSearch implements Serializable {
     private static final long serialVersionUID = -4792732235757055958L;
-    @DataModel
-    List<String> users;
-
-    @DataModelSelection
-    String selectedUser;
+    private List<String> users;
 
     @In
     IdentityManager identityManager;
@@ -56,7 +50,7 @@ public class UserSearch implements Serializable {
         return sb.toString();
     }
 
-    public String getSelectedUser() {
-        return selectedUser;
+    public List<String> getUsers() {
+        return users;
     }
 }
