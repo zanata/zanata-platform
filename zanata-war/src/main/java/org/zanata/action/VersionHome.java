@@ -498,7 +498,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
         if (!slug.equals(getInstance().getSlug())) {
             slug = getInstance().getSlug();
-            return "versionSlugUpdated";
+            return "version-slug-updated";
         }
 
         return state;

@@ -194,15 +194,6 @@
     </navigation-case>
   </navigation-rule>-->
 
-  <navigation-rule>
-    <from-view-id>/account/register.xhtml</from-view-id>
-    <navigation-case>
-      <from-outcome>true</from-outcome>
-      <to-view-id>/dashboard/home.xhtml</to-view-id>
-      <redirect/>
-    </navigation-case>
-  </navigation-rule>
-
   <!-- TODO [CDI] it uses conversation scoped facesMessages -->
   <!--<navigation-rule>
     <from-view-id>/account/inactive_account.xhtml</from-view-id>
@@ -291,7 +282,7 @@
   <navigation-rule>
     <from-view-id>/project/project.xhtml</from-view-id>
     <navigation-case>
-      <from-outcome>projectSlugUpdated</from-outcome>
+      <from-outcome>project-slug-updated</from-outcome>
       <to-view-id>/project/project.xhtml</to-view-id>
       <redirect>
         <view-param>
@@ -403,7 +394,7 @@
     </navigation-case>
     <navigation-case>
       <from-action>#{versionHome.update}</from-action>
-      <from-outcome>versionSlugUpdated</from-outcome>
+      <from-outcome>version-slug-updated</from-outcome>
       <to-view-id>/iteration/view.xhtml</to-view-id>
       <redirect>
         <view-param>

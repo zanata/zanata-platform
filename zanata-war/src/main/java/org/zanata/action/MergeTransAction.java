@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.application.NavigationHandler;
-import javax.faces.context.FacesContext;
 
 import com.google.common.collect.Lists;
 import lombok.Getter;
@@ -25,6 +23,7 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.ui.CopyAction;
+import org.zanata.util.FacesNavigationUtil;
 import org.zanata.ui.faces.FacesMessages;
 
 /**
@@ -186,9 +185,7 @@ public class MergeTransAction extends CopyAction implements Serializable {
         mergeTranslationsManager.start(sourceProjectSlug,
                 sourceVersionSlug, targetProjectSlug, targetVersionSlug,
                 !keepExistingTranslation);
-        FacesContext context = FacesContext.getCurrentInstance();
-        NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
-        navigationHandler.handleNavigation(context, null, "merge-translation");
+        FacesNavigationUtil.handlePageNavigation(null, "merge-translation");
     }
 
     // Check if copy-trans, copy version or merge-trans is running for the

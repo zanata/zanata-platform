@@ -20,8 +20,10 @@
  */
 package org.zanata.action;
 
+import java.io.IOException;
 import java.io.Serializable;
 
+import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.validation.constraints.Pattern;
@@ -38,9 +40,14 @@ import javax.inject.Named;
 import org.zanata.action.validator.NotDuplicateEmail;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HPerson;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.EmailService;
 import org.zanata.service.RegisterService;
 import org.zanata.ui.faces.FacesMessages;
+import org.zanata.util.UrlUtil;
+
+
+import com.google.common.base.Throwables;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
@@ -66,6 +73,12 @@ public class RegisterAction implements Serializable {
     @Inject
     EmailService emailServiceImpl;
 
+    @Inject
+    private ZanataIdentity identity;
+
+    @Inject
+    private UrlUtil urlUtil;
+
     private String username;
     private String email;
     private String password;
@@ -74,6 +87,20 @@ public class RegisterAction implements Serializable {
     private boolean valid;
 
     private HPerson person;
+
+    public String redirectIfLoggedIn() {
+        if (identity.isLoggedIn()) {
+            try {
+                // this is in preRenderView phase. we have to use this to
+                // redirect
+                FacesContext.getCurrentInstance().getExternalContext()
+                        .redirect(urlUtil.dashboardUrl());
+            } catch (IOException e) {
+                Throwables.propagate(e);
+            }
+        }
+        return null;
+    }
 
     @Begin(join = true)
     public HPerson getPerson() {
