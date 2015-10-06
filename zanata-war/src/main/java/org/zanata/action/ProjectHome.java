@@ -763,7 +763,7 @@ public class ProjectHome extends SlugHome<HProject> implements
         }
         if (!slug.equals(getInstance().getSlug())) {
             slug = getInstance().getSlug();
-            return "projectSlugUpdated";
+            return "project-slug-updated";
         }
         return result;
     }

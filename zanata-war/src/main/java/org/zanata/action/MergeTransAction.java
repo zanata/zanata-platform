@@ -29,6 +29,7 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.ui.CopyAction;
+import org.zanata.util.FacesNavigationUtil;
 
 /**
  * Handles user interaction from merge_trans_modal.xhtml.
@@ -186,9 +187,7 @@ public class MergeTransAction extends CopyAction implements Serializable {
         mergeTranslationsManager.start(sourceProjectSlug,
             sourceVersionSlug, targetProjectSlug, targetVersionSlug,
             !keepExistingTranslation);
-        FacesContext context = FacesContext.getCurrentInstance();
-        NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
-        navigationHandler.handleNavigation(context, null, "merge-translation");
+        FacesNavigationUtil.handlePageNavigation(null, "merge-translation");
     }
 
     // Check if copy-trans, copy version or merge-trans is running for the
