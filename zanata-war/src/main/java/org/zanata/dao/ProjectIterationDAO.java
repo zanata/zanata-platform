@@ -22,6 +22,7 @@ package org.zanata.dao;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -541,8 +542,8 @@ public class ProjectIterationDAO extends
         Query q = getSession().createQuery(query);
         q.setParameter("versionSlug", versionSlug);
         q.setParameter("projectSlug", projectSlug);
-        q.setTimestamp("fromDate", dataRange.getFromDate().toDate());
-        q.setTimestamp("toDate", dataRange.getToDate().toDate());
+        q.setTimestamp("fromDate", Date.from(dataRange.getFromDate().toInstant()));
+        q.setTimestamp("toDate", Date.from(dataRange.getToDate().toInstant()));
         q.setCacheable(true).setComment(
             "ProjectIterationDAO.getContributors");
         return q.list();

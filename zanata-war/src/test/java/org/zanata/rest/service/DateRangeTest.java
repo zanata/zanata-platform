@@ -1,46 +1,45 @@
 package org.zanata.rest.service;
 
 import org.assertj.core.api.Assertions;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Hours;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.junit.Test;
+
+import java.time.Duration;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 public class DateRangeTest {
 
     @Test
     public void testConcept() {
+        ZoneId bneZone = ZoneId.of("Australia/Brisbane");
+        ZoneId shanghaiZone = ZoneId.of("Asia/Shanghai"); // 2 hours late
 
-        DateTimeZone bneZone = DateTimeZone.forID("Australia/Brisbane");
-        DateTimeZone shanghaiZone = DateTimeZone.forID("Asia/Shanghai"); // 2 hours late
+        ZonedDateTime bneTime = ZonedDateTime.of(2015, 2, 1, 0, 0, 0, 0, bneZone);
+        ZonedDateTime shanghaiTime = ZonedDateTime.of(2015, 2, 1, 0, 0, 0, 0, shanghaiZone);
+        Assertions.assertThat(Duration.between(bneTime, shanghaiTime)).isEqualTo(Duration.of(2, ChronoUnit.HOURS));
 
-        DateTime bneTime = new DateTime(2015, 2, 1, 0, 0, bneZone);
-        DateTime shanghaiTime = new DateTime(2015, 2, 1, 0, 0, shanghaiZone);
-        int hours = Hours.hoursBetween(bneTime, shanghaiTime).getHours();
-        Assertions.assertThat(hours).isEqualTo(2);
-
-        DateTime bneToShanghai = bneTime.toDateTime(shanghaiZone);
-        Assertions.assertThat(bneToShanghai.getMonthOfYear()).isEqualTo(1);
+        ZonedDateTime bneToShanghai = bneTime.withZoneSameInstant(shanghaiZone);
+        Assertions.assertThat(bneToShanghai.getMonthValue()).isEqualTo(1);
         Assertions.assertThat(bneToShanghai.getDayOfMonth()).isEqualTo(31);
-        Assertions.assertThat(bneToShanghai.getHourOfDay()).isEqualTo(22);
+        Assertions.assertThat(bneToShanghai.getHour()).isEqualTo(22);
 
         // now test our parser
         DateTimeFormatter bneFormat =
-                DateTimeFormat.forPattern("yyyy-MM-dd").withZone(bneZone);
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(bneZone);
 
         DateTimeFormatter shanghaiFormat = bneFormat.withZone(shanghaiZone);
-        DateTime timeAsShanghai = shanghaiFormat.parseDateTime("2015-02-01");
-        DateTime timeInBne = timeAsShanghai.toDateTime(bneZone);
-        Assertions.assertThat(timeInBne.getMonthOfYear()).isEqualTo(2);
-        Assertions.assertThat(timeInBne.getHourOfDay()).isEqualTo(2);
+        ZonedDateTime timeAsShanghai = ZonedDateTime.parse("2015-02-01 00:00:00", shanghaiFormat);
+        ZonedDateTime timeInBne = timeAsShanghai.withZoneSameInstant(bneZone);
+        Assertions.assertThat(timeInBne.getMonthValue()).isEqualTo(2);
+        Assertions.assertThat(timeInBne.getHour()).isEqualTo(2);
 
-        timeAsShanghai = shanghaiFormat.parseDateTime("2015-02-01");
-        DateTime endOfDayShanghai = timeAsShanghai.plusDays(1).minusMillis(1);
+        timeAsShanghai = ZonedDateTime.parse("2015-02-01 00:00:00", shanghaiFormat);
+        ZonedDateTime endOfDayShanghai = timeAsShanghai.plusDays(1).minus(1, ChronoUnit.MILLIS);
 
-        timeInBne = endOfDayShanghai.toDateTime(bneZone);
-        Assertions.assertThat(timeInBne.getMonthOfYear()).isEqualTo(2);
+        timeInBne = endOfDayShanghai.withZoneSameInstant(bneZone);
+        Assertions.assertThat(timeInBne.getMonthValue()).isEqualTo(2);
         Assertions.assertThat(timeInBne.getDayOfMonth()).isEqualTo(2);
 
     }

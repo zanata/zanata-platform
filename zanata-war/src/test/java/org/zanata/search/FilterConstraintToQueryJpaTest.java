@@ -1,14 +1,16 @@
 package org.zanata.search;
 
+import static java.time.temporal.ChronoUnit.DAYS;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.hamcrest.Matchers;
 import org.hibernate.transform.ResultTransformer;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.ZanataJpaTest;
@@ -44,8 +46,8 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
             .addAll().build();
     private HLocale hLocale;
     private DocumentId documentId;
-    private DateTime today = new DateTime();
-    private DateTime yesterday = new DateTime().minusDays(1);
+    private Instant today = Instant.now();
+    private Instant yesterday = today.minus(1, DAYS);
     private ResultTransformer transformer;
     private HPerson admin;
     private HPerson translator;

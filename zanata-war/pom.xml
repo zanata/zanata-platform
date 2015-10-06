@@ -2276,12 +2276,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.ocpsoft.prettytime</groupId>
-      <artifactId>prettytime</artifactId>
-      <version>3.0.2.Final</version>
-    </dependency>
-
-    <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpcore</artifactId>
     </dependency>
@@ -2360,10 +2354,6 @@
     <dependency>
       <groupId>org.fedorahosted.tennera</groupId>
       <artifactId>jgettext</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
     </dependency>
     <dependency>
       <groupId>com.beust</groupId>

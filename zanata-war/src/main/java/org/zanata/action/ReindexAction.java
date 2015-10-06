@@ -2,6 +2,7 @@ package org.zanata.action;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -10,16 +11,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
-import org.joda.time.Period;
-import org.joda.time.format.PeriodFormatter;
-import org.joda.time.format.PeriodFormatterBuilder;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.service.SearchIndexManager;
 
 import com.google.common.base.Optional;
+import org.zanata.util.DateUtil;
 
 
 @Named("reindexAction")
@@ -184,40 +181,21 @@ public class ReindexAction implements Serializable {
                 && searchIndexManager.getProcessHandle().isCancelled();
     }
 
-    // TODO move to common location with ViewAllStatusAction
-    private static final PeriodFormatter PERIOD_FORMATTER =
-            new PeriodFormatterBuilder().appendDays()
-                    .appendSuffix(" day", " days").appendSeparator(", ")
-                    .appendHours().appendSuffix(" hour", " hours")
-                    .appendSeparator(", ").appendMinutes()
-                    .appendSuffix(" min", " mins")
-                    .toFormatter();
-
-    private String formatTimePeriod(long durationInMillis) {
-        Period period = new Period(durationInMillis);
-
-        if (period.toStandardMinutes().getMinutes() <= 0) {
-            return "less than a minute"; // TODO Localize
-        } else {
-            return PERIOD_FORMATTER.print(period.normalizedStandard());
-        }
-    }
-
     public String getElapsedTime() {
         AsyncTaskHandle<Void> processHandle = searchIndexManager.getProcessHandle();
         if (processHandle == null) {
             log.error("processHandle is null when looking up elapsed time");
             return "";
         } else {
-            long elapsedTime = processHandle.getExecutingTime();
-            return formatTimePeriod(elapsedTime);
+            Date start = new Date(processHandle.getStartTime());
+            return DateUtil.getHowLongAgoDescription(start);
         }
     }
 
     public String getEstimatedTimeRemaining() {
         Optional<Long> estimate = searchIndexManager.getProcessHandle().getEstimatedTimeRemaining();
         if (estimate.isPresent()) {
-            return formatTimePeriod(estimate.get());
+            return DateUtil.getTimeRemainingDescription(estimate.get());
         }
         // TODO localize (not expecting to display estimate when it is unavailable anyway).
         return "unknown";

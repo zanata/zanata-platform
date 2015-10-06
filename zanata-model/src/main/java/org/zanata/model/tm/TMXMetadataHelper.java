@@ -21,6 +21,10 @@
 
 package org.zanata.model.tm;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -36,8 +40,6 @@ import nu.xom.Element;
 import nu.xom.Elements;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.zanata.util.TMXConstants;
 import org.zanata.util.TMXParseException;
 
@@ -61,8 +63,8 @@ public class TMXMetadataHelper {
     private static final String TMX_ELEMENT_CHILDREN =
             "__TMX_ELEMENT_CHILDREN__";
 
-    private static final DateTimeFormatter ISO8601Z = DateTimeFormat
-            .forPattern("yyyyMMdd'T'HHmmss'Z").withZoneUTC();
+    private static final DateTimeFormatter ISO_FORMATTER = DateTimeFormatter
+            .ofPattern("yyyyMMdd'T'HHmmss'Z'").withZone(ZoneOffset.UTC);
     private static final ObjectMapper jsonMapper = new ObjectMapper();
 
     // TMX attributes which we store as fields (*not* in the generic metadata
@@ -295,13 +297,14 @@ public class TMXMetadataHelper {
     @SuppressWarnings("null")
     public static @Nonnull
     Date toDate(String dateString) {
-        return ISO8601Z.parseDateTime(dateString).toDate();
+        TemporalAccessor temporalAccessor = ISO_FORMATTER.parse(dateString);
+        return Date.from(Instant.from(temporalAccessor));
     }
 
     @SuppressWarnings("null")
     public static @Nonnull
     String toString(Date date) {
-        return ISO8601Z.print(date.getTime());
+        return ISO_FORMATTER.format(date.toInstant());
     }
 
     private static Map<String, Object> buildMetadata(Element fromElem) {

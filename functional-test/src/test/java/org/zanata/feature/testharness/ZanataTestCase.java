@@ -22,10 +22,6 @@
 package org.zanata.feature.testharness;
 
 import lombok.extern.slf4j.Slf4j;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.joda.time.format.PeriodFormatter;
-import org.joda.time.format.PeriodFormatterBuilder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -34,6 +30,9 @@ import org.junit.rules.TestName;
 import org.zanata.page.WebDriverFactory;
 import org.zanata.util.EnsureLogoutRule;
 import org.zanata.util.SampleProjectRule;
+
+import java.time.Duration;
+import java.time.Instant;
 
 /**
  * Global application of rules to Zanata functional tests
@@ -62,7 +61,7 @@ public class ZanataTestCase {
      * public Timeout timeout = new Timeout(MAX_TEST_DURATION);
      */
 
-    public DateTime testFunctionStart;
+    public Instant testFunctionStart;
 
     private String getTestDescription() {
         return this.getClass().getCanonicalName()
@@ -73,26 +72,19 @@ public class ZanataTestCase {
     @Before
     public final void testEntry() {
         log.info("Starting ".concat(getTestDescription()));
-        testFunctionStart = new DateTime();
+        testFunctionStart = Instant.now();
         WebDriverFactory.INSTANCE.testEntry();
     }
 
     @After
     public final void testExit() {
         WebDriverFactory.INSTANCE.logLogs();
-        Duration duration = new Duration(testFunctionStart, new DateTime());
-        PeriodFormatter periodFormatter = new PeriodFormatterBuilder()
-                .appendLiteral("Finished "
-                        .concat(getTestDescription()).concat(" in "))
-                .printZeroAlways()
-                .appendMinutes()
-                .appendSuffix(" minutes, ")
-                .appendSeconds()
-                .appendSuffix(" seconds, ")
-                .appendMillis()
-                .appendSuffix("ms")
-                .toFormatter();
-        log.info(periodFormatter.print(duration.toPeriod()));
+        Duration d = Duration.between(testFunctionStart, Instant.now());
+        String msg =
+                String.format("Finished %s in %d minutes, %d seconds, %dms",
+                        getTestDescription(), d.toMinutes(), d.getSeconds(),
+                        d.getNano() / 1000_000);
+        log.info(msg);
         WebDriverFactory.INSTANCE.testExit();
     }
 

@@ -1,12 +1,14 @@
 package org.zanata.dao;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.hibernate.transform.ResultTransformer;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.ZanataJpaTest;
@@ -33,18 +35,20 @@ import com.google.common.collect.Iterables;
 
 import lombok.RequiredArgsConstructor;
 
+import static java.time.temporal.ChronoUnit.DAYS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
     private TextFlowTargetHistoryDAO historyDAO;
     private HPerson user;
     private HLocale hLocale;
-    private DateTime today = new DateTime();
-    private DateTime yesterday = new DateTime().minusDays(1);
-    private DateTime twoDaysAgo = new DateTime().minusDays(2);
+    private Instant today = Instant.now();
+    private Instant yesterday = today.minus(1, DAYS);
+    private Instant twoDaysAgo = today.minus(2, DAYS);
     private HDocument hDocument;
     private ResultTransformer resultTransformer;
-    private static final DateTimeFormatter dateFormatter = DateTimeFormat.mediumDate();
+    private static final DateTimeFormatter dateFormatter =
+            DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
 
     @Before
     public void setUp() throws Exception {
@@ -134,10 +138,10 @@ public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
         List<TranslationMatrix> result =
                 historyDAO
                         .getUserTranslationMatrix(user,
-                                twoDaysAgo.withTimeAtStartOfDay(),
-                                today.withTimeAtStartOfDay(),
-                                Optional.<DateTimeZone> absent(),
-                                DateTimeZone.getDefault(), resultTransformer);
+                                twoDaysAgo.truncatedTo(ChronoUnit.DAYS),
+                                today.truncatedTo(ChronoUnit.DAYS),
+                                Optional.<ZoneId> absent(),
+                                ZoneId.systemDefault(), resultTransformer);
 
         assertThat(result).hasSize(4);
         final SavedDatePredicate yesterdayPredicate =
@@ -200,11 +204,11 @@ public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
                 new HTextFlowBuilder().withDocument(hDocument)
                         .withTargetLocale(hLocale);
 
-        DateTimeZone zone = DateTimeZone
-                .forID("Australia/Brisbane");
+        ZoneId zone = ZoneId
+                .of("Australia/Brisbane");
         baseBuilder
                 .withLastModifiedDate(
-                        new DateTime(2015, 2, 1, 1, 0, zone))
+                        ZonedDateTime.of(2015, 2, 1, 1, 0, 0, 0, zone).toInstant())
                 .withLastModifiedBy(user)
                 .withResId("res1").withSourceContent("source 1")
                 .withTargetContent("target 1")
@@ -213,17 +217,17 @@ public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
 
         List<TranslationMatrix> result = historyDAO
                 .getUserTranslationMatrix(user,
-                        new DateTime(2015, 2, 1, 1, 1, zone),
-                        new DateTime(zone), Optional.<DateTimeZone> absent(),
-                        DateTimeZone.getDefault(), resultTransformer);
+                        ZonedDateTime.of(2015, 2, 1, 1, 1, 0, 0, zone).toInstant(),
+                        ZonedDateTime.now(zone).toInstant(), Optional.<ZoneId> absent(),
+                        ZoneId.systemDefault(), resultTransformer);
         assertThat(result).isEmpty();
     }
 
     @Test
-    public void canConvertTimeZoneIfUSerSuppliedDifferentZone() {
+    public void canConvertTimeZoneIfUserSuppliedDifferentZone() {
         String result = historyDAO.convertTimeZoneFunction("lastChanged",
-                Optional.of(DateTimeZone.forID("Australia/Brisbane")),
-                DateTimeZone.forID("America/Chicago"));
+                Optional.of(ZoneId.of("Australia/Brisbane")),
+                ZoneId.of("America/Chicago"), Instant.now());
 
         assertThat(result).isEqualToIgnoringCase(
                 "convert_tz(lastChanged, '-06:00', '10:00')");
@@ -244,8 +248,8 @@ public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
             implements Predicate<TranslationMatrix> {
         private final String theDate;
 
-        private SavedDatePredicate(DateTime theDate) {
-            this.theDate = dateFormatter.print(theDate.withTimeAtStartOfDay());
+        private SavedDatePredicate(Instant theDate) {
+            this.theDate = dateFormatter.format(theDate.truncatedTo(ChronoUnit.DAYS));
         }
 
         @Override

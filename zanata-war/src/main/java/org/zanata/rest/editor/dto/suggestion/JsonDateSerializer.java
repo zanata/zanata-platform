@@ -23,11 +23,12 @@ package org.zanata.rest.editor.dto.suggestion;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.JsonSerializer;
 import org.codehaus.jackson.map.SerializerProvider;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -38,11 +39,13 @@ import java.util.Date;
  */
 public class JsonDateSerializer extends JsonSerializer<Date> {
 
-    private static final DateTimeFormatter ISO8601Format = ISODateTimeFormat.dateTime();
+    private static final DateTimeFormatter ISO8601Format = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+    private static final ZoneId ZONE = ZoneId.systemDefault();
 
     @Override
     public void serialize(Date date, JsonGenerator jsonGenerator, SerializerProvider provider) throws IOException {
-        String dateString = ISO8601Format.print(new DateTime(date));
+        LocalDateTime ldt = LocalDateTime.ofInstant(date.toInstant(), ZONE);
+        String dateString = ISO8601Format.format(ldt);
         jsonGenerator.writeString(dateString);
     }
 

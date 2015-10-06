@@ -3,22 +3,25 @@
  */
 package org.zanata.util;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
+import java.util.function.LongFunction;
 
-import org.joda.time.DateTime;
-import org.joda.time.Days;
-import org.joda.time.Period;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.PeriodFormatter;
-import org.joda.time.format.PeriodFormatterBuilder;
-import org.ocpsoft.prettytime.PrettyTime;
+import com.ibm.icu.impl.duration.BasicPeriodFormatterService;
+import com.ibm.icu.impl.duration.DurationFormatter;
+import lombok.ToString;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import static java.time.DayOfWeek.MONDAY;
+import static java.time.temporal.ChronoUnit.DAYS;
+import static java.time.temporal.TemporalAdjusters.previousOrSame;
 
 /**
  *
@@ -28,15 +31,11 @@ import lombok.NoArgsConstructor;
 public class DateUtil {
     private final static String DATE_TIME_SHORT_PATTERN = "dd/MM/yy HH:mm";
     private final static String TIME_SHORT_PATTERN = "hh:mm:ss";
-
-    // Period Formatters are thread safe and immutable according to joda time
-    // docs
-    private static final PeriodFormatter TIME_REMAINING_FORMATTER =
-            new PeriodFormatterBuilder().appendDays()
-                    .appendSuffix(" day", " days").appendSeparator(", ")
-                    .appendHours().appendSuffix(" hour", " hours")
-                    .appendSeparator(", ").appendMinutes()
-                    .appendSuffix(" min", " mins").toFormatter();
+    private static final ZoneId ZONE = ZoneId.systemDefault();
+    private static final DurationFormatter TIME_REMAINING_FORMATTER =
+            BasicPeriodFormatterService.getInstance().newDurationFormatterFactory().getFormatter();
+    // one millisecond in nanos
+    private static final long ONE_MILLI = 1000_000L;
 
     /**
      * Format date to dd/MM/yy hh:mm a
@@ -46,9 +45,9 @@ public class DateUtil {
      */
     public static String formatShortDate(Date date) {
         if (date != null) {
-            DateTimeFormatter fmt =
-                    DateTimeFormat.forPattern(DATE_TIME_SHORT_PATTERN);
-            return fmt.print(new DateTime(date));
+            DateTimeFormatter fmt = DateTimeFormatter.ofPattern(
+                    DATE_TIME_SHORT_PATTERN).withZone(ZoneId.systemDefault());
+            return fmt.format(date.toInstant());
         }
         return null;
     }
@@ -61,9 +60,9 @@ public class DateUtil {
      */
     public static String formatTime(Date date) {
         if (date != null) {
-            DateTimeFormatter fmt =
-                    DateTimeFormat.forPattern(TIME_SHORT_PATTERN);
-            return fmt.print(new DateTime(date));
+            DateTimeFormatter fmt = DateTimeFormatter.ofPattern(
+                    TIME_SHORT_PATTERN).withZone(ZoneId.systemDefault());
+            return fmt.format(date.toInstant());
         }
         return null;
     }
@@ -76,17 +75,35 @@ public class DateUtil {
      * @return
      */
     public static String getHowLongAgoDescription(Date then) {
-        Locale locale = Locale.getDefault();
-        PrettyTime p = new PrettyTime(locale);
-        return p.format(then);
+        long now = new Date().getTime();
+        long durationInMillis = now - then.getTime();
+        return getDurationDescription(durationInMillis, d ->
+                TIME_REMAINING_FORMATTER.formatDurationFrom(-durationInMillis, now));
     }
 
     public static String getTimeRemainingDescription(long durationInMillis) {
-        Period period = new Period(durationInMillis);
-        if (period.toStandardMinutes().getMinutes() <= 0) {
+        return getDurationDescription(durationInMillis, d ->
+                TIME_REMAINING_FORMATTER.formatDurationFromNow(
+                        durationInMillis)
+        );
+    }
+
+    private static String getDurationDescription(long durationInMillis,
+                                                LongFunction<String> format) {
+        if (durationInMillis < 60_000) {
             return "less than a minute";
         } else {
-            return TIME_REMAINING_FORMATTER.print(period.normalizedStandard());
+            StringBuilder sb = new StringBuilder();
+            sb.append(format.apply(durationInMillis));
+            Duration d = Duration.ofMillis(durationInMillis);
+            sb.append(" (");
+            if (d.toDays() != 0) {
+                sb.append(d.toDays()).append("d ");
+            }
+            sb.append(LocalTime.MIDNIGHT.plus(d).format(
+                    DateTimeFormatter.ofPattern("H'h':mm'm'")));
+            sb.append(")");
+            return sb.toString();
         }
     }
 
@@ -95,15 +112,13 @@ public class DateUtil {
     }
 
     public static DateUnitAndFigure getUnitAndFigure(long durationInMillis) {
-        Period period = new Period(durationInMillis);
-        if (period.toStandardMinutes().getMinutes() <= 0) {
-            return new DateUnitAndFigure("seconds", period.toStandardSeconds()
-                    .getSeconds());
-        } else if (period.toStandardDays().getDays() <= 0) {
-            return new DateUnitAndFigure("minutes", period.toStandardMinutes()
-                    .getMinutes());
+        Duration period = Duration.ofMillis(durationInMillis);
+        if (period.toMinutes() <= 0) {
+            return new DateUnitAndFigure("seconds", period.getSeconds());
+        } else if (period.toDays() <= 0) {
+            return new DateUnitAndFigure("minutes", period.toMinutes());
         }
-        return new DateUnitAndFigure("days", period.toStandardDays().getDays());
+        return new DateUnitAndFigure("days", period.toDays());
     }
 
     public static int compareDate(Date date1, Date date2) {
@@ -121,9 +136,10 @@ public class DateUtil {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
+    @ToString
     public static class DateUnitAndFigure {
         private String unit; // s(second) m(minute) or d(day)
-        private int figure;
+        private long figure;
     }
 
     /**
@@ -134,8 +150,9 @@ public class DateUtil {
      * @return
      */
     public static Date getStartOfDay(Date actionTime) {
-        DateTime dateTime = new DateTime(actionTime);
-        return dateTime.withTimeAtStartOfDay().toDate();
+        LocalDateTime ldt = LocalDateTime.ofInstant(actionTime.toInstant(), ZONE);
+        LocalDateTime start = ldt.toLocalDate().atStartOfDay();
+        return Date.from(start.atZone(ZONE).toInstant());
     }
 
     /**
@@ -146,9 +163,9 @@ public class DateUtil {
      * @return
      */
     public static Date getEndOfTheDay(Date actionTime) {
-        DateTime endOfTheDay = new DateTime(actionTime).plusDays(1)
-                .withTimeAtStartOfDay().minusMillis(1);
-        return endOfTheDay.toDate();
+        LocalDateTime ldt = LocalDateTime.ofInstant(actionTime.toInstant(), ZONE);
+        LocalDateTime end = ldt.toLocalDate().atStartOfDay().plusDays(1).minusNanos(ONE_MILLI);
+        return Date.from(end.atZone(ZONE).toInstant());
     }
 
     /**
@@ -158,9 +175,9 @@ public class DateUtil {
      * @return
      */
     public static Date getStartOfWeek(Date actionTime) {
-        DateTime truncateMonth =
-                new DateTime(actionTime).weekOfWeekyear().roundFloorCopy();
-        return truncateMonth.toDate();
+        LocalDateTime ldt = LocalDateTime.ofInstant(actionTime.toInstant(), ZONE);
+        LocalDateTime start = ldt.truncatedTo(DAYS).with(previousOrSame(MONDAY));
+        return Date.from(start.atZone(ZONE).toInstant());
     }
 
     /**
@@ -170,10 +187,9 @@ public class DateUtil {
      * @return
      */
     public static Date getEndOfTheWeek(Date actionTime) {
-        DateTime truncateMonth =
-                new DateTime(actionTime).weekOfWeekyear().roundCeilingCopy()
-                        .minusMillis(1);
-        return truncateMonth.toDate();
+        LocalDateTime ldt = LocalDateTime.ofInstant(actionTime.toInstant(), ZONE);
+        LocalDateTime end = ldt.truncatedTo(DAYS).with(previousOrSame(MONDAY)).plusWeeks(1).minusNanos(ONE_MILLI);
+        return Date.from(end.atZone(ZONE).toInstant());
     }
 
     /**
@@ -184,9 +200,9 @@ public class DateUtil {
      * @return
      */
     public static Date getStartOfMonth(Date actionTime) {
-        DateTime truncateMonth =
-                new DateTime(actionTime).monthOfYear().roundFloorCopy();
-        return truncateMonth.toDate();
+        LocalDateTime ldt = LocalDateTime.ofInstant(actionTime.toInstant(), ZONE);
+        LocalDateTime start = ldt.truncatedTo(DAYS).withDayOfMonth(1);
+        return Date.from(start.atZone(ZONE).toInstant());
     }
 
     /**
@@ -197,10 +213,9 @@ public class DateUtil {
      * @return
      */
     public static Date getEndOfTheMonth(Date actionTime) {
-        DateTime truncateMonth =
-                new DateTime(actionTime).monthOfYear().roundCeilingCopy()
-                        .minusMillis(1);
-        return truncateMonth.toDate();
+        LocalDateTime ldt = LocalDateTime.ofInstant(actionTime.toInstant(), ZONE);
+        LocalDateTime start = ldt.truncatedTo(DAYS).withDayOfMonth(1).plusMonths(1).minusNanos(ONE_MILLI);
+        return Date.from(start.atZone(ZONE).toInstant());
     }
 
     /**
@@ -213,22 +228,22 @@ public class DateUtil {
     public static Date getDate(String date, String pattern)
             throws IllegalArgumentException {
         DateTimeFormatter formatter =
-                DateTimeFormat.forPattern(pattern);
-        return formatter.parseDateTime(date).toDate();
+                DateTimeFormatter.ofPattern(pattern);
+        LocalDateTime ldt = LocalDateTime.parse(date, formatter);
+        return Date.from(ldt.atZone(ZONE).toInstant());
     }
 
     /**
-     * Check if date difference is within given days.
+     * Check that date difference is no more than 'days' days.
      *
      * @param from
      * @param to
      * @param days
      */
     public static boolean isDatesInRange(Date from, Date to, int days) {
-        DateTime fromDate = new DateTime(from);
-        DateTime toDate = new DateTime(to);
-
-        Days d = Days.daysBetween(fromDate, toDate);
-        return d.getDays() <= days;
+        long durationMillis = to.getTime() - from.getTime();
+        Duration actual = Duration.ofMillis(durationMillis);
+        Duration limit = Duration.ofDays(days);
+        return actual.compareTo(limit) <= 0;
     }
 }

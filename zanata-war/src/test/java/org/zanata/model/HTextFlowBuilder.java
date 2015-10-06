@@ -1,8 +1,8 @@
 package org.zanata.model;
 
+import java.time.Instant;
 import java.util.Date;
 
-import org.joda.time.DateTime;
 import org.zanata.common.ContentState;
 import org.zanata.model.po.HPotEntryData;
 
@@ -39,7 +39,7 @@ public class HTextFlowBuilder {
     private String targetContent;
     private ContentState targetState;
     private HPerson lastModifiedBy;
-    private DateTime lastModifiedDate;
+    private Instant lastModifiedDate;
     private String targetComment;
 
     public HTextFlow build() {
@@ -69,7 +69,7 @@ public class HTextFlowBuilder {
                 target.setTranslator(lastModifiedBy);
             }
             if (lastModifiedDate != null) {
-                target.setLastChanged(lastModifiedDate.toDate());
+                target.setLastChangedInstant(lastModifiedDate);
             } else {
                 target.setLastChanged(new Date());
             }

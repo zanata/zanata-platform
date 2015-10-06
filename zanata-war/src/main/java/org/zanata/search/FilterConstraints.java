@@ -23,13 +23,14 @@ package org.zanata.search;
 //TODO May want to add document(someDocument) to these constraints
 //so that only one search method is needed on the interface.
 
-import org.joda.time.DateTime;
 import org.zanata.webtrans.shared.model.ContentStateGroup;
 
 import lombok.Getter;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+
+import java.time.Instant;
 
 /**
  * Specifies a set of constraints to be applied by a filter.
@@ -44,8 +45,8 @@ public class FilterConstraints {
     private boolean searchInTarget;
     private ContentStateGroup includedStates;
     private String resId;
-    private DateTime changedBefore;
-    private DateTime changedAfter;
+    private Instant changedBefore;
+    private Instant changedAfter;
     private String lastModifiedByUser;
     private String sourceComment;
     private String transComment;
@@ -104,8 +105,8 @@ public class FilterConstraints {
         private boolean searchInTarget;
         private ContentStateGroup.Builder states;
         private String resId;
-        private DateTime changedBefore;
-        private DateTime changedAfter;
+        private Instant changedBefore;
+        private Instant changedAfter;
         private String lastModifiedByUser;
         private String sourceComment;
         private String transComment;
@@ -241,12 +242,12 @@ public class FilterConstraints {
             return this;
         }
 
-        public Builder targetChangedBefore(DateTime date) {
+        public Builder targetChangedBefore(Instant date) {
             this.changedBefore = date;
             return this;
         }
 
-        public Builder targetChangedAfter(DateTime date) {
+        public Builder targetChangedAfter(Instant date) {
             this.changedAfter = date;
             return this;
         }

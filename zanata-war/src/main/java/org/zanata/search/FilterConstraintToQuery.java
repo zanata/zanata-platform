@@ -1,5 +1,7 @@
 package org.zanata.search;
 
+import java.sql.Date;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 
@@ -8,7 +10,6 @@ import javax.annotation.Nonnull;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.criterion.MatchMode;
-import org.joda.time.DateTime;
 import org.zanata.model.HLocale;
 import org.zanata.util.HqlCriterion;
 import org.zanata.util.QueryBuilder;
@@ -252,8 +253,8 @@ public class FilterConstraintToQuery {
     }
 
     private String buildLastModifiedDateCondition() {
-        DateTime changedBeforeTime = constraints.getChangedBefore();
-        DateTime changedAfterTime = constraints.getChangedAfter();
+        Instant changedBeforeTime = constraints.getChangedBefore();
+        Instant changedAfterTime = constraints.getChangedAfter();
         if (changedBeforeTime == null && changedAfterTime == null) {
             return null;
         }
@@ -366,11 +367,11 @@ public class FilterConstraintToQuery {
             LastModifiedBy);
         if (constraints.getChangedAfter() != null) {
             textFlowQuery.setParameter(LastChangedAfter.namedParam(),
-                    constraints.getChangedAfter().toDate());
+                    Date.from(constraints.getChangedAfter()));
         }
         if (constraints.getChangedBefore() != null) {
             textFlowQuery.setParameter(LastChangedBefore.namedParam(),
-                    constraints.getChangedBefore().toDate());
+                    Date.from(constraints.getChangedBefore()));
         }
         return textFlowQuery;
     }
