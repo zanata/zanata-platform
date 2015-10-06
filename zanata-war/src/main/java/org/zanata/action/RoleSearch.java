@@ -25,11 +25,7 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
 @Install(precedence = APPLICATION)
 public class RoleSearch implements Serializable {
     private static final long serialVersionUID = 1734703030195353735L;
-    @DataModel
-    List<String> roles;
-
-    @DataModelSelection
-    String selectedRole;
+    private List<String> roles;
 
     @In
     IdentityManager identityManager;
@@ -60,7 +56,8 @@ public class RoleSearch implements Serializable {
         return sb.toString();
     }
 
-    public String getSelectedRole() {
-        return selectedRole;
+    public List<String> getRoles() {
+        return roles;
     }
+
 }

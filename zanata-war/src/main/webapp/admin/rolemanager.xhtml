@@ -53,7 +53,7 @@
           </div>
           <h:form styleClass="l--push-bottom-0">
             <ul class="list--stats">
-              <ui:repeat value="#{roles}" var="role">
+              <ui:repeat value="#{zanataRoleSearch.roles}" var="role">
                 <li class="list__item--actionable">
                   <div class="list__item__action">
                     <div
@@ -67,7 +67,7 @@
                           rendered="#{identity.hasPermission('seam.role', 'delete') and accountRoleDAO.findByName(role).roleType.toString() ne 'AUTO'}">
                           <li>
                             <h:commandLink
-                              action="#{identityManager.deleteRole(zanataRoleSearch.selectedRole)}"
+                              action="#{identityManager.deleteRole(role)}"
                               onclick="return confirmDelete()"
                               styleClass="i__item--right txt--danger">#{msgs['jsf.Delete']}
                               <i class="i i--remove i__item__icon"></i>
@@ -87,7 +87,7 @@
                         </h3>
                       </div>
                     </div>
-                    <f:param name="role" value="#{zanataRoleSearch.selectedRole}" />
+                    <f:param name="role" value="#{role}" />
                   </h:link>
                 </li>
               </ui:repeat>
