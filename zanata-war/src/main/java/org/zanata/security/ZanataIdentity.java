@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
 import org.zanata.events.AlreadyLoggedInEvent;
 import org.zanata.events.LoginFailedEvent;
 import org.zanata.events.LoginSuccessfulEvent;
-import org.zanata.events.Logout;
+import org.zanata.events.LogoutEvent;
 import org.zanata.events.NotLoggedInEvent;
 import org.zanata.model.HAccount;
 import org.zanata.model.HasUserFriendlyToString;
@@ -181,7 +181,7 @@ public class ZanataIdentity implements Identity, Serializable {
     @Observer("org.jboss.seam.preDestroyContext.SESSION")
     public void logout() {
         if (getCredentials() != null) {
-            getLogoutEvent().fire(new Logout(getCredentials().getUsername()));
+            getLogoutEvent().fire(new LogoutEvent(getCredentials().getUsername()));
         }
         if (isLoggedIn()) {
             unAuthenticate();
@@ -189,7 +189,7 @@ public class ZanataIdentity implements Identity, Serializable {
         }
     }
 
-    private Event<Logout> getLogoutEvent() {
+    private Event<LogoutEvent> getLogoutEvent() {
         return ServiceLocator.instance().getInstance("event", Event.class);
     }
 
