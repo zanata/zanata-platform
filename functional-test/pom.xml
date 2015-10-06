@@ -39,6 +39,11 @@
          https://github.com/jcabi/jcabi-mysql-maven-plugin/issues/47
      -->
     <mysql.dist.version>5.5.34</mysql.dist.version>
+    <!-- 0 is the Linux default (case sensitive), but 1 (lowercase,
+         case-insensitive) is recommended for InnoDB.
+         See https://dev.mysql.com/doc/refman/5.1/en/server-system-variables.html#sysvar_lower_case_table_names
+     -->
+    <mysql.lower_case_table_names>0</mysql.lower_case_table_names>
 
     <!-- target zanata instance will be built by war overlay -->
     <zanata.test.war.name>zanata-test-${project.version}</zanata.test.war.name>
@@ -517,6 +522,9 @@
               <port>${mysql.port}</port>
               <socket>${mysql.socket}</socket>
               <clearexistingdata>false</clearexistingdata>
+              <options>
+                <option>lower_case_table_names=${mysql.lower_case_table_names}</option>
+              </options>
             </configuration>
             <executions>
               <execution>
