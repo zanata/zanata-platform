@@ -116,6 +116,7 @@ public class UserAction implements Serializable {
             // NB: Need to call flush here to be able to catch the persistence
             // exception, otherwise it would be caught by Seam.
             entityManager.flush();
+            userFilter.reset();
         } catch (PersistenceException e) {
             if (e.getCause() instanceof ConstraintViolationException) {
                 facesMessages
