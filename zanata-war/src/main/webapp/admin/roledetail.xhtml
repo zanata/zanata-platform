@@ -5,8 +5,7 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
-  xmlns:a4j="http://richfaces.org/a4j"
-  xmlns:s="http://jboss.org/schema/seam/taglib">
+  xmlns:a4j="http://richfaces.org/a4j">
 
 <ui:composition template="../WEB-INF/template/template.xhtml">
   <f:metadata>
@@ -41,8 +40,6 @@
         <h1 class="l--push-all-0">#{msgs['jsf.RoleDetails']}</h1>
 
         <h:form>
-          <s:token allowMultiplePosts="true"/>
-
           <div class="form__item l--push-top-1">
             <h:outputLabel for="role">#{msgs['jsf.Role']}</h:outputLabel>
             <zanata:decorate id="role" componentId="roleField">

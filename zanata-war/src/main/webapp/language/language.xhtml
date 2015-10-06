@@ -4,7 +4,6 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:a4j="http://richfaces.org/a4j"
   template="/WEB-INF/template/template.xhtml">
 
@@ -138,8 +137,6 @@
                             oncomplete="refreshMembersForm()"
                             value=" #{msgs['jsf.JoinLanguageTeam']}">
                             <i class="i i--plus i__item__icon"></i>
-                            <s:conversationId name="id"
-                              value="#{languageAction.language}"/>
                           </a4j:commandLink>
                         </li>
                       </ui:fragment>
@@ -153,8 +150,6 @@
                           oncomplete="refreshMembersForm()"
                           value="#{msgs['jsf.LeaveLanguageTeam']}">
                           <i class="i i--remove i__item__icon"></i>
-                          <s:conversationId name="id"
-                            value="#{languageAction.language}"/>
                         </a4j:commandLink>
                       </li>
                     </ui:fragment>

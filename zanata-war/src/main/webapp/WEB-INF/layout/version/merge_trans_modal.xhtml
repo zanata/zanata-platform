@@ -1,6 +1,5 @@
 <div xmlns="http://www.w3.org/1999/xhtml"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:rich="http://richfaces.org/rich"
@@ -37,7 +36,6 @@
     </header>
 
     <h:form id="merge-form" styleClass="l--push-bottom-0">
-      <s:token allowMultiplePosts="true"/>
       <a4j:jsFunction name="bindKeepExistingTranslated" limitRender="true">
         <a4j:param name="va1" assignTo="#{key}"/>
         <a4j:param name="val2"
