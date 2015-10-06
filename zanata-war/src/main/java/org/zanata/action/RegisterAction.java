@@ -49,6 +49,8 @@ import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.UrlUtil;
 
 
+import com.google.common.base.Throwables;
+
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 @Name("register")
@@ -88,16 +90,15 @@ public class RegisterAction implements Serializable {
 
     private HPerson person;
 
-    public String isLoggedIn() {
+    public String redirectIfLoggedIn() {
         if (identity.isLoggedIn()) {
             try {
                 // this is in preRenderView phase. we have to use this to
                 // redirect
                 FacesContext.getCurrentInstance().getExternalContext()
                         .redirect(urlUtil.dashboardUrl());
-            }
-            catch (IOException e) {
-                return null;
+            } catch (IOException e) {
+                Throwables.propagate(e);
             }
         }
         return null;

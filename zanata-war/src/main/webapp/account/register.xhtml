@@ -9,7 +9,7 @@
   template="../WEB-INF/template/template_nobanner.xhtml">
 
   <f:metadata>
-    <f:event type="preRenderView" listener="#{register.isLoggedIn()}"/>
+    <f:event type="preRenderView" listener="#{register.redirectIfLoggedIn()}"/>
   </f:metadata>
 
   <ui:define name="page_title">#{msgs['jsf.Register']}</ui:define>
