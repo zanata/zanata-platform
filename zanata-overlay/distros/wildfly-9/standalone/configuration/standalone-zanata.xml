@@ -23,6 +23,7 @@
         <extension module="org.jboss.as.security"/>
         <extension module="org.jboss.as.transactions"/>
         <extension module="org.jboss.as.webservices"/>
+        <extension module="org.jboss.as.weld" />
         <extension module="org.wildfly.extension.batch"/>
         <extension module="org.wildfly.extension.io"/>
         <extension module="org.wildfly.extension.undertow"/>
@@ -563,6 +564,7 @@
             </endpoint-config>
             <client-config name="Standard-Client-Config"/>
         </subsystem>
+        <subsystem xmlns="urn:jboss:domain:weld:2.0"/>
     </profile>
 
     <interfaces>

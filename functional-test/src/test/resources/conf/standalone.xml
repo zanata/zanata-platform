@@ -24,7 +24,7 @@
     <extension module="org.jboss.as.transactions" />
     <extension module="org.jboss.as.web" />
     <extension module="org.jboss.as.webservices" />
-    <!--<extension module="org.jboss.as.weld" />-->
+    <extension module="org.jboss.as.weld" />
   </extensions>
   <system-properties>
     <property name="zanata.countAjax" value="true" />
@@ -442,7 +442,7 @@
       </endpoint-config>
       <client-config name="Standard-Client-Config" />
     </subsystem>
-    <!--<subsystem xmlns="urn:jboss:domain:weld:1.0" />-->
+    <subsystem xmlns="urn:jboss:domain:weld:1.0" />
   </profile>
   <interfaces>
     <interface name="management">
