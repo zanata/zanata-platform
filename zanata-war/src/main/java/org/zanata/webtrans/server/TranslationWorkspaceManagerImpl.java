@@ -23,9 +23,8 @@ import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountDAO;
-import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.events.Logout;
+import org.zanata.events.LogoutEvent;
 import org.zanata.events.ProjectIterationUpdate;
 import org.zanata.events.ProjectUpdate;
 import org.zanata.events.ServerStarted;
@@ -130,8 +129,8 @@ public class TranslationWorkspaceManagerImpl implements
         log.info("starting...");
     }
 
-    @Observer(Logout.EVENT_NAME)
-    public void exitWorkspace(@Observes Logout payload) {
+    @Observer(LogoutEvent.EVENT_NAME)
+    public void exitWorkspace(@Observes LogoutEvent payload) {
         exitWorkspace(payload.getUsername());
     }
 
