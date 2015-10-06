@@ -126,13 +126,6 @@ public class CopyTransServiceUnitTest {
         List<HLocale> localeList = Arrays.asList(de);
         when(localeServiceImpl.getSupportedLanguageByProjectIteration(projSlug, iterSlug)).thenReturn(localeList);
 
-        when(copyTransWorkFactory
-                .createCopyTransExecution(any(HLocale.class),
-                        any(HCopyTransOptions.class), any(HDocument.class),
-                        anyBoolean(), anyListOf(HTextFlow.class)))
-                .thenReturn(
-                        copyTransWork);
-
         HCopyTransOptions optionsIn, optionsOut;
         if (useProjectOpts) {
             optionsIn = null;
@@ -144,8 +137,6 @@ public class CopyTransServiceUnitTest {
 
         ctService.copyTransForDocument(doc, optionsIn, null);
 
-        verify(copyTransWorkFactory).createCopyTransExecution(de, optionsOut, doc,
-                requireReview, textFlows);
         // TODO Need to mock the static method but then that defeats the purpose
         //verify(copyTransWork).call();
     }
