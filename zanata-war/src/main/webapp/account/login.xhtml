@@ -25,14 +25,16 @@
       <div
         class="g__item #{applicationConfiguration.multiAuth ? 'l--constrain-medium l--constrain-small-m' : 'l--constrain-small'}">
         <div class="l--push-v-1">
-          <a4j:outputPanel ajaxRendered="true" layout="block">
-            <h:messages id="messages" globalOnly="true"
-              styleClass="list--no-bullets"
-              errorClass="message--danger app-error l--push-bottom-half"
-              infoClass="message--highlight l--push-bottom-half"
-              warnClass="message--warning l--push-bottom-half"
-              rendered="#{showGlobalMessages != 'false'}"/>
-          </a4j:outputPanel>
+          <h:form styleClass="l--push-bottom-0">
+            <a4j:outputPanel ajaxRendered="true" layout="block">
+              <h:messages id="messages" globalOnly="true"
+                styleClass="list--no-bullets"
+                errorClass="message--danger app-error l--push-bottom-half"
+                infoClass="message--highlight l--push-bottom-half"
+                warnClass="message--warning l--push-bottom-half"
+                rendered="#{showGlobalMessages != 'false'}"/>
+            </a4j:outputPanel>
+          </h:form>
           <div class="g">
             <ui:remove>
               <!--Internal, JAAS and Kerberos Login form-->

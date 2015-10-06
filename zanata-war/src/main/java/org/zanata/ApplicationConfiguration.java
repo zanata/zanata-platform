@@ -47,6 +47,8 @@ import org.zanata.config.DatabaseBackedConfig;
 import org.zanata.config.JaasConfig;
 import org.zanata.config.JndiBackedConfig;
 import org.zanata.events.ConfigurationChanged;
+import org.zanata.events.LogoutEvent;
+import org.zanata.events.PostAuthenticateEvent;
 import org.zanata.i18n.Messages;
 import org.zanata.log4j.ZanataHTMLLayout;
 import org.zanata.log4j.ZanataSMTPAppender;
@@ -57,6 +59,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.zanata.security.OpenIdLoginModule;
+
+import static java.lang.Math.max;
 
 @Named("applicationConfiguration")
 @javax.enterprise.context.ApplicationScoped
@@ -71,6 +75,9 @@ public class ApplicationConfiguration implements Serializable {
 
     @Getter
     private static final int defaultMaxFilesPerUpload = 100;
+
+    @Getter
+    private static final int defaultAnonymousSessionTimeoutMinutes = 30;
 
     @Inject
     private DatabaseBackedConfig databaseBackedConfig;
@@ -402,5 +409,31 @@ public class ApplicationConfiguration implements Serializable {
     public String copyrightNotice() {
         return msgs.format("jsf.CopyrightNotice",
                 String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
+    }
+
+    public void setAuthenticatedSessionTimeout(
+            @Observes PostAuthenticateEvent payload) {
+        HttpServletRequest request = ServletContexts
+                .getInstance()
+                .getRequest();
+        if (request != null) {
+            int timeoutInSecs = max(authenticatedSessionTimeoutMinutes * 60,
+                    defaultAnonymousSessionTimeoutMinutes * 60);
+            request
+                .getSession()
+                .setMaxInactiveInterval(timeoutInSecs);
+        }
+    }
+
+    public void setUnauthenticatedSessionTimeout(@Observes LogoutEvent payload) {
+        HttpServletRequest request = ServletContexts
+                .getInstance()
+                .getRequest();
+        if (request != null) {
+            request
+                .getSession()
+                .setMaxInactiveInterval(
+                        defaultAnonymousSessionTimeoutMinutes * 60);
+        }
     }
 }

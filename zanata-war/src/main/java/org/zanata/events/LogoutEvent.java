@@ -22,16 +22,14 @@ package org.zanata.events;
 
 import lombok.Value;
 
-import org.zanata.security.AuthenticationType;
-
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Value
-public class Logout {
+public class LogoutEvent {
     // TODO remove constant after switching to CDI
     // NB must be a constant string equal to class name
-    public static final String EVENT_NAME = "org.zanata.events.Logout";
+    public static final String EVENT_NAME = "org.zanata.events.LogoutEvent";
 
     String username;
 }

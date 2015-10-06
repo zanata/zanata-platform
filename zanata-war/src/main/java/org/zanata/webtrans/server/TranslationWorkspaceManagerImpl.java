@@ -24,7 +24,7 @@ import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.events.Logout;
+import org.zanata.events.LogoutEvent;
 import org.zanata.events.ProjectIterationUpdate;
 import org.zanata.events.ProjectUpdate;
 import org.zanata.events.ServerStarted;
@@ -128,7 +128,7 @@ public class TranslationWorkspaceManagerImpl implements
         log.info("starting...");
     }
 
-    public void exitWorkspace(@Observes Logout payload, @DeltaSpike HttpSession session) {
+    public void exitWorkspace(@Observes LogoutEvent payload, @DeltaSpike HttpSession session) {
         exitWorkspace(payload.getUsername(), session.getId());
     }
 
