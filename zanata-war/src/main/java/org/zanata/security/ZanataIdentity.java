@@ -40,13 +40,10 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
 import com.google.common.annotations.VisibleForTesting;
-import javax.annotation.PostConstruct;
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.lifecycle.Destroyed;
 import org.apache.deltaspike.core.api.lifecycle.Initialized;
-import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
-import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.contexts.Contexts;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.exception.NotLoggedInException;

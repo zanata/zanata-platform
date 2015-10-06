@@ -18,7 +18,6 @@ import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
 import javax.servlet.ServletContext;
 
-import org.jboss.seam.annotations.Observer;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;

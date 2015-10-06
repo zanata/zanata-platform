@@ -63,7 +63,6 @@ import org.jboss.seam.Component;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.contexts.ServletLifecycle;
 import org.jboss.seam.mail.MailSession;
 import org.zanata.events.ServerStarted;

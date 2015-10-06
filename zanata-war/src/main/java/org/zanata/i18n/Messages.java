@@ -31,7 +31,6 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.inject.Named;
-import org.jboss.seam.annotations.Observer;
 import org.jboss.seam.contexts.Contexts;
 import org.zanata.action.LocaleSelectorAction;
 import org.zanata.events.LocaleSelectedEvent;
@@ -40,9 +39,6 @@ import org.zanata.util.ServiceLocator;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.event.Observes;
-import javax.faces.context.FacesContext;
-
-import static org.jboss.seam.ScopeType.EVENT;
 
 /**
  * Utility component to help with programmatic access to the message resource
@@ -126,7 +122,6 @@ public class Messages extends AbstractMap<String, String> {
         this.resourceBundle = resourceBundle;
     }
 
-    @Observer(LocaleSelectedEvent.EVENT_NAME)
     public void changeLocale(@Observes LocaleSelectedEvent event) {
         // we need to refresh the bean
         // see org.jboss.seam.international.LocaleSelector.select()
