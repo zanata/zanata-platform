@@ -39,8 +39,12 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Begin;
+import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesManager;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
@@ -79,6 +83,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 @Name("versionHome")
+@Scope(ScopeType.CONVERSATION)
 @Slf4j
 public class VersionHome extends SlugHome<HProjectIteration> implements
     HasLanguageSettings {
@@ -183,6 +188,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         }
     }
 
+    @Begin(join = true)
     public void init(boolean isNewInstance) {
         this.isNewInstance = isNewInstance;
         if (isNewInstance) {

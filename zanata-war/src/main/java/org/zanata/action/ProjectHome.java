@@ -48,8 +48,12 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Begin;
+import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Transactional;
 import org.jboss.seam.faces.FacesManager;
 import org.jboss.seam.faces.Redirect;
@@ -262,6 +266,7 @@ public class ProjectHome extends SlugHome<HProject> implements
                 }
             };
 
+    @Begin(join = true)
     public void createNew() {
         identity.checkPermission(getInstance(), "insert");
         getInstance().setDefaultProjectType(ProjectType.File);
@@ -688,6 +693,7 @@ public class ProjectHome extends SlugHome<HProject> implements
             msgs.get("jsf.project.CopyTransOpts.updated"));
     }
 
+    @Begin(join = true)
     public void initialize() {
         initInstance();
         validateSuppliedId();
@@ -1134,6 +1140,7 @@ public class ProjectHome extends SlugHome<HProject> implements
                     .getInstance("projectHome", ProjectHome.class);
             projectHome.update();
             reset();
+            maintainerFilter.reset();
 
             getFacesMessages().addGlobal(FacesMessage.SEVERITY_INFO,
                     msgs.format("jsf.project.MaintainerAdded",

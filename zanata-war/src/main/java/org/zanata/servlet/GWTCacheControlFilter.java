@@ -1,5 +1,8 @@
 package org.zanata.servlet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 
 import javax.servlet.Filter;
@@ -28,10 +31,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Sean Flanigan <sflaniga@redhat.com>
  * @created 24 Feb 2009
  */
-public class GWTCacheControlFilter implements Filter {
-
-    private static final long ONE_DAY_MS = 86400000L;
-    private static final long ONE_YEAR_MS = ONE_DAY_MS * 365;
+public class GWTCacheControlFilter extends CacheControlFilter {
 
     public void destroy() {
     }
@@ -46,16 +46,10 @@ public class GWTCacheControlFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         String requestURI = httpRequest.getRequestURI();
 
-        if (requestURI.contains(".nocache.")) {
-            long now = System.currentTimeMillis();
-            httpResponse.setDateHeader("Date", now);
-            httpResponse.setDateHeader("Expires", now - ONE_DAY_MS);
-            httpResponse.setHeader("Cache-control",
-                    "public, max-age=0, must-revalidate");
-        } else if (requestURI.contains(".cache.")) {
-            long now = System.currentTimeMillis();
-            httpResponse.setDateHeader("Date", now);
-            httpResponse.setDateHeader("Expires", now + ONE_YEAR_MS);
+        if (requestURI.contains(".cache.")) {
+            addCacheHeader(httpResponse);
+        } else if (requestURI.contains(".nocache.")) {
+            addNoCacheHeader(httpResponse);
         }
 
         filterChain.doFilter(request, response);

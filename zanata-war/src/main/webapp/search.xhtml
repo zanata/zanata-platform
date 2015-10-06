@@ -1,9 +1,16 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   template="/WEB-INF/template/template.xhtml">
+
+  <f:metadata>
+    <f:event type="preRenderView" listener="#{breadcrumbs.clear}"/>
+    <f:event type="preRenderView" listener="#{breadcrumbs.addLocation('', msgs['jsf.SearchProjects'])}"/>
+    <f:viewParam name="query" value="#{zanataSearch.autocomplete.query}" />
+  </f:metadata>
 
   <ui:define
     name="page_title">#{msgs.format('jsf.search.searchQuery.title',

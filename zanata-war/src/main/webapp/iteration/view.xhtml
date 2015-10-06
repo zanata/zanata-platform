@@ -10,6 +10,23 @@
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   template="../WEB-INF/template/template.xhtml">
 
+  <f:metadata>
+    <f:viewParam name="projectSlug" value="#{versionHomeAction.projectSlug}" />
+    <f:viewParam name="iterationSlug" value="#{versionHomeAction.versionSlug}" />
+
+    <f:viewParam name="projectSlug" value="#{versionHome.projectSlug}" />
+    <f:viewParam name="iterationSlug" value="#{versionHome.slug}" />
+
+    <f:viewParam name="projectSlug" value="#{copyTransAction.projectSlug}" />
+    <f:viewParam name="iterationSlug" value="#{copyTransAction.iterationSlug}" />
+
+    <f:viewParam name="projectSlug" value="#{mergeTransAction.targetProjectSlug}" />
+    <f:viewParam name="iterationSlug" value="#{mergeTransAction.targetVersionSlug}" />
+
+    <f:event type="preRenderView" listener="#{versionHome.init(false)}"/>
+    <f:event type="preRenderView" listener="#{versionHome.validateSuppliedId}"/>
+  </f:metadata>
+
 <ui:define name="page_title">
   #{msgs['jsf.Version']} -
   #{versionHomeAction.projectSlug}:#{versionHomeAction.versionSlug}
