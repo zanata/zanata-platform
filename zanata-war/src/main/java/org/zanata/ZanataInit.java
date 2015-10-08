@@ -62,7 +62,6 @@ import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.contexts.ServletLifecycle;
 import org.zanata.email.EmailBuilder;
 import org.zanata.events.ServerStarted;
 import org.zanata.exception.ZanataInitializationException;
@@ -111,14 +110,12 @@ public class ZanataInit {
     private EntityManagerFactory entityManagerFactory;
 
     public void onCreate(@Observes @Initialized ServletContext context) throws Exception {
-        initZanata();
+        initZanata(context);
     }
 
-    public void initZanata() throws Exception {
+    public void initZanata(ServletContext context) throws Exception {
         checkAppServerVersion();
-        ServletContext servletContext =
-                ServletLifecycle.getCurrentServletContext();
-        String appServerHome = servletContext.getRealPath("/");
+        String appServerHome = context.getRealPath("/");
 
         File manifestFile = new File(appServerHome, "META-INF/MANIFEST.MF");
 
