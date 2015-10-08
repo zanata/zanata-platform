@@ -55,6 +55,10 @@ public class SysProperties {
      * Override Lucene value for project iteration (slug)
      */
     public static final String TM_BOOST_ITERATION = "zanata.tm.boost.iteration";
+    /**
+     * Override default lock timeout for @Synchronized beans
+     */
+    public static final String LOCK_TIMEOUT = "zanata.lock.timeout.millis";
 
     /**
      * Gets the value of a system property as a float if available,
@@ -84,6 +88,17 @@ public class SysProperties {
      */
     public static int getInt(String propName, int defVal) {
         return Integer.getInteger(propName, defVal);
+    }
+
+    /**
+     * Gets the value of a system property as a float if available,
+     * otherwise returning the default value.
+     * @param propName name of the system property
+     * @param defVal the default to use if the property is missing or can't be converted to int
+     * @return the int value
+     */
+    public static long getLong(String propName, long defVal) {
+        return Long.getLong(propName, defVal);
     }
 
 }
