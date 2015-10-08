@@ -31,23 +31,33 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.core.Events;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
+import org.zanata.common.ContentState;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
+import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.HSimpleComment;
+import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.type.TranslationSourceType;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.MergeTranslationsService;
+import org.zanata.service.TranslationStateCache;
+import org.zanata.service.VersionStateCache;
+import org.zanata.transaction.TransactionUtil;
+import org.zanata.util.TranslationUtil;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Stopwatch;
-import org.zanata.service.TranslationStateCache;
-import org.zanata.service.VersionStateCache;
+
+import static org.zanata.transaction.TransactionUtil.runInTransaction;
 
 /**
  * Service provider for merge translations task.
@@ -163,14 +173,107 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
             HProjectIteration targetVersion, List<HLocale> supportedLocales,
             boolean useNewerTranslation, int offset, int batchSize) {
         try {
-            return new MergeTranslationsWork(sourceVersion.getId(),
-                    targetVersion.getId(), offset, batchSize,
-                    useNewerTranslation, supportedLocales,
-                    textFlowDAO, translationStateCacheImpl)
-                    .workInTransaction();
+            return runInTransaction(
+                    () -> this.mergeTranslations(sourceVersion.getId(),
+                            targetVersion.getId(), offset, batchSize,
+                            useNewerTranslation, supportedLocales));
         } catch (Exception e) {
             log.warn("exception during copy text flow target", e);
             return 0;
+        }
+    }
+
+    private Integer mergeTranslations(
+            final Long sourceVersionId,
+            final Long targetVersionId,
+            final int batchStart,
+            final int batchLength,
+            final boolean useNewerTranslation,
+            final List<HLocale> supportedLocales) throws Exception {
+
+        final Stopwatch stopwatch = Stopwatch.createUnstarted();
+        stopwatch.start();
+
+        List<HTextFlow[]> matches =
+                textFlowDAO.getSourceByMatchedContext(
+                        sourceVersionId, targetVersionId, batchStart,
+                        batchLength);
+
+        for (HTextFlow[] results : matches) {
+            HTextFlow sourceTf = results[0];
+            HTextFlow targetTf = results[1];
+            boolean foundChange = false;
+
+            for (HLocale hLocale : supportedLocales) {
+                HTextFlowTarget sourceTft =
+                        sourceTf.getTargets().get(hLocale.getId());
+                // only process translated state
+                if (sourceTft == null || !sourceTft.getState().isTranslated()) {
+                    continue;
+                }
+
+                HTextFlowTarget targetTft =
+                        targetTf.getTargets().get(hLocale.getId());
+                if (targetTft == null) {
+                    targetTft = new HTextFlowTarget(targetTf, hLocale);
+                    targetTft.setVersionNum(0);
+                    targetTf.getTargets().put(hLocale.getId(), targetTft);
+                }
+
+                if (MergeTranslationsServiceImpl.shouldMerge(sourceTft,
+                        targetTft, useNewerTranslation)) {
+                    foundChange = true;
+                    mergeTextFlowTarget(sourceTft, targetTft, targetVersionId);
+                }
+            }
+            if (foundChange) {
+                translationStateCacheImpl.clearDocumentStatistics(targetTf
+                        .getDocument().getId());
+                textFlowDAO.makePersistent(targetTf);
+                textFlowDAO.flush();
+            }
+        }
+        stopwatch.stop();
+        log.info("Complete merge translations of {} in {}", matches.size()
+                * supportedLocales.size(), stopwatch);
+        return matches.size() * supportedLocales.size();
+    }
+
+    private void mergeTextFlowTarget(HTextFlowTarget sourceTft,
+            HTextFlowTarget targetTft, Long targetVersionId) {
+        ContentState oldState = targetTft.getState();
+
+        targetTft.setContents(sourceTft.getContents());
+        targetTft.setState(sourceTft.getState());
+        targetTft.setLastChanged(sourceTft.getLastChanged());
+        targetTft.setLastModifiedBy(sourceTft.getLastModifiedBy());
+        targetTft.setTranslator(sourceTft.getTranslator());
+
+        if (sourceTft.getComment() == null) {
+            targetTft.setComment(null);
+        } else {
+            HSimpleComment hComment = targetTft.getComment();
+            if (hComment == null) {
+                hComment = new HSimpleComment();
+                targetTft.setComment(hComment);
+            }
+            hComment.setComment(sourceTft.getComment().getComment());
+        }
+        targetTft.setRevisionComment(TranslationUtil
+                .getMergeTranslationMessage(sourceTft));
+        targetTft.setSourceType(TranslationSourceType.MERGE_VERSION);
+        TranslationUtil.copyEntity(sourceTft, targetTft);
+
+        if (Events.exists()) {
+            TextFlowTargetStateEvent event =
+                    new TextFlowTargetStateEvent(null, targetVersionId,
+                            targetTft.getTextFlow().getDocument().getId(),
+                            targetTft.getTextFlow().getId(),
+                            targetTft.getLocale().getLocaleId(),
+                            targetTft.getId(), targetTft.getState(), oldState);
+
+            Events.instance().raiseTransactionSuccessEvent(
+                    TextFlowTargetStateEvent.EVENT_NAME, event);
         }
     }
 
