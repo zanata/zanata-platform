@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.infinispan.manager.CacheContainer;
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
-import org.jboss.seam.annotations.Startup;
 import javax.enterprise.inject.Produces;
 import org.zanata.util.ServiceLocator;
 

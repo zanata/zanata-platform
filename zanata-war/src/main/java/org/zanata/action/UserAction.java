@@ -21,21 +21,16 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 
 import org.hibernate.exception.ConstraintViolationException;
-import org.jboss.seam.Component;
-import org.jboss.seam.annotations.Begin;
 import javax.inject.Inject;
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
-import org.jboss.seam.core.Conversation;
-import org.jboss.seam.international.StatusMessages;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.i18n.Messages;
@@ -46,10 +41,9 @@ import org.zanata.ui.AbstractListFilter;
 
 import lombok.Getter;
 import org.zanata.ui.faces.FacesMessages;
+import org.zanata.util.ServiceLocator;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
-import static org.jboss.seam.ScopeType.PAGE;
-import static org.jboss.seam.annotations.Install.APPLICATION;
 
 /**
  * Extension of Seam management's UserAction class' behaviour.
@@ -90,7 +84,7 @@ public class UserAction implements Serializable {
     private AbstractListFilter<String> userFilter =
             new AbstractListFilter<String>() {
                 AccountDAO accountDAO =
-                        (AccountDAO) Component.getInstance(AccountDAO.class);
+                        ServiceLocator.instance().getInstance(AccountDAO.class);
 
                 @Override
                 protected List<String> fetchRecords(int start, int max,

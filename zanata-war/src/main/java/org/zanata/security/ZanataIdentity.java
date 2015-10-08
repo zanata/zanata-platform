@@ -20,8 +20,6 @@
  */
 package org.zanata.security;
 
-import static org.jboss.seam.ScopeType.SESSION;
-import static org.jboss.seam.annotations.Install.APPLICATION;
 
 import java.io.Serializable;
 import java.security.Principal;
@@ -40,6 +38,7 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
 import com.google.common.annotations.VisibleForTesting;
+import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.lifecycle.Destroyed;
 import org.apache.deltaspike.core.api.lifecycle.Initialized;
@@ -62,7 +61,6 @@ import org.zanata.security.jaas.InternalLoginModule;
 import org.zanata.security.permission.CustomPermissionResolver;
 import org.zanata.security.permission.MultiTargetList;
 import javax.enterprise.event.Event;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import org.zanata.util.ServiceLocator;

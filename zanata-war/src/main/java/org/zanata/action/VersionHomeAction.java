@@ -44,7 +44,6 @@ import javax.inject.Named;
 import org.richfaces.event.FileUploadEvent;
 import org.richfaces.model.UploadedFile;
 import org.zanata.exception.AuthorizationException;
-import org.jboss.seam.util.Hex;
 import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
@@ -87,6 +86,7 @@ import org.zanata.ui.faces.FacesMessages;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.DateUtil;
 import org.zanata.util.FileUtil;
+import org.zanata.util.PasswordUtil;
 import org.zanata.util.ServiceLocator;
 import org.zanata.util.StatisticsUtil;
 import org.zanata.util.UrlUtil;
@@ -933,7 +933,8 @@ public class VersionHomeAction extends AbstractSortAction implements
         } else {
             HRawDocument rawDocument = new HRawDocument();
             rawDocument.setDocument(document);
-            rawDocument.setContentHash(new String(Hex.encodeHex(md5hash)));
+            rawDocument.setContentHash(new String(
+                    PasswordUtil.encodeHex(md5hash)));
             rawDocument.setType(docType);
             rawDocument.setUploadedBy(identity.getCredentials().getUsername());
 

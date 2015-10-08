@@ -40,7 +40,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.util.Hex;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.DocumentDAO;
@@ -55,6 +54,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationFileService;
+import org.zanata.util.PasswordUtil;
 
 import com.google.common.base.Optional;
 
@@ -340,7 +340,7 @@ public class DocumentUploadUtil {
      */
     private void checkAndUpdateHash(DocumentFileUploadForm uploadForm,
             MessageDigest md, String providedHash) {
-        String md5hash = new String(Hex.encodeHex(md.digest()));
+        String md5hash = new String(PasswordUtil.encodeHex(md.digest()));
         if (isNullOrEmpty(providedHash)) {
             // Web upload with no hash provided, use generated hash for metadata
             uploadForm.setHash(md5hash);

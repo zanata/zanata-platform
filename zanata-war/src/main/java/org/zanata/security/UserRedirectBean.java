@@ -25,7 +25,12 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.jboss.seam.web.ServletContexts;
 
 /**

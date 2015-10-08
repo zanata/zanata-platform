@@ -11,14 +11,12 @@ import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
 import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.util.Strings;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.util.ServiceLocator;
 
+import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 
-import static org.jboss.seam.ScopeType.EVENT;
-import static org.jboss.seam.annotations.Install.APPLICATION;
 
 /**
  * Based on seam's IdentityManager.
@@ -225,8 +223,9 @@ public class IdentityManager implements Serializable {
     }
 
     public boolean authenticate(String username, String password) {
-        if (Strings.isEmpty(username))
+        if (Strings.isNullOrEmpty(username)) {
             return false;
+        }
         return identityStore.authenticate(username, password);
     }
 

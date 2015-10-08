@@ -19,7 +19,6 @@ import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
 import org.jboss.seam.async.AsynchronousInterceptor;
 import org.jboss.seam.intercept.InvocationContext;
-import org.jboss.seam.util.Strings;
 import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.util.ServiceLocator;
 import lombok.extern.slf4j.Slf4j;

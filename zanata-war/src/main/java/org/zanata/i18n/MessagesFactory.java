@@ -20,7 +20,6 @@
  */
 package org.zanata.i18n;
 
-import static org.jboss.seam.ScopeType.APPLICATION;
 
 import lombok.Getter;
 import javax.inject.Named;
