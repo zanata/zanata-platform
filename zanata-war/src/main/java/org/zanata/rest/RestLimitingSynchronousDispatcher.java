@@ -32,7 +32,6 @@ import org.jboss.resteasy.spi.HttpResponse;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.spi.UnhandledException;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
-import org.jboss.seam.web.ServletContexts;
 import org.zanata.dao.AccountDAO;
 import org.zanata.limits.RateLimitingProcessor;
 import org.zanata.model.HAccount;
@@ -43,6 +42,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.zanata.seam.resteasy.SeamResteasyProviderFactory;
 import org.zanata.security.SecurityFunctions;
+import org.zanata.servlet.HttpRequestAndSessionHolder;
 import org.zanata.util.HttpUtil;
 import org.zanata.util.ServiceLocator;
 
@@ -74,7 +74,7 @@ class RestLimitingSynchronousDispatcher extends SynchronousDispatcher {
     }
 
     HttpServletRequest getServletRequest() {
-        return ServletContexts.instance().getRequest();
+        return HttpRequestAndSessionHolder.getRequest().get();
     }
 
     @Override

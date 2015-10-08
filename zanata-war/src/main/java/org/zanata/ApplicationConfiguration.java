@@ -41,8 +41,10 @@ import org.apache.log4j.Level;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpSession;
+
+import org.zanata.servlet.HttpRequestAndSessionHolder;
 import org.zanata.util.Synchronized;
-import org.jboss.seam.web.ServletContexts;
 import org.zanata.config.DatabaseBackedConfig;
 import org.zanata.config.JaasConfig;
 import org.zanata.config.JndiBackedConfig;
@@ -250,9 +252,10 @@ public class ApplicationConfiguration implements Serializable {
 
     //@see comment at org.zanata.security.AuthenticationManager.onLoginCompleted()
     public void createDefaultServerPath() {
-        HttpServletRequest request =
-                ServletContexts.instance().getRequest();
-        if (request != null) {
+        java.util.Optional<HttpServletRequest> requestOpt =
+                HttpRequestAndSessionHolder.getRequest();
+        if (requestOpt.isPresent()) {
+            HttpServletRequest request = requestOpt.get();
             defaultServerPath =
                     request.getScheme() + "://" + request.getServerName()
                             + ":" + request.getServerPort()
@@ -413,25 +416,21 @@ public class ApplicationConfiguration implements Serializable {
 
     public void setAuthenticatedSessionTimeout(
             @Observes PostAuthenticateEvent payload) {
-        HttpServletRequest request = ServletContexts
-                .getInstance()
-                .getRequest();
-        if (request != null) {
+        java.util.Optional<HttpSession> sessionOpt =
+                HttpRequestAndSessionHolder.getHttpSession();
+        if (sessionOpt.isPresent()) {
             int timeoutInSecs = max(authenticatedSessionTimeoutMinutes * 60,
                     defaultAnonymousSessionTimeoutMinutes * 60);
-            request
-                .getSession()
+            sessionOpt.get()
                 .setMaxInactiveInterval(timeoutInSecs);
         }
     }
 
     public void setUnauthenticatedSessionTimeout(@Observes LogoutEvent payload) {
-        HttpServletRequest request = ServletContexts
-                .getInstance()
-                .getRequest();
-        if (request != null) {
-            request
-                .getSession()
+        java.util.Optional<HttpSession> sessionOpt =
+                HttpRequestAndSessionHolder.getHttpSession();
+        if (sessionOpt.isPresent()) {
+            sessionOpt.get()
                 .setMaxInactiveInterval(
                         defaultAnonymousSessionTimeoutMinutes * 60);
         }

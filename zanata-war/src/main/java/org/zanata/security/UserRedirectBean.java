@@ -27,11 +27,8 @@ import java.net.URLEncoder;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
-import org.apache.deltaspike.core.api.common.DeltaSpike;
-import org.jboss.seam.web.ServletContexts;
+import org.zanata.servlet.annotations.ContextPath;
 
 /**
  * This bean is used store a url from the query string for use with redirects.
@@ -58,6 +55,10 @@ public class UserRedirectBean implements Serializable {
     */
     private static final long serialVersionUID = 1L;
     private final static String ENCODING = "UTF-8";
+
+    @Inject @ContextPath
+    private String contextPath;
+
     private String url;
 
     /**
@@ -106,9 +107,7 @@ public class UserRedirectBean implements Serializable {
      * @see UserRedirectBean#setUrl(String)
      */
     public void setLocalUrl(String url) {
-        String ctxPath =
-                ServletContexts.instance().getRequest().getContextPath();
-        setUrl(ctxPath + url);
+        setUrl(contextPath + url);
     }
 
     /**

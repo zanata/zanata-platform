@@ -26,6 +26,8 @@ import javax.inject.Named;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.deltaspike.core.api.common.DeltaSpike;
+
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
@@ -71,6 +73,7 @@ public class AjaxCounterBean {
             "</script>\n";
 
     @Inject
+    @DeltaSpike
     private HttpServletRequest httpRequest;
 
     public String getAjaxCounterScript() {

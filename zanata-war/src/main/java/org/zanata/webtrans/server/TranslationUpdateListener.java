@@ -17,7 +17,6 @@ import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.util.Work;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
@@ -28,6 +27,8 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import javax.enterprise.event.Event;
+
+import org.zanata.servlet.HttpRequestAndSessionHolder;
 import org.zanata.util.ServiceLocator;
 import org.zanata.webtrans.server.rpc.TransUnitTransformer;
 import org.zanata.webtrans.shared.auth.EditorClientId;
@@ -77,10 +78,6 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
     @Inject
     private Event<TextFlowTargetUpdatedEvent>
             textFlowTargetUpdatedEvent;
-
-    @Inject
-    @DeltaSpike
-    private HttpServletRequest request;
 
     /**
      * Event raised by Text flow target update initiator containing update
@@ -157,13 +154,15 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
                 updateContext.getIfPresent(new CacheKey(transUnit.getId(),
                         transUnit.getLocaleId()));
         TransUnitUpdated updated;
+        java.util.Optional<HttpSession> sessionOpt =
+                HttpRequestAndSessionHolder.getHttpSession(false);
         if (context != null) {
             updated =
                     new TransUnitUpdated(updateInfo, context.editorClientId,
                             context.updateType);
             log.debug("about to publish trans unit updated event {}", updated);
-        } else if (getHttpSession() != null) {
-            String sessionId = getHttpSession().getId();
+        } else if (sessionOpt.isPresent()) {
+            String sessionId = sessionOpt.get().getId();
             EditorClientId editorClientId = new EditorClientId(sessionId, -1);
             updated =
                     new TransUnitUpdated(updateInfo, editorClientId,
@@ -180,7 +179,7 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
     }
 
     HttpSession getHttpSession() {
-        return request.getSession(false);
+        return HttpRequestAndSessionHolder.getHttpSession(false).orElse(null);
     }
 
     private static TransUnitUpdateInfo createTransUnitUpdateInfo(

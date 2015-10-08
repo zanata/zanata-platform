@@ -23,21 +23,21 @@ package org.zanata.action;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.StringTokenizer;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.servlet.ServletRequest;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.web.ServletContexts;
 import org.zanata.events.LocaleSelectedEvent;
+import org.zanata.servlet.HttpRequestAndSessionHolder;
 import org.zanata.util.Event;
 import org.zanata.util.ServiceLocator;
 
@@ -102,9 +102,10 @@ public class LocaleSelectorAction {
             }
         }
 
-        ServletContexts servletContexts = ServletContexts.getInstance();
-        if (servletContexts != null) {
-            ServletRequest request = servletContexts.getRequest();
+        Optional<HttpServletRequest> requestOpt =
+                HttpRequestAndSessionHolder.getRequest();
+        if (requestOpt.isPresent()) {
+            ServletRequest request = requestOpt.get();
             if (request != null) {
                 return calculateLocale(request.getLocale());
             }
