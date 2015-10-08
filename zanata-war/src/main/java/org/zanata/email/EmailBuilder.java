@@ -8,6 +8,7 @@ import java.net.ConnectException;
 import java.util.List;
 import java.util.Locale;
 
+import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Session;
@@ -30,9 +31,8 @@ import org.apache.velocity.runtime.log.CommonsLogLogChute;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.international.LocaleSelector;
-import org.jboss.seam.mail.MailSession;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.action.LocaleSelectorAction;
 import org.zanata.i18n.Messages;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -41,8 +41,6 @@ import org.zanata.i18n.MessagesFactory;
 import org.zanata.util.HtmlUtil;
 
 import static com.googlecode.totallylazy.collections.PersistentMap.constructors.map;
-import static org.jboss.seam.ScopeType.EVENT;
-import static org.jboss.seam.ScopeType.STATELESS;
 
 /**
  * Uses an instance of EmailBuilderStrategy to build an email from a Velocity
@@ -54,23 +52,23 @@ import static org.jboss.seam.ScopeType.STATELESS;
 @javax.enterprise.context.Dependent
 @Slf4j
 public class EmailBuilder {
+    public static final String MAIL_SESSION_JNDI = "jboss/mail/Default";
     // Use this if you want emails logged on stderr
     // Warning: The full message may contain sensitive information
     private static final boolean LOG_FULL_MESSAGES = false;
     private static final VelocityEngine velocityEngine = makeVelocityEngine();
 
     public EmailBuilder() {
-        this.mailSession = MailSession.instance();
     }
 
-    // it seems to be impossible to inject this in Seam 2:
-    private final Session mailSession;
+    @Resource(lookup = MAIL_SESSION_JNDI)
+    private Session mailSession;
     @Inject
     private Context emailContext;
     @Inject
     private MessagesFactory messagesFactory;
     @Inject
-    private LocaleSelector localeSelector;
+    private LocaleSelectorAction localeSelector;
 
     private static VelocityEngine makeVelocityEngine() {
         VelocityEngine ve = new VelocityEngine();

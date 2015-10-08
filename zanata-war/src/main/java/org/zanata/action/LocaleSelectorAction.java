@@ -52,8 +52,6 @@ import com.google.common.collect.Lists;
 @Name("localeSelectorAction")
 @Scope(ScopeType.SESSION)
 public class LocaleSelectorAction {
-    public static final String COOKIE_NAME = "org.zanata.i18n.locale";
-    public static final int DEFAULT_MAX_AGE = 365 * 24 * 60 * 60; // 1 year in seconds
 
     private String language;
     private String country;
@@ -74,9 +72,7 @@ public class LocaleSelectorAction {
      */
     public void select() {
         FacesContext.getCurrentInstance().getViewRoot().setLocale(getLocale());
-//        Contexts.removeFromAllContexts("org.jboss.seam.international.messages");
 
-//        setCookieValueIfEnabled(getLocaleString());
         getLocaleSelectedEvent().fire(
                 new LocaleSelectedEvent(getLocaleString()));
     }
@@ -143,32 +139,9 @@ public class LocaleSelectorAction {
         return selectItems;
     }
 
-    protected Cookie getCookie() {
-        FacesContext ctx = FacesContext.getCurrentInstance();
-        if (ctx != null) {
-            return (Cookie) ctx.getExternalContext().getRequestCookieMap()
-                    .get(COOKIE_NAME);
-        } else {
-            return null;
-        }
+    public void setLocale(Locale locale) {
+        language = Strings.emptyToNull(locale.getLanguage());
+        country = Strings.emptyToNull(locale.getCountry());
+        variant = Strings.emptyToNull(locale.getVariant());
     }
-
-    protected void setCookieValueIfEnabled(String value) {
-        FacesContext ctx = FacesContext.getCurrentInstance();
-
-        if (ctx != null) {
-            HttpServletResponse response = (HttpServletResponse) ctx.getExternalContext().getResponse();
-            Cookie cookie = new Cookie(COOKIE_NAME, value);
-            cookie.setMaxAge(DEFAULT_MAX_AGE);
-            String requestContextPath =
-                    FacesContext.getCurrentInstance().getExternalContext()
-                            .getRequestContextPath();
-            if (requestContextPath.isEmpty()) {
-                requestContextPath = "/";
-            }
-            cookie.setPath(requestContextPath);
-            response.addCookie(cookie);
-        }
-    }
-
 }

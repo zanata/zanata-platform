@@ -59,12 +59,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.deltaspike.core.api.lifecycle.Initialized;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
-import org.jboss.seam.Component;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.jboss.seam.contexts.ServletLifecycle;
-import org.jboss.seam.mail.MailSession;
+import org.zanata.email.EmailBuilder;
 import org.zanata.events.ServerStarted;
 import org.zanata.exception.ZanataInitializationException;
 import org.zanata.rest.dto.VersionInfo;
@@ -176,10 +175,7 @@ public class ZanataInit {
         }
 
         // Email server information
-        MailSession mailSession = (MailSession) Component.forName(
-                "org.jboss.seam.mail.mailSession").newInstance();
-        log.info("Mail Session (JNDI): {}",
-                mailSession.getSessionJndiName());
+        log.info("Mail Session (JNDI): {}", EmailBuilder.MAIL_SESSION_JNDI);
 
         startupEvent.fire(new ServerStarted());
 
