@@ -457,7 +457,7 @@ public class EditorPage extends BasePage {
     public EditorPage inputFilterQuery(String query) {
         log.info("Enter filter query {}", query);
         readyElement(editorFilterField).clear();
-        enterText(readyElement(editorFilterField), query + Keys.ENTER);
+        enterText(readyElement(editorFilterField), query + Keys.ENTER, true, false, false);
         return new EditorPage(getDriver());
     }
 

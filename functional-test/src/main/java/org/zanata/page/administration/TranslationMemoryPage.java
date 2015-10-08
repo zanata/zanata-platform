@@ -79,7 +79,7 @@ public class TranslationMemoryPage extends BasePage {
     public TranslationMemoryPage enterImportFileName(String importFileName) {
         log.info("Enter import TM filename {}", importFileName);
         // Don't clear, inject text, check value
-        enterText(readyElement(filenameInput), importFileName, false, true, true);
+        enterText(readyElement(filenameInput), importFileName, false, true, false);
         slightPause();
         return new TranslationMemoryPage(getDriver());
     }
