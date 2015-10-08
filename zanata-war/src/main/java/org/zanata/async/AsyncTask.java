@@ -20,11 +20,6 @@
  */
 package org.zanata.async;
 
-import java.util.concurrent.Future;
-
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * Public common class for all asynchronous tasks in the system.
  *
@@ -34,10 +29,8 @@ import lombok.Setter;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public abstract class AsyncTask<V> {
-
-    @Getter @Setter
-    private Future<V> future;
+@FunctionalInterface
+public interface AsyncTask<V> {
 
     /**
      * Computes a result, or throws a Throwable if unable to do so.
@@ -45,5 +38,5 @@ public abstract class AsyncTask<V> {
      * @return computed result
      * @throws Throwable if unable to compute a result
      */
-    abstract V call() throws Throwable;
+    V call() throws Throwable;
 }

@@ -72,6 +72,14 @@ public class AsyncTaskManager {
         scheduler.shutdown();
     }
 
+    /**
+     * Starts a task asynchronously.
+     * In its present implementation can only run tasks which expect a
+     * {@code Future} result.
+     * @param task The task to run.
+     * @param <V> The type of result expected.
+     * @return A listenable future for the expected result.
+     */
     public <V> ListenableFuture<V> startTask(
             final @Nonnull AsyncTask<Future<V>> task) {
         HAccount taskOwner = ServiceLocator.instance()

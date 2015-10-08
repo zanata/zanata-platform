@@ -69,29 +69,26 @@ public class AsyncMethodInterceptor implements OptimizedInterceptor {
                     Optional.fromNullable(findHandleIfPresent(ctx
                             .getParameters()));
 
-            AsyncTask asyncTask = new AsyncTask() {
-                @Override
-                public Object call() throws Throwable {
-                    interceptorRan.set(true);
-                    try {
-                        if (handle.isPresent()) {
-                            handle.get().startTiming();
-                        }
-                        Object target =
-                                ServiceLocator.instance().getInstance(
-                                        ctx.getMethod()
-                                                .getDeclaringClass());
-                        return ctx.getMethod().invoke(target,
-                                ctx.getParameters());
-                    } catch (InvocationTargetException itex) {
-                        // exception thrown from the invoked method
-                        throw itex.getCause();
-                    } finally {
-                        interceptorRan.remove();
-                        if (handle.isPresent()) {
-                            handle.get().finishTiming();
-                            taskHandleManager.taskFinished(handle.get());
-                        }
+            AsyncTask asyncTask = () -> {
+                interceptorRan.set(true);
+                try {
+                    if (handle.isPresent()) {
+                        handle.get().startTiming();
+                    }
+                    Object target =
+                            ServiceLocator.instance().getInstance(
+                                    ctx.getMethod()
+                                            .getDeclaringClass());
+                    return ctx.getMethod().invoke(target,
+                            ctx.getParameters());
+                } catch (InvocationTargetException itex) {
+                    // exception thrown from the invoked method
+                    throw itex.getCause();
+                } finally {
+                    interceptorRan.remove();
+                    if (handle.isPresent()) {
+                        handle.get().finishTiming();
+                        taskHandleManager.taskFinished(handle.get());
                     }
                 }
             };
