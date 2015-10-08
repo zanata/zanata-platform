@@ -31,6 +31,12 @@ import org.apache.deltaspike.core.api.lifecycle.Destroyed;
 import org.apache.deltaspike.core.api.lifecycle.Initialized;
 
 /**
+ * DeltaSpike will always inject a HttpServletRequest or HttpSession proxy
+ * object even when you don't have an active request. Invoke any method on the
+ * proxy object will result in an IllegalStateException. This way we will be
+ * able to get an optional request or session object in the cases where it's
+ * optional.
+ *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
@@ -41,7 +47,8 @@ public class HttpRequestAndSessionHolder {
 
     void setRequest(@Observes @Initialized HttpServletRequest request) {
         if (REQUEST.get() != null) {
-            throw new IllegalStateException("There is already a request for this thread");
+            throw new IllegalStateException(
+                    "There is already a request for this thread");
         }
         REQUEST.set(request);
     }

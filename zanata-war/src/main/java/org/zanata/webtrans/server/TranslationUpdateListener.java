@@ -178,10 +178,6 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
                         target.getId(), updated));
     }
 
-    HttpSession getHttpSession() {
-        return HttpRequestAndSessionHolder.getHttpSession(false).orElse(null);
-    }
-
     private static TransUnitUpdateInfo createTransUnitUpdateInfo(
             TransUnit transUnit, DocumentId documentId, int wordCount,
             int previousVersionNum, ContentState previousState) {
