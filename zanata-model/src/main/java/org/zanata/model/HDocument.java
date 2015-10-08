@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
@@ -48,6 +49,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
@@ -58,7 +61,6 @@ import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.Where;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.jboss.seam.Component;
-import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
@@ -72,6 +74,7 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 import com.google.common.collect.ImmutableList;
+import org.zanata.util.Contexts;
 
 /**
  * @see AbstractResourceMeta
@@ -88,6 +91,7 @@ import com.google.common.collect.ImmutableList;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true, of = {})
 @ToString(of = { "name", "path", "docId", "locale", "revision" })
+@Slf4j
 public class HDocument extends ModelEntityBase implements DocumentWithId,
         IDocumentHistory, Serializable, Iterable<ITextFlow>, IsEntityWithType {
     private static final long serialVersionUID = 5129552589912687504L;
@@ -309,18 +313,29 @@ public class HDocument extends ModelEntityBase implements DocumentWithId,
     }
 
     public static class EntityListener {
+        // TODO look up @Authenticated HAccount, not by name
+        // from org.jboss.seam.security.management.JpaIdentityStore.AUTHENTICATED_USER
+        private static final String AUTHENTICATED_USER =
+                "org.jboss.seam.security.management.authenticatedUser";
+
         @PreUpdate
         private void onUpdate(HDocument doc) {
             if (Contexts.isSessionContextActive()) {
-                HAccount account =
-                        (HAccount) Component.getInstance(
-                                JpaIdentityStore.AUTHENTICATED_USER);
-                // TODO In some cases there is no session ( such as when pushing
-                // async )
-                if (account != null) {
-                    doc.setLastModifiedBy(account.getPerson());
+                Optional<HAccount> account =
+                        getOptionalInstance(
+                                AUTHENTICATED_USER, HAccount.class);
+                // TODO In some cases there is no session (eg async push)
+                if (account.isPresent()) {
+                    doc.setLastModifiedBy(account.get().getPerson());
                 }
             }
         }
     }
+
+    // TODO use IServiceLocator
+    public static <T> Optional<T> getOptionalInstance(String name, Class<T> clazz) {
+        log.warn("Still using name in getOptionalInstance({}, {})", name, clazz);
+        return Optional.ofNullable(BeanProvider.getContextualReference(name, true, clazz));
+    }
+
 }

@@ -7,11 +7,9 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import org.apache.deltaspike.core.api.exclude.Exclude;
-import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
-import org.jboss.seam.contexts.Contexts;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.util.Contexts;
 import org.zanata.util.ServiceLocator;
 
 import com.google.common.base.Strings;
@@ -50,20 +48,11 @@ public class IdentityManager implements Serializable {
 
     // TODO [CDI] revisit this
     public static IdentityManager instance() {
-        if (!Contexts.isEventContextActive()) {
-            throw new IllegalStateException("No active event context");
+        if (!Contexts.isRequestContextActive()) {
+            throw new IllegalStateException("No active request context");
         }
-
-        IdentityManager instance =
-                ServiceLocator.instance().getInstance(
-                        IdentityManager.class);
-
-        if (instance == null) {
-            throw new IllegalStateException(
-                    "No IdentityManager could be created");
-        }
-
-        return instance;
+        return ServiceLocator.instance().getInstance(
+                IdentityManager.class);
     }
 
     public boolean createUser(String name, String password) {

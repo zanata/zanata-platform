@@ -35,9 +35,9 @@ import javax.servlet.http.HttpServletRequest;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.contexts.Contexts;
 import org.zanata.events.LocaleSelectedEvent;
 import org.zanata.servlet.HttpRequestAndSessionHolder;
+import org.zanata.util.Contexts;
 import org.zanata.util.Event;
 import org.zanata.util.ServiceLocator;
 
@@ -74,7 +74,7 @@ public class LocaleSelectorAction {
         FacesContext.getCurrentInstance().getViewRoot().setLocale(getLocale());
 
         getLocaleSelectedEvent().fire(
-                new LocaleSelectedEvent(getLocaleString()));
+                new LocaleSelectedEvent(getLocale()));
     }
 
     private Event<LocaleSelectedEvent> getLocaleSelectedEvent() {

@@ -7,10 +7,12 @@ import org.hibernate.event.spi.EventType;
 import org.hibernate.integrator.spi.Integrator;
 import org.hibernate.metamodel.source.MetadataImplementor;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
-import org.jboss.seam.contexts.Contexts;
 import lombok.extern.slf4j.Slf4j;
 import org.zanata.service.impl.SlugEntityUpdatedListener;
+import org.zanata.util.Contexts;
 import org.zanata.util.ServiceLocator;
+
+import java.util.Optional;
 
 /**
  * Hibernate SPI. Register event listener for entity lifecycle events.
@@ -40,6 +42,8 @@ public class HibernateIntegrator implements Integrator {
                     updateListener);
             eventListenerRegistry.appendListeners(EventType.POST_COMMIT_UPDATE,
                     new SlugEntityUpdatedListener());
+        } else {
+            log.debug("Application context not active");
         }
     }
 

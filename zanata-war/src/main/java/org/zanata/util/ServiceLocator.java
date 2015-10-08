@@ -31,6 +31,7 @@ import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.lang.annotation.Annotation;
+import java.util.Optional;
 
 /**
  * Service Locator for CDI beans, intended for obtaining short-lived
@@ -99,6 +100,19 @@ public class ServiceLocator implements IServiceLocator {
     public <T> T getInstance(String name, Object scope, Class<T> clazz) {
         log.warn("Ignoring scope in getInstance({}, {}, {})", name, scope, clazz);
         return (T) getInstance(name, clazz);
+    }
+
+    /**
+     * @deprecated Use class and/or qualifiers, not name
+     */
+    @Deprecated
+    public <T> Optional<T> getOptionalInstance(String name, Class<T> clazz) {
+        log.warn("Still using name in getOptionalInstance({}, {})", name, clazz);
+        return Optional.ofNullable(BeanProvider.getContextualReference(name, true, clazz));
+    }
+
+    public <T> Optional<T> getOptionalInstance(Class<T> clazz, Annotation... qualifiers) {
+        return Optional.ofNullable(BeanProvider.getContextualReference(clazz, true, qualifiers));
     }
 
     @Override

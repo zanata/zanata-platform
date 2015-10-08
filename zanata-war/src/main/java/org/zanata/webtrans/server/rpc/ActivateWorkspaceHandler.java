@@ -30,7 +30,6 @@ import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 import org.apache.deltaspike.core.api.common.DeltaSpike;
-import org.jboss.seam.contexts.Contexts;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectDAO;
@@ -43,6 +42,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GravatarService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SecurityService;
+import org.zanata.util.ServiceLocator;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
@@ -194,9 +194,9 @@ public class ActivateWorkspaceHandler extends
     }
 
     protected Person retrievePerson() {
-        HAccount authenticatedAccount =
-                (HAccount) Contexts.getSessionContext().get(
-                        ZanataJpaIdentityStore.AUTHENTICATED_USER);
+        HAccount authenticatedAccount = ServiceLocator.instance()
+                .getInstance(ZanataJpaIdentityStore.AUTHENTICATED_USER,
+                        HAccount.class);
         return new Person(new PersonId(authenticatedAccount.getUsername()),
                 authenticatedAccount.getPerson().getName(),
                 gravatarServiceImpl.getUserImageUrl(16, authenticatedAccount

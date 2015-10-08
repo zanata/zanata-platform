@@ -8,8 +8,8 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreRemove;
 import javax.persistence.PreUpdate;
 
-import org.jboss.seam.contexts.Contexts;
 import org.zanata.annotation.EntityRestrict;
+import org.zanata.util.Contexts;
 
 /**
  * Disable permission checking when security is disabled, which solves the

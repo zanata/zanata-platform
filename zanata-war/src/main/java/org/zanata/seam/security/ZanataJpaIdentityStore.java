@@ -68,6 +68,7 @@ import lombok.extern.slf4j.Slf4j;
 /* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
 @Slf4j
 public class ZanataJpaIdentityStore implements Serializable {
+    // see also org.zanata.model.HDocument.EntityListener.AUTHENTICATED_USER
     public static final String AUTHENTICATED_USER = "org.jboss.seam.security.management.authenticatedUser";
 
     private static final long serialVersionUID = 1L;

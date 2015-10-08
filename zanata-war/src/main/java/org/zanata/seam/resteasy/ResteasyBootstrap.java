@@ -49,14 +49,10 @@ import javax.inject.Inject;
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import org.jboss.seam.annotations.JndiName;
-import org.jboss.seam.annotations.Logger;
 import javax.inject.Named;
-import org.jboss.seam.annotations.Startup;
-import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.core.Init;
 import org.jboss.seam.deployment.AnnotationDeploymentHandler;
 import org.jboss.seam.deployment.DeploymentStrategy;
-import org.jboss.seam.log.Log;
 import org.jboss.seam.util.EJB;
 import org.jboss.seam.util.Reflections;
 import org.slf4j.LoggerFactory;
@@ -211,9 +207,9 @@ public class ResteasyBootstrap {
         // Iterate through all variables in the application context that end
         // with ".component"
         log.debug("discovering all Seam components");
-        Collection<Component> seamComponents = new HashSet();
-        String[] applicationContextNames =
-                Contexts.getApplicationContext().getNames();
+        Collection<Component> seamComponents = new HashSet<>();
+//        String[] applicationContextNames =
+//                Contexts.getApplicationContext().getNames();
         // TODO [CDI] the returned seam components do not seem to be used. Check whether we still need this.
         /*for (String applicationContextName : applicationContextNames) {
             if (applicationContextName.endsWith(".component")) {

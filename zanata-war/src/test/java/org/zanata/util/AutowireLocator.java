@@ -22,11 +22,13 @@ package org.zanata.util;
 
 
 import java.lang.annotation.Annotation;
+import java.util.Optional;
 
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.seam.SeamAutowire;
@@ -80,6 +82,21 @@ public class AutowireLocator implements IServiceLocator {
 
     public <T> T getInstance(String name, Object scope, Class<T> clazz) {
         return getInstance(name, clazz);
+    }
+
+    /**
+     * @deprecated Use class and/or qualifiers, not name
+     */
+    @Deprecated
+    public <T> Optional<T> getOptionalInstance(String name, Class<T> clazz) {
+        log.warn("Still using name in getOptionalInstance({}, {})", name, clazz);
+        return Optional.ofNullable(
+                (T) SeamAutowire.instance().getComponent(name));
+    }
+
+    public <T> Optional<T> getOptionalInstance(Class<T> clazz, Annotation... qualifiers) {
+        return Optional.ofNullable(SeamAutowire.instance().getComponent(
+                clazz, qualifiers));
     }
 
     @Override

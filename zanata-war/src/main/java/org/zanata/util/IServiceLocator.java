@@ -20,7 +20,10 @@
  */
 package org.zanata.util;
 
+import org.apache.deltaspike.core.api.provider.BeanProvider;
+
 import java.lang.annotation.Annotation;
+import java.util.Optional;
 
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
@@ -47,10 +50,26 @@ public interface IServiceLocator {
     @Deprecated
     <T> T getInstance(String name, Class<T> clazz);
 
+    /**
+     * Resolves a bean by type and qualifiers
+     * @param clazz type of the requested bean
+     * @param qualifiers additional qualifiers to distinguish the bean type
+     * @param <T> bean type
+     * @return the resolved bean
+     * @throws IllegalStateException if the bean could not be found.
+     */
     <T> T getInstance(Class<T> clazz, Annotation... qualifiers);
 
     @Deprecated
     <T> T getInstance(String name, Object scope, Class<T> clazz);
+
+    /**
+     * @deprecated Use class and/or qualifiers, not name
+     */
+    @Deprecated
+    <T> Optional<T> getOptionalInstance(String name, Class<T> clazz);
+
+    <T> Optional<T> getOptionalInstance(Class<T> clazz, Annotation... qualifiers);
 
     EntityManager getEntityManager();
 

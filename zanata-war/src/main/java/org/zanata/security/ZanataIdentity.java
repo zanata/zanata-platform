@@ -43,6 +43,7 @@ import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.lifecycle.Destroyed;
 import org.apache.deltaspike.core.api.lifecycle.Initialized;
 import javax.inject.Named;
+
 import org.jboss.seam.contexts.Contexts;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.exception.NotLoggedInException;
@@ -69,7 +70,6 @@ import com.google.common.collect.Lists;
 
 @Named("zanataIdentity")
 @javax.enterprise.context.SessionScoped
-/* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
 public class ZanataIdentity implements Identity, Serializable {
     private static final Logger log = LoggerFactory.getLogger(
             ZanataIdentity.class);
@@ -90,10 +90,12 @@ public class ZanataIdentity implements Identity, Serializable {
     private String apiKey;
 
     private boolean preAuthenticated;
-    private Subject subject;
+    private Subject subject = new Subject();
     private Principal principal;
     private List<String> preAuthenticationRoles = new ArrayList<>();
-    CustomPermissionResolver permissionResolver;
+    @Inject
+    private CustomPermissionResolver permissionResolver;
+    @Inject
     private ZanataCredentials credentials;
     private boolean authenticating;
     private String jaasConfigName = "zanata";
@@ -103,29 +105,6 @@ public class ZanataIdentity implements Identity, Serializable {
 
     @Inject
     private Event<LogoutEvent> logoutEvent;
-
-    public void onCreate(@Observes @Initialized HttpSession session) {
-        create();
-    }
-
-    public void create() {
-        subject = new Subject();
-
-        if (Contexts.isApplicationContextActive()) {
-            permissionResolver = ServiceLocator.instance()
-                    .getInstance(CustomPermissionResolver.class);
-        }
-
-        if (Contexts.isSessionContextActive()) {
-            credentials =
-                    ServiceLocator.instance().getInstance(ZanataCredentials.class);
-        }
-
-        if (credentials == null) {
-            // Must have credentials for unit tests
-            credentials = new ZanataCredentials();
-        }
-    }
 
     public static boolean isSecurityEnabled() {
         return securityEnabled;
@@ -148,19 +127,8 @@ public class ZanataIdentity implements Identity, Serializable {
         return apiKey != null;
     }
 
-    public static ZanataIdentity instance() {
-        if (!Contexts.isSessionContextActive()) {
-            throw new IllegalStateException("No active session context");
-        }
-
-        ZanataIdentity instance =
-                ServiceLocator.instance().getInstance(ZanataIdentity.class);
-
-        if (instance == null) {
-            throw new IllegalStateException("No Identity could be created");
-        }
-
-        return instance;
+    public static ZanataIdentity instance()  {
+        return ServiceLocator.instance().getInstance(ZanataIdentity.class);
     }
 
     public void checkLoggedIn() {

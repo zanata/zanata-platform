@@ -27,13 +27,15 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.inject.Named;
-import org.jboss.seam.contexts.Contexts;
+
 import org.zanata.action.LocaleSelectorAction;
 import org.zanata.events.LocaleSelectedEvent;
+import org.zanata.util.Contexts;
 import org.zanata.util.EmptyEnumeration;
 import org.zanata.util.ServiceLocator;
 
@@ -59,26 +61,23 @@ import javax.enterprise.event.Observes;
 public class Messages extends AbstractMap<String, String> {
 
     /**
-     * Gets the 'messages' ResourceBundle for the locale of the current
-     * request, if any, otherwise server's default locale.
-     * @see org.jboss.seam.web.Locale
+     * Gets the locale of the current request, if any, otherwise server's
+     * default locale.
      */
-    private static ResourceBundle getResourceBundle() {
-        // TODO [CDI] use producer to produce a session or request scope locale
+    private static Locale getLocale() {
+        // TODO [CDI] inject LocaleResolver but make sure it handles session locale
         if (Contexts.isSessionContextActive()) {
             LocaleSelectorAction selectorAction = ServiceLocator.instance()
                     .getInstance(LocaleSelectorAction.class);
-            Locale locale = selectorAction.getLocale();
-            return getResourceBundle(locale);
+            return selectorAction.getLocale();
         }
-
-        return getResourceBundle(Locale.getDefault());
+        return Locale.getDefault();
     }
 
     /**
      * Gets the 'messages' ResourceBundle for the specified locale.
      */
-    private static ResourceBundle getResourceBundle(java.util.Locale locale) {
+    private static ResourceBundle getResourceBundle(Locale locale) {
         // Generic ResourceBundle without built-in interpolation:
         ResourceBundle resourceBundle = null;
         try {
@@ -101,32 +100,42 @@ public class Messages extends AbstractMap<String, String> {
         return resourceBundle;
     }
 
-    private final ResourceBundle resourceBundle;
+    /**
+     * Currently selected locale (observes LocaleSelectedEvent)
+     */
+    private Locale locale;
+    private ResourceBundle resourceBundle;
 
     /**
      * Create an instance for the locale of the current request, if any,
      * otherwise the server's default locale.
      */
     public Messages() {
-        this(getResourceBundle());
+        this(getLocale());
     }
 
     /**
      * Create an instance for the specified locale.
      */
-    public Messages(java.util.Locale locale) {
-        this(getResourceBundle(locale));
+    public Messages(Locale locale) {
+        this.locale = locale;
+        this.resourceBundle = getResourceBundle(locale);
     }
 
-    private Messages(ResourceBundle resourceBundle) {
-        this.resourceBundle = resourceBundle;
+    private ResourceBundle getBundle() {
+        if (resourceBundle != null) {
+            resourceBundle = getResourceBundle(locale);
+        }
+        return resourceBundle;
     }
 
     public void changeLocale(@Observes LocaleSelectedEvent event) {
         // we need to refresh the bean
         // see org.jboss.seam.international.LocaleSelector.select()
-        Contexts.removeFromAllContexts("msgs");
+        this.locale = event.getLocale();
+        this.resourceBundle = null;
     }
+
     // the default toString includes the entire list of properties,
     // which makes a mess of the log file
     @Override
@@ -137,16 +146,15 @@ public class Messages extends AbstractMap<String, String> {
     /**
      * Gets a resource string, without any message formatting.  (So an
      * apostrophe just represents an apostrophe (single quote).)
-     * @param key
-     * @return
+     * @param key ResourceBundle key
+     * @return ResourceBundle string
      */
     @Override
     public String get(Object key) {
         if (key instanceof String) {
             String resourceKey = (String) key;
             try {
-                String resource = resourceBundle.getString(resourceKey);
-                return (resource == null) ? resourceKey : resource;
+                return getBundle().getString(resourceKey);
             } catch (MissingResourceException mre) {
                 return resourceKey;
             }
@@ -157,8 +165,8 @@ public class Messages extends AbstractMap<String, String> {
 
     /**
      * @deprecated use get(key) or format(key, args...)
-     * @param key
-     * @return
+     * @param key ResourceBundle key to look up the format string
+     * @return formatted string
      */
     @Deprecated
     public String format(String key) {
@@ -167,13 +175,13 @@ public class Messages extends AbstractMap<String, String> {
 
     /**
      * Gets a resource string, and formats it using MessageFormat and the
-     * positional parameters.  Due to the use of {@link java.util.MessageFormat}
+     * positional parameters.  Due to the use of {@link MessageFormat}
      * any literal apostrophes (single quotes) will need to be doubled,
      * otherwise they will be interpreted as quoting format patterns.
-     * @param key
-     * @param args
-     * @return
-     * @see java.util.MessageFormat
+     * @param key ResourceBundle key to look up the format string
+     * @param args arguments for interpolation by MessageFormat
+     * @return formatted string
+     * @see MessageFormat
      */
     public String format(String key, Object... args) {
         String template = get(key);
@@ -205,12 +213,13 @@ public class Messages extends AbstractMap<String, String> {
         return format(key, new Object[] {arg1, arg2, arg3, arg4, arg5, arg6});
     }
 
+    @Nonnull
     @Override
     public Set<Map.Entry<String, String>> entrySet() {
         Set<Map.Entry<String, String>> entrySet =
                 new HashSet<Entry<String, String>>();
 
-        for (final String key : resourceBundle.keySet()) {
+        for (final String key : getBundle().keySet()) {
             entrySet.add(new Map.Entry<String, String>() {
 
                 @Override

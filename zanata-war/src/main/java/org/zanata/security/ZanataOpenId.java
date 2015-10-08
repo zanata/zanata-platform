@@ -20,9 +20,9 @@
  */
 package org.zanata.security;
 
-import static org.jboss.seam.ScopeType.SESSION;
-
+import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 
 import javax.faces.context.ExternalContext;
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.faces.FacesManager;
 import org.jboss.seam.faces.Redirect;
 import org.openid4java.OpenIDException;
@@ -60,6 +59,8 @@ import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.security.openid.YahooOpenIdProvider;
 import org.zanata.ui.faces.FacesMessages;
 import javax.enterprise.event.Event;
+
+import org.zanata.util.Contexts;
 import org.zanata.util.ServiceLocator;
 
 @Named("org.jboss.seam.security.zanataOpenId")
@@ -68,7 +69,7 @@ import org.zanata.util.ServiceLocator;
 /*
  * based on org.jboss.seam.security.openid.OpenId class
  */
-public class ZanataOpenId implements OpenIdAuthCallback {
+public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(ZanataOpenId.class);
 
@@ -245,13 +246,15 @@ public class ZanataOpenId implements OpenIdAuthCallback {
 
     private void loginImmediate() {
         if (loginImmediately()) {
-            if (Contexts.isEventContextActive()) {
+            if (Contexts.isRequestContextActive()) {
                 HAccount authenticatedAccount =
-                        (HAccount) Contexts.getEventContext()
-                                .get(ZanataJpaIdentityStore.AUTHENTICATED_USER);
+                        ServiceLocator.instance().getInstance(
+                                ZanataJpaIdentityStore.AUTHENTICATED_USER,
+                                HAccount.class);
                 postAuthenticateEvent.fire(new PostAuthenticateEvent(
                         authenticatedAccount));
             }
+
             // Events.instance().raiseEvent(Identity.EVENT_LOGIN_SUCCESSFUL,
             // AuthenticationType.OPENID);
             loginCompletedEvent.fire(new LoginCompleted(AuthenticationType.OPENID));

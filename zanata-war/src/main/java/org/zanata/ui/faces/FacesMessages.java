@@ -22,8 +22,8 @@ package org.zanata.ui.faces;
 
 import static javax.faces.application.FacesMessage.SEVERITY_INFO;
 import static javax.faces.application.FacesMessage.Severity;
-import static org.jboss.seam.annotations.Install.APPLICATION;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,7 +41,6 @@ import javax.faces.context.FacesContext;
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.seam.core.Interpolator;
 import org.zanata.i18n.Messages;
 import org.zanata.util.ServiceLocator;
@@ -56,8 +55,7 @@ import com.google.common.collect.Lists;
  */
 @org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
 @Named("jsfMessages")
-@BypassInterceptors
-public class FacesMessages {
+public class FacesMessages implements Serializable {
 
     private final List<FacesMessage> globalMessages = new ArrayList<>();
     private final Map<String, List<FacesMessage>> keyedMessages =
