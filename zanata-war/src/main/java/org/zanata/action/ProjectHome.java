@@ -75,6 +75,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.WebHook;
 import org.zanata.model.validator.SlugValidator;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
 import org.zanata.service.ValidationService;
@@ -122,7 +123,8 @@ public class ProjectHome extends SlugHome<HProject> implements
     @Inject
     private ZanataIdentity identity;
 
-    @Inject /* TODO [CDI] check this: migrated from @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
     @Inject

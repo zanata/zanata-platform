@@ -34,6 +34,7 @@ import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.common.EntityStatus;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.VersionGroupService;
 
 import com.google.common.collect.Lists;
@@ -46,7 +47,8 @@ public class VersionGroupAction implements Serializable {
     @Inject
     private VersionGroupService versionGroupServiceImpl;
 
-    @Inject /* TODO [CDI] check this: migrated from @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
     @Getter

@@ -33,6 +33,7 @@ import org.zanata.model.HProject;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SecurityService;
 import org.zanata.webtrans.server.ActionHandlerFor;
@@ -68,7 +69,8 @@ public class AddReviewCommentHandler extends
     @Inject
     private TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO;
 
-    @Inject /* TODO [CDI] check this: migrated from @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
     @Inject

@@ -33,6 +33,7 @@ import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.AccountDAO;
@@ -85,7 +86,8 @@ public class DashboardAction implements Serializable {
     @Inject
     private Messages msgs;
 
-    @Inject /* TODO [CDI] check this: migrated from @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
     @Getter

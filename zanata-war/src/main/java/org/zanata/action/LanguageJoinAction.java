@@ -28,6 +28,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
@@ -94,7 +96,8 @@ public class LanguageJoinAction implements Serializable {
     @Setter
     private String message;
 
-    @Inject /* TODO [CDI] check this: migrated from @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER, required = false) */
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
     public boolean hasSelectedRole() {

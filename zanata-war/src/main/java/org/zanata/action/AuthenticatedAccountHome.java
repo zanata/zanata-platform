@@ -28,6 +28,7 @@ import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.seam.framework.EntityHome;
+import org.zanata.security.annotations.Authenticated;
 
 /**
  * A simple bean to hold the currently authenticated account.
@@ -42,7 +43,8 @@ public class AuthenticatedAccountHome extends EntityHome<HAccount> {
     */
     private static final long serialVersionUID = 1L;
 
-    @Inject /* TODO [CDI] check this: migrated from @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
+    @Inject
+    @Authenticated
     HAccount authenticatedAccount;
 
     @Override

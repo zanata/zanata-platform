@@ -54,6 +54,7 @@ import org.zanata.seam.security.AbstractRunAsOperation;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.openid.FedoraOpenIdProvider;
 import org.zanata.security.openid.GoogleOpenIdProvider;
 import org.zanata.security.openid.OpenIdAuthCallback;
@@ -112,7 +113,8 @@ public class UserSettingsAction {
     @Inject
     private Messages msgs;
 
-    @Inject /* TODO [CDI] check this: migrated from @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
+    @Inject
+    @Authenticated
     HAccount authenticatedAccount;
 
     @Getter

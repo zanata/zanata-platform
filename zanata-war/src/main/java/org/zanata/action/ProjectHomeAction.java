@@ -59,6 +59,7 @@ import org.zanata.model.LocaleRole;
 import org.zanata.model.ProjectRole;
 import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.ActivityService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.VersionStateCache;
@@ -111,7 +112,8 @@ public class ProjectHomeAction extends AbstractSortAction implements
     @Inject
     private LocaleMemberDAO localeMemberDAO;
 
-    @Inject /* TODO [CDI] check this: migrated from @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
     @Inject

@@ -17,6 +17,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HLocaleMember.HLocaleMemberPk;
 import org.zanata.model.HPerson;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LanguageTeamService;
 import javax.enterprise.event.Event;
 
@@ -32,7 +33,8 @@ public class LanguageTeamServiceImpl implements LanguageTeamService {
     @Inject
     private LocaleMemberDAO localeMemberDAO;
 
-    @Inject /* TODO [CDI] check this: migrated from @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION) */
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
     @Inject

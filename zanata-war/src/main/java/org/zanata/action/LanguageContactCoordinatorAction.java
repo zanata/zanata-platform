@@ -27,6 +27,8 @@ import javax.faces.application.FacesMessage;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
@@ -56,7 +58,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LanguageContactCoordinatorAction implements Serializable {
 
-    @Inject /* TODO [CDI] check this: migrated from @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER, required = false) */
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
     @Inject

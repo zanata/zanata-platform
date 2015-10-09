@@ -32,6 +32,7 @@ import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountOptionDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountOption;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.UserOptions;
 import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
@@ -46,7 +47,8 @@ import org.zanata.webtrans.shared.rpc.SaveOptionsResult;
 @ActionHandlerFor(SaveOptionsAction.class)
 public class SaveOptionsHandler extends
         AbstractActionHandler<SaveOptionsAction, SaveOptionsResult> {
-    @Inject /* TODO [CDI] check this: migrated from @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
     @Inject

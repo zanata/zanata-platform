@@ -42,6 +42,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.VersionGroupService;
 import org.zanata.service.VersionLocaleKey;
 import org.zanata.ui.AbstractListFilter;
@@ -75,7 +76,8 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     @Inject
     private Messages msgs;
 
-    @Inject /* TODO [CDI] check this: migrated from @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
     @Inject

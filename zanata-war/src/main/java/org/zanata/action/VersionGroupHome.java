@@ -49,6 +49,7 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
 import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.SlugEntityService;
 import org.zanata.service.VersionGroupService;
 import org.zanata.service.impl.VersionGroupServiceImpl;
@@ -79,7 +80,8 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
     @Setter
     private String slug;
 
-    @Inject /* TODO [CDI] check this: migrated from @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
     @Inject

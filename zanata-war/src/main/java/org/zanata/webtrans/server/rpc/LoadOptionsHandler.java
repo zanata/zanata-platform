@@ -33,6 +33,7 @@ import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountOption;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.DiffMode;
@@ -51,7 +52,8 @@ import org.zanata.webtrans.shared.rpc.ThemesOption;
 @ActionHandlerFor(LoadOptionsAction.class)
 public class LoadOptionsHandler extends
         AbstractActionHandler<LoadOptionsAction, LoadOptionsResult> {
-    @Inject /* TODO [CDI] check this: migrated from @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
     @Inject

@@ -11,6 +11,7 @@ import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.ui.faces.FacesMessages;
 
 /**
@@ -30,7 +31,8 @@ public abstract class AbstractProfileAction {
     @Inject
     private FacesMessages facesMessages;
 
-    @Inject /* TODO [CDI] check this: migrated from @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
+    @Inject
+    @Authenticated
     HAccount authenticatedAccount;
 
     @Inject

@@ -12,6 +12,7 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.rest.editor.dto.User;
 import org.zanata.rest.editor.service.resource.UserResource;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.GravatarService;
@@ -31,7 +32,8 @@ import lombok.NoArgsConstructor;
 @CheckLoggedIn
 public class UserService implements UserResource {
 
-    @Inject /* TODO [CDI] check this: migrated from @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
     @Inject

@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Set;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -44,6 +46,7 @@ import org.zanata.events.PostAuthenticateEvent;
 import org.zanata.exception.IdentityManagementException;
 import org.zanata.exception.NoSuchRoleException;
 import org.zanata.exception.NoSuchUserException;
+import org.zanata.security.AuthenticatedAccountHolder;
 import org.zanata.security.Role;
 import org.zanata.dao.AccountDAO;
 import org.zanata.events.UserCreatedEvent;
@@ -52,6 +55,8 @@ import org.zanata.model.HAccountRole;
 import org.zanata.security.SimplePrincipal;
 import org.zanata.security.ZanataIdentity;
 import javax.enterprise.event.Event;
+
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.util.PasswordUtil;
 import org.zanata.util.ServiceLocator;
 
@@ -78,6 +83,9 @@ public class ZanataJpaIdentityStore implements Serializable {
 
     @Inject
     private Event<PostAuthenticateEvent> postAuthenticateEventEvent;
+
+    @Inject
+    private Instance<AuthenticatedAccountHolder> authenticatedAccountHolders;
 
     public boolean apiKeyAuthenticate(String username, String apiKey) {
         HAccount user = lookupUser(username);
@@ -163,14 +171,20 @@ public class ZanataJpaIdentityStore implements Serializable {
     }
 
     public void setAuthenticateUser(HAccount user) {
-        if (Events.exists()) {
-            if (Contexts.isEventContextActive()) {
-                Contexts.getEventContext().set(AUTHENTICATED_USER, user);
-            }
-            if (Contexts.isSessionContextActive()) {
-                Contexts.getSessionContext().set(AUTHENTICATED_USER, user);
+        for (AuthenticatedAccountHolder accountHolder : authenticatedAccountHolders) {
+            accountHolder.setAuthenticatedAccount(user);
+        }
+    }
+
+    @Produces @Authenticated @Named(AUTHENTICATED_USER)
+    HAccount getAuthenticatedAccount() {
+        for (AuthenticatedAccountHolder accountHolder : authenticatedAccountHolders) {
+            HAccount authenticatedAccount = accountHolder.getAuthenticatedAccount();
+            if (authenticatedAccount != null) {
+                return authenticatedAccount;
             }
         }
+        return null;
     }
 
     public List<String> listUsers() {

@@ -4,6 +4,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.model.HAccount;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.GravatarService;
 import org.zanata.util.HashUtil;
 
@@ -12,7 +13,8 @@ import org.zanata.util.HashUtil;
 public class GravatarServiceImpl implements GravatarService {
     private static String GRAVATAR_URL = "//www.gravatar.com/avatar/";
 
-    @Inject /* TODO [CDI] check this: migrated from @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
+    @Inject
+    @Authenticated
     HAccount authenticatedAccount;
 
     @Override

@@ -33,6 +33,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
@@ -76,7 +78,8 @@ public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
     @Inject
     private VersionGroupDAO versionGroupDAO;
 
-    @Inject /* TODO [CDI] check this: migrated from @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
     @Getter

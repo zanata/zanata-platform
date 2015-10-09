@@ -36,6 +36,7 @@ import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdAuthenticationResult;
 import org.zanata.security.openid.OpenIdProviderType;
@@ -59,7 +60,8 @@ public class AccountMergeAction implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Inject /* TODO [CDI] check this: migrated from @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
     @Inject

@@ -22,6 +22,7 @@ import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.ui.CopyAction;
 import org.zanata.util.FacesNavigationUtil;
 import org.zanata.ui.faces.FacesMessages;
@@ -77,7 +78,8 @@ public class MergeTransAction extends CopyAction implements Serializable {
     @Inject
     private Messages msgs;
 
-    @Inject /* TODO [CDI] check this: migrated from @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
     @Inject

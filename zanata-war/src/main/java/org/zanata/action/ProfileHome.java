@@ -40,6 +40,7 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.GravatarService;
 import org.zanata.ui.faces.FacesMessages;
 
@@ -75,7 +76,8 @@ public class ProfileHome implements Serializable {
 
     @Inject
     ZanataIdentity identity;
-    @Inject /* TODO [CDI] check this: migrated from @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER) */
+    @Inject
+    @Authenticated
     HAccount authenticatedAccount;
     @Inject
     PersonDAO personDAO;
