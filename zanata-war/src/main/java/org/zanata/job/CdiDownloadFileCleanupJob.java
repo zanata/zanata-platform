@@ -22,6 +22,7 @@ package org.zanata.job;
 
 import java.io.File;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.deltaspike.scheduler.api.Scheduled;
@@ -40,7 +41,9 @@ import org.zanata.service.FileSystemService;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Scheduled(cronExpression = "0 0 0 * * ?", startScopes = {})
+// here we have to start ApplicationScope even though we don't need it, due to a
+// bug in deltaspike https://issues.apache.org/jira/browse/DELTASPIKE-1002
+@Scheduled(cronExpression = "0 0 0 * * ?", startScopes = {ApplicationScoped.class})
 public class CdiDownloadFileCleanupJob extends JobDetail implements Job {
     private static final Logger log =
             LoggerFactory.getLogger(CdiDownloadFileCleanupJob.class);
