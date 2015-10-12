@@ -40,13 +40,12 @@ import javax.persistence.NoResultException;
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
-import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.core.Events;
 import org.zanata.events.PostAuthenticateEvent;
 import org.zanata.exception.IdentityManagementException;
 import org.zanata.exception.NoSuchRoleException;
 import org.zanata.exception.NoSuchUserException;
 import org.zanata.security.AuthenticatedAccountHolder;
+import org.zanata.security.AuthenticatedAccountSessionScopeHolder;
 import org.zanata.security.Role;
 import org.zanata.dao.AccountDAO;
 import org.zanata.events.UserCreatedEvent;
@@ -152,11 +151,9 @@ public class ZanataJpaIdentityStore implements Serializable {
         return postAuthenticateEventEvent;
     }
 
-    public void setUserAccountForSession(@Observes PostAuthenticateEvent event) {
-        if (Contexts.isSessionContextActive()) {
-            Contexts.getSessionContext().set(AUTHENTICATED_USER,
-                    event.getAuthenticatedAccount());
-        }
+    public void setUserAccountForSession(@Observes PostAuthenticateEvent event,
+            AuthenticatedAccountSessionScopeHolder holder) {
+        holder.setAuthenticatedAccount(event.getAuthenticatedAccount());
     }
 
     public boolean isNewUser(String username) {
