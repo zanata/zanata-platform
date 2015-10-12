@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.LocaleId;
@@ -61,6 +62,7 @@ public class GlossaryTerm implements Serializable {
 
     @XmlAttribute(name = "lang", namespace = Namespaces.XML)
     @XmlJavaTypeAdapter(type = LocaleId.class, value = LocaleIdAdapter.class)
+    @JsonProperty("locale")
     public LocaleId getLocale() {
         return locale;
     }
@@ -80,6 +82,7 @@ public class GlossaryTerm implements Serializable {
     }
 
     @XmlElement(name = "comment", namespace = Namespaces.ZANATA_OLD)
+    @JsonProperty("comments")
     public List<String> getComments() {
         if (comments == null) {
             comments = new ArrayList<String>();

@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.hibernate.validator.constraints.Email;
@@ -116,6 +117,7 @@ public class Account implements Serializable, HasMediaType {
     }
 
     @XmlElement(name = "role", namespace = Namespaces.ZANATA_OLD)
+    @JsonProperty("roles")
     public Set<String> getRoles() {
         return roles;
     }
@@ -125,6 +127,7 @@ public class Account implements Serializable, HasMediaType {
     }
 
     @XmlElement(name = "tribe", namespace = Namespaces.ZANATA_OLD)
+    @JsonProperty("tribes")
     public Set<String> getTribes() {
         return tribes;
     }

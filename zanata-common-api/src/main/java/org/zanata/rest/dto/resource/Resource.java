@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.Namespaces;
@@ -35,6 +36,7 @@ public class Resource extends AbstractResourceMeta {
             namespace = Namespaces.ZANATA_OLD)
     @XmlElement(name = "text-flow",
             namespace = org.zanata.common.Namespaces.ZANATA_API)
+    @JsonProperty("textFlows")
     public List<TextFlow> getTextFlows() {
         if (textFlows == null) {
             textFlows = new ArrayList<TextFlow>();
