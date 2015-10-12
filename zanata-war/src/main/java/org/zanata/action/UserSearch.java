@@ -11,9 +11,6 @@ import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.security.annotations.ZanataSecured;
 
-import static org.jboss.seam.ScopeType.SESSION;
-import static org.jboss.seam.annotations.Install.APPLICATION;
-
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>

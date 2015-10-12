@@ -20,17 +20,18 @@
  */
 package org.zanata.security;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
 import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.faces.FacesManager;
 import org.jboss.seam.faces.Redirect;
 import org.openid4java.OpenIDException;
 import org.openid4java.consumer.ConsumerManager;
@@ -62,6 +63,7 @@ import javax.enterprise.event.Event;
 
 import org.zanata.util.Contexts;
 import org.zanata.util.ServiceLocator;
+import com.google.common.base.Throwables;
 
 @Named("org.jboss.seam.security.zanataOpenId")
 @javax.enterprise.context.SessionScoped
@@ -295,7 +297,13 @@ public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
             Redirect redirect = Redirect.instance();
             redirect.captureCurrentView();
 
-            FacesManager.instance().redirectToExternalURL(url);
+            try {
+                FacesContext.getCurrentInstance().getExternalContext().redirect(
+                        url);
+            }
+            catch (IOException e) {
+                throw Throwables.propagate(e);
+            }
         }
     }
 

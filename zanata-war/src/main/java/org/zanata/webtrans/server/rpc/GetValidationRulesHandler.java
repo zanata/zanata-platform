@@ -25,8 +25,6 @@ import java.util.*;
 import net.customware.gwt.dispatch.server.*;
 import net.customware.gwt.dispatch.shared.*;
 
-import org.jboss.seam.*;
-import org.jboss.seam.annotations.*;
 import org.zanata.service.*;
 import org.zanata.webtrans.server.*;
 import org.zanata.webtrans.shared.model.*;

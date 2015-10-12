@@ -27,9 +27,9 @@ import javax.annotation.Nonnull;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.core.Events;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.ContainsAsyncMethods;
@@ -87,6 +87,9 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
 
     @Inject
     private LocaleService localeServiceImpl;
+
+    @Inject
+    private Event<TextFlowTargetStateEvent> textFlowTargetStateEventEvent;
 
     private final static int TRANSLATION_BATCH_SIZE = 10;
 
@@ -262,17 +265,14 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
         targetTft.setSourceType(TranslationSourceType.MERGE_VERSION);
         TranslationUtil.copyEntity(sourceTft, targetTft);
 
-        if (Events.exists()) {
-            TextFlowTargetStateEvent event =
-                    new TextFlowTargetStateEvent(null, targetVersionId,
-                            targetTft.getTextFlow().getDocument().getId(),
-                            targetTft.getTextFlow().getId(),
-                            targetTft.getLocale().getLocaleId(),
-                            targetTft.getId(), targetTft.getState(), oldState);
+        TextFlowTargetStateEvent event =
+                new TextFlowTargetStateEvent(null, targetVersionId,
+                        targetTft.getTextFlow().getDocument().getId(),
+                        targetTft.getTextFlow().getId(),
+                        targetTft.getLocale().getLocaleId(),
+                        targetTft.getId(), targetTft.getState(), oldState);
 
-            Events.instance().raiseTransactionSuccessEvent(
-                    TextFlowTargetStateEvent.EVENT_NAME, event);
-        }
+        textFlowTargetStateEventEvent.fire(event);
     }
 
     /**

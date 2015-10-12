@@ -46,7 +46,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.StaleStateException;
 import org.hibernate.exception.ConstraintViolationException;
-import org.jboss.seam.servlet.ContextualHttpServletRequest;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -84,12 +83,7 @@ public class MultiFileUploadServlet extends HttpServlet {
      */
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-        new ContextualHttpServletRequest(request) {
-            @Override
-            public void process() throws Exception {
-                respondWithUploadAvailability(response);
-            }
-        }.run();
+        respondWithUploadAvailability(response);
     }
 
     /**
@@ -139,12 +133,7 @@ public class MultiFileUploadServlet extends HttpServlet {
     protected void doPost(final HttpServletRequest request,
                           final HttpServletResponse response) throws ServletException,
             IOException {
-        new ContextualHttpServletRequest(request) {
-            @Override
-            public void process() throws Exception {
-                processPost(request, response);
-            }
-        }.run();
+        processPost(request, response);
     }
 
     /**

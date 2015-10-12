@@ -33,7 +33,8 @@ import javax.persistence.EntityManager;
 import org.apache.commons.lang.time.DateUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.annotations.Transactional;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.action.DashboardUserStats;
 import org.zanata.common.ActivityType;
 import org.zanata.dao.ActivityDAO;

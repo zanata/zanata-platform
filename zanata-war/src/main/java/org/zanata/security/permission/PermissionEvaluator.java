@@ -32,7 +32,6 @@ import com.google.common.collect.Multimap;
 import org.apache.commons.lang.ArrayUtils;
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
-import org.jboss.seam.annotations.Startup;
 import org.zanata.security.SecurityFunctions;
 
 import com.google.common.collect.Lists;

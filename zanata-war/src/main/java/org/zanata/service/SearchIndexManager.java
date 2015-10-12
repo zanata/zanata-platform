@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.annotations.Startup;
 import org.zanata.util.Synchronized;
 import org.zanata.ServerConstants;
 import org.zanata.action.ReindexClassOptions;

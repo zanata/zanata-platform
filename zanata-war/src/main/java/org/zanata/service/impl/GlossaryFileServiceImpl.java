@@ -20,7 +20,6 @@
  */
 package org.zanata.service.impl;
 
-import static org.jboss.seam.ScopeType.STATELESS;
 
 import java.io.IOException;
 import java.io.InputStream;

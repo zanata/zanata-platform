@@ -23,11 +23,13 @@ package org.zanata.action;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
+import com.google.common.base.Throwables;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -39,13 +41,11 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.End;
+
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.faces.FacesManager;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -492,7 +492,13 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
         if (softDeleted) {
             String url = urlUtil.projectUrl(projectSlug);
-            FacesManager.instance().redirectToExternalURL(url);
+            try {
+                FacesContext.getCurrentInstance().getExternalContext().redirect(
+                        url);
+            }
+            catch (IOException e) {
+                throw Throwables.propagate(e);
+            }
             return state;
         }
 

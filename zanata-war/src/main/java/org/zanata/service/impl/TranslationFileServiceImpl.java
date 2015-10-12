@@ -66,7 +66,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.jboss.seam.ScopeType.STATELESS;
 import static org.zanata.common.DocumentType.GETTEXT;
 import static org.zanata.common.DocumentType.HTML;
 import static org.zanata.common.DocumentType.IDML;

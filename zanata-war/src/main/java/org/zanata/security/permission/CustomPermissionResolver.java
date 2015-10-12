@@ -20,8 +20,6 @@
  */
 package org.zanata.security.permission;
 
-import static org.jboss.seam.ScopeType.APPLICATION;
-import static org.jboss.seam.annotations.Install.BUILT_IN;
 
 import java.io.Serializable;
 import java.util.Iterator;

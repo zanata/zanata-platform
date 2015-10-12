@@ -41,8 +41,6 @@ import org.hibernate.HibernateException;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.jboss.seam.core.Events;
-import org.jboss.seam.util.Work;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskResult;
@@ -308,25 +306,23 @@ public class TranslationServiceImpl implements TranslationService {
      * Sends out an event to signal that a Text Flow target has been translated
      */
     private void signalPostTranslateEvent(Long actorId,
-            HTextFlowTarget hTextFlowTarget, ContentState oldState) {
-        if (Events.exists()) {
-            HTextFlow textFlow = hTextFlowTarget.getTextFlow();
-            Long documentId = textFlow.getDocument().getId();
-            Long versionId =
-                    textFlow.getDocument().getProjectIteration().getId();
-            // TODO remove hasError from DocumentStatus, so that we can pass
-            // everything else directly to cache
-            // DocumentStatus docStatus = new DocumentStatus(
-            // new DocumentId(document.getId(), document.getDocId()), hasError,
-            // hTextFlowTarget.getLastChanged(),
-            // hTextFlowTarget.getLastModifiedBy().getAccount().getUsername());
-            textFlowTargetStateEvent.fire(
-                    new TextFlowTargetStateEvent(actorId, versionId,
-                            documentId, textFlow.getId(), hTextFlowTarget
-                            .getLocale().getLocaleId(), hTextFlowTarget
-                            .getId(), hTextFlowTarget.getState(),
-                            oldState));
-        }
+        HTextFlowTarget hTextFlowTarget, ContentState oldState) {
+        HTextFlow textFlow = hTextFlowTarget.getTextFlow();
+        Long documentId = textFlow.getDocument().getId();
+        Long versionId =
+                textFlow.getDocument().getProjectIteration().getId();
+        // TODO remove hasError from DocumentStatus, so that we can pass
+        // everything else directly to cache
+        // DocumentStatus docStatus = new DocumentStatus(
+        // new DocumentId(document.getId(), document.getDocId()), hasError,
+        // hTextFlowTarget.getLastChanged(),
+        // hTextFlowTarget.getLastModifiedBy().getAccount().getUsername());
+        textFlowTargetStateEvent.fire(
+                new TextFlowTargetStateEvent(actorId, versionId,
+                        documentId, textFlow.getId(), hTextFlowTarget
+                        .getLocale().getLocaleId(), hTextFlowTarget
+                        .getId(), hTextFlowTarget.getState(),
+                        oldState));
     }
 
     public class TranslationDetails {

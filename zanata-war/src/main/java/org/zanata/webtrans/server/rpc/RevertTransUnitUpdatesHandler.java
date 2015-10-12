@@ -27,7 +27,6 @@ import net.customware.gwt.dispatch.shared.ActionException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.core.Events;
 import org.zanata.events.TextFlowTargetUpdateContextEvent;
 import org.zanata.service.SecurityService;
 import org.zanata.service.TranslationService;
