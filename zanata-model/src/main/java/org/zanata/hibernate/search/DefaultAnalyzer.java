@@ -64,6 +64,7 @@ public final class DefaultAnalyzer extends Analyzer {
      */
     @Override
     public TokenStream tokenStream(@Nullable String fieldName, Reader reader) {
+        // FIXME this should apply to some or all fields in TransMemoryUnitVariant, esp. plainTextSegment
         if (fieldName != null && fieldName.contains(".content-nocase")) {
             StandardTokenizer source = new StandardTokenizer(matchVersion, reader);
             TokenFilter filter = new StandardFilter(matchVersion, source);
