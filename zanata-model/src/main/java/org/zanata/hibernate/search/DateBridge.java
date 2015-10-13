@@ -28,6 +28,7 @@ import org.hibernate.search.bridge.TwoWayStringBridge;
 
 public class DateBridge implements TwoWayStringBridge {
 
+    // TODO include milliseconds for more precision (".SSS")
     private final static String DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat(
