@@ -26,7 +26,6 @@ import java.io.Serializable;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 
-import org.jboss.seam.annotations.Begin;
 import javax.inject.Named;
 import com.google.common.collect.Lists;
 import org.zanata.util.ServiceLocator;
@@ -41,13 +40,13 @@ public class ConversationScopeMessages implements Serializable {
 
     private List<FacesMessage> messages = Lists.newArrayList();
 
-    @Begin(join = true)
+    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public void setMessage(FacesMessage.Severity severity, String message) {
         FacesMessage facesMessage = new FacesMessage(severity, message, null);
         setMessages(Lists.newArrayList(facesMessage));
     }
 
-    @Begin(join = true)
+    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public void setMessages(List<FacesMessage> messages) {
         this.messages = messages;
     }

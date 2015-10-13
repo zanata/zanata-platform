@@ -48,7 +48,6 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
-import org.jboss.seam.annotations.Begin;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -263,7 +262,7 @@ public class ProjectHome extends SlugHome<HProject> implements
                 }
             };
 
-    @Begin(join = true)
+    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public void createNew() {
         identity.checkPermission(getInstance(), "insert");
         getInstance().setDefaultProjectType(ProjectType.File);
@@ -688,7 +687,7 @@ public class ProjectHome extends SlugHome<HProject> implements
             msgs.get("jsf.project.CopyTransOpts.updated"));
     }
 
-    @Begin(join = true)
+    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public void initialize() {
         initInstance();
         validateSuppliedId();

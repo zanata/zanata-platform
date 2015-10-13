@@ -24,7 +24,6 @@ import java.io.Serializable;
 import javax.annotation.Nonnull;
 import javax.faces.application.FacesMessage;
 
-import org.jboss.seam.annotations.Begin;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -117,7 +116,7 @@ public class CopyTransAction extends CopyAction implements Serializable {
                         getProjectSlug(), getIterationSlug()));
     }
 
-    @Begin(join = true)
+    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public void updateCopyTrans(String action, String value) {
         copyTransOptionsModel.update(action, value);
     }

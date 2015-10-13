@@ -24,8 +24,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 import org.apache.commons.lang.time.DateUtils;
-import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.End;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.dao.AccountActivationKeyDAO;
@@ -61,7 +59,7 @@ public class ActivateAction implements Serializable {
 
     private static int LINK_ACTIVE_DAYS = 1;
 
-    @Begin(join = true)
+    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public void validateActivationKey() {
 
         if (getActivationKey() == null) {
@@ -90,7 +88,7 @@ public class ActivateAction implements Serializable {
         this.activationKey = activationKey;
     }
 
-    @End
+//    @End /* TODO [CDI] commented out end conversation. verify it still work */
     public String activate() {
 
         new AbstractRunAsOperation() {

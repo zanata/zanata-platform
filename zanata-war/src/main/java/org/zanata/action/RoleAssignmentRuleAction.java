@@ -25,7 +25,6 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-import org.jboss.seam.annotations.Begin;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.security.annotations.CheckRole;
@@ -61,7 +60,7 @@ public class RoleAssignmentRuleAction extends EntityHome<HRoleAssignmentRule> {
         return roleAssignmentRuleDAO.findAll();
     }
 
-    @Begin
+//    @Begin /* TODO [CDI] commented out Begin conversation. verify it still works */
     public void edit(HRoleAssignmentRule rule) {
         this.setInstance(rule);
     }

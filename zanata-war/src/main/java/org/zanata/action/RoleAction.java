@@ -4,21 +4,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.End;
 import javax.inject.Inject;
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
-import org.jboss.seam.core.Conversation;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.ZanataSecured;
-
-import static org.jboss.seam.ScopeType.CONVERSATION;
-import static org.jboss.seam.ScopeType.PAGE;
-import static org.jboss.seam.annotations.Install.APPLICATION;
 
 /**
  * @author Patrick Huang

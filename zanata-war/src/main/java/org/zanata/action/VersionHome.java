@@ -41,9 +41,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
-import org.jboss.seam.annotations.Begin;
 
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.DocumentType;
@@ -188,7 +186,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         }
     }
 
-    @Begin(join = true)
+    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public void init(boolean isNewInstance) {
         this.isNewInstance = isNewInstance;
         if (isNewInstance) {

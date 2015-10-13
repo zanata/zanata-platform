@@ -23,7 +23,6 @@ package org.zanata.action;
 import java.io.IOException;
 import java.io.Serializable;
 
-import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.validation.constraints.Pattern;
@@ -33,8 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.End;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.action.validator.NotDuplicateEmail;
@@ -46,8 +43,6 @@ import org.zanata.service.RegisterService;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.UrlUtil;
 
-
-import com.google.common.base.Throwables;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
@@ -95,7 +90,7 @@ public class RegisterAction implements Serializable {
         return null;
     }
 
-    @Begin(join = true)
+    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public HPerson getPerson() {
         if (person == null)
             person = new HPerson();
@@ -171,7 +166,7 @@ public class RegisterAction implements Serializable {
 
     }
 
-    @End
+//    @End /* TODO [CDI] commented out end conversation. verify it still work */
     public String register() {
         valid = true;
         validateUsername(getUsername());

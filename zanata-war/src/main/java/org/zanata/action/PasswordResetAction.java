@@ -8,8 +8,6 @@ import javax.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.End;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.exception.AuthorizationException;
@@ -80,7 +78,7 @@ public class PasswordResetAction implements Serializable {
                         getActivationKey());
     }
 
-    @Begin(join = true)
+    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public void validateActivationKey() {
         if (!applicationConfiguration.isInternalAuth()) {
             throw new AuthorizationException(
@@ -100,7 +98,7 @@ public class PasswordResetAction implements Serializable {
 
     private boolean passwordChanged;
 
-    @End
+//    @End /* TODO [CDI] commented out end conversation. verify it still work */
     public String changePassword() {
 
         if (!validatePasswordsMatch())

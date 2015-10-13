@@ -32,13 +32,8 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.End;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.annotations.Scope;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.i18n.Messages;
@@ -268,7 +263,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup> {
         return slug;
     }
 
-    @Begin(join = true)
+    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public void validateSuppliedId() {
         getInstance(); // this will raise an EntityNotFound exception
         // when id is invalid and conversation will not

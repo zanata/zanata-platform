@@ -6,7 +6,6 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.jboss.seam.annotations.End;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.dao.AccountActivationKeyDAO;
@@ -87,7 +86,7 @@ public class PasswordResetRequestAction implements Serializable {
         return null;
     }
 
-    @End
+//    @End /* TODO [CDI] commented out end conversation. verify it still work */
     public String sendActivationEmail(String usernameOrEmail) {
         HAccount account = getAccount(usernameOrEmail);
         if(account != null) {
