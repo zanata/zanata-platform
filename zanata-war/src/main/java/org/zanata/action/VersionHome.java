@@ -492,13 +492,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
         if (softDeleted) {
             String url = urlUtil.projectUrl(projectSlug);
-            try {
-                FacesContext.getCurrentInstance().getExternalContext().redirect(
-                        url);
-            }
-            catch (IOException e) {
-                throw Throwables.propagate(e);
-            }
+            urlUtil.redirectTo(url);
             return state;
         }
 

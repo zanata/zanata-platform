@@ -90,14 +90,7 @@ public class RegisterAction implements Serializable {
 
     public String redirectIfLoggedIn() {
         if (identity.isLoggedIn()) {
-            try {
-                // this is in preRenderView phase. we have to use this to
-                // redirect
-                FacesContext.getCurrentInstance().getExternalContext()
-                        .redirect(urlUtil.dashboardUrl());
-            } catch (IOException e) {
-                Throwables.propagate(e);
-            }
+            urlUtil.redirectTo(urlUtil.dashboardUrl());
         }
         return null;
     }

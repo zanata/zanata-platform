@@ -48,16 +48,11 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
-import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.End;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.faces.FacesManager;
 import org.jboss.seam.faces.Redirect;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
@@ -760,7 +755,7 @@ public class ProjectHome extends SlugHome<HProject> implements
 
         if (softDeleted) {
             String url = urlUtil.dashboardUrl();
-            FacesManager.instance().redirectToExternalURL(url);
+            urlUtil.redirectTo(url);
             return result;
         }
         if (!slug.equals(getInstance().getSlug())) {

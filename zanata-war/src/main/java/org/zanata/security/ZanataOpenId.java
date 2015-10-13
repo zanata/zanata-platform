@@ -63,6 +63,7 @@ import javax.enterprise.event.Event;
 
 import org.zanata.util.Contexts;
 import org.zanata.util.ServiceLocator;
+import org.zanata.util.UrlUtil;
 import com.google.common.base.Throwables;
 
 @Named("org.jboss.seam.security.zanataOpenId")
@@ -95,6 +96,9 @@ public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
 
     @Inject
     private Event<PostAuthenticateEvent> postAuthenticateEvent;
+
+    @Inject
+    private UrlUtil urlUtil;
 
     private String id;
     private OpenIdAuthenticationResult authResult;
@@ -297,13 +301,7 @@ public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
             Redirect redirect = Redirect.instance();
             redirect.captureCurrentView();
 
-            try {
-                FacesContext.getCurrentInstance().getExternalContext().redirect(
-                        url);
-            }
-            catch (IOException e) {
-                throw Throwables.propagate(e);
-            }
+            urlUtil.redirectTo(url);
         }
     }
 

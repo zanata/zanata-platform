@@ -20,6 +20,7 @@
  */
 package org.zanata.util;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -27,6 +28,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +39,7 @@ import javax.inject.Named;
 import org.jboss.seam.contexts.ServletLifecycle;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
+import com.google.common.base.Throwables;
 
 /**
  * Get the URL for the current page in URL encoded format for use in the query
@@ -186,6 +189,16 @@ public class UrlUtil implements Serializable {
             return true;
         } catch (MalformedURLException e) {
             return false;
+        }
+    }
+
+    public void redirectTo(String url) {
+        try {
+            FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+        }
+        catch (IOException e) {
+            log.error("fail to redirect to {}", url, e);
+            throw Throwables.propagate(e);
         }
     }
 }
