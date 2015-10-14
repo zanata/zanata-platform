@@ -29,7 +29,6 @@ import org.jboss.resteasy.spi.HttpResponse;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.core.PropertyInjectorImpl;
 
-import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.Component;
 import org.jboss.seam.log.Log;
 import org.jboss.seam.log.Logging;
@@ -85,12 +84,13 @@ public class SeamResteasyResourceFactory implements ResourceFactory {
             ResteasyProviderFactory factory) {
         // Push this onto event context so we have it available in
         // ResteasyContextInjectionInterceptor
-        Contexts.getEventContext().set(
-                ResteasyContextInjectionInterceptor.RE_HTTP_REQUEST_VAR,
-                request);
-        Contexts.getEventContext().set(
-                ResteasyContextInjectionInterceptor.RE_HTTP_RESPONSE_VAR,
-                response);
+        // ZANATA we don't need to do this anymore
+//        Contexts.getEventContext().set(
+//                ResteasyContextInjectionInterceptor.RE_HTTP_REQUEST_VAR,
+//                request);
+//        Contexts.getEventContext().set(
+//                ResteasyContextInjectionInterceptor.RE_HTTP_RESPONSE_VAR,
+//                response);
         log.debug(
                 "creating RESTEasy resource instance by looking up Seam component: "
                         + seamComponent.getName());
