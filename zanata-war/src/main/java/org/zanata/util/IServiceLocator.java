@@ -20,8 +20,6 @@
  */
 package org.zanata.util;
 
-import org.apache.deltaspike.core.api.provider.BeanProvider;
-
 import java.lang.annotation.Annotation;
 import java.util.Optional;
 

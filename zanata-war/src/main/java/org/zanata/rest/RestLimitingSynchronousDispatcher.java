@@ -22,6 +22,7 @@ package org.zanata.rest;
 
 import java.io.IOException;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 
@@ -31,7 +32,6 @@ import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.HttpResponse;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.spi.UnhandledException;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.limits.RateLimitingProcessor;
 import org.zanata.model.HAccount;
@@ -42,6 +42,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.zanata.seam.resteasy.SeamResteasyProviderFactory;
 import org.zanata.security.SecurityFunctions;
+import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.servlet.HttpRequestAndSessionHolder;
 import org.zanata.util.HttpUtil;
 import org.zanata.util.ServiceLocator;
@@ -168,10 +169,10 @@ class RestLimitingSynchronousDispatcher extends SynchronousDispatcher {
     @VisibleForTesting
     protected HAccount getAuthenticatedUser() {
         return ServiceLocator.instance().getInstance(
-                ZanataJpaIdentityStore.AUTHENTICATED_USER, HAccount.class);
+                HAccount.class, new AuthenticatedLiteral());
     }
 
-    protected HAccount getUser(@Nonnull String apiKey) {
+    protected @Nullable HAccount getUser(@Nonnull String apiKey) {
         return ServiceLocator.instance().getInstance(AccountDAO.class)
                 .getByApiKey(apiKey);
     }
