@@ -29,9 +29,9 @@ import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jboss.seam.navigation.Pages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.util.FacesNavigationUtil;
 import org.zanata.util.ServiceLocator;
 
 public class FedoraOpenIdPhaseListener implements PhaseListener {
@@ -40,7 +40,7 @@ public class FedoraOpenIdPhaseListener implements PhaseListener {
     private static final long serialVersionUID = 1L;
 
     public void beforePhase(PhaseEvent event) {
-        String viewId = Pages.getCurrentViewId();
+        String viewId = FacesNavigationUtil.getCurrentViewId();
         event.getFacesContext().getExternalContext().getRequestParameterMap();
 
         if (viewId == null || !viewId.startsWith("/openid.")) {
@@ -60,7 +60,7 @@ public class FedoraOpenIdPhaseListener implements PhaseListener {
 
         openid.verify();
 
-        Pages.handleOutcome(event.getFacesContext(), null, "/openid.xhtml");
+        FacesNavigationUtil.handlePageNavigation("/openid.xhtml", null);
     }
 
     private void sendXRDS() throws IOException {

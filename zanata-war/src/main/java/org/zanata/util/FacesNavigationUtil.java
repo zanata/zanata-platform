@@ -21,6 +21,7 @@
 package org.zanata.util;
 
 import javax.faces.application.NavigationHandler;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
 /**
@@ -33,5 +34,16 @@ public class FacesNavigationUtil {
         NavigationHandler navigationHandler =
                 context.getApplication().getNavigationHandler();
         navigationHandler.handleNavigation(context, fromAction, outcome);
+    }
+
+    public static String getCurrentViewId() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        if (facesContext != null) {
+            UIViewRoot viewRoot = facesContext.getViewRoot();
+            if (viewRoot != null) {
+                return viewRoot.getViewId();
+            }
+        }
+        return null;
     }
 }
