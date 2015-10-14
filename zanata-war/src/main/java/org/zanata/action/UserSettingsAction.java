@@ -40,7 +40,6 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.jboss.seam.core.Conversation;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.CredentialsDAO;
 import org.zanata.dao.PersonDAO;
@@ -381,7 +380,8 @@ public class UserSettingsAction {
                         ServiceLocator.instance().getInstance(
                                 FacesMessages.class);
 
-                Conversation.instance().begin(true, false); // (To retain
+                // TODO [CDI] commented out programmatically starting conversation
+//                Conversation.instance().begin(true, false); // (To retain
                 // messages)
                 facesMessages.clear();
 
@@ -399,9 +399,9 @@ public class UserSettingsAction {
 
         @Override
         public String getRedirectToUrl() {
-            return "/dashboard/settings?cid="
-                    + Conversation.instance().getId(); // keep the same
-            // conversation
+            return "/dashboard/settings";
+            // TODO [CDI] was keeping the same conversation
+//                    + Conversation.instance().getId();
         }
     }
 

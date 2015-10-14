@@ -32,8 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.core.Conversation;
-import org.jboss.seam.core.Conversation;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.security.AuthenticationType;
@@ -127,7 +125,8 @@ public class LoginAction implements Serializable {
                 return continueToPreviousUrl();
             }
         } else if ("inactive".equals(loginResult)) {
-            Conversation.instance().end();
+            // TODO [CDI] commented out programmatically ending conversation
+//            Conversation.instance().end();
             return "inactive";
         }
         return loginResult;

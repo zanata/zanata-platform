@@ -21,7 +21,6 @@
 package org.zanata.config;
 
 import javax.inject.Named;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
 
 /**
  * Property Store that delegates to system properties.
@@ -31,8 +30,6 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
  */
 @Named("systemPropertyConfigStore")
 @javax.enterprise.context.Dependent
-
-@BypassInterceptors
 public class SystemPropertyConfigStore implements ConfigStore {
 
     @Override

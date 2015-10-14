@@ -20,23 +20,23 @@
  */
 package org.zanata.action;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.StringTokenizer;
 
+import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Event;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
 import org.zanata.events.LocaleSelectedEvent;
 import org.zanata.servlet.HttpRequestAndSessionHolder;
 import org.zanata.util.Contexts;
@@ -49,9 +49,10 @@ import com.google.common.collect.Lists;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Name("localeSelectorAction")
-@Scope(ScopeType.SESSION)
-public class LocaleSelectorAction {
+@Named("localeSelectorAction")
+@SessionScoped
+public class LocaleSelectorAction implements Serializable {
+    private static final long serialVersionUID = -7116393807988405479L;
     @Inject
     private Event<LocaleSelectedEvent> localeSelectedEvent;
 
