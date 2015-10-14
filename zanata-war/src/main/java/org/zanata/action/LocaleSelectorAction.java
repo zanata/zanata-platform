@@ -26,9 +26,11 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.StringTokenizer;
 
+import javax.enterprise.event.Event;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
+import javax.inject.Inject;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
@@ -38,8 +40,6 @@ import org.jboss.seam.annotations.Scope;
 import org.zanata.events.LocaleSelectedEvent;
 import org.zanata.servlet.HttpRequestAndSessionHolder;
 import org.zanata.util.Contexts;
-import org.zanata.util.Event;
-import org.zanata.util.ServiceLocator;
 
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
@@ -52,6 +52,8 @@ import com.google.common.collect.Lists;
 @Name("localeSelectorAction")
 @Scope(ScopeType.SESSION)
 public class LocaleSelectorAction {
+    @Inject
+    private Event<LocaleSelectedEvent> localeSelectedEvent;
 
     private String language;
     private String country;
@@ -78,7 +80,7 @@ public class LocaleSelectorAction {
     }
 
     private Event<LocaleSelectedEvent> getLocaleSelectedEvent() {
-        return ServiceLocator.instance().getInstance(Event.class);
+        return localeSelectedEvent;
     }
 
 
