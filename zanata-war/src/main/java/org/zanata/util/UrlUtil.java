@@ -36,9 +36,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.contexts.ServletLifecycle;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
+import org.zanata.servlet.annotations.ContextPath;
 import com.google.common.base.Throwables;
 
 /**
@@ -54,18 +54,13 @@ import com.google.common.base.Throwables;
 public class UrlUtil implements Serializable {
     private static final long serialVersionUID = 1L;
     private final static String ENCODING = "UTF-8";
-    private static String contextPath;
 
     @Inject
     private ApplicationConfiguration applicationConfiguration;
 
-    public static String getContextPath() {
-        if (contextPath == null) {
-            contextPath = ServletLifecycle
-                    .getCurrentServletContext().getContextPath();
-        }
-        return contextPath;
-    }
+    @Inject
+    @ContextPath
+    private String contextPath;
 
     /**
      * Get the local url part, including context path, for the given page
@@ -112,23 +107,23 @@ public class UrlUtil implements Serializable {
     }
 
     public String projectUrl(String projectSlug) {
-        return getContextPath() + "/project/view/" + projectSlug;
+        return contextPath + "/project/view/" + projectSlug;
     }
 
     public String createNewVersionUrl(String projectSlug) {
-        return getContextPath() + "/project/add_iteration.seam?projectSlug="
+        return contextPath + "/project/add_iteration.seam?projectSlug="
                 + projectSlug;
     }
 
     public String versionUrl(String projectSlug, String versionSlug) {
-        return getContextPath() + "/iteration/view/" + projectSlug + "/"
+        return contextPath + "/iteration/view/" + projectSlug + "/"
                 + versionSlug;
     }
 
     public String editorDocumentListUrl(String projectSlug, String versionSlug,
             LocaleId targetLocaleId, LocaleId sourceLocaleId, boolean fullPath) {
         String prefix = fullPath ? applicationConfiguration.getServerPath()
-                        : getContextPath();
+                        : contextPath;
 
         return prefix + "/webtrans/translate?project=" + projectSlug
                 + "&iteration=" + versionSlug + "&localeId=" + targetLocaleId
@@ -155,7 +150,7 @@ public class UrlUtil implements Serializable {
     }
 
     public String dashboardUrl() {
-        return getContextPath() + "/dashboard/";
+        return contextPath + "/dashboard/";
     }
 
     /**
