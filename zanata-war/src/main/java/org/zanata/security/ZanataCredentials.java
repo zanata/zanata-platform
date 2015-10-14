@@ -31,7 +31,6 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.zanata.security.openid.OpenIdProviderType;
 
 import lombok.extern.slf4j.Slf4j;
