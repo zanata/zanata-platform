@@ -28,6 +28,7 @@ import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -44,7 +45,6 @@ import org.hibernate.Session;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.jboss.seam.transaction.Transaction;
 import org.zanata.common.util.ElementBuilder;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.util.TMXParseException;
@@ -67,6 +67,9 @@ public class TMXParser {
     private Session session;
     @Inject
     private TransMemoryAdapter transMemoryAdapter;
+
+    @Inject
+    private UserTransaction transaction;
 
     @Transactional
     public void parseAndSaveTMX(InputStream input, TransMemory transMemory)
@@ -138,8 +141,8 @@ public class TMXParser {
             HeuristicRollbackException, SystemException, NotSupportedException {
         session.flush();
         session.clear();
-        Transaction.instance().commit();
-        Transaction.instance().begin();
+        transaction.commit();
+        transaction.begin();
     }
 
 }

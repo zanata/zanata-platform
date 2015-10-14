@@ -2,12 +2,12 @@
 
 package org.zanata.seam.framework;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.jboss.seam.transaction.Transaction;
 import org.zanata.model.ModelEntityBase;
 import org.zanata.util.ServiceLocator;
 
@@ -21,6 +21,9 @@ import static javax.transaction.Status.STATUS_MARKED_ROLLBACK;
  */
 public class EntityHome<E> extends Home<EntityManager, E> {
     private static final long serialVersionUID = -3140094990727574632L;
+
+    @Inject
+    private UserTransaction transaction;
 
     /**
      * Run on {@link EntityHome} instantiation. <br />
@@ -155,9 +158,8 @@ public class EntityHome<E> extends Home<EntityManager, E> {
         }
     }
 
-    // TODO [CDI] inject UserTransaction
     private UserTransaction getTransaction() {
-        return Transaction.instance();
+        return transaction;
     }
 
     /**

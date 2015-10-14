@@ -29,7 +29,8 @@ import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.transaction.Transaction;
+import javax.transaction.UserTransaction;
+
 import org.zanata.exception.EntityMissingException;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnit;
@@ -48,6 +49,9 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long> {
 
     @Inject
     private FullTextSession session;
+
+    @Inject
+    private UserTransaction userTransaction;
 
     public TransMemoryDAO() {
         super(TransMemory.class);
@@ -88,7 +92,7 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long> {
         int deleted;
         do {
             try {
-                Transaction.instance().begin();
+                userTransaction.begin();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -116,7 +120,7 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long> {
             }
 
             try {
-                Transaction.instance().commit();
+                userTransaction.commit();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
