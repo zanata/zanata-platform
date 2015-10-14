@@ -44,7 +44,6 @@ import org.apache.deltaspike.core.api.lifecycle.Destroyed;
 import org.apache.deltaspike.core.api.lifecycle.Initialized;
 import javax.inject.Named;
 
-import org.jboss.seam.contexts.Contexts;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.exception.NotLoggedInException;
 import org.jboss.seam.web.Session;
@@ -64,6 +63,8 @@ import org.zanata.security.permission.MultiTargetList;
 import javax.enterprise.event.Event;
 import javax.servlet.http.HttpSession;
 
+import org.zanata.util.Contexts;
+import org.zanata.util.RequestContextValueStore;
 import org.zanata.util.ServiceLocator;
 
 import com.google.common.collect.Lists;
@@ -105,6 +106,9 @@ public class ZanataIdentity implements Identity, Serializable {
 
     @Inject
     private Event<LogoutEvent> logoutEvent;
+
+    @Inject
+    private RequestContextValueStore requestContextValueStore;
 
     public static boolean isSecurityEnabled() {
         return securityEnabled;
@@ -370,9 +374,9 @@ public class ZanataIdentity implements Identity, Serializable {
     // copied from org.jboss.seam.security.Identity.tryLogin()
     public boolean tryLogin() {
         if (!authenticating && getPrincipal() == null && credentials.isSet() &&
-                Contexts.isEventContextActive() &&
-                !Contexts.getEventContext().isSet(LOGIN_TRIED)) {
-            Contexts.getEventContext().set(LOGIN_TRIED, true);
+                Contexts.isRequestContextActive() &&
+                !requestContextValueStore.contains(LOGIN_TRIED)) {
+            requestContextValueStore.put(LOGIN_TRIED, true);
             quietLogin();
         }
 
@@ -390,8 +394,8 @@ public class ZanataIdentity implements Identity, Serializable {
             if (!isLoggedIn()) {
                 if (credentials.isSet()) {
                     authenticate();
-                    if (isLoggedIn() && Contexts.isEventContextActive()) {
-                        Contexts.getEventContext().set(SILENT_LOGIN, true);
+                    if (isLoggedIn() && Contexts.isRequestContextActive()) {
+                        requestContextValueStore.put(SILENT_LOGIN, true);
                     }
                 }
             }
@@ -526,8 +530,8 @@ public class ZanataIdentity implements Identity, Serializable {
                 // and login() is explicitly called then we still want to raise
                 // the LOGIN_SUCCESSFUL event,
                 // and then return.
-                if (Contexts.isEventContextActive()
-                        && Contexts.getEventContext().isSet(SILENT_LOGIN)) {
+                if (Contexts.isRequestContextActive()
+                        && requestContextValueStore.contains(SILENT_LOGIN)) {
                     getLoginSuccessfulEvent().fire(new LoginSuccessfulEvent());
                     this.preAuthenticated = true;
                     return "loggedIn";
