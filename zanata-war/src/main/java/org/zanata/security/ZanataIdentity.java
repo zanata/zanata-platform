@@ -31,6 +31,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 import javax.security.auth.Subject;
 import javax.security.auth.login.AppConfigurationEntry;
@@ -44,9 +45,9 @@ import org.apache.deltaspike.core.api.lifecycle.Destroyed;
 import org.apache.deltaspike.core.api.lifecycle.Initialized;
 import javax.inject.Named;
 
+import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.exception.NotLoggedInException;
-import org.jboss.seam.web.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.events.AlreadyLoggedInEvent;
@@ -168,7 +169,11 @@ public class ZanataIdentity implements Identity, Serializable {
         }
         if (isLoggedIn()) {
             unAuthenticate();
-            Session.instance().invalidate();
+            HttpSession session =
+                    BeanProvider.getContextualReference(HttpSession.class,
+                            new AnnotationLiteral<DeltaSpike>() {
+                            });
+            session.invalidate();
         }
     }
 
