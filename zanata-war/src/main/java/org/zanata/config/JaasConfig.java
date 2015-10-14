@@ -25,7 +25,6 @@ import javax.security.auth.login.Configuration;
 import javax.security.auth.spi.LoginModule;
 
 import javax.inject.Named;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
 
 /**
  * Store for JAAS configuration.
@@ -35,7 +34,6 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
  */
 @Named("jaasConfig")
 
-@BypassInterceptors
 @javax.enterprise.context.ApplicationScoped
 public class JaasConfig {
 

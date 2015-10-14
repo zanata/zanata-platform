@@ -23,10 +23,12 @@ package org.zanata.security;
 import java.util.Set;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
 import org.apache.deltaspike.security.api.authorization.AbstractAccessDecisionVoter;
 import org.apache.deltaspike.security.api.authorization.AccessDecisionVoterContext;
 import org.apache.deltaspike.security.api.authorization.SecurityViolation;
+import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.security.annotations.CheckRole;
 
 /**
@@ -34,6 +36,14 @@ import org.zanata.security.annotations.CheckRole;
  */
 @RequestScoped
 public class CheckRoleDecisionVoter extends AbstractAccessDecisionVoter {
+    private static final long serialVersionUID = -2225527674677560626L;
+
+    @Inject
+    private ZanataIdentity identity;
+
+    @Inject
+    private ZanataJpaIdentityStore identityStore;
+
     @Override
     protected void checkPermission(
             AccessDecisionVoterContext accessDecisionVoterContext,
@@ -42,6 +52,7 @@ public class CheckRoleDecisionVoter extends AbstractAccessDecisionVoter {
         CheckRole hasRole =
                 accessDecisionVoterContext.getMetaDataFor(CheckRole.class.getName(), CheckRole.class);
         if (hasRole != null) {
+            boolean result = identity.hasRole(hasRole.value());
 // TODO unify with PicketLink roles
 //            Role role = RoleFactory.createRole(hasRole.value());
 //
@@ -54,10 +65,9 @@ public class CheckRoleDecisionVoter extends AbstractAccessDecisionVoter {
 //                        "You don't have the necessary access"));
 //            }
 
-            String role = hasRole.value();
+//            String role = hasRole.value();
 
-            // FIXME DANGER!! Do an actual role check
-            if (!role.contains("admin")) {
+            if (!result) {
                 violations.add(newSecurityViolation(
                         "You don't have the necessary access"));
             }

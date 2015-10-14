@@ -8,33 +8,32 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.jboss.seam.annotations.intercept.AroundInvoke;
-import org.jboss.seam.annotations.intercept.Interceptor;
-import org.jboss.seam.annotations.intercept.InterceptorType;
-import org.jboss.seam.intercept.AbstractInterceptor;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
+
+
 import org.zanata.exception.NotLoggedInException;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
-import org.jboss.seam.async.AsynchronousInterceptor;
-import org.jboss.seam.intercept.InvocationContext;
 import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.util.ServiceLocator;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * TODO [CDI] this will need to change to CDI interceptor once migrated to CDI
+ * TODO [CDI] CheckLoggedInProvider and CheckRoleDecisionVoter should have taken care of security check already. Check whether this is still needed
  *
  * Copy and modified from org.jboss.seam.security.SecurityInterceptor
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Interceptor(type = InterceptorType.CLIENT,
-        around = AsynchronousInterceptor.class)
+
+@ZanataSecured
+@Interceptor
 @Slf4j
-public class ZanataSecurityInterceptor extends AbstractInterceptor
-        implements Serializable {
+public class ZanataSecurityInterceptor implements Serializable {
     private static final long serialVersionUID = -1L;
 
     /**
@@ -92,7 +91,7 @@ public class ZanataSecurityInterceptor extends AbstractInterceptor
         Method interfaceMethod = invocation.getMethod();
 
         if (!"hashCode".equals(interfaceMethod.getName())) {
-            Restriction restriction = getRestriction(interfaceMethod);
+            Restriction restriction = getRestriction(interfaceMethod, invocation.getTarget());
             if (restriction != null) {
                 restriction.check();
             }
@@ -101,7 +100,7 @@ public class ZanataSecurityInterceptor extends AbstractInterceptor
         return invocation.proceed();
     }
 
-    private Restriction getRestriction(Method interfaceMethod) throws Exception {
+    private Restriction getRestriction(Method interfaceMethod, Object target) throws Exception {
         // see field declaration as to why this is done
         if (restrictions == null) {
             synchronized (this) {
@@ -117,7 +116,7 @@ public class ZanataSecurityInterceptor extends AbstractInterceptor
                     Restriction restriction = null;
 
                     Method method =
-                            getComponent().getBeanClass().getMethod(
+                            target.getClass().getMethod(
                                     interfaceMethod.getName(),
                                     interfaceMethod.getParameterTypes());
 
@@ -177,10 +176,5 @@ public class ZanataSecurityInterceptor extends AbstractInterceptor
             }
         }
         return restrictions.get(interfaceMethod);
-    }
-
-    public boolean isInterceptorEnabled() {
-        boolean enabled = getComponent().beanClassHasAnnotation(ZanataSecured.class);
-        return enabled;
     }
 }

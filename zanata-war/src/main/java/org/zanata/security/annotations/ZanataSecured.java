@@ -26,18 +26,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.jboss.seam.annotations.intercept.Interceptors;
-import org.zanata.seam.interceptor.ZanataSecurityInterceptor;
+import javax.interceptor.InterceptorBinding;
+
 
 /**
  * This is to have our own seam interceptor working. Once migrated to CDI, we
  * need to revisit this and use CDI interceptor/PicketLink/DeltaSpike for
  * security
- * TODO [CDI] temporary replacement for built-in seam security interceptor
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Interceptors(ZanataSecurityInterceptor.class)
+@InterceptorBinding
 public @interface ZanataSecured {
 }

@@ -23,7 +23,6 @@ package org.zanata.security;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.apache.deltaspike.security.api.authorization.Secures;
-import org.picketlink.Identity;
 import org.zanata.security.annotations.CheckLoggedIn;
 
 /**
@@ -34,7 +33,7 @@ public class CheckLoggedInProvider {
 
     @Secures
     @CheckLoggedIn
-    public boolean isLoggedIn(Identity identity) throws Exception {
+    public boolean isLoggedIn(ZanataIdentity identity) throws Exception {
         return identity.isLoggedIn();
     }
 }
