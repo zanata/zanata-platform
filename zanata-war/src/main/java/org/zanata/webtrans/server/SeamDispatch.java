@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.inject.Instance;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -21,9 +23,6 @@ import net.customware.gwt.dispatch.shared.UnsupportedActionException;
 import javax.inject.Named;
 
 import org.apache.deltaspike.core.api.common.DeltaSpike;
-import org.apache.http.HttpRequest;
-import org.jboss.seam.deployment.HotDeploymentStrategy;
-import org.jboss.seam.deployment.StandardDeploymentStrategy;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.exception.NotLoggedInException;
 import org.zanata.util.ServiceLocator;
@@ -36,41 +35,26 @@ import com.google.common.collect.Maps;
 
 @Named("seamDispatch")
 @javax.enterprise.context.ApplicationScoped
-/* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
 @Slf4j
 public class SeamDispatch implements Dispatch {
     @Inject
     @DeltaSpike
     private HttpServletRequest request;
 
+
     @SuppressWarnings("rawtypes")
     private final Map<Class<? extends Action>, Class<? extends ActionHandler<?, ?>>> handlers =
             Maps.newHashMap();
 
     @SuppressWarnings("rawtypes")
-    public SeamDispatch() {
+    @Inject
+    public SeamDispatch(Instance<ActionHandler> actionHandlers) {
         // register all handlers with the @ActionHandlerFor annotation
-        Set<Class<?>> annotatedClasses =
-                StandardDeploymentStrategy.instance().getAnnotatedClasses()
-                        .get(ActionHandlerFor.class.getName());
-        if (annotatedClasses != null) {
-            for (Class clazz : annotatedClasses) {
-                register(clazz);
-            }
-        }
-
-        // also register hot deployed handlers
-        HotDeploymentStrategy hotDeploymentStrategy =
-                HotDeploymentStrategy.instance();
-        if (hotDeploymentStrategy != null && hotDeploymentStrategy.available()) {
-            Set<Class<?>> hotAnnotatedClasses =
-                    hotDeploymentStrategy.getAnnotatedClasses().get(
-                            ActionHandlerFor.class.getName());
-            if (hotAnnotatedClasses != null) {
-                for (Class clazz : hotAnnotatedClasses) {
-                    register(clazz);
-                }
-            }
+        Instance<ActionHandler> gwtActionHandlers = actionHandlers
+                .select(new AnnotationLiteral<ActionHandlerFor>() {
+                });
+        for (ActionHandler gwtActionHandler : gwtActionHandlers) {
+            register(gwtActionHandler.getClass());
         }
     }
 
