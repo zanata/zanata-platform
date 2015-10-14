@@ -32,6 +32,11 @@
 * [1214502](https://bugzilla.redhat.com/show_bug.cgi?id=1214502) -  RFE: Grant project creation permission to certain sets of users
 
 -----------------------
+## 3.7.3
+
+<h5>Bug fixes</h5>
+* [ZNTA-686](https://zanata.atlassian.net/browse/ZNTA-686) - Editor filter by last modified date uses wrong date pattern to validate
+* [ZNTA-707](https://zanata.atlassian.net/browse/ZNTA-707) - mysql on Mac throws error migrating DB with indexname 'Idx_lastChanged' vs 'Idx_LastChanged'
 
 ## 3.7.2
 
