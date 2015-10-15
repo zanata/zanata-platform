@@ -22,7 +22,6 @@ import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataTest;
 import org.zanata.limits.RateLimitingProcessor;
 import org.zanata.model.HAccount;
-import org.zanata.seam.resteasy.SeamResteasyProviderFactory;
 import org.zanata.util.HttpUtil;
 
 import static org.mockito.Mockito.*;
@@ -43,8 +42,6 @@ public class RestLimitingSynchronousDispatcherTest extends ZanataTest {
     private HttpResponse response;
     @Mock
     private RateLimitingProcessor processor;
-    //@Mock
-    private ResteasyProviderFactory providerFactory = SeamResteasyProviderFactory.getInstance();
     @Captor
     private ArgumentCaptor<Runnable> taskCaptor;
     @Mock
@@ -67,9 +64,7 @@ public class RestLimitingSynchronousDispatcherTest extends ZanataTest {
         when(headers.getFirst(HttpUtil.X_AUTH_TOKEN_HEADER)).thenReturn(
             API_KEY);
 
-        dispatcher =
-                spy(new RestLimitingSynchronousDispatcher(providerFactory,
-                        processor));
+        dispatcher = spy(new RestLimitingSynchronousDispatcher());
 
         // this way we can verify the task actually called super.invoke()
         doReturn(servletRequest).when(dispatcher).getServletRequest();

@@ -20,6 +20,8 @@
  */
 package org.zanata.test;
 
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import org.apache.deltaspike.core.util.ProjectStageProducer;
 import org.jglue.cdiunit.CdiRunner;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
@@ -36,11 +38,15 @@ public class CdiUnitRunner extends CdiRunner {
     @Override
     public void run(RunNotifier notifier) {
         boolean old = SeamAutowire.useRealServiceLocator;
+//        ProjectStage oldStage = ProjectStageProducer.getInstance().getProjectStage();
         SeamAutowire.useRealServiceLocator = true;
+        // Tell DeltaSpike to give more warning messages
+        ProjectStageProducer.setProjectStage(ProjectStage.UnitTest);
         try {
             super.run(notifier);
         } finally {
             SeamAutowire.useRealServiceLocator = old;
+//            ProjectStageProducer.setProjectStage(oldStage);
         }
     }
 }

@@ -239,8 +239,8 @@
   </rule>
 
   <rule>
-    <from casesensitive="true">^/rest/(.+)$</from>
-    <to last="true">/seam/resource/restv1/$1</to>
+    <from casesensitive="true">^/seam/resource/restv1/(.+)$</from>
+    <to last="true">/rest/$1</to>
   </rule>
 
   <!-- Version group -->

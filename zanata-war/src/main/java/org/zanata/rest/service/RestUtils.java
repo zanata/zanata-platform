@@ -16,9 +16,10 @@ import org.jboss.resteasy.core.ServerResponse;
 import org.jboss.resteasy.spi.NoLogWebApplicationException;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.seam.resteasy.SeamResteasyProviderFactory;
 
 @Named("restUtils")
 public class RestUtils {
@@ -75,7 +76,7 @@ public class RestUtils {
             MediaType requestContentType,
             MultivaluedMap<String, String> requestHeaders) {
         MessageBodyReader<T> reader =
-                SeamResteasyProviderFactory.getInstance().getMessageBodyReader(
+                ResteasyProviderFactory.getInstance().getMessageBodyReader(
                         entityClass, entityClass, entityClass.getAnnotations(),
                         requestContentType);
         if (reader == null) {

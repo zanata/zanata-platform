@@ -48,9 +48,6 @@ public class ServiceLocatorTest {
         // redirect JUL to slf4j
         LogManager.getLogManager().reset();
         SLF4JBridgeHandler.install();
-
-        // Tell DeltaSpike to give more warning messages
-        ProjectStageProducer.getInstance().setProjectStage(ProjectStage.UnitTest);
     }
 
     @Named
