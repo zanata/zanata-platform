@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.faces.event.ValueChangeEvent;
-import javax.persistence.EntityNotFoundException;
 
 import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
@@ -34,8 +33,6 @@ import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
-import org.jboss.seam.faces.Redirect;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.LocaleMemberDAO;
@@ -60,6 +57,7 @@ import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.InMemoryListFilter;
 import org.zanata.util.IServiceLocator;
 import org.zanata.util.ServiceLocator;
+import org.zanata.util.UrlUtil;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -115,7 +113,7 @@ public class LanguageAction implements Serializable {
     private ResourceUtils resourceUtils;
 
     @Inject
-    private Redirect redirect;
+    private UrlUtil urlUtil;
 
     @Getter
     @Setter
@@ -256,9 +254,8 @@ public class LanguageAction implements Serializable {
 
     private void redirectToLanguageHome() {
         facesMessages.addGlobal(msgs.format(
-            "jsf.language.validation.NotSupport", language));
-        redirect.setViewId("/language/home.xhtml");
-        redirect.execute();
+                "jsf.language.validation.NotSupport", language));
+        urlUtil.redirectTo(urlUtil.languageHome());
     }
 
 

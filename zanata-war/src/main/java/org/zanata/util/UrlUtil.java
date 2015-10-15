@@ -196,4 +196,8 @@ public class UrlUtil implements Serializable {
             throw Throwables.propagate(e);
         }
     }
+
+    public String languageHome() {
+        return contextPath + "/language/home.xhtml";
+    }
 }

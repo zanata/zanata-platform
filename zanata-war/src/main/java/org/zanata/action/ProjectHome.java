@@ -51,7 +51,6 @@ import org.hibernate.criterion.Restrictions;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.jboss.seam.faces.Redirect;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
@@ -823,7 +822,7 @@ public class ProjectHome extends SlugHome<HProject> implements
     }
 
     @Inject
-    private Redirect redirect;
+    private UrlUtil urlUtil;
 
     public String removeMaintainer(HPerson person) {
         identity.checkPermission(instance, "update");
@@ -839,9 +838,7 @@ public class ProjectHome extends SlugHome<HProject> implements
                 msgs.format("jsf.project.MaintainerRemoved",
                     person.getName()));
             if (person.equals(authenticatedAccount.getPerson())) {
-                redirect.setViewId("/project/project.xhtml");
-                redirect.setParameter("slug", getSlug());
-                redirect.execute();
+                urlUtil.redirectTo(urlUtil.projectUrl(getSlug()));
             }
         }
         return "";
