@@ -37,6 +37,7 @@
 <h5>Bug fixes</h5>
 * [ZNTA-686](https://zanata.atlassian.net/browse/ZNTA-686) - Editor filter by last modified date uses wrong date pattern to validate
 * [ZNTA-707](https://zanata.atlassian.net/browse/ZNTA-707) - mysql on Mac throws error migrating DB with indexname 'Idx_lastChanged' vs 'Idx_LastChanged'
+* [ZNTA-721](https://zanata.atlassian.net/browse/ZNTA-721) - Fuzzy/automatic TM search not finding good/exact matches
 
 ## 3.7.2
 
