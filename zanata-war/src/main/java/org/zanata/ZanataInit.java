@@ -58,6 +58,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.deltaspike.core.api.lifecycle.Initialized;
+import org.apache.deltaspike.jpa.api.entitymanager.PersistenceUnitName;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -107,6 +108,7 @@ public class ZanataInit {
     private Event<ServerStarted> startupEvent;
 
     @Inject
+    @PersistenceUnitName("zanataDatasourcePU")
     private EntityManagerFactory entityManagerFactory;
 
     public void onCreate(@Observes @Initialized ServletContext context) throws Exception {

@@ -4,6 +4,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import org.apache.deltaspike.jpa.api.entitymanager.PersistenceUnitName;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
 import javax.inject.Inject;
@@ -64,6 +65,7 @@ public class SampleProjectProfile {
     private EntityManager entityManager;
 
     @Inject
+    @PersistenceUnitName("zanataDatasourcePU")
     private EntityManagerFactory entityManagerFactory;
 
     private HLocale enUSLocale;

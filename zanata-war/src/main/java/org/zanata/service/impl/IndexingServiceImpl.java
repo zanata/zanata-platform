@@ -27,6 +27,7 @@ import javax.persistence.EntityManagerFactory;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.deltaspike.jpa.api.entitymanager.PersistenceUnitName;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
@@ -58,6 +59,7 @@ import org.zanata.service.IndexingService;
 public class IndexingServiceImpl implements IndexingService {
 
     @Inject
+    @PersistenceUnitName("zanataDatasourcePU")
     private EntityManagerFactory entityManagerFactory;
 
     @Inject
