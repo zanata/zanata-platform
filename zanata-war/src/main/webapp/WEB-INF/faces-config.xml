@@ -183,36 +183,33 @@
     </navigation-case>
   </navigation-rule>
 
-  <!--<navigation-rule>
+  <navigation-rule>
     <from-view-id>/account/password_reset_request.xhtml</from-view-id>
     <navigation-case>
       <from-outcome>home</from-outcome>
       <to-view-id>/home.xhtml</to-view-id>
-      &lt;!&ndash; TODO [CDI] end conversation (it will lose notification message) &ndash;&gt;
-      &lt;!&ndash;<end-conversation />&ndash;&gt;
       <redirect/>
     </navigation-case>
-  </navigation-rule>-->
+  </navigation-rule>
 
-  <!-- TODO [CDI] it uses conversation scoped facesMessages -->
-  <!--<navigation-rule>
+  <navigation-rule>
     <from-view-id>/account/inactive_account.xhtml</from-view-id>
     <navigation-case>
       <from-action>#{inactiveAccountAction.sendActivationEmail}</from-action>
-      &lt;!&ndash; TODO [CDI] end conversation &ndash;&gt;
-      &lt;!&ndash;<end-conversation />&ndash;&gt;
+      <!-- TODO [CDI] end conversation in seam -->
+      <!--<end-conversation />-->
       <to-view-id>/home.xhtml</to-view-id>
       <redirect/>
     </navigation-case>
     <navigation-case>
       <from-action>#{inactiveAccountAction.changeEmail}</from-action>
-      &lt;!&ndash; TODO [CDI] end conversation &ndash;&gt;
-      &lt;!&ndash;<end-conversation />&ndash;&gt;
+      <!-- TODO [CDI] end conversation in seam-->
+      <!--<end-conversation />-->
       <to-view-id>/home.xhtml</to-view-id>
       <redirect/>
     </navigation-case>
 
-  </navigation-rule-->>
+  </navigation-rule>
 
   <!-- Admin -->
   <navigation-rule>
@@ -239,6 +236,27 @@
       <from-outcome>success</from-outcome>
       <to-view-id>/admin/home.xhtml</to-view-id>
       <redirect/>
+    </navigation-case>
+  </navigation-rule>
+
+  <navigation-rule>
+    <from-view-id>/admin/rolerules.xhtml</from-view-id>
+    <navigation-case>
+      <from-action>#{roleAssignmentRuleAction.edit}</from-action>
+      <to-view-id>/admin/roleruledetails.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+
+  <navigation-rule>
+    <from-view-id>/admin/roleruledetails.xhtml</from-view-id>
+    <navigation-case>
+      <from-action>#{roleAssignmentRuleAction.update}</from-action>
+      <to-view-id>/admin/rolerules.xhtml</to-view-id>
+    </navigation-case>
+    <navigation-case>
+      <from-action>#{roleAssignmentRuleAction.persist}</from-action>
+      <to-view-id>/admin/rolerules.xhtml</to-view-id>
     </navigation-case>
   </navigation-rule>
 
@@ -421,7 +439,7 @@
 
   <!-- Translation Memory -->
   <!-- TODO [CDI] EntityHome messages are conversation scoped which can not be migrated to faces-config yet -->
-  <!--<navigation-rule>
+  <navigation-rule>
     <from-view-id>/tm/create.xhtml</from-view-id>
     <navigation-case>
       <from-action>#{translationMemoryHome.persist}</from-action>
@@ -435,7 +453,7 @@
       <to-view-id>/tm/home.xhtml</to-view-id>
       <redirect/>
     </navigation-case>
-  </navigation-rule>-->
+  </navigation-rule>
 
   <!-- we need to explicitly secure webtrans after removing seam remoting -->
   <navigation-rule>

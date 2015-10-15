@@ -5,63 +5,63 @@
   no-conversation-view-id="/home.xhtml" login-view-id="/account/login.xhtml">
 
   <!-- TODO [CDI] uses conversation scope facesMessages. if migrated to faces-config, it will lose notification message -->
-  <page view-id="/account/password_reset_request.xhtml">
-    <navigation from-action="#{passwordResetRequest.requestReset}">
-      <rule if-outcome="home">
-        <end-conversation />
-        <redirect view-id="/home.xhtml" />
-      </rule>
-    </navigation>
-  </page>
+  <!--<page view-id="/account/password_reset_request.xhtml">-->
+    <!--<navigation from-action="#{passwordResetRequest.requestReset}">-->
+      <!--<rule if-outcome="home">-->
+        <!--<end-conversation />-->
+        <!--<redirect view-id="/home.xhtml" />-->
+      <!--</rule>-->
+    <!--</navigation>-->
+  <!--</page>-->
 
   <!-- TODO [CDI] uses conversation scope facesMessages. if migrated to faces-config, it will lose notification message -->
-  <page view-id="/account/inactive_account.xhtml">
-    <navigation from-action="#{inactiveAccountAction.sendActivationEmail}">
-      <end-conversation />
-      <redirect view-id="/home.xhtml" />
-    </navigation>
-    <navigation from-action="#{inactiveAccountAction.changeEmail}">
-      <rule if-outcome="home">
-        <end-conversation />
-        <redirect view-id="/home.xhtml" />
-      </rule>
-    </navigation>
-  </page>
+  <!--<page view-id="/account/inactive_account.xhtml">-->
+    <!--<navigation from-action="#{inactiveAccountAction.sendActivationEmail}">-->
+      <!--<end-conversation />-->
+      <!--<redirect view-id="/home.xhtml" />-->
+    <!--</navigation>-->
+    <!--<navigation from-action="#{inactiveAccountAction.changeEmail}">-->
+      <!--<rule if-outcome="home">-->
+        <!--<end-conversation />-->
+        <!--<redirect view-id="/home.xhtml" />-->
+      <!--</rule>-->
+    <!--</navigation>-->
+  <!--</page>-->
 
   <!-- Admin -->
   <!-- TODO [CDI] the backed bean is conversation scope (EntityHome) which can not be migrated to faces-config.xml -->
-  <page view-id="/admin/rolerules.xhtml">
-    <navigation from-action="#{roleAssignmentRuleAction.edit(rule)}">
-      <redirect view-id="/admin/roleruledetails.xhtml" />
-    </navigation>
-  </page>
-  <page view-id="/admin/roleruledetails.xhtml">
-    <navigation from-action="#{roleAssignmentRuleAction.update}">
-      <end-conversation />
-      <redirect view-id="/admin/rolerules.xhtml" />
-    </navigation>
-    <navigation from-action="#{roleAssignmentRuleAction.persist}">
-      <end-conversation />
-      <redirect view-id="/admin/rolerules.xhtml" />
-    </navigation>
-  </page>
+  <!--<page view-id="/admin/rolerules.xhtml">-->
+    <!--<navigation from-action="#{roleAssignmentRuleAction.edit(rule)}">-->
+      <!--<redirect view-id="/admin/roleruledetails.xhtml" />-->
+    <!--</navigation>-->
+  <!--</page>-->
+  <!--<page view-id="/admin/roleruledetails.xhtml">-->
+    <!--<navigation from-action="#{roleAssignmentRuleAction.update}">-->
+      <!--<end-conversation />-->
+      <!--<redirect view-id="/admin/rolerules.xhtml" />-->
+    <!--</navigation>-->
+    <!--<navigation from-action="#{roleAssignmentRuleAction.persist}">-->
+      <!--<end-conversation />-->
+      <!--<redirect view-id="/admin/rolerules.xhtml" />-->
+    <!--</navigation>-->
+  <!--</page>-->
 
 
 
   <!-- Translation Memory -->
   <!-- TODO [CDI] the backed bean is conversation scope (EntityHome) which can not be migrated to faces-config.xml (messages missing) -->
-  <page view-id="/tm/create.xhtml">
-    <navigation from-action="#{translationMemoryHome.persist}">
-      <rule if-outcome="persisted">
-        <redirect view-id="/tm/home.xhtml" />
-      </rule>
-    </navigation>
-    <navigation from-action="#{translationMemoryHome.update}">
-      <rule if-outcome="updated">
-        <redirect view-id="/tm/home.xhtml" />
-      </rule>
-    </navigation>
-  </page>
+  <!--<page view-id="/tm/create.xhtml">-->
+    <!--<navigation from-action="#{translationMemoryHome.persist}">-->
+      <!--<rule if-outcome="persisted">-->
+        <!--<redirect view-id="/tm/home.xhtml" />-->
+      <!--</rule>-->
+    <!--</navigation>-->
+    <!--<navigation from-action="#{translationMemoryHome.update}">-->
+      <!--<rule if-outcome="updated">-->
+        <!--<redirect view-id="/tm/home.xhtml" />-->
+      <!--</rule>-->
+    <!--</navigation>-->
+  <!--</page>-->
 
   <!-- TODO [CDI] we will probably use something like this http://stackoverflow.com/a/18411362/345718 -->
   <!-- Exceptions -->
