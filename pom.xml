@@ -601,9 +601,9 @@
       </dependency>
 
       <dependency>
-        <groupId>org.opensymphony.quartz</groupId>
+        <groupId>org.quartz-scheduler</groupId>
         <artifactId>quartz</artifactId>
-        <version>1.6.5</version>
+        <version>2.2.1</version>
       </dependency>
 
       <!-- zanata assets -->
@@ -1523,6 +1523,9 @@
                 <!-- Use org.jboss.spec.javax.xml.bind:jboss-jaxb-api_2.2_spec -->
                 <exclude>javax.xml.bind:jaxb-api</exclude>
 
+                <!-- use jdk and javax.xml.stream:stax-api -->
+                <exclude>javax.xml.bind:jsr173_api</exclude>
+
                 <!-- Use org.jboss.resteasy:jaxrs-api (since we package resteasy) -->
                 <exclude>org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_1.1_spec</exclude>
 
@@ -1532,8 +1535,8 @@
                 <!-- use org.jboss.spec.javax.annotation:jboss-annotations-api_1.1_spec -->
                 <exclude>org.jboss.spec.javax.annotation:jboss-annotations-api_1.2_spec</exclude>
 
-                <!-- use jdk and javax.xml.stream:stax-api -->
-                <exclude>javax.xml.bind:jsr173_api</exclude>
+                <!-- use org.quartz-scheduler:quartz -->
+                <exclude>org.opensymphony.quartz:quartz</exclude>
               </excludes>
             </bannedDependencies>
             <requireNoRepositories>

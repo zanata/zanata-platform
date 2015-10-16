@@ -25,11 +25,15 @@ import java.io.File;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.common.base.Throwables;
 import org.apache.deltaspike.scheduler.api.Scheduled;
 import org.quartz.Job;
+import org.quartz.JobBuilder;
+import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.JobKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.service.FileSystemService;
@@ -43,19 +47,16 @@ import org.zanata.service.FileSystemService;
  */
 // here we have to start ApplicationScope even though we don't need it, due to a
 // bug in deltaspike https://issues.apache.org/jira/browse/DELTASPIKE-1002
-@Scheduled(cronExpression = "0 0 0 * * ?", startScopes = {ApplicationScoped.class})
-public class CdiDownloadFileCleanupJob extends JobDetail implements Job {
+@Scheduled(cronExpression = "0 0 0 * * ?",
+        startScopes = {ApplicationScoped.class},
+        description = "Download File Cleanup")
+public class CdiDownloadFileCleanupJob implements Job {
     private static final Logger log =
             LoggerFactory.getLogger(CdiDownloadFileCleanupJob.class);
     private static final long serialVersionUID = 4401137227756319418L;
 
     @Inject
     private FileSystemService fileSystemServiceImpl;
-
-    public CdiDownloadFileCleanupJob() {
-        // null group name will become default group name
-        super("Download File Cleanup", null, CdiDownloadFileCleanupJob.class);
-    }
 
     @Override
     public void execute(JobExecutionContext context)

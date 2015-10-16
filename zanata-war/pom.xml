@@ -1842,13 +1842,6 @@
       <artifactId>openprops</artifactId>
     </dependency>
 
-    <!-- Quartz -->
-
-    <dependency>
-      <groupId>org.opensymphony.quartz</groupId>
-      <artifactId>quartz</artifactId>
-    </dependency>
-
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-core</artifactId>
@@ -2301,8 +2294,7 @@
     <dependency>
       <groupId>org.quartz-scheduler</groupId>
       <artifactId>quartz</artifactId>
-      <version>2.2.1</version>
-      <scope>${cdi.runtime}</scope>
+      <!--<scope>${cdi.runtime}</scope>-->
     </dependency>
 
     <dependency>
