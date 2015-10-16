@@ -20,6 +20,9 @@ public class AbstractDAOImpl<T, ID extends Serializable> implements
     private Class<T> persistentClass;
     private Session session;
 
+    protected AbstractDAOImpl() {
+    }
+
     public AbstractDAOImpl(Class<T> clz, Session session) {
         this(clz);
         this.session = session;
