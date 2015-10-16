@@ -2,6 +2,7 @@
 
 package org.zanata.seam.framework;
 
+import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -23,8 +24,9 @@ import org.zanata.util.ServiceLocator;
  *
  * @author Gavin King
  */
-@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
-public abstract class Home<T, E> extends MutableController<T> {
+//@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
+public abstract class Home<T, E> extends MutableController<T>
+        implements Serializable {
     private static final Logger log = LoggerFactory.getLogger(Home.class);
     private static final long serialVersionUID = -5462396456614090423L;
 

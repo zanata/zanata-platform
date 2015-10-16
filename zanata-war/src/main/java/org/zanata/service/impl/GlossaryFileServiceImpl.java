@@ -27,6 +27,8 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -51,7 +53,7 @@ import org.zanata.service.LocaleService;
  *
  */
 @Named("glossaryFileServiceImpl")
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class GlossaryFileServiceImpl implements GlossaryFileService {
     @Inject
     private GlossaryDAO glossaryDAO;

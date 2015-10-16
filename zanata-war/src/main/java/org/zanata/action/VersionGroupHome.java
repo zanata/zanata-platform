@@ -20,6 +20,7 @@
  */
 package org.zanata.action;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -68,7 +69,8 @@ import lombok.Setter;
  */
 @Named("versionGroupHome")
 @org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
-public class VersionGroupHome extends SlugHome<HIterationGroup> {
+public class VersionGroupHome extends SlugHome<HIterationGroup>
+        implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Getter

@@ -20,12 +20,14 @@
  */
 package org.zanata.service.impl;
 
+import java.io.Serializable;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.ApplicationConfiguration;
@@ -60,7 +62,7 @@ import static org.zanata.email.Addresses.getAddresses;
  */
 
 @Named("emailServiceImpl")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @Slf4j
 public class EmailServiceImpl implements EmailService {
 

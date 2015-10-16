@@ -30,13 +30,16 @@ import org.zanata.model.HPerson;
 import org.zanata.seam.framework.EntityHome;
 import org.zanata.security.annotations.Authenticated;
 
+import java.io.Serializable;
+
 /**
  * A simple bean to hold the currently authenticated account.
  */
 @Named("authenticatedAccountHome")
 @org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
 @Slf4j
-public class AuthenticatedAccountHome extends EntityHome<HAccount> {
+public class AuthenticatedAccountHome extends EntityHome<HAccount>
+        implements Serializable {
 
     /**
     *

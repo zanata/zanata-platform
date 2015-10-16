@@ -19,7 +19,8 @@ import static javax.transaction.Status.STATUS_MARKED_ROLLBACK;
  *
  * @author Gavin King
  */
-public class EntityHome<E> extends Home<EntityManager, E> {
+//@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
+public abstract class EntityHome<E> extends Home<EntityManager, E> {
     private static final long serialVersionUID = -3140094990727574632L;
 
     @Inject

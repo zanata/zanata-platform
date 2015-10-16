@@ -1,5 +1,6 @@
 package org.zanata.service.impl;
 
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -26,7 +27,7 @@ import javax.enterprise.event.TransactionPhase;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Named("translationUpdatedManager")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @Slf4j
 public class TranslationUpdatedManager {
 

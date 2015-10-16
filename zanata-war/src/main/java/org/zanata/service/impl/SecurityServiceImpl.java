@@ -21,6 +21,7 @@
 
 package org.zanata.service.impl;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.exception.AuthorizationException;
@@ -42,7 +43,7 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Named("securityServiceImpl")
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class SecurityServiceImpl implements SecurityService {
     @Inject
     private ProjectDAO projectDAO;

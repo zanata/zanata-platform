@@ -22,6 +22,8 @@
 package org.zanata.webtrans.server.rpc;
 
 import org.apache.commons.lang.StringUtils;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
@@ -55,7 +57,7 @@ import net.customware.gwt.dispatch.shared.ActionException;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Named("webtrans.gwt.AddReviewCommentHandler")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @ActionHandlerFor(AddReviewCommentAction.class)
 @Slf4j
 public class AddReviewCommentHandler extends

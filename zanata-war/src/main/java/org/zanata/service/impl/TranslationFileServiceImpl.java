@@ -26,6 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.xml.sax.InputSource;
@@ -87,7 +89,7 @@ import static org.zanata.common.DocumentType.XML_DOCUMENT_TYPE_DEFINITION;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("translationFileServiceImpl")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @Slf4j
 public class TranslationFileServiceImpl implements TranslationFileService {
     private static Map<DocumentType, Class<? extends FileFormatAdapter>> DOCTYPEMAP =

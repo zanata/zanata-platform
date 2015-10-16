@@ -104,7 +104,7 @@ public class Messages extends AbstractMap<String, String> {
      * Currently selected locale (observes LocaleSelectedEvent)
      */
     private Locale locale;
-    private ResourceBundle resourceBundle;
+    private transient ResourceBundle resourceBundle;
 
     /**
      * Create an instance for the locale of the current request, if any,

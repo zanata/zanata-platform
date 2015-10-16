@@ -43,6 +43,7 @@ import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.ServiceLocator;
 
 import com.google.common.cache.CacheLoader;
+import org.zanata.util.Zanata;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
@@ -61,7 +62,7 @@ public class VersionStateCacheImpl implements VersionStateCache {
     private CacheWrapper<VersionLocaleKey, WordStatistic> versionStatisticCache;
     private CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader;
 
-    @Inject
+    @Inject @Zanata
     private CacheContainer cacheContainer;
 
     @Inject

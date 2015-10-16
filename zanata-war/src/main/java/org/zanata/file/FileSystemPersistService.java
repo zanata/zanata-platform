@@ -29,6 +29,8 @@ import java.io.InputStream;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FilenameUtils;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.ApplicationConfiguration;
@@ -42,8 +44,7 @@ import org.zanata.rest.service.VirusScanner;
 import com.google.common.io.Files;
 
 @Named("filePersistService")
-@javax.enterprise.context.Dependent
-
+@RequestScoped
 @Slf4j
 public class FileSystemPersistService implements FilePersistService {
 

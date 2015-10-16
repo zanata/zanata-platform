@@ -52,6 +52,7 @@ import org.zanata.service.TranslationStateCache;
 import org.zanata.service.ValidationFactoryProvider;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.ServiceLocator;
+import org.zanata.util.Zanata;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.model.ValidationAction;
@@ -90,7 +91,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     private CacheWrapper<Long, Map<ValidationId, Boolean>> targetValidationCache;
     private CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
 
-    @Inject
+    @Inject @Zanata
     private CacheContainer cacheContainer;
 
     @Inject

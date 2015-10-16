@@ -26,6 +26,8 @@ import java.util.concurrent.Future;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -52,6 +54,7 @@ import org.zanata.model.WebHook;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
@@ -76,7 +79,7 @@ import javax.enterprise.event.Observes;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("documentServiceImpl")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @ContainsAsyncMethods
 @Slf4j
 public class DocumentServiceImpl implements DocumentService {
@@ -113,7 +116,7 @@ public class DocumentServiceImpl implements DocumentService {
     @Inject
     private UrlUtil urlUtil;
 
-    @Inject
+    @Inject @Authenticated
     private HAccount authenticatedAccount;
 
     @Inject

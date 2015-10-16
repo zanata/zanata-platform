@@ -20,12 +20,14 @@
  */
 package org.zanata.service.impl;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.persistence.EntityManager;
@@ -56,8 +58,7 @@ import org.zanata.service.ActivityService;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Named("activityServiceImpl")
-
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class ActivityServiceImpl implements ActivityService {
     @Inject
     private ActivityDAO activityDAO;

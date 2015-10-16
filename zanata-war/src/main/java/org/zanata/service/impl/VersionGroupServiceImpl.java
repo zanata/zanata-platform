@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.EntityStatus;
@@ -49,7 +50,7 @@ import com.google.common.collect.Maps;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Named("versionGroupServiceImpl")
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class VersionGroupServiceImpl implements VersionGroupService {
 
     @Inject

@@ -84,7 +84,7 @@ import java.util.ResourceBundle;
 @org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
 @Slf4j
 public class VersionHome extends SlugHome<HProjectIteration> implements
-    HasLanguageSettings {
+    HasLanguageSettings, Serializable {
 
     private static final long serialVersionUID = 1L;
 

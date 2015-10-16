@@ -64,7 +64,7 @@ public class SampleProjectProfile {
     @Inject
     private EntityManager entityManager;
 
-    @Inject
+    @Inject @Zanata
     @PersistenceUnitName("zanataDatasourcePU")
     private EntityManagerFactory entityManagerFactory;
 

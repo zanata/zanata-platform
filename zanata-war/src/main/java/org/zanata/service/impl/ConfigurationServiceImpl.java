@@ -25,6 +25,7 @@ import static org.apache.commons.lang.StringUtils.join;
 
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.ApplicationConfiguration;
@@ -36,7 +37,7 @@ import org.zanata.service.ConfigurationService;
 import org.zanata.service.LocaleService;
 
 @Named("configurationServiceImpl")
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class ConfigurationServiceImpl implements ConfigurationService {
     private static final String FILE_NAME = "zanata.xml";
 

@@ -29,7 +29,6 @@ import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
 import static org.zanata.transaction.TransactionUtil.runInTransaction;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -48,7 +47,6 @@ import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.type.TranslationSourceType;
-import org.zanata.service.TranslationFinder;
 import org.zanata.service.ValidationService;
 import org.zanata.service.VersionStateCache;
 import org.zanata.util.TranslationUtil;
@@ -66,10 +64,10 @@ import com.google.common.collect.ImmutableList;
 @Slf4j
 public class CopyTransWorkFactory {
 
-    // Inject textFlowTargetDAO for Hibernate-based query
-    // Inject translationMemoryServiceImpl for Hibernate Search query
+    // Inject textFlowTargetDAO (@DatabaseSearch) for Hibernate-based query
+    // Inject translationMemoryServiceImpl (no qualifier) for Hibernate Search query
     @Inject
-    private TranslationFinder translationFinder;
+    private TextFlowTargetDAO translationFinder;
 
     @Inject
     private TextFlowTargetDAO textFlowTargetDAO;

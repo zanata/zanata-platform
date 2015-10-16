@@ -37,6 +37,7 @@ import org.hibernate.search.jpa.FullTextQuery;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.LocaleId;
+import org.zanata.jpa.FullText;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HLocale;
@@ -51,7 +52,7 @@ import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 @javax.enterprise.context.Dependent
 public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long> {
-    @Inject
+    @Inject @FullText
     private FullTextEntityManager entityManager;
 
     public GlossaryDAO() {

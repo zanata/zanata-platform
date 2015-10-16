@@ -1,5 +1,6 @@
 package org.zanata.service.impl;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
@@ -9,7 +10,7 @@ import org.zanata.service.GravatarService;
 import org.zanata.util.HashUtil;
 
 @Named("gravatarServiceImpl")
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class GravatarServiceImpl implements GravatarService {
     private static String GRAVATAR_URL = "//www.gravatar.com/avatar/";
 

@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.ContentState;
@@ -63,7 +64,7 @@ import static org.zanata.service.SecurityService.TranslationAction.MODIFY;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Named("transMemoryMergeServiceImpl")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @Slf4j
 public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
 

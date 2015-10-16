@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,27 +18,33 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.validation;
+package org.zanata.jpa;
 
-import javax.validation.Validation;
-import javax.validation.Validator;
-
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
-import javax.inject.Named;
+import javax.persistence.PersistenceUnit;
+
+import org.hibernate.ejb.HibernateEntityManagerFactory;
+import org.zanata.util.Zanata;
 
 /**
- * Singleton producer for Bean Validators.
- *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Named("validatorFactory")
-@javax.enterprise.context.ApplicationScoped
-public class ValidatorFactory {
-    private javax.validation.ValidatorFactory beanValidatorFactory = Validation.buildDefaultValidatorFactory();
+@ApplicationScoped
+public class EntityManagerFactoryProducer {
 
-    @Produces(/* TODO [CDI] check this: migrated from @Factory *//*scope = ScopeType.EVENT, autoCreate = true*/)
-    public Validator getValidator() {
-        return beanValidatorFactory.getValidator();
+    @PersistenceUnit
+    private HibernateEntityManagerFactory entityManagerFactory;
+
+    @Produces
+    @RequestScoped
+    @Default
+    @Zanata
+    // NB: This was conversation scoped before, so keep an eye out for it
+    protected HibernateEntityManagerFactory create() {
+        return entityManagerFactory;
     }
+
 }

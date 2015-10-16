@@ -91,6 +91,7 @@ import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 @Named("projectHome")
 @Slf4j
+@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
 public class ProjectHome extends SlugHome<HProject> implements
     HasLanguageSettings {
 
@@ -820,9 +821,6 @@ public class ProjectHome extends SlugHome<HProject> implements
         Collections.sort(list, ComparatorUtil.PERSON_NAME_COMPARATOR);
         return list;
     }
-
-    @Inject
-    private UrlUtil urlUtil;
 
     public String removeMaintainer(HPerson person) {
         identity.checkPermission(instance, "update");

@@ -27,6 +27,7 @@ import javax.annotation.Nonnull;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -65,7 +66,7 @@ import static org.zanata.transaction.TransactionUtil.runInTransaction;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Named("mergeTranslationsServiceImpl")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @Slf4j
 @ContainsAsyncMethods
 public class MergeTranslationsServiceImpl implements MergeTranslationsService {

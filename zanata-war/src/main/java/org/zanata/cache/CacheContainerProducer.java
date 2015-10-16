@@ -26,6 +26,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Named;
 import javax.enterprise.inject.Produces;
 import org.zanata.util.ServiceLocator;
+import org.zanata.util.Zanata;
 
 import javax.naming.NamingException;
 
@@ -33,11 +34,10 @@ import javax.naming.NamingException;
  * Produces a cache container for injection.
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Named("cacheContainer")
 @javax.enterprise.context.ApplicationScoped
-
-/* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
 @Slf4j
 public class CacheContainerProducer {
 
@@ -62,7 +62,8 @@ public class CacheContainerProducer {
         }
     }
 
-    @Produces /* FIXME [CDI] check this: migrated from @Unwrap */
+    @Produces
+    @Zanata
     public CacheContainer getCacheContainer() {
         return container;
     }

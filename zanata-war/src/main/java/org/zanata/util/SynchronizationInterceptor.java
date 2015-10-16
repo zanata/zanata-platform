@@ -2,6 +2,7 @@
 
 package org.zanata.util;
 
+import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -21,7 +22,7 @@ import javax.interceptor.InvocationContext;
 @Interceptor
 @Synchronized
 @Slf4j
-public class SynchronizationInterceptor {
+public class SynchronizationInterceptor implements Serializable {
     private static final long defaultTimeout = SysProperties.getLong(
             SysProperties.LOCK_TIMEOUT, Synchronized.DEFAULT_TIMEOUT);
 

@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.concurrent.Future;
 
 import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 
 import lombok.extern.slf4j.Slf4j;
@@ -74,6 +75,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
 import org.zanata.service.LockManagerService;
 import org.zanata.service.TranslationMergeService;
@@ -94,7 +96,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 @Named("translationServiceImpl")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @ContainsAsyncMethods
 @Slf4j
 public class TranslationServiceImpl implements TranslationService {
@@ -126,7 +128,7 @@ public class TranslationServiceImpl implements TranslationService {
     @Inject
     private ValidationService validationServiceImpl;
 
-    @Inject
+    @Inject @Authenticated
     private HAccount authenticatedAccount;
 
     @Inject

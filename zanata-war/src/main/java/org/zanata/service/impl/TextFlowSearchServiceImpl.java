@@ -41,6 +41,8 @@ import org.apache.lucene.util.Version;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.ContentState;
@@ -50,6 +52,7 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
+import org.zanata.jpa.FullText;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
@@ -71,7 +74,7 @@ import com.google.common.collect.Lists;
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  */
 @Named("textFlowSearchServiceImpl")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @Slf4j
 public class TextFlowSearchServiceImpl implements TextFlowSearchService {
 
@@ -81,7 +84,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService {
     @Inject
     private DocumentDAO documentDAO;
 
-    @Inject
+    @Inject @FullText
     private FullTextSession session;
 
     @Override

@@ -27,6 +27,8 @@ import lombok.NoArgsConstructor;
 
 import org.hibernate.Session;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
+import org.zanata.util.Zanata;
+
 import javax.inject.Inject;
 
 /**
@@ -39,7 +41,7 @@ import javax.inject.Inject;
 @NoArgsConstructor
 public abstract class StreamingDAO<T> {
 
-    @Inject
+    @Inject @Zanata
     private HibernateEntityManagerFactory entityManagerFactory;
 
     public StreamingDAO(HibernateEntityManagerFactory emf) {

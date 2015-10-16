@@ -52,6 +52,7 @@ import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ServiceLocator;
 
 import javax.faces.application.FacesMessage;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +66,8 @@ import java.util.Map;
 @Named("projectPermissionDialog")
 @javax.faces.bean.ViewScoped
 @Slf4j
-public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson> {
+public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
+        implements Serializable {
 
     @Inject
     private FacesMessages facesMessages;

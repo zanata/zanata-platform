@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -80,7 +81,7 @@ import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isEmpty;
 
 @Named("resourceUtils")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @Slf4j
 // TODO move plural logic out of ResourceUtils into a dedicated class
 public class ResourceUtils {

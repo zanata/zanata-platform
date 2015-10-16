@@ -20,6 +20,7 @@
  */
 package org.zanata.action;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +45,8 @@ import org.zanata.security.annotations.ZanataSecured;
 @org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
 @ZanataSecured
 @CheckRole("admin")
-public class RoleAssignmentRuleAction extends EntityHome<HRoleAssignmentRule> {
+public class RoleAssignmentRuleAction extends EntityHome<HRoleAssignmentRule>
+        implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Inject

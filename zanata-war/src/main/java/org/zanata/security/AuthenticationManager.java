@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.ApplicationConfiguration;
@@ -54,8 +56,7 @@ import lombok.extern.slf4j.Slf4j;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("authenticationManager")
-@javax.enterprise.context.Dependent
-
+@RequestScoped
 @Slf4j
 public class AuthenticationManager {
     @Inject

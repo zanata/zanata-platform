@@ -51,7 +51,7 @@ public class MDCInsertingServletFilter implements Filter {
     public static final String REQUEST_REQUEST_URL = "req.requestURL";
     public static final String REQUEST_X_FORWARDED_FOR = "req.xForwardedFor";
     /**
-     * This MDC value is set by LoggingFilter
+     * This MDC value is set by UsernameLoggingFilter
      */
     public static final String USERNAME = "username";
 

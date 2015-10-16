@@ -32,6 +32,7 @@ import javax.inject.Named;
 import javax.transaction.UserTransaction;
 
 import org.zanata.exception.EntityMissingException;
+import org.zanata.jpa.FullText;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnit;
 import com.google.common.base.Optional;
@@ -47,7 +48,7 @@ import com.google.common.base.Optional;
 
 public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long> {
 
-    @Inject
+    @Inject @FullText
     private FullTextSession session;
 
     @Inject

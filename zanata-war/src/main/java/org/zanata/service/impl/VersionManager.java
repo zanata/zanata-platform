@@ -2,10 +2,11 @@ package org.zanata.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 
 @Named("versionManager")
-@javax.enterprise.context.Dependent
+@ApplicationScoped
 @Slf4j
 public class VersionManager {
 

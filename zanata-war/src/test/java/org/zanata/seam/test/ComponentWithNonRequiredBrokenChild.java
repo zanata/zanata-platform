@@ -33,6 +33,7 @@ import javax.inject.Named;
  */
 @Named("componentWithNonRequiredBrokenChild")
 public class ComponentWithNonRequiredBrokenChild {
+    @SuppressWarnings("CdiInjectionPointsInspection")
     @Inject /* TODO [CDI] check this: migrated from @In(required = false) */
     private ChildBroken unbuildableTestComponent;
 

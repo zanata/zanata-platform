@@ -22,6 +22,8 @@ package org.zanata.service.impl;
 
 import com.google.common.base.Optional;
 import lombok.extern.slf4j.Slf4j;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.adapter.po.PoWriter2;
@@ -62,8 +64,7 @@ import static org.zanata.common.ProjectType.*;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("translationArchiveServiceImpl")
-@javax.enterprise.context.Dependent
-
+@RequestScoped
 @Slf4j
 @ContainsAsyncMethods
 public class TranslationArchiveServiceImpl implements

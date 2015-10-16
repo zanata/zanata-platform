@@ -11,6 +11,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import lombok.extern.slf4j.Slf4j;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.async.Async;
@@ -50,9 +52,8 @@ import com.google.common.collect.Maps;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Named("copyVersionServiceImpl")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @Slf4j
-
 @ContainsAsyncMethods
 public class CopyVersionServiceImpl implements CopyVersionService {
 

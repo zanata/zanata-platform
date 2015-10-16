@@ -2,6 +2,7 @@ package org.zanata.service.impl;
 
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.LocaleId;
@@ -20,7 +21,7 @@ import org.zanata.service.LanguageTeamService;
 import javax.enterprise.event.Event;
 
 @Named("languageTeamServiceImpl")
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class LanguageTeamServiceImpl implements LanguageTeamService {
     @Inject
     private PersonDAO personDAO;

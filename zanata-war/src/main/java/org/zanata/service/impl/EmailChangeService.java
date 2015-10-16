@@ -23,6 +23,8 @@ package org.zanata.service.impl;
 import java.util.Date;
 
 import org.apache.commons.lang.time.DateUtils;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.dao.PersonEmailValidationKeyDAO;
@@ -31,7 +33,7 @@ import org.zanata.model.HPersonEmailValidationKey;
 import org.zanata.util.HashUtil;
 
 @Named("emailChangeService")
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class EmailChangeService {
     @Inject
     PersonEmailValidationKeyDAO personEmailValidationKeyDAO;

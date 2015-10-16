@@ -18,7 +18,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.dao;
+package org.zanata.jpa;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
@@ -31,10 +31,12 @@ import javax.persistence.PersistenceContext;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
+import org.hibernate.search.jpa.FullTextEntityManager;
 
 /**
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @ApplicationScoped
 public class EntityManagerProducer {
@@ -57,8 +59,24 @@ public class EntityManagerProducer {
     }
 
     @Produces
-    protected Session getHibernateSession() {
-        return getSession();
+    @FullText
+    @RequestScoped
+    protected FullTextEntityManager createFTEntityManager() {
+        return org.hibernate.search.jpa.Search
+                .getFullTextEntityManager(entityManager);
+    }
+
+    protected void closeFTEntityManager(@Disposes FullTextEntityManager entityManager) {
+        if (entityManager.isOpen()) {
+            entityManager.close();
+        }
+    }
+
+    @Produces
+    @Default
+    @RequestScoped
+    protected Session getSession() {
+        return entityManager.unwrap(Session.class);
     }
 
     protected void closeSession(@Disposes Session session) {
@@ -67,11 +85,9 @@ public class EntityManagerProducer {
         }
     }
 
-    private Session getSession() {
-        return (Session) entityManager.getDelegate();
-    }
-
     @Produces
+    @FullText
+    @RequestScoped
     protected FullTextSession getFullTextSession() {
         return Search.getFullTextSession(getSession());
     }

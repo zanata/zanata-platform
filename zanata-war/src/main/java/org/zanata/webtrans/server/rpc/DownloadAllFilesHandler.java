@@ -46,7 +46,8 @@ import java.io.Serializable;
 @org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
 @ActionHandlerFor(DownloadAllFilesAction.class)
 public class DownloadAllFilesHandler extends
-        AbstractActionHandler<DownloadAllFilesAction, DownloadAllFilesResult> {
+        AbstractActionHandler<DownloadAllFilesAction, DownloadAllFilesResult>
+        implements Serializable {
 
     @Inject
     private ZanataIdentity identity;

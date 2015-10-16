@@ -22,6 +22,8 @@ package org.zanata.service.impl;
 
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.model.HProjectIteration;
@@ -36,7 +38,7 @@ import org.zanata.service.SlugEntityService;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("slugEntityServiceImpl")
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class SlugEntityServiceImpl implements SlugEntityService {
     @Inject
     private Session session;

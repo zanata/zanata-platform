@@ -23,6 +23,7 @@ package org.zanata.service.impl;
 import java.util.Map;
 import java.util.concurrent.Future;
 
+import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManagerFactory;
 
 import lombok.extern.slf4j.Slf4j;
@@ -46,19 +47,19 @@ import org.zanata.search.ClassIndexer;
 import org.zanata.search.HTextFlowTargetIndexingStrategy;
 import org.zanata.search.SimpleClassIndexingStrategy;
 import org.zanata.service.IndexingService;
+import org.zanata.util.Zanata;
 
 /**
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("indexingServiceImpl")
-@javax.enterprise.context.Dependent
-
+@RequestScoped
 @Slf4j
 @ContainsAsyncMethods
 public class IndexingServiceImpl implements IndexingService {
 
-    @Inject
+    @Inject @Zanata
     @PersistenceUnitName("zanataDatasourcePU")
     private EntityManagerFactory entityManagerFactory;
 

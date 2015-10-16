@@ -20,6 +20,7 @@
  */
 package org.zanata.service.impl;
 
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 
@@ -45,6 +46,7 @@ import org.zanata.service.SearchService;
 @Path("/search")
 @ZanataSecured
 @CheckRole("admin")
+@RequestScoped
 public class SearchServiceImpl implements SearchService {
     @Inject
     private SearchIndexManager searchIndexManager;

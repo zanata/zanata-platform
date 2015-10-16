@@ -12,6 +12,8 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.LocaleId;
@@ -41,7 +43,7 @@ import com.google.common.collect.Lists;
  *
  */
 @Named("validationServiceImpl")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @Slf4j
 public class ValidationServiceImpl implements ValidationService {
     @Inject

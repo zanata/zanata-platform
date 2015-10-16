@@ -20,6 +20,7 @@
  */
 package org.zanata.service.impl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -31,6 +32,7 @@ import java.util.TreeMap;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.LocaleId;
@@ -58,7 +60,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @Named("localeServiceImpl")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @Slf4j
 public class LocaleServiceImpl implements LocaleService {
     private LocaleDAO localeDAO;

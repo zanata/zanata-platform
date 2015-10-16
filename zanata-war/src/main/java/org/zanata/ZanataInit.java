@@ -69,6 +69,7 @@ import org.zanata.exception.ZanataInitializationException;
 import org.zanata.rest.dto.VersionInfo;
 import javax.enterprise.event.Event;
 import org.zanata.util.VersionUtility;
+import org.zanata.util.Zanata;
 
 /**
  * This class handles various tasks at startup.  It disables warnings for a
@@ -107,7 +108,7 @@ public class ZanataInit {
     @Inject
     private Event<ServerStarted> startupEvent;
 
-    @Inject
+    @Inject @Zanata
     @PersistenceUnitName("zanataDatasourcePU")
     private EntityManagerFactory entityManagerFactory;
 
@@ -184,7 +185,9 @@ public class ZanataInit {
     @PreDestroy
     private void destroy() {
         // Tell Hibernate Search to clean up indexes and lock files
-        entityManagerFactory.close();
+        if (entityManagerFactory.isOpen()) {
+            entityManagerFactory.close();
+        }
     }
 
 

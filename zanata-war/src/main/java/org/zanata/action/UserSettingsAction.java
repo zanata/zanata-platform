@@ -83,7 +83,7 @@ import static javax.faces.application.FacesMessage.SEVERITY_INFO;
 @Named("userSettingsAction")
 @javax.faces.bean.ViewScoped
 @Slf4j
-public class UserSettingsAction {
+public class UserSettingsAction implements Serializable {
 
     @Inject
     private EmailService emailServiceImpl;

@@ -23,6 +23,7 @@ package org.zanata.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 
 import javax.inject.Inject;
@@ -48,7 +49,7 @@ import org.zanata.service.RegisterService;
 import org.zanata.util.HashUtil;
 
 @Named("registerServiceImpl")
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class RegisterServiceImpl implements RegisterService {
     @Inject
     EntityManager entityManager;

@@ -23,6 +23,7 @@ package org.zanata.service.impl;
 import java.util.List;
 import java.util.concurrent.Future;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.validation.constraints.NotNull;
@@ -53,7 +54,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Stopwatch;
 
 @Named("copyTransServiceImpl")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @Slf4j
 @ContainsAsyncMethods
 @AllArgsConstructor

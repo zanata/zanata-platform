@@ -43,6 +43,7 @@ import javax.inject.Named;
 import org.zanata.common.EntityStatus;
 import org.zanata.hibernate.search.CaseInsensitiveWhitespaceAnalyzer;
 import org.zanata.hibernate.search.IndexFieldLabels;
+import org.zanata.jpa.FullText;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
@@ -53,7 +54,7 @@ import org.zanata.model.ProjectRole;
 
 @javax.enterprise.context.Dependent
 public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
-    @Inject
+    @Inject @FullText
     private FullTextEntityManager entityManager;
 
     public ProjectDAO() {

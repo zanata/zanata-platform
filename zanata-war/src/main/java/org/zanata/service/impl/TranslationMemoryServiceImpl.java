@@ -23,8 +23,6 @@ package org.zanata.service.impl;
 
 import static com.google.common.collect.Collections2.filter;
 
-import javax.enterprise.inject.Alternative;
-
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,6 +42,8 @@ import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.util.Version;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.ContentState;
@@ -51,6 +51,7 @@ import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
+import org.zanata.jpa.FullText;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
@@ -90,9 +91,8 @@ import java.util.Map;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Alternative
 @Named("translationMemoryServiceImpl")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @Slf4j
 public class TranslationMemoryServiceImpl implements TranslationMemoryService {
 
@@ -120,7 +120,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
 //    private static final float BOOST_PROJITERSLUG = SysProperties.getFloat(
 //            SysProperties.TM_BOOST_PROJITERSLUG, 1.5f);
 
-    @Inject
+    @Inject @FullText
     private FullTextEntityManager entityManager;
 
     private static final Version LUCENE_VERSION = Version.LUCENE_29;
