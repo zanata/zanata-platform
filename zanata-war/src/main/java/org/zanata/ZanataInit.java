@@ -109,7 +109,6 @@ public class ZanataInit {
     private Event<ServerStarted> startupEvent;
 
     @Inject @Zanata
-    @PersistenceUnitName("zanataDatasourcePU")
     private EntityManagerFactory entityManagerFactory;
 
     public void onCreate(@Observes @Initialized ServletContext context) throws Exception {

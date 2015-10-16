@@ -66,7 +66,7 @@ public class EntityManagerProducer {
                 .getFullTextEntityManager(entityManager);
     }
 
-    protected void closeFTEntityManager(@Disposes FullTextEntityManager entityManager) {
+    protected void closeFTEntityManager(@Disposes @FullText FullTextEntityManager entityManager) {
         if (entityManager.isOpen()) {
             entityManager.close();
         }
@@ -92,7 +92,7 @@ public class EntityManagerProducer {
         return Search.getFullTextSession(getSession());
     }
 
-    protected void closeFullTextSession(@Disposes FullTextSession fullTextSession) {
+    protected void closeFullTextSession(@Disposes @FullText FullTextSession fullTextSession) {
         if (fullTextSession.isOpen()) {
             fullTextSession.close();
         }

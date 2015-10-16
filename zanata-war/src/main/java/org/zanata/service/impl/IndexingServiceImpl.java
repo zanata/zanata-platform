@@ -60,7 +60,6 @@ import org.zanata.util.Zanata;
 public class IndexingServiceImpl implements IndexingService {
 
     @Inject @Zanata
-    @PersistenceUnitName("zanataDatasourcePU")
     private EntityManagerFactory entityManagerFactory;
 
     @Inject

@@ -65,7 +65,6 @@ public class SampleProjectProfile {
     private EntityManager entityManager;
 
     @Inject @Zanata
-    @PersistenceUnitName("zanataDatasourcePU")
     private EntityManagerFactory entityManagerFactory;
 
     private HLocale enUSLocale;

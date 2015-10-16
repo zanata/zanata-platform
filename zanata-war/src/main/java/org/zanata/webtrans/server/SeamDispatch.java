@@ -4,13 +4,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.customware.gwt.dispatch.server.AbstractActionHandler;
 import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ActionResult;
 import net.customware.gwt.dispatch.server.Dispatch;
@@ -33,9 +36,9 @@ import org.zanata.webtrans.shared.rpc.WrappedAction;
 
 import com.google.common.collect.Maps;
 
-@Named("seamDispatch")
-@javax.enterprise.context.ApplicationScoped
+@ApplicationScoped
 @Slf4j
+@NoArgsConstructor
 public class SeamDispatch implements Dispatch {
     @Inject
     @DeltaSpike
@@ -48,18 +51,13 @@ public class SeamDispatch implements Dispatch {
 
     @SuppressWarnings("rawtypes")
     @Inject
-    public SeamDispatch(Instance<ActionHandler> actionHandlers) {
-        // register all handlers with the @ActionHandlerFor annotation
-        Instance<ActionHandler> gwtActionHandlers = actionHandlers
-                .select(new AnnotationLiteral<ActionHandlerFor>() {
-                });
-        for (ActionHandler gwtActionHandler : gwtActionHandlers) {
-            register(gwtActionHandler.getClass());
-        }
+    public SeamDispatch(Instance<AbstractActionHandler> actionHandlers) {
+        // register all ActionHandlers
+        actionHandlers.forEach(ah -> register(ah.getClass()));
     }
 
     @SuppressWarnings("unchecked")
-    private void register(Class<?> clazz) {
+    private void register(Class<? extends ActionHandler> clazz) {
         log.debug("Registering ActionHandler {}", clazz.getName());
         ActionHandlerFor ahf = clazz.getAnnotation(ActionHandlerFor.class);
         handlers.put(ahf.value(), (Class<? extends ActionHandler<?, ?>>) clazz);

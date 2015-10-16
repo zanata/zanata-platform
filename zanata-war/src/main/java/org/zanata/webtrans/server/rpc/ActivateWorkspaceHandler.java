@@ -85,7 +85,7 @@ public class ActivateWorkspaceHandler extends
     @Inject
     private LocaleService localeServiceImpl;
 
-    @Inject /* TODO [CDI] check this: migrated from @In(value = "webtrans.gwt.LoadOptionsHandler", create = true) */
+    @Inject
     private LoadOptionsHandler loadOptionsHandler;
 
     @Inject /* TODO [CDI] check this: migrated from @In(value = "webtrans.gwt.GetValidationRulesHandler", create = true) */
