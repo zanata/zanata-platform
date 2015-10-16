@@ -23,32 +23,34 @@ package org.zanata.rest;
 import java.io.IOException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.core.Response;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.ext.Provider;
 
+import com.google.common.base.Throwables;
 import org.apache.commons.lang.StringUtils;
-import org.jboss.resteasy.core.SynchronousDispatcher;
-import org.jboss.resteasy.spi.HttpRequest;
-import org.jboss.resteasy.spi.HttpResponse;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
-import org.jboss.resteasy.spi.ResteasyUriInfo;
-import org.jboss.resteasy.spi.UnhandledException;
 import org.zanata.dao.AccountDAO;
 import org.zanata.limits.RateLimitingProcessor;
 import org.zanata.model.HAccount;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
 
 import org.zanata.security.SecurityFunctions;
 import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.servlet.HttpRequestAndSessionHolder;
 import org.zanata.util.HttpUtil;
+import org.zanata.util.RunnableEx;
 import org.zanata.util.ServiceLocator;
+
+import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 
 /**
  * This class filters JAX-RS calls to limit API calls per
@@ -61,29 +63,42 @@ import org.zanata.util.ServiceLocator;
  */
 @Provider
 @Slf4j
-public class RestLimitingSynchronousDispatcher implements
-        ContainerRequestFilter {
+@WebFilter(filterName = "RestLimitingFilter", urlPatterns = "/rest/*")
+public class RestLimitingFilter implements Filter {
     private static final String API_KEY_ABSENCE_WARNING =
             "You must have a valid API key. You can create one by logging " +
                     "in to Zanata and visiting the settings page.";
     private final RateLimitingProcessor processor;
 
-    public RestLimitingSynchronousDispatcher() {
+    public RestLimitingFilter() {
         this(new RateLimitingProcessor());
     }
 
     @VisibleForTesting
-    RestLimitingSynchronousDispatcher(RateLimitingProcessor processor) {
+    RestLimitingFilter(RateLimitingProcessor processor) {
         this.processor = processor;
     }
 
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+    }
+
+    @Override
+    public void destroy() {
+    }
+
+    @VisibleForTesting
     HttpServletRequest getServletRequest() {
         return HttpRequestAndSessionHolder.getRequest().get();
     }
 
     @Override
-    public void filter(ContainerRequestContext requestContext)
-            throws IOException {
+    public void doFilter(ServletRequest req, ServletResponse resp,
+            FilterChain chain) throws IOException, ServletException {
+
+        HttpServletRequest request = (HttpServletRequest) req;
+        HttpServletResponse response = (HttpServletResponse) resp;
 
         /**
          * This is only non-null if request came from same browser which
@@ -96,47 +111,55 @@ public class RestLimitingSynchronousDispatcher implements
          * If apiKey is not empty, it must be an authenticated
          * user from pre-process in ZanataRestSecurityInterceptor.
          */
-        String apiKey = HttpUtil.getApiKey(requestContext.getHeaders());
+        String apiKey = request.getHeader(HttpUtil.X_AUTH_TOKEN_HEADER);
 
         // Get user account with apiKey if request is from client
         if(authenticatedUser == null && StringUtils.isNotEmpty(apiKey)) {
             authenticatedUser = getUser(apiKey);
         }
 
-        // TODO avoid cast. Perhaps UriInfo.getPath(false) ?
-        ResteasyUriInfo uriInfo = (ResteasyUriInfo) requestContext.getUriInfo();
-        if(!SecurityFunctions.canAccessRestPath(authenticatedUser,
-                requestContext.getMethod(), uriInfo.getMatchingPath())) {
+        if (!SecurityFunctions.canAccessRestPath(authenticatedUser,
+                request.getMethod(), request.getRequestURI())) {
             /**
              * Not using response.sendError because the app server will generate
              * an HTML page which includes the message. We want to return
              * the message string as is.
+             * TODO is this true in a servlet Filter?
              */
-            requestContext.abortWith(Response
-                    .status(Response.Status.UNAUTHORIZED)
-                    .entity(InvalidApiKeyUtil.getMessage(
-                            API_KEY_ABSENCE_WARNING))
-                    .build());
+//            response.sendError(UNAUTHORIZED.getStatusCode(),
+//                    InvalidApiKeyUtil.getMessage(API_KEY_ABSENCE_WARNING));
+            response.setStatus(UNAUTHORIZED.getStatusCode());
+            response.getOutputStream().write(InvalidApiKeyUtil.getMessage(
+                    API_KEY_ABSENCE_WARNING).getBytes());
             return;
         }
-        //authenticatedUser can be from browser or client request
-        if(authenticatedUser == null) {
-            /**
-             * Process anonymous request for rate limiting
-             * Note: clientIP might be a proxy server IP address, due to
-             * different implementation of each proxy server. This will put
-             * all the requests from same proxy server into a single queue.
-             */
-            String clientIP = HttpUtil.getClientIp(getServletRequest());
-            processor.processForAnonymousIP(clientIP, response, superInvoke);
-        } else {
-            if (!Strings.isNullOrEmpty(authenticatedUser.getApiKey())) {
-                processor.processForApiKey(authenticatedUser.getApiKey(),
-                        response, superInvoke);
+
+        RunnableEx invokeChain = () -> chain.doFilter(req, resp);
+
+        try {
+            //authenticatedUser can be from browser or client request
+            if (authenticatedUser == null) {
+                /**
+                 * Process anonymous request for rate limiting
+                 * Note: clientIP might be a proxy server IP address, due to
+                 * different implementation of each proxy server. This will put
+                 * all the requests from same proxy server into a single queue.
+                 */
+                String clientIP = HttpUtil.getClientIp(getServletRequest());
+                processor.processForAnonymousIP(clientIP, response, invokeChain);
             } else {
-                processor.processForUser(authenticatedUser.getUsername(),
-                        response, superInvoke);
+                if (!Strings.isNullOrEmpty(authenticatedUser.getApiKey())) {
+                    processor.processForApiKey(authenticatedUser.getApiKey(),
+                            response, invokeChain);
+                } else {
+                    processor.processForUser(authenticatedUser.getUsername(),
+                            response, invokeChain);
+                }
             }
+        } catch (IOException | ServletException e) {
+            throw e;
+        } catch (Exception e) {
+            Throwables.propagate(e);
         }
     }
 
@@ -146,7 +169,7 @@ public class RestLimitingSynchronousDispatcher implements
                 HAccount.class, new AuthenticatedLiteral());
     }
 
-    protected @Nullable HAccount getUser(@Nonnull String apiKey) {
+    private @Nullable HAccount getUser(@Nonnull String apiKey) {
         return ServiceLocator.instance().getInstance(AccountDAO.class)
                 .getByApiKey(apiKey);
     }

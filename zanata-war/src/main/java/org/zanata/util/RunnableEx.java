@@ -18,21 +18,24 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata;
+package org.zanata.util;
 
-import org.apache.deltaspike.core.api.projectstage.ProjectStage;
-import org.apache.deltaspike.core.util.ProjectStageProducer;
-import org.zanata.seam.SeamAutowire;
+import com.google.common.base.Throwables;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public abstract class ZanataTest {
+public interface RunnableEx {
 
-    static {
-        // Tell DeltaSpike to give more warning messages
-        ProjectStageProducer.setProjectStage(ProjectStage.UnitTest);
-        SeamAutowire.instance();
+    void run() throws Exception;
+
+    static Runnable runnable(RunnableEx r) {
+        return () -> {
+            try {
+                r.run();
+            } catch (Exception e) {
+                Throwables.propagate(e);
+            }
+        };
     }
-
 }

@@ -1,19 +1,13 @@
 package org.zanata.rest;
 
 import java.io.IOException;
+import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.MultivaluedMap;
+import javax.servlet.http.HttpServletResponse;
 
-import org.jboss.resteasy.core.ResourceInvoker;
-import org.jboss.resteasy.mock.MockHttpRequest;
-import org.jboss.resteasy.mock.MockHttpResponse;
-import org.jboss.resteasy.spi.HttpRequest;
-import org.jboss.resteasy.spi.HttpResponse;
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -23,6 +17,7 @@ import org.zanata.ZanataTest;
 import org.zanata.limits.RateLimitingProcessor;
 import org.zanata.model.HAccount;
 import org.zanata.util.HttpUtil;
+import org.zanata.util.RunnableEx;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.doReturn;
@@ -31,45 +26,39 @@ import static org.mockito.Mockito.doReturn;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class RestLimitingSynchronousDispatcherTest extends ZanataTest {
-    private RestLimitingSynchronousDispatcher dispatcher;
+public class RestLimitingFilterTest extends ZanataTest {
+    private RestLimitingFilter dispatcher;
 
     private static final String API_KEY = "apiKey123";
 
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private HttpRequest request;
+    private HttpServletRequest request;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
-    private HttpResponse response;
+    private HttpServletResponse response;
     @Mock
     private RateLimitingProcessor processor;
     @Captor
-    private ArgumentCaptor<Runnable> taskCaptor;
+    private ArgumentCaptor<RunnableEx> taskCaptor;
     @Mock
-    private ResourceInvoker superInvoker;
-    @Mock
-    private MultivaluedMap<String, String> headers;
+    private FilterChain filterChain;
     private HAccount authenticatedUser;
     @Mock
     private HttpServletRequest servletRequest;
 
-    private String clienIP = "255.255.255.0.1";
+    private String clientIP = "255.255.0.1";
 
     @Before
     public void beforeMethod() throws ServletException, IOException {
         MockitoAnnotations.initMocks(this);
-        when(request.getHttpHeaders().getRequestHeaders())
-                .thenReturn(headers);
-        when(request.getMutableHeaders()).thenReturn(headers);
-        when(request.getHttpMethod()).thenReturn("GET");
-        when(headers.getFirst(HttpUtil.X_AUTH_TOKEN_HEADER)).thenReturn(
-            API_KEY);
+        when(request.getMethod()).thenReturn("GET");
+        when(request.getHeader(HttpUtil.X_AUTH_TOKEN_HEADER)).thenReturn(
+                API_KEY);
 
-        dispatcher = spy(new RestLimitingSynchronousDispatcher());
+        dispatcher = spy(new RestLimitingFilter(processor));
 
         // this way we can verify the task actually called super.invoke()
         doReturn(servletRequest).when(dispatcher).getServletRequest();
-        doReturn(superInvoker).when(dispatcher).getInvoker(request);
-        doNothing().when(dispatcher).invoke(request, response, superInvoker);
+        doNothing().when(filterChain).doFilter(request, response);
         authenticatedUser = null;
         doReturn(authenticatedUser).when(dispatcher).getAuthenticatedUser();
     }
@@ -80,10 +69,15 @@ public class RestLimitingSynchronousDispatcherTest extends ZanataTest {
         authenticatedUser.setApiKey("apiKeyInAuth");
         doReturn(authenticatedUser).when(dispatcher).getAuthenticatedUser();
 
-        dispatcher.invoke(request, response);
+        dispatcher.doFilter(request, response, filterChain);
 
         verify(processor).processForApiKey(same("apiKeyInAuth"), same(response),
             taskCaptor.capture());
+
+        // verify task is calling filter chain
+        RunnableEx task = taskCaptor.getValue();
+        task.run();
+        verify(filterChain).doFilter(request, response);
     }
 
     @Test
@@ -92,21 +86,26 @@ public class RestLimitingSynchronousDispatcherTest extends ZanataTest {
         authenticatedUser.setUsername("admin");
         doReturn(authenticatedUser).when(dispatcher).getAuthenticatedUser();
 
-        dispatcher.invoke(request, response);
+        dispatcher.doFilter(request, response, filterChain);
 
         verify(processor).processForUser(same("admin"), same(response),
             taskCaptor.capture());
+
+        // verify task is calling filter chain
+        RunnableEx task = taskCaptor.getValue();
+        task.run();
+        verify(filterChain).doFilter(request, response);
     }
 
     @Test
     public void willThrowErrorWithPOSTAndNoApiKey() throws Exception {
-        when(request.getHttpMethod()).thenReturn("POST");
-        when(headers.getFirst(HttpUtil.X_AUTH_TOKEN_HEADER)).thenReturn(
+        when(request.getMethod()).thenReturn("POST");
+        when(request.getHeader(HttpUtil.X_AUTH_TOKEN_HEADER)).thenReturn(
             null);
-        when(request.getUri().getPath()).thenReturn("/rest/in/peace");
+        when(request.getRequestURI()).thenReturn("/rest/in/peace");
         doReturn(null).when(dispatcher).getAuthenticatedUser();
 
-        dispatcher.invoke(request, response);
+        dispatcher.doFilter(request, response, filterChain);
 
         verify(response).setStatus(401);
         verify(response).getOutputStream();
@@ -115,19 +114,19 @@ public class RestLimitingSynchronousDispatcherTest extends ZanataTest {
 
     @Test
     public void willProcessAnonymousWithGETAndNoApiKey() throws Exception {
-        when(headers.getFirst(HttpUtil.X_AUTH_TOKEN_HEADER)).thenReturn(null);
-        when(request.getUri().getPath()).thenReturn("/rest/in/peace");
-        when(servletRequest.getRemoteAddr()).thenReturn(clienIP);
+        when(request.getHeader(HttpUtil.X_AUTH_TOKEN_HEADER)).thenReturn(null);
+        when(request.getRequestURI()).thenReturn("/rest/in/peace");
+        when(servletRequest.getRemoteAddr()).thenReturn(clientIP);
         doReturn(null).when(dispatcher).getAuthenticatedUser();
 
-        dispatcher.invoke(request, response);
+        dispatcher.doFilter(request, response, filterChain);
 
-        verify(processor).processForAnonymousIP(same(clienIP), same(response),
+        verify(processor).processForAnonymousIP(same(clientIP), same(response),
             taskCaptor.capture());
 
-        // verify task is calling super.invoke
-        Runnable task = taskCaptor.getValue();
+        // verify task is calling filter chain
+        RunnableEx task = taskCaptor.getValue();
         task.run();
-        verify(dispatcher).getInvoker(request);
+        verify(filterChain).doFilter(request, response);
     }
 }
