@@ -82,7 +82,7 @@ public class TranslationMemoryAction implements Serializable {
     /**
      * Stores the last process handle, in page scope (ie for this user).
      */
-    @Inject /* TODO [CDI] check this: migrated from @In(scope = ScopeType.PAGE, required = false) */
+//    @Inject /* TODO [CDI] check this: migrated from @In(scope = ScopeType.PAGE, required = false) */
     @Produces /* FIXME [CDI] check this: migrated from @Out *//*(scope = ScopeType.PAGE, required = false)*/
     private Future lastTaskResult;
 
