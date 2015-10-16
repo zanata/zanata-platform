@@ -22,37 +22,41 @@ package org.zanata.async;
 
 import com.google.common.base.Optional;
 import com.google.common.util.concurrent.ListenableFuture;
-import org.jboss.seam.annotations.intercept.Interceptor;
-import org.jboss.seam.intercept.InvocationContext;
-import org.jboss.seam.intercept.JavaBeanInterceptor;
-import org.jboss.seam.intercept.OptimizedInterceptor;
 import org.zanata.util.ServiceLocator;
 
+import javax.inject.Inject;
+import javax.interceptor.AroundInvoke;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InvocationContext;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.Future;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Interceptor(stateless = true, around = JavaBeanInterceptor.class)
-public class AsyncMethodInterceptor implements OptimizedInterceptor {
+@Async
+@Interceptor
+public class AsyncMethodInterceptor {
 
     static final ThreadLocal<Boolean> interceptorRan =
             new ThreadLocal<Boolean>();
 
-    @Override
-    public Object aroundInvoke(final InvocationContext ctx) throws Exception {
-        if (ctx.getMethod().getAnnotation(Async.class) == null) {
-            return ctx.proceed();
-        }
+    @Inject
+    private AsyncTaskManager taskManager;
 
-        final AsyncTaskManager taskManager =
-                ServiceLocator.instance().getInstance(
-                        AsyncTaskManager.class);
+    @Inject
+    private AsyncTaskHandleManager taskHandleManager;
 
-        final AsyncTaskHandleManager taskHandleManager =
-                ServiceLocator.instance().getInstance(
-                        AsyncTaskHandleManager.class);
+    //    AsyncMethodInterceptor() {}
+
+//    @Inject
+//    AsyncMethodInterceptor(AsynchronousTaskManager taskManager, AsyncTaskHandleManager taskHandleManager) {
+//        this.taskManager = taskManager;
+//        this.taskHandleManager = taskHandleManager;
+//    }
+
+    @AroundInvoke
+    public Object callAsync(final InvocationContext ctx) throws Exception {
 
         Class<?> methodReturnType = ctx.getMethod().getReturnType();
         if (methodReturnType != void.class
@@ -75,6 +79,7 @@ public class AsyncMethodInterceptor implements OptimizedInterceptor {
                     if (handle.isPresent()) {
                         handle.get().startTiming();
                     }
+                    // TODO Handle CDI Qualifiers
                     Object target =
                             ServiceLocator.instance().getInstance(
                                     ctx.getMethod()
@@ -103,11 +108,6 @@ public class AsyncMethodInterceptor implements OptimizedInterceptor {
         } else {
             return ctx.proceed();
         }
-    }
-
-    @Override
-    public boolean isInterceptorEnabled() {
-        return true;
     }
 
     private AsyncTaskHandle findHandleIfPresent(Object[] params) {

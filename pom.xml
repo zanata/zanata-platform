@@ -205,7 +205,7 @@
         <groupId>org.apache.deltaspike.cdictrl</groupId>
         <artifactId>deltaspike-cdictrl-api</artifactId>
         <version>${deltaspike.version}</version>
-        <scope>${cdi.runtime}</scope>
+        <scope>${cdi.compile}</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.deltaspike.cdictrl</groupId>
