@@ -200,4 +200,12 @@ public class UrlUtil implements Serializable {
     public String languageHome() {
         return contextPath + "/language/home.xhtml";
     }
+
+    public String genericErrorPage() {
+        return contextPath + "/error.xhtml";
+    }
+
+    public String signInPage() {
+        return contextPath + "/account/sign_in";
+    }
 }

@@ -63,113 +63,105 @@
     <!--</navigation>-->
   <!--</page>-->
 
-  <!-- TODO [CDI] we will probably use something like this http://stackoverflow.com/a/18411362/345718 -->
   <!-- Exceptions -->
-  <exception class="org.zanata.exception.KeyNotFoundException"
-    log-level="warn">
-    <redirect view-id="/error.xhtml">
-      <message severity="error">#{msgs['jsf.InvalidActivationKey']}
-      </message>
-    </redirect>
-  </exception>
+  <!--<exception class="org.zanata.exception.KeyNotFoundException"-->
+    <!--log-level="warn">-->
+    <!--<redirect view-id="/error.xhtml">-->
+      <!--<message severity="error">#{msgs['jsf.InvalidActivationKey']}-->
+      <!--</message>-->
+    <!--</redirect>-->
+  <!--</exception>-->
 
-  <exception class="org.zanata.exception.ActivationLinkExpiredException"
-    log-level="warn">
-    <redirect view-id="/error.xhtml">
-      <message severity="error">#{msgs['jsf.ActivationLinkExpired']}
-      </message>
-    </redirect>
-  </exception>
+  <!--<exception class="org.zanata.exception.ActivationLinkExpiredException"-->
+    <!--log-level="warn">-->
+    <!--<redirect view-id="/error.xhtml">-->
+      <!--<message severity="error">#{msgs['jsf.ActivationLinkExpired']}-->
+      <!--</message>-->
+    <!--</redirect>-->
+  <!--</exception>-->
 
-  <exception class="javax.persistence.EntityNotFoundException"
-    log-level="warn">
-    <redirect view-id="/error.xhtml">
-      <message severity="warn">#{msgs['jsf.RecordNotFound']}</message>
-    </redirect>
-  </exception>
+  <!--<exception class="javax.persistence.EntityNotFoundException"-->
+    <!--log-level="warn">-->
+    <!--<redirect view-id="/error.xhtml">-->
+      <!--<message severity="warn">#{msgs['jsf.RecordNotFound']}</message>-->
+    <!--</redirect>-->
+  <!--</exception>-->
 
-  <exception class="javax.persistence.EntityNotFoundException"
-    log-level="warn">
-    <redirect view-id="/error.xhtml">
-      <message severity="warn">#{msgs['jsf.RecordNotFound']}</message>
-    </redirect>
-  </exception>
+  <!--<exception class="javax.persistence.EntityExistsException">-->
+    <!--<redirect view-id="/error.xhtml">-->
+      <!--<message severity="warn">#{msgs['jsf.DuplicatedRecord']}</message>-->
+    <!--</redirect>-->
+  <!--</exception>-->
 
-  <exception class="javax.persistence.EntityExistsException">
-    <redirect view-id="/error.xhtml">
-      <message severity="warn">#{msgs['jsf.DuplicatedRecord']}</message>
-    </redirect>
-  </exception>
+  <!--<exception class="javax.persistence.OptimisticLockException">-->
+    <!--<end-conversation />-->
+    <!--<redirect view-id="/error.xhtml">-->
+      <!--<message-->
+        <!--severity="warn">#{msgs['jsf.AnotherUserChangedTheSameDataPleaseTryAgain']}-->
+      <!--</message>-->
+    <!--</redirect>-->
+  <!--</exception>-->
 
-  <exception class="javax.persistence.OptimisticLockException">
-    <end-conversation />
-    <redirect view-id="/error.xhtml">
-      <message
-        severity="warn">#{msgs['jsf.AnotherUserChangedTheSameDataPleaseTryAgain']}
-      </message>
-    </redirect>
-  </exception>
+  <!--<exception class="org.zanata.exception.AuthorizationException"-->
+    <!--log-level="debug">-->
+    <!--<redirect view-id="/error.xhtml">-->
+      <!--<message-->
+        <!--severity="error">#{msgs['jsf.YouDoNotHavePermissionToAccessThisResource']}-->
+      <!--</message>-->
+    <!--</redirect>-->
+  <!--</exception>-->
 
-  <exception class="org.zanata.exception.AuthorizationException"
-    log-level="debug">
-    <redirect view-id="/error.xhtml">
-      <message
-        severity="error">#{msgs['jsf.YouDoNotHavePermissionToAccessThisResource']}
-      </message>
-    </redirect>
-  </exception>
+  <!--<exception class="org.zanata.exception.NotLoggedInException"-->
+    <!--log-level="debug">-->
+    <!--<redirect view-id="/account/login.xhtml">-->
+      <!--<message severity="warn">#{msgs['org.jboss.seam.NotLoggedIn']}-->
+      <!--</message>-->
+    <!--</redirect>-->
+  <!--</exception>-->
 
-  <exception class="org.zanata.exception.NotLoggedInException"
-    log-level="debug">
-    <redirect view-id="/account/login.xhtml">
-      <message severity="warn">#{msgs['org.jboss.seam.NotLoggedIn']}
-      </message>
-    </redirect>
-  </exception>
+  <!--<exception class="javax.security.auth.login.LoginException"-->
+    <!--log-level="debug">-->
+    <!--<redirect view-id="/account/login.xhtml">-->
+      <!--<message severity="warn">#{msgs['org.jboss.seam.NotLoggedIn']}-->
+      <!--</message>-->
+    <!--</redirect>-->
+  <!--</exception>-->
 
-  <exception class="javax.security.auth.login.LoginException"
-    log-level="debug">
-    <redirect view-id="/account/login.xhtml">
-      <message severity="warn">#{msgs['org.jboss.seam.NotLoggedIn']}
-      </message>
-    </redirect>
-  </exception>
+  <!--<exception class="javax.faces.application.ViewExpiredException"-->
+    <!--log-level="debug">-->
+    <!--<redirect view-id="/error.xhtml">-->
+      <!--<message-->
+        <!--severity="warn">#{msgs['jsf.YourSessionHasTimedOutPleaseTryAgain']}-->
+      <!--</message>-->
+    <!--</redirect>-->
+  <!--</exception>-->
 
-  <exception class="javax.faces.application.ViewExpiredException"
-    log-level="debug">
-    <redirect view-id="/error.xhtml">
-      <message
-        severity="warn">#{msgs['jsf.YourSessionHasTimedOutPleaseTryAgain']}
-      </message>
-    </redirect>
-  </exception>
+  <!--<exception class="org.jboss.seam.ConcurrentRequestTimeoutException"-->
+    <!--log-level="trace">-->
+    <!--<http-error error-code="503" />-->
+  <!--</exception>-->
 
-  <exception class="org.jboss.seam.ConcurrentRequestTimeoutException"
-    log-level="trace">
-    <http-error error-code="503" />
-  </exception>
+  <!--<exception class="javax.validation.ConstraintViolationException"-->
+    <!--log-level="debug">-->
+    <!--<redirect view-id="/error.xhtml">-->
+      <!--<message-->
+        <!--severity="warn">#{msgs['jsf.Error']} #{org.jboss.seam.handledException.message}-->
+      <!--</message>-->
+    <!--</redirect>-->
+  <!--</exception>-->
 
-  <exception class="javax.validation.ConstraintViolationException"
-    log-level="debug">
-    <redirect view-id="/error.xhtml">
-      <message
-        severity="warn">#{msgs['jsf.Error']} #{org.jboss.seam.handledException.message}
-      </message>
-    </redirect>
-  </exception>
+  <!--<exception class="org.richfaces.exception.FileUploadException" log-level="warn">-->
+    <!--<redirect view-id="/error.xhtml">-->
+      <!--<message severity="error">-->
+        <!--#{msgs['jsf.iteration.files.UploadFailed']} #{org.jboss.seam.handledException.message}-->
+      <!--</message>-->
+    <!--</redirect>-->
+  <!--</exception>-->
 
-  <exception class="org.richfaces.exception.FileUploadException" log-level="warn">
-    <redirect view-id="/error.xhtml">
-      <message severity="error">
-        #{msgs['jsf.iteration.files.UploadFailed']} #{org.jboss.seam.handledException.message}
-      </message>
-    </redirect>
-  </exception>
-
-  <exception>
-    <redirect view-id="/error.xhtml">
-      <message severity="error">#{msgs['jsf.UnexpectedError']}</message>
-    </redirect>
-  </exception>
+  <!--<exception>-->
+    <!--<redirect view-id="/error.xhtml">-->
+      <!--<message severity="error">#{msgs['jsf.UnexpectedError']}</message>-->
+    <!--</redirect>-->
+  <!--</exception>-->
 
 </pages>
