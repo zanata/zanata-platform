@@ -27,7 +27,6 @@ import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
 import org.richfaces.exception.FileUploadException;
 
 import javax.faces.application.FacesMessage;
-import javax.validation.ConstraintViolationException;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>

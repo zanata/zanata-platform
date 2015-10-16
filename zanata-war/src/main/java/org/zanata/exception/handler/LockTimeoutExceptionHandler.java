@@ -25,11 +25,8 @@ import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.apache.deltaspike.core.api.exception.control.ExceptionHandler;
 import org.apache.deltaspike.core.api.exception.control.Handles;
 import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
-import org.jboss.seam.ConcurrentRequestTimeoutException;
-import org.zanata.exception.ActivationLinkExpiredException;
 import org.zanata.exception.LockTimeoutException;
 
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;

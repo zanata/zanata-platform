@@ -24,7 +24,6 @@ package org.zanata.exception.handler;
 import org.apache.deltaspike.core.api.exception.control.ExceptionHandler;
 import org.apache.deltaspike.core.api.exception.control.Handles;
 import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
-import org.zanata.exception.ActivationLinkExpiredException;
 
 import javax.faces.application.FacesMessage;
 
