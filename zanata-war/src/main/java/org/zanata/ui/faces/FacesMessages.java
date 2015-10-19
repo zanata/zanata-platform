@@ -40,11 +40,11 @@ import javax.faces.context.FacesContext;
 
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+
+import javax.inject.Inject;
 import javax.inject.Named;
-import org.jboss.seam.core.Interpolator;
 import org.zanata.i18n.Messages;
 import org.zanata.util.ServiceLocator;
-import com.google.common.collect.Lists;
 
 /**
  * Utility to allow for easy handling of JSF messages. Serves as a replacement
@@ -133,7 +133,7 @@ public class FacesMessages implements Serializable {
             String messageTemplate, final Object... params) {
         // NB This needs to change when migrating out of Seam
         String interpolatedMessage =
-                Interpolator.instance().interpolate(messageTemplate, params);
+                String.format(messageTemplate, params);
         FacesMessage jsfMssg =
                 new FacesMessage(severity, interpolatedMessage, null);
 
