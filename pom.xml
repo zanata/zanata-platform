@@ -463,6 +463,12 @@
       </dependency>
 
       <dependency>
+        <groupId>org.atteo.classindex</groupId>
+        <artifactId>classindex</artifactId>
+        <version>3.3</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.jboss.byteman</groupId>
         <artifactId>byteman</artifactId>
         <version>${byteman.version}</version>
