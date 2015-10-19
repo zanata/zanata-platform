@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.zanata.common.BaseTranslationCount;
@@ -122,6 +123,7 @@ public class TranslationStatistics implements Serializable {
      * Number of elements that need review (i.e. Fuzzy or Rejected).
      */
     @XmlTransient
+    @JsonIgnore
     public long getDraft() {
         return translationCount.getNeedReview()
                 + translationCount.getRejected();
@@ -167,6 +169,7 @@ public class TranslationStatistics implements Serializable {
     }
 
     @XmlTransient
+    @JsonIgnore
     public long getTranslatedAndApproved() {
         return translationCount.getTranslated()
                 + translationCount.getApproved();
@@ -210,6 +213,7 @@ public class TranslationStatistics implements Serializable {
      * @return untranslated, fuzzy and rejected count.
      */
     @XmlTransient
+    @JsonIgnore
     public long getIncomplete() {
         return translationCount.getUntranslated() + getDraft();
     }
@@ -256,6 +260,7 @@ public class TranslationStatistics implements Serializable {
     }
 
     @XmlTransient
+    @JsonIgnore
     public @Nullable
     Date getLastTranslatedDate() {
         return lastTranslatedDate != null ? new Date(
@@ -269,6 +274,7 @@ public class TranslationStatistics implements Serializable {
     }
 
     @XmlTransient
+    @JsonIgnore
     public String getLastTranslatedBy() {
         return lastTranslatedBy;
     }
@@ -278,6 +284,7 @@ public class TranslationStatistics implements Serializable {
     }
 
     @XmlTransient
+    @JsonIgnore
     public double getPercentTranslated() {
         long total = getTotal();
         if (total <= 0) {
@@ -288,6 +295,7 @@ public class TranslationStatistics implements Serializable {
     }
 
     @XmlTransient
+    @JsonIgnore
     public double getPercentDraft() {
         long total = getTotal();
         if (total <= 0) {
@@ -298,6 +306,7 @@ public class TranslationStatistics implements Serializable {
     }
 
     @XmlTransient
+    @JsonIgnore
     public double getPercentUntranslated() {
         long total = getTotal();
         if (total <= 0) {
@@ -314,6 +323,7 @@ public class TranslationStatistics implements Serializable {
     // TODO Should consolidate with countRemainingHours() as it might return 0
     // or null for StatUnit.MESSAGE
     @XmlTransient
+    @JsonIgnore
     @Deprecated
     public double getRemainingHours() {
         return remainingHours;

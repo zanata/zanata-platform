@@ -24,7 +24,9 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.zanata.common.DocumentType.*;
 
@@ -64,14 +66,14 @@ public enum ProjectType {
      * @return a list of file types or empty list if it's not a supported
      *         project type
      */
-    public static List<String> getSupportedSourceFileTypes(ProjectType type) {
+    public static List<DocumentType> getSupportedSourceFileTypes(ProjectType type) {
         if (type != null) {
             switch (type) {
                 case Gettext:
                 case Podir:
-                    return GETTEXT_PORTABLE_OBJECT_TEMPLATE.getExtensions();
+                    return Arrays.asList(GETTEXT);
                 case File:
-                    return fileProjectSourceFileTypes();
+                    return fileProjectSourceDocTypes();
                 default:
                     break;
             }
@@ -82,32 +84,27 @@ public enum ProjectType {
     /**
      * @return source file types/extensions that this project type uses
      */
-    public List<String> getSourceFileTypes() {
+    public List<DocumentType> getSourceFileTypes() {
         switch (this) {
             case Utf8Properties:
             case Properties:
-                return PROPERTIES.getExtensions();
+                return Arrays.asList(PROPERTIES);
             case Gettext:
             case Podir:
-                return GETTEXT_PORTABLE_OBJECT_TEMPLATE.getExtensions();
+                return Arrays.asList(GETTEXT);
             case Xliff:
             case Xml:
-                return XML.getExtensions();
+                return Arrays.asList(XML);
             case File:
-                return fileProjectSourceFileTypes();
+                return fileProjectSourceDocTypes();
         }
         throw new IllegalStateException("impossible");
     }
 
-    private static List<String> fileProjectSourceFileTypes() {
-        List<DocumentType> supported = Arrays.asList(XML_DOCUMENT_TYPE_DEFINITION,
-                PLAIN_TEXT, IDML, HTML, OPEN_DOCUMENT_TEXT, OPEN_DOCUMENT_PRESENTATION,
-                OPEN_DOCUMENT_GRAPHICS, OPEN_DOCUMENT_SPREADSHEET, SUBTITLE);
-
-        List<String> extensions = new ArrayList<String>();
-        for (DocumentType type : supported) {
-            extensions.addAll(type.getExtensions());
-        }
-        return  extensions;
+    public static List<DocumentType> fileProjectSourceDocTypes() {
+        return Arrays.asList(XML_DOCUMENT_TYPE_DEFINITION,
+            PLAIN_TEXT, IDML, HTML, OPEN_DOCUMENT_TEXT, OPEN_DOCUMENT_PRESENTATION,
+            OPEN_DOCUMENT_GRAPHICS, OPEN_DOCUMENT_SPREADSHEET, SUBTITLE,
+            GETTEXT, PROPERTIES, PROPERTIES_UTF8, XLIFF);
     }
 }

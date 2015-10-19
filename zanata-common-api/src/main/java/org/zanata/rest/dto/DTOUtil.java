@@ -72,9 +72,8 @@ public class DTOUtil {
     public static <T> T fromJSONToObject(String json, Class<T> clazz) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            return (T)mapper.readValue(json, clazz);
-        }
-        catch (IOException e) {
+            return (T) mapper.readValue(json, clazz);
+        } catch (IOException e) {
             e.printStackTrace();
             log.error("fromJSONToObject failed", e);
             return null;
