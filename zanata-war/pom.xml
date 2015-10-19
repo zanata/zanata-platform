@@ -1515,11 +1515,13 @@
       <groupId>org.jboss.seam</groupId>
       <artifactId>jboss-seam</artifactId>
       <type>ejb</type>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.seam</groupId>
       <artifactId>jboss-seam-ui</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -1531,6 +1533,7 @@
     <dependency>
       <groupId>org.jboss.seam</groupId>
       <artifactId>jboss-seam-mail</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <!-- RestEasy dependencies -->
