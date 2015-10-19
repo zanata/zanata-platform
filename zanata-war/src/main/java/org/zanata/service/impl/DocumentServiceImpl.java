@@ -35,7 +35,6 @@ import org.zanata.ApplicationConfiguration;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskResult;
-import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
@@ -80,7 +79,6 @@ import javax.enterprise.event.Observes;
  */
 @Named("documentServiceImpl")
 @RequestScoped
-@ContainsAsyncMethods
 @Slf4j
 public class DocumentServiceImpl implements DocumentService {
     @Inject /* TODO [CDI] check this: migrated from @In(required = false) */

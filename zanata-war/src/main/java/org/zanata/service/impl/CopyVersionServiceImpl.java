@@ -17,7 +17,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskResult;
-import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -54,7 +53,6 @@ import com.google.common.collect.Maps;
 @Named("copyVersionServiceImpl")
 @RequestScoped
 @Slf4j
-@ContainsAsyncMethods
 public class CopyVersionServiceImpl implements CopyVersionService {
 
     // Document batch size

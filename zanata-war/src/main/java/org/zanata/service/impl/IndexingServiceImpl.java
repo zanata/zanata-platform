@@ -38,7 +38,6 @@ import org.zanata.action.ReindexClassOptions;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskResult;
-import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.dao.HTextFlowTargetStreamingDAO;
 import org.zanata.model.HProject;
 import org.zanata.model.HTextFlowTarget;
@@ -56,7 +55,6 @@ import org.zanata.util.Zanata;
 @Named("indexingServiceImpl")
 @RequestScoped
 @Slf4j
-@ContainsAsyncMethods
 public class IndexingServiceImpl implements IndexingService {
 
     @Inject @Zanata

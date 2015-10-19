@@ -40,7 +40,6 @@ import org.zanata.security.annotations.CheckRole;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskResult;
-import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowStreamingDAO;
 import org.zanata.dao.TransMemoryDAO;
@@ -66,7 +65,6 @@ import com.google.common.base.Optional;
 @Named("translationMemoryResource")
 @Path(TranslationMemoryResource.SERVICE_PATH)
 @Slf4j
-@ContainsAsyncMethods
 @ParametersAreNonnullByDefault
 @ZanataSecured
 // TODO options to export obsolete docs and textflows to TMX?

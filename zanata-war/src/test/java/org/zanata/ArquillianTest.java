@@ -20,6 +20,7 @@
  */
 package org.zanata;
 
+import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
 import org.dbunit.database.DatabaseConfig;
@@ -28,7 +29,6 @@ import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.seam.util.Naming;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -95,7 +95,7 @@ public abstract class ArquillianTest {
     private static IDatabaseConnection getConnection() {
         try {
             DataSource dataSource =
-                    (DataSource) Naming.getInitialContext().lookup(
+                    (DataSource) new InitialContext().lookup(
                             "java:jboss/datasources/zanataDatasource");
             DatabaseConnection dbConn =
                     new DatabaseConnection(dataSource.getConnection());

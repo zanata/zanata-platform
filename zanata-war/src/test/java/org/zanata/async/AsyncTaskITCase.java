@@ -120,8 +120,6 @@ public class AsyncTaskITCase extends ArquillianTest {
 
 
     @Named("testAsyncBean")
-
-    @ContainsAsyncMethods
     public static class TestAsyncBean {
 
         @Async

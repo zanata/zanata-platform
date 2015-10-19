@@ -19,7 +19,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.zanata.async.Async;
-import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountDAO;
@@ -67,7 +66,6 @@ import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 @javax.enterprise.context.ApplicationScoped
 @Named("translationWorkspaceManager")
 @Slf4j
-@ContainsAsyncMethods
 public class TranslationWorkspaceManagerImpl implements
         TranslationWorkspaceManager {
 

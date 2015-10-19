@@ -34,7 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskResult;
-import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.async.handle.CopyTransTaskHandle;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectDAO;
@@ -56,7 +55,6 @@ import com.google.common.base.Stopwatch;
 @Named("copyTransServiceImpl")
 @RequestScoped
 @Slf4j
-@ContainsAsyncMethods
 @AllArgsConstructor
 @NoArgsConstructor
 public class CopyTransServiceImpl implements CopyTransService {

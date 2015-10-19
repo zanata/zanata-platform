@@ -30,7 +30,6 @@ import org.zanata.adapter.po.PoWriter2;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskResult;
-import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
@@ -66,7 +65,6 @@ import static org.zanata.common.ProjectType.*;
 @Named("translationArchiveServiceImpl")
 @RequestScoped
 @Slf4j
-@ContainsAsyncMethods
 public class TranslationArchiveServiceImpl implements
         TranslationArchiveService {
 

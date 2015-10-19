@@ -21,9 +21,6 @@
 package org.zanata.seam;
 
 import com.google.common.collect.ImmutableMap;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.contexts.BasicContext;
-import org.jboss.seam.contexts.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,32 +109,6 @@ public class AutowireContexts {
         // Clear out the request and session contexts
         newRequest();
         allContexts.put(ContextType.Session, new HashMap<String, Object>());
-    }
-
-    public Context getEventContext() {
-        return new BasicContext(ScopeType.SESSION) {
-            @Override
-            public void set(String name, Object value) {
-                log.debug("trying to set value in dummy session context: {} -> {}", name, value);
-                if (!allContexts.containsKey(ContextType.Session)) {
-                    newSession();
-                }
-                allContexts.get(ContextType.Session).put(name, value);
-            }
-        };
-    }
-
-    public Context getSessionContext() {
-        return new BasicContext(ScopeType.EVENT) {
-            @Override
-            public void set(String name, Object value) {
-                log.debug("trying to set value in dummy event context: {} -> {}", name, value);
-                if (!allContexts.containsKey(ContextType.Event)) {
-                    allContexts.put(ContextType.Event, new HashMap<String, Object>());
-                }
-                allContexts.get(ContextType.Event).put(name, value);
-            }
-        };
     }
 
     public static void simulateSessionContext(boolean simulate) {

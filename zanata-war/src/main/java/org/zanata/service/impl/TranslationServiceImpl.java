@@ -45,7 +45,6 @@ import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskResult;
-import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
@@ -97,7 +96,6 @@ import com.google.common.collect.Lists;
 
 @Named("translationServiceImpl")
 @RequestScoped
-@ContainsAsyncMethods
 @Slf4j
 public class TranslationServiceImpl implements TranslationService {
 

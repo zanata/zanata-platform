@@ -28,8 +28,8 @@ import javax.transaction.RollbackException;
 import javax.transaction.Status;
 import javax.transaction.Synchronization;
 import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
-import org.jboss.seam.transaction.UserTransaction;
 import lombok.Getter;
 
 /**
@@ -52,49 +52,6 @@ public class AutowireTransaction implements UserTransaction {
 
     public static UserTransaction instance() {
         return instance;
-    }
-
-    @Override
-    public boolean isActiveOrMarkedRollback() throws SystemException {
-        return isActive();
-    }
-
-    @Override
-    public boolean isRolledBackOrMarkedRollback() throws SystemException {
-        return false;
-    }
-
-    @Override
-    public boolean isMarkedRollback() throws SystemException {
-        return false;
-    }
-
-    @Override
-    public boolean isNoTransaction() throws SystemException {
-        return false;
-    }
-
-    @Override
-    public boolean isRolledBack() throws SystemException {
-        return false;
-    }
-
-    @Override
-    public boolean isCommitted() throws SystemException {
-        return false;
-    }
-
-    @Override
-    public boolean isConversationContextRequired() {
-        return false;
-    }
-
-    @Override
-    public void registerSynchronization(Synchronization sync) {
-    }
-
-    @Override
-    public void enlist(EntityManager entityManager) throws SystemException {
     }
 
     @Override

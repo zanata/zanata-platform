@@ -33,7 +33,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskResult;
-import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.common.ContentState;
 import org.zanata.dao.ProjectIterationDAO;
@@ -50,7 +49,6 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.MergeTranslationsService;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.service.VersionStateCache;
-import org.zanata.transaction.TransactionUtil;
 import org.zanata.util.TranslationUtil;
 
 import com.google.common.base.Optional;
@@ -68,7 +66,6 @@ import static org.zanata.transaction.TransactionUtil.runInTransaction;
 @Named("mergeTranslationsServiceImpl")
 @RequestScoped
 @Slf4j
-@ContainsAsyncMethods
 public class MergeTranslationsServiceImpl implements MergeTranslationsService {
 
     @Inject
