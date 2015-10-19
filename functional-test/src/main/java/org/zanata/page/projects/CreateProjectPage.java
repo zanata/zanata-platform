@@ -71,7 +71,7 @@ public class CreateProjectPage extends BasePage {
                 break;
             }
         }
-        return this;
+        return new CreateProjectPage(getDriver());
     }
 
     public ProjectVersionsPage pressCreateProject() {

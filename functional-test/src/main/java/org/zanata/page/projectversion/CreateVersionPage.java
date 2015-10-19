@@ -87,7 +87,7 @@ public class CreateVersionPage extends BasePage {
             clickCopyFromCheckbox();
         }
         readyElement(previousVersionsList);
-        return this;
+        return new CreateVersionPage(getDriver());
     }
 
     public CreateVersionPage disableCopyFromVersion() {
@@ -102,7 +102,7 @@ public class CreateVersionPage extends BasePage {
             clickCopyFromCheckbox();
         }
         readyElement(projectTypesList);
-        return this;
+        return new CreateVersionPage(getDriver());
     }
 
     public boolean copyFromVersionIsChecked() {

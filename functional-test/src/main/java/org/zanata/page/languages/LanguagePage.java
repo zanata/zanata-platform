@@ -139,7 +139,7 @@ public class LanguagePage extends BasePage {
     public LanguagePage clickAddTeamMember() {
         log.info("Click Add Team Member");
         clickElement(addTeamMemberButton);
-        return this;
+        return new LanguagePage(getDriver());
     }
 
     /*
