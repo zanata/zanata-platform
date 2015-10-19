@@ -95,7 +95,6 @@ public interface SourceDocResource {
      *         the server while performing this operation.
      */
     @GET
-    @Wrapped(element = "resources", namespace = Namespaces.ZANATA_API)
     // TODO Enunciate doesn't handle arrays/Collections
     // Ugly workaround:
     // http://docs.codehaus.org/display/ENUNCIATE/Lists+and+JAX-RS
