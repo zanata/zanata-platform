@@ -64,7 +64,7 @@
     <class>org.zanata.model.WebHook</class>
 
     <!-- TODO This may be removed once the class files are packaged in the zanata-model jar as intended
-     Otherwise, hibernate will scan the whole war file-->
+     Otherwise, hibernate will scan the whole war file and dependency jars -->
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     <properties>
