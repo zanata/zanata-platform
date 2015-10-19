@@ -5,19 +5,23 @@ import static org.zanata.model.HAccountRole.RoleType.MANUAL;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
-import javax.persistence.EntityManager;
 
 import com.google.common.annotations.VisibleForTesting;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
+
+import org.apache.deltaspike.cdise.api.ContextControl;
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.lifecycle.Initialized;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
 import javax.servlet.ServletContext;
 
+import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
@@ -35,7 +39,7 @@ import org.zanata.model.HLocale;
  * @author Sean Flanigan
  */
 @Named("essentialDataCreator")
-@javax.enterprise.context.Dependent
+@ApplicationScoped
 @Slf4j
 @Exclude(ifProjectStage = ProjectStage.UnitTest.class) /* TODO [CDI] Set ProjectStage for unit tests */
 public class EssentialDataCreator {
@@ -69,12 +73,24 @@ public class EssentialDataCreator {
 
     // Do it when the application starts (but after everything else has been
     // loaded)
+    @Transactional
     public void onCreate(@Observes @Initialized ServletContext context) {
-        prepare();
+        ContextControl ctxCtrl = BeanProvider
+                .getContextualReference(ContextControl.class);
+
+        //this will implicitly bind a new RequestContext to the current thread
+        ctxCtrl.startContext(RequestScoped.class);
+
+        try {
+            prepare();
+        } finally {
+            // stop the RequestContext to ensure that all request-scoped beans
+            // get cleaned up.
+            ctxCtrl.stopContext(RequestScoped.class);
+        }
     }
 
-    @Transactional
-    public void prepare() {
+    void prepare() {
         if (!prepared) {
             boolean adminExists;
 

@@ -132,7 +132,7 @@
       <property name="hibernate.cache.use_query_cache" value="true" />
 
       <!-- https://docs.jboss.org/author/display/AS71/JPA+Reference+Guide#JPAReferenceGuide-Persistenceunitproperties -->
-      <property name="jboss.as.jpa.managed" value="false" />
+      <property name="jboss.as.jpa.managed" value="true" />
     </properties>
   </persistence-unit>
 

@@ -37,6 +37,7 @@ import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.management.AttributeNotFoundException;
 import javax.management.InstanceNotFoundException;
@@ -51,16 +52,13 @@ import javax.naming.LinkRef;
 import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-import javax.persistence.EntityManagerFactory;
 import javax.servlet.ServletContext;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.deltaspike.core.api.lifecycle.Initialized;
-import org.apache.deltaspike.jpa.api.entitymanager.PersistenceUnitName;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.email.EmailBuilder;
@@ -69,7 +67,6 @@ import org.zanata.exception.ZanataInitializationException;
 import org.zanata.rest.dto.VersionInfo;
 import javax.enterprise.event.Event;
 import org.zanata.util.VersionUtility;
-import org.zanata.util.Zanata;
 
 /**
  * This class handles various tasks at startup.  It disables warnings for a
@@ -81,7 +78,7 @@ import org.zanata.util.Zanata;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Named("zanataInit")
-@javax.enterprise.context.Dependent
+@ApplicationScoped
 @Slf4j
 public class ZanataInit {
     private static final DefaultArtifactVersion MIN_EAP_VERSION =
@@ -107,9 +104,6 @@ public class ZanataInit {
 
     @Inject
     private Event<ServerStarted> startupEvent;
-
-    @Inject @Zanata
-    private EntityManagerFactory entityManagerFactory;
 
     public void onCreate(@Observes @Initialized ServletContext context) throws Exception {
         initZanata(context);
@@ -180,15 +174,6 @@ public class ZanataInit {
 
         log.info("Started Zanata...");
     }
-
-    @PreDestroy
-    private void destroy() {
-        // Tell Hibernate Search to clean up indexes and lock files
-        if (entityManagerFactory.isOpen()) {
-            entityManagerFactory.close();
-        }
-    }
-
 
     private void checkAppServerVersion()
             throws MalformedObjectNameException, AttributeNotFoundException,
