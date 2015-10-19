@@ -12,6 +12,8 @@ import org.hibernate.LobHelper;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.type.TimestampType;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -34,8 +36,7 @@ import com.google.common.base.Optional;
 import lombok.extern.slf4j.Slf4j;
 
 @Named("documentDAO")
-
-@javax.enterprise.context.Dependent
+@RequestScoped
 @Slf4j
 public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
     public DocumentDAO() {

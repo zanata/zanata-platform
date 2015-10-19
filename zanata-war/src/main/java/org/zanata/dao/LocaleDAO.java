@@ -27,13 +27,14 @@ import javax.annotation.Nullable;
 
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 
 @Named("localeDAO")
-
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class LocaleDAO extends AbstractDAOImpl<HLocale, Long> {
 
     public LocaleDAO() {

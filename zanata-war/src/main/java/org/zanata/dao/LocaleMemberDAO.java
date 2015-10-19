@@ -24,6 +24,8 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
@@ -31,8 +33,7 @@ import org.zanata.model.HLocaleMember;
 import org.zanata.model.HLocaleMember.HLocaleMemberPk;
 
 @Named("localeMemberDAO")
-
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class LocaleMemberDAO extends
         AbstractDAOImpl<HLocaleMember, HLocaleMemberPk> {
 

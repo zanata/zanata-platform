@@ -20,6 +20,7 @@
  */
 package org.zanata.dao;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.model.HRoleAssignmentRule;
 
@@ -28,8 +29,7 @@ import org.zanata.model.HRoleAssignmentRule;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("roleAssignmentRuleDAO")
-
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class RoleAssignmentRuleDAO extends
         AbstractDAOImpl<HRoleAssignmentRule, Long> {
     public RoleAssignmentRuleDAO() {

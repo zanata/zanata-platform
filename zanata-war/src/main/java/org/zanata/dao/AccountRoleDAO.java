@@ -9,14 +9,15 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HProject;
 
 @Named("accountRoleDAO")
-
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class AccountRoleDAO extends AbstractDAOImpl<HAccountRole, Integer> {
 
     public AccountRoleDAO() {

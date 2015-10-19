@@ -6,6 +6,8 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
@@ -21,8 +23,7 @@ import org.zanata.service.TranslationFinder;
 import com.google.common.base.Optional;
 
 @Named("textFlowTargetDAO")
-
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
         implements TranslationFinder {
 

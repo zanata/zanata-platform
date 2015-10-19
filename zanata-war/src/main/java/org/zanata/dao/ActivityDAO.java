@@ -25,6 +25,8 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.common.ActivityType;
 import org.zanata.model.Activity;
@@ -34,8 +36,7 @@ import org.zanata.model.type.EntityType;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Named("activityDAO")
-
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class ActivityDAO extends AbstractDAOImpl<Activity, Long> {
     private static final long serialVersionUID = 1L;
 

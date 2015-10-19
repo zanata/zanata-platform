@@ -27,6 +27,8 @@ import lombok.NoArgsConstructor;
 
 import org.hibernate.Query;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.common.EntityStatus;
 import org.zanata.model.HProject;
@@ -44,7 +46,7 @@ import org.zanata.util.CloseableIterator;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Named("textFlowStreamDAO")
-@javax.enterprise.context.RequestScoped
+@RequestScoped
 // TODO queries should only return Translated/Approved TFTs
 // TODO build related queries using querydsl
 @NoArgsConstructor

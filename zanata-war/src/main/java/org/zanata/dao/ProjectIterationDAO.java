@@ -28,6 +28,7 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.core.EntityTag;
 
 import org.apache.commons.lang.StringUtils;
@@ -51,8 +52,7 @@ import org.zanata.util.StatisticsUtil;
 import com.google.common.collect.Lists;
 
 @Named("projectIterationDAO")
-
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class ProjectIterationDAO extends
         AbstractDAOImpl<HProjectIteration, Long> {
 

@@ -20,6 +20,7 @@
  */
 package org.zanata.dao;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.model.security.HCredentials;
 
@@ -28,8 +29,7 @@ import org.zanata.model.security.HCredentials;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("credentialsDAO")
-@javax.enterprise.context.Dependent
-
+@RequestScoped
 public class CredentialsDAO extends AbstractDAOImpl<HCredentials, Long> {
     public CredentialsDAO() {
         super(HCredentials.class);

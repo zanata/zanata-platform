@@ -21,12 +21,13 @@
 package org.zanata.dao;
 
 import org.hibernate.Session;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.model.HDocumentUpload;
 
 @Named("documentUploadDAO")
-
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class DocumentUploadDAO extends AbstractDAOImpl<HDocumentUpload, Long> {
     private static final long serialVersionUID = 1L;
 

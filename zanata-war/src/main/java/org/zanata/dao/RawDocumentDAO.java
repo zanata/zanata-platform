@@ -2,6 +2,8 @@ package org.zanata.dao;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.model.HRawDocument;
 
@@ -11,8 +13,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Named("rawDocumentDAO")
-
-@javax.enterprise.context.Dependent
+@RequestScoped
 @Slf4j
 public class RawDocumentDAO extends AbstractDAOImpl<HRawDocument, Long> {
     public RawDocumentDAO() {

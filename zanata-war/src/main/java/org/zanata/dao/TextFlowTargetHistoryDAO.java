@@ -28,6 +28,8 @@ import java.util.concurrent.TimeUnit;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.transform.ResultTransformer;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -40,8 +42,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 
 @Named("textFlowTargetHistoryDAO")
-
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class TextFlowTargetHistoryDAO extends
         AbstractDAOImpl<HTextFlowTargetHistory, Long> {
 

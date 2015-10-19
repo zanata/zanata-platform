@@ -25,6 +25,8 @@ import lombok.NoArgsConstructor;
 
 import org.hibernate.Query;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemory;
@@ -38,7 +40,7 @@ import org.zanata.util.CloseableIterator;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Named("transMemoryStreamingDAO")
-@javax.enterprise.context.RequestScoped
+@RequestScoped
 @NoArgsConstructor
 /**
  * Note: unless the find* methods throw an exception, the caller is

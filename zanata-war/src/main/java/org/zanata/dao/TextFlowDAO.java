@@ -29,6 +29,8 @@ import java.util.Map;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.transform.ResultTransformer;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.ContentState;
@@ -45,8 +47,7 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 
 @Named("textFlowDAO")
-
-@javax.enterprise.context.Dependent
+@RequestScoped
 @Slf4j
 public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
     private static final long serialVersionUID = 1L;

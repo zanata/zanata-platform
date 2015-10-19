@@ -28,6 +28,8 @@ import javax.annotation.Nonnull;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.common.EntityStatus;
 import org.zanata.model.HIterationGroup;
@@ -39,8 +41,7 @@ import com.google.common.collect.Lists;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Named("versionGroupDAO")
-
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long> {
     public VersionGroupDAO() {
         super(HIterationGroup.class);

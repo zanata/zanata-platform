@@ -21,12 +21,13 @@
 package org.zanata.dao;
 
 import org.hibernate.Session;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.model.HAccountOption;
 
 @Named("accountOptionDAO")
-
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class AccountOptionDAO extends AbstractDAOImpl<HAccountOption, Long> {
     public AccountOptionDAO() {
         super(HAccountOption.class);

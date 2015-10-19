@@ -25,6 +25,8 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HTextFlowTargetReviewComment;
@@ -36,8 +38,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Named("textFlowTargetReviewCommentsDAO")
-
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class TextFlowTargetReviewCommentsDAO extends
         AbstractDAOImpl<HTextFlowTargetReviewComment, Long> {
     @SuppressWarnings("unused")

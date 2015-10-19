@@ -22,6 +22,8 @@ package org.zanata.dao;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
@@ -36,8 +38,7 @@ import java.util.Set;
  * Provides methods to access data related to membership in a locale for a project.
  */
 @Named("projectLocaleMemberDAO")
-
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class ProjectLocaleMemberDAO
         extends AbstractDAOImpl<HProjectLocaleMember, HProjectLocaleMember.HProjectLocaleMemberPK> {
 

@@ -34,6 +34,8 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.LocaleId;
@@ -49,8 +51,7 @@ import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
  *
  **/
 @Named("glossaryDAO")
-
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long> {
     @Inject @FullText
     private FullTextEntityManager entityManager;

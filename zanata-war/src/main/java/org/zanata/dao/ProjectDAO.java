@@ -38,6 +38,8 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.EntityStatus;
@@ -51,8 +53,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.ProjectRole;
 
 @Named("projectDAO")
-
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     @Inject @FullText
     private FullTextEntityManager entityManager;

@@ -26,6 +26,8 @@ import org.hibernate.Query;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
@@ -36,8 +38,7 @@ import org.zanata.model.HTextFlowTarget;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Named("hTextFlowTargetStreamingDAO")
-
-@javax.enterprise.context.Dependent
+@RequestScoped
 @Slf4j
 public class HTextFlowTargetStreamingDAO extends
         AbstractDAOImpl<HTextFlowTarget, Long> {

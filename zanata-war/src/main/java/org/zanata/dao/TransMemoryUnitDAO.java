@@ -20,6 +20,7 @@
  */
 package org.zanata.dao;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.model.tm.TransMemoryUnit;
 
@@ -28,7 +29,7 @@ import org.zanata.model.tm.TransMemoryUnit;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("transMemoryUnitDAO")
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class TransMemoryUnitDAO extends AbstractDAOImpl<TransMemoryUnit, Long> {
 
     public TransMemoryUnitDAO() {

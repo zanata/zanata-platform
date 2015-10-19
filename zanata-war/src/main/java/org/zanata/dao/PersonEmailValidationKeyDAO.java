@@ -22,12 +22,13 @@ package org.zanata.dao;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.model.HPersonEmailValidationKey;
 
 @Named("personEmailValidationKeyDAO")
-
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class PersonEmailValidationKeyDAO extends
         AbstractDAOImpl<HPersonEmailValidationKey, Long> {
 

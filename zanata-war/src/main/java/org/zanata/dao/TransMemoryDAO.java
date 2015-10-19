@@ -27,6 +27,8 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.UserTransaction;
@@ -44,8 +46,7 @@ import com.google.common.base.Optional;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("transMemoryDAO")
-@javax.enterprise.context.Dependent
-
+@RequestScoped
 public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long> {
 
     @Inject @FullText
