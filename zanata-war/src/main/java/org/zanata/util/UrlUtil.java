@@ -208,4 +208,8 @@ public class UrlUtil implements Serializable {
     public String signInPage() {
         return contextPath + "/account/sign_in";
     }
+
+    public String home() {
+        return contextPath + "/home.xhtml";
+    }
 }

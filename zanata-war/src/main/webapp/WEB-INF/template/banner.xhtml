@@ -137,9 +137,8 @@
           </li>
         </ui:fragment>
         <li>
-          <a jsfc="s:link" id="right_menu_sign_out_link"
-            view="/home.xhtml"
-            action="#{identity.logout}" propagation="none">
+          <a jsfc="h:commandLink" id="right_menu_sign_out_link"
+            action="#{identity.logout}">
             #{msgs['jsf.Logout']} <i class="l--float-right i--inline i--logout"/>
           </a>
         </li>

@@ -306,7 +306,7 @@
           <span class="is-hidden--s i__text--right">
             #{msgs['jsf.Languages']}
             <h:panelGroup styleClass="txt--neutral" id="languages-size">
-              #{versionHomeAction.getSupportedLocale().size}
+              #{versionHomeAction.getSupportedLocale().size()}
             </h:panelGroup>
           </span>
         </a>
@@ -319,7 +319,7 @@
           <span class="is-hidden--s i__text--right">
             #{msgs['jsf.Documents']}
             <h:panelGroup styleClass="txt--neutral" id="documents-size">
-              #{versionHomeAction.getDocuments().size}
+              #{versionHomeAction.getDocuments().size()}
             </h:panelGroup>
           </span>
         </a>
@@ -333,7 +333,7 @@
             <span class="is-hidden--s i__text--right">
               #{msgs['jsf.Groups']}
               <h:panelGroup styleClass="txt--neutral" id="groups-size">
-                #{versionHomeAction.groups.size}
+                #{versionHomeAction.groups.size()}
               </h:panelGroup>
             </span>
           </a>

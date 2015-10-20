@@ -31,7 +31,6 @@ import javax.interceptor.InvocationContext;
 import org.apache.deltaspike.security.api.authorization.AbstractAccessDecisionVoter;
 import org.apache.deltaspike.security.api.authorization.AccessDecisionVoterContext;
 import org.apache.deltaspike.security.api.authorization.SecurityViolation;
-import org.picketlink.Identity;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.PermissionTarget;
 

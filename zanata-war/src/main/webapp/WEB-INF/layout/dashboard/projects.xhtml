@@ -27,9 +27,9 @@
           </li>
           <ui:fragment rendered="#{identity.hasPermission(projectHome.instance, 'insert')}">
             <li class="tab__end">
-              <a href="#" jsfc="s:link"
+              <a href="#" jsfc="h:link"
                 id="create-project-link"
-                view="/project/create_project.xhtml"
+                outcome="/project/create_project.xhtml"
                 title="#{msgs['jsf.dashboard.projects.createNewProject.label']}">
                 <i aria-hidden="true" class="i i--plus i i--large"></i>
                 <span class="is-invisible">#{msgs['jsf.dashboard.projects.newProject.label']}</span>

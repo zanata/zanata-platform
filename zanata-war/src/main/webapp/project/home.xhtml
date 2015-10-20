@@ -102,7 +102,7 @@
           </h:panelGroup>
           <br/>
           <rich:dataTable id="projectList"
-            rows="#{projectAction.projectPagedListDataModel.pageSize}"
+            rows="#{projectAction.projectPagedListDataModel.pageSize()}"
             value="#{projectAction.projectPagedListDataModel}" var="project">
             <rich:column width="270px" sortBy="#{project.name}">
               <f:facet name="header">#{msgs['jsf.ProjectName']}

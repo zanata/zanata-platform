@@ -260,19 +260,6 @@
 
       <dependency>
         <groupId>org.picketlink</groupId>
-        <artifactId>picketlink-api</artifactId>
-        <version>${picketlink.version}</version>
-        <scope>${cdi.compile}</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.picketlink</groupId>
-        <artifactId>picketlink-impl</artifactId>
-        <version>${picketlink.version}</version>
-        <scope>${cdi.runtime}</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.picketlink</groupId>
         <artifactId>picketlink-idm-api</artifactId>
         <version>${picketlink.version}</version>
         <scope>${cdi.compile}</scope>

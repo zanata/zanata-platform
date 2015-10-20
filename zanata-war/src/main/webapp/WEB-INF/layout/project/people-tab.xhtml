@@ -139,7 +139,7 @@
           <h3 class="heading--secondary l--push-bottom-quarter">
             #{msgs['jsf.project.peoplelist.project.label']}
             <span class="txt--mini l--push-left-quarter">
-              <span class="badge">#{maintainers.size}</span>
+              <span class="badge">#{maintainers.size()}</span>
             </span>
           </h3>
           <ul class="list--slat">
@@ -159,7 +159,7 @@
           <h3 class="heading--secondary l--push-bottom-quarter">
             #{msgs['jsf.project.peoplelist.translation.label']}
             <span class="txt--mini l--push-left-quarter">
-              <span class="badge">#{localesWithMembers.size}</span>
+              <span class="badge">#{localesWithMembers.size()}</span>
             </span>
           </h3>
           <!-- cannot use name var="locale" as that overwrites an existing param with that name and causes errors -->
@@ -168,7 +168,7 @@
             <h4 class="heading--sub delta">
               #{localeGrouping.retrieveDisplayName()}
               <span class="txt--mini l--push-left-quarter">
-                <span class="badge">#{localeMembers.size}</span>
+                <span class="badge">#{localeMembers.size()}</span>
               </span>
             </h4>
             <ul class="list--slat l--push-bottom-1">

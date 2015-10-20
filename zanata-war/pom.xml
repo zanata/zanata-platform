@@ -2345,15 +2345,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.picketlink</groupId>
-      <artifactId>picketlink-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.picketlink</groupId>
-      <artifactId>picketlink-impl</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.webjars.bower</groupId>
       <artifactId>commonmark</artifactId>
       <version>0.20.0</version>

@@ -159,7 +159,7 @@
               <span class="is-hidden--s i__text--right">
                 #{msgs['jsf.Versions']}
                 <h:panelGroup styleClass="txt--neutral" id="versions-size">
-                  #{projectHomeAction.getProjectVersions().size}
+                  #{projectHomeAction.getProjectVersions().size()}
                 </h:panelGroup>
               </span>
         </a>
@@ -172,7 +172,7 @@
               <span class="is-hidden--s i__text--right">
                 #{msgs['jsf.People']}
                 <h:panelGroup styleClass="txt--neutral" id="people-size">
-                  #{projectHomeAction.allMembers.size}
+                  #{projectHomeAction.allMembers.size()}
                 </h:panelGroup>
               </span>
         </a>

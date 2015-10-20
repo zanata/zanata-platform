@@ -748,7 +748,7 @@ public class ProjectHomeAction extends AbstractSortAction implements
     private static final Ordering<HLocale> LOCALE_NAME_ORDERING =
             Ordering.natural().onResultOf(TO_LOCALE_NAME);
 
-    private final class PeopleFilterComparator extends InMemoryListFilter<HPerson>
+    public final class PeopleFilterComparator extends InMemoryListFilter<HPerson>
         implements Comparator<HPerson> {
 
         private final ProjectRolePredicate projectRolePredicate =

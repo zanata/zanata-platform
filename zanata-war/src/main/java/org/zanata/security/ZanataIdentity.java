@@ -65,8 +65,10 @@ import javax.enterprise.event.Event;
 import javax.servlet.http.HttpSession;
 
 import org.zanata.util.Contexts;
+import org.zanata.util.FacesNavigationUtil;
 import org.zanata.util.RequestContextValueStore;
 import org.zanata.util.ServiceLocator;
+import org.zanata.util.UrlUtil;
 
 import com.google.common.collect.Lists;
 
@@ -110,6 +112,9 @@ public class ZanataIdentity implements Identity, Serializable {
 
     @Inject
     private RequestContextValueStore requestContextValueStore;
+
+    @Inject
+    private UrlUtil urlUtil;
 
     public static boolean isSecurityEnabled() {
         return securityEnabled;
@@ -174,6 +179,7 @@ public class ZanataIdentity implements Identity, Serializable {
                             new AnnotationLiteral<DeltaSpike>() {
                             });
             session.invalidate();
+            urlUtil.redirectTo(urlUtil.home());
         }
     }
 

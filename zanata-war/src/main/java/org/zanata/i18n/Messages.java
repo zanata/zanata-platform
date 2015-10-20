@@ -190,7 +190,7 @@ public class Messages extends AbstractMap<String, String> {
 
     // JSF can't handle varargs, hence the need for these overloaded methods:
     public String format(String key, Object arg1) {
-        return format(key, new Object[] {arg1});
+        return format(key, new Object[]{ arg1 });
     }
 
     public String format(String key, Object arg1, Object arg2) {
@@ -198,6 +198,10 @@ public class Messages extends AbstractMap<String, String> {
     }
 
     public String format(String key, Object arg1, Object arg2, Object arg3) {
+        return format(key, new Object[] {arg1, arg2, arg3});
+    }
+
+    public String format3(String key, Object arg1, Object arg2, Object arg3) {
         return format(key, new Object[] {arg1, arg2, arg3});
     }
 

@@ -178,7 +178,7 @@
                 #{msgs['jsf.Languages']}
               </span>
             <h:panelGroup styleClass="txt--neutral" id="languages-size">
-              #{versionGroupHomeAction.activeLocales.size}
+              #{versionGroupHomeAction.activeLocales.size()}
             </h:panelGroup>
           </a>
         </li>
@@ -191,7 +191,7 @@
                 #{msgs['jsf.Projects']}
               </span>
             <h:panelGroup id="projects-size" layout="inline" styleClass="txt--neutral">
-              #{versionGroupHomeAction.getProjectIterations().size}
+              #{versionGroupHomeAction.getProjectIterations().size()}
             </h:panelGroup>
           </a>
         </li>
@@ -204,7 +204,7 @@
                 #{msgs['jsf.Maintainers']}
               </span>
             <h:panelGroup styleClass="txt--neutral" id="maintainers-size">
-              #{versionGroupHome.instance.maintainers.size}
+              #{versionGroupHome.instance.maintainers.size()}
             </h:panelGroup>
           </a>
         </li>
@@ -262,7 +262,7 @@
 
         <li id="maintainers">
           <zanata:maintainers-tab
-            listSize="#{versionGroupHome.instanceMaintainers.size}"
+            listSize="#{versionGroupHome.instanceMaintainers.size()}"
             filterActionBean="#{versionGroupHome.maintainerFilter}"
             settingsUrl="#settings-maintainers"
             PermissionToUpdate="#{identity.hasPermission(versionGroupHome.instance, 'update')}"/>
