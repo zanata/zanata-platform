@@ -42,8 +42,6 @@ public class RestLimitingFilterTest extends ZanataTest {
     @Mock
     private FilterChain filterChain;
     private HAccount authenticatedUser;
-    @Mock
-    private HttpServletRequest servletRequest;
 
     private String clientIP = "255.255.0.1";
 
@@ -57,7 +55,6 @@ public class RestLimitingFilterTest extends ZanataTest {
         dispatcher = spy(new RestLimitingFilter(processor));
 
         // this way we can verify the task actually called super.invoke()
-        doReturn(servletRequest).when(dispatcher).getServletRequest();
         doNothing().when(filterChain).doFilter(request, response);
         authenticatedUser = null;
         doReturn(authenticatedUser).when(dispatcher).getAuthenticatedUser();
@@ -116,7 +113,7 @@ public class RestLimitingFilterTest extends ZanataTest {
     public void willProcessAnonymousWithGETAndNoApiKey() throws Exception {
         when(request.getHeader(HttpUtil.X_AUTH_TOKEN_HEADER)).thenReturn(null);
         when(request.getRequestURI()).thenReturn("/rest/in/peace");
-        when(servletRequest.getRemoteAddr()).thenReturn(clientIP);
+        when(request.getRemoteAddr()).thenReturn(clientIP);
         doReturn(null).when(dispatcher).getAuthenticatedUser();
 
         dispatcher.doFilter(request, response, filterChain);

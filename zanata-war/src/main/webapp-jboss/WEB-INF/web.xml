@@ -146,7 +146,7 @@
 
   <filter-mapping>
     <filter-name>RestLimitingFilter</filter-name>
-    <url-pattern />
+    <url-pattern>/rest/*</url-pattern>
   </filter-mapping>
 
   <filter-mapping>

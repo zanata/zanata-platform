@@ -45,7 +45,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.zanata.security.SecurityFunctions;
 import org.zanata.security.annotations.AuthenticatedLiteral;
-import org.zanata.servlet.HttpRequestAndSessionHolder;
 import org.zanata.util.HttpUtil;
 import org.zanata.util.RunnableEx;
 import org.zanata.util.ServiceLocator;
@@ -63,7 +62,7 @@ import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
  */
 @Provider
 @Slf4j
-@WebFilter(filterName = "RestLimitingFilter", urlPatterns = "/rest/*")
+@WebFilter(filterName = "RestLimitingFilter")
 public class RestLimitingFilter implements Filter {
     private static final String API_KEY_ABSENCE_WARNING =
             "You must have a valid API key. You can create one by logging " +
@@ -86,11 +85,6 @@ public class RestLimitingFilter implements Filter {
 
     @Override
     public void destroy() {
-    }
-
-    @VisibleForTesting
-    HttpServletRequest getServletRequest() {
-        return HttpRequestAndSessionHolder.getRequest().get();
     }
 
     @Override
@@ -145,7 +139,7 @@ public class RestLimitingFilter implements Filter {
                  * different implementation of each proxy server. This will put
                  * all the requests from same proxy server into a single queue.
                  */
-                String clientIP = HttpUtil.getClientIp(getServletRequest());
+                String clientIP = HttpUtil.getClientIp(request);
                 processor.processForAnonymousIP(clientIP, response, invokeChain);
             } else {
                 if (!Strings.isNullOrEmpty(authenticatedUser.getApiKey())) {
