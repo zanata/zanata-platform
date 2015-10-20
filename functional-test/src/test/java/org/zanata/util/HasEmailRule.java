@@ -20,6 +20,7 @@
  */
 package org.zanata.util;
 
+import java.net.InetAddress;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
@@ -50,7 +51,10 @@ public class HasEmailRule extends ExternalResource {
         super.before();
         if (HasEmailRule.wiser == null) {
             String port = PropertiesHolder.getProperty("smtp.port");
-            HasEmailRule.wiser = new Wiser(Integer.parseInt(port));
+            int portNum = Integer.parseInt(port);
+            HasEmailRule.wiser = new Wiser(portNum);
+            HasEmailRule.wiser.getServer().setBindAddress(
+                    InetAddress.getByName("127.0.0.1"));
             HasEmailRule.wiser.start();
             // NB we never call wiser.stop() because we want the email
             // server to stay running for all tests in this VM

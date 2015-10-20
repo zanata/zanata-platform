@@ -23,6 +23,7 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.annotations.Authenticated;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.ui.CopyAction;
 import org.zanata.util.FacesNavigationUtil;
 import org.zanata.ui.faces.FacesMessages;
@@ -84,6 +85,9 @@ public class MergeTransAction extends CopyAction implements Serializable {
 
     @Inject
     private FacesMessages jsfMessages;
+
+    @Inject
+    private ZanataIdentity identity;
 
     private HProjectIteration targetVersion;
 
@@ -163,11 +167,17 @@ public class MergeTransAction extends CopyAction implements Serializable {
      * Only display user maintained project to merge translation from in this
      * UI. TODO: implement filterable drop down and allow users to select any
      * available project.
-     *
      */
     public List<HProject> getProjects() {
-        return projectDAO.getProjectsForMaintainer(
-                authenticatedAccount.getPerson(), null, 0, Integer.MAX_VALUE);
+        boolean canMergeFromAllProjects =
+                identity.hasPermission(getTargetVersion()
+                    .getProject(), "merge-trans");
+        if (canMergeFromAllProjects) {
+            return projectDAO
+                    .getOffsetListOrderByName(0, Integer.MAX_VALUE, false,
+                        true, true);
+        }
+        return Lists.newArrayList();
     }
 
     public void startMergeTranslations() {

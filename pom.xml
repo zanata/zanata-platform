@@ -642,6 +642,11 @@
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-multipart-provider</artifactId>
           </exclusion>
+          <!-- Need to exclude jersey from api, getHeader method is not available in jersey jaxrs -->
+          <exclusion>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-core</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
 
@@ -1766,7 +1771,7 @@
               <dependency>
                 <groupId>sun.jdk</groupId>
                 <artifactId>tools</artifactId>
-                <version>1.6</version>
+                <version>${required.jvm}</version>
                 <scope>system</scope>
                 <systemPath>${java.home}/../lib/tools.jar</systemPath>
               </dependency>

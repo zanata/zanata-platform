@@ -126,8 +126,10 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
     private static final Version LUCENE_VERSION = Version.LUCENE_29;
 
     // sort desc by lastChanged of HTextFlowTarget
-    private final Sort lastChangedSort = new Sort(new SortField(
-            IndexFieldLabels.LAST_CHANGED_FIELD, SortField.STRING, true));
+    private final Sort lastChangedSort = new Sort(
+            SortField.FIELD_SCORE,
+            new SortField(IndexFieldLabels.LAST_CHANGED_FIELD,
+                    SortField.STRING, true));
 
     private final TermQuery newStateQuery = new TermQuery(new Term(
             IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.New.toString()));
@@ -605,11 +607,29 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
 
         List<Object[]> resultList = (List<Object[]>) ftQuery.getResultList();
         if (!resultList.isEmpty() && resultList.size() == maxResult) {
-            log.info(
-                    "Lucene query returned exactly {} results.  Increasing {} might produce more matches.",
-                    resultList.size(), SysProperties.TM_MAX_RESULTS);
+            log.warn(
+                    "Lucene query returned {} results (out of approx {}). " +
+                            "Increasing {} might produce more matches.",
+                    resultList.size(), ftQuery.getResultSize(),
+                    SysProperties.TM_MAX_RESULTS);
+            logQueryResults(resultList);
         }
         return resultList;
+    }
+
+    private void logQueryResults(List<Object[]> resultList) {
+        if (log.isTraceEnabled()) {
+            // resultList.get() could be a little slow if resultList is a
+            // LinkedList, but in practice HSearch seems to use ArrayLists,
+            // plus we only iterate up to 10 elements.
+            int numToLog = Math.min(resultList.size(), 10);
+            for (int i = 0; i < numToLog; i++) {
+                Object[] arr = resultList.get(i);
+                Number score = (Number) arr[0];
+                Object entity = arr[1];
+                log.trace("{}[{}]: {}", i, score, entity);
+            }
+        }
     }
 
     /**

@@ -202,6 +202,11 @@ public class SecurityFunctions {
         return isProjectMaintainer(iteration.getProject());
     }
 
+    @GrantsPermission(actions = "merge-trans")
+    public static boolean canMergeTrans(HProject project) {
+        return isAdmin() || isProjectMaintainer(project);
+    }
+
     /***************************************************************************
      * Project team management rules
      **************************************************************************/
