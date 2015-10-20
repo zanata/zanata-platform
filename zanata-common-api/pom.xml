@@ -19,7 +19,7 @@
   </scm>
 
   <properties>
-    <jersey.version>1.17.1</jersey.version>
+    <jersey.version>1.19</jersey.version>
   </properties>
 
   <build>
@@ -271,6 +271,12 @@
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-core</artifactId>
       <version>${jersey.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.ws.rs</groupId>
+          <artifactId>jsr311-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
