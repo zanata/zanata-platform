@@ -1091,12 +1091,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.jboss.seam</groupId>
-        <artifactId>jboss-seam</artifactId>
-        <version>${seam.version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>jaxrs-api</artifactId>
         <version>${jaxrsapi.version}</version>

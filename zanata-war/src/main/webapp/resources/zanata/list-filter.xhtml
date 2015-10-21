@@ -82,7 +82,7 @@
         <i class="i txt--neutral #{cc.attrs.iconClass}"></i>
       </h:panelGroup>
       <ui:fragment
-        rendered="#{cc.attrs.actionBean.totalRecords ge cc.attrs.actionBean.pageSize()}">
+        rendered="#{cc.attrs.actionBean.totalRecords ge cc.attrs.actionBean.pageSize}">
         <ul class="panel__pager">
           <li>
             <button title="#{msgs['jsf.pager.PreviousPage']}"
@@ -108,12 +108,12 @@
         <ui:fragment
           rendered="#{not (cc.attrs.bottomPanel and cc.attrs.actionBean.totalRecords eq 0)}">
           <ui:fragment
-            rendered="#{cc.attrs.actionBean.totalRecords gt cc.attrs.actionBean.pageSize()}">
+            rendered="#{cc.attrs.actionBean.totalRecords gt cc.attrs.actionBean.pageSize}">
             <strong>#{cc.attrs.actionBean.pageStartIdx+1}-#{cc.attrs.actionBean.pageEndIdx+1}</strong> of
             #{cc.attrs.actionBean.totalRecords}
           </ui:fragment>
           <ui:fragment
-            rendered="#{cc.attrs.actionBean.totalRecords le cc.attrs.actionBean.pageSize()}">
+            rendered="#{cc.attrs.actionBean.totalRecords le cc.attrs.actionBean.pageSize}">
             <strong>#{cc.attrs.actionBean.totalRecords}</strong>
           </ui:fragment>
         </ui:fragment>

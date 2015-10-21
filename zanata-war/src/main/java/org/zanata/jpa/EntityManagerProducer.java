@@ -25,13 +25,16 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.jpa.FullTextEntityManager;
+import org.zanata.util.Zanata;
 
 /**
  * @author Patrick Huang
@@ -41,15 +44,16 @@ import org.hibernate.search.jpa.FullTextEntityManager;
 @ApplicationScoped
 public class EntityManagerProducer {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    @Inject
+    @Zanata
+    private EntityManagerFactory entityManagerFactory;
 
     @Produces
     @RequestScoped
     @Default
     // NB: This was conversation scoped before, so keep an eye out for it
     protected EntityManager getEntityManager() {
-        return entityManager;
+        return entityManagerFactory.createEntityManager();
     }
 
     protected void closeEntityManager(@Disposes EntityManager entityManager) {
@@ -63,7 +67,7 @@ public class EntityManagerProducer {
     @RequestScoped
     protected FullTextEntityManager createFTEntityManager() {
         return org.hibernate.search.jpa.Search
-                .getFullTextEntityManager(entityManager);
+                .getFullTextEntityManager(entityManagerFactory.createEntityManager());
     }
 
     protected void closeFTEntityManager(@Disposes @FullText FullTextEntityManager entityManager) {
@@ -76,7 +80,7 @@ public class EntityManagerProducer {
     @Default
     @RequestScoped
     protected Session getSession() {
-        return entityManager.unwrap(Session.class);
+        return entityManagerFactory.createEntityManager().unwrap(Session.class);
     }
 
     protected void closeSession(@Disposes Session session) {

@@ -120,6 +120,10 @@
             <version>1.5.2</version>
           </dependency>
     -->
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>jaxrs-api</artifactId>
+    </dependency>
 
 
     <dependency>

@@ -35,13 +35,8 @@ import java.util.Stack;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
-import org.apache.deltaspike.core.api.exclude.Exclude;
-import org.apache.deltaspike.core.api.projectstage.ProjectStage;
-
-import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.i18n.Messages;
 import org.zanata.util.ServiceLocator;

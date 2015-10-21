@@ -27,7 +27,6 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -198,10 +197,6 @@ public class Messages extends AbstractMap<String, String> {
     }
 
     public String format(String key, Object arg1, Object arg2, Object arg3) {
-        return format(key, new Object[] {arg1, arg2, arg3});
-    }
-
-    public String format3(String key, Object arg1, Object arg2, Object arg3) {
         return format(key, new Object[] {arg1, arg2, arg3});
     }
 

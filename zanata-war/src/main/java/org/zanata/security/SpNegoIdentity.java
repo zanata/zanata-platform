@@ -27,6 +27,8 @@ import javax.faces.context.FacesContext;
 
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+
+import javax.inject.Inject;
 import javax.inject.Named;
 import org.jboss.security.SecurityContextAssociation;
 import org.slf4j.Logger;
@@ -43,6 +45,9 @@ public class SpNegoIdentity implements Serializable {
     private static final long serialVersionUID = 5341594999046279309L;
     private static final String SUBJECT = "subject";
     private static final String PRINCIPAL = "principal";
+
+    @Inject
+    private Event<AlreadyLoggedInEvent> alreadyLoggedInEventEvent;
 
     public void authenticate() {
         ZanataIdentity identity =
@@ -72,7 +77,7 @@ public class SpNegoIdentity implements Serializable {
     }
 
     private Event<AlreadyLoggedInEvent> getAlreadyLoggedInEvent() {
-        return ServiceLocator.instance().getInstance("event", Event.class);
+        return alreadyLoggedInEventEvent;
     }
 
     public void login() {

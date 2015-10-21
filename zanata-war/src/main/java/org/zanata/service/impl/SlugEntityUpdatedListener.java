@@ -6,7 +6,6 @@ import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
 import javax.inject.Inject;
-import javax.inject.Named;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.events.ProjectIterationUpdate;
@@ -39,6 +38,12 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
 
     private static Integer slugFieldIndexInProject;
     private static Integer slugFieldIndexInIteration;
+
+    @Inject
+    private Event<ProjectUpdate> projectUpdateEvent;
+
+    @Inject
+    private Event<ProjectIterationUpdate> projectIterationUpdateEvent;
 
     @Override
     public void onPostUpdate(PostUpdateEvent event) {
@@ -136,10 +141,10 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
     }
 
     public Event<ProjectUpdate> getProjectUpdateEvent() {
-        return ServiceLocator.instance().getInstance("event", Event.class);
+        return projectUpdateEvent;
     }
 
     public Event<ProjectIterationUpdate> getProjectIterationUpdateEvent() {
-        return ServiceLocator.instance().getInstance("event", Event.class);
+        return projectIterationUpdateEvent;
     }
 }

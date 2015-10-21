@@ -1,5 +1,6 @@
 package org.zanata.webtrans.server;
 
+import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.event.service.spi.EventListenerRegistry;
@@ -40,8 +41,11 @@ public class HibernateIntegrator implements Integrator {
                     updateListener);
             eventListenerRegistry.appendListeners(EventType.POST_INSERT,
                     updateListener);
+            SlugEntityUpdatedListener slugEntityUpdatedListener =
+                    new SlugEntityUpdatedListener();
+            BeanProvider.injectFields(slugEntityUpdatedListener);
             eventListenerRegistry.appendListeners(EventType.POST_COMMIT_UPDATE,
-                    new SlugEntityUpdatedListener());
+                    slugEntityUpdatedListener);
         } else {
             log.debug("Application context not active");
         }

@@ -72,7 +72,7 @@ import org.zanata.util.UrlUtil;
 
 import com.google.common.collect.Lists;
 
-@Named("zanataIdentity")
+@Named("identity")
 @javax.enterprise.context.SessionScoped
 public class ZanataIdentity implements Identity, Serializable {
     private static final Logger log = LoggerFactory.getLogger(
@@ -115,6 +115,15 @@ public class ZanataIdentity implements Identity, Serializable {
 
     @Inject
     private UrlUtil urlUtil;
+
+    @Inject
+    private Event<AlreadyLoggedInEvent> alreadyLoggedInEventEvent;
+
+    @Inject
+    private Event<LoginFailedEvent> loginFailedEventEvent;
+
+    @Inject
+    private Event<NotLoggedInEvent> notLoggedInEventEvent;
 
     public static boolean isSecurityEnabled() {
         return securityEnabled;
@@ -263,7 +272,8 @@ public class ZanataIdentity implements Identity, Serializable {
         return permissionResolver.hasPermission(target, action);
     }
 
-    public boolean hasPermission(String name, String action, Object... arg) {
+    public boolean hasPermission(String name, String action,
+            Object... arg) {
         if (log.isTraceEnabled()) {
             log.trace("ENTER hasPermission({})",
                     Lists.newArrayList(name, action, arg));
@@ -379,7 +389,7 @@ public class ZanataIdentity implements Identity, Serializable {
     }
 
     private Event<NotLoggedInEvent> getNotLoggedInEvent() {
-        return ServiceLocator.instance().getInstance("event", Event.class);
+        return notLoggedInEventEvent;
     }
 
     // copied from org.jboss.seam.security.Identity.tryLogin()
@@ -585,7 +595,7 @@ public class ZanataIdentity implements Identity, Serializable {
     }
 
     private Event<AlreadyLoggedInEvent> getAlreadyLoggedInEvent() {
-        return ServiceLocator.instance().getInstance("event", Event.class);
+        return alreadyLoggedInEventEvent;
     }
 
     private Event<LoginSuccessfulEvent> getLoginSuccessfulEvent() {
@@ -593,7 +603,7 @@ public class ZanataIdentity implements Identity, Serializable {
     }
 
     private Event<LoginFailedEvent> getLoginFailedEvent() {
-        return ServiceLocator.instance().getInstance("event", Event.class);
+        return loginFailedEventEvent;
     }
 
     /**
