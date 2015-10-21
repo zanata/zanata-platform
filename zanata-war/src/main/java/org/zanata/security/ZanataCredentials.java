@@ -42,7 +42,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Named("org.jboss.seam.security.credentials")
+@Named("credentials")
 @javax.enterprise.context.SessionScoped
 @Slf4j
 public class ZanataCredentials implements Serializable {

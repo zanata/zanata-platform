@@ -67,7 +67,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * This class is the replacement of seam's JpaIdentityStore. It no longer use seam's annotation. e.g. UserPrincipal, UserRoles etc.
  */
-@Named("org.jboss.seam.security.identityStore")
+@Named("identityStore")
 @javax.enterprise.context.ApplicationScoped
 /* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
 @Slf4j

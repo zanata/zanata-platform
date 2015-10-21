@@ -52,7 +52,7 @@ import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Named("org.jboss.seam.security.management.userAction")
+@Named("userAction")
 @javax.faces.bean.ViewScoped
 public class UserAction implements Serializable {
     private static final long serialVersionUID = 1L;

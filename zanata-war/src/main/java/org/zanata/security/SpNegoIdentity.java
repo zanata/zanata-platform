@@ -37,7 +37,7 @@ import org.zanata.events.AlreadyLoggedInEvent;
 import javax.enterprise.event.Event;
 import org.zanata.util.ServiceLocator;
 
-@Named("org.jboss.seam.security.spNegoIdentity")
+@Named("spNegoIdentity")
 @javax.enterprise.context.SessionScoped
 public class SpNegoIdentity implements Serializable {
     private static final Logger LOGGER = LoggerFactory

@@ -15,7 +15,7 @@ import org.zanata.security.annotations.ZanataSecured;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Named("org.jboss.seam.security.management.userSearch")
+@Named("userSearch")
 @javax.enterprise.context.SessionScoped
 @ZanataSecured
 public class UserSearch implements Serializable {

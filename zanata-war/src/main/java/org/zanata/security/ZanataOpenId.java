@@ -61,7 +61,7 @@ import org.zanata.util.Contexts;
 import org.zanata.util.ServiceLocator;
 import org.zanata.util.UrlUtil;
 
-@Named("org.jboss.seam.security.zanataOpenId")
+@Named("zanataOpenId")
 @javax.enterprise.context.SessionScoped
 
 /*

@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @javax.enterprise.context.RequestScoped
-@Named("org.jboss.seam.security.identityManager")
+@Named("identityManager")
 @Slf4j
 public class IdentityManager implements Serializable {
     public static final String USER_PERMISSION_NAME = "seam.user";
