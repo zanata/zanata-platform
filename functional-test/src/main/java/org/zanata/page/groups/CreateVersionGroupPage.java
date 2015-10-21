@@ -71,7 +71,7 @@ public class CreateVersionGroupPage extends BasePage {
     public CreateVersionGroupPage inputGroupDescription(String desc) {
         log.info("Enter Group description {}", desc);
         enterText(readyElement(groupDescriptionField), desc);
-        return this;
+        return new CreateVersionGroupPage(getDriver());
     }
 
     public VersionGroupsPage saveGroup() {
