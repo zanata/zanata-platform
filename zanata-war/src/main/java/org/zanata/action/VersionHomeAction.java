@@ -464,7 +464,7 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     @Override
     protected String getMessage(String key, Object... args) {
-        return msgs.format(key, args);
+        return msgs.formatWithAnyArgs(key, args);
     }
 
     public List<HLocale> getSupportedLocale() {
@@ -619,8 +619,10 @@ public class VersionHomeAction extends AbstractSortAction implements
     public boolean isUserAllowedToTranslateOrReview(HLocale hLocale) {
         return isVersionActive()
                 && identity != null
-                && (identity.hasPermission("add-translation", getVersion()
-                        .getProject(), hLocale) || identity.hasPermission(
+                && (identity.hasPermissionWithAnyTargets("add-translation",
+                        getVersion().getProject(),
+                        hLocale) ||
+                identity.hasPermissionWithAnyTargets(
                         "translation-review", getVersion().getProject(),
                         hLocale));
     }
@@ -664,12 +666,14 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     public boolean isDocumentUploadAllowed() {
         return isVersionActive() && identity != null
-                && identity.hasPermission("import-template", getVersion());
+                && identity.hasPermissionWithAnyTargets("import-template",
+                getVersion());
     }
 
     public boolean isZipFileDownloadAllowed() {
         return getVersion().getProjectType() != null
-                && identity.hasPermission("download-all", getVersion());
+                && identity.hasPermissionWithAnyTargets("download-all",
+                getVersion());
     }
 
     public boolean isPoProject() {
@@ -712,7 +716,8 @@ public class VersionHomeAction extends AbstractSortAction implements
     public boolean isFileUploadAllowed(HLocale hLocale) {
         return isVersionActive()
                 && identity != null
-                && identity.hasPermission("modify-translation", getVersion()
+                && identity.hasPermissionWithAnyTargets("modify-translation",
+                getVersion()
                         .getProject(), hLocale);
     }
 

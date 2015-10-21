@@ -18,7 +18,6 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -147,7 +146,8 @@ public class ActivateWorkspaceHandlerTest extends ZanataTest {
                         projectIterationId.getProjectSlug(),
                         projectIterationId.getIterationSlug())).thenReturn(
                 hProjectIteration);
-        when(identity.hasPermission("modify-translation", hProject, hLocale))
+        when(identity.hasPermissionWithAnyTargets("modify-translation",
+                hProject, hLocale))
                 .thenReturn(true);
         when(identity.hasPermission("", "glossary-update")).thenReturn(true);
         LoadOptionsResult optionsResult =

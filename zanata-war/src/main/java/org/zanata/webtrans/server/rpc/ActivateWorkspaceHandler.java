@@ -168,7 +168,7 @@ public class ActivateWorkspaceHandler extends
     }
 
     private boolean hasWritePermission(HProject project, HLocale locale) {
-        return identity.hasPermission(
+        return identity.hasPermissionWithAnyTargets(
                 SecurityService.TranslationAction.MODIFY.action(), project,
                 locale);
     }
@@ -178,7 +178,8 @@ public class ActivateWorkspaceHandler extends
     }
 
     private boolean hasReviewerPermission(HLocale locale, HProject project) {
-        return identity.hasPermission("translation-review", project, locale);
+        return identity.hasPermissionWithAnyTargets("translation-review",
+                project, locale);
     }
 
     private boolean isProjectIterationActive(EntityStatus projectStatus,

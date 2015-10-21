@@ -190,7 +190,7 @@ public class FacesMessages implements Serializable {
             final Object... params) {
         Messages messages =
                 ServiceLocator.instance().getInstance(Messages.class);
-        String formatedMssg = messages.format(key, params);
+        String formatedMssg = messages.formatWithAnyArgs(key, params);
         addGlobal(severity, formatedMssg, params);
     }
 

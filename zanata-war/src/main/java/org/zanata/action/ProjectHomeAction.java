@@ -39,7 +39,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
+
 import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.LocaleMemberDAO;
@@ -463,9 +463,9 @@ public class ProjectHomeAction extends AbstractSortAction implements
                 && localeId != null
                 && isIterationActive(version)
                 && identity != null
-                && (identity.hasPermission("add-translation",
-                        version.getProject(), localeId) || identity
-                        .hasPermission("translation-review",
+                && (identity.hasPermissionWithAnyTargets("add-translation",
+                version.getProject(), localeId) || identity
+                        .hasPermissionWithAnyTargets("translation-review",
                                 version.getProject(), localeId));
     }
 
@@ -490,7 +490,7 @@ public class ProjectHomeAction extends AbstractSortAction implements
 
     @Override
     protected String getMessage(String key, Object... args) {
-        return msgs.format(key, args);
+        return msgs.formatWithAnyArgs(key, args);
     }
 
     public Map<HPerson, Collection<ProjectRole>> getMemberRoles() {

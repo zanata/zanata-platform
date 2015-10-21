@@ -31,7 +31,6 @@ import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.dao.ProjectMemberDAO;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -552,7 +551,7 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
 
     @Override
     protected String getMessage(String key, Object... args) {
-        return msgs.format(key, args);
+        return msgs.formatWithAnyArgs(key, args);
     }
 
     public void setSelectedLocaleId(String localeId) {

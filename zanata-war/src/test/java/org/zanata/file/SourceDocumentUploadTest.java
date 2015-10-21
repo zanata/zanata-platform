@@ -135,7 +135,8 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
     }
 
     private void mockHasUploadPermission() {
-        when(identity.hasPermission("import-template", projectIteration))
+        when(identity.hasPermissionWithAnyTargets("import-template",
+                projectIteration))
                 .thenReturn(conf.hasImportTemplatePermission);
     }
 

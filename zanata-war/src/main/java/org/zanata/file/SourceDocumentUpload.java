@@ -211,7 +211,8 @@ public class SourceDocumentUpload {
         return projectIteration.getStatus() == EntityStatus.ACTIVE
                 && projectIteration.getProject().getStatus() == EntityStatus.ACTIVE
                 && identity != null
-                && identity.hasPermission("import-template", projectIteration);
+                && identity.hasPermissionWithAnyTargets("import-template",
+                projectIteration);
     }
 
     private void failIfFileTypeNotValid(DocumentFileUploadForm uploadForm)

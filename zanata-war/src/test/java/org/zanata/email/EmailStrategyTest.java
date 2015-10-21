@@ -61,7 +61,7 @@ public class EmailStrategyTest {
         }
 
         @Override
-        public String format(String key, Object... args) {
+        public String formatWithAnyArgs(String key, Object... args) {
             return get(key) + ",args={" + Joiner.on(',').join(args) + "}";
         }
     };

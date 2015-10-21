@@ -243,8 +243,8 @@ public class TranslationDocumentUpload {
         return projectIteration.getStatus() == EntityStatus.ACTIVE
                 && projectIteration.getProject().getStatus() == EntityStatus.ACTIVE
                 && identity != null
-                && identity.hasPermission("add-translation",
-                        projectIteration.getProject(), locale);
+                && identity.hasPermissionWithAnyTargets("add-translation",
+                projectIteration.getProject(), locale);
     }
 
     private static Set<String> newExtensions(boolean gettextExtensions) {

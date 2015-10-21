@@ -237,6 +237,7 @@ public class ZanataIdentity implements Identity, Serializable {
         credentials.clear();
     }
 
+    // TODO WHY do we have methods hasPermission(target, action) as well as hasPermission(action, target)??? Especially it's used in EL. So DARN confusing!
     public boolean hasPermission(Object target, String action) {
         log.trace("ENTER hasPermission({}, {})", target, action);
         boolean result = resolvePermission(target, action);
@@ -272,46 +273,6 @@ public class ZanataIdentity implements Identity, Serializable {
         return permissionResolver.hasPermission(target, action);
     }
 
-    public boolean hasPermission(String name, String action,
-            Object... arg) {
-        if (log.isTraceEnabled()) {
-            log.trace("ENTER hasPermission({})",
-                    Lists.newArrayList(name, action, arg));
-        }
-        boolean result = resolvePermission(name, action, arg);
-        if (result) {
-            if (log.isDebugEnabled()) {
-                log.debug("ALLOWED hasPermission({}, {}, {}) for user {}",
-                        name, action, Lists.newArrayList(arg), getAccountUsername());
-            }
-        } else {
-            if (log.isDebugEnabled()) {
-                log.debug("DENIED hasPermission({}, {}, {}) for user {}",
-                        name, action, Lists.newArrayList(arg), getAccountUsername());
-            }
-        }
-        log.trace("EXIT hasPermission(): {}", result);
-        return result;
-    }
-
-    private boolean resolvePermission(String name, String action, Object... arg) {
-        if (!securityEnabled) {
-            return true;
-        }
-        if (systemOp != null && Boolean.TRUE.equals(systemOp.get())) {
-            return true;
-        }
-        if (permissionResolver == null) {
-            return false;
-        }
-
-        if (arg != null && arg.length > 0) {
-            return permissionResolver.hasPermission(arg[0], action);
-        } else {
-            return permissionResolver.hasPermission(name, action);
-        }
-    }
-
     /**
      * Indicates if the user has permission to perform an action on a variable
      * number of targets. This is provided as an extension to Seam's single
@@ -322,7 +283,7 @@ public class ZanataIdentity implements Identity, Serializable {
      * @param targets
      *            Targets for permissions.
      */
-    public boolean hasPermission(String action, Object... targets) {
+    public boolean hasPermissionWithAnyTargets(String action, Object... targets) {
         return hasPermission(MultiTargetList.fromTargets(targets), action);
     }
 

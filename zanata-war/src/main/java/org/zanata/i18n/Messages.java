@@ -169,7 +169,7 @@ public class Messages extends AbstractMap<String, String> {
      */
     @Deprecated
     public String format(String key) {
-        return format(key, new Object[0]);
+        return formatWithAnyArgs(key, new Object[0]);
     }
 
     /**
@@ -182,34 +182,36 @@ public class Messages extends AbstractMap<String, String> {
      * @return formatted string
      * @see MessageFormat
      */
-    public String format(String key, Object... args) {
+    public String formatWithAnyArgs(String key, Object... args) {
         String template = get(key);
         return MessageFormat.format(template, args);
     }
 
     // JSF can't handle varargs, hence the need for these overloaded methods:
     public String format(String key, Object arg1) {
-        return format(key, new Object[]{ arg1 });
+        return formatWithAnyArgs(key, arg1);
     }
 
     public String format(String key, Object arg1, Object arg2) {
-        return format(key, new Object[] {arg1, arg2});
+        return formatWithAnyArgs(key, arg1, arg2);
     }
 
     public String format(String key, Object arg1, Object arg2, Object arg3) {
-        return format(key, new Object[] {arg1, arg2, arg3});
+        return formatWithAnyArgs(key, arg1, arg2, arg3);
     }
 
     public String format(String key, Object arg1, Object arg2, Object arg3, Object arg4) {
-        return format(key, new Object[] {arg1, arg2, arg3, arg4});
+        return formatWithAnyArgs(key, arg1, arg2, arg3, arg4);
     }
 
     public String format(String key, Object arg1, Object arg2, Object arg3, Object arg4, Object arg5) {
-        return format(key, new Object[] {arg1, arg2, arg3, arg4, arg5});
+        return formatWithAnyArgs(key,
+                arg1, arg2, arg3, arg4, arg5 );
     }
 
     public String format(String key, Object arg1, Object arg2, Object arg3, Object arg4, Object arg5, Object arg6) {
-        return format(key, new Object[] {arg1, arg2, arg3, arg4, arg5, arg6});
+        return formatWithAnyArgs(key,
+                arg1, arg2, arg3, arg4, arg5, arg6);
     }
 
     @Nonnull
