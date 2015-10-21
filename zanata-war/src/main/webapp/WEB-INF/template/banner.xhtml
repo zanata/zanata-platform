@@ -102,6 +102,7 @@
 
   <ui:fragment
     rendered="#{identity.loggedIn and authenticatedAccountHome.instance.enabled}">
+    <h:form>
     <nav class="header__user-nav js-dropdown">
       <a href="#nav-user" class="header__user-nav__toggle js-dropdown__toggle"
         id="user--avatar"
@@ -144,6 +145,7 @@
         </li>
       </ul>
     </nav>
+    </h:form>
   </ui:fragment>
 
   <ui:fragment rendered="#{not identity.loggedIn}">

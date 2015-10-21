@@ -58,6 +58,10 @@ public class RoleAssignmentRuleAction extends EntityHome<HRoleAssignmentRule>
     @Inject
     private ApplicationConfiguration applicationConfiguration;
 
+    public RoleAssignmentRuleAction() {
+        setEntityClass(HRoleAssignmentRule.class);
+    }
+
     public List<HRoleAssignmentRule> getAllRules() {
         return roleAssignmentRuleDAO.findAll();
     }

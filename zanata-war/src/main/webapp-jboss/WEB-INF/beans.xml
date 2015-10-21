@@ -3,12 +3,12 @@
   xmlns:weld="http://jboss.org/schema/weld/beans"
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
 
-  <!--<alternatives>-->
-    <!--<class>org.zanata</class>-->
-  <!--</alternatives>-->
+  <alternatives>
+    <class>org.apache.deltaspike.jpa.impl.transaction.BeanManagedUserTransactionStrategy</class>
+  </alternatives>
   <interceptors>
     <class>org.zanata.util.SynchronizationInterceptor</class>
-    <!--<class>org.apache.deltaspike.jpa.impl.transaction.TransactionalInterceptor</class>-->
+    <class>org.apache.deltaspike.jpa.impl.transaction.TransactionalInterceptor</class>
     <class>org.zanata.async.AsyncMethodInterceptor</class>
     <class>org.zanata.seam.interceptor.ZanataSecurityInterceptor</class>
   </interceptors>

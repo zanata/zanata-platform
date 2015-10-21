@@ -55,6 +55,10 @@ public class TranslationMemoryHome extends EntityHome<TransMemory> {
     @Inject
     private FacesMessages facesMessages;
 
+    public TranslationMemoryHome() {
+        setEntityClass(TransMemory.class);
+    }
+
     public void verifySlugAvailable(ValueChangeEvent e) {
         String slug = (String) e.getNewValue();
         validateSlug(slug, e.getComponent().getId());

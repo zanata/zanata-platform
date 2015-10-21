@@ -13,6 +13,7 @@ import javax.persistence.EntityNotFoundException;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.action.SlugHome;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ServiceLocator;
 
@@ -186,7 +187,8 @@ public abstract class Home<T, E> extends MutableController<T>
      */
     public Class<E> getEntityClass() {
         if (entityClass == null) {
-            Type type = getClass().getGenericSuperclass();
+            // CDI will return a proxy instance (so need an extra getSuperClass)
+            Type type = getClass().getSuperclass().getGenericSuperclass();
             if (type instanceof ParameterizedType) {
                 ParameterizedType paramType = (ParameterizedType) type;
                 if (paramType.getActualTypeArguments().length == 2) {
@@ -260,4 +262,7 @@ public abstract class Home<T, E> extends MutableController<T>
         this.instance = instance;
     }
 
+    public void setEntityClass(Class<E> entityClass) {
+        this.entityClass = entityClass;
+    }
 }

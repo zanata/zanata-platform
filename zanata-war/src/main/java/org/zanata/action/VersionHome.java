@@ -38,6 +38,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
@@ -184,6 +185,10 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         } else {
             copyFromVersion = false;
         }
+    }
+
+    public VersionHome() {
+        setEntityClass(HProjectIteration.class);
     }
 
     // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
@@ -362,6 +367,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
                 projectSlug);
     }
 
+    @Transactional
     public String createVersion() {
         if (!validateSlug(inputSlugValue, "slug"))
             return "invalid-slug";
@@ -374,6 +380,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         }
     }
 
+    @Transactional
     public void copyVersion() {
         getInstance().setSlug(inputSlugValue);
         getInstance().setStatus(EntityStatus.READONLY);
@@ -398,6 +405,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     }
 
     @Override
+    @Transactional
     public String persist() {
         if (!validateSlug(getInputSlugValue(), "slug")) {
             return null;
@@ -449,6 +457,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         return versionValidations.equals(projectValidations);
     }
 
+    @Transactional
     public void copyValidationFromProject() {
         getInstance().getCustomizedValidations().clear();
         getInstance().getCustomizedValidations().putAll(
@@ -528,6 +537,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         updateProjectType();
     }
 
+    @Transactional
     public void copyProjectTypeFromProject() {
         getInstance().setProjectType(
                 getInstance().getProject().getDefaultProjectType());

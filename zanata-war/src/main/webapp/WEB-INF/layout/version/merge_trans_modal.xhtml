@@ -151,7 +151,7 @@
           <h:panelGroup layout="block"  styleClass="g__item txt--align-right"
             id="merge-trans-buttons">
             <a4j:commandButton id="merge-button"
-              rendered="#{not mergeTransAction.isCopyActionsRunning(mergeTransAction.targetProjectSlug, mergeTransAction.targetVersionSlug)}"
+              rendered="#{not mergeTransAction.isCopyActionsRunning()}"
               styleClass="button button--primary" disabled="#{empty mergeTransAction.sourceVersions}"
               action="#{mergeTransAction.startMergeTranslations}"
               value="#{msgs['jsf.iteration.mergeTrans']}"/>

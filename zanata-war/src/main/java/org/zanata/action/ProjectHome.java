@@ -206,6 +206,10 @@ public class ProjectHome extends SlugHome<HProject> implements
 
     private List<HLocale> disabledLocales;
 
+    public ProjectHome() {
+        setEntityClass(HProject.class);
+    }
+
     public List<HLocale> getDisabledLocales() {
         if(disabledLocales == null) {
             disabledLocales = findActiveNotEnabledLocales();

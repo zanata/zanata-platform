@@ -30,6 +30,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.event.ValueChangeEvent;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
@@ -122,6 +123,10 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
                 }
             };
 
+    public VersionGroupHome() {
+        setEntityClass(HIterationGroup.class);
+    }
+
     public void verifySlugAvailable(ValueChangeEvent e) {
         String slug = (String) e.getNewValue();
         validateSlug(slug, e.getComponent().getId());
@@ -147,6 +152,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
     }
 
     @Override
+    @Transactional
     public String persist() {
         identity.checkPermission(instance, "update");
         if (!validateSlug(getInstance().getSlug(), "slug"))
