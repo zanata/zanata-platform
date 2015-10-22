@@ -25,15 +25,11 @@ import java.io.Serializable;
 import org.apache.deltaspike.core.api.scope.ViewAccessScoped;
 
 /**
- * We set this to ViewAccessScoped so that it can retain the value accross
- * requests (original request, subsequent ajax requests)
- *
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @ViewAccessScoped
-public class ProjectSlug implements Serializable {
-    private static final long serialVersionUID = -2815530471069045162L;
+public class VersionGroupSlug implements Serializable {
     private String value;
 
     public String getValue() {

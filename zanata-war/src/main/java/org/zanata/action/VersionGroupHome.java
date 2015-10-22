@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.event.ValueChangeEvent;
 
@@ -69,14 +70,14 @@ import lombok.Setter;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Named("versionGroupHome")
-@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
+@RequestScoped
 public class VersionGroupHome extends SlugHome<HIterationGroup>
         implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @Inject
     @Getter
-    @Setter
-    private String slug;
+    private VersionGroupSlug versionGroupSlug;
 
     @Inject
     @Authenticated
@@ -127,6 +128,14 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         setEntityClass(HIterationGroup.class);
     }
 
+    public String getSlug() {
+        return versionGroupSlug.getValue();
+    }
+
+    public void setSlug(String slug) {
+        versionGroupSlug.setValue(slug);
+    }
+
     public void verifySlugAvailable(ValueChangeEvent e) {
         String slug = (String) e.getNewValue();
         validateSlug(slug, e.getComponent().getId());
@@ -165,6 +174,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
     }
 
     @Override
+    @Transactional
     public String update() {
         identity.checkPermission(instance, "update");
         return super.update();
@@ -184,10 +194,12 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         return update();
     }
 
+    @Transactional
     public void setStatus(char initial) {
         getInstance().setStatus(EntityStatus.valueOf(initial));
     }
 
+    @Transactional
     public void removeLanguage(HLocale locale) {
         identity.checkPermission(instance, "update");
         getInstance().getActiveLocales().remove(locale);
@@ -198,6 +210,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
                         locale.retrieveDisplayName()));
     }
 
+    @Transactional
     public void removeVersion(HProjectIteration version) {
         identity.checkPermission(instance, "update");
         getInstance().getProjectIterations().remove(version);
@@ -208,6 +221,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
                         version.getProject().getSlug()));
     }
 
+    @Transactional
     public void removeMaintainer(HPerson maintainer) {
         identity.checkPermission(instance, "update");
         if (getInstance().getMaintainers().size() <= 1) {
@@ -258,17 +272,17 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
 
     @Override
     public NaturalIdentifier getNaturalId() {
-        return Restrictions.naturalId().set("slug", slug);
+        return Restrictions.naturalId().set("slug", getSlug());
     }
 
     @Override
     public boolean isIdDefined() {
-        return slug != null;
+        return getSlug() != null;
     }
 
     @Override
     public Object getId() {
-        return slug;
+        return getSlug();
     }
 
     // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
@@ -278,7 +292,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         // start
     }
 
-    private class GroupMaintainerAutocomplete extends MaintainerAutocomplete {
+    public class GroupMaintainerAutocomplete extends MaintainerAutocomplete {
 
         @Override
         protected List<HPerson> getMaintainers() {
@@ -304,7 +318,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         }
     }
 
-    private class VersionAutocomplete extends
+    public class VersionAutocomplete extends
             AbstractAutocomplete<HProjectIteration> {
         private ProjectIterationDAO projectIterationDAO = ServiceLocator
                 .instance().getInstance(ProjectIterationDAO.class);
@@ -357,10 +371,10 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
 
     private static VersionGroupHome getVersionGroupHome() {
         return ServiceLocator.instance()
-                        .getInstance("versionGroupHome", VersionGroupHome.class);
+                        .getInstance(VersionGroupHome.class);
     }
 
-    private class GroupLocaleAutocomplete extends LocaleAutocomplete {
+    public class GroupLocaleAutocomplete extends LocaleAutocomplete {
         private ZanataIdentity identity = ServiceLocator.instance()
                 .getInstance(ZanataIdentity.class);
 
