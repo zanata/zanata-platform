@@ -3,6 +3,7 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
 
   <interceptors>
+    <class>org.zanata.util.WithRequestScopeInterceptor</class>
     <class>org.zanata.util.SynchronizationInterceptor</class>
     <!--<class>org.apache.deltaspike.jpa.impl.transaction.TransactionalInterceptor</class>-->
     <!--<class>org.zanata.async.AsyncMethodInterceptor</class>-->

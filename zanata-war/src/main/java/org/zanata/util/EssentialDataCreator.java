@@ -73,21 +73,10 @@ public class EssentialDataCreator {
 
     // Do it when the application starts (but after everything else has been
     // loaded)
+    @WithRequestScope
     public void onCreate(@Observes @Initialized ServletContext context) {
-        ContextControl ctxCtrl = BeanProvider
-                .getContextualReference(ContextControl.class);
-
-        //this will implicitly bind a new RequestContext to the current thread
         // since our EntityManager is RequestScoped, we need to have it before any Transactional thing to happen
-        ctxCtrl.startContext(RequestScoped.class);
-
-        try {
-            prepare();
-        } finally {
-            // stop the RequestContext to ensure that all request-scoped beans
-            // get cleaned up.
-            ctxCtrl.stopContext(RequestScoped.class);
-        }
+        prepare();
     }
 
     @Transactional
