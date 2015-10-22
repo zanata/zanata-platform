@@ -240,23 +240,18 @@
   </navigation-rule>
 
   <navigation-rule>
-    <from-view-id>/admin/rolerules.xhtml</from-view-id>
-    <navigation-case>
-      <from-action>#{roleAssignmentRuleAction.edit}</from-action>
-      <to-view-id>/admin/roleruledetails.xhtml</to-view-id>
-      <redirect/>
-    </navigation-case>
-  </navigation-rule>
-
-  <navigation-rule>
     <from-view-id>/admin/roleruledetails.xhtml</from-view-id>
     <navigation-case>
       <from-action>#{roleAssignmentRuleAction.update}</from-action>
+      <from-outcome>updated</from-outcome>
       <to-view-id>/admin/rolerules.xhtml</to-view-id>
+      <redirect/>
     </navigation-case>
     <navigation-case>
       <from-action>#{roleAssignmentRuleAction.persist}</from-action>
+      <from-outcome>persisted</from-outcome>
       <to-view-id>/admin/rolerules.xhtml</to-view-id>
+      <redirect/>
     </navigation-case>
   </navigation-rule>
 

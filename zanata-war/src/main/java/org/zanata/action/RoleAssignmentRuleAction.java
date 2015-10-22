@@ -24,10 +24,15 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
 import javax.validation.constraints.NotNull;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountRoleDAO;
@@ -42,12 +47,17 @@ import org.zanata.security.annotations.ZanataSecured;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("roleAssignmentRuleAction")
-@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
+@RequestScoped
 @ZanataSecured
 @CheckRole("admin")
 public class RoleAssignmentRuleAction extends EntityHome<HRoleAssignmentRule>
         implements Serializable {
+    private static final Logger log =
+            LoggerFactory.getLogger(RoleAssignmentRuleAction.class);
     private static final long serialVersionUID = 1L;
+
+    @Inject
+    private RoleAssignmentRuleId roleAssignmentRuleId;
 
     @Inject
     private RoleAssignmentRuleDAO roleAssignmentRuleDAO;
@@ -62,13 +72,23 @@ public class RoleAssignmentRuleAction extends EntityHome<HRoleAssignmentRule>
         setEntityClass(HRoleAssignmentRule.class);
     }
 
-    public List<HRoleAssignmentRule> getAllRules() {
-        return roleAssignmentRuleDAO.findAll();
+    @Override
+    public void setId(Object id) {
+        if (id != null) {
+            roleAssignmentRuleId.setId(Long.parseLong(id.toString()));
+        } else {
+            roleAssignmentRuleId.setId(null);
+        }
+
     }
 
-//    @Begin /* TODO [CDI] commented out Begin conversation. verify it still works */
-    public void edit(HRoleAssignmentRule rule) {
-        this.setInstance(rule);
+    @Override
+    public Object getId() {
+        return roleAssignmentRuleId.getId();
+    }
+
+    public List<HRoleAssignmentRule> getAllRules() {
+        return roleAssignmentRuleDAO.findAll();
     }
 
     public void remove(HRoleAssignmentRule rule) {

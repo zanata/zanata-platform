@@ -92,7 +92,8 @@
                       </ul>
                     </div>
                   </div>
-                  <h:commandLink action="#{roleAssignmentRuleAction.edit(rule)}">
+                  <h:link outcome="/admin/roleruledetails.xhtml">
+                    <f:param name="id" value="#{rule.id}" />
                     <div class="list__item__content">
                       <div class="list__item__info">
                         <h3 class="list__title">
@@ -110,7 +111,7 @@
                         </span>
                       </div>
                     </div>
-                  </h:commandLink>
+                  </h:link>
                 </li>
               </ui:repeat>
             </ul>
