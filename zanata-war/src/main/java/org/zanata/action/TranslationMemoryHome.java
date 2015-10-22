@@ -20,6 +20,7 @@
  */
 package org.zanata.action;
 
+import javax.enterprise.context.RequestScoped;
 import javax.faces.event.ValueChangeEvent;
 
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +47,7 @@ import org.zanata.ui.faces.FacesMessages;
 @ZanataSecured
 @CheckRole("admin")
 @Slf4j
-@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
+@RequestScoped
 public class TranslationMemoryHome extends EntityHome<TransMemory> {
     private static final long serialVersionUID = -8557363011909155662L;
     @Inject
