@@ -79,8 +79,8 @@ public class EntityManagerProducer {
     @Produces
     @Default
     @RequestScoped
-    protected Session getSession() {
-        return entityManagerFactory.createEntityManager().unwrap(Session.class);
+    protected Session getSession(EntityManager entityManager) {
+        return entityManager.unwrap(Session.class);
     }
 
     protected void closeSession(@Disposes Session session) {
@@ -92,8 +92,8 @@ public class EntityManagerProducer {
     @Produces
     @FullText
     @RequestScoped
-    protected FullTextSession getFullTextSession() {
-        return Search.getFullTextSession(getSession());
+    protected FullTextSession getFullTextSession(Session session) {
+        return Search.getFullTextSession(session);
     }
 
     protected void closeFullTextSession(@Disposes @FullText FullTextSession fullTextSession) {

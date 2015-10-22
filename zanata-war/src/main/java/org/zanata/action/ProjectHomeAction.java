@@ -100,6 +100,7 @@ public class ProjectHomeAction extends AbstractSortAction implements
     public static final Ordering<LocaleRole>
             LOCALE_ROLE_ORDERING = Ordering.explicit(LocaleRole.Translator,
             LocaleRole.Reviewer, LocaleRole.Coordinator);
+    private static final long serialVersionUID = -5163376385991003306L;
     @Inject
     private ActivityService activityServiceImpl;
 

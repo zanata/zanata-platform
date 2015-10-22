@@ -32,6 +32,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityManager;
@@ -91,23 +93,29 @@ import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 @Named("projectHome")
 @Slf4j
-@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
+//@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
+@RequestScoped
 public class ProjectHome extends SlugHome<HProject> implements
     HasLanguageSettings {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * This field is set from http parameter which will be the original slug
-     */
+//    /**
+//     * This field is set from http parameter which will be the original slug
+//     */
+//    @Getter
+//    private String slug;
+
     @Getter
-    private String slug;
+    @Inject
+    private ProjectSlug projectSlug;
 
     /**
      * This field is set from form input which can differ from original slug
      */
     @Getter
     @Setter
+    @Nullable
     private String inputSlugValue;
 
     @Setter
@@ -210,6 +218,10 @@ public class ProjectHome extends SlugHome<HProject> implements
         setEntityClass(HProject.class);
     }
 
+    public String getSlug() {
+        return projectSlug.getValue();
+    }
+
     public List<HLocale> getDisabledLocales() {
         if(disabledLocales == null) {
             disabledLocales = findActiveNotEnabledLocales();
@@ -276,11 +288,13 @@ public class ProjectHome extends SlugHome<HProject> implements
         getSelectedEnabledLocales();
     }
 
+    @Transactional
     public void updateSelectedProjectType(ValueChangeEvent e) {
         selectedProjectType = (String) e.getNewValue();
         updateProjectType();
     }
 
+    @Transactional
     public void setSelectedProjectType(String selectedProjectType) {
         if (!StringUtils.isEmpty(selectedProjectType)
                 && !selectedProjectType.equals("null")) {
@@ -293,6 +307,7 @@ public class ProjectHome extends SlugHome<HProject> implements
         return getInstance().isOverrideLocales();
     }
 
+    @Transactional
     public void setOverrideLocales(boolean overrideLocales) {
         getInstance().setOverrideLocales(overrideLocales);
     }
@@ -344,6 +359,7 @@ public class ProjectHome extends SlugHome<HProject> implements
      * alias (if any) is removed for the given locale, otherwise the alias is
      * replaced with the value.
      */
+    @Transactional
     public void updateToEnteredLocaleAlias(LocaleId localeId) {
         identity.checkPermission(instance, "update");
         String enteredAlias = enteredLocaleAliases.get(localeId);
@@ -404,6 +420,7 @@ public class ProjectHome extends SlugHome<HProject> implements
         return setLocaleAliasSilently(localeId, "");
     }
 
+    @Transactional
     public void removeSelectedLocaleAliases() {
         identity.checkPermission(instance, "update");
         List<LocaleId> removed = new ArrayList<>();
@@ -419,6 +436,7 @@ public class ProjectHome extends SlugHome<HProject> implements
         showRemovedAliasesMessage(removed);
     }
 
+    @Transactional
     public void removeAllLocaleAliases() {
         identity.checkPermission(instance, "update");
         List<LocaleId> removed = new ArrayList<>();
@@ -453,6 +471,7 @@ public class ProjectHome extends SlugHome<HProject> implements
         }
     }
 
+    @Transactional
     public void disableLocale(HLocale locale) {
         identity.checkPermission(instance, "update");
         disableLocaleSilently(locale);
@@ -462,6 +481,7 @@ public class ProjectHome extends SlugHome<HProject> implements
     }
 
 
+    @Transactional
     public void disableSelectedLocales() {
         identity.checkPermission(instance, "update");
         List<LocaleId> removedLocales = new ArrayList<>();
@@ -509,6 +529,7 @@ public class ProjectHome extends SlugHome<HProject> implements
         return localeWasEnabled;
     }
 
+    @Transactional
     public void enableLocale(HLocale locale) {
         identity.checkPermission(instance, "update");
         enableLocaleSilently(locale);
@@ -517,6 +538,7 @@ public class ProjectHome extends SlugHome<HProject> implements
                 msgs.format("jsf.languageSettings.LanguageEnabled", localeId));
     }
 
+    @Transactional
     public void enableSelectedLocales() {
         identity.checkPermission(instance, "update");
         List<LocaleId> addedLocales = new ArrayList<>();
@@ -563,6 +585,7 @@ public class ProjectHome extends SlugHome<HProject> implements
         return localeWasDisabled;
     }
 
+    @Transactional
     public void useDefaultLocales() {
         identity.checkPermission(instance, "update");
         setOverrideLocales(false);
@@ -661,7 +684,7 @@ public class ProjectHome extends SlugHome<HProject> implements
         if (project == null || project.getStatus() == EntityStatus.OBSOLETE) {
             log.warn(
                     "Project [id={}, slug={}], does not exist or is soft deleted: {}",
-                    projectId, slug, project);
+                    projectId, getSlug(), project);
             throw new EntityNotFoundException();
         }
     }
@@ -736,17 +759,21 @@ public class ProjectHome extends SlugHome<HProject> implements
     }
 
     public void setSlug(String slug) {
-        this.slug = slug;
+        this.projectSlug.setValue(slug);
         this.inputSlugValue = slug;
     }
 
     @Override
+    @Transactional
     public String update() {
         identity.checkPermission(instance, "update");
-        if (!getInputSlugValue().equals(slug) && !validateSlug(getInputSlugValue(), "slug")) {
+        // getInputSlugValue() can be null
+        if (!getSlug().equals(getInputSlugValue()) && !validateSlug(getInputSlugValue(), "slug")) {
             return null;
         }
-        getInstance().setSlug(getInputSlugValue());
+        if (getInputSlugValue() != null && !getSlug().equals(getInputSlugValue())) {
+            getInstance().setSlug(getInputSlugValue());
+        }
 
         boolean softDeleted = false;
         if (getInstance().getStatus() == EntityStatus.OBSOLETE) {
@@ -761,8 +788,8 @@ public class ProjectHome extends SlugHome<HProject> implements
             urlUtil.redirectTo(url);
             return result;
         }
-        if (!slug.equals(getInstance().getSlug())) {
-            slug = getInstance().getSlug();
+        if (!getSlug().equals(getInstance().getSlug())) {
+            projectSlug.setValue(getInstance().getSlug());
             return "project-slug-updated";
         }
         return result;
@@ -826,6 +853,7 @@ public class ProjectHome extends SlugHome<HProject> implements
         return list;
     }
 
+    @Transactional
     public String removeMaintainer(HPerson person) {
         identity.checkPermission(instance, "update");
         if (getInstanceMaintainers().size() <= 1) {
@@ -846,6 +874,7 @@ public class ProjectHome extends SlugHome<HProject> implements
         return "";
     }
 
+    @Transactional
     public void updateRoles(String roleName, boolean isRestricted) {
         identity.checkPermission(instance, "update");
         getInstance().getAllowedRoles().clear();
@@ -865,6 +894,7 @@ public class ProjectHome extends SlugHome<HProject> implements
             msgs.get("jsf.RolesUpdated"));
     }
 
+    @Transactional
     public void updateStatus(char initial) {
         identity.checkPermission(instance, "update");
         getInstance().setStatus(EntityStatus.valueOf(initial));
@@ -891,6 +921,7 @@ public class ProjectHome extends SlugHome<HProject> implements
                 EntityStatus.valueOf(initial)));
     }
 
+    @Transactional
     public void deleteSelf() {
         updateStatus('O');
     }
@@ -959,17 +990,17 @@ public class ProjectHome extends SlugHome<HProject> implements
 
     @Override
     public boolean isIdDefined() {
-        return slug != null;
+        return getSlug() != null;
     }
 
     @Override
     public NaturalIdentifier getNaturalId() {
-        return Restrictions.naturalId().set("slug", slug);
+        return Restrictions.naturalId().set("slug", getSlug());
     }
 
     @Override
     public Object getId() {
-        return slug;
+        return getSlug();
     }
 
     private Map<ValidationId, ValidationAction> getValidations() {
@@ -986,6 +1017,7 @@ public class ProjectHome extends SlugHome<HProject> implements
         return availableValidations;
     }
 
+    @Transactional
     public void updateValidationOption(String name, String state) {
         identity.checkPermission(instance, "update");
         ValidationId validationId = ValidationId.valueOf(name);
@@ -1016,6 +1048,7 @@ public class ProjectHome extends SlugHome<HProject> implements
         return sortedList;
     }
 
+    @Transactional
     public void addWebHook(String url, String secret) {
         identity.checkPermission(instance, "update");
         if (isValidUrl(url)) {
@@ -1028,6 +1061,7 @@ public class ProjectHome extends SlugHome<HProject> implements
         }
     }
 
+    @Transactional
     public void removeWebHook(Long webhookId) {
         identity.checkPermission(instance, "update");
         WebHook webHook = webHookDAO.findById(webhookId);
@@ -1082,6 +1116,7 @@ public class ProjectHome extends SlugHome<HProject> implements
     /**
      * Update the about page to the entered value, and show a success message.
      */
+    @Transactional
     public void updateAboutPage() {
         identity.checkPermission(instance, "update");
         String status = update();
