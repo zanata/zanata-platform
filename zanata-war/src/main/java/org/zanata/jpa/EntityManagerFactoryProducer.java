@@ -20,6 +20,7 @@
  */
 package org.zanata.jpa;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Default;
@@ -42,9 +43,16 @@ public class EntityManagerFactoryProducer {
     @RequestScoped
     @Default
     @Zanata
-    // NB: This was conversation scoped before, so keep an eye out for it
     protected HibernateEntityManagerFactory create() {
         return entityManagerFactory;
+    }
+
+    @PreDestroy
+    protected void destroy() {
+        // help Hibernate Search to shut down cleanly (delete Lucene index locks)
+        if (entityManagerFactory.isOpen()) {
+            entityManagerFactory.close();
+        }
     }
 
 }
