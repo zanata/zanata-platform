@@ -21,7 +21,6 @@
 
 package org.zanata.feature.misc;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.testharness.TestPlan;
@@ -33,12 +32,12 @@ import org.zanata.feature.testharness.TestPlan;
  * </p>
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
+@Category(TestPlan.DetailedTest.class)
 public class FlakyTest {
 
     static int n = 0;
 
     @Category(TestPlan.BasicAcceptanceTest.class)
-    @Ignore("waiting for SUREFIRE-1152 in surefire 2.19")
     @Test
     public void testFlaky() {
         if (n++ == 0) {

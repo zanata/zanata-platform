@@ -25,11 +25,10 @@
     <cobertura.total-branch-rate>30</cobertura.total-branch-rate>
     <cobertura.halt.failure>false</cobertura.halt.failure>
     <delombok.dir>${project.build.directory}/delombok/org/zanata</delombok.dir>
-    <!-- failsafe.version needs to be at least 2.19-20150503.223005-71: -->
     <failsafe.rerunFailingTestsCount>3</failsafe.rerunFailingTestsCount>
     <failsafe.useFile>false</failsafe.useFile>
     <surefire.useFile>false</surefire.useFile>
-    <surefire.version>2.18.1</surefire.version>
+    <surefire.version>2.19</surefire.version>
     <!-- Applies to surefire and failsafe (if enabled) -->
     <failIfNoTests>true</failIfNoTests>
 
