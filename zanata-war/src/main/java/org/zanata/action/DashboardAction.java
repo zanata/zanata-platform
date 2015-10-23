@@ -90,8 +90,9 @@ public class DashboardAction implements Serializable {
     @Authenticated
     private HAccount authenticatedAccount;
 
+    @Inject
     @Getter
-    private ProjectFilter projectList = new ProjectFilter();
+    private ProjectFilter projectList;
 
     @Getter(lazy = true)
     private final int userMaintainedProjectsCount =
@@ -217,32 +218,25 @@ public class DashboardAction implements Serializable {
     /**
      * Project list filter. Pages its elements directly from the database.
      */
-    public class ProjectFilter
-            extends AbstractListFilter<HProject> {
+    public static class ProjectFilter
+            extends AbstractListFilter<HProject> implements Serializable {
+
+        @Inject
+        @Authenticated
+        private HAccount authenticatedAccount;
+
+        @Inject
+        private ProjectDAO projectDAO;
 
         @Override
         protected List<HProject> fetchRecords(int start, int max,
                 String filter) {
-            IServiceLocator serviceLocator = ServiceLocator.instance();
-            ProjectDAO projectDAO =
-                    serviceLocator.getInstance(ProjectDAO.class);
-            HAccount authenticatedAccount =
-                    serviceLocator
-                            .getInstance(ZanataJpaIdentityStore.AUTHENTICATED_USER,
-                                    HAccount.class);
             return projectDAO.getProjectsForMaintainer(
                     authenticatedAccount.getPerson(), filter, start, max);
         }
 
         @Override
         protected long fetchTotalRecords(String filter) {
-            IServiceLocator serviceLocator = ServiceLocator.instance();
-            ProjectDAO projectDAO =
-                    serviceLocator.getInstance(ProjectDAO.class);
-            HAccount authenticatedAccount =
-                    serviceLocator
-                            .getInstance(ZanataJpaIdentityStore.AUTHENTICATED_USER,
-                                    HAccount.class);
             return projectDAO.getMaintainedProjectCount(
                     authenticatedAccount.getPerson(), filter);
         }
