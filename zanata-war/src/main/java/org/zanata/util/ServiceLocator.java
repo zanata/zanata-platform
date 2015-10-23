@@ -45,6 +45,11 @@ import java.util.Optional;
  * It's still an anti-pattern, but at least this way callers don't use
  * Component.getInstance() directly, and ServiceLocator can be subclassed
  * to return mock objects for testing.
+ * <p>
+ * Note that the deprecated methods which accept a bean name will output a
+ * debug message if enabled, and go to the trouble of creating a stack trace to
+ * find the caller's class name. This is expensive, so it would be best not to
+ * enable debug if these methods are used in production.
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
@@ -67,7 +72,11 @@ public class ServiceLocator implements IServiceLocator {
     @Override
     @Deprecated
     public <T> BeanHolder<T> getDependent(String name, Class<T> clazz) {
-        log.warn("Still using name in getDependent({}, {})", name, clazz);
+        if (log.isDebugEnabled()) {
+            String caller = new Exception().getStackTrace()[1].getClassName();
+            log.debug("{} is still using name in getDependent({}, {})", caller,
+                    name, clazz);
+        }
         return new BeanHolder<T>(BeanProvider.<T>getDependent(name));
     }
 
@@ -83,7 +92,11 @@ public class ServiceLocator implements IServiceLocator {
     @Override
     @Deprecated
     public <T> T getInstance(String name, Class<T> clazz) {
-        log.warn("Still using name in getInstance({}, {})", name, clazz);
+        if (log.isDebugEnabled()) {
+            String caller = new Exception().getStackTrace()[1].getClassName();
+            log.debug("{} is still using name in getInstance({}, {})", caller,
+                    name, clazz);
+        }
         return BeanProvider.getContextualReference(name, false, clazz);
     }
 
@@ -98,8 +111,13 @@ public class ServiceLocator implements IServiceLocator {
     @Override
     @Deprecated
     public <T> T getInstance(String name, Object scope, Class<T> clazz) {
-        log.warn("Ignoring scope in getInstance({}, {}, {})", name, scope, clazz);
-        return (T) getInstance(name, clazz);
+        if (log.isDebugEnabled()) {
+            String caller = new Exception().getStackTrace()[1].getClassName();
+            log.debug(
+                    "{} is still using name in getInstance({}, {}, {}) - scope ignored",
+                    caller, name, scope, clazz);
+        }
+        return BeanProvider.getContextualReference(name, false, clazz);
     }
 
     /**
@@ -107,7 +125,11 @@ public class ServiceLocator implements IServiceLocator {
      */
     @Deprecated
     public <T> Optional<T> getOptionalInstance(String name, Class<T> clazz) {
-        log.warn("Still using name in getOptionalInstance({}, {})", name, clazz);
+        if (log.isDebugEnabled()) {
+            String caller = new Exception().getStackTrace()[1].getClassName();
+            log.debug("{} is still using name in getOptionalInstance({}, {})",
+                    caller, name, clazz);
+        }
         return Optional.ofNullable(BeanProvider.getContextualReference(name, true, clazz));
     }
 
