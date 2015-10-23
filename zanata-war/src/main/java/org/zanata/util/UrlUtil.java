@@ -198,11 +198,11 @@ public class UrlUtil implements Serializable {
     }
 
     public String languageHome() {
-        return contextPath + "/language/home.xhtml";
+        return contextPath + "/language/home.seam";
     }
 
     public String genericErrorPage() {
-        return contextPath + "/error.xhtml";
+        return contextPath + "/error";
     }
 
     public String signInPage() {
@@ -210,6 +210,6 @@ public class UrlUtil implements Serializable {
     }
 
     public String home() {
-        return contextPath + "/home.xhtml";
+        return contextPath + "/home.seam";
     }
 }
