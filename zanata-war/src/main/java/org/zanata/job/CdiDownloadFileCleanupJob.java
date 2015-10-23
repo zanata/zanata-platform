@@ -21,36 +21,37 @@
 package org.zanata.job;
 
 import java.io.File;
+import java.io.Serializable;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-import com.google.common.base.Throwables;
 import org.apache.deltaspike.scheduler.api.Scheduled;
 import org.quartz.Job;
-import org.quartz.JobBuilder;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.quartz.JobKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.service.FileSystemService;
 
 /**
- * CDI version of background job scheduler. Deltaspike will register this job
+ * CDI version of background job scheduler. DeltaSpike will register this job
  * automatically on bootstrap.
  *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-// here we have to start ApplicationScope even though we don't need it, due to a
-// bug in deltaspike https://issues.apache.org/jira/browse/DELTASPIKE-1002
-@Scheduled(cronExpression = "0 0 0 * * ?",
-        startScopes = {ApplicationScoped.class},
-        description = "Download File Cleanup")
-public class CdiDownloadFileCleanupJob implements Job {
+// We have to start a scope whether we need it or not, due to
+// https://issues.apache.org/jira/browse/DELTASPIKE-1002
+@Scheduled(cronExpression = CdiDownloadFileCleanupJob.CRON_EXPRESSION,
+        startScopes = { RequestScoped.class },
+        description = CdiDownloadFileCleanupJob.DESCRIPTION)
+class CdiDownloadFileCleanupJob implements Job, Serializable {
+    static final String DESCRIPTION = "Download File Cleanup";
+    // seconds minutes hours dayOfMonth(1-31) month(1-12) dayOfWeek(1-7) year
+    static final String CRON_EXPRESSION = "0 0 0 * * ? *";
+
     private static final Logger log =
             LoggerFactory.getLogger(CdiDownloadFileCleanupJob.class);
     private static final long serialVersionUID = 4401137227756319418L;
@@ -61,7 +62,7 @@ public class CdiDownloadFileCleanupJob implements Job {
     @Override
     public void execute(JobExecutionContext context)
             throws JobExecutionException {
-        log.debug("executing job: {}", this);
+        log.info("executing job: {}", DESCRIPTION);
         File[] toRemove =
                 this.fileSystemServiceImpl.getAllExpiredDownloadFiles();
 
