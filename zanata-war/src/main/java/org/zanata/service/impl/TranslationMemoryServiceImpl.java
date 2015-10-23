@@ -55,6 +55,7 @@ import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.tm.TransMemoryUnit;
+import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.rest.editor.dto.suggestion.Suggestion;
 import org.zanata.rest.editor.dto.suggestion.SuggestionDetail;
 import org.zanata.rest.editor.dto.suggestion.TextFlowSuggestionDetail;
@@ -75,6 +76,8 @@ import com.google.common.collect.Lists;
 
 import static com.google.common.collect.Collections2.filter;
 import lombok.extern.slf4j.Slf4j;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -274,19 +277,21 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
     private Collection<Object[]> findMatchingTranslation(
             LocaleId targetLocaleId, LocaleId sourceLocaleId,
             TransMemoryQuery transMemoryQuery, int maxResults,
-            Class<?>... entities) {
+            @Nonnull Class<?>... entityTypes) {
         try {
-            if (entities == null || entities.length < 1) {
+            if (entityTypes.length == 0) {
                 throw new RuntimeException(
                         "Need entity type (HTextFlowTarget.class or TransMemoryUnit.class) for TM search");
             }
             List<Object[]> matches =
                     getSearchResult(transMemoryQuery, sourceLocaleId,
-                            targetLocaleId, maxResults, entities);
+                            targetLocaleId, maxResults, entityTypes);
 
             // filter out invalid target
+            // TODO filter by entityTypes as well
+            // TODO returning a filtered collection might be overkill
             return Collections2.filter(matches,
-                    ValidTargetFilterPredicate.INSTANCE);
+                    new ValidTargetFilterPredicate(targetLocaleId));
 
         } catch (ParseException e) {
             if (transMemoryQuery.getSearchType() == HasSearchType.SearchType.RAW) {
@@ -819,36 +824,65 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
 
     private static class ValidTargetFilterPredicate implements
             Predicate<Object[]> {
-        public static final ValidTargetFilterPredicate INSTANCE = new ValidTargetFilterPredicate();
+        private final LocaleId localeId;
+
+        public ValidTargetFilterPredicate(LocaleId localeId) {
+            this.localeId = localeId;
+        }
+
         @Override
         public boolean apply(Object[] input) {
             Object entity = input[1];
             if (entity instanceof HTextFlowTarget) {
                 HTextFlowTarget target = (HTextFlowTarget) entity;
-
-                if (!target.getState().isTranslated()) {
-                    log.warn("Unexpected TFT with state {}: {}",
-                            target.getState(), entity);
+                if (!target.getLocaleId().equals(localeId)) {
+                    log.error(
+                            "Unexpected TextFlowTarget (locale {}): {}. You may need to re-index.",
+                            target.getLocaleId(), target);
+                    return false;
+                } else if (!target.getState().isTranslated()) {
+                    log.error(
+                            "Unexpected TextFlowTarget (state {}): {}. You may need to re-index.",
+                            target.getState(), target);
                     return false;
                 } else {
                     HProjectIteration version =
                             target.getTextFlow().getDocument()
                                     .getProjectIteration();
                     if (version.getStatus() == EntityStatus.OBSOLETE) {
-                        log.debug("Discarding TFT result from obsolete iteration {}: {}",
-                                version, entity);
+                        log.debug(
+                                "Discarding TextFlowTarget (obsolete iteration {}): {}",
+                                version, target);
                         return false;
                     } else if (version.getProject().getStatus() ==
                             EntityStatus.OBSOLETE) {
-                        log.debug("Discarding TFT result from obsolete project {}: {}",
-                                version.getProject(), entity);
+                        log.debug(
+                                "Discarding TextFlowTarget (obsolete project {}): {}",
+                                version.getProject(), target);
                         return false;
                     }
                 }
                 return true;
+            } else if (entity instanceof TransMemoryUnit) {
+                TransMemoryUnit tmu = ((TransMemoryUnit) entity);
+                boolean includesTargetLocale =
+                        tmu.getTransUnitVariants().containsKey(localeId.getId());
+                if (!includesTargetLocale) {
+                    log.error(
+                            "Unexpected TransMemoryUnit (no TUV in locale {}): {}. You may need to re-index.",
+                            localeId.getId(), tmu);
+                }
+                return includesTargetLocale;
+            } else if (entity == null) {
+                log.error(
+                        "Query results include null entity. You may need to re-index.");
+                return false;
+            } else {
+                log.error(
+                        "Unexpected query result of type {}: {}. You may need to re-index.",
+                        entity.getClass().getName(), entity);
+                return false;
             }
-            log.warn("Unexpected query result of type {}: {}", entity.getClass().getName(), entity);
-            return true;
         }
     }
 

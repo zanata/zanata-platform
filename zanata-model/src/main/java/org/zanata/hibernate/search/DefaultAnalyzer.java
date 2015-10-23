@@ -24,12 +24,15 @@ package org.zanata.hibernate.search;
 import java.io.Reader;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.CharTokenizer;
 import org.apache.lucene.analysis.LowerCaseFilter;
 import org.apache.lucene.analysis.TokenFilter;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.util.Version;
+
+import javax.annotation.Nullable;
 
 /**
  * Similar to Lucene's StandardAnalyzer, but without stopwords, and with
@@ -60,15 +63,27 @@ public final class DefaultAnalyzer extends Analyzer {
      * {@link org.zanata.model.HTextContainer}.
      */
     @Override
-    public TokenStream tokenStream(String fieldName, Reader reader) {
-        StandardTokenizer source = new StandardTokenizer(matchVersion, reader);
-        TokenFilter filter = new StandardFilter(matchVersion, source);
-        if (fieldName != null && fieldName.contains("content-nocase")) {
+    public TokenStream tokenStream(@Nullable String fieldName, Reader reader) {
+        // FIXME this should apply to some or all fields in TransMemoryUnitVariant, esp. plainTextSegment
+        if (fieldName != null && fieldName.contains(".content-nocase")) {
+            StandardTokenizer source = new StandardTokenizer(matchVersion, reader);
+            TokenFilter filter = new StandardFilter(matchVersion, source);
             // TODO should we be using ULowerCaseFilter (also in HTextContainer)?
             filter = new LowerCaseFilter(matchVersion, filter);
+            // Shouldn't we use a StopFilter too?
+            return filter;
+        } else {
+            return new PassThroughTokenizer(matchVersion, reader);
         }
-        // Shouldn't we use a StopFilter too?
-        return filter;
     }
 
+    private static class PassThroughTokenizer extends CharTokenizer {
+        public PassThroughTokenizer(Version luceneVersion, Reader input) {
+            super(luceneVersion, input);
+        }
+        @Override
+        protected boolean isTokenChar(int c) {
+            return true;
+        }
+    }
 }
