@@ -257,7 +257,7 @@ public class ZanataInit {
             // we don't trust Lucene's NativeFSLockFactory for NFS locks
             String docURL = "http://docs.jboss.org/hibernate/search/4.4/reference/en-US/html/search-configuration.html#search-configuration-directory-lockfactories";
             log.warn("The Hibernate Search index dir '{}' might be NFS. " +
-                    "NativeFSLockFactory might not be safe: {}" +
+                    "NativeFSLockFactory might not be safe: See {}",
                     indexDir, docURL);
         }
         Collection<File> lockFiles =
