@@ -35,11 +35,9 @@ import javax.security.auth.Subject;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.deltaspike.cdise.api.ContextControl;
-import org.zanata.action.AuthenticationEvents;
 import org.zanata.config.AsyncConfig;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
-import org.zanata.seam.security.AbstractRunAsOperation;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.util.ServiceLocator;
@@ -52,7 +50,6 @@ import com.google.common.util.concurrent.ListenableFuture;
  */
 @Named("asyncTaskManager")
 @javax.enterprise.context.ApplicationScoped
-
 @Slf4j
 public class AsyncTaskManager {
 
@@ -96,46 +93,34 @@ public class AsyncTaskManager {
         // final result
         final AsyncTaskResult<V> taskFuture = new AsyncTaskResult<V>();
 
-        final AbstractRunAsOperation runnableOp = new AbstractRunAsOperation() {
+        // The logic to run to setup all necessary contexts and specific logic
+        final Runnable executableCommand = () -> {
+            ContextControl ctxCtrl = null;
 
-            @Override
-            public void execute() {
-                ContextControl ctxCtrl = null;
-
-                try {
-                    // Start CDI contexts
-                    ctxCtrl =
-                            ServiceLocator.instance().getInstance(
-                                    ContextControl.class);
-                    ctxCtrl.startContexts();
-                    // Prepare the security context
-                    prepareSecurityContext(taskOwnerUsername);
-                    // run the task and capture the result
-                    V returnValue = getReturnValue(task.call());
-                    taskFuture.set(returnValue);
-                } catch (Throwable t) {
-                    taskFuture.setException(t);
-                    log.error(
-                            "Exception when executing an asynchronous task.", t);
-                } finally {
-                    // stop the contexts to make sure all beans are cleaned up
-                    if(ctxCtrl != null) {
-                        ctxCtrl.stopContexts();
-                    }
+            try {
+                // Start CDI contexts
+                ctxCtrl =
+                        ServiceLocator.instance().getInstance(
+                                ContextControl.class);
+                ctxCtrl.startContexts();
+                // Prepare the security context
+                prepareSecurityContext(taskOwnerUsername, runAsPpal, runAsSubject);
+                // run the task and capture the result
+                V returnValue = getReturnValue(task.call());
+                taskFuture.set(returnValue);
+            } catch (Throwable t) {
+                taskFuture.setException(t);
+                log.error(
+                        "Exception when executing an asynchronous task.", t);
+            } finally {
+                // stop the contexts to make sure all beans are cleaned up
+                if(ctxCtrl != null) {
+                    ctxCtrl.stopContexts();
                 }
             }
-
-            @Override
-            public Principal getPrincipal() {
-                return runAsPpal;
-            }
-
-            @Override
-            public Subject getSubject() {
-                return runAsSubject;
-            }
         };
-        scheduler.execute(() -> ZanataIdentity.instance().runAs(runnableOp));
+
+        scheduler.execute(executableCommand);
         return taskFuture;
     }
 
@@ -152,10 +137,11 @@ public class AsyncTaskManager {
      * Prepares the security context so that it contains all the
      * necessary facts for security checking.
      */
-    private static void prepareSecurityContext(String username) {
+    private static void prepareSecurityContext(String username, Principal ppal,
+            Subject subject) {
         /*
-         * TODO This should be changed to not need the username. There should be
-         * a way to simulate a login for asyn tasks, or at least to inherit the
+         * TODO This should be changed to not need any parameters. There should be
+         * a way to simulate a login for async tasks, or at least to inherit the
          * caller's context
          */
         if (username != null) {
@@ -166,11 +152,9 @@ public class AsyncTaskManager {
             ZanataJpaIdentityStore idStore =
                     ServiceLocator.instance().getInstance(
                             ZanataJpaIdentityStore.class);
-            AuthenticationEvents authEvts =
-                    ServiceLocator.instance().getInstance(
-                            AuthenticationEvents.class);
             HAccount authenticatedAccount = accountDAO.getByUsername(username);
             idStore.setAuthenticateUser(authenticatedAccount);
         }
+        ZanataIdentity.instance().acceptExternalSubjectAndPpal(subject, ppal);
     }
 }

@@ -22,6 +22,7 @@ package org.zanata.action;
 
 import java.io.Serializable;
 import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 
 import javax.annotation.PostConstruct;
@@ -50,7 +51,7 @@ import lombok.Setter;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("copyTransAction")
-@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
+@RequestScoped
 public class CopyTransAction extends CopyAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -75,13 +76,8 @@ public class CopyTransAction extends CopyAction implements Serializable {
     @Inject
     private org.zanata.ui.faces.FacesMessages jsfMessages;
 
-    @Getter
-    @Setter
-    private String iterationSlug;
-
-    @Getter
-    @Setter
-    private String projectSlug;
+    @Inject
+    private ProjectAndVersionSlug projectAndVersionSlug;
 
     private HProjectIteration projectIteration;
 
@@ -113,12 +109,28 @@ public class CopyTransAction extends CopyAction implements Serializable {
     public void onComplete() {
         jsfMessages.addGlobal(FacesMessage.SEVERITY_INFO,
                 msgs.format("jsf.iteration.CopyTrans.Completed",
-                        getProjectSlug(), getIterationSlug()));
+                        getProjectSlug(), getVersionSlug()));
     }
 
     // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public void updateCopyTrans(String action, String value) {
         copyTransOptionsModel.update(action, value);
+    }
+
+    public String getProjectSlug() {
+        return projectAndVersionSlug.getProjectSlug();
+    }
+
+    public void setProjectSlug(String projectSlug) {
+        projectAndVersionSlug.setProjectSlug(projectSlug);
+    }
+
+    public String getVersionSlug() {
+        return projectAndVersionSlug.getVersionSlug();
+    }
+
+    public void setVersionSlug(String versionSlug) {
+        projectAndVersionSlug.setVersionSlug(versionSlug);
     }
 
     @Override
@@ -132,10 +144,10 @@ public class CopyTransAction extends CopyAction implements Serializable {
         // TODO share code with ProjectVersionService.retrieveAndCheckIteration?
         if (projectIteration == null) {
             projectIteration =
-                    projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+                    projectIterationDAO.getBySlug(getProjectSlug(), getVersionSlug());
             if (projectIteration == null) {
-                throw new NoSuchEntityException("Project version '" + projectSlug
-                        + ":" + iterationSlug + "' not found.");
+                throw new NoSuchEntityException("Project version '" + getProjectSlug()
+                        + ":" + getVersionSlug() + "' not found.");
             }
         }
         return projectIteration;

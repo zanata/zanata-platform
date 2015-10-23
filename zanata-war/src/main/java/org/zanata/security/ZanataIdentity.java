@@ -29,25 +29,20 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Nullable;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Any;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.security.auth.Subject;
 import javax.security.auth.login.AppConfigurationEntry;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
+import javax.servlet.http.HttpSession;
 
-import com.google.common.annotations.VisibleForTesting;
 import org.apache.deltaspike.core.api.common.DeltaSpike;
-import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.lifecycle.Destroyed;
-import org.apache.deltaspike.core.api.lifecycle.Initialized;
-import javax.inject.Named;
-
 import org.apache.deltaspike.core.api.provider.BeanProvider;
-import org.zanata.exception.AuthorizationException;
-import org.zanata.exception.NotLoggedInException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.events.AlreadyLoggedInEvent;
@@ -55,21 +50,20 @@ import org.zanata.events.LoginFailedEvent;
 import org.zanata.events.LoginSuccessfulEvent;
 import org.zanata.events.LogoutEvent;
 import org.zanata.events.NotLoggedInEvent;
+import org.zanata.exception.AuthorizationException;
+import org.zanata.exception.NotLoggedInException;
 import org.zanata.model.HAccount;
 import org.zanata.model.HasUserFriendlyToString;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.security.jaas.InternalLoginModule;
 import org.zanata.security.permission.CustomPermissionResolver;
 import org.zanata.security.permission.MultiTargetList;
-import javax.enterprise.event.Event;
-import javax.servlet.http.HttpSession;
-
 import org.zanata.util.Contexts;
-import org.zanata.util.FacesNavigationUtil;
 import org.zanata.util.RequestContextValueStore;
 import org.zanata.util.ServiceLocator;
 import org.zanata.util.UrlUtil;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 
 @Named("identity")
@@ -171,6 +165,15 @@ public class ZanataIdentity implements Identity, Serializable {
     public void acceptExternallyAuthenticatedPrincipal(Principal principal) {
         getSubject().getPrincipals().add(principal);
         this.principal = principal;
+    }
+
+    /**
+     * Accepts an external subject and principal. (Use with caution)
+     */
+    public void acceptExternalSubjectAndPpal(Subject subject,
+            Principal principal) {
+        this.subject = subject;
+        acceptExternallyAuthenticatedPrincipal(principal);
     }
 
     public void onDestroy(@Observes @Destroyed HttpSession session) {
