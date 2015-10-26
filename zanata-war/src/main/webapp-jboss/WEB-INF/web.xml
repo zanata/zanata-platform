@@ -216,7 +216,7 @@
     <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
     <init-param>
       <param-name>logLevel</param-name>
-      <param-value>INFO</param-value>
+      <param-value>slf4j</param-value>
     </init-param>
     <init-param>
       <param-name>statusPath</param-name>
