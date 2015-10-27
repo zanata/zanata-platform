@@ -45,12 +45,19 @@ public class HttpRequestAndSessionHolder {
     private static final ThreadLocal<HttpServletRequest> REQUEST =
             new ThreadLocal<>();
 
+    private static String defaultServerPath;
+
     void setRequest(@Observes @Initialized HttpServletRequest request) {
         if (REQUEST.get() != null) {
             throw new IllegalStateException(
                     "There is already a request for this thread");
         }
         REQUEST.set(request);
+        if (defaultServerPath == null) {
+            defaultServerPath = request.getScheme() + "://" + request.getServerName()
+                    + ":" + request.getServerPort()
+                    + request.getContextPath();
+        }
     }
 
     void removeRequest(@Observes @Destroyed HttpServletRequest request) {
@@ -75,5 +82,9 @@ public class HttpRequestAndSessionHolder {
             return Optional.of(requestOpt.get().getSession(create));
         }
         return Optional.empty();
+    }
+
+    public static String getDefaultServerPath() {
+        return defaultServerPath;
     }
 }

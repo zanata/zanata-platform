@@ -241,25 +241,8 @@ public class ApplicationConfiguration implements Serializable {
         String configuredValue = databaseBackedConfig.getServerHost();
         if (configuredValue != null) {
             return configuredValue;
-        } else if (defaultServerPath != null) {
-            return defaultServerPath;
         } else {
-            createDefaultServerPath();
-            return defaultServerPath;
-        }
-    }
-
-
-    //@see comment at org.zanata.security.AuthenticationManager.onLoginCompleted()
-    public void createDefaultServerPath() {
-        java.util.Optional<HttpServletRequest> requestOpt =
-                HttpRequestAndSessionHolder.getRequest();
-        if (requestOpt.isPresent()) {
-            HttpServletRequest request = requestOpt.get();
-            defaultServerPath =
-                    request.getScheme() + "://" + request.getServerName()
-                            + ":" + request.getServerPort()
-                            + request.getContextPath();
+            return HttpRequestAndSessionHolder.getDefaultServerPath();
         }
     }
 

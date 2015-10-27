@@ -31,7 +31,7 @@ import com.google.common.util.concurrent.Uninterruptibles;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Path("/test/data/sample")
+@Path("/data/sample")
 @Slf4j
 public class SampleDataResourceImpl implements SampleDataResource {
 

@@ -51,6 +51,8 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import org.zanata.util.AutowireLocator;
 
 import com.google.common.collect.Lists;
@@ -97,6 +99,7 @@ import com.google.common.collect.Lists;
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
+@Exclude(ifProjectStage = ProjectStage.IntegrationTest.class)
 public class SeamAutowire {
 
     private static final Object PLACEHOLDER = new Object();

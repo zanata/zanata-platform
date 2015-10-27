@@ -44,7 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ServerSettingsTest extends ZanataTestCase {
 
     @ClassRule
-    public HasEmailRule hasEmailRule = new HasEmailRule();
+    public static HasEmailRule hasEmailRule = new HasEmailRule();
 
     @Test
     public void setServerURLTest() {

@@ -30,6 +30,8 @@ import javax.transaction.Synchronization;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import lombok.Getter;
 
 /**
@@ -43,6 +45,7 @@ import lombok.Getter;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Exclude(ifProjectStage = ProjectStage.IntegrationTest.class)
 public class AutowireTransaction implements UserTransaction {
 
     private static final AutowireTransaction instance =

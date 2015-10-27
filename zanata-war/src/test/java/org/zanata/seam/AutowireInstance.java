@@ -6,10 +6,14 @@ import java.util.Iterator;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.util.TypeLiteral;
 
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+
 /**
 * @author Patrick Huang
 *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
 */
+@Exclude(ifProjectStage = ProjectStage.IntegrationTest.class)
 class AutowireInstance implements Instance {
     private final Object value;
 

@@ -28,6 +28,8 @@ import java.util.Set;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import org.apache.deltaspike.core.util.ProjectStageProducer;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
@@ -45,6 +47,7 @@ import org.zanata.arquillian.RemoteAfter;
 import org.zanata.arquillian.RemoteBefore;
 import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.ResourceRequestEnvironment;
+import org.zanata.seam.SeamAutowire;
 import org.zanata.util.ServiceLocator;
 
 import com.google.common.collect.Lists;
@@ -65,6 +68,11 @@ public abstract class RestTest {
     protected static final String TRANSLATOR = "demo";
     protected static final String TRANSLATOR_KEY =
             "23456789012345678901234567890123";
+
+    static {
+        // Tell DeltaSpike to give more warning messages
+        ProjectStageProducer.setProjectStage(ProjectStage.IntegrationTest);
+    }
 
     // Authorized environment with valid credentials
     private static final ResourceRequestEnvironment ENV_AUTHORIZED =

@@ -21,6 +21,8 @@
 package org.zanata.seam;
 
 import com.google.common.collect.ImmutableMap;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +33,7 @@ import java.util.Map;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Exclude(ifProjectStage = ProjectStage.IntegrationTest.class)
 public class AutowireContexts {
     private static final Logger log = LoggerFactory.getLogger(AutowireContexts.class);
 

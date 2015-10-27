@@ -2,6 +2,7 @@ package org.zanata.rest;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.Provider;
@@ -18,6 +19,7 @@ import org.zanata.util.HttpUtil;
 import java.io.IOException;
 
 @Provider
+@PreMatching
 @SecurityPrecedence
 @Slf4j
 public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {

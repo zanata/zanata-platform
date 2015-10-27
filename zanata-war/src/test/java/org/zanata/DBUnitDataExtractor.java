@@ -8,6 +8,7 @@ import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.database.QueryDataSet;
@@ -26,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
+@Exclude
 public class DBUnitDataExtractor {
     private static final String TEMP_DIR = System.getProperty("java.io.tmpdir");
 

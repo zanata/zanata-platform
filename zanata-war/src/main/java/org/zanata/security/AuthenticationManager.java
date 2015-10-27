@@ -306,11 +306,6 @@ public class AuthenticationManager {
             userAccountServiceImpl.runRoleAssignmentRules(authenticatedAccount,
                     authenticatedCredentials, authType.name());
         }
-        // make sure server path is populated. Here we are sure servlet request
-        // is available. In cases where it's not in database and
-        // there is no servlet request, the value will not be null.
-        // e.g. EmailBuilder triggered by JMS message
-        applicationConfiguration.createDefaultServerPath();
     }
 
     public boolean isAccountWaitingForActivation(String username) {

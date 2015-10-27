@@ -627,7 +627,13 @@ public class SecurityFunctions {
      *                        See annotation @Path in REST service class.
      */
     private static boolean isTestServicePath(String servicePath) {
-        return servicePath != null && servicePath.startsWith("/test");
+        return servicePath != null
+                && (
+                // when being called in RestLimitingFilter
+                servicePath.startsWith("/zanata/rest/test") ||
+                        // when being called in ZanataRestSecurityInterceptor
+                servicePath.startsWith("/test")
+        );
     }
 
     private static class AutoCloseSession implements AutoCloseable {

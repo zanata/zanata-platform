@@ -73,9 +73,9 @@ public class BasePage extends CorePage {
     private By glossaryLink = By.id("glossary_link");
     private By userAvatar = By.id("user--avatar");
     private static final By BY_SIGN_IN = By.id("signin_link");
-    private static final By BY_SIGN_OUT = By.id("right_menu_sign_out_link");
-    private static final By BY_DASHBOARD_LINK = By.id("dashboard");
-    private static final By BY_ADMINISTRATION_LINK = By.id("administration");
+    private static final By BY_SIGN_OUT = By.id("banner_form:right_menu_sign_out_link");
+    private static final By BY_DASHBOARD_LINK = By.id("banner_form:dashboard");
+    private static final By BY_ADMINISTRATION_LINK = By.id("banner_form:administration");
     private By searchInput = By.id("projectAutocomplete-autocomplete__input");
     private By registrationLink = By.id("register_link_internal_auth");
     private static final By contactAdminLink = By.linkText("Contact admin");

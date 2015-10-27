@@ -28,11 +28,14 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import com.google.common.collect.Sets;
 
 /**
  * Property Accessor that relies on a field.
  */
+@Exclude(ifProjectStage = ProjectStage.IntegrationTest.class)
 class FieldComponentAccessor extends ComponentAccessor {
     private Field field;
 

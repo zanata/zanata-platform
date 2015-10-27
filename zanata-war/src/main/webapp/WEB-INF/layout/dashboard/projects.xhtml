@@ -25,7 +25,7 @@
               <span class="is-invisible">#{msgs['jsf.dashboard.projects.maintainedProjects.label']}</span>
             </a>
           </li>
-          <ui:fragment rendered="#{identity.hasPermission(projectHome.instance, 'insert')}">
+          <ui:fragment rendered="#{dashboardAction.canCreateProject()}">
             <li class="tab__end">
               <a href="#" jsfc="h:link"
                 id="create-project-link"

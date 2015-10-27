@@ -1139,7 +1139,7 @@ public class ProjectHome extends SlugHome<HProject> implements
                 && identity.hasPermission("HProject", "view-obsolete");
     }
 
-    private class ProjectMaintainersAutocomplete extends MaintainerAutocomplete {
+    public class ProjectMaintainersAutocomplete extends MaintainerAutocomplete {
 
         @Override
         protected List<HPerson> getMaintainers() {

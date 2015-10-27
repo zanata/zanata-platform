@@ -25,14 +25,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import org.apache.deltaspike.core.util.ProjectStageProducer;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Filter;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
@@ -47,6 +47,11 @@ import org.jboss.shrinkwrap.resolver.api.maven.strategy.RejectDependenciesStrate
  */
 public class Deployments {
     public static final String DEPLOYMENT_NAME = "zanata-tests";
+
+    static {
+        // Tell DeltaSpike to give more warning messages
+        ProjectStageProducer.setProjectStage(ProjectStage.IntegrationTest);
+    }
 
     public static void main(String[] args) {
         System.out.println("resolving dependencies:");
@@ -69,6 +74,7 @@ public class Deployments {
                 // conflict with guava.
                 new RejectDependenciesStrategy(false,
                         "net.bull.javamelody:javamelody-core",
+                        "org.zanata:zanata-model",
                         "com.google.collections:google-collections"))
                 .asFile();
     }
@@ -80,36 +86,36 @@ public class Deployments {
         archive.addAsLibraries(runtimeAndTestDependenciesFromPom());
 
         // Local packages
-        archive.addPackages(true, new Filter<ArchivePath>() {
-            @Override
-            public boolean include(ArchivePath object) {
-                // Avoid the model package (for some reason it's being included
-                // as a class file)
-                return !object.get().startsWith("/org/zanata/model/");
-            }
-        }, "org.zanata");
+        Filter<ArchivePath> archivePathFilter = object -> {
+            // Avoid the model package (for some reason it's being included
+            // as a class file)
+            return /*!object.get().startsWith("/org/zanata/model/") &&
+                    !object.get().startsWith("/org/zanata/util/RequestContextValueStore") &&*/
+                    !object.get().startsWith("/org/zanata/seam/AutowireContexts") &&
+                    !object.get().startsWith("/org/zanata/seam/AutowireInstance") &&
+                    !object.get().startsWith("/org/zanata/seam/AutowireTransaction") &&
+                    !object.get().startsWith("/org/zanata/seam/FieldComponentAccessor") &&
+                    !object.get().startsWith("/org/zanata/seam/MethodComponentAccessor") &&
+                    !object.get().startsWith("/org/zanata/seam/SeamAutowire") &&
+                    !object.get().startsWith("/org/zanata/seam/test") &&
+                    !object.get().startsWith("/org/zanata/webtrans/client") &&
+                    !object.get().matches(".+Test.*") &&
+                    !object.get().matches(".+ITCase.*");
+        };
+        archive.addPackages(true, archivePathFilter, "org.zanata");
 
         // Resources (descriptors, etc)
-        archive.addAsResource(EmptyAsset.INSTANCE, "seam.properties");
         archive.addAsResource("pluralforms.properties");
         archive.addAsResource(new ClassLoaderAsset("META-INF/orm.xml"),
                 "META-INF/orm.xml");
-        archive.addAsResource(new ClassLoaderAsset(
-                "META-INF/seam-deployment.properties"),
-                "META-INF/seam-deployment.properties");
-        archive.addAsResource(
-                new FileAsset(
-                        new File(
-                                "src/main/webapp-jboss/WEB-INF/classes/META-INF/components.xml")),
-                "META-INF/components.xml");
         archive.addAsResource(
                 new ClassLoaderAsset("arquillian/persistence.xml"),
                 "META-INF/persistence.xml");
-        archive.addAsResource(new ClassLoaderAsset(
-                "arquillian/components.properties"), "components.properties");
         archive.addAsResource("import.sql");
         archive.addAsResource("messages.properties");
-        archive.addAsWebInfResource(new File("src/main/webapp-jboss/WEB-INF/jboss-web.xml"));
+        archive.addAsWebInfResource(
+                new File("src/main/webapp-jboss/WEB-INF/jboss-web.xml"));
+        archive.addAsWebInfResource(new File("src/main/webapp-jboss/WEB-INF/beans.xml"));
         archive.addAsWebInfResource(new File(
                 "src/main/webapp-jboss/WEB-INF/jboss-deployment-structure.xml"));
         archive.setWebXML("arquillian/test-web.xml");
@@ -117,8 +123,8 @@ public class Deployments {
         addRemoteHelpers(archive);
 
         // Export (to actually see what is being deployed)
-        // archive.as(ZipExporter.class).exportTo(new
-        // File("/home/camunoz/temp/archive.war"), true);
+//         archive.as(ZipExporter.class).exportTo(new
+//         File("/home/pahuang/temp/archive.war"), true);
 
         return archive;
     }

@@ -119,15 +119,15 @@ public class DashboardAction implements Serializable {
         HAccount account = accountDAO.findById(authenticatedAccount.getId());
         return StringUtils.join(
                 Collections2.transform(account.getPerson()
-                .getLanguageMemberships(),
-                 new Function<HLocale, Object>() {
-                    @Nullable
-                    @Override
-                    public Object apply(@NonNull HLocale locale) {
-                        return locale.retrieveDisplayName();
-                    }
-                }),
-            ", ");
+                                .getLanguageMemberships(),
+                        new Function<HLocale, Object>() {
+                            @Nullable
+                            @Override
+                            public Object apply(@NonNull HLocale locale) {
+                                return locale.retrieveDisplayName();
+                            }
+                        }),
+                ", ");
     }
 
     private int countUserMaintainedProjects() {
@@ -213,6 +213,10 @@ public class DashboardAction implements Serializable {
                             username);
         }
         return "";
+    }
+
+    public boolean canCreateProject() {
+        return identity.hasPermission(new HProject(), "insert");
     }
 
     /**

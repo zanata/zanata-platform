@@ -29,11 +29,14 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import com.google.common.collect.Sets;
 
 /**
  * Property accessor that relies on getter / setter methods.
  */
+@Exclude(ifProjectStage = ProjectStage.IntegrationTest.class)
 class MethodComponentAccessor extends ComponentAccessor {
     private String fieldName;
     private Method setter;

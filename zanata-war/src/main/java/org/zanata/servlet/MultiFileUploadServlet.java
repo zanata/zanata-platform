@@ -54,8 +54,10 @@ import org.zanata.common.DocumentType;
 import org.zanata.file.GlobalDocumentId;
 import org.zanata.file.SourceDocumentUpload;
 import org.zanata.file.UserFileUploadTracker;
+import org.zanata.model.HAccount;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.dto.ChunkUploadResponse;
+import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.util.FileUtil;
 import org.zanata.util.ServiceLocator;
 
@@ -123,10 +125,15 @@ public class MultiFileUploadServlet extends HttpServlet {
         return Optional.absent();
     }
 
+    // FIXME consolidate to one Optional
     private Optional<Long> getAccountId() {
-        AuthenticatedAccountHome accountHome = ServiceLocator.instance().getInstance(
-                AuthenticatedAccountHome.class);
-        return Optional.fromNullable((Long) accountHome.getId());
+        java.util.Optional<HAccount> optionalAuthenticatedAccount =
+                ServiceLocator.instance().getOptionalInstance(
+                        HAccount.class, new AuthenticatedLiteral());
+        if (optionalAuthenticatedAccount.isPresent()) {
+            return Optional.of(optionalAuthenticatedAccount.get().getId());
+        }
+        return Optional.absent();
     }
 
     @Override
