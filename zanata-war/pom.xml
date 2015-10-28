@@ -36,7 +36,6 @@
     <!--this will get set by maven dependency:properties goal and be used in gwt-maven-plugin-->
     <lombok.lib>${org.projectlombok:lombok:jar}</lombok.lib>
 
-    <groovy.version>2.1.5</groovy.version>
     <!-- TODO check whether this is still used anywhere -->
     <zanata.web.assets.version>7</zanata.web.assets.version>
     <jboss.as.standalone.version>7.5.0</jboss.as.standalone.version>
