@@ -7,14 +7,15 @@
   xmlns:rich="http://richfaces.org/rich">
 
 <div class="panels--2">
-<div class="panels__panel panel">
+<div class="panels__panel panel js-panel">
   <div class="panels__panel__header panel__header">
     <div class="panel__header__actions">
       <zanata:sortlist id="projects-project_sorting"
         sortAction="#{versionGroupHomeAction.sortProjectList()}"
-        render="projects-project_form, projectTabVersionFilter-pager, projectTabVersionFilter-page-info, projectTabVersionFilterBottom-pager, projectTabVersionFilterBottom-page-info"
+        render="projects-project_form, projectTabVersionFilter-pager, projectTabVersionFilter-page-info"
         sortingList="#{versionGroupHomeAction.projectSortingList}"
         onbegin="clearHTML('#{rich:clientId('projects-project_form')}')"
+        oncomplete="zanata.panel.init()"
         status="projectsTab-projectsLoader"/>
 
       <ui:fragment
@@ -47,107 +48,104 @@
       listId="projects-project_form"
       placeholder="#{msgs['jsf.project.search.placeholder']}"
       iconClass="i--project"
-      render="projects-project_form, projectTabVersionFilterBottom-pager, projectTabVersionFilterBottom-page-info"
+      render="projects-project_form"
+      oncomplete="zanata.panel.init()"
       id="projectTabVersionFilter"
       actionBean="#{versionGroupHomeAction.projectTabVersionFilter}"/>
   </div>
 
-  <a4j:status name="projectsTab-projectsLoader">
-    <f:facet name="start"><zanata:loader/></f:facet>
-  </a4j:status>
-
-  <h:form id="projects-project_form" styleClass="l--push-bottom-1">
-    <h:panelGroup layout="block"  styleClass="l--pad-all-half"
-      rendered="#{empty versionGroupHomeAction.projectIterations}">
-      <p class="txt--meta">#{msgs['jsf.NoProjectsInGroup']}</p>
-      <ui:fragment
-        rendered="#{identity.hasPermission(versionGroupHome.instance, 'update')}">
-        <p>
-          <a class="button--primary" href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/projects"
-            onclick="changeBrowserUrl(this.href, true);return false;">
-            #{msgs['jsf.AddProjectVersions']}
-          </a>
-        </p>
-      </ui:fragment>
-    </h:panelGroup>
-
-    <h:panelGroup layout="block"  styleClass="l--pad-all-half"
-      rendered="#{not empty versionGroupHomeAction.projectIterations and empty versionGroupHomeAction.projectTabVersionFilter.currentPage}">
-      <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
-    </h:panelGroup>
-
-    <ui:fragment
-      rendered="#{not empty versionGroupHomeAction.projectTabVersionFilter.currentPage}">
-      <ul class="list--stats" id="projects-project_list">
-        <ui:repeat
-          value="#{versionGroupHomeAction.projectTabVersionFilter.currentPage}"
-          var="version">
-          <li class="progress-bar__expander"
-            id="#{version.project.slug}[#{version.slug}]">
-            <a href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/projects/#{version.project.slug}/#{version.slug}"
-             onclick="changeBrowserUrl(this.href, true);return false">
-              <div class="list__item">
-                <div class="list__item__info">
-                  <h3 class="list__title">#{version.project.name}</h3>
-                    <span class="list__item__meta">
-                      <i class="txt--neutral i i--version"></i> <zanata:version-label version="#{version}" />
-                      <ui:fragment
-                        rendered="#{!versionGroupHomeAction.getMissingLocale(version).isEmpty()}">
-                          <span
-                            title="#{versionGroupHomeAction.getMissingLocaleTitle(version)}"
-                            class="badge--danger l--push-left-quarter">#{versionGroupHomeAction.getMissingLocale(version).size()}</span>
-                      </ui:fragment>
-                    </span>
-                </div>
-                <div class="list__item__stats">
-                  <a4j:status name="statistic-loader">
-                    <f:facet name="start">
-                      <zanata:loader type="loader--small" layout="inline"/>
-                    </f:facet>
-                  </a4j:status>
-
-                  <ui:fragment rendered="#{versionGroupHomeAction.pageRendered}">
-                    <ui:param name="displayUnit"
-                      value="#{versionGroupHomeAction.getStatisticFigureForProject(versionGroupHomeAction.projectSortingList.selectedSortOption, version.id)}"/>
-                     <span class="stats--small #{displayUnit.cssClass}">
-                        <span class="stats__figure">
-                          #{displayUnit.figure}
-                        </span>
-                        <span class="stats__unit txt--lowercase">
-                          #{displayUnit.unit}
-                        </span>
-                      </span>
-                  </ui:fragment>
-                </div>
-              </div>
-              <zanata:statistic
-                value="#{versionGroupHomeAction.getStatisticForProject(version.id)}"
-                rendered="#{versionGroupHomeAction.pageRendered}"/>
+  <div style="position: relative">
+    <a4j:status name="projectsTab-projectsLoader">
+      <f:facet name="start">
+        <zanata:loader type="loader--large" layout="center"/>
+      </f:facet>
+    </a4j:status>
+    <h:form id="projects-project_form" styleClass="panel__body js-panel__body">
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
+        rendered="#{empty versionGroupHomeAction.projectIterations}">
+        <p class="txt--meta">#{msgs['jsf.NoProjectsInGroup']}</p>
+        <ui:fragment
+          rendered="#{identity.hasPermission(versionGroupHome.instance, 'update')}">
+          <p>
+            <a class="button--primary" href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/projects"
+              onclick="changeBrowserUrl(this.href, true);return false;">
+              #{msgs['jsf.AddProjectVersions']}
             </a>
-          </li>
-        </ui:repeat>
-      </ul>
-    </ui:fragment>
-  </h:form>
+          </p>
+        </ui:fragment>
+      </h:panelGroup>
 
-  <zanata:list-filter status="projectsTab-projectsLoader"
-    listId="projects-project_form"
-    placeholder="#{msgs['jsf.project.search.placeholder']}"
-    iconClass="i--project" bottomPanel="true"
-    render="projects-project_form, projectTabVersionFilter-pager, projectTabVersionFilter-page-info"
-    id="projectTabVersionFilterBottom"
-    actionBean="#{versionGroupHomeAction.projectTabVersionFilter}"/>
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
+        rendered="#{not empty versionGroupHomeAction.projectIterations and empty versionGroupHomeAction.projectTabVersionFilter.currentPage}">
+        <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
+      </h:panelGroup>
+
+      <ui:fragment
+        rendered="#{not empty versionGroupHomeAction.projectTabVersionFilter.currentPage}">
+        <ul class="list--stats" id="projects-project_list">
+          <ui:repeat
+            value="#{versionGroupHomeAction.projectTabVersionFilter.currentPage}"
+            var="version">
+            <li class="progress-bar__expander"
+              id="#{version.project.slug}[#{version.slug}]">
+              <a href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/projects/#{version.project.slug}/#{version.slug}"
+               onclick="changeBrowserUrl(this.href, true);return false">
+                <div class="list__item">
+                  <div class="list__item__info">
+                    <h3 class="list__title">#{version.project.name}</h3>
+                      <span class="list__item__meta">
+                        <i class="txt--neutral i i--version"></i> <zanata:version-label version="#{version}" />
+                        <ui:fragment
+                          rendered="#{!versionGroupHomeAction.getMissingLocale(version).isEmpty()}">
+                            <span
+                              title="#{versionGroupHomeAction.getMissingLocaleTitle(version)}"
+                              class="badge--danger l--push-left-quarter">#{versionGroupHomeAction.getMissingLocale(version).size()}</span>
+                        </ui:fragment>
+                      </span>
+                  </div>
+                  <div class="list__item__stats">
+                    <a4j:status name="statistic-loader">
+                      <f:facet name="start">
+                        <zanata:loader type="loader--small" layout="inline"/>
+                      </f:facet>
+                    </a4j:status>
+
+                    <ui:fragment rendered="#{versionGroupHomeAction.pageRendered}">
+                      <ui:param name="displayUnit"
+                        value="#{versionGroupHomeAction.getStatisticFigureForProject(versionGroupHomeAction.projectSortingList.selectedSortOption, version.id)}"/>
+                       <span class="stats--small #{displayUnit.cssClass}">
+                          <span class="stats__figure">
+                            #{displayUnit.figure}
+                          </span>
+                          <span class="stats__unit txt--lowercase">
+                            #{displayUnit.unit}
+                          </span>
+                        </span>
+                    </ui:fragment>
+                  </div>
+                </div>
+                <zanata:statistic
+                  value="#{versionGroupHomeAction.getStatisticForProject(version.id)}"
+                  rendered="#{versionGroupHomeAction.pageRendered}"/>
+              </a>
+            </li>
+          </ui:repeat>
+        </ul>
+      </ui:fragment>
+    </h:form>
+  </div>
 
 </div>
 
-<div class="panels__panel panel">
+<div class="panels__panel panel js-panel">
   <div class="panels__panel__header panel__header">
     <div class="panel__header__actions">
       <zanata:sortlist id="projects-language_sorting"
         sortAction="#{versionGroupHomeAction.sortLanguageList(versionGroupHomeAction.selectedVersion.id)}"
-        render="projects-language_list, projectTabLanguageFilter-pager, projectTabLanguageFilter-page-info, projectTabLanguageFilterBottom-pager, projectTabLanguageFilterBottom-page-info"
+        render="projects-language_list, projectTabLanguageFilter-pager, projectTabLanguageFilter-page-info"
         sortingList="#{versionGroupHomeAction.languageSortingList}"
         onbegin="clearHTML('#{rich:clientId('projects-language_list')}')"
+        oncomplete="zanata.panel.init()"
         status="projectsTab-languagesLoader"/>
     </div>
 
@@ -173,86 +171,83 @@
       listId="projects-language_list"
       placeholder="#{msgs['jsf.language.search.placeholder']}"
       iconClass="i--language"
-      render="projects-language_list, projectTabLanguageFilterBottom-pager, projectTabLanguageFilterBottom-page-info"
+      render="projects-language_list"
+      oncomplete="zanata.panel.init()"
       id="projectTabLanguageFilter"
       actionBean="#{versionGroupHomeAction.projectTabLanguageFilter}"/>
   </div>
 
-  <a4j:status name="projectsTab-languagesLoader">
-    <f:facet name="start"><zanata:loader/></f:facet>
-  </a4j:status>
-
-  <h:form id="projects-language_list" styleClass="l--push-bottom-1">
-    <ui:fragment
-      rendered="#{versionGroupHomeAction.selectedVersion == null}">
-      <div class="l--pad-all-half">
-        <p class="txt--meta">#{msgs['jsf.SelectAProjectFromList']}</p>
-      </div>
-    </ui:fragment>
-
-    <ui:fragment rendered="#{versionGroupHomeAction.selectedVersion != null}">
-      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
-        rendered="#{empty versionGroupHomeAction.activeLocales}">
-        <p class="txt--meta">#{msgs['jsf.NoActiveLanguages']}</p>
-        <ui:fragment
-          rendered="#{identity.hasPermission(versionGroupHome.instance, 'update')}">
-          <p>
-            <a class="button--primary" href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/languages"
-              onclick="changeBrowserUrl(this.href, true);return false;">
-              #{msgs['jsf.AddLanguages']}
-            </a>
-          </p>
-        </ui:fragment>
-      </h:panelGroup>
-
-      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
-        rendered="#{not empty versionGroupHomeAction.activeLocales and empty versionGroupHomeAction.projectTabLanguageFilter.currentPage}">
-        <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
-      </h:panelGroup>
-
+  <div style="position: relative">
+    <a4j:status name="projectsTab-languagesLoader">
+      <f:facet name="start">
+        <zanata:loader type="loader--large" layout="center"/>
+      </f:facet>
+    </a4j:status>
+    <h:form id="projects-language_list" styleClass="panel__body js-panel__body">
       <ui:fragment
-        rendered="#{not empty versionGroupHomeAction.projectTabLanguageFilter.currentPage}">
-        <ul class="list--stats">
-          <ui:repeat
-            value="#{versionGroupHomeAction.projectTabLanguageFilter.currentPage}"
-            var="hLocale">
-            <li class="progress-bar__expander panels__panel__item">
-              <a
-                href="#{request.contextPath}/iteration/view/#{versionGroupHomeAction.selectedVersion.project.slug}/#{versionGroupHomeAction.selectedVersion.slug}/languages/#{hLocale.localeId}">
-                <div class="list__item">
-                  <div class="list__item__info">
-                    <h3 class="list__title">
-                      #{hLocale.retrieveDisplayName()}
-                      <h:panelGroup layout="span" rendered="#{!versionGroupHomeAction.isLocaleActivatedInVersion(versionGroupHomeAction.selectedVersion, hLocale.localeId)}"
-                        styleClass="label--danger">#{msgs['jsf.Missing']}</h:panelGroup>
-                    </h3>
-                    <span class="list__item__meta">#{hLocale.localeId}</span>
-                  </div>
-                  <div class="list__item__stats">
-                    <ui:param name="displayUnit"
-                      value="#{versionGroupHomeAction.getStatisticFigureForProjectWithLocale(versionGroupHomeAction.languageSortingList.selectedSortOption, hLocale.localeId, versionGroupHomeAction.selectedVersion.id)}"/>
-                  <span class="stats--small #{displayUnit.cssClass}">
-                    <span class="stats__figure">#{displayUnit.figure}</span>
-                    <span class="stats__unit">#{displayUnit.unit}</span>
-                  </span>
-                  </div>
-                </div>
-                <zanata:statistic
-                  value="#{versionGroupHomeAction.getSelectedVersionStatistic(hLocale.localeId)}"/>
-              </a>
-            </li>
-          </ui:repeat>
-        </ul>
+        rendered="#{versionGroupHomeAction.selectedVersion == null}">
+        <div class="l--pad-all-half">
+          <p class="txt--meta">#{msgs['jsf.SelectAProjectFromList']}</p>
+        </div>
       </ui:fragment>
-    </ui:fragment>
-  </h:form>
-  <zanata:list-filter status="projectsTab-languagesLoader"
-    listId="projects-language_list"
-    placeholder="#{msgs['jsf.language.search.placeholder']}"
-    iconClass="i--language" bottomPanel="true"
-    render="projects-language_list, projectTabLanguageFilter-pager, projectTabLanguageFilter-page-info"
-    id="projectTabLanguageFilterBottom"
-    actionBean="#{versionGroupHomeAction.projectTabLanguageFilter}"/>
+
+      <ui:fragment rendered="#{versionGroupHomeAction.selectedVersion != null}">
+        <h:panelGroup layout="block"  styleClass="l--pad-all-half"
+          rendered="#{empty versionGroupHomeAction.activeLocales}">
+          <p class="txt--meta">#{msgs['jsf.NoActiveLanguages']}</p>
+          <ui:fragment
+            rendered="#{identity.hasPermission(versionGroupHome.instance, 'update')}">
+            <p>
+              <a class="button--primary" href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/languages"
+                onclick="changeBrowserUrl(this.href, true);return false;">
+                #{msgs['jsf.AddLanguages']}
+              </a>
+            </p>
+          </ui:fragment>
+        </h:panelGroup>
+
+        <h:panelGroup layout="block"  styleClass="l--pad-all-half"
+          rendered="#{not empty versionGroupHomeAction.activeLocales and empty versionGroupHomeAction.projectTabLanguageFilter.currentPage}">
+          <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
+        </h:panelGroup>
+
+        <ui:fragment
+          rendered="#{not empty versionGroupHomeAction.projectTabLanguageFilter.currentPage}">
+          <ul class="list--stats">
+            <ui:repeat
+              value="#{versionGroupHomeAction.projectTabLanguageFilter.currentPage}"
+              var="hLocale">
+              <li class="progress-bar__expander panels__panel__item">
+                <a
+                  href="#{request.contextPath}/iteration/view/#{versionGroupHomeAction.selectedVersion.project.slug}/#{versionGroupHomeAction.selectedVersion.slug}/languages/#{hLocale.localeId}">
+                  <div class="list__item">
+                    <div class="list__item__info">
+                      <h3 class="list__title">
+                        #{hLocale.retrieveDisplayName()}
+                        <h:panelGroup layout="span" rendered="#{!versionGroupHomeAction.isLocaleActivatedInVersion(versionGroupHomeAction.selectedVersion, hLocale.localeId)}"
+                          styleClass="label--danger">#{msgs['jsf.Missing']}</h:panelGroup>
+                      </h3>
+                      <span class="list__item__meta">#{hLocale.localeId}</span>
+                    </div>
+                    <div class="list__item__stats">
+                      <ui:param name="displayUnit"
+                        value="#{versionGroupHomeAction.getStatisticFigureForProjectWithLocale(versionGroupHomeAction.languageSortingList.selectedSortOption, hLocale.localeId, versionGroupHomeAction.selectedVersion.id)}"/>
+                    <span class="stats--small #{displayUnit.cssClass}">
+                      <span class="stats__figure">#{displayUnit.figure}</span>
+                      <span class="stats__unit">#{displayUnit.unit}</span>
+                    </span>
+                    </div>
+                  </div>
+                  <zanata:statistic
+                    value="#{versionGroupHomeAction.getSelectedVersionStatistic(hLocale.localeId)}"/>
+                </a>
+              </li>
+            </ui:repeat>
+          </ul>
+        </ui:fragment>
+      </ui:fragment>
+    </h:form>
+  </div>
 </div>
 </div>
 </ui:composition>
