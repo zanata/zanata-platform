@@ -197,7 +197,7 @@ public class UrlUtil implements Serializable {
     }
 
     public String languageHome() {
-        return contextPath + "/language/home.seam";
+        return contextPath + "/language/list";
     }
 
     public String genericErrorPage() {
@@ -209,6 +209,6 @@ public class UrlUtil implements Serializable {
     }
 
     public String home() {
-        return contextPath + "/home.seam";
+        return contextPath + "/";
     }
 }
