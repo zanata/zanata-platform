@@ -11,7 +11,7 @@ import org.zanata.webtrans.server.ActionHandlerFor;
  * @param <A>
  * @param <R>
  */
-abstract class AbstractActionHandler<A extends Action<R>, R extends Result>
+public abstract class AbstractActionHandler<A extends Action<R>, R extends Result>
         implements ActionHandler<A, R> {
 
     protected AbstractActionHandler() {

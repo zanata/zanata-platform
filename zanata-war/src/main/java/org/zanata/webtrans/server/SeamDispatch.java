@@ -2,18 +2,16 @@ package org.zanata.webtrans.server;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
-import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.customware.gwt.dispatch.server.AbstractActionHandler;
 import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ActionResult;
 import net.customware.gwt.dispatch.server.Dispatch;
@@ -23,12 +21,11 @@ import net.customware.gwt.dispatch.shared.ActionException;
 import net.customware.gwt.dispatch.shared.Result;
 import net.customware.gwt.dispatch.shared.UnsupportedActionException;
 
-import javax.inject.Named;
-
 import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.exception.NotLoggedInException;
 import org.zanata.util.ServiceLocator;
+import org.zanata.webtrans.server.rpc.AbstractActionHandler;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.AuthorizationError;
 import org.zanata.webtrans.shared.auth.InvalidTokenError;
@@ -44,15 +41,16 @@ public class SeamDispatch implements Dispatch {
     @DeltaSpike
     private HttpServletRequest request;
 
+    @Inject
+    private Instance<AbstractActionHandler> actionHandlers;
+
 
     @SuppressWarnings("rawtypes")
     private final Map<Class<? extends Action>, Class<? extends ActionHandler<?, ?>>> handlers =
             Maps.newHashMap();
 
-    @SuppressWarnings("rawtypes")
-    @Inject
-    public SeamDispatch(Instance<AbstractActionHandler> actionHandlers) {
-        // register all ActionHandlers
+    @PostConstruct
+    public void registerHandlers() {
         actionHandlers.forEach(ah -> register(ah.getClass()));
     }
 

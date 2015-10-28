@@ -57,8 +57,8 @@ import net.customware.gwt.dispatch.shared.ActionException;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Named("webtrans.gwt.AddReviewCommentHandler")
-@RequestScoped
 @ActionHandlerFor(AddReviewCommentAction.class)
+@javax.enterprise.context.Dependent
 @Slf4j
 public class AddReviewCommentHandler extends
         AbstractActionHandler<AddReviewCommentAction, AddReviewCommentResult> {

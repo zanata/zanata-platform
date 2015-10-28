@@ -43,7 +43,7 @@ import java.io.Serializable;
  *
  */
 @Named("webtrans.gwt.DownloadAllFilesHandler")
-@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
+//@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
 @ActionHandlerFor(DownloadAllFilesAction.class)
 public class DownloadAllFilesHandler extends
         AbstractActionHandler<DownloadAllFilesAction, DownloadAllFilesResult>

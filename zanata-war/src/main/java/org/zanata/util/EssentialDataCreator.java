@@ -74,12 +74,12 @@ public class EssentialDataCreator {
     // Do it when the application starts (but after everything else has been
     // loaded)
     @WithRequestScope
+    @Transactional
     public void onCreate(@Observes @Initialized ServletContext context) {
         // since our EntityManager is RequestScoped, we need to have it before any Transactional thing to happen
         prepare();
     }
 
-    @Transactional
     void prepare() {
         if (!prepared) {
             boolean adminExists;
