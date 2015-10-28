@@ -98,6 +98,8 @@
       <!-- Search engine -->
       <property name="hibernate.search.default.directory_provider"
         value="org.hibernate.search.store.impl.FSDirectoryProvider" />
+      <property name="hibernate.search.default.locking_strategy"
+        value="simple" />
       <property name="hibernate.search.default.indexBase"
         value="./target/zanatasearchindex" />
       <property name="hibernate.search.lucene_version" value="LUCENE_36" />
