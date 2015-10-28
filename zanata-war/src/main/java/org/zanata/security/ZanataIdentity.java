@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Nullable;
+import javax.annotation.PreDestroy;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.enterprise.util.AnnotationLiteral;
@@ -58,6 +59,7 @@ import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.security.jaas.InternalLoginModule;
 import org.zanata.security.permission.CustomPermissionResolver;
 import org.zanata.security.permission.MultiTargetList;
+import org.zanata.servlet.annotations.SessionId;
 import org.zanata.util.Contexts;
 import org.zanata.util.RequestContextValueStore;
 import org.zanata.util.ServiceLocator;
@@ -119,6 +121,9 @@ public class ZanataIdentity implements Identity, Serializable {
     @Inject
     private Event<NotLoggedInEvent> notLoggedInEventEvent;
 
+    @Inject @SessionId
+    private String sessionId;
+
     public static boolean isSecurityEnabled() {
         return securityEnabled;
     }
@@ -176,13 +181,10 @@ public class ZanataIdentity implements Identity, Serializable {
         acceptExternallyAuthenticatedPrincipal(principal);
     }
 
-    public void onDestroy(@Observes @Destroyed HttpSession session) {
-        logout();
-    }
-
+    @PreDestroy
     public void logout() {
         if (getCredentials() != null) {
-            getLogoutEvent().fire(new LogoutEvent(getCredentials().getUsername()));
+            getLogoutEvent().fire(new LogoutEvent(getCredentials().getUsername(), sessionId));
         }
         if (isLoggedIn()) {
             unAuthenticate();
@@ -572,7 +574,7 @@ public class ZanataIdentity implements Identity, Serializable {
 
     /**
      * Utility method to get the authenticated account username. This differs
-     * from {@link org.jboss.seam.security.Credentials#getUsername()} in that
+     * from org.jboss.seam.security.Credentials.getUsername() in that
      * this returns the actual account's username, not the user provided one
      * (which for some authentication systems is non-existent).
      *

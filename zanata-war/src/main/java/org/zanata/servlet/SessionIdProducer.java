@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Red Hat, Inc. and individual contributors
+ * Copyright 2015, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,19 +18,37 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.events;
+package org.zanata.servlet;
 
-import lombok.Value;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Produces;
+import javax.servlet.http.HttpSession;
+
+import lombok.extern.slf4j.Slf4j;
+import org.apache.deltaspike.core.api.lifecycle.Initialized;
+import org.zanata.servlet.annotations.SessionId;
+
+import java.io.Serializable;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Value
-public class LogoutEvent {
-    // TODO remove constant after switching to CDI
-    // NB must be a constant string equal to class name
-    public static final String EVENT_NAME = "org.zanata.events.LogoutEvent";
+@RequestScoped
+@Slf4j
+public class SessionIdProducer implements Serializable {
 
-    String username;
-    String sessionId;
+    private String sessionId;
+
+    void onCreate(@Observes @Initialized HttpSession session) {
+        sessionId = session.getId();
+        log.debug("observing sessionId: {}", sessionId);
+    }
+
+    @Produces
+    @SessionId
+    String produceSessionId() {
+        log.debug("producing sessionId: {}", sessionId);
+        return sessionId;
+    }
 }

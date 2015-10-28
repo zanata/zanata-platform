@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -35,6 +36,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.service.GravatarService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.ValidationService;
+import org.zanata.servlet.annotations.SessionId;
 import org.zanata.util.ServiceLocator;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.auth.EditorClientId;
@@ -126,8 +128,8 @@ public class TranslationWorkspaceManagerImpl implements
         log.info("starting...");
     }
 
-    public void exitWorkspace(@Observes LogoutEvent payload, @DeltaSpike HttpSession session) {
-        exitWorkspace(payload.getUsername(), session.getId());
+    public void exitWorkspace(@Observes LogoutEvent payload) {
+        exitWorkspace(payload.getUsername(), payload.getSessionId());
     }
 
     void exitWorkspace(String username, String httpSessionId) {
