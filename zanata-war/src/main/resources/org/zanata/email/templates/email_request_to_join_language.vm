@@ -30,7 +30,7 @@
 </p>
 
 #if ($htmlMessage)
-  <p>$msgs.format("jsf.email.UserMessageIntro", $fromName)</p>
+  <p>$msgs.format("jsf.email.UserMessageIntro", $fromLoginName)</p>
   <hr/>
   $htmlMessage
   <hr/>
