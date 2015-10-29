@@ -80,10 +80,13 @@ public class AbstractExceptionHandler {
             case Warn:
                 log.warn("exception happened in view: {}", currentViewId, exception);
                 break;
+            case Error:
+                log.error("exception happened in view: {}", currentViewId, exception);
+                break;
         }
     }
 
     static enum LogLevel {
-        Trace, Debug, Warn
+        Trace, Debug, Warn, Error
     }
 }

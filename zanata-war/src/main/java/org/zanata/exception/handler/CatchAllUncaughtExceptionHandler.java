@@ -35,7 +35,7 @@ import javax.faces.application.FacesMessage;
 public class CatchAllUncaughtExceptionHandler extends AbstractExceptionHandler {
 
     public void handleException(@Handles ExceptionEvent<Exception> event) {
-        handle(event, LogLevel.Warn, FacesMessage.SEVERITY_ERROR,
+        handle(event, LogLevel.Error, FacesMessage.SEVERITY_ERROR,
                 "jsf.UnexpectedError");
     }
 
