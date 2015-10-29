@@ -38,6 +38,8 @@ println "====================================================="
 def downloadWarFile = true
 if( new File(WAR_FILE_LOC).exists() ) {
     downloadWarFile = askYesNoQuestion("It seems Zanata is already installed. Do you wish to download it again? (y/N)")
+} else {
+    downloadWarFile = askYesNoQuestion("Do you wish to download the Zanata package (zanata.war)? (y/N)")
 }
 
 def dbHost
@@ -48,7 +50,7 @@ def dbPassword
 
 // Download the war file
 if( downloadWarFile ) {
-    def fileUrl = "http://sourceforge.net/projects/zanata/files/webapp/zanata-war-${ZANATA_VERSION}.war/download"
+    def fileUrl = "https://github.com/zanata/zanata-server/releases/download/server-${ZANATA_VERSION}/zanata-war-${ZANATA_VERSION}.war"
     println "Downloading $fileUrl"
     println "This might take a few minutes."
 
