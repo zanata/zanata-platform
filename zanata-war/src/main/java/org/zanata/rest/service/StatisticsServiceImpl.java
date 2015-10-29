@@ -325,7 +325,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
      */
     @Override
     public ContributionStatistics getContributionStatistics(String projectSlug,
-            String versionSlug, String username, String dateRangeParam) {
+            String versionSlug, String username, String dateRangeParam, boolean automatedEntry) {
 
         HProjectIteration version =
                 projectIterationDAO.getBySlug(projectSlug, versionSlug);
@@ -344,7 +344,8 @@ public class StatisticsServiceImpl implements StatisticsResource {
                 textFlowTargetHistoryDAO.getUserContributionStatisticInVersion(
                         version.getId(), person.getId(),
                         dateRange.getFromDate().toDate(),
-                        dateRange.getToDate().toDate());
+                        dateRange.getToDate().toDate(),
+                        automatedEntry);
 
         for (Object[] entry : data) {
             int count = ((BigDecimal) entry[0]).intValue();
