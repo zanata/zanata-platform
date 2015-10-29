@@ -1,27 +1,42 @@
 ## RHEL 7
 
-1. Download binary package from [0Install v2.9](https://downloads.sourceforge.net/project/zero-install/0install/2.9/0install-linux-x86_64-2.9.tar.bz2)
-2. Unpack it, and run the `install.sh` script inside. You'll need libcurl installed (most systems have it by default).
-
-## RHEL 6/Fedora
-
-Install EPEL repository for RHEL 6
+1. Install EPEL repository for RHEL 7
 ```
-## RHEL/CentOS 6 32-Bit ##
-wget http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm
-rpm -ivh epel-release-6-8.noarch.rpm
-
-## RHEL/CentOS 6 64-Bit ##
-wget http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-rpm -ivh epel-release-6-8.noarch.rpm
+sudo rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 ```
 
-1. To install 0Install,
-    - RHEL: `yum install zeroinstall-injector`
-    - Fedora: `yum install 0install`
-2. Install Java runtime: `yum install java-1.7.0-openjdk`.
+2. Install 0install 
+```
+sudo yum -y install 0install
+```
+
 3. Setup alias: `0install -c add zanata-cli http://zanata.org/files/0install/zanata-cli.xml`.
 4. Now you can run `zanata-cli --help` for more options.
+
+## RHEL 6
+
+1. Download binary package from [0Install v2.10 x86_64](https://downloads.sourceforge.net/project/zero-install/0install/2.10/0install-linux-x86_64-2.10.tar.bz2) or [0Install v2.10 i486](https://downloads.sourceforge.net/project/zero-install/0install/2.10/0install-linux-i486-2.10.tar.bz2)
+2. Unpack it, and run the `install.sh` script inside. You'll need libcurl installed (most systems have it by default).
+3. Setup alias: `0install -c add zanata-cli http://zanata.org/files/0install/zanata-cli.xml`.
+4. Now you can run `zanata-cli --help` for more options.
+
+## Fedora
+
+The recommend way to install is though 0install:
+
+1. Install 0install
+```
+sudo yum -y install 0install
+```
+
+2. Setup alias: `0install -c add zanata-cli http://zanata.org/files/0install/zanata-cli.xml`.
+3. Now you can run `zanata-cli --help` for more options.
+
+You can also install using yum/dnf:
+
+```
+sudo yum -y install zanata-client
+```
 
 *Note: If you have installed `zanata-cli` previously through another method, you need to uninstall that for this to work.*
 
