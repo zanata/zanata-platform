@@ -25,7 +25,7 @@ import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 
-import javax.validation.constraints.NotNull;
+import javax.annotation.Nonnull;
 import java.util.concurrent.Future;
 
 public interface CopyTransService {
@@ -83,7 +83,7 @@ public interface CopyTransService {
      */
     Future<Void> startCopyTransForIteration(HProjectIteration iteration,
             HCopyTransOptions copyTransOptions,
-            @NotNull CopyTransTaskHandle handle);
+            @Nonnull CopyTransTaskHandle handle);
 
     /**
      * Copies previous matching translations for all available locales and
@@ -102,5 +102,5 @@ public interface CopyTransService {
      * @param handle Optional Task handle to track progress for the operation.
      */
     void copyTransForIteration(HProjectIteration iteration,
-            HCopyTransOptions copyTransOptions, CopyTransTaskHandle handle);
+            HCopyTransOptions copyTransOptions, @Nonnull CopyTransTaskHandle handle);
 }

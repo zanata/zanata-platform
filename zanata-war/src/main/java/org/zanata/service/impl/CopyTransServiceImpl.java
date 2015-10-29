@@ -23,10 +23,10 @@ package org.zanata.service.impl;
 import java.util.List;
 import java.util.concurrent.Future;
 
+import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -263,7 +263,7 @@ public class CopyTransServiceImpl implements CopyTransService {
     @Override
     public void copyTransForIteration(HProjectIteration iteration,
             HCopyTransOptions copyTransOptions,
-            @NotNull CopyTransTaskHandle handle) {
+            @Nonnull CopyTransTaskHandle handle) {
         Optional<CopyTransTaskHandle> taskHandleOpt =
                 Optional.fromNullable(handle);
 
