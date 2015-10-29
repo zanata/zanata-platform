@@ -33,11 +33,15 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Stack;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
 import javax.inject.Named;
+
+import lombok.extern.slf4j.Slf4j;
 import org.zanata.i18n.Messages;
 import org.zanata.util.ServiceLocator;
 
@@ -48,18 +52,30 @@ import org.zanata.util.ServiceLocator;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
+@org.apache.deltaspike.core.api.scope.WindowScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
 @Named("jsfMessages")
+@Slf4j
 public class FacesMessages implements Serializable {
 
     private final List<FacesMessage> globalMessages = new ArrayList<>();
     private final Map<String, List<FacesMessage>> keyedMessages =
             new HashMap<>();
 
+    @PostConstruct
+    void postConstruct() {
+        log.debug("{}: postConstruct", this);
+    }
+
+    @PreDestroy
+    void preDestroy() {
+        log.debug("{}: preDestroy", this);
+    }
+
     /**
      * Called to transfer messages from FacesMessages to JSF
      */
     public void beforeRenderResponse() {
+        log.debug("{}: beforeRenderResponse", this);
         for (FacesMessage message : globalMessages) {
             FacesContext.getCurrentInstance().addMessage(null,
                     message);
@@ -126,6 +142,8 @@ public class FacesMessages implements Serializable {
      */
     void addToControl(String id, Severity severity, String key,
             String messageTemplate, final Object... params) {
+        log.debug("{}: addToControl(id={}, template={})", this, id, messageTemplate);
+
         // NB This needs to change when migrating out of Seam
         String interpolatedMessage =
                 String.format(messageTemplate, params);
