@@ -28,6 +28,8 @@ import javax.persistence.EntityManager;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.dao.AccountDAO;
@@ -116,6 +118,7 @@ public class RegisterServiceImpl implements RegisterService {
         return key.getKeyHash();
     }
 
+    @Transactional
     public String register(final String username, final String password,
             String name, String email) {
         new AbstractRunAsOperation() {

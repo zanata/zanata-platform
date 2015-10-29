@@ -40,6 +40,8 @@ import javax.persistence.NoResultException;
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.events.PostAuthenticateEvent;
 import org.zanata.exception.IdentityManagementException;
 import org.zanata.exception.NoSuchRoleException;
@@ -196,6 +198,7 @@ public class ZanataJpaIdentityStore implements Serializable {
         return users;
     }
 
+    @Transactional
     public boolean deleteUser(String name) {
         HAccount user = lookupUser(name);
         if (user == null) {
@@ -216,6 +219,7 @@ public class ZanataJpaIdentityStore implements Serializable {
         return lookupUser(name) != null;
     }
 
+    @Transactional
     public boolean createUser(String username, String password) {
         try {
             if (userExists(username)) {
@@ -254,6 +258,7 @@ public class ZanataJpaIdentityStore implements Serializable {
         return userCreatedEventEvent;
     }
 
+    @Transactional
     public boolean enableUser(String name) {
 
         HAccount user = lookupUser(name);
@@ -270,6 +275,7 @@ public class ZanataJpaIdentityStore implements Serializable {
         return true;
     }
 
+    @Transactional
     public boolean disableUser(String name) {
         HAccount user = lookupUser(name);
         if (user == null) {
@@ -286,6 +292,7 @@ public class ZanataJpaIdentityStore implements Serializable {
         return true;
     }
 
+    @Transactional
     public boolean changePassword(String username, String password) {
         HAccount user = lookupUser(username);
         if (user == null) {
@@ -324,6 +331,7 @@ public class ZanataJpaIdentityStore implements Serializable {
         return roles;
     }
 
+    @Transactional
     public boolean revokeRole(String username, String role) {
         HAccount user = lookupUser(username);
         if (user == null) {
@@ -371,6 +379,7 @@ public class ZanataJpaIdentityStore implements Serializable {
         }
     }
 
+    @Transactional
     public boolean grantRole(String username, String role) {
         HAccount user = lookupUser(username);
         if (user == null) {
@@ -469,6 +478,7 @@ public class ZanataJpaIdentityStore implements Serializable {
         }
     }
 
+    @Transactional
     public boolean deleteRole(String role) {
         HAccountRole roleToDelete = lookupRole(role);
         if (roleToDelete == null) {
@@ -485,6 +495,7 @@ public class ZanataJpaIdentityStore implements Serializable {
         return true;
     }
 
+    @Transactional
     public boolean removeRoleFromGroup(String role, String group) {
         HAccountRole roleToRemove = lookupRole(role);
         if (roleToRemove == null) {
@@ -503,6 +514,7 @@ public class ZanataJpaIdentityStore implements Serializable {
         return lookupRole(name) != null;
     }
 
+    @Transactional
     public boolean createRole(String role) {
         try {
 
@@ -526,6 +538,7 @@ public class ZanataJpaIdentityStore implements Serializable {
         }
     }
 
+    @Transactional
     public boolean addRoleToGroup(String role, String group) {
         HAccountRole targetRole = lookupRole(role);
         if (targetRole == null) {
