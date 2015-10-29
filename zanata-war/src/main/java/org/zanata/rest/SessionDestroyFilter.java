@@ -20,8 +20,6 @@
  */
 package org.zanata.rest;
 
-import org.zanata.util.HttpUtil;
-
 import javax.annotation.Priority;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

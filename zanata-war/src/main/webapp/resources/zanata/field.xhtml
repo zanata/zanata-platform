@@ -15,9 +15,7 @@
   <cc:implementation>
 
     <div class="#{cc.attrs.invalid ? 'form__item--error' : ''} #{cc.attrs.styleClass}">
-      <f:validateBean >
-        <cc:insertChildren/>
-      </f:validateBean>
+      <cc:insertChildren/>
       <h:panelGroup rendered="#{cc.attrs.invalid}" layout="block"
         styleClass="message--danger app-error">
         <h:message id="errorMessage" />

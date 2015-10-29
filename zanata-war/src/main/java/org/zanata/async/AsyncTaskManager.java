@@ -40,6 +40,8 @@ import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
+import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.util.ServiceLocator;
 
 import com.google.common.util.concurrent.ListenableFuture;
@@ -81,8 +83,7 @@ public class AsyncTaskManager {
     public <V> ListenableFuture<V> startTask(
             final @Nonnull AsyncTask<Future<V>> task) {
         HAccount taskOwner = ServiceLocator.instance()
-                .getInstance(ZanataJpaIdentityStore.AUTHENTICATED_USER,
-                        HAccount.class);
+                .getInstance(HAccount.class, new AuthenticatedLiteral());
         ZanataIdentity ownerIdentity = ZanataIdentity.instance();
 
         // Extract security context from current thread

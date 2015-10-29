@@ -196,15 +196,13 @@
     <from-view-id>/account/inactive_account.xhtml</from-view-id>
     <navigation-case>
       <from-action>#{inactiveAccountAction.sendActivationEmail}</from-action>
-      <!-- TODO [CDI] end conversation in seam -->
-      <!--<end-conversation />-->
+      <from-outcome>success</from-outcome>
       <to-view-id>/home.xhtml</to-view-id>
       <redirect/>
     </navigation-case>
     <navigation-case>
       <from-action>#{inactiveAccountAction.changeEmail}</from-action>
-      <!-- TODO [CDI] end conversation in seam-->
-      <!--<end-conversation />-->
+      <from-outcome>home</from-outcome>
       <to-view-id>/home.xhtml</to-view-id>
       <redirect/>
     </navigation-case>

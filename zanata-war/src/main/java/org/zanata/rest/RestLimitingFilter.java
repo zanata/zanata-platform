@@ -60,7 +60,6 @@ import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Provider
 @Slf4j
 @WebFilter(filterName = "RestLimitingFilter")
 public class RestLimitingFilter implements Filter {

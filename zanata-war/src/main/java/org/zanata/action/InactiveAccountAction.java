@@ -90,7 +90,8 @@ public class InactiveAccountAction implements Serializable {
         return account;
     }
 
-    public void sendActivationEmail() {
+    @Transactional
+    public String sendActivationEmail() {
         HAccount account = getAccount();
         if (account != null) {
             HAccountActivationKey key = accountActivationKeyDAO
@@ -108,6 +109,7 @@ public class InactiveAccountAction implements Serializable {
                     account.getAccountActivationKey().getKeyHash());
             facesMessages.addGlobal(message);
         }
+        return "success";
     }
 
     @Transactional
