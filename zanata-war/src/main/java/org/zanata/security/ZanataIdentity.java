@@ -20,7 +20,6 @@
  */
 package org.zanata.security;
 
-
 import java.io.Serializable;
 import java.security.Principal;
 import java.security.acl.Group;
@@ -31,7 +30,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 import javax.annotation.PreDestroy;
 import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -42,7 +40,6 @@ import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpSession;
 
 import org.apache.deltaspike.core.api.common.DeltaSpike;
-import org.apache.deltaspike.core.api.lifecycle.Destroyed;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,9 +64,11 @@ import org.zanata.util.UrlUtil;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
+import org.zanata.util.LifecycleMethodsWithRequestScope;
 
 @Named("identity")
 @javax.enterprise.context.SessionScoped
+@LifecycleMethodsWithRequestScope
 public class ZanataIdentity implements Identity, Serializable {
     private static final Logger log = LoggerFactory.getLogger(
             ZanataIdentity.class);
@@ -182,10 +181,24 @@ public class ZanataIdentity implements Identity, Serializable {
     }
 
     @PreDestroy
-    public void logout() {
+    public void preDestroy() {
+        log.debug("preDestroy");
+        fireLogoutEvent();
+    }
+
+    private void fireLogoutEvent() {
         if (getCredentials() != null) {
-            getLogoutEvent().fire(new LogoutEvent(getCredentials().getUsername(), sessionId));
+            String username = getCredentials().getUsername();
+            log.info("firing LogoutEvent for user {} with session {}", username,
+                    sessionId);
+            getLogoutEvent().fire(new LogoutEvent(
+                    username, sessionId));
         }
+    }
+
+    public void logout() {
+        log.debug("explicit logout");
+        fireLogoutEvent();
         if (isLoggedIn()) {
             unAuthenticate();
             HttpSession session =

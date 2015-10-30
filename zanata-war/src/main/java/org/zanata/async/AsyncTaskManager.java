@@ -51,6 +51,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 @Named("asyncTaskManager")
 @javax.enterprise.context.ApplicationScoped
 @Slf4j
+// TODO consider switching from Guava's ListenableFuture to Java 8's CompletableFuture
 public class AsyncTaskManager {
 
     private ExecutorService scheduler;

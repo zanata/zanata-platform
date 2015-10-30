@@ -38,6 +38,7 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.ValidationService;
 import org.zanata.servlet.annotations.SessionId;
 import org.zanata.util.ServiceLocator;
+import org.zanata.util.WithRequestScope;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
@@ -128,6 +129,7 @@ public class TranslationWorkspaceManagerImpl implements
         log.info("starting...");
     }
 
+    @WithRequestScope
     public void exitWorkspace(@Observes LogoutEvent payload) {
         exitWorkspace(payload.getUsername(), payload.getSessionId());
     }
@@ -137,8 +139,6 @@ public class TranslationWorkspaceManagerImpl implements
             log.debug("Logout: null session");
             return;
         }
-        log.info("Logout: Removing user {} from all workspaces, session: {}",
-                username, httpSessionId);
         String personName = "<unknown>";
         String personEmail = "<unknown>";
         HAccount account = getAccountDAO().getByUsername(username);
@@ -156,9 +156,10 @@ public class TranslationWorkspaceManagerImpl implements
                     workspace.removeEditorClients(httpSessionId);
             for (EditorClientId editorClientId : editorClients) {
                 log.info(
-                        "Publishing ExitWorkspace event for user {} with editorClientId {} from workspace {}",
-                        new Object[] { username, editorClientId,
-                                workspace.getWorkspaceContext() });
+                        "Publishing ExitWorkspace event for user {} " +
+                                "with editorClientId {} from workspace {}",
+                        username, editorClientId,
+                        workspace.getWorkspaceContext());
                 // Send GWT Event to client to update the userlist
                 ExitWorkspace event =
                         new ExitWorkspace(editorClientId, new Person(
