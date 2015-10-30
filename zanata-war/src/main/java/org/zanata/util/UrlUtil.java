@@ -190,8 +190,7 @@ public class UrlUtil implements Serializable {
     public void redirectTo(String url) {
         try {
             FacesContext.getCurrentInstance().getExternalContext().redirect(url);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             log.error("fail to redirect to {}", url, e);
             throw Throwables.propagate(e);
         }

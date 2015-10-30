@@ -206,7 +206,7 @@ public class Messages extends AbstractMap<String, String> {
 
     public String format(String key, Object arg1, Object arg2, Object arg3, Object arg4, Object arg5) {
         return formatWithAnyArgs(key,
-                arg1, arg2, arg3, arg4, arg5 );
+                arg1, arg2, arg3, arg4, arg5);
     }
 
     public String format(String key, Object arg1, Object arg2, Object arg3, Object arg4, Object arg5, Object arg6) {
