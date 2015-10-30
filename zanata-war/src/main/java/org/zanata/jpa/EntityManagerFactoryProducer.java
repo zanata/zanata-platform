@@ -25,6 +25,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
 import org.hibernate.ejb.HibernateEntityManagerFactory;
@@ -37,14 +38,14 @@ import org.zanata.util.Zanata;
 public class EntityManagerFactoryProducer {
 
     @PersistenceUnit
-    private HibernateEntityManagerFactory entityManagerFactory;
+    private EntityManagerFactory entityManagerFactory;
 
     @Produces
     @RequestScoped
     @Default
     @Zanata
     protected HibernateEntityManagerFactory create() {
-        return entityManagerFactory;
+        return (HibernateEntityManagerFactory) entityManagerFactory;
     }
 
     @PreDestroy

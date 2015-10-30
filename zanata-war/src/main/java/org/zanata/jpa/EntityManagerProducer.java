@@ -57,7 +57,9 @@ public class EntityManagerProducer {
     }
 
     protected void closeEntityManager(@Disposes EntityManager entityManager) {
-        if (entityManager.isOpen()) {
+        // sometimes EntityManager.isOpen() returns true when the Session
+        // is actually closed, so we ask the Session
+        if (entityManager.unwrap(Session.class).isOpen()) {
             entityManager.close();
         }
     }

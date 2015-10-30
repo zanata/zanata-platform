@@ -7,8 +7,8 @@
     <class>org.apache.deltaspike.jpa.impl.transaction.BeanManagedUserTransactionStrategy</class>
   </alternatives>
   <interceptors>
-    <class>org.zanata.util.WithRequestScopeInterceptor</class>
     <class>org.zanata.util.SynchronizationInterceptor</class>
+    <class>org.zanata.util.WithRequestScopeInterceptor</class>
     <class>org.apache.deltaspike.jpa.impl.transaction.TransactionalInterceptor</class>
     <class>org.zanata.async.AsyncMethodInterceptor</class>
     <class>org.zanata.seam.interceptor.ZanataSecurityInterceptor</class>
@@ -29,5 +29,7 @@
     <weld:exclude name="org.apache.deltaspike.jsf.impl.navigation.DeltaSpikeNavigationHandlerWrapper"/>
     <!-- Requires Weld SE -->
     <weld:exclude name="org.apache.deltaspike.cdise.weld.WeldContainerControl"/>
+    <!-- No need for injection; breaks WildFly -->
+    <weld:exclude name="org.zanata.security.negotiation.CustomNegotiationAuthenticator"/>
   </weld:scan>
 </beans>

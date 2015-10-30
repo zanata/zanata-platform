@@ -76,6 +76,7 @@ public class EssentialDataCreator {
     @WithRequestScope
     @Transactional
     public void onCreate(@Observes @Initialized ServletContext context) {
+        log.debug(getClass().getName() + ".onCreate()");
         // since our EntityManager is RequestScoped, we need to have it before any Transactional thing to happen
         prepare();
     }

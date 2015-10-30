@@ -47,7 +47,7 @@ import org.zanata.util.ServiceLocator;
 
 /**
  * Utility to allow for easy handling of JSF messages. Serves as a replacement
- * for the old Seam 2 {@link org.jboss.seam.faces.FacesMessages} class.
+ * for the old Seam 2 org.jboss.seam.faces.FacesMessages class.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
