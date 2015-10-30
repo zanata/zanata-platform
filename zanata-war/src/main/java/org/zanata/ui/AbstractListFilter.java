@@ -22,6 +22,7 @@
 
 package org.zanata.ui;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.google.common.collect.Lists;
@@ -32,7 +33,7 @@ import lombok.Setter;
  * Helper class to assist with the paging of data.
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-public abstract class AbstractListFilter<T> {
+public abstract class AbstractListFilter<T> implements Serializable {
 
     @Getter
     @Setter

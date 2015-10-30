@@ -38,8 +38,7 @@ import org.zanata.util.ServiceLocator;
 public class ZanataSearch implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    private final boolean includeObsolete = false;
+    private static final boolean includeObsolete = false;
 
     @Inject
     private ProjectDAO projectDAO;
@@ -51,7 +50,8 @@ public class ZanataSearch implements Serializable {
     private AccountDAO accountDAO;
 
     @Getter
-    private ProjectUserAutocomplete autocomplete = new ProjectUserAutocomplete();
+    @Inject
+    private ProjectUserAutocomplete autocomplete;
 
     @Getter
     private SortingType ProjectSortingList = new SortingType(
@@ -80,7 +80,7 @@ public class ZanataSearch implements Serializable {
 
     @AllArgsConstructor
     @NoArgsConstructor
-    public class SearchResult {
+    public static class SearchResult implements Serializable {
         @Getter
         private HProject project;
 
@@ -95,14 +95,12 @@ public class ZanataSearch implements Serializable {
         }
     }
 
-    private class ProjectUserAutocomplete extends
-            AbstractAutocomplete<SearchResult> {
-
-        private ProjectDAO projectDAO =
-                ServiceLocator.instance().getInstance(ProjectDAO.class);
-
-        private AccountDAO accountDAO = ServiceLocator.instance().getInstance(
-                AccountDAO.class);
+    private static class ProjectUserAutocomplete extends
+            AbstractAutocomplete<SearchResult> implements Serializable {
+        @Inject
+        private ProjectDAO projectDAO;
+        @Inject
+        private AccountDAO accountDAO;
 
         /**
          * Return results on search
@@ -282,7 +280,7 @@ public class ZanataSearch implements Serializable {
         userTabUserFilter.reset();
     }
 
-    private class ProjectComparator implements Comparator<HProject> {
+    private class ProjectComparator implements Comparator<HProject>, Serializable {
         private SortingType sortingType;
 
         public ProjectComparator(SortingType sortingType) {
@@ -310,7 +308,7 @@ public class ZanataSearch implements Serializable {
         }
     }
 
-    private class UserComparator implements Comparator<HAccount> {
+    private class UserComparator implements Comparator<HAccount>, Serializable {
         private SortingType sortingType;
 
         public UserComparator(SortingType sortingType) {
