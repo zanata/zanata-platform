@@ -1102,6 +1102,12 @@
         <artifactId>resteasy-cdi</artifactId>
         <version>${resteasy.version}</version>
         <scope>${resteasy.scope}</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.jboss.resteasy</groupId>
@@ -1120,6 +1126,14 @@
           <exclusion>
             <artifactId>jcip-annotations</artifactId>
             <groupId>net.jcip</groupId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.spec.javax.annotation</groupId>
+            <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -1172,6 +1186,12 @@
         <artifactId>resteasy-servlet-initializer</artifactId>
         <version>${resteasy.version}</version>
         <scope>${resteasy.scope}</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.lucene</groupId>
