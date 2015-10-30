@@ -23,7 +23,6 @@ package org.zanata.config;
 import org.dbunit.operation.DatabaseOperation;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.seam.SeamAutowire;
 

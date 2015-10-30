@@ -25,7 +25,6 @@ package org.zanata.service.impl;
 import com.google.common.annotations.VisibleForTesting;
 import org.infinispan.manager.CacheContainer;
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.cache.CacheWrapper;
@@ -40,6 +39,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.service.VersionLocaleKey;
 import org.zanata.service.VersionStateCache;
 import org.zanata.ui.model.statistic.WordStatistic;
+import org.zanata.util.IServiceLocator;
 import org.zanata.util.ServiceLocator;
 
 import com.google.common.cache.CacheLoader;
@@ -66,7 +66,7 @@ public class VersionStateCacheImpl implements VersionStateCache {
     private CacheContainer cacheContainer;
 
     @Inject
-    private ServiceLocator serviceLocator;
+    private IServiceLocator serviceLocator;
 
     // constructor for Seam
     public VersionStateCacheImpl() {

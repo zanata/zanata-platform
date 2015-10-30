@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 import org.zanata.events.TextFlowTargetUpdatedEvent;
 import org.zanata.model.*;
 import org.zanata.service.*;
-import org.zanata.util.ServiceLocator;
+import org.zanata.util.IServiceLocator;
 import org.zanata.webtrans.shared.model.*;
 import org.zanata.webtrans.shared.rpc.*;
 
@@ -52,7 +52,7 @@ import javax.inject.Named;
 public class TransUnitUpdateHelper {
 
     @Inject
-    private ServiceLocator serviceLocator;
+    private IServiceLocator serviceLocator;
 
     private static Cache<CacheKey, TransUnitUpdateInfo> cache = CacheBuilder
             .newBuilder().expireAfterAccess(1, TimeUnit.MILLISECONDS)
@@ -99,11 +99,6 @@ public class TransUnitUpdateHelper {
             }
         }
         return result;
-    }
-
-    private static TransUnitTransformer getTransUnitTransformer() {
-        return ServiceLocator.instance()
-                .getInstance(TransUnitTransformer.class);
     }
 
     private static TransUnitUpdateInfo build(

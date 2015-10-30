@@ -25,7 +25,6 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
-import javax.inject.Named;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -153,6 +152,7 @@ public class SeamAutowire {
         componentImpls.clear();
         allowCycles = false;
         AutowireContexts.simulateSessionContext(false);
+        useImpl(AutowireLocator.class);
         return this;
     }
 

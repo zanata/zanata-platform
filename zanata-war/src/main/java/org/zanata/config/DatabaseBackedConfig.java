@@ -27,6 +27,8 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.zanata.util.IServiceLocator;
 import org.zanata.util.Synchronized;
 import org.zanata.ServerConstants;
 import org.zanata.dao.ApplicationConfigurationDAO;
@@ -50,7 +52,7 @@ public class DatabaseBackedConfig implements Serializable {
     private Map<String, String> configurationValues;
 
     @Inject
-    private ServiceLocator serviceLocator;
+    private IServiceLocator serviceLocator;
 
     /**
      * Resets the store by clearing out all values. This means that values will

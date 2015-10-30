@@ -5,7 +5,6 @@ import static org.zanata.transaction.TransactionUtil.runInTransaction;
 import java.util.concurrent.TimeUnit;
 
 import javax.enterprise.event.Observes;
-import org.apache.deltaspike.core.api.common.DeltaSpike;
 
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,7 @@ import org.zanata.model.HTextFlowTarget;
 import javax.enterprise.event.Event;
 
 import org.zanata.servlet.HttpRequestAndSessionHolder;
-import org.zanata.util.ServiceLocator;
+import org.zanata.util.IServiceLocator;
 import org.zanata.webtrans.server.rpc.TransUnitTransformer;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -47,7 +46,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 /**
  * Entity event listener for HTextFlowTarget.
@@ -73,7 +71,7 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
     private TranslationWorkspaceManager translationWorkspaceManager;
 
     @Inject
-    private ServiceLocator serviceLocator;
+    private IServiceLocator serviceLocator;
 
     @Inject
     private Event<TextFlowTargetUpdatedEvent>
