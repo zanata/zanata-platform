@@ -1,6 +1,7 @@
 package org.zanata.notification;
 
 import java.util.List;
+import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -35,7 +36,7 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandlerTest {
         MockitoAnnotations.initMocks(this);
         handler =
                 new LanguageTeamPermissionChangeJmsMessagePayloadHandler(
-                        emailBuilder, new Messages(), applicationConfiguration);
+                        emailBuilder, new Messages(Locale.ENGLISH), applicationConfiguration);
 
     }
 
@@ -83,7 +84,7 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandlerTest {
                 "John Smith <john@a.c>");
         LanguageTeamPermissionChangeEmailStrategy strategy =
                 strategyArgumentCaptor.getValue();
-        assertThat(strategy.getSubject(new Messages())).isEqualTo(
+        assertThat(strategy.getSubject(new Messages(Locale.ENGLISH))).isEqualTo(
                 "Your permissions in language team \"de\" have changed");
 
     }

@@ -52,9 +52,10 @@ import org.zanata.webtrans.shared.model.ProjectIterationId;
 public class EmailStrategyTest {
     // use this if you want to see the real messages on stderr
     private static final boolean DEBUG = false;
+    Locale locale = Locale.ENGLISH;
 
     // context values needed for most/all templates:
-    Messages msgs = DEBUG ? new Messages() : new Messages() {
+    Messages msgs = DEBUG ? new Messages(locale) : new Messages(locale) {
         @Override
         public String get(Object key) {
             return "MSG:key=" + key;

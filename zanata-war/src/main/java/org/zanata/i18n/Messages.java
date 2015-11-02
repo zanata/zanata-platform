@@ -30,6 +30,10 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.Default;
 import javax.inject.Named;
 
 import org.zanata.action.LocaleSelectorAction;
@@ -55,35 +59,19 @@ import javax.enterprise.event.Observes;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 
-@Named("msgs")
-@javax.enterprise.context.RequestScoped
+@Alternative
 public class Messages extends AbstractMap<String, String> {
-
-    /**
-     * Gets the locale of the current request, if any, otherwise server's
-     * default locale.
-     */
-    private static Locale getLocale() {
-        // TODO [CDI] inject LocaleResolver but make sure it handles session locale
-        if (Contexts.isSessionContextActive()) {
-            LocaleSelectorAction selectorAction = ServiceLocator.instance()
-                    .getInstance(LocaleSelectorAction.class);
-            return selectorAction.getLocale();
-        }
-        return Locale.getDefault();
-    }
 
     /**
      * Gets the 'messages' ResourceBundle for the specified locale.
      */
     private static ResourceBundle getResourceBundle(Locale locale) {
         // Generic ResourceBundle without built-in interpolation:
-        ResourceBundle resourceBundle = null;
         try {
-            resourceBundle = ResourceBundle.getBundle(
+            return ResourceBundle.getBundle(
                     "messages", locale);
         } catch (MissingResourceException e) {
-            resourceBundle = new ResourceBundle() {
+            return new ResourceBundle() {
                 @Override
                 protected Object handleGetObject(@Nonnull String key) {
                     return key;
@@ -96,21 +84,14 @@ public class Messages extends AbstractMap<String, String> {
                 }
             };
         }
-        return resourceBundle;
     }
 
-    /**
-     * Currently selected locale (observes LocaleSelectedEvent)
-     */
-    private Locale locale;
-    private transient ResourceBundle resourceBundle;
+    Locale locale;
+    // NB: getBundle will load the bundle whenever it is null
+    @Nullable
+    transient ResourceBundle resourceBundle;
 
-    /**
-     * Create an instance for the locale of the current request, if any,
-     * otherwise the server's default locale.
-     */
-    public Messages() {
-        this(getLocale());
+    protected Messages() {
     }
 
     /**
@@ -118,21 +99,14 @@ public class Messages extends AbstractMap<String, String> {
      */
     public Messages(Locale locale) {
         this.locale = locale;
-        this.resourceBundle = getResourceBundle(locale);
+        this.resourceBundle = null;
     }
 
     private ResourceBundle getBundle() {
-        if (resourceBundle != null) {
+        if (resourceBundle == null) {
             resourceBundle = getResourceBundle(locale);
         }
         return resourceBundle;
-    }
-
-    public void changeLocale(@Observes LocaleSelectedEvent event) {
-        // we need to refresh the bean
-        // see org.jboss.seam.international.LocaleSelector.select()
-        this.locale = event.getLocale();
-        this.resourceBundle = null;
     }
 
     // the default toString includes the entire list of properties,
@@ -169,7 +143,7 @@ public class Messages extends AbstractMap<String, String> {
      */
     @Deprecated
     public String format(String key) {
-        return formatWithAnyArgs(key, new Object[0]);
+        return formatWithAnyArgs(key);
     }
 
     /**
@@ -241,4 +215,39 @@ public class Messages extends AbstractMap<String, String> {
         }
         return entrySet;
     }
+
+    /**
+     * Uses the locale of the current request, if any, otherwise server's
+     * default locale. (observes LocaleSelectedEvent)
+     */
+    @Default
+    @RequestScoped
+    @Named("msgs")
+    public static class AutoLocaleMessages extends Messages {
+        public AutoLocaleMessages() {
+            super(getLocale());
+        }
+
+        /**
+         * Gets the locale of the current request. NB: May not work during
+         * application startup: use @DefaultLocale Messages.
+         */
+        private static Locale getLocale() {
+            // TODO [CDI] inject LocaleResolver but make sure it handles session locale
+            if (Contexts.isSessionContextActive()) {
+                LocaleSelectorAction selectorAction = ServiceLocator.instance()
+                        .getInstance(LocaleSelectorAction.class);
+                return selectorAction.getLocale();
+            }
+            return Locale.getDefault();
+        }
+
+        public void changeLocale(@Observes LocaleSelectedEvent event) {
+            // we need to refresh the bean
+            // see org.jboss.seam.international.LocaleSelector.select()
+            this.locale = event.getLocale();
+            this.resourceBundle = null;
+        }
+    }
+
 }

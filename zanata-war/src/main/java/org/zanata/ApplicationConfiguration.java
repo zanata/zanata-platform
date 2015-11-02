@@ -44,6 +44,7 @@ import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 import org.zanata.servlet.HttpRequestAndSessionHolder;
+import org.zanata.util.DefaultLocale;
 import org.zanata.util.Synchronized;
 import org.zanata.config.DatabaseBackedConfig;
 import org.zanata.config.JaasConfig;
@@ -87,7 +88,7 @@ public class ApplicationConfiguration implements Serializable {
     private JndiBackedConfig jndiBackedConfig;
     @Inject
     private JaasConfig jaasConfig;
-    @Inject
+    @Inject @DefaultLocale
     private Messages msgs;
 
     private static final ZanataSMTPAppender smtpAppenderInstance =
