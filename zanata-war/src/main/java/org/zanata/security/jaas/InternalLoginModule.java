@@ -117,9 +117,7 @@ public class InternalLoginModule implements LoginModule {
                 throw le;
             }
         } else {
-            log.error("No authentication method defined - "
-                    +
-                    "please define authenticate-method for <security:identity/> in components.xml");
+            log.error("No authentication method defined");
             throw new LoginException("No authentication method defined");
         }
 

@@ -258,28 +258,26 @@ public class SeamAutowire {
         // field might be an interface, but we need to find the
         // implementation class
         Class<T> componentClass = getImplClass(fieldClass);
+        // The component class might be an interface
+        if (componentClass.isInterface()) {
+            throw new RuntimeException(""
+                    + "Could not auto-wire component of type "
+                    + componentClass.getName()
+                    + ". Component is defined as an interface, but no "
+                    + "implementations have been defined for it.");
+        }
 
         try {
+            // No-arg constructor
             Constructor<T> constructor =
-                    componentClass.getDeclaredConstructor(); // No-arg
-                                                             // constructor
+                    componentClass.getDeclaredConstructor();
             constructor.setAccessible(true);
             return constructor.newInstance();
         } catch (NoSuchMethodException e) {
-            // The component class might be an interface
-            if (componentClass.isInterface()) {
-                throw new RuntimeException(
-                        ""
-                                + "Could not auto-wire component of type "
-                                + componentClass.getName()
-                                + ". Component is defined as an interface, but no implementations have been defined for it.",
-                        e);
-            } else {
-                throw new RuntimeException(""
-                        + "Could not auto-wire component of type "
-                        + componentClass.getName()
-                        + ". No no-args constructor.", e);
-            }
+            throw new RuntimeException(""
+                    + "Could not auto-wire component of type "
+                    + componentClass.getName()
+                    + ". No no-args constructor.", e);
         } catch (InvocationTargetException e) {
             throw new RuntimeException(""
                     + "Could not auto-wire component of type "
@@ -329,7 +327,7 @@ public class SeamAutowire {
         if (implOptional.isPresent()) {
             return (T) implOptional.get();
         }
-        return autowire(create(componentClass));
+        return autowire(create(componentClass), componentClass.getSimpleName());
     }
 
     /**
@@ -342,6 +340,10 @@ public class SeamAutowire {
      * @return Returns component.
      */
     public <T> T autowire(T component) {
+        return autowire(component, component.getClass().getSimpleName());
+    }
+
+    private <T> T autowire(T component, String componentPath) {
         Class<T> componentClass = (Class<T>) component.getClass();
 
         // Register all interfaces for this class
@@ -365,7 +367,8 @@ public class SeamAutowire {
                         newComponent = create(compType);
                     } catch (RuntimeException e) {
                         if (ignoreNonResolvable) {
-                            log.warn("Could not build component of type: "
+                            log.warn("Could not build component with name '" +
+                                    compName + "' of type: "
                                     + compType + ".", e);
                         } else {
                             throw e;
@@ -380,7 +383,7 @@ public class SeamAutowire {
                     }
 
                     try {
-                        autowire(newComponent);
+                        autowire(newComponent, componentPath+"."+compName);
                     } catch (RuntimeException e) {
                         if (ignoreNonResolvable) {
                             log.warn("Could not autowire component of type: "
@@ -421,7 +424,7 @@ public class SeamAutowire {
         }
 
         // call post constructor
-        invokePostConstructMethod(component);
+        invokePostConstructMethod(component, componentPath);
 
         return component;
     }
@@ -635,32 +638,26 @@ public class SeamAutowire {
      * Invokes a single method (the first found) annotated with
      * {@link javax.annotation.PostConstruct},
      */
-    private static void invokePostConstructMethod(Object component) {
+    private static void invokePostConstructMethod(Object component,
+            String componentPath) {
         Class<?> compClass = component.getClass();
         boolean postConstructAlreadyFound = false;
 
         for (Method m : compClass.getDeclaredMethods()) {
-            // Call the first Post Constructor found. Per the spec, there should
-            // be only one
+            // Per the spec, there should be only one PostConstruct method
             if (m.getAnnotation(javax.annotation.PostConstruct.class) != null) {
                 if (postConstructAlreadyFound) {
-                    log.warn("More than one PostConstruct method found for class "
-                            + compClass.getName()
-                            + ", only one will be invoked");
-                    break;
+                    throw new RuntimeException("More than one PostConstruct method found for class "
+                            + compClass.getName());
                 }
-
                 try {
                     m.setAccessible(true);
                     m.invoke(component); // there should be no params
                     postConstructAlreadyFound = true;
-                } catch (IllegalAccessException e) {
+                } catch (IllegalAccessException | InvocationTargetException e) {
                     throw new RuntimeException(
-                            "Error invoking Post construct method in component of class: "
-                                    + compClass.getName(), e);
-                } catch (InvocationTargetException e) {
-                    throw new RuntimeException(
-                            "Error invoking Post construct method in component of class: "
+                            "Error invoking PostConstruct method in component '" +
+                                    componentPath + "' of class "
                                     + compClass.getName(), e);
                 }
             }

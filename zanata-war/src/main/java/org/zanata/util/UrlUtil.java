@@ -36,10 +36,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.servlet.annotations.ContextPath;
 import com.google.common.base.Throwables;
+import org.zanata.servlet.annotations.ServerPath;
 
 /**
  * Get the URL for the current page in URL encoded format for use in the query
@@ -55,8 +55,8 @@ public class UrlUtil implements Serializable {
     private static final long serialVersionUID = 1L;
     private final static String ENCODING = "UTF-8";
 
-    @Inject
-    private ApplicationConfiguration applicationConfiguration;
+    @Inject @ServerPath
+    private String serverPath;
 
     @Inject
     @ContextPath
@@ -122,8 +122,7 @@ public class UrlUtil implements Serializable {
 
     public String editorDocumentListUrl(String projectSlug, String versionSlug,
             LocaleId targetLocaleId, LocaleId sourceLocaleId, boolean fullPath) {
-        String prefix = fullPath ? applicationConfiguration.getServerPath()
-                        : contextPath;
+        String prefix = fullPath ? serverPath : contextPath;
 
         return prefix + "/webtrans/translate?project=" + projectSlug
                 + "&iteration=" + versionSlug + "&localeId=" + targetLocaleId

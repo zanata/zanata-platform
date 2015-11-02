@@ -42,8 +42,10 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.Produces;
 
 import org.zanata.servlet.HttpRequestAndSessionHolder;
+import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.util.DefaultLocale;
 import org.zanata.util.Synchronized;
 import org.zanata.config.DatabaseBackedConfig;
@@ -238,6 +240,8 @@ public class ApplicationConfiguration implements Serializable {
         return databaseBackedConfig.getRegistrationUrl();
     }
 
+    @Produces
+    @ServerPath
     public String getServerPath() {
         String configuredValue = databaseBackedConfig.getServerHost();
         if (configuredValue != null) {
