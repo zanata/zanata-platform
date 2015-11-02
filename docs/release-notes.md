@@ -24,6 +24,7 @@
 * [ZNTA-634](https://zanata.atlassian.net/browse/ZNTA-634) - Users being logged out after a short period of inactivity
 * [ZNTA-719](https://zanata.atlassian.net/browse/ZNTA-719) - Translation merge targets the wrong source version
 * [ZNTA-718](https://zanata.atlassian.net/browse/ZNTA-718) - Allow admin and project maintainer to merge translation from all active projects.
+* [ZNTA-639](https://zanata.atlassian.net/browse/ZNTA-639) - Expired sessions causing ViewExpiredExceptions
 
 
 -----------------------
