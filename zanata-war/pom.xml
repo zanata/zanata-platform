@@ -164,8 +164,6 @@
             <usedDependency>org.apache.solr:solr-core</usedDependency>
             <usedDependency>org.apache.solr:solr-solrj</usedDependency>
             <usedDependency>org.antlr:antlr</usedDependency>
-            <!-- Used by lucene search -->
-            <usedDependency>org.hibernate.common:hibernate-commons-annotations</usedDependency>
             <!-- Used by hibernate -->
             <usedDependency>org.hibernate:hibernate-search-analyzers</usedDependency>
             <!-- used for arquillian deployment (org.zanata.Deployments) -->
@@ -2343,7 +2341,6 @@
     <dependency>
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
-      <version>1.1.0.Final</version>
       <scope>provided</scope>
     </dependency>
 
