@@ -39,7 +39,7 @@ public class JaxbTestUtil {
         JAXBContext context = createJaxbContextFor(obj, classes);
         context.createMarshaller().marshal(obj, writer);
         writer.flush();
-        // System.out.println(writer.toString());
+        System.out.println(writer.toString());
         obj =
                 (T) context.createUnmarshaller().unmarshal(
                         new StringReader(writer.toString()));

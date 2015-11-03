@@ -21,8 +21,7 @@
 package org.zanata.rest.dto;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -43,8 +42,8 @@ import org.zanata.common.Namespaces;
  *
  **/
 
-@XmlType(name = "glossaryTermType", propOrder = { "comments", "content" })
-@JsonPropertyOrder({ "content", "comments", "locale" })
+@XmlType(name = "glossaryTermType", propOrder = {"comment", "content", "locale", "lastModifiedDate", "lastModifiedBy"})
+@JsonPropertyOrder({ "content", "comment", "locale", "lastModifiedDate", "lastModifiedBy" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class GlossaryTerm implements Serializable {
@@ -58,7 +57,14 @@ public class GlossaryTerm implements Serializable {
 
     private String content;
 
-    private List<String> comments;
+    private String comment;
+
+    private String lastModifiedBy;
+
+    private Date lastModifiedDate;
+
+    public GlossaryTerm() {
+    }
 
     @XmlAttribute(name = "lang", namespace = Namespaces.XML)
     @XmlJavaTypeAdapter(type = LocaleId.class, value = LocaleIdAdapter.class)
@@ -73,6 +79,7 @@ public class GlossaryTerm implements Serializable {
 
     @XmlElement(name = "content", required = false,
             namespace = Namespaces.ZANATA_OLD)
+    @JsonProperty("content")
     public String getContent() {
         return content;
     }
@@ -81,17 +88,39 @@ public class GlossaryTerm implements Serializable {
         this.content = content;
     }
 
-    @XmlElement(name = "comment", namespace = Namespaces.ZANATA_OLD)
-    @JsonProperty("comments")
-    public List<String> getComments() {
-        if (comments == null) {
-            comments = new ArrayList<String>();
-        }
-        return comments;
+    @XmlElement(name = "comment", namespace = Namespaces.ZANATA_API)
+    @JsonProperty("comment")
+    public String getComment() {
+        return comment;
     }
 
-    public void setComments(List<String> comments) {
-        this.comments = comments;
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    @XmlElement(name = "lastModifiedBy", required = false,
+        namespace = Namespaces.ZANATA_API)
+    @JsonProperty("lastModifiedBy")
+    public String getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public void setLastModifiedBy(String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
+
+    @XmlElement(name = "lastModifiedDate", required = false,
+        namespace = Namespaces.ZANATA_API)
+    @JsonProperty("lastModifiedDate")
+    public Date getLastModifiedDate() {
+        return lastModifiedDate != null ? new Date(
+            lastModifiedDate.getTime()) : null;
+    }
+
+    public void setLastModifiedDate(Date lastModifiedDate) {
+        this.lastModifiedDate =
+            lastModifiedDate != null ? new Date(
+                lastModifiedDate.getTime()) : null;
     }
 
     @Override
@@ -100,41 +129,40 @@ public class GlossaryTerm implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result =
-                prime * result + ((comments == null) ? 0 : comments.hashCode());
-        result = prime * result + ((content == null) ? 0 : content.hashCode());
-        result = prime * result + ((locale == null) ? 0 : locale.hashCode());
-        return result;
-    }
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GlossaryTerm)) return false;
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
+        GlossaryTerm that = (GlossaryTerm) o;
+
+        if (comment != null ? !comment.equals(that.comment) :
+            that.comment != null)
             return false;
-        if (getClass() != obj.getClass())
+        if (content != null ? !content.equals(that.content) :
+            that.content != null)
             return false;
-        GlossaryTerm other = (GlossaryTerm) obj;
-        if (comments == null) {
-            if (other.comments != null)
-                return false;
-        } else if (!comments.equals(other.comments))
+        if (lastModifiedBy != null ?
+            !lastModifiedBy.equals(that.lastModifiedBy) :
+            that.lastModifiedBy != null) return false;
+        if (lastModifiedDate != null ?
+            !lastModifiedDate.equals(that.lastModifiedDate) :
+            that.lastModifiedDate != null) return false;
+        if (locale != null ? !locale.equals(that.locale) : that.locale != null)
             return false;
-        if (content == null) {
-            if (other.content != null)
-                return false;
-        } else if (!content.equals(other.content))
-            return false;
-        if (locale == null) {
-            if (other.locale != null)
-                return false;
-        } else if (!locale.equals(other.locale))
-            return false;
+
         return true;
     }
 
+    @Override
+    public int hashCode() {
+        int result = locale != null ? locale.hashCode() : 0;
+        result = 31 * result + (content != null ? content.hashCode() : 0);
+        result = 31 * result + (comment != null ? comment.hashCode() : 0);
+        result =
+            31 * result +
+                (lastModifiedBy != null ? lastModifiedBy.hashCode() : 0);
+        result = 31 * result +
+            (lastModifiedDate != null ? lastModifiedDate.hashCode() : 0);
+        return result;
+    }
 }

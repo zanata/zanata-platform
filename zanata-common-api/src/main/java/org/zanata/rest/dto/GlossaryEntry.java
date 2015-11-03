@@ -26,6 +26,7 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
@@ -35,28 +36,85 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.LocaleId;
 import org.zanata.common.Namespaces;
+import org.zanata.rest.MediaTypes;
 
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-@XmlType(name = "glossaryEntryType", propOrder = { "sourcereference",
-        "glossaryTerms" })
-@JsonPropertyOrder({ "srcLang", "sourcereference", "glossaryTerms" })
-@JsonIgnoreProperties(ignoreUnknown = true)
+@XmlRootElement(name = "glossaryEntry")
+@XmlType(name = "glossaryEntryType", propOrder = { "id", "pos",
+        "description", "sourceReference", "glossaryTerms", "termsCount" })
+@JsonPropertyOrder({ "id", "pos", "description", "srcLang", "sourceReference", "glossaryTerms", "termsCount" })
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class GlossaryEntry implements Serializable {
+public class GlossaryEntry implements Serializable, HasMediaType {
     /**
     *
     */
     private static final long serialVersionUID = 1685907304736580890L;
 
+    private Long id;
+
+    private String pos;
+
+    private String description;
+
     private List<GlossaryTerm> glossaryTerms;
 
     private LocaleId srcLang;
 
-    private String sourcereference;
+    private String sourceReference;
+
+    private int termsCount = 0;
+
+    public GlossaryEntry() {
+        this(null);
+    }
+
+    public GlossaryEntry(Long id) {
+        this.id = id;
+    }
+
+    @XmlElement(name = "id", namespace = Namespaces.ZANATA_OLD)
+    @JsonProperty("id")
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @XmlElement(name = "pos", namespace = Namespaces.ZANATA_OLD)
+    @JsonProperty("pos")
+    public String getPos() {
+        return pos;
+    }
+
+    public void setPos(String pos) {
+        this.pos = pos;
+    }
+
+    @XmlElement(name = "description", namespace = Namespaces.ZANATA_OLD)
+    @JsonProperty("description")
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @XmlElement(name = "termsCount", namespace = Namespaces.ZANATA_API)
+    @JsonProperty("termsCount")
+    public int getTermsCount() {
+        return termsCount;
+    }
+
+    public void setTermsCount(int termsCount) {
+        this.termsCount = termsCount;
+    }
 
     @XmlElement(name = "glossary-term", namespace = Namespaces.ZANATA_OLD)
     @JsonProperty("glossaryTerms")
@@ -84,13 +142,13 @@ public class GlossaryEntry implements Serializable {
 
     @XmlElement(name = "source-reference", required = false,
             namespace = Namespaces.ZANATA_OLD)
-    @JsonProperty("sourcereference")
-    public String getSourcereference() {
-        return sourcereference;
+    @JsonProperty("sourceReference")
+    public String getSourceReference() {
+        return sourceReference;
     }
 
-    public void setSourcereference(String ref) {
-        this.sourcereference = ref;
+    public void setSourceReference(String ref) {
+        this.sourceReference = ref;
     }
 
     @Override
@@ -99,48 +157,47 @@ public class GlossaryEntry implements Serializable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GlossaryEntry)) return false;
+
+        GlossaryEntry that = (GlossaryEntry) o;
+
+        if (termsCount != that.termsCount) return false;
+        if (description != null ? !description.equals(that.description) :
+            that.description != null) return false;
+        if (glossaryTerms != null ? !glossaryTerms.equals(that.glossaryTerms) :
+            that.glossaryTerms != null) return false;
+        if (pos != null ? !pos.equals(that.pos) : that.pos != null)
+            return false;
+        if (sourceReference != null ?
+            !sourceReference.equals(that.sourceReference) :
+            that.sourceReference != null) return false;
+        if (srcLang != null ? !srcLang.equals(that.srcLang) :
+            that.srcLang != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (pos != null ? pos.hashCode() : 0);
         result =
-                prime
-                        * result
-                        + ((glossaryTerms == null) ? 0 : glossaryTerms
-                                .hashCode());
+            31 * result + (description != null ? description.hashCode() : 0);
         result =
-                prime
-                        * result
-                        + ((sourcereference == null) ? 0 : sourcereference
-                                .hashCode());
-        result = prime * result + ((srcLang == null) ? 0 : srcLang.hashCode());
+            31 * result +
+                (glossaryTerms != null ? glossaryTerms.hashCode() : 0);
+        result = 31 * result + (srcLang != null ? srcLang.hashCode() : 0);
+        result = 31 * result +
+            (sourceReference != null ? sourceReference.hashCode() : 0);
+        result = 31 * result + termsCount;
         return result;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        GlossaryEntry other = (GlossaryEntry) obj;
-        if (glossaryTerms == null) {
-            if (other.glossaryTerms != null)
-                return false;
-        } else if (!glossaryTerms.equals(other.glossaryTerms))
-            return false;
-        if (sourcereference == null) {
-            if (other.sourcereference != null)
-                return false;
-        } else if (!sourcereference.equals(other.sourcereference))
-            return false;
-        if (srcLang == null) {
-            if (other.srcLang != null)
-                return false;
-        } else if (!srcLang.equals(other.srcLang))
-            return false;
-        return true;
+    public String getMediaType(MediaTypes.Format format) {
+        return MediaTypes.APPLICATION_ZANATA_GLOSSARY + format;
     }
-
 }
