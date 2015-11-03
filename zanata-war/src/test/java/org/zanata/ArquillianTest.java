@@ -99,10 +99,6 @@ public abstract class ArquillianTest {
                             "java:jboss/datasources/zanataDatasource");
             DatabaseConnection dbConn =
                     new DatabaseConnection(dataSource.getConnection());
-            // NB: Specific to H2
-            dbConn.getConfig().setProperty(
-                    DatabaseConfig.PROPERTY_DATATYPE_FACTORY,
-                    new H2DataTypeFactory());
             return dbConn;
         } catch (Exception e) {
             throw new RuntimeException(e);

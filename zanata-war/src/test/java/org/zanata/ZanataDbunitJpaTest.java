@@ -20,6 +20,7 @@ import org.dbunit.dataset.datatype.DataType;
 import org.dbunit.dataset.datatype.DataTypeException;
 import org.dbunit.dataset.datatype.DefaultDataTypeFactory;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
+import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.internal.SessionImpl;
 import org.junit.After;
@@ -232,8 +233,10 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest {
     // TODO This is hibernate specific
     protected IDatabaseConnection getConnection() {
         try {
-            return new DatabaseConnection(
+            DatabaseConnection dbConn = new DatabaseConnection(
                     ((SessionImpl) getSession()).connection());
+            editConfig(dbConn.getConfig());
+            return dbConn;
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
@@ -291,19 +294,7 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest {
      *            and features
      */
     protected void editConfig(DatabaseConfig config) {
-        // DBUnit/HSQL bugfix
-        // http://www.carbonfive.com/community/archives/2005/07/dbunit_hsql_and.html
-        config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY,
-                new DefaultDataTypeFactory() {
-                    @Override
-                    public DataType createDataType(int sqlType,
-                            String sqlTypeName) throws DataTypeException {
-                        if (sqlType == Types.BOOLEAN) {
-                            return DataType.BOOLEAN;
-                        }
-                        return super.createDataType(sqlType, sqlTypeName);
-                    }
-                });
+        config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new H2DataTypeFactory());
     }
 
     /**
