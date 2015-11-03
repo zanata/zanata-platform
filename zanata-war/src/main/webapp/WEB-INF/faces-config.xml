@@ -51,6 +51,8 @@
     -->
     <!--<view-handler>org.ajax4jsf.application.AjaxViewHandler</view-handler>-->
 
+    <message-bundle>messages</message-bundle>
+
   </application>
   <lifecycle>
     <phase-listener>org.zanata.security.FedoraOpenIdPhaseListener</phase-listener>
