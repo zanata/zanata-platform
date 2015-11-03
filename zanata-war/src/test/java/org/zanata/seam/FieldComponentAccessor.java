@@ -64,7 +64,7 @@ class FieldComponentAccessor extends ComponentAccessor {
             } else {
                 field.set(instance, value);
             }
-        } catch (IllegalAccessException e) {
+        } catch (IllegalAccessException | IllegalArgumentException e) {
             throw new AutowireException("Error accessing field "
                     + field.getName() + " on instance of type "
                     + instance.getClass().getName(), e);

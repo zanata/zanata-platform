@@ -186,7 +186,9 @@ public class SeamAutowire {
      */
     public SeamAutowire use(String name, Object component) {
         if (namedComponents.containsKey(name)) {
-            throw new AutowireException("Component "+name+" was already created.  You should register it before it is resolved.");
+            throw new AutowireException("Component " + name
+                    + " was already created.  You should register it before "
+                    + "it is resolved.");
         }
         namedComponents.put(name, component);
         // we could register the parent interfaces, but note that
@@ -254,14 +256,15 @@ public class SeamAutowire {
      *            spec.
      * @return The component.
      */
-    private <T> T create(Class<T> fieldClass) {
+    private <T> T create(Class<T> fieldClass, String componentPath) {
         // field might be an interface, but we need to find the
         // implementation class
         Class<T> componentClass = getImplClass(fieldClass);
         // The component class might be an interface
         if (componentClass.isInterface()) {
             throw new AutowireException(""
-                    + "Could not auto-wire component of type "
+                    + "Could not auto-wire component with path "
+                    + componentPath + " of type "
                     + componentClass.getName()
                     + ". Component is defined as an interface, but no "
                     + "implementations have been defined for it.");
@@ -275,17 +278,21 @@ public class SeamAutowire {
             return constructor.newInstance();
         } catch (NoSuchMethodException e) {
             throw new AutowireException(""
-                    + "Could not auto-wire component of type "
+                    + "Could not auto-wire component with path "
+                    + componentPath + " of type "
                     + componentClass.getName()
                     + ". No no-args constructor.", e);
         } catch (InvocationTargetException e) {
             throw new AutowireException(""
-                    + "Could not auto-wire component of type "
+                    + "Could not auto-wire component with path "
+                    + componentPath + " of type "
                     + componentClass.getName()
                     + ". Exception thrown from constructor.", e);
         } catch (Exception e) {
-            throw new AutowireException("Could not auto-wire component of type "
-                    + componentClass.getName(), e);
+            throw new AutowireException(""
+                    + "Could not auto-wire component with path "
+                            + componentPath + " of type "
+                            + componentClass.getName(), e);
         }
     }
 
@@ -327,7 +334,8 @@ public class SeamAutowire {
         if (implOptional.isPresent()) {
             return (T) implOptional.get();
         }
-        return autowire(create(componentClass), componentClass.getSimpleName());
+        String componentPath = componentClass.getSimpleName();
+        return autowire(create(componentClass, componentPath), componentPath);
     }
 
     /**
@@ -362,9 +370,10 @@ public class SeamAutowire {
                 // TODO stateless components should not / need not be cached
                 // autowire the component if not done yet
                 if (!namedComponents.containsKey(compName)) {
+                    String newComponentPath = componentPath + "." + compName;
                     Object newComponent = null;
                     try {
-                        newComponent = create(compType);
+                        newComponent = create(compType, newComponentPath);
                     } catch (AutowireException e) {
                         if (ignoreNonResolvable) {
                             log.warn("Could not build component with name '" +
@@ -383,7 +392,9 @@ public class SeamAutowire {
                     }
 
                     try {
-                        autowire(newComponent, componentPath+"."+compName);
+                        if (newComponent != null) {
+                            autowire(newComponent, newComponentPath);
+                        }
                     } catch (AutowireException e) {
                         if (ignoreNonResolvable) {
                             log.warn("Could not autowire component of type: "
@@ -454,6 +465,7 @@ public class SeamAutowire {
 
     }
 
+    // TODO delete this when Seam is entirely gone
     private static void rewireSeamContextsClass() {
         try {
             ClassPool pool = ClassPool.getDefault();
@@ -482,6 +494,7 @@ public class SeamAutowire {
 
     }
 
+    // TODO delete this when Seam is entirely gone
     private static void rewireSeamComponentClass() {
         try {
             ClassPool pool = ClassPool.getDefault();
@@ -536,6 +549,7 @@ public class SeamAutowire {
                 .getDeclaredMethod("getDependent", params), null);
     }
 
+    // TODO delete this when Seam is entirely gone
     private static void rewireSeamTransactionClass() {
         try {
             ClassPool pool = ClassPool.getDefault();
