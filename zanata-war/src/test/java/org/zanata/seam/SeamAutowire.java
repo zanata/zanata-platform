@@ -57,17 +57,17 @@ import org.zanata.util.AutowireLocator;
 import com.google.common.collect.Lists;
 
 /**
- * Helps with Auto-wiring of Seam components for integrated tests without the
+ * Helps with Auto-wiring of beans for integrated tests without the
  * need for a full Seam environment. It's a singleton class that upon first use
  * will change the way the {@link org.zanata.util.ServiceLocator} class works by
- * returning its own auto-wired components.
+ * returning its own auto-wired beans.
  * <p>
  * Note: If CDI-Unit is active, the modified ServiceLocator will attempt
  * to use real CDI beans first, otherwise falling back on Autowire
- * components if available.
+ * beans if available.
  * </p>
  * <p>
- * Supports components injected using: {@link javax.inject.Inject},
+ * Supports beans injected using: {@link javax.inject.Inject},
  * {@link org.zanata.util.ServiceLocator#getInstance(String, Class)} and similar methods...
  * and which have no-arg constructors.
  * </p>
@@ -109,9 +109,9 @@ public class SeamAutowire {
     private Map<String, Object> namedComponents = new HashMap<String, Object>();
 
     /**
-     * key is an interface Class, values is the concrete component Class
+     * key is an interface Class, values is the concrete bean Class
      */
-    private Map<Class<?>, Class<?>> componentImpls =
+    private Map<Class<?>, Class<?>> beanImpls =
             new HashMap<Class<?>, Class<?>>();
 
     private boolean ignoreNonResolvable;
@@ -143,13 +143,13 @@ public class SeamAutowire {
     }
 
     /**
-     * Clears out any components and returns to it's initial value.
+     * Clears out any beans and returns to it's initial value.
      */
     public SeamAutowire reset() {
         // TODO create a new instance instead, to be sure of clearing all state
         ignoreNonResolvable = false;
         namedComponents.clear();
-        componentImpls.clear();
+        beanImpls.clear();
         allowCycles = false;
         AutowireContexts.simulateSessionContext(false);
         useImpl(AutowireLocator.class);
@@ -175,31 +175,31 @@ public class SeamAutowire {
     }
 
     /**
-     * Indicates a specific instance of a component to use.
+     * Indicates a specific instance of a bean to use.
      *
      * @param name
-     *            The name of the component. When another component injects
+     *            The name of the bean. When another bean injects
      *            using <code>@Inject(value = "name")</code> or
-     *            <code>@Inject varName</code>, the provided component will be used.
-     * @param component
-     *            The component instance to use under the provided name.
+     *            <code>@Inject varName</code>, the provided bean will be used.
+     * @param bean
+     *            The bean instance to use under the provided name.
      */
-    public SeamAutowire use(String name, Object component) {
+    public SeamAutowire use(String name, Object bean) {
         if (namedComponents.containsKey(name)) {
-            throw new AutowireException("Component " + name
+            throw new AutowireException("The bean " + name
                     + " was already created.  You should register it before "
                     + "it is resolved.");
         }
-        namedComponents.put(name, component);
+        namedComponents.put(name, bean);
         // we could register the parent interfaces, but note that
         // getComponent(Class) currently constructs a new instance every time
-//        this.registerInterfaces(component.getClass());
+//        this.registerInterfaces(bean.getClass());
         return this;
     }
 
     /**
-     * Registers an implementation to use for components. This method is
-     * provided for components which are injected by interface rather than name.
+     * Registers an implementation to use for beans. This method is
+     * provided for beans which are injected by interface rather than name.
      *
      * @param cls
      *            The class to register.
@@ -215,7 +215,7 @@ public class SeamAutowire {
     }
 
     /**
-     * Indicates that a warning should be logged if for some reason a component
+     * Indicates that a warning should be logged if for some reason a bean
      * cannot be resolved. Otherwise, an exception will be thrown.
      */
     public SeamAutowire ignoreNonResolvable() {
@@ -224,171 +224,171 @@ public class SeamAutowire {
     }
 
     /**
-     * Returns a component by name.
+     * Returns a bean by name.
      *
      * @param name
-     *            Component's name.
-     * @return The component registered under the provided name, or null if such
-     *         a component has not been auto wired or cannot be resolved
+     *            The bean's name.
+     * @return The bean registered under the provided name, or null if such
+     *         a bean has not been auto wired or cannot be resolved
      *         otherwise.
      */
     public Object getComponent(String name) {
         return namedComponents.get(name);
     }
 
-    public <T> T getComponent(Class<T> componentClass, Annotation... qualifiers) {
+    public <T> T getComponent(Class<T> beanClass, Annotation... qualifiers) {
         if (qualifiers.length != 0) {
             log.warn(
                     "Qualifiers currently not supported by SeamAutowire.  Try CDI-Unit and CdiUnitRunner. Class:{}, Qualifiers:{}",
-                    componentClass,
+                    beanClass,
                     Lists.newArrayList(qualifiers));
         }
-        return autowire(componentClass);
+        return autowire(beanClass);
     }
 
     /**
-     * Creates (but does not autowire) the component instance for the provided
+     * Creates (but does not autowire) the bean instance for the provided
      * class.
      *
      * @param fieldClass
-     *            The component class to create - may be an interface if useImpl
+     *            The bean class to create - may be an interface if useImpl
      *            was called, otherwise must have a no-arg constructor per Seam
      *            spec.
-     * @return The component.
+     * @return The bean.
      */
-    private <T> T create(Class<T> fieldClass, String componentPath) {
+    private <T> T create(Class<T> fieldClass, String beanPath) {
         // field might be an interface, but we need to find the
         // implementation class
-        Class<T> componentClass = getImplClass(fieldClass);
-        // The component class might be an interface
-        if (componentClass.isInterface()) {
+        Class<T> beanClass = getImplClass(fieldClass);
+        // The bean class might be an interface
+        if (beanClass.isInterface()) {
             throw new AutowireException(""
-                    + "Could not auto-wire component with path "
-                    + componentPath + " of type "
-                    + componentClass.getName()
-                    + ". Component is defined as an interface, but no "
+                    + "Could not auto-wire bean with path "
+                    + beanPath + " of type "
+                    + beanClass.getName()
+                    + ". The bean is defined as an interface, but no "
                     + "implementations have been defined for it.");
         }
 
         try {
             // No-arg constructor
             Constructor<T> constructor =
-                    componentClass.getDeclaredConstructor();
+                    beanClass.getDeclaredConstructor();
             constructor.setAccessible(true);
             return constructor.newInstance();
         } catch (NoSuchMethodException e) {
             throw new AutowireException(""
-                    + "Could not auto-wire component with path "
-                    + componentPath + " of type "
-                    + componentClass.getName()
+                    + "Could not auto-wire bean with path "
+                    + beanPath + " of type "
+                    + beanClass.getName()
                     + ". No no-args constructor.", e);
         } catch (InvocationTargetException e) {
             throw new AutowireException(""
-                    + "Could not auto-wire component with path "
-                    + componentPath + " of type "
-                    + componentClass.getName()
+                    + "Could not auto-wire bean with path "
+                    + beanPath + " of type "
+                    + beanClass.getName()
                     + ". Exception thrown from constructor.", e);
         } catch (Exception e) {
             throw new AutowireException(""
-                    + "Could not auto-wire component with path "
-                            + componentPath + " of type "
-                            + componentClass.getName(), e);
+                    + "Could not auto-wire bean with path "
+                            + beanPath + " of type "
+                            + beanClass.getName(), e);
         }
     }
 
     private <T> Class<T> getImplClass(Class<T> fieldClass) {
-        // If the component type is an interface, try to find a declared
+        // If the bean type is an interface, try to find a declared
         // implementation
         // TODO field class might a concrete superclass
         // of the impl class
         if (Modifier.isAbstract(fieldClass.getModifiers())
-                && this.componentImpls.containsKey(fieldClass)) {
-            fieldClass = (Class<T>) this.componentImpls.get(fieldClass);
+                && this.beanImpls.containsKey(fieldClass)) {
+            fieldClass = (Class<T>) this.beanImpls.get(fieldClass);
         }
 
         return (Class<T>) fieldClass;
     }
 
     /**
-     * Autowires and returns the component instance for the provided class.
+     * Autowires and returns the bean instance for the provided class.
      *
-     * @param componentClass
-     *            The component class to create - may be an interface if useImpl
+     * @param beanClass
+     *            The bean class to create - may be an interface if useImpl
      *            was called, otherwise must have a no-arg constructor per Seam
      *            spec.
-     * @return The autowired component.
+     * @return The autowired bean.
      */
-    public <T> T autowire(Class<T> componentClass) {
+    public <T> T autowire(Class<T> beanClass) {
         // We could use getComponentName(Class) to simulate Seam's lookup
         // (by the @Named annotation on the injection point's class), but
         // this would just move us further away from CDI semantics.
         // TODO don't create multiple instances of a class
-        Predicate<Object> predicate = Predicates.instanceOf(componentClass);
+        Predicate<Object> predicate = Predicates.instanceOf(beanClass);
         Optional<Object> namedOptional = Iterables.tryFind(
                 namedComponents.values(), predicate);
         if (namedOptional.isPresent()) {
             return (T) namedOptional.get();
         }
         Optional<Class<?>> implOptional =
-                Iterables.tryFind(componentImpls.values(), predicate);
+                Iterables.tryFind(beanImpls.values(), predicate);
         if (implOptional.isPresent()) {
             return (T) implOptional.get();
         }
-        String componentPath = componentClass.getSimpleName();
-        return autowire(create(componentClass, componentPath), componentPath);
+        String beanPath = beanClass.getSimpleName();
+        return autowire(create(beanClass, beanPath), beanPath);
     }
 
     /**
-     * Autowires a component instance. The provided instance of the component
+     * Autowires a bean instance. The provided instance of the bean
      * will be autowired instead of creating a new one.
      *
-     * @param component
-     *            The component instance to autowire.
+     * @param bean
+     *            The bean instance to autowire.
      * @param <T>
-     * @return Returns component.
+     * @return Returns bean.
      */
-    public <T> T autowire(T component) {
-        return autowire(component, component.getClass().getSimpleName());
+    public <T> T autowire(T bean) {
+        return autowire(bean, bean.getClass().getSimpleName());
     }
 
-    private <T> T autowire(T component, String componentPath) {
-        Class<T> componentClass = (Class<T>) component.getClass();
+    private <T> T autowire(T bean, String beanPath) {
+        Class<T> beanClass = (Class<T>) bean.getClass();
 
         // Register all interfaces for this class
-        this.registerInterfaces(componentClass);
+        this.registerInterfaces(beanClass);
         // Resolve injected Components
-        for (ComponentAccessor accessor : getAllComponentAccessors(component)) {
-            // Another annotated component
+        for (ComponentAccessor accessor : getAllComponentAccessors(bean)) {
+            // Another annotated bean
             Inject inAnnotation = accessor.getAnnotation(Inject.class);
             if (inAnnotation != null) {
                 Object fieldVal = null;
-                String compName = accessor.getComponentName();
-                Class<?> compType = accessor.getComponentType();
+                String beanName = accessor.getComponentName();
+                Class<?> beanType = accessor.getComponentType();
                 Set<Annotation> qualifiers = accessor.getQualifiers();
-                Class<?> implType = getImplClass(compType);
+                Class<?> implType = getImplClass(beanType);
 
-                // TODO stateless components should not / need not be cached
-                // autowire the component if not done yet
-                if (!namedComponents.containsKey(compName)) {
-                    String newComponentPath = componentPath + "." + compName;
+                // TODO stateless beans should not / need not be cached
+                // autowire the bean if not done yet
+                if (!namedComponents.containsKey(beanName)) {
+                    String newComponentPath = beanPath + "." + beanName;
                     Object newComponent = null;
                     try {
-                        newComponent = create(compType, newComponentPath);
+                        newComponent = create(beanType, newComponentPath);
                     } catch (AutowireException e) {
                         if (ignoreNonResolvable) {
-                            log.warn("Could not build component with name '" +
-                                    compName + "' of type: "
-                                    + compType + ".", e);
+                            log.warn("Could not build bean with name '" +
+                                    beanName + "' of type: "
+                                    + beanType + ".", e);
                         } else {
                             throw e;
                         }
                     }
 
                     if (allowCycles) {
-                        namedComponents.put(compName, newComponent);
+                        namedComponents.put(beanName, newComponent);
                     } else {
                         // to detect mutual injection
-                        namedComponents.put(compName, PLACEHOLDER);
+                        namedComponents.put(beanName, PLACEHOLDER);
                     }
 
                     try {
@@ -397,8 +397,8 @@ public class SeamAutowire {
                         }
                     } catch (AutowireException e) {
                         if (ignoreNonResolvable) {
-                            log.warn("Could not autowire component of type: "
-                                    + compType + ".", e);
+                            log.warn("Could not autowire bean of type: "
+                                    + beanType + ".", e);
                         } else {
                             throw e;
                         }
@@ -406,25 +406,25 @@ public class SeamAutowire {
 
                     if (!allowCycles) {
                         // replace placeholder with the injected object
-                        namedComponents.put(compName, newComponent);
+                        namedComponents.put(beanName, newComponent);
                     }
                 }
 
-                fieldVal = namedComponents.get(compName);
+                fieldVal = namedComponents.get(beanName);
                 if (fieldVal == PLACEHOLDER) {
                     throw new AutowireException(
                             "Recursive dependency: unable to inject "
-                                    + compName + " into component of type "
-                                    + component.getClass().getName());
+                                    + beanName + " into bean of type "
+                                    + bean.getClass().getName());
                 }
                 try {
-                    accessor.setValue(component, fieldVal);
+                    accessor.setValue(bean, fieldVal);
                 } catch (AutowireException e) {
                     if (ignoreNonResolvable) {
                         log.warn("Could not set autowire field "
                                 + accessor.getComponentName()
-                                + " on component of type "
-                                + component.getClass().getName()
+                                + " on bean of type "
+                                + bean.getClass().getName()
                                 + " to value of type "
                                 + fieldVal.getClass().getName());
                     } else {
@@ -435,11 +435,12 @@ public class SeamAutowire {
         }
 
         // call post constructor
-        invokePostConstructMethod(component, componentPath);
+        invokePostConstructMethod(bean, beanPath);
 
-        return component;
+        return bean;
     }
 
+    // TODO why are we rewiring classes we control?
     private static void rewireServiceLocatorClass() {
         try {
             ClassPool pool = ClassPool.getDefault();
@@ -450,7 +451,7 @@ public class SeamAutowire {
             final CtClass objectCls = pool.get("java.lang.Object");
             final CtClass classCls = pool.get("java.lang.Class");
 
-            // Replace Component's method bodies with the ones in
+            // Replace ServiceLocator's method bodies with the ones in
             // AutowireComponent
             CtClass[] emptyArgs = {};
             CtMethod methodToReplace =
@@ -460,9 +461,8 @@ public class SeamAutowire {
             locatorCls.toClass();
         } catch (NotFoundException | CannotCompileException e) {
             throw new AutowireException(
-                    "Problem rewiring Seam's Component class", e);
+                    "Problem rewiring ServiceLocator class", e);
         }
-
     }
 
     // TODO delete this when Seam is entirely gone
@@ -471,7 +471,7 @@ public class SeamAutowire {
             ClassPool pool = ClassPool.getDefault();
             CtClass contextsCls = pool.get("org.jboss.seam.contexts.Contexts");
 
-            // Replace Component's method bodies with the ones in
+            // Replace Context's method bodies with the ones in
             // AutowireComponent
             contextsCls.getDeclaredMethod("isSessionContextActive")
                     .setBody(
@@ -541,6 +541,7 @@ public class SeamAutowire {
                 .getDeclaredMethod("getInstance", params), null);
     }
 
+    // TODO why are we rewiring classes we control?
     private static void replaceGetDependent(ClassPool pool, CtClass locatorCls, CtClass... params) throws
             NotFoundException, CannotCompileException {
         CtMethod methodToReplace =
@@ -571,16 +572,16 @@ public class SeamAutowire {
     }
 
     private static ComponentAccessor[]
-            getAllComponentAccessors(Object component) {
+            getAllComponentAccessors(Object bean) {
         Collection<ComponentAccessor> props =
                 new ArrayList<ComponentAccessor>();
 
-        for (Field f : getAllComponentFields(component)) {
+        for (Field f : getAllComponentFields(bean)) {
             if (f.getAnnotation(Inject.class) != null) {
                 props.add(ComponentAccessor.newInstance(f));
             }
         }
-        for (Method m : getAllComponentMethods(component)) {
+        for (Method m : getAllComponentMethods(bean)) {
             if (m.getAnnotation(Inject.class) != null) {
                 props.add(ComponentAccessor.newInstance(m));
             }
@@ -589,9 +590,9 @@ public class SeamAutowire {
         return props.toArray(new ComponentAccessor[props.size()]);
     }
 
-    private static Field[] getAllComponentFields(Object component) {
-        Field[] fields = component.getClass().getDeclaredFields();
-        Class<?> superClass = component.getClass().getSuperclass();
+    private static Field[] getAllComponentFields(Object bean) {
+        Field[] fields = bean.getClass().getDeclaredFields();
+        Class<?> superClass = bean.getClass().getSuperclass();
 
         while (superClass != null) {
             fields =
@@ -603,9 +604,9 @@ public class SeamAutowire {
         return fields;
     }
 
-    private static Method[] getAllComponentMethods(Object component) {
-        Method[] methods = component.getClass().getDeclaredMethods();
-        Class<?> superClass = component.getClass().getSuperclass();
+    private static Method[] getAllComponentMethods(Object bean) {
+        Method[] methods = bean.getClass().getDeclaredMethods();
+        Class<?> superClass = bean.getClass().getSuperclass();
 
         while (superClass != null) {
             methods =
@@ -619,9 +620,9 @@ public class SeamAutowire {
 
     private void registerInterfaces(Class<?> cls) {
         assert !Modifier.isAbstract(cls.getModifiers());
-        // register all interfaces registered by this component
+        // register all interfaces registered by this bean
         for (Class<?> iface : getAllInterfaces(cls)) {
-            this.componentImpls.put(iface, cls);
+            this.beanImpls.put(iface, cls);
         }
     }
 
@@ -640,9 +641,9 @@ public class SeamAutowire {
      * Invokes a single method (the first found) annotated with
      * {@link javax.annotation.PostConstruct},
      */
-    private static void invokePostConstructMethod(Object component,
-            String componentPath) {
-        Class<?> compClass = component.getClass();
+    private static void invokePostConstructMethod(Object bean,
+            String beanPath) {
+        Class<?> compClass = bean.getClass();
         boolean postConstructAlreadyFound = false;
 
         for (Method m : compClass.getDeclaredMethods()) {
@@ -654,12 +655,12 @@ public class SeamAutowire {
                 }
                 try {
                     m.setAccessible(true);
-                    m.invoke(component); // there should be no params
+                    m.invoke(bean); // there should be no params
                     postConstructAlreadyFound = true;
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     throw new AutowireException(
-                            "Error invoking PostConstruct method in component '" +
-                                    componentPath + "' of class "
+                            "Error invoking PostConstruct method in bean '" +
+                                    beanPath + "' of class "
                                     + compClass.getName(), e);
                 }
             }
