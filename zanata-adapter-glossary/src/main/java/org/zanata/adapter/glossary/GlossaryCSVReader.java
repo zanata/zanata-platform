@@ -22,18 +22,14 @@ package org.zanata.adapter.glossary;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
 
 import org.zanata.common.LocaleId;
-import org.zanata.rest.dto.Glossary;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.GlossaryTerm;
 
@@ -46,20 +42,22 @@ import au.com.bytecode.opencsv.CSVReader;
  **/
 public class GlossaryCSVReader extends AbstractGlossaryPushReader {
     private final int batchSize;
-    private final List<String> customColNames;
+    private final LocaleId srcLang;
+    private final static String POS = "POS";
+    private final static String DESC = "DESCRIPTION";
 
     /**
      * This class will close the reader
      *
-     * @param customColNames
      * @param batchSize
      */
-    public GlossaryCSVReader(List<String> customColNames, int batchSize) {
-        this.customColNames = customColNames;
+    public GlossaryCSVReader(LocaleId srcLang, int batchSize) {
+        this.srcLang = srcLang;
         this.batchSize = batchSize;
     }
 
-    public List<Glossary> extractGlossary(Reader reader) throws IOException {
+    public List<List<GlossaryEntry>> extractGlossary(Reader reader)
+            throws IOException {
         int entryCount = 0;
         // TODO replace opencsv with apache-commons-csv (a replacement of
         // opencsv and is in fedora maintained by someone)
@@ -67,43 +65,52 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
         // fedora. see http://commons.apache.org/csv/
         CSVReader csvReader = new CSVReader(reader);
         try {
-            List<Glossary> glossaries = new ArrayList<Glossary>();
+            List<List<GlossaryEntry>> glossaries =
+                    new ArrayList<List<GlossaryEntry>>();
             List<String[]> entries = csvReader.readAll();
 
             validateCSVEntries(entries);
 
-            Map<Integer, String> descriptionMap = setupDescMap(entries);
+            Map<String, Integer> descriptionMap = setupDescMap(entries);
             Map<Integer, LocaleId> localeColMap =
                     setupLocalesMap(entries, descriptionMap);
 
             LocaleId srcLocale = localeColMap.get(0);
 
-            Glossary glossary = new Glossary();
+            if (!srcLang.equals(srcLocale)) {
+                throw new RuntimeException("input source language '" + srcLang
+                        + "' does not match source language in file '"
+                        + srcLocale + "'");
+            }
+
+            List<GlossaryEntry> glossaryEntries =
+                    new ArrayList<GlossaryEntry>();
 
             for (int i = 1; i < entries.size(); i++) {
                 String[] row = entries.get(i);
                 GlossaryEntry entry = new GlossaryEntry();
                 entry.setSrcLang(srcLocale);
+                entry.setPos(row[descriptionMap.get(POS)]);
+                entry.setDescription(row[descriptionMap.get(DESC)]);
 
                 for (int x = 0; x < row.length && localeColMap.containsKey(x); x++) {
+                    LocaleId locale = localeColMap.get(x);
+                    String content = row[x];
+
                     GlossaryTerm term = new GlossaryTerm();
-                    term.setLocale(localeColMap.get(x));
-                    term.setContent(row[x]);
-                    if (x == 0) {
-                        // this is source term
-                        for (int descRow : descriptionMap.keySet()) {
-                            term.getComments().add(row[descRow]);
-                        }
-                    }
+
+                    term.setLocale(locale);
+                    term.setContent(content);
+
                     entry.getGlossaryTerms().add(term);
                 }
-                glossary.getGlossaryEntries().add(entry);
+                glossaryEntries.add(entry);
                 entryCount++;
 
                 if (entryCount == batchSize || i == entries.size() - 1) {
-                    glossaries.add(glossary);
+                    glossaries.add(glossaryEntries);
                     entryCount = 0;
-                    glossary = new Glossary();
+                    glossaryEntries = new ArrayList<GlossaryEntry>();
                 }
             }
             return glossaries;
@@ -134,15 +141,13 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
     /**
      * Parser reads from all from first row and exclude column from description
      * map. Format of CVS: {source locale},{locale},{locale}...,pos,description
-     * OR Format of CVS: {source
-     * locale},{locale},{locale}...,description1,description2.....
      */
     private Map<Integer, LocaleId> setupLocalesMap(List<String[]> entries,
-            Map<Integer, String> descriptionMap) {
+            Map<String, Integer> descriptionMap) {
         Map<Integer, LocaleId> localeColMap = new HashMap<Integer, LocaleId>();
         String[] headerRow = entries.get(0);
         for (int row = 0; row < headerRow.length
-                && !descriptionMap.containsKey(row); row++) {
+                && !descriptionMap.containsValue(row); row++) {
 
             LocaleId locale = new LocaleId(headerRow[row]);
             localeColMap.put(row, locale);
@@ -150,43 +155,17 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
         return localeColMap;
     }
 
-    private Map<Integer, String> setupDescMap(List<String[]> entries) {
-        Map<Integer, String> descMap = new HashMap<Integer, String>();
+    /**
+     * Read last 2 columns in CSV:
+     * {source locale},{locale},{locale}...,pos,description
+     *
+     * @param entries
+     */
+    private Map<String, Integer> setupDescMap(List<String[]> entries) {
+        Map<String, Integer> descMap = new HashMap<String, Integer>();
         String[] headerRow = entries.get(0);
-
-        for (int row = 0; row < headerRow.length; row++) {
-            for (String optsHeader : customColNames) {
-                if (optsHeader.equals(headerRow[row])) {
-                    descMap.put(row, headerRow[row]);
-                }
-            }
-        }
-        /*
-         * Sort out description map according to the value (header name)
-         */
-        ValueComparator bvc = new ValueComparator(descMap);
-        TreeMap<Integer, String> sorted_map = new TreeMap<Integer, String>(bvc);
-        sorted_map.putAll(descMap);
-
-        return sorted_map;
-    }
-
-   static class ValueComparator implements Comparator<Integer>, Serializable {
-
-      Map<Integer, String> base;
-      public ValueComparator(Map<Integer, String> base) {
-          this.base = base;
-      }
-
-      public int compare(Integer a, Integer b) {
-         String strA = base.get(a);
-         String strB = base.get(b);
-
-         if (strA == null || strB == null) {
-            return (strA == null) ? -1 : 1;
-         }
-
-        return strA.compareTo(strB);
-      }
+        descMap.put(POS, headerRow.length - 2);
+        descMap.put(DESC, headerRow.length - 1);
+        return descMap;
     }
 }

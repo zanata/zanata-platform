@@ -26,12 +26,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.zanata.rest.dto.Glossary;
+import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.GlossaryEntry;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -43,13 +42,23 @@ import static org.hamcrest.MatcherAssert.assertThat;
  **/
 public class GlossaryCSVReaderTest {
 
+    @Test(expected = RuntimeException.class)
+    public void testNotMatchingSource() throws IOException {
+        GlossaryCSVReader reader = new GlossaryCSVReader(LocaleId.DE, 300);
+        File sourceFile =
+            new File("src/test/resources/glossary/translate1.csv");
+
+        Reader inputStreamReader =
+            new InputStreamReader(new FileInputStream(sourceFile), "UTF-8");
+        BufferedReader br = new BufferedReader(inputStreamReader);
+
+        List<List<GlossaryEntry>> glossaries = reader.extractGlossary(br);
+    }
+
     @Test
     public void extractGlossaryTest1() throws IOException {
-        List<String> commentHeaders = new ArrayList<String>();
-        commentHeaders.add("pos");
-        commentHeaders.add("description");
 
-        GlossaryCSVReader reader = new GlossaryCSVReader(commentHeaders, 300);
+        GlossaryCSVReader reader = new GlossaryCSVReader(LocaleId.EN_US, 300);
 
         File sourceFile =
                 new File("src/test/resources/glossary/translate1.csv");
@@ -58,14 +67,12 @@ public class GlossaryCSVReaderTest {
                 new InputStreamReader(new FileInputStream(sourceFile), "UTF-8");
         BufferedReader br = new BufferedReader(inputStreamReader);
 
-        List<Glossary> glossaries = reader.extractGlossary(br);
-        // System.out.println(glossary);
+        List<List<GlossaryEntry>> glossaries = reader.extractGlossary(br);
         assertThat(glossaries.size(), Matchers.equalTo(1));
 
-        assertThat(glossaries.get(0).getGlossaryEntries().size(),
-                Matchers.equalTo(2));
+        assertThat(glossaries.get(0).size(), Matchers.equalTo(2));
 
-        for (GlossaryEntry entry : glossaries.get(0).getGlossaryEntries()) {
+        for (GlossaryEntry entry : glossaries.get(0)) {
             assertThat(entry.getGlossaryTerms().size(), Matchers.equalTo(3));
         }
 
@@ -73,13 +80,7 @@ public class GlossaryCSVReaderTest {
 
     @Test
     public void extractGlossaryTest2() throws IOException {
-        List<String> commentHeaders = new ArrayList<String>();
-        commentHeaders.add("description1");
-        commentHeaders.add("description2");
-        // this will be ignored
-        commentHeaders.add("description3");
-
-        GlossaryCSVReader reader = new GlossaryCSVReader(commentHeaders, 300);
+        GlossaryCSVReader reader = new GlossaryCSVReader(LocaleId.EN_US, 300);
 
         File sourceFile =
                 new File("src/test/resources/glossary/translate2.csv");
@@ -88,14 +89,14 @@ public class GlossaryCSVReaderTest {
                 new InputStreamReader(new FileInputStream(sourceFile), "UTF-8");
         BufferedReader br = new BufferedReader(inputStreamReader);
 
-        List<Glossary> glossaries = reader.extractGlossary(br);
+        List<List<GlossaryEntry>> glossaries = reader.extractGlossary(br);
         // System.out.println(glossary);
         assertThat(glossaries.size(), Matchers.equalTo(1));
 
-        assertThat(glossaries.get(0).getGlossaryEntries().size(),
+        assertThat(glossaries.get(0).size(),
                 Matchers.equalTo(2));
 
-        for (GlossaryEntry entry : glossaries.get(0).getGlossaryEntries()) {
+        for (GlossaryEntry entry : glossaries.get(0)) {
             assertThat(entry.getGlossaryTerms().size(), Matchers.equalTo(3));
         }
 
