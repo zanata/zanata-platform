@@ -111,8 +111,8 @@ public class ActivateWorkspaceHandlerTest extends ZanataTest {
             .use("projectDAO", projectDAO)
             .use("projectIterationDAO", projectIterationDAO)
             .use("localeServiceImpl", localeServiceImpl)
-            .use("webtrans.gwt.LoadOptionsHandler", loadOptionsHandler)
-            .use("webtrans.gwt.GetValidationRulesHandler", getValidationRulesHandler)
+            .use("loadOptionsHandler", loadOptionsHandler)
+            .use("getValidationRulesHandler", getValidationRulesHandler)
             .ignoreNonResolvable()
             .autowire(ActivateWorkspaceHandler.class);
         // @formatter:on

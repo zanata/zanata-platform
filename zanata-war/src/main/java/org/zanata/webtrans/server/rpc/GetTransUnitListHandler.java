@@ -74,7 +74,7 @@ public class GetTransUnitListHandler extends
     @Inject
     private ValidationService validationServiceImpl;
 
-    @Inject /* TODO [CDI] check this: migrated from @In(value = "webtrans.gwt.GetTransUnitsNavigationHandler", create = true) */
+    @Inject
     private GetTransUnitsNavigationService getTransUnitsNavigationService;
 
     private DateTimeFormatter dateFormatter =

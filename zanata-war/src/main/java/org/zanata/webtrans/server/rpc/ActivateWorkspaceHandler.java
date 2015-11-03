@@ -88,7 +88,7 @@ public class ActivateWorkspaceHandler extends
     @Inject
     private LoadOptionsHandler loadOptionsHandler;
 
-    @Inject /* TODO [CDI] check this: migrated from @In(value = "webtrans.gwt.GetValidationRulesHandler", create = true) */
+    @Inject
     private GetValidationRulesHandler getValidationRulesHandler;
 
     @Inject

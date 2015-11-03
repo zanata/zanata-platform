@@ -47,7 +47,7 @@ import org.zanata.webtrans.shared.rpc.ThemesOption;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Named("webtrans.gwt.LoadOptionsHandler")
+@Named("loadOptionsHandler")
 @javax.enterprise.context.Dependent
 @ActionHandlerFor(LoadOptionsAction.class)
 public class LoadOptionsHandler extends

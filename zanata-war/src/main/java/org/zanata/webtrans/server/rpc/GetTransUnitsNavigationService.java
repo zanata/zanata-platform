@@ -43,7 +43,7 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Named("webtrans.gwt.GetTransUnitsNavigationHandler")
+@Named("getTransUnitsNavigationService")
 @javax.enterprise.context.Dependent
 @Slf4j
 public class GetTransUnitsNavigationService {

@@ -39,7 +39,7 @@ import javax.inject.Named;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
-@Named("webtrans.gwt.GetValidationRulesHandler")
+@Named("getValidationRulesHandler")
 @ActionHandlerFor(GetValidationRulesAction.class)
 @javax.enterprise.context.Dependent
 public class GetValidationRulesHandler

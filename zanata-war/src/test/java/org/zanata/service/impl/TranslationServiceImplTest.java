@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
+import org.zanata.model.HAccount;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,6 +46,8 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import com.google.common.collect.Lists;
 
+import javax.enterprise.event.Event;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.isA;
@@ -60,6 +63,8 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest {
     private SeamAutowire seam = SeamAutowire.instance();
     @Mock
     private ZanataIdentity identity;
+    @Mock
+    private Event textFlowTargetStateEvent;
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -85,11 +90,16 @@ public class TranslationServiceImplTest extends ZanataDbunitJpaTest {
         MockitoAnnotations.initMocks(this);
         seam.reset()
                 .use("entityManager", getEm())
-                .use("session", getSession())
-                .use(ZanataJpaIdentityStore.AUTHENTICATED_USER,
-                        seam.autowire(AccountDAO.class).getByUsername("demo"))
-                .use("identity", identity).useImpl(LocaleServiceImpl.class)
-                .useImpl(ValidationServiceImpl.class).ignoreNonResolvable();
+                .use("session", getSession());
+        HAccount demoUser = seam.autowire(AccountDAO.class).getByUsername("demo");
+        seam
+                .use(ZanataJpaIdentityStore.AUTHENTICATED_USER, demoUser)
+                .use("authenticatedAccount", demoUser)
+                .use("identity", identity)
+                .use("textFlowTargetStateEvent", textFlowTargetStateEvent)
+                .useImpl(LocaleServiceImpl.class)
+                .useImpl(ValidationServiceImpl.class)
+                .ignoreNonResolvable();
     }
 
     @Test
