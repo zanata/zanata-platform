@@ -140,6 +140,7 @@
 
       <!-- https://docs.jboss.org/author/display/AS71/JPA+Reference+Guide#JPAReferenceGuide-Persistenceunitproperties -->
       <property name="jboss.as.jpa.managed" value="true" />
+      <property name="javax.persistence.validation.factory" value="org.jboss.seam.validation.InjectingConstraintValidatorFactory"/>
     </properties>
   </persistence-unit>
 

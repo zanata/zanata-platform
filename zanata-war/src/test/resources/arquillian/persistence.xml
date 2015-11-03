@@ -102,7 +102,7 @@
         value="./target/zanatasearchindex" />
       <property name="hibernate.search.lucene_version" value="LUCENE_36" />
       <property name="hibernate.search.worker.batch_size" value="50" />
-
+      <property name="javax.persistence.validation.factory" value="org.jboss.seam.validation.InjectingConstraintValidatorFactory"/>
     </properties>
   </persistence-unit>
 </persistence>

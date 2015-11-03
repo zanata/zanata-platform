@@ -1655,6 +1655,27 @@
       <scope>${hibernate.scope}</scope>
     </dependency>
 
+    <!--<dependency>-->
+      <!--<groupId>org.hibernate</groupId>-->
+      <!--<artifactId>hibernate-validator-cdi</artifactId>-->
+      <!--<scope>${hibernate.scope}</scope>-->
+    <!--</dependency>-->
+
+    <!-- TODO replace seam validation with hibernate-validator-cdi once we
+         move to Java EE 7 -->
+    <dependency>
+      <groupId>org.jboss.seam.validation</groupId>
+      <artifactId>seam-validation-api</artifactId>
+      <version>3.1.0.Final</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.seam.validation</groupId>
+      <artifactId>seam-validation</artifactId>
+      <version>3.1.0.Final</version>
+      <scope>runtime</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
