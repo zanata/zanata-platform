@@ -54,6 +54,8 @@ import org.zanata.util.TranslationUtil;
 
 import com.google.common.collect.Lists;
 
+import javax.enterprise.event.Event;
+
 public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
     private SeamAutowire seam = SeamAutowire.instance();
 
@@ -69,6 +71,8 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
     private MergeTranslationsServiceImpl service;
 
     private final String projectSlug = "sample-project";
+    @Mock
+    private Event textFlowTargetStateEventEvent;
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -101,6 +105,7 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
                 .use("entityManager" , getEm())
                 .use("session" , getSession())
                 .use("identity" , identity)
+                .use("textFlowTargetStateEventEvent", textFlowTargetStateEventEvent)
                 .use("cacheContainer", new InfinispanTestCacheContainer())
                 .useImpl(LocaleServiceImpl.class)
                 .useImpl(VersionStateCacheImpl.class)

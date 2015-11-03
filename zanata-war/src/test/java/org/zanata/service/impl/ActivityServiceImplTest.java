@@ -83,7 +83,9 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
         seam.reset().use("activityDAO", new ActivityDAO(getSession()))
                 .use("textFlowTargetDAO", new TextFlowTargetDAO(getSession()))
                 .use("documentDAO", new DocumentDAO(getSession()))
-                .use("session", getSession()).ignoreNonResolvable();
+                .use("session", getSession())
+                .use("entityManager", em)
+                .ignoreNonResolvable();
 
         activityService = seam.autowire(ActivityServiceImpl.class);
     }

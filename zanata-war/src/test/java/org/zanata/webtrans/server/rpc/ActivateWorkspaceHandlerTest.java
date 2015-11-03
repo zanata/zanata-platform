@@ -104,6 +104,7 @@ public class ActivateWorkspaceHandlerTest extends ZanataTest {
         // @formatter:off
         ActivateWorkspaceHandler activateWorkspaceHandler = SeamAutowire.instance()
             .reset()
+            .use("authenticatedAccount", hAccount)
             .use("identity", identity)
             .use("translationWorkspaceManager", translationWorkspaceManager)
             .use("accountDAO", accountDAO)
@@ -119,6 +120,9 @@ public class ActivateWorkspaceHandlerTest extends ZanataTest {
         person = TestFixture.person();
         doReturn(person).when(handler).retrievePerson();
         doReturn(HTTP_SESSION_ID).when(handler).getHttpSessionId();
+        long accountId = 7;
+        when(hAccount.getId()).thenReturn(accountId);
+        when(accountDAO.findById(accountId, true)).thenReturn(hAccount);
 
         ValidationMessages message =
                 Gwti18nReader.create(ValidationMessages.class);
