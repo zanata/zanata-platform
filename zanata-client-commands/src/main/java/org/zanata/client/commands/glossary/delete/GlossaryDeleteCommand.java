@@ -26,7 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.ConfigurableCommand;
 import org.zanata.client.commands.OptionsUtil;
-import org.zanata.common.LocaleId;
 import org.zanata.rest.client.GlossaryClient;
 import org.zanata.rest.client.RestClientFactory;
 
@@ -55,16 +54,15 @@ public class GlossaryDeleteCommand extends
     public void run() throws Exception {
         log.info("Server: {}", getOpts().getUrl());
         log.info("Username: {}", getOpts().getUsername());
-        log.info("Locale to delete: {}", getOpts().getlang());
+        log.info("Entry id to delete: {}", getOpts().getId());
         log.info("Delete entire glossary?: {}", getOpts().getAllGlossary());
 
         if (getOpts().getAllGlossary()) {
             glossaryClient.deleteAll();
-        } else if (!StringUtils.isEmpty(getOpts().getlang())) {
-            glossaryClient.delete(new LocaleId(getOpts()
-                    .getlang()));
+        } else if (!StringUtils.isEmpty(getOpts().getId())) {
+            glossaryClient.delete(getOpts().getId());
         } else {
-            throw new RuntimeException("Option 'zanata.lang' is required.");
+            throw new RuntimeException("Option 'zanata.resId' is required.");
         }
     }
 }

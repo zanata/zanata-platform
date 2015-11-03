@@ -21,13 +21,16 @@
 
 package org.zanata.rest.service;
 
+import java.util.List;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.zanata.common.LocaleId;
-import org.zanata.rest.dto.Glossary;
+import org.zanata.rest.GlossaryFileUploadForm;
+import org.zanata.rest.dto.GlossaryEntry;
 
 /**
  * @author Patrick Huang
@@ -39,28 +42,38 @@ public class MockGlossaryResource implements GlossaryResource {
     UriInfo uriInfo;
 
     @Override
-    public Response getEntries() {
+    public Response getInfo() {
+        return null;
+    }
+
+    @Override
+    public Response getEntries(LocaleId srcLocale,
+        LocaleId transLocale, int page, int sizePerPage, String filter,
+        String sort) {
         return MockResourceUtil.notUsedByClient();
     }
 
     @Override
-    public Response get(LocaleId locale) {
+    public Response post(List<GlossaryEntry> glossaryEntries) {
+        GenericEntity<List<GlossaryEntry>> genericEntity =
+            new GenericEntity<List<GlossaryEntry>>(glossaryEntries) {
+            };
+        return Response.ok(genericEntity).build();
+    }
+
+    @Override
+    public Response upload(GlossaryFileUploadForm glossaryFileUploadForm) {
         return MockResourceUtil.notUsedByClient();
     }
 
     @Override
-    public Response put(Glossary messageBody) {
-        return Response.created(uriInfo.getAbsolutePath()).build();
+    public Response deleteEntry(Long id) {
+        return MockResourceUtil.notUsedByClient();
     }
 
     @Override
-    public Response deleteGlossary(LocaleId locale) {
-        return Response.ok().build();
-    }
-
-    @Override
-    public Response deleteGlossaries() {
-        return Response.ok().build();
+    public Response deleteAllEntries() {
+        return null;
     }
 }
 

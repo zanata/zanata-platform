@@ -21,11 +21,15 @@
 
 package org.zanata.rest.client;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.Glossary;
+import org.zanata.rest.dto.GlossaryEntry;
+import org.zanata.rest.dto.ResultList;
 import org.zanata.rest.service.StubbingServerRule;
 
 public class GlossaryClientTest {
@@ -42,20 +46,8 @@ public class GlossaryClientTest {
 
     @Test
     public void testPut() throws Exception {
-        client.put(new Glossary());
-
-        MockServerTestUtil.verifyServerRespondSuccessStatus();
-    }
-
-    @Test
-    public void testDelete() throws Exception {
-        client.delete(LocaleId.DE);
-        MockServerTestUtil.verifyServerRespondSuccessStatus();
-    }
-
-    @Test
-    public void testDeleteAll() throws Exception {
-        client.deleteAll();
+        List<GlossaryEntry> glossaryEntries = new ArrayList<>();
+        client.post(glossaryEntries);
         MockServerTestUtil.verifyServerRespondSuccessStatus();
     }
 }

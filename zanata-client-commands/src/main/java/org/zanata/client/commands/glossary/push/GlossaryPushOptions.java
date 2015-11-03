@@ -1,7 +1,6 @@
 package org.zanata.client.commands.glossary.push;
 
 import java.io.File;
-import java.util.List;
 
 import org.zanata.client.commands.ConfigurableProjectOptions;
 
@@ -13,8 +12,4 @@ public interface GlossaryPushOptions extends ConfigurableProjectOptions {
     public String getTransLang();
 
     public int getBatchSize();
-
-    public boolean getTreatSourceCommentsAsTarget();
-
-    public List<String> getCommentCols();
 }
