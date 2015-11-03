@@ -102,10 +102,10 @@ public class FileService implements FileResource {
     @Inject
     private VirusScanner virusScanner;
 
-    @Inject /* TODO [CDI] check this: migrated from @In(value = "sourceDocumentUploader", create = true) */
+    @Inject
     private SourceDocumentUpload sourceUploader;
 
-    @Inject /* TODO [CDI] check this: migrated from @In(value = "translationDocumentUploader", create = true) */
+    @Inject
     private TranslationDocumentUpload translationUploader;
 
     @Inject

@@ -73,7 +73,7 @@ public class SourceDocumentUpload {
 
     private static final HLocale NULL_LOCALE = null;
 
-    @Inject /* TODO [CDI] check this: migrated from @In(create = true, value = "documentUploadUtil") */
+    @Inject
     private DocumentUploadUtil util;
     @Inject
     private FilePersistService filePersistService;

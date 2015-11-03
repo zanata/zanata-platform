@@ -75,6 +75,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
         seam.reset();
         seam.ignoreNonResolvable()
                 .use("documentUploadUtil", documentUploadUtil)
+                .use("util", documentUploadUtil)
                 .use("identity", identity)
                 .use("projectIterationDAO", projectIterationDAO)
                 .use("translationFileServiceImpl", translationFileService)
