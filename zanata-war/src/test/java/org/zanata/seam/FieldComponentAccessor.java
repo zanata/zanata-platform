@@ -49,7 +49,7 @@ class FieldComponentAccessor extends ComponentAccessor {
         try {
             return field.get(instance);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException("Error accessing field "
+            throw new AutowireException("Error accessing field "
                     + field.getName() + " on instance of type "
                     + instance.getClass().getName(), e);
         }
@@ -65,7 +65,7 @@ class FieldComponentAccessor extends ComponentAccessor {
                 field.set(instance, value);
             }
         } catch (IllegalAccessException e) {
-            throw new RuntimeException("Error accessing field "
+            throw new AutowireException("Error accessing field "
                     + field.getName() + " on instance of type "
                     + instance.getClass().getName(), e);
         }

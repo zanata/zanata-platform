@@ -59,7 +59,7 @@ class MethodComponentAccessor extends ComponentAccessor {
             setter = method;
             methodPrefix = "get";
         } else {
-            throw new RuntimeException(
+            throw new AutowireException(
                     "Property Accessor methods must be either getters or setters");
         }
 
@@ -84,18 +84,14 @@ class MethodComponentAccessor extends ComponentAccessor {
     @Override
     public Object getValue(Object instance) {
         if (getter == null) {
-            throw new RuntimeException("No getter for field " + fieldName
+            throw new AutowireException("No getter for field " + fieldName
                     + " found");
         }
 
         try {
             return getter.invoke(instance);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("Error accessing method "
-                    + getter.getName() + " on instance of type "
-                    + instance.getClass().getName(), e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException("Error accessing method "
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new AutowireException("Error accessing method "
                     + getter.getName() + " on instance of type "
                     + instance.getClass().getName(), e);
         }
@@ -104,7 +100,7 @@ class MethodComponentAccessor extends ComponentAccessor {
     @Override
     public void setValue(Object instance, Object value) {
         if (setter == null) {
-            throw new RuntimeException("No setter for field " + fieldName
+            throw new AutowireException("No setter for field " + fieldName
                     + " found");
         }
 
@@ -114,12 +110,8 @@ class MethodComponentAccessor extends ComponentAccessor {
             } else {
                 setter.invoke(instance, value);
             }
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("Error accessing method "
-                    + setter.getName() + " on instance of type "
-                    + instance.getClass().getName(), e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException("Error accessing method "
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new AutowireException("Error accessing method "
                     + setter.getName() + " on instance of type "
                     + instance.getClass().getName(), e);
         }

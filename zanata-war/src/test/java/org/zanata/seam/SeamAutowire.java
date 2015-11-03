@@ -186,7 +186,7 @@ public class SeamAutowire {
      */
     public SeamAutowire use(String name, Object component) {
         if (namedComponents.containsKey(name)) {
-            throw new RuntimeException("Component "+name+" was already created.  You should register it before it is resolved.");
+            throw new AutowireException("Component "+name+" was already created.  You should register it before it is resolved.");
         }
         namedComponents.put(name, component);
         // we could register the parent interfaces, but note that
@@ -204,7 +204,7 @@ public class SeamAutowire {
      */
     public SeamAutowire useImpl(Class<?> cls) {
         if (Modifier.isAbstract(cls.getModifiers())) {
-            throw new RuntimeException("Class " + cls.getName()
+            throw new AutowireException("Class " + cls.getName()
                     + " is abstract.");
         }
         this.registerInterfaces(cls);
@@ -260,7 +260,7 @@ public class SeamAutowire {
         Class<T> componentClass = getImplClass(fieldClass);
         // The component class might be an interface
         if (componentClass.isInterface()) {
-            throw new RuntimeException(""
+            throw new AutowireException(""
                     + "Could not auto-wire component of type "
                     + componentClass.getName()
                     + ". Component is defined as an interface, but no "
@@ -274,17 +274,17 @@ public class SeamAutowire {
             constructor.setAccessible(true);
             return constructor.newInstance();
         } catch (NoSuchMethodException e) {
-            throw new RuntimeException(""
+            throw new AutowireException(""
                     + "Could not auto-wire component of type "
                     + componentClass.getName()
                     + ". No no-args constructor.", e);
         } catch (InvocationTargetException e) {
-            throw new RuntimeException(""
+            throw new AutowireException(""
                     + "Could not auto-wire component of type "
                     + componentClass.getName()
                     + ". Exception thrown from constructor.", e);
         } catch (Exception e) {
-            throw new RuntimeException("Could not auto-wire component of type "
+            throw new AutowireException("Could not auto-wire component of type "
                     + componentClass.getName(), e);
         }
     }
@@ -365,7 +365,7 @@ public class SeamAutowire {
                     Object newComponent = null;
                     try {
                         newComponent = create(compType);
-                    } catch (RuntimeException e) {
+                    } catch (AutowireException e) {
                         if (ignoreNonResolvable) {
                             log.warn("Could not build component with name '" +
                                     compName + "' of type: "
@@ -384,7 +384,7 @@ public class SeamAutowire {
 
                     try {
                         autowire(newComponent, componentPath+"."+compName);
-                    } catch (RuntimeException e) {
+                    } catch (AutowireException e) {
                         if (ignoreNonResolvable) {
                             log.warn("Could not autowire component of type: "
                                     + compType + ".", e);
@@ -401,14 +401,14 @@ public class SeamAutowire {
 
                 fieldVal = namedComponents.get(compName);
                 if (fieldVal == PLACEHOLDER) {
-                    throw new RuntimeException(
+                    throw new AutowireException(
                             "Recursive dependency: unable to inject "
                                     + compName + " into component of type "
                                     + component.getClass().getName());
                 }
                 try {
                     accessor.setValue(component, fieldVal);
-                } catch (RuntimeException e) {
+                } catch (AutowireException e) {
                     if (ignoreNonResolvable) {
                         log.warn("Could not set autowire field "
                                 + accessor.getComponentName()
@@ -447,11 +447,8 @@ public class SeamAutowire {
             methodToReplace.setBody("{return org.zanata.util.AutowireLocator.instance(); }");
 
             locatorCls.toClass();
-        } catch (NotFoundException e) {
-            throw new RuntimeException(
-                    "Problem rewiring Seam's Component class", e);
-        } catch (CannotCompileException e) {
-            throw new RuntimeException(
+        } catch (NotFoundException | CannotCompileException e) {
+            throw new AutowireException(
                     "Problem rewiring Seam's Component class", e);
         }
 
@@ -478,11 +475,8 @@ public class SeamAutowire {
                     .setBody("{ return org.zanata.seam.AutowireContexts.getInstance().getSessionContext(); }");
 
             contextsCls.toClass();
-        } catch (NotFoundException e) {
-            throw new RuntimeException(
-                    "Problem rewiring Seam's Contexts class", e);
-        } catch (CannotCompileException e) {
-            throw new RuntimeException(
+        } catch (NotFoundException | CannotCompileException e) {
+            throw new AutowireException(
                     "Problem rewiring Seam's Contexts class", e);
         }
 
@@ -505,11 +499,8 @@ public class SeamAutowire {
                     classCls);
 
             componentCls.toClass();
-        } catch (NotFoundException e) {
-            throw new RuntimeException(
-                    "Problem rewiring Seam's Component class", e);
-        } catch (CannotCompileException e) {
-            throw new RuntimeException(
+        } catch (NotFoundException | CannotCompileException e) {
+            throw new AutowireException(
                     "Problem rewiring Seam's Component class", e);
         }
 
@@ -559,11 +550,8 @@ public class SeamAutowire {
                             "{ return org.zanata.seam.AutowireTransaction.instance(); }");
 
             cls.toClass();
-        } catch (NotFoundException e) {
-            throw new RuntimeException(
-                    "Problem rewiring Seam's Transaction class", e);
-        } catch (CannotCompileException e) {
-            throw new RuntimeException(
+        } catch (NotFoundException | CannotCompileException e) {
+            throw new AutowireException(
                     "Problem rewiring Seam's Transaction class", e);
         }
     }
@@ -647,7 +635,7 @@ public class SeamAutowire {
             // Per the spec, there should be only one PostConstruct method
             if (m.getAnnotation(javax.annotation.PostConstruct.class) != null) {
                 if (postConstructAlreadyFound) {
-                    throw new RuntimeException("More than one PostConstruct method found for class "
+                    throw new AutowireException("More than one PostConstruct method found for class "
                             + compClass.getName());
                 }
                 try {
@@ -655,7 +643,7 @@ public class SeamAutowire {
                     m.invoke(component); // there should be no params
                     postConstructAlreadyFound = true;
                 } catch (IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException(
+                    throw new AutowireException(
                             "Error invoking PostConstruct method in component '" +
                                     componentPath + "' of class "
                                     + compClass.getName(), e);

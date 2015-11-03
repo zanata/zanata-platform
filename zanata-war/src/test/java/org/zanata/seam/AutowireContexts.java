@@ -96,7 +96,7 @@ public class AutowireContexts {
     public void putValue(String name, ContextType ctx, Object value) {
         Map<String, Object> context = allContexts.get(ctx);
         if (context == null) {
-            throw new RuntimeException("Context of Type " + ctx.name()
+            throw new AutowireException("Context of Type " + ctx.name()
                     + " is not available. Check the SeamAutowire setup.");
         } else {
             context.put(name, value);
