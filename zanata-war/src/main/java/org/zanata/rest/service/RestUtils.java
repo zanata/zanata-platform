@@ -1,15 +1,10 @@
 package org.zanata.rest.service;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.ext.MessageBodyReader;
 
 import org.jboss.resteasy.core.Headers;
 import org.jboss.resteasy.core.ServerResponse;
@@ -17,7 +12,6 @@ import org.jboss.resteasy.spi.NoLogWebApplicationException;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,42 +64,6 @@ public class RestUtils {
                     .status(Status.BAD_REQUEST).entity(message.toString())
                     .build());
         }
-    }
-
-    public <T> T unmarshall(Class<T> entityClass, InputStream is,
-            MediaType requestContentType,
-            MultivaluedMap<String, String> requestHeaders) {
-        MessageBodyReader<T> reader =
-                ResteasyProviderFactory.getInstance().getMessageBodyReader(
-                        entityClass, entityClass, entityClass.getAnnotations(),
-                        requestContentType);
-        if (reader == null) {
-            throw new RuntimeException(
-                    "Unable to find MessageBodyReader for content type "
-                            + requestContentType);
-        }
-        T entity;
-        try {
-            entity =
-                    reader.readFrom(entityClass, entityClass,
-                            entityClass.getAnnotations(), requestContentType,
-                            requestHeaders, is);
-        } catch (Exception e) {
-            log.debug("Bad Request: Unable to read request body:", e);
-            throw new NoLogWebApplicationException(e, Response
-                    .status(Status.BAD_REQUEST)
-                    .entity("Unable to read request body: " + e.getMessage())
-                    .build());
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-            }
-        }
-
-        validateEntity(entity);
-
-        return entity;
     }
 
 }
