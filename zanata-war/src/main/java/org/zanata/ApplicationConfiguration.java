@@ -30,6 +30,7 @@ import java.util.Set;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
+import javax.enterprise.inject.Produces;
 import javax.servlet.http.HttpServletRequest;
 
 import com.google.common.base.Optional;
@@ -42,7 +43,6 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
-import javax.ws.rs.Produces;
 
 import org.zanata.servlet.HttpRequestAndSessionHolder;
 import org.zanata.servlet.annotations.ServerPath;
