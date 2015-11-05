@@ -112,7 +112,7 @@ public class Deployments {
                     !object.get().startsWith("/org/zanata/seam/MethodComponentAccessor") &&
                     !object.get().startsWith("/org/zanata/seam/SeamAutowire") &&
                     !object.get().startsWith("/org/zanata/seam/test") &&
-                    !object.get().startsWith("/org/zanata/webtrans") &&
+                    !object.get().startsWith("/org/zanata/webtrans/client") &&
                     notUnitTest(object);
         };
         archive.addPackages(true, archivePathFilter, "org.zanata");
