@@ -25,6 +25,7 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.List;
 
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 
 import org.zanata.rest.dto.GlossaryEntry;
@@ -48,11 +49,15 @@ public class GlossaryClient {
     }
 
     public void post(List<GlossaryEntry> glossaryEntries) {
-        GenericType<List<GlossaryEntry>> type2 =
-                new GenericType<List<GlossaryEntry>>() {};
+        Type genericType = new GenericType<List<GlossaryEntry>>() {
+        }.getType();
 
-        webResource().path("entries").type(MediaType.APPLICATION_JSON_TYPE)
-                .post(type2, glossaryEntries);
+        Object entity =
+                new GenericEntity<List<GlossaryEntry>>(glossaryEntries,
+                        genericType);
+
+        webResource().path("entries").type(MediaType.APPLICATION_XML_TYPE)
+                .post(entity);
     }
 
     public void delete(String id) {
