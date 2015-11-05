@@ -7,48 +7,8 @@
   <ui:with field='resources'
     type="org.zanata.webtrans.client.resources.Resources" />
 
-  <ui:style type="org.zanata.webtrans.client.view.GlossaryDetailsView.Styles">
-    .textArea {
-      width: 280px;
-      height: 40px;
-      resize: none;
-    }
-
+  <ui:style>
     .textArea[readonly] {
-      background: lightgray;
-    }
-
-    .listBox {
-      width: 285px;
-      margin: 0;
-    }
-
-    .targetCommentList {
-      background: #FFFFFF;
-      border: 1px solid #000000;
-    }
-
-    .targetCommentListButton {
-      font-size: 10px;
-      background: none;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      padding: 2px 1px 2px 3px;
-      margin: 2px;
-      vertical-align: top;
-    }
-
-    .targetCommentListButton:hover {
-      background: gray;
-      color: white;
-    }
-
-    .targetCommentTextArea {
-      width: 240px;
-    }
-
-    .targetCommentTextArea[readonly] {
       background: lightgray;
     }
 
@@ -62,83 +22,56 @@
       background: lightgray;
     }
 
-    .buttonDiv {
-      text-align: right;
+    .container {
+      height: 30em;
     }
-
   </ui:style>
 
-  <g:DialogBox autoHide="true" modal="true" styleName="gwt-DialogBox-fixedSize">
-    <g:LayoutPanel width="100%" height="100%">
-      <g:layer top="5px" height="22px" left="0" width="150px">
-        <g:HTMLPanel>
-          <g:InlineLabel styleName="headerLabel" text="Entries:" />
-          <g:ListBox ui:field='entryListBox' />
-        </g:HTMLPanel>
-      </g:layer>
+  <g:HTMLPanel styleName="new-zanata">
+    <fui:DialogBoxCloseButton ui:field="dismissButton" />
+    <div class="l__wrapper {style.container} l--scroll-auto">
+      <span class="epsilon">Entries</span>
+      <g:ListBox ui:field='entryListBox' />
 
-      <g:layer top="5px" height="46px" left="176px" right="0">
-        <g:HTMLPanel>
-          <g:InlineLabel styleName="headerLabel alignTop"
-            text="Source Reference:" />
-          <g:TextArea ui:field="srcRef" styleName="{style.textArea}" />
-        </g:HTMLPanel>
-      </g:layer>
+      <div class="l--push-top-half">
+        <g:InlineLabel ui:field="srcRef" styleName="txt--understated"/>
+        <div>
+          <label class="epsilon">Part of speech</label>
+          <g:TextBox ui:field="pos"/>
+        </div>
+      </div>
 
-      <g:layer top="70px" height="85px" left="0" right="300px">
-        <g:HTMLPanel>
-          <g:Label ui:field="sourceLabel" styleName="headerLabel" />
-          <g:TextArea ui:field='sourceText' styleName="{style.textArea}" />
-        </g:HTMLPanel>
-      </g:layer>
+      <div class="g l--push-top-half">
+        <div class="g__item w--1-2">
+          <g:Label ui:field="sourceLabel" styleName="epsilon" />
+          <g:InlineLabel ui:field='sourceText'/>
+        </div>
+        <div class="g__item w--1-2">
+          <label class="epsilon">Description</label>
+          <g:TextArea ui:field='description'/>
+        </div>
+      </div>
 
-      <g:layer top="70px" height="85px" left="300px" right="0">
-        <g:HTMLPanel>
-          <g:Label styleName="headerLabel" text="Comments:" />
-          <g:ListBox ui:field='sourceComment' styleName="{style.listBox}" />
-        </g:HTMLPanel>
-      </g:layer>
-
-      <g:layer top="165px" height="85px" left="0" right="300px">
-        <g:HTMLPanel>
-          <g:Label ui:field="targetLabel" styleName="headerLabel" />
-          <g:TextArea ui:field='targetText' styleName="{style.textArea}" />
-        </g:HTMLPanel>
-      </g:layer>
-
-      <g:layer top="165px" height="166px" left="300px" right="5px">
-        <g:HTMLPanel>
-          <g:Label styleName="headerLabel" text="Comments:" />
-          <g:ScrollPanel height="148px" styleName="{style.targetCommentList}"
-            ui:field="targetCommentScrollTable">
-            <g:FlexTable ui:field="targetCommentsTable" width="100%" />
-          </g:ScrollPanel>
-        </g:HTMLPanel>
-      </g:layer>
-
-      <g:layer top="255px" height="80px" left="0" right="300px">
-        <g:HTMLPanel>
-          <g:Label styleName="headerLabel" text="New target comment:" />
-          <g:TextArea ui:field="newTargetComment"
+      <div class="g l--push-top-half">
+        <div class="g__item w--1-2">
+          <g:Label ui:field="targetLabel" styleName="epsilon" />
+          <g:TextArea ui:field='targetText'/>
+        </div>
+        <div class="g__item w--1-2">
+          <label class="epsilon">Target comment</label>
+          <g:TextArea ui:field="targetComment"
             styleName="{style.newTargetCommentTextArea}" />
-          <g:Button ui:field="addNewCommentButton"
-            styleName="{style.targetCommentListButton}" />
-        </g:HTMLPanel>
-      </g:layer>
+        </div>
+      </div>
 
-      <g:layer top="355px" height="15px" width="350px" left="0">
-        <g:Label ui:field='lastModified' styleName="lastModifiedLabel" />
-      </g:layer>
+      <div class="l--push-top-half txt--align-right">
+        <g:InlineLabel ui:field='lastModified' styleName="txt--understated" />
 
-      <g:layer height="32px" top="348px" right="0" width="170px">
-        <g:HTMLPanel styleName="{style.buttonDiv}">
+        <g:HTMLPanel>
           <g:Image ui:field="loadingIcon" />
-          <g:Button ui:field='dismissButton' addStyleNames="button" />
-          <g:Button ui:field='saveButton' addStyleNames="button" />
+          <g:Button ui:field='saveButton' styleName="button--primary"/>
         </g:HTMLPanel>
-      </g:layer>
-
-    </g:LayoutPanel>
-
-  </g:DialogBox>
+      </div>
+    </div>
+  </g:HTMLPanel>
 </ui:UiBinder>

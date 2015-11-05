@@ -1,5 +1,6 @@
 package org.zanata.rest.editor.service.resource;
 
+import javax.annotation.Nonnull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -8,7 +9,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.zanata.model.HAccount;
 import org.zanata.rest.editor.MediaTypes;
+import org.zanata.rest.editor.dto.User;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -51,4 +54,18 @@ public interface UserResource {
             MediaType.APPLICATION_JSON })
     @Path("/{username:[a-z\\d_]{3,20}}")
     public Response getUserInfo(@PathParam("username") String username);
+
+    /**
+     * Generate {@link org.zanata.rest.editor.dto.User} object from username
+     *
+     * @param username
+     */
+    public User generateUser(String username);
+
+    /**
+     * Generate {@link org.zanata.rest.editor.dto.User} object from HAccount
+     *
+     * @param username
+     */
+    public User transferToUser(HAccount account);
 }

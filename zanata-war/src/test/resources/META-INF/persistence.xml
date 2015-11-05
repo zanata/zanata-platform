@@ -46,7 +46,6 @@
     <class>org.zanata.model.HRawDocument</class>
     <class>org.zanata.model.HRoleAssignmentRule</class>
     <class>org.zanata.model.HSimpleComment</class>
-    <class>org.zanata.model.HTermComment</class>
     <class>org.zanata.model.HTextFlowHistory</class>
     <class>org.zanata.model.HTextFlow</class>
     <class>org.zanata.model.HTextFlowTarget</class>

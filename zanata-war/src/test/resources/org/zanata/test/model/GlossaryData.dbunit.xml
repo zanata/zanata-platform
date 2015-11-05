@@ -1,11 +1,36 @@
 <?xml version="1.0"?>
 <dataset>
   <HGlossaryEntry id="1"
+    contentHash="hash"
     versionNum="1"
     creationDate="2009-09-01 20:31:32"
     lastChanged="2009-09-01 20:31:32"
     sourceRef="source reference"
     srcLocaleId="4"
+    pos="pos 1"
+    description="description 1"
+    />
+
+  <HGlossaryEntry id="2"
+    contentHash="hash2"
+    versionNum="1"
+    creationDate="2009-09-01 20:31:32"
+    lastChanged="2009-09-01 20:31:32"
+    sourceRef="source reference"
+    srcLocaleId="4"
+    pos="pos 2"
+    description="description 2"
+    />
+
+  <HGlossaryEntry id="3"
+    contentHash="hash3"
+    versionNum="1"
+    creationDate="2009-09-01 20:31:32"
+    lastChanged="2009-09-01 20:31:32"
+    sourceRef="source reference"
+    srcLocaleId="4"
+    pos="pos 3"
+    description="description 3"
     />
 
   <!-- en-US -->
@@ -38,20 +63,34 @@
     glossaryEntryId="1"
     />
 
-  <HTermComment id="1"
-    comment="test data comment 1"
-    pos="0"
-    glossaryTermId="1" />
+  <!-- en-US -->
+  <HGlossaryTerm id="4"
+    versionNum="1"
+    creationDate="2009-09-01 20:31:32"
+    lastChanged="2009-09-01 20:31:32"
+    content="test data content 4 (source lang)"
+    localeId="4"
+    glossaryEntryId="2"
+    />
 
+  <!-- de -->
+  <HGlossaryTerm id="5"
+    versionNum="1"
+    creationDate="2009-09-01 21:31:32"
+    lastChanged="2009-09-01 21:31:32"
+    content="test data content 5"
+    localeId="3"
+    glossaryEntryId="2"
+    />
 
-  <HTermComment id="2"
-    comment="test data comment 2"
-    pos="0"
-    glossaryTermId="2" />
-
-  <HTermComment id="3"
-    comment="test data comment 3"
-    pos="0"
-    glossaryTermId="3" />
+  <!-- en-US -->
+  <HGlossaryTerm id="6"
+    versionNum="1"
+    creationDate="2009-09-01 20:31:32"
+    lastChanged="2009-09-01 20:31:32"
+    content="test data content 4 (source lang)"
+    localeId="4"
+    glossaryEntryId="3"
+    />
 
 </dataset>

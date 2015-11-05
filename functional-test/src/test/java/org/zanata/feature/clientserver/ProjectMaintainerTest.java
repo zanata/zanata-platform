@@ -163,9 +163,9 @@ public class ProjectMaintainerTest extends ZanataTestCase {
                 .build());
 
         // copy a pom file
-        generateZanataXml(new File(workDir, "zanata.xml"), projectSlug,
-                iterationSlug, projectType, Lists.newArrayList("pl"));
 
+        generateZanataXml(new File(workDir, "zanata.xml"), projectSlug,
+            iterationSlug, projectType, Lists.newArrayList("pl"));
         client.callWithTimeout(workDir,
                 "mvn -B org.zanata:zanata-maven-plugin:push -Dzanata.userConfig="
                         + translatorConfig);

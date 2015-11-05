@@ -29,7 +29,7 @@ public class DateUtil {
     private final static String DATE_TIME_SHORT_PATTERN = "dd/MM/yy HH:mm";
     private final static String TIME_SHORT_PATTERN = "hh:mm:ss";
 
-    // Period Formatters are thread safe and immutableaccording to joda time
+    // Period Formatters are thread safe and immutable according to joda time
     // docs
     private static final PeriodFormatter TIME_REMAINING_FORMATTER =
             new PeriodFormatterBuilder().appendDays()

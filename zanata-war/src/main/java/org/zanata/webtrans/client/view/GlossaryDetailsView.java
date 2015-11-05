@@ -1,146 +1,112 @@
 package org.zanata.webtrans.client.view;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
+import org.zanata.ui.input.TextInput;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;
+import org.zanata.webtrans.client.ui.DialogBoxCloseButton;
 import org.zanata.webtrans.client.util.DateUtil;
 
-import com.google.common.base.Strings;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
-public class GlossaryDetailsView implements GlossaryDetailsDisplay {
+public class GlossaryDetailsView extends DialogBox
+    implements GlossaryDetailsDisplay {
 
     interface GlossaryDetailsIUiBinder extends
-            UiBinder<DialogBox, GlossaryDetailsView> {
-    }
-
-    interface Styles extends CssResource {
-        String targetCommentListButton();
-
-        String targetCommentTextArea();
+            UiBinder<HTMLPanel, GlossaryDetailsView> {
     }
 
     private static GlossaryDetailsIUiBinder uiBinder = GWT
             .create(GlossaryDetailsIUiBinder.class);
 
-    DialogBox dialogBox;
+    @UiField
+    TextArea targetText, targetComment, description;
 
     @UiField
-    TextArea srcRef, sourceText, targetText, newTargetComment;
+    TextBox pos;
 
     @UiField
-    Label sourceLabel, targetLabel, lastModified;
+    Label sourceLabel, targetLabel;
 
     @UiField
-    ListBox sourceComment, entryListBox;
+    InlineLabel lastModified, srcRef, sourceText;
 
     @UiField
-    Button dismissButton, saveButton, addNewCommentButton;
+    ListBox entryListBox;
 
     @UiField
-    FlexTable targetCommentsTable;
+    Button saveButton;
 
-    @UiField
-    ScrollPanel targetCommentScrollTable;
+    @UiField(provided = true)
+    DialogBoxCloseButton dismissButton;
 
     @UiField
     Image loadingIcon;
 
-    @UiField
-    Styles style;
-
-    private final int VISIBLE_COMMENTS = 4;
     private Listener listener;
 
     private final UiMessages messages;
 
-    private boolean hasGlossaryUpdateAccess;
-
-    private class DeleteRowHandler implements ClickHandler {
-        private final Widget panel;
-
-        public DeleteRowHandler(Widget panel) {
-            this.panel = panel;
-        }
-
-        @Override
-        public void onClick(ClickEvent event) {
-            targetCommentsTable.remove(panel);
-
-            // Clean up empty <tr> tag in the table
-            for (int i = 0; i < targetCommentsTable.getRowCount(); i++) {
-                Widget widget = targetCommentsTable.getWidget(i, 0);
-                if (widget == null) {
-                    targetCommentsTable.removeRow(i);
-                }
-            }
-        }
-    }
-
     @Inject
     public GlossaryDetailsView(UiMessages messages, Resources resources) {
-        dialogBox = uiBinder.createAndBindUi(this);
-        dialogBox.setText(messages.glossaryDetails());
+        super(true, false);
+        setGlassEnabled(true);
+        this.messages = messages;
+
+        dismissButton = new DialogBoxCloseButton(this);
+
+        HTMLPanel container = uiBinder.createAndBindUi(this);
+        getCaption().setText(messages.glossaryDetails());
+        setWidget(container);
+
         dismissButton.setText(messages.dismiss());
         saveButton.setText(messages.save());
-        sourceComment.setVisibleItemCount(VISIBLE_COMMENTS);
-
-        sourceText.setReadOnly(true);
-        srcRef.setReadOnly(true);
-
-        targetCommentsTable.setCellPadding(0);
-        targetCommentsTable.setCellSpacing(1);
-
-        addNewCommentButton.addStyleName("icon-plus-1");
-        targetCommentScrollTable.setAlwaysShowScrollBars(true);
 
         loadingIcon.setResource(resources.spinner());
         loadingIcon.setVisible(false);
-        this.messages = messages;
     }
 
     public void hide() {
-        dialogBox.hide();
+        hide(false);
     }
 
-    public void show() {
-        dialogBox.center();
-        targetCommentScrollTable.scrollToBottom();
+    @Override
+    public void setDescription(String descriptionText) {
+        description.setText(descriptionText);
+    }
+
+    @Override
+    public void setPos(String posText) {
+        pos.setText(posText);
+    }
+
+    @Override
+    public void setTargetComment(String targetCommentText) {
+        targetComment.setText(targetCommentText);
     }
 
     @Override
     public Widget asWidget() {
-        return dialogBox;
-    }
-
-    @Override
-    public void setSourceComment(List<String> comments) {
-        sourceComment.clear();
-        for (String comment : comments) {
-            sourceComment.addItem(comment);
-        }
+        return this;
     }
 
     @Override
@@ -148,50 +114,19 @@ public class GlossaryDetailsView implements GlossaryDetailsDisplay {
         sourceText.setText(source);
     }
 
-    private FlowPanel getTargetCommentRow(String comment) {
-        FlowPanel panel = new FlowPanel();
-
-        TextArea commentArea = new TextArea();
-        commentArea.setStyleName(style.targetCommentTextArea());
-        commentArea.setVisibleLines(2);
-        commentArea.setValue(comment);
-
-        if (!hasGlossaryUpdateAccess) {
-            commentArea.setReadOnly(true);
-        }
-        panel.add(commentArea);
-
-        if (hasGlossaryUpdateAccess) {
-            Button deleteButton = new Button();
-            deleteButton.setStyleName("icon-minus-1");
-            deleteButton.addStyleName(style.targetCommentListButton());
-            deleteButton.addClickHandler(new DeleteRowHandler(panel));
-            panel.add(deleteButton);
-        }
-        return panel;
+    @Override
+    public HasText getTargetComment() {
+        return targetComment;
     }
 
     @Override
-    public void setTargetComment(List<String> comments) {
-        targetCommentsTable.clear();
-        for (int i = 0; i < comments.size(); i++) {
-            String comment = comments.get(i);
-            targetCommentsTable.setWidget(i, 0, getTargetCommentRow(comment));
-        }
+    public HasText getPos() {
+        return pos;
     }
 
     @Override
-    public List<String> getCurrentTargetComments() {
-        ArrayList<String> currentComments = new ArrayList<String>();
-
-        for (int i = 0; i < targetCommentsTable.getRowCount(); i++) {
-            FlowPanel panel = (FlowPanel) targetCommentsTable.getWidget(i, 0);
-            TextArea textArea = (TextArea) panel.getWidget(0);
-            if (!Strings.isNullOrEmpty(textArea.getText())) {
-                currentComments.add(textArea.getText());
-            }
-        }
-        return currentComments;
+    public HasText getDescription() {
+        return description;
     }
 
     @Override
@@ -204,19 +139,9 @@ public class GlossaryDetailsView implements GlossaryDetailsDisplay {
         listener.selectEntry(entryListBox.getSelectedIndex());
     }
 
-    @UiHandler("dismissButton")
-    public void onDismissButtonClick(ClickEvent event) {
-        listener.onDismissClick();
-    }
-
     @UiHandler("saveButton")
     public void onSaveButtonClick(ClickEvent event) {
         listener.onSaveClick();
-    }
-
-    @UiHandler("addNewCommentButton")
-    public void getAddNewCommentButton(ClickEvent event) {
-        listener.addNewComment(targetCommentsTable.getRowCount());
     }
 
     @Override
@@ -245,17 +170,6 @@ public class GlossaryDetailsView implements GlossaryDetailsDisplay {
     }
 
     @Override
-    public HasText getNewCommentText() {
-        return newTargetComment;
-    }
-
-    @Override
-    public void addRowIntoTargetComment(int row, String comment) {
-        targetCommentsTable.setWidget(row, 0, getTargetCommentRow(comment));
-        targetCommentScrollTable.scrollToBottom();
-    }
-
-    @Override
     public void showLoading(boolean visible) {
         loadingIcon.setVisible(visible);
     }
@@ -263,10 +177,11 @@ public class GlossaryDetailsView implements GlossaryDetailsDisplay {
     @Override
     public void setHasUpdateAccess(boolean hasGlossaryUpdateAccess) {
         saveButton.setEnabled(hasGlossaryUpdateAccess);
-        newTargetComment.setReadOnly(!hasGlossaryUpdateAccess);
+        saveButton.setVisible(hasGlossaryUpdateAccess);
+        targetComment.setReadOnly(!hasGlossaryUpdateAccess);
         targetText.setReadOnly(!hasGlossaryUpdateAccess);
-        addNewCommentButton.setVisible(hasGlossaryUpdateAccess);
-        this.hasGlossaryUpdateAccess = hasGlossaryUpdateAccess;
+        pos.setReadOnly(!hasGlossaryUpdateAccess);
+        description.setReadOnly(!hasGlossaryUpdateAccess);
     }
 
     @Override
