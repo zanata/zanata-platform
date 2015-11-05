@@ -187,10 +187,11 @@ public class ZanataIdentity implements Identity, Serializable {
     }
 
     private void fireLogoutEvent() {
-        if (getCredentials() != null) {
+        // FIXME [CDI] when sessionId is null, it's likely instantiated for async context. It should not raise logout event which will cause a ConcurrentModificationException when destroying session
+        if (getCredentials() != null && sessionId != null) {
             String username = getCredentials().getUsername();
-            log.info("firing LogoutEvent for user {} with session {}", username,
-                    sessionId);
+            log.info("firing LogoutEvent for user {} with session {} -> {}", username,
+                    sessionId, this);
             getLogoutEvent().fire(new LogoutEvent(
                     username, sessionId));
         }
