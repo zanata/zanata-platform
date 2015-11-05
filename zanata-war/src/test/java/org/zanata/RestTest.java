@@ -28,6 +28,7 @@ import java.util.Set;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import org.apache.deltaspike.core.util.ProjectStageProducer;
 import org.dbunit.database.DatabaseConfig;
@@ -59,6 +60,7 @@ import com.google.common.collect.Lists;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @RunWith(Arquillian.class)
+@Exclude
 public abstract class RestTest {
     // Admin credentials
     protected static final String ADMIN = "admin";
@@ -206,7 +208,7 @@ public abstract class RestTest {
      */
     public final String getRestEndpointUrl(String resourceUrl) {
         StringBuilder fullUrl =
-                new StringBuilder(getDeploymentUrl() + "seam/resource/restv1");
+                new StringBuilder(getDeploymentUrl() + "rest");
         if (!resourceUrl.startsWith("/")) {
             fullUrl.append("/");
         }

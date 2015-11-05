@@ -21,9 +21,18 @@
 package org.zanata.arquillian;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import org.apache.deltaspike.core.util.ProjectStageProducer;
@@ -37,6 +46,10 @@ import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.RejectDependenciesStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableList;
 
 /**
  * Contains Suite-wide deployments to avoid having to deploy the same package
@@ -46,6 +59,8 @@ import org.jboss.shrinkwrap.resolver.api.maven.strategy.RejectDependenciesStrate
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class Deployments {
+    private static final Logger log =
+            LoggerFactory.getLogger(Deployments.class);
     public static final String DEPLOYMENT_NAME = "zanata-tests";
 
     static {
@@ -74,7 +89,6 @@ public class Deployments {
                 // conflict with guava.
                 new RejectDependenciesStrategy(false,
                         "net.bull.javamelody:javamelody-core",
-                        "org.zanata:zanata-model",
                         "com.google.collections:google-collections"))
                 .asFile();
     }
@@ -89,8 +103,8 @@ public class Deployments {
         Filter<ArchivePath> archivePathFilter = object -> {
             // Avoid the model package (for some reason it's being included
             // as a class file)
-            return /*!object.get().startsWith("/org/zanata/model/") &&
-                    !object.get().startsWith("/org/zanata/util/RequestContextValueStore") &&*/
+            return !object.get().startsWith("/org/zanata/model/") &&
+                    !object.get().startsWith("/org/zanata/util/RequestContextValueStore") &&
                     !object.get().startsWith("/org/zanata/seam/AutowireContexts") &&
                     !object.get().startsWith("/org/zanata/seam/AutowireInstance") &&
                     !object.get().startsWith("/org/zanata/seam/AutowireTransaction") &&
@@ -99,13 +113,21 @@ public class Deployments {
                     !object.get().startsWith("/org/zanata/seam/SeamAutowire") &&
                     !object.get().startsWith("/org/zanata/seam/test") &&
                     !object.get().startsWith("/org/zanata/webtrans/client") &&
-                    !object.get().matches(".+Test.*") &&
-                    !object.get().matches(".+ITCase.*");
+                    notUnitTest(object);
         };
         archive.addPackages(true, archivePathFilter, "org.zanata");
 
         // Resources (descriptors, etc)
         archive.addAsResource("pluralforms.properties");
+        archive.addAsResource("META-INF/apache-deltaspike.properties");
+        // JaxRSClassIndexProcessor generated class index
+//        archive.addAsResource("META-INF/services/javax.annotation.processing.Processor");
+
+        File jaxRsPathIndex = concatenatePathClassIndice();
+        archive.addAsResource(jaxRsPathIndex,
+                "META-INF/annotations/javax.ws.rs.Path");
+        archive.addAsResource("META-INF/annotations/javax.ws.rs.ext.Provider");
+
         archive.addAsResource(new ClassLoaderAsset("META-INF/orm.xml"),
                 "META-INF/orm.xml");
         archive.addAsResource(
@@ -115,7 +137,8 @@ public class Deployments {
         archive.addAsResource("messages.properties");
         archive.addAsWebInfResource(
                 new File("src/main/webapp-jboss/WEB-INF/jboss-web.xml"));
-        archive.addAsWebInfResource(new File("src/main/webapp-jboss/WEB-INF/beans.xml"));
+        archive.addAsWebInfResource(
+                new File("src/main/webapp-jboss/WEB-INF/beans.xml"));
         archive.addAsWebInfResource(new File(
                 "src/main/webapp-jboss/WEB-INF/jboss-deployment-structure.xml"));
         archive.setWebXML("arquillian/test-web.xml");
@@ -127,6 +150,65 @@ public class Deployments {
 //         File("/home/pahuang/temp/archive.war"), true);
 
         return archive;
+    }
+
+    /**
+     * There are two copy of generated class index file from
+     * JaxRSClassIndexProcessor, one for production under target/classes and one
+     * for test under target/test-classes. Here we concatenate the content of
+     * the two and generate a new one for arquillian archive to use.
+     *
+     * @return class index file with concatenated content
+     */
+    private static File concatenatePathClassIndice() {
+        try {
+            Enumeration<URL> resources =
+                    Thread.currentThread().getContextClassLoader()
+                            .getResources(
+                                    "META-INF/annotations/javax.ws.rs.Path");
+            ImmutableList.Builder<String> builder = ImmutableList.builder();
+            forEachRemaining(resources, url -> {
+                File file = new File(url.getPath());
+                if (file.exists() && file.canRead()) {
+                    try {
+                        Files.lines(Paths.get(url.toURI()),
+                                StandardCharsets.UTF_8)
+                                .forEach(builder::add);
+                    } catch (URISyntaxException | IOException e) {
+                        log.error("error handling file: {}", file, e);
+                    }
+                }
+            });
+            List<String> pathClasses = builder.build();
+            log.debug("all javax.ws.rs.Path classes: {}", pathClasses);
+            URL metaInf = Thread.currentThread().getContextClassLoader()
+                    .getResource("META-INF/annotations/javax.ws.rs.Path");
+            if (metaInf != null) {
+                File allPathClassesIndex = new File(metaInf.getPath() + "-concatenated");
+                Files.write(
+                        allPathClassesIndex.toPath(), pathClasses, StandardCharsets.UTF_8);
+                return allPathClassesIndex;
+            }
+            throw new IllegalStateException("can not find annotation index file");
+        } catch (IOException e) {
+            throw Throwables.propagate(e);
+        }
+    }
+
+    private static boolean notUnitTest(ArchivePath object) {
+        String context = object.get();
+        // TODO find a better way to exclude all unit tests being included and registered as CDI bean
+        return context.contains("ArquillianTest")
+                || context.contains("RestTest")
+                || context.contains("ResourceTestObjectFactory")
+                || !context.matches(".+Test.*");
+    }
+
+    private static <T> void forEachRemaining(Enumeration<T> enumeration,
+            Consumer<? super T> consumer) {
+        while (enumeration.hasMoreElements()) {
+            consumer.accept(enumeration.nextElement());
+        }
     }
 
     private static void addRemoteHelpers(WebArchive archive) {

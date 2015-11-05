@@ -1133,6 +1133,7 @@
         <dependency>
           <groupId>org.jboss.as</groupId>
           <artifactId>jboss-as-arquillian-common</artifactId>
+          <!-- this brings in a bunch of out of date arquillian-testenricher-XXX as transitive dependencies -->
           <version>${jboss.as.version}</version>
           <scope>test</scope>
           <exclusions>
@@ -1141,6 +1142,12 @@
               <artifactId>log4j-jboss-logmanager</artifactId>
             </exclusion>
           </exclusions>
+        </dependency>
+        <dependency>
+          <groupId>org.jboss.arquillian.testenricher</groupId>
+          <artifactId>arquillian-testenricher-cdi</artifactId>
+          <version>${arquillian.version}</version>
+          <scope>test</scope>
         </dependency>
 
         <dependency>

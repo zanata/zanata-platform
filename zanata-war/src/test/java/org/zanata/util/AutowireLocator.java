@@ -28,6 +28,7 @@ import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,7 @@ import org.zanata.seam.SeamAutowire;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Exclude
 public class AutowireLocator implements IServiceLocator {
     private static final Logger log =
             LoggerFactory.getLogger(AutowireLocator.class);
