@@ -29,6 +29,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
 import org.hibernate.ejb.HibernateEntityManagerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.util.Zanata;
 
 /**
@@ -36,6 +38,8 @@ import org.zanata.util.Zanata;
  */
 @ApplicationScoped
 public class EntityManagerFactoryProducer {
+    private static final Logger log =
+            LoggerFactory.getLogger(EntityManagerFactoryProducer.class);
 
     @PersistenceUnit
     private EntityManagerFactory entityManagerFactory;
@@ -52,6 +56,7 @@ public class EntityManagerFactoryProducer {
     protected void destroy() {
         // help Hibernate Search to shut down cleanly (delete Lucene index locks)
         if (entityManagerFactory.isOpen()) {
+            log.debug("!!!!!!!!!!!! shutting down entityManagerFactory");
             entityManagerFactory.close();
         }
     }

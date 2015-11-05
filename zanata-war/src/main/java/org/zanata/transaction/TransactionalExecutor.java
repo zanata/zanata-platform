@@ -22,21 +22,44 @@ package org.zanata.transaction;
 
 import java.util.concurrent.Callable;
 
-import javax.ejb.Stateless;
+import javax.annotation.Resource;
+import javax.enterprise.context.Dependent;
+import javax.transaction.TransactionManager;
 
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Throwables;
 
 /**
  * Executes callables in transactions.
- * NB: This is a Stateless EJB component. Have to use EJB otherwise the
- * transactional environment might not be present always.
+ *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Stateless
+@Dependent
 public class TransactionalExecutor {
-    @Transactional
+    private static final Logger log =
+            LoggerFactory.getLogger(TransactionalExecutor.class);
+
+    // using java:comp/UserTransaction will only work for first thread. I am not
+    // entirely sure the underlying cause but this will work.
+    // see https://home.java.net/node/696522#comment-777077
+    @Resource(lookup = "java:jboss/TransactionManager")
+    private TransactionManager transactionManager;
+
     public <R> R runInTransaction(Callable<R> function) throws Exception {
-        return function.call();
+        R result = null;
+        try {
+//            transactionManager.setTransactionTimeout(30);
+            transactionManager.begin();
+            result = function.call();
+            transactionManager.commit();
+        } catch (Throwable t) {
+            log.error("error running in transaction",
+                    Throwables.getRootCause(t));
+            transactionManager.rollback();
+        }
+        return result;
     }
 }

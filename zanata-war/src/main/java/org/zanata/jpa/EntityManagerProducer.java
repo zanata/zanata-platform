@@ -34,6 +34,8 @@ import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.jpa.FullTextEntityManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.util.Zanata;
 
 /**
@@ -43,6 +45,8 @@ import org.zanata.util.Zanata;
  */
 @ApplicationScoped
 public class EntityManagerProducer {
+    private static final Logger log =
+            LoggerFactory.getLogger(EntityManagerProducer.class);
 
     @Inject
     @Zanata
@@ -60,6 +64,7 @@ public class EntityManagerProducer {
         // sometimes EntityManager.isOpen() returns true when the Session
         // is actually closed, so we ask the Session
         if (entityManager.unwrap(Session.class).isOpen()) {
+            log.debug("___________ closing entityManager: {}", entityManager);
             entityManager.close();
         }
     }
@@ -74,6 +79,7 @@ public class EntityManagerProducer {
 
     protected void closeFTEntityManager(@Disposes @FullText FullTextEntityManager entityManager) {
         if (entityManager.isOpen()) {
+            log.debug("___________ closing FullTextEntityManager: {}", entityManager);
             entityManager.close();
         }
     }
@@ -87,6 +93,7 @@ public class EntityManagerProducer {
 
     protected void closeSession(@Disposes Session session) {
         if (session.isOpen()) {
+            log.debug("___________ closing session: {}", session);
             session.close();
         }
     }
@@ -100,6 +107,7 @@ public class EntityManagerProducer {
 
     protected void closeFullTextSession(@Disposes @FullText FullTextSession fullTextSession) {
         if (fullTextSession.isOpen()) {
+            log.debug("___________ closing FullTextSession: {}", fullTextSession);
             fullTextSession.close();
         }
     }

@@ -28,6 +28,8 @@ import java.util.concurrent.Future;
 import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.security.auth.Subject;
@@ -104,7 +106,8 @@ public class AsyncTaskManager {
                 ctxCtrl =
                         ServiceLocator.instance().getInstance(
                                 ContextControl.class);
-                ctxCtrl.startContexts();
+                ctxCtrl.startContext(RequestScoped.class);
+                ctxCtrl.startContext(SessionScoped.class);
                 // Prepare the security context
                 prepareSecurityContext(taskOwnerUsername, runAsPpal, runAsSubject);
                 // run the task and capture the result
@@ -116,8 +119,9 @@ public class AsyncTaskManager {
                         "Exception when executing an asynchronous task.", t);
             } finally {
                 // stop the contexts to make sure all beans are cleaned up
-                if(ctxCtrl != null) {
-                    ctxCtrl.stopContexts();
+                if (ctxCtrl != null) {
+                    ctxCtrl.stopContext(RequestScoped.class);
+                    ctxCtrl.stopContext(SessionScoped.class);
                 }
             }
         };

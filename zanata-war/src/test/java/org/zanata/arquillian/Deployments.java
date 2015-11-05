@@ -112,7 +112,7 @@ public class Deployments {
                     !object.get().startsWith("/org/zanata/seam/MethodComponentAccessor") &&
                     !object.get().startsWith("/org/zanata/seam/SeamAutowire") &&
                     !object.get().startsWith("/org/zanata/seam/test") &&
-                    !object.get().startsWith("/org/zanata/webtrans/client") &&
+                    !object.get().startsWith("/org/zanata/webtrans") &&
                     notUnitTest(object);
         };
         archive.addPackages(true, archivePathFilter, "org.zanata");
@@ -121,8 +121,6 @@ public class Deployments {
         archive.addAsResource("pluralforms.properties");
         archive.addAsResource("META-INF/apache-deltaspike.properties");
         // JaxRSClassIndexProcessor generated class index
-//        archive.addAsResource("META-INF/services/javax.annotation.processing.Processor");
-
         File jaxRsPathIndex = concatenatePathClassIndice();
         archive.addAsResource(jaxRsPathIndex,
                 "META-INF/annotations/javax.ws.rs.Path");
