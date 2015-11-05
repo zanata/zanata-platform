@@ -99,6 +99,18 @@ public class GlossaryFileServiceImpl implements GlossaryFileService {
         }
     }
 
+    private final static int MAX_LENGTH = 255;
+
+    private String validateGlossaryEntry(GlossaryEntry entry) {
+        if(StringUtils.length(entry.getDescription()) > MAX_LENGTH) {
+            return "Glossary description too long, maximum " + MAX_LENGTH + " character";
+        }
+        if(StringUtils.length(entry.getPos()) > MAX_LENGTH) {
+            return "Glossary part of speech too long, maximum " + MAX_LENGTH + " character";
+        }
+        return null;
+    }
+
     @Override
     public GlossaryProcessed saveOrUpdateGlossary(
             List<GlossaryEntry> glossaryEntries) {
@@ -110,7 +122,19 @@ public class GlossaryFileServiceImpl implements GlossaryFileService {
         List<String> warnings = Lists.newArrayList();
         for (int i = 0; i < glossaryEntries.size(); i++) {
             GlossaryEntry entry = glossaryEntries.get(i);
-            String message = checkForDuplicateEntry(entry);
+
+            String message = validateGlossaryEntry(entry);
+            if(message != null) {
+                warnings.add(message);
+                counter++;
+                if (counter == BATCH_SIZE || i == glossaryEntries.size() - 1) {
+                    executeCommit();
+                    counter = 0;
+                }
+                continue;
+            }
+
+            message = checkForDuplicateEntry(entry);
             boolean onlyTransferTransTerm = false;
             if(message != null) {
                 //only update transTerm

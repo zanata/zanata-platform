@@ -109,6 +109,7 @@ var NewEntryModal = React.createClass({
               label='Part of speech'
               value={this.state.pos}
               placeholder='Noun, Verb, etc'
+              maxLength='255'
               onChange={this._onPosChange}
               onReset={this._onPosReset}
               />
@@ -119,6 +120,7 @@ var NewEntryModal = React.createClass({
               label='Description'
               value={this.state.description}
               placeholder='The definition of this term'
+              maxLength='255'
               onChange={this._onDescChange}
               onReset={this._onDescReset}
               />
