@@ -86,6 +86,7 @@ var ImportModal = React.createClass({
 
   render: function () {
     var transLanguageDropdown,
+      messageSection,
       fileExtension = this._getUploadFileExtension(),
       disableUpload = true,
       isUploading = this.state.status !== -1;
@@ -119,6 +120,8 @@ var ImportModal = React.createClass({
       } else {
         disableUpload = false;
       }
+    } else if(this.state.file) {
+      messageSection = <div className='cdanger mv1/4'>File {this.state.file.name} is not supported.</div>
     }
 
     return (
@@ -134,6 +137,7 @@ var ImportModal = React.createClass({
             <form onSubmit={this._onSubmit} encType="multipart/form-data" className="mb1">
               <input type="file" onChange={this._onFileChange} ref="file" multiple={false} disabled={isUploading} />
             </form>
+            {messageSection}
             {transLanguageDropdown}
             <p>
               CSV and PO files are supported. <strong>The source language should be in {this.props.srcLocale.locale.displayName}</strong>.
