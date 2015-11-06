@@ -20,6 +20,7 @@
  */
 package org.zanata.security;
 
+import java.io.IOException;
 import java.util.Map;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
@@ -84,7 +85,7 @@ public class ZanataCentralLoginModule implements LoginModule {
             // NB: A custom callback handler could be configured on the app
             // server to avoid this.
             authTypeCallback.setAuthType(AuthenticationType.KERBEROS);
-        } catch (Exception e) {
+        } catch (IOException e) {
             LoginException lex = new LoginException(e.getMessage());
             lex.initCause(e);
             throw lex;

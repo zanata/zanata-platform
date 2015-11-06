@@ -96,8 +96,8 @@ public class SpNegoIdentity implements Serializable {
             field = ZanataIdentity.class.getDeclaredField(SUBJECT);
             field.setAccessible(true);
             field.set(identity, SecurityContextAssociation.getSubject());
-        } catch (Exception e) {
-            LOGGER.warn("exception", e);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new RuntimeException(e);
         }
     }
 }

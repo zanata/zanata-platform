@@ -34,7 +34,10 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.security.auth.Subject;
+import javax.security.auth.login.AccountException;
 import javax.security.auth.login.AppConfigurationEntry;
+import javax.security.auth.login.CredentialException;
+import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpSession;
@@ -190,10 +193,12 @@ public class ZanataIdentity implements Identity, Serializable {
         // FIXME [CDI] when sessionId is null, it's likely instantiated for async context. It should not raise logout event which will cause a ConcurrentModificationException when destroying session
         if (getCredentials() != null && sessionId != null) {
             String username = getCredentials().getUsername();
-            log.info("firing LogoutEvent for user {} with session {} -> {}", username,
-                    sessionId, this);
-            getLogoutEvent().fire(new LogoutEvent(
-                    username, sessionId));
+            if (username != null) {
+                log.info("firing LogoutEvent for user {} with session {} -> {}", username,
+                        sessionId, this);
+                getLogoutEvent().fire(new LogoutEvent(
+                        username, sessionId));
+            }
         }
     }
 
@@ -559,19 +564,30 @@ public class ZanataIdentity implements Identity, Serializable {
             getLoginSuccessfulEvent().fire(new LoginSuccessfulEvent());
             this.preAuthenticated = true;
             return "loggedIn";
-        } catch (LoginException ex) {
-            credentials.invalidate();
-
+        } catch (FailedLoginException | CredentialException | AccountException e) {
             if (log.isDebugEnabled()) {
                 log.debug(
                         "Login failed for: " + getCredentials().getUsername(),
-                        ex);
+                        e);
             }
-            // used by org.zanata.security.FacesSecurityEvents.addLoginFailedMessage()
-            getLoginFailedEvent().fire(new LoginFailedEvent(ex));
+            handleLoginException(e);
+        } catch (LoginException e) {
+            // if it's not one of the above subclasses, a LoginException may indicate
+            // a configuration problem
+            log.error(
+                    "Login failed for: " + getCredentials().getUsername(),
+                    e);
+            handleLoginException(e);
         }
 
         return null;
+    }
+
+    private void handleLoginException(LoginException e) {
+        credentials.invalidate();
+
+        // used by org.zanata.security.FacesSecurityEvents.addLoginFailedMessage()
+        getLoginFailedEvent().fire(new LoginFailedEvent(e));
     }
 
     private Event<AlreadyLoggedInEvent> getAlreadyLoggedInEvent() {

@@ -20,6 +20,7 @@
  */
 package org.zanata.security;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
@@ -264,16 +265,12 @@ public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
 
     private void login(String username, OpenIdProviderType openIdProviderType,
             OpenIdAuthCallback callback) {
-        try {
-            this.setProvider(openIdProviderType);
-            String var = openIdProvider.getOpenId(username);
-            setId(var);
-            setCallback(callback);
-            LOGGER.info("openid: {}", getId());
-            login();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        this.setProvider(openIdProviderType);
+        String var = openIdProvider.getOpenId(username);
+        setId(var);
+        setCallback(callback);
+        LOGGER.info("openid: {}", getId());
+        login();
     }
 
     public void login(ZanataCredentials credentials) {
