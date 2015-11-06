@@ -1,11 +1,12 @@
 package org.zanata.webtrans.server;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -24,14 +25,11 @@ import net.customware.gwt.dispatch.shared.UnsupportedActionException;
 import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.exception.NotLoggedInException;
-import org.zanata.util.ServiceLocator;
 import org.zanata.webtrans.server.rpc.AbstractActionHandler;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.AuthorizationError;
 import org.zanata.webtrans.shared.auth.InvalidTokenError;
 import org.zanata.webtrans.shared.rpc.WrappedAction;
-
-import com.google.common.collect.Maps;
 
 @ApplicationScoped
 @Slf4j
@@ -41,24 +39,15 @@ public class SeamDispatch implements Dispatch {
     @DeltaSpike
     private HttpServletRequest request;
 
-    @Inject
+    @Inject @Any
     private Instance<AbstractActionHandler> actionHandlers;
 
-
-    @SuppressWarnings("rawtypes")
-    private final Map<Class<? extends Action>, Class<? extends ActionHandler<?, ?>>> handlers =
-            Maps.newHashMap();
-
     @PostConstruct
-    public void registerHandlers() {
-        actionHandlers.forEach(ah -> register(ah.getClass()));
-    }
-
-    @SuppressWarnings("unchecked")
-    private void register(Class<? extends ActionHandler> clazz) {
-        log.debug("Registering ActionHandler {}", clazz.getName());
-        ActionHandlerFor ahf = clazz.getAnnotation(ActionHandlerFor.class);
-        handlers.put(ahf.value(), (Class<? extends ActionHandler<?, ?>>) clazz);
+    public void postConstruct() {
+        if (actionHandlers.isUnsatisfied()) {
+            throw new RuntimeException("No ActionHandler beans found for injection");
+        }
+        log.debug("Found one or more ActionHandler beans");
     }
 
     private static class DefaultExecutionContext implements ExecutionContext {
@@ -143,16 +132,19 @@ public class SeamDispatch implements Dispatch {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private <A extends Action<R>, R extends Result> ActionHandler<A, R>
             findHandler(A action) throws UnsupportedActionException {
-
-        Class<? extends ActionHandler> handlerClazz =
-                handlers.get(action.getClass());
-        final ActionHandler<A, R> handler =
-                ServiceLocator.instance().getInstance(handlerClazz);
-
-        if (handler == null)
+        Instance<AbstractActionHandler> handler = actionHandlers
+                .select(new ActionHandlerForQualifier() {
+                    public Class<? extends Action<?>> value() {
+                        return (Class<? extends Action<?>>) action.getClass();
+                    }
+                });
+        if (handler.isUnsatisfied()) {
             throw new UnsupportedActionException(action);
-
-        return handler;
+        }
+        if (handler.isAmbiguous()) {
+            throw new RuntimeException("Found multiple ActionHandlers for " + action.getClass());
+        }
+        return handler.get();
     }
 
     private <A extends Action<R>, R extends Result> void doRollback(A action,
@@ -191,6 +183,11 @@ public class SeamDispatch implements Dispatch {
             log.error("Error dispatching action: " + e, e);
             throw new ActionException(e);
         }
+    }
+
+    abstract class ActionHandlerForQualifier
+            extends AnnotationLiteral<ActionHandlerFor>
+            implements ActionHandlerFor {
     }
 
 }

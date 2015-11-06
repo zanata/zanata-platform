@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
@@ -85,10 +86,10 @@ public class ActivateWorkspaceHandler extends
     @Inject
     private LocaleService localeServiceImpl;
 
-    @Inject
+    @Inject @Any
     private LoadOptionsHandler loadOptionsHandler;
 
-    @Inject
+    @Inject @Any
     private GetValidationRulesHandler getValidationRulesHandler;
 
     @Inject

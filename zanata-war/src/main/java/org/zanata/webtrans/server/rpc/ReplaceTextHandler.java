@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.service.SecurityService;
@@ -43,7 +44,7 @@ import net.customware.gwt.dispatch.shared.ActionException;
 @Slf4j
 public class ReplaceTextHandler extends
         AbstractActionHandler<ReplaceText, UpdateTransUnitResult> {
-    @Inject /* TODO [CDI] check this: migrated from @In(value = "webtrans.gwt.UpdateTransUnitHandler", create = true) */
+    @Inject @Any
     UpdateTransUnitHandler updateTransUnitHandler;
 
     @Inject
