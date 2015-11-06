@@ -24,6 +24,7 @@ import java.util.concurrent.Callable;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.zanata.util.BeanHolder;
 import org.zanata.util.ServiceLocator;
 
 /**
@@ -48,10 +49,11 @@ public class TransactionUtil {
      *             Exception (if any) thrown by the given function.
      */
     public static <R> R runInTransaction(Callable<R> function) throws Exception {
-        TransactionalExecutor txExecutor =
+        try (BeanHolder<TransactionalExecutor> txExecutor =
                 ServiceLocator.instance()
-                        .getInstance(TransactionalExecutor.class);
-        return txExecutor.runInTransaction(function);
+                        .getDependent(TransactionalExecutor.class)) {
+            return txExecutor.get().runInTransaction(function);
+        }
     }
 
     /**

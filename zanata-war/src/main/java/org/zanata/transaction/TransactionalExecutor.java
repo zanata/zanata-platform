@@ -24,7 +24,9 @@ import java.util.concurrent.Callable;
 
 import javax.annotation.Resource;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 import javax.transaction.TransactionManager;
+import javax.transaction.UserTransaction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,23 +44,20 @@ public class TransactionalExecutor {
     private static final Logger log =
             LoggerFactory.getLogger(TransactionalExecutor.class);
 
-    // using java:comp/UserTransaction will only work for first thread. I am not
-    // entirely sure the underlying cause but this will work.
-    // see https://home.java.net/node/696522#comment-777077
-    @Resource(lookup = "java:jboss/TransactionManager")
-    private TransactionManager transactionManager;
+    @Inject
+    private UserTransaction userTransaction;
 
     public <R> R runInTransaction(Callable<R> function) throws Exception {
         R result = null;
         try {
 //            transactionManager.setTransactionTimeout(30);
-            transactionManager.begin();
+            userTransaction.begin();
             result = function.call();
-            transactionManager.commit();
+            userTransaction.commit();
         } catch (Throwable t) {
             log.error("error running in transaction",
                     Throwables.getRootCause(t));
-            transactionManager.rollback();
+            userTransaction.rollback();
         }
         return result;
     }

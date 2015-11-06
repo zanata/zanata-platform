@@ -108,6 +108,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
                 .use("entityManagerFactory", getEmf())
                 .use("session", new FullTextSessionImpl(getSession()))
                 .use("cacheContainer", new InfinispanTestCacheContainer())
+                .use("userTransaction", AutowireTransaction.instance())
                 .use(ZanataJpaIdentityStore.AUTHENTICATED_USER,
                         seam.autowire(AccountDAO.class).getByUsername("demo"))
                 .useImpl(LocaleServiceImpl.class)
