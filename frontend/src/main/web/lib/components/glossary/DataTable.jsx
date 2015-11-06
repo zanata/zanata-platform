@@ -54,6 +54,7 @@ var DataTable = React.createClass({
     ),
     canAddNewEntry: React.PropTypes.bool.isRequired,
     canUpdateEntry: React.PropTypes.bool.isRequired,
+    canDeleteEntry: React.PropTypes.bool.isRequired,
     user: React.PropTypes.shape({
       username: React.PropTypes.string,
       email: React.PropTypes.string,
@@ -284,7 +285,9 @@ var DataTable = React.createClass({
                             columnData, width) {
     if(id === null) {
       return <LoadingCell/>;
-    } else if(!this.props.canUpdateEntry && !this.props.canAddNewEntry) {
+    } else if(!this.props.canUpdateEntry &&
+      !this.props.canDeleteEntry &&
+      !this.props.canAddNewEntry) {
       return;
     }
     var entry = this._getGlossaryEntry(id);
@@ -303,7 +306,7 @@ var DataTable = React.createClass({
           srcLocaleId={this.props.srcLocale.locale.localeId}
           info={info}
           canUpdateEntry={this.props.canUpdateEntry}
-          canDeleteEntry={this.props.canAddNewEntry}/>
+          canDeleteEntry={this.props.canDeleteEntry}/>
       );
     }
   },
