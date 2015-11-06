@@ -178,6 +178,7 @@ var SystemGlossary = React.createClass({
             totalCount={this.state.totalCount}
             canAddNewEntry={this.state.canAddNewEntry}
             canUpdateEntry={this.state.canUpdateEntry}
+            canDeleteEntry={this.state.canDeleteEntry}
             user={Configs.user}
             srcLocale={srcLocale}
             locales={this.state.locales}
