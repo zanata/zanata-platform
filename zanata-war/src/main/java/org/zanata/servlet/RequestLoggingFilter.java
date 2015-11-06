@@ -45,6 +45,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class RequestLoggingFilter implements Filter {
     private static final Logger pageLogger = getLogger(
             "org.zanata.requests.page");
+    private static final Logger gwtESLogger = getLogger(
+            "org.zanata.requests.gwteventservice");
     private static final Logger resourceLogger = getLogger(
             "org.zanata.requests.resource");
 
@@ -59,11 +61,18 @@ public class RequestLoggingFilter implements Filter {
                         || resourceLogger.isDebugEnabled())) {
             HttpServletRequest httpRequest = (HttpServletRequest) request;
             String uri = httpRequest.getRequestURI();
-            boolean isResourceRequest =
-                    uri.startsWith("/javax.faces.resource/") ||
-                            uri.startsWith("/org.richfaces.resources/") ||
-                            uri.startsWith("/resources/");
-            Logger logger = isResourceRequest ? resourceLogger : pageLogger;
+            Logger logger;
+            if (uri.equals("/webtrans/gwteventservice")) {
+                logger = gwtESLogger;
+            } else if (uri.startsWith("/javax.faces.resource/") ||
+                    uri.startsWith("/org.richfaces.resources/") ||
+                    uri.startsWith("/resources/") ||
+                    uri.endsWith(".js") ||
+                    uri.endsWith(".css")) {
+                logger = resourceLogger;
+            } else {
+                logger = pageLogger;
+            }
             String query = httpRequest.getQueryString();
             String location = (query == null) ? uri : (uri + "?" + query);
             logger.debug("> {}", location);
