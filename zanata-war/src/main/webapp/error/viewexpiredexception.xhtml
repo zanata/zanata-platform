@@ -1,0 +1,34 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  template="../WEB-INF/template/template.xhtml">
+
+  <ui:define name="page_title">#{msgs['jsf.ViewExpiredException.Error.PageTitle']}</ui:define>
+  <ui:param name="showGlobalMessages" value="false"/>
+  <ui:define name="center_content">
+    <ui:fragment>
+      <ul class="list--no-bullets">
+        <li>
+          <div class="alert">
+            <h2 class="alert__heading">#{msgs['jsf.ViewExpiredException.ErrorTitle']}</h2>
+
+            <div class="alert__content">
+              <ul class="list--no-bullets">
+                <li><h:outputText escape="false" value="#{msgs['jsf.ViewExpiredException.Error']}"/></li>
+              </ul>
+
+              <p>
+                <button
+                  onclick="window.history.back();">
+                  #{msgs['jsf.ViewExpiredException.GoBack']}
+                </button>
+              </p>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </ui:fragment>
+  </ui:define>
+</ui:composition>

@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<f:view contentType="text/html" xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core">
+  <!--[if lt IE 7]>      <html class="no-js new-zanata lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+  <!--[if IE 7]>         <html class="no-js new-zanata lt-ie9 lt-ie8"> <![endif]-->
+  <!--[if IE 8]>         <html class="no-js new-zanata lt-ie9"> <![endif]-->
+  <!--[if gt IE 8]><!-->
+  <html class="no-js">
+  <!--<![endif]-->
+  <h:head>
+    <ui:remove>
+      <!-- This needs to appear before all other JavaScript, for accurate testing -->
+    </ui:remove>
+    <h:outputText value="#{ajaxCounter.ajaxCounterScript}" escape="false" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+
+    <title>#{msgs['jsf.Zanata']}: <ui:insert name="page_title"/></title>
+
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0"/>
+    <meta http-equiv="cleartype" content="on"/>
+
+    <link rel="shortcut icon" href="#{assets['img/logo/logo.ico']}" type="image/x-icon" />
+
+    <!--[if gt IE 8]><!-->
+    <link type="text/css" rel="stylesheet" href="#{assets['css/style.min.css']}"/>
+    <!--<![endif]-->
+
+    <!--[if (lt IE 9) & (!IEMobile)]>
+    <script src="js/vendor/selectivizr-min.js"></script>
+    <![endif]-->
+
+    <!-- Async Google Fonts -->
+    <script type="text/javascript">
+      WebFontConfig = {
+        google: { families: [ 'Source+Sans+Pro:300,400,600,700,400italic:latin,latin-ext' ] }
+      };
+      (function() {
+        var wf = document.createElement('script');
+        wf.src = (document.location.protocol === 'https:' ? 'https' : 'http') +
+          '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+        wf.type = 'text/javascript';
+        wf.async = 'true';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(wf, s);
+      })();
+    </script>
+  </h:head>
+
+  <h:body>
+    <div class="new-zanata new-zanata-base">
+      <ui:include src="banner.xhtml"/>
+    </div>
+
+    <main role="main" class="ffsans cblack90 pt1 ph1">
+      <ui:insert name="center_content"/>
+    </main>
+
+    <div class="new-zanata new-zanata-base">
+      <ui:include src="footer.xhtml"/>
+      <ui:include src="scripts.xhtml"/>
+    </div>
+  </h:body>
+  <h:outputText value="#{ajaxCounter.javascriptFinishedScript}" escape="false" />
+  </html>
+</f:view>

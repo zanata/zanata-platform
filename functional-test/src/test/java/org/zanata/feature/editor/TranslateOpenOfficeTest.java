@@ -21,7 +21,7 @@
 package org.zanata.feature.editor;
 
 import org.junit.Before;
-import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.experimental.categories.Category;
 import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
@@ -51,8 +51,8 @@ import static org.zanata.util.FunctionalTestHelper.assumeFalse;
 @Category(DetailedTest.class)
 public class TranslateOpenOfficeTest extends ZanataTestCase {
 
-    @ClassRule
-    public static CleanDocumentStorageRule documentStorageRule =
+    @Rule
+    public CleanDocumentStorageRule documentStorageRule =
             new CleanDocumentStorageRule();
 
     private ZanataRestCaller zanataRestCaller = new ZanataRestCaller();
@@ -69,7 +69,7 @@ public class TranslateOpenOfficeTest extends ZanataTestCase {
     public void before() {
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
         assumeFalse(
-                "",
+                "The documents dir should not exist",
                 new File(CleanDocumentStorageRule.getDocumentStoragePath()
                         .concat(File.separator).concat("documents")
                         .concat(File.separator)).exists());

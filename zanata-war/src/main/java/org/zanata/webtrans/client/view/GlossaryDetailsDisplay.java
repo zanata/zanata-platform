@@ -37,8 +37,6 @@ public interface GlossaryDetailsDisplay extends WidgetDisplay {
 
     void setHasUpdateAccess(boolean hasGlossaryUpdateAccess);
 
-    HasText getNewCommentText();
-
     void setSourceText(String sourceText);
 
     HasText getTargetText();
@@ -49,30 +47,30 @@ public interface GlossaryDetailsDisplay extends WidgetDisplay {
 
     HasText getSrcRef();
 
-    void addRowIntoTargetComment(int index, String text);
-
     void clearEntries();
 
     void addEntry(String entriesLabel);
 
-    void show();
+    void center();
 
     void hide();
 
-    void setSourceComment(List<String> sourceComment);
+    void setDescription(String description);
 
-    void setTargetComment(List<String> targetComment);
+    void setPos(String pos);
+
+    void setTargetComment(String targetComment);
 
     void showLoading(boolean visible);
 
-    List<String> getCurrentTargetComments();
+    HasText getTargetComment();
+
+    HasText getPos();
+
+    HasText getDescription();
 
     interface Listener {
         void selectEntry(int selected);
-
-        void addNewComment(int index);
-
-        void onDismissClick();
 
         void onSaveClick();
     }

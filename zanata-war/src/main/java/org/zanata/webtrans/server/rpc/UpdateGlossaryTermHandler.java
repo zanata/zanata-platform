@@ -1,19 +1,20 @@
 package org.zanata.webtrans.server.rpc;
 
-import java.util.ArrayList;
-
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.dao.GlossaryDAO;
+import org.zanata.exception.DuplicateGlossaryEntryException;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HLocale;
-import org.zanata.model.HTermComment;
+import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.service.GlossaryFileService;
 import org.zanata.service.LocaleService;
+import org.zanata.util.GlossaryUtil;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
 import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermAction;
@@ -37,14 +38,18 @@ public class UpdateGlossaryTermHandler
     @Override
     public UpdateGlossaryTermResult execute(UpdateGlossaryTermAction action,
             ExecutionContext context) throws ActionException {
-        identity.checkLoggedIn();
+        identity.hasPermission("glossary-update", "");
 
         GlossaryDetails selectedDetailEntry = action.getSelectedDetailEntry();
 
-        HGlossaryEntry entry =
-                glossaryDAO.getEntryBySrcLocaleAndContent(
-                        selectedDetailEntry.getSrcLocale(),
-                        selectedDetailEntry.getSource());
+        Long id = selectedDetailEntry.getId();
+
+        HGlossaryEntry entry = glossaryDAO.findById(id);
+
+        if (entry == null) {
+            throw new ActionException(
+                "Cannot find glossary entry with id " + id);
+        }
 
         HLocale targetLocale =
                 localeServiceImpl.getByLocaleId(selectedDetailEntry
@@ -66,32 +71,42 @@ public class UpdateGlossaryTermHandler
                     + targetTerm.getVersionNum());
         } else {
             targetTerm.setContent(action.getNewTargetTerm());
-            targetTerm.getComments().clear();
+            targetTerm.setComment(action.getNewTargetComment());
+            entry.setPos(action.getNewPos());
+            entry.setDescription(action.getNewDescription());
 
-            for (String newComment : action.getNewTargetComment()) {
-                targetTerm.getComments().add(new HTermComment(newComment));
+            HGlossaryTerm srcTerm =
+                    entry.getGlossaryTerms().get(entry.getSrcLocale());
+
+            String contentHash =
+                    GlossaryUtil.generateHash(entry.getSrcLocale()
+                            .getLocaleId(), srcTerm.getContent(),
+                            entry.getPos(), entry.getDescription());
+
+            HGlossaryEntry sameHashEntry =
+                glossaryDAO.getEntryByContentHash(contentHash);
+
+            if (sameHashEntry != null && (sameHashEntry.getId() != entry.getId())) {
+                throw new DuplicateGlossaryEntryException(entry.getSrcLocale()
+                        .getLocaleId(),
+                        srcTerm.getContent(), entry.getPos(),
+                        entry.getDescription());
             }
 
             HGlossaryEntry entryResult = glossaryDAO.makePersistent(entry);
             glossaryDAO.flush();
 
-            ArrayList<String> srcComments = new ArrayList<String>();
-            ArrayList<String> targetComments = new ArrayList<String>();
-
-            for (HTermComment termComment : entryResult.getGlossaryTerms()
-                    .get(entryResult.getSrcLocale()).getComments()) {
-                srcComments.add(termComment.getComment());
-            }
-
-            for (HTermComment termComment : targetTerm.getComments()) {
-                targetComments.add(termComment.getComment());
-            }
+            srcTerm =
+                    entryResult.getGlossaryTerms().get(
+                            entryResult.getSrcLocale());
 
             GlossaryDetails details =
-                    new GlossaryDetails(entryResult.getGlossaryTerms()
-                            .get(entryResult.getSrcLocale()).getContent(),
-                            entryResult.getGlossaryTerms().get(targetLocale)
-                                    .getContent(), srcComments, targetComments,
+                    new GlossaryDetails(entryResult.getId(),
+                        srcTerm.getContent(),
+                            targetTerm.getContent(),
+                            entryResult.getDescription(),
+                            entryResult.getPos(),
+                            targetTerm.getComment(),
                             entryResult.getSourceRef(),
                             selectedDetailEntry.getSrcLocale(),
                             selectedDetailEntry.getTargetLocale(),

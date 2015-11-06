@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.zanata.dao.AccountDAO;
+import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.rest.editor.dto.User;
@@ -20,6 +21,8 @@ public class UserServiceTest {
     private UserService service;
     @Mock
     private AccountDAO accountDAO;
+    @Mock
+    private PersonDAO personDAO;
     private HAccount authenticatedAccount;
     @Mock
     private GravatarService gravatarService;
@@ -30,24 +33,27 @@ public class UserServiceTest {
         MockitoAnnotations.initMocks(this);
         authenticatedAccount = new HAccount();
         person = new HPerson();
+        person.setId(1L);
         person.setName("peter");
         person.setEmail("pan@wonderland");
         person.setAccount(authenticatedAccount);
         authenticatedAccount.setPerson(person);
         service =
                 new UserService(authenticatedAccount, gravatarService,
-                        accountDAO);
+                        accountDAO, personDAO);
     }
 
     @Test
     public void getMyInfoWillReturnNotFoundIfNotAuthenticated() {
-        service = new UserService(null, gravatarService, accountDAO);
+        service = new UserService(null, gravatarService, accountDAO, personDAO);
         Response response = service.getMyInfo();
         assertThat(response.getStatus()).isEqualTo(404);
     }
 
     @Test
     public void getMyInfoWillReturnInfoAboutAuthenticatedPerson() {
+        when(personDAO.findById(person.getId())).thenReturn(person);
+
         Response response = service.getMyInfo();
         assertThat(response.getStatus()).isEqualTo(200);
         assertThat(response.getEntity()).isInstanceOf(User.class);
@@ -69,6 +75,7 @@ public class UserServiceTest {
     @Test
     public void getUserInfoWillReturnInfoAboutThePerson() {
         when(accountDAO.getByUsername("a")).thenReturn(person.getAccount());
+        when(personDAO.findById(person.getId())).thenReturn(person);
 
         Response response = service.getUserInfo("a");
         assertThat(response.getStatus()).isEqualTo(200);

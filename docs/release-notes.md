@@ -22,7 +22,9 @@
 * [ZNTA-9](https://zanata.atlassian.net/browse/ZNTA-9) - Account activation message not displaying
 * [ZNTA-696](https://zanata.atlassian.net/browse/ZNTA-696) - Fix user service for null authenticated user
 * [ZNTA-634](https://zanata.atlassian.net/browse/ZNTA-634) - Users being logged out after a short period of inactivity
+* [ZNTA-719](https://zanata.atlassian.net/browse/ZNTA-719) - Translation merge targets the wrong source version
 * [ZNTA-718](https://zanata.atlassian.net/browse/ZNTA-718) - Allow admin and project maintainer to merge translation from all active projects.
+* [ZNTA-639](https://zanata.atlassian.net/browse/ZNTA-639) - Expired sessions causing ViewExpiredExceptions
 
 
 -----------------------
@@ -31,6 +33,7 @@
 * [1224912] (https://bugzilla.redhat.com/show_bug.cgi?id=1224912) - Filter "Last modified by translators other than <user>"
 * [1213630](https://bugzilla.redhat.com/show_bug.cgi?id=1213630) - Webhook header needs to include cryptographic signature in header for identification
 * [1214502](https://bugzilla.redhat.com/show_bug.cgi?id=1214502) -  RFE: Grant project creation permission to certain sets of users
+* [ZNTA-108](https://zanata.atlassian.net/browse/ZNTA-108) - Improved glossary management: add, edit and delete individual glossary entries
 
 -----------------------
 ## 3.7.3

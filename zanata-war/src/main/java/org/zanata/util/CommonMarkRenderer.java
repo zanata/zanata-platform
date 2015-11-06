@@ -20,19 +20,22 @@
  */
 package org.zanata.util;
 
-import com.google.common.base.Throwables;
+import com.google.common.io.Resources;
+import jdk.nashorn.api.scripting.JSObject;
 import lombok.extern.slf4j.Slf4j;
 import javax.inject.Named;
 
-import javax.script.Invocable;
+import javax.script.Bindings;
+import javax.script.Compilable;
+import javax.script.CompiledScript;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+
+import static com.google.common.base.Throwables.propagate;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -53,18 +56,28 @@ public class CommonMarkRenderer {
             VER_SANITIZER + "/html-sanitizer-minified.js";
     private static final String RESOURCE_NAME = "META-INF/resources/webjars/" +
             SCRIPT_NAME;
+    // Share ScriptEngine and CompiledScript across threads, but not Bindings
+    // See http://stackoverflow.com/a/30159424/14379
+    private static final ScriptEngine engine =
+            new ScriptEngineManager().getEngineByName("Nashorn");
+    private static final CompiledScript functions = compileFunctions();
+    private static final ThreadLocal<Bindings> threadBindings =
+            ThreadLocal.withInitial(() -> {
+                Bindings bindings = engine.createBindings();
+                // libraries like commonmark.js assume the presence of 'window'
+                bindings.put("window", bindings);
+                try {
+                    functions.eval(bindings);
+                    return bindings;
+                } catch (ScriptException e) {
+                    throw propagate(e);
+                }
+            });
 
-    public CommonMarkRenderer() {
+    static {
         log.info("Using commonmark.js version {}", VER);
         log.info("Using Google Caja version {}", VER_SANITIZER);
     }
-
-    // ScriptEngine is expensive, but not really threadsafe (even in Rhino).
-    // However, they are quite large, so it's probably not worth keeping
-    // one for every thread.  Instead, we keep one around, and synchronise
-    // access to it.
-    // Please ensure any methods which use this Invocable are synchronized!
-    private Invocable invocable = getInvocable();
 
     /**
      * Return the name of the implementation script for JSF h:outputScript.
@@ -104,55 +117,36 @@ public class CommonMarkRenderer {
         return HtmlUtil.SANITIZER.sanitize(unsafeHtml);
     }
 
-    public synchronized String renderToHtmlUnsafe(String commonMark) {
+    public String renderToHtmlUnsafe(String commonMark) {
         try {
-            return (String) invocable.invokeFunction("mdRender", commonMark);
-        } catch (ScriptException | NoSuchMethodException e) {
-            throw Throwables.propagate(e);
+            Bindings bindings = threadBindings.get();
+            JSObject mdRender = (JSObject) bindings.get("mdRender");
+            return (String) mdRender.call(bindings, commonMark);
+        } catch (Exception e) {
+            throw propagate(e);
         }
     }
 
-    private Invocable getInvocable() {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                getScriptAsStream(), StandardCharsets.UTF_8))) {
-
-            ScriptEngine engine = newEngine();
-            engine.eval("window = this;");
-            engine.eval(reader);
+    private static CompiledScript compileFunctions() {
+        try {
             // Create a javascript function 'mdRender' which takes CommonMark
             // as a string and returns a rendered HTML string:
-            String initScript =
+            String commonMarkScript = Resources.toString(getScriptResource(),
+                    StandardCharsets.UTF_8);
+            String functionsScript = commonMarkScript +
                     "var reader = new commonmark.Parser();" +
-                            "var writer = new commonmark.HtmlRenderer();" +
-                            "function mdRender(src) {" +
-                            "  return writer.render(reader.parse(src));" +
-                            "};";
-            engine.eval(initScript);
-            return (Invocable) engine;
-        } catch (IOException | ScriptException e) {
-            throw Throwables.propagate(e);
+                    "var writer = new commonmark.HtmlRenderer();" +
+                    "function mdRender(src) {" +
+                    "  return writer.render(reader.parse(src));" +
+                    "};";
+            return ((Compilable) engine).compile(functionsScript);
+        } catch (ScriptException | IOException e) {
+            throw propagate(e);
         }
     }
 
-    private InputStream getScriptAsStream() {
-        InputStream stream =
-                getClass().getClassLoader().getResourceAsStream(
-                        RESOURCE_NAME);
-        if (stream == null) {
-            throw new RuntimeException("Script "+ RESOURCE_NAME + " not found");
-        }
-        return stream;
-    }
-
-    private ScriptEngine newEngine() {
-        ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
-        ScriptEngine engine =
-                scriptEngineManager.getEngineByName("rhino17R5");
-        if (engine == null) {
-            log.warn("Falling back on generic JavaScript engine");
-            engine = scriptEngineManager.getEngineByName("JavaScript");
-        }
-        return engine;
+    private static URL getScriptResource() {
+        return Resources.getResource(CommonMarkRenderer.class, "/" + RESOURCE_NAME);
     }
 
 }

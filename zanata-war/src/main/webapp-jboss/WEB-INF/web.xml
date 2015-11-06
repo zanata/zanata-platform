@@ -118,6 +118,11 @@
     <param-value>java:jboss/datasources/zanataDatasource</param-value>
   </context-param>
 
+  <context-param>
+    <param-name>javamelody.monitoring-path</param-name>
+    <param-value>/admin/monitoring</param-value>
+  </context-param>
+
   <!-- Zanata custom taglib -->
   <context-param>
     <param-name>javax.faces.FACELETS_LIBRARIES</param-name>
@@ -196,10 +201,6 @@
   <filter>
     <filter-name>monitoring</filter-name>
     <filter-class>org.zanata.seam.interceptor.MonitoringWrapper</filter-class>
-    <init-param>
-      <param-name>monitoring-path</param-name>
-      <param-value>/admin/monitoring</param-value>
-    </init-param>
   </filter>
   <filter-mapping>
     <filter-name>monitoring</filter-name>

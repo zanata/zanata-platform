@@ -35,7 +35,6 @@
   <HRawDocument />
   <HRoleAssignmentRule />
   <HSimpleComment />
-  <HTermComment />
   <HTextFlow />
   <HTextFlowContentHistory />
   <HTextFlowHistory />

@@ -37,7 +37,6 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HPersonEmailValidationKey;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.model.HTermComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowHistory;
 import org.zanata.model.HTextFlowTarget;
@@ -77,8 +76,7 @@ public class ZanataEntities {
                 TransMemory.class);
         builder.add(Activity.class);
         // glossary
-        builder.add(HTermComment.class, HGlossaryTerm.class,
-                HGlossaryEntry.class);
+        builder.add(HGlossaryTerm.class, HGlossaryEntry.class);
         // text flows and targets
         builder.add(HPoTargetHeader.class, HTextFlowTargetHistory.class,
                 HTextFlowTargetReviewComment.class,

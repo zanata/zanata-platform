@@ -1,13 +1,10 @@
 <!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  template="../WEB-INF/template/template.xhtml">
+  template="/WEB-INF/template/template.xhtml">
 
   <f:metadata>
-    <f:event type="preRenderView" listener="#{breadcrumbs.clear}"/>
     <f:viewParam name="username" value="#{profileHome.username}" />
   </f:metadata>
 
@@ -15,39 +12,12 @@
     name="page_title">#{msgs['jsf.Profile']}:#{msgs['jsf.Profile.User']}:#{profileHome.username}</ui:define>
   <ui:define name="center_content">
 
-    <div class="g">
-      <div id="profile-overview" class="g__item w--1-4 w--1-2-m">
-        <!-- taken from dashboard/home.xhtml and modified -->
-        <div class="media l--push-bottom-half">
-          <div class="media__item--right bx--round">
-            <img
-              src="#{profileHome.userImageUrl}"
-              alt="#{profileHome.username}"/>
-          </div>
-          <div class="media__body">
-            <h1 id="profile-displayname"
-              class="l--push-all-0">#{profileHome.name}</h1>
-            <ul class="list--no-bullets txt--meta">
-              <li id="profile-username"><i class="i i--user list__icon"
-                title="Username"></i>#{profileHome.username}
-              </li>
-              <li id="profile-languages"><i class="i i--language list__icon"
-                title="Spoken languages"></i>#{profileHome.userLanguageTeams}
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <!-- user contribution matrix -->
-      <ui:fragment rendered="#{identity.loggedIn}">
-        <div class="g__item w--3-4 w--1-2-m">
-          <div id="userMatrixRoot" class="bg--pop-highest l--pad-v-1"
-            data-base-url="#{request.contextPath}/rest/stats/user/#{profileHome.username}/"></div>
-        </div>
-      </ui:fragment>
-    </div>
+    <div id="main-content"
+      base-url="#{request.contextPath}/rest"
+      user="#{profileHome.authenticatedUser.getJSON()}"
+      data='{"view": "profile", "profileUser": #{profileHome.user.getJSON()}}'/>
 
     <script type="text/javascript"
-      src="#{request.contextPath}/user-profile-page.bundle.min.js"></script>
+      src="#{request.contextPath}/frontend.bundle.min.js"></script>
   </ui:define>
 </ui:composition>

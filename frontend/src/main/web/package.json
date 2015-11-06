@@ -1,0 +1,58 @@
+{
+  "name": "zanata-frontend",
+  "version": "1.0.0",
+  "description": "Zanata front-end package",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "js": "webpack",
+    "build": "webpack -p --config webpack.prod.config.js --bail --display-error-details",
+    "start": "node server.js"
+  },
+  "license": "LGPL",
+  "devDependencies": {
+    "babel-core": "^4.3.0",
+    "babel-loader": "^4.0.0",
+    "css-loader": "^0.16.0",
+    "cssnext-loader": "^1.0.1",
+    "jest-cli": "^0.4.18",
+    "jsx-loader": "^0.12.2",
+    "react-hot-loader": "^1.1.1",
+    "react-tools": "^0.13.0",
+    "style-loader": "^0.12.3",
+    "webpack": "^1.9.11",
+    "webpack-dev-server": "^1.7.0"
+  },
+  "dependencies": {
+    "chart.js": "git://github.com/huangp/Chart.js.git",
+    "classnames": "^2.1.3",
+    "es6-promise": "^2.0.1",
+    "events": "^1.0.2",
+    "fixed-data-table": "^0.4.6",
+    "flux": "^2.0.3",
+    "keymirror": "^0.1.1",
+    "lodash": "^3.10.1",
+    "moment": "^2.10.6",
+    "moment-range": "^1.2.0",
+    "object-assign": "^2.0.0",
+    "react": "^0.13.3",
+    "react-chartjs": "^0.4.0",
+    "react-router": "^0.13.3",
+    "superagent": "^0.21.0",
+    "zanata-ui": "^1.0.7"
+  },
+  "jest": {
+    "unmockedModulePathPatterns": [
+      "./node_modules/react",
+      "./node_modules/object-assign",
+      "./node_modules/es6-promise",
+      "./node_modules/events",
+      "./lib"
+    ],
+    "scriptPreprocessor": "./preprocessor.js",
+    "moduleFileExtensions": [
+      "js",
+      "jsx"
+    ]
+  }
+}

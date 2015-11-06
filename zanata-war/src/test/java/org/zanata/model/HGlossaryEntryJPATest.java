@@ -81,10 +81,6 @@ public class HGlossaryEntryJPATest extends ZanataDbunitJpaTest {
 
         assertThat(
                 ((Long) super.getSession()
-                        .createQuery("select count(*) from HTermComment")
-                        .uniqueResult()), is(0L));
-        assertThat(
-                ((Long) super.getSession()
                         .createQuery("select count(*) from HGlossaryTerm")
                         .uniqueResult()), is(0L));
     }

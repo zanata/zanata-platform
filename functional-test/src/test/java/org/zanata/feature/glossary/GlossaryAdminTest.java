@@ -27,16 +27,12 @@ import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
-import org.zanata.page.glossary.GlossaryPage;
 import org.zanata.workflow.ClientWorkFlow;
-import org.zanata.workflow.LoginWorkFlow;
 
 import java.io.File;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.greaterThan;
 
 /**
  * @author Carlos Munoz <a
@@ -67,25 +63,12 @@ public class GlossaryAdminTest extends ZanataTestCase {
 
         List<String> result = clientWorkFlow .callWithTimeout(
                 projectRootPath,
-                "mvn --batch-mode zanata:glossary-push " +
+                "mvn -U --batch-mode zanata:glossary-push " +
                         "-Dglossary.lang=hi " +
                         "-Dzanata.glossaryFile=compendium.csv " +
                         "-Dzanata.userConfig=" + userConfigPath);
 
         assertThat(clientWorkFlow.isPushSuccessful(result),
                 Matchers.is(true));
-
-        // Make sure glossary shows up on the page
-        GlossaryPage glossaryPage =
-                new LoginWorkFlow().signIn("admin", "admin").goToGlossary();
-        List<String> langs = glossaryPage.getAvailableGlossaryLanguages();
-
-        assertThat(langs.size(), greaterThan(0));
-        assertThat(langs, containsInAnyOrder("Polish",
-                "Hindi", "English (United States)"));
-        assertThat(glossaryPage.getGlossaryEntryCount("Polish"), greaterThan(1));
-        assertThat(glossaryPage.getGlossaryEntryCount("Hindi"), greaterThan(1));
-        assertThat(glossaryPage.getGlossaryEntryCount("English (United States)"),
-                greaterThan(1));
     }
 }

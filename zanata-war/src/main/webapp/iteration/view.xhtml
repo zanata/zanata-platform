@@ -132,14 +132,14 @@
   <h:form styleClass="l--push-bottom-0">
     <a4j:jsFunction name="reloadLocale" status="languageTab-documentsLoader"
       onbegin="clearHTML('#{rich:clientId('languages-document_list')}');clearHTML('#{rich:clientId('language-label')}');zanata.loader.activate('#languagesTab-language-label-loader')"
-      oncomplete="zanata.loader.deactivate('#languagesTab-language-label-loader')"
+      oncomplete="zanata.loader.deactivate('#languagesTab-language-label-loader'); zanata.panel.init()"
       render="languages-document_list, language-label, languages-export_options, languageTabDocumentSearch-pager, languageTabDocumentSearch-page-info, languageTabDocumentSearchBottom-pager, languageTabDocumentSearchBottom-page-info">
       <a4j:param name="val1" assignTo="#{versionHomeAction.selectedLocaleId}"/>
     </a4j:jsFunction>
 
     <a4j:jsFunction name="reloadDocument" status="documentsTab-languagesLoader"
       onbegin="clearHTML('#{rich:clientId('documents-language_list')}');clearHTML('#{rich:clientId('document-label')}');zanata.loader.activate('#documentsTab-document-label-loader')"
-      oncomplete="zanata.loader.deactivate('#documentsTab-document-label-loader')"
+      oncomplete="zanata.loader.deactivate('#documentsTab-document-label-loader'); zanata.panel.init()"
       render="documents-language_list, document-label, documents-language-size, documentsTabLanguageSearch-pager, documentsTabLanguageSearch-page-info, documentsTabLanguageSearchBottom-pager, documentsTabLanguageSearchBottom-page-info"
       action="#{versionHomeAction.setSelectedDocumentId(projSlug, verSlug, docId)}">
       <a4j:param name="val1" assignTo="#{projSlug}"/>
@@ -153,7 +153,7 @@
       action="#{versionHomeAction.resetPageData}"/>
 
     <a4j:jsFunction name="renderStatistics" status="statistic-loader"
-      oncomplete="refreshTooltip('version-page');updateStateFromUrl()"
+      oncomplete="refreshTooltip('version-page'); updateStateFromUrl(); zanata.panel.init()"
       render="overall_statistic, languages-language_form, documents-document_form, settings-document_form"
       action="#{versionHomeAction.setPageRendered(true)}"/>
 

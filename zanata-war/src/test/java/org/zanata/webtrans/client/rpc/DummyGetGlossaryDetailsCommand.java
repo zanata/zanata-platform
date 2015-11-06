@@ -28,24 +28,12 @@ public class DummyGetGlossaryDetailsCommand implements Command {
         Log.info("ENTER DummyGetGlossaryDetailsCommand.execute()");
         ArrayList<GlossaryDetails> items = new ArrayList<GlossaryDetails>();
         for (int i = 0; i < 4; i++) {
-            ArrayList<String> srcComments = new ArrayList<String>();
-            ArrayList<String> targetComments = new ArrayList<String>();
-
-            srcComments.add("Source Comment " + (1 + i));
-            srcComments.add("Source Comment " + (2 + i));
-            srcComments.add("Source Comment " + (3 + i));
-
-            targetComments.add("Target Comment " + (1 + i));
-            targetComments.add("Target Comment " + (2 + i));
-            targetComments.add("Target Comment " + (3 + i));
-            targetComments.add("Target Comment " + (4 + i));
-            targetComments.add("Target Comment " + (5 + i));
-            targetComments.add("Target Comment " + (6 + i));
-
+            String description = "Description " + i;
+            String targetComment = "Target comment " + i;
             GlossaryDetails details =
-                    new GlossaryDetails("source content:" + (i + 1),
-                            "target content:" + (i + 1), srcComments,
-                            targetComments, "Dummy source ref " + (i + 1),
+                    new GlossaryDetails(1L, "source content:" + (i + 1),
+                            "target content:" + (i + 1), description, "pos",
+                            targetComment, "Dummy source ref " + (i + 1),
                             new LocaleId("en-us"), action.getWorkspaceId()
                                     .getLocaleId(), i, new Date());
             items.add(details);

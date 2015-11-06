@@ -1,0 +1,108 @@
+{
+  "srcLocale": {
+    "locale": {
+      "localeId": "en-US",
+      "displayName": "English (United States)",
+      "alias": ""
+    },
+    "numberOfTerms": 473
+  },
+  "transLocale": [
+    {
+      "locale": {
+        "localeId": "zh-Hans",
+        "displayName": "Chinese (Simplified)",
+        "alias": ""
+      },
+      "numberOfTerms": 0
+    },
+    {
+      "locale": {
+        "localeId": "zh-Hant",
+        "displayName": "Chinese (Traditional)",
+        "alias": ""
+      },
+      "numberOfTerms": 0
+    },
+    {
+      "locale": {
+        "localeId": "en-US",
+        "displayName": "English (United States)",
+        "alias": ""
+      },
+      "numberOfTerms": 0
+    },
+    {
+      "locale": {
+        "localeId": "fr",
+        "displayName": "French",
+        "alias": ""
+      },
+      "numberOfTerms": 500
+    },
+    {
+      "locale": {
+        "localeId": "de",
+        "displayName": "German",
+        "alias": ""
+      },
+      "numberOfTerms": 476
+    },
+    {
+      "locale": {
+        "localeId": "it",
+        "displayName": "Italian",
+        "alias": ""
+      },
+      "numberOfTerms": 0
+    },
+    {
+      "locale": {
+        "localeId": "ja",
+        "displayName": "Japanese",
+        "alias": ""
+      },
+      "numberOfTerms": 0
+    },
+    {
+      "locale": {
+        "localeId": "ja-JP",
+        "displayName": "Japanese (Japan)",
+        "alias": ""
+      },
+      "numberOfTerms": 0
+    },
+    {
+      "locale": {
+        "localeId": "ko",
+        "displayName": "Korean",
+        "alias": ""
+      },
+      "numberOfTerms": 0
+    },
+    {
+      "locale": {
+        "localeId": "pt-BR",
+        "displayName": "Portuguese (Brazil)",
+        "alias": ""
+      },
+      "numberOfTerms": 0
+    },
+    {
+      "locale": {
+        "localeId": "ru",
+        "displayName": "Russian",
+        "alias": ""
+      },
+      "numberOfTerms": 0
+    },
+    {
+      "locale": {
+        "localeId": "es",
+        "displayName": "Spanish",
+        "alias": ""
+      },
+      "numberOfTerms": 0
+    }
+  ]
+}

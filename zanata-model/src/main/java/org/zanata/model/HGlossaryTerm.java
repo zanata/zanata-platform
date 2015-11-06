@@ -20,15 +20,10 @@
  */
 package org.zanata.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
 import lombok.EqualsAndHashCode;
@@ -39,7 +34,6 @@ import lombok.ToString;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyze;
@@ -70,10 +64,12 @@ import org.zanata.hibernate.search.LocaleIdBridge;
 @ToString(doNotUseGetters = true)
 public class HGlossaryTerm extends ModelEntityBase {
     private static final long serialVersionUID = 1854278563597070432L;
+
     private String content;
-    private List<HTermComment> comments;
+    private String comment;
     private HGlossaryEntry glossaryEntry;
     private HLocale locale;
+    private HPerson lastModifiedBy;
 
     public HGlossaryTerm(String content) {
         setContent(content);
@@ -86,14 +82,9 @@ public class HGlossaryTerm extends ModelEntityBase {
         return content;
     }
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @IndexColumn(name = "pos", base = 0, nullable = false)
-    @JoinColumn(name = "glossaryTermId", nullable = false)
-    public List<HTermComment> getComments() {
-        if (comments == null) {
-            comments = new ArrayList<HTermComment>();
-        }
-        return comments;
+
+    public String getComment() {
+        return comment;
     }
 
     // TODO PERF @NaturalId(mutable=false) for better criteria caching
@@ -112,5 +103,11 @@ public class HGlossaryTerm extends ModelEntityBase {
     @FieldBridge(impl = LocaleIdBridge.class)
     public HLocale getLocale() {
         return locale;
+    }
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "last_modified_by_id", nullable = true)
+    public HPerson getLastModifiedBy() {
+        return lastModifiedBy;
     }
 }

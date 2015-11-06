@@ -36,7 +36,6 @@
     <!--this will get set by maven dependency:properties goal and be used in gwt-maven-plugin-->
     <lombok.lib>${org.projectlombok:lombok:jar}</lombok.lib>
 
-    <groovy.version>2.1.5</groovy.version>
     <!-- TODO check whether this is still used anywhere -->
     <zanata.web.assets.version>7</zanata.web.assets.version>
     <jboss.as.standalone.version>7.5.0</jboss.as.standalone.version>
@@ -2367,7 +2366,7 @@
     <dependency>
       <groupId>se.jiderhamn</groupId>
       <artifactId>classloader-leak-prevention</artifactId>
-      <version>1.12.0</version>
+      <version>1.15.1</version>
       <exclusions>
         <exclusion>
           <groupId>javax.servlet</groupId>
@@ -2532,13 +2531,6 @@
     </dependency>
 
     <!-- end of GWT related dependencies -->
-
-    <!-- Updated rhino for javax.script API (access by engine name "rhino17R5") -->
-    <dependency>
-      <groupId>de.christophkraemer</groupId>
-      <artifactId>rhino-script-engine</artifactId>
-      <version>1.1.1</version>
-    </dependency>
 
     <dependency>
       <groupId>org.scannotation</groupId>

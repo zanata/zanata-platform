@@ -249,17 +249,22 @@ public class ZanataInit {
                 log.warn("Could not create lucene index directory");
             }
         }
+        // TODO switch between native and simple locks based on this check?
         if (mightUseNFS(indexDir)) {
             // we don't trust Lucene's NativeFSLockFactory for NFS locks
             String docURL = "http://docs.jboss.org/hibernate/search/4.4/reference/en-US/html/search-configuration.html#search-configuration-directory-lockfactories";
-            log.warn("The Hibernate Search index dir '{}' might be NFS. " +
-                    "NativeFSLockFactory might not be safe: {}" +
+            log.info("The Hibernate Search index dir '{}' might be NFS. ",
+                    "Using NativeFSLockFactory would not be safe: See {}",
                     indexDir, docURL);
         }
         Collection<File> lockFiles =
                 FileUtils.listFiles(indexDir, new String[] { "lock" }, true);
         if (!lockFiles.isEmpty()) {
-            log.info("Lucene lock files found: {}", lockFiles);
+            String msg = "Lucene lock files found. Check if Zanata is " +
+                    "already running. Otherwise, Zanata was not shut down " +
+                    "cleanly: delete the lock files: " + lockFiles;
+            // TODO just log a warning if using native locks
+            throw new ZanataInitializationException(msg);
         }
     }
 

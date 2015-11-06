@@ -11,6 +11,7 @@
     <exclusions>
       <module name="javax.ws.rs.api" />
       <module name="javaee.api" />
+      <module name="org.hibernate.search.orm" />
       <module name="org.jboss.as.jaxrs" />
     </exclusions>
     <dependencies>
@@ -44,13 +45,6 @@
       <module name="org.jboss.security.negotiation" />
       <module name="org.picketbox" />
       <module name="org.slf4j" />
-      <system>
-        <paths>
-          <!-- Needed by de.christophkraemer.rhino.javascript.RhinoScriptEngine -->
-          <path name="sun/security/action"/>
-          <path name="sun/security/util" />
-        </paths>
-      </system>
     </dependencies>
   </deployment>
 </jboss-deployment-structure>

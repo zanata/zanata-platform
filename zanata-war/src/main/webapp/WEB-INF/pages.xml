@@ -136,10 +136,14 @@
     <!--</redirect>-->
   <!--</exception>-->
 
-  <!--<exception class="org.jboss.seam.ConcurrentRequestTimeoutException"-->
-    <!--log-level="trace">-->
-    <!--<http-error error-code="503" />-->
-  <!--</exception>-->
+  <exception class="javax.faces.application.ViewExpiredException"
+    log-level="debug">
+    <redirect view-id="/error/viewexpiredexception.xhtml">
+      <message
+        severity="warn">#{msgs['jsf.YourSessionHasTimedOutPleaseTryAgain']}
+      </message>
+    </redirect>
+  </exception>
 
   <!--<exception class="javax.validation.ConstraintViolationException"-->
     <!--log-level="debug">-->

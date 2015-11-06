@@ -11,7 +11,6 @@ import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HLocale;
-import org.zanata.model.HTermComment;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.server.ActionHandlerFor;
@@ -66,21 +65,13 @@ public class GetGlossaryDetailsHandler
 
         for (HGlossaryTerm srcTerm : srcTerms) {
             HGlossaryEntry entry = srcTerm.getGlossaryEntry();
-            List<String> srcComments = new ArrayList<String>();
-            List<String> targetComments = new ArrayList<String>();
-
             HGlossaryTerm hGlossaryTerm = entry.getGlossaryTerms().get(hLocale);
-            for (HTermComment termComment : srcTerm.getComments()) {
-                srcComments.add(termComment.getComment());
-            }
 
-            for (HTermComment termComment : hGlossaryTerm.getComments()) {
-                targetComments.add(termComment.getComment());
-            }
-
-            items.add(new GlossaryDetails(srcTerm.getContent(), hGlossaryTerm
-                    .getContent(), srcComments, targetComments, entry
-                    .getSourceRef(), entry.getSrcLocale().getLocaleId(),
+            items.add(new GlossaryDetails(entry.getId(),
+                    srcTerm.getContent(), hGlossaryTerm.getContent(),
+                    entry.getDescription(), entry.getPos(),
+                    hGlossaryTerm.getComment(), entry.getSourceRef(),
+                    entry.getSrcLocale().getLocaleId(),
                     hLocale.getLocaleId(), hGlossaryTerm.getVersionNum(),
                     hGlossaryTerm.getLastChanged()));
         }

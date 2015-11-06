@@ -184,7 +184,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
         readyElement(confirmDeleteInput).clear();
         enterText(readyElement(confirmDeleteInput), projectName);
         waitForPageSilence();
-        return this;
+        return new ProjectGeneralTab(getDriver());
     }
 
     /**

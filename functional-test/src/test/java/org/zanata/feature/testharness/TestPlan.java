@@ -33,7 +33,6 @@ import org.zanata.feature.dashboard.DashboardTest;
 import org.zanata.feature.document.*;
 import org.zanata.feature.editor.*;
 import org.zanata.feature.glossary.GlossaryAdminTest;
-import org.zanata.feature.glossary.GlossaryDeleteTest;
 import org.zanata.feature.glossary.GlossaryPushTest;
 import org.zanata.feature.glossary.InvalidGlossaryPushTest;
 import org.zanata.feature.language.AddLanguageTest;
@@ -139,7 +138,6 @@ import org.zanata.feature.versionGroup.VersionGroupUrlTest;
          * Glossary management features
          */
         GlossaryAdminTest.class,
-        GlossaryDeleteTest.class,
         GlossaryPushTest.class,
         InvalidGlossaryPushTest.class,
 

@@ -13,7 +13,7 @@
     default="loader"/>
 
   <composite:attribute name="layout" type="java.lang.String"
-    shortDescription="'inline' or 'block'"
+    shortDescription="Default (block) or 'inline' or 'center'"
     default="block"/>
 
   <composite:attribute name="jsHandle" type="java.lang.Boolean"
@@ -27,7 +27,7 @@
 <composite:implementation>
 
   <div id="#{cc.attrs.id}"
-    class="#{cc.attrs.type} #{cc.attrs.jsHandle ? 'js-loader' : ''} #{cc.attrs.layout eq 'inline' ? 'loader--inline' : ''} #{cc.attrs.visible ? 'is-active' : ''}">
+    class="#{cc.attrs.type} #{cc.attrs.jsHandle ? 'js-loader' : ''} #{cc.attrs.layout eq '' ? '' : 'loader--'}#{cc.attrs.layout} #{cc.attrs.visible ? 'is-active' : ''}">
     <span class="loader__spinner">
       <span></span><span></span><span></span>
     </span>

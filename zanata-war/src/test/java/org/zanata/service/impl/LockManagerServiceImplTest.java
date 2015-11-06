@@ -20,8 +20,10 @@
  */
 package org.zanata.service.impl;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataTest;
 import org.zanata.lock.Lock;
 import org.zanata.seam.SeamAutowire;
@@ -43,8 +45,18 @@ public class LockManagerServiceImplTest extends ZanataTest {
         SeamAutowire.instance();
     }
 
-    private LockManagerServiceImpl lockManagerService =
-            new LockManagerServiceImpl();
+    private LockManagerServiceImpl lockManagerService;
+
+    @Before
+    public void beforeMethod() {
+        MockitoAnnotations.initMocks(this);
+        // @formatter:off
+        lockManagerService = SeamAutowire.instance()
+            .reset()
+            .autowire(LockManagerServiceImpl.class);
+        // @formatter:on
+
+    }
 
     @Test
     public void simpleLock() {

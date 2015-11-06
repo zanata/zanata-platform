@@ -45,6 +45,8 @@
   <!--   <component name="org.jboss.seam.async.dispatcher" class="org.jboss.seam.async.QuartzDispatcher"/> -->
   <component class="org.jboss.seam.async.QuartzDispatcher" />
 
+  <resteasy:application resource-path-prefix="/restv1" />
+
   <web:multipart-filter create-temp-files="false"
     max-request-size="5200000"
     url-pattern="/*" />

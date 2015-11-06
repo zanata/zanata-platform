@@ -18,7 +18,6 @@ import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermAction;
 import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermResult;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.common.base.Strings;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -64,12 +63,16 @@ public class GlossaryDetailsPresenter extends
             // check if there's any changes on the target term or the target
             // comments and save
             if (!display.getTargetText().getText()
-                    .equals(selectedDetailEntry.getTarget())) {
+                    .equals(selectedDetailEntry.getTarget()) ||
+                    !display.getTargetComment().getText().equals(
+                            selectedDetailEntry.getTargetComment())) {
                 display.showLoading(true);
                 UpdateGlossaryTermAction action =
                         new UpdateGlossaryTermAction(selectedDetailEntry,
                                 display.getTargetText().getText(),
-                                display.getCurrentTargetComments());
+                                display.getTargetComment().getText(),
+                                display.getPos().getText(),
+                                display.getDescription().getText());
 
                 dispatcher.execute(action,
                         new AsyncCallback<UpdateGlossaryTermResult>() {
@@ -94,23 +97,6 @@ public class GlossaryDetailsPresenter extends
                             }
                         });
             }
-        }
-    }
-
-    @Override
-    public void onDismissClick() {
-        display.hide();
-        selectedDetailEntry = null;
-    }
-
-    @Override
-    public void addNewComment(int index) {
-        if (!Strings.isNullOrEmpty(display.getNewCommentText().getText())
-                && userWorkspaceContext.getWorkspaceRestrictions()
-                        .isHasGlossaryUpdateAccess()) {
-            display.addRowIntoTargetComment(index, display.getNewCommentText()
-                    .getText());
-            display.getNewCommentText().setText("");
         }
     }
 
@@ -147,14 +133,15 @@ public class GlossaryDetailsPresenter extends
                             i++;
                         }
                         selectEntry(0);
-                        display.show();
+                        display.center();
                     }
                 });
     }
 
     private void populateDisplayData() {
         display.getSrcRef().setText(selectedDetailEntry.getSourceRef());
-        display.setSourceComment(selectedDetailEntry.getSourceComment());
+        display.setDescription(selectedDetailEntry.getDescription());
+        display.setPos(selectedDetailEntry.getPos());
         display.setTargetComment(selectedDetailEntry.getTargetComment());
         display.setLastModifiedDate(selectedDetailEntry.getLastModifiedDate());
     }

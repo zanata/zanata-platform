@@ -119,7 +119,7 @@ public class ProjectPermissionsTab extends ProjectBasePage {
         log.info("Wait for maintainers contains {}", username);
         waitForPageSilence();
         assertThat(getSettingsMaintainersList()).contains(username);
-        return this;
+        return new ProjectPermissionsTab(getDriver());
     }
 
     public ProjectPermissionsTab expectMaintainersNotContains(
@@ -127,7 +127,7 @@ public class ProjectPermissionsTab extends ProjectBasePage {
         log.info("Wait for maintainers does not contain {}", username);
         waitForPageSilence();
         assertThat(getSettingsMaintainersList()).doesNotContain(username);
-        return this;
+        return new ProjectPermissionsTab(getDriver());
     }
 
     private List<WebElement> getSettingsMaintainersElement() {
