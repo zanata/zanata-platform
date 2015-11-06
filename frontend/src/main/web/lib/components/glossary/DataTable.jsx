@@ -192,7 +192,7 @@ var DataTable = React.createClass({
     Actions.updateSortOrder(field, ascending);
   },
 
-  _renderCell: function ({ id, rowIndex, field, readOnly, placeholder }) {
+  _renderCell: function ({ id, rowIndex, field, readOnly, placeholder, maxLength }) {
     var key = this._generateKey(field.col, rowIndex, id);
     if (id === null) {
       return <LoadingCell key={key}/>;
@@ -207,6 +207,7 @@ var DataTable = React.createClass({
             value={value}
             id={id}
             key={key}
+            maxLength={maxLength}
             placeholder={placeholder}
             rowIndex={rowIndex}
             field={field.field}
@@ -249,7 +250,8 @@ var DataTable = React.createClass({
       rowIndex: rowIndex,
       field: this.ENTRY.POS,
       readOnly: readOnly,
-      placeholder: placeholder
+      placeholder: placeholder,
+      maxLength: 255
     });
   },
 
@@ -262,7 +264,8 @@ var DataTable = React.createClass({
       rowIndex: rowIndex,
       field: this.ENTRY.DESC,
       readOnly: readOnly,
-      placeholder: placeholder
+      placeholder: placeholder,
+      maxLength: 255
     });
   },
 
