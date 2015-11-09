@@ -23,11 +23,14 @@ package org.zanata.seam;
 import javax.persistence.EntityManager;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
+import javax.transaction.InvalidTransactionException;
 import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.Status;
 import javax.transaction.Synchronization;
 import javax.transaction.SystemException;
+import javax.transaction.Transaction;
+import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;
 
 import org.apache.deltaspike.core.api.exclude.Exclude;
@@ -46,7 +49,8 @@ import lombok.Getter;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Exclude(ifProjectStage = ProjectStage.IntegrationTest.class)
-public class AutowireTransaction implements UserTransaction {
+public class AutowireTransaction implements UserTransaction,
+        TransactionManager {
 
     private static final AutowireTransaction instance =
             new AutowireTransaction();
@@ -86,6 +90,7 @@ public class AutowireTransaction implements UserTransaction {
 
     @Override
     public void setRollbackOnly() throws IllegalStateException, SystemException {
+        throw new RuntimeException();
     }
 
     @Override
@@ -99,5 +104,23 @@ public class AutowireTransaction implements UserTransaction {
 
     @Override
     public void setTransactionTimeout(int seconds) throws SystemException {
+        throw new RuntimeException();
+    }
+
+    @Override
+    public Transaction getTransaction() throws SystemException {
+        throw new RuntimeException();
+    }
+
+    @Override
+    public Transaction suspend() throws SystemException {
+        throw new RuntimeException();
+    }
+
+    @Override
+    public void resume(Transaction tobj)
+            throws InvalidTransactionException, IllegalStateException,
+            SystemException {
+        throw new RuntimeException();
     }
 }
