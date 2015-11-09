@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.Namespaces;
@@ -44,9 +45,8 @@ import org.zanata.rest.dto.resource.LocaleList;
  **/
 
 @XmlRootElement(name = "glossary")
-@XmlType(name = "glossaryType", propOrder = { "sourceLocales", "targetLocales",
-        "glossaryEntries" })
-@JsonPropertyOrder({ "sourceLocales", "glossaryEntries", "targetLocales" })
+@XmlType(name = "glossaryType", propOrder = { "glossaryEntries", "totalCount" })
+@JsonPropertyOrder({ "glossaryEntries", "totalCount" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class Glossary implements Serializable, HasMediaType {
@@ -57,35 +57,12 @@ public class Glossary implements Serializable, HasMediaType {
 
     private List<GlossaryEntry> glossaryEntries;
 
-    private LocaleList sourceLocales = new LocaleList();
-
-    private LocaleList targetLocales = new LocaleList();
-
-    @XmlElementWrapper(name = "source-locales", required = false,
-            namespace = Namespaces.ZANATA_OLD)
-    @XmlElement(name = "locale", namespace = Namespaces.ZANATA_OLD)
-    public LocaleList getSourceLocales() {
-        return sourceLocales;
-    }
-
-    public void setSourceLocales(LocaleList sourceLocales) {
-        this.sourceLocales = sourceLocales;
-    }
-
-    @XmlElementWrapper(name = "target-locales", required = false,
-            namespace = Namespaces.ZANATA_OLD)
-    @XmlElement(name = "locale", namespace = Namespaces.ZANATA_OLD)
-    public LocaleList getTargetLocales() {
-        return targetLocales;
-    }
-
-    public void setTargetLocales(LocaleList targetLocales) {
-        this.targetLocales = targetLocales;
-    }
+    private int totalCount;
 
     @XmlElementWrapper(name = "glossary-entries",
             namespace = Namespaces.ZANATA_OLD)
     @XmlElement(name = "glossary-entry", namespace = Namespaces.ZANATA_OLD)
+    @JsonProperty("glossaryEntries")
     public List<GlossaryEntry> getGlossaryEntries() {
         if (glossaryEntries == null) {
             glossaryEntries = new ArrayList<GlossaryEntry>();
@@ -95,6 +72,15 @@ public class Glossary implements Serializable, HasMediaType {
 
     public void setGlossaryEntries(List<GlossaryEntry> glossaryEntries) {
         this.glossaryEntries = glossaryEntries;
+    }
+
+    @XmlElement(name = "totalCount", namespace = Namespaces.ZANATA_API)
+    public int getTotalCount() {
+        return totalCount;
+    }
+
+    public void setTotalCount(int totalCount) {
+        this.totalCount = totalCount;
     }
 
     @Override
@@ -108,51 +94,24 @@ public class Glossary implements Serializable, HasMediaType {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result =
-                prime
-                        * result
-                        + ((glossaryEntries == null) ? 0 : glossaryEntries
-                                .hashCode());
-        result =
-                prime
-                        * result
-                        + ((sourceLocales == null) ? 0 : sourceLocales
-                                .hashCode());
-        result =
-                prime
-                        * result
-                        + ((targetLocales == null) ? 0 : targetLocales
-                                .hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Glossary)) return false;
+
+        Glossary glossary = (Glossary) o;
+
+        if (totalCount != glossary.totalCount) return false;
+        if (glossaryEntries != null ?
+            !glossaryEntries.equals(glossary.glossaryEntries) :
+            glossary.glossaryEntries != null) return false;
+
+        return true;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Glossary other = (Glossary) obj;
-        if (glossaryEntries == null) {
-            if (other.glossaryEntries != null)
-                return false;
-        } else if (!glossaryEntries.equals(other.glossaryEntries))
-            return false;
-        if (sourceLocales == null) {
-            if (other.sourceLocales != null)
-                return false;
-        } else if (!sourceLocales.equals(other.sourceLocales))
-            return false;
-        if (targetLocales == null) {
-            if (other.targetLocales != null)
-                return false;
-        } else if (!targetLocales.equals(other.targetLocales))
-            return false;
-        return true;
+    public int hashCode() {
+        int result = glossaryEntries != null ? glossaryEntries.hashCode() : 0;
+        result = 31 * result + totalCount;
+        return result;
     }
 }

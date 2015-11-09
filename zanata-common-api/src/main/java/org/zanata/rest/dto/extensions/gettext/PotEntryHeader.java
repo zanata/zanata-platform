@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.zanata.rest.dto.DTOUtil;
 
 /**
@@ -62,6 +63,7 @@ public class PotEntryHeader implements TextFlowExtension {
 
     @XmlElementWrapper(name = "source-references", required = true)
     @XmlElement(name = "sourcereference")
+    @JsonProperty("references")
     public List<String> getReferences() {
         if (references == null)
             references = new ArrayList<String>();

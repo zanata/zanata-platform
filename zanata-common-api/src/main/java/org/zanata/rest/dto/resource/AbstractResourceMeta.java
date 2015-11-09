@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.common.Namespaces;
@@ -88,6 +89,7 @@ public abstract class AbstractResourceMeta implements Serializable,
     @XmlJavaTypeAdapter(type = ContentType.class,
             value = ContentTypeAdapter.class)
     @XmlAttribute(name = "content-type", required = true)
+    @JsonProperty("contentType")
     public ContentType getContentType() {
         return contentType;
     }

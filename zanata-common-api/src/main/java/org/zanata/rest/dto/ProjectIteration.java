@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
@@ -81,6 +82,7 @@ public class ProjectIteration implements Serializable,
      */
     @XmlElement(name = "link", required = false,
             namespace = Namespaces.ZANATA_OLD)
+    @JsonProperty("links")
     public Links getLinks() {
         return links;
     }

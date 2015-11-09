@@ -159,28 +159,24 @@ public class SerializationTest extends Specification {
     def "round trip for Glossary"() {
         given:
         Glossary glossary = new Glossary();
-        glossary.getSourceLocales().add("en-US");
-
-        glossary.getTargetLocales().add("jp");
-        glossary.getTargetLocales().add("de");
 
         GlossaryEntry entry = new GlossaryEntry();
         entry.setSrcLang(LocaleId.EN_US);
-        entry.setSourcereference("source ref");
+        entry.setSourceReference("source ref");
 
         GlossaryTerm term = new GlossaryTerm();
         term.setContent("testData1");
         term.setLocale(LocaleId.EN_US);
-        term.getComments().add("comment1");
-        term.getComments().add("comment2");
-        term.getComments().add("comment3");
+        term.setComment("comment1");
+        term.setComment("comment2");
+        term.setComment("comment3");
 
         GlossaryTerm term2 = new GlossaryTerm();
         term2.setContent("testData2");
         term2.setLocale(LocaleId.DE);
-        term2.getComments().add("comment4");
-        term2.getComments().add("comment5");
-        term2.getComments().add("comment6");
+        term2.setComment("comment4");
+        term2.setComment("comment5");
+        term2.setComment("comment6");
 
         entry.getGlossaryTerms().add(term);
         entry.getGlossaryTerms().add(term2);
