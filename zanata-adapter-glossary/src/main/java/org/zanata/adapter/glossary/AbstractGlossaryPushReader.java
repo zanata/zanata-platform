@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
-import org.zanata.rest.dto.Glossary;
+import org.zanata.rest.dto.GlossaryEntry;
 
 /**
  *
@@ -32,23 +32,6 @@ import org.zanata.rest.dto.Glossary;
  *
  **/
 public abstract class AbstractGlossaryPushReader {
-    public abstract List<Glossary> extractGlossary(Reader reader)
+    public abstract List<List<GlossaryEntry>> extractGlossary(Reader reader)
             throws IOException;
-
-    // protected LocaleId getLocaleFromMap(String localLocale)
-    // {
-    // if (getOpts() != null && getOpts().getLocaleMapList() != null &&
-    // !getOpts().getLocaleMapList().isEmpty())
-    // {
-    // for (LocaleMapping loc : getOpts().getLocaleMapList())
-    // {
-    // if (loc.getLocalLocale().equals(localLocale))
-    // {
-    // return new LocaleId(loc.getLocale());
-    // }
-    // }
-    // }
-    // return new LocaleId(localLocale);
-    // }
-
 }

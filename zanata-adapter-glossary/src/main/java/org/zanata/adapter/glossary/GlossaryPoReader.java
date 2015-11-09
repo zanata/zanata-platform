@@ -27,6 +27,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.Joiner;
 import org.apache.commons.io.input.ReaderInputStream;
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.tennera.jgettext.Message;
@@ -52,26 +53,23 @@ public class GlossaryPoReader extends AbstractGlossaryPushReader {
     private final LocaleId srcLang;
     private final LocaleId transLang;
     private final int batchSize;
-    private final boolean treatSourceCommentsAsTarget;
 
     /**
      * This class will close the reader
      *
      * @param srcLang
      * @param transLang
-     * @param treatSourceCommentsAsTarget
      * @param batchSize
      */
     public GlossaryPoReader(LocaleId srcLang, LocaleId transLang,
-            boolean treatSourceCommentsAsTarget, int batchSize) {
+            int batchSize) {
         this.srcLang = srcLang;
         this.transLang = transLang;
         this.batchSize = batchSize;
-        this.treatSourceCommentsAsTarget = treatSourceCommentsAsTarget;
     }
 
     @Override
-    public List<Glossary> extractGlossary(Reader reader) throws IOException {
+    public List<List<GlossaryEntry>> extractGlossary(Reader reader) throws IOException {
         ReaderInputStream ris = new ReaderInputStream(reader);
         try {
             InputSource potInputSource = new InputSource(ris);
@@ -82,12 +80,14 @@ public class GlossaryPoReader extends AbstractGlossaryPushReader {
         }
     }
 
-    private List<Glossary> extractTemplate(InputSource potInputSource) {
+    private List<List<GlossaryEntry>>
+            extractTemplate(InputSource potInputSource) {
         int entryCount = 0;
         MessageStreamParser messageParser = createParser(potInputSource);
-        List<Glossary> glossaries = new ArrayList<Glossary>();
+        List<List<GlossaryEntry>> glossaries =
+                new ArrayList<List<GlossaryEntry>>();
 
-        Glossary glossary = new Glossary();
+        List<GlossaryEntry> glossaryEntries = new ArrayList<GlossaryEntry>();
 
         while (messageParser.hasNext()) {
             Message message = messageParser.next();
@@ -116,48 +116,39 @@ public class GlossaryPoReader extends AbstractGlossaryPushReader {
                 targetTerm.setLocale(transLang);
                 targetTerm.setContent(message.getMsgstr());
 
-                // Treat all comments and source reference as translation
-                // comment
-                if (treatSourceCommentsAsTarget) {
-                    for (String srcRef : message.getSourceReferences()) {
-                        targetTerm.getComments().add(srcRef);
-                    }
-
-                    for (String comment : message.getExtractedComments()) {
-                        targetTerm.getComments().add(comment);
-                    }
-                } else {
-                    StringBuilder sb = new StringBuilder();
-                    if (!StringUtils.isEmpty(entry.getSourcereference())) {
-                        sb.append(entry.getSourcereference());
-                    }
-                    if (!StringUtils.isEmpty(StringUtils.join(
-                            message.getSourceReferences(), "\n"))) {
-                        sb.append(StringUtils.join(
-                                message.getSourceReferences(), "\n"));
-                    }
-
-                    entry.setSourcereference(sb.toString());
-
-                    for (String comment : message.getExtractedComments()) {
-                        srcTerm.getComments().add(comment);
-                    }
+                StringBuilder sb = new StringBuilder();
+                if (!StringUtils.isEmpty(entry.getSourceReference())) {
+                    sb.append(entry.getSourceReference());
                 }
-                for (String comment : message.getComments()) {
-                    targetTerm.getComments().add(comment);
+                if (!StringUtils.isEmpty(StringUtils.join(
+                        message.getSourceReferences(), "\n"))) {
+                    sb.append(StringUtils.join(
+                            message.getSourceReferences(), "\n"));
                 }
+
+                entry.setSourceReference(sb.toString());
+
+                String description = Joiner.on("\n").skipNulls()
+                    .join(message.getExtractedComments());
+
+                entry.setDescription(description);
+
+                String targetComment = Joiner.on("\n").skipNulls()
+                    .join(message.getComments());
+
+                targetTerm.setComment(targetComment);
 
                 entry.getGlossaryTerms().add(srcTerm);
                 entry.getGlossaryTerms().add(targetTerm);
 
-                glossary.getGlossaryEntries().add(entry);
+                glossaryEntries.add(entry);
                 entryCount++;
             }
 
             if (entryCount == batchSize || !messageParser.hasNext()) {
-                glossaries.add(glossary);
+                glossaries.add(glossaryEntries);
                 entryCount = 0;
-                glossary = new Glossary();
+                glossaryEntries = new ArrayList<GlossaryEntry>();
             }
         }
         return glossaries;

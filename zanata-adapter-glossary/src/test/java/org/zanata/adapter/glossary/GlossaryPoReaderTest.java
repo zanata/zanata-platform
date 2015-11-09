@@ -31,6 +31,7 @@ import java.util.List;
 import org.junit.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.Glossary;
+import org.zanata.rest.dto.GlossaryEntry;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -56,42 +57,42 @@ public class GlossaryPoReaderTest {
     @Test
     public void extractGlossaryTest() throws IOException {
         GlossaryPoReader reader =
-                new GlossaryPoReader(LocaleId.EN_US, new LocaleId("hi"), false,
+                new GlossaryPoReader(LocaleId.EN_US, new LocaleId("hi"),
                         BATCH_SIZE);
 
         Reader inputStreamReader =
                 new InputStreamReader(new FileInputStream(sourceFile), "UTF-8");
         BufferedReader br = new BufferedReader(inputStreamReader);
 
-        List<Glossary> glossaries = reader.extractGlossary(br);
+        List<List<GlossaryEntry>> glossaries = reader.extractGlossary(br);
         assertThat(glossaries.size(),
                 equalTo((int) Math.ceil(sourceSize1 * 1F / BATCH_SIZE)));
-        assertThat(glossaries.get(0).getGlossaryEntries().size(),
+        assertThat(glossaries.get(0).size(),
                 equalTo(BATCH_SIZE));
-        assertThat(glossaries.get(1).getGlossaryEntries().size(),
+        assertThat(glossaries.get(1).size(),
                 equalTo(BATCH_SIZE));
 
-        assertThat(glossaries.get(glossaries.size() - 1).getGlossaryEntries()
-                .size(), equalTo(sourceSize1 % BATCH_SIZE));
+        assertThat(glossaries.get(glossaries.size() - 1).size(),
+                equalTo(sourceSize1 % BATCH_SIZE));
     }
 
     @Test
     public void glossaryBatchTest() throws IOException {
         GlossaryPoReader reader =
                 new GlossaryPoReader(LocaleId.EN_US, new LocaleId("zh-Hants"),
-                        false, BATCH_SIZE);
+                        BATCH_SIZE);
         Reader inputStreamReader =
                 new InputStreamReader(new FileInputStream(sourceFile2), "UTF-8");
         BufferedReader br = new BufferedReader(inputStreamReader);
 
-        List<Glossary> glossaries = reader.extractGlossary(br);
+        List<List<GlossaryEntry>> glossaries = reader.extractGlossary(br);
         assertThat(glossaries.size(),
                 equalTo((int) Math.ceil(sourceSize2 * 1F / BATCH_SIZE)));
-        assertThat(glossaries.get(0).getGlossaryEntries().size(),
+        assertThat(glossaries.get(0).size(),
                 equalTo(BATCH_SIZE));
-        assertThat(glossaries.get(1).getGlossaryEntries().size(),
+        assertThat(glossaries.get(1).size(),
                 equalTo(BATCH_SIZE));
-        assertThat(glossaries.get(glossaries.size() - 1).getGlossaryEntries()
-                .size(), equalTo(sourceSize2 % BATCH_SIZE));
+        assertThat(glossaries.get(glossaries.size() - 1).size(),
+                equalTo(sourceSize2 % BATCH_SIZE));
     }
 }
