@@ -85,7 +85,7 @@ var NewEntryModal = React.createClass({
   render: function () {
     return (
       <div className={this.props.className}>
-        <Button onClick={this._showModal} link>
+        <Button className='whsnw tove ovh' onClick={this._showModal} link>
           <Icon name='plus' className='mr1/8'/><span>New Term</span>
         </Button>
         <Modal show={this.state.show} onHide={this._closeModal}>

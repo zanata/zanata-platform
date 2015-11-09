@@ -1,12 +1,15 @@
 import React, {PureRenderMixin} from 'react/addons';
 import Actions from '../../actions/GlossaryActions';
 import {Table, Column} from 'fixed-data-table';
+import { Button, Icon } from 'zanata-ui';
 import StringUtils from '../../utils/StringUtils'
 import InputCell from './InputCell';
 import LoadingCell from './LoadingCell'
 import ActionCell from './ActionCell'
 import SourceActionCell from './SourceActionCell'
 import ColumnHeader from './ColumnHeader'
+import NewEntryModal from './NewEntryModal'
+import ImportModal from './ImportModal'
 import _ from 'lodash';
 
 var DataTable = React.createClass({
@@ -74,7 +77,10 @@ var DataTable = React.createClass({
     focusedRow: React.PropTypes.shape({
       id: React.PropTypes.number,
       rowIndex: React.PropTypes.number
-    })
+    }),
+    locales: React.PropTypes.object,
+    allowNewEntry: React.PropTypes.bool,
+    loading: React.PropTypes.bool
   },
 
   getInitialState: function () {
@@ -446,19 +452,14 @@ var DataTable = React.createClass({
   },
 
   render: function() {
-    var columns = [];
-
-    columns.push(this._getSourceColumn());
-    if(this._isTranslationSelected()) {
-      columns.push(this._getTransColumn());
-    } else {
-      columns.push(this._getTransCountColumn());
-    }
-    columns.push(this._getPosColumn());
-    columns.push(this._getDescColumn());
-    columns.push(this._getActionColumn());
-
-    return (
+    const columns = [
+      this._getSourceColumn(),
+      this._isTranslationSelected() ? this._getTransColumn() : this._getTransCountColumn(),
+      this._getPosColumn(),
+      this._getDescColumn(),
+      this._getActionColumn()
+    ]
+    const termTable = (
       <Table
         onRowClick={this._onRowClick}
         onRowMouseEnter={this._onRowMouseEnter}
@@ -472,7 +473,24 @@ var DataTable = React.createClass({
         headerHeight={this.CELL_HEIGHT}>
         {columns}
       </Table>
-    );
+    )
+    const addTerms = this.props.allowNewEntry ? (
+      <span className='ml1/4 difx aic'> Add a <NewEntryModal className='mh1/4' srcLocale={this.props.srcLocale}/> or <ImportModal className='ml1/4' srcLocale={this.props.srcLocale} transLocales={this.props.locales}/>.</span>
+    ) : null
+    const emptyState = !this.props.totalCount && !this.props.loading ? (
+      <div className='posa a0 mt2 df aic jcc'>
+        <p className='csec50 df aic'>
+          <Icon name='info' size='1' className='mr1/4'/>
+          No terms have been entered. {addTerms}
+        </p>
+      </div>
+    ) : null
+    return (
+      <div className='posr'>
+        {termTable}
+        {emptyState}
+      </div>
+    )
   }
 });
 

@@ -75,18 +75,6 @@ var SystemGlossary = React.createClass({
       messageModal = <MessageModal value={this.state.notification}/>;
     }
 
-    var contents = (<DataTable
-      glossaryData={this.state.glossary}
-      glossaryIds={this.state.glossaryIds}
-      focusedRow={this.state.focusedRow}
-      hoveredRow={this.state.hoveredRow}
-      totalCount={this.state.totalCount}
-      canAddNewEntry={this.state.canAddNewEntry}
-      canUpdateEntry={this.state.canUpdateEntry}
-      user={Configs.user}
-      srcLocale={srcLocale}
-      selectedTransLocale={selectedTransLocale}/>);
-
     if(!_.isUndefined(srcLocale) && !_.isNull(srcLocale)) {
       count = this.state.srcLocale.numberOfTerms;
     }
@@ -100,7 +88,7 @@ var SystemGlossary = React.createClass({
     var loader;
 
     if(this.state.loadingEntries) {
-      loader = (<Loader size={3}/>);
+      loader = (<Loader className='csec' size={3}/>);
     }
 
     return (
@@ -108,12 +96,12 @@ var SystemGlossary = React.createClass({
         <Icons />
         <div className='dfx aic mb1'>
           <div className='fxauto dfx aic'>
-            <h1 className='fz2 dib csec'>System Glossary</h1>
+            <h1 className='fz2 dib csec whsnw tove ovh'>System Glossary</h1>
             <Icon name='chevron-right' className='mh1/2 csec50' size='s1'/>
             <Select
               name='language-selection'
               placeholder='Select a language…'
-              className='w16'
+              className='wmi8'
               value={this.state.selectedTransLocale}
               options={this.state.localeOptions}
               onChange={this._onTranslationLocaleChange}/>
@@ -146,7 +134,20 @@ var SystemGlossary = React.createClass({
           </div>
         </div>
         <div>
-          {contents}
+          <DataTable
+            glossaryData={this.state.glossary}
+            glossaryIds={this.state.glossaryIds}
+            focusedRow={this.state.focusedRow}
+            hoveredRow={this.state.hoveredRow}
+            totalCount={this.state.totalCount}
+            canAddNewEntry={this.state.canAddNewEntry}
+            canUpdateEntry={this.state.canUpdateEntry}
+            user={Configs.user}
+            srcLocale={srcLocale}
+            locales={this.state.locales}
+            allowNewEntry={allowNewEntry}
+            loading={this.state.loadingEntries}
+            selectedTransLocale={selectedTransLocale}/>
         </div>
       </div>
     );

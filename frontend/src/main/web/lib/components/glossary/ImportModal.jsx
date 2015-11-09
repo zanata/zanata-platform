@@ -123,7 +123,7 @@ var ImportModal = React.createClass({
 
     return (
       <div className={this.props.className}>
-        <Button onClick={this._showModal} link>
+        <Button className='whsnw tove ovh' onClick={this._showModal} link>
           <Icon name='import' className='mr1/4' /><span>Import Glossary</span>
         </Button>
         <Modal show={this.state.show} onHide={this._closeModal}>
