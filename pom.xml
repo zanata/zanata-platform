@@ -2,13 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <artifactId>api</artifactId>
-  <version>3.8.0-SNAPSHOT</version>
+  <version>3.8.0</version>
   <name>Zanata API modules</name>
   <packaging>pom</packaging>
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>25-SNAPSHOT</version>
+    <version>25</version>
     <relativePath>../zanata-parent</relativePath>
   </parent>
 
@@ -16,7 +16,7 @@
     <connection>scm:git:git://github.com/zanata/zanata-api.git</connection>
     <developerConnection>scm:git:git@github.com:zanata/zanata-api.git</developerConnection>
     <url>https://github.com/zanata/zanata-api</url>
-    <tag>HEAD</tag>
+    <tag>api-3.8.0</tag>
   </scm>
 
   <!-- This is needed for bootstrapping with a zanata-parent SNAPSHOT  -->
