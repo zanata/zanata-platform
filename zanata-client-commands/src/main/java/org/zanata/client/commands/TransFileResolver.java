@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkState;
-import static org.zanata.client.commands.Messages._;
+import static org.zanata.client.commands.Messages.get;
 
 /**
  * Resolve translation file destination. It will first try to apply file mapping
@@ -128,7 +128,7 @@ public class TransFileResolver {
             QualifiedSrcDocName qualifiedSrcDocName, LocaleMapping localeMapping,
             ProjectType projectType, Optional<String> translationFileExtension) {
         FileMappingRule rule = PROJECT_TYPE_FILE_MAPPING_RULES.get(projectType);
-        checkState(rule != null, _("no.default.mapping"), projectType);
+        checkState(rule != null, get("no.default.mapping"), projectType);
         String relativePath = new FileMappingRuleHandler(rule, projectType, opts)
                 .getRelativeTransFilePathForSourceDoc(qualifiedSrcDocName,
                         localeMapping, translationFileExtension);

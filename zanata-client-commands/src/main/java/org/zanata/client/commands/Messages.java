@@ -37,7 +37,7 @@ public final class Messages {
 
     private static ResourceBundle bundle = ResourceBundle.getBundle("prompts");
 
-    public static String _(String key) {
+    public static String get(String key) {
         if (bundle.containsKey(key)) {
             return bundle.getString(key);
         }
@@ -48,7 +48,7 @@ public final class Messages {
     }
 
     public static String format(String key, Object... args) {
-        String template = _(key);
+        String template = get(key);
         return MessageFormat.format(template, args);
     }
 }

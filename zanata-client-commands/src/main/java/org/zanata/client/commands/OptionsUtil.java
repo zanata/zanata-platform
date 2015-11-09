@@ -34,7 +34,7 @@ import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Warning;
 import static org.zanata.client.commands.FileMappingRuleHandler.*;
 import static org.zanata.client.commands.FileMappingRuleHandler.Placeholders.allHolders;
-import static org.zanata.client.commands.Messages._;
+import static org.zanata.client.commands.Messages.get;
 
 public class OptionsUtil {
     private static final Logger log = LoggerFactory
@@ -71,7 +71,8 @@ public class OptionsUtil {
                                     && !projectConfig.getLocales().isEmpty();
                     if (localesDefinedInFile) {
                         ConsoleInteractorImpl console = new ConsoleInteractorImpl(opts);
-                        console.printfln(Warning, _("locales.in.config.deprecated"));
+                        console.printfln(Warning, get(
+                                "locales.in.config.deprecated"));
                     } else {
                         shouldFetchLocalesFromServer = true;
                     }
@@ -171,18 +172,18 @@ public class OptionsUtil {
         for (FileMappingRule mappingRule : opts.getFileMappingRules()) {
             String rule = mappingRule.getRule();
             if (!isRuleValid(rule)) {
-                console.printfln(Warning, _("invalid.rule"), rule);
+                console.printfln(Warning, get("invalid.rule"), rule);
                 invalid = true;
             }
             if (ruleMayHaveProblem(rule)) {
-                console.printfln(Warning, _("unrecognized.variables"),
+                console.printfln(Warning, get("unrecognized.variables"),
                         allHolders(), rule);
                 potentialProblem = true;
             }
         }
         Preconditions.checkState(!invalid);
         if (potentialProblem && opts.isInteractiveMode()) {
-            console.printfln(Question, _("confirm.rule"));
+            console.printfln(Question, get("confirm.rule"));
             console.expectYes();
         }
     }

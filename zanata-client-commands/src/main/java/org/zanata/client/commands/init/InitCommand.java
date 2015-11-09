@@ -25,7 +25,7 @@ import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Confirmat
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Hint;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Warning;
-import static org.zanata.client.commands.Messages._;
+import static org.zanata.client.commands.Messages.get;
 
 import java.io.File;
 import java.io.IOException;
@@ -142,42 +142,42 @@ public class InitCommand extends ConfigurableCommand<InitOptions> {
                 getClientFactory().getServerVersionInfo().getVersionNo();
 
         if (new VersionComparator().compare(serverVersion, "3.4.0") < 0) {
-            console.printfln(Warning, _("server.incompatible"));
-            console.printfln(Hint, _("server.incompatible.hint"));
-            throw new RuntimeException(_("server.incompatible"));
+            console.printfln(Warning, get("server.incompatible"));
+            console.printfln(Hint, get("server.incompatible.hint"));
+            throw new RuntimeException(get("server.incompatible"));
         }
     }
 
     private void displayAdviceAboutWhatIsNext(boolean hasOldConfig) {
-        console.printfln(_("what.next"));
+        console.printfln(get("what.next"));
         if (hasOldConfig) {
-            console.printfln(_("compare.project.config"),
+            console.printfln(get("compare.project.config"),
                     projectConfigHandler.getBackup());
         }
-        console.printfln(_("view.project"),
+        console.printfln(get("view.project"),
                 getProjectIterationUrl(getOpts().getUrl(), getOpts().getProj(),
                         getOpts().getProjectVersion()));
         if (isInvokedByMaven()) {
-            console.printfln(_("mvn.push.source"));
-            console.printfln(_("mvn.push.both"));
-            console.printfln(_("mvn.push.trans"));
-            console.printfln(_("mvn.help"));
+            console.printfln(get("mvn.push.source"));
+            console.printfln(get("mvn.push.both"));
+            console.printfln(get("mvn.push.trans"));
+            console.printfln(get("mvn.help"));
         } else {
-            console.printfln(_("cli.push.source"));
-            console.printfln(_("cli.push.both"));
-            console.printfln(_("cli.push.trans"));
-            console.printfln(_("cli.help"));
+            console.printfln(get("cli.push.source"));
+            console.printfln(get("cli.push.both"));
+            console.printfln(get("cli.push.trans"));
+            console.printfln(get("cli.help"));
         }
-        console.printfln(_("browse.online.help"));
+        console.printfln(get("browse.online.help"));
     }
 
     private void advancedSettingsReminder() {
         ConfigurableProjectOptions opts = getOpts();
-        console.printfln(Warning, _("customize.languages.warning"));
-        console.printfln(Hint, _("view.project"),
+        console.printfln(Warning, get("customize.languages.warning"));
+        console.printfln(Hint, get("view.project"),
                 getProjectIterationUrl(opts.getUrl(), opts.getProj(),
                         opts.getProjectVersion()));
-        console.printf(Question, _("continue.yes.no"));
+        console.printf(Question, get("continue.yes.no"));
         console.expectYes();
     }
 
@@ -191,7 +191,7 @@ public class InitCommand extends ConfigurableCommand<InitOptions> {
         OptionsUtil.applyConfigFiles(opts);
         logger.setLevel(preLevel);
         console.printfln(
-                Confirmation, _("project.version.type.confirmation"),
+                Confirmation, get("project.version.type.confirmation"),
                 opts.getProjectType(), opts.getProj(), opts
                         .getProjectVersion());
     }
@@ -209,9 +209,9 @@ public class InitCommand extends ConfigurableCommand<InitOptions> {
 
     public static void offerRetryOnServerError(Exception e,
             ConsoleInteractor consoleInteractor) {
-        consoleInteractor.printfln(Warning, _("server.error"),
+        consoleInteractor.printfln(Warning, get("server.error"),
                 Throwables.getRootCause(e).getMessage());
-        consoleInteractor.printf(Question, _("server.error.try.again"));
+        consoleInteractor.printf(Question, get("server.error.try.again"));
         consoleInteractor.expectYes();
     }
 
