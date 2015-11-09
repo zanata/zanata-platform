@@ -24,6 +24,7 @@ EventEmitter.prototype.setMaxListeners(MAX_LISTENERS);
 var _state = {
   canAddNewEntry: false,
   canUpdateEntry: false,
+  canDeleteEntry: false,
   localeOptions: [],
   srcLocale: null,
   selectedTransLocale: null,
@@ -99,6 +100,10 @@ function canAddNewEntry () {
 function canUpdateEntry() {
   return Configs.data.permission.updateGlossary;
 }
+function canDeleteEntry() {
+  return Configs.data.permission.deleteGlossary;
+}
+
 
 function processGlossaryList(res) {
   if(res.error) {
@@ -249,6 +254,7 @@ function refreshGlossaryEntries() {
   //load permission here
   _state.canAddNewEntry = canAddNewEntry();
   _state.canUpdateEntry = canUpdateEntry();
+  _state.canDeleteEntry = canDeleteEntry();
 
   GlossaryAPIStore.loadLocalesStats()
     .then(processLocalesStatistic)
