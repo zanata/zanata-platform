@@ -22,7 +22,7 @@ package org.zanata.client.commands;
 
 import com.google.common.base.Strings;
 
-import static org.zanata.client.commands.Messages._;
+import static org.zanata.client.commands.Messages.get;
 
 public interface ConsoleInteractor {
     /**
@@ -69,7 +69,7 @@ public interface ConsoleInteractor {
 
             @Override
             public String invalidErrorMessage(String answer) {
-                return String.format(_("expected.and.actual.answer"), "y or n",
+                return String.format(get("expected.and.actual.answer"), "y or n",
                         answer);
             }
         };
@@ -81,7 +81,7 @@ public interface ConsoleInteractor {
 
             @Override
             public String invalidErrorMessage(String answer) {
-                return _("no.blank.answer");
+                return get("no.blank.answer");
             }
         };
         static final AnswerValidator ANY = new AnswerValidator() {

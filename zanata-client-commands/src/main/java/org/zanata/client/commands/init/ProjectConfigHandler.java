@@ -32,7 +32,7 @@ import com.google.common.annotations.VisibleForTesting;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Confirmation;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Warning;
-import static org.zanata.client.commands.Messages._;
+import static org.zanata.client.commands.Messages.get;
 
 /**
  * @author Patrick Huang
@@ -59,8 +59,8 @@ class ProjectConfigHandler {
         File projectConfig = getOpts().getProjectConfig();
         if (projectConfig.exists()) {
             consoleInteractor
-                    .printfln(Warning, _("project.config.exists"))
-                    .printf(Question, _("continue.yes.no"));
+                    .printfln(Warning, get("project.config.exists"))
+                    .printf(Question, get("continue.yes.no"));
             consoleInteractor.expectYes();
             // back up old zanata.xml
             String suffix = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss").format(
@@ -69,7 +69,7 @@ class ProjectConfigHandler {
                     "zanata.xml." + suffix);
             FileUtils.moveFile(projectConfig, backup);
             consoleInteractor
-                    .printfln(Confirmation, _("backup.old.project.config"), backup);
+                    .printfln(Confirmation, get("backup.old.project.config"), backup);
 
             clearValuesSetByConfigurableMojo();
         }

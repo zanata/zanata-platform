@@ -40,7 +40,7 @@ import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Hint;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
 import static org.zanata.client.commands.StringUtil.indent;
 import static org.zanata.client.commands.ConsoleInteractorImpl.AnswerValidatorImpl.*;
-import static org.zanata.client.commands.Messages._;
+import static org.zanata.client.commands.Messages.get;
 
 /**
  * Prompt for trans dir,
@@ -81,7 +81,7 @@ class TransConfigPrompt {
     }
 
     TransConfigPrompt promptUser() throws Exception {
-        console.printf(Question, _("trans.dir.prompt"));
+        console.printf(Question, get("trans.dir.prompt"));
         String localTransDir = console.expectAnyNotBlankAnswer();
         File transDir = new File(localTransDir);
         pullOptions.setTransDir(transDir);
@@ -92,14 +92,14 @@ class TransConfigPrompt {
 
         Iterable<String> transFiles = Iterables.transform(srcFilesSample,
                 new ToTransFileNameFunction(strategy, localeMapping));
-        console.printfln(Hint, _("trans.doc.preview"), localeMapping.getLocale());
+        console.printfln(Hint, get("trans.doc.preview"), localeMapping.getLocale());
         for (String transFile : transFiles) {
             console.printfln("%s%s", indent(8), transFile);
         }
         if (remainingFileNumber > 0) {
-            console.printfln(_("remaining.files"), remainingFileNumber);
+            console.printfln(get("remaining.files"), remainingFileNumber);
         }
-        console.printf(Question, _("trans.dir.confirm.yes.no"));
+        console.printf(Question, get("trans.dir.confirm.yes.no"));
         String answer = console.expectAnswerWithRetry(YES_NO);
         if (answer.toLowerCase().startsWith("n")) {
             return new TransConfigPrompt(console, opts, srcFilesSample)

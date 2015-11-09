@@ -33,7 +33,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.zanata.client.commands.Messages._;
+import static org.zanata.client.commands.Messages.get;
 
 public class UpdateCheckerTest {
     private final DateTimeFormatter dateFormat =
@@ -85,7 +85,7 @@ public class UpdateCheckerTest {
         assertThat(properties.getProperty("frequency"), Matchers.equalTo(
                 "weekly"));
         assertThat(properties.getComment("frequency"), Matchers.equalTo(
-                _("valid.frequency")));
+                get("valid.frequency")));
     }
     @Test
     public void willNotCheckIfUserSaysNo() throws Exception {
@@ -159,7 +159,7 @@ public class UpdateCheckerTest {
 
         checker = new UpdateChecker(url, marker, mockConsole, currentVersion);
         checker.checkNewerVersion();
-        String expectedString = Messages._("suggest.update");
+        String expectedString = Messages.get("suggest.update");
 
         verify(mockConsole, atLeastOnce()).printfln(
                 outputStringCaptor.capture(), outputArgsCaptor.capture());

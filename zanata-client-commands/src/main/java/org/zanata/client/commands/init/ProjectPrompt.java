@@ -24,7 +24,7 @@ import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Confirmat
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Hint;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
 import static org.zanata.client.commands.ConsoleInteractorImpl.AnswerValidatorImpl;
-import static org.zanata.client.commands.Messages._;
+import static org.zanata.client.commands.Messages.get;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +33,6 @@ import org.zanata.client.commands.ConsoleInteractor;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
 import org.zanata.rest.client.ProjectClient;
-import org.zanata.rest.client.ProjectsClient;
 import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.dto.Project;
 
@@ -78,10 +77,10 @@ class ProjectPrompt {
      * If creating, also ask for Project type.
      */
     public void selectOrCreateNewProjectAndVersion() {
-        consoleInteractor.printfln(_("do.you.want.to"));
-        consoleInteractor.printf("1)").printfln(Hint, _("project.select"));
-        consoleInteractor.printf("2)").printfln(Hint, _("project.create"));
-        consoleInteractor.printf(Question, _("select.or.create"));
+        consoleInteractor.printfln(get("do.you.want.to"));
+        consoleInteractor.printf("1)").printfln(Hint, get("project.select"));
+        consoleInteractor.printf("2)").printfln(Hint, get("project.create"));
+        consoleInteractor.printf(Question, get("select.or.create"));
         String answer = consoleInteractor.expectAnswerWithRetry(
                 AnswerValidatorImpl.expect("1", "2"));
         if (answer.equals("1")) {
@@ -94,9 +93,9 @@ class ProjectPrompt {
     @VisibleForTesting
     protected void selectProject() {
         ensureActiveProjects();
-        consoleInteractor.printfln(_("available.projects"));
+        consoleInteractor.printfln(get("available.projects"));
         listFilteredProjectsPrefixedByNumber();
-        consoleInteractor.printf(Question, _("select.project.prompt"));
+        consoleInteractor.printf(Question, get("select.project.prompt"));
 
         String selection = consoleInteractor.expectAnyAnswer();
         if (selectionIsFilter(selection, filteredProjects)) {
@@ -109,7 +108,7 @@ class ProjectPrompt {
         opts.setProj(projectId);
         // TODO server returns Upper case project type!!!
         opts.setProjectType(project.getDefaultType().toLowerCase());
-        consoleInteractor.printfln(Confirmation, _("project.confirmation"),
+        consoleInteractor.printfln(Confirmation, get("project.confirmation"),
                 opts.getProj());
         projectIterationPrompt.selectOrCreateNewVersion();
     }
@@ -187,14 +186,14 @@ class ProjectPrompt {
 
     @VisibleForTesting
     protected void createNewProject() {
-        consoleInteractor.printfln(_("create.project.help"));
-        consoleInteractor.printfln(Hint, _("project.id.constraint"));
-        consoleInteractor.printfln(Question, _("project.id.prompt"));
+        consoleInteractor.printfln(get("create.project.help"));
+        consoleInteractor.printfln(Hint, get("project.id.constraint"));
+        consoleInteractor.printfln(Question, get("project.id.prompt"));
         String projectId = consoleInteractor.expectAnyAnswer();
-        consoleInteractor.printfln(Question, _("project.name.prompt"));
+        consoleInteractor.printfln(Question, get("project.name.prompt"));
         String projectName = consoleInteractor.expectAnyAnswer();
         String projectTypes = Joiner.on(", ").join(PROJECT_TYPE_LIST);
-        consoleInteractor.printfln(Question, _("project.type.prompt"), projectTypes);
+        consoleInteractor.printfln(Question, get("project.type.prompt"), projectTypes);
         String projectType =
                 consoleInteractor.expectAnswerWithRetry(
                         AnswerValidatorImpl.expect(PROJECT_TYPE_LIST));
@@ -208,7 +207,7 @@ class ProjectPrompt {
                 createNewProject();
             }
         }
-        consoleInteractor.printfln(Confirmation, _("project.created"));
+        consoleInteractor.printfln(Confirmation, get("project.created"));
         opts.setProj(projectId);
         opts.setProjectType(projectType);
         projectIterationPrompt.createNewVersion();

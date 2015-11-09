@@ -36,8 +36,6 @@ import org.zanata.client.commands.push.AbstractPushStrategy;
 import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.push.PushOptions;
 import org.zanata.client.commands.push.PushOptionsImpl;
-import org.zanata.rest.client.AsyncProcessClient;
-import org.zanata.rest.client.CopyTransClient;
 import org.zanata.rest.client.RestClientFactory;
 
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Hint;
@@ -45,7 +43,7 @@ import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Warning;
 import static org.zanata.client.commands.StringUtil.indent;
 import static org.zanata.client.commands.ConsoleInteractorImpl.AnswerValidatorImpl.*;
-import static org.zanata.client.commands.Messages._;
+import static org.zanata.client.commands.Messages.get;
 
 /**
  * Prompt for src dir.
@@ -95,25 +93,25 @@ class SourceConfigPrompt {
     }
 
     SourceConfigPrompt promptUser() throws Exception {
-        console.printf(Question, _("src.dir.prompt"));
+        console.printf(Question, get("src.dir.prompt"));
         String localSrcDir = console.expectAnyNotBlankAnswer();
         File srcDir = new File(localSrcDir);
         if (!srcDir.exists()) {
-            console.printfln(Warning, _("src.dir.not.exist"),
+            console.printfln(Warning, get("src.dir.not.exist"),
                     localSrcDir);
             return new SourceConfigPrompt(console, opts).promptUser();
         }
         console.blankLine();
-        console.printfln(Hint, _("includes.question"));
-        console.printfln(_("includes.usage.1"));
-        console.printfln(_("includes.usage.2"));
-        console.printfln(_("includes.usage.3"));
-        console.printf(Question, _("includes.prompt"));
+        console.printfln(Hint, get("includes.question"));
+        console.printfln(get("includes.usage.1"));
+        console.printfln(get("includes.usage.2"));
+        console.printfln(get("includes.usage.3"));
+        console.printf(Question, get("includes.prompt"));
         includes = console.expectAnyAnswer();
         console.blankLine();
-        console.printfln(Hint, _("excludes.question"));
-        console.printfln(_("excludes.usage"));
-        console.printf(Question, _("excludes.prompt"));
+        console.printfln(Hint, get("excludes.question"));
+        console.printfln(get("excludes.usage"));
+        console.printf(Question, get("excludes.prompt"));
         excludes = console.expectAnyAnswer();
 
         pushOptions.setSrcDir(srcDir);
@@ -122,14 +120,14 @@ class SourceConfigPrompt {
         console.blankLine();
         docNames = findDocNames();
         if (docNames.isEmpty()) {
-            console.printfln(_("no.source.doc.found"));
+            console.printfln(get("no.source.doc.found"));
         } else {
-            console.printfln(_("found.source.docs"));
+            console.printfln(get("found.source.docs"));
             for (String docName : docNames) {
                 console.printfln("%s%s", indent(8), docName);
             }
         }
-        console.printf(Question, _("source.doc.confirm.yes.no"));
+        console.printf(Question, get("source.doc.confirm.yes.no"));
         String answer = console.expectAnswerWithRetry(YES_NO);
         if (answer.toLowerCase().startsWith("n")) {
             hintAdvancedConfigurations();
@@ -152,7 +150,7 @@ class SourceConfigPrompt {
     }
 
     private void hintAdvancedConfigurations() {
-        console.printfln(Hint, _("more.src.options.hint"));
+        console.printfln(Hint, get("more.src.options.hint"));
         console.printfln(Hint,
                 " - %s",
                 getUsageFromOptionAnnotation(PushOptionsImpl.class,

@@ -38,7 +38,7 @@ import com.google.common.collect.Lists;
 
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.*;
 import static org.zanata.client.commands.ConsoleInteractorImpl.AnswerValidatorImpl.*;
-import static org.zanata.client.commands.Messages._;
+import static org.zanata.client.commands.Messages.get;
 
 /**
  * @author Patrick Huang
@@ -64,7 +64,7 @@ class UserConfigHandler {
     protected void verifyUserConfig() throws Exception {
         File userConfig = opts.getUserConfig();
         if (!userConfig.exists()) {
-            String msg = _("missing.user.config");
+            String msg = get("missing.user.config");
             log.warn(msg);
             throw new RuntimeException(msg);
         }
@@ -76,20 +76,20 @@ class UserConfigHandler {
 
         // apply user config
         if (serverUrls.isEmpty()) {
-            String msg = _("missing.server.url");
+            String msg = get("missing.server.url");
             log.warn(msg);
             throw new RuntimeException(msg);
         }
         if (serverUrls.size() == 1) {
             opts.setUrl(serverUrls.get(0));
         } else {
-            consoleInteractor.printfln(_("found.servers"), opts.getUserConfig().getName());
+            consoleInteractor.printfln(get("found.servers"), opts.getUserConfig().getName());
             List<String> answers = listServerUrlsPrefixedWithNumber(serverUrls);
-            consoleInteractor.printf(Question, _("which.server"));
+            consoleInteractor.printf(Question, get("which.server"));
             String chosenNumber =
                     consoleInteractor.expectAnswerWithRetry(expect(answers));
             URL url = serverUrls.get(Integer.parseInt(chosenNumber) - 1);
-            consoleInteractor.printfln(Confirmation, _("server.selection"), url);
+            consoleInteractor.printfln(Confirmation, get("server.selection"), url);
             opts.setUrl(url);
         }
         OptionsUtil.applyUserConfig(opts, config);

@@ -13,14 +13,13 @@ import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
 import org.zanata.client.commands.ConsoleInteractor;
-import org.zanata.client.commands.Messages;
 import org.zanata.client.commands.MockConsoleInteractor;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.zanata.client.commands.Messages._;
+import static org.zanata.client.commands.Messages.get;
 
 public class UserConfigHandlerTest {
     @Rule
@@ -58,7 +57,7 @@ public class UserConfigHandlerTest {
     @Test
     public void exitWhenThereIsNoUserConfig() throws Exception {
         expectException.expect(RuntimeException.class);
-        expectException.expectMessage(_("missing.user.config"));
+        expectException.expectMessage(get("missing.user.config"));
         opts.setUserConfig(new File("/planet/Mars/zanata.ini"));
 
         handler.verifyUserConfig();
@@ -67,7 +66,7 @@ public class UserConfigHandlerTest {
     @Test
     public void willExitWhenThereIsNoServerUrlInFile() throws Exception {
         expectException.expect(RuntimeException.class);
-        expectException.expectMessage(_("missing.server.url"));
+        expectException.expectMessage(get("missing.server.url"));
 
         // wipe contents in the file
         BufferedWriter writer =

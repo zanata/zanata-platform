@@ -5,7 +5,7 @@ import static org.mockito.Mockito.verify;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Warning;
 import static org.zanata.client.commands.FileMappingRuleHandler.Placeholders.allHolders;
-import static org.zanata.client.commands.Messages._;
+import static org.zanata.client.commands.Messages.get;
 
 import java.io.File;
 
@@ -108,7 +108,7 @@ public class OptionsUtilTest {
         opts.setFileMappingRules(Lists.newArrayList(new FileMappingRule(rule)));
         OptionsUtil.checkPotentialMistakesInRules(opts, console);
 
-        verify(console).printfln(Warning, _("unrecognized.variables"),
+        verify(console).printfln(Warning, get("unrecognized.variables"),
                 allHolders(), rule);
     }
 
@@ -119,9 +119,9 @@ public class OptionsUtilTest {
         opts.setFileMappingRules(Lists.newArrayList(new FileMappingRule(rule)));
         OptionsUtil.checkPotentialMistakesInRules(opts, console);
 
-        verify(console).printfln(Warning, _("unrecognized.variables"),
+        verify(console).printfln(Warning, get("unrecognized.variables"),
                 allHolders(), rule);
-        verify(console).printfln(Question, _("confirm.rule"));
+        verify(console).printfln(Question, get("confirm.rule"));
     }
 
     @Test
@@ -132,6 +132,6 @@ public class OptionsUtilTest {
 
         OptionsUtil.checkPotentialMistakesInRules(opts, console);
 
-        verify(console).printfln(Warning, _("invalid.rule"), rule);
+        verify(console).printfln(Warning, get("invalid.rule"), rule);
     }
 }
