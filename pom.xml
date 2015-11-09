@@ -47,7 +47,7 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
         <configuration>
-          <additionalparam>-Xdoclint:none</additionalparam>
+          <failOnError>true</failOnError>
         </configuration>
       </plugin>
     </plugins>
