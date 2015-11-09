@@ -58,6 +58,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 // TODO consider switching from Guava's ListenableFuture to Java 8's CompletableFuture
 public class AsyncTaskManager {
 
+    // TODO use ManagedExecutorService on Java EE 7, so that we can eg inject UserTransaction
     private ExecutorService scheduler;
 
     @Inject

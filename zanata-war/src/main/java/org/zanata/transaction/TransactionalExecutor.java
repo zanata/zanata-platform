@@ -25,7 +25,6 @@ import java.util.concurrent.Callable;
 import javax.annotation.Resource;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;
 
 import org.slf4j.Logger;
@@ -44,21 +43,29 @@ public class TransactionalExecutor {
     private static final Logger log =
             LoggerFactory.getLogger(TransactionalExecutor.class);
 
-    @Inject
-    private UserTransaction userTransaction;
+    @Inject @Resource
+    private UserTransaction transaction;
+
+    public TransactionalExecutor() {
+    }
+
+    public TransactionalExecutor(UserTransaction transaction) {
+        this.transaction = transaction;
+    }
 
     public <R> R runInTransaction(Callable<R> function) throws Exception {
-        R result = null;
+        assert transaction != null : "must inject UserTransaction";
         try {
-//            transactionManager.setTransactionTimeout(30);
-            userTransaction.begin();
-            result = function.call();
-            userTransaction.commit();
-        } catch (Throwable t) {
-            log.error("error running in transaction",
-                    Throwables.getRootCause(t));
-            userTransaction.rollback();
+//            transaction.setTransactionTimeout(30);
+            transaction.begin();
+            R result = function.call();
+            transaction.commit();
+            return result;
+        } catch (Exception e) {
+            log.warn("error running in transaction",
+                    Throwables.getRootCause(e));
+            transaction.rollback();
+            throw e;
         }
-        return result;
     }
 }

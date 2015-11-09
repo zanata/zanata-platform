@@ -30,6 +30,7 @@ import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.search.impl.FullTextSessionImpl;
 import org.hibernate.search.jpa.Search;
+import org.zanata.seam.AutowireTransactionExecutor;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -63,6 +64,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.zanata.transaction.TransactionalExecutor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.common.ContentState.Approved;
@@ -108,7 +110,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
                 .use("entityManagerFactory", getEmf())
                 .use("session", new FullTextSessionImpl(getSession()))
                 .use("cacheContainer", new InfinispanTestCacheContainer())
-                .use("userTransaction", AutowireTransaction.instance())
+                .use(TransactionalExecutor.class, new AutowireTransactionExecutor())
                 .use(ZanataJpaIdentityStore.AUTHENTICATED_USER,
                         seam.autowire(AccountDAO.class).getByUsername("demo"))
                 .useImpl(LocaleServiceImpl.class)

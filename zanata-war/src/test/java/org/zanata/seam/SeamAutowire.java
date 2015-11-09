@@ -22,8 +22,6 @@ package org.zanata.seam;
 
 
 import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 
 import java.lang.annotation.Annotation;
@@ -53,9 +51,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
-import org.zanata.util.AutowireLocator;
 
 import com.google.common.collect.Lists;
+import org.zanata.util.AutowireLocator;
 
 /**
  * Helps with Auto-wiring of beans for integrated tests without the
@@ -105,12 +103,16 @@ public class SeamAutowire {
     private static final Object PLACEHOLDER = new Object();
 
     private static SeamAutowire instance;
+    public static boolean disableRealServiceLocator = false;
     public static boolean useRealServiceLocator = false;
 
-    private Map<String, Object> namedComponents = new HashMap<String, Object>();
+    // key is String (name) or Class (bean type)
+    // value is an autowired instance, or an implementation class
+    private Map<Object, Object> namedComponents = new HashMap<>();
 
     /**
-     * key is an interface Class, values is the concrete bean Class
+     * key is an interface Class (or other type), values is the concrete bean
+     * implementation Class (which should be assignable to the interface class)
      */
     private Map<Class<?>, Class<?>> beanImpls =
             new HashMap<Class<?>, Class<?>>();
@@ -176,25 +178,53 @@ public class SeamAutowire {
     }
 
     /**
-     * Indicates a specific instance of a bean to use.
+     * Indicates a specific instance of a bean to use, by name.
      *
      * @param name
      *            The name of the bean. When another bean injects
      *            using <code>@Inject(value = "name")</code> or
      *            <code>@Inject varName</code>, the provided bean will be used.
-     * @param bean
+     * @param beanInstance
      *            The bean instance to use under the provided name.
      */
-    public SeamAutowire use(String name, Object bean) {
-        if (namedComponents.containsKey(name)) {
-            throw new AutowireException("The bean " + name
+    public SeamAutowire use(String name, Object beanInstance) {
+        return use((Object) name, beanInstance);
+    }
+
+    /**
+     * Indicates a specific instance of a bean to use, by bean type.
+     *
+     * @param beanType
+     *            The class of the bean. When another bean injects
+     *            using <code>@Inject BeanType</code>, the provided bean will be used.
+     * @param beanInstance
+     *            The bean instance to use when the beanType is requested .
+     */
+    public SeamAutowire use(Class beanType, Object beanInstance) {
+        return use((Object) beanType, beanInstance);
+    }
+
+    /**
+     * Indicates an implementation class to use for a given bean type.
+     *
+     * @param beanType
+     *            The class of the bean. When another bean injects
+     *            using <code>@Inject BeanType</code>, an autowired instance of
+     *            the specified implementation class will be used.
+     * @param beanImplClass
+     *            The implementation class to use when the beanType is requested .
+     */
+    public SeamAutowire use(Class beanType, Class beanImplClass) {
+        return use((Object) beanType, beanImplClass);
+    }
+
+    private SeamAutowire use(Object key, Object bean) {
+        if(namedComponents.containsKey(key)) {
+            throw new AutowireException("The bean " + key
                     + " was already created.  You should register it before "
                     + "it is resolved.");
         }
-        namedComponents.put(name, bean);
-        // we could register the parent interfaces, but note that
-        // getComponent(Class) currently constructs a new instance every time
-//        this.registerInterfaces(bean.getClass());
+        namedComponents.put(key, bean);
         return this;
     }
 
@@ -234,7 +264,18 @@ public class SeamAutowire {
      *         otherwise.
      */
     public Object getComponent(String name) {
-        return namedComponents.get(name);
+        Object o = namedComponents.get(name);
+        if (o instanceof Class) {
+            Class clazz = (Class) o;
+            try {
+                Object instance = autowire(clazz.newInstance());
+                namedComponents.put(name, instance);
+                return instance;
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return o;
     }
 
     public <T> T getComponent(Class<T> beanClass, Annotation... qualifiers) {
@@ -324,19 +365,42 @@ public class SeamAutowire {
         // (by the @Named annotation on the injection point's class), but
         // this would just move us further away from CDI semantics.
         // TODO don't create multiple instances of a class
-        Predicate<Object> predicate = Predicates.instanceOf(beanClass);
-        Optional<Object> namedOptional = Iterables.tryFind(
-                namedComponents.values(), predicate);
-        if (namedOptional.isPresent()) {
-            return (T) namedOptional.get();
+        // TODO abort if multiple matches
+        Optional<?> instanceOrClass = Iterables.tryFind(
+                namedComponents.values(),
+                o -> beanClass.isInstance(o) ||
+                        o instanceof Class &&
+                                beanClass.isAssignableFrom((Class<?>) o));
+        if (instanceOrClass.isPresent()) {
+            Object val = instanceOrClass.get();
+            if (val instanceof Class) {
+                try {
+                    T autowired = ((Class<T>) val).newInstance();
+                    autowire(autowired);
+                    // store it for future lookups
+                    namedComponents.put(beanClass, autowired);
+                    return autowired;
+                } catch (InstantiationException | IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                return (T) val;
+            }
         }
-        Optional<Class<?>> implOptional =
-                Iterables.tryFind(beanImpls.values(), predicate);
-        if (implOptional.isPresent()) {
-            return (T) implOptional.get();
-        }
+        // FIXME beanImpls.values are Classes, not instances of beanClass!
+        // try Predicates.assignableFrom
+        // TODO what if there's more than one match?!
+//        Optional<Class<?>> implOptional =
+//                Iterables.tryFind(beanImpls.values(), predicate);
+//        if (implOptional.isPresent()) {
+//            return (T) implOptional.get();
+//        }
         String beanPath = beanClass.getSimpleName();
-        return autowire(create(beanClass, beanPath), beanPath);
+        T autowired = create(beanClass, beanPath);
+        autowire(autowired, beanPath);
+        // store it for future lookups
+        namedComponents.put(beanClass, autowired);
+        return autowired;
     }
 
     /**
@@ -414,7 +478,7 @@ public class SeamAutowire {
                     }
                 }
 
-                fieldVal = namedComponents.get(beanName);
+                fieldVal = getComponent(beanName);
                 if (fieldVal == PLACEHOLDER) {
                     throw new AutowireException(
                             "Recursive dependency: unable to inject "
@@ -642,6 +706,14 @@ public class SeamAutowire {
 
         return interfaces;
     }
+
+//    @SuppressWarnings("unchecked")
+//    private static List<Class<?>> getAllTypes(Class<?> cls) {
+//        List<Class<?>> classes = ClassUtils.getAllInterfaces(cls);
+//        classes.addAll(ClassUtils.getAllSuperclasses(cls));
+//        classes.add(cls);
+//        return classes;
+//    }
 
     /**
      * Invokes a single method (the first found) annotated with

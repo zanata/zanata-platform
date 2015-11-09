@@ -29,7 +29,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.apache.deltaspike.core.api.exclude.Exclude;
-import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.seam.SeamAutowire;
@@ -72,14 +71,17 @@ public class AutowireLocator implements IServiceLocator {
 
     public <T> T getInstance(Class<T> clazz, Annotation... qualifiers) {
         try {
-            T bean = ServiceLocator.INSTANCE.getInstance(clazz, qualifiers);
-            log.debug("Returning CDI bean: {}", bean);
-            return bean;
+            if (!SeamAutowire.disableRealServiceLocator) {
+                T bean = ServiceLocator.INSTANCE.getInstance(clazz,
+                        qualifiers);
+                log.debug("Returning CDI bean: {}", bean);
+                return bean;
+            }
         } catch (IllegalStateException e) {
             log.debug("Can't find CDI bean, trying SeamAutowire",
                     e.getMessage());
-            return SeamAutowire.instance().getComponent(clazz, qualifiers);
         }
+        return SeamAutowire.instance().getComponent(clazz, qualifiers);
     }
 
     public <T> T getInstance(String name, Object scope, Class<T> clazz) {
