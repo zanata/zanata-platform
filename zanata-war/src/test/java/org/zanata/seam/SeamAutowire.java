@@ -45,6 +45,7 @@ import javassist.CtClass;
 import javassist.CtMethod;
 import javassist.NotFoundException;
 
+import javax.annotation.Resource;
 import javax.inject.Inject;
 
 import lombok.extern.slf4j.Slf4j;
@@ -359,7 +360,10 @@ public class SeamAutowire {
         // Resolve injected Components
         for (ComponentAccessor accessor : getAllComponentAccessors(bean)) {
             // Another annotated bean
-            Inject inAnnotation = accessor.getAnnotation(Inject.class);
+            Annotation inAnnotation = accessor.getAnnotation(Inject.class);
+            if (inAnnotation == null) {
+                inAnnotation = accessor.getAnnotation(Resource.class);
+            }
             if (inAnnotation != null) {
                 Object fieldVal = null;
                 String beanName = accessor.getComponentName();
@@ -577,12 +581,14 @@ public class SeamAutowire {
                 new ArrayList<ComponentAccessor>();
 
         for (Field f : getAllComponentFields(bean)) {
-            if (f.getAnnotation(Inject.class) != null) {
+            if (f.getAnnotation(Inject.class) != null ||
+                    f.getAnnotation(Resource.class) != null) {
                 props.add(ComponentAccessor.newInstance(f));
             }
         }
         for (Method m : getAllComponentMethods(bean)) {
-            if (m.getAnnotation(Inject.class) != null) {
+            if (m.getAnnotation(Inject.class) != null ||
+                    m.getAnnotation(Resource.class) != null) {
                 props.add(ComponentAccessor.newInstance(m));
             }
         }

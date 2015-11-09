@@ -25,6 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.Set;
+import javax.annotation.Resource;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
@@ -133,8 +134,11 @@ class MethodComponentAccessor extends ComponentAccessor {
 
     @Override
     public String getComponentName() {
-        Inject inAnnot = this.getAnnotation(Inject.class);
+        Annotation inAnnot = this.getAnnotation(Inject.class);
         String compName = null;
+        if (inAnnot == null) {
+            inAnnot = this.getAnnotation(Resource.class);
+        }
         if (inAnnot != null) {
             if (getter != null) {
                 compName = getter.getName().substring(3);
@@ -189,7 +193,7 @@ class MethodComponentAccessor extends ComponentAccessor {
     public Set<Annotation> getQualifiers() {
         Set<Annotation> annotations =
                 Sets.newHashSet(setter.getAnnotations());
-        annotations.remove(new AnnotationLiteral<Inject>() {});
+        annotations.removeIf(a -> a instanceof Inject || a instanceof Resource);
         return annotations;
     }
 }
