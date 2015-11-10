@@ -29,12 +29,24 @@ import javax.transaction.UserTransaction;
 import java.util.concurrent.Callable;
 
 /**
+ * Replaces runInTransaction() which is normally @Transactional to run under
+ * AutowireTransaction. TransactionalInterceptor isn't active in Autowire
+ * tests, so we have to manage the transaction ourselves.
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 public class AutowireTransactionExecutor extends TransactionalExecutor {
     private static final Logger log =
             LoggerFactory.getLogger(AutowireTransactionExecutor.class);
-    private UserTransaction transaction = AutowireTransaction.instance();
+
+    private UserTransaction transaction;
+
+    public AutowireTransactionExecutor() {
+        this(AutowireTransaction.instance());
+    }
+
+    public AutowireTransactionExecutor(UserTransaction transaction) {
+        this.transaction = transaction;
+    }
 
     @Override
     public <R> R runInTransaction(Callable<R> function) throws Exception {
