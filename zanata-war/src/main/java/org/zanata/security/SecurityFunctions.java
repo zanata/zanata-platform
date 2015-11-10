@@ -630,7 +630,7 @@ public class SecurityFunctions {
         return servicePath != null
                 && (
                 // when being called in RestLimitingFilter
-                servicePath.startsWith("/zanata/rest/test") ||
+                servicePath.contains("/rest/test/") ||
                         // when being called in ZanataRestSecurityInterceptor
                 servicePath.startsWith("/test")
         );

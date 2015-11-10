@@ -112,7 +112,7 @@ public class Deployments {
                     !object.get().startsWith("/org/zanata/seam/MethodComponentAccessor") &&
                     !object.get().startsWith("/org/zanata/seam/SeamAutowire") &&
                     !object.get().startsWith("/org/zanata/seam/test") &&
-                    !object.get().startsWith("/org/zanata/webtrans/client") &&
+                    notUnusedGwtClientCode(object) &&
                     notUnitTest(object);
         };
         archive.addPackages(true, archivePathFilter, "org.zanata");
@@ -198,8 +198,17 @@ public class Deployments {
         // TODO find a better way to exclude all unit tests being included and registered as CDI bean
         return context.contains("ArquillianTest")
                 || context.contains("RestTest")
+                || context.contains("TestAsyncBean")
                 || context.contains("ResourceTestObjectFactory")
                 || !context.matches(".+Test.*");
+    }
+
+    private static boolean notUnusedGwtClientCode(ArchivePath object) {
+        String context = object.get();
+        // we need this class in ValidationFactoryProvider
+        return context.startsWith(
+                "/org/zanata/webtrans/client/resources/ValidationMessages") ||
+                !context.startsWith("/org/zanata/webtrans/client");
     }
 
     private static <T> void forEachRemaining(Enumeration<T> enumeration,

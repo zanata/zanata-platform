@@ -602,6 +602,7 @@ public class TranslationServiceImpl implements TranslationService {
     }
 
     @Override
+    @Transactional
     public List<String> translateAllInDoc(final String projectSlug,
             final String iterationSlug, final String docId,
             final LocaleId locale, final TranslationsResource translations,
@@ -614,13 +615,13 @@ public class TranslationServiceImpl implements TranslationService {
     }
 
     @Override
+    @Transactional
     public List<String> translateAllInDoc(final String projectSlug,
             final String iterationSlug, final String docId,
             final LocaleId locale, final TranslationsResource translations,
             final Set<String> extensions, final MergeType mergeType,
             final boolean assignCreditToUploader, AsyncTaskHandle handle,
             final TranslationSourceType translationSourceType) {
-        assert !entityManager.getTransaction().isActive();
         final HProjectIteration hProjectIteration =
                 projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 
@@ -936,6 +937,7 @@ public class TranslationServiceImpl implements TranslationService {
     }
 
     @Override
+    @Transactional
     public List<TranslationResult> revertTranslations(LocaleId localeId,
             List<TransUnitUpdateInfo> translationsToRevert) {
         List<TranslationResult> results = new ArrayList<TranslationResult>();

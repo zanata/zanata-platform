@@ -30,8 +30,12 @@ import java.util.concurrent.Future;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.zanata.ArquillianTest;
+import org.zanata.security.SimplePrincipal;
+import org.zanata.security.ZanataIdentity;
 
 import com.google.common.collect.Lists;
 
@@ -43,8 +47,16 @@ public class AsyncTaskITCase extends ArquillianTest {
     @Inject
     TestAsyncBean testAsyncBean;
 
+    @Inject
+    ZanataIdentity identity;
+
     @Override
     protected void prepareDBUnitOperations() {
+    }
+
+    @Before
+    public void setUp() {
+        identity.acceptExternallyAuthenticatedPrincipal(new SimplePrincipal("admin"));
     }
 
     @Test
