@@ -37,11 +37,11 @@ public class GlossaryDeleteMojo extends
         GlossaryDeleteOptions {
 
     /**
-     * Locale of glossary to delete
+     * id of glossary to delete
      *
-     * @parameter expression="${zanata.lang}"
+     * @parameter expression="${zanata.id}"
      */
-    private String lang;
+    private String id;
 
     /**
      * Delete entire glossaries
@@ -53,8 +53,8 @@ public class GlossaryDeleteMojo extends
     @SuppressFBWarnings(value = "UWF_UNWRITTEN_FIELD",
             justification = "Injected by Maven")
     @Override
-    public String getlang() {
-        return lang;
+    public String getId() {
+        return id;
     }
 
     @Override

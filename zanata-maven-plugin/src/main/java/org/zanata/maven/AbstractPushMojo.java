@@ -76,7 +76,7 @@ public abstract class AbstractPushMojo extends
      * Whether the server should copy latest translations from equivalent
      * messages/documents in the database
      *
-     * @parameter expression="${zanata.copyTrans}" default-value="true"
+     * @parameter expression="${zanata.copyTrans}" default-value="false"
      */
     private boolean copyTrans;
 
