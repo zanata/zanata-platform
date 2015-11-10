@@ -27,6 +27,8 @@ import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
 
 import javax.faces.application.FacesMessage;
 
+import static java.lang.Integer.MIN_VALUE;
+
 /**
  * TODO [CDI] how can we make sure it's the last one to handle an uncaught exception? Needs test
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -34,7 +36,7 @@ import javax.faces.application.FacesMessage;
 @ExceptionHandler
 public class CatchAllUncaughtExceptionHandler extends AbstractExceptionHandler {
 
-    public void handleException(@Handles ExceptionEvent<Exception> event) {
+    public void handleException(@Handles(ordinal = MIN_VALUE) ExceptionEvent<Exception> event) {
         handle(event, LogLevel.Error, FacesMessage.SEVERITY_ERROR,
                 "jsf.UnexpectedError");
     }
