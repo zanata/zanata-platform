@@ -101,7 +101,7 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
         textFlowDAO = new TextFlowDAO(getSession());
 
         service = seam
-                .use("projectIterationDAO" , projectIterationDAO)
+                .use("projectIterationDAO", projectIterationDAO)
                 .use("textFlowTargetDAO", textFlowTargetDAO)
                 .use("textFlowDAO" , textFlowDAO)
                 .use("entityManager" , getEm())

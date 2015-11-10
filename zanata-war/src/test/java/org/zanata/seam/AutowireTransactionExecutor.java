@@ -20,13 +20,35 @@
  */
 package org.zanata.seam;
 
+import com.google.common.base.Throwables;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.transaction.TransactionalExecutor;
+
+import javax.transaction.UserTransaction;
+import java.util.concurrent.Callable;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 public class AutowireTransactionExecutor extends TransactionalExecutor {
-    public AutowireTransactionExecutor() {
-        super(AutowireTransaction.instance());
+    private static final Logger log =
+            LoggerFactory.getLogger(AutowireTransactionExecutor.class);
+    private UserTransaction transaction = AutowireTransaction.instance();
+
+    @Override
+    public <R> R runInTransaction(Callable<R> function) throws Exception {
+        R result = null;
+        try {
+//            transaction.setTransactionTimeout(30);
+            transaction.begin();
+            result = function.call();
+            transaction.commit();
+        } catch (Throwable t) {
+            log.error("error running in transaction",
+                    Throwables.getRootCause(t));
+            transaction.rollback();
+        }
+        return result;
     }
 }

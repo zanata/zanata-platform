@@ -119,7 +119,7 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
         textFlowDAO = new TextFlowDAO(getSession());
         rawDocumentDAO = new RawDocumentDAO((getSession()));
 
-        service = seam.reset()
+        seam.reset()
                 .use("projectIterationDAO",
                         projectIterationDAO)
                 .use("documentDAO", documentDAO)
@@ -132,8 +132,8 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
                 .use("cacheContainer", new InfinispanTestCacheContainer())
                 .use(TransactionalExecutor.class, new AutowireTransactionExecutor())
                 .useImpl(VersionStateCacheImpl.class)
-                .ignoreNonResolvable()
-                .autowire(CopyVersionServiceImpl.class);
+                .ignoreNonResolvable();
+        service = seam.autowire(CopyVersionServiceImpl.class);
     }
 
     @Test
