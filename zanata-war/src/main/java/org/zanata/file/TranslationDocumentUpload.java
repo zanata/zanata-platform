@@ -66,7 +66,7 @@ import com.google.common.base.Optional;
 @Named("translationDocumentUploader")
 public class TranslationDocumentUpload {
 
-    @Inject /* TODO [CDI] check this: migrated from @In(create = true, value = "documentUploadUtil") */
+    @Inject
     private DocumentUploadUtil util;
     @Inject
     private ZanataIdentity identity;

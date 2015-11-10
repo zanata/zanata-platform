@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.Produces;
@@ -68,8 +69,7 @@ import org.zanata.security.OpenIdLoginModule;
 import static java.lang.Math.max;
 
 @Named("applicationConfiguration")
-@javax.enterprise.context.ApplicationScoped
-/* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
+@ApplicationScoped
 @Synchronized(timeout = ServerConstants.DEFAULT_TIMEOUT)
 @Slf4j
 public class ApplicationConfiguration implements Serializable {

@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.util.Synchronized;
@@ -24,8 +25,7 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.tm.TransMemoryUnit;
 
 @Named("searchIndexManager")
-@javax.enterprise.context.ApplicationScoped
-/* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
+@ApplicationScoped
 @Synchronized(timeout = ServerConstants.DEFAULT_TIMEOUT)
 @Slf4j
 public class SearchIndexManager implements Serializable {

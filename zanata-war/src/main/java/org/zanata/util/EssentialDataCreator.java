@@ -41,7 +41,7 @@ import org.zanata.model.HLocale;
 @Named("essentialDataCreator")
 @ApplicationScoped
 @Slf4j
-@Exclude(ifProjectStage = ProjectStage.UnitTest.class) /* TODO [CDI] Set ProjectStage for unit tests */
+@Exclude(ifProjectStage = ProjectStage.UnitTest.class)
 public class EssentialDataCreator {
 
     @Inject

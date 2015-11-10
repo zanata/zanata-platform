@@ -44,8 +44,7 @@ public class TransMemoryMergeHandler extends
 
     @Inject
     private TransMemoryMergeService transMemoryMergeServiceImpl;
-
-    @Inject /* TODO [CDI] check this: migrated from @In(value = "webtrans.gwt.TransUnitUpdateHelper", create = true) */
+    @Inject
     private TransUnitUpdateHelper transUnitUpdateHelper;
 
     @Override

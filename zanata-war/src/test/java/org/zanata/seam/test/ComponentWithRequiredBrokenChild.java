@@ -26,7 +26,7 @@ import javax.inject.Named;
 @Named("componentWithRequiredBrokenChild")
 public class ComponentWithRequiredBrokenChild {
     @SuppressWarnings("CdiInjectionPointsInspection")
-    @Inject /* TODO [CDI] check this: migrated from @In(required = true) */
+    @Inject
     private ChildBroken unbuildableTestComponent;
 
     public ChildBroken getUnbuildableTestComponent() {

@@ -47,7 +47,7 @@ import net.customware.gwt.dispatch.shared.ActionException;
 @ActionHandlerFor(UpdateTransUnit.class)
 public class UpdateTransUnitHandler extends
         AbstractActionHandler<UpdateTransUnit, UpdateTransUnitResult> {
-    @Inject /* TODO [CDI] check this: migrated from @In(value = "webtrans.gwt.TransUnitUpdateHelper", create = true) */
+    @Inject
     private TransUnitUpdateHelper transUnitUpdateHelper;
 
     @Inject

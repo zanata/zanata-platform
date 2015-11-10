@@ -81,7 +81,7 @@ import javax.enterprise.event.Observes;
 @RequestScoped
 @Slf4j
 public class DocumentServiceImpl implements DocumentService {
-    @Inject /* TODO [CDI] check this: migrated from @In(required = false) */
+    @Inject
     private ZanataIdentity identity;
 
     @Inject

@@ -54,7 +54,7 @@ public class RevertTransUnitUpdatesHandler extends
     @Inject
     private SecurityService securityServiceImpl;
 
-    @Inject /* TODO [CDI] check this: migrated from @In(value = "webtrans.gwt.TransUnitUpdateHelper", create = true) */
+    @Inject
     private TransUnitUpdateHelper transUnitUpdateHelper;
 
     @Inject

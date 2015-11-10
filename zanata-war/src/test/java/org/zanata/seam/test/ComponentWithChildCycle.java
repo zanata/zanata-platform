@@ -32,7 +32,7 @@ import javax.inject.Named;
  */
 @Named("ComponentWithChildCycle")
 public class ComponentWithChildCycle {
-    @Inject /* TODO [CDI] check this: migrated from @In(required = true, create = true) */
+    @Inject
     private ChildWithCycle cyclicChildComponent;
 
     public ChildWithCycle getCyclicChildComponent() {

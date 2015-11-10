@@ -23,6 +23,7 @@ package org.zanata.notification;
 import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.jms.JMSException;
@@ -49,9 +50,7 @@ import com.google.common.base.Throwables;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Named("notificationManager")
-@javax.enterprise.context.ApplicationScoped
-// see below Observer method comment
-/* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
+@ApplicationScoped
 @Slf4j
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -71,6 +70,7 @@ public class NotificationManager implements Serializable {
     @PostConstruct
     public void onCreate() {
         try {
+            // force initialisation:
             mailQueueSender.getQueue();
         } catch (JMSException e) {
             // it will never reach this block. As long as you call getQueue()
@@ -80,10 +80,9 @@ public class NotificationManager implements Serializable {
         }
     }
 
-    // Once migrated to CDI events, CDI will instantiate NotificationManager bean for us. This will remove the need of Seam /* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
-    public
-            void onLanguageTeamPermissionChanged(
-                    final @Observes LanguageTeamPermissionChangedEvent event) {
+    // TODO [CDI] Once migrated to CDI events, CDI will instantiate NotificationManager bean for us. This will remove the need of Seam @PostConstruct
+    public void onLanguageTeamPermissionChanged(
+            final @Observes LanguageTeamPermissionChangedEvent event) {
         try {
             ObjectMessage message =
                     queueSession.createObjectMessage(event);
@@ -100,9 +99,9 @@ public class NotificationManager implements Serializable {
      * message/event this is and the queue consumer can base on this value to
      * find appropriate handler to handle the message payload.
      *
-     * @seeorg.zanata.notification.EmailQueueMessageReceiver
+     * @see org.zanata.notification.EmailQueueMessageReceiver
      */
-    static enum MessagePropertiesKey {
+    enum MessagePropertiesKey {
         objectType
     }
 }

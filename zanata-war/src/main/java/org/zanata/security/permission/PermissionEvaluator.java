@@ -20,21 +20,15 @@
  */
 package org.zanata.security.permission;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Collection;
-import java.util.List;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import org.apache.commons.lang.ArrayUtils;
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 import org.zanata.security.SecurityFunctions;
-
-import com.google.common.collect.Lists;
 
 /**
  * Holds all application permissions and provides a way to evaluate these
@@ -44,9 +38,7 @@ import com.google.common.collect.Lists;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("permissions")
-
-@javax.enterprise.context.ApplicationScoped
-/* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
+@ApplicationScoped
 public class PermissionEvaluator {
 
     private static final String ALL_ACTION_GRANTER = "__**__";
@@ -63,7 +55,8 @@ public class PermissionEvaluator {
      * Registers all permission granter methods found in clazz to be used to
      * check permissions.
      *
-     * @param clazz
+     * @param clazz Class for which GrantsPermission methods should be
+     *              registered
      */
     public void registerPermissionGranters(Class<?> clazz) {
         for (Method m : clazz.getDeclaredMethods()) {

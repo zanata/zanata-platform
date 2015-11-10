@@ -29,6 +29,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -70,8 +71,7 @@ import lombok.extern.slf4j.Slf4j;
  * This class is the replacement of seam's JpaIdentityStore. It no longer use seam's annotation. e.g. UserPrincipal, UserRoles etc.
  */
 @Named("identityStore")
-@javax.enterprise.context.ApplicationScoped
-/* TODO [CDI] Remove @PostConstruct from startup method and make it accept (@Observes @Initialized ServletContext context) */
+@ApplicationScoped
 @Slf4j
 public class ZanataJpaIdentityStore implements Serializable {
     // see also org.zanata.model.HDocument.EntityListener.AUTHENTICATED_USER

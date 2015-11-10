@@ -74,7 +74,7 @@ public class EmailQueueMessageReceiver implements MessageListener {
     private static Map<String, JmsMessagePayloadHandler> handlers = Collections
             .emptyMap();
 
-    @Inject /* TODO [CDI] check this: migrated from @In("languageTeamPermissionChangeJmsMessagePayloadHandler") */
+    @Inject
     private LanguageTeamPermissionChangeJmsMessagePayloadHandler languageTeamHandler;
 
     @Override

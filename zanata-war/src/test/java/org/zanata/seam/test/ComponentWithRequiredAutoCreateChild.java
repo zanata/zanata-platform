@@ -26,7 +26,7 @@ import javax.inject.Named;
 
 @Named("ComponentWithRequiredAutoCreateChild")
 public class ComponentWithRequiredAutoCreateChild {
-    @Inject /* TODO [CDI] check this: migrated from @In(required = true) */
+    @Inject
     private ChildAutoCreate childComponent;
 
     private boolean postConstructInvoked = false;

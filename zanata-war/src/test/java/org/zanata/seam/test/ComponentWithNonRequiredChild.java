@@ -26,7 +26,7 @@ import javax.inject.Named;
 
 @Named("ComponentWithNonRequiredChild")
 public class ComponentWithNonRequiredChild {
-    @Inject /* TODO [CDI] check this: migrated from @In(required = false) */
+    @Inject
     private Child childComponent;
 
     private boolean postConstructInvoked = false;
