@@ -29,6 +29,8 @@ import org.zanata.webtrans.server.rpc.AbstractActionHandler;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.AuthorizationError;
 import org.zanata.webtrans.shared.auth.InvalidTokenError;
+import org.zanata.webtrans.shared.rpc.ExitWorkspaceAction;
+import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.WrappedAction;
 
 @ApplicationScoped
@@ -101,6 +103,11 @@ public class SeamDispatch implements Dispatch {
         if (session != null && !session.getId().equals(a.getCsrfToken())) {
             log.warn("Token mismatch. Client token: {}, Expected token: {}",
                     a.getCsrfToken(), session.getId());
+            // If we throw an exception here, the client's onWindowCloseHandler
+            // is likely to call exitWorkspace again, forever!
+            if (a.getAction() instanceof ExitWorkspaceAction) {
+                return (R) new NoOpResult();
+            }
             throw new InvalidTokenError(
                     "The csrf token sent with this request is not valid. It may be from an expired session, or may have been forged");
         }
