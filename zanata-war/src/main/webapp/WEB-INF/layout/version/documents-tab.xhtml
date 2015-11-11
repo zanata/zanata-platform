@@ -102,7 +102,7 @@
         var="document">
         <ui:param name="hasActions"
           value="#{versionHomeAction.isPoDocument(document.docId) or !versionHomeAction.isPoDocument(document.docId) or versionHomeAction.hasOriginal(document.path, document.name) or versionHomeAction.documentUploadAllowed or versionHomeAction.documentRemovalAllowed}"/>
-        <li id="#{versionHomeAction.encodeDocId(document.docId)}"
+        <li id="#{document.docId}"
           class="progress-bar__expander #{hasActions ? 'list__item--actionable' : ''}" >
           <s:div styleClass="list__item__action" rendered="#{hasActions}">
             <div
@@ -191,7 +191,7 @@
               </ul>
             </div>
           </s:div>
-          <a href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/documents/#{versionHomeAction.encodeDocId(document.docId)}"
+          <a href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/documents/#{document.docId}"
             onclick="changeBrowserUrl(this.href, true);return false;">
             <div class="list__item__content">
               <div class="list__item__info">
