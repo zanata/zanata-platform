@@ -1,11 +1,11 @@
 import React, {PureRenderMixin} from 'react/addons';
-import { Button, Icon, Tooltip, OverlayTrigger } from 'zanata-ui';
+import { Button, Icon, Tooltip, OverlayTrigger, Overlay } from 'zanata-ui';
 import Actions from '../../actions/GlossaryActions';
 import LoadingCell from './LoadingCell'
-import Comment from './Comment'
 import GlossaryStore from '../../stores/GlossaryStore';
 import StringUtils from '../../utils/StringUtils'
 import _ from 'lodash';
+import cx from 'classnames'
 
 var ActionCell = React.createClass({
   propTypes: {
@@ -22,9 +22,13 @@ var ActionCell = React.createClass({
   },
 
   _getState: function() {
+    var entry = GlossaryStore.getEntry(this.props.id);
     return {
-      entry: GlossaryStore.getEntry(this.props.id),
-      saving: false
+      entry: entry,
+      saving: false,
+      comment: _.cloneDeep(entry.transTerm.comment),
+      savingComment: false,
+      showComment: false
     }
   },
 
@@ -51,8 +55,34 @@ var ActionCell = React.createClass({
     Actions.resetEntry(this.props.id);
   },
 
-  _onUpdateComment: function (value) {
-    Actions.updateComment(this.props.id, value);
+  _onUpdateComment: function () {
+    this.setState({savingComment: true});
+    Actions.updateComment(this.props.id, this.state.comment);
+  },
+
+  _hasCommentChanged: function() {
+    var initialValue = _.isUndefined(this.state.entry.transTerm.comment) ? '' : this.state.entry.transTerm.comment;
+    var newValue = _.isUndefined(this.state.comment) ? '' : this.state.comment;
+    return initialValue !== newValue;
+  },
+
+  _toggleComment: function () {
+    this.setState({showComment: !this.state.showComment});
+  },
+
+  _onCommentChange: function(event) {
+    this.setState({comment: event.target.value});
+  },
+
+  _onCancelComment: function () {
+    var value = _.isUndefined(this.state.entry.transTerm.comment) ? '' : this.state.entry.transTerm.comment;
+    this.setState({comment: value, showComment: false});
+  },
+
+  _handleCommentKeyUp: function (event) {
+    if(event.key === 'Escape') {
+      this._onCancelComment();
+    }
   },
 
   render: function () {
@@ -71,13 +101,68 @@ var ActionCell = React.createClass({
 
       var updateButton,
         cancelButton,
-        comment = (
-          <Comment
-            className="ml1/4"
-            readOnly={!this.props.canUpdateEntry || !canUpdateComment || isSaving}
-            value={this.state.entry.transTerm.comment}
-            onUpdateCommentCallback={this._onUpdateComment}/>
+        readOnlyComment = !this.props.canUpdateEntry || !canUpdateComment || isSaving,
+        disableCommentUpdate = !this._hasCommentChanged(),
+        saveCommentButton;
+
+      if(this.state.savingComment) {
+        saveCommentButton = (
+          <Button kind='primary' size={-1} disabled={disableCommentUpdate}
+            onClick={this._onUpdateComment} loading>
+            Update Comment
+          </Button>
         );
+      } else {
+        saveCommentButton = (
+          <Button kind='primary' size={-1} disabled={disableCommentUpdate}
+            onClick={this._onUpdateComment}>
+            Update Comment
+          </Button>
+        );
+      }
+
+      if(readOnlyComment !== true) {
+        var tooltip = (
+          <Tooltip id="comment" title="Comment">
+            <textarea className="p1/4 w100p bd2 bdcsec30 bdrs1/4"
+              onChange={this._onCommentChange}
+              value={this.state.comment}
+              onKeyUp={this._handleCommentKeyUp}/>
+            <div className="mt1/4">
+              <Button className="mr1/2" link
+                onClick={this._onCancelComment}>
+                Cancel
+              </Button>
+            {saveCommentButton}
+            </div>
+          </Tooltip>
+        );
+      } else {
+        var comment = StringUtils.isEmptyOrNull(this.state.comment) ? (<i>No comment</i>) : (<span>{this.state.comment}</span>);
+        tooltip = (<Tooltip id="comment">{comment}</Tooltip>);
+      }
+
+      var buttonClasses = cx(
+        this.props.className,
+        'mr1/2'
+      );
+
+      var comment = (
+        <div className="dib">
+          <Overlay placement='top'
+            target={() => React.findDOMNode(this.refs.commentButton)}
+            onHide={this._onCancelComment}
+            rootClose show={this.state.showComment}>
+            {tooltip}
+          </Overlay>
+          <Button link ref='commentButton'
+            kind={StringUtils.isEmptyOrNull(this.state.comment) ? 'muted' : 'primary'}
+            className={buttonClasses}
+            onClick={this._toggleComment}>
+            <Icon name='comment'/>
+          </Button>
+        </div>
+      );
 
       if(isSaving) {
         return (

@@ -1,8 +1,9 @@
 import Dispatcher from '../dispatchers/GlossaryDispatcher';
 import {GlossaryActionTypes} from '../constants/ActionTypes';
 
-
 var Actions = {
+  NO_INFO_MESSAGE: 'No information available',
+
   changeTransLocale: function(selectedLocale) {
     Dispatcher.handleViewAction({
       actionType: GlossaryActionTypes.TRANS_LOCALE_SELECTED,

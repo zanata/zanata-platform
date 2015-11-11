@@ -56,11 +56,12 @@ var SourceActionCell = React.createClass({
     if(this.props.id === null || this.state.entry === null) {
       return <LoadingCell/>;
     } else {
+      var classes = this.props.info === Actions.NO_INFO_MESSAGE ? 'csec50' : 'cpri';
       var info = (
         <OverlayTrigger placement='top'
           rootClose
           overlay={<Tooltip id='src-info'>{this.props.info}</Tooltip>}>
-          <Icon className="cpri" name="info"/>
+          <Icon className={classes} name="info"/>
         </OverlayTrigger>
       );
 

@@ -268,10 +268,7 @@ function resetCache() {
   _.assign(_state, {
     page: 1,
     glossary: {},
-    glossaryIds: [],
-    sort:{
-      src_content: true
-    }
+    glossaryIds: []
   });
 }
 
