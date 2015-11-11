@@ -15,7 +15,7 @@ var GlossaryHelper = {
     }
     var content = trimContent ? StringUtils.trim(data.content) : data.content,
       locale = data.locale,
-      comments = StringUtils.trim(data.comment);
+      comment = StringUtils.trim(data.comment);
 
     if(StringUtils.isEmptyOrNull(locale)) {
       return;
@@ -23,7 +23,7 @@ var GlossaryHelper = {
       return  {
         content: content,
         locale: locale,
-        comments: comments
+        comment: comment
       };
     }
   },

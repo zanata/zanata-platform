@@ -5,6 +5,7 @@ import StringUtils from '../../utils/StringUtils'
 import InputCell from './InputCell';
 import LoadingCell from './LoadingCell'
 import ActionCell from './ActionCell'
+import { Icon, Tooltip, OverlayTrigger } from 'zanata-ui';
 import SourceActionCell from './SourceActionCell'
 import ColumnHeader from './ColumnHeader'
 import _ from 'lodash';
@@ -140,7 +141,7 @@ var DataTable = React.createClass({
       }
     }
     if(StringUtils.isEmptyOrNull(title)) {
-      title = "No information available";
+      title = Actions.NO_INFO_MESSAGE;
     }
     return title;
   },
@@ -193,7 +194,7 @@ var DataTable = React.createClass({
     Actions.updateSortOrder(field, ascending);
   },
 
-  _renderCell: function ({ id, rowIndex, field, readOnly, placeholder, maxLength }) {
+  _renderCell: function ({ id, rowIndex, field, readOnly, placeholder, maxLength, tooltip }) {
     var key = this._generateKey(field.col, rowIndex, id);
     if (id === null) {
       return <LoadingCell key={key}/>;
@@ -201,20 +202,29 @@ var DataTable = React.createClass({
       var entry = this._getGlossaryEntry(id);
       var value = _.get(entry, field.field);
       if (readOnly) {
-        return <span className="mh1/2" key={key}>{value}</span>;
-      } else {
-        return (
-          <InputCell
-            value={value}
-            id={id}
-            key={key}
-            maxLength={maxLength}
-            placeholder={placeholder}
-            rowIndex={rowIndex}
-            field={field.field}
-            onFocusCallback={this._onRowClick}/>
-        );
+        var span = <span className="mh1/2" key={key}>{value}</span>;
+        if(!StringUtils.isEmptyOrNull(tooltip)) {
+          return (
+            <OverlayTrigger placement='top'
+              rootClose
+              overlay={<Tooltip id='src-info'>{tooltip}</Tooltip>}>
+              {span}
+            </OverlayTrigger>
+          );
+        }
+        return {span};
       }
+      return (
+        <InputCell
+          value={value}
+          id={id}
+          key={key}
+          maxLength={maxLength}
+          placeholder={placeholder}
+          rowIndex={rowIndex}
+          field={field.field}
+          onFocusCallback={this._onRowClick}/>
+      );
     }
   },
 
@@ -260,13 +270,18 @@ var DataTable = React.createClass({
                              columnData, width) {
     var readOnly = !this.props.canUpdateEntry || this._isTranslationSelected(),
       placeholder = 'enter description';
+
+    var entry = this._getGlossaryEntry(id);
+    var tooltip = entry.description;
+
     return this._renderCell({
       id: id,
       rowIndex: rowIndex,
       field: this.ENTRY.DESC,
       readOnly: readOnly,
       placeholder: placeholder,
-      maxLength: 255
+      maxLength: 255,
+      tooltip: tooltip
     });
   },
 
