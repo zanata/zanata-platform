@@ -2,29 +2,11 @@
 
 1. Install [Homebrew](http://brew.sh/): `ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
   - If you already have Homebrew installed, run `brew update` to pull in the latest formulae.
-2. Install the zanata-client: `brew install zanata-client`
-3. Now you can run `zanata-cli --help` for more options.
+2. If you **don't** have Java 1.7+, you can install it using `brew install brew-cask && brew cask install java`.
+3. Install the zanata-client: `brew install zanata-client`
+4. Now you can run `zanata-cli --help` for more options.
 
-## With 0Install
+### Upgrading
 
-1. Click [here](http://downloads.sourceforge.net/project/zero-install/0install/2.8/ZeroInstall.pkg) to download binary package of [0Install for OS X](http://0install.net/install-osx.html).
-2. Install 0Install: `sudo installer -pkg ZeroInstall.pkg -target`.
-3. Install [Homebrew](http://brew.sh/): `ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
-4. Install cask: `brew install caskroom/cask/brew-cask`.
-5. Install Java runtime: `brew cask install java`.
-6. Setup alias: `0install -c add zanata-cli http://zanata.org/files/0install/zanata-cli.xml`.
-7. Now you can run `zanata-cli --help` for more options.
-
-*Note: If you have installed `zanata-cli` previously through another method, you need to uninstall that for this to work.*
-
-### Useful command
-
-**Run Zanata-CLI without alias**
-```
-0launch http://zanata.org/files/0install/zanata-cli.xml {command}
-```
-
-**Update Zanata-CLI manually**
-```
-0install update http://zanata.org/files/0install/zanata-cli.xml
-```
+1. Run `brew update`
+2. Run `brew upgrade zanata-client`
