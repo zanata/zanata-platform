@@ -52,14 +52,19 @@ var SystemGlossary = React.createClass({
     }
   },
 
+  _handleFilterReset: function (event) {
+    this.setState({filter: ''})
+    Actions.updateFilter('')
+  },
+
   _handleFilterChange: function(event) {
     this.setState({filter: event.target.value});
 
-    if(this.filterTimeout !== null) {
+    if(this.filterTimeout) {
       clearTimeout(this.filterTimeout);
     }
     this.filterTimeout = setTimeout(() => {
-      Actions.updateFilter(this.state.filter);
+      Actions.updateFilter(this.state.filter)
     }, 500);
   },
 
@@ -88,13 +93,13 @@ var SystemGlossary = React.createClass({
     var loader;
 
     if(this.state.loadingEntries) {
-      loader = (<Loader className='csec' size={3}/>);
+      loader = (<Loader className='csec ml1/2' size={3}/>);
     }
 
     return (
       <div>
         <Icons />
-        <div className='dfx aic mb1'>
+        <div className='dfx aic mb2'>
           <div className='fxauto dfx aic'>
             <h1 className='fz2 dib csec whsnw tove ovh'>System Glossary</h1>
             <Icon name='chevron-right' className='mh1/2 csec50' size='s1'/>
@@ -113,15 +118,17 @@ var SystemGlossary = React.createClass({
             {newEntrySection}
           </div>
         </div>
-        <div className='dfx aic mb1'>
+        <div className='dfx aic mb1/2'>
           <div className='fxauto'>
-            <div className='w8'>
+            <div className='maw16'>
               <Input value={this.state.filter}
                 label='Search Glossary'
                 hideLabel
-                className="w100p pr1&1/2"
+                icon='search'
                 border='outline'
-                reset
+                resetButton
+                loading={this.state.loadingEntries && this.state.filter}
+                onReset={this._handleFilterReset}
                 placeholder='Search Glossary'
                 id="search"
                 onKeyDown={this._handleFilterKeyDown}
@@ -145,6 +152,7 @@ var SystemGlossary = React.createClass({
             user={Configs.user}
             srcLocale={srcLocale}
             locales={this.state.locales}
+            filter={this.state.filter}
             allowNewEntry={allowNewEntry}
             loading={this.state.loadingEntries}
             selectedTransLocale={selectedTransLocale}/>

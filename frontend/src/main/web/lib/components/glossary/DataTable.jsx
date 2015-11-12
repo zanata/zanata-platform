@@ -80,7 +80,8 @@ var DataTable = React.createClass({
     }),
     locales: React.PropTypes.object,
     allowNewEntry: React.PropTypes.bool,
-    loading: React.PropTypes.bool
+    loading: React.PropTypes.bool,
+    filter: React.PropTypes.string
   },
 
   getInitialState: function () {
@@ -486,7 +487,15 @@ var DataTable = React.createClass({
     const addTerms = this.props.allowNewEntry ? (
       <span className='ml1/4 difx aic'> Add a <NewEntryModal className='mh1/4' srcLocale={this.props.srcLocale}/> or <ImportModal className='ml1/4' srcLocale={this.props.srcLocale} transLocales={this.props.locales}/>.</span>
     ) : null
-    const emptyState = !this.props.totalCount && !this.props.loading ? (
+    const noResultsState = this.props.filter && !this.props.totalCount && !this.props.loading ? (
+      <div className='posa a0 mt2 df aic jcc'>
+        <p className='csec50 df aic'>
+          <Icon name='info' size='1' className='mr1/4'/>
+          No results for "{this.props.filter}". Maybe try another search.
+        </p>
+      </div>
+    ) : null
+    const emptyState = !this.props.filter && !this.props.totalCount && !this.props.loading ? (
       <div className='posa a0 mt2 df aic jcc'>
         <p className='csec50 df aic'>
           <Icon name='info' size='1' className='mr1/4'/>
@@ -497,6 +506,7 @@ var DataTable = React.createClass({
     return (
       <div className='posr'>
         {termTable}
+        {noResultsState}
         {emptyState}
       </div>
     )
