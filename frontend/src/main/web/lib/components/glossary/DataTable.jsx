@@ -1,7 +1,7 @@
 import React, {PureRenderMixin} from 'react/addons';
 import Actions from '../../actions/GlossaryActions';
 import {Table, Column} from 'fixed-data-table';
-import { Button, Icon } from 'zanata-ui';
+import { Button, Icon, Tooltip, OverlayTrigger } from 'zanata-ui';
 import StringUtils from '../../utils/StringUtils'
 import InputCell from './InputCell';
 import LoadingCell from './LoadingCell'
@@ -198,15 +198,23 @@ var DataTable = React.createClass({
     Actions.updateSortOrder(field, ascending);
   },
 
-  _renderCell: function ({ id, rowIndex, field, readOnly, placeholder, maxLength }) {
-    var key = this._generateKey(field.col, rowIndex, id);
+  _renderCell: function ({ id, rowIndex, field, readOnly, placeholder, maxLength, tooltip }) {
+    var key = this._generateKey(field.col, rowIndex, id)
     if (id === null) {
       return <LoadingCell key={key}/>;
     } else {
-      var entry = this._getGlossaryEntry(id);
-      var value = _.get(entry, field.field);
-      if (readOnly) {
-        return <span className="mh1/2" key={key}>{value}</span>;
+      const entry = this._getGlossaryEntry(id)
+      const value = _.get(entry, field.field)
+      const tooltipContent = tooltip ? (<Tooltip id={key}>{value}</Tooltip>) : null
+      const readonlyValue = <span className="mh1/2 db ovh tove" key={key}>{value}</span>
+      if (readOnly && tooltip) {
+        return (
+          <OverlayTrigger placement='top' rootClose overlay={tooltipContent}>
+            {readonlyValue}
+          </OverlayTrigger>
+        )
+      } else if (readOnly) {
+        return readonlyValue
       } else {
         return (
           <InputCell
@@ -271,7 +279,8 @@ var DataTable = React.createClass({
       field: this.ENTRY.DESC,
       readOnly: readOnly,
       placeholder: placeholder,
-      maxLength: 255
+      maxLength: 255,
+      tooltip: true
     });
   },
 
