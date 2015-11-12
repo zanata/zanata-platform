@@ -6,6 +6,7 @@ import GlossaryStore from '../../stores/GlossaryStore';
 import StringUtils from '../../utils/StringUtils'
 import _ from 'lodash';
 import cx from 'classnames'
+import defined from 'defined';
 
 var ActionCell = React.createClass({
   propTypes: {
@@ -61,8 +62,8 @@ var ActionCell = React.createClass({
   },
 
   _hasCommentChanged: function() {
-    var initialValue = _.isUndefined(this.state.entry.transTerm.comment) ? '' : this.state.entry.transTerm.comment;
-    var newValue = _.isUndefined(this.state.comment) ? '' : this.state.comment;
+    var initialValue = defined(this.state.entry.transTerm.comment, '');
+    var newValue = defined(this.state.comment, '');
     return initialValue !== newValue;
   },
 
@@ -75,7 +76,7 @@ var ActionCell = React.createClass({
   },
 
   _onCancelComment: function () {
-    var value = _.isUndefined(this.state.entry.transTerm.comment) ? '' : this.state.entry.transTerm.comment;
+    var value = defined(this.state.entry.transTerm.comment, '');
     this.setState({comment: value, showComment: false});
   },
 
@@ -86,6 +87,7 @@ var ActionCell = React.createClass({
   },
 
   render: function () {
+    var tooltip;
     if (this.props.id === null || this.state.entry === null) {
       return <LoadingCell/>;
     } else {
@@ -103,26 +105,15 @@ var ActionCell = React.createClass({
         cancelButton,
         readOnlyComment = !this.props.canUpdateEntry || !canUpdateComment || isSaving,
         disableCommentUpdate = !this._hasCommentChanged(),
-        saveCommentButton;
-
-      if(this.state.savingComment) {
         saveCommentButton = (
           <Button kind='primary' size={-1} disabled={disableCommentUpdate}
-            onClick={this._onUpdateComment} loading>
+            onClick={this._onUpdateComment} loading={this.state.savingComment}>
             Update Comment
           </Button>
         );
-      } else {
-        saveCommentButton = (
-          <Button kind='primary' size={-1} disabled={disableCommentUpdate}
-            onClick={this._onUpdateComment}>
-            Update Comment
-          </Button>
-        );
-      }
 
-      if(readOnlyComment !== true) {
-        var tooltip = (
+      if(!readOnlyComment) {
+        tooltip = (
           <Tooltip id="comment" title="Comment">
             <textarea className="p1/4 w100p bd2 bdcsec30 bdrs1/4"
               onChange={this._onCommentChange}
@@ -138,8 +129,8 @@ var ActionCell = React.createClass({
           </Tooltip>
         );
       } else {
-        var comment = StringUtils.isEmptyOrNull(this.state.comment) ? (<i>No comment</i>) : (<span>{this.state.comment}</span>);
-        tooltip = (<Tooltip id="comment">{comment}</Tooltip>);
+        var commentSpan = StringUtils.isEmptyOrNull(this.state.comment) ? (<i>No comment</i>) : (<span>{this.state.comment}</span>);
+        tooltip = (<Tooltip id="comment">{commentSpan}</Tooltip>);
       }
 
       var buttonClasses = cx(

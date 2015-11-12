@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import StringUtils from './StringUtils'
 import DateHelpers from './DateHelper'
+import defined from 'defined';
+
 
 var GlossaryHelper = {
   /**
@@ -97,8 +99,8 @@ var GlossaryHelper = {
 
     return {
       id: entry.id,
-      pos: _.isUndefined(entry.pos) ? '' : entry.pos,
-      description: _.isUndefined(entry.description) ? '' : entry.description,
+      pos: defined(entry.pos, ''),
+      description: defined(entry.description, ''),
       termsCount: entry.termsCount > 0 ? entry.termsCount - 1 : 0 , //remove source term from count
       srcTerm: srcTerm,
       transTerm: transTerm,

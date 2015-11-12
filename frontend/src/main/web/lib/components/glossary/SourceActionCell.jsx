@@ -5,6 +5,7 @@ import LoadingCell from './LoadingCell'
 import DeleteEntryModal from './DeleteEntryModal'
 import GlossaryStore from '../../stores/GlossaryStore';
 import _ from 'lodash';
+import Messages from '../../constants/Messages'
 
 var SourceActionCell = React.createClass({
   propTypes: {
@@ -56,12 +57,12 @@ var SourceActionCell = React.createClass({
     if(this.props.id === null || this.state.entry === null) {
       return <LoadingCell/>;
     } else {
-      var classes = this.props.info === Actions.NO_INFO_MESSAGE ? 'csec50' : 'cpri';
+      var className = this.props.info === Messages.NO_INFO_MESSAGE ? 'csec50' : 'cpri';
       var info = (
         <OverlayTrigger placement='top'
           rootClose
           overlay={<Tooltip id='src-info'>{this.props.info}</Tooltip>}>
-          <Icon className={classes} name="info"/>
+          <Icon className={className} name="info"/>
         </OverlayTrigger>
       );
 
