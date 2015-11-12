@@ -127,8 +127,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
      */
     @Ignore
     @Test
-    public void individualTest() {
-
+    public void individualTest() throws Exception {
         this.testCopyTrans(new CopyTransExecution(REJECT, IGNORE,
                 DOWNGRADE_TO_FUZZY, false, true, false, false, Approved)
                 .expectTransState(NeedReview));
@@ -151,7 +150,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
     @UseDataProvider("copyTransParams")
     // (about 2 seconds)
     @SlowTest
-    public void testCopyTrans(CopyTransExecution execution) {
+    public void testCopyTrans(CopyTransExecution execution) throws Exception {
         // Prepare Execution
         ProjectIterationDAO iterationDAO =
                 seam.autowire(ProjectIterationDAO.class);
@@ -214,7 +213,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
                 new HCopyTransOptions(execution.getContextMismatchAction(),
                         execution.getDocumentMismatchAction(),
                         execution.getProjectMismatchAction());
-        CopyTransService copyTransService =
+        CopyTransServiceImpl copyTransService =
                 seam.autowire(CopyTransServiceImpl.class);
         copyTransService.copyTransForIteration(projectIteration, options,
                 new CopyTransTaskHandle());

@@ -24,6 +24,8 @@ import javax.ws.rs.Path;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import com.google.common.base.Throwables;
 import org.zanata.action.CopyTransManager;
 import org.zanata.async.handle.CopyTransTaskHandle;
 import org.zanata.dao.DocumentDAO;
@@ -61,10 +63,13 @@ public class CopyTransResourceService implements CopyTransResource {
 
         // NB: Permission check happens in the Copy Trans service itself.
 
-        copyTransManager.startCopyTrans(document, null); // TODO allow options
-                                                         // from the Rest
-                                                         // endpoint
-        return this.getCopyTransStatus(projectSlug, iterationSlug, docId);
+        // TODO allow options from the Rest endpoint
+        try {
+            copyTransManager.startCopyTrans(document, null);
+            return this.getCopyTransStatus(projectSlug, iterationSlug, docId);
+        } catch (Exception e) {
+            throw Throwables.propagate(e);
+        }
     }
 
     @Override

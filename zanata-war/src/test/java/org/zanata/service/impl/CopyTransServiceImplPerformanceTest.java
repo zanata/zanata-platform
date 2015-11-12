@@ -162,7 +162,7 @@ public class CopyTransServiceImplPerformanceTest extends ZanataTest {
     private static EntityManagerFactory emf;
     protected EntityManager em;
     private int numOfTextFlows;
-    private CopyTransService copyTransService;
+    private CopyTransServiceImpl copyTransService;
     private HDocument copyTransTargetDoc;
     private static SeamAutowire seam = SeamAutowire.instance();
 
