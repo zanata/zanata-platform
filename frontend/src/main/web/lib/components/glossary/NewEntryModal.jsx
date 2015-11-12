@@ -101,6 +101,7 @@ var NewEntryModal = React.createClass({
               placeholder='The new term'
               onChange={this._onTermChange}
               onReset={this._onTermReset}
+              autoFocus
               />
 
             <Input
