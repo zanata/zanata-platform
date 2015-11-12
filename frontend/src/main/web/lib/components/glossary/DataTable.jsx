@@ -12,6 +12,7 @@ import ColumnHeader from './ColumnHeader'
 import NewEntryModal from './NewEntryModal'
 import ImportModal from './ImportModal'
 import _ from 'lodash';
+import Messages from '../../constants/Messages'
 
 var DataTable = React.createClass({
   TIMEOUT: 400,
@@ -148,7 +149,7 @@ var DataTable = React.createClass({
       }
     }
     if(StringUtils.isEmptyOrNull(title)) {
-      title = Actions.NO_INFO_MESSAGE;
+      title = Messages.NO_INFO_MESSAGE;
     }
     return title;
   },
@@ -209,7 +210,7 @@ var DataTable = React.createClass({
       var entry = this._getGlossaryEntry(id);
       var value = _.get(entry, field.field);
       if (readOnly) {
-        var span = <span className="mh1/2" key={key}>{value}</span>;
+        let span = <span className="mh1/2" key={key}>{value}</span>;
         if(!StringUtils.isEmptyOrNull(tooltip)) {
           return (
             <OverlayTrigger placement='top'

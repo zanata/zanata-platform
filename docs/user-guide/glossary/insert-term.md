@@ -7,8 +7,8 @@ Requires **Glossary-admin** role. See [glossary roles and permission](/user-guid
 <figure>
 ![new term](/images/glossary-new-term.png)
 </figure>
-1. A window will popup, fill in term, part of speech and description of the new term.
+1. A window will popup, fill in term, part of speech and description of the new term. For info on these fields, see [fields in CSV](upload-glossaries/#csv-comma-separated-value-utf-8-format)
 <figure>
 ![new term modal](/images/glossary-new-term-modal.png)
 </figure>
-1. Click save button to save your changes.
+1. To save your changes, click the save button.
