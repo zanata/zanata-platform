@@ -3,15 +3,13 @@
     {
       "id": 34,
       "pos": "",
-      "description": "1",
+      "description": "this is a long long long long long long long long long long long long long long long long long long long long descriptions",
       "srcLang": "en-US",
       "sourceReference": "jdimanos@10.64.6.15",
       "glossaryTerms": [
         {
           "content": " interceptor stack configuration",
-          "locale": "en-US",
-          "lastModifiedDate": 1445391143000,
-          "lastModifiedBy": "Administrator"
+          "locale": "en-US"
         },
         {
           "content": "Interceptor Stack-Konfiguration1",
