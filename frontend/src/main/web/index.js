@@ -5,7 +5,7 @@ import Views from './lib/constants/Views.js';
 import Configs from './lib/constants/Configs';
 import StringUtils from './lib/utils/StringUtils';
 import _ from 'lodash';
-import css from './index.css'
+import 'zanata-ui/lib/styles/index.css'
 
 /**
  * Process attributes in dom element:id='main-content'

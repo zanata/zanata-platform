@@ -99,7 +99,7 @@ var DataTable = React.createClass({
    * @param  top : number - the position of the top of the DataTable. If not supplied, the top position will be calculated based on DOM height.
    */
   _getHeight: function(top) {
-    var footer = window.document.getElementById("footer");
+    var footer = window.document.querySelector('.js-footer');
     var footerHeight = footer ? footer.clientHeight : 91;
 
     top = _.isUndefined(top) ? React.findDOMNode(this).offsetTop: top;
@@ -259,7 +259,7 @@ var DataTable = React.createClass({
   _renderPosCell: function (id, cellDataKey, rowData, rowIndex,
                             columnData, width) {
     var readOnly = !this.props.canUpdateEntry || this._isTranslationSelected(),
-      placeholder = 'enter part of speech';
+      placeholder = 'Noun, Verb, etc';
     return this._renderCell({
       id: id,
       rowIndex: rowIndex,
