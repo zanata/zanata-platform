@@ -68,13 +68,33 @@ var SystemGlossary = React.createClass({
     }, 500);
   },
 
+  _currentLocaleCount: function () {
+    const locales = this.state.localeOptions
+    const selectedTransLocale = this.state.selectedTransLocale
+    return _.result(_.find(locales, function(locale) {
+      return locale.value === selectedTransLocale
+    }), 'count')
+  },
+
   render: function() {
     const srcLocale = this.state.srcLocale;
-    var count = 0,
-      selectedTransLocale = this.state.selectedTransLocale,
-      uploadSection,
-      newEntrySection,
-      messageModal;
+    let count = 0
+    let selectedTransLocale = this.state.selectedTransLocale
+    let uploadSection
+    let newEntrySection
+    let messageModal
+    const currentLocaleCount = this._currentLocaleCount()
+
+    let optionOutput = (op) => {
+      let count = op.count || 0
+      return (
+        <span className='dfx aic jcsb'>
+          <span className='fxauto tove ovh whsnw' title={op.label}>{op.label}</span>
+          <span className='fxnone csec pl1/8 tove ovh whsnw tar maw4'>{op.value}</span>
+          <span className='fxnone csec50 pl1/8 tove ovh whsnw tar w2'>{count}</span>
+        </span>
+      )
+    }
 
     if(this.state.notification) {
       messageModal = <MessageModal value={this.state.notification}/>;
@@ -96,6 +116,13 @@ var SystemGlossary = React.createClass({
       loader = (<Loader className='csec ml1/2' size={3}/>);
     }
 
+    const currentLocaleCountComponent = (currentLocaleCount >= 0) ? (
+      <span className='df aic'>
+        <Icon name='translate' className='csec50 mr1/8' />
+        <span className='csec'>{currentLocaleCount}</span>
+      </span>
+    ) : null
+
     return (
       <div>
         <Icons />
@@ -109,6 +136,7 @@ var SystemGlossary = React.createClass({
               className='wmi8'
               value={this.state.selectedTransLocale}
               options={this.state.localeOptions}
+              optionRenderer={optionOutput}
               onChange={this._onTranslationLocaleChange}/>
             {loader}
           </div>
@@ -127,7 +155,7 @@ var SystemGlossary = React.createClass({
                 icon='search'
                 border='outline'
                 resetButton
-                loading={this.state.loadingEntries && this.state.filter}
+                loading={!!this.state.loadingEntries && !!this.state.filter}
                 onReset={this._handleFilterReset}
                 placeholder='Search Glossary'
                 id="search"
@@ -136,7 +164,8 @@ var SystemGlossary = React.createClass({
             </div>
           </div>
           <div className='dfx aic'>
-            <Icon name='glossary' className='csec50 mr1/4' />
+            {currentLocaleCountComponent}
+            <Icon name='glossary' className='csec50 ml1/4 mr1/8' />
             <span className='csec'>{count}</span>
           </div>
         </div>

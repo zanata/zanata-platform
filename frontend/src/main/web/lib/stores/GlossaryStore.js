@@ -78,7 +78,8 @@ function processLocalesStatistic(res) {
       _state.locales[transLocale.locale.localeId] = transLocale;
       _state.localeOptions.push({
         value: transLocale.locale.localeId,
-        label: `${transLocale.locale.displayName} - (${transLocale.numberOfTerms})`
+        label: transLocale.locale.displayName,
+        count: transLocale.numberOfTerms
       });
     });
   }
