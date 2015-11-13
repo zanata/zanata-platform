@@ -171,7 +171,9 @@
       Version of Java used for API compatibility checking. Should
       correspond with required.jvm.
     -->
+    <animal.sniffer.sig.group>org.codehaus.mojo.signature</animal.sniffer.sig.group>
     <animal.sniffer.signature>java17</animal.sniffer.signature>
+    <animal.sniffer.sig.version>1.0</animal.sniffer.sig.version>
     <required.maven>3.0.5</required.maven>
     <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -480,19 +482,19 @@
             <goals>
               <goal>check</goal>
             </goals>
-            <configuration>
-              <excludeDependencies>
-                <!-- xom:1.0 uses this -->
-                <excludeDependency>com.ibm.icu:icu4j:jar:2.6.1</excludeDependency>
-              </excludeDependencies>
-              <signature>
-                <groupId>org.codehaus.mojo.signature</groupId>
-                <artifactId>${animal.sniffer.signature}</artifactId>
-                <version>1.0</version>
-              </signature>
-            </configuration>
           </execution>
         </executions>
+        <configuration>
+          <excludeDependencies>
+            <!-- xom:1.0 uses this -->
+            <excludeDependency>com.ibm.icu:icu4j:jar:2.6.1</excludeDependency>
+          </excludeDependencies>
+          <signature>
+            <groupId>${animal.sniffer.sig.group}</groupId>
+            <artifactId>${animal.sniffer.signature}</artifactId>
+            <version>${animal.sniffer.sig.version}</version>
+          </signature>
+        </configuration>
       </plugin>
 
       <plugin>
