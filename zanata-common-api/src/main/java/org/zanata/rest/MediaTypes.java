@@ -76,6 +76,22 @@ public class MediaTypes {
     public static final String APPLICATION_ZANATA_GLOSSARY_JSON =
             APPLICATION_ZANATA_GLOSSARY + JSON;
 
+    public static final String APPLICATION_ZANATA_PROJECT_VERSION =
+        APPLICATION_VND_ZANATA + ".version";
+    public static final String APPLICATION_ZANATA_PROJECT_VERSION_JSON =
+        APPLICATION_ZANATA_PROJECT_VERSION + JSON;
+
+    public static final String APPLICATION_ZANATA_VERSION_LOCALES =
+        APPLICATION_ZANATA_PROJECT_VERSION + ".locales";
+    public static final String APPLICATION_ZANATA_VERSION_LOCALES_JSON =
+        APPLICATION_ZANATA_VERSION_LOCALES + JSON;
+
+    public static final String APPLICATION_ZANATA_TRANS_UNIT =
+        APPLICATION_VND_ZANATA + ".tu";
+
+    public static final String APPLICATION_ZANATA_TRANS_UNIT_RESOURCE_JSON =
+        APPLICATION_ZANATA_TRANS_UNIT + ".resource" + JSON;
+
     /**
      * Creates a format specific MediaType string given an existing media type
      *
