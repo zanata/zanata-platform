@@ -57,6 +57,10 @@
     <phase-listener>org.zanata.ui.faces.FacesMessagesPhaseListener</phase-listener>
   </lifecycle>
 
+  <factory>
+    <exception-handler-factory>org.zanata.exception.AjaxViewExpiredExceptionHandlerFactory</exception-handler-factory>
+  </factory>
+
   <render-kit>
     <renderer>
       <component-family>javax.faces.Input</component-family>

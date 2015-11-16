@@ -32,7 +32,6 @@ import org.zanata.model.HPersonEmailValidationKey;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRoleAssignmentRule;
-import org.zanata.model.HTermComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;

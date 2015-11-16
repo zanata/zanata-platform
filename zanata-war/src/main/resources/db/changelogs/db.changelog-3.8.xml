@@ -94,4 +94,59 @@
     </createTable>
   </changeSet>
 
+  <changeSet id="2" author="aeng@redhat.com">
+    <comment>Add contentHash, pos and description to HGlossaryEntry</comment>
+    <addColumn tableName="HGlossaryEntry">
+      <column name="contentHash" type="varchar(255)">
+        <constraints nullable="false" />
+      </column>
+    </addColumn>
+    <addColumn tableName="HGlossaryEntry">
+      <column name="pos" type="varchar(255)">
+        <constraints nullable="true" />
+      </column>
+    </addColumn>
+    <addColumn tableName="HGlossaryEntry">
+      <column name="description" type="varchar(255)">
+        <constraints nullable="true" />
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="3" author="aeng@redhat.com">
+    <comment>Generate contentHash for HGlossaryEntry</comment>
+    <customChange class="org.zanata.liquibase.custom.GenerateHashForGlossaryEntry" />
+  </changeSet>
+
+  <changeSet id="4" author="aeng@redhat.com">
+    <comment>Add unique constrains on HGlossaryEntry</comment>
+    <addUniqueConstraint constraintName="UK_glossaryEntry"
+      tableName="HGlossaryEntry" columnNames="contentHash" />
+  </changeSet>
+
+  <changeSet id="5" author="aeng@redhat.com">
+    <comment>Add lastModifiedBy to HGlossaryTerm</comment>
+    <addColumn tableName="HGlossaryTerm">
+      <column name="last_modified_by_id" type="bigint"/>
+    </addColumn>
+    <addColumn tableName="HGlossaryTerm">
+      <column name="comment" type="longtext">
+        <constraints nullable="true" />
+      </column>
+    </addColumn>
+    <addForeignKeyConstraint baseTableName="HGlossaryTerm"
+      baseColumnNames="last_modified_by_id" constraintName="UKglossaryterm_person_id"
+      referencedTableName="HPerson" referencedColumnNames="id" />
+  </changeSet>
+
+  <changeSet id="6" author="aeng@redhat.com">
+    <comment>Migrate HTermComment to HGlossaryTerm#comment</comment>
+    <customChange class="org.zanata.liquibase.custom.MigrateHTermCommentToString" />
+  </changeSet>
+
+  <changeSet id="7" author="aeng@redhat.com">
+    <comment>Drop HTermComment</comment>
+    <dropTable tableName="HTermComment"/>
+  </changeSet>
+
 </databaseChangeLog>

@@ -419,7 +419,7 @@
 
   <exception class="javax.faces.application.ViewExpiredException"
     log-level="debug">
-    <redirect view-id="/error.xhtml">
+    <redirect view-id="/error/viewexpiredexception.xhtml">
       <message
         severity="warn">#{msgs['jsf.YourSessionHasTimedOutPleaseTryAgain']}
       </message>

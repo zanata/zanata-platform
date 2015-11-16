@@ -1,180 +1,21 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:rich="http://richfaces.org/rich"
-  xmlns:a4j="http://richfaces.org/a4j"
-  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
+  xmlns:ui="http://java.sun.com/jsf/facelets">
 
-<ui:composition template="../WEB-INF/template/template.xhtml">
-
-<ui:define name="head">
-  <script type="text/javascript">
-    function confirmDelete(msg) {
-      return confirm(msg);
-    }
-  </script>
-
-  <a4j:jsFunction name="deleteGlossary" action="#{glossaryAction.deleteGlossary(localeId)}" status="glossaryLoader"
-    render="glossary_form, glossarySearch-pager, glossarySearch-page-info,glossarySearchBottom-pager, glossarySearchBottom-page-info">
-    <a4j:param name="val1" assignTo="#{localeId}"/>
-  </a4j:jsFunction>
-</ui:define>
+<ui:composition template="../WEB-INF/template/template_ui.xhtml">
 
 <ui:define name="page_title">#{msgs['jsf.Glossary']}</ui:define>
 <ui:define name="center_content">
-<div class="g--centered">
-  <div class="g__item w--2-3">
-    <h1>#{msgs['jsf.Glossary']}</h1>
-    <div class="panel">
-      <div class="panel__header">
-        <div class="panel__header__actions">
-          <zanata:sortlist id="glossary_sorting"
-            sortAction="#{glossaryAction.sortGlossaryEntries()}"
-            render="glossary_form, glossarySearch-pager, glossarySearch-page-info,glossarySearchBottom-pager, glossarySearchBottom-page-info"
-            oncomplete="refreshTooltip('#{rich:clientId('glossary_form')}')"
-            sortingList="#{glossaryAction.glossarySortingList}"
-            onbegin="clearHTML('#{rich:clientId('glossary_form')}')"
-            status="glossaryLoader"/>
 
-          <ui:fragment
-            rendered="#{identity.hasPermission('', 'glossary-delete') or identity.hasPermission('', 'glossary-insert')}">
-            <div
-              class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown"
-              id="glossary-more-actions">
-              <a class="dropdown__toggle js-dropdown__toggle" href="#"
-                title="#{msgs['jsf.tooltip.MoreActions']}"><i
-                class="i i--ellipsis"></i></a>
-              <ul class="dropdown__content js-dropdown__content" role="content"
-                aria-labelledby="dropdownContent">
-                <ui:fragment
-                  rendered="#{identity.hasPermission('', 'glossary-insert')}">
-                  <li>
-                    <a href="#" data-toggle="modal" data-target="#glossaryUploadDialog">
-                      #{msgs['jsf.Glossary.upload']}
-                      <i class="i i--import i__item__icon"></i>
-                    </a>
-                  </li>
-                </ui:fragment>
-              </ul>
-            </div>
-          </ui:fragment>
-        </div>
-        <h2 class="panel__heading">#{msgs['jsf.Glossary.entries.label']}</h2>
-      </div>
 
-      <div class="panel__sub-header js-reveal">
-        <zanata:list-filter status="glossaryLoader"
-          listId="glossary_form"
-          render="glossary_form, glossarySearchBottom-pager, glossarySearchBottom-page-info"
-          id="glossarySearch" iconClass="i--language"
-          placeholder="#{msgs['jsf.language.search.placeholder']}"
-          actionBean="#{glossaryAction.glossaryFilter}"/>
-      </div>
+  <div id="main-content"
+    base-url="#{request.contextPath}/rest"
+    user="#{glossaryAction.user.getJSON()}"
+    data='{"view": "glossary", "permission": #{glossaryAction.userPermission.getJSON()}}'/>
 
-      <a4j:status name="glossaryLoader">
-        <f:facet name="start">
-          <zanata:loader/>
-        </f:facet>
-      </a4j:status>
-
-      <h:form id="glossary_form" styleClass="l--push-bottom-1">
-        <h:panelGroup layout="block"  styleClass="l--pad-all-half"
-          rendered="#{empty glossaryAction.getEntries()}">
-          <p class="txt--meta">#{msgs['jsf.Glossary.empty']}</p>
-          <ui:fragment
-            rendered="#{identity.hasPermission('', 'glossary-insert')}">
-            <p>
-              <a href="#" data-toggle="modal" data-target="#glossaryUploadDialog"
-                class="button--primary">
-                #{msgs['jsf.Glossary.upload']}
-                <i class="i i--plus i__item__icon"></i>
-              </a>
-            </p>
-          </ui:fragment>
-        </h:panelGroup>
-
-        <h:panelGroup layout="block"  styleClass="l--pad-all-half"
-          rendered="#{not empty glossaryAction.getEntries() and empty glossaryAction.glossaryFilter.currentPage}">
-          <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
-        </h:panelGroup>
-
-        <ui:fragment
-          rendered="#{!glossaryAction.glossaryFilter.currentPage.isEmpty()}">
-          <ul class="list--stats">
-            <ui:repeat
-              value="#{glossaryAction.glossaryFilter.currentPage}"
-              var="glossary">
-              <ui:param name="hasActions"
-                value="#{identity.hasPermission('', 'glossary-delete')}"/>
-              <li
-                class="#{hasActions ? 'list__item--actionable' : ''}">
-                <h:panelGroup layout="block"  styleClass="list__item__action" rendered="#{hasActions}">
-                  <div
-                    class="dropdown dropdown--small dropdown--inline dropdown--single list__item__dropdown js-dropdown">
-                    <a href="#"
-                      class="dropdown__toggle js-dropdown__toggle txt--meta"
-                      title="#{msgs['jsf.Glossary.options']}">
-                      <span class="is-invisible">
-                        #{msgs['jsf.Glossary.options']}
-                      </span>
-                    </a>
-                    <ul class="dropdown__content js-dropdown__content">
-                      <ui:fragment
-                        rendered="#{identity.hasPermission('', 'glossary-delete')}">
-                        <li>
-                          <a href="#" onclick="if(confirmDelete('#{glossaryAction.getDeleteConfirmationMessage(glossary.displayName)}')) {deleteGlossary('#{glossary.localeId}')}; return false;"
-                            class="i__item--right">
-                            #{msgs['jsf.Glossary.delete']}<i
-                            class="i i--remove i__item__icon"></i>
-                          </a>
-                        </li>
-                      </ui:fragment>
-                    </ul>
-                  </div>
-                </h:panelGroup>
-
-                <h:link outcome="/language/language.xhtml">
-                  <f:param name="id" value="#{glossary.localeId}"/>
-                  <div class="list__item__content">
-                    <div class="list__item__info">
-                      <h3 class="list__title">
-                        #{glossary.displayName}
-                      </h3>
-                      <span class="list__item__meta">
-                        #{glossary.localeId}
-                      </span>
-                    </div>
-
-                    <div class="list__item__stats">
-                     <span class="stats--small">
-                        <span
-                          class="stats__figure">#{glossary.entryCount}</span>
-                        <span class="stats__unit txt--lowercase">
-                          #{msgs['jsf.Entries']}
-                        </span>
-                      </span>
-                    </div>
-                  </div>
-                </h:link>
-              </li>
-            </ui:repeat>
-          </ul>
-        </ui:fragment>
-      </h:form>
-
-      <zanata:list-filter listId="glossary_form"
-        render="glossary_form, glossarySearch-pager, glossarySearch-page-info"
-        id="glossarySearchBottom" iconClass="i--language" bottomPanel="true"
-        placeholder="#{msgs['jsf.language.search.placeholder']}"
-        actionBean="#{glossaryAction.glossaryFilter}"/>
-    </div>
-  </div>
-</div>
-
-  <ui:include src="/WEB-INF/layout/glossary/upload_glossary_modal.xhtml"/>
+  <script type="text/javascript"
+    src="#{request.contextPath}/frontend.bundle.min.js"></script>
 
 </ui:define>
 </ui:composition>

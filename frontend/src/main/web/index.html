@@ -1,0 +1,45 @@
+<html class="new-zanata">
+<head lang="en">
+  <meta charset="UTF-8">
+  <meta name='viewport' content='width=device-width,initial-scale=1'>
+  <!--<link type="text/css" rel="stylesheet" href="http://localhost:5000/assets/css/style.css">-->
+  <title>Zanata</title>
+  <script type="text/javascript">
+    WebFontConfig = {
+      google: { families: [ 'Source+Sans+Pro:300,400,600,700,400italic:latin,latin-ext' ] }
+    };
+    (function() {
+      var wf = document.createElement('script');
+      wf.src = (document.location.protocol === 'https:' ? 'https' : 'http') +
+        '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+      wf.type = 'text/javascript';
+      wf.async = 'true';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(wf, s);
+    })();
+
+    function viewChange(view) {
+      window.location.hash = view;
+    }
+  </script>
+</head>
+
+<body class="ffsans cblack90 pt1 ph1">
+  <!-- for testing different view -->
+  <select id="views" onclick="viewChange(this.value)">
+    <option value="profile">Profile page</option>
+    <option value="glossary">Glossary page</option>
+  </select>
+
+  <main role="main">
+    <div id="main-content" base-url="http://localhost:3000/lib/stores/testData"
+      user='{"username": "test-user", "email":"zanata@zanata.org", "name": "admin-name", "loggedIn": "true", "imageUrl":"//www.gravatar.com/avatar/dda6e90e3f2a615fb8b31205e8b4894b?d=mm&r=g&s=115", "languageTeams": "English, French, German, Yodish (Yoda English)"}'
+      data='{"permission":{"updateGlossary":true, "insertGlossary":true, "deleteGlossary":true}, "dev": "true", "profileUser" : {"username": "test-user", "email":"zanata@zanata.org", "name":"admin-name","loggedIn":"true","imageUrl":"//www.gravatar.com/avatar/dda6e90e3f2a615fb8b31205e8b4894b?d=mm&r=g&s=115","languageTeams":"English, French, German, Yodish (Yoda English)"}}'>
+    </div>
+
+  </main>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js" ></script>
+  <script src="bundle.js" ></script>
+</body>
+</html>
