@@ -6,7 +6,6 @@ import StringUtils from '../../utils/StringUtils'
 import InputCell from './InputCell';
 import LoadingCell from './LoadingCell'
 import ActionCell from './ActionCell'
-import { Icon, Tooltip, OverlayTrigger } from 'zanata-ui';
 import SourceActionCell from './SourceActionCell'
 import ColumnHeader from './ColumnHeader'
 import NewEntryModal from './NewEntryModal'
