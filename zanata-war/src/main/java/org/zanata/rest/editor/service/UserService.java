@@ -36,7 +36,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @ZanataSecured
-@CheckLoggedIn
 public class UserService implements UserResource {
 
     @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER, required = false)
@@ -52,6 +51,7 @@ public class UserService implements UserResource {
     private PersonDAO personDAO;
 
     @Override
+    @CheckLoggedIn
     public Response getMyInfo() {
         if(authenticatedAccount == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
