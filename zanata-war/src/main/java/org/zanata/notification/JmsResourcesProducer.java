@@ -33,52 +33,46 @@ import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 import javax.jms.Session;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import com.google.common.base.Throwables;
+
 /**
- * Produce JMS related resources for CDI injection.
+ * Produce JMS connection for CDI injection.
  *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @ApplicationScoped
 public class JmsResourcesProducer {
-    @Resource(name = "JmsXA")
+    private static final Logger log =
+            LoggerFactory.getLogger(JmsResourcesProducer.class);
+    @Resource(lookup = "JmsXA")
     private QueueConnectionFactory connectionFactory;
 
-    @Resource(name = "jms/queue/MailsQueue")
+    @Resource(lookup = "jms/queue/MailsQueue")
     private Queue mailQueue;
 
     @Produces @InVMJMS
-    public QueueConnection createOrderConnection() throws JMSException {
+    public QueueConnection createJMSConnection() throws JMSException {
         return connectionFactory.createQueueConnection();
     }
 
-    public void closeOrderConnection(
+    public void closeJMSConnection(
             @Disposes @InVMJMS Connection connection)
             throws JMSException {
+        log.debug("________ closing JMS connection");
         connection.close();
     }
 
-    @Produces @InVMJMS
-    public QueueSession createQueueSession(@InVMJMS QueueConnection connection)
+    public QueueSession createQueueSession(QueueConnection connection)
             throws JMSException {
         return connection.createQueueSession(true, Session.AUTO_ACKNOWLEDGE);
     }
 
-    public void closeOrderSession(@Disposes @InVMJMS QueueSession session)
-            throws JMSException {
-        session.close();
-    }
-
-    @Produces
-    @EmailQueueSender
     public QueueSender createEmailQueueSender(
-            @InVMJMS QueueSession session) throws JMSException {
+            QueueSession session) throws JMSException {
         return session.createSender(mailQueue);
     }
 
-    public void closeEmailQueueSender(
-            @Disposes @EmailQueueSender QueueSender queueSender)
-            throws JMSException {
-        queueSender.close();
-    }
 }

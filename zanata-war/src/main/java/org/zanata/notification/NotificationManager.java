@@ -24,10 +24,12 @@ import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
+import javax.jms.QueueConnection;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 
@@ -39,6 +41,8 @@ import lombok.extern.slf4j.Slf4j;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.jms.Session;
+
 import org.zanata.events.LanguageTeamPermissionChangedEvent;
 
 import com.google.common.base.Throwables;
@@ -50,26 +54,30 @@ import com.google.common.base.Throwables;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Named("notificationManager")
-@ApplicationScoped
+@Dependent
 @Slf4j
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class NotificationManager implements Serializable {
-    private static final long serialVersionUID = -1L;
-
-    // JMS EmailQueue Producer.
-    @Inject
-    @EmailQueueSender
-    private QueueSender mailQueueSender;
+public class NotificationManager {
 
     @Inject
     @InVMJMS
-    private QueueSession queueSession;
+    private QueueConnection connection;
+
+    @Inject
+    private JmsResourcesProducer resourcesProducer;
+
+    private transient QueueSender mailQueueSender;
+
+    private transient QueueSession queueSession;
 
 
     @PostConstruct
     public void onCreate() {
         try {
+            queueSession = resourcesProducer.createQueueSession(connection);
+            mailQueueSender =
+                    resourcesProducer.createEmailQueueSender(queueSession);
             // force initialisation:
             mailQueueSender.getQueue();
         } catch (JMSException e) {
@@ -80,7 +88,6 @@ public class NotificationManager implements Serializable {
         }
     }
 
-    // TODO [CDI] Once migrated to CDI events, CDI will instantiate NotificationManager bean for us. This will remove the need of Seam @PostConstruct
     public void onLanguageTeamPermissionChanged(
             final @Observes LanguageTeamPermissionChangedEvent event) {
         try {
@@ -91,6 +98,19 @@ public class NotificationManager implements Serializable {
             mailQueueSender.send(message);
         } catch (JMSException e) {
             throw Throwables.propagate(e);
+        } finally {
+            // We can not use JmsResourceProducer to produce session and
+            // mailQueueSender. If we do that, it seems to only dispose queueSender
+            // and session but not connection. Server will log a INFO with long
+            // stacktrace:
+            // 14:48:35,653 INFO  [org.jboss.jca.core.api.connectionmanager.ccm.CachedConnectionManager] (http-/0.0.0.0:8180-3) IJ000100: Closing a connection for you. Please close them yourself: org.hornetq.ra.HornetQRASession@74dd3df2: java.lang.Throwable: STACKTRACE
+            try {
+                mailQueueSender.close();
+                queueSession.close();
+            }
+            catch (JMSException e) {
+                log.error("error closing JMS resources", e);
+            }
         }
     }
 
