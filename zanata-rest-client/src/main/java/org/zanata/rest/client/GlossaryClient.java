@@ -21,11 +21,18 @@
 
 package org.zanata.rest.client;
 
+import java.lang.reflect.Type;
 import java.net.URI;
+import java.util.List;
 
-import org.zanata.common.LocaleId;
-import org.zanata.rest.dto.Glossary;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.MediaType;
+
+import org.zanata.rest.dto.GlossaryEntry;
+import org.zanata.rest.dto.Project;
 import org.zanata.rest.service.GlossaryResource;
+
+import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
 
 /**
@@ -41,14 +48,21 @@ public class GlossaryClient {
         baseUri = factory.getBaseUri();
     }
 
-    public void put(Glossary glossary) {
-        webResource().put(glossary);
+    public void post(List<GlossaryEntry> glossaryEntries) {
+        Type genericType = new GenericType<List<GlossaryEntry>>() {
+        }.getType();
+
+        Object entity =
+                new GenericEntity<List<GlossaryEntry>>(glossaryEntries,
+                        genericType);
+
+        webResource().path("entries").type(MediaType.APPLICATION_XML_TYPE)
+                .post(entity);
     }
 
-    public void delete(LocaleId locale) {
-        webResource().path(locale.getId())
+    public void delete(String id) {
+        webResource().path("entries/" + id)
                 .delete();
-
     }
 
     public void deleteAll() {

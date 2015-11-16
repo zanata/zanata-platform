@@ -65,25 +65,6 @@ public class GlossaryPushMojo extends
     private File glossaryFile;
 
     /**
-     * Treat source comments and references as target comments in glossary file
-     * as translation comment
-     *
-     * @parameter expression="${zanata.treatSourceCommentsAsTarget}"
-     *            default-value="false"
-     */
-    private boolean treatSourceCommentsAsTarget = false;
-
-    /**
-     * Customized comment column headers for csv file format. Format of CSV:
-     * {source locale},{locale},{locale}...,pos,description OR {source
-     * locale},{locale},{locale}...,description1,description2...
-     *
-     * @parameter expression="${zanata.commentCols}"
-     *            default-value="pos,description"
-     */
-    private String commentCols = "pos,description";
-
-    /**
      * Batch size for large glossary file
      *
      * @parameter expression="${zanata.batchSize}" default-value=50
@@ -116,21 +97,6 @@ public class GlossaryPushMojo extends
     @Override
     public String getTransLang() {
         return transLang;
-    }
-
-    @Override
-    public boolean getTreatSourceCommentsAsTarget() {
-        return treatSourceCommentsAsTarget;
-    }
-
-    @Override
-    public List<String> getCommentCols() {
-        String[] commentHeadersList = StringUtils.split(commentCols, ",");
-        List<String> list = new ArrayList<String>();
-        if (commentHeadersList != null && commentHeadersList.length > 0) {
-            Collections.addAll(list, commentHeadersList);
-        }
-        return list;
     }
 
     @Override
