@@ -1,11 +1,11 @@
 import React, {PureRenderMixin} from 'react/addons';
 import Actions from '../../actions/GlossaryActions';
 import {Table, Column} from 'fixed-data-table';
-import { Button, Icon, Tooltip, OverlayTrigger } from 'zanata-ui';
 import StringUtils from '../../utils/StringUtils'
 import InputCell from './InputCell';
 import LoadingCell from './LoadingCell'
 import ActionCell from './ActionCell'
+import { Button, Icon, Tooltip, OverlayTrigger } from 'zanata-ui';
 import SourceActionCell from './SourceActionCell'
 import ColumnHeader from './ColumnHeader'
 import NewEntryModal from './NewEntryModal'
