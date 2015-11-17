@@ -200,7 +200,8 @@
         <groupId>org.apache.deltaspike.modules</groupId>
         <artifactId>deltaspike-jpa-module-impl</artifactId>
         <version>${deltaspike.version}</version>
-        <scope>${cdi.runtime}</scope>
+        <scope>${cdi.compile}</scope>
+        <!--<scope>${cdi.runtime}</scope>-->
       </dependency>
       <dependency>
         <groupId>org.apache.deltaspike.cdictrl</groupId>
