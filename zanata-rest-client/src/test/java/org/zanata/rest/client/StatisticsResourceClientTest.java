@@ -73,7 +73,7 @@ public class StatisticsResourceClientTest {
     public void testGetContributorStatistics() {
         ContributionStatistics statistics =
                 client.getContributionStatistics("about-fedora", "master",
-                        "pahuang", "2014-10-01..2014-11-10");
+                        "pahuang", "2014-10-01..2014-11-10", false);
         assertThat(statistics, Matchers.hasKey("pahuang"));
     }
 

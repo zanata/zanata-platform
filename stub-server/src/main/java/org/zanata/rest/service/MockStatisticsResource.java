@@ -69,7 +69,7 @@ public class MockStatisticsResource implements StatisticsResource {
 
     @Override
     public ContributionStatistics getContributionStatistics(String projectSlug,
-            String versionSlug, String username, String dateRange) {
+            String versionSlug, String username, String dateRange, boolean includeAutomatedEntry) {
         ContributionStatistics contributionStatistics =
                 new ContributionStatistics();
         LocaleStatistics localeStatistics = new LocaleStatistics();
