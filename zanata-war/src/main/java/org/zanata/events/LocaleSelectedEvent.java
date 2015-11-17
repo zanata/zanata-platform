@@ -7,7 +7,6 @@ import java.util.Locale;
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class LocaleSelectedEvent {
-    public static final String EVENT_NAME = "org.zanata.events.LocaleSelectedEvent";
     private final Locale locale;
 
     public LocaleSelectedEvent(Locale locale) {

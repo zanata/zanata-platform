@@ -30,10 +30,6 @@ import org.zanata.model.HProject;
 @Value
 // TODO use HProjectIteration with a discriminator instead?
 public class ProjectUpdate {
-    // TODO remove constant after switching to CDI
-    // NB must be a constant string equal to class name
-    public static final String EVENT_NAME = "org.zanata.events.ProjectUpdate";
-
     HProject project;
 
     String oldSlug;

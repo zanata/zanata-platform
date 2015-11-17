@@ -34,8 +34,6 @@ import org.zanata.common.LocaleId;
  */
 @Value
 public final class TextFlowTargetStateEvent {
-    public static final String EVENT_NAME =
-            "org.zanata.events.TextFlowTargetStateEvent";
     // this may be null in the case of document uploads
     private final @Nullable
     Long actorId;

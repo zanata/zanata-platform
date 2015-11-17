@@ -24,7 +24,4 @@ package org.zanata.events;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 public class ServerStarted {
-    // TODO remove constant after switching to CDI
-    // NB must be a constant string equal to class name
-    public static final String EVENT_NAME = "org.zanata.events.ServerStarted";
 }

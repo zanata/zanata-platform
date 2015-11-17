@@ -42,10 +42,6 @@ import org.zanata.common.LocaleId;
 @JsonPropertyOrder({ "project", "version", "docId", "locale", "editorDocumentUrl", "milestone"})
 @EqualsAndHashCode
 public class DocumentMilestoneEvent extends WebhookEventType {
-
-    public static final String EVENT_NAME =
-        "org.zanata.events.DocumentMilestoneEvent";
-
     /**
      * Target project slug.
      * {@link org.zanata.model.HProject#slug}
@@ -81,8 +77,4 @@ public class DocumentMilestoneEvent extends WebhookEventType {
      */
     private String editorDocumentUrl;
 
-    @Override
-    public String getEventType() {
-        return EVENT_NAME;
-    }
 }

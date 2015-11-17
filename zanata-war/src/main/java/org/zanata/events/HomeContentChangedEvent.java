@@ -24,6 +24,4 @@ package org.zanata.events;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 public class HomeContentChangedEvent {
-        public static final String EVENT_NAME =
-            "org.zanata.events.HomeContentChangedEvent";
 }
