@@ -196,7 +196,7 @@ public class ZanataIdentity implements Identity, Serializable {
         if (getCredentials() != null && sessionId != null) {
             String username = getCredentials().getUsername();
             if (username != null) {
-                log.info("firing LogoutEvent for user {} with session {} -> {}", username,
+                log.debug("firing LogoutEvent for user {} with session {} -> {}", username,
                         sessionId, this);
                 getLogoutEvent().fire(new LogoutEvent(
                         username, sessionId));

@@ -26,9 +26,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -72,6 +72,7 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 import com.google.common.collect.ImmutableList;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.util.Contexts;
 
 /**
@@ -311,29 +312,25 @@ public class HDocument extends ModelEntityBase implements DocumentWithId,
     }
 
     public static class EntityListener {
-        // TODO look up @Authenticated HAccount, not by name
-        // from org.jboss.seam.security.management.JpaIdentityStore.AUTHENTICATED_USER
-        private static final String AUTHENTICATED_USER =
-                "org.jboss.seam.security.management.authenticatedUser";
 
         @PreUpdate
         private void onUpdate(HDocument doc) {
             if (Contexts.isSessionContextActive()) {
-                Optional<HAccount> account =
-                        getOptionalInstance(
-                                AUTHENTICATED_USER, HAccount.class);
-                // TODO In some cases there is no session (eg async push)
-                if (account.isPresent()) {
-                    doc.setLastModifiedBy(account.get().getPerson());
+                HAccount account;
+                try {
+                    account = BeanProvider
+                            .getContextualReference(HAccount.class,
+                                    true,
+                                    new AnnotationLiteral<Authenticated>() {
+                                    });
+                } catch (IllegalStateException e) {
+                    account = null;
+                }
+                if (account != null) {
+                    doc.setLastModifiedBy(account.getPerson());
                 }
             }
         }
-    }
-
-    // TODO use IServiceLocator
-    public static <T> Optional<T> getOptionalInstance(String name, Class<T> clazz) {
-        log.warn("Still using name in getOptionalInstance({}, {})", name, clazz);
-        return Optional.ofNullable(BeanProvider.getContextualReference(name, true, clazz));
     }
 
 }
