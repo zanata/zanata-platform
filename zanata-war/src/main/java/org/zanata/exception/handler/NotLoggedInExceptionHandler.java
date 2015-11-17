@@ -24,17 +24,25 @@ package org.zanata.exception.handler;
 import org.apache.deltaspike.core.api.exception.control.ExceptionHandler;
 import org.apache.deltaspike.core.api.exception.control.Handles;
 import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
+import org.zanata.events.NotLoggedInEvent;
 import org.zanata.exception.NotLoggedInException;
 
+import javax.enterprise.event.Event;
 import javax.faces.application.FacesMessage;
+import javax.inject.Inject;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @ExceptionHandler
 public class NotLoggedInExceptionHandler extends AbstractExceptionHandler {
+    @Inject
+    private Event<NotLoggedInEvent> notLoggedInEventEvent;
+
     public void handleException(@Handles ExceptionEvent<NotLoggedInException> event) {
-        handle(event, LogLevel.Debug, urlUtil.signInPage(), FacesMessage.SEVERITY_WARN,
+        notLoggedInEventEvent.fire(new NotLoggedInEvent());
+        handle(event, LogLevel.Debug, urlUtil.signInPage(),
+                FacesMessage.SEVERITY_WARN,
                 "org.jboss.seam.NotLoggedIn");
     }
 }

@@ -253,7 +253,6 @@ public class ZanataJpaIdentityStore implements Serializable {
         }
     }
 
-    // TODO [CDI] revisit
     private Event<UserCreatedEvent> getUserCreatedEvent() {
         return userCreatedEventEvent;
     }

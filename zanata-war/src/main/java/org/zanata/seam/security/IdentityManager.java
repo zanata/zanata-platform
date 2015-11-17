@@ -48,15 +48,6 @@ public class IdentityManager implements Serializable {
         }
     }
 
-    // TODO [CDI] revisit this
-    public static IdentityManager instance() {
-//        if (!Contexts.isRequestContextActive()) {
-//            throw new IllegalStateException("No active request context");
-//        }
-        return ServiceLocator.instance().getInstance(
-                IdentityManager.class);
-    }
-
     public boolean createUser(String name, String password) {
         ZanataIdentity.instance().checkPermission(USER_PERMISSION_NAME,
                 PERMISSION_CREATE);

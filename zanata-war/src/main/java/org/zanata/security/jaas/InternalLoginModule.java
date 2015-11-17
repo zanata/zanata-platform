@@ -23,6 +23,7 @@ import org.zanata.security.SimpleGroup;
 import org.zanata.security.SimplePrincipal;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.seam.security.IdentityManager;
+import org.zanata.util.ServiceLocator;
 
 import static org.zanata.security.ZanataIdentity.*;
 
@@ -98,7 +99,8 @@ public class InternalLoginModule implements LoginModule {
             throw new RuntimeException(e);
         }
 
-        IdentityManager identityManager = IdentityManager.instance();
+        IdentityManager identityManager =
+                ServiceLocator.instance().getInstance(IdentityManager.class);
         if (identityManager != null && identityManager.isEnabled()) {
             ZanataIdentity identity = ZanataIdentity.instance();
             boolean success =

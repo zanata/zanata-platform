@@ -27,14 +27,15 @@ import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
 import org.zanata.exception.NotLoggedInException;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.application.ViewExpiredException;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @ExceptionHandler
 public class ViewExpiredExceptionHandler extends AbstractExceptionHandler {
-    public void handleException(@Handles ExceptionEvent<NotLoggedInException> event) {
-        handle(event, LogLevel.Debug, FacesMessage.SEVERITY_WARN,
+    public void handleException(@Handles ExceptionEvent<ViewExpiredException> event) {
+        handle(event, LogLevel.Debug, "/error/viewexpiredexception", FacesMessage.SEVERITY_WARN,
                 "jsf.YourSessionHasTimedOutPleaseTryAgain");
     }
 }

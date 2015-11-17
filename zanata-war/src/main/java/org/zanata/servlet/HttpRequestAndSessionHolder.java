@@ -46,6 +46,9 @@ public class HttpRequestAndSessionHolder {
             new ThreadLocal<>();
 
     private static String defaultServerPath;
+    private static String scheme;
+    private static String serverName;
+    private static int serverPort;
 
     void setRequest(@Observes @Initialized HttpServletRequest request) {
         if (REQUEST.get() != null) {
@@ -54,8 +57,11 @@ public class HttpRequestAndSessionHolder {
         }
         REQUEST.set(request);
         if (defaultServerPath == null) {
-            defaultServerPath = request.getScheme() + "://" + request.getServerName()
-                    + ":" + request.getServerPort()
+            scheme = request.getScheme();
+            serverName = request.getServerName();
+            serverPort = request.getServerPort();
+            defaultServerPath = scheme + "://" + serverName
+                    + ":" + serverPort
                     + request.getContextPath();
         }
     }
@@ -86,5 +92,17 @@ public class HttpRequestAndSessionHolder {
 
     public static String getDefaultServerPath() {
         return defaultServerPath;
+    }
+
+    public static String getScheme() {
+        return scheme;
+    }
+
+    public static String getServerName() {
+        return serverName;
+    }
+
+    public static int getServerPort() {
+        return serverPort;
     }
 }

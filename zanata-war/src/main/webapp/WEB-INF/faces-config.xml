@@ -113,12 +113,12 @@
       <to-view-id>/account/login.xhtml</to-view-id>
       <redirect/>
     </navigation-case>
-    <navigation-case>
-      <!-- FIXME [CDI] this will not work if continue url is /project/list, it can not find this as view id (url rewrite)-->
-      <if>#{identity.loggedIn and userRedirect.redirect}</if>
-      <to-view-id>#{userRedirect.url}</to-view-id>
-      <redirect/>
-    </navigation-case>
+    <!--<navigation-case>-->
+      <!--&lt;!&ndash; FIXME [CDI] this will not work if continue url is /project/list, it can not find this as view id (url rewrite)&ndash;&gt;-->
+      <!--<if>#{identity.loggedIn and userRedirect.redirect}</if>-->
+      <!--<to-view-id>#{userRedirect.url}</to-view-id>-->
+      <!--<redirect/>-->
+    <!--</navigation-case>-->
     <navigation-case>
       <!-- Default redirection after a log in is to the dashboard -->
       <if>#{identity.loggedIn}</if>
@@ -180,11 +180,6 @@
     <navigation-case>
       <from-outcome>inactive</from-outcome>
       <to-view-id>/account/inactive_account.xhtml</to-view-id>
-      <redirect/>
-    </navigation-case>
-    <navigation-case>
-      <from-outcome>continue</from-outcome>
-      <to-view-id>#{userRedirect.url}</to-view-id>
       <redirect/>
     </navigation-case>
   </navigation-rule>
