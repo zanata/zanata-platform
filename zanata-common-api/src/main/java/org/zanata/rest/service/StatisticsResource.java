@@ -133,6 +133,9 @@ public interface StatisticsResource {
      * @param dateRange
      *            date range from..to (yyyy-mm-dd..yyyy-mm-dd)
      *
+     * @param includeAutomatedEntry
+     *            whether to include automatic entries of translation into statistic
+     *
      * @return The following response status codes will be returned from this
      *         operation:<br>
      *         OK(200) - Response containing contribution statistics for the
@@ -151,7 +154,9 @@ public interface StatisticsResource {
                     @PathParam("projectSlug") String projectSlug,
                     @PathParam("versionSlug") String versionSlug,
                     @PathParam("username") String username,
-                    @PathParam("dateRange") String dateRange
+                    @PathParam("dateRange") String dateRange,
+                    @QueryParam("includeAutomatedEntry")
+                    @DefaultValue("false") boolean includeAutomatedEntry
             );
 
 }
