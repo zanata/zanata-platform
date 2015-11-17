@@ -56,25 +56,32 @@ public class EntityManagerProducer {
     @RequestScoped
     @Default
     // NB: This was conversation scoped before, so keep an eye out for it
-    protected EntityManager getEntityManager() {
+    protected EntityManager createEntityManager() {
         return entityManagerFactory.createEntityManager();
     }
 
     protected void closeEntityManager(@Disposes EntityManager entityManager) {
-        // sometimes EntityManager.isOpen() returns true when the Session
-        // is actually closed, so we ask the Session
-        if (entityManager.unwrap(Session.class).isOpen()) {
-            log.debug("___________ closing entityManager: {}", entityManager);
-            entityManager.close();
+        if (entityManager.isOpen()) {
+            Session session = entityManager.unwrap(Session.class);
+            // sometimes EntityManager.isOpen() returns true when the Session
+            // is actually closed, so we ask the Session too
+            if (session.isOpen()) {
+                log.debug("___________ closing EntityManager: {}", entityManager);
+                entityManager.close();
+            } else {
+                log.debug("Session is not open");
+            }
+        } else {
+            log.debug("EntityManager is not open");
         }
     }
 
     @Produces
     @FullText
     @RequestScoped
-    protected FullTextEntityManager createFTEntityManager() {
+    protected FullTextEntityManager createFTEntityManager(EntityManager entityManager) {
         return org.hibernate.search.jpa.Search
-                .getFullTextEntityManager(entityManagerFactory.createEntityManager());
+                .getFullTextEntityManager(entityManager);
     }
 
     protected void closeFTEntityManager(@Disposes @FullText FullTextEntityManager entityManager) {
