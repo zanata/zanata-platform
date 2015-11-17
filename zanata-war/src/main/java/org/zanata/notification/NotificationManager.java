@@ -107,8 +107,7 @@ public class NotificationManager {
             try {
                 mailQueueSender.close();
                 queueSession.close();
-            }
-            catch (JMSException e) {
+            } catch (JMSException e) {
                 log.error("error closing JMS resources", e);
             }
         }
