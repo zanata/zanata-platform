@@ -266,41 +266,41 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
     @Test(expected = NoSuchEntityException.class)
     public void contributionStatsInvalidVersion() {
         statisticsService.getContributionStatistics("non-exist-project",
-                "non-exist-version", "admin", "2013-01-01..2014-01-01");
+                "non-exist-version", "admin", "2013-01-01..2014-01-01", false);
     }
 
     @Test(expected = NoSuchEntityException.class)
     public void contributionStatsInvalidPerson() {
         statisticsService.getContributionStatistics("sample-project",
-                "1.0", "non-exist-user", "2013-01-01..2014-01-01");
+                "1.0", "non-exist-user", "2013-01-01..2014-01-01", false);
     }
 
     @Test(expected = InvalidDateParamException.class)
 //            description = "invalid date range separator")
     public void contributionStatsInvalidDateRange1() {
         statisticsService.getContributionStatistics("sample-project",
-                "1.0", "admin", "2013-01-012014-01-01");
+                "1.0", "admin", "2013-01-012014-01-01", false);
     }
 
     @Test(expected = InvalidDateParamException.class)
 //            description = "invalid date format")
     public void contributionStatsInvalidDateRange2() {
         statisticsService.getContributionStatistics("sample-project",
-                "1.0", "admin", "203-01-01..201-01-01");
+                "1.0", "admin", "203-01-01..201-01-01", false);
     }
 
     @Test(expected = InvalidDateParamException.class)
 //            description = "toDate is before fromDate")
     public void contributionStatsInvalidDateRange3() {
         statisticsService.getContributionStatistics("sample-project",
-                "1.0", "admin", "2014-01-01..2013-01-01");
+                "1.0", "admin", "2014-01-01..2013-01-01", false);
     }
 
     @Test(expected = InvalidDateParamException.class)
 //            description = "date range is more than max-range(365 days)")
     public void contributionStatsInvalidDateRange4() {
         statisticsService.getContributionStatistics("sample-project",
-                "1.0", "admin", "2013-01-01..2014-06-01");
+                "1.0", "admin", "2013-01-01..2014-06-01", false);
     }
 
     @Test
@@ -320,7 +320,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
         ContributionStatistics initialStats =
                 statisticsService.getContributionStatistics(
                         "sample-project", "1.0", username, todayDate + ".."
-                                + todayDate);
+                                + todayDate, false);
 
         BaseContributionStatistic stats =
                 initialStats.get(username).get(target.getLocaleId());
@@ -472,7 +472,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
         ContributionStatistics newStats =
                 statisticsService.getContributionStatistics(
                         "sample-project", "1.0", person1.getAccount()
-                                .getUsername(), todayDate + ".." + todayDate);
+                                .getUsername(), todayDate + ".." + todayDate, false);
         assertThat(newStats).isEqualTo(expectedStats);
     }
 
@@ -496,7 +496,7 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
         ContributionStatistics newStats =
                 statisticsService.getContributionStatistics(
                         "sample-project", "1.0", translator.getAccount()
-                                .getUsername(), todayDate + ".." + todayDate);
+                                .getUsername(), todayDate + ".." + todayDate, false);
 
         assertNotNull(newStats);
         assertThat(newStats).isEqualTo(expectedStats);
