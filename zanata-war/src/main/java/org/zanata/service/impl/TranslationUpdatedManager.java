@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
+import org.zanata.async.Async;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.events.DocumentStatisticUpdatedEvent;
 import org.zanata.events.TextFlowTargetStateEvent;
@@ -43,6 +44,7 @@ public class TranslationUpdatedManager {
      * This method contains all logic to be run immediately after a Text Flow
      * Target has been successfully translated.
      */
+    @Async
     public void textFlowStateUpdated(
             @Observes(during = TransactionPhase.AFTER_SUCCESS)
             TextFlowTargetStateEvent event) {
@@ -51,7 +53,7 @@ public class TranslationUpdatedManager {
     }
 
     // Fire asynchronous event
-    public void publishAsyncEvent(TextFlowTargetStateEvent event) {
+    void publishAsyncEvent(TextFlowTargetStateEvent event) {
         if (BeanManagerProvider.isActive()) {
             int wordCount = textFlowDAO.getWordCount(event.getTextFlowId());
 

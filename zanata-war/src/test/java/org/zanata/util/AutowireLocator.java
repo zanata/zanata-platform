@@ -24,6 +24,7 @@ package org.zanata.util;
 import java.lang.annotation.Annotation;
 import java.util.Optional;
 
+import javax.enterprise.inject.Alternative;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -41,6 +42,7 @@ import org.zanata.seam.SeamAutowire;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Alternative
 @Exclude
 public class AutowireLocator implements IServiceLocator {
     private static final Logger log =
@@ -116,7 +118,12 @@ public class AutowireLocator implements IServiceLocator {
     @Override
     public <T> T getJndiComponent(String jndiName, Class<T> clazz)
             throws NamingException {
-        return getInstance(jndiName, clazz);
+        T instance = getInstance(jndiName, clazz);
+        if (instance == null) {
+            throw new NamingException("component with JNDI name " + jndiName +
+                    " has not been registered with Autowire");
+        }
+        return instance;
     }
 
 }

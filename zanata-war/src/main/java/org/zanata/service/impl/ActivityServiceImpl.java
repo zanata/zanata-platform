@@ -38,6 +38,7 @@ import javax.inject.Named;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.action.DashboardUserStats;
+import org.zanata.async.Async;
 import org.zanata.common.ActivityType;
 import org.zanata.dao.ActivityDAO;
 import org.zanata.dao.DocumentDAO;
@@ -53,6 +54,7 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.IsEntityWithType;
 import org.zanata.model.type.EntityType;
 import org.zanata.service.ActivityService;
+import org.zanata.transaction.TransactionUtil;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -77,6 +79,9 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Inject
     private ActivityLockManager activityLockManager;
+
+    @Inject
+    private TransactionUtil transactionUtil;
 
     @Override
     public Activity findActivity(long actorId, EntityType contextType,
@@ -172,6 +177,9 @@ public class ActivityServiceImpl implements ActivityService {
      * Logs each text flow target translation immediately after successful
      * translation.
      */
+    // uses Async to ensure transaction environment is reset, because
+    // this is triggered during transaction.commit
+    @Async
     @Transactional
     public void logTextFlowStateUpdate(@Observes(during = TransactionPhase.AFTER_SUCCESS) TextFlowTargetStateEvent event) {
         Long actorId = event.getActorId();
@@ -199,14 +207,19 @@ public class ActivityServiceImpl implements ActivityService {
     /**
      * Logs document upload immediately after successful upload.
      */
+    // uses Async to ensure transaction environment is reset, because
+    // this is triggered during transaction.commit
+    @Async
     @Transactional
-    public void onDocumentUploaded(@Observes(during = TransactionPhase.AFTER_SUCCESS) DocumentUploadedEvent event) {
+    public void onDocumentUploaded(@Observes(during = TransactionPhase.AFTER_SUCCESS) DocumentUploadedEvent event)
+            throws Exception {
         Lock lock = activityLockManager.getLock(event.getActorId());
         lock.lock();
         try {
             HDocument document = documentDAO.getById(event.getDocumentId());
             ActivityType activityType =
-                    event.isSourceDocument() ? ActivityType.UPLOAD_SOURCE_DOCUMENT
+                    event.isSourceDocument() ?
+                            ActivityType.UPLOAD_SOURCE_DOCUMENT
                             : ActivityType.UPLOAD_TRANSLATION_DOCUMENT;
             HPerson actor = personDAO.findById(event.getActorId());
             logActivityAlreadyLocked(actor.getId(),

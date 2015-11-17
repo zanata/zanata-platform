@@ -8,6 +8,8 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.util.Contexts;
 import org.zanata.util.ServiceLocator;
@@ -197,6 +199,7 @@ public class IdentityManager implements Serializable {
      *            The user for which to return the list of roles
      * @return List containing the names of the implied roles
      */
+    @Transactional
     public List<String> getImpliedRoles(String name) {
         return identityStore.getImpliedRoles(name);
     }

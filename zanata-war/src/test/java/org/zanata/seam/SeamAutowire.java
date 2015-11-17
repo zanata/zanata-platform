@@ -191,6 +191,10 @@ public class SeamAutowire {
         return use((Object) name, beanInstance);
     }
 
+    public SeamAutowire useJndi(String jndiName, Object beanInstance) {
+        return use((Object) jndiName, beanInstance);
+    }
+
     /**
      * Indicates a specific instance of a bean to use, by bean type.
      *
@@ -494,7 +498,7 @@ public class SeamAutowire {
                                 + " on bean of type "
                                 + bean.getClass().getName()
                                 + " to value of type "
-                                + fieldVal.getClass().getName());
+                                + fieldVal.getClass().getName(), e);
                     } else {
                         throw e;
                     }

@@ -48,10 +48,9 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.type.TranslationSourceType;
-import org.zanata.seam.AutowireTransactionExecutor;
+import org.zanata.seam.AutowireTransaction;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.transaction.TransactionalExecutor;
 import org.zanata.util.TranslationUtil;
 
 import com.google.common.collect.Lists;
@@ -109,7 +108,8 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
                 .use("identity" , identity)
                 .use("textFlowTargetStateEventEvent", textFlowTargetStateEventEvent)
                 .use("cacheContainer", new InfinispanTestCacheContainer())
-                .use(TransactionalExecutor.class, new AutowireTransactionExecutor())
+                .useJndi("java:jboss/UserTransaction",
+                        AutowireTransaction.instance())
                 .useImpl(LocaleServiceImpl.class)
                 .useImpl(VersionStateCacheImpl.class)
                 .useImpl(TranslationStateCacheImpl.class)

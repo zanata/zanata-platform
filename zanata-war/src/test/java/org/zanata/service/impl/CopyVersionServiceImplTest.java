@@ -58,12 +58,11 @@ import org.zanata.model.HTextFlowTargetHistory;
 import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.model.po.HPoTargetHeader;
 import org.zanata.model.type.TranslationSourceType;
-import org.zanata.seam.AutowireTransactionExecutor;
+import org.zanata.seam.AutowireTransaction;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataCredentials;
 import org.zanata.security.ZanataIdentity;
 import com.google.common.collect.Lists;
-import org.zanata.transaction.TransactionalExecutor;
 import org.zanata.util.TranslationUtil;
 
 public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
@@ -130,7 +129,8 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
                 .use("identity", identity)
                 .use("filePersistService", fileSystemPersistService)
                 .use("cacheContainer", new InfinispanTestCacheContainer())
-                .use(TransactionalExecutor.class, new AutowireTransactionExecutor())
+                .useJndi("java:jboss/UserTransaction",
+                        AutowireTransaction.instance())
                 .useImpl(VersionStateCacheImpl.class)
                 .ignoreNonResolvable();
         service = seam.autowire(CopyVersionServiceImpl.class);

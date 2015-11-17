@@ -72,7 +72,6 @@ import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.ResourceUtils;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
@@ -80,7 +79,6 @@ import org.zanata.service.LockManagerService;
 import org.zanata.service.TranslationMergeService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.ValidationService;
-import org.zanata.transaction.TransactionUtil;
 import javax.enterprise.event.Event;
 import org.zanata.util.ShortString;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -615,7 +613,7 @@ public class TranslationServiceImpl implements TranslationService {
     }
 
     @Override
-    @Transactional
+    // can't use @Transactional because we call runInTransaction
     public List<String> translateAllInDoc(final String projectSlug,
             final String iterationSlug, final String docId,
             final LocaleId locale, final TranslationsResource translations,
