@@ -355,9 +355,10 @@ var DataTable = React.createClass({
   },
 
   _getTransColumn: function() {
+    let selectedLocale = this.props.locales[this.props.selectedTransLocale];
     return (
       <Column
-        label="Translations"
+        label={selectedLocale.locale.displayName}
         key={this.ENTRY.TRANS.field}
         width={150}
         dataKey={0}
