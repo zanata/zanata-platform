@@ -38,8 +38,8 @@ import java.util.concurrent.Future;
 @Interceptor
 public class AsyncMethodInterceptor {
 
-    static final ThreadLocal<Boolean> interceptorRan =
-            new ThreadLocal<Boolean>();
+    private static final ThreadLocal<Boolean> shouldRunAsyncThreadLocal =
+            ThreadLocal.withInitial(() -> true);
 
     @Inject
     private AsyncTaskManager taskManager;
@@ -56,7 +56,7 @@ public class AsyncMethodInterceptor {
 //    }
 
     @AroundInvoke
-    public Object callAsync(final InvocationContext ctx) throws Exception {
+    public Object aroundInvoke(final InvocationContext ctx) throws Exception {
 
         Class<?> methodReturnType = ctx.getMethod().getReturnType();
         if (methodReturnType != void.class
@@ -65,8 +65,11 @@ public class AsyncMethodInterceptor {
                     + ctx.getMethod().getName()
                     + " must return java.lang.Future or nothing at all");
         }
-
-        if (interceptorRan.get() == null) {
+        // if this is already an AsyncTask, this will be false:
+        boolean shouldRunAsync = shouldRunAsyncThreadLocal.get();
+        // reset the state in case this thread triggers *other* Async methods
+        shouldRunAsyncThreadLocal.remove();
+        if (shouldRunAsync) {
             // If there is a Task handle parameter (only the first one will be
             // registered)
             final Optional<AsyncTaskHandle> handle =
@@ -74,7 +77,9 @@ public class AsyncMethodInterceptor {
                             .getParameters()));
 
             AsyncTask asyncTask = () -> {
-                interceptorRan.set(true);
+                // ensure that the next invocation of this interceptor in this
+                // thread will skip the AsyncTask:
+                shouldRunAsyncThreadLocal.set(false);
                 try {
                     if (handle.isPresent()) {
                         handle.get().startTiming();
@@ -90,7 +95,6 @@ public class AsyncMethodInterceptor {
                     // exception thrown from the invoked method
                     throw itex.getCause();
                 } finally {
-                    interceptorRan.remove();
                     if (handle.isPresent()) {
                         handle.get().finishTiming();
                         taskHandleManager.taskFinished(handle.get());
