@@ -170,7 +170,9 @@ public class ZanataIdentity implements Identity, Serializable {
     }
 
     public void acceptExternallyAuthenticatedPrincipal(Principal principal) {
-        getSubject().getPrincipals().add(principal);
+        if (principal != null) {
+            getSubject().getPrincipals().add(principal);
+        }
         this.principal = principal;
     }
 
