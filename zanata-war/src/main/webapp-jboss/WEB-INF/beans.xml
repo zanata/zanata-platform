@@ -7,11 +7,13 @@
     <class>org.apache.deltaspike.jpa.impl.transaction.BeanManagedUserTransactionStrategy</class>
   </alternatives>
   <interceptors>
+    <!-- AsyncMethodInterceptor should be first, because we don't need to run
+         the other interceptors in the original thread -->
+    <class>org.zanata.async.AsyncMethodInterceptor</class>
     <class>org.zanata.util.SynchronizationInterceptor</class>
     <class>org.zanata.util.LifecycleMethodsWithRequestScopeInterceptor</class>
     <class>org.zanata.util.WithRequestScopeInterceptor</class>
     <class>org.apache.deltaspike.jpa.impl.transaction.TransactionalInterceptor</class>
-    <class>org.zanata.async.AsyncMethodInterceptor</class>
     <class>org.zanata.seam.interceptor.ZanataSecurityInterceptor</class>
   </interceptors>
 
