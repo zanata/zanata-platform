@@ -113,14 +113,14 @@ public class FacesNavigationUtil {
 
     public static void redirect(FacesContext context, String url) {
         url = encodeScheme(context, url);
-        if (log.isDebugEnabled() ) {
+        if (log.isDebugEnabled()) {
             log.debug("redirecting to: " + url);
         }
         ExternalContext externalContext = context.getExternalContext();
 //        controllingRedirect = true;
         try {
 //            Contexts.getEventContext().set(REDIRECT_FROM_MANAGER, "");
-            externalContext.redirect( externalContext.encodeActionURL(url) );
+            externalContext.redirect(externalContext.encodeActionURL(url));
         } catch (IOException | IllegalStateException e) {
             log.warn("error redirecting to url:" + url, e);
         } /*finally {
