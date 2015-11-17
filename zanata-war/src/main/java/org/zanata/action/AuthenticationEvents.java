@@ -52,9 +52,8 @@ public class AuthenticationEvents implements Serializable {
 
     public void loginInSuccessful(@Observes LoginSuccessfulEvent event) {
         log.debug("Account logged in successfully");
-        // TODO [CDI] may need to redirect users to captured view as in components.xml
         facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_INFO,
-                "org.jboss.seam.loginSuccessful");
+                "org.jboss.seam.loginSuccessful", event.getName());
     }
 
     public void loginFailed(@Observes LoginFailedEvent event) {

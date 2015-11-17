@@ -538,7 +538,8 @@ public class ZanataIdentity implements Identity, Serializable {
                 // and then return.
                 if (Contexts.isRequestContextActive()
                         && requestContextValueStore.contains(SILENT_LOGIN)) {
-                    getLoginSuccessfulEvent().fire(new LoginSuccessfulEvent());
+                    getLoginSuccessfulEvent().fire(new LoginSuccessfulEvent(
+                            getPrincipal().getName()));
                     this.preAuthenticated = true;
                     return "loggedIn";
                 }
@@ -561,7 +562,8 @@ public class ZanataIdentity implements Identity, Serializable {
             }
 
             // used by org.zanata.security.FacesSecurityEvents.addLoginSuccessfulMessage()
-            getLoginSuccessfulEvent().fire(new LoginSuccessfulEvent());
+            getLoginSuccessfulEvent().fire(new LoginSuccessfulEvent(
+                    getPrincipal().getName()));
             this.preAuthenticated = true;
             return "loggedIn";
         } catch (FailedLoginException | CredentialException | AccountException e) {
