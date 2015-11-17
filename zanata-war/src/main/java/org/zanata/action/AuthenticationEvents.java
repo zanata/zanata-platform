@@ -25,15 +25,26 @@ import java.io.Serializable;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.enterprise.event.Observes;
-import javax.inject.Named;
-import org.zanata.events.LoginSuccessfulEvent;
-import org.zanata.events.UserCreatedEvent;
+import javax.faces.application.FacesMessage;
+import javax.inject.Inject;
 
-@Named("authenticationEvents")
+import org.zanata.events.AlreadyLoggedInEvent;
+import org.zanata.events.LoginFailedEvent;
+import org.zanata.events.LoginSuccessfulEvent;
+import org.zanata.events.NotLoggedInEvent;
+import org.zanata.events.UserCreatedEvent;
+import org.zanata.ui.faces.FacesMessages;
+
+/**
+ * Some of the event observers are migrated from org.jboss.seam.security.FacesSecurityEvents
+ */
 @javax.enterprise.context.Dependent
 @Slf4j
 public class AuthenticationEvents implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    @Inject
+    private FacesMessages facesMessages;
 
     public void createSuccessful(@Observes UserCreatedEvent userCreatedEvent) {
         log.info("Account {} created", userCreatedEvent.getUser().getUsername());
@@ -42,6 +53,23 @@ public class AuthenticationEvents implements Serializable {
     public void loginInSuccessful(@Observes LoginSuccessfulEvent event) {
         log.debug("Account logged in successfully");
         // TODO [CDI] may need to redirect users to captured view as in components.xml
+        facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_INFO,
+                "org.jboss.seam.loginSuccessful");
     }
 
+    public void loginFailed(@Observes LoginFailedEvent event) {
+        log.debug("login failed", event.getException());
+        facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR,
+                "org.jboss.seam.loginFailed");
+    }
+
+    public void notLoggedIn(@Observes NotLoggedInEvent event) {
+        facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_INFO,
+                "org.jboss.seam.NotLoggedIn");
+    }
+
+    public void alreadyLoggedIn(@Observes AlreadyLoggedInEvent event) {
+        facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_WARN,
+                "org.jboss.seam.AlreadyLoggedIn");
+    }
 }

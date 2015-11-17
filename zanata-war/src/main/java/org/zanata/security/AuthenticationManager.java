@@ -32,6 +32,7 @@ import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.CredentialsDAO;
 import org.zanata.events.LoginCompleted;
+import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.security.HCredentials;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
@@ -88,6 +89,9 @@ public class AuthenticationManager {
 
     @Inject
     private ApplicationConfiguration applicationConfiguration;
+
+    @Inject
+    private Messages msgs;
 
     /**
      * Logs in a user using a specified authentication type.
@@ -375,7 +379,7 @@ public class AuthenticationManager {
         } else {
             String message = "";
             if (isAccountWaitingForActivation(username)) {
-                message = "#{msgs['org.jboss.seam.loginFailed']}";
+                message = msgs.get("org.jboss.seam.loginFailed");
             } else {
                 message =
                         "User "
