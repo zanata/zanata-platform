@@ -23,10 +23,10 @@ package org.zanata.action;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.faces.application.FacesMessage;
+
 import org.apache.commons.lang.time.DateUtils;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.End;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
@@ -34,24 +34,24 @@ import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.exception.KeyNotFoundException;
 import org.zanata.exception.ActivationLinkExpiredException;
 import org.zanata.model.HAccountActivationKey;
+import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.seam.security.AbstractRunAsOperation;
 import org.zanata.seam.security.IdentityManager;
-import org.zanata.ui.faces.FacesMessages;
 
 @Name("activate")
-@Scope(ScopeType.CONVERSATION)
+@Scope(ScopeType.PAGE)
 public class ActivateAction implements Serializable {
 
     private static final long serialVersionUID = -8079131168179421345L;
-
-    @In("jsfMessages")
-    private FacesMessages facesMessages;
 
     @In
     private AccountActivationKeyDAO accountActivationKeyDAO;
 
     @In
     private IdentityManager identityManager;
+
+    @In
+    private ConversationScopeMessages conversationScopeMessages;
 
     private String activationKey;
 
@@ -63,7 +63,6 @@ public class ActivateAction implements Serializable {
 
     private static int LINK_ACTIVE_DAYS = 1;
 
-    @Begin(join = true)
     public void validateActivationKey() {
 
         if (getActivationKey() == null) {
@@ -92,9 +91,7 @@ public class ActivateAction implements Serializable {
         this.activationKey = activationKey;
     }
 
-    @End
-    public String activate() {
-
+    public void activate() {
         new AbstractRunAsOperation() {
             public void execute() {
                 identityManager.enableUser(key.getAccount().getUsername());
@@ -105,10 +102,11 @@ public class ActivateAction implements Serializable {
 
         accountActivationKeyDAO.makeTransient(key);
 
-        facesMessages
-                .addGlobal(
-                "Your account was successfully activated. You can now sign in.");
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+            "Your account was successfully activated. You can now sign in.");
+    }
 
+    public String redirectToLogin() {
         return "/account/login.xhtml";
     }
 
