@@ -1,5 +1,6 @@
 package org.zanata.webtrans.server;
 
+import static com.google.common.base.MoreObjects.firstNonNull;
 import static org.zanata.transaction.TransactionUtil.runInTransaction;
 
 import java.util.Collection;
@@ -44,6 +45,7 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
 import org.zanata.webtrans.shared.rpc.WorkspaceContextUpdate;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
 import com.google.common.collect.HashMultimap;
@@ -123,7 +125,8 @@ public class TranslationWorkspaceManagerImpl implements
 
     public void exitWorkspace(@Observes LogoutEvent payload) {
         exitWorkspace(payload.getUsername(), payload.getSessionId(),
-                payload.getPersonName(), payload.getPersonEmail());
+                firstNonNull(payload.getPersonName(), "<unknown>"),
+                firstNonNull(payload.getPersonEmail(), "<unknown>"));
     }
 
     void exitWorkspace(String username, String httpSessionId, String personName,

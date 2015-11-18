@@ -198,7 +198,6 @@ public class ZanataIdentity implements Identity, Serializable {
     }
 
     private void fireLogoutEvent() {
-        // FIXME [CDI] when sessionId is null, it's likely instantiated for async context. It should not raise logout event which will cause a ConcurrentModificationException when destroying session
         if (getCredentials() != null && sessionId != null) {
             String username = getCredentials().getUsername();
             if (username != null) {
@@ -546,10 +545,11 @@ public class ZanataIdentity implements Identity, Serializable {
                 // and login() is explicitly called then we still want to raise
                 // the LOGIN_SUCCESSFUL event,
                 // and then return.
+                fetchPersonDetails();
                 if (Contexts.isRequestContextActive()
                         && requestContextValueStore.contains(SILENT_LOGIN)) {
                     getLoginSuccessfulEvent().fire(new LoginSuccessfulEvent(
-                            getPrincipal().getName()));
+                            personName));
                     this.preAuthenticated = true;
                     return "loggedIn";
                 }
@@ -571,20 +571,11 @@ public class ZanataIdentity implements Identity, Serializable {
                         + getCredentials().getUsername());
             }
 
-            HAccount account =
-                    accountDAO.getByUsername(getCredentials().getUsername());
-            HPerson person = account.getPerson();
-            if (person != null) {
-                personName = person.getName();
-                personEmail = person.getEmail();
-            } else {
-                personName = "<unknown>";
-                personEmail = "<unknown>";
-            }
+            fetchPersonDetails();
 
             // used by org.zanata.security.FacesSecurityEvents.addLoginSuccessfulMessage()
             getLoginSuccessfulEvent().fire(new LoginSuccessfulEvent(
-                    getPrincipal().getName()));
+                    personName));
 
 
             this.preAuthenticated = true;
@@ -606,6 +597,18 @@ public class ZanataIdentity implements Identity, Serializable {
         }
 
         return null;
+    }
+
+    private void fetchPersonDetails() {
+        if (personName == null) {
+            HAccount account =
+                    accountDAO.getByUsername(getCredentials().getUsername());
+            HPerson person = account.getPerson();
+            if (person != null) {
+                personName = person.getName();
+                personEmail = person.getEmail();
+            }
+        }
     }
 
     private void handleLoginException(LoginException e) {

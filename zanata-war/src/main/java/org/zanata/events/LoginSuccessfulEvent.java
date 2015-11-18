@@ -7,6 +7,10 @@ package org.zanata.events;
 public class LoginSuccessfulEvent {
     private String name;
 
+    /**
+     *
+     * @param name person's name
+     */
     public LoginSuccessfulEvent(String name) {
         this.name = name;
     }

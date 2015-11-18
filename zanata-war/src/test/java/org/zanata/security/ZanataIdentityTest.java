@@ -75,6 +75,7 @@ public class ZanataIdentityTest extends ZanataJpaTest {
                 .use("permissionEvaluator", permissionEvaluator)
                 .use("session", getSession())
                 .use("serverPath", "/")
+                .use("session", getSession())
                 .autowire(ZanataIdentity.class);
         seam.use("identity", identity);
         identity.setJaasConfigName(null);
