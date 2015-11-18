@@ -101,8 +101,9 @@ var GlossaryAPIStore = ({
         .attach('file', uploadFile.file, uploadFile.file.name)
         .field('fileName', uploadFile.file.name)
         .field('srcLocale', data.srcLocale)
-        .field('transLocale', data.uploadFile.transLocale)
+        .field('transLocale', uploadFile.transLocale)
         .set('Accept', 'application/json')
+
         .end(function (err, res) {
           err ? reject(err) : resolve(res);
         })

@@ -84,7 +84,7 @@
     <okapi.version>0.22</okapi.version>
 
     <zanata.assets.version>8.0.5</zanata.assets.version>
-    <zanata.api.version>3.9.0-SNAPSHOT</zanata.api.version>
+    <zanata.api.version>3.8.3-SNAPSHOT</zanata.api.version>
     <!-- This should always be the previous version of the used api version above (but only 3.0.1 or later will work) -->
     <zanata.api.compat.version>3.4.1</zanata.api.compat.version>
     <zanata.client.version>3.8.0</zanata.client.version>
