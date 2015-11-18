@@ -95,7 +95,7 @@ public class StatisticsResourceClient implements StatisticsResource {
 
     @Override
     public ContributionStatistics getContributionStatistics(String projectSlug,
-            String versionSlug, String username, String dateRange) {
+            String versionSlug, String username, String dateRange, boolean includeAutomatedEntry) {
         WebResource webResource =
                 factory.getClient().resource(baseUri).path("stats")
                         .path("project")
@@ -104,7 +104,8 @@ public class StatisticsResourceClient implements StatisticsResource {
                         .path(versionSlug)
                         .path("contributor")
                         .path(username)
-                        .path(dateRange);
+                        .path(dateRange)
+                        .queryParam("includeAutomatedEntry", String.valueOf(includeAutomatedEntry));
         return webResource.get(ContributionStatistics.class);
     }
 }
