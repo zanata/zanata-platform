@@ -24,11 +24,13 @@ import java.io.Serializable;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 
 import org.apache.deltaspike.core.api.scope.WindowScoped;
+import org.apache.deltaspike.core.util.ContextUtils;
 import org.zanata.events.AlreadyLoggedInEvent;
 import org.zanata.events.LoginFailedEvent;
 import org.zanata.events.LoginSuccessfulEvent;
@@ -36,12 +38,10 @@ import org.zanata.events.NotLoggedInEvent;
 import org.zanata.events.UserCreatedEvent;
 import org.zanata.ui.faces.FacesMessages;
 
-import static javax.enterprise.event.Reception.IF_EXISTS;
-
 /**
  * Some of the event observers are migrated from org.jboss.seam.security.FacesSecurityEvents
  */
-@WindowScoped
+@Dependent
 @Slf4j
 public class AuthenticationEvents implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -49,35 +49,41 @@ public class AuthenticationEvents implements Serializable {
     @Inject
     private FacesMessages facesMessages;
 
-    public void createSuccessful(@Observes(notifyObserver = IF_EXISTS)
-    UserCreatedEvent userCreatedEvent) {
+    public void createSuccessful(@Observes UserCreatedEvent userCreatedEvent) {
         log.info("Account {} created",
                 userCreatedEvent.getUser().getUsername());
     }
 
-    public void loginInSuccessful(
-            @Observes(notifyObserver = IF_EXISTS) LoginSuccessfulEvent event) {
+    public void loginInSuccessful(@Observes LoginSuccessfulEvent event) {
         log.debug("Account logged in successfully");
-        facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_INFO,
-                "org.jboss.seam.loginSuccessful", event.getName());
+        if (ContextUtils.isContextActive(WindowScoped.class)) {
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_INFO,
+                    "org.jboss.seam.loginSuccessful", event.getName());
+        }
     }
 
-    public void loginFailed(
-            @Observes(notifyObserver = IF_EXISTS) LoginFailedEvent event) {
+    public void loginFailed(@Observes LoginFailedEvent event) {
         log.debug("login failed", event.getException());
-        facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR,
-                "org.jboss.seam.loginFailed");
+        if (ContextUtils.isContextActive(WindowScoped.class)) {
+            facesMessages
+                    .addFromResourceBundle(FacesMessage.SEVERITY_ERROR,
+                            "org.jboss.seam.loginFailed");
+        }
     }
 
-    public void notLoggedIn(
-            @Observes(notifyObserver = IF_EXISTS) NotLoggedInEvent event) {
-        facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_INFO,
-                "org.jboss.seam.NotLoggedIn");
+    public void notLoggedIn(@Observes NotLoggedInEvent event) {
+        if (ContextUtils.isContextActive(WindowScoped.class)) {
+            facesMessages
+                    .addFromResourceBundle(FacesMessage.SEVERITY_INFO,
+                            "org.jboss.seam.NotLoggedIn");
+        }
     }
 
-    public void alreadyLoggedIn(
-            @Observes(notifyObserver = IF_EXISTS) AlreadyLoggedInEvent event) {
-        facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_WARN,
-                "org.jboss.seam.AlreadyLoggedIn");
+    public void alreadyLoggedIn(@Observes AlreadyLoggedInEvent event) {
+        if (ContextUtils.isContextActive(WindowScoped.class)) {
+            facesMessages
+                    .addFromResourceBundle(FacesMessage.SEVERITY_WARN,
+                            "org.jboss.seam.AlreadyLoggedIn");
+        }
     }
 }
