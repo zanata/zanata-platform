@@ -7,18 +7,14 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.PreDestroy;
 import javax.inject.Named;
-import javax.servlet.http.HttpSession;
 
-import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.zanata.async.Async;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
@@ -28,17 +24,13 @@ import org.zanata.events.LogoutEvent;
 import org.zanata.events.ProjectIterationUpdate;
 import org.zanata.events.ProjectUpdate;
 import org.zanata.events.ServerStarted;
-import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
-import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.GravatarService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.ValidationService;
-import org.zanata.servlet.annotations.SessionId;
 import org.zanata.util.ServiceLocator;
-import org.zanata.util.WithRequestScope;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
@@ -129,26 +121,18 @@ public class TranslationWorkspaceManagerImpl implements
         log.info("starting...");
     }
 
-    @WithRequestScope
     public void exitWorkspace(@Observes LogoutEvent payload) {
-        exitWorkspace(payload.getUsername(), payload.getSessionId());
+        exitWorkspace(payload.getUsername(), payload.getSessionId(),
+                payload.getPersonName(), payload.getPersonEmail());
     }
 
-    void exitWorkspace(String username, String httpSessionId) {
+    void exitWorkspace(String username, String httpSessionId, String personName,
+            String personEmail) {
         if (httpSessionId == null) {
             log.debug("Logout: null session");
             return;
         }
-        String personName = "<unknown>";
-        String personEmail = "<unknown>";
-        HAccount account = getAccountDAO().getByUsername(username);
-        if (account != null) {
-            HPerson person = account.getPerson();
-            if (person != null) {
-                personName = person.getName();
-                personEmail = person.getEmail();
-            }
-        }
+
         ImmutableSet<TranslationWorkspace> workspaceSet =
                 ImmutableSet.copyOf(workspaceMap.values());
         for (TranslationWorkspace workspace : workspaceSet) {

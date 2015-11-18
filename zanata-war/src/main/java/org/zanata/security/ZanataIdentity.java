@@ -46,6 +46,7 @@ import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.dao.AccountDAO;
 import org.zanata.events.AlreadyLoggedInEvent;
 import org.zanata.events.LoginFailedEvent;
 import org.zanata.events.LoginSuccessfulEvent;
@@ -54,8 +55,10 @@ import org.zanata.events.NotLoggedInEvent;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.exception.NotLoggedInException;
 import org.zanata.model.HAccount;
+import org.zanata.model.HPerson;
 import org.zanata.model.HasUserFriendlyToString;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
+import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.security.jaas.InternalLoginModule;
 import org.zanata.security.permission.CustomPermissionResolver;
 import org.zanata.security.permission.MultiTargetList;
@@ -121,8 +124,13 @@ public class ZanataIdentity implements Identity, Serializable {
     @Inject
     private Event<NotLoggedInEvent> notLoggedInEventEvent;
 
+    @Inject
+    private AccountDAO accountDAO;
+
     @Inject @SessionId
     private String sessionId;
+    private String personEmail;
+    private String personName;
 
     public static boolean isSecurityEnabled() {
         return securityEnabled;
@@ -194,10 +202,12 @@ public class ZanataIdentity implements Identity, Serializable {
         if (getCredentials() != null && sessionId != null) {
             String username = getCredentials().getUsername();
             if (username != null) {
-                log.debug("firing LogoutEvent for user {} with session {} -> {}", username,
+                log.debug(
+                        "firing LogoutEvent for user {} with session {} -> {}",
+                        username,
                         sessionId, this);
                 getLogoutEvent().fire(new LogoutEvent(
-                        username, sessionId));
+                        username, sessionId, personName, personEmail));
             }
         }
     }
@@ -561,9 +571,22 @@ public class ZanataIdentity implements Identity, Serializable {
                         + getCredentials().getUsername());
             }
 
+            HAccount account =
+                    accountDAO.getByUsername(getCredentials().getUsername());
+            HPerson person = account.getPerson();
+            if (person != null) {
+                personName = person.getName();
+                personEmail = person.getEmail();
+            } else {
+                personName = "<unknown>";
+                personEmail = "<unknown>";
+            }
+
             // used by org.zanata.security.FacesSecurityEvents.addLoginSuccessfulMessage()
             getLoginSuccessfulEvent().fire(new LoginSuccessfulEvent(
                     getPrincipal().getName()));
+
+
             this.preAuthenticated = true;
             return "loggedIn";
         } catch (FailedLoginException | CredentialException | AccountException e) {
@@ -587,6 +610,8 @@ public class ZanataIdentity implements Identity, Serializable {
 
     private void handleLoginException(LoginException e) {
         credentials.invalidate();
+        personEmail = null;
+        personName = null;
 
         // used by org.zanata.security.FacesSecurityEvents.addLoginFailedMessage()
         getLoginFailedEvent().fire(new LoginFailedEvent(e));
@@ -616,8 +641,8 @@ public class ZanataIdentity implements Identity, Serializable {
     @Nullable
     public String getAccountUsername() {
         HAccount authenticatedAccount =
-                ServiceLocator.instance().getInstance(
-                        ZanataJpaIdentityStore.AUTHENTICATED_USER, HAccount.class);
+                ServiceLocator.instance().getInstance(HAccount.class,
+                        new AuthenticatedLiteral());
         if (authenticatedAccount != null) {
             return authenticatedAccount.getUsername();
         }

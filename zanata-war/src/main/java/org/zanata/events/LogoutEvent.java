@@ -29,4 +29,6 @@ import lombok.Value;
 public class LogoutEvent {
     String username;
     String sessionId;
+    private String personName;
+    private String personEmail;
 }

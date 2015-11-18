@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -272,7 +271,7 @@ public class TranslationWorkspaceManagerImplTest extends ZanataTest {
     public void testExitWorkspaceWithNullSessionId() throws Exception {
         TranslationWorkspaceManagerImpl spy = spy(manager);
 
-        spy.exitWorkspace("admin", null);
+        spy.exitWorkspace("admin", null, personName, personEmail);
 
         verifyZeroInteractions(accountDAO);
     }
@@ -307,7 +306,7 @@ public class TranslationWorkspaceManagerImplTest extends ZanataTest {
         hAccount.setPerson(person);
         when(accountDAO.getByUsername("admin")).thenReturn(hAccount);
 
-        spy.exitWorkspace("admin", "sessionId");
+        spy.exitWorkspace("admin", "sessionId", personName, personEmail);
 
         verify(mockWorkspace).removeEditorClients("sessionId");
         verify(mockWorkspace, times(2)).publish(eventCaptor.capture());
@@ -350,7 +349,7 @@ public class TranslationWorkspaceManagerImplTest extends ZanataTest {
                 editorClientIds);
         spy.getOrRegisterWorkspace(workspaceId);
 
-        spy.exitWorkspace("admin", "sessionId");
+        spy.exitWorkspace("admin", "sessionId", personName, personEmail);
 
         verify(mockWorkspace).removeEditorClients("sessionId");
         verify(mockWorkspace, times(2)).publish(eventCaptor.capture());
