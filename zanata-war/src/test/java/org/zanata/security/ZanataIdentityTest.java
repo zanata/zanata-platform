@@ -73,6 +73,7 @@ public class ZanataIdentityTest extends ZanataJpaTest {
                 .use("loginFailedEventEvent", event)
                 .use("notLoggedInEventEvent", event)
                 .use("permissionEvaluator", permissionEvaluator)
+                .use("session", getSession())
                 .use("serverPath", "/")
                 .autowire(ZanataIdentity.class);
         seam.use("identity", identity);
