@@ -5,9 +5,11 @@ import StringUtils from '../../utils/StringUtils'
 import InputCell from './InputCell';
 import LoadingCell from './LoadingCell'
 import ActionCell from './ActionCell'
-import { Icon, Tooltip, OverlayTrigger } from 'zanata-ui';
+import { Button, Icon, Tooltip, OverlayTrigger } from 'zanata-ui';
 import SourceActionCell from './SourceActionCell'
 import ColumnHeader from './ColumnHeader'
+import NewEntryModal from './NewEntryModal'
+import ImportModal from './ImportModal'
 import _ from 'lodash';
 import Messages from '../../constants/Messages'
 
@@ -77,7 +79,11 @@ var DataTable = React.createClass({
     focusedRow: React.PropTypes.shape({
       id: React.PropTypes.number,
       rowIndex: React.PropTypes.number
-    })
+    }),
+    locales: React.PropTypes.object,
+    allowNewEntry: React.PropTypes.bool,
+    loading: React.PropTypes.bool,
+    filter: React.PropTypes.string
   },
 
   getInitialState: function () {
@@ -95,7 +101,7 @@ var DataTable = React.createClass({
    * @param  top : number - the position of the top of the DataTable. If not supplied, the top position will be calculated based on DOM height.
    */
   _getHeight: function(top) {
-    var footer = window.document.getElementById("footer");
+    var footer = window.document.querySelector('.js-footer');
     var footerHeight = footer ? footer.clientHeight : 91;
 
     top = _.isUndefined(top) ? React.findDOMNode(this).offsetTop: top;
@@ -256,7 +262,7 @@ var DataTable = React.createClass({
   _renderPosCell: function (id, cellDataKey, rowData, rowIndex,
                             columnData, width) {
     var readOnly = !this.props.canUpdateEntry || this._isTranslationSelected(),
-      placeholder = 'enter part of speech';
+      placeholder = 'Noun, Verb, etc';
     return this._renderCell({
       id: id,
       rowIndex: rowIndex,
@@ -349,9 +355,10 @@ var DataTable = React.createClass({
   },
 
   _getTransColumn: function() {
+    let selectedLocale = this.props.locales[this.props.selectedTransLocale];
     return (
       <Column
-        label="Translations"
+        label={selectedLocale.locale.displayName}
         key={this.ENTRY.TRANS.field}
         width={150}
         dataKey={0}
@@ -465,19 +472,14 @@ var DataTable = React.createClass({
   },
 
   render: function() {
-    var columns = [];
-
-    columns.push(this._getSourceColumn());
-    if(this._isTranslationSelected()) {
-      columns.push(this._getTransColumn());
-    } else {
-      columns.push(this._getTransCountColumn());
-    }
-    columns.push(this._getPosColumn());
-    columns.push(this._getDescColumn());
-    columns.push(this._getActionColumn());
-
-    return (
+    const columns = [
+      this._getSourceColumn(),
+      this._isTranslationSelected() ? this._getTransColumn() : this._getTransCountColumn(),
+      this._getPosColumn(),
+      this._getDescColumn(),
+      this._getActionColumn()
+    ]
+    const termTable = (
       <Table
         onRowClick={this._onRowClick}
         onRowMouseEnter={this._onRowMouseEnter}
@@ -491,7 +493,33 @@ var DataTable = React.createClass({
         headerHeight={this.CELL_HEIGHT}>
         {columns}
       </Table>
-    );
+    )
+    const addTerms = this.props.allowNewEntry ? (
+      <span className='ml1/4 difx aic'> Add a <NewEntryModal className='mh1/4' srcLocale={this.props.srcLocale}/> or <ImportModal className='ml1/4' srcLocale={this.props.srcLocale} transLocales={this.props.locales}/>.</span>
+    ) : null
+    const noResultsState = this.props.filter && !this.props.totalCount && !this.props.loading ? (
+      <div className='posa a0 mt2 df aic jcc'>
+        <p className='csec50 df aic'>
+          <Icon name='info' size='1' className='mr1/4'/>
+          No results for "{this.props.filter}". Maybe try another search.
+        </p>
+      </div>
+    ) : null
+    const emptyState = !this.props.filter && !this.props.totalCount && !this.props.loading ? (
+      <div className='posa a0 mt2 df aic jcc'>
+        <p className='csec50 df aic'>
+          <Icon name='info' size='1' className='mr1/4'/>
+          No terms have been entered. {addTerms}
+        </p>
+      </div>
+    ) : null
+    return (
+      <div className='posr'>
+        {termTable}
+        {noResultsState}
+        {emptyState}
+      </div>
+    )
   }
 });
 

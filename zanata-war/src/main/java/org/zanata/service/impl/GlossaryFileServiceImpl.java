@@ -166,7 +166,7 @@ public class GlossaryFileServiceImpl implements GlossaryFileService {
             throws IOException {
         GlossaryCSVReader csvReader =
                 new GlossaryCSVReader(sourceLang, BATCH_SIZE);
-        return csvReader.extractGlossary(new InputStreamReader(fileContents));
+        return csvReader.extractGlossary(new InputStreamReader(fileContents, "UTF-8"));
     }
 
     private List<List<GlossaryEntry>> parsePoFile(InputStream fileContents,
