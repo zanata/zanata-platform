@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.enterprise.event.Observes;
 import javax.persistence.EntityManager;
 
+import com.google.common.annotations.VisibleForTesting;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.PreDestroy;
@@ -124,11 +125,14 @@ public class TranslationWorkspaceManagerImpl implements
     }
 
     public void exitWorkspace(@Observes LogoutEvent payload) {
+        // NB: avoid using session-scoped beans, because this event is
+        // fired during session expiry.
         exitWorkspace(payload.getUsername(), payload.getSessionId(),
                 firstNonNull(payload.getPersonName(), "<unknown>"),
                 firstNonNull(payload.getPersonEmail(), "<unknown>"));
     }
 
+    @VisibleForTesting
     void exitWorkspace(String username, String httpSessionId, String personName,
             String personEmail) {
         if (httpSessionId == null) {

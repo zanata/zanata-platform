@@ -26,6 +26,8 @@ import lombok.Value;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Value
+// NB: avoid using session-scoped beans, because this event is
+// fired during session expiry.
 public class LogoutEvent {
     String username;
     String sessionId;

@@ -57,7 +57,6 @@ import org.zanata.exception.NotLoggedInException;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.model.HasUserFriendlyToString;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.security.jaas.InternalLoginModule;
 import org.zanata.security.permission.CustomPermissionResolver;
@@ -129,8 +128,12 @@ public class ZanataIdentity implements Identity, Serializable {
 
     @Inject @SessionId
     private String sessionId;
-    private String personEmail;
-    private String personName;
+
+    // The following fields store user details for use during preDestroy().
+    // NB: they are not currently kept up to date if the user name changes.
+    private @Nullable String cachedPersonEmail;
+    private @Nullable String cachedPersonName;
+    private @Nullable String cachedUsername;
 
     public static boolean isSecurityEnabled() {
         return securityEnabled;
@@ -198,16 +201,17 @@ public class ZanataIdentity implements Identity, Serializable {
     }
 
     private void fireLogoutEvent() {
-        if (getCredentials() != null && sessionId != null) {
-            String username = getCredentials().getUsername();
-            if (username != null) {
-                log.debug(
-                        "firing LogoutEvent for user {} with session {} -> {}",
-                        username,
-                        sessionId, this);
-                getLogoutEvent().fire(new LogoutEvent(
-                        username, sessionId, personName, personEmail));
-            }
+        // NB: avoid using session-scoped beans, because this method is
+        // called by preDestroy().
+        if (credentials != null && sessionId != null &&
+                cachedUsername != null) {
+            log.debug(
+                    "firing LogoutEvent for user {} with session {} -> {}",
+                    cachedUsername,
+                    sessionId, this);
+            getLogoutEvent().fire(new LogoutEvent(
+                    cachedUsername, sessionId, cachedPersonName,
+                    cachedPersonEmail));
         }
     }
 
@@ -545,11 +549,11 @@ public class ZanataIdentity implements Identity, Serializable {
                 // and login() is explicitly called then we still want to raise
                 // the LOGIN_SUCCESSFUL event,
                 // and then return.
-                fetchPersonDetails();
+                cacheUserDetails();
                 if (Contexts.isRequestContextActive()
                         && requestContextValueStore.contains(SILENT_LOGIN)) {
                     getLoginSuccessfulEvent().fire(new LoginSuccessfulEvent(
-                            personName));
+                            cachedPersonName));
                     this.preAuthenticated = true;
                     return "loggedIn";
                 }
@@ -566,17 +570,12 @@ public class ZanataIdentity implements Identity, Serializable {
                 throw new LoginException();
             }
 
-            if (log.isDebugEnabled()) {
-                log.debug("Login successful for: "
-                        + getCredentials().getUsername());
-            }
-
-            fetchPersonDetails();
+            cacheUserDetails();
+            log.debug("Login successful for: {}", cachedUsername);
 
             // used by org.zanata.security.FacesSecurityEvents.addLoginSuccessfulMessage()
             getLoginSuccessfulEvent().fire(new LoginSuccessfulEvent(
-                    personName));
-
+                    cachedPersonName));
 
             this.preAuthenticated = true;
             return "loggedIn";
@@ -599,22 +598,38 @@ public class ZanataIdentity implements Identity, Serializable {
         return null;
     }
 
-    private void fetchPersonDetails() {
-        if (personName == null) {
+    /**
+     * Caches username and other details, so that we can use them during
+     * {@link #preDestroy()}.
+     */
+    // TODO should we fire an event when username/name/email is changed (rare)?
+    private void cacheUserDetails() {
+        if (cachedUsername == null) {
+            cachedUsername = getCredentials().getUsername();
+        }
+        if (cachedPersonName == null) {
             HAccount account =
-                    accountDAO.getByUsername(getCredentials().getUsername());
+                    accountDAO.getByUsername(cachedUsername);
             HPerson person = account.getPerson();
             if (person != null) {
-                personName = person.getName();
-                personEmail = person.getEmail();
+                cachedPersonName = person.getName();
+                cachedPersonEmail = person.getEmail();
+            } else {
+//                cachedPersonName = null;
+                cachedPersonEmail = null;
             }
         }
     }
 
+    private void removeCachedUserDetails() {
+        cachedUsername = null;
+        cachedPersonEmail = null;
+        cachedPersonName = null;
+    }
+
     private void handleLoginException(LoginException e) {
         credentials.invalidate();
-        personEmail = null;
-        personName = null;
+        removeCachedUserDetails();
 
         // used by org.zanata.security.FacesSecurityEvents.addLoginFailedMessage()
         getLoginFailedEvent().fire(new LoginFailedEvent(e));
