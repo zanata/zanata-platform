@@ -22,14 +22,15 @@ package org.zanata.service.impl;
 
 import static org.jboss.seam.ScopeType.STATELESS;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
+import java.io.Reader;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeSet;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -46,13 +47,13 @@ import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HLocale;
 import org.zanata.rest.dto.GlossaryEntry;
-import org.zanata.rest.dto.GlossaryResults;
 import org.zanata.rest.dto.GlossaryTerm;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.service.GlossaryFileService;
 import org.zanata.service.LocaleService;
 import org.zanata.util.GlossaryUtil;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.AllArgsConstructor;
@@ -80,33 +81,34 @@ public class GlossaryFileServiceImpl implements GlossaryFileService {
 
     private final static int BATCH_SIZE = 50;
 
+    private final static int MAX_LENGTH_CHAR = 255;
+
     @Override
-    public List<List<GlossaryEntry>> parseGlossaryFile(InputStream fileContents,
+    public List<List<GlossaryEntry>> parseGlossaryFile(InputStream inputStream,
             String fileName, LocaleId sourceLang, LocaleId transLang)
             throws ZanataServiceException {
         try {
-            if (StringUtils.endsWithIgnoreCase(fileName, ".csv")) {
-                return parseCsvFile(sourceLang, fileContents);
-            } else if (StringUtils.endsWithIgnoreCase(fileName, ".po")) {
-                return parsePoFile(fileContents, sourceLang, transLang);
-            } else {
-                throw new ZanataServiceException("Unsupported Glossary file: "
-                        + fileName);
+            if (FilenameUtils.getExtension(fileName).equals("csv")) {
+                return parseCsvFile(sourceLang, inputStream);
+            } else if (FilenameUtils.getExtension(fileName).equals("po")) {
+                return parsePoFile(inputStream, sourceLang, transLang);
             }
+            throw new ZanataServiceException("Unsupported Glossary file: "
+                    + fileName);
         } catch (Exception e) {
             throw new ZanataServiceException("Error processing glossary file: "
                     + fileName + ". " + e.getMessage());
         }
     }
 
-    private final static int MAX_LENGTH = 255;
-
     private String validateGlossaryEntry(GlossaryEntry entry) {
-        if(StringUtils.length(entry.getDescription()) > MAX_LENGTH) {
-            return "Glossary description too long, maximum " + MAX_LENGTH + " character";
+        if (StringUtils.length(entry.getDescription()) > MAX_LENGTH_CHAR) {
+            return "Glossary description too long, maximum " + MAX_LENGTH_CHAR
+                    + " character";
         }
-        if(StringUtils.length(entry.getPos()) > MAX_LENGTH) {
-            return "Glossary part of speech too long, maximum " + MAX_LENGTH + " character";
+        if (StringUtils.length(entry.getPos()) > MAX_LENGTH_CHAR) {
+            return "Glossary part of speech too long, maximum "
+                    + MAX_LENGTH_CHAR + " character";
         }
         return null;
     }
@@ -114,8 +116,6 @@ public class GlossaryFileServiceImpl implements GlossaryFileService {
     @Override
     public GlossaryProcessed saveOrUpdateGlossary(
             List<GlossaryEntry> glossaryEntries) {
-        Map<HGlossaryEntry, List<String>> results =
-                new HashMap<HGlossaryEntry, List<String>>();
 
         int counter = 0;
         List<HGlossaryEntry> entries = Lists.newArrayList();
@@ -162,22 +162,25 @@ public class GlossaryFileServiceImpl implements GlossaryFileService {
     }
 
     private List<List<GlossaryEntry>> parseCsvFile(LocaleId sourceLang,
-            InputStream fileContents)
-            throws IOException {
+        InputStream inputStream) throws IOException {
         GlossaryCSVReader csvReader =
                 new GlossaryCSVReader(sourceLang, BATCH_SIZE);
-        return csvReader.extractGlossary(new InputStreamReader(fileContents, "UTF-8"));
+        return csvReader.extractGlossary(new InputStreamReader(inputStream,
+                Charsets.UTF_8.displayName()));
     }
 
-    private List<List<GlossaryEntry>> parsePoFile(InputStream fileContents,
+    private List<List<GlossaryEntry>> parsePoFile(InputStream inputStream,
             LocaleId sourceLang, LocaleId transLang) throws IOException {
+
         if (sourceLang == null || transLang == null) {
             throw new ZanataServiceException(
                     "Mandatory fields for PO file format: Source Language and Target Language");
         }
         GlossaryPoReader poReader =
                 new GlossaryPoReader(sourceLang, transLang, BATCH_SIZE);
-        return poReader.extractGlossary(new InputStreamReader(fileContents));
+        Reader reader = new BufferedReader(
+            new InputStreamReader(inputStream, Charsets.UTF_8.displayName()));
+        return poReader.extractGlossary(reader);
     }
 
     /**
