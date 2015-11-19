@@ -65,7 +65,6 @@ import static org.zanata.notification.NotificationManager.MessagePropertiesKey;
                 propertyValue = "jms/queue/MailsQueue"
         )
 })
-@Named("emailQueueMessageReceiver")
 @Slf4j
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -100,6 +99,8 @@ public class EmailQueueMessageReceiver implements MessageListener {
             } catch (JMSException e) {
                 log.warn("error handling jms message: {}", message);
                 Throwables.propagate(e);
+            } catch (Throwable e) {
+                log.warn("error handling jms message: {}", message, e);
             }
         }
     }

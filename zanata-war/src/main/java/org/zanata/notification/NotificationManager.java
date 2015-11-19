@@ -43,6 +43,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.jms.Session;
 
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.events.LanguageTeamPermissionChangedEvent;
 
 import com.google.common.base.Throwables;
@@ -53,8 +54,7 @@ import com.google.common.base.Throwables;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Named("notificationManager")
-@Dependent
+@ApplicationScoped
 @Slf4j
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
@@ -67,26 +67,30 @@ public class NotificationManager {
     @Inject
     private JmsResourcesProducer resourcesProducer;
 
-    private transient QueueSender mailQueueSender;
+    @EmailQueueSender
+    @Inject
+    private QueueSender mailQueueSender;
 
-    private transient QueueSession queueSession;
+    @InVMJMS
+    @Inject
+    private QueueSession queueSession;
 
 
-    @PostConstruct
-    public void onCreate() {
-        try {
-            queueSession = resourcesProducer.createQueueSession(connection);
-            mailQueueSender =
-                    resourcesProducer.createEmailQueueSender(queueSession);
-            // force initialisation:
-            mailQueueSender.getQueue();
-        } catch (JMSException e) {
-            // it will never reach this block. As long as you call getQueue()
-            // and if the queue is not defined, seam will terminate:
-            // org.jboss.seam.jms.ManagedQueueSender.getQueue(ManagedQueueSender.java:45
-            Throwables.propagate(e);
-        }
-    }
+//    @PostConstruct
+//    public void onCreate() {
+//        try {
+//            queueSession = resourcesProducer.createQueueSession(connection);
+//            mailQueueSender =
+//                    resourcesProducer.createEmailQueueSender(queueSession);
+//            // force initialisation:
+//            mailQueueSender.getQueue();
+//        } catch (JMSException e) {
+//            // it will never reach this block. As long as you call getQueue()
+//            // and if the queue is not defined, seam will terminate:
+//            // org.jboss.seam.jms.ManagedQueueSender.getQueue(ManagedQueueSender.java:45
+//            Throwables.propagate(e);
+//        }
+//    }
 
     public void onLanguageTeamPermissionChanged(
             final @Observes LanguageTeamPermissionChangedEvent event) {
@@ -98,7 +102,7 @@ public class NotificationManager {
             mailQueueSender.send(message);
         } catch (JMSException e) {
             throw Throwables.propagate(e);
-        } finally {
+        } /*finally {
             // We can not use JmsResourceProducer to produce session and
             // mailQueueSender. If we do that, it seems to only dispose queueSender
             // and session but not connection. Server will log a INFO with long
@@ -110,7 +114,7 @@ public class NotificationManager {
             } catch (JMSException e) {
                 log.error("error closing JMS resources", e);
             }
-        }
+        }*/
     }
 
     /*

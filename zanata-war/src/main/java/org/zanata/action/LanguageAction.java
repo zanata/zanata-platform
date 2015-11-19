@@ -329,7 +329,6 @@ public class LanguageAction implements Serializable {
                         member.getPerson(), getLocale().getLocaleId(),
                         doneByPerson)
                         .changedReviewerPermission(member);
-        languageTeamPermissionChangedEvent.fire(changedEvent);
     }
 
     public void saveTeamTranslator(HLocaleMember member) {
@@ -341,7 +340,6 @@ public class LanguageAction implements Serializable {
                         member.getPerson(), getLocale().getLocaleId(),
                         doneByPerson)
                         .changedTranslatorPermission(member);
-        languageTeamPermissionChangedEvent.fire(changedEvent);
     }
 
     private void savePermission(HLocaleMember member, String permissionDesc,

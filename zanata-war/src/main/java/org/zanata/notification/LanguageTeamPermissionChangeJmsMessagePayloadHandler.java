@@ -32,6 +32,7 @@ import org.zanata.email.EmailBuilder;
 import org.zanata.email.LanguageTeamPermissionChangeEmailStrategy;
 import org.zanata.events.LanguageTeamPermissionChangedEvent;
 import org.zanata.i18n.Messages;
+import org.zanata.servlet.annotations.ServerPath;
 
 import com.google.common.collect.Lists;
 import lombok.AccessLevel;
@@ -64,7 +65,8 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandler implements
     private Messages msgs;
 
     @Inject
-    private ApplicationConfiguration applicationConfiguration;
+    @ServerPath
+    private String serverPath;
 
 
     @Override
@@ -87,7 +89,7 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandler implements
                 msgs.format("jsf.email.languageteam.permission.ReceivedReason",
                         changedEvent.getLanguage());
         String contactTeamCoordinatorLink =
-                applicationConfiguration.getServerPath() +
+                serverPath +
                         "/language/view/" + changedEvent.getLanguage();
         LanguageTeamPermissionChangeEmailStrategy emailStrategy =
                 new LanguageTeamPermissionChangeEmailStrategy(

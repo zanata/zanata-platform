@@ -70,7 +70,7 @@ public class EmailStrategyTest {
     String fromName = msgs.get("jsf.Zanata");
     String toName = "User Name[测试]";
     String toAddress = "username@example.com";
-    String serverPath = "https://zanata.example.com";
+    String testServerPath = "https://zanata.example.com";
     InternetAddress toAddr;
     InternetAddress[] toAddresses;
 
@@ -90,10 +90,10 @@ public class EmailStrategyTest {
 
         @Override
         String getServerPath() {
-            return serverPath;
+            return testServerPath;
         }
     };
-    EmailBuilder builder = new EmailBuilder(session, context, msgsFactory, null);
+    EmailBuilder builder = new EmailBuilder(session, context, msgsFactory);
     MimeMessage message;
 
     // context values needed for some templates:
@@ -176,7 +176,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(msgs.get(
                 "jsf.email.activation.ClickLinkToActivateAccount"));
         assertThat(html).contains(
-                serverPath + "/account/activate/123456");
+                testServerPath + "/account/activate/123456");
     }
 
     @Test
@@ -226,7 +226,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(
                 htmlMessage);
         assertThat(html).contains(
-                serverPath + "/language/view/" + localeId);
+                testServerPath + "/language/view/" + localeId);
     }
 
     @Test
@@ -248,7 +248,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(msgs.get(
                 "jsf.email.accountchange.ConfirmationLink"));
         assertThat(html).contains(
-                serverPath + "/account/validate_email/123456");
+                testServerPath + "/account/validate_email/123456");
     }
 
     @Test
@@ -269,7 +269,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(msgs.get(
                 "jsf.email.passwordreset.FollowLinkToResetPassword"));
         assertThat(html).contains(
-                serverPath + "/account/password_reset/123456");
+                testServerPath + "/account/password_reset/123456");
     }
 
     @Test
@@ -296,7 +296,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(
                 htmlMessage);
         assertThat(html).contains(
-                serverPath + "/language/view/" + localeId);
+                testServerPath + "/language/view/" + localeId);
     }
 
     @Test
@@ -330,7 +330,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(
                 htmlMessage);
         assertThat(html).contains(
-                serverPath + "/version-group/view/" + versionGroupSlug);
+                testServerPath + "/version-group/view/" + versionGroupSlug);
     }
 
     @Test
@@ -353,7 +353,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(msgs.format(
                 "jsf.email.usernamechange.YourNewUsername", newUsername));
         assertThat(html).contains(
-                serverPath + "/account/password_reset_request");
+                testServerPath + "/account/password_reset_request");
     }
 
 }

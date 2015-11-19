@@ -38,6 +38,7 @@ import org.zanata.i18n.Messages;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import org.zanata.i18n.MessagesFactory;
+import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.util.HtmlUtil;
 
 import static com.googlecode.totallylazy.collections.PersistentMap.constructors.map;
@@ -67,8 +68,6 @@ public class EmailBuilder {
     private Context emailContext;
     @Inject
     private MessagesFactory messagesFactory;
-    @Inject
-    private LocaleSelectorAction localeSelector;
 
     private static VelocityEngine makeVelocityEngine() {
         VelocityEngine ve = new VelocityEngine();
@@ -104,8 +103,6 @@ public class EmailBuilder {
      */
     public void sendMessage(EmailStrategy strategy,
             List<String> receivedReasons, InternetAddress[] toAddresses) {
-        Locale pervLocale = localeSelector.getLocale();
-        localeSelector.setLocale(new Locale("en"));
 
         try {
             MimeMessage email = new MimeMessage(mailSession);
@@ -118,8 +115,6 @@ public class EmailBuilder {
                 throw new RuntimeException("The system failed to connect to mail service. Please contact the administrator!", e);
             }
             throw new RuntimeException(e);
-        } finally {
-            localeSelector.setLocale(pervLocale);
         }
     }
 
@@ -213,9 +208,12 @@ public class EmailBuilder {
     @javax.enterprise.context.RequestScoped
     public static class Context {
         @Inject
+        @ServerPath
+        String serverPath;
+        @Inject
         private ApplicationConfiguration applicationConfiguration;
         String getServerPath() {
-            return applicationConfiguration.getServerPath();
+            return this.serverPath;
         }
         String getFromAddress() {
             return applicationConfiguration.getFromEmailAddr();

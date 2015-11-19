@@ -26,8 +26,7 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandlerTest {
     private LanguageTeamPermissionChangeJmsMessagePayloadHandler handler;
     @Mock
     private EmailBuilder emailBuilder;
-    @Mock
-    private ApplicationConfiguration applicationConfiguration;
+
     @Mock
     private LanguageTeamPermissionChangedEvent permissionChangeEvent;
 
@@ -36,7 +35,7 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandlerTest {
         MockitoAnnotations.initMocks(this);
         handler =
                 new LanguageTeamPermissionChangeJmsMessagePayloadHandler(
-                        emailBuilder, new Messages(Locale.ENGLISH), applicationConfiguration);
+                        emailBuilder, new Messages(Locale.ENGLISH), "http://localhost");
 
     }
 
@@ -44,7 +43,7 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandlerTest {
     public void willNotHandleWhenEventIsIrrelevant() {
         handler.handle("not a language team permission change event");
 
-        Mockito.verifyZeroInteractions(emailBuilder, applicationConfiguration);
+        Mockito.verifyZeroInteractions(emailBuilder);
     }
 
     @Test
@@ -53,7 +52,7 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandlerTest {
 
         handler.handle(permissionChangeEvent);
 
-        Mockito.verifyZeroInteractions(emailBuilder, applicationConfiguration);
+        Mockito.verifyZeroInteractions(emailBuilder);
     }
 
     @Test
@@ -62,8 +61,6 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandlerTest {
         when(permissionChangeEvent.getLanguage()).thenReturn(LocaleId.DE);
         when(permissionChangeEvent.getEmail()).thenReturn("john@a.c");
         when(permissionChangeEvent.getName()).thenReturn("John Smith");
-        when(applicationConfiguration.getServerPath()).thenReturn(
-                "http://localhost");
 
         handler.handle(permissionChangeEvent);
 

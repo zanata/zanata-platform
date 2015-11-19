@@ -55,24 +55,51 @@ public class JmsResourcesProducer {
 
     @Produces @InVMJMS
     public QueueConnection createJMSConnection() throws JMSException {
-        return connectionFactory.createQueueConnection();
+        QueueConnection queueConnection =
+                connectionFactory.createQueueConnection();
+        queueConnection.start();
+        return queueConnection;
     }
 
     public void closeJMSConnection(
             @Disposes @InVMJMS Connection connection)
             throws JMSException {
         log.debug("________ closing JMS connection");
+        connection.stop();
         connection.close();
     }
 
-    public QueueSession createQueueSession(QueueConnection connection)
+    @Produces
+    @InVMJMS
+    public QueueSession createQueueSession(@InVMJMS QueueConnection connection)
             throws JMSException {
-        return connection.createQueueSession(true, Session.AUTO_ACKNOWLEDGE);
+        return connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
     }
 
-    public QueueSender createEmailQueueSender(
+    public void closeQueueSession(@Disposes @InVMJMS QueueSession session) {
+        try {
+            log.debug("________ closing JMS session");
+            session.close();
+        } catch (JMSException e) {
+            throw Throwables.propagate(e);
+        }
+    }
+
+    @Produces
+    @EmailQueueSender
+    public QueueSender createEmailQueueSender(@InVMJMS
             QueueSession session) throws JMSException {
         return session.createSender(mailQueue);
     }
+
+    public void closeQueueSender(@Disposes @EmailQueueSender QueueSender queueSender) {
+        try {
+            log.debug("________ closing email queue sender");
+            queueSender.close();
+        } catch (JMSException e) {
+            throw Throwables.propagate(e);
+        }
+    }
+
 
 }

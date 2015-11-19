@@ -56,6 +56,7 @@ public class HttpRequestAndSessionHolder {
                     "There is already a request for this thread");
         }
         REQUEST.set(request);
+        // TODO if we have jms message in the queue when starting up server, there is no request coming yet and defaultServerPath can be null
         if (defaultServerPath == null) {
             scheme = request.getScheme();
             serverName = request.getServerName();
