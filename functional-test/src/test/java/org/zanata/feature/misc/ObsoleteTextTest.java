@@ -123,9 +123,7 @@ public class ObsoleteTextTest extends ZanataTestCase {
                         .approveTranslationAtRow(2);
 
         editorPageFinal.waitForPageSilence();
-        editorPageFinal.waitForAMoment().until(
-                (Predicate<WebDriver>) (webDriver) -> editorPageFinal
-                        .getStatistics().contains("100%"));
+        assertThat(editorPageFinal.getStatistics()).contains("100%");
 
         VersionLanguagesPage versionPage =
                 new BasicWorkFlow().goToPage(String.format(

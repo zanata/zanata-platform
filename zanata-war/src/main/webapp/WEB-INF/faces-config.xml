@@ -458,6 +458,7 @@
       <redirect>
         <view-param>
           <name>continue</name>
+          <!--FIXME this will not work-->
           <value>#{userRedirect.encodedUrl}</value>
         </view-param>
       </redirect>

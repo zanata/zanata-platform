@@ -1,5 +1,6 @@
 package org.zanata.webtrans.server;
 
+import org.apache.deltaspike.cdise.api.ContextControl;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
@@ -27,28 +28,27 @@ public class HibernateIntegrator implements Integrator {
     public void integrate(Configuration configuration,
             SessionFactoryImplementor sessionFactory,
             SessionFactoryServiceRegistry serviceRegistry) {
-        if (Contexts.isApplicationContextActive()) {
-            final EventListenerRegistry eventListenerRegistry =
-                    serviceRegistry.getService(EventListenerRegistry.class);
-            TranslationUpdateListener updateListener =
-                    ServiceLocator.instance().getInstance(
-                            TranslationUpdateListener.class);
-            log.info("register event listener: {}", updateListener);
-            // We have to use POST_UPDATE not POST_UPDATE_COMMIT. Because we
-            // still need to access some other entities to make transunit. After
-            // commit the transaction is closed.
-            eventListenerRegistry.appendListeners(EventType.POST_UPDATE,
-                    updateListener);
-            eventListenerRegistry.appendListeners(EventType.POST_INSERT,
-                    updateListener);
-            SlugEntityUpdatedListener slugEntityUpdatedListener =
-                    new SlugEntityUpdatedListener();
-            BeanProvider.injectFields(slugEntityUpdatedListener);
-            eventListenerRegistry.appendListeners(EventType.POST_COMMIT_UPDATE,
-                    slugEntityUpdatedListener);
-        } else {
-            log.debug("Application context not active");
-        }
+        final EventListenerRegistry eventListenerRegistry =
+                serviceRegistry.getService(EventListenerRegistry.class);
+
+        // at the time of executing this code, weld is not started yet
+        TranslationUpdateListenerLazyLoader
+                updateListenerLazyLoader =
+                new TranslationUpdateListenerLazyLoader();
+        log.info("register event listener: {}", updateListenerLazyLoader);
+        // We have to use POST_UPDATE not POST_UPDATE_COMMIT. Because we
+        // still need to access some other entities to make transunit. After
+        // commit the transaction is closed.
+        eventListenerRegistry.appendListeners(EventType.POST_UPDATE,
+                updateListenerLazyLoader);
+        eventListenerRegistry.appendListeners(EventType.POST_INSERT,
+                updateListenerLazyLoader);
+
+        SlugEntityUpdatedListener slugEntityUpdatedListener =
+                new SlugEntityUpdatedListener();
+        eventListenerRegistry.appendListeners(EventType.POST_COMMIT_UPDATE,
+                slugEntityUpdatedListener);
+
     }
 
     @Override

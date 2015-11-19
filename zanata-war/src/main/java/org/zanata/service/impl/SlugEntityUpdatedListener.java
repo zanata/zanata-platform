@@ -39,12 +39,6 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
     private static Integer slugFieldIndexInProject;
     private static Integer slugFieldIndexInIteration;
 
-    @Inject
-    private Event<ProjectUpdate> projectUpdateEvent;
-
-    @Inject
-    private Event<ProjectIterationUpdate> projectIterationUpdateEvent;
-
     @Override
     public void onPostUpdate(PostUpdateEvent event) {
         Class<?> entityClass = event.getEntity().getClass();
@@ -140,11 +134,4 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
                 IndexingService.class);
     }
 
-    public Event<ProjectUpdate> getProjectUpdateEvent() {
-        return projectUpdateEvent;
-    }
-
-    public Event<ProjectIterationUpdate> getProjectIterationUpdateEvent() {
-        return projectIterationUpdateEvent;
-    }
 }
