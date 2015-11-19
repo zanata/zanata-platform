@@ -65,7 +65,6 @@ public class JmsResourcesProducer {
             @Disposes @InVMJMS Connection connection)
             throws JMSException {
         log.debug("________ closing JMS connection");
-        connection.stop();
         connection.close();
     }
 
