@@ -84,6 +84,8 @@ public class TranslationMemoryAction implements Serializable {
      */
 //    @Inject /* TODO [CDI] check this: migrated from @In(scope = ScopeType.PAGE, required = false) */
     @Produces /* FIXME [CDI] check this: migrated from @Out *//*(scope = ScopeType.PAGE, required = false)*/
+    // @ViewScoped
+    // TODO lastTaskResult is apparently always null. See asyncTaskHandleManager
     private Future lastTaskResult;
 
     @Getter
