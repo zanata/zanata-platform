@@ -23,6 +23,8 @@ package org.zanata.cache;
 import lombok.extern.slf4j.Slf4j;
 import org.infinispan.manager.CacheContainer;
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 import javax.enterprise.inject.Produces;
 import org.zanata.util.ServiceLocator;
@@ -37,32 +39,18 @@ import javax.naming.NamingException;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Named("cacheContainer")
-@javax.enterprise.context.ApplicationScoped
+@ApplicationScoped
 @Slf4j
 public class CacheContainerProducer {
 
     private static final String CACHE_CONTAINER_NAME =
             "java:jboss/infinispan/container/zanata";
 
+    @Resource(lookup = CACHE_CONTAINER_NAME)
     private CacheContainer container;
 
-    @PostConstruct
-    public void initialize() {
-        try {
-            container =
-                    ServiceLocator.instance().getJndiComponent(
-                            CACHE_CONTAINER_NAME,
-                            CacheContainer.class);
-        } catch (NamingException e) {
-            String msg = "A cache container with name " +
-                    "'" + CACHE_CONTAINER_NAME + "' " +
-                    "has not been configured.";
-            log.warn(msg);
-            throw new RuntimeException(msg, e);
-        }
-    }
-
     @Produces
+    @ApplicationScoped
     @Zanata
     public CacheContainer getCacheContainer() {
         return container;
