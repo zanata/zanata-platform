@@ -20,10 +20,9 @@
  */
 package org.zanata.jpa;
 
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
@@ -45,19 +44,18 @@ public class EntityManagerFactoryProducer {
     private EntityManagerFactory entityManagerFactory;
 
     @Produces
-    @RequestScoped
+    @ApplicationScoped
     @Default
     @Zanata
     protected HibernateEntityManagerFactory create() {
         return (HibernateEntityManagerFactory) entityManagerFactory;
     }
 
-    @PreDestroy
-    protected void destroy() {
+    protected void disposeEMF(@Disposes @Zanata HibernateEntityManagerFactory emf) {
         // help Hibernate Search to shut down cleanly (delete Lucene index locks)
-        if (entityManagerFactory.isOpen()) {
-            log.debug("!!!!!!!!!!!! shutting down entityManagerFactory");
-            entityManagerFactory.close();
+        if (emf.isOpen()) {
+            log.info("shutting down entityManagerFactory");
+            emf.close();
         }
     }
 
