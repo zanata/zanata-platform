@@ -22,6 +22,7 @@ package org.zanata.notification;
 
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.jms.Connection;
@@ -42,18 +43,30 @@ import com.google.common.base.Throwables;
  *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @ApplicationScoped
 public class JmsResourcesProducer {
     private static final Logger log =
             LoggerFactory.getLogger(JmsResourcesProducer.class);
+
+    // == JMS thread safety note ==
+    // The following JMS objects are threadsafe:
+    // Destination ConnectionFactory Connection
+    // These objects are not threadsafe and must not be shared:
+    // Session MessageProducer MessageConsumer
+    // The threadsafe objects can be shared, but for better JMS performance
+    // it may be better to create a Connection per Session (or per thread,
+    // eg ThreadScoped), instead of multiplexing.
+    // See http://stackoverflow.com/a/18630122/14379
+
     @Resource(lookup = "JmsXA")
     private QueueConnectionFactory connectionFactory;
 
     @Resource(lookup = "jms/queue/MailsQueue")
     private Queue mailQueue;
 
-    @Produces @InVMJMS
+    @Produces @RequestScoped @InVMJMS
     public QueueConnection createJMSConnection() throws JMSException {
         QueueConnection queueConnection =
                 connectionFactory.createQueueConnection();
@@ -68,8 +81,7 @@ public class JmsResourcesProducer {
         connection.close();
     }
 
-    @Produces
-    @InVMJMS
+    @Produces @RequestScoped @InVMJMS
     public QueueSession createQueueSession(@InVMJMS QueueConnection connection)
             throws JMSException {
         return connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
