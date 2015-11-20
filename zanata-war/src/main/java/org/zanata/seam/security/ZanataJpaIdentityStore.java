@@ -74,8 +74,7 @@ import lombok.extern.slf4j.Slf4j;
 @ApplicationScoped
 @Slf4j
 public class ZanataJpaIdentityStore implements Serializable {
-    // see also org.zanata.model.HDocument.EntityListener.AUTHENTICATED_USER
-    public static final String AUTHENTICATED_USER = "org.jboss.seam.security.management.authenticatedUser";
+    public static final String AUTHENTICATED_USER = "authenticatedAccount";
 
     private static final long serialVersionUID = 1L;
 
