@@ -31,7 +31,7 @@ public class NotificationManagerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         JmsResourcesProducer producer = new JmsResourcesProducer();
-        manager = new NotificationManager(connection, producer, mailQueueSender, queueSession);
+        manager = new NotificationManager();
     }
 
     @Test
@@ -40,7 +40,7 @@ public class NotificationManagerTest {
                 Mockito.mock(LanguageTeamPermissionChangedEvent.class);
         when(queueSession.createObjectMessage(event)).thenReturn(message);
 
-        manager.onLanguageTeamPermissionChanged(event);
+        manager.onLanguageTeamPermissionChanged(event, queueSession, mailQueueSender);
 
         verify(message).setObjectProperty(
                 NotificationManager.MessagePropertiesKey.objectType.name(),

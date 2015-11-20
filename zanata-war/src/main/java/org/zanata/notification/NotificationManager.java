@@ -20,32 +20,15 @@
  */
 package org.zanata.notification;
 
-import java.io.Serializable;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
-import javax.jms.QueueConnection;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.jms.Session;
-
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.events.LanguageTeamPermissionChangedEvent;
 
 import com.google.common.base.Throwables;
@@ -56,46 +39,14 @@ import com.google.common.base.Throwables;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@RequestScoped
+@ApplicationScoped
 @Slf4j
-@NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class NotificationManager {
 
-//    @Inject
-//    @InVMJMS
-//    private QueueConnection connection;
-
-    @Inject
-    private JmsResourcesProducer resourcesProducer;
-
-    @EmailQueueSender
-    @Inject
-    private QueueSender mailQueueSender;
-
-    @InVMJMS
-    @Inject
-    private QueueSession queueSession;
-
-
-//    @PostConstruct
-//    public void onCreate() {
-//        try {
-//            queueSession = resourcesProducer.createQueueSession(connection);
-//            mailQueueSender =
-//                    resourcesProducer.createEmailQueueSender(queueSession);
-//            // force initialisation:
-//            mailQueueSender.getQueue();
-//        } catch (JMSException e) {
-//            // it will never reach this block. As long as you call getQueue()
-//            // and if the queue is not defined, seam will terminate:
-//            // org.jboss.seam.jms.ManagedQueueSender.getQueue(ManagedQueueSender.java:45
-//            Throwables.propagate(e);
-//        }
-//    }
-
     public void onLanguageTeamPermissionChanged(
-            final @Observes LanguageTeamPermissionChangedEvent event) {
+            final @Observes LanguageTeamPermissionChangedEvent event,
+            final @InVMJMS QueueSession queueSession,
+            final @EmailQueueSender QueueSender mailQueueSender) {
         try {
             ObjectMessage message =
                     queueSession.createObjectMessage(event);
@@ -104,19 +55,7 @@ public class NotificationManager {
             mailQueueSender.send(message);
         } catch (JMSException e) {
             throw Throwables.propagate(e);
-        } /*finally {
-            // We can not use JmsResourceProducer to produce session and
-            // mailQueueSender. If we do that, it seems to only dispose queueSender
-            // and session but not connection. Server will log a INFO with long
-            // stacktrace:
-            // 14:48:35,653 INFO  [org.jboss.jca.core.api.connectionmanager.ccm.CachedConnectionManager] (http-/0.0.0.0:8180-3) IJ000100: Closing a connection for you. Please close them yourself: org.hornetq.ra.HornetQRASession@74dd3df2: java.lang.Throwable: STACKTRACE
-            try {
-                mailQueueSender.close();
-                queueSession.close();
-            } catch (JMSException e) {
-                log.error("error closing JMS resources", e);
-            }
-        }*/
+        }
     }
 
     /*
