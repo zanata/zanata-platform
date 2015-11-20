@@ -3,6 +3,8 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:h="http://java.sun.com/jsf/html"
   template="../WEB-INF/template/template.xhtml">
 
   <f:metadata>
@@ -10,8 +12,19 @@
     <f:event type="preRenderView" listener="#{activate.validateActivationKey}"/>
     <f:event type="preRenderView" listener="#{activate.activate}"/>
   </f:metadata>
+
   <ui:define name="page_title">#{msgs['jsf.ActivateAccount']}</ui:define>
   <ui:define name="center_content">
+    <script type="application/javascript">
+      jQuery(document).ready(function () {
+        document.getElementById('form:redirectButton').click();
+      });
+    </script>
+
+    <h:form id="form">
+      <a4j:commandButton id="redirectButton" style="display: none;"
+        action="#{activate.redirectToLogin()}" />
+    </h:form>
   </ui:define>
 
 </ui:composition>

@@ -1,4 +1,5 @@
-var webpack = require('webpack');
+var webpack = require('webpack')
+var ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = {
   context: __dirname,
@@ -6,7 +7,7 @@ module.exports = {
   entry: [
     'webpack-dev-server/client?http://localhost:3000',
     'webpack/hot/only-dev-server',
-    './index',
+    './index'
   ],
   output: {
     path: __dirname,
@@ -22,7 +23,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loaders: ['style', 'css', 'cssnext']
+        loader: ExtractTextPlugin.extract('style-loader', 'css-loader?safe')
       }
     ]
   },
@@ -36,7 +37,8 @@ module.exports = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.DefinePlugin({ "global.GENTLY": false }),
+    new ExtractTextPlugin('bundle.css'),
+    new webpack.DefinePlugin({ 'global.GENTLY': false }),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new webpack.NoErrorsPlugin()
   ],
@@ -46,4 +48,4 @@ module.exports = {
   node: {
     __dirname: true
   }
-};
+}

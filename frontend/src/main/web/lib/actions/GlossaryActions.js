@@ -1,7 +1,6 @@
 import Dispatcher from '../dispatchers/GlossaryDispatcher';
 import {GlossaryActionTypes} from '../constants/ActionTypes';
 
-
 var Actions = {
   changeTransLocale: function(selectedLocale) {
     Dispatcher.handleViewAction({

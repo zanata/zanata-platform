@@ -23,6 +23,8 @@ package org.zanata.action;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.faces.application.FacesMessage;
+
 import org.apache.commons.lang.time.DateUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -30,9 +32,9 @@ import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.exception.KeyNotFoundException;
 import org.zanata.exception.ActivationLinkExpiredException;
 import org.zanata.model.HAccountActivationKey;
+import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.seam.security.AbstractRunAsOperation;
 import org.zanata.seam.security.IdentityManager;
-import org.zanata.ui.faces.FacesMessages;
 
 @Named("activate")
 @org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
@@ -40,14 +42,15 @@ public class ActivateAction implements Serializable {
 
     private static final long serialVersionUID = -8079131168179421345L;
 
-    @Inject
-    private FacesMessages facesMessages;
 
     @Inject
     private AccountActivationKeyDAO accountActivationKeyDAO;
 
     @Inject
     private IdentityManager identityManager;
+
+    @Inject
+    private ConversationScopeMessages conversationScopeMessages;
 
     private String activationKey;
 
@@ -59,7 +62,6 @@ public class ActivateAction implements Serializable {
 
     private static int LINK_ACTIVE_DAYS = 1;
 
-    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public void validateActivationKey() {
 
         if (getActivationKey() == null) {
@@ -88,9 +90,7 @@ public class ActivateAction implements Serializable {
         this.activationKey = activationKey;
     }
 
-//    @End /* TODO [CDI] commented out end conversation. verify it still work */
-    public String activate() {
-
+    public void activate() {
         new AbstractRunAsOperation() {
             public void execute() {
                 identityManager.enableUser(key.getAccount().getUsername());
@@ -101,10 +101,11 @@ public class ActivateAction implements Serializable {
 
         accountActivationKeyDAO.makeTransient(key);
 
-        facesMessages
-                .addGlobal(
-                "Your account was successfully activated. You can now sign in.");
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+            "Your account was successfully activated. You can now sign in.");
+    }
 
+    public String redirectToLogin() {
         return "/account/login.xhtml";
     }
 

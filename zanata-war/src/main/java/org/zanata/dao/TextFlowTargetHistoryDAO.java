@@ -76,7 +76,7 @@ public class TextFlowTargetHistoryDAO extends
      */
     @NativeQuery
     public List<Object[]> getUserContributionStatisticInVersion(
-            Long versionId, Long personId, Date fromDate, Date toDate) {
+            Long versionId, Long personId, Date fromDate, Date toDate, boolean automatedEntry) {
 
         StringBuilder queryString = new StringBuilder();
         queryString
@@ -118,7 +118,7 @@ public class TextFlowTargetHistoryDAO extends
         query.setParameter("versionId", versionId);
         query.setParameter("personId", personId);
         query.setInteger("untranslated", ContentState.New.ordinal());
-        query.setBoolean("automatedEntry", false);
+        query.setBoolean("automatedEntry", automatedEntry);
         query.setTimestamp("fromDate", fromDate);
         query.setTimestamp("toDate", toDate);
         query.setComment("textFlowTargetHistoryDAO.getUserContributionStatisticInVersion");

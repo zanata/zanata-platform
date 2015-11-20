@@ -976,13 +976,22 @@ public class TranslationServiceImpl implements TranslationService {
                         // generate request
                         List<String> oldContents = oldTarget.getContents();
                         ContentState oldState = oldTarget.getState();
+                        String copiedEntityType =
+                                oldTarget.getCopiedEntityType() == null ? null
+                                        : oldTarget.getCopiedEntityType()
+                                                .getAbbr();
+                        String sourceType =
+                                oldTarget.getSourceType() == null ? TranslationSourceType.UNKNOWN
+                                        .getAbbr()
+                                        : oldTarget.getSourceType()
+                                                .getAbbr();
+
                         TransUnitUpdateRequest request =
                                 new TransUnitUpdateRequest(tuId, oldContents,
                                         oldState, versionNum,
                                         oldTarget.getRevisionComment(),
-                                        oldTarget.getCopiedEntityId(), oldTarget
-                                                .getCopiedEntityType().getAbbr(),
-                                        oldTarget.getSourceType().getAbbr());
+                                        oldTarget.getCopiedEntityId(),
+                                        copiedEntityType, sourceType);
                         // add to list
                         updateRequests.add(request);
                     } else {

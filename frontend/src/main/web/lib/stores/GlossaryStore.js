@@ -24,6 +24,7 @@ EventEmitter.prototype.setMaxListeners(MAX_LISTENERS);
 var _state = {
   canAddNewEntry: false,
   canUpdateEntry: false,
+  canDeleteEntry: false,
   localeOptions: [],
   srcLocale: null,
   selectedTransLocale: null,
@@ -78,7 +79,8 @@ function processLocalesStatistic(res) {
       _state.locales[transLocale.locale.localeId] = transLocale;
       _state.localeOptions.push({
         value: transLocale.locale.localeId,
-        label: `${transLocale.locale.displayName} - (${transLocale.numberOfTerms})`
+        label: transLocale.locale.displayName,
+        count: transLocale.numberOfTerms
       });
     });
   }
@@ -86,7 +88,6 @@ function processLocalesStatistic(res) {
 }
 
 function loadGlossaryByLocale() {
-  _state.loadingEntries = true;
   return GlossaryAPIStore.loadGlossaryByLocale(_state.srcLocale,
     _state.selectedTransLocale, _state.filter, _state.sort, _state.page,
     PAGE_SIZE);
@@ -99,6 +100,10 @@ function canAddNewEntry () {
 function canUpdateEntry() {
   return Configs.data.permission.updateGlossary;
 }
+function canDeleteEntry() {
+  return Configs.data.permission.deleteGlossary;
+}
+
 
 function processGlossaryList(res) {
   if(res.error) {
@@ -246,9 +251,11 @@ function setNotification(severity, subject, msg, details, showModel) {
 }
 
 function refreshGlossaryEntries() {
+  startLoader();
   //load permission here
   _state.canAddNewEntry = canAddNewEntry();
   _state.canUpdateEntry = canUpdateEntry();
+  _state.canDeleteEntry = canDeleteEntry();
 
   GlossaryAPIStore.loadLocalesStats()
     .then(processLocalesStatistic)
@@ -261,11 +268,13 @@ function resetCache() {
   _.assign(_state, {
     page: 1,
     glossary: {},
-    glossaryIds: [],
-    sort:{
-      src_content: true
-    }
+    glossaryIds: []
   });
+}
+
+function startLoader() {
+  _state.loadingEntries = true;
+  GlossaryStore.emitChange();
 }
 
 var GlossaryStore = assign({}, EventEmitter.prototype, {
@@ -363,6 +372,7 @@ var GlossaryStore = assign({}, EventEmitter.prototype, {
     var pageSize = data % PAGE_SIZE === 0 ? PAGE_SIZE - 1 : PAGE_SIZE;
     _state.page = Math.ceil(data/pageSize);
     _state.page = Math.max(_state.page, 1);
+    startLoader();
     loadGlossaryByLocale()
       .then(processGlossaryList)
       .then(() => GlossaryStore.emitChange());
@@ -372,6 +382,7 @@ var GlossaryStore = assign({}, EventEmitter.prototype, {
     console.debug('Update sort order', data);
     _state.sort = {};
     _state.sort[data.field] = data.ascending;
+    startLoader();
     loadGlossaryByLocale()
       .then(processGlossaryList)
       .then(() => GlossaryStore.emitChange());

@@ -85,7 +85,7 @@ var NewEntryModal = React.createClass({
   render: function () {
     return (
       <div className={this.props.className}>
-        <Button onClick={this._showModal} link>
+        <Button className='whsnw tove ovh' onClick={this._showModal} link>
           <Icon name='plus' className='mr1/8'/><span>New Term</span>
         </Button>
         <Modal show={this.state.show} onHide={this._closeModal}>
@@ -101,6 +101,7 @@ var NewEntryModal = React.createClass({
               placeholder='The new term'
               onChange={this._onTermChange}
               onReset={this._onTermReset}
+              autoFocus
               />
 
             <Input
@@ -109,6 +110,7 @@ var NewEntryModal = React.createClass({
               label='Part of speech'
               value={this.state.pos}
               placeholder='Noun, Verb, etc'
+              maxLength='255'
               onChange={this._onPosChange}
               onReset={this._onPosReset}
               />
@@ -119,6 +121,7 @@ var NewEntryModal = React.createClass({
               label='Description'
               value={this.state.description}
               placeholder='The definition of this term'
+              maxLength='255'
               onChange={this._onDescChange}
               onReset={this._onDescReset}
               />

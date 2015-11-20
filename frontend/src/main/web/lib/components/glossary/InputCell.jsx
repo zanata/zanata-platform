@@ -12,7 +12,8 @@ var InputCell = React.createClass({
     rowIndex: React.PropTypes.number.isRequired,
     placeholder: React.PropTypes.string,
     onFocusCallback: React.PropTypes.func,
-    onBlurCallback: React.PropTypes.func
+    onBlurCallback: React.PropTypes.func,
+    maxLength: React.PropTypes.number
   },
 
   TIMEOUT: 150,
@@ -83,6 +84,7 @@ var InputCell = React.createClass({
   },
 
   render: function() {
+    const maxLength = this.props.maxLength ? this.props.maxLength : -1;
     return (
       <div>
         <span className='cdtargetn mh1/2'>{this.state.value}</span>
@@ -90,6 +92,7 @@ var InputCell = React.createClass({
           className='cdtargetib'
           margin='mh1/8'
           border='outline'
+          maxLength={maxLength}
           label={this.props.field}
           hideLabel
           value={this.state.value}

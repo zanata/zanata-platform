@@ -5,9 +5,13 @@ import StringUtils from '../../utils/StringUtils'
 import InputCell from './InputCell';
 import LoadingCell from './LoadingCell'
 import ActionCell from './ActionCell'
+import { Button, Icon, Tooltip, OverlayTrigger } from 'zanata-ui';
 import SourceActionCell from './SourceActionCell'
 import ColumnHeader from './ColumnHeader'
+import NewEntryModal from './NewEntryModal'
+import ImportModal from './ImportModal'
 import _ from 'lodash';
+import Messages from '../../constants/Messages'
 
 var DataTable = React.createClass({
   TIMEOUT: 400,
@@ -54,6 +58,7 @@ var DataTable = React.createClass({
     ),
     canAddNewEntry: React.PropTypes.bool.isRequired,
     canUpdateEntry: React.PropTypes.bool.isRequired,
+    canDeleteEntry: React.PropTypes.bool.isRequired,
     user: React.PropTypes.shape({
       username: React.PropTypes.string,
       email: React.PropTypes.string,
@@ -74,7 +79,11 @@ var DataTable = React.createClass({
     focusedRow: React.PropTypes.shape({
       id: React.PropTypes.number,
       rowIndex: React.PropTypes.number
-    })
+    }),
+    locales: React.PropTypes.object,
+    allowNewEntry: React.PropTypes.bool,
+    loading: React.PropTypes.bool,
+    filter: React.PropTypes.string
   },
 
   getInitialState: function () {
@@ -92,7 +101,7 @@ var DataTable = React.createClass({
    * @param  top : number - the position of the top of the DataTable. If not supplied, the top position will be calculated based on DOM height.
    */
   _getHeight: function(top) {
-    var footer = window.document.getElementById("footer");
+    var footer = window.document.querySelector('.js-footer');
     var footerHeight = footer ? footer.clientHeight : 91;
 
     top = _.isUndefined(top) ? React.findDOMNode(this).offsetTop: top;
@@ -139,7 +148,7 @@ var DataTable = React.createClass({
       }
     }
     if(StringUtils.isEmptyOrNull(title)) {
-      title = "No information available";
+      title = Messages.NO_INFO_MESSAGE;
     }
     return title;
   },
@@ -192,7 +201,7 @@ var DataTable = React.createClass({
     Actions.updateSortOrder(field, ascending);
   },
 
-  _renderCell: function ({ id, rowIndex, field, readOnly, placeholder }) {
+  _renderCell: function ({ id, rowIndex, field, readOnly, placeholder, maxLength, tooltip }) {
     var key = this._generateKey(field.col, rowIndex, id);
     if (id === null) {
       return <LoadingCell key={key}/>;
@@ -200,19 +209,29 @@ var DataTable = React.createClass({
       var entry = this._getGlossaryEntry(id);
       var value = _.get(entry, field.field);
       if (readOnly) {
-        return <span className="mh1/2" key={key}>{value}</span>;
-      } else {
-        return (
-          <InputCell
-            value={value}
-            id={id}
-            key={key}
-            placeholder={placeholder}
-            rowIndex={rowIndex}
-            field={field.field}
-            onFocusCallback={this._onRowClick}/>
-        );
+        let span = <span className="mh1/2" key={key}>{value}</span>;
+        if(!StringUtils.isEmptyOrNull(tooltip)) {
+          return (
+            <OverlayTrigger placement='top'
+              rootClose
+              overlay={<Tooltip id='src-info'>{tooltip}</Tooltip>}>
+              {span}
+            </OverlayTrigger>
+          );
+        }
+        return {span};
       }
+      return (
+        <InputCell
+          value={value}
+          id={id}
+          key={key}
+          maxLength={maxLength}
+          placeholder={placeholder}
+          rowIndex={rowIndex}
+          field={field.field}
+          onFocusCallback={this._onRowClick}/>
+      );
     }
   },
 
@@ -243,13 +262,14 @@ var DataTable = React.createClass({
   _renderPosCell: function (id, cellDataKey, rowData, rowIndex,
                             columnData, width) {
     var readOnly = !this.props.canUpdateEntry || this._isTranslationSelected(),
-      placeholder = 'enter part of speech';
+      placeholder = 'Noun, Verb, etc';
     return this._renderCell({
       id: id,
       rowIndex: rowIndex,
       field: this.ENTRY.POS,
       readOnly: readOnly,
-      placeholder: placeholder
+      placeholder: placeholder,
+      maxLength: 255
     });
   },
 
@@ -257,12 +277,18 @@ var DataTable = React.createClass({
                              columnData, width) {
     var readOnly = !this.props.canUpdateEntry || this._isTranslationSelected(),
       placeholder = 'enter description';
+
+    var entry = this._getGlossaryEntry(id);
+    var tooltip = entry.description;
+
     return this._renderCell({
       id: id,
       rowIndex: rowIndex,
       field: this.ENTRY.DESC,
       readOnly: readOnly,
-      placeholder: placeholder
+      placeholder: placeholder,
+      maxLength: 255,
+      tooltip: tooltip
     });
   },
 
@@ -281,7 +307,9 @@ var DataTable = React.createClass({
                             columnData, width) {
     if(id === null) {
       return <LoadingCell/>;
-    } else if(!this.props.canUpdateEntry && !this.props.canAddNewEntry) {
+    } else if(!this.props.canUpdateEntry &&
+      !this.props.canDeleteEntry &&
+      !this.props.canAddNewEntry) {
       return;
     }
     var entry = this._getGlossaryEntry(id);
@@ -300,7 +328,7 @@ var DataTable = React.createClass({
           srcLocaleId={this.props.srcLocale.locale.localeId}
           info={info}
           canUpdateEntry={this.props.canUpdateEntry}
-          canDeleteEntry={this.props.canAddNewEntry}/>
+          canDeleteEntry={this.props.canDeleteEntry}/>
       );
     }
   },
@@ -327,9 +355,10 @@ var DataTable = React.createClass({
   },
 
   _getTransColumn: function() {
+    let selectedLocale = this.props.locales[this.props.selectedTransLocale];
     return (
       <Column
-        label="Translations"
+        label={selectedLocale.locale.displayName}
         key={this.ENTRY.TRANS.field}
         width={150}
         dataKey={0}
@@ -443,19 +472,14 @@ var DataTable = React.createClass({
   },
 
   render: function() {
-    var columns = [];
-
-    columns.push(this._getSourceColumn());
-    if(this._isTranslationSelected()) {
-      columns.push(this._getTransColumn());
-    } else {
-      columns.push(this._getTransCountColumn());
-    }
-    columns.push(this._getPosColumn());
-    columns.push(this._getDescColumn());
-    columns.push(this._getActionColumn());
-
-    return (
+    const columns = [
+      this._getSourceColumn(),
+      this._isTranslationSelected() ? this._getTransColumn() : this._getTransCountColumn(),
+      this._getPosColumn(),
+      this._getDescColumn(),
+      this._getActionColumn()
+    ]
+    const termTable = (
       <Table
         onRowClick={this._onRowClick}
         onRowMouseEnter={this._onRowMouseEnter}
@@ -469,7 +493,33 @@ var DataTable = React.createClass({
         headerHeight={this.CELL_HEIGHT}>
         {columns}
       </Table>
-    );
+    )
+    const addTerms = this.props.allowNewEntry ? (
+      <span className='ml1/4 difx aic'> Add a <NewEntryModal className='mh1/4' srcLocale={this.props.srcLocale}/> or <ImportModal className='ml1/4' srcLocale={this.props.srcLocale} transLocales={this.props.locales}/>.</span>
+    ) : null
+    const noResultsState = this.props.filter && !this.props.totalCount && !this.props.loading ? (
+      <div className='posa a0 mt2 df aic jcc'>
+        <p className='csec50 df aic'>
+          <Icon name='info' size='1' className='mr1/4'/>
+          No results for "{this.props.filter}". Maybe try another search.
+        </p>
+      </div>
+    ) : null
+    const emptyState = !this.props.filter && !this.props.totalCount && !this.props.loading ? (
+      <div className='posa a0 mt2 df aic jcc'>
+        <p className='csec50 df aic'>
+          <Icon name='info' size='1' className='mr1/4'/>
+          No terms have been entered. {addTerms}
+        </p>
+      </div>
+    ) : null
+    return (
+      <div className='posr'>
+        {termTable}
+        {noResultsState}
+        {emptyState}
+      </div>
+    )
   }
 });
 

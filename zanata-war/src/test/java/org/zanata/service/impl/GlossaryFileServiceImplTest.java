@@ -22,6 +22,7 @@
 package org.zanata.service.impl;
 
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -34,9 +35,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HGlossaryEntry;
-import org.zanata.rest.dto.Glossary;
 import org.zanata.rest.dto.GlossaryEntry;
-import org.zanata.rest.dto.GlossaryResults;
 import org.zanata.rest.dto.GlossaryTerm;
 import org.zanata.seam.SeamAutowire;
 
@@ -76,17 +75,17 @@ public class GlossaryFileServiceImplTest extends ZanataDbunitJpaTest {
 
     @Test(expected = ZanataServiceException.class)
     public void parseGlossaryFileTestException() {
-        InputStream stream = Mockito.mock(InputStream.class);
+        InputStream is = Mockito.mock(InputStream.class);
         String fileName = "fileName";
         LocaleId srcLocaleId = LocaleId.EN_US;
         LocaleId transLocaleId = LocaleId.DE;
 
-        glossaryFileService.parseGlossaryFile(stream, fileName, srcLocaleId,
+        glossaryFileService.parseGlossaryFile(is, fileName, srcLocaleId,
                 transLocaleId);
     }
 
     @Test
-    public void parseGlossaryFilePoTest() {
+    public void parseGlossaryFilePoTest() throws UnsupportedEncodingException {
         String poSample = "# My comment\n" +
             "#. Programmer comment\n" +
             "#: location.c:23\n" +
@@ -95,6 +94,7 @@ public class GlossaryFileServiceImplTest extends ZanataDbunitJpaTest {
             "msgstr \"Een\"";
 
         InputStream stubInputStream = IOUtils.toInputStream(poSample);
+
         String fileName = "fileName.po";
         LocaleId srcLocaleId = LocaleId.EN_US;
         LocaleId transLocaleId = LocaleId.DE;

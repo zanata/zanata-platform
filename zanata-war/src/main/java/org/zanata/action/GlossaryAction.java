@@ -45,14 +45,17 @@ public class GlossaryAction implements Serializable {
         Permission permission = new Permission();
         boolean canUpdate = false;
         boolean canInsert = false;
+        boolean canDelete = false;
 
         if(authenticatedAccount != null) {
             canUpdate = identity.hasPermission("", "glossary-update");
             canInsert = identity.hasPermission("", "glossary-insert");
+            canDelete = identity.hasPermission("", "glossary-delete");
         }
 
         permission.put("updateGlossary", canUpdate);
         permission.put("insertGlossary", canInsert);
+        permission.put("deleteGlossary", canDelete);
 
         return permission;
     }

@@ -1,5 +1,6 @@
-var webpack = require('webpack');
-var path = require('path');
+var webpack = require('webpack')
+var path = require('path')
+var ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 // bundle destination (default is current directory)
 var bundleDest = process.env.npm_config_env_bundleDest || __dirname;
@@ -23,7 +24,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loaders: ['style', 'css', 'cssnext']
+        loader: ExtractTextPlugin.extract('style-loader', 'css-loader?safe')
       }
     ]
   },
@@ -38,6 +39,7 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({ "global.GENTLY": false }),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new ExtractTextPlugin('bundle.css'),
     new webpack.optimize.UglifyJsPlugin({
         compress: {
             warnings: false

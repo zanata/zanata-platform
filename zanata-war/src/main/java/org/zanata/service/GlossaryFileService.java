@@ -21,6 +21,8 @@
 package org.zanata.service;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.List;
 
 import org.zanata.common.LocaleId;
@@ -44,7 +46,7 @@ public interface GlossaryFileService {
     GlossaryFileServiceImpl.GlossaryProcessed saveOrUpdateGlossary(
             List<GlossaryEntry> glossaryEntries);
 
-    List<List<GlossaryEntry>> parseGlossaryFile(InputStream fileContents,
+    List<List<GlossaryEntry>> parseGlossaryFile(InputStream inputStream,
             String fileName,
             LocaleId sourceLang, LocaleId transLang) throws
             ZanataServiceException;
