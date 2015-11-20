@@ -43,6 +43,6 @@ public class NotLoggedInExceptionHandler extends AbstractExceptionHandler {
         notLoggedInEventEvent.fire(new NotLoggedInEvent());
         handle(event, LogLevel.Debug, urlUtil.signInPage(),
                 FacesMessage.SEVERITY_WARN,
-                "org.jboss.seam.NotLoggedIn");
+                "authentication.notLoggedIn");
     }
 }

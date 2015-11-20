@@ -58,7 +58,7 @@ public class AuthenticationEvents implements Serializable {
         log.debug("Account logged in successfully");
         if (ContextUtils.isContextActive(WindowScoped.class)) {
             facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_INFO,
-                    "org.jboss.seam.loginSuccessful", event.getName());
+                    "authentication.loginSuccessful", event.getName());
         }
     }
 
@@ -67,7 +67,7 @@ public class AuthenticationEvents implements Serializable {
         if (ContextUtils.isContextActive(WindowScoped.class)) {
             facesMessages
                     .addFromResourceBundle(FacesMessage.SEVERITY_ERROR,
-                            "org.jboss.seam.loginFailed");
+                            "authentication.loginFailed");
         }
     }
 
@@ -75,7 +75,7 @@ public class AuthenticationEvents implements Serializable {
         if (ContextUtils.isContextActive(WindowScoped.class)) {
             facesMessages
                     .addFromResourceBundle(FacesMessage.SEVERITY_INFO,
-                            "org.jboss.seam.NotLoggedIn");
+                            "authentication.notLoggedIn");
         }
     }
 
@@ -83,7 +83,7 @@ public class AuthenticationEvents implements Serializable {
         if (ContextUtils.isContextActive(WindowScoped.class)) {
             facesMessages
                     .addFromResourceBundle(FacesMessage.SEVERITY_WARN,
-                            "org.jboss.seam.AlreadyLoggedIn");
+                            "authentication.alreadyLoggedIn");
         }
     }
 }

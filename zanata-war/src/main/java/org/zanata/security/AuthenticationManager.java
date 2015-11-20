@@ -379,7 +379,7 @@ public class AuthenticationManager {
         } else {
             String message = "";
             if (isAccountWaitingForActivation(username)) {
-                message = msgs.get("org.jboss.seam.loginFailed");
+                message = msgs.get("authentication.loginFailed");
             } else {
                 message =
                         "User "

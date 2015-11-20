@@ -35,6 +35,6 @@ import javax.security.auth.login.LoginException;
 public class LoginExceptionHandler extends AbstractExceptionHandler {
     public void handleException(@Handles ExceptionEvent<LoginException> event) {
         handle(event, LogLevel.Debug, urlUtil.signInPage(), FacesMessage.SEVERITY_WARN,
-                "org.jboss.seam.NotLoggedIn");
+                "authentication.notLoggedIn");
     }
 }
