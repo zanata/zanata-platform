@@ -170,10 +170,6 @@
             <usedDependency>org.jboss.arquillian.junit:arquillian-junit-container</usedDependency>
             <usedDependency>org.jboss.arquillian.protocol:arquillian-protocol-servlet</usedDependency>
             <usedDependency>org.codehaus.jackson:jackson-xc</usedDependency>
-            <!-- Used in arquillian test - zanata-war/arquillian/components.properties -->
-            <usedDependency>org.jboss.seam:jboss-seam-debug</usedDependency>
-            <!-- runtime dependency for email implementations -->
-            <usedDependency>org.jboss.seam:jboss-seam-mail</usedDependency>
             <!-- Used for email unit tests -->
             <usedDependency>org.jvnet.mock-javamail:mock-javamail</usedDependency>
             <!-- Needed for urlrewrite.xml impl -->
@@ -1510,33 +1506,6 @@
     <dependency>
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
-    </dependency>
-
-    <!-- Seam Dependencies -->
-
-    <dependency>
-      <groupId>org.jboss.seam</groupId>
-      <artifactId>jboss-seam</artifactId>
-      <type>ejb</type>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.seam</groupId>
-      <artifactId>jboss-seam-ui</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.seam</groupId>
-      <artifactId>jboss-seam-debug</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.seam</groupId>
-      <artifactId>jboss-seam-mail</artifactId>
-      <scope>test</scope>
     </dependency>
 
     <!-- RestEasy dependencies -->

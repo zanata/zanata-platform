@@ -537,60 +537,6 @@ public class SeamAutowire {
         }
     }
 
-    // TODO delete this when Seam is entirely gone
-    private static void rewireSeamContextsClass() {
-        try {
-            ClassPool pool = ClassPool.getDefault();
-            CtClass contextsCls = pool.get("org.jboss.seam.contexts.Contexts");
-
-            // Replace Context's method bodies with the ones in
-            // AutowireComponent
-            contextsCls.getDeclaredMethod("isSessionContextActive")
-                    .setBody(
-                            "{ return org.zanata.seam.AutowireContexts.isSessionContextActive(); }");
-
-            contextsCls.getDeclaredMethod("isEventContextActive")
-                    .setBody("{ return org.zanata.seam.AutowireContexts.isEventContextActive(); }");
-
-            contextsCls.getDeclaredMethod("getEventContext")
-                    .setBody("{ return org.zanata.seam.AutowireContexts.getInstance().getEventContext(); }");
-
-            contextsCls.getDeclaredMethod("getSessionContext")
-                    .setBody("{ return org.zanata.seam.AutowireContexts.getInstance().getSessionContext(); }");
-
-            contextsCls.toClass();
-        } catch (NotFoundException | CannotCompileException e) {
-            throw new AutowireException(
-                    "Problem rewiring Seam's Contexts class", e);
-        }
-
-    }
-
-    // TODO delete this when Seam is entirely gone
-    private static void rewireSeamComponentClass() {
-        try {
-            ClassPool pool = ClassPool.getDefault();
-            CtClass componentCls = pool.get("org.jboss.seam.Component");
-
-            // Commonly used CtClasses
-            final CtClass stringCls = pool.get("java.lang.String");
-            final CtClass objectCls = pool.get("java.lang.Object");
-            final CtClass classCls = pool.get("java.lang.Class");
-
-            // Replace Component's method bodies with the ones in
-            // AutowireComponent
-            replaceGetInstance(pool, componentCls, stringCls, classCls);
-            replaceGetInstance(pool, componentCls, stringCls, objectCls,
-                    classCls);
-
-            componentCls.toClass();
-        } catch (NotFoundException | CannotCompileException e) {
-            throw new AutowireException(
-                    "Problem rewiring Seam's Component class", e);
-        }
-
-    }
-
     /**
      * Replaces Component.getInstance(params) method body with that of
      * AutowireComponent.getInstance(params).
@@ -620,27 +566,6 @@ public class SeamAutowire {
                 locatorCls.getDeclaredMethod("getDependent", params);
         methodToReplace.setBody(pool.get(AutowireLocator.class.getName())
                 .getDeclaredMethod("getDependent", params), null);
-    }
-
-    // TODO delete this when Seam is entirely gone
-    private static void rewireSeamTransactionClass() {
-        try {
-            ClassPool pool = ClassPool.getDefault();
-            CtClass cls = pool.get("org.jboss.seam.transaction.Transaction");
-
-            // Replace Component's method bodies with the ones in
-            // AutowireComponent
-            CtMethod methodToReplace =
-                    cls.getDeclaredMethod("instance", new CtClass[] {});
-            methodToReplace
-                    .setBody(
-                            "{ return org.zanata.seam.AutowireTransaction.instance(); }");
-
-            cls.toClass();
-        } catch (NotFoundException | CannotCompileException e) {
-            throw new AutowireException(
-                    "Problem rewiring Seam's Transaction class", e);
-        }
     }
 
     private static ComponentAccessor[]

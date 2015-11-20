@@ -74,18 +74,6 @@
       <artifactId>jaxrs-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jboss.seam</groupId>
-      <artifactId>jboss-seam</artifactId>
-      <type>ejb</type>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.testng</groupId>
-          <artifactId>testng</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
       <groupId>org.hibernate.javax.persistence</groupId>
       <artifactId>hibernate-jpa-2.0-api</artifactId>
       <scope>provided</scope>

@@ -250,18 +250,6 @@
 
     <!-- Hibernate / JPA -->
     <dependency>
-      <groupId>org.jboss.seam</groupId>
-      <artifactId>jboss-seam</artifactId>
-      <type>ejb</type>
-      <exclusions>
-        <exclusion>
-          <groupId>org.testng</groupId>
-          <artifactId>testng</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-search-orm</artifactId>
     </dependency>
