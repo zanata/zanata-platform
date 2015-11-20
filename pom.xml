@@ -35,7 +35,7 @@
   </repositories>
 
   <properties>
-    <zanata.api.version>3.8.2</zanata.api.version>
+    <zanata.api.version>3.8.3</zanata.api.version>
   </properties>
 
   <build>
