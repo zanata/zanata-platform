@@ -23,8 +23,10 @@ package org.zanata.notification;
 import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.Stateless;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.jms.JMSException;
@@ -54,15 +56,15 @@ import com.google.common.base.Throwables;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@ApplicationScoped
+@RequestScoped
 @Slf4j
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class NotificationManager {
 
-    @Inject
-    @InVMJMS
-    private QueueConnection connection;
+//    @Inject
+//    @InVMJMS
+//    private QueueConnection connection;
 
     @Inject
     private JmsResourcesProducer resourcesProducer;
