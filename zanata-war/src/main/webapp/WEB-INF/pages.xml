@@ -114,7 +114,7 @@
   <!--<exception class="org.zanata.exception.NotLoggedInException"-->
     <!--log-level="debug">-->
     <!--<redirect view-id="/account/login.xhtml">-->
-      <!--<message severity="warn">#{msgs['org.jboss.seam.NotLoggedIn']}-->
+      <!--<message severity="warn">#{msgs['authentication.notLoggedIn']}-->
       <!--</message>-->
     <!--</redirect>-->
   <!--</exception>-->
@@ -122,7 +122,7 @@
   <!--<exception class="javax.security.auth.login.LoginException"-->
     <!--log-level="debug">-->
     <!--<redirect view-id="/account/login.xhtml">-->
-      <!--<message severity="warn">#{msgs['org.jboss.seam.NotLoggedIn']}-->
+      <!--<message severity="warn">#{msgs['authentication.notLoggedIn']}-->
       <!--</message>-->
     <!--</redirect>-->
   <!--</exception>-->
