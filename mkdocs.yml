@@ -7,6 +7,7 @@ theme: readthedocs
 
 pages:
 - Home: 'index.md'
+- Release notes: 'release-notes.md'
 - User Guide:
   - Linux Installation: 'installation/linux-installation.md'
   - OS X Installation: 'installation/osx-installation.md'
