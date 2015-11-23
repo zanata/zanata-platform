@@ -37,7 +37,7 @@ public class AsyncConfigTest {
     private static final String THREAD_POOL_SIZE_VAL = "15";
 
     private AsyncConfig asyncConfig;
-    @Mock private ConfigStore configStore;
+    @Mock private SystemPropertyConfigStore configStore;
 
     @Before
     public void beforeTest() {

@@ -41,9 +41,9 @@ public class AsyncConfig {
     public static final String THREAD_POOL_SIZE = "async.threadpool.size";
 
     @Inject
-    private ConfigStore systemPropertyConfigStore;
+    private SystemPropertyConfigStore systemPropertyConfigStore;
 
-    public AsyncConfig(ConfigStore systemPropertyConfigStore) {
+    public AsyncConfig(SystemPropertyConfigStore systemPropertyConfigStore) {
         this.systemPropertyConfigStore = systemPropertyConfigStore;
     }
 
