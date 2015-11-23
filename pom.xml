@@ -1477,8 +1477,10 @@
                 <echo message="cargo.installation=${cargo.installation}" />
                 <echo message="appserver.home=${appserver.home}" />
                 <echo message="DISPLAY=${env.DISPLAY}" />
-                <echo message="WARNING: 'appserver' property must be set unless skipping integration tests" unless:set="appserver" />
-                <echo message="WARNING: 'cargo.installation' property is null. You might need to set the env var EAP6_URL" unless:set="cargo.installation" />
+                <echo message="WARNING: 'appserver' property must be set unless skipping integration tests"
+                  unless:set="appserver" />
+                <echo message="WARNING: 'cargo.installation' property is null.  You might need to set the env var EAP6_URL"
+                  unless:set="cargo.installation" />
               </target>
             </configuration>
           </execution>
