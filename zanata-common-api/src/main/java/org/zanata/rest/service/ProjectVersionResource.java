@@ -25,15 +25,18 @@ import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.dto.ProjectIteration;
+import org.zanata.rest.dto.TransUnitStatus;
 import org.zanata.rest.dto.resource.ResourceMeta;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HEAD;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -237,13 +240,9 @@ public interface ProjectVersionResource {
      * @param versionSlug
      *            Project version identifier
      * @param docId
-     *            The document identifier. Some document ids could have forward
-     *            slashes ('/') in them which would cause conflicts with the
-     *            browser's own url interpreter. For this reason, the supplied
-     *            id must have all its '/' characters replaced with commas
-     *            (',').
+     *            The document identifier.
      * @param localeId
-     *            target locale
+     *            target locale, default to 'en-US'
      *
      * @return The following response status codes will be returned from this
      *         operation:<br>
@@ -252,16 +251,17 @@ public interface ProjectVersionResource {
      *         the given parameters.<br>
      *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
      *         the server while performing this operation.
+     *
      */
     @GET
     @Produces({ MediaTypes.APPLICATION_ZANATA_TRANS_UNIT_RESOURCE_JSON,
             MediaType.APPLICATION_JSON })
-    @Path(VERSION_SLUG_TEMPLATE + "/doc/{docId}/status/{localeId}")
-    @TypeHint(LocaleDetails[].class)
+    @Path(VERSION_SLUG_TEMPLATE + "/status")
+    @TypeHint(TransUnitStatus[].class)
     public Response getTransUnitStatus(
         @PathParam("projectSlug") String projectSlug,
         @PathParam("versionSlug") String versionSlug,
-        @PathParam("docId") String docId,
-        @PathParam("localeId") String localeId);
+        @QueryParam("docId") String docId,
+        @DefaultValue("en-US") @QueryParam("localeId")  String localeId);
 
 }
