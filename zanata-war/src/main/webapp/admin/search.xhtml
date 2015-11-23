@@ -136,14 +136,7 @@
                           <a4j:ajax event="click" render="actions" execute="@this"/>
                         </h:selectBooleanCheckbox>
                         <span class="l--push-left-quarter">
-                          #{msgs['jsf.manageSearch.purge']} <i class="i i--info txt--meta"></i>
-                          <rich:tooltip showDelay="800">
-                            <p>#{msgs['jsf.manageSearch.purge.Description']}</p>
-
-                            <p>#{msgs['jsf.manageSearch.purge.ObsoletesOccupyDiskSpace']}</p>
-
-                            <p>#{msgs['jsf.manageSearch.purge.RemoveByRunningOptimize']}</p>
-                          </rich:tooltip>
+                          #{msgs['jsf.manageSearch.purge']} <i class="i i--info txt--meta" title="#{msgs['jsf.manageSearch.purge.Description']}"></i>
                         </span>
                       </th>
                       <th class="l--pad-v-half">
@@ -152,22 +145,7 @@
                           <a4j:ajax event="click" render="actions" execute="@this"/>
                         </h:selectBooleanCheckbox>
                         <span class="l--push-left-quarter">
-                          #{msgs['jsf.manageSearch.reindex']} <i class="i i--info txt--meta"></i>
-                          <rich:tooltip showDelay="800">
-                            <p>#{msgs['jsf.manageSearch.reindex.Description']}</p>
-
-                            <p>#{msgs['jsf.manageSearch.reindex.OnlyWhenOutOfDate']}</p>
-
-                            <p>#{msgs['jsf.manageSearch.reindex.AllRowsWillBeReindexed']}</p>
-
-                            <p>#{msgs['jsf.manageSearch.reindex.IndexedRowsWillBeUpdated']}</p>
-                            <p>
-                              <em>#{msgs['jsf.manageSearch.reindex.TimeAndMemoryWarning']}</em>
-                            </p>
-                            <p>
-                              <em>#{msgs['jsf.manageSearch.reindex.RunDuringOffPeak']}</em>
-                            </p>
-                          </rich:tooltip>
+                          #{msgs['jsf.manageSearch.reindex']} <i class="i i--info txt--meta" title="#{msgs['jsf.manageSearch.reindex.Description']} #{msgs['jsf.manageSearch.reindex.Description.details']}"></i>
                         </span>
                       </th>
                       <th class="l--pad-v-half">
@@ -176,18 +154,7 @@
                           <a4j:ajax event="click" render="actions" execute="@this"/>
                         </h:selectBooleanCheckbox>
                         <span class="l--push-left-quarter">
-                          #{msgs['jsf.manageSearch.optimize']} <i class="i i--info txt--meta"></i>
-                          <rich:tooltip showDelay="800">
-                            <p>#{msgs['jsf.manageSearch.optimize.Description']}</p>
-
-                            <p>#{msgs['jsf.manageSearch.optimize.RemovesObsoleteEntries']}</p>
-
-                            <p>#{msgs['jsf.manageSearch.optimize.WillNotInfluenceIndexTime']}</p>
-
-                            <p>
-                              <em>#{msgs['jsf.manageSearch.optimize.TempFileWarning']}</em>
-                            </p>
-                          </rich:tooltip>
+                          #{msgs['jsf.manageSearch.optimize']} <i class="i i--info txt--meta" title="#{msgs['jsf.manageSearch.optimize.Description']} #{msgs['jsf.manageSearch.optimize.TempFileWarning']}"></i>
                         </span>
                       </th>
                     </tr>
