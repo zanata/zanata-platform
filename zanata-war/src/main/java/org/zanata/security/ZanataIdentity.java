@@ -69,11 +69,9 @@ import org.zanata.util.UrlUtil;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
-import org.zanata.util.LifecycleMethodsWithRequestScope;
 
 @Named("identity")
 @javax.enterprise.context.SessionScoped
-@LifecycleMethodsWithRequestScope
 public class ZanataIdentity implements Identity, Serializable {
     private static final Logger log = LoggerFactory.getLogger(
             ZanataIdentity.class);

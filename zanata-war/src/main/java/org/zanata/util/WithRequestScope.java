@@ -13,8 +13,7 @@ import javax.interceptor.InterceptorBinding;
 
 /**
  * Specifies that the CDI scopes RequestScoped and SessionScoped should be
- * activated for a method (unless already active). For lifecycle methods
- * (@PostConstruct and @PreDestroy), use @LifecycleMethodsWithRequestScope.
+ * activated for a method (unless already active).
  * @author Sean Flanigan
  */
 @Target({METHOD, TYPE})
