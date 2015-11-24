@@ -20,7 +20,6 @@
  */
 package org.zanata.service.impl;
 
-import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -32,11 +31,11 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.persistence.EntityManager;
 
+import com.google.common.base.Throwables;
 import org.apache.commons.lang.time.DateUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.action.DashboardUserStats;
 import org.zanata.async.Async;
 import org.zanata.common.ActivityType;
@@ -131,6 +130,8 @@ public class ActivityServiceImpl implements ActivityService {
         Lock lock = activityLockManager.getLock(actorId);
         lock.lock();
         try {
+            // TODO wrap this in a transaction (between lock/unlock), or
+            // perhaps remove this method
             logActivityAlreadyLocked(actorId, context, target, activityType,
                     wordCount);
         } finally {
@@ -180,24 +181,27 @@ public class ActivityServiceImpl implements ActivityService {
     // uses Async to ensure transaction environment is reset, because
     // this is triggered during transaction.commit
     @Async
-    @Transactional
     public void logTextFlowStateUpdate(@Observes(during = TransactionPhase.AFTER_SUCCESS) TextFlowTargetStateEvent event) {
         Long actorId = event.getActorId();
         if (actorId != null) {
             Lock lock = activityLockManager.getLock(actorId);
             lock.lock();
             try {
-                HTextFlowTarget target =
-                        textFlowTargetDAO.findById(event.getTextFlowTargetId(),
-                                false);
-                HDocument document = documentDAO.getById(event.getDocumentId());
-                ActivityType activityType =
-                        event.getNewState().isReviewed() ? ActivityType.REVIEWED_TRANSLATION
-                                : ActivityType.UPDATE_TRANSLATION;
+                transactionUtil.run(() -> {
+                    HTextFlowTarget target =
+                            textFlowTargetDAO.findById(event.getTextFlowTargetId(),
+                                    false);
+                    HDocument document = documentDAO.getById(event.getDocumentId());
+                    ActivityType activityType =
+                            event.getNewState().isReviewed() ? ActivityType.REVIEWED_TRANSLATION
+                                    : ActivityType.UPDATE_TRANSLATION;
 
-                logActivityAlreadyLocked(actorId,
-                        document.getProjectIteration(), target, activityType,
-                        target.getTextFlow().getWordCount().intValue());
+                    logActivityAlreadyLocked(actorId,
+                            document.getProjectIteration(), target, activityType,
+                            target.getTextFlow().getWordCount().intValue());
+                });
+            } catch (Exception e) {
+                Throwables.propagate(e);
             } finally {
                 lock.unlock();
             }
@@ -210,21 +214,24 @@ public class ActivityServiceImpl implements ActivityService {
     // uses Async to ensure transaction environment is reset, because
     // this is triggered during transaction.commit
     @Async
-    @Transactional
     public void onDocumentUploaded(@Observes(during = TransactionPhase.AFTER_SUCCESS) DocumentUploadedEvent event)
             throws Exception {
         Lock lock = activityLockManager.getLock(event.getActorId());
         lock.lock();
         try {
-            HDocument document = documentDAO.getById(event.getDocumentId());
-            ActivityType activityType =
-                    event.isSourceDocument() ?
-                            ActivityType.UPLOAD_SOURCE_DOCUMENT
-                            : ActivityType.UPLOAD_TRANSLATION_DOCUMENT;
-            HPerson actor = personDAO.findById(event.getActorId());
-            logActivityAlreadyLocked(actor.getId(),
-                    document.getProjectIteration(), document, activityType,
-                    getDocumentWordCount(document));
+            transactionUtil.run(() -> {
+                HDocument document = documentDAO.getById(event.getDocumentId());
+                ActivityType activityType =
+                        event.isSourceDocument() ?
+                                ActivityType.UPLOAD_SOURCE_DOCUMENT
+                                : ActivityType.UPLOAD_TRANSLATION_DOCUMENT;
+                HPerson actor = personDAO.findById(event.getActorId());
+                logActivityAlreadyLocked(actor.getId(),
+                        document.getProjectIteration(), document, activityType,
+                        getDocumentWordCount(document));
+            });
+        } catch (Exception e) {
+            Throwables.propagate(e);
         } finally {
             lock.unlock();
         }
