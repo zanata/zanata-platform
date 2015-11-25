@@ -181,7 +181,9 @@ public class ActivityServiceImpl implements ActivityService {
     // uses Async to ensure transaction environment is reset, because
     // this is triggered during transaction.commit
     @Async
-    public void logTextFlowStateUpdate(@Observes(during = TransactionPhase.AFTER_SUCCESS) TextFlowTargetStateEvent event) {
+    public void logTextFlowStateUpdate(@Observes(during = TransactionPhase.AFTER_SUCCESS) TextFlowTargetStateEvent event_) {
+        // workaround for https://issues.jboss.org/browse/WELD-2019
+        final TextFlowTargetStateEvent event = event_;
         Long actorId = event.getActorId();
         if (actorId != null) {
             Lock lock = activityLockManager.getLock(actorId);
@@ -214,8 +216,10 @@ public class ActivityServiceImpl implements ActivityService {
     // uses Async to ensure transaction environment is reset, because
     // this is triggered during transaction.commit
     @Async
-    public void onDocumentUploaded(@Observes(during = TransactionPhase.AFTER_SUCCESS) DocumentUploadedEvent event)
+    public void onDocumentUploaded(@Observes(during = TransactionPhase.AFTER_SUCCESS) DocumentUploadedEvent event_)
             throws Exception {
+        // workaround for https://issues.jboss.org/browse/WELD-2019
+        final DocumentUploadedEvent event = event_;
         Lock lock = activityLockManager.getLock(event.getActorId());
         lock.lock();
         try {
