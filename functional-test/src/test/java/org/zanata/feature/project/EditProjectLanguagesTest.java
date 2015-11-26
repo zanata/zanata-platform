@@ -86,12 +86,16 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
                 .doesNotContain("pl")
                 .as("The enabled list does not contain 'US English' or Polish");
 
-        enabledLocaleList = projectLanguagesTab
+        projectLanguagesTab = projectLanguagesTab
                 .gotoSettingsTab()
                 .gotoSettingsLanguagesTab()
-                .enterSearchLanguage("en-US")
+                .enterSearchLanguage("en-US");
+                // count doesn't account for filtered search results:
+//                .expectAvailableLocaleListCount(1);
+        projectLanguagesTab = projectLanguagesTab
                 .addLanguage("en-US")
-                .expectEnabledLocaleListCount(3)
+                .expectEnabledLocaleListCount(3);
+        enabledLocaleList = projectLanguagesTab
                 .getEnabledLocaleList();
 
         Assertions.assertThat(enabledLocaleList)
