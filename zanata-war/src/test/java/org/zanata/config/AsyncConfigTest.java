@@ -21,6 +21,8 @@
 package org.zanata.config;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -37,25 +39,26 @@ public class AsyncConfigTest {
     private static final String THREAD_POOL_SIZE_VAL = "15";
 
     private AsyncConfig asyncConfig;
-    @Mock private SystemPropertyConfigStore configStore;
+    private SystemPropertyConfigStore configStore;
 
     @Before
     public void beforeTest() {
-        initMocks(this);
+        configStore = spy(new SystemPropertyConfigStore());
         asyncConfig = new AsyncConfig(configStore);
     }
 
     @Test
     public void testNumberOfThreads() {
-        when(configStore.get(AsyncConfig.THREAD_POOL_SIZE)).thenReturn(
-                THREAD_POOL_SIZE_VAL);
+        doReturn(THREAD_POOL_SIZE_VAL)
+                .when(configStore).get(AsyncConfig.THREAD_POOL_SIZE);
 
         assertThat(asyncConfig.getThreadPoolSize()).isEqualTo(15);
     }
 
     @Test
     public void testNumberOfThreadsDefault() {
-        when(configStore.get(AsyncConfig.THREAD_POOL_SIZE)).thenReturn(null);
+        doReturn(null)
+                .when(configStore).get(AsyncConfig.THREAD_POOL_SIZE);
 
         assertThat(asyncConfig.getThreadPoolSize()).isEqualTo(10);
     }

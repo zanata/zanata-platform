@@ -32,7 +32,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.Produces;
-import javax.servlet.http.HttpServletRequest;
 
 import com.google.common.base.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -45,7 +44,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
-import org.zanata.config.EnvPropertyConfigStore;
+import org.zanata.config.SystemPropertyConfigStore;
 import org.zanata.servlet.HttpRequestAndSessionHolder;
 import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.util.DefaultLocale;
@@ -95,16 +94,13 @@ public class ApplicationConfiguration implements Serializable {
     private Messages msgs;
 
     @Inject
-    private EnvPropertyConfigStore envConfigStore;
+    private SystemPropertyConfigStore sysPropConfigStore;
 
     private static final ZanataSMTPAppender smtpAppenderInstance =
             new ZanataSMTPAppender();
 
     @Getter
-    private boolean debug;
-
-    @Getter
-    private int authenticatedSessionTimeoutMinutes = 180;
+    private int authenticatedSessionTimeoutMinutes;
 
     @Getter
     @Setter
@@ -135,7 +131,8 @@ public class ApplicationConfiguration implements Serializable {
         this.validateConfiguration();
         this.applyLoggingConfiguration();
         this.loadJaasConfig();
-        debug = Boolean.valueOf(envConfigStore.get("debug"));
+        authenticatedSessionTimeoutMinutes = sysPropConfigStore
+                .get("authenticatedSessionTimeoutMinutes", 180);
     }
 
     public void resetConfigValue(

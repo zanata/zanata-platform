@@ -135,9 +135,6 @@ public class ZanataInit {
 
         logBanner(zanataVersion);
 
-        if (this.applicationConfiguration.isDebug()) {
-            log.info("debug: enabled");
-        }
         boolean authlogged = false;
 
         if (applicationConfiguration.isInternalAuth()) {
