@@ -43,8 +43,8 @@ public class SessionDestroyFilter implements ContainerResponseFilter {
     @Override
     public void filter(ContainerRequestContext requestContext,
             ContainerResponseContext responseContext) throws IOException {
-        HttpSession session = request.getSession();
-        if (session.isNew()) {
+        HttpSession session = request.getSession(false);
+        if (session != null && session.isNew()) {
             session.invalidate();
         }
     }
