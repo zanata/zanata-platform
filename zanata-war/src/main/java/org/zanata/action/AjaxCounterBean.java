@@ -34,40 +34,27 @@ import javax.servlet.http.HttpServletRequest;
 @Name("ajaxCounter")
 @Slf4j
 public class AjaxCounterBean {
+    // NB this doesn't handle setInterval or setTimeout
+    // TODO handle XHR.abort (NB: readystatechange listener triggers on Chrome 45, despite MDN docs)
     // http://stackoverflow.com/questions/4410218/trying-to-keep-track-of-number-of-outstanding-ajax-requests-in-firefox
-    private static final String AJAX_COUNTER_SCRIPT = "<script type=\"application/javascript\">" +
+    private static final String AJAX_COUNTER_SCRIPT = "<script type=\"application/javascript\">\n" +
             "(function(xhr) {\n" +
-            "  if (xhr.active === undefined) {\n" +
-            "    xhr.active = 0;\n" +
-            "    var pt = xhr.prototype;\n" +
-            "    pt._send = pt.send;\n" +
-            "    pt.send = function() {\n" +
-            "        XMLHttpRequest.active++;\n" +
-            "        this._onreadystatechange = this.onreadystatechange;\n" +
-            "        this.onreadystatechange = function(e) {\n" +
-            "            if ( this._onreadystatechange ) {\n" +
-            "                var fn = this._onreadystatechange.handleEvent || this._onreadystatechange;\n" +
-            "                fn.apply(this, arguments);\n" +
-            "            }\n" +
-            "            if ( this.readyState == 4 ) {\n" +
-            "                XMLHttpRequest.active--;\n" +
-            "            }\n" +
-            "        };\n" +
-            "        this._send.apply(this, arguments);\n" +
+            "    if (xhr.active === undefined) {\n" +
+            "        xhr.active = 0;\n" +
+            "        var pt = xhr.prototype;\n" +
+            "        var _send = pt.send;\n" +
+            "        pt.send = function() {\n" +
+            "            xhr.active++;\n" +
+            "            this.addEventListener('readystatechange', function(e) {\n" +
+            "                if ( this.readyState == XMLHttpRequest.DONE ) {\n" +
+            "                    setTimeout(function() {\n" +
+            "                        xhr.active--;\n" +
+            "                    }, 1);\n" +
+            "                }\n" +
+            "            });\n" +
+            "            _send.apply(this, arguments);\n" +
+            "        }\n" +
             "    }\n" +
-            "    window.timeoutCounter = 0;\n" +
-            "    window.originalSetTimeout = window.setTimeout;\n" +
-            "    window.setTimeout = function(func, delay, params) {\n" +
-            "        window.timeoutCounter++;\n" +
-            "        window.originalSetTimeout(window.timeoutCallback, delay, [func, params]);\n" +
-            "    }\n" +
-            "    window.timeoutCallback = function(funcAndParams) {\n" +
-            "        window.timeoutCounter--;\n" +
-            "        func = funcAndParams[0];\n" +
-            "        params = funcAndParams[1];\n" +
-            "        func(params);\n" +
-            "    }\n" +
-            "  }\n" +
             "})(XMLHttpRequest);\n" +
             "</script>\n";
 

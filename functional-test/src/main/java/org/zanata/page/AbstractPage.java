@@ -186,29 +186,12 @@ public class AbstractPage {
     }
 
     /**
-     * Wait for any AJAX and timeout requests to return.
-     */
-    public void waitForAbsolutePageSilence() {
-        waitForPageSilence(true);
-    }
-
-    /**
-     * Wait for any AJAX (but not timeout) requests to return.
-     */
-    public void waitForPageSilence() {
-        waitForPageSilence(false);
-    }
-
-    /**
      * Wait for any AJAX/timeout requests to return.
      */
-    private void waitForPageSilence(boolean includingTimeouts) {
-        final String script;
-        if (includingTimeouts) {
-            script = "return XMLHttpRequest.active + window.timeoutCounter";
-        } else {
-            script = "return XMLHttpRequest.active";
-        }
+    public void waitForPageSilence() {
+        // TODO wait for any short-lived timeouts to expire (eg less than 1000 ms)
+        // but not multi-second timeouts (eg global faces messages)
+        final String script = "return XMLHttpRequest.active";
         // Wait for AJAX/timeout requests to be 0
         waitForAMoment().withMessage("page silence").until(new Predicate<WebDriver>() {
             @Override
