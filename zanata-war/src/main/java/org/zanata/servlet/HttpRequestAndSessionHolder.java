@@ -24,6 +24,8 @@ import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -50,37 +52,32 @@ public class HttpRequestAndSessionHolder {
     private static String serverName;
     private static int serverPort;
 
-    void setRequest(@Observes @Initialized HttpServletRequest request) {
-        if (REQUEST.get() != null) {
-            throw new IllegalStateException(
-                    "There is already a request for this thread");
-        }
-        REQUEST.set(request);
-        // TODO if we have jms message in the queue when starting up server, there is no request coming yet and defaultServerPath can be null
-        if (defaultServerPath == null) {
-            scheme = request.getScheme();
-            serverName = request.getServerName();
-            serverPort = request.getServerPort();
-            defaultServerPath = scheme + "://" + serverName
-                    + ":" + serverPort
-                    + request.getContextPath();
+    void setFacesRequest(@Observes @Initialized FacesContext facesRequest) {
+        Object requestObj = facesRequest.getExternalContext().getRequest();
+        if (requestObj instanceof HttpServletRequest) {
+            HttpServletRequest request = (HttpServletRequest) requestObj;
+            REQUEST.set(request);
+            // TODO if we have jms message in the queue when starting up server, there is no request coming yet and defaultServerPath can be null
+            if (defaultServerPath == null) {
+                scheme = request.getScheme();
+                serverName = request.getServerName();
+                serverPort = request.getServerPort();
+                defaultServerPath = scheme + "://" + serverName
+                        + ":" + serverPort
+                        + request.getContextPath();
+            }
         }
     }
 
-    void removeRequest(@Observes @Destroyed HttpServletRequest request) {
-        REQUEST.remove();
+    void removeRequest(@Observes @Destroyed FacesContext facesContext) {
+        Object requestObj = facesContext.getExternalContext().getRequest();
+        if (requestObj instanceof HttpServletRequest) {
+            REQUEST.remove();
+        }
     }
 
     public static Optional<HttpServletRequest> getRequest() {
         return Optional.ofNullable(REQUEST.get());
-    }
-
-    public static Optional<HttpSession> getHttpSession() {
-        Optional<HttpServletRequest> requestOpt = getRequest();
-        if (requestOpt.isPresent()) {
-            return Optional.of(requestOpt.get().getSession());
-        }
-        return Optional.empty();
     }
 
     public static Optional<HttpSession> getHttpSession(boolean create) {

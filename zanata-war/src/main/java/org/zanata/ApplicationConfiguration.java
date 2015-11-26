@@ -38,8 +38,10 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.apache.log4j.Level;
 import javax.annotation.PostConstruct;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
@@ -48,6 +50,7 @@ import org.zanata.config.SystemPropertyConfigStore;
 import org.zanata.servlet.HttpRequestAndSessionHolder;
 import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.util.DefaultLocale;
+import org.zanata.util.ServiceLocator;
 import org.zanata.util.Synchronized;
 import org.zanata.config.DatabaseBackedConfig;
 import org.zanata.config.JaasConfig;
@@ -404,22 +407,24 @@ public class ApplicationConfiguration implements Serializable {
 
     public void setAuthenticatedSessionTimeout(
             @Observes PostAuthenticateEvent payload) {
-        java.util.Optional<HttpSession> sessionOpt =
-                HttpRequestAndSessionHolder.getHttpSession();
-        if (sessionOpt.isPresent()) {
+        HttpSession session =
+                ServiceLocator.instance().getInstance(HttpSession.class,
+                        new AnnotationLiteral<DeltaSpike>() {
+                        });
+        if (session != null) {
             int timeoutInSecs = max(authenticatedSessionTimeoutMinutes * 60,
                     defaultAnonymousSessionTimeoutMinutes * 60);
-            sessionOpt.get()
-                .setMaxInactiveInterval(timeoutInSecs);
+            session.setMaxInactiveInterval(timeoutInSecs);
         }
     }
 
     public void setUnauthenticatedSessionTimeout(@Observes LogoutEvent payload) {
-        java.util.Optional<HttpSession> sessionOpt =
-                HttpRequestAndSessionHolder.getHttpSession();
-        if (sessionOpt.isPresent()) {
-            sessionOpt.get()
-                .setMaxInactiveInterval(
+        HttpSession session =
+                ServiceLocator.instance().getInstance(HttpSession.class,
+                        new AnnotationLiteral<DeltaSpike>() {
+                        });
+        if (session != null) {
+            session.setMaxInactiveInterval(
                         defaultAnonymousSessionTimeoutMinutes * 60);
         }
     }
