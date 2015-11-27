@@ -168,9 +168,11 @@ public class TranslationWorkspaceManagerImpl implements
     // IJ000460: Error checking for a transaction: Transactions are not active)
     @Async
     public void projectUpdate(@Observes final ProjectUpdate payload) {
+        // avoid WELD-2019
+        final ProjectUpdate event = payload;
         try {
-            runInTransaction(() -> projectUpdate(payload.getProject(),
-                    payload.getOldSlug()));
+            runInTransaction(() -> projectUpdate(event.getProject(),
+                    event.getOldSlug()));
         } catch (Exception e) {
             throw Throwables.propagate(e);
         }
