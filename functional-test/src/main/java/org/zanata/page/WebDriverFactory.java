@@ -22,6 +22,7 @@ package org.zanata.page;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.logging.Level;
 
 import org.openqa.selenium.WebDriver;
@@ -46,6 +47,8 @@ import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.zanata.util.ScreenshotDirForTest;
 import org.zanata.util.TestEventForScreenshotListener;
+
+import javax.annotation.Nullable;
 
 import static org.zanata.util.Constants.webDriverType;
 import static org.zanata.util.Constants.webDriverWait;
@@ -112,8 +115,11 @@ public enum WebDriverFactory {
      * Logs all the outstanding WebDriver logs of the specified type.
      * @param type a log type from org.openqa.selenium.logging.LogType
      *             (but they don't all seem to work)
+     * @throws WebDriverLogException exception containing the first warning/error message, if any
      */
-    public void logLogs(String type) {
+    private void logLogs(String type, boolean throwIfWarn) {
+        @Nullable
+        WebDriverLogException firstException = null;
         String logName = WebDriverFactory.class.getName() + "." + type;
         Logger log = LoggerFactory.getLogger(logName);
         int logCount = 0;
@@ -121,20 +127,45 @@ public enum WebDriverFactory {
             ++logCount;
             if (logEntry.getLevel().intValue() >= Level.SEVERE.intValue()) {
                 log.error(logEntry.toString());
+                if (throwIfWarn && firstException == null) {
+                    firstException = new WebDriverLogException(logEntry.getLevel(),
+                            logEntry.toString());
+                }
             } else if (logEntry.getLevel().intValue() >= Level.WARNING.intValue()) {
                 log.warn(logEntry.toString());
-            } else {
+                if (throwIfWarn && firstException == null) {
+                    firstException = new WebDriverLogException(logEntry.getLevel(),
+                            logEntry.toString());
+                }
+            } else if (logEntry.getLevel().intValue() >= Level.INFO.intValue()) {
                 log.info(logEntry.toString());
+            } else {
+                log.debug(logEntry.toString());
             }
         }
         if (logCount == 0) {
             log.info("no messages found for LogType.{}", type);
         }
+        if (throwIfWarn && firstException != null) {
+            throw firstException;
+        }
     }
 
+    /**
+     * Dump any outstanding browser logs to the main log.
+     *
+     * @throws WebDriverLogException exception containing the first warning/error message, if any
+     */
     public void logLogs() {
+        // TODO always throw, once we fix our tests
+        logLogs(false);
+//        logLogs(true);
+    }
+
+    @Deprecated
+    public void logLogs(boolean throwIfWarn) {
         for (String type : getLogTypes()) {
-            logLogs(type);
+            logLogs(type, throwIfWarn);
         }
     }
 
