@@ -139,9 +139,10 @@
   </listener>
 
 
-  <listener>
-    <listener-class>net.bull.javamelody.SessionListener</listener-class>
-  </listener>
+  <!-- This is already declared in the web-fragment.xml in javamelody's jar: -->
+  <!--<listener>-->
+    <!--<listener-class>net.bull.javamelody.SessionListener</listener-class>-->
+  <!--</listener>-->
 
   <!-- Seam -->
 
@@ -189,11 +190,14 @@
 
   <!--java melody for monitoring stats-->
   <filter>
-    <filter-name>monitoring</filter-name>
+    <!-- This name must match the web-fragment.xml in javamelody's jar,
+         so that we can override it. -->
+    <filter-name>javamelody</filter-name>
     <filter-class>org.zanata.seam.interceptor.MonitoringWrapper</filter-class>
+    <!--<async-supported>true</async-supported>-->
   </filter>
   <filter-mapping>
-    <filter-name>monitoring</filter-name>
+    <filter-name>javamelody</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
