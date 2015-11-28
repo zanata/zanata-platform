@@ -87,7 +87,7 @@
                 <h:outputLabel for="oldPassword">#{msgs['jsf.OldPassword']}</h:outputLabel>
                 <zanata:decorate id="oldPasswordField" componentId="oldPassword">
                   <h:inputSecret id="oldPassword" value="#{userSettingsAction.oldPassword}"
-                    maxlength="255"/>
+                    maxlength="1024"/>
                 </zanata:decorate>
               </div>
             </ui:fragment>
@@ -98,7 +98,7 @@
                   <h:inputSecret id="newPassword"
                     value="#{userSettingsAction.newPassword}"
                     styleClass="js-form-password-input form__input"
-                    maxlength="255"/>
+                    maxlength="1024"/>
                   <a href="#"
                     class="form__toggle js-form-password-toggle">Show</a>
                 </div>
