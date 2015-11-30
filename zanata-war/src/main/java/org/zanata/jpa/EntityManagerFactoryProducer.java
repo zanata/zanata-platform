@@ -51,12 +51,4 @@ public class EntityManagerFactoryProducer {
         return (HibernateEntityManagerFactory) entityManagerFactory;
     }
 
-    protected void disposeEMF(@Disposes @Zanata HibernateEntityManagerFactory emf) {
-        // help Hibernate Search to shut down cleanly (delete Lucene index locks)
-        if (emf.isOpen()) {
-            log.info("shutting down entityManagerFactory");
-            emf.close();
-        }
-    }
-
 }
