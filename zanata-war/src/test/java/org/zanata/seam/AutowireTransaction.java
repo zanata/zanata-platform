@@ -78,6 +78,7 @@ public class AutowireTransaction implements UserTransaction,
         EntityManager entityManager = getEntityManager();
         if (entityManager != null) {
             entityManager.flush();
+            entityManager.clear();
         }
         active = false;
     }

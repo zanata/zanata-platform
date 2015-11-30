@@ -80,7 +80,7 @@ public class TMXParserTest extends ZanataDbunitJpaTest {
         seam.reset()
                 .ignoreNonResolvable()
                 .use("entityManager", getEm())
-                .use("transaction", AutowireTransaction.instance())
+                .useJndi("java:jboss/UserTransaction", AutowireTransaction.instance())
                 .use("session", getSession());
     }
 
