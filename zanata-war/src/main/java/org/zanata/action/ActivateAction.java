@@ -28,13 +28,14 @@ import javax.faces.application.FacesMessage;
 import org.apache.commons.lang.time.DateUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
+
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.exception.KeyNotFoundException;
 import org.zanata.exception.ActivationLinkExpiredException;
 import org.zanata.model.HAccountActivationKey;
-import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.seam.security.AbstractRunAsOperation;
 import org.zanata.seam.security.IdentityManager;
+import org.zanata.ui.faces.FacesMessages;
 
 @Named("activate")
 @org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
@@ -50,7 +51,7 @@ public class ActivateAction implements Serializable {
     private IdentityManager identityManager;
 
     @Inject
-    private ConversationScopeMessages conversationScopeMessages;
+    private FacesMessages facesMessages;
 
     private String activationKey;
 
@@ -62,6 +63,7 @@ public class ActivateAction implements Serializable {
 
     private static int LINK_ACTIVE_DAYS = 1;
 
+//    @Begin(join = true)
     public void validateActivationKey() {
 
         if (getActivationKey() == null) {
@@ -98,14 +100,13 @@ public class ActivateAction implements Serializable {
                         "user");
             }
         }.addRole("admin").run();
-
         accountActivationKeyDAO.makeTransient(key);
-
-        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-            "Your account was successfully activated. You can now sign in.");
     }
 
+//    @End
     public String redirectToLogin() {
+        facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+            "Your account was successfully activated. You can now sign in.");
         return "/account/login.xhtml";
     }
 

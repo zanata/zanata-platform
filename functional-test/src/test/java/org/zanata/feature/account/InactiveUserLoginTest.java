@@ -29,6 +29,7 @@ import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.account.InactiveAccountPage;
+import org.zanata.page.account.SignInPage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.EmailQuery;
 import org.zanata.util.HasEmailRule;
@@ -73,8 +74,8 @@ public class InactiveUserLoginTest extends ZanataTestCase {
 
         String activationLink = EmailQuery.getActivationLink(message);
         log.info(activationLink);
-        HomePage homePage = new BasicWorkFlow()
-                .goToUrl(activationLink, HomePage.class);
+        SignInPage page = new BasicWorkFlow().goToUrl(
+            activationLink, SignInPage.class);
 
         /* This fails in functional test, for reasons unknown
         assertThat(signInPage.getNotificationMessage())
@@ -161,8 +162,8 @@ public class InactiveUserLoginTest extends ZanataTestCase {
                 .isTrue()
                 .as("The second email contains the activation link");
 
-        homePage = new BasicWorkFlow().goToUrl(
-                EmailQuery.getActivationLink(message), HomePage.class);
+        SignInPage page = new BasicWorkFlow().goToUrl(
+            EmailQuery.getActivationLink(message), SignInPage.class);
 
         /* This fails in functional test, for reasons unknown
         assertThat(homePage.getNotificationMessage())
