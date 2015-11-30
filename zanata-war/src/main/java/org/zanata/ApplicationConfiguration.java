@@ -419,12 +419,14 @@ public class ApplicationConfiguration implements Serializable {
     }
 
     public void setUnauthenticatedSessionTimeout(@Observes LogoutEvent payload) {
-        HttpSession session =
-                ServiceLocator.instance().getInstance(HttpSession.class,
-                        new AnnotationLiteral<DeltaSpike>() {
-                        });
-        if (session != null) {
-            session.setMaxInactiveInterval(
+        // if we use ServiceLocator and get deltaspike session, upon invoking
+        // setMaxInactiveInterval method, it will throw Request Scope not active
+        // exception
+        java.util.Optional<HttpSession> httpSession =
+                HttpRequestAndSessionHolder.getHttpSession(false);
+
+        if (httpSession.isPresent()) {
+            httpSession.get().setMaxInactiveInterval(
                         defaultAnonymousSessionTimeoutMinutes * 60);
         }
     }
