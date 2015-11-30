@@ -248,15 +248,20 @@
       </div>
       <script type="text/javascript">
         //<![CDATA[
-        zanata.form.appendCheckboxes(jQuery('##{id}-content').element);
+        // zanata is undefined during doc load (but we can skip)
+        if (typeof zanata !== 'undefined') {
+          zanata.form.appendCheckboxes(jQuery('##{id}-content').element);
+        }
         //]]>
       </script>
       <ui:fragment rendered="#{projectPermissionDialog.lastMaintainerSelected() or not identity.hasPermission(projectPermissionDialog.project, 'manage-members')}">
         <script type="text/javascript">
           //<![CDATA[
-          jQuery('##{id}-project-permissions')
-                  .find(' input')
-                  .trigger('disable');
+          jQuery(document).ready(function () {
+            jQuery('##{id}-project-permissions')
+              .find(' input')
+              .trigger('disable');
+          });
           //]]>
         </script>
       </ui:fragment>
@@ -265,7 +270,7 @@
              (not needed if the user has no permission, since both are permanently disabled )-->
         <script type="text/javascript">
           //<![CDATA[
-          (function () {
+          jQuery(document).ready(function () {
             var checkboxes = jQuery('##{id}-project-permissions').find('input');
             var translationMaintainerCheckbox = checkboxes.first();
             var maintainerCheckbox = checkboxes.eq(1);
@@ -290,13 +295,13 @@
 
             // make sure the initial state is right
             refreshCheckboxDisplay();
-            })();
+          });
           //]]>
         </script>
       </ui:fragment>
       <script type="text/javascript">
         //<![CDATA[
-        (function () {
+        jQuery(document).ready(function () {
           var checkboxes = jQuery('##{id}-project-permissions').find('input');
           var translationMaintainerCheckbox = checkboxes.first();
           var maintainerCheckbox = checkboxes.eq(1);
@@ -315,7 +320,7 @@
             maintainerInfo.toggleClass('is-hidden', !isMaintainer);
             translationMaintainerInfo.toggleClass('is-hidden', isMaintainer || !isTransMaintainer);
           }
-        })();
+        });
         //]]>
       </script>
     </h:panelGroup>
