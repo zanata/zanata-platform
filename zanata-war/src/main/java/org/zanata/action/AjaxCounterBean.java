@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 public class AjaxCounterBean {
     // NB this doesn't handle setInterval or setTimeout
     // TODO handle XHR.abort (NB: readystatechange listener triggers on Chrome 45, despite MDN docs)
+    // TODO handle send() being called again while request is open
     // http://stackoverflow.com/questions/4410218/trying-to-keep-track-of-number-of-outstanding-ajax-requests-in-firefox
     private static final String AJAX_COUNTER_SCRIPT = "<script type=\"application/javascript\">\n" +
             "(function(xhr) {\n" +
@@ -44,14 +45,17 @@ public class AjaxCounterBean {
             "        var pt = xhr.prototype;\n" +
             "        var _send = pt.send;\n" +
             "        pt.send = function() {\n" +
+            "            if (this.hasActiveEventListener === undefined) {\n" +
+            "                this.addEventListener('readystatechange', function() {\n" +
+            "                    if ( this.readyState == XMLHttpRequest.DONE ) {\n" +
+            "                        setTimeout(function() {\n" +
+            "                            xhr.active--;\n" +
+            "                        }, 1);\n" +
+            "                    }\n" +
+            "                });\n" +
+            "                this.hasActiveEventListener = true;\n" +
+            "            }" +
             "            xhr.active++;\n" +
-            "            this.addEventListener('readystatechange', function(e) {\n" +
-            "                if ( this.readyState == XMLHttpRequest.DONE ) {\n" +
-            "                    setTimeout(function() {\n" +
-            "                        xhr.active--;\n" +
-            "                    }, 1);\n" +
-            "                }\n" +
-            "            });\n" +
             "            _send.apply(this, arguments);\n" +
             "        }\n" +
             "    }\n" +
