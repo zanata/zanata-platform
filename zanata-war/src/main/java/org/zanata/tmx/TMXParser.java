@@ -28,7 +28,6 @@ import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -100,9 +99,9 @@ public class TMXParser {
             // At this point, event = START_ELEMENT and name = tmx
             while (reader.hasNext()) {
                 CommitBatch commitBatch =
-                        new CommitBatch(reader, handledTUs, transMemory);
+                        new CommitBatch(reader, 0, transMemory);
                 TransactionUtil.get().runEx(commitBatch);
-                handledTUs = commitBatch.handledTUs;
+                handledTUs += commitBatch.handledTUs;
             }
         } catch (EntityExistsException e) {
             String msg =
