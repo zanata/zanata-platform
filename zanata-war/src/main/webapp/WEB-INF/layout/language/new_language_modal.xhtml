@@ -14,7 +14,7 @@
       replaceUnderscoresServer(langName);
     }
 
-    function validate() {
+    function validateLanguage() {
       validateLangName(getInputVal());
     }
 
@@ -73,7 +73,7 @@
           fetchValue="#{result.localeId}"
           displayText="#{result.localeId}"
           render="output,localeNameMsgs"
-          onRenderResultComplete="validate()"
+          onRenderResultComplete="validateLanguage()"
           placeholder="#{msgs['jsf.language.search.placeholder']}">
 
           #{result.localeId}<span
