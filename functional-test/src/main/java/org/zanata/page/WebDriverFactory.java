@@ -157,15 +157,8 @@ public enum WebDriverFactory {
      * @throws WebDriverLogException exception containing the first warning/error message, if any
      */
     public void logLogs() {
-        // TODO always throw, once we fix our tests
-        logLogs(false);
-//        logLogs(true);
-    }
-
-    @Deprecated
-    public void logLogs(boolean throwIfWarn) {
         for (String type : getLogTypes()) {
-            logLogs(type, throwIfWarn);
+            logLogs(type, true);
         }
     }
 
