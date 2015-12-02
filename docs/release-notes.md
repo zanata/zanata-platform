@@ -31,6 +31,7 @@
 * [ZNTA-657](https://zanata.atlassian.net/browse/ZNTA-657) - Add new language uses the search text instead of the selected locale
 * [ZNTA-817](https://zanata.atlassian.net/browse/ZNTA-817) - Fix default terms of use url
 * [ZNTA-816](https://zanata.atlassian.net/browse/ZNTA-816) - No success/confirmation message after updating email via Settings->Profile
+* [ZNTA-811](https://zanata.atlassian.net/browse/ZNTA-811) - Downloaded translated .pot file has no extension
 
 
 -----------------------
