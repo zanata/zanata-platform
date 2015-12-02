@@ -60,6 +60,7 @@ public class UserRedirectBean implements Serializable {
     private static final String HOME_URL = "/";
     private static final String REGISTER_URL = "/register";
     private static final String ERROR_URL = "/error";
+    private static final String LOGIN_URL = "/sign_in";
 
     /**
     *
@@ -180,9 +181,13 @@ public class UserRedirectBean implements Serializable {
         return isRedirectTo(REGISTER_URL);
     }
 
+    public boolean isRedirectToLoginPage() {
+        return isRedirectTo(LOGIN_URL);
+    }
+
     // provided user is logged in, they should be redirect to dashboard
     public boolean shouldRedirectToDashboard() {
-        return isRedirectToHome() || isRedirectToRegister();
+        return isRedirectToHome() || isRedirectToRegister() || isRedirectToLoginPage();
     }
 
     private boolean isRedirectTo(String url) {

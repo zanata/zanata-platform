@@ -19,7 +19,7 @@
           zanata.tabs.activate(jQuery('#' + subSection + '_tab'))
         });
 
-        crossroads.addRoute(':pre*:/dashboard/:section:', function(pre, section) {
+        crossroads.addRoute(':pre*:/dashboard/:section::?query:', function(pre, section, query) {
           section = section || 'activity'
           section = validateTab('#' + section + "_tab", section, "activity");
           zanata.tabs.activate(jQuery('#' + section + "_tab"))

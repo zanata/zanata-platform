@@ -47,9 +47,10 @@
         }
       });
 
-    crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/documents/:docId*:',
-      function (pre, projectSlug, versionSlug, docId) {
+    crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/documents:?query:',
+      function (pre, projectSlug, versionSlug, query) {
         zanata.tabs.activate(jQuery('#documents_tab'));
+        var docId = encodeURIComponent(query.docId);
         var clickEle = jQuery('#' + jqSelector(docId)).children().eq(1);
         if (docId && clickEle.length != 0) {
           updateActiveRow(clickEle);

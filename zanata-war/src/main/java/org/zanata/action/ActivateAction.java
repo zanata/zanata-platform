@@ -37,12 +37,16 @@ import org.zanata.seam.security.AbstractRunAsOperation;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.ui.faces.FacesMessages;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Named("activate")
 @org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
 public class ActivateAction implements Serializable {
 
     private static final long serialVersionUID = -8079131168179421345L;
 
+    private static int LINK_ACTIVE_DAYS = 1;
 
     @Inject
     private AccountActivationKeyDAO accountActivationKeyDAO;
@@ -51,21 +55,20 @@ public class ActivateAction implements Serializable {
     private IdentityManager identityManager;
 
     @Inject
+    //TODO [CDI] change to urlUtil
+    private Redirect redirect;
+
+    @Inject
     private FacesMessages facesMessages;
 
+    @Getter
+    @Setter
     private String activationKey;
-
-    public String getActivationKey() {
-        return activationKey;
-    }
 
     private HAccountActivationKey key;
 
-    private static int LINK_ACTIVE_DAYS = 1;
-
 //    @Begin(join = true)
     public void validateActivationKey() {
-
         if (getActivationKey() == null) {
             throw new KeyNotFoundException("null activation key");
         }
@@ -88,10 +91,6 @@ public class ActivateAction implements Serializable {
         return expiryDate.before(new Date());
     }
 
-    public void setActivationKey(String activationKey) {
-        this.activationKey = activationKey;
-    }
-
     public void activate() {
         new AbstractRunAsOperation() {
             public void execute() {
@@ -101,13 +100,14 @@ public class ActivateAction implements Serializable {
             }
         }.addRole("admin").run();
         accountActivationKeyDAO.makeTransient(key);
-    }
 
 //    @End
-    public String redirectToLogin() {
+//    public String redirectToLogin() {
         facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
-            "Your account was successfully activated. You can now sign in.");
-        return "/account/login.xhtml";
-    }
+                "Your account was successfully activated. You can now sign in.");
 
+        redirect.setConversationPropagationEnabled(true);
+        redirect.setViewId("/account/login.xhtml");
+        redirect.execute();
+    }
 }

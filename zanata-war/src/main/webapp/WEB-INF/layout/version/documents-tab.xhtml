@@ -191,7 +191,7 @@
                 </ul>
               </div>
             </h:panelGroup>
-            <a href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/documents/#{versionHomeAction.encodeDocId(document.docId)}"
+            <a href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/documents?docId=#{versionHomeAction.encodeDocId(document.docId)}"
               onclick="changeBrowserUrl(this.href, true);return false;">
               <div class="list__item__content">
                 <div class="list__item__info">

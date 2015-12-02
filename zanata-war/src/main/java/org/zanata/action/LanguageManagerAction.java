@@ -103,6 +103,7 @@ public class LanguageManagerAction extends AbstractAutocomplete<HLocale>
     public void updateLanguage(String language) {
         if (!StringUtils.isEmpty(language)) {
             uLocale = new ULocale(language);
+            setQuery(language);
             isLanguageNameValid();
         } else {
             uLocale = null;
