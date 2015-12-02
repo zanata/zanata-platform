@@ -29,6 +29,7 @@
 * [ZNTA-767](https://zanata.atlassian.net/browse/ZNTA-767) - File names / paths with spaces cannot be navigated to via the Documents tab. **Note:** This will invalidate all existing bookmarked URL with selected document in the project version page.
 * [ZNTA-815](https://zanata.atlassian.net/browse/ZNTA-815) - New user login redirected to login screen again instead of Dashboard
 * [ZNTA-657](https://zanata.atlassian.net/browse/ZNTA-657) - Add new language uses the search text instead of the selected locale
+* [ZNTA-817](https://zanata.atlassian.net/browse/ZNTA-817) - Fix default terms of use url
 
 
 -----------------------
