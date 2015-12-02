@@ -36,6 +36,7 @@ import org.zanata.model.HAccountActivationKey;
 import org.zanata.seam.security.AbstractRunAsOperation;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.ui.faces.FacesMessages;
+import org.zanata.util.UrlUtil;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -55,8 +56,7 @@ public class ActivateAction implements Serializable {
     private IdentityManager identityManager;
 
     @Inject
-    //TODO [CDI] change to urlUtil
-    private Redirect redirect;
+    private UrlUtil urlUtil;
 
     @Inject
     private FacesMessages facesMessages;
@@ -101,13 +101,9 @@ public class ActivateAction implements Serializable {
         }.addRole("admin").run();
         accountActivationKeyDAO.makeTransient(key);
 
-//    @End
-//    public String redirectToLogin() {
         facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
                 "Your account was successfully activated. You can now sign in.");
 
-        redirect.setConversationPropagationEnabled(true);
-        redirect.setViewId("/account/login.xhtml");
-        redirect.execute();
+        urlUtil.redirectTo(urlUtil.signInPage());
     }
 }

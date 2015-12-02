@@ -23,6 +23,8 @@ package org.zanata.action;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.enterprise.context.RequestScoped;
+import javax.faces.context.FacesContext;
 import javax.security.auth.login.LoginException;
 
 import lombok.Getter;
@@ -44,12 +46,15 @@ import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.impl.EmailChangeService;
 import org.zanata.ui.faces.FacesMessages;
+import org.zanata.util.FacesNavigationUtil;
+import org.zanata.util.UrlUtil;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 @Named("validateEmail")
 @Slf4j
 @ZanataSecured
+@RequestScoped
 public class ValidateEmailAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -67,9 +72,8 @@ public class ValidateEmailAction implements Serializable {
     @Inject
     EmailChangeService emailChangeService;
 
-    //TODO [CDI] change to urlUtil
     @Inject
-    private Redirect redirect;
+    private UrlUtil urlUtil;
     @Getter
     @Setter
     private String activationKey;
@@ -115,9 +119,7 @@ public class ValidateEmailAction implements Serializable {
                 returnUrl = checkResult;
             }
         }
-        redirect.setConversationPropagationEnabled(true);
-        redirect.setViewId(returnUrl);
-        redirect.execute();
+        urlUtil.redirectTo(returnUrl);
     }
 
     private String checkExpiryDate(Date createdDate) {
@@ -125,7 +127,7 @@ public class ValidateEmailAction implements Serializable {
             log.info("Creation date expired:" + createdDate);
             facesMessages.addGlobal(SEVERITY_ERROR,
                     "Link expired. Please update your email again.");
-            return "/profile/edit.xhtml";
+            return urlUtil.dashboardUrl();
         }
         return "";
     }
