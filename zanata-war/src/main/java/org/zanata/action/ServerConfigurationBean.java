@@ -69,7 +69,7 @@ public class ServerConfigurationBean implements Serializable {
 
     public static final String DEFAULT_HELP_URL = "http://zanata.org/help";
 
-    public static final String DEFAULT_TERM_OF_USE_URL = "http://zanata.org/term";
+    public static final String DEFAULT_TERM_OF_USE_URL = "http://zanata.org/terms";
 
     @In
     private ApplicationConfigurationDAO applicationConfigurationDAO;

@@ -25,6 +25,8 @@ import java.util.Date;
 
 import javax.security.auth.login.LoginException;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
@@ -32,6 +34,7 @@ import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Transactional;
+import org.jboss.seam.faces.Redirect;
 import org.zanata.dao.PersonDAO;
 import org.zanata.exception.KeyNotFoundException;
 import org.zanata.model.HAccount;
@@ -50,19 +53,28 @@ import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 @ZanataSecured
 public class ValidateEmailAction implements Serializable {
     private static final long serialVersionUID = 1L;
-    private String activationKey;
+
+    private static int LINK_ACTIVE_DAYS = 1;
 
     @In
-    PersonDAO personDAO;
+    private PersonDAO personDAO;
 
     @In
     private ZanataIdentity identity;
 
+    @In
+    private EmailChangeService emailChangeService;
+
+    //TODO [CDI] change to urlUtil
+    @In
+    private Redirect redirect;
+
     @In("jsfMessages")
     private FacesMessages facesMessages;
 
-    @In
-    EmailChangeService emailChangeService;
+    @Getter
+    @Setter
+    private String activationKey;
 
     @Create
     public void onCreate() {
@@ -71,7 +83,7 @@ public class ValidateEmailAction implements Serializable {
 
     @Transactional
     @CheckLoggedIn
-    public String validate() throws LoginException {
+    public void validate() throws LoginException {
         String returnUrl = "/home.xhtml";
 
         if (activationKey != null && !activationKey.isEmpty()) {
@@ -105,10 +117,10 @@ public class ValidateEmailAction implements Serializable {
                 returnUrl = checkResult;
             }
         }
-        return returnUrl;
+        redirect.setConversationPropagationEnabled(true);
+        redirect.setViewId(returnUrl);
+        redirect.execute();
     }
-
-    private static int LINK_ACTIVE_DAYS = 1;
 
     private String checkExpiryDate(Date createdDate) {
         if (emailChangeService.isExpired(createdDate, LINK_ACTIVE_DAYS)) {
@@ -118,13 +130,5 @@ public class ValidateEmailAction implements Serializable {
             return "/profile/edit.xhtml";
         }
         return "";
-    }
-
-    public String getActivationKey() {
-        return activationKey;
-    }
-
-    public void setActivationKey(String activationKey) {
-        this.activationKey = activationKey;
     }
 }

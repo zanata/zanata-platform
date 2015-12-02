@@ -73,7 +73,6 @@ public class InactiveUserLoginTest extends ZanataTestCase {
                 .as("The email contains the activation link");
 
         String activationLink = EmailQuery.getActivationLink(message);
-        log.info(activationLink);
         SignInPage page = new BasicWorkFlow().goToUrl(
             activationLink, SignInPage.class);
 

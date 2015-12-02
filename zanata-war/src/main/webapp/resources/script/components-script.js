@@ -37,7 +37,7 @@ function validateTab(tab, currentSection, defaultSection) {
 }
 
 function updateStateFromUrl() {
-  crossroads.parse(window.location.pathname);
+  crossroads.parse(window.location.pathname + window.location.search);
 }
 
 function changeBrowserUrl(url, refresh) {
@@ -55,7 +55,7 @@ jQuery(function() {
   jQuery(window).on("popstate", function(event) {
     var state = event.originalEvent.state;
     if (state)
-      crossroads.parse(state.path)
+      crossroads.parse(state.path + state.search)
   })
 });
 
