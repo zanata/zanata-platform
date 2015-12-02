@@ -113,7 +113,7 @@
         value="#{projectHomeAction.versionFilter.currentPage}" var="version">
         <ui:param name="hasActions" value="#{identity.loggedIn}"/>
         <li
-          class="progress-bar__expander #{(hasActions) ? 'list__item--actionable' : ''}">
+          class="progress-bar__expander #{hasActions ? 'list__item--actionable' : ''}">
 
           <a4j:poll id="poll" interval="3000" limitRender="true"
             render="poll, copy-version-info, copy-version-message"
