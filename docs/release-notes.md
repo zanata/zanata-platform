@@ -30,6 +30,7 @@
 * [ZNTA-815](https://zanata.atlassian.net/browse/ZNTA-815) - New user login redirected to login screen again instead of Dashboard
 * [ZNTA-657](https://zanata.atlassian.net/browse/ZNTA-657) - Add new language uses the search text instead of the selected locale
 * [ZNTA-817](https://zanata.atlassian.net/browse/ZNTA-817) - Fix default terms of use url
+* [ZNTA-816](https://zanata.atlassian.net/browse/ZNTA-816) - No success/confirmation message after updating email via Settings->Profile
 
 
 -----------------------
