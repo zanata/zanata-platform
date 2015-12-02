@@ -36,6 +36,8 @@
 
 * [ZNTA-818](https://zanata.atlassian.net/browse/ZNTA-818) - 'SHOW' does not work while changing password in the Settings twice
 
+* [ZNTA-813](https://zanata.atlassian.net/browse/ZNTA-813) - Add tooltip for disabled account
+* [ZNTA-814](https://zanata.atlassian.net/browse/ZNTA-814) - handle enter key in inactive account page
 
 -----------------------
 
