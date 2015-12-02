@@ -3,6 +3,7 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:rich="http://richfaces.org/rich"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
   <h1>#{msgs['jsf.dashboard.settings.title']}</h1>
@@ -104,15 +105,14 @@
                 </div>
               </zanata:decorate>
             </div>
-            <input id="changePasswordButton" type="submit"
-              value="Update password" styleClass="button"
-              jsfc="a4j:commandButton"
+            <zanata:ajax-command-button
+              id="changePasswordButton"
+              oncomplete="zanata.form.init('#{rich:clientId('passwordChangeForm')}');"
               action="#{userSettingsAction.changePassword()}"
-              render="passwordChangeForm"
-              status="change-password-loader"/>
-            <a4j:status name="change-password-loader">
-              <f:facet name="start"><zanata:loader layout="inline" type="loader--small"/></f:facet>
-            </a4j:status>
+              styleClass="button"
+              render="passwordChangeForm">
+              Update password
+            </zanata:ajax-command-button>
           </h:form>
         </ui:fragment>
         <hr/>

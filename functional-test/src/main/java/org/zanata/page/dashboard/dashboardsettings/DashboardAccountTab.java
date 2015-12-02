@@ -46,7 +46,7 @@ public class DashboardAccountTab extends DashboardBasePage {
     private By updateEmailButton = By.id("email-update-form:updateEmailButton");
     private By oldPasswordField = By.id("passwordChangeForm:oldPasswordField:input:oldPassword");
     private By newPasswordField = By.id("passwordChangeForm:newPasswordField:input:newPassword");
-    private By changePasswordButton = By.id("passwordChangeForm:changePasswordButton");
+    private By changePasswordButton = By.cssSelector("button[id^='passwordChangeForm:changePasswordButton']");
 
     public DashboardAccountTab(WebDriver driver) {
         super(driver);
