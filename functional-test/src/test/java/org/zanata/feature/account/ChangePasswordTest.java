@@ -32,6 +32,7 @@ import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.dashboard.dashboardsettings.DashboardAccountTab;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
+import org.apache.commons.lang.RandomStringUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
