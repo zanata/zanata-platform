@@ -20,6 +20,7 @@
  */
 package org.zanata.email;
 
+import static javax.mail.Message.RecipientType.BCC;
 import static javax.mail.Message.RecipientType.TO;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -144,9 +145,9 @@ public class EmailStrategyTest {
                 fromAddress);
         assertThat(message.getFrom()).extracting("personal").contains(
                 fromName);
-        assertThat(message.getRecipients(TO)).extracting("address").contains(
+        assertThat(message.getRecipients(BCC)).extracting("address").contains(
                 toAddress);
-        assertThat(message.getRecipients(TO)).extracting("personal").contains(
+        assertThat(message.getRecipients(BCC)).extracting("personal").contains(
                 toName);
     }
 
@@ -155,7 +156,6 @@ public class EmailStrategyTest {
         assertThat(html).contains(msgs.get(
                 "jsf.email.GeneratedFromZanataServerAt"));
     }
-
 
     @Test
     public void activation() throws Exception {
