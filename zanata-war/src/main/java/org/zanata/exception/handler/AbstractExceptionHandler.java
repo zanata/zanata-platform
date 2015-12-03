@@ -22,6 +22,8 @@
 package org.zanata.exception.handler;
 
 import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
+import org.apache.deltaspike.core.api.scope.WindowScoped;
+import org.apache.deltaspike.core.util.ContextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.ui.faces.FacesMessages;
@@ -33,55 +35,69 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
 /**
+ * Base handler for all exceptions. N.B. this will handle exceptions from both
+ * JSF and REST. For REST exceptions, this happens before REST ExceptionMapper
+ * is called so we need to be careful not to use any jsf specific beans. e.g.
+ * FacesMessages which is in WindowScoped.
+ *
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class AbstractExceptionHandler {
-    private static final Logger log = LoggerFactory.getLogger(AbstractExceptionHandler.class);
+public abstract class AbstractExceptionHandler {
+    private static final Logger log =
+            LoggerFactory.getLogger(AbstractExceptionHandler.class);
     @Inject
     protected FacesMessages messages;
     @Inject
     protected UrlUtil urlUtil;
 
     protected final <T extends Throwable> void handle(ExceptionEvent<T> event,
-                                                      LogLevel logLevel,
-                                                      FacesMessage.Severity severity,
-                                                      String messageKey,
-                                                      Object... messageArgs) {
-        handle(event, logLevel, urlUtil.genericErrorPage(), severity, messageKey, messageArgs);
+            LogLevel logLevel,
+            FacesMessage.Severity severity,
+            String messageKey,
+            Object... messageArgs) {
+        handle(event, logLevel, urlUtil.genericErrorPage(), severity,
+                messageKey, messageArgs);
     }
 
     protected final <T extends Throwable> void handle(ExceptionEvent<T> event,
-                                                      LogLevel logLevel,
-                                                      String redirectUrl, FacesMessage.Severity severity,
-                                                      String messageKey,
-                                                      Object... messageArgs) {
+            LogLevel logLevel,
+            String redirectUrl, FacesMessage.Severity severity,
+            String messageKey,
+            Object... messageArgs) {
         logException(logLevel, event.getException());
 
-        messages.clear();
-        messages.addFromResourceBundle(severity, messageKey, messageArgs);
-        urlUtil.redirectTo(redirectUrl);
+        if (ContextUtils.isContextActive(WindowScoped.class)) {
+            messages.clear();
+            messages.addFromResourceBundle(severity, messageKey, messageArgs);
+            urlUtil.redirectTo(redirectUrl);
 
-        // required - "stops" the JSF lifecycle
-        FacesContext.getCurrentInstance().responseComplete();
-        // no other JSF ExceptionHandler should handle this exception...
+            // required - "stops" the JSF lifecycle
+            FacesContext.getCurrentInstance().responseComplete();
+        }
+        // no other ExceptionHandler should handle this exception...
         event.handled();
     }
 
-    protected static <T extends Throwable> void logException(LogLevel logLevel, T exception) {
+    protected static <T extends Throwable> void logException(LogLevel logLevel,
+            T exception) {
         String currentViewId = FacesNavigationUtil.getCurrentViewId();
 
         switch (logLevel) {
             case Trace:
-                log.trace("exception happened in view: {}", currentViewId, exception);
+                log.trace("exception happened in view: {}", currentViewId,
+                        exception);
                 break;
             case Debug:
-                log.debug("exception happened in view: {}", currentViewId, exception);
+                log.debug("exception happened in view: {}", currentViewId,
+                        exception);
                 break;
             case Warn:
-                log.warn("exception happened in view: {}", currentViewId, exception);
+                log.warn("exception happened in view: {}", currentViewId,
+                        exception);
                 break;
             case Error:
-                log.error("exception happened in view: {}", currentViewId, exception);
+                log.error("exception happened in view: {}", currentViewId,
+                        exception);
                 break;
         }
     }

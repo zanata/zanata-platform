@@ -14,7 +14,8 @@
     <class>org.zanata.util.SynchronizationInterceptor</class>
     <class>org.zanata.util.WithRequestScopeInterceptor</class>
     <class>org.apache.deltaspike.jpa.impl.transaction.TransactionalInterceptor</class>
-    <class>org.zanata.seam.interceptor.ZanataSecurityInterceptor</class>
+    <!--<class>org.zanata.seam.interceptor.ZanataSecurityInterceptor</class>-->
+    <class>org.apache.deltaspike.security.impl.extension.SecurityInterceptor</class>
   </interceptors>
 
   <!-- Skip a lot of classes which don't need injection and won't load due to missing classes -->

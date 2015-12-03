@@ -28,7 +28,6 @@ import javax.inject.Inject;
 import org.apache.deltaspike.security.api.authorization.AbstractAccessDecisionVoter;
 import org.apache.deltaspike.security.api.authorization.AccessDecisionVoterContext;
 import org.apache.deltaspike.security.api.authorization.SecurityViolation;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.security.annotations.CheckRole;
 
 /**
@@ -41,36 +40,46 @@ public class CheckRoleDecisionVoter extends AbstractAccessDecisionVoter {
     @Inject
     private ZanataIdentity identity;
 
-    @Inject
-    private ZanataJpaIdentityStore identityStore;
-
     @Override
     protected void checkPermission(
             AccessDecisionVoterContext accessDecisionVoterContext,
             Set<SecurityViolation> violations) {
 
         CheckRole hasRole =
-                accessDecisionVoterContext.getMetaDataFor(CheckRole.class.getName(), CheckRole.class);
+                accessDecisionVoterContext
+                        .getMetaDataFor(CheckRole.class.getName(),
+                                CheckRole.class);
         if (hasRole != null) {
             boolean result = identity.hasRole(hasRole.value());
-// TODO unify with PicketLink roles
-//            Role role = RoleFactory.createRole(hasRole.value());
-//
-//            SecurityContext sc = SecurityContextAssociation.getSecurityContext();
-//            RoleGroup roleGroup = PicketBoxUtil
-//                    .getRolesFromSubject(sc.getUtil().getSubject());
-//
-//            if (!roleGroup.containsRole(role)) {
-//                violations.add(newSecurityViolation(
-//                        "You don't have the necessary access"));
-//            }
-
-//            String role = hasRole.value();
 
             if (!result) {
-                violations.add(newSecurityViolation(
-                        "You don't have the necessary access"));
+                violations.add(CheckRoleSecurityViolation
+                        .instance(hasRole.value()));
             }
+        }
+    }
+
+    public static class CheckRoleSecurityViolation
+            implements SecurityViolation {
+        private static final String REASON =
+                "You don't have the necessary access";
+        private String requiredRole;
+
+        public CheckRoleSecurityViolation(String requiredRole) {
+            this.requiredRole = requiredRole;
+        }
+
+        @Override
+        public String getReason() {
+            return REASON;
+        }
+
+        public String getRequiredRole() {
+            return requiredRole;
+        }
+
+        static CheckRoleSecurityViolation instance(String requiredRole) {
+            return new CheckRoleSecurityViolation(requiredRole);
         }
     }
 }
