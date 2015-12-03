@@ -78,7 +78,7 @@
     <from casesensitive="true">^/iteration/view/([^/]+)/([^/]+)(/([^?]*)\??(.*))?$
     </from>
     <to
-      last="true">/iteration/view.seam\?projectSlug=$1&amp;iterationSlug=$2&amp;$4
+      last="true">/iteration/view.seam\?projectSlug=$1&amp;iterationSlug=$2&amp;$5
     </to>
   </rule>
 

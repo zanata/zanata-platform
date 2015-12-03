@@ -23,16 +23,16 @@
 <script type="text/javascript">
   //<![CDATA[
   jQuery(function () {
-    crossroads.addRoute(':pre*:/project/view/{slug}/settings/{subSection}',
-      function (pre, slug, subSection) {
+    crossroads.addRoute(':pre*:/project/view/{slug}/settings/{subSection}:?query:',
+      function (pre, slug, subSection, query) {
         zanata.tabs.activate(jQuery('#settings_tab'));
         subSection = subSection || 'general';
         subSection = validateTab("#settings-" + subSection + '_tab', subSection, 'general');
         zanata.tabs.activate(jQuery('#settings-' + subSection + "_tab"));
       });
 
-    crossroads.addRoute(':pre*:/project/view/{slug}/:section:',
-      function (pre, slug, section) {
+    crossroads.addRoute(':pre*:/project/view/{slug}/:section::?query:',
+      function (pre, slug, section, query) {
         section = section || 'versions';
         // maintainers tab is replaced with people tab, so links to maintainers
         // tab should direct to the people tab
