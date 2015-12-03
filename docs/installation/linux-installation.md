@@ -79,7 +79,7 @@ There are two ways to install zanata-client, via `0install` or `dnf`.
 
 *Note: If you have installed `zanata-cli` previously through different method, you need to uninstall that*
 
-### 0install
+### With 0install
 1. Install 0install
 
         sudo yum -y install 0install
@@ -90,23 +90,21 @@ There are two ways to install zanata-client, via `0install` or `dnf`.
 
 3. It should be done now. Run `zanata-cli --help` for the usage of the client.
 
-### dnf
+### With dnf
 1. Install `zanata-client`
 
         sudo yum -y install zanata-client
-
-
 
 ## Debian based distro
 *Note: If you have installed `zanata-cli` previously through different method, you need to uninstall that*
 
 1. Install 0install
 
-        sudo yum -y install 0install
+        sudo apt-get install 0install
 
 2. Install Java runtime: 
 
-        apt-get install openjdk-8-jre
+        sudo apt-get install openjdk-8-jre
 
 3. Use `zanata-cli` as alias: 
 
@@ -118,9 +116,6 @@ There are two ways to install zanata-client, via `0install` or `dnf`.
 *Note: If you have installed `zanata-cli` previously through another method, you need to uninstall that for this to work.*
 
 1. Follow 0Install in [0Install for Linux](http://0install.net/install-linux.html).
-
-        sudo yum -y install 0install
-
 2. Install Java JRE (1.8 onwards) from [OpenJDK installation](http://openjdk.java.net/install/index.html)
 3. Use `zanata-cli` as alias: 
 
