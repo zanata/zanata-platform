@@ -177,6 +177,12 @@
       <to-view-id>/account/inactive_account.xhtml</to-view-id>
       <redirect/>
     </navigation-case>
+    <navigation-case>
+      <!-- default case -->
+      <from-outcome>loggedIn</from-outcome>
+      <to-view-id>/dashboard/home.xhtml</to-view-id>
+      <redirect />
+    </navigation-case>
   </navigation-rule>
 
   <navigation-rule>
