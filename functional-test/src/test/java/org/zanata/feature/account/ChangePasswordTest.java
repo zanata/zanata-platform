@@ -114,21 +114,12 @@ public class ChangePasswordTest extends ZanataTestCase {
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changePasswordAreOfRequiredLength() throws Exception {
         String tooShort = "test5";
-        String tooLong = RandomStringUtils.randomAlphanumeric(1025);
         DashboardAccountTab dashboardAccountTab = new LoginWorkFlow()
                 .signIn("translator", "translator")
                 .goToSettingsTab()
                 .gotoSettingsAccountTab()
                 .typeOldPassword("translator")
                 .typeNewPassword(tooShort)
-                .clickUpdatePasswordButton();
-
-        assertThat(dashboardAccountTab.getErrors())
-                .contains(DashboardAccountTab.PASSWORD_LENGTH_ERROR)
-                .as("Incorrect password length message displayed");
-
-        dashboardAccountTab = dashboardAccountTab
-                .typeNewPassword(tooLong)
                 .clickUpdatePasswordButton();
 
         assertThat(dashboardAccountTab.getErrors())
