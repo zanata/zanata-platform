@@ -68,6 +68,7 @@ public class ProjectVersionsPage extends ProjectBasePage {
         waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
+                getDriver().findElement(By.id("versions_tab")).click();
                 List<WebElement> versionLinks = getDriver()
                         .findElement(By.id("versions_form"))
                         .findElement(By.className("list--stats"))
