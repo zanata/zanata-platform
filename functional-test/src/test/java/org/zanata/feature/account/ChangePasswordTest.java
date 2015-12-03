@@ -108,12 +108,12 @@ public class ChangePasswordTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The user must enter a new password of between 6 and " +
-            "20 characters in length to change it",
+            "1024 characters in length to change it",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86823)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changePasswordAreOfRequiredLength() throws Exception {
         String tooShort = "test5";
-        String tooLong = "t12345678901234567890";
+        String tooLong = "mvvilzlkwwtpcdtjvjfaxntohgeeznxjucisdvaizmefykqmxgnzorilfyfwuvkuaueaegjxpnehowfgxrhsjrelqskxzecsnyxpkmchdbuljslbbljlzzlrbsbxmyfhutmkpwnvxdouutivnzvpgznvpfoqlgqmipnfonbsidvzcuqymhjqvovgdxxpcwnuddjzjtjvruehwkiyqnppxdlqihqeefmcutgwrxvphsxcsiujqrjaxahfwkyyzasnyimupdilmligtywifloxnfzyyjapzghtswxcutcttofuxxisdclaeljabuisrwjyoeydhbezrfwzxenxykmutceavfyvscrvfeqwfcwcattfpiakvbucfqpqublprkwupjgfuzzdygnntnpvfmgyooozhqntvpxkvhlxevajskwflkzlznypwhnevyxhqnpsdawkkhpanoegykwywcvqbrxnepanfrkidpyjzgsktlaxeakksvvedttcppsavecenomvjtteioarqhzbsnfjpotenjzomvrjgiyihwgsrfdqlkasfmhtnnnputtnmjlposewbqqdunyfaoifdkalngzavbqfpaqbtkcjuqotbsdbctubklxswgmsgjgxwvrcigcrlpgnqwhdzqmxhmcgetzmxmynqhlskmpizuhwwjbyqejbzotbowoedwzabbuotlkadtdmdsokmzduhdxxdcsiotodowgjfenybikfhctdkwmyrnnygtadbtksbvyslxtxnhzzxjctxutvdzzynzdfifzvogocwwgckegzxfxkdwqiodcyfkyljzfyfmwaoqjfknkfhudsrwaqddznwkskawzhyqcmgtgaomuqxollsempcuymlhyqfegkroqchyllcupybuygdcusizfyroukqfovbdugnptoxlhzrdzynrckzsslbryoihgqeqeketljnnpvkauubvebdoitiuawlkcqnunbdqhfkuqvgrhibqgxqqenxpbvfqcrybuya";
         DashboardAccountTab dashboardAccountTab = new LoginWorkFlow()
                 .signIn("translator", "translator")
                 .goToSettingsTab()
