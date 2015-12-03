@@ -10,14 +10,13 @@ import org.zanata.rest.editor.service.UserService;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.ZanataSecured;
 
 import java.io.Serializable;
 
 
 @Named("glossaryAction")
 @javax.faces.bean.ViewScoped
-@ZanataSecured
+
 @CheckLoggedIn
 @Slf4j
 public class GlossaryAction implements Serializable {

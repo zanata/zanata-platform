@@ -49,14 +49,13 @@ import org.zanata.events.HomeContentChangedEvent;
 import org.zanata.model.HApplicationConfiguration;
 import org.zanata.model.validator.Url;
 import org.zanata.rest.service.ServerConfigurationService;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.ui.faces.FacesMessages;
 
 import static org.zanata.model.HApplicationConfiguration.*;
 
 @Named("serverConfigurationBean")
 @javax.faces.bean.ViewScoped
-@ZanataSecured
+
 @CheckRole("admin")
 @Slf4j
 public class ServerConfigurationBean implements Serializable {

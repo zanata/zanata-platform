@@ -32,13 +32,12 @@ import org.zanata.model.HAccountRole;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.rest.dto.Account;
-import org.zanata.security.annotations.ZanataSecured;
 
 @Named("accountService")
 @Path(AccountResource.SERVICE_PATH)
 @Slf4j
 @Transactional
-@ZanataSecured
+
 @CheckRole("admin")
 public class AccountService implements AccountResource {
     /** User name that identifies an account. */

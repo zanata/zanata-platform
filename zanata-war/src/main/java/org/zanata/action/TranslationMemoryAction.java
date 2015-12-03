@@ -48,7 +48,6 @@ import org.zanata.exception.EntityMissingException;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.rest.service.TranslationMemoryResourceService;
 
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.ui.faces.FacesMessages;
 import com.google.common.collect.Lists;
 
@@ -59,7 +58,7 @@ import com.google.common.collect.Lists;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("translationMemoryAction")
-@ZanataSecured
+
 @CheckRole("admin")
 @javax.faces.bean.ViewScoped
 @Slf4j

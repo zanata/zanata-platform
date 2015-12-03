@@ -31,7 +31,6 @@ import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.rest.dto.ReindexStatus;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.SearchIndexManager;
 import org.zanata.service.SearchService;
 
@@ -44,7 +43,7 @@ import org.zanata.service.SearchService;
  */
 @Named("searchServiceImpl")
 @Path("/search")
-@ZanataSecured
+
 @CheckRole("admin")
 @RequestScoped
 public class SearchServiceImpl implements SearchService {

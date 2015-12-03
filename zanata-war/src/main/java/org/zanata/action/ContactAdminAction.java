@@ -37,7 +37,6 @@ import org.zanata.email.ContactAdminEmailStrategy;
 import org.zanata.email.EmailStrategy;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.EmailService;
 
 import lombok.Getter;
@@ -57,7 +56,7 @@ import javax.servlet.http.HttpServletRequest;
 @Named("contactAdminAction")
 @javax.faces.bean.ViewScoped
 @Slf4j
-@ZanataSecured
+
 public class ContactAdminAction implements Serializable {
 
     @Inject

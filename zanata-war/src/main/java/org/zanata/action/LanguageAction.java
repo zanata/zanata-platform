@@ -48,7 +48,6 @@ import org.zanata.model.HPerson;
 import org.zanata.rest.editor.dto.Locale;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.LanguageTeamService;
 import org.zanata.service.LocaleService;
 import org.zanata.ui.faces.FacesMessages;
@@ -67,7 +66,7 @@ import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 @Named("languageAction")
 @javax.faces.bean.ViewScoped
-@ZanataSecured
+
 @Slf4j
 public class LanguageAction implements Serializable {
     private static final long serialVersionUID = 1L;

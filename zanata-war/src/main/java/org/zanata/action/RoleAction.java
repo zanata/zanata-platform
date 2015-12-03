@@ -11,7 +11,6 @@ import javax.inject.Named;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.ZanataSecured;
 
 /**
  * @author Patrick Huang
@@ -19,7 +18,7 @@ import org.zanata.security.annotations.ZanataSecured;
  */
 @Named("zanataRoleAction")
 @javax.faces.bean.ViewScoped
-@ZanataSecured
+
 @CheckLoggedIn
 public class RoleAction implements Serializable {
     private static final long serialVersionUID = -3830647911484729768L;

@@ -40,7 +40,6 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.zanata.security.annotations.ZanataSecured;
 import javax.enterprise.event.Event;
 import org.zanata.util.ServiceLocator;
 
@@ -55,7 +54,7 @@ import org.zanata.util.ServiceLocator;
 @Produces({"application/xml", "application/json"})
 @Consumes({"application/xml", "application/json"})
 @Transactional
-@ZanataSecured
+
 @CheckRole("admin")
 @Slf4j
 @Beta

@@ -9,7 +9,6 @@ import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.annotations.CheckRole;
-import org.zanata.security.annotations.ZanataSecured;
 
 /**
  * @author Patrick Huang <a
@@ -17,7 +16,7 @@ import org.zanata.security.annotations.ZanataSecured;
  */
 @Named("userSearch")
 @javax.enterprise.context.SessionScoped
-@ZanataSecured
+
 public class UserSearch implements Serializable {
     private static final long serialVersionUID = -4792732235757055958L;
     private List<String> users;

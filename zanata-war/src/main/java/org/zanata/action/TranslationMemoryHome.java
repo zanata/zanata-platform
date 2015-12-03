@@ -33,7 +33,6 @@ import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.seam.framework.EntityHome;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.SlugEntityService;
 import org.zanata.ui.faces.FacesMessages;
 
@@ -44,7 +43,7 @@ import org.zanata.ui.faces.FacesMessages;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("translationMemoryHome")
-@ZanataSecured
+
 @CheckRole("admin")
 @Slf4j
 @RequestScoped

@@ -46,7 +46,6 @@ import org.zanata.dao.LocaleDAO;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HLocale;
 import org.zanata.rest.service.ResourceUtils;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.LocaleService;
 import org.zanata.ui.AbstractAutocomplete;
 import org.zanata.ui.FilterUtil;
@@ -60,7 +59,7 @@ import com.ibm.icu.util.ULocale;
 
 @Named("languageManagerAction")
 @javax.faces.bean.ViewScoped
-@ZanataSecured
+
 public class LanguageManagerAction extends AbstractAutocomplete<HLocale>
         implements Serializable {
     private static final long serialVersionUID = 1L;

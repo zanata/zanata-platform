@@ -31,7 +31,6 @@ import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
-import org.zanata.security.annotations.ZanataSecured;
 
 /**
  * @author Carlos Munoz <a
@@ -39,7 +38,7 @@ import org.zanata.security.annotations.ZanataSecured;
  */
 @Named("processManagerAction")
 @javax.enterprise.context.RequestScoped
-@ZanataSecured
+
 @CheckRole("admin")
 public class ProcessManagerAction {
     @Inject

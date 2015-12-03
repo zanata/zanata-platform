@@ -18,7 +18,6 @@ import org.zanata.rest.editor.dto.User;
 import org.zanata.rest.editor.service.resource.UserResource;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.GravatarService;
 
 import com.google.common.base.Function;
@@ -36,7 +35,7 @@ import lombok.NoArgsConstructor;
 @Transactional
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@ZanataSecured
+
 public class UserService implements UserResource {
 
     @Inject

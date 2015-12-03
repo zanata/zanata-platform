@@ -43,7 +43,6 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HPersonEmailValidationKey;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.impl.EmailChangeService;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.FacesNavigationUtil;
@@ -53,7 +52,7 @@ import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 @Named("validateEmail")
 @Slf4j
-@ZanataSecured
+
 @RequestScoped
 public class ValidateEmailAction implements Serializable {
     private static final long serialVersionUID = 1L;

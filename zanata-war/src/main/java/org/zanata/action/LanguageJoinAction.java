@@ -42,7 +42,6 @@ import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.EmailService;
 import org.zanata.service.LocaleService;
 import org.zanata.ui.faces.FacesMessages;
@@ -54,7 +53,7 @@ import org.zanata.ui.faces.FacesMessages;
 
 @Named("languageJoinAction")
 @javax.faces.bean.ViewScoped
-@ZanataSecured
+
 @Slf4j
 public class LanguageJoinAction implements Serializable {
     private static final long serialVersionUID = 1L;

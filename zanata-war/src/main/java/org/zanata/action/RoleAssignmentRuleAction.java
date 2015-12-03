@@ -40,7 +40,6 @@ import org.zanata.dao.RoleAssignmentRuleDAO;
 import org.zanata.model.HRoleAssignmentRule;
 import org.zanata.seam.framework.EntityHome;
 import org.zanata.security.AuthenticationType;
-import org.zanata.security.annotations.ZanataSecured;
 
 /**
  * @author Carlos Munoz <a
@@ -48,7 +47,7 @@ import org.zanata.security.annotations.ZanataSecured;
  */
 @Named("roleAssignmentRuleAction")
 @RequestScoped
-@ZanataSecured
+
 @CheckRole("admin")
 public class RoleAssignmentRuleAction extends EntityHome<HRoleAssignmentRule>
         implements Serializable {

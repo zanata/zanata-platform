@@ -17,7 +17,6 @@ import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import org.zanata.async.AsyncTaskHandle;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.SearchIndexManager;
 
 import com.google.common.base.Optional;
@@ -26,7 +25,7 @@ import com.google.common.base.Optional;
 @Named("reindexAction")
 @Slf4j
 @javax.enterprise.context.Dependent
-@ZanataSecured
+
 @CheckRole("admin")
 public class ReindexAction implements Serializable {
     private static final long serialVersionUID = 1L;

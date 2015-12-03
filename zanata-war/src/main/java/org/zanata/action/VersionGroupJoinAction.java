@@ -47,7 +47,6 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.EmailService;
 import org.zanata.service.VersionGroupService;
 
@@ -60,7 +59,7 @@ import com.google.common.collect.Lists;
 
 @Named("versionGroupJoinAction")
 @javax.faces.bean.ViewScoped
-@ZanataSecured
+
 @Slf4j
 public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
         implements Serializable {

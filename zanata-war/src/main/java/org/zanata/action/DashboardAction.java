@@ -44,7 +44,6 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.ActivityService;
 import org.zanata.service.GravatarService;
 import org.zanata.ui.AbstractListFilter;
@@ -60,7 +59,7 @@ import lombok.Getter;
 
 @Named("dashboardAction")
 @javax.faces.bean.ViewScoped
-@ZanataSecured
+
 @CheckLoggedIn
 public class DashboardAction implements Serializable {
     private static final long serialVersionUID = 1L;
