@@ -113,7 +113,7 @@ public class ChangePasswordTest extends ZanataTestCase {
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changePasswordAreOfRequiredLength() throws Exception {
         String tooShort = "test5";
-        String tooLong = "mvvilzlkwwtpcdtjvjfaxntohgeeznxjucisdvaizmefykqmxgnzorilfyfwuvkuaueaegjxpnehowfgxrhsjrelqskxzecsnyxpkmchdbuljslbbljlzzlrbsbxmyfhutmkpwnvxdouutivnzvpgznvpfoqlgqmipnfonbsidvzcuqymhjqvovgdxxpcwnuddjzjtjvruehwkiyqnppxdlqihqeefmcutgwrxvphsxcsiujqrjaxahfwkyyzasnyimupdilmligtywifloxnfzyyjapzghtswxcutcttofuxxisdclaeljabuisrwjyoeydhbezrfwzxenxykmutceavfyvscrvfeqwfcwcattfpiakvbucfqpqublprkwupjgfuzzdygnntnpvfmgyooozhqntvpxkvhlxevajskwflkzlznypwhnevyxhqnpsdawkkhpanoegykwywcvqbrxnepanfrkidpyjzgsktlaxeakksvvedttcppsavecenomvjtteioarqhzbsnfjpotenjzomvrjgiyihwgsrfdqlkasfmhtnnnputtnmjlposewbqqdunyfaoifdkalngzavbqfpaqbtkcjuqotbsdbctubklxswgmsgjgxwvrcigcrlpgnqwhdzqmxhmcgetzmxmynqhlskmpizuhwwjbyqejbzotbowoedwzabbuotlkadtdmdsokmzduhdxxdcsiotodowgjfenybikfhctdkwmyrnnygtadbtksbvyslxtxnhzzxjctxutvdzzynzdfifzvogocwwgckegzxfxkdwqiodcyfkyljzfyfmwaoqjfknkfhudsrwaqddznwkskawzhyqcmgtgaomuqxollsempcuymlhyqfegkroqchyllcupybuygdcusizfyroukqfovbdugnptoxlhzrdzynrckzsslbryoihgqeqeketljnnpvkauubvebdoitiuawlkcqnunbdqhfkuqvgrhibqgxqqenxpbvfqcrybuya";
+        String tooLong = RandomStringUtils.randomAlphanumeric(1025);
         DashboardAccountTab dashboardAccountTab = new LoginWorkFlow()
                 .signIn("translator", "translator")
                 .goToSettingsTab()
