@@ -21,15 +21,17 @@
         return jQuery('#' + jqSelector('#{rich:clientId('inactiveAccountForm')}'));
       }
 
-      getInactiveAccountForm().keypress(function(e) {
-        if(e.which == 13) {
-          if(getNewEmailField().is(":focus")) {
-            e.preventDefault();
-            e.stopPropagation();
-            jQuery('#' + jqSelector('#{rich:clientId('updateEmail')}')).click();
-            return false;
+      jQuery(document).ready(function() {
+        getInactiveAccountForm().keypress(function(e) {
+          if(e.which == 13) {
+            if(getNewEmailField().is(":focus")) {
+              e.preventDefault();
+              e.stopPropagation();
+              jQuery('#' + jqSelector('#{rich:clientId('updateEmail')}')).click();
+              return false;
+            }
           }
-        }
+        });
       });
     </script>
 
