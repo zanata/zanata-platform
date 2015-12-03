@@ -226,6 +226,7 @@
     <navigation-case>
       <from-outcome>success</from-outcome>
       <to-view-id>/admin/usermanager.xhtml</to-view-id>
+      <redirect/>
     </navigation-case>
   </navigation-rule>
 

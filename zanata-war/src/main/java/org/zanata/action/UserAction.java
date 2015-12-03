@@ -26,6 +26,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.exception.ConstraintViolationException;
 import javax.inject.Inject;
 import org.apache.deltaspike.core.api.exclude.Exclude;
@@ -103,6 +104,7 @@ public class UserAction implements Serializable {
     private String confirm;
     private boolean enabled;
 
+    @Transactional
     public void deleteUser(String userName) {
         try {
             identityManager.deleteUser(userName);
