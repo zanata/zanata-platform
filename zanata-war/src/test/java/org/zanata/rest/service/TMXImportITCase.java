@@ -100,6 +100,7 @@ public class TMXImportITCase extends ArquillianTest {
         identity.setApiKey("b6d7044e9ee3b2447c28fb7c50d86d98");
         identity.acceptExternallyAuthenticatedPrincipal(
                 new SimplePrincipal("admin"));
+        identity.addRole("admin");
     }
 
     @Test

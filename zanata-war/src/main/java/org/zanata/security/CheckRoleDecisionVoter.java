@@ -53,8 +53,13 @@ public class CheckRoleDecisionVoter extends AbstractAccessDecisionVoter {
             boolean result = identity.hasRole(hasRole.value());
 
             if (!result) {
-                violations.add(CheckRoleSecurityViolation
-                        .instance(hasRole.value()));
+                boolean loggedIn = identity.isLoggedIn();
+                if (!loggedIn) {
+                    violations.add(newSecurityViolation("Not logged in"));
+                } else {
+                    violations.add(CheckRoleSecurityViolation
+                            .instance(hasRole.value()));
+                }
             }
         }
     }
