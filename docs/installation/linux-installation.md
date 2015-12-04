@@ -25,7 +25,7 @@ There are two ways to install zanata-client, via `0install` or `yum`.
 
 2. Install package `zanata-cli-bin`
 
-        sudo yum -y zanata-cli-bin
+        sudo yum -y install zanata-cli-bin
 
 3. It should be done now. Run `zanata-cli --help` for the usage of the client.
 
@@ -70,7 +70,7 @@ There are two ways to install zanata-client, via `0install` or `yum`.
 
 2. Install package `zanata-cli-bin`
 
-        sudo yum -y zanata-cli-bin
+        sudo yum -y install zanata-cli-bin
 
 3. It should be done now. Run `zanata-cli --help` for the usage of the client.
 
