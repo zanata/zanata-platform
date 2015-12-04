@@ -26,6 +26,7 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataTest;
 import org.zanata.lock.Lock;
+import org.zanata.model.HAccount;
 import org.zanata.seam.SeamAutowire;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -50,11 +51,12 @@ public class LockManagerServiceImplTest extends ZanataTest {
     @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
-        // @formatter:off
+        HAccount account = new HAccount();
+        account.setUsername("admin");
         lockManagerService = SeamAutowire.instance()
-            .reset()
-            .autowire(LockManagerServiceImpl.class);
-        // @formatter:on
+                .reset()
+                .use(HAccount.class, account)
+                .autowire(LockManagerServiceImpl.class);
 
     }
 

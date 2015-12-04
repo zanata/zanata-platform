@@ -36,6 +36,7 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.LocaleRole;
 import org.zanata.model.ProjectRole;
+import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.security.permission.GrantsPermission;
 import org.zanata.util.HttpUtil;
 import org.zanata.util.ServiceLocator;
@@ -546,7 +547,7 @@ public class SecurityFunctions {
 
     private static final Optional<HAccount> getAuthenticatedAccount() {
         return Optional.fromNullable(ServiceLocator.instance().getInstance(
-                ZanataJpaIdentityStore.AUTHENTICATED_USER, HAccount.class));
+                HAccount.class, new AuthenticatedLiteral()));
     }
 
     private static final <T> T extractTarget(Object[] array, Class<T> type) {

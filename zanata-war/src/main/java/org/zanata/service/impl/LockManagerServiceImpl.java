@@ -29,6 +29,7 @@ import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.lock.Lock;
 import org.zanata.lock.LockNotAcquiredException;
 import org.zanata.model.HAccount;
+import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.service.LockManagerService;
 import org.zanata.util.ServiceLocator;
 
@@ -76,8 +77,8 @@ public class LockManagerServiceImpl implements LockManagerService {
 
     private String getCurrentUser() {
         HAccount user =
-                ServiceLocator.instance().getInstance(
-                        ZanataJpaIdentityStore.AUTHENTICATED_USER, HAccount.class);
+                ServiceLocator.instance().getInstance(HAccount.class,
+                        new AuthenticatedLiteral());
         String newLocker = user != null ? user.getUsername() : "unknown";
         return newLocker;
     }

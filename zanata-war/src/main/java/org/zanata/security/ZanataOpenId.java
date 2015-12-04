@@ -46,6 +46,7 @@ import org.zanata.events.LoginCompleted;
 import org.zanata.events.PostAuthenticateEvent;
 import org.zanata.model.HAccount;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
+import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.security.openid.FedoraOpenIdProvider;
 import org.zanata.security.openid.GenericOpenIdProvider;
 import org.zanata.security.openid.GoogleOpenIdProvider;
@@ -251,8 +252,7 @@ public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
             if (Contexts.isRequestContextActive()) {
                 HAccount authenticatedAccount =
                         ServiceLocator.instance().getInstance(
-                                ZanataJpaIdentityStore.AUTHENTICATED_USER,
-                                HAccount.class);
+                                HAccount.class, new AuthenticatedLiteral());
                 postAuthenticateEvent.fire(new PostAuthenticateEvent(
                         authenticatedAccount));
             }

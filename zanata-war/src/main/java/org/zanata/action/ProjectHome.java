@@ -1163,7 +1163,7 @@ public class ProjectHome extends SlugHome<HProject> implements
                             .findByUsername(getSelectedItem());
             getInstance().addMaintainer(maintainer);
             ProjectHome projectHome = ServiceLocator.instance()
-                    .getInstance("projectHome", ProjectHome.class);
+                    .getInstance(ProjectHome.class);
             projectHome.update();
             reset();
             maintainerFilter.reset();
