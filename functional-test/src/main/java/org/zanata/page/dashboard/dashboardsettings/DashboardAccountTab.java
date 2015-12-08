@@ -37,7 +37,7 @@ public class DashboardAccountTab extends DashboardBasePage {
     public static final String FIELD_EMPTY_ERROR = "may not be empty";
 
     public static final String PASSWORD_LENGTH_ERROR =
-            "size must be between 6 and 20";
+            "size must be between 6 and 1024";
 
     public static final String EMAIL_TAKEN_ERROR =
             "This email address is already taken";

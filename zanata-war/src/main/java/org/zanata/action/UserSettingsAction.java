@@ -126,7 +126,7 @@ public class UserSettingsAction {
     @Getter
     @Setter
     @NotEmpty
-    @Size(min = 6, max = 20)
+    @Size(min = 6, max = 1024)
     private String newPassword;
 
     @Getter
