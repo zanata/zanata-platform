@@ -440,6 +440,14 @@
     </redirect>
   </exception>
 
+  <exception class="org.apache.catalina.connector.ClientAbortException" log-level="debug">
+    <redirect view-id="/error.xhtml">
+      <message severity="error">
+        #{msgs['jsf.Error']} #{org.jboss.seam.handledException.message}
+      </message>
+    </redirect>
+  </exception>
+
   <exception class="org.richfaces.exception.FileUploadException" log-level="warn">
     <redirect view-id="/error.xhtml">
       <message severity="error">

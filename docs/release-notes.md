@@ -2,6 +2,10 @@
 
 <h5>Bug fixes</h5>
 * [ZNTA-804](https://zanata.atlassian.net/browse/ZNTA-804) - Coordinators' email addresses should be BCC in Contact Coordinator
+<h5>Bug fixes</h5>
+* [ZNTA-693](https://zanata.atlassian.net/browse/ZNTA-693) - Handle ClientAbortException exception and reduce severity.
+
+
 
 ## 3.8
 <h5>Infrastructure Changes</h5>
