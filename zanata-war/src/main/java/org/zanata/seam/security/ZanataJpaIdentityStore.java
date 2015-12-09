@@ -31,15 +31,12 @@ import java.util.List;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
-import org.apache.deltaspike.core.api.exclude.Exclude;
-import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -87,6 +84,9 @@ public class ZanataJpaIdentityStore implements Serializable {
 
     @Inject
     private Instance<AuthenticatedAccountHolder> authenticatedAccountHolders;
+
+    @Inject
+    private EntityManager entityManager;
 
     public boolean apiKeyAuthenticate(String username, String apiKey) {
         HAccount user = lookupUser(username);
@@ -187,7 +187,7 @@ public class ZanataJpaIdentityStore implements Serializable {
     }
 
     public List<String> listUsers() {
-        List<String> users = entityManager().createQuery(
+        List<String> users = entityManager.createQuery(
                 "select u.username from HAccount u")
                 .getResultList();
         Collections.sort(users, new Comparator<String>() {
@@ -206,7 +206,7 @@ public class ZanataJpaIdentityStore implements Serializable {
                     + "' does not exist");
         }
 
-        entityManager().remove(user);
+        entityManager.remove(user);
         return true;
     }
 
@@ -238,7 +238,7 @@ public class ZanataJpaIdentityStore implements Serializable {
             }
 
 
-            entityManager().persist(user);
+            entityManager.persist(user);
 
             getUserCreatedEvent().fire(new UserCreatedEvent(user));
 
@@ -354,7 +354,7 @@ public class ZanataJpaIdentityStore implements Serializable {
     public HAccount lookupUser(String username) {
         try {
             HAccount user =
-                    entityManager()
+                    entityManager
                             .createQuery(
                                     "select u from HAccount u where u.username = :username",
                                     HAccount.class)
@@ -369,7 +369,7 @@ public class ZanataJpaIdentityStore implements Serializable {
 
     public HAccountRole lookupRole(String role) {
         try {
-            return entityManager().createQuery(
+            return entityManager.createQuery(
                     "select r from HAccountRole r where name = :role", HAccountRole.class)
                     .setParameter("role", role)
                     .getSingleResult();
@@ -442,7 +442,7 @@ public class ZanataJpaIdentityStore implements Serializable {
 
     private List<String> listUserMembers(String role) {
         HAccountRole roleEntity = lookupRole(role);
-        return entityManager().createQuery("select u.username" +
+        return entityManager.createQuery("select u.username" +
                 " from HAccount u where :role member of u.roles")
                 .setParameter("role", roleEntity)
                 .getResultList();
@@ -490,7 +490,7 @@ public class ZanataJpaIdentityStore implements Serializable {
             removeRoleFromGroup(r, role);
         }
 
-        entityManager().remove(roleToDelete);
+        entityManager.remove(roleToDelete);
         return true;
     }
 
@@ -524,7 +524,7 @@ public class ZanataJpaIdentityStore implements Serializable {
 
             HAccountRole newRole = new HAccountRole();
             newRole.setName(role);
-            entityManager().persist(newRole);
+            entityManager.persist(newRole);
 
             return true;
         } catch (Exception ex) {
@@ -564,27 +564,24 @@ public class ZanataJpaIdentityStore implements Serializable {
     }
 
     public List<String> listGrantableRoles() {
-        return entityManager().createQuery(
+        return entityManager.createQuery(
                 "select r.name from HAccountRole r where r.conditional" + " = false")
                 .getResultList();
     }
 
     public List<String> listRoles() {
-        return entityManager().createQuery(
+        return entityManager.createQuery(
                 "select r.name from HAccountRole r").getResultList();
     }
 
     private List<String> listRoleMembers(String role) {
         HAccountRole roleEntity = lookupRole(role);
 
-        return entityManager().createQuery("select r.name" +
+        return entityManager.createQuery("select r.name" +
                 " from HAccountRole r where :role member of r.groups")
                 .setParameter("role", roleEntity)
                 .getResultList();
 
     }
 
-    private EntityManager entityManager() {
-        return ServiceLocator.instance().getEntityManager();
-    }
 }

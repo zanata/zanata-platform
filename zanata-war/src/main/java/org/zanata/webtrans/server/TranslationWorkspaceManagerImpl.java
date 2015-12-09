@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -32,7 +33,6 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.service.GravatarService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.ValidationService;
-import org.zanata.util.ServiceLocator;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
@@ -46,7 +46,6 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
 import org.zanata.webtrans.shared.rpc.WorkspaceContextUpdate;
 
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
 import com.google.common.collect.HashMultimap;
@@ -67,6 +66,21 @@ import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 public class TranslationWorkspaceManagerImpl implements
         TranslationWorkspaceManager {
 
+    @Inject
+    private GravatarService gravatarServiceImpl;
+
+    @Inject
+    private ProjectIterationDAO projectIterationDAO;
+
+    @Inject
+    private EntityManager entityManager;
+
+    @Inject
+    private LocaleService localeServiceImpl;
+
+    @Inject
+    private ValidationService validationServiceImpl;
+
     private final ConcurrentHashMap<WorkspaceId, TranslationWorkspace> workspaceMap;
     private final Multimap<ProjectIterationId, TranslationWorkspace> projIterWorkspaceMap;
     private final EventRegistry eventRegistry;
@@ -79,45 +93,6 @@ public class TranslationWorkspaceManagerImpl implements
         this.projIterWorkspaceMap = Multimaps.synchronizedMultimap(piwm);
         this.eventRegistry =
                 EventRegistryFactory.getInstance().getEventRegistry();
-    }
-
-    // TODO Requesting component by name for testability. This should be fixed
-    // in subsequent versions of AutoWire
-    AccountDAO getAccountDAO() {
-        return ServiceLocator.instance().getInstance("accountDAO",
-                AccountDAO.class);
-    }
-
-    // TODO Requesting component by name for testability. This should be fixed
-    // in subsequent versions of AutoWire
-    GravatarService getGravatarService() {
-        return ServiceLocator.instance().getInstance("gravatarServiceImpl",
-                GravatarService.class);
-    }
-
-    // TODO Requesting component by name for testability. This should be fixed
-    // in subsequent versions of AutoWire
-    ProjectIterationDAO getProjectIterationDAO() {
-        return ServiceLocator.instance().getInstance("projectIterationDAO",
-                ProjectIterationDAO.class);
-    }
-
-    EntityManager getEntityManager() {
-        return ServiceLocator.instance().getEntityManager();
-    }
-
-    // TODO Requesting component by name for testability. This should be fixed
-    // in subsequent versions of AutoWire
-    LocaleService getLocaleService() {
-        return ServiceLocator.instance().getInstance("localeServiceImpl",
-                LocaleService.class);
-    }
-
-    // TODO Requesting component by name for testability. This should be fixed
-    // in subsequent versions of AutoWire
-    ValidationService getValidationService() {
-        return ServiceLocator.instance().getInstance("validationServiceImpl",
-                ValidationService.class);
     }
 
     public void start(@Observes ServerStarted payload) {
@@ -155,7 +130,7 @@ public class TranslationWorkspaceManagerImpl implements
                 ExitWorkspace event =
                         new ExitWorkspace(editorClientId, new Person(
                                 new PersonId(username), personName,
-                                getGravatarService().getUserImageUrl(16,
+                                gravatarServiceImpl.getUserImageUrl(16,
                                         personEmail)));
                 workspace.publish(event);
             }
@@ -181,7 +156,7 @@ public class TranslationWorkspaceManagerImpl implements
 
     void projectUpdate(HProject project, String oldProjectSlug) {
         // need to reload the entity since it's in separate thread/transaction
-        project = getEntityManager().find(HProject.class, project.getId());
+        project = entityManager.find(HProject.class, project.getId());
         String projectSlug = project.getSlug();
         log.info("Project newSlug={}, oldSlug={} updated, status={}",
                 projectSlug, oldProjectSlug, project.getStatus());
@@ -202,7 +177,7 @@ public class TranslationWorkspaceManagerImpl implements
             Optional<String> oldProjectSlug, Optional<String> oldIterationSlug) {
         HashMap<ValidationId, State> validationStates = Maps.newHashMap();
 
-        for (ValidationAction validationAction : getValidationService()
+        for (ValidationAction validationAction : validationServiceImpl
                 .getValidationActions(projectIteration.getProject().getSlug(),
                         projectIteration.getSlug())) {
             validationStates.put(validationAction.getId(),
@@ -347,7 +322,7 @@ public class TranslationWorkspaceManagerImpl implements
         String iterationSlug =
                 workspaceId.getProjectIterationId().getIterationSlug();
         HProjectIteration projectIteration =
-                getProjectIterationDAO().getBySlug(projectSlug, iterationSlug);
+                projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 
         if (projectIteration == null) {
             throw new NoSuchWorkspaceException("Invalid workspace Id");
@@ -360,7 +335,7 @@ public class TranslationWorkspaceManagerImpl implements
             throw new NoSuchWorkspaceException("Project Iteration is obsolete");
         }
         HLocale locale =
-                getLocaleService().getByLocaleId(workspaceId.getLocaleId());
+                localeServiceImpl.getByLocaleId(workspaceId.getLocaleId());
         if (locale == null) {
             throw new NoSuchWorkspaceException("Invalid Workspace Locale");
         }

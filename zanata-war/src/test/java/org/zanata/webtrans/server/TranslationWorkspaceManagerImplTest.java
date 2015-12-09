@@ -82,7 +82,6 @@ public class TranslationWorkspaceManagerImplTest extends ZanataTest {
         // @formatter:off
       manager = SeamAutowire.instance()
             .reset()
-            .use("accountDAO", accountDAO)
             .use("gravatarServiceImpl", gravatarServiceImpl)
             .use("projectIterationDAO", projectIterationDAO)
             .use("localeServiceImpl", localeServiceImpl)

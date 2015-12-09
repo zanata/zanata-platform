@@ -40,6 +40,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.service.GravatarService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SecurityService;
@@ -197,8 +198,7 @@ public class ActivateWorkspaceHandler extends
 
     protected Person retrievePerson() {
         HAccount authenticatedAccount = ServiceLocator.instance()
-                .getInstance(ZanataJpaIdentityStore.AUTHENTICATED_USER,
-                        HAccount.class);
+                .getInstance(HAccount.class, new AuthenticatedLiteral());
         return new Person(new PersonId(authenticatedAccount.getUsername()),
                 authenticatedAccount.getPerson().getName(),
                 gravatarServiceImpl.getUserImageUrl(16, authenticatedAccount

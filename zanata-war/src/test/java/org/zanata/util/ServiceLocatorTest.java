@@ -86,7 +86,7 @@ public class ServiceLocatorTest {
     @Test
     public void dependentBeanByName() throws Exception {
         DependentTestBean got =
-                locator.getInstance("dependentTestBean", DependentTestBean.class);
+                locator.getInstance(DependentTestBean.class);
         assertThat(got).isNotEqualTo(dependentBean);
         assertThat(got.getClass()).isEqualTo(dependentBean.getClass());
     }
@@ -98,7 +98,7 @@ public class ServiceLocatorTest {
 
     @Test
     public void explicitlyNamedBeanByName() throws Exception {
-        assertThat(locator.getInstance("myNamedBean", ExplicitlyNamedBean.class)).isEqualTo(myNamedBean);
+        assertThat(locator.getInstance(ExplicitlyNamedBean.class)).isEqualTo(myNamedBean);
     }
 
     @Test
@@ -108,7 +108,7 @@ public class ServiceLocatorTest {
 
     @Test
     public void namedBeanByName() throws Exception {
-        assertThat(locator.getInstance("namedBean", NamedBean.class)).isEqualTo(namedBean);
+        assertThat(locator.getInstance(NamedBean.class)).isEqualTo(namedBean);
     }
 
 }
