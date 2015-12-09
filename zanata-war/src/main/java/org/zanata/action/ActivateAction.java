@@ -20,10 +20,13 @@
  */
 package org.zanata.action;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.jboss.seam.ScopeType;
@@ -31,17 +34,16 @@ import org.jboss.seam.annotations.Begin;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.faces.Redirect;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.exception.KeyNotFoundException;
 import org.zanata.exception.ActivationLinkExpiredException;
 import org.zanata.model.HAccountActivationKey;
 import org.zanata.seam.security.AbstractRunAsOperation;
 import org.zanata.seam.security.IdentityManager;
-import org.zanata.ui.faces.FacesMessages;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.zanata.ui.faces.FacesMessages;
 
 @Name("activate")
 @Scope(ScopeType.CONVERSATION)
@@ -57,10 +59,6 @@ public class ActivateAction implements Serializable {
     @In
     private IdentityManager identityManager;
 
-    //TODO [CDI] change to urlUtil
-    @In
-    private Redirect redirect;
-
     @In("jsfMessages")
     private FacesMessages facesMessages;
 
@@ -71,7 +69,7 @@ public class ActivateAction implements Serializable {
     private HAccountActivationKey key;
 
     @Begin(join = true)
-    public void validateActivationKey() {
+    public void validateAndActivateAccount() throws IOException {
         if (getActivationKey() == null) {
             throw new KeyNotFoundException("null activation key");
         }
@@ -87,19 +85,12 @@ public class ActivateAction implements Serializable {
             throw new ActivationLinkExpiredException("Activation link expired:"
                     + getActivationKey());
         }
-    }
 
-    private boolean isExpired(Date creationDate, int activeDays) {
-        Date expiryDate = DateUtils.addDays(creationDate, activeDays);
-        return expiryDate.before(new Date());
-    }
-
-    public void activate() {
         new AbstractRunAsOperation() {
             public void execute() {
                 identityManager.enableUser(key.getAccount().getUsername());
                 identityManager.grantRole(key.getAccount().getUsername(),
-                        "user");
+                    "user");
             }
         }.addRole("admin").run();
         accountActivationKeyDAO.makeTransient(key);
@@ -107,8 +98,14 @@ public class ActivateAction implements Serializable {
         facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
             "Your account was successfully activated. You can now sign in.");
 
-        redirect.setConversationPropagationEnabled(true);
-        redirect.setViewId("/account/login.xhtml");
-        redirect.execute();
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext ec = context.getExternalContext();
+        ec.getFlash().setKeepMessages(true);
+        ec.redirect(ec.getRequestContextPath() + "/account/sign_in");
+    }
+
+    private boolean isExpired(Date creationDate, int activeDays) {
+        Date expiryDate = DateUtils.addDays(creationDate, activeDays);
+        return expiryDate.before(new Date());
     }
 }

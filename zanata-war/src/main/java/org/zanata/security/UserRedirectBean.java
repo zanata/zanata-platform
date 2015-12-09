@@ -173,7 +173,7 @@ public class UserRedirectBean implements Serializable {
 
     // provided user is logged in, they should be redirect to dashboard
     public boolean shouldRedirectToDashboard() {
-        return isRedirectToHome() || isRedirectToRegister() || isRedirectToLoginPage();
+        return !isRedirect() || isRedirectToHome() || isRedirectToRegister() || isRedirectToLoginPage();
     }
 
     private boolean isRedirectTo(String url) {
