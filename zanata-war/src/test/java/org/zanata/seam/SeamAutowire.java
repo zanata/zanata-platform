@@ -67,8 +67,8 @@ import org.zanata.util.AutowireLocator;
  * </p>
  * <p>
  * Supports beans injected using: {@link javax.inject.Inject},
- * {@link org.zanata.util.ServiceLocator#getInstance(String, Class)} and similar methods...
- * and which have no-arg constructors.
+ * {@link org.zanata.util.ServiceLocator#getInstance(java.lang.Class, java.lang.annotation.Annotation...)}
+ * and similar methods... and which have no-arg constructors.
  * </p>
  * <p>
  * Limitations:

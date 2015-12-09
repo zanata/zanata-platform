@@ -26,6 +26,9 @@ public abstract class EntityHome<E> extends Home<EntityManager, E> {
     @Inject
     private UserTransaction transaction;
 
+    @Inject
+    private EntityManager entityManager;
+
     /**
      * Run on {@link EntityHome} instantiation. <br />
      * Validates that an {@link EntityManager} is available.
@@ -167,7 +170,7 @@ public abstract class EntityHome<E> extends Home<EntityManager, E> {
      * The Seam Managed Persistence Context used by this Home component
      */
     public EntityManager getEntityManager() {
-        return ServiceLocator.instance().getEntityManager();
+        return entityManager;
     }
 
 }

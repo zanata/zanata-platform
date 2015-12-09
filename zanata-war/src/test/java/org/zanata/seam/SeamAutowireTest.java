@@ -89,10 +89,10 @@ public class SeamAutowireTest extends ZanataDbunitJpaTest {
 
     @Test
     public void testComponentInvocation() {
-        SeamAutowire.instance().use("component", "This is the component!");
+        SeamAutowire.instance().use("string", "This is the component!");
 
         String val =
-                ServiceLocator.instance().getInstance("component", String.class);
+                ServiceLocator.instance().getInstance(String.class);
 
         assertThat(val, is("This is the component!"));
     }

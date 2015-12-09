@@ -28,8 +28,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 public interface IServiceLocator {
-    @Deprecated
-    <T> BeanHolder<T> getDependent(String name, Class<T> clazz);
 
     /**
      * Returns a BeanHolder for the relevant CDI bean, which must be
@@ -45,9 +43,6 @@ public interface IServiceLocator {
     <T> BeanHolder<T> getDependent(Class<T> clazz,
             Annotation... qualifiers);
 
-    @Deprecated
-    <T> T getInstance(String name, Class<T> clazz);
-
     /**
      * Resolves a bean by type and qualifiers
      * @param clazz type of the requested bean
@@ -57,15 +52,6 @@ public interface IServiceLocator {
      * @throws IllegalStateException if the bean could not be found.
      */
     <T> T getInstance(Class<T> clazz, Annotation... qualifiers);
-
-    @Deprecated
-    <T> T getInstance(String name, Object scope, Class<T> clazz);
-
-    /**
-     * @deprecated Use class and/or qualifiers, not name
-     */
-    @Deprecated
-    <T> Optional<T> getOptionalInstance(String name, Class<T> clazz);
 
     <T> Optional<T> getOptionalInstance(Class<T> clazz, Annotation... qualifiers);
 

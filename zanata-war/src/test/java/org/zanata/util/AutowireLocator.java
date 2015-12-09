@@ -57,18 +57,8 @@ public class AutowireLocator implements IServiceLocator {
 
     }
 
-    @Deprecated
-    public <T> BeanHolder<T> getDependent(String name, Class<T> clazz) {
-        return new BeanHolder<T>(getInstance(name, clazz));
-    }
-
     public <T> BeanHolder<T> getDependent(Class<T> clazz, Annotation... qualifiers) {
         return new BeanHolder<T>(getInstance(clazz, qualifiers));
-    }
-
-    @Deprecated
-    public <T> T getInstance(String name, Class<T> clazz) {
-        return (T) SeamAutowire.instance().getComponent(name);
     }
 
     public <T> T getInstance(Class<T> clazz, Annotation... qualifiers) {
@@ -86,20 +76,6 @@ public class AutowireLocator implements IServiceLocator {
         return SeamAutowire.instance().getComponent(clazz, qualifiers);
     }
 
-    public <T> T getInstance(String name, Object scope, Class<T> clazz) {
-        return getInstance(name, clazz);
-    }
-
-    /**
-     * @deprecated Use class and/or qualifiers, not name
-     */
-    @Deprecated
-    public <T> Optional<T> getOptionalInstance(String name, Class<T> clazz) {
-        log.warn("Still using name in getOptionalInstance({}, {})", name, clazz);
-        return Optional.ofNullable(
-                (T) SeamAutowire.instance().getComponent(name));
-    }
-
     public <T> Optional<T> getOptionalInstance(Class<T> clazz, Annotation... qualifiers) {
         return Optional.ofNullable(SeamAutowire.instance().getComponent(
                 clazz, qualifiers));
@@ -107,18 +83,18 @@ public class AutowireLocator implements IServiceLocator {
 
     @Override
     public EntityManager getEntityManager() {
-        return getInstance("entityManager", EntityManager.class);
+        return getInstance(EntityManager.class);
     }
 
     @Override
     public EntityManagerFactory getEntityManagerFactory() {
-        return getInstance("entityManagerFactory", EntityManagerFactory.class);
+        return getInstance(EntityManagerFactory.class);
     }
 
     @Override
     public <T> T getJndiComponent(String jndiName, Class<T> clazz)
             throws NamingException {
-        T instance = getInstance(jndiName, clazz);
+        T instance = (T) SeamAutowire.instance().getComponent(jndiName);
         if (instance == null) {
             throw new NamingException("component with JNDI name " + jndiName +
                     " has not been registered with Autowire");

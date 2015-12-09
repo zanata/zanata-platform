@@ -66,71 +66,15 @@ public class ServiceLocator implements IServiceLocator {
     private ServiceLocator() {
     }
 
-    /**
-     * @deprecated Use class and/or qualifiers, not name
-     */
-    @Override
-    @Deprecated
-    public <T> BeanHolder<T> getDependent(String name, Class<T> clazz) {
-        if (log.isDebugEnabled()) {
-            String caller = new Exception().getStackTrace()[1].getClassName();
-            log.debug("{} is still using name in getDependent({}, {})", caller,
-                    name, clazz);
-        }
-        return new BeanHolder<T>(BeanProvider.<T>getDependent(name));
-    }
-
     @Override
     public <T> BeanHolder<T> getDependent(Class<T> clazz,
             Annotation... qualifiers) {
         return new BeanHolder<T>(BeanProvider.getDependent(clazz, qualifiers));
     }
 
-    /**
-     * @deprecated Use class and/or qualifiers, not name
-     */
-    @Override
-    @Deprecated
-    public <T> T getInstance(String name, Class<T> clazz) {
-        if (log.isDebugEnabled()) {
-            String caller = new Exception().getStackTrace()[1].getClassName();
-            log.debug("{} is still using name in getInstance({}, {})", caller,
-                    name, clazz);
-        }
-        return BeanProvider.getContextualReference(name, false, clazz);
-    }
-
     @Override
     public <T> T getInstance(Class<T> clazz, Annotation... qualifiers) {
         return BeanProvider.getContextualReference(clazz, qualifiers);
-    }
-
-    /**
-     * @deprecated Use class and/or qualifiers, not name
-     */
-    @Override
-    @Deprecated
-    public <T> T getInstance(String name, Object scope, Class<T> clazz) {
-        if (log.isDebugEnabled()) {
-            String caller = new Exception().getStackTrace()[1].getClassName();
-            log.debug(
-                    "{} is still using name in getInstance({}, {}, {}) - scope ignored",
-                    caller, name, scope, clazz);
-        }
-        return BeanProvider.getContextualReference(name, false, clazz);
-    }
-
-    /**
-     * @deprecated Use class and/or qualifiers, not name
-     */
-    @Deprecated
-    public <T> Optional<T> getOptionalInstance(String name, Class<T> clazz) {
-        if (log.isDebugEnabled()) {
-            String caller = new Exception().getStackTrace()[1].getClassName();
-            log.debug("{} is still using name in getOptionalInstance({}, {})",
-                    caller, name, clazz);
-        }
-        return Optional.ofNullable(BeanProvider.getContextualReference(name, true, clazz));
     }
 
     public <T> Optional<T> getOptionalInstance(Class<T> clazz, Annotation... qualifiers) {
