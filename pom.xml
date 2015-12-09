@@ -1825,8 +1825,6 @@
 
         <!-- Versions of our compatibility modules for wildfly -->
         <module.wildfly.version>8.1.0.Final</module.wildfly.version>
-        <mojarra.module.version>2.1.29-01</mojarra.module.version>
-        <mojarra.module.name>wildfly-${module.wildfly.version}-module-mojarra-${mojarra.module.version}.zip</mojarra.module.name>
         <hibernate.module.version>4.2.19.Final</hibernate.module.version>
         <hibernate.module.name>wildfly-${module.wildfly.version}-module-hibernate-main-${hibernate.module.version}.zip</hibernate.module.name>
       </properties>
@@ -1849,9 +1847,7 @@
                 <configuration>
                   <target unless="skipITs">
                     <mkdir dir="${download.dir}" />
-                    <get src="http://sourceforge.net/projects/zanata/files/wildfly/${mojarra.module.name}/download" dest="${download.dir}/${mojarra.module.name}" skipexisting="true" />
                     <get src="http://sourceforge.net/projects/zanata/files/wildfly/${hibernate.module.name}/download" dest="${download.dir}/${hibernate.module.name}" skipexisting="true" />
-                    <unzip src="${download.dir}/${mojarra.module.name}" dest="${appserver.home}" />
                     <unzip src="${download.dir}/${hibernate.module.name}" dest="${appserver.home}" />
                   </target>
                 </configuration>
