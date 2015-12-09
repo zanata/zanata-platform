@@ -25,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -64,7 +65,7 @@ import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 
 @Named("webtrans.gwt.ActivateWorkspaceHandler")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @ActionHandlerFor(ActivateWorkspaceAction.class)
 @Slf4j
 public class ActivateWorkspaceHandler extends

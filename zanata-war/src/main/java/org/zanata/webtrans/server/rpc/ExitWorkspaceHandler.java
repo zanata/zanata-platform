@@ -3,6 +3,7 @@ package org.zanata.webtrans.server.rpc;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.security.ZanataIdentity;
@@ -13,7 +14,7 @@ import org.zanata.webtrans.shared.rpc.ExitWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
 
 @Named("webtrans.gwt.ExitWorkspaceHandler")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @ActionHandlerFor(ExitWorkspaceAction.class)
 public class ExitWorkspaceHandler extends
         AbstractActionHandler<ExitWorkspaceAction, NoOpResult> {

@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.lucene.queryParser.ParseException;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.LocaleId;
@@ -48,7 +50,7 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 @Named("webtrans.gwt.GetGlossaryHandler")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @ActionHandlerFor(GetGlossary.class)
 @Slf4j
 public class GetGlossaryHandler extends

@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.joda.time.DateTime;
@@ -54,7 +55,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 @Named("webtrans.gwt.GetTransUnitListHandler")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @ActionHandlerFor(GetTransUnitList.class)
 @Slf4j
 public class GetTransUnitListHandler extends

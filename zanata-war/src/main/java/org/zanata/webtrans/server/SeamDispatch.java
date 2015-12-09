@@ -2,12 +2,13 @@ package org.zanata.webtrans.server;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -23,6 +24,7 @@ import net.customware.gwt.dispatch.shared.Result;
 import net.customware.gwt.dispatch.shared.UnsupportedActionException;
 
 import org.apache.deltaspike.core.api.common.DeltaSpike;
+import org.apache.deltaspike.core.api.lifecycle.Initialized;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.exception.NotLoggedInException;
 import org.zanata.webtrans.server.rpc.AbstractActionHandler;
@@ -42,10 +44,9 @@ public class SeamDispatch implements Dispatch {
     private HttpServletRequest request;
 
     @Inject @Any
-    private Instance<AbstractActionHandler> actionHandlers;
+    private Instance<AbstractActionHandler<?, ?>> actionHandlers;
 
-    @PostConstruct
-    public void postConstruct() {
+    public void onStartup(@Observes @Initialized ServletContext context) {
         if (actionHandlers.isUnsatisfied()) {
             throw new RuntimeException("No ActionHandler beans found for injection");
         }
@@ -139,19 +140,16 @@ public class SeamDispatch implements Dispatch {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private <A extends Action<R>, R extends Result> ActionHandler<A, R>
             findHandler(A action) throws UnsupportedActionException {
-        Instance<AbstractActionHandler> handler = actionHandlers
-                .select(new ActionHandlerForQualifier() {
-                    public Class<? extends Action<?>> value() {
-                        return (Class<? extends Action<?>>) action.getClass();
-                    }
-                });
+        Instance<AbstractActionHandler<?, ?>> handler = actionHandlers
+                .select(new ActionHandlerForLiteral(
+                        (Class<A>) action.getClass()));
         if (handler.isUnsatisfied()) {
             throw new UnsupportedActionException(action);
         }
         if (handler.isAmbiguous()) {
             throw new RuntimeException("Found multiple ActionHandlers for " + action.getClass());
         }
-        return handler.get();
+        return (ActionHandler<A, R>) handler.get();
     }
 
     private <A extends Action<R>, R extends Result> void doRollback(A action,
@@ -192,9 +190,18 @@ public class SeamDispatch implements Dispatch {
         }
     }
 
-    abstract class ActionHandlerForQualifier
+    class ActionHandlerForLiteral
             extends AnnotationLiteral<ActionHandlerFor>
             implements ActionHandlerFor {
+        private final Class<? extends Action<?>> clazz;
+
+        public ActionHandlerForLiteral(Class<? extends Action<?>> clazz) {
+            this.clazz = clazz;
+        }
+        @Override
+        public Class<? extends Action<?>> value() {
+            return clazz;
+        }
     }
 
 }

@@ -23,6 +23,7 @@ package org.zanata.webtrans.server.rpc;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.security.ZanataIdentity;
@@ -43,7 +44,7 @@ import net.customware.gwt.dispatch.shared.ActionException;
  *
  */
 @Named("webtrans.gwt.PreviewReplaceTextHandler")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @ActionHandlerFor(PreviewReplaceText.class)
 public class PreviewReplaceTextHandler extends
         AbstractActionHandler<PreviewReplaceText, PreviewReplaceTextResult> {

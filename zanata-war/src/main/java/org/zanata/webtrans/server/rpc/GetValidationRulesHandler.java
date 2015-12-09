@@ -31,6 +31,7 @@ import org.zanata.webtrans.shared.model.*;
 import org.zanata.webtrans.shared.model.ValidationAction.*;
 import org.zanata.webtrans.shared.rpc.*;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -41,7 +42,7 @@ import javax.inject.Named;
  */
 @Named("getValidationRulesHandler")
 @ActionHandlerFor(GetValidationRulesAction.class)
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class GetValidationRulesHandler
         extends
         AbstractActionHandler<GetValidationRulesAction, GetValidationRulesResult> {

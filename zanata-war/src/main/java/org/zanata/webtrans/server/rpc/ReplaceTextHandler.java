@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -39,7 +40,7 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 @Named("webtrans.gwt.ReplaceTextHandler")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @ActionHandlerFor(ReplaceText.class)
 @Slf4j
 public class ReplaceTextHandler extends

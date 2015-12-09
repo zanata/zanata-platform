@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.exception.ZanataServiceException;
@@ -52,7 +53,7 @@ import net.customware.gwt.dispatch.shared.ActionException;
  * @author David Mason, damason@redhat.com
  */
 @Named("webtrans.gwt.GetProjectTransUnitListsHandler")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @ActionHandlerFor(GetProjectTransUnitLists.class)
 @Slf4j
 public class GetProjectTransUnitListsHandler

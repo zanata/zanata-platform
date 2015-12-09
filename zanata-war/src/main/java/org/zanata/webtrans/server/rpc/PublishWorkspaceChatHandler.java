@@ -27,6 +27,7 @@ import java.util.Date;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.security.ZanataIdentity;
@@ -38,7 +39,7 @@ import org.zanata.webtrans.shared.rpc.PublishWorkspaceChat;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatAction;
 
 @Named("webtrans.gwt.PublishWorkspaceChatHandler")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @ActionHandlerFor(PublishWorkspaceChatAction.class)
 public class PublishWorkspaceChatHandler extends
         AbstractActionHandler<PublishWorkspaceChatAction, NoOpResult> {

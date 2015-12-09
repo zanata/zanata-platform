@@ -25,6 +25,7 @@ import java.util.List;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.events.TextFlowTargetUpdateContextEvent;
@@ -44,7 +45,7 @@ import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
  * @see RevertTransUnitUpdates
  */
 @Named("webtrans.gwt.RevertTransUnitUpdatesHandler")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @ActionHandlerFor(RevertTransUnitUpdates.class)
 public class RevertTransUnitUpdatesHandler extends
         AbstractActionHandler<RevertTransUnitUpdates, UpdateTransUnitResult> {

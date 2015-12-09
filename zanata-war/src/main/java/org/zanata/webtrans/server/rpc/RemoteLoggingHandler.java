@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.security.ZanataIdentity;
@@ -16,7 +17,7 @@ import org.zanata.webtrans.shared.rpc.RemoteLoggingAction;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Named("webtrans.gwt.RemoteLoggingHandler")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @ActionHandlerFor(RemoteLoggingAction.class)
 @Slf4j
 public class RemoteLoggingHandler extends

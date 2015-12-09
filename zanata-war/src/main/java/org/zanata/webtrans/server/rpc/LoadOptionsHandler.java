@@ -27,6 +27,7 @@ import java.util.Map.Entry;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
@@ -48,7 +49,7 @@ import org.zanata.webtrans.shared.rpc.ThemesOption;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("loadOptionsHandler")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @ActionHandlerFor(LoadOptionsAction.class)
 public class LoadOptionsHandler extends
         AbstractActionHandler<LoadOptionsAction, LoadOptionsResult> {

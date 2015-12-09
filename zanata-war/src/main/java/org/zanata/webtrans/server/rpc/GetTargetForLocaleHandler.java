@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.dao.TextFlowTargetDAO;
@@ -17,7 +18,7 @@ import org.zanata.webtrans.shared.rpc.GetTargetForLocale;
 import org.zanata.webtrans.shared.rpc.GetTargetForLocaleResult;
 
 @Named("webtrans.gwt.GetTargetForLocaleHandler")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @ActionHandlerFor(GetTargetForLocale.class)
 @Slf4j
 public class GetTargetForLocaleHandler extends

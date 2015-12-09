@@ -21,6 +21,7 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.util.ArrayList;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.model.HLocale;
@@ -34,8 +35,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @Named("transUnitTransformer")
-@javax.enterprise.context.Dependent
-
+@RequestScoped
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransUnitTransformer {

@@ -3,6 +3,7 @@ package org.zanata.webtrans.server.rpc;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.dao.GlossaryDAO;
@@ -21,7 +22,7 @@ import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermAction;
 import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermResult;
 
 @Named("webtrans.gwt.UpdateGlossaryTermHandler")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @ActionHandlerFor(UpdateGlossaryTermAction.class)
 public class UpdateGlossaryTermHandler
         extends

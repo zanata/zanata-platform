@@ -6,6 +6,7 @@ import java.util.Map;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.dao.AccountDAO;
@@ -23,7 +24,7 @@ import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
 
 @Named("webtrans.gwt.GetTranslatorListHandler")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @ActionHandlerFor(GetTranslatorList.class)
 public class GetTranslatorListHandler extends
         AbstractActionHandler<GetTranslatorList, GetTranslatorListResult> {

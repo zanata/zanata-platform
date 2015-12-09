@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
@@ -43,7 +44,7 @@ import org.zanata.webtrans.shared.rpc.SaveOptionsResult;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("webtrans.gwt.SaveOptionsHandler")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @ActionHandlerFor(SaveOptionsAction.class)
 public class SaveOptionsHandler extends
         AbstractActionHandler<SaveOptionsAction, SaveOptionsResult> {

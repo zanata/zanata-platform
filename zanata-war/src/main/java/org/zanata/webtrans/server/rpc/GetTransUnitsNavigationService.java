@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.hibernate.transform.ResultTransformer;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.joda.time.format.DateTimeFormat;
@@ -44,7 +46,7 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 import lombok.extern.slf4j.Slf4j;
 
 @Named("getTransUnitsNavigationService")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @Slf4j
 public class GetTransUnitsNavigationService {
 

@@ -24,6 +24,7 @@ package org.zanata.webtrans.server.rpc;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.security.ZanataIdentity;
@@ -35,7 +36,7 @@ import org.zanata.webtrans.shared.rpc.TransUnitEdit;
 import org.zanata.webtrans.shared.rpc.TransUnitEditAction;
 
 @Named("webtrans.gwt.TransUnitEditHandler")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @ActionHandlerFor(TransUnitEditAction.class)
 public class TransUnitEditHandler extends
         AbstractActionHandler<TransUnitEditAction, NoOpResult> {

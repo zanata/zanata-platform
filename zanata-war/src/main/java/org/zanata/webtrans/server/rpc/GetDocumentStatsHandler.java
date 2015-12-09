@@ -3,6 +3,7 @@ package org.zanata.webtrans.server.rpc;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
@@ -19,7 +20,7 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 @Named("webtrans.gwt.GetDocumentStatsHandler")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @ActionHandlerFor(GetDocumentStats.class)
 public class GetDocumentStatsHandler extends
         AbstractActionHandler<GetDocumentStats, GetDocumentStatsResult> {

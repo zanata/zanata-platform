@@ -2,6 +2,7 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.model.HLocale;
@@ -19,7 +20,7 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 @Named("webtrans.gwt.GetLocaleListHandler")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @ActionHandlerFor(GetLocaleList.class)
 public class GetLocaleListHandler extends
         AbstractActionHandler<GetLocaleList, GetLocaleListResult> {

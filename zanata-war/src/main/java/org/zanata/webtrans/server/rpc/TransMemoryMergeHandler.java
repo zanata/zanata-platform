@@ -27,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.service.TransMemoryMergeService;
@@ -36,7 +37,7 @@ import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 @Named("webtrans.gwt.TransMemoryMergeHandler")
-@javax.enterprise.context.Dependent
+@RequestScoped
 @ActionHandlerFor(TransMemoryMerge.class)
 @Slf4j
 public class TransMemoryMergeHandler extends
