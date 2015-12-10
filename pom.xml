@@ -41,7 +41,7 @@
     <weld.se.version>${weld.version}</weld.se.version>
     <groovy.version>2.4.5</groovy.version>
     <guava.version>18.0</guava.version>
-    <gwt.version>2.6.1</gwt.version>
+    <gwt.version>2.7.0</gwt.version>
     <icu4j.version>50.1.1</icu4j.version>
     <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
     <lucene.version>3.6.2</lucene.version>
