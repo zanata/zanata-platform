@@ -22,6 +22,7 @@ package org.zanata.email;
 
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.mail.Session;
@@ -29,13 +30,14 @@ import javax.mail.Session;
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
+@ApplicationScoped
 public class MailSessionProducer {
 
     @Resource(mappedName = "java:jboss/mail/Default")
     private Session session;
 
     @Produces
-    @ApplicationScoped
+    @Dependent
     @Named("mailSession")
     public Session getSession() {
         return session;
