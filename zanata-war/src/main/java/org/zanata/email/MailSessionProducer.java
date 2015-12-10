@@ -21,6 +21,7 @@
 package org.zanata.email;
 
 import javax.annotation.Resource;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.mail.Session;
@@ -34,6 +35,7 @@ public class MailSessionProducer {
     private Session session;
 
     @Produces
+    @ApplicationScoped
     @Named("mailSession")
     public Session getSession() {
         return session;
