@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.context.Dependent;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -63,6 +64,7 @@ import com.google.common.base.Optional;
 
 //TODO damason: add thorough unit testing
 @Slf4j
+@Dependent
 @Named("translationDocumentUploader")
 public class TranslationDocumentUpload {
 

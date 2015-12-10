@@ -15,6 +15,7 @@ import org.zanata.security.annotations.CheckRole;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Named("userSearch")
+// TODO this should probably be ViewScoped or even RequestScoped (with changes in xhtml)
 @javax.enterprise.context.SessionScoped
 
 public class UserSearch implements Serializable {

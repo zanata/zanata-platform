@@ -6,6 +6,7 @@ import static org.zanata.common.EntityStatus.READONLY;
 import java.net.URI;
 
 import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
@@ -39,6 +40,7 @@ import org.zanata.security.ZanataIdentity;
 
 import com.google.common.base.Objects;
 
+@RequestScoped
 @Named("projectService")
 @Path(ProjectResource.SERVICE_PATH)
 @Transactional

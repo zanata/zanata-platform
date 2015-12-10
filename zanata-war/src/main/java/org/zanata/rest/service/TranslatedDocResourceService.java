@@ -24,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -66,6 +67,7 @@ import com.google.common.base.Optional;
  * This service allows clients to push and pull both source documents and
  * translations.
  */
+@RequestScoped
 @Named("translatedDocResourceService")
 @Path(TranslatedDocResource.SERVICE_PATH)
 @Slf4j

@@ -24,6 +24,7 @@ import static org.zanata.common.EntityStatus.OBSOLETE;
 import static org.zanata.common.EntityStatus.READONLY;
 
 import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
@@ -54,6 +55,7 @@ import org.zanata.service.ConfigurationService;
 
 import com.google.common.base.Objects;
 
+@RequestScoped
 @Named("projectIterationService")
 @Path(ProjectIterationResource.SERVICE_PATH)
 @Transactional

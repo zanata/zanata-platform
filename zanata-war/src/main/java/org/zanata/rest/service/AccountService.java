@@ -3,6 +3,7 @@ package org.zanata.rest.service;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.enterprise.context.RequestScoped;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -33,6 +34,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.rest.dto.Account;
 
+@RequestScoped
 @Named("accountService")
 @Path(AccountResource.SERVICE_PATH)
 @Slf4j

@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.util.Collections;
 
 import javax.annotation.Nonnull;
+import javax.enterprise.context.Dependent;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -68,6 +69,7 @@ import com.google.common.base.Strings;
 
 //TODO damason: add thorough unit testing
 @Slf4j
+@Dependent
 @Named("sourceDocumentUploader")
 public class SourceDocumentUpload {
 

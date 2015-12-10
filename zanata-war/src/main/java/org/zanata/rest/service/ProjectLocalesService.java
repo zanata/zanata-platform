@@ -24,6 +24,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.GenericEntity;
@@ -43,6 +44,7 @@ import org.zanata.service.LocaleService;
 
 import com.google.common.collect.Lists;
 
+@RequestScoped
 @Named("projectLocalesService")
 @Path(ProjectLocalesResource.SERVICE_PATH)
 public class ProjectLocalesService extends LocalesService implements ProjectLocalesResource {

@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -49,6 +50,7 @@ import org.zanata.util.ServiceLocator;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@RequestScoped
 @Named("serverConfigurationResource")
 @Path("/configurations")
 @Produces({"application/xml", "application/json"})

@@ -22,6 +22,7 @@ package org.zanata.tmx;
 
 import java.io.InputStream;
 
+import javax.enterprise.context.Dependent;
 import javax.persistence.EntityExistsException;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
@@ -59,7 +60,7 @@ import com.google.common.base.Throwables;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("tmxParser")
-
+@Dependent
 @Slf4j
 public class TMXParser {
     // Batch size to commit in a new transaction for long files

@@ -20,6 +20,7 @@
  */
 package org.zanata.rest.service;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.LocaleId;
@@ -36,6 +37,7 @@ import javax.ws.rs.core.Response.Status;
 import java.util.List;
 import java.util.Map;
 
+@RequestScoped
 @Named("projectIterationLocalesService")
 @Path(ProjectIterationLocalesService.SERVICE_PATH)
 public class ProjectIterationLocalesService extends LocalesService implements ProjectIterationLocalesResource {

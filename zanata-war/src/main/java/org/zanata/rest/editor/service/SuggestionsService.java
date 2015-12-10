@@ -23,6 +23,8 @@ package org.zanata.rest.editor.service;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.googlecode.totallylazy.Option;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -46,6 +48,7 @@ import static org.zanata.webtrans.shared.rpc.HasSearchType.*;
 /**
  * @see org.zanata.rest.editor.service.resource.SuggestionsResource
  */
+@RequestScoped
 @Named("editor.suggestionsService")
 @Path(SuggestionsResource.SERVICE_PATH)
 @Transactional

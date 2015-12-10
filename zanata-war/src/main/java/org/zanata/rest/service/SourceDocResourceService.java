@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
@@ -67,6 +68,7 @@ import org.zanata.service.LocaleService;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@RequestScoped
 @Named("sourceDocResourceService")
 @Path(SourceDocResource.SERVICE_PATH)
 @Slf4j

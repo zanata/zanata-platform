@@ -23,6 +23,7 @@ package org.zanata.rest.editor.service;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.GenericEntity;
@@ -49,6 +50,7 @@ import lombok.NoArgsConstructor;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
+@RequestScoped
 @Named("editor.statisticService")
 @Path(StatisticResource.SERVICE_PATH)
 @NoArgsConstructor

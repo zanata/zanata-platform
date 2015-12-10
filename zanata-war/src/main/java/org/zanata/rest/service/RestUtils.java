@@ -1,6 +1,7 @@
 package org.zanata.rest.service;
 
 import java.util.Set;
+import javax.enterprise.context.Dependent;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import javax.ws.rs.core.Response;
@@ -15,6 +16,7 @@ import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Dependent
 @Named("restUtils")
 public class RestUtils {
     private static final Logger log = LoggerFactory.getLogger(RestUtils.class);

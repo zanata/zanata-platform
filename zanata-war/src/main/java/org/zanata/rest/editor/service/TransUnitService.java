@@ -22,6 +22,7 @@ package org.zanata.rest.editor.service;
 
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
@@ -41,6 +42,7 @@ import org.zanata.service.LocaleService;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
+@RequestScoped
 @Named("editor.transUnitService")
 @Path(TransUnitResource.SERVICE_PATH)
 @Transactional

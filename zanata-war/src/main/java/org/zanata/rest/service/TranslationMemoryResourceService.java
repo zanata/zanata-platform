@@ -26,6 +26,7 @@ import java.util.concurrent.Future;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
@@ -61,6 +62,7 @@ import org.zanata.util.CloseableIterator;
 
 import com.google.common.base.Optional;
 
+@RequestScoped
 @Named("translationMemoryResource")
 @Path(TranslationMemoryResource.SERVICE_PATH)
 @Slf4j

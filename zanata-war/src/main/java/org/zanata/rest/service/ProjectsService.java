@@ -27,6 +27,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -52,6 +53,7 @@ import org.zanata.rest.dto.Project;
 
 import com.google.common.base.Objects;
 
+@RequestScoped
 @Named("projectsService")
 @Path(ProjectsResource.SERVICE_PATH)
 @Transactional

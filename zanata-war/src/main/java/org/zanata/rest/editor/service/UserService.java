@@ -1,6 +1,7 @@
 package org.zanata.rest.editor.service;
 
 import java.util.Set;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
@@ -30,6 +31,7 @@ import lombok.NoArgsConstructor;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
+@RequestScoped
 @Named("editor.userService")
 @Path(UserResource.SERVICE_PATH)
 @Transactional

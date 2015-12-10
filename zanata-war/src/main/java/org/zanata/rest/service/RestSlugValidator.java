@@ -22,6 +22,8 @@
 package org.zanata.rest.service;
 
 import javax.annotation.Nonnull;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.WebApplicationException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +47,7 @@ import org.zanata.service.LocaleService;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
+@Dependent
 @Named("restSlugValidator")
 @Slf4j
 public class RestSlugValidator {

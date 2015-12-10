@@ -16,6 +16,7 @@ import org.zanata.security.ZanataIdentity;
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Named("zanataRoleSearch")
+// TODO this should probably be ViewScoped or even RequestScoped (plus xhtml changes)
 @javax.enterprise.context.SessionScoped
 public class RoleSearch implements Serializable {
     private static final long serialVersionUID = 1734703030195353735L;

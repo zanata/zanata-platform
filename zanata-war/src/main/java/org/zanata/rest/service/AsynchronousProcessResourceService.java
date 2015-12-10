@@ -26,6 +26,8 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import org.jboss.resteasy.spi.NotFoundException;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -65,6 +67,7 @@ import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@RequestScoped
 @Named("asynchronousProcessResourceService")
 @Path(AsynchronousProcessResource.SERVICE_PATH)
 @Transactional

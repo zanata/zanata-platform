@@ -23,6 +23,7 @@ package org.zanata.rest.editor.service;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
@@ -41,6 +42,7 @@ import com.google.common.collect.Lists;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
+@RequestScoped
 @Named("editor.localesService")
 @Path(LocalesResource.SERVICE_PATH)
 @Transactional

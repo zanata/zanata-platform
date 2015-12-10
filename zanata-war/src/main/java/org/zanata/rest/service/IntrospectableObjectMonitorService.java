@@ -3,6 +3,7 @@ package org.zanata.rest.service;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -43,6 +44,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@RequestScoped
 @Named("introspectableObjectMonitorService")
 @Path("/monitor")
 @Produces({ "application/xml" })

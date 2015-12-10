@@ -1,5 +1,6 @@
 package org.zanata.rest.editor.service;
 
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
@@ -24,6 +25,7 @@ import lombok.NoArgsConstructor;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
+@RequestScoped
 @Named("editor.projectService")
 @Path(ProjectResource.SERVICE_PATH)
 @Transactional

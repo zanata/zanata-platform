@@ -34,6 +34,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.GenericEntity;
@@ -77,6 +78,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.io.ByteStreams;
 
+@RequestScoped
 @Named("fileService")
 @Path(FileResource.SERVICE_PATH)
 @Slf4j

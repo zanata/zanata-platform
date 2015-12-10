@@ -3,6 +3,7 @@ package org.zanata.rest.service;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
@@ -39,6 +40,7 @@ import org.zanata.service.GlossaryFileService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.impl.GlossaryFileServiceImpl;
 
+@RequestScoped
 @Named("glossaryService")
 @Path(GlossaryResource.SERVICE_PATH)
 @Slf4j

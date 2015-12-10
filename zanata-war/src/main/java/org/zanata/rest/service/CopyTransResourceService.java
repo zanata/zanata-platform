@@ -20,6 +20,7 @@
  */
 package org.zanata.rest.service;
 
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 
 import javax.inject.Inject;
@@ -38,6 +39,7 @@ import org.zanata.security.ZanataIdentity;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@RequestScoped
 @Named("copyTransResourceService")
 @Path(CopyTransResource.SERVICE_PATH)
 public class CopyTransResourceService implements CopyTransResource {

@@ -21,6 +21,8 @@
 package org.zanata.action;
 
 import lombok.extern.slf4j.Slf4j;
+
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -33,6 +35,7 @@ import org.apache.deltaspike.core.api.common.DeltaSpike;
  */
 
 @Named("ajaxCounter")
+@Dependent
 @Slf4j
 public class AjaxCounterBean {
     // NB this doesn't handle setInterval or setTimeout

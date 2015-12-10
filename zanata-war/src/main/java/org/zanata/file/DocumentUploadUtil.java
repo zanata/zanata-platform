@@ -33,6 +33,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Vector;
 
+import javax.enterprise.context.Dependent;
 import javax.ws.rs.core.Response.Status;
 
 import lombok.extern.slf4j.Slf4j;
@@ -61,6 +62,7 @@ import com.google.common.base.Optional;
 // TODO damason: add thorough unit testing
 @Slf4j
 @Named("documentUploadUtil")
+@Dependent
 public class DocumentUploadUtil {
 
     @Inject

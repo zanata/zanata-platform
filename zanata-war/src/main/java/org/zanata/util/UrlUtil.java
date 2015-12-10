@@ -49,6 +49,7 @@ import org.zanata.servlet.annotations.ServerPath;
  */
 
 @Named("urlUtil")
+// TODO use a narrower scope
 @javax.enterprise.context.SessionScoped
 @Slf4j
 public class UrlUtil implements Serializable {

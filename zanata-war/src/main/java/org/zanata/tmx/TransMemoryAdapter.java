@@ -21,6 +21,7 @@
 
 package org.zanata.tmx;
 
+import javax.enterprise.context.Dependent;
 import javax.persistence.EntityManager;
 
 import lombok.NoArgsConstructor;
@@ -45,7 +46,7 @@ import org.zanata.util.TMXParseException;
  *
  */
 @Named("transMemoryAdapter")
-
+@Dependent
 @NoArgsConstructor
 public class TransMemoryAdapter {
     @Inject
