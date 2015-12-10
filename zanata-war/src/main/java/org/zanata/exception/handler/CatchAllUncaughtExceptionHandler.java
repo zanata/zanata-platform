@@ -30,7 +30,6 @@ import javax.faces.application.FacesMessage;
 import static java.lang.Integer.MIN_VALUE;
 
 /**
- * TODO [CDI] how can we make sure it's the last one to handle an uncaught exception? Needs test
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @ExceptionHandler
