@@ -30,6 +30,7 @@ import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.FacesNavigationUtil;
 import org.zanata.util.UrlUtil;
 
+import javax.annotation.Nullable;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -80,29 +81,29 @@ public abstract class AbstractExceptionHandler {
 
     protected static <T extends Throwable> void logException(LogLevel logLevel,
             T exception) {
+        @Nullable
         String currentViewId = FacesNavigationUtil.getCurrentViewId();
-
+        String msg;
+        msg = currentViewId != null ?
+                "exception happened in view: " + currentViewId :
+                "exception caught";
         switch (logLevel) {
             case Trace:
-                log.trace("exception happened in view: {}", currentViewId,
-                        exception);
+                log.trace(msg, exception);
                 break;
             case Debug:
-                log.debug("exception happened in view: {}", currentViewId,
-                        exception);
+                log.debug(msg, exception);
                 break;
             case Warn:
-                log.warn("exception happened in view: {}", currentViewId,
-                        exception);
+                log.warn(msg, exception);
                 break;
             case Error:
-                log.error("exception happened in view: {}", currentViewId,
-                        exception);
+                log.error(msg, exception);
                 break;
         }
     }
 
-    static enum LogLevel {
+    enum LogLevel {
         Trace, Debug, Warn, Error
     }
 }
