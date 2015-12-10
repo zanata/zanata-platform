@@ -185,6 +185,7 @@ public class ServerConfigurationService {
             applicationConfigurationDAO.makePersistent(appConfig);
         }
 
+        // TODO make method non-static, use configurationChangedEvent.fire()
         BeanManagerProvider.getInstance().getBeanManager().fireEvent(
                 new ConfigurationChanged(key));
     }

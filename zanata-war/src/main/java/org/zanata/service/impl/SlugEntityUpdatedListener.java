@@ -69,11 +69,13 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
 
     private void fireProjectIterationUpdateEvent(HProjectIteration iteration,
             String oldSlug) {
+        // TODO use Event.fire()
         BeanManagerProvider.getInstance().getBeanManager().fireEvent(
                 new ProjectIterationUpdate(iteration, oldSlug));
     }
 
     private void fireProjectUpdateEvent(HProject project, String oldSlug) {
+        // TODO use Event.fire()
         BeanManagerProvider.getInstance().getBeanManager().fireEvent(
                 new ProjectUpdate(project, oldSlug));
     }

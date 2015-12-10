@@ -57,6 +57,7 @@ public class TranslationUpdatedManager {
         if (BeanManagerProvider.isActive()) {
             int wordCount = textFlowDAO.getWordCount(event.getTextFlowId());
 
+            // TODO use Event.fire()
             BeanManagerProvider.getInstance().getBeanManager().fireEvent(
                     new DocumentStatisticUpdatedEvent(
                             event.getProjectIterationId(),
