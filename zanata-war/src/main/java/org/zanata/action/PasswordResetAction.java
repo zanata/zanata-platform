@@ -47,7 +47,7 @@ public class PasswordResetAction implements Serializable {
     @Getter
     @Setter
     @NotEmpty
-    @Size(min = 6, max = 20)
+    @Size(min = 6, max = 1024)
     private String password;
 
     @Getter

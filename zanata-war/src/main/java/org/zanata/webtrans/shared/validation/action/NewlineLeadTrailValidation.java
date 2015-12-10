@@ -68,16 +68,6 @@ public class NewlineLeadTrailValidation extends AbstractValidationAction {
             errors.add(getMessages().trailingNewlineAdded());
         }
 
-        int sourceLines = 1 + countNewlines(source);
-        int targetLines = 1 + countNewlines(target);
-        if (sourceLines < targetLines) {
-            errors.add(getMessages().linesAdded(sourceLines, targetLines));
-        }
-
-        if (targetLines < sourceLines) {
-            errors.add(getMessages().linesRemoved(sourceLines, targetLines));
-        }
-
         return errors;
     }
 
@@ -111,18 +101,6 @@ public class NewlineLeadTrailValidation extends AbstractValidationAction {
         }
         // no newline so can't fail
         return true;
-    }
-
-    private int countNewlines(String string) {
-        RegExp newlineRegExp = RegExp.compile(newlineRegex, "g");
-
-        int count = 0;
-        MatchResult matchResult = newlineRegExp.exec(string);
-        while (matchResult != null) {
-            count++;
-            matchResult = newlineRegExp.exec(string);
-        }
-        return count;
     }
 
     @Override

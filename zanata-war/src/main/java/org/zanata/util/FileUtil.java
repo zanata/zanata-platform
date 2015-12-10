@@ -49,11 +49,7 @@ public class FileUtil {
      * @param fileName
      */
     public static String generateDocId(String path, String fileName) {
-        String docName = fileName;
-        if (docName.endsWith(".pot")) {
-            docName = docName.substring(0, docName.lastIndexOf('.'));
-        }
-        return convertToValidPath(path) + docName;
+        return convertToValidPath(path) + fileName;
     }
 
     /**

@@ -1,6 +1,7 @@
 package org.zanata.email;
 
 import static com.google.common.base.Charsets.UTF_8;
+import static javax.mail.Message.RecipientType.BCC;
 import static javax.mail.Message.RecipientType.TO;
 
 import java.io.StringWriter;
@@ -163,7 +164,7 @@ public class EmailBuilder {
         if (replyTo.isPresent()) {
             msg.setReplyTo(replyTo.get());
         }
-        msg.addRecipients(TO, toAddresses);
+        msg.addRecipients(BCC, toAddresses);
         msg.setSubject(strategy.getSubject(msgs), UTF_8.name());
         // optional future extension
 //        strategy.setMailHeaders(msg, msgs);

@@ -12,6 +12,28 @@
     <a4j:jsFunction name="sendActivationEmail"
       action="#{inactiveAccountAction.sendActivationEmail}"/>
 
+    <script type="application/javascript">
+      function getNewEmailField() {
+        return jQuery('#' + jqSelector('#{rich:clientId('emailInput')}'));
+      }
+
+      function getInactiveAccountForm() {
+        return jQuery('#' + jqSelector('#{rich:clientId('inactiveAccountForm')}'));
+      }
+
+      jQuery(document).ready(function() {
+        getInactiveAccountForm().keypress(function(e) {
+          if(e.which == 13) {
+            if(getNewEmailField().is(":focus")) {
+              e.preventDefault();
+              e.stopPropagation();
+              jQuery('#' + jqSelector('#{rich:clientId('updateEmail')}')).click();
+              return false;
+            }
+          }
+        });
+      });
+    </script>
 
     <div class="header__logo-only">
       <h:link outcome="/home.xhtml" id="home" tabindex="1">
@@ -35,11 +57,11 @@
 
               <h:outputText value="#{msgs['jsf.or']}"/>
 
-              <zanata:decorate id="email" styleClass="l--push-top-quarter" componentId="emailField">
+              <zanata:decorate id="email" styleClass="l--push-top-quarter" componentId="emailInputField">
                 <div class="form--inline">
-                  <h:inputText id="email" styleClass="form--inline__input" value="#{inactiveAccountAction.email}"
+                  <h:inputText id="emailInput" styleClass="form--inline__input" value="#{inactiveAccountAction.email}"
                     placeholder="#{msgs['jsf.email.placeholder']}">
-                    <a4j:ajax event="blur" render="emailField"/>
+                    <a4j:ajax event="blur" render="emailInputField"/>
                   </h:inputText>
 
                   <div class="form--inline__suffix">
