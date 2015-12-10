@@ -81,4 +81,8 @@ public interface EmailService {
 
     String sendUsernameChangedEmail(String email, String newUsername);
 
+    /**
+     * sends email to requester of the language request
+     */
+    void sendToLanguageRequester(EmailStrategy strategy, HPerson person);
 }

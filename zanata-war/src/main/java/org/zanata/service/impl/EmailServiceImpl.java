@@ -243,4 +243,12 @@ public class EmailServiceImpl implements EmailService {
         return msgs.get("jsf.email.usernamechange.SentNotification");
     }
 
+    @Override
+    public void sendToLanguageRequester(EmailStrategy strategy,
+        HPerson person) {
+        if (person != null) {
+            InternetAddress to = Addresses.getAddress(person);
+            emailBuilder.sendMessage(strategy, null, to);
+        }
+    }
 }

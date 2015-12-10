@@ -1,0 +1,78 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  class="modal" id="declineRequestDialog" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
+
+  <script>
+    jQuery(document).ready(function () {
+      getDeclineRequestMessageField().bind('input propertychange', function() {
+        checkDeclineRequestMessage();
+      });
+    });
+
+    function getDeclineRequestMessageField() {
+      return jQuery('#' + jqSelector('#{rich:clientId('decline-request-message')}'));
+    }
+
+    function cancelDecline() {
+      getDeclineRequestMessageField().val('');
+      jQuery('#decline-request-button').removeClass('is-active');
+    }
+
+    function checkDeclineRequestMessage() {
+      var isEmpty = getDeclineRequestMessageField().val() === '';
+      jQuery('#decline-request-button').prop('disabled', isEmpty);
+    }
+  </script>
+
+  <div class="modal__dialog l--constrain-medium">
+    <header class="modal__header">
+      <h2 class="modal__title">
+        #{msgs['jsf.language.request.decline.request.button']}
+      </h2>
+      <button type="button"
+        class="modal__close button--link"
+        data-dismiss="modal" onclick="cancelDecline();return false;">
+        <i class="i i--huge i--cancel"></i>
+      </button>
+    </header>
+
+    <h:form id="declineJoinLanguageForm" styleClass="l--push-bottom-0">
+      <a4j:jsFunction name="declineRequest"
+        render="requests-size"
+        action="#{languageJoinAction.declineRequest(langRequestId)}"
+        oncomplete="requestTabToggleActions(jQuery('#requestId').val(), false);jQuery('#decline-request-cancel-button').click();refreshMembersForm()">
+        <a4j:param name="val1" assignTo="#{langRequestId}"/>
+      </a4j:jsFunction>
+
+      <div class="modal__content l--pad-all-1">
+
+        <zanata:decorate id="message" componentId="messageField">
+          <span>#{msgs['jsf.language.request.decline.message']}</span>
+          <h:inputTextarea id="decline-request-message" value="#{languageJoinAction.declineMessage}"
+            styleClass="l--push-bottom-0">
+            <a4j:ajax event="blur" render="messageField" execute="@this"/>
+          </h:inputTextarea>
+        </zanata:decorate>
+        <input type="hidden" id="requestId"/>
+      </div>
+
+      <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
+        <h:panelGroup layout="block"  id="request-join-buttons" styleClass="txt--align-right">
+          <button id="decline-request-cancel-button" onclick="cancelDecline();return false;"
+            class="cancel button--link l--push-right-half"
+            data-dismiss="modal">
+            #{msgs['jsf.Cancel']}
+          </button>
+
+          <button id="decline-request-button" class="button loader button--primary" disabled="disabled"
+            onclick="declineRequest(jQuery('#requestId').val());return false;">
+            <span class="loader__label">#{msgs['jsf.language.request.decline.request.button']}</span>
+          </button>
+        </h:panelGroup>
+      </footer>
+    </h:form>
+  </div>
+</div>

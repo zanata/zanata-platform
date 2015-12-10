@@ -9,19 +9,19 @@
   <script>
 
     jQuery(document).ready(function () {
-      jQuery(getContactCoordinatorMessageField()).bind('input propertychange', function() {
+      getContactCoordinatorMessageField().bind('input propertychange', function() {
         checkMessage();
       });
     });
 
     function cancelContactCoordinator() {
-      jQuery(getContactCoordinatorMessageField()).val('');
-      jQuery(getContactCoordinatorForm()).find('#contact-coordinator-send-button').removeClass('is-active');
+      getContactCoordinatorMessageField().val('');
+      getContactCoordinatorForm().find('#contact-coordinator-send-button').removeClass('is-active');
       checkMessage();
     }
 
     function getContactCoordinatorMessageField() {
-      return jQuery(getContactCoordinatorForm()).find('#' + jqSelector('#{rich:clientId('contact-coordinator-message')}'));
+      return getContactCoordinatorForm().find('#' + jqSelector('#{rich:clientId('contact-coordinator-message')}'));
     }
 
     function getContactCoordinatorForm() {
@@ -29,8 +29,8 @@
     }
 
     function checkMessage() {
-      var isEmpty = jQuery(getContactCoordinatorMessageField()).val() === '';
-      jQuery(getContactCoordinatorForm()).find('#contact-coordinator-send-button').prop('disabled', isEmpty);
+      var isEmpty = getContactCoordinatorMessageField().val() === '';
+      getContactCoordinatorForm().find('#contact-coordinator-send-button').prop('disabled', isEmpty);
     }
 
   </script>

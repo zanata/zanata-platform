@@ -21,19 +21,28 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.validation.constraints.Size;
+
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang.StringUtils;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
-import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
-import org.zanata.security.annotations.CheckRole;
+import org.zanata.exception.RequestExistsException;
+import org.zanata.model.HPerson;
+import org.zanata.model.LanguageRequest;
+import org.zanata.model.LocaleRole;
+import org.zanata.model.type.RequestState;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleMemberDAO;
@@ -45,7 +54,9 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.EmailService;
+import org.zanata.service.LanguageTeamService;
 import org.zanata.service.LocaleService;
+import org.zanata.service.RequestService;
 import org.zanata.ui.faces.FacesMessages;
 
 /**
@@ -75,18 +86,6 @@ public class LanguageJoinAction implements Serializable {
     @In
     private Messages msgs;
 
-    @Getter
-    @Setter
-    private boolean requestAsTranslator;
-
-    @Getter
-    @Setter
-    private boolean requestAsReviewer;
-
-    @Getter
-    @Setter
-    private boolean requestAsCoordinator;
-
     @Setter
     @Getter
     private String language;
@@ -95,34 +94,100 @@ public class LanguageJoinAction implements Serializable {
 
     @Getter
     @Setter
+    @Size(max = 1000)
     private String message;
+
+    @Setter
+    @Getter
+    private String declineMessage;
+
+    @In
+    private RequestService requestServiceImpl;
+
+    @In
+    private ZanataIdentity identity;
+
+    @In
+    private LanguageTeamService languageTeamServiceImpl;
 
     @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER, required = false)
     private HAccount authenticatedAccount;
 
-    public boolean hasSelectedRole() {
-        return requestAsTranslator || requestAsReviewer || requestAsCoordinator;
+    /**
+     * Return localised roles requested
+     *
+     */
+    public String getLocalisedRequestedRoles(LanguageRequest request) {
+        return Joiner.on(", ")
+            .skipNulls()
+            .join(request.isCoordinator() ? msgs.get("jsf.Coordinator") : null,
+                request.isReviewer() ? msgs.get("jsf.Reviewer") : null,
+                request.isTranslator() ? msgs.get("jsf.Translator") : null);
     }
 
-    public void bindRole(String role, boolean checked) {
-        if (role.equals("translator")) {
-            requestAsTranslator = checked;
-        } else if (role.equals("reviewer")) {
-            requestAsReviewer = checked;
-        } else if (role.equals("coordinator")) {
-            requestAsCoordinator = checked;
+    public void acceptRequest(Long languageRequestId) {
+        identity.checkPermission(getLocale(), "manage-language-team");
+        LanguageRequest request =
+                requestServiceImpl.getLanguageRequest(languageRequestId);
+        Long personId = request.getRequest().getRequester().getPerson().getId();
+
+        boolean updateAsTranslator, updateAsReviewer, updateAsCoordinator;
+
+        HLocaleMember member = localeMemberDAO.findByPersonAndLocale(
+            personId, new LocaleId(language));
+
+        if (member == null) {
+            updateAsTranslator = request.isTranslator();
+            updateAsReviewer = request.isReviewer();
+            updateAsCoordinator = request.isCoordinator();
+        } else {
+            updateAsTranslator =
+                member.isTranslator() ? true : request.isTranslator();
+            updateAsReviewer =
+                member.isReviewer() ? true : request.isReviewer();
+            updateAsCoordinator =
+                member.isCoordinator() ? true : request.isCoordinator();
         }
+
+        languageTeamServiceImpl.joinOrUpdateRoleInLanguageTeam(
+            language, personId, updateAsTranslator, updateAsReviewer,
+            updateAsCoordinator);
+
+        requestServiceImpl.updateLanguageRequest(languageRequestId,
+                authenticatedAccount, RequestState.ACCEPTED, "");
+        facesMessages.addGlobal(msgs.get("jsf.language.request.updated"));
     }
 
-    private void reset() {
-        requestAsTranslator = false;
-        requestAsReviewer = false;
-        requestAsCoordinator = false;
+    public void declineRequest(Long languageRequestId) {
+        identity.checkPermission(locale, "manage-language-team");
+        requestServiceImpl.updateLanguageRequest(languageRequestId,
+            authenticatedAccount, RequestState.REJECTED, declineMessage);
+        facesMessages.addGlobal(msgs.get("jsf.language.request.updated"));
+    }
+
+    public void clearMessage() {
         message = "";
     }
 
-    @CheckLoggedIn
-    public void send() {
+    public void processRequest(boolean translator, boolean reviewer, boolean coordinator) {
+        try {
+            requestServiceImpl
+                    .createLanguageRequest(authenticatedAccount, getLocale(),
+                        coordinator, reviewer, translator);
+            sendRequestEmail(coordinator, reviewer, translator);
+        } catch (RequestExistsException e) {
+            String message =
+                    msgs.format("jsf.language.request.exists",
+                            authenticatedAccount.getUsername(),
+                            getLocale().retrieveDisplayName());
+            facesMessages.addGlobal(message);
+        } finally {
+            clearMessage();
+        }
+    }
+
+    private void sendRequestEmail(boolean requestAsCoordinator,
+            boolean requestAsReviewer, boolean requestAsTranslator) {
         String fromName = authenticatedAccount.getPerson().getName();
         String fromLoginName = authenticatedAccount.getUsername();
         String replyEmail = authenticatedAccount.getPerson().getEmail();
@@ -132,9 +197,9 @@ public class LanguageJoinAction implements Serializable {
                         fromLoginName, fromName, replyEmail,
                         locale.getLocaleId().getId(),
                         locale.retrieveNativeName(), message,
-                        isRequestAsTranslator(),
-                        isRequestAsReviewer(),
-                        isRequestAsCoordinator());
+                        requestAsTranslator,
+                        requestAsReviewer,
+                        requestAsCoordinator);
         try {
             facesMessages.addGlobal(emailServiceImpl
                 .sendToLanguageCoordinators(locale.getLocaleId(), strategy));
@@ -151,9 +216,57 @@ public class LanguageJoinAction implements Serializable {
                     "Failed to send email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}'. {}",
                     fromName, fromLoginName, replyEmail, subject, message, e);
             facesMessages.addGlobal(sb.toString());
-        } finally {
-            reset();
         }
+    }
+
+    public boolean isUserAlreadyRequest() {
+        return requestServiceImpl.doesLanguageRequestExist(authenticatedAccount,
+            getLocale());
+    }
+
+    public void cancelRequest() {
+        LanguageRequest languageRequest =
+                requestServiceImpl.getPendingLanguageRequests(
+                        authenticatedAccount,
+                        getLocale().getLocaleId());
+        if(languageRequest == null) {
+            facesMessages.addGlobal(msgs.get("jsf.language.request.processed"));
+            return;
+        }
+
+        String comment =
+                "Request cancelled by requester {"
+                        + authenticatedAccount.getUsername() + "}";
+        requestServiceImpl.updateLanguageRequest(languageRequest.getId(),
+                authenticatedAccount, RequestState.CANCELLED, comment);
+
+        facesMessages.addGlobal(msgs.format("jsf.language.request.cancelled",
+            authenticatedAccount.getUsername()));
+    }
+
+    public String getMyLocalisedRoles() {
+        if(authenticatedAccount == null) {
+            return "";
+        }
+        HLocaleMember localeMember = getLocaleMember();
+        if(localeMember == null) {
+            return "";
+        }
+
+        if(localeMember.isCoordinator()) {
+            return msgs.format("jsf.language.myRoles",
+                    StringUtils.lowerCase(msgs.get("jsf.Coordinator")));
+        }
+
+        List<String> roles = Lists.newArrayList();
+        if(localeMember.isTranslator()) {
+            roles.add(StringUtils.lowerCase(msgs.get("jsf.Translator")));
+        }
+
+        if(localeMember.isReviewer()) {
+            roles.add(StringUtils.lowerCase(msgs.get("jsf.Reviewer")));
+        }
+        return msgs.format("jsf.language.myRoles", Joiner.on(" and ").join(roles));
     }
 
     public HLocale getLocale() {
