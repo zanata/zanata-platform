@@ -57,6 +57,10 @@ public class LanguageTeamServiceImpl implements LanguageTeamService {
         LanguageTeamPermissionChangedEvent permissionChangedEvent;
 
         HPerson authenticatedUser = authenticatedAccount.getPerson();
+        if(isCoordinator) {
+            isReviewer = true;
+            isTranslator = true;
+        }
         if (!alreadyJoined) {
             if (currentPerson.getLanguageMemberships().size() >= MAX_NUMBER_MEMBERSHIP) {
                 throw new ZanataServiceException(

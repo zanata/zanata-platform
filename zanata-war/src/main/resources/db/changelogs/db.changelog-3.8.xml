@@ -149,4 +149,108 @@
     <dropTable tableName="HTermComment"/>
   </changeSet>
 
+  <changeSet id="8" author="aeng@redhat.com">
+    <comment>Create table Request</comment>
+    <createTable tableName="Request">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="entityId" type="char(36)">
+        <constraints nullable="false" />
+      </column>
+      <column name="validFrom" type="datetime">
+        <constraints nullable="false" />
+      </column>
+      <column name="validTo" type="datetime">
+        <constraints nullable="true" />
+      </column>
+      <column name="state" type="char(1)">
+        <constraints nullable="true" />
+      </column>
+      <column name="comment" type="varchar(255)">
+        <constraints nullable="true" />
+      </column>
+      <column name="requestType" type="char(2)">
+        <constraints nullable="false" />
+      </column>
+      <column name="requesterId" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="actorId" type="bigint">
+        <constraints nullable="true" />
+      </column>
+    </createTable>
+
+    <addForeignKeyConstraint
+      baseTableName = "Request"
+      baseColumnNames = "requesterId"
+      constraintName = "FK_REQUEST_REQUESTER_HACCOUNT"
+      referencedTableName = "HAccount"
+      referencedColumnNames = "id"/>
+
+    <addForeignKeyConstraint
+      baseTableName = "Request"
+      baseColumnNames = "actorId"
+      constraintName = "FK_REQUEST_ACTOR_HACCOUNT"
+      referencedTableName = "HAccount"
+      referencedColumnNames = "id"/>
+
+    <createIndex tableName="Request" indexName="Idx_entityId_validTo" unique="true">
+      <column name="entityId" type="char(36)"/>
+      <column name="validTo" type="datetime"/>
+    </createIndex>
+
+    <createIndex tableName="Request" indexName="Idx_entityId_validFrom">
+      <column name="entityId" type="char(36)"/>
+      <column name="validFrom" type="datetime"/>
+    </createIndex>
+
+    <createIndex tableName="Request" indexName="Idx_requesterId_validTo">
+      <column name="requesterId" />
+      <column name="validTo" type="datetime"/>
+    </createIndex>
+  </changeSet>
+
+  <changeSet id="9" author="aeng@redhat.com">
+    <comment>Create table LanguageRequest</comment>
+    <createTable tableName="LanguageRequest">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="requestId" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="localeId" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="coordinator" type="boolean" defaultValueBoolean="false">
+        <constraints nullable="false" />
+      </column>
+      <column name="reviewer" type="boolean" defaultValueBoolean="false">
+        <constraints nullable="false" />
+      </column>
+      <column name="translator" type="boolean" defaultValueBoolean="false">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+    <addForeignKeyConstraint
+      baseTableName = "LanguageRequest"
+      baseColumnNames = "requestId"
+      constraintName = "FK_LANGUAGE_REQUEST_REQUEST"
+      referencedTableName = "Request"
+      referencedColumnNames = "id"/>
+
+    <addForeignKeyConstraint
+      baseTableName = "LanguageRequest"
+      baseColumnNames = "localeId"
+      constraintName = "FK_LANGUAGE_REQUEST_LOCALE"
+      referencedTableName = "HLocale"
+      referencedColumnNames = "id"/>
+  </changeSet>
+
+  <changeSet id="10" author="aeng@redhat.com">
+    <comment>Migrate locale member to translator and reviewer if coordinator is true</comment>
+    <sql>UPDATE HLocale_Member SET isTranslator=true, isReviewer=true WHERE isCoordinator=true</sql>
+  </changeSet>
+
 </databaseChangeLog>

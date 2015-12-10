@@ -52,9 +52,11 @@
     <class>org.zanata.model.HTextFlowTarget</class>
     <class>org.zanata.model.HTextFlowTargetHistory</class>
     <class>org.zanata.model.HTextFlowTargetReviewComment</class>
+    <class>org.zanata.model.LanguageRequest</class>
     <class>org.zanata.model.po.HPoHeader</class>
     <class>org.zanata.model.po.HPoTargetHeader</class>
     <class>org.zanata.model.po.HPotEntryData</class>
+    <class>org.zanata.model.Request</class>
     <class>org.zanata.model.security.HCredentials</class>
     <class>org.zanata.model.security.HOpenIdCredentials</class>
     <class>org.zanata.model.tm.TransMemoryUnit</class>

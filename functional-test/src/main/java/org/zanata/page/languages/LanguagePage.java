@@ -45,9 +45,9 @@ import com.google.common.collect.Sets;
 public class LanguagePage extends BasePage {
 
     private By contactCoordinatorsButton =
-            By.linkText("Contact Coordinators");
+        By.id("contact-coordinator");
     private By saveButton = By.id("save-button");
-    private By moreActions = By.className("dropdown__toggle");
+    private By moreActions = By.id("more-action");
     private By enableByDefault = By.id("enable-by-default");
     private By membersTab = By.id("members_tab");
     private By settingsTab = By.id("settings_tab");
@@ -178,13 +178,18 @@ public class LanguagePage extends BasePage {
             waitForAMoment().until(new Predicate<WebDriver>() {
                 @Override
                 public boolean apply(@Nullable WebDriver webDriver) {
-                    WebElement input = getSearchedForUser(username)
+                    WebElement inputDiv = getSearchedForUser(username)
                         .findElement(By.className("list--horizontal"))
                         .findElements(By.tagName("li"))
                         .get(permission.columnIndex)
-                        .findElement(By.tagName("input"));
+                        .findElement(By.className("form__checkbox"));
+                    WebElement input =
+                            inputDiv.findElement(By.tagName("input"));
                     Checkbox checkbox = Checkbox.of(input);
-                    checkbox.check();
+                    if (!checkbox.checked()) {
+                        inputDiv.click();
+                        waitForPageSilence();
+                    }
                     return checkbox.checked();
                 }
             });
@@ -226,7 +231,7 @@ public class LanguagePage extends BasePage {
 
     private String getListItemUsername(WebElement listItem) {
         String fullname = listItem.findElements(
-            By.className("bx--inline-block"))
+            By.className("g__item"))
             .get(0).getText();
         return fullname.substring(fullname.indexOf('[') + 1, fullname.indexOf(']'));
     }
