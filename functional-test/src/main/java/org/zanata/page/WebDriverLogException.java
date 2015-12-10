@@ -26,7 +26,14 @@ import java.util.logging.Level;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 public class WebDriverLogException extends RuntimeException {
+    private final boolean errorLog;
+
     public WebDriverLogException(Level logLevel, String logMessage) {
         super(logLevel + ": " + logMessage);
+        this.errorLog = (logLevel.intValue() >= Level.SEVERE.intValue());
+    }
+
+    public boolean isErrorLog() {
+        return errorLog;
     }
 }

@@ -127,7 +127,7 @@ public enum WebDriverFactory {
             ++logCount;
             if (logEntry.getLevel().intValue() >= Level.SEVERE.intValue()) {
                 log.error(logEntry.toString());
-                if (throwIfWarn && firstException == null) {
+                if (firstException == null || !firstException.isErrorLog()) {
                     firstException = new WebDriverLogException(logEntry.getLevel(),
                             logEntry.toString());
                 }
@@ -154,15 +154,17 @@ public enum WebDriverFactory {
     /**
      * Dump any outstanding browser logs to the main log.
      *
-     * @throws WebDriverLogException exception containing the first warning/error message, if any
+     * @throws WebDriverLogException exception containing the first error message, if any
      */
     public void logLogs() {
-        // TODO always throw, once we fix our tests
         logLogs(false);
-//        logLogs(true);
     }
 
-    @Deprecated
+    /**
+     * Dump any outstanding browser logs to the main log.
+     *
+     * @throws WebDriverLogException exception containing the first warning/error message, if any
+     */
     public void logLogs(boolean throwIfWarn) {
         for (String type : getLogTypes()) {
             logLogs(type, throwIfWarn);
