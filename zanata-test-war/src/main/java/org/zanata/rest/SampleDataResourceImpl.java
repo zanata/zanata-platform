@@ -3,6 +3,7 @@ package org.zanata.rest;
 import java.security.Principal;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.security.auth.Subject;
 import javax.ws.rs.Path;
@@ -31,6 +32,7 @@ import com.google.common.util.concurrent.Uninterruptibles;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@RequestScoped
 @Path("/data/sample")
 @Slf4j
 public class SampleDataResourceImpl implements SampleDataResource {
