@@ -34,9 +34,10 @@ import org.slf4j.LoggerFactory;
 import org.zanata.util.FacesNavigationUtil;
 import org.zanata.util.ServiceLocator;
 
-public class FedoraOpenIdPhaseListener implements PhaseListener {
+// TODO Use DeltaSpike's {@link org.apache.deltaspike.jsf.api.listener.phase.JsfPhaseListener}
+public class OpenIdPhaseListener implements PhaseListener {
     private static final Logger LOGGER = LoggerFactory
-            .getLogger(FedoraOpenIdPhaseListener.class);
+            .getLogger(OpenIdPhaseListener.class);
     private static final long serialVersionUID = 1L;
 
     public void beforePhase(PhaseEvent event) {
