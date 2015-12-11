@@ -146,9 +146,10 @@ public class RequestServiceImplTest extends ZanataDbunitJpaTest {
             assertThat(request.getRequestType()).isEqualTo(RequestType.LOCALE);
         }
 
+        //can be equal or before
         assertThat(
                 requests.get(0).getValidFrom()
-                        .before(requests.get(1).getValidFrom())).isTrue();
+                        .after(requests.get(1).getValidFrom())).isFalse();
 
         assertThat(requests).extracting("state")
             .contains(RequestState.NEW, RequestState.ACCEPTED);
