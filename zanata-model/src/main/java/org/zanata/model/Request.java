@@ -90,8 +90,8 @@ public class Request extends TimeEntityBase {
         String entityId, Date validFrom) {
         this.requestType = requestType;
         this.requester = requester;
-        this.entityId = entityId;
-        this.validFrom = validFrom;
+        setEntityId(entityId);
+        setValidFrom(validFrom);
     }
 
     /**
@@ -105,10 +105,10 @@ public class Request extends TimeEntityBase {
      */
     public Request update(HAccount actor, RequestState state, String comment,
             Date date) {
-        this.validTo = date;
+        setValidTo(date);
 
         Request newRequest =
-                new Request(this.requestType, this.requester, this.entityId, date);
+                new Request(this.requestType, this.requester, getEntityId(), date);
         newRequest.state = state;
         newRequest.comment = comment;
         newRequest.actor = actor;

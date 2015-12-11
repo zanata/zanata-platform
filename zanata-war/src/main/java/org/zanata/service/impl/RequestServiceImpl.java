@@ -24,11 +24,6 @@ package org.zanata.service.impl;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LanguageRequestDAO;
@@ -46,9 +41,12 @@ import org.zanata.model.type.RequestState;
 import org.zanata.model.type.RequestType;
 import org.zanata.service.EmailService;
 import org.zanata.service.RequestService;
-import org.zanata.util.Event;
 
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.EntityNotFoundException;
 import java.util.Date;
 import java.util.List;
@@ -56,27 +54,27 @@ import java.util.List;
 /**
  * @author Alex Eng <a href="aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("requestServiceImpl")
-@Scope(ScopeType.STATELESS)
+@Named("requestServiceImpl")
+@RequestScoped
 @Slf4j
 public class RequestServiceImpl implements RequestService {
 
-    @In
+    @Inject
     private RequestDAO requestDAO;
 
-    @In
+    @Inject
     private LanguageRequestDAO languageRequestDAO;
 
-    @In("event")
+    @Inject
     private Event<RequestUpdatedEvent> requestUpdatedEvent;
 
-    @In
+    @Inject
     private ApplicationConfiguration applicationConfiguration;
 
-    @In
+    @Inject
     private EmailService emailServiceImpl;
 
-    @In
+    @Inject
     private Messages msgs;
 
     @Override
@@ -147,7 +145,6 @@ public class RequestServiceImpl implements RequestService {
         }
     }
 
-    @Observer(RequestUpdatedEvent.EVENT_NAME)
     public void onRequestUpdated(@Observes RequestUpdatedEvent event) {
         Request request = requestDAO.findById(event.getId());
         if(request.getRequestType().equals(RequestType.LOCALE)) {

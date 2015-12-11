@@ -18,8 +18,8 @@ import org.zanata.model.Request;
 import org.zanata.model.type.RequestState;
 import org.zanata.model.type.RequestType;
 import org.zanata.seam.SeamAutowire;
-import org.zanata.util.Event;
 
+import javax.enterprise.event.Event;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,7 +70,7 @@ public class RequestServiceImplTest extends ZanataDbunitJpaTest {
         service = seam
             .use("requestDAO", requestDAO)
             .use("languageRequestDAO", languageRequestDAO)
-            .use("event", requestUpdatedEvent)
+            .use("requestUpdatedEvent", requestUpdatedEvent)
             .use("entityManager", getEm())
             .use("session", getSession())
             .ignoreNonResolvable()

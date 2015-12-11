@@ -7,6 +7,7 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
@@ -25,21 +26,22 @@ import java.util.Date;
 @MappedSuperclass
 @Access(AccessType.FIELD)
 @Getter
+@Setter
 public class TimeEntityBase implements Serializable {
     @Id
-    @GeneratedValue
-    protected Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotNull
-    protected String entityId;
+    private String entityId;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     @NotNull
-    protected Date validFrom;
+    private Date validFrom;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = true)
     @Setter
-    protected Date validTo;
+    private Date validTo;
 }

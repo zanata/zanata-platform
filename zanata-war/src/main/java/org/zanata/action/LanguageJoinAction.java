@@ -99,13 +99,13 @@ public class LanguageJoinAction implements Serializable {
     @Getter
     private String declineMessage;
 
-    @In
+    @Inject
     private RequestService requestServiceImpl;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private LanguageTeamService languageTeamServiceImpl;
 
     @Inject
