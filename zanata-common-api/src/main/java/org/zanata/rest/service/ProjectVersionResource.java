@@ -26,6 +26,7 @@ import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.dto.ProjectIteration;
 import org.zanata.rest.dto.TransUnitStatus;
+import org.zanata.rest.dto.User;
 import org.zanata.rest.dto.resource.ResourceMeta;
 
 import javax.ws.rs.Consumes;
@@ -163,7 +164,7 @@ public interface ProjectVersionResource {
         @PathParam("versionSlug") String versionSlug);
 
     /**
-     * Get list of contributor's username (translator/review) for the given
+     * Get list of contributor (translator/review) for the given
      * project version in date range.
      *
      * @param projectSlug
@@ -177,7 +178,7 @@ public interface ProjectVersionResource {
     @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECT_VERSION_JSON,
             MediaType.APPLICATION_JSON })
     @Path(VERSION_SLUG_TEMPLATE + "/contributors/{dateRange}")
-    @TypeHint(String[].class)
+    @TypeHint(User[].class)
     public Response getContributors(
         @PathParam("projectSlug") String projectSlug,
         @PathParam("versionSlug") String versionSlug,
