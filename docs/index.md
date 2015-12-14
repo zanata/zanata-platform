@@ -21,20 +21,20 @@ Installation
 
 For installation instructions, see:
 
-- [Linux Installation](installation/linux-installation)
-- [OS X Installation](installation/osx-installation)
-- [Windows Installation](installation/windows-installation)
+- [Linux Installation](installation/linux-installation.md)
+- [OS X Installation](installation/osx-installation.md)
+- [Windows Installation](installation/windows-installation.md)
 
 Contribute
 ----------
 
-- [Issue Tracker](http://bugzilla.redhat.com/buglist.cgi?product=Zanata)
+- [Issue Tracker](https://zanata.atlassian.net)
 - [Source Code on GitHub](http://github.com/zanata-client)
 
 Release notes
 -------
 
-[Release notes](release-notes)
+[Release notes](release-notes.md)
 
 Contact us
 -------
