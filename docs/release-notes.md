@@ -1,4 +1,13 @@
+## 3.8.1
+
+##### Changes
+* Add a new parameter includeAutomatedEntry to API getContributionStatics 
+* Downgrade dependency to keep enforcer happy
+
 ## 3.8.0
+
+##### Highlight
+* Copy Trans will nolonger run by default. Option `--copy-trans` is now required to invoke copy trans when pushing
 
 ##### Changes
 * [ZNTA-354](https://zanata.atlassian.net/browse/ZNTA-354) - Improve Zanata client installation documentation and workflow
