@@ -38,6 +38,7 @@
     <cdi.compile>compile</cdi.compile>
     <picketlink.version>2.5.4.SP4</picketlink.version>
     <infinispan.version>6.0.2.Final</infinispan.version>
+    <lombok.version>1.16.6</lombok.version>
     <weld.version>1.1.31.Final</weld.version>
     <weld.se.version>${weld.version}</weld.se.version>
     <groovy.version>2.4.5</groovy.version>
@@ -1760,7 +1761,7 @@
           <plugin>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok-maven-plugin</artifactId>
-            <version>0.11.0.0</version>
+            <version>1.16.6.1</version>
             <executions>
               <execution>
                 <phase>generate-sources</phase>
