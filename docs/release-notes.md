@@ -3,6 +3,7 @@
 ##### Changes
 * Add a new parameter includeAutomatedEntry to API getContributionStatics 
 * Downgrade dependency to keep enforcer happy
+* 0install feed for Zanata CLI has been migrated to https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml. Please see [installation](/#installation) for updated command.
 
 ## 3.8.0
 
