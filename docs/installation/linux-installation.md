@@ -14,7 +14,7 @@ There are two ways to install zanata-client, via `0install` or `yum`.
 
 3. Use `zanata-cli` as alias: 
 
-        mkdir -p ~/bin | 0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
+        mkdir -p ~/bin | yes | 0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
 
 4. It should be done now. Run `zanata-cli --help` for the usage of the client.
  
@@ -59,7 +59,7 @@ There are two ways to install zanata-client, via `0install` or `yum`.
 
 4. Use `zanata-cli` as alias: 
 
-        mkdir -p ~/bin | 0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
+        mkdir -p ~/bin | yes | 0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
 
 5. It should be done now. Run `zanata-cli --help` for the usage of the client.
 
@@ -86,7 +86,7 @@ There are two ways to install zanata-client, via `0install` or `dnf`.
 
 2. Use `zanata-cli` as alias: 
 
-        mkdir -p ~/bin | 0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
+        mkdir -p ~/bin | yes | 0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
 
 3. It should be done now. Run `zanata-cli --help` for the usage of the client.
 
@@ -108,7 +108,7 @@ There are two ways to install zanata-client, via `0install` or `dnf`.
 
 3. Use `zanata-cli` as alias: 
 
-        mkdir -p ~/bin | 0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
+        mkdir -p ~/bin | yes | 0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
 
 4. It should be done now. Run `zanata-cli --help` for the usage of the client.
 
@@ -119,7 +119,7 @@ There are two ways to install zanata-client, via `0install` or `dnf`.
 2. Install Java JRE (1.8 onwards) from [OpenJDK installation](http://openjdk.java.net/install/index.html)
 3. Use `zanata-cli` as alias: 
 
-        mkdir -p ~/bin | 0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
+        mkdir -p ~/bin | yes | 0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
 
 4. It should be done now. Run `zanata-cli --help` for the usage of the client.
 
