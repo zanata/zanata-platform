@@ -31,6 +31,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
 
 import org.hibernate.Session;
+import org.hibernate.event.spi.EventSource;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -108,7 +109,9 @@ public class EntityManagerProducer {
     @Produces
     @FullText
     @RequestScoped
-    protected FullTextSession getFullTextSession(Session session) {
+    protected FullTextSession getFullTextSession(EntityManager entityManager) {
+        // here we can't inject session directly because then it will be a proxy and in FullTextSessionImpl constructor, it will try to cast it to EventSource
+        Session session = entityManager.unwrap(Session.class);
         return Search.getFullTextSession(session);
     }
 
