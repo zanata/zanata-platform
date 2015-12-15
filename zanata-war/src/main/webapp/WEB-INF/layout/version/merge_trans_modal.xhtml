@@ -37,13 +37,13 @@
       </button>
     </header>
 
-    <h:form id="merge-form" styleClass="l--push-bottom-0">
-      <a4j:jsFunction name="bindSourceProjectSlug" limitRender="true"
-        render="sourceVersions, merge-button">
-        <a4j:param name="va1" assignTo="#{mergeTransAction.sourceProjectSlug}"/>
-      </a4j:jsFunction>
+    <div class="modal__content">
+      <h:form id="merge-form" styleClass="l--push-bottom-0  l--pad-all-1">
+        <a4j:jsFunction name="bindSourceProjectSlug" limitRender="true"
+          render="sourceVersions, merge-button">
+          <a4j:param name="va1" assignTo="#{mergeTransAction.sourceProjectSlug}"/>
+        </a4j:jsFunction>
 
-      <div class="modal__content l--push-all-1">
         <div class="form__item">
           <p>
             <h:outputText
@@ -139,28 +139,27 @@
             </zanata:checkbox>
           </div>
         </h:panelGroup>
-      </div>
 
-      <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
-        <div class="g--tight">
-          <h:panelGroup layout="block"  styleClass="g__item txt--align-right"
-            id="merge-trans-buttons">
+        <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
+          <div class="g--tight">
+            <h:panelGroup layout="block"  styleClass="g__item txt--align-right"
+              id="merge-trans-buttons">
 
-            <a4j:commandButton id="merge-button"
-              rendered="#{not mergeTransAction.isCopyActionsRunning(mergeTransAction.targetProjectSlug, mergeTransAction.targetVersionSlug)}"
-              styleClass="button button--primary" disabled="#{empty mergeTransAction.sourceVersions}"
-              action="#{mergeTransAction.startMergeTranslations}"
-              value="#{msgs['jsf.iteration.mergeTrans']}"/>
+              <a4j:commandButton id="merge-button"
+                rendered="#{not mergeTransAction.isCopyActionsRunning(mergeTransAction.targetProjectSlug, mergeTransAction.targetVersionSlug)}"
+                styleClass="button button--primary" disabled="#{empty mergeTransAction.sourceVersions}"
+                action="#{mergeTransAction.startMergeTranslations}"
+                value="#{msgs['jsf.iteration.mergeTrans']}"/>
 
-            <ui:fragment rendered="#{mergeTransAction.isCopyActionsRunning(mergeTransAction.targetProjectSlug, mergeTransAction.targetVersionSlug)}">
-              <zanata:loader type="loader--small" layout="inline" jsHandle="true"
-                id="merge-trans-loader"/>
-            </ui:fragment>
-          </h:panelGroup>
-        </div>
-      </footer>
-
-    </h:form>
+              <ui:fragment rendered="#{mergeTransAction.isCopyActionsRunning(mergeTransAction.targetProjectSlug, mergeTransAction.targetVersionSlug)}">
+                <zanata:loader type="loader--small" layout="inline" jsHandle="true"
+                  id="merge-trans-loader"/>
+              </ui:fragment>
+            </h:panelGroup>
+          </div>
+        </footer>
+      </h:form>
+    </div>
   </div>
 
 </div>
