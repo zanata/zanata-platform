@@ -10,7 +10,7 @@ There are two ways to install zanata-client, via `0install` or `yum`.
 
 2. Install `0install`
 
-        sudo yum -y install 0install
+        sudo yum -y install 0install java-1.8.0-openjdk unzip
 
 3. Use `zanata-cli` as alias: 
 
@@ -50,7 +50,7 @@ There are two ways to install zanata-client, via `0install` or `yum`.
 
 2. Install `libcurl` if you have not
 
-        sudo yum -y install libcurl
+        sudo yum -y install libcurl java-1.8.0-openjdk unzip
 
 
 3. Install `0install`
@@ -82,7 +82,7 @@ There are two ways to install zanata-client, via `0install` or `dnf`.
 ### With 0install
 1. Install 0install
 
-        sudo yum -y install 0install
+        sudo yum -y install 0install java-1.8.0-openjdk unzip
 
 2. Use `zanata-cli` as alias: 
 
