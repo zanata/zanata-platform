@@ -91,7 +91,7 @@
     <zanata.client.version>3.8.1</zanata.client.version>
     <zanata.common.version>3.8.1</zanata.common.version>
 
-    <richfaces.version>4.5.4.Final</richfaces.version>
+    <richfaces.version>4.5.11.Final</richfaces.version>
 
     <arquillian.version>1.1.5.Final</arquillian.version>
     <shrinkwrap.api.version>1.2.2</shrinkwrap.api.version>
@@ -936,7 +936,7 @@
       <dependency>
         <groupId>net.sourceforge.cssparser</groupId>
         <artifactId>cssparser</artifactId>
-        <version>0.9.14</version>
+        <version>0.9.18</version>
       </dependency>
 
       <dependency>
