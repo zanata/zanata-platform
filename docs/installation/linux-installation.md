@@ -1,9 +1,16 @@
 ## RHEL 7
 There are two ways to install zanata-client, via `0install` or `yum`.
 
-*Note: If you have installed `zanata-cli` previously through different method, you need to uninstall that*
-
 ### With 0install
+
+**Note: If you have previously installed `zanata-cli` through 0install, please run this command to update your `zanata-cli`**
+
+    0install destroy zanata-cli | yes | 0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
+
+**Note: If you have previously installed `zanata-cli` with Ivy or yum, you need to uninstall it first**
+
+---
+
 1. Install EPEL repository for RHEL 7
 
         sudo rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
@@ -19,6 +26,11 @@ There are two ways to install zanata-client, via `0install` or `yum`.
 4. It should be done now. Run `zanata-cli --help` for the usage of the client.
  
 ### With yum
+
+**Note: If you have previously installed `zanata-cli` with Ivy or 0install, you need to uninstall it first**
+
+---
+
 1. Install `epel-zanata` repo
 
         cd /etc/yum.repos.d ; sudo wget https://repos.fedorapeople.org/dchen/zanata/epel-zanata.repo
@@ -32,9 +44,16 @@ There are two ways to install zanata-client, via `0install` or `yum`.
 ## RHEL 6
 There are two ways to install zanata-client, via `0install` or `yum`.
 
-*Note: If you have installed `zanata-cli` previously through different method, you need to uninstall that*
-
 ### With 0install
+
+**Note: If you have previously installed `zanata-cli` through 0install, please run this command to update your `zanata-cli`**
+
+    0install destroy zanata-cli | yes | 0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
+
+**Note: If you have previously installed `zanata-cli` with Ivy or yum, you need to uninstall it first**
+
+---
+
 1. Download and extract `0install` binary package
    a. for 64-bit machine (such as x86_64)
 
@@ -64,6 +83,11 @@ There are two ways to install zanata-client, via `0install` or `yum`.
 5. It should be done now. Run `zanata-cli --help` for the usage of the client.
 
 ### With yum
+
+**Note: If you have previously installed `zanata-cli` with Ivy or 0install, you need to uninstall it first**
+
+---
+
 1. Install `epel-zanata` repo
 
         cd /etc/yum.repos.d ; sudo wget https://repos.fedorapeople.org/dchen/zanata/epel-zanata.repo
@@ -77,9 +101,16 @@ There are two ways to install zanata-client, via `0install` or `yum`.
 ## Fedora
 There are two ways to install zanata-client, via `0install` or `dnf`.
 
-*Note: If you have installed `zanata-cli` previously through different method, you need to uninstall that*
-
 ### With 0install
+
+**Note: If you have previously installed `zanata-cli` through 0install, please run this command to update your `zanata-cli`**
+
+    0install destroy zanata-cli | yes | 0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
+
+**Note: If you have previously installed `zanata-cli` with Ivy or dnf, you need to uninstall it first**
+
+---
+
 1. Install 0install
 
         sudo yum -y install 0install java-1.8.0-openjdk unzip
@@ -91,12 +122,24 @@ There are two ways to install zanata-client, via `0install` or `dnf`.
 3. It should be done now. Run `zanata-cli --help` for the usage of the client.
 
 ### With dnf
+
+**Note: If you have previously installed `zanata-cli` with Ivy or 0install, you need to uninstall it first**
+
+---
+
 1. Install `zanata-client`
 
-        sudo yum -y install zanata-client
+        sudo dnf -y install zanata-client
 
 ## Debian based distro
-*Note: If you have installed `zanata-cli` previously through different method, you need to uninstall that*
+
+**Note: If you have previously installed `zanata-cli` through 0install, please run this command to update your `zanata-cli`**
+
+    0install destroy zanata-cli | yes | 0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
+
+**Note: If you have previously installed `zanata-cli` with Ivy or dnf, you need to uninstall it first**
+
+---
 
 1. Install 0install
 
@@ -123,7 +166,7 @@ There are two ways to install zanata-client, via `0install` or `dnf`.
 
 4. It should be done now. Run `zanata-cli --help` for the usage of the client.
 
-## 0install Useful command
+## 0install Useful commands
 
  * Run Zanata-CLI without alias
 
