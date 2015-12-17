@@ -1,4 +1,8 @@
-## 3.8
+## 3.8.1
+<h5>Bug fixes</h5>
+* [ZNTA-844](https://zanata.atlassian.net/browse/ZNTA-844) - Merge Translations dialog broken
+
+## 3.8.0
 <h5>Infrastructure Changes</h5>
 * In wildfly or EAP standalone.xml, change all occurrences of "org.jboss.seam.security.jaas.SeamLoginModule" to "org.zanata.security.jaas.InternalLoginModule"
 * Zanata now requires JBoss EAP 6.4.2.GA or later (recommended), or WildFly version 9.x.
