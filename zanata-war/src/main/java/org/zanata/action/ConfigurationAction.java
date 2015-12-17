@@ -28,25 +28,23 @@ import javax.servlet.http.HttpServletResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.web.RequestParameter;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.zanata.servlet.annotations.HttpParam;
 import org.zanata.model.HLocale;
 import org.zanata.service.ConfigurationService;
 
-@Name("configurationAction")
-@Scope(ScopeType.EVENT)
+@Named("configurationAction")
+@javax.enterprise.context.RequestScoped
 @Slf4j
 public class ConfigurationAction implements Serializable {
     private static final long serialVersionUID = 1L;
-    @RequestParameter("iterationSlug")
+    @Inject @HttpParam("iterationSlug")
     private String iterationSlug;
-    @RequestParameter("projectSlug")
+    @Inject @HttpParam("projectSlug")
     private String projectSlug;
 
-    @In
+    @Inject
     private ConfigurationService configurationServiceImpl;
 
     public void downloadGeneralConfig() {

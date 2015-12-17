@@ -29,16 +29,13 @@ import com.google.common.collect.Lists;
 
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.model.LanguageRequest;
 import org.zanata.model.LocaleRole;
 import org.zanata.security.annotations.CheckRole;
-import org.jboss.seam.faces.Redirect;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.LocaleMemberDAO;
@@ -53,15 +50,16 @@ import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.LanguageTeamService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.RequestService;
 import org.zanata.ui.faces.FacesMessages;
-import org.zanata.util.Event;
+import javax.enterprise.event.Event;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.InMemoryListFilter;
+import org.zanata.util.IServiceLocator;
 import org.zanata.util.ServiceLocator;
+import org.zanata.util.UrlUtil;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -69,57 +67,59 @@ import lombok.extern.slf4j.Slf4j;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
-@Name("languageAction")
-@Scope(ScopeType.PAGE)
-@ZanataSecured
+@Named("languageAction")
+@javax.faces.bean.ViewScoped
+
 @Slf4j
 public class LanguageAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @In
+    @Inject
     private LanguageTeamService languageTeamServiceImpl;
 
-    @In
+    @Inject
     private LocaleDAO localeDAO;
 
-    @In
+    @Inject
     private PersonDAO personDAO;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private Messages msgs;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
-    @In("event")
+    @Inject
     private Event<JoinedLanguageTeam> joinLanguageTeamEvent;
 
-    @In("event")
+    @Inject
     private Event<LanguageTeamPermissionChangedEvent> languageTeamPermissionChangedEvent;
 
-    @In("event")
+    @Inject
     private Event<LeftLanguageTeam> leaveLanguageTeamEvent;
 
-    @In
+    @Inject
     private LocaleMemberDAO localeMemberDAO;
 
-    @In
-    private ResourceUtils resourceUtils;
-
-    @In
+    @Inject
     private RequestService requestServiceImpl;
 
-    @In
-    private Redirect redirect;
+    @Inject
+    private ResourceUtils resourceUtils;
+
+    @Inject
+    private UrlUtil urlUtil;
+
 
     @Getter
     @Setter
@@ -138,7 +138,7 @@ public class LanguageAction implements Serializable {
             new InMemoryListFilter<HLocaleMember>() {
                 @Override
                 protected List<HLocaleMember> fetchAll() {
-                    ServiceLocator serviceLocator = ServiceLocator.instance();
+                    IServiceLocator serviceLocator = ServiceLocator.instance();
                     LocaleMemberDAO localeMemberDAO =
                             serviceLocator.getInstance(LocaleMemberDAO.class);
 
@@ -301,9 +301,8 @@ public class LanguageAction implements Serializable {
 
     private void redirectToLanguageHome() {
         facesMessages.addGlobal(msgs.format(
-            "jsf.language.validation.NotSupport", language));
-        redirect.setViewId("/language/home.xhtml");
-        redirect.execute();
+                "jsf.language.validation.NotSupport", language));
+        urlUtil.redirectTo(urlUtil.languageHome());
     }
 
 

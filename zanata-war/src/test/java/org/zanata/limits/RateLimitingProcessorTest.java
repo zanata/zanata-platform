@@ -2,12 +2,13 @@ package org.zanata.limits;
 
 import java.io.IOException;
 import javax.servlet.FilterChain;
+import javax.servlet.http.HttpServletResponse;
 
-import org.jboss.resteasy.spi.HttpResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.zanata.util.RunnableEx;
 
 import static org.mockito.Mockito.*;
 
@@ -19,13 +20,13 @@ public class RateLimitingProcessorTest {
     public static final String API_KEY = "apiKey";
     private RateLimitingProcessor processor;
     @Mock
-    private HttpResponse response;
+    private HttpServletResponse response;
     @Mock
     private FilterChain filterChain;
     @Mock
     private RateLimitManager rateLimitManager;
     @Mock
-    private Runnable runnable;
+    private RunnableEx runnable;
     @Mock
     private RestCallLimiter restCallLimiter;
 

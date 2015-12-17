@@ -25,13 +25,14 @@ import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.contexts.Contexts;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.servlet.http.HttpSession;
+
+import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
-import org.jboss.seam.web.ServletContexts;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -40,9 +41,11 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.service.GravatarService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SecurityService;
+import org.zanata.util.ServiceLocator;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
@@ -61,35 +64,39 @@ import org.zanata.webtrans.shared.rpc.GetValidationRulesResult;
 import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 
-@Name("webtrans.gwt.ActivateWorkspaceHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.ActivateWorkspaceHandler")
+@RequestScoped
 @ActionHandlerFor(ActivateWorkspaceAction.class)
 @Slf4j
 public class ActivateWorkspaceHandler extends
         AbstractActionHandler<ActivateWorkspaceAction, ActivateWorkspaceResult> {
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private TranslationWorkspaceManager translationWorkspaceManager;
 
-    @In
+    @Inject
     private GravatarService gravatarServiceImpl;
 
-    @In
+    @Inject
     private ProjectDAO projectDAO;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In(value = "webtrans.gwt.LoadOptionsHandler", create = true)
+    @Inject @Any
     private LoadOptionsHandler loadOptionsHandler;
 
-    @In(value = "webtrans.gwt.GetValidationRulesHandler", create = true)
+    @Inject @Any
     private GetValidationRulesHandler getValidationRulesHandler;
+
+    @Inject
+    @DeltaSpike
+    private HttpSession session;
 
     private static long nextEditorClientIdNum = 0;
 
@@ -160,11 +167,11 @@ public class ActivateWorkspaceHandler extends
     }
 
     protected String getHttpSessionId() {
-        return ServletContexts.instance().getRequest().getSession().getId();
+        return session.getId();
     }
 
     private boolean hasWritePermission(HProject project, HLocale locale) {
-        return identity.hasPermission(
+        return identity.hasPermissionWithAnyTargets(
                 SecurityService.TranslationAction.MODIFY.action(), project,
                 locale);
     }
@@ -174,7 +181,8 @@ public class ActivateWorkspaceHandler extends
     }
 
     private boolean hasReviewerPermission(HLocale locale, HProject project) {
-        return identity.hasPermission("translation-review", project, locale);
+        return identity.hasPermissionWithAnyTargets("translation-review",
+                project, locale);
     }
 
     private boolean isProjectIterationActive(EntityStatus projectStatus,
@@ -190,9 +198,8 @@ public class ActivateWorkspaceHandler extends
     }
 
     protected Person retrievePerson() {
-        HAccount authenticatedAccount =
-                (HAccount) Contexts.getSessionContext().get(
-                        ZanataJpaIdentityStore.AUTHENTICATED_USER);
+        HAccount authenticatedAccount = ServiceLocator.instance()
+                .getInstance(HAccount.class, new AuthenticatedLiteral());
         return new Person(new PersonId(authenticatedAccount.getUsername()),
                 authenticatedAccount.getPerson().getName(),
                 gravatarServiceImpl.getUserImageUrl(16, authenticatedAccount

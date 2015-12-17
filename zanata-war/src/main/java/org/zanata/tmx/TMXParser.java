@@ -22,6 +22,7 @@ package org.zanata.tmx;
 
 import java.io.InputStream;
 
+import javax.enterprise.context.Dependent;
 import javax.persistence.EntityExistsException;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
@@ -34,6 +35,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import lombok.AllArgsConstructor;
 import lombok.Cleanup;
 import lombok.extern.slf4j.Slf4j;
 import nu.xom.Element;
@@ -41,15 +43,15 @@ import nu.xom.Element;
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.transaction.Transaction;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.util.ElementBuilder;
 import org.zanata.model.tm.TransMemory;
+import org.zanata.transaction.TransactionUtil;
+import org.zanata.util.RunnableEx;
 import org.zanata.util.TMXParseException;
 import org.zanata.xml.TmxDtdResolver;
+import com.google.common.base.Throwables;
 
 /**
  * Parses TMX input.
@@ -57,19 +59,18 @@ import org.zanata.xml.TmxDtdResolver;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("tmxParser")
-@AutoCreate
+@Named("tmxParser")
+@Dependent
 @Slf4j
 public class TMXParser {
     // Batch size to commit in a new transaction for long files
     private static final int BATCH_SIZE = 100;
 
-    @In
+    @Inject
     private Session session;
-    @In
+    @Inject
     private TransMemoryAdapter transMemoryAdapter;
 
-    @Transactional
     public void parseAndSaveTMX(InputStream input, TransMemory transMemory)
             throws TMXParseException, SecurityException, IllegalStateException,
             RollbackException, HeuristicMixedException,
@@ -87,8 +88,6 @@ public class TMXParser {
             XMLStreamReader reader = factory.createXMLStreamReader(input);
 
             QName tmx = new QName("tmx");
-            QName header = new QName("header");
-            QName tu = new QName("tu");
 
             while (reader.hasNext()
                     && reader.next() != XMLStreamConstants.START_ELEMENT) {
@@ -100,11 +99,46 @@ public class TMXParser {
 
             // At this point, event = START_ELEMENT and name = tmx
             while (reader.hasNext()) {
+                CommitBatch commitBatch =
+                        new CommitBatch(reader, 0, transMemory);
+                TransactionUtil.get().runEx(commitBatch);
+                handledTUs += commitBatch.handledTUs;
+            }
+        } catch (EntityExistsException e) {
+            String msg =
+                    "Possible duplicate TU (duplicate tuid or duplicate"
+                            + "src content without tuid)";
+            throw new TMXParseException(msg, e);
+        } catch (Exception e) {
+            Throwable rootCause = Throwables.getRootCause(e);
+            if (rootCause instanceof TMXParseException) {
+                throw (TMXParseException) e;
+            } else if (rootCause instanceof XMLStreamException) {
+                throw new TMXParseException(rootCause);
+            } else {
+                throw Throwables.propagate(e);
+            }
+        } finally {
+            log.info("parsing stopped for: {}, TU count={}",
+                    transMemory.getSlug(), handledTUs);
+        }
+    }
+
+
+
+    @AllArgsConstructor
+    private class CommitBatch implements RunnableEx {
+        private XMLStreamReader reader;
+        private int handledTUs;
+        private TransMemory transMemory;
+        private final QName header = new QName("header");
+        private final QName tu = new QName("tu");
+
+        @Override
+        public void run() throws Exception {
+            while (reader.hasNext() && handledTUs < BATCH_SIZE) {
                 int eventType = reader.next();
                 if (eventType == XMLStreamConstants.START_ELEMENT) {
-                    if (handledTUs > 0 && handledTUs % BATCH_SIZE == 0) {
-                        commitBatch(handledTUs);
-                    }
                     QName elemName = reader.getName();
                     if (elemName.equals(tu)) {
                         Element tuElem = ElementBuilder.buildElement(reader);
@@ -119,28 +153,7 @@ public class TMXParser {
                     }
                 }
             }
-            commitBatch(handledTUs); // A new transaction is needed for Seam to
-                                     // commit it
-        } catch (EntityExistsException e) {
-            String msg =
-                    "Possible duplicate TU (duplicate tuid or duplicate"
-                            + "src content without tuid)";
-            throw new TMXParseException(msg, e);
-        } catch (XMLStreamException e) {
-            throw new TMXParseException(e);
-        } finally {
-            log.info("parsing stopped for: {}, TU count={}",
-                    transMemory.getSlug(), handledTUs);
         }
-    }
-
-    private void commitBatch(int numProcessed) throws SecurityException,
-            IllegalStateException, RollbackException, HeuristicMixedException,
-            HeuristicRollbackException, SystemException, NotSupportedException {
-        session.flush();
-        session.clear();
-        Transaction.instance().commit();
-        Transaction.instance().begin();
     }
 
 }

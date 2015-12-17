@@ -22,7 +22,7 @@ package org.zanata.config;
 
 import java.util.Set;
 
-import org.jboss.seam.annotations.In;
+import javax.inject.Inject;
 import org.junit.Test;
 import org.zanata.ArquillianTest;
 
@@ -38,7 +38,7 @@ import static org.hamcrest.Matchers.nullValue;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class JndiBackedConfigITCase extends ArquillianTest {
-    @In
+    @Inject
     private JndiBackedConfig jndiBackedConfig;
 
     @Override

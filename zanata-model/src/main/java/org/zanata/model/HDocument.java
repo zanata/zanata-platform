@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -48,6 +49,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
@@ -57,10 +60,6 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.Where;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.security.management.JpaIdentityStore;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.model.po.HPoHeader;
@@ -73,6 +72,8 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 import com.google.common.collect.ImmutableList;
+import org.zanata.security.annotations.Authenticated;
+import org.zanata.util.Contexts;
 
 /**
  * @see AbstractResourceMeta
@@ -89,6 +90,7 @@ import com.google.common.collect.ImmutableList;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true, of = {})
 @ToString(of = { "name", "path", "docId", "locale", "revision" })
+@Slf4j
 public class HDocument extends ModelEntityBase implements DocumentWithId,
         IDocumentHistory, Serializable, Iterable<ITextFlow>, IsEntityWithType {
     private static final long serialVersionUID = 5129552589912687504L;
@@ -310,18 +312,25 @@ public class HDocument extends ModelEntityBase implements DocumentWithId,
     }
 
     public static class EntityListener {
+
         @PreUpdate
         private void onUpdate(HDocument doc) {
             if (Contexts.isSessionContextActive()) {
-                HAccount account =
-                        (HAccount) Component.getInstance(
-                                JpaIdentityStore.AUTHENTICATED_USER);
-                // TODO In some cases there is no session ( such as when pushing
-                // async )
+                HAccount account;
+                try {
+                    account = BeanProvider
+                            .getContextualReference(HAccount.class,
+                                    true,
+                                    new AnnotationLiteral<Authenticated>() {
+                                    });
+                } catch (IllegalStateException e) {
+                    account = null;
+                }
                 if (account != null) {
                     doc.setLastModifiedBy(account.getPerson());
                 }
             }
         }
     }
+
 }

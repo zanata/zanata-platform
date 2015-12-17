@@ -23,13 +23,18 @@ package org.zanata.seam;
 import javax.persistence.EntityManager;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
+import javax.transaction.InvalidTransactionException;
 import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.Status;
 import javax.transaction.Synchronization;
 import javax.transaction.SystemException;
+import javax.transaction.Transaction;
+import javax.transaction.TransactionManager;
+import javax.transaction.UserTransaction;
 
-import org.jboss.seam.transaction.UserTransaction;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import lombok.Getter;
 
 /**
@@ -43,7 +48,9 @@ import lombok.Getter;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class AutowireTransaction implements UserTransaction {
+@Exclude(ifProjectStage = ProjectStage.IntegrationTest.class)
+public class AutowireTransaction implements UserTransaction,
+        TransactionManager {
 
     private static final AutowireTransaction instance =
             new AutowireTransaction();
@@ -52,49 +59,6 @@ public class AutowireTransaction implements UserTransaction {
 
     public static UserTransaction instance() {
         return instance;
-    }
-
-    @Override
-    public boolean isActiveOrMarkedRollback() throws SystemException {
-        return isActive();
-    }
-
-    @Override
-    public boolean isRolledBackOrMarkedRollback() throws SystemException {
-        return false;
-    }
-
-    @Override
-    public boolean isMarkedRollback() throws SystemException {
-        return false;
-    }
-
-    @Override
-    public boolean isNoTransaction() throws SystemException {
-        return false;
-    }
-
-    @Override
-    public boolean isRolledBack() throws SystemException {
-        return false;
-    }
-
-    @Override
-    public boolean isCommitted() throws SystemException {
-        return false;
-    }
-
-    @Override
-    public boolean isConversationContextRequired() {
-        return false;
-    }
-
-    @Override
-    public void registerSynchronization(Synchronization sync) {
-    }
-
-    @Override
-    public void enlist(EntityManager entityManager) throws SystemException {
     }
 
     @Override
@@ -114,6 +78,7 @@ public class AutowireTransaction implements UserTransaction {
         EntityManager entityManager = getEntityManager();
         if (entityManager != null) {
             entityManager.flush();
+            entityManager.clear();
         }
         active = false;
     }
@@ -126,6 +91,7 @@ public class AutowireTransaction implements UserTransaction {
 
     @Override
     public void setRollbackOnly() throws IllegalStateException, SystemException {
+        throw new RuntimeException();
     }
 
     @Override
@@ -139,5 +105,23 @@ public class AutowireTransaction implements UserTransaction {
 
     @Override
     public void setTransactionTimeout(int seconds) throws SystemException {
+        throw new RuntimeException();
+    }
+
+    @Override
+    public Transaction getTransaction() throws SystemException {
+        throw new RuntimeException();
+    }
+
+    @Override
+    public Transaction suspend() throws SystemException {
+        throw new RuntimeException();
+    }
+
+    @Override
+    public void resume(Transaction tobj)
+            throws InvalidTransactionException, IllegalStateException,
+            SystemException {
+        throw new RuntimeException();
     }
 }

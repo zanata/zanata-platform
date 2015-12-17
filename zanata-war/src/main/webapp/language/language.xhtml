@@ -4,7 +4,6 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   template="/WEB-INF/template/template.xhtml">
@@ -127,8 +126,6 @@
                   action="#{languageAction.joinLanguageTeam}"
                   styleClass="button button--primary">
                   #{msgs['jsf.JoinLanguageTeam']}
-                  <s:conversationId name="id"
-                    value="#{languageAction.language}"/>
                 </zanata:ajax-command-button>
               </ui:fragment>
             </ui:fragment>
@@ -147,8 +144,6 @@
                     action="#{languageAction.leaveLanguageTeam}"
                     styleClass="txt--danger button">
                     #{msgs['jsf.LeaveLanguageTeam']}
-                    <s:conversationId name="id"
-                      value="#{languageAction.language}"/>
                   </zanata:ajax-command-button>
                   <ui:fragment rendered="#{not languageJoinAction.isCoordinator() and not languageJoinAction.isUserAlreadyRequest()}">
                     <button class="button button--snug js-dropdown__toggle" style="height: 2.15em">
@@ -205,8 +200,6 @@
                 action="#{languageJoinAction.cancelRequest()}"
                 styleClass="button--link link--danger txt--mini l--push-top-quarter">
                 #{msgs['jsf.language.cancelMyRequest']}
-                <s:conversationId name="id"
-                  value="#{languageAction.language}"/>
               </zanata:ajax-command-button>
             </ui:fragment>
             <ui:fragment rendered="#{not languageJoinAction.isUserAlreadyRequest() and not identity.hasRole('admin') and not languageAction.isUserInTeam()}">
@@ -230,7 +223,7 @@
               <span class="is-hidden--s i__text--right">
                 #{msgs['jsf.Members']}
                 <h:panelGroup styleClass="txt--neutral" id="members-size">
-                  #{languageAction.localeMembers.size}
+                  #{languageAction.localeMembers.size()}
                 </h:panelGroup>
               </span>
               </a>
@@ -243,7 +236,7 @@
                   <span class="is-hidden--s i__text--right">
                     #{msgs['jsf.language.requests']}
                     <h:panelGroup styleClass="txt--neutral" id="requests-size">
-                      #{languageAction.requests.size}
+                      #{languageAction.requests.size()}
                     </h:panelGroup>
                   </span>
                 </a>

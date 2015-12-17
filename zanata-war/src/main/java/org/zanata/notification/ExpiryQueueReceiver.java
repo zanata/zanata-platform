@@ -25,7 +25,7 @@ import javax.ejb.MessageDriven;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 
-import org.jboss.seam.annotations.Name;
+import javax.inject.Named;
 import lombok.extern.slf4j.Slf4j;
 
 @MessageDriven(activationConfig = {
@@ -47,7 +47,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Name("expiryQueueReceiver")
+@Named("expiryQueueReceiver")
 @Slf4j
 public class ExpiryQueueReceiver implements MessageListener {
     @Override

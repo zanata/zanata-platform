@@ -39,14 +39,11 @@ import javax.validation.ConstraintViolationException;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.richfaces.event.FileUploadEvent;
 import org.richfaces.model.UploadedFile;
 import org.zanata.exception.AuthorizationException;
-import org.jboss.seam.util.Hex;
 import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
@@ -89,6 +86,7 @@ import org.zanata.ui.faces.FacesMessages;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.DateUtil;
 import org.zanata.util.FileUtil;
+import org.zanata.util.PasswordUtil;
 import org.zanata.util.ServiceLocator;
 import org.zanata.util.StatisticsUtil;
 import org.zanata.util.UrlUtil;
@@ -107,56 +105,56 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-@Name("versionHomeAction")
-@Scope(ScopeType.PAGE)
+@Named("versionHomeAction")
+@javax.faces.bean.ViewScoped
 @Slf4j
 public class VersionHomeAction extends AbstractSortAction implements
         Serializable {
     private static final long serialVersionUID = 1L;
 
-    @In
+    @Inject
     private CopyVersionManager copyVersionManager;
 
-    @In
+    @Inject
     private MergeTranslationsManager mergeTranslationsManager;
 
-    @In
+    @Inject
     private CopyTransManager copyTransManager;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private DocumentDAO documentDAO;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In
+    @Inject
     private VersionStateCache versionStateCacheImpl;
 
-    @In
+    @Inject
     private TranslationStateCache translationStateCacheImpl;
 
-    @In
+    @Inject
     private Messages msgs;
 
-    @In
+    @Inject
     private DocumentService documentServiceImpl;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private TranslationFileService translationFileServiceImpl;
 
-    @In
+    @Inject
     private VirusScanner virusScanner;
 
-    @In
+    @Inject
     private LocaleDAO localeDAO;
 
-    @In
+    @Inject
     private TranslationService translationServiceImpl;
 
     @Getter
@@ -177,13 +175,13 @@ public class VersionHomeAction extends AbstractSortAction implements
     @Getter
     private HDocument selectedDocument;
 
-    @In
+    @Inject
     private ConversationScopeMessages conversationScopeMessages;
 
-    @In("filePersistService")
+    @Inject
     private FilePersistService filePersistService;
 
-    @In
+    @Inject
     private UrlUtil urlUtil;
 
     private List<HLocale> supportedLocale;
@@ -466,7 +464,7 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     @Override
     protected String getMessage(String key, Object... args) {
-        return msgs.format(key, args);
+        return msgs.formatWithAnyArgs(key, args);
     }
 
     public List<HLocale> getSupportedLocale() {
@@ -621,8 +619,10 @@ public class VersionHomeAction extends AbstractSortAction implements
     public boolean isUserAllowedToTranslateOrReview(HLocale hLocale) {
         return isVersionActive()
                 && identity != null
-                && (identity.hasPermission("add-translation", getVersion()
-                        .getProject(), hLocale) || identity.hasPermission(
+                && (identity.hasPermissionWithAnyTargets("add-translation",
+                        getVersion().getProject(),
+                        hLocale) ||
+                identity.hasPermissionWithAnyTargets(
                         "translation-review", getVersion().getProject(),
                         hLocale));
     }
@@ -666,12 +666,14 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     public boolean isDocumentUploadAllowed() {
         return isVersionActive() && identity != null
-                && identity.hasPermission("import-template", getVersion());
+                && identity.hasPermissionWithAnyTargets("import-template",
+                getVersion());
     }
 
     public boolean isZipFileDownloadAllowed() {
         return getVersion().getProjectType() != null
-                && identity.hasPermission("download-all", getVersion());
+                && identity.hasPermissionWithAnyTargets("download-all",
+                getVersion());
     }
 
     public boolean isPoProject() {
@@ -714,7 +716,8 @@ public class VersionHomeAction extends AbstractSortAction implements
     public boolean isFileUploadAllowed(HLocale hLocale) {
         return isVersionActive()
                 && identity != null
-                && identity.hasPermission("modify-translation", getVersion()
+                && identity.hasPermissionWithAnyTargets("modify-translation",
+                getVersion()
                         .getProject(), hLocale);
     }
 
@@ -735,7 +738,7 @@ public class VersionHomeAction extends AbstractSortAction implements
         return Optional.of(type);
     }
 
-    public void uploadSourceFile() {
+    public String uploadSourceFile() {
         identity.checkPermission("import-template", getVersion());
 
         if (sourceFileUpload.getFileName().endsWith(".pot")) {
@@ -761,6 +764,7 @@ public class VersionHomeAction extends AbstractSortAction implements
                 throw new IllegalArgumentException(summary);
             }
         }
+        return "success";
     }
 
     public boolean isPoDocument(String docId) {
@@ -934,7 +938,8 @@ public class VersionHomeAction extends AbstractSortAction implements
         } else {
             HRawDocument rawDocument = new HRawDocument();
             rawDocument.setDocument(document);
-            rawDocument.setContentHash(new String(Hex.encodeHex(md5hash)));
+            rawDocument.setContentHash(new String(
+                    PasswordUtil.encodeHex(md5hash)));
             rawDocument.setType(docType);
             rawDocument.setUploadedBy(identity.getCredentials().getUsername());
 
@@ -996,7 +1001,7 @@ public class VersionHomeAction extends AbstractSortAction implements
         return urlUtil.encodeString(docId);
     }
 
-    public void uploadTranslationFile(HLocale hLocale) {
+    public String uploadTranslationFile(HLocale hLocale) {
         identity.checkPermission("modify-translation", hLocale, getVersion()
                 .getProject());
         try {
@@ -1062,6 +1067,7 @@ public class VersionHomeAction extends AbstractSortAction implements
                     translationFileUpload.getFileName() + "-" + e.getMessage());
         }
         resetPageData();
+        return "success";
     }
 
     public void sourceFileUploaded(FileUploadEvent event) throws IOException {

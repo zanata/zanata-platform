@@ -2,12 +2,12 @@
 
 package org.zanata.seam.framework;
 
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
-import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.transaction.Transaction;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.model.ModelEntityBase;
 import org.zanata.util.ServiceLocator;
 
@@ -19,8 +19,15 @@ import static javax.transaction.Status.STATUS_MARKED_ROLLBACK;
  *
  * @author Gavin King
  */
-public class EntityHome<E> extends Home<EntityManager, E> {
+//@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
+public abstract class EntityHome<E> extends Home<EntityManager, E> {
     private static final long serialVersionUID = -3140094990727574632L;
+
+    @Inject
+    private UserTransaction transaction;
+
+    @Inject
+    private EntityManager entityManager;
 
     /**
      * Run on {@link EntityHome} instantiation. <br />
@@ -155,16 +162,15 @@ public class EntityHome<E> extends Home<EntityManager, E> {
         }
     }
 
-    // TODO [CDI] inject UserTransaction
     private UserTransaction getTransaction() {
-        return Transaction.instance();
+        return transaction;
     }
 
     /**
      * The Seam Managed Persistence Context used by this Home component
      */
     public EntityManager getEntityManager() {
-        return ServiceLocator.instance().getEntityManager();
+        return entityManager;
     }
 
 }

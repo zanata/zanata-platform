@@ -23,16 +23,16 @@
 <script type="text/javascript">
   //<![CDATA[
   jQuery(function () {
-    crossroads.addRoute(':pre*:/project/view/{slug}/settings/{subSection}',
-      function (pre, slug, subSection) {
+    crossroads.addRoute(':pre*:/project/view/{slug}/settings/{subSection}:?query:',
+      function (pre, slug, subSection, query) {
         zanata.tabs.activate(jQuery('#settings_tab'));
         subSection = subSection || 'general';
         subSection = validateTab("#settings-" + subSection + '_tab', subSection, 'general');
         zanata.tabs.activate(jQuery('#settings-' + subSection + "_tab"));
       });
 
-    crossroads.addRoute(':pre*:/project/view/{slug}/:section:',
-      function (pre, slug, section) {
+    crossroads.addRoute(':pre*:/project/view/{slug}/:section::?query:',
+      function (pre, slug, section, query) {
         section = section || 'versions';
         // maintainers tab is replaced with people tab, so links to maintainers
         // tab should direct to the people tab
@@ -159,7 +159,7 @@
               <span class="is-hidden--s i__text--right">
                 #{msgs['jsf.Versions']}
                 <h:panelGroup styleClass="txt--neutral" id="versions-size">
-                  #{projectHomeAction.getProjectVersions().size}
+                  #{projectHomeAction.getProjectVersions().size()}
                 </h:panelGroup>
               </span>
         </a>
@@ -172,7 +172,7 @@
               <span class="is-hidden--s i__text--right">
                 #{msgs['jsf.People']}
                 <h:panelGroup styleClass="txt--neutral" id="people-size">
-                  #{projectHomeAction.allMembers.size}
+                  #{projectHomeAction.allMembers.size()}
                 </h:panelGroup>
               </span>
         </a>

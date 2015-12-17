@@ -18,9 +18,6 @@ import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
  */
 @Value
 public class TextFlowTargetUpdatedEvent {
-    public static final String EVENT_NAME =
-            "org.zanata.events.TextFlowTargetUpdatedEvent";
-
     private final TranslationWorkspace workspace;
     private final Long textFlowTargetId;
     private final TransUnitUpdated transUnitUpdated;

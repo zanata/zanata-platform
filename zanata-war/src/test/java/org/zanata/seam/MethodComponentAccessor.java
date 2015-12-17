@@ -20,15 +20,24 @@
  */
 package org.zanata.seam;
 
-import org.jboss.seam.annotations.In;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.util.Set;
+import javax.annotation.Resource;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.util.AnnotationLiteral;
+import javax.inject.Inject;
+
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import com.google.common.collect.Sets;
 
 /**
  * Property accessor that relies on getter / setter methods.
  */
+@Exclude(ifProjectStage = ProjectStage.IntegrationTest.class)
 class MethodComponentAccessor extends ComponentAccessor {
     private String fieldName;
     private Method setter;
@@ -51,7 +60,7 @@ class MethodComponentAccessor extends ComponentAccessor {
             setter = method;
             methodPrefix = "get";
         } else {
-            throw new RuntimeException(
+            throw new AutowireException(
                     "Property Accessor methods must be either getters or setters");
         }
 
@@ -76,18 +85,14 @@ class MethodComponentAccessor extends ComponentAccessor {
     @Override
     public Object getValue(Object instance) {
         if (getter == null) {
-            throw new RuntimeException("No getter for field " + fieldName
+            throw new AutowireException("No getter for field " + fieldName
                     + " found");
         }
 
         try {
             return getter.invoke(instance);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("Error accessing method "
-                    + getter.getName() + " on instance of type "
-                    + instance.getClass().getName(), e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException("Error accessing method "
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new AutowireException("Error accessing method "
                     + getter.getName() + " on instance of type "
                     + instance.getClass().getName(), e);
         }
@@ -96,18 +101,18 @@ class MethodComponentAccessor extends ComponentAccessor {
     @Override
     public void setValue(Object instance, Object value) {
         if (setter == null) {
-            throw new RuntimeException("No setter for field " + fieldName
+            throw new AutowireException("No setter for field " + fieldName
                     + " found");
         }
 
         try {
-            setter.invoke(instance, value);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("Error accessing method "
-                    + setter.getName() + " on instance of type "
-                    + instance.getClass().getName(), e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException("Error accessing method "
+            if (setter.getParameterTypes()[0].equals(Instance.class)) {
+                setter.invoke(instance, new AutowireInstance(value));
+            } else {
+                setter.invoke(instance, value);
+            }
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new AutowireException("Error accessing method "
                     + setter.getName() + " on instance of type "
                     + instance.getClass().getName(), e);
         }
@@ -129,21 +134,21 @@ class MethodComponentAccessor extends ComponentAccessor {
 
     @Override
     public String getComponentName() {
-        In inAnnot = this.getAnnotation(In.class);
+        Annotation inAnnot = this.getAnnotation(Inject.class);
         String compName = null;
-
+        if (inAnnot == null) {
+            inAnnot = this.getAnnotation(Resource.class);
+        }
         if (inAnnot != null) {
-            if (inAnnot.value().trim().isEmpty()) {
-                if (getter != null) {
-                    compName = getter.getName().substring(3);
-                } else if (setter != null) {
-                    compName = setter.getName().substring(3);
-                }
+            if (getter != null) {
+                compName = getter.getName().substring(3);
+            } else if (setter != null) {
+                compName = setter.getName().substring(3);
+            }
+            if (compName != null) {
                 compName =
                         compName.substring(0, 1).toLowerCase()
                                 + compName.substring(1);
-            } else {
-                return inAnnot.value();
             }
         }
         return compName;
@@ -151,12 +156,44 @@ class MethodComponentAccessor extends ComponentAccessor {
 
     @Override
     public Class getComponentType() {
+        Class result = null;
         if (getter != null) {
-            return getter.getReturnType();
+            result = getter.getReturnType();
+            Class genericType = getGenericTypeForInstanceInjection(result,
+                    getter);
+            if (genericType != null) {
+                return genericType;
+            }
         } else if (setter != null) {
-            return setter.getParameterTypes()[0];
+            result = setter.getParameterTypes()[0];
+            Class genericType =
+                    getGenericTypeForInstanceInjection(result, setter);
+            if (genericType != null) {
+                return genericType;
+            }
         }
 
-        return null; // should not happen
+
+        return result; // should not happen
+    }
+
+    private Class getGenericTypeForInstanceInjection(Class result,
+            Method method) {
+        if (result.equals(Instance.class)) {
+            ParameterizedType genericType =
+                    (ParameterizedType) method.getGenericReturnType();
+            // should only have one generic argument
+            return (Class<?>) genericType.getActualTypeArguments()[0];
+
+        }
+        return null;
+    }
+
+    @Override
+    public Set<Annotation> getQualifiers() {
+        Set<Annotation> annotations =
+                Sets.newHashSet(setter.getAnnotations());
+        annotations.removeIf(a -> a instanceof Inject || a instanceof Resource);
+        return annotations;
     }
 }

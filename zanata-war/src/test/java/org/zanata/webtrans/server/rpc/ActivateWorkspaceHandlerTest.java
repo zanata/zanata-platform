@@ -18,7 +18,6 @@ import net.customware.gwt.dispatch.server.ExecutionContext;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -105,14 +104,15 @@ public class ActivateWorkspaceHandlerTest extends ZanataTest {
         // @formatter:off
         ActivateWorkspaceHandler activateWorkspaceHandler = SeamAutowire.instance()
             .reset()
+            .use("authenticatedAccount", hAccount)
             .use("identity", identity)
             .use("translationWorkspaceManager", translationWorkspaceManager)
             .use("accountDAO", accountDAO)
             .use("projectDAO", projectDAO)
             .use("projectIterationDAO", projectIterationDAO)
             .use("localeServiceImpl", localeServiceImpl)
-            .use("webtrans.gwt.LoadOptionsHandler", loadOptionsHandler)
-            .use("webtrans.gwt.GetValidationRulesHandler", getValidationRulesHandler)
+            .use("loadOptionsHandler", loadOptionsHandler)
+            .use("getValidationRulesHandler", getValidationRulesHandler)
             .ignoreNonResolvable()
             .autowire(ActivateWorkspaceHandler.class);
         // @formatter:on
@@ -120,6 +120,9 @@ public class ActivateWorkspaceHandlerTest extends ZanataTest {
         person = TestFixture.person();
         doReturn(person).when(handler).retrievePerson();
         doReturn(HTTP_SESSION_ID).when(handler).getHttpSessionId();
+        long accountId = 7;
+        when(hAccount.getId()).thenReturn(accountId);
+        when(accountDAO.findById(accountId, true)).thenReturn(hAccount);
 
         ValidationMessages message =
                 Gwti18nReader.create(ValidationMessages.class);
@@ -147,7 +150,8 @@ public class ActivateWorkspaceHandlerTest extends ZanataTest {
                         projectIterationId.getProjectSlug(),
                         projectIterationId.getIterationSlug())).thenReturn(
                 hProjectIteration);
-        when(identity.hasPermission("modify-translation", hProject, hLocale))
+        when(identity.hasPermissionWithAnyTargets("modify-translation",
+                hProject, hLocale))
                 .thenReturn(true);
         when(identity.hasPermission("", "glossary-update")).thenReturn(true);
         LoadOptionsResult optionsResult =

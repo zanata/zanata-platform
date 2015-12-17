@@ -24,10 +24,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.ContentState;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TransMemoryUnitDAO;
@@ -43,7 +42,7 @@ import org.zanata.service.SecurityService;
 import org.zanata.service.TransMemoryMergeService;
 import org.zanata.service.TranslationMemoryService;
 import org.zanata.service.TranslationService;
-import org.zanata.util.Event;
+import javax.enterprise.event.Event;
 import org.zanata.util.TranslationUtil;
 import org.zanata.webtrans.server.rpc.TransMemoryMergeStatusResolver;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
@@ -64,30 +63,30 @@ import static org.zanata.service.SecurityService.TranslationAction.MODIFY;
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Name("transMemoryMergeServiceImpl")
-@Scope(ScopeType.STATELESS)
+@Named("transMemoryMergeServiceImpl")
+@RequestScoped
 @Slf4j
 public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
 
-    @In
+    @Inject
     private SecurityService securityServiceImpl;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In
+    @Inject
     private TextFlowDAO textFlowDAO;
 
-    @In
+    @Inject
     private TransMemoryUnitDAO transMemoryUnitDAO;
 
-    @In
+    @Inject
     private TranslationMemoryService translationMemoryServiceImpl;
 
-    @In
+    @Inject
     private TranslationService translationServiceImpl;
 
-    @In("event")
+    @Inject
     private Event<TextFlowTargetUpdateContextEvent>
             textFlowTargetUpdateContextEvent;
 
@@ -151,7 +150,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         }
 
         if (updateRequests.isEmpty()) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
         for (TransUnitUpdateRequest updateRequest : updateRequests) {

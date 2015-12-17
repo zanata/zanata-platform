@@ -29,21 +29,23 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Startup;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
-import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.core.Events;
+import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.events.PostAuthenticateEvent;
 import org.zanata.exception.IdentityManagementException;
 import org.zanata.exception.NoSuchRoleException;
 import org.zanata.exception.NoSuchUserException;
+import org.zanata.security.AuthenticatedAccountHolder;
+import org.zanata.security.AuthenticatedAccountSessionScopeHolder;
 import org.zanata.security.Role;
 import org.zanata.dao.AccountDAO;
 import org.zanata.events.UserCreatedEvent;
@@ -51,7 +53,9 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
 import org.zanata.security.SimplePrincipal;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.util.Event;
+import javax.enterprise.event.Event;
+
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.util.PasswordUtil;
 import org.zanata.util.ServiceLocator;
 
@@ -59,21 +63,30 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 
-import static org.jboss.seam.ScopeType.APPLICATION;
 
 /**
  * This class is the replacement of seam's JpaIdentityStore. It no longer use seam's annotation. e.g. UserPrincipal, UserRoles etc.
  */
-@Name("org.jboss.seam.security.identityStore")
-@Install(precedence = Install.DEPLOYMENT, value = true)
-@Scope(APPLICATION)
-@Startup
-@BypassInterceptors
+@Named("identityStore")
+@ApplicationScoped
 @Slf4j
 public class ZanataJpaIdentityStore implements Serializable {
+    // see also org.zanata.model.HDocument.EntityListener.AUTHENTICATED_USER
     public static final String AUTHENTICATED_USER = "org.jboss.seam.security.management.authenticatedUser";
 
     private static final long serialVersionUID = 1L;
+
+    @Inject
+    private Event<UserCreatedEvent> userCreatedEventEvent;
+
+    @Inject
+    private Event<PostAuthenticateEvent> postAuthenticateEventEvent;
+
+    @Inject
+    private Instance<AuthenticatedAccountHolder> authenticatedAccountHolders;
+
+    @Inject
+    private EntityManager entityManager;
 
     public boolean apiKeyAuthenticate(String username, String apiKey) {
         HAccount user = lookupUser(username);
@@ -137,15 +150,12 @@ public class ZanataJpaIdentityStore implements Serializable {
     }
 
     private Event<PostAuthenticateEvent> getPostAuthenticateEvent() {
-        return ServiceLocator.instance().getInstance("event", Event.class);
+        return postAuthenticateEventEvent;
     }
 
-    @Observer(PostAuthenticateEvent.EVENT_NAME)
-    public void setUserAccountForSession(PostAuthenticateEvent event) {
-        if (Contexts.isSessionContextActive()) {
-            Contexts.getSessionContext().set(AUTHENTICATED_USER,
-                    event.getAuthenticatedAccount());
-        }
+    public void setUserAccountForSession(@Observes PostAuthenticateEvent event,
+            AuthenticatedAccountSessionScopeHolder holder) {
+        holder.setAuthenticatedAccount(event.getAuthenticatedAccount());
     }
 
     public boolean isNewUser(String username) {
@@ -160,18 +170,24 @@ public class ZanataJpaIdentityStore implements Serializable {
     }
 
     public void setAuthenticateUser(HAccount user) {
-        if (Events.exists()) {
-            if (Contexts.isEventContextActive()) {
-                Contexts.getEventContext().set(AUTHENTICATED_USER, user);
-            }
-            if (Contexts.isSessionContextActive()) {
-                Contexts.getSessionContext().set(AUTHENTICATED_USER, user);
-            }
+        for (AuthenticatedAccountHolder accountHolder : authenticatedAccountHolders) {
+            accountHolder.setAuthenticatedAccount(user);
         }
     }
 
+    @Produces @Authenticated @Named(AUTHENTICATED_USER)
+    HAccount getAuthenticatedAccount() {
+        for (AuthenticatedAccountHolder accountHolder : authenticatedAccountHolders) {
+            HAccount authenticatedAccount = accountHolder.getAuthenticatedAccount();
+            if (authenticatedAccount != null) {
+                return authenticatedAccount;
+            }
+        }
+        return null;
+    }
+
     public List<String> listUsers() {
-        List<String> users = entityManager().createQuery(
+        List<String> users = entityManager.createQuery(
                 "select u.username from HAccount u")
                 .getResultList();
         Collections.sort(users, new Comparator<String>() {
@@ -182,6 +198,7 @@ public class ZanataJpaIdentityStore implements Serializable {
         return users;
     }
 
+    @Transactional
     public boolean deleteUser(String name) {
         HAccount user = lookupUser(name);
         if (user == null) {
@@ -189,7 +206,7 @@ public class ZanataJpaIdentityStore implements Serializable {
                     + "' does not exist");
         }
 
-        entityManager().remove(user);
+        entityManager.remove(user);
         return true;
     }
 
@@ -202,6 +219,7 @@ public class ZanataJpaIdentityStore implements Serializable {
         return lookupUser(name) != null;
     }
 
+    @Transactional
     public boolean createUser(String username, String password) {
         try {
             if (userExists(username)) {
@@ -220,7 +238,7 @@ public class ZanataJpaIdentityStore implements Serializable {
             }
 
 
-            entityManager().persist(user);
+            entityManager.persist(user);
 
             getUserCreatedEvent().fire(new UserCreatedEvent(user));
 
@@ -235,11 +253,11 @@ public class ZanataJpaIdentityStore implements Serializable {
         }
     }
 
-    // TODO [CDI] revisit
     private Event<UserCreatedEvent> getUserCreatedEvent() {
-        return ServiceLocator.instance().getInstance("event", Event.class);
+        return userCreatedEventEvent;
     }
 
+    @Transactional
     public boolean enableUser(String name) {
 
         HAccount user = lookupUser(name);
@@ -256,6 +274,7 @@ public class ZanataJpaIdentityStore implements Serializable {
         return true;
     }
 
+    @Transactional
     public boolean disableUser(String name) {
         HAccount user = lookupUser(name);
         if (user == null) {
@@ -272,6 +291,7 @@ public class ZanataJpaIdentityStore implements Serializable {
         return true;
     }
 
+    @Transactional
     public boolean changePassword(String username, String password) {
         HAccount user = lookupUser(username);
         if (user == null) {
@@ -310,6 +330,7 @@ public class ZanataJpaIdentityStore implements Serializable {
         return roles;
     }
 
+    @Transactional
     public boolean revokeRole(String username, String role) {
         HAccount user = lookupUser(username);
         if (user == null) {
@@ -333,7 +354,7 @@ public class ZanataJpaIdentityStore implements Serializable {
     public HAccount lookupUser(String username) {
         try {
             HAccount user =
-                    entityManager()
+                    entityManager
                             .createQuery(
                                     "select u from HAccount u where u.username = :username",
                                     HAccount.class)
@@ -348,7 +369,7 @@ public class ZanataJpaIdentityStore implements Serializable {
 
     public HAccountRole lookupRole(String role) {
         try {
-            return entityManager().createQuery(
+            return entityManager.createQuery(
                     "select r from HAccountRole r where name = :role", HAccountRole.class)
                     .setParameter("role", role)
                     .getSingleResult();
@@ -357,6 +378,7 @@ public class ZanataJpaIdentityStore implements Serializable {
         }
     }
 
+    @Transactional
     public boolean grantRole(String username, String role) {
         HAccount user = lookupUser(username);
         if (user == null) {
@@ -420,7 +442,7 @@ public class ZanataJpaIdentityStore implements Serializable {
 
     private List<String> listUserMembers(String role) {
         HAccountRole roleEntity = lookupRole(role);
-        return entityManager().createQuery("select u.username" +
+        return entityManager.createQuery("select u.username" +
                 " from HAccount u where :role member of u.roles")
                 .setParameter("role", roleEntity)
                 .getResultList();
@@ -455,6 +477,7 @@ public class ZanataJpaIdentityStore implements Serializable {
         }
     }
 
+    @Transactional
     public boolean deleteRole(String role) {
         HAccountRole roleToDelete = lookupRole(role);
         if (roleToDelete == null) {
@@ -467,10 +490,11 @@ public class ZanataJpaIdentityStore implements Serializable {
             removeRoleFromGroup(r, role);
         }
 
-        entityManager().remove(roleToDelete);
+        entityManager.remove(roleToDelete);
         return true;
     }
 
+    @Transactional
     public boolean removeRoleFromGroup(String role, String group) {
         HAccountRole roleToRemove = lookupRole(role);
         if (roleToRemove == null) {
@@ -489,6 +513,7 @@ public class ZanataJpaIdentityStore implements Serializable {
         return lookupRole(name) != null;
     }
 
+    @Transactional
     public boolean createRole(String role) {
         try {
 
@@ -499,7 +524,7 @@ public class ZanataJpaIdentityStore implements Serializable {
 
             HAccountRole newRole = new HAccountRole();
             newRole.setName(role);
-            entityManager().persist(newRole);
+            entityManager.persist(newRole);
 
             return true;
         } catch (Exception ex) {
@@ -512,6 +537,7 @@ public class ZanataJpaIdentityStore implements Serializable {
         }
     }
 
+    @Transactional
     public boolean addRoleToGroup(String role, String group) {
         HAccountRole targetRole = lookupRole(role);
         if (targetRole == null) {
@@ -538,27 +564,24 @@ public class ZanataJpaIdentityStore implements Serializable {
     }
 
     public List<String> listGrantableRoles() {
-        return entityManager().createQuery(
+        return entityManager.createQuery(
                 "select r.name from HAccountRole r where r.conditional" + " = false")
                 .getResultList();
     }
 
     public List<String> listRoles() {
-        return entityManager().createQuery(
+        return entityManager.createQuery(
                 "select r.name from HAccountRole r").getResultList();
     }
 
     private List<String> listRoleMembers(String role) {
         HAccountRole roleEntity = lookupRole(role);
 
-        return entityManager().createQuery("select r.name" +
+        return entityManager.createQuery("select r.name" +
                 " from HAccountRole r where :role member of r.groups")
                 .setParameter("role", roleEntity)
                 .getResultList();
 
     }
 
-    private EntityManager entityManager() {
-        return ServiceLocator.instance().getEntityManager();
-    }
 }

@@ -20,12 +20,13 @@
  */
 package org.zanata.seam.test;
 
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 
-@Name("componentWithRequiredBrokenChild")
+@Named("componentWithRequiredBrokenChild")
 public class ComponentWithRequiredBrokenChild {
-    @In(required = true)
+    @SuppressWarnings("CdiInjectionPointsInspection")
+    @Inject
     private ChildBroken unbuildableTestComponent;
 
     public ChildBroken getUnbuildableTestComponent() {

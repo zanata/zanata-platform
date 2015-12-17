@@ -11,26 +11,29 @@ import org.zanata.exception.AuthorizationException;
 import org.zanata.exception.NotLoggedInException;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
-import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.seam.AutowireContexts;
 import org.zanata.seam.SeamAutowire;
+import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.permission.CustomPermissionResolver;
 import org.zanata.security.permission.PermissionEvaluator;
-import org.zanata.util.Event;
-import org.zanata.util.PasswordUtil;
+import javax.enterprise.event.Event;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 import static org.zanata.util.PasswordUtil.generateSaltedHash;
 
 public class ZanataIdentityTest extends ZanataJpaTest {
     private static final SeamAutowire seam = SeamAutowire.instance();
+    private static final String username = "translator";
     private static final String apiKey = "d83882201764f7d339e97c4b087f0806";
     private static final String validPassword = "translator";
     private static boolean securityEnabled;
     private ZanataIdentity identity;
     @Mock
     private Event event;
+    @Mock
+    private IdentityManager identityManager;
     private HAccount account;
     //    private CustomPermissionResolver permissionResolver;
 
@@ -56,12 +59,22 @@ public class ZanataIdentityTest extends ZanataJpaTest {
         ZanataCredentials credentials = new ZanataCredentials();
         PermissionEvaluator permissionEvaluator = new PermissionEvaluator();
         permissionEvaluator.buildIndex();
+        when(identityManager.isEnabled()).thenReturn(true);
+        when(identityManager.authenticate(username, validPassword)).thenReturn(true);
+        when(identityManager.authenticate(username, apiKey)).thenReturn(true);
 
         identity = seam
                 .use("credentials", credentials)
                 .use("entityManager", getEm())
-                .use("event", event)
+                .use("identityManager", identityManager)
+                .use("loginSuccessfulEventEvent", event)
+                .use("logoutEvent", event)
+                .use("alreadyLoggedInEventEvent", event)
+                .use("loginFailedEventEvent", event)
+                .use("notLoggedInEventEvent", event)
                 .use("permissionEvaluator", permissionEvaluator)
+                .use("session", getSession())
+                .use("serverPath", "/")
                 .autowire(ZanataIdentity.class);
         seam.use("identity", identity);
         identity.setJaasConfigName(null);
@@ -74,9 +87,9 @@ public class ZanataIdentityTest extends ZanataJpaTest {
 
     private static HAccount makeAccount() {
         HAccount account = new HAccount();
-        account.setUsername("translator");
+        account.setUsername(username);
         account.setPasswordHash(
-                generateSaltedHash(validPassword, account.getUsername()));
+                generateSaltedHash(validPassword, username));
         account.setApiKey(apiKey);
         account.setEnabled(true);
         return account;
@@ -84,7 +97,7 @@ public class ZanataIdentityTest extends ZanataJpaTest {
 
     @Test
     public void canLogin() {
-        identity.getCredentials().setUsername(account.getUsername());
+        identity.getCredentials().setUsername(username);
         identity.getCredentials().setPassword(validPassword);
         String login = identity.login();
         assertThat(login).isEqualTo("loggedIn");
@@ -93,7 +106,7 @@ public class ZanataIdentityTest extends ZanataJpaTest {
 
     @Test
     public void invalidPassword() {
-        identity.getCredentials().setUsername(account.getUsername());
+        identity.getCredentials().setUsername(username);
         identity.getCredentials().setPassword("invalid password");
         String login = identity.login();
         assertThat(login).isNull();
@@ -106,7 +119,7 @@ public class ZanataIdentityTest extends ZanataJpaTest {
         assertThat(identity.hasRole("admin")).isFalse()
                 .as("before login hasRole is always false");
 
-        identity.getCredentials().setUsername(account.getUsername());
+        identity.getCredentials().setUsername(username);
         identity.getCredentials().setPassword(validPassword);
         identity.login();
 
@@ -127,7 +140,7 @@ public class ZanataIdentityTest extends ZanataJpaTest {
 
     @Test
     public void checkLoggedInDoesNotThrowIfLoggedIn() {
-        identity.getCredentials().setUsername(account.getUsername());
+        identity.getCredentials().setUsername(username);
         identity.getCredentials().setPassword(validPassword);
         identity.login();
         identity.checkLoggedIn();
@@ -135,7 +148,7 @@ public class ZanataIdentityTest extends ZanataJpaTest {
 
     @Test(expected = AuthorizationException.class)
     public void checkRoleWillThrowIfDoesNotHaveTheRole() {
-        identity.getCredentials().setUsername(account.getUsername());
+        identity.getCredentials().setUsername(username);
         identity.getCredentials().setPassword(validPassword);
         identity.login();
         identity.checkRole("admin");
@@ -171,23 +184,25 @@ public class ZanataIdentityTest extends ZanataJpaTest {
         assertThat(identity.hasPermission(target, "seam.insert")).isFalse()
                 .as("only admin can create role");
 
-        identity.getCredentials().setUsername(account.getUsername());
+        identity.getCredentials().setUsername(username);
         identity.getCredentials().setPassword(validPassword);
         identity.login();
 
-        identity.addRole("user");
+        boolean addedUser = identity.addRole("user");
+        assert addedUser;
 
         assertThat(identity.hasPermission(target, "seam.insert")).isFalse()
                 .as("ordinary user do not have permission to create role");
 
-        identity.addRole("admin");
+        boolean addedAdmin = identity.addRole("admin");
+        assert addedAdmin;
 
         assertThat(identity.hasPermission(target, "seam.insert")).isTrue();
     }
 
     @Test(expected = AuthorizationException.class)
     public void canCheckPermission() {
-        identity.getCredentials().setUsername(account.getUsername());
+        identity.getCredentials().setUsername(username);
         identity.getCredentials().setPassword(validPassword);
         identity.login();
 

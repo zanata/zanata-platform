@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.notNullValue;
 import javax.persistence.EntityManager;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.jboss.seam.annotations.In;
+import javax.inject.Inject;
 import org.junit.Test;
 import org.zanata.ArquillianTest;
 import org.zanata.model.HAccount;
@@ -17,10 +17,10 @@ import org.zanata.security.ZanataIdentity;
 
 public class LocaleMemberDAOITCase extends ArquillianTest {
 
-    @In
+    @Inject
     private LocaleMemberDAO localeMemberDAO;
 
-    @In
+    @Inject
     private EntityManager entityManager;
 
     @Override

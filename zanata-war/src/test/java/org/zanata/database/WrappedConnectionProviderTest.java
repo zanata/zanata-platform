@@ -6,6 +6,7 @@ import java.sql.Statement;
 
 import lombok.Cleanup;
 
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Fail;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.JDBCException;
@@ -18,6 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.zanata.ZanataDbunitJpaTest;
 
+@Slf4j
 public class WrappedConnectionProviderTest extends ZanataDbunitJpaTest {
 
     private Session session;
@@ -48,6 +50,7 @@ public class WrappedConnectionProviderTest extends ZanataDbunitJpaTest {
         @Cleanup
         ScrollableResults scroll1 = streamQuery("from HTextFlow");
         try {
+            log.warn("This test is about to trigger a StreamingResultSetSQLException");
             session.doWork(new Work() {
                 @Override
                 public void execute(Connection connection) throws SQLException {
@@ -66,6 +69,7 @@ public class WrappedConnectionProviderTest extends ZanataDbunitJpaTest {
         @Cleanup
         ScrollableResults scroll1 = streamQuery("from HTextFlow");
         try {
+            log.warn("This test is about to trigger a StreamingResultSetSQLException");
             @Cleanup
             ScrollableResults scroll2 = streamQuery("from HTextFlowTarget");
             concurrentResultSetNotDetected();
@@ -79,6 +83,7 @@ public class WrappedConnectionProviderTest extends ZanataDbunitJpaTest {
         @Cleanup
         ScrollableResults scroll1 = streamQuery("from HTextFlow");
         try {
+            log.warn("This test is about to trigger a StreamingResultSetSQLException");
             @Cleanup
             ScrollableResults scroll2 = scrollQuery("from HTextFlowTarget");
             concurrentResultSetNotDetected();

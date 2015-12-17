@@ -20,10 +20,13 @@
  */
 package org.zanata.rest.service;
 
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import com.google.common.base.Throwables;
 import org.zanata.action.CopyTransManager;
 import org.zanata.async.handle.CopyTransTaskHandle;
 import org.zanata.dao.DocumentDAO;
@@ -36,16 +39,17 @@ import org.zanata.security.ZanataIdentity;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("copyTransResourceService")
+@RequestScoped
+@Named("copyTransResourceService")
 @Path(CopyTransResource.SERVICE_PATH)
 public class CopyTransResourceService implements CopyTransResource {
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private CopyTransManager copyTransManager;
 
-    @In
+    @Inject
     private DocumentDAO documentDAO;
 
     @Override
@@ -61,10 +65,13 @@ public class CopyTransResourceService implements CopyTransResource {
 
         // NB: Permission check happens in the Copy Trans service itself.
 
-        copyTransManager.startCopyTrans(document, null); // TODO allow options
-                                                         // from the Rest
-                                                         // endpoint
-        return this.getCopyTransStatus(projectSlug, iterationSlug, docId);
+        // TODO allow options from the Rest endpoint
+        try {
+            copyTransManager.startCopyTrans(document, null);
+            return this.getCopyTransStatus(projectSlug, iterationSlug, docId);
+        } catch (Exception e) {
+            throw Throwables.propagate(e);
+        }
     }
 
     @Override

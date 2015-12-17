@@ -23,7 +23,7 @@ package org.zanata.model.validator;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.EntityManager;
+import javax.inject.Inject;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -32,9 +32,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.metadata.ClassMetadata;
-import org.jboss.seam.Component;
 
 /**
  * Unique validator implementation. NB: <b>Requires Seam and Hibernate</b>.
@@ -45,6 +43,8 @@ import org.jboss.seam.Component;
  */
 public class UniqueValidator implements ConstraintValidator<Unique, Object> {
     private Unique parameters;
+    @Inject
+    private Session session;
 
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
@@ -55,15 +55,11 @@ public class UniqueValidator implements ConstraintValidator<Unique, Object> {
     }
 
     private int countRows(Object value) {
-        EntityManager entityManager =
-                (EntityManager) Component.getInstance("entityManager");
-        Session session = (Session) entityManager.getDelegate();
-
         ClassMetadata metadata =
                 session.getSessionFactory().getClassMetadata(value.getClass());
         String idName = metadata.getIdentifierPropertyName();
         // FIXME was EntityMode.POJO
-        Serializable id = metadata.getIdentifier(value, (SessionImplementor) null);
+        Serializable id = metadata.getIdentifier(value, null);
 
         DetachedCriteria criteria = DetachedCriteria.forClass(value.getClass());
         for (String property : parameters.properties()) {

@@ -11,10 +11,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.common.EntityStatus;
@@ -24,8 +22,10 @@ import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.ui.CopyAction;
+import org.zanata.util.FacesNavigationUtil;
 import org.zanata.ui.faces.FacesMessages;
 
 /**
@@ -39,8 +39,8 @@ import org.zanata.ui.faces.FacesMessages;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("mergeTransAction")
-@Scope(ScopeType.PAGE)
+@Named("mergeTransAction")
+@javax.faces.bean.ViewScoped
 public class MergeTransAction extends CopyAction implements Serializable {
 
     @Getter
@@ -61,31 +61,32 @@ public class MergeTransAction extends CopyAction implements Serializable {
     @Setter
     private boolean keepExistingTranslation;
 
-    @In
+    @Inject
     private ProjectDAO projectDAO;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private MergeTranslationsManager mergeTranslationsManager;
 
-    @In
+    @Inject
     private CopyTransManager copyTransManager;
 
-    @In
+    @Inject
     private CopyVersionManager copyVersionManager;
 
-    @In
+    @Inject
     private Messages msgs;
 
-    @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
-    @In
+    @Inject
     private FacesMessages jsfMessages;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
     private HProjectIteration targetVersion;
@@ -196,6 +197,7 @@ public class MergeTransAction extends CopyAction implements Serializable {
         mergeTranslationsManager.start(sourceProjectSlug,
                 sourceVersionSlug, targetProjectSlug, targetVersionSlug,
                 !keepExistingTranslation);
+        FacesNavigationUtil.handlePageNavigation(null, "merge-translation");
     }
 
     // Check if copy-trans, copy version or merge-trans is running for the

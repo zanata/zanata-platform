@@ -27,7 +27,7 @@ import javax.jms.MessageListener;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.annotations.Name;
+import javax.inject.Named;
 
 /**
  * Consumer of Dead Letter Queue (all unsuccessful message will be dropped into
@@ -49,7 +49,7 @@ import org.jboss.seam.annotations.Name;
                 propertyName = "maxSession",
                 propertyValue = "1")
 })
-@Name("deadLetterQueueReceiver")
+@Named("deadLetterQueueReceiver")
 @Slf4j
 public class DeadLetterQueueReceiver implements MessageListener {
 

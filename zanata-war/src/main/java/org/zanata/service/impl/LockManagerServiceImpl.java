@@ -23,14 +23,13 @@ package org.zanata.service.impl;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Startup;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.lock.Lock;
 import org.zanata.lock.LockNotAcquiredException;
 import org.zanata.model.HAccount;
+import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.service.LockManagerService;
 import org.zanata.util.ServiceLocator;
 
@@ -41,9 +40,8 @@ import org.zanata.util.ServiceLocator;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("lockManagerServiceImpl")
-@Scope(ScopeType.APPLICATION)
-@Startup
+@Named("lockManagerServiceImpl")
+@ApplicationScoped
 public class LockManagerServiceImpl implements LockManagerService {
     /**
      * Maps locks to their owners' usernames
@@ -79,8 +77,8 @@ public class LockManagerServiceImpl implements LockManagerService {
 
     private String getCurrentUser() {
         HAccount user =
-                ServiceLocator.instance().getInstance(
-                        ZanataJpaIdentityStore.AUTHENTICATED_USER, HAccount.class);
+                ServiceLocator.instance().getInstance(HAccount.class,
+                        new AuthenticatedLiteral());
         String newLocker = user != null ? user.getUsername() : "unknown";
         return newLocker;
     }

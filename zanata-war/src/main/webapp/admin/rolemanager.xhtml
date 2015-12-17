@@ -46,7 +46,7 @@
                   <li>
                     <h:link styleClass="i__item--right"
                       outcome="/admin/roledetail.xhtml"
-                      rendered="#{identity.hasPermission('seam.account', 'create', null)}"
+                      rendered="#{identity.hasPermission('seam.account', 'create')}"
                       value="#{msgs['jsf.CreateRole']}">
                       <i class="i i--plus i__item__icon"></i>
                     </h:link>

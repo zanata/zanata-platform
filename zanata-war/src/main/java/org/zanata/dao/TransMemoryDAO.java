@@ -27,13 +27,14 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.transaction.Transaction;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.transaction.UserTransaction;
+
 import org.zanata.exception.EntityMissingException;
+import org.zanata.jpa.FullText;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnit;
 import com.google.common.base.Optional;
@@ -44,13 +45,15 @@ import com.google.common.base.Optional;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("transMemoryDAO")
-@Scope(ScopeType.STATELESS)
-@AutoCreate
+@Named("transMemoryDAO")
+@RequestScoped
 public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long> {
 
-    @In
+    @Inject @FullText
     private FullTextSession session;
+
+    @Inject
+    private UserTransaction userTransaction;
 
     public TransMemoryDAO() {
         super(TransMemory.class);
@@ -91,7 +94,7 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long> {
         int deleted;
         do {
             try {
-                Transaction.instance().begin();
+                userTransaction.begin();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -119,7 +122,7 @@ public class TransMemoryDAO extends AbstractDAOImpl<TransMemory, Long> {
             }
 
             try {
-                Transaction.instance().commit();
+                userTransaction.commit();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

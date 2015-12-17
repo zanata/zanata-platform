@@ -24,27 +24,66 @@ import java.io.Serializable;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
-import org.zanata.events.LoginSuccessfulEvent;
-import org.zanata.events.UserCreatedEvent;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
+import javax.faces.application.FacesMessage;
+import javax.inject.Inject;
 
-@Name("authenticationEvents")
-@Scope(ScopeType.STATELESS)
+import org.apache.deltaspike.core.api.scope.WindowScoped;
+import org.apache.deltaspike.core.util.ContextUtils;
+import org.zanata.events.AlreadyLoggedInEvent;
+import org.zanata.events.LoginFailedEvent;
+import org.zanata.events.LoginSuccessfulEvent;
+import org.zanata.events.NotLoggedInEvent;
+import org.zanata.events.UserCreatedEvent;
+import org.zanata.ui.faces.FacesMessages;
+
+/**
+ * Some of the event observers are migrated from org.jboss.seam.security.FacesSecurityEvents
+ */
+@Dependent
 @Slf4j
 public class AuthenticationEvents implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Observer(UserCreatedEvent.EVENT_NAME)
-    public void createSuccessful(UserCreatedEvent userCreatedEvent) {
-        log.info("Account {} created", userCreatedEvent.getUser().getUsername());
+    @Inject
+    private FacesMessages facesMessages;
+
+    public void createSuccessful(@Observes UserCreatedEvent userCreatedEvent) {
+        log.info("Account {} created",
+                userCreatedEvent.getUser().getUsername());
     }
 
-    @Observer(LoginSuccessfulEvent.EVENT_NAME)
-    public void loginInSuccessful() {
+    public void loginInSuccessful(@Observes LoginSuccessfulEvent event) {
         log.debug("Account logged in successfully");
+        if (ContextUtils.isContextActive(WindowScoped.class)) {
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_INFO,
+                    "authentication.loginSuccessful", event.getName());
+        }
     }
 
+    public void loginFailed(@Observes LoginFailedEvent event) {
+        log.debug("login failed", event.getException());
+        if (ContextUtils.isContextActive(WindowScoped.class)) {
+            facesMessages
+                    .addFromResourceBundle(FacesMessage.SEVERITY_ERROR,
+                            "authentication.loginFailed");
+        }
+    }
+
+    public void notLoggedIn(@Observes NotLoggedInEvent event) {
+        if (ContextUtils.isContextActive(WindowScoped.class)) {
+            facesMessages
+                    .addFromResourceBundle(FacesMessage.SEVERITY_INFO,
+                            "authentication.notLoggedIn");
+        }
+    }
+
+    public void alreadyLoggedIn(@Observes AlreadyLoggedInEvent event) {
+        if (ContextUtils.isContextActive(WindowScoped.class)) {
+            facesMessages
+                    .addFromResourceBundle(FacesMessage.SEVERITY_WARN,
+                            "authentication.alreadyLoggedIn");
+        }
+    }
 }

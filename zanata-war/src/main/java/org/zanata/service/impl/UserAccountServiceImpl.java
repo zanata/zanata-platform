@@ -29,10 +29,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountResetPasswordKeyDAO;
 import org.zanata.dao.RoleAssignmentRuleDAO;
@@ -47,20 +47,20 @@ import org.zanata.util.HashUtil;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("userAccountServiceImpl")
-@Scope(ScopeType.STATELESS)
+@Named("userAccountServiceImpl")
+@RequestScoped
 @Slf4j
 public class UserAccountServiceImpl implements UserAccountService {
-    @In
+    @Inject
     private Session session;
 
-    @In
+    @Inject
     private AccountDAO accountDAO;
 
-    @In
+    @Inject
     private AccountResetPasswordKeyDAO accountResetPasswordKeyDAO;
 
-    @In
+    @Inject
     private RoleAssignmentRuleDAO roleAssignmentRuleDAO;
 
     @Override

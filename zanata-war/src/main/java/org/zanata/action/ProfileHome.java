@@ -23,14 +23,12 @@ package org.zanata.action;
 import java.io.Serializable;
 
 import javax.faces.application.FacesMessage;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
 import org.zanata.rest.editor.dto.User;
 import org.zanata.rest.editor.service.UserService;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
@@ -39,6 +37,7 @@ import org.zanata.dao.PersonDAO;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.ui.faces.FacesMessages;
 
 import com.google.common.base.Strings;
@@ -52,8 +51,8 @@ import static org.apache.commons.lang.StringUtils.abbreviate;
  * @see NewProfileAction for new user profile form page
  *
  */
-@Name("profileHome")
-@Scope(ScopeType.PAGE)
+@Named("profileHome")
+@javax.faces.bean.ViewScoped
 @Slf4j
 public class ProfileHome implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -62,19 +61,19 @@ public class ProfileHome implements Serializable {
     @Getter
     private User user;
 
-    @In
+    @Inject
     ZanataIdentity identity;
-    @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
+    @Inject @Authenticated
     HAccount authenticatedAccount;
-    @In
+    @Inject
     PersonDAO personDAO;
-    @In
+    @Inject
     AccountDAO accountDAO;
-    @In
+    @Inject
     Messages msgs;
-    @In(value = "editor.userService", create = true)
+    @Inject
     private UserService userService;
-    @In
+    @Inject
     private FacesMessages jsfMessages;
 
     private void init() {

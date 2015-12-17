@@ -52,6 +52,7 @@ import org.zanata.model.tm.TMXMetadataHelper;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemoryUnitVariant;
+import org.zanata.seam.AutowireTransaction;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.util.TMXParseException;
 
@@ -76,7 +77,10 @@ public class TMXParserTest extends ZanataDbunitJpaTest {
 
     @Before
     public void initializeSeam() {
-        seam.reset().ignoreNonResolvable().use("entityManager", getEm())
+        seam.reset()
+                .ignoreNonResolvable()
+                .use("entityManager", getEm())
+                .useJndi("java:jboss/UserTransaction", AutowireTransaction.instance())
                 .use("session", getSession());
     }
 

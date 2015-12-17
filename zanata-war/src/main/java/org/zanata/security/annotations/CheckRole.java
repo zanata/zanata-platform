@@ -22,6 +22,7 @@ package org.zanata.security.annotations;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -39,6 +40,7 @@ import org.zanata.security.CheckRoleDecisionVoter;
 @Documented
 @Stereotype
 @Secured(CheckRoleDecisionVoter.class)
+@Inherited
 public @interface CheckRole {
     String value();
 }

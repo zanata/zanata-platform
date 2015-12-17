@@ -23,6 +23,8 @@ package org.zanata.action;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.enterprise.context.RequestScoped;
+import javax.faces.context.FacesContext;
 import javax.security.auth.login.LoginException;
 
 import lombok.Getter;
@@ -30,11 +32,10 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.faces.Redirect;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.PersonDAO;
 import org.zanata.exception.KeyNotFoundException;
 import org.zanata.model.HAccount;
@@ -42,41 +43,41 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HPersonEmailValidationKey;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.impl.EmailChangeService;
 import org.zanata.ui.faces.FacesMessages;
+import org.zanata.util.FacesNavigationUtil;
+import org.zanata.util.UrlUtil;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
-@Name("validateEmail")
+@Named("validateEmail")
 @Slf4j
-@ZanataSecured
+
+@RequestScoped
 public class ValidateEmailAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private static int LINK_ACTIVE_DAYS = 1;
 
-    @In
+    @Inject
     private PersonDAO personDAO;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
-    private EmailChangeService emailChangeService;
-
-    //TODO [CDI] change to urlUtil
-    @In
-    private Redirect redirect;
-
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
+    @Inject
+    EmailChangeService emailChangeService;
+
+    @Inject
+    private UrlUtil urlUtil;
     @Getter
     @Setter
     private String activationKey;
 
-    @Create
+    @PostConstruct
     public void onCreate() {
         identity.checkLoggedIn();
     }
@@ -117,9 +118,7 @@ public class ValidateEmailAction implements Serializable {
                 returnUrl = checkResult;
             }
         }
-        redirect.setConversationPropagationEnabled(true);
-        redirect.setViewId(returnUrl);
-        redirect.execute();
+        urlUtil.redirectTo(returnUrl);
     }
 
     private String checkExpiryDate(Date createdDate) {
@@ -127,7 +126,7 @@ public class ValidateEmailAction implements Serializable {
             log.info("Creation date expired:" + createdDate);
             facesMessages.addGlobal(SEVERITY_ERROR,
                     "Link expired. Please update your email again.");
-            return "/profile/edit.xhtml";
+            return urlUtil.dashboardUrl();
         }
         return "";
     }

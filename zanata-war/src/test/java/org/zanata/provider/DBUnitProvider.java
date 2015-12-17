@@ -37,6 +37,7 @@ import org.dbunit.dataset.datatype.DataType;
 import org.dbunit.dataset.datatype.DataTypeException;
 import org.dbunit.dataset.datatype.DefaultDataTypeFactory;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
+import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 
 /**
@@ -113,6 +114,7 @@ public abstract class DBUnitProvider {
         IDatabaseConnection con = null;
         try {
             con = getConnection();
+            editConfig(con.getConfig());
             disableReferentialIntegrity(con);
             for (DataSetOperation op : list) {
                 prepareExecution(con, op);
@@ -312,19 +314,7 @@ public abstract class DBUnitProvider {
      *            and features
      */
     protected void editConfig(DatabaseConfig config) {
-        // DBUnit/HSQL bugfix
-        // http://www.carbonfive.com/community/archives/2005/07/dbunit_hsql_and.html
-        config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY,
-                new DefaultDataTypeFactory() {
-                    @Override
-                    public DataType createDataType(int sqlType,
-                            String sqlTypeName) throws DataTypeException {
-                        if (sqlType == Types.BOOLEAN) {
-                            return DataType.BOOLEAN;
-                        }
-                        return super.createDataType(sqlType, sqlTypeName);
-                    }
-                });
+        config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new H2DataTypeFactory());
     }
 
     /**

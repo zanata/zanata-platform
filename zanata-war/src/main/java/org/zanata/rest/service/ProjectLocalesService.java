@@ -24,6 +24,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.GenericEntity;
@@ -31,8 +32,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.jboss.resteasy.util.GenericType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HLocale;
@@ -43,16 +44,17 @@ import org.zanata.service.LocaleService;
 
 import com.google.common.collect.Lists;
 
-@Name("projectLocalesService")
+@RequestScoped
+@Named("projectLocalesService")
 @Path(ProjectLocalesResource.SERVICE_PATH)
 public class ProjectLocalesService extends LocalesService implements ProjectLocalesResource {
     @PathParam("projectSlug")
     String projectSlug;
 
-    @In
+    @Inject
     private ProjectDAO projectDAO;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
     @Override

@@ -1,14 +1,15 @@
 package org.zanata.rest.editor.service;
 
 import java.util.Set;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
@@ -16,8 +17,8 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.rest.editor.dto.User;
 import org.zanata.rest.editor.service.resource.UserResource;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.GravatarService;
 
 import com.google.common.base.Function;
@@ -30,24 +31,26 @@ import lombok.NoArgsConstructor;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("editor.userService")
+@RequestScoped
+@Named("editor.userService")
 @Path(UserResource.SERVICE_PATH)
 @Transactional
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@ZanataSecured
+
 public class UserService implements UserResource {
 
-    @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER, required = false)
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
-    @In
+    @Inject
     private GravatarService gravatarServiceImpl;
 
-    @In
+    @Inject
     private AccountDAO accountDAO;
 
-    @In
+    @Inject
     private PersonDAO personDAO;
 
     @Override

@@ -24,14 +24,12 @@ import java.io.Serializable;
 
 import javax.faces.model.DataModel;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.dao.ProjectDAO;
 
-@Name("projectAction")
-@Scope(ScopeType.PAGE)
+@Named("projectAction")
+@javax.faces.bean.ViewScoped
 public class ProjectAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -43,7 +41,7 @@ public class ProjectAction implements Serializable {
             new ProjectPagedListDataModel(!showActive, !showReadOnly,
                     !showObsolete);
 
-    @In
+    @Inject
     private ProjectDAO projectDAO;
 
     public boolean getEmpty() {

@@ -18,8 +18,8 @@
       required="false"
       placeholder="#{msgs['jsf.languages.FilterLanguages']}"
       value="#{filterText}"
-      oninput="return filterLocalesFromTextBox('[id=\\'#{component.namingContainer.clientId}:#{id}-filter-input\\']', '##{id}-list');"
-      onkeyup="return onFilterLocalesTextboxKeyUp('[id=\\'#{component.namingContainer.clientId}:#{id}-filter-input\\']', '##{id}-list', event);"
+      oninput="return filterLocalesFromTextBox('[id=\'#{component.namingContainer.clientId}:#{id}-filter-input\']', '##{id}-list');"
+      onkeyup="return onFilterLocalesTextboxKeyUp('[id=\'#{component.namingContainer.clientId}:#{id}-filter-input\']', '##{id}-list', event);"
       onkeypress="doNotSubmit(event);"
       maxlength="255"
       styleClass="form--search__input js-form--search__input l--push-bottom-quarter">

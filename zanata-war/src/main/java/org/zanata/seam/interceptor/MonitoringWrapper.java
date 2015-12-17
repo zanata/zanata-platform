@@ -21,6 +21,7 @@
 package org.zanata.seam.interceptor;
 
 import java.io.IOException;
+import javax.inject.Inject;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -28,13 +29,13 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jboss.seam.servlet.ContextualHttpServletRequest;
 import org.zanata.security.ZanataIdentity;
 
 import net.bull.javamelody.MonitoringFilter;
-import org.zanata.util.ServiceLocator;
 
 public class MonitoringWrapper extends MonitoringFilter {
+    @Inject
+    private ZanataIdentity identity;
 
     @Override
     public void doFilter(final ServletRequest request,
@@ -44,24 +45,17 @@ public class MonitoringWrapper extends MonitoringFilter {
         final HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         if (httpRequest.getRequestURI().equals(getMonitoringUrl(httpRequest))) {
-            new ContextualHttpServletRequest((HttpServletRequest) request) {
-                @Override
-                public void process() throws Exception {
-                    ZanataIdentity identity =
-                            ServiceLocator.instance().getInstance(
-                                    ZanataIdentity.class);
-                    if (identity == null || !identity.isLoggedIn()) {
-                        String signInUrl =
-                                httpRequest.getContextPath()
-                                        + "/account/sign_in";
-                        httpResponse.sendRedirect(signInUrl);
-                    } else if (!identity.hasRole("admin")) {
-                        httpResponse.sendError(
-                                HttpServletResponse.SC_UNAUTHORIZED,
-                                "Only admin can access monitoring!");
-                    }
-                }
-            }.run();
+            if (identity == null || !identity.isLoggedIn()) {
+                String signInUrl =
+                        httpRequest.getContextPath()
+                                + "/account/sign_in";
+                httpResponse.sendRedirect(signInUrl);
+            } else if (!identity.hasRole("admin")) {
+                httpResponse.sendError(
+                        HttpServletResponse.SC_UNAUTHORIZED,
+                        "Only admin can access monitoring!");
+            }
+
             super.doFilter(request, response, chain);
         } else {
             chain.doFilter(request, response);

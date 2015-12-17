@@ -4,6 +4,11 @@
 
 <urlrewrite>
 
+  <rule>
+    <from casesensitive="true">^([^?]*)\?dswid=([^&amp;]*)&amp;(.*)$</from>
+    <to>$1?$3&amp;dswid=$2</to>
+  </rule>
+
   <!-- Disable the Red Hat crawler -->
   <rule>
     <condition name="remote-addr">66.187.233.202</condition>
@@ -73,8 +78,14 @@
     <from casesensitive="true">^/iteration/view/([^/]+)/([^/]+)(/([^?]*)\??(.*))?$
     </from>
     <to
-      last="true">/iteration/view.seam\?projectSlug=$1&amp;iterationSlug=$2&amp;$4
+      last="true">/iteration/view.seam\?projectSlug=$1&amp;iterationSlug=$2&amp;$5
     </to>
+  </rule>
+
+  <!-- error page rule -->
+  <rule>
+    <from casesensitive="true">^/error/?.*\??(.*)</from>
+    <to last="true">/error.seam?$1</to>
   </rule>
 
 
@@ -239,8 +250,8 @@
   </rule>
 
   <rule>
-    <from casesensitive="true">^/rest/(.+)$</from>
-    <to last="true">/seam/resource/restv1/$1</to>
+    <from casesensitive="true">^/seam/resource/restv1/(.+)$</from>
+    <to last="true">/rest/$1</to>
   </rule>
 
   <!-- Version group -->
@@ -288,6 +299,11 @@
     <from casesensitive="true">^/javax.faces.resource/jars/assets/(.*)(?&lt;!.seam)$</from>
     <to last="true">/javax.faces.resource/jars/assets/$1.seam</to>
   </rule>
+
+  <outbound-rule>
+    <from casesensitive="true">^([^?]*)\?dswid=([^&amp;]*)&amp;(.*)$</from>
+    <to>$1?$3&amp;dswid=$2</to>
+  </outbound-rule>
 
   <outbound-rule>
     <from>^(/.+)?/dashboard/home.seam(.+)?$</from>

@@ -24,7 +24,6 @@ import java.util.List;
 import javax.faces.FacesException;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.EditableValueHolder;
-import javax.faces.component.FacesComponent;
 import javax.faces.component.NamingContainer;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
@@ -103,15 +102,8 @@ import javax.validation.ValidatorFactory;
  * @author <a href="http://community.jboss.org/people/spinner)">Jose Rodolfo
  *         freitas</a>
  */
-@FacesComponent(UIInputContainer.COMPONENT_TYPE)
 public class UIInputContainer extends UIComponentBase implements
         NamingContainer {
-    /**
-     * The standard component type for this component.
-     */
-    public static final String COMPONENT_TYPE =
-            "org.jboss.seam.faces.InputContainer";
-
     protected static final String HTML_ID_ATTR_NAME = "id";
     protected static final String HTML_CLASS_ATTR_NAME = "class";
     protected static final String HTML_STYLE_ATTR_NAME = "style";

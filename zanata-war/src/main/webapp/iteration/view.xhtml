@@ -18,7 +18,7 @@
     <f:viewParam name="iterationSlug" value="#{versionHome.slug}" />
 
     <f:viewParam name="projectSlug" value="#{copyTransAction.projectSlug}" />
-    <f:viewParam name="iterationSlug" value="#{copyTransAction.iterationSlug}" />
+    <f:viewParam name="iterationSlug" value="#{copyTransAction.versionSlug}" />
 
     <f:viewParam name="projectSlug" value="#{mergeTransAction.targetProjectSlug}" />
     <f:viewParam name="iterationSlug" value="#{mergeTransAction.targetVersionSlug}" />
@@ -36,8 +36,8 @@
 <script type="text/javascript">
   //<![CDATA[
   jQuery(function () {
-    crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/languages/:lang:',
-      function (pre, projectSlug, versionSlug, lang) {
+    crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/languages/:lang::?query:',
+      function (pre, projectSlug, versionSlug, lang, query) {
         zanata.tabs.activate(jQuery('#languages_tab'));
         var clickEle = jQuery('a.' + lang);
         if (lang && clickEle.length != 0) {
@@ -59,8 +59,8 @@
         }
       });
 
-    crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/settings/:setting:',
-      function (pre, projectSlug, versionSlug, setting) {
+    crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/settings/:setting::?query:',
+      function (pre, projectSlug, versionSlug, setting, query) {
         zanata.tabs.activate(jQuery('#settings_tab'));
         setting = setting || 'general';
         setting =
@@ -69,7 +69,7 @@
       });
 
 
-    crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/:section:',
+    crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/:section::?query:',
       function (pre, projectSlug, versionSlug, section) {
         section = section || 'languages';
         section = validateTab('#' + section + "_tab", section, "languages");
@@ -307,7 +307,7 @@
           <span class="is-hidden--s i__text--right">
             #{msgs['jsf.Languages']}
             <h:panelGroup styleClass="txt--neutral" id="languages-size">
-              #{versionHomeAction.getSupportedLocale().size}
+              #{versionHomeAction.getSupportedLocale().size()}
             </h:panelGroup>
           </span>
         </a>
@@ -320,7 +320,7 @@
           <span class="is-hidden--s i__text--right">
             #{msgs['jsf.Documents']}
             <h:panelGroup styleClass="txt--neutral" id="documents-size">
-              #{versionHomeAction.getDocuments().size}
+              #{versionHomeAction.getDocuments().size()}
             </h:panelGroup>
           </span>
         </a>
@@ -334,7 +334,7 @@
             <span class="is-hidden--s i__text--right">
               #{msgs['jsf.Groups']}
               <h:panelGroup styleClass="txt--neutral" id="groups-size">
-                #{versionHomeAction.groups.size}
+                #{versionHomeAction.groups.size()}
               </h:panelGroup>
             </span>
           </a>

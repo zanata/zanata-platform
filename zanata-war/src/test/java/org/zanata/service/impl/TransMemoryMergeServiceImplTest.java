@@ -76,6 +76,8 @@ import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 
 import com.google.common.base.Optional;
 
+import javax.enterprise.event.Event;
+
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -98,7 +100,8 @@ public class TransMemoryMergeServiceImplTest extends ZanataTest {
     private TranslationService translationService;
     @Mock
     private TranslationWorkspace workspace;
-
+    @Mock
+    private Event textFlowTargetUpdateContextEvent;
     @Captor
     ArgumentCaptor<List<TransUnitUpdateRequest>> updateRequestCaptor;
 
@@ -124,6 +127,7 @@ public class TransMemoryMergeServiceImplTest extends ZanataTest {
                 .use("textFlowDAO", textFlowDAO)
                 .use("transMemoryUnitDAO", transMemoryUnitDAO)
                 .use("translationServiceImpl", translationService)
+                .use("textFlowTargetUpdateContextEvent", textFlowTargetUpdateContextEvent)
                 .autowire(TransMemoryMergeServiceImpl.class);
         // @formatter:on
 

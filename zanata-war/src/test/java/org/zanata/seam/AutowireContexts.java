@@ -21,9 +21,8 @@
 package org.zanata.seam;
 
 import com.google.common.collect.ImmutableMap;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.contexts.BasicContext;
-import org.jboss.seam.contexts.Context;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +33,7 @@ import java.util.Map;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Exclude(ifProjectStage = ProjectStage.IntegrationTest.class)
 public class AutowireContexts {
     private static final Logger log = LoggerFactory.getLogger(AutowireContexts.class);
 
@@ -96,7 +96,7 @@ public class AutowireContexts {
     public void putValue(String name, ContextType ctx, Object value) {
         Map<String, Object> context = allContexts.get(ctx);
         if (context == null) {
-            throw new RuntimeException("Context of Type " + ctx.name()
+            throw new AutowireException("Context of Type " + ctx.name()
                     + " is not available. Check the SeamAutowire setup.");
         } else {
             context.put(name, value);
@@ -112,32 +112,6 @@ public class AutowireContexts {
         // Clear out the request and session contexts
         newRequest();
         allContexts.put(ContextType.Session, new HashMap<String, Object>());
-    }
-
-    public Context getEventContext() {
-        return new BasicContext(ScopeType.SESSION) {
-            @Override
-            public void set(String name, Object value) {
-                log.debug("trying to set value in dummy session context: {} -> {}", name, value);
-                if (!allContexts.containsKey(ContextType.Session)) {
-                    newSession();
-                }
-                allContexts.get(ContextType.Session).put(name, value);
-            }
-        };
-    }
-
-    public Context getSessionContext() {
-        return new BasicContext(ScopeType.EVENT) {
-            @Override
-            public void set(String name, Object value) {
-                log.debug("trying to set value in dummy event context: {} -> {}", name, value);
-                if (!allContexts.containsKey(ContextType.Event)) {
-                    allContexts.put(ContextType.Event, new HashMap<String, Object>());
-                }
-                allContexts.get(ContextType.Event).put(name, value);
-            }
-        };
     }
 
     public static void simulateSessionContext(boolean simulate) {

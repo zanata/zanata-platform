@@ -91,7 +91,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
                         .use("identity", identity)
                         .use("textFlowDAO", new TextFlowDAO(getSession()))
                         .use("transUnitTransformer", transUnitTransformer)
-                        .use("webtrans.gwt.GetTransUnitsNavigationHandler",
+                        .use("getTransUnitsNavigationService",
                                 getTransUnitsNavigationService)
                         .use("cacheContainer", new InfinispanTestCacheContainer())
                         .useImpl(TranslationStateCacheImpl.class)

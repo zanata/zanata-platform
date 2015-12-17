@@ -20,6 +20,7 @@
  */
 package org.zanata.async;
 
+import javax.interceptor.InterceptorBinding;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -27,9 +28,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * Marks a method as running asynchronously. This means the actual method
+ * execution will happen in its own thread. Methods marked with this annotation
+ * must return an object of type {@link java.util.concurrent.Future} or void.
+ *
+ * @author Carlos Munoz <a
+ *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Target({ ElementType.METHOD})
+@InterceptorBinding
+@Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Async {

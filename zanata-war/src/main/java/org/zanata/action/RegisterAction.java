@@ -20,6 +20,7 @@
  */
 package org.zanata.action;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 import javax.persistence.EntityManager;
@@ -31,42 +32,47 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.End;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.action.validator.NotDuplicateEmail;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HPerson;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.EmailService;
 import org.zanata.service.RegisterService;
 import org.zanata.ui.faces.FacesMessages;
+import org.zanata.util.UrlUtil;
+
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
-@Name("register")
-@Scope(ScopeType.CONVERSATION)
+@Named("register")
+@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
 @Slf4j
 public class RegisterAction implements Serializable {
 
     private static final long serialVersionUID = -7883627570614588182L;
 
-    @In
+    @Inject
     private EntityManager entityManager;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
-    @In
+    @Inject
     RegisterService registerServiceImpl;
 
-    @In
+    @Inject
     PersonDAO personDAO;
 
-    @In
+    @Inject
     EmailService emailServiceImpl;
+
+    @Inject
+    private ZanataIdentity identity;
+
+    @Inject
+    private UrlUtil urlUtil;
 
     private String username;
     private String email;
@@ -77,7 +83,14 @@ public class RegisterAction implements Serializable {
 
     private HPerson person;
 
-    @Begin(join = true)
+    public String redirectIfLoggedIn() {
+        if (identity.isLoggedIn()) {
+            urlUtil.redirectTo(urlUtil.dashboardUrl());
+        }
+        return null;
+    }
+
+    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public HPerson getPerson() {
         if (person == null)
             person = new HPerson();
@@ -153,7 +166,7 @@ public class RegisterAction implements Serializable {
 
     }
 
-    @End
+//    @End /* TODO [CDI] commented out end conversation. verify it still work */
     public String register() {
         valid = true;
         validateUsername(getUsername());

@@ -43,6 +43,7 @@ import org.zanata.events.DocumentUploadedEvent;
 import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.model.Activity;
 import org.zanata.model.type.EntityType;
+import org.zanata.seam.AutowireTransaction;
 import org.zanata.seam.SeamAutowire;
 
 /**
@@ -83,7 +84,11 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
         seam.reset().use("activityDAO", new ActivityDAO(getSession()))
                 .use("textFlowTargetDAO", new TextFlowTargetDAO(getSession()))
                 .use("documentDAO", new DocumentDAO(getSession()))
-                .use("session", getSession()).ignoreNonResolvable();
+                .use("session", getSession())
+                .use("entityManager", em)
+                .useJndi("java:jboss/UserTransaction",
+                        AutowireTransaction.instance())
+                .ignoreNonResolvable();
 
         activityService = seam.autowire(ActivityServiceImpl.class);
     }

@@ -25,8 +25,8 @@
   //<![CDATA[
   jQuery(function () {
     crossroads.ignoreState = true /* Make sure every url modification gets parsed */
-    crossroads.addRoute(':pre*:/version-group/view/{slug}/languages/:lang:',
-      function (pre, slug, lang) {
+    crossroads.addRoute(':pre*:/version-group/view/{slug}/languages/:lang::?query:',
+      function (pre, slug, lang, query) {
         zanata.tabs.activate(jQuery('#languages_tab'));
         var clickEle = jQuery('a.' + lang);
         if (lang && clickEle.length != 0) {
@@ -36,8 +36,8 @@
         }
       });
 
-    crossroads.addRoute(':pre*:/version-group/view/{slug}/projects/{proj}/{ver}',
-      function (pre, slug, proj, ver) {
+    crossroads.addRoute(':pre*:/version-group/view/{slug}/projects/{proj}/{ver}:?query:',
+      function (pre, slug, proj, ver, query) {
         zanata.tabs.activate(jQuery('#projects_tab'));
         var clickEle = jQuery('#' + jqSelector(proj + "[" + ver + "]") + " a");
         if (clickEle.length != 0) {
@@ -47,8 +47,8 @@
         }
       });
 
-    crossroads.addRoute(':pre*:/version-group/view/{slug}/settings/:setting:',
-      function (pre, slug, setting) {
+    crossroads.addRoute(':pre*:/version-group/view/{slug}/settings/:setting::?query:',
+      function (pre, slug, setting, query) {
         zanata.tabs.activate(jQuery('#settings_tab'));
         setting = setting || 'general';
         setting =
@@ -57,8 +57,8 @@
           "_tab"))
       });
 
-    crossroads.addRoute(':pre*:/version-group/view/{slug}/:section:',
-      function (pre, slug, section) {
+    crossroads.addRoute(':pre*:/version-group/view/{slug}/:section::?query:',
+      function (pre, slug, section, query) {
         section = section || 'languages';
         section = validateTab('#' + section + "_tab", section, "languages");
         zanata.tabs.activate(jQuery('#' + section + "_tab"))
@@ -178,7 +178,7 @@
                 #{msgs['jsf.Languages']}
               </span>
             <h:panelGroup styleClass="txt--neutral" id="languages-size">
-              #{versionGroupHomeAction.activeLocales.size}
+              #{versionGroupHomeAction.activeLocales.size()}
             </h:panelGroup>
           </a>
         </li>
@@ -191,7 +191,7 @@
                 #{msgs['jsf.Projects']}
               </span>
             <h:panelGroup id="projects-size" layout="inline" styleClass="txt--neutral">
-              #{versionGroupHomeAction.getProjectIterations().size}
+              #{versionGroupHomeAction.getProjectIterations().size()}
             </h:panelGroup>
           </a>
         </li>
@@ -204,7 +204,7 @@
                 #{msgs['jsf.Maintainers']}
               </span>
             <h:panelGroup styleClass="txt--neutral" id="maintainers-size">
-              #{versionGroupHome.instance.maintainers.size}
+              #{versionGroupHome.instance.maintainers.size()}
             </h:panelGroup>
           </a>
         </li>
@@ -262,7 +262,7 @@
 
         <li id="maintainers">
           <zanata:maintainers-tab
-            listSize="#{versionGroupHome.instanceMaintainers.size}"
+            listSize="#{versionGroupHome.instanceMaintainers.size()}"
             filterActionBean="#{versionGroupHome.maintainerFilter}"
             settingsUrl="#settings-maintainers"
             PermissionToUpdate="#{identity.hasPermission(versionGroupHome.instance, 'update')}"/>

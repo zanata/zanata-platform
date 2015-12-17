@@ -1,0 +1,38 @@
+<beans xmlns="http://java.sun.com/xml/ns/javaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:weld="http://jboss.org/schema/weld/beans"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
+
+  <alternatives>
+    <!--<class>org.apache.deltaspike.jpa.impl.transaction.BeanManagedUserTransactionStrategy</class>-->
+    <class>org.zanata.jpa.NoNestingTransactionStrategy</class>
+  </alternatives>
+  <interceptors>
+    <!-- AsyncMethodInterceptor should be first, because we don't need to run
+         the other interceptors in the original thread -->
+    <class>org.zanata.async.AsyncMethodInterceptor</class>
+    <class>org.zanata.util.SynchronizationInterceptor</class>
+    <class>org.zanata.util.WithRequestScopeInterceptor</class>
+    <class>org.apache.deltaspike.jpa.impl.transaction.TransactionalInterceptor</class>
+    <class>org.apache.deltaspike.security.impl.extension.SecurityInterceptor</class>
+  </interceptors>
+
+  <!-- Skip a lot of classes which don't need injection and won't load due to missing classes -->
+  <weld:scan>
+    <!-- GWT client-side code; uses gwt-presenter -->
+    <weld:exclude name="org.zanata.webtrans.client.**"/>
+    <!-- Only on WildFly -->
+    <weld:exclude name="org.zanata.servlet.ZanataServletExtension"/>
+    <!-- Only needed on WildFly -->
+    <weld:exclude name="org.zanata.security.DummyAuthenticationMechanism"/>
+    <!-- Requires JSF 2.2: https://deltaspike.apache.org/documentation/jsf.html#DELEGATED -->
+    <weld:exclude name="org.apache.deltaspike.jsf.impl.scope.window.ClientWindowAdapter"/>
+    <weld:exclude name="org.apache.deltaspike.jsf.impl.listener.request.JsfClientWindowAwareLifecycleWrapper"/>
+    <!-- Apparently JSF 2.2+ -->
+    <weld:exclude name="org.apache.deltaspike.jsf.impl.navigation.DeltaSpikeNavigationHandlerWrapper"/>
+    <!-- Requires Weld SE -->
+    <weld:exclude name="org.apache.deltaspike.cdise.weld.WeldContainerControl"/>
+    <!-- No need for injection; breaks WildFly -->
+    <weld:exclude name="org.zanata.security.negotiation.CustomNegotiationAuthenticator"/>
+  </weld:scan>
+</beans>

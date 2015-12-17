@@ -28,15 +28,13 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.core.EntityTag;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -53,9 +51,8 @@ import org.zanata.util.StatisticsUtil;
 
 import com.google.common.collect.Lists;
 
-@Name("projectIterationDAO")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("projectIterationDAO")
+@RequestScoped
 public class ProjectIterationDAO extends
         AbstractDAOImpl<HProjectIteration, Long> {
 

@@ -20,18 +20,19 @@
  */
 package org.zanata.action;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
 import javax.validation.constraints.NotNull;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountRoleDAO;
@@ -39,35 +40,54 @@ import org.zanata.dao.RoleAssignmentRuleDAO;
 import org.zanata.model.HRoleAssignmentRule;
 import org.zanata.seam.framework.EntityHome;
 import org.zanata.security.AuthenticationType;
-import org.zanata.security.annotations.ZanataSecured;
 
 /**
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("roleAssignmentRuleAction")
-@Scope(ScopeType.CONVERSATION)
-@ZanataSecured
+@Named("roleAssignmentRuleAction")
+@RequestScoped
+
 @CheckRole("admin")
-public class RoleAssignmentRuleAction extends EntityHome<HRoleAssignmentRule> {
+public class RoleAssignmentRuleAction extends EntityHome<HRoleAssignmentRule>
+        implements Serializable {
+    private static final Logger log =
+            LoggerFactory.getLogger(RoleAssignmentRuleAction.class);
     private static final long serialVersionUID = 1L;
 
-    @In
+    @Inject
+    private RoleAssignmentRuleId roleAssignmentRuleId;
+
+    @Inject
     private RoleAssignmentRuleDAO roleAssignmentRuleDAO;
 
-    @In
+    @Inject
     private AccountRoleDAO accountRoleDAO;
 
-    @In
+    @Inject
     private ApplicationConfiguration applicationConfiguration;
+
+    public RoleAssignmentRuleAction() {
+        setEntityClass(HRoleAssignmentRule.class);
+    }
+
+    @Override
+    public void setId(Object id) {
+        if (id != null) {
+            roleAssignmentRuleId.setId(Long.parseLong(id.toString()));
+        } else {
+            roleAssignmentRuleId.setId(null);
+        }
+
+    }
+
+    @Override
+    public Object getId() {
+        return roleAssignmentRuleId.getId();
+    }
 
     public List<HRoleAssignmentRule> getAllRules() {
         return roleAssignmentRuleDAO.findAll();
-    }
-
-    @Begin
-    public void edit(HRoleAssignmentRule rule) {
-        this.setInstance(rule);
     }
 
     public void remove(HRoleAssignmentRule rule) {

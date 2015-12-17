@@ -23,6 +23,7 @@ package org.zanata.security;
 import java.util.Set;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 
 import org.apache.deltaspike.security.api.authorization.AbstractAccessDecisionVoter;
 import org.apache.deltaspike.security.api.authorization.AccessDecisionVoterContext;
@@ -34,33 +35,56 @@ import org.zanata.security.annotations.CheckRole;
  */
 @RequestScoped
 public class CheckRoleDecisionVoter extends AbstractAccessDecisionVoter {
+    private static final long serialVersionUID = -2225527674677560626L;
+
+    @Inject
+    private ZanataIdentity identity;
+
     @Override
     protected void checkPermission(
             AccessDecisionVoterContext accessDecisionVoterContext,
             Set<SecurityViolation> violations) {
 
         CheckRole hasRole =
-                accessDecisionVoterContext.getMetaDataFor(CheckRole.class.getName(), CheckRole.class);
+                accessDecisionVoterContext
+                        .getMetaDataFor(CheckRole.class.getName(),
+                                CheckRole.class);
         if (hasRole != null) {
-// TODO unify with PicketLink roles
-//            Role role = RoleFactory.createRole(hasRole.value());
-//
-//            SecurityContext sc = SecurityContextAssociation.getSecurityContext();
-//            RoleGroup roleGroup = PicketBoxUtil
-//                    .getRolesFromSubject(sc.getUtil().getSubject());
-//
-//            if (!roleGroup.containsRole(role)) {
-//                violations.add(newSecurityViolation(
-//                        "You don't have the necessary access"));
-//            }
+            boolean result = identity.hasRole(hasRole.value());
 
-            String role = hasRole.value();
-
-            // FIXME DANGER!! Do an actual role check
-            if (!role.contains("admin")) {
-                violations.add(newSecurityViolation(
-                        "You don't have the necessary access"));
+            if (!result) {
+                boolean loggedIn = identity.isLoggedIn();
+                if (!loggedIn) {
+                    violations.add(newSecurityViolation("Not logged in"));
+                } else {
+                    violations.add(CheckRoleSecurityViolation
+                            .instance(hasRole.value()));
+                }
             }
+        }
+    }
+
+    public static class CheckRoleSecurityViolation
+            implements SecurityViolation {
+        private static final String REASON =
+                "You don't have the necessary access";
+        private String requiredRole;
+
+        public CheckRoleSecurityViolation(String requiredRole) {
+            this.requiredRole = requiredRole;
+        }
+
+        @Override
+        public String getReason() {
+            return REASON;
+        }
+
+        public String getRequiredRole() {
+            return requiredRole;
+        }
+
+        static CheckRoleSecurityViolation instance(String requiredRole) {
+            return new CheckRoleSecurityViolation(requiredRole);
         }
     }
 }

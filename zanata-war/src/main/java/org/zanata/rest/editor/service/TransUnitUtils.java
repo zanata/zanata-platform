@@ -9,11 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
@@ -29,17 +26,17 @@ import javax.annotation.Nonnull;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("transUnitUtils")
-@Scope(ScopeType.STATELESS)
+@Named("transUnitUtils")
+@javax.enterprise.context.Dependent
 @Slf4j
-@AutoCreate
+
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class TransUnitUtils {
     public static int MAX_SIZE = 200;
     public static String ID_SEPARATOR = ",";
 
-    @In
+    @Inject
     private ResourceUtils resourceUtils;
 
     /**

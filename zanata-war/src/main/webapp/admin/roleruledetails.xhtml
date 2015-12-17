@@ -9,6 +9,7 @@
 
   <f:metadata>
     <f:event type="preRenderView" listener="#{identity.checkRole('admin')}"/>
+    <f:viewParam name="id" value="#{roleAssignmentRuleAction.id}" />
   </f:metadata>
 
   <ui:define

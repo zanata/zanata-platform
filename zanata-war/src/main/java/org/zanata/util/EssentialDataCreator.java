@@ -5,18 +5,24 @@ import static org.zanata.model.HAccountRole.RoleType.MANUAL;
 import java.util.List;
 
 import javax.annotation.Nonnull;
-import javax.persistence.EntityManager;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Observes;
 
 import com.google.common.annotations.VisibleForTesting;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Inject;
+
+import org.apache.deltaspike.cdise.api.ContextControl;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.lifecycle.Initialized;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import javax.inject.Named;
+import javax.servlet.ServletContext;
+
+import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
@@ -32,24 +38,24 @@ import org.zanata.model.HLocale;
  *
  * @author Sean Flanigan
  */
-@Name("essentialDataCreator")
-@Scope(ScopeType.STATELESS)
+@Named("essentialDataCreator")
+@ApplicationScoped
 @Slf4j
-@Install(false)
+@Exclude(ifProjectStage = ProjectStage.UnitTest.class)
 public class EssentialDataCreator {
 
-    @In
+    @Inject
     private ApplicationConfiguration applicationConfiguration;
 
     private boolean prepared;
 
-    @In
+    @Inject
     private AccountDAO accountDAO;
 
-    @In
+    @Inject
     private AccountRoleDAO accountRoleDAO;
 
-    @In
+    @Inject
     private LocaleDAO localeDAO;
 
     public EssentialDataCreator() {
@@ -67,9 +73,15 @@ public class EssentialDataCreator {
 
     // Do it when the application starts (but after everything else has been
     // loaded)
-    @Observer("org.jboss.seam.postInitialization")
+    @WithRequestScope
     @Transactional
-    public void prepare() {
+    public void onCreate(@Observes @Initialized ServletContext context) {
+        log.debug(getClass().getName() + ".onCreate()");
+        // since our EntityManager is RequestScoped, we need to have it before any Transactional thing to happen
+        prepare();
+    }
+
+    void prepare() {
         if (!prepared) {
             boolean adminExists;
 

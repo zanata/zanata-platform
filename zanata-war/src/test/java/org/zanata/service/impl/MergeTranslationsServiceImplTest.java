@@ -48,11 +48,14 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.type.TranslationSourceType;
+import org.zanata.seam.AutowireTransaction;
 import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.util.TranslationUtil;
 
 import com.google.common.collect.Lists;
+
+import javax.enterprise.event.Event;
 
 public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
     private SeamAutowire seam = SeamAutowire.instance();
@@ -69,6 +72,8 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
     private MergeTranslationsServiceImpl service;
 
     private final String projectSlug = "sample-project";
+    @Mock
+    private Event textFlowTargetStateEventEvent;
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -95,13 +100,16 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
         textFlowDAO = new TextFlowDAO(getSession());
 
         service = seam
-                .use("projectIterationDAO" , projectIterationDAO)
+                .use("projectIterationDAO", projectIterationDAO)
                 .use("textFlowTargetDAO", textFlowTargetDAO)
                 .use("textFlowDAO" , textFlowDAO)
                 .use("entityManager" , getEm())
                 .use("session" , getSession())
                 .use("identity" , identity)
+                .use("textFlowTargetStateEventEvent", textFlowTargetStateEventEvent)
                 .use("cacheContainer", new InfinispanTestCacheContainer())
+                .useJndi("java:jboss/UserTransaction",
+                        AutowireTransaction.instance())
                 .useImpl(LocaleServiceImpl.class)
                 .useImpl(VersionStateCacheImpl.class)
                 .useImpl(TranslationStateCacheImpl.class)

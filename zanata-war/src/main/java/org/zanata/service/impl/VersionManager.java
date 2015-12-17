@@ -2,12 +2,11 @@ package org.zanata.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 
-@Name("versionManager")
-@Scope(ScopeType.STATELESS)
+@Named("versionManager")
+@ApplicationScoped
 @Slf4j
 public class VersionManager {
 

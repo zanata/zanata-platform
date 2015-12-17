@@ -21,15 +21,13 @@
 package org.zanata.dao;
 
 import org.hibernate.Session;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 import org.zanata.model.HAccountOption;
 
-@Name("accountOptionDAO")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("accountOptionDAO")
+@RequestScoped
 public class AccountOptionDAO extends AbstractDAOImpl<HAccountOption, Long> {
     public AccountOptionDAO() {
         super(HAccountOption.class);

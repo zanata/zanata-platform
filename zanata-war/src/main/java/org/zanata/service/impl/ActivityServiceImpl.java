@@ -26,19 +26,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.persistence.EntityManager;
 
+import com.google.common.base.Throwables;
 import org.apache.commons.lang.time.DateUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.zanata.action.DashboardUserStats;
+import org.zanata.async.Async;
 import org.zanata.common.ActivityType;
 import org.zanata.dao.ActivityDAO;
 import org.zanata.dao.DocumentDAO;
@@ -54,31 +53,34 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.IsEntityWithType;
 import org.zanata.model.type.EntityType;
 import org.zanata.service.ActivityService;
+import org.zanata.transaction.TransactionUtil;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("activityServiceImpl")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("activityServiceImpl")
+@RequestScoped
 public class ActivityServiceImpl implements ActivityService {
-    @In
+    @Inject
     private ActivityDAO activityDAO;
 
-    @In
+    @Inject
     private TextFlowTargetDAO textFlowTargetDAO;
 
-    @In
+    @Inject
     private DocumentDAO documentDAO;
 
-    @In
+    @Inject
     private PersonDAO personDAO;
 
-    @In
+    @Inject
     private EntityManager entityManager;
 
-    @In
+    @Inject
     private ActivityLockManager activityLockManager;
+
+    @Inject
+    private TransactionUtil transactionUtil;
 
     @Override
     public Activity findActivity(long actorId, EntityType contextType,
@@ -128,6 +130,8 @@ public class ActivityServiceImpl implements ActivityService {
         Lock lock = activityLockManager.getLock(actorId);
         lock.lock();
         try {
+            // TODO wrap this in a transaction (between lock/unlock), or
+            // perhaps remove this method
             logActivityAlreadyLocked(actorId, context, target, activityType,
                     wordCount);
         } finally {
@@ -174,25 +178,32 @@ public class ActivityServiceImpl implements ActivityService {
      * Logs each text flow target translation immediately after successful
      * translation.
      */
-    @Observer(TextFlowTargetStateEvent.EVENT_NAME)
-    @Transactional
-    public void logTextFlowStateUpdate(@Observes(during = TransactionPhase.AFTER_SUCCESS) TextFlowTargetStateEvent event) {
+    // uses Async to ensure transaction environment is reset, because
+    // this is triggered during transaction.commit
+    @Async
+    public void logTextFlowStateUpdate(@Observes(during = TransactionPhase.AFTER_SUCCESS) TextFlowTargetStateEvent event_) {
+        // workaround for https://issues.jboss.org/browse/WELD-2019
+        final TextFlowTargetStateEvent event = event_;
         Long actorId = event.getActorId();
         if (actorId != null) {
             Lock lock = activityLockManager.getLock(actorId);
             lock.lock();
             try {
-                HTextFlowTarget target =
-                        textFlowTargetDAO.findById(event.getTextFlowTargetId(),
-                                false);
-                HDocument document = documentDAO.getById(event.getDocumentId());
-                ActivityType activityType =
-                        event.getNewState().isReviewed() ? ActivityType.REVIEWED_TRANSLATION
-                                : ActivityType.UPDATE_TRANSLATION;
+                transactionUtil.run(() -> {
+                    HTextFlowTarget target =
+                            textFlowTargetDAO.findById(event.getTextFlowTargetId(),
+                                    false);
+                    HDocument document = documentDAO.getById(event.getDocumentId());
+                    ActivityType activityType =
+                            event.getNewState().isReviewed() ? ActivityType.REVIEWED_TRANSLATION
+                                    : ActivityType.UPDATE_TRANSLATION;
 
-                logActivityAlreadyLocked(actorId,
-                        document.getProjectIteration(), target, activityType,
-                        target.getTextFlow().getWordCount().intValue());
+                    logActivityAlreadyLocked(actorId,
+                            document.getProjectIteration(), target, activityType,
+                            target.getTextFlow().getWordCount().intValue());
+                });
+            } catch (Exception e) {
+                Throwables.propagate(e);
             } finally {
                 lock.unlock();
             }
@@ -202,20 +213,29 @@ public class ActivityServiceImpl implements ActivityService {
     /**
      * Logs document upload immediately after successful upload.
      */
-    @Observer(DocumentUploadedEvent.EVENT_NAME)
-    @Transactional
-    public void onDocumentUploaded(@Observes(during = TransactionPhase.AFTER_SUCCESS) DocumentUploadedEvent event) {
+    // uses Async to ensure transaction environment is reset, because
+    // this is triggered during transaction.commit
+    @Async
+    public void onDocumentUploaded(@Observes(during = TransactionPhase.AFTER_SUCCESS) DocumentUploadedEvent event_)
+            throws Exception {
+        // workaround for https://issues.jboss.org/browse/WELD-2019
+        final DocumentUploadedEvent event = event_;
         Lock lock = activityLockManager.getLock(event.getActorId());
         lock.lock();
         try {
-            HDocument document = documentDAO.getById(event.getDocumentId());
-            ActivityType activityType =
-                    event.isSourceDocument() ? ActivityType.UPLOAD_SOURCE_DOCUMENT
-                            : ActivityType.UPLOAD_TRANSLATION_DOCUMENT;
-            HPerson actor = personDAO.findById(event.getActorId());
-            logActivityAlreadyLocked(actor.getId(),
-                    document.getProjectIteration(), document, activityType,
-                    getDocumentWordCount(document));
+            transactionUtil.run(() -> {
+                HDocument document = documentDAO.getById(event.getDocumentId());
+                ActivityType activityType =
+                        event.isSourceDocument() ?
+                                ActivityType.UPLOAD_SOURCE_DOCUMENT
+                                : ActivityType.UPLOAD_TRANSLATION_DOCUMENT;
+                HPerson actor = personDAO.findById(event.getActorId());
+                logActivityAlreadyLocked(actor.getId(),
+                        document.getProjectIteration(), document, activityType,
+                        getDocumentWordCount(document));
+            });
+        } catch (Exception e) {
+            Throwables.propagate(e);
         } finally {
             lock.unlock();
         }

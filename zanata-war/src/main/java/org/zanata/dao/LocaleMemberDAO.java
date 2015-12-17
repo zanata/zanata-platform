@@ -24,18 +24,16 @@ import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HLocaleMember.HLocaleMemberPk;
 
-@Name("localeMemberDAO")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("localeMemberDAO")
+@RequestScoped
 public class LocaleMemberDAO extends
         AbstractDAOImpl<HLocaleMember, HLocaleMemberPk> {
 

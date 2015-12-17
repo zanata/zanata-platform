@@ -24,9 +24,4 @@
         extract = true
     }
 
-    jsfmodule {
-        url = "http://sourceforge.net/projects/zanata/files/wildfly/wildfly-8.1.0.Final-module-mojarra-2.1.29-01.zip/download"
-        toFile = "/mojarra-module.zip"
-        extract = true
-    }
 }

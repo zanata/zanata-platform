@@ -30,13 +30,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.context.Dependent;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -63,22 +64,23 @@ import com.google.common.base.Optional;
 
 //TODO damason: add thorough unit testing
 @Slf4j
-@Name("translationDocumentUploader")
+@Dependent
+@Named("translationDocumentUploader")
 public class TranslationDocumentUpload {
 
-    @In(create = true, value = "documentUploadUtil")
+    @Inject
     private DocumentUploadUtil util;
-    @In
+    @Inject
     private ZanataIdentity identity;
-    @In
+    @Inject
     private LocaleDAO localeDAO;
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
-    @In
+    @Inject
     private TranslationService translationServiceImpl;
-    @In
+    @Inject
     private TranslationFileService translationFileServiceImpl;
-    @In
+    @Inject
     private DocumentUploadDAO documentUploadDAO;
 
     public Response
@@ -243,8 +245,8 @@ public class TranslationDocumentUpload {
         return projectIteration.getStatus() == EntityStatus.ACTIVE
                 && projectIteration.getProject().getStatus() == EntityStatus.ACTIVE
                 && identity != null
-                && identity.hasPermission("add-translation",
-                        projectIteration.getProject(), locale);
+                && identity.hasPermissionWithAnyTargets("add-translation",
+                projectIteration.getProject(), locale);
     }
 
     private static Set<String> newExtensions(boolean gettextExtensions) {

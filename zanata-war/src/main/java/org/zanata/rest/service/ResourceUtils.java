@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -36,10 +37,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.richfaces.exception.FileUploadException;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.ContentState;
@@ -81,8 +80,8 @@ import com.google.common.base.Optional;
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isEmpty;
 
-@Name("resourceUtils")
-@Scope(ScopeType.STATELESS)
+@Named("resourceUtils")
+@RequestScoped
 @Slf4j
 // TODO move plural logic out of ResourceUtils into a dedicated class
 public class ResourceUtils {
@@ -123,10 +122,10 @@ public class ResourceUtils {
 
     private static Properties pluralForms;
 
-    @In
+    @Inject
     private EntityManager entityManager;
 
-    @In
+    @Inject
     private LocaleDAO localeDAO;
 
     @PostConstruct

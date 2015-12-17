@@ -29,16 +29,13 @@ import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
 import static org.zanata.transaction.TransactionUtil.runInTransaction;
 
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.ContentState;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.events.TextFlowTargetStateEvent;
@@ -50,7 +47,6 @@ import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.type.TranslationSourceType;
-import org.zanata.service.TranslationFinder;
 import org.zanata.service.ValidationService;
 import org.zanata.service.VersionStateCache;
 import org.zanata.util.TranslationUtil;
@@ -63,23 +59,23 @@ import com.google.common.collect.ImmutableList;
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Name("copyTransWorkFactory")
-@Scope(ScopeType.STATELESS)
+@Named("copyTransWorkFactory")
+@javax.enterprise.context.Dependent
 @Slf4j
 public class CopyTransWorkFactory {
 
-    // Inject textFlowTargetDAO for Hibernate-based query
-    // Inject translationMemoryServiceImpl for Hibernate Search query
-    @In("textFlowTargetDAO")
-    private TranslationFinder translationFinder;
+    // Inject textFlowTargetDAO (@DatabaseSearch) for Hibernate-based query
+    // Inject translationMemoryServiceImpl (no qualifier) for Hibernate Search query
+    @Inject
+    private TextFlowTargetDAO translationFinder;
 
-    @In("textFlowTargetDAO")
+    @Inject
     private TextFlowTargetDAO textFlowTargetDAO;
 
-    @In
+    @Inject
     private ValidationService validationServiceImpl;
 
-    @In
+    @Inject
     private VersionStateCache versionStateCacheImpl;
 
     public Integer runCopyTransInNewTx(HLocale targetLocale,

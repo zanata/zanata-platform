@@ -4,11 +4,9 @@ package org.zanata.seam.framework;
 
 import java.io.Serializable;
 
+import javax.inject.Inject;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
-
-import org.jboss.seam.core.Conversation;
-import org.jboss.seam.transaction.Transaction;
 
 /**
  * Base class for controller objects. Provides various helper methods that help
@@ -18,10 +16,8 @@ import org.jboss.seam.transaction.Transaction;
  * @author Gavin King
  */
 public abstract class Controller implements Serializable {
-
-    protected Conversation getConversation() {
-        return Conversation.instance();
-    }
+    @Inject
+    private UserTransaction transaction;
 
     protected boolean isTransactionMarkedRollback() {
         try {
@@ -31,9 +27,8 @@ public abstract class Controller implements Serializable {
         }
     }
 
-    // TODO [CDI] inject UserTransaction
     private UserTransaction getTransaction() {
-        return Transaction.instance();
+        return transaction;
     }
 
 }

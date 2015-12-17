@@ -52,16 +52,17 @@ import org.zanata.webtrans.shared.model.ProjectIterationId;
 public class EmailStrategyTest {
     // use this if you want to see the real messages on stderr
     private static final boolean DEBUG = false;
+    Locale locale = Locale.ENGLISH;
 
     // context values needed for most/all templates:
-    Messages msgs = DEBUG ? new Messages() : new Messages() {
+    Messages msgs = DEBUG ? new Messages(locale) : new Messages(locale) {
         @Override
         public String get(Object key) {
             return "MSG:key=" + key;
         }
 
         @Override
-        public String format(String key, Object... args) {
+        public String formatWithAnyArgs(String key, Object... args) {
             return get(key) + ",args={" + Joiner.on(',').join(args) + "}";
         }
     };
@@ -69,7 +70,7 @@ public class EmailStrategyTest {
     String fromName = msgs.get("jsf.Zanata");
     String toName = "User Name[测试]";
     String toAddress = "username@example.com";
-    String serverPath = "https://zanata.example.com";
+    String testServerPath = "https://zanata.example.com";
     InternetAddress toAddr;
     InternetAddress[] toAddresses;
 
@@ -89,10 +90,10 @@ public class EmailStrategyTest {
 
         @Override
         String getServerPath() {
-            return serverPath;
+            return testServerPath;
         }
     };
-    EmailBuilder builder = new EmailBuilder(session, context, msgsFactory, null);
+    EmailBuilder builder = new EmailBuilder(session, context, msgsFactory);
     MimeMessage message;
 
     // context values needed for some templates:
@@ -174,7 +175,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(msgs.get(
                 "jsf.email.activation.ClickLinkToActivateAccount"));
         assertThat(html).contains(
-                serverPath + "/account/activate/123456");
+                testServerPath + "/account/activate/123456");
     }
 
     @Test
@@ -250,7 +251,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(
                 htmlMessage);
         assertThat(html).contains(
-                serverPath + "/language/view/" + localeId);
+                testServerPath + "/language/view/" + localeId);
     }
 
     @Test
@@ -272,7 +273,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(msgs.get(
                 "jsf.email.accountchange.ConfirmationLink"));
         assertThat(html).contains(
-                serverPath + "/account/validate_email/123456");
+                testServerPath + "/account/validate_email/123456");
     }
 
     @Test
@@ -293,7 +294,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(msgs.get(
                 "jsf.email.passwordreset.FollowLinkToResetPassword"));
         assertThat(html).contains(
-                serverPath + "/account/password_reset/123456");
+                testServerPath + "/account/password_reset/123456");
     }
 
     @Test
@@ -319,7 +320,7 @@ public class EmailStrategyTest {
                 fromName, fromLoginName, localeId, localeNativeName));
         assertThat(html).contains(htmlMessage);
         assertThat(html).contains(
-                serverPath + "/language/view/" + localeId);
+                testServerPath + "/language/view/" + localeId);
     }
 
     @Test
@@ -353,7 +354,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(
                 htmlMessage);
         assertThat(html).contains(
-                serverPath + "/version-group/view/" + versionGroupSlug);
+                testServerPath + "/version-group/view/" + versionGroupSlug);
     }
 
     @Test
@@ -376,7 +377,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(msgs.format(
                 "jsf.email.usernamechange.YourNewUsername", newUsername));
         assertThat(html).contains(
-                serverPath + "/account/password_reset_request");
+                testServerPath + "/account/password_reset_request");
     }
 
 }

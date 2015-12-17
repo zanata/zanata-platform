@@ -28,27 +28,27 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.common.EntityStatus;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.VersionGroupService;
 
 import com.google.common.collect.Lists;
 
-@Name("versionGroupAction")
-@Scope(ScopeType.PAGE)
+@Named("versionGroupAction")
+@javax.faces.bean.ViewScoped
 public class VersionGroupAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @In
+    @Inject
     private VersionGroupService versionGroupServiceImpl;
 
-    @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
     @Getter

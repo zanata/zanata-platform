@@ -23,9 +23,11 @@ package org.zanata.rest.editor.service;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.googlecode.totallylazy.Option;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.rest.editor.dto.suggestion.Suggestion;
@@ -46,17 +48,18 @@ import static org.zanata.webtrans.shared.rpc.HasSearchType.*;
 /**
  * @see org.zanata.rest.editor.service.resource.SuggestionsResource
  */
-@Name("editor.suggestionsService")
+@RequestScoped
+@Named("editor.suggestionsService")
 @Path(SuggestionsResource.SERVICE_PATH)
 @Transactional
 public class SuggestionsService implements SuggestionsResource {
 
     public static final String SEARCH_TYPES = Joiner.on(", ").join(SearchType.values());
 
-    @In("translationMemoryServiceImpl")
+    @Inject
     private TranslationMemoryService transMemoryService;
 
-    @In("localeServiceImpl")
+    @Inject
     private LocaleService localeService;
 
     @Override

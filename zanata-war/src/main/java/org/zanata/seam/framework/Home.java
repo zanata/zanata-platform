@@ -2,19 +2,18 @@
 
 package org.zanata.seam.framework;
 
+import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
 import javax.persistence.EntityNotFoundException;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.action.SlugHome;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ServiceLocator;
 
@@ -26,8 +25,9 @@ import org.zanata.util.ServiceLocator;
  *
  * @author Gavin King
  */
-@Scope(ScopeType.CONVERSATION)
-public abstract class Home<T, E> extends MutableController<T> {
+//@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
+public abstract class Home<T, E> extends MutableController<T>
+        implements Serializable {
     private static final Logger log = LoggerFactory.getLogger(Home.class);
     private static final long serialVersionUID = -5462396456614090423L;
 
@@ -95,7 +95,7 @@ public abstract class Home<T, E> extends MutableController<T> {
      * valid state. <br />
      * Validates that the class of the entity to be managed has been specified.
      */
-    @Create
+    @PostConstruct
     public void create() {
         if (getEntityClass() == null) {
             throw new IllegalStateException("entityClass is null");
@@ -187,7 +187,8 @@ public abstract class Home<T, E> extends MutableController<T> {
      */
     public Class<E> getEntityClass() {
         if (entityClass == null) {
-            Type type = getClass().getGenericSuperclass();
+            // CDI will return a proxy instance (so need an extra getSuperClass)
+            Type type = getClass().getSuperclass().getGenericSuperclass();
             if (type instanceof ParameterizedType) {
                 ParameterizedType paramType = (ParameterizedType) type;
                 if (paramType.getActualTypeArguments().length == 2) {
@@ -261,4 +262,7 @@ public abstract class Home<T, E> extends MutableController<T> {
         this.instance = instance;
     }
 
+    public void setEntityClass(Class<E> entityClass) {
+        this.entityClass = entityClass;
+    }
 }

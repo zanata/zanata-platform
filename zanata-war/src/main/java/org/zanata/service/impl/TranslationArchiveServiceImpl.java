@@ -22,16 +22,14 @@ package org.zanata.service.impl;
 
 import com.google.common.base.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskResult;
-import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
@@ -64,33 +62,31 @@ import static org.zanata.common.ProjectType.*;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("translationArchiveServiceImpl")
-@Scope(ScopeType.STATELESS)
-@AutoCreate
+@Named("translationArchiveServiceImpl")
+@RequestScoped
 @Slf4j
-@ContainsAsyncMethods
 public class TranslationArchiveServiceImpl implements
         TranslationArchiveService {
 
-    @In
+    @Inject
     private DocumentDAO documentDAO;
 
-    @In
+    @Inject
     private LocaleDAO localeDAO;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private ResourceUtils resourceUtils;
 
-    @In
+    @Inject
     private TextFlowTargetDAO textFlowTargetDAO;
 
-    @In
+    @Inject
     private FileSystemService fileSystemServiceImpl;
 
-    @In
+    @Inject
     private ConfigurationService configurationServiceImpl;
 
     @Override

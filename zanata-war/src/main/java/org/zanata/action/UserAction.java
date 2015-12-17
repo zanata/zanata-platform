@@ -21,21 +21,17 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.exception.ConstraintViolationException;
-import org.jboss.seam.Component;
-import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.core.Conversation;
-import org.jboss.seam.international.StatusMessages;
+import javax.inject.Inject;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import javax.inject.Named;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.i18n.Messages;
@@ -46,10 +42,9 @@ import org.zanata.ui.AbstractListFilter;
 
 import lombok.Getter;
 import org.zanata.ui.faces.FacesMessages;
+import org.zanata.util.ServiceLocator;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
-import static org.jboss.seam.ScopeType.PAGE;
-import static org.jboss.seam.annotations.Install.APPLICATION;
 
 /**
  * Extension of Seam management's UserAction class' behaviour.
@@ -58,31 +53,30 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("org.jboss.seam.security.management.userAction")
-@Scope(PAGE)
-@Install(precedence = APPLICATION)
+@Named("userAction")
+@javax.faces.bean.ViewScoped
 public class UserAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @In
+    @Inject
     private IdentityManager identityManager;
 
-    @In
+    @Inject
     private EntityManager entityManager;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
-    @In
+    @Inject
     private Messages msgs;
 
-    @In
+    @Inject
     private UserAccountService userAccountServiceImpl;
 
-    @In
+    @Inject
     private EmailService emailServiceImpl;
 
-    @In
+    @Inject
     private PersonDAO personDAO;
 
     private String originalUsername;
@@ -91,7 +85,7 @@ public class UserAction implements Serializable {
     private AbstractListFilter<String> userFilter =
             new AbstractListFilter<String>() {
                 AccountDAO accountDAO =
-                        (AccountDAO) Component.getInstance(AccountDAO.class);
+                        ServiceLocator.instance().getInstance(AccountDAO.class);
 
                 @Override
                 protected List<String> fetchRecords(int start, int max,
@@ -110,6 +104,7 @@ public class UserAction implements Serializable {
     private String confirm;
     private boolean enabled;
 
+    @Transactional
     public void deleteUser(String userName) {
         try {
             identityManager.deleteUser(userName);

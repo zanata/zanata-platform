@@ -6,14 +6,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 
-@Name("breadcrumbs")
-@AutoCreate
-@Scope(ScopeType.PAGE)
+@Named("breadcrumbs")
+
+@javax.faces.bean.ViewScoped
 public class Breadcrumbs implements Serializable {
     private static final long serialVersionUID = 1L;
 

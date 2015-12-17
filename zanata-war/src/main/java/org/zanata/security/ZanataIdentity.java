@@ -20,9 +20,6 @@
  */
 package org.zanata.security;
 
-import static org.jboss.seam.ScopeType.SESSION;
-import static org.jboss.seam.annotations.Install.APPLICATION;
-
 import java.io.Serializable;
 import java.security.Principal;
 import java.security.acl.Group;
@@ -31,46 +28,50 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Nullable;
+import javax.annotation.PreDestroy;
+import javax.enterprise.event.Event;
+import javax.enterprise.util.AnnotationLiteral;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.security.auth.Subject;
+import javax.security.auth.login.AccountException;
 import javax.security.auth.login.AppConfigurationEntry;
+import javax.security.auth.login.CredentialException;
+import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
+import javax.servlet.http.HttpSession;
 
-import com.google.common.annotations.VisibleForTesting;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Startup;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
-import org.jboss.seam.contexts.Contexts;
-import org.zanata.exception.AuthorizationException;
-import org.zanata.exception.NotLoggedInException;
-import org.jboss.seam.web.Session;
+import org.apache.deltaspike.core.api.common.DeltaSpike;
+import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.dao.AccountDAO;
 import org.zanata.events.AlreadyLoggedInEvent;
 import org.zanata.events.LoginFailedEvent;
 import org.zanata.events.LoginSuccessfulEvent;
 import org.zanata.events.LogoutEvent;
 import org.zanata.events.NotLoggedInEvent;
+import org.zanata.exception.AuthorizationException;
+import org.zanata.exception.NotLoggedInException;
 import org.zanata.model.HAccount;
+import org.zanata.model.HPerson;
 import org.zanata.model.HasUserFriendlyToString;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
+import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.security.jaas.InternalLoginModule;
 import org.zanata.security.permission.CustomPermissionResolver;
 import org.zanata.security.permission.MultiTargetList;
-import org.zanata.util.Event;
+import org.zanata.servlet.annotations.SessionId;
+import org.zanata.util.Contexts;
+import org.zanata.util.RequestContextValueStore;
 import org.zanata.util.ServiceLocator;
+import org.zanata.util.UrlUtil;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 
-@Name("org.jboss.seam.security.identity")
-@Scope(SESSION)
-@Install(precedence = APPLICATION)
-@BypassInterceptors
-@Startup
+@Named("identity")
+@javax.enterprise.context.SessionScoped
 public class ZanataIdentity implements Identity, Serializable {
     private static final Logger log = LoggerFactory.getLogger(
             ZanataIdentity.class);
@@ -81,43 +82,56 @@ public class ZanataIdentity implements Identity, Serializable {
     private static final long serialVersionUID = -5488977241602567930L;
 
     protected static boolean securityEnabled = true;
-    // Seam Context variables
-    // TODO [CDI] revisit this (the value and its usage in CDI)
-    private static final String LOGIN_TRIED = "org.jboss.seam.security.loginTried";
-    private static final String SILENT_LOGIN = "org.jboss.seam.security.silentLogin";
+    private static final String LOGIN_TRIED = "security.loginTried";
+    private static final String SILENT_LOGIN = "security.silentLogin";
 
     private transient ThreadLocal<Boolean> systemOp;
 
     private String apiKey;
 
     private boolean preAuthenticated;
-    private Subject subject;
+    private Subject subject = new Subject();
     private Principal principal;
     private List<String> preAuthenticationRoles = new ArrayList<>();
-    CustomPermissionResolver permissionResolver;
+    @Inject
+    private CustomPermissionResolver permissionResolver;
+    @Inject
     private ZanataCredentials credentials;
     private boolean authenticating;
     private String jaasConfigName = "zanata";
 
-    @Create
-    public void create() {
-        subject = new Subject();
+    @Inject
+    private Event<LoginSuccessfulEvent> loginSuccessfulEventEvent;
 
-        if (Contexts.isApplicationContextActive()) {
-            permissionResolver = ServiceLocator.instance()
-                    .getInstance(CustomPermissionResolver.class);
-        }
+    @Inject
+    private Event<LogoutEvent> logoutEvent;
 
-        if (Contexts.isSessionContextActive()) {
-            credentials =
-                    ServiceLocator.instance().getInstance(ZanataCredentials.class);
-        }
+    @Inject
+    private RequestContextValueStore requestContextValueStore;
 
-        if (credentials == null) {
-            // Must have credentials for unit tests
-            credentials = new ZanataCredentials();
-        }
-    }
+    @Inject
+    private UrlUtil urlUtil;
+
+    @Inject
+    private Event<AlreadyLoggedInEvent> alreadyLoggedInEventEvent;
+
+    @Inject
+    private Event<LoginFailedEvent> loginFailedEventEvent;
+
+    @Inject
+    private Event<NotLoggedInEvent> notLoggedInEventEvent;
+
+    @Inject
+    private AccountDAO accountDAO;
+
+    @Inject @SessionId
+    private String sessionId;
+
+    // The following fields store user details for use during preDestroy().
+    // NB: they are not currently kept up to date if the user name changes.
+    private @Nullable String cachedPersonEmail;
+    private @Nullable String cachedPersonName;
+    private @Nullable String cachedUsername;
 
     public static boolean isSecurityEnabled() {
         return securityEnabled;
@@ -140,19 +154,8 @@ public class ZanataIdentity implements Identity, Serializable {
         return apiKey != null;
     }
 
-    public static ZanataIdentity instance() {
-        if (!Contexts.isSessionContextActive()) {
-            throw new IllegalStateException("No active session context");
-        }
-
-        ZanataIdentity instance =
-                ServiceLocator.instance().getInstance(ZanataIdentity.class);
-
-        if (instance == null) {
-            throw new IllegalStateException("No Identity could be created");
-        }
-
-        return instance;
+    public static ZanataIdentity instance()  {
+        return ServiceLocator.instance().getInstance(ZanataIdentity.class);
     }
 
     public void checkLoggedIn() {
@@ -174,23 +177,58 @@ public class ZanataIdentity implements Identity, Serializable {
     }
 
     public void acceptExternallyAuthenticatedPrincipal(Principal principal) {
-        getSubject().getPrincipals().add(principal);
+        if (principal != null) {
+            getSubject().getPrincipals().add(principal);
+        }
         this.principal = principal;
     }
 
-    @Observer("org.jboss.seam.preDestroyContext.SESSION")
-    public void logout() {
-        if (getCredentials() != null) {
-            getLogoutEvent().fire(new LogoutEvent(getCredentials().getUsername()));
+    /**
+     * Accepts an external subject and principal. (Use with caution)
+     */
+    public void acceptExternalSubjectAndPpal(Subject subject,
+            Principal principal) {
+        this.subject = subject;
+        acceptExternallyAuthenticatedPrincipal(principal);
+    }
+
+    @PreDestroy
+    public void preDestroy() {
+        log.debug("preDestroy");
+        fireLogoutEvent();
+    }
+
+    private void fireLogoutEvent() {
+        // NB: avoid using session-scoped beans, because this method is
+        // called by preDestroy().
+        if (credentials != null && sessionId != null &&
+                cachedUsername != null) {
+            log.debug(
+                    "firing LogoutEvent for user {} with session {} -> {}",
+                    cachedUsername,
+                    sessionId, this);
+            getLogoutEvent().fire(new LogoutEvent(
+                    cachedUsername, sessionId, cachedPersonName,
+                    cachedPersonEmail));
         }
+    }
+
+    public void logout() {
+        log.debug("explicit logout");
+        fireLogoutEvent();
         if (isLoggedIn()) {
             unAuthenticate();
-            Session.instance().invalidate();
+            HttpSession session =
+                    BeanProvider.getContextualReference(HttpSession.class,
+                            new AnnotationLiteral<DeltaSpike>() {
+                            });
+            session.invalidate();
+            urlUtil.redirectTo(urlUtil.home());
         }
     }
 
     private Event<LogoutEvent> getLogoutEvent() {
-        return ServiceLocator.instance().getInstance("event", Event.class);
+        return logoutEvent;
     }
 
     public boolean hasRole(String role) {
@@ -234,6 +272,7 @@ public class ZanataIdentity implements Identity, Serializable {
         credentials.clear();
     }
 
+    // TODO WHY do we have methods hasPermission(target, action) as well as hasPermission(action, target)??? Especially it's used in EL. So DARN confusing!
     public boolean hasPermission(Object target, String action) {
         log.trace("ENTER hasPermission({}, {})", target, action);
         boolean result = resolvePermission(target, action);
@@ -269,45 +308,6 @@ public class ZanataIdentity implements Identity, Serializable {
         return permissionResolver.hasPermission(target, action);
     }
 
-    public boolean hasPermission(String name, String action, Object... arg) {
-        if (log.isTraceEnabled()) {
-            log.trace("ENTER hasPermission({})",
-                    Lists.newArrayList(name, action, arg));
-        }
-        boolean result = resolvePermission(name, action, arg);
-        if (result) {
-            if (log.isDebugEnabled()) {
-                log.debug("ALLOWED hasPermission({}, {}, {}) for user {}",
-                        name, action, Lists.newArrayList(arg), getAccountUsername());
-            }
-        } else {
-            if (log.isDebugEnabled()) {
-                log.debug("DENIED hasPermission({}, {}, {}) for user {}",
-                        name, action, Lists.newArrayList(arg), getAccountUsername());
-            }
-        }
-        log.trace("EXIT hasPermission(): {}", result);
-        return result;
-    }
-
-    private boolean resolvePermission(String name, String action, Object... arg) {
-        if (!securityEnabled) {
-            return true;
-        }
-        if (systemOp != null && Boolean.TRUE.equals(systemOp.get())) {
-            return true;
-        }
-        if (permissionResolver == null) {
-            return false;
-        }
-
-        if (arg != null && arg.length > 0) {
-            return permissionResolver.hasPermission(arg[0], action);
-        } else {
-            return permissionResolver.hasPermission(name, action);
-        }
-    }
-
     /**
      * Indicates if the user has permission to perform an action on a variable
      * number of targets. This is provided as an extension to Seam's single
@@ -318,7 +318,7 @@ public class ZanataIdentity implements Identity, Serializable {
      * @param targets
      *            Targets for permissions.
      */
-    public boolean hasPermission(String action, Object... targets) {
+    public boolean hasPermissionWithAnyTargets(String action, Object... targets) {
         return hasPermission(MultiTargetList.fromTargets(targets), action);
     }
 
@@ -385,15 +385,15 @@ public class ZanataIdentity implements Identity, Serializable {
     }
 
     private Event<NotLoggedInEvent> getNotLoggedInEvent() {
-        return ServiceLocator.instance().getInstance("event", Event.class);
+        return notLoggedInEventEvent;
     }
 
     // copied from org.jboss.seam.security.Identity.tryLogin()
     public boolean tryLogin() {
         if (!authenticating && getPrincipal() == null && credentials.isSet() &&
-                Contexts.isEventContextActive() &&
-                !Contexts.getEventContext().isSet(LOGIN_TRIED)) {
-            Contexts.getEventContext().set(LOGIN_TRIED, true);
+                Contexts.isRequestContextActive() &&
+                !requestContextValueStore.contains(LOGIN_TRIED)) {
+            requestContextValueStore.put(LOGIN_TRIED, true);
             quietLogin();
         }
 
@@ -411,8 +411,8 @@ public class ZanataIdentity implements Identity, Serializable {
             if (!isLoggedIn()) {
                 if (credentials.isSet()) {
                     authenticate();
-                    if (isLoggedIn() && Contexts.isEventContextActive()) {
-                        Contexts.getEventContext().set(SILENT_LOGIN, true);
+                    if (isLoggedIn() && Contexts.isRequestContextActive()) {
+                        requestContextValueStore.put(SILENT_LOGIN, true);
                     }
                 }
             }
@@ -547,9 +547,11 @@ public class ZanataIdentity implements Identity, Serializable {
                 // and login() is explicitly called then we still want to raise
                 // the LOGIN_SUCCESSFUL event,
                 // and then return.
-                if (Contexts.isEventContextActive()
-                        && Contexts.getEventContext().isSet(SILENT_LOGIN)) {
-                    getLoginSuccessfulEvent().fire(new LoginSuccessfulEvent());
+                cacheUserDetails();
+                if (Contexts.isRequestContextActive()
+                        && requestContextValueStore.contains(SILENT_LOGIN)) {
+                    getLoginSuccessfulEvent().fire(new LoginSuccessfulEvent(
+                            cachedPersonName));
                     this.preAuthenticated = true;
                     return "loggedIn";
                 }
@@ -566,45 +568,86 @@ public class ZanataIdentity implements Identity, Serializable {
                 throw new LoginException();
             }
 
-            if (log.isDebugEnabled()) {
-                log.debug("Login successful for: "
-                        + getCredentials().getUsername());
-            }
+            cacheUserDetails();
+            log.debug("Login successful for: {}", cachedUsername);
 
             // used by org.zanata.security.FacesSecurityEvents.addLoginSuccessfulMessage()
-            getLoginSuccessfulEvent().fire(new LoginSuccessfulEvent());
+            getLoginSuccessfulEvent().fire(new LoginSuccessfulEvent(
+                    cachedPersonName));
+
             this.preAuthenticated = true;
             return "loggedIn";
-        } catch (LoginException ex) {
-            credentials.invalidate();
-
+        } catch (FailedLoginException | CredentialException | AccountException e) {
             if (log.isDebugEnabled()) {
                 log.debug(
                         "Login failed for: " + getCredentials().getUsername(),
-                        ex);
+                        e);
             }
-            // used by org.zanata.security.FacesSecurityEvents.addLoginFailedMessage()
-            getLoginFailedEvent().fire(new LoginFailedEvent(ex));
+            handleLoginException(e);
+        } catch (LoginException e) {
+            // if it's not one of the above subclasses, a LoginException may indicate
+            // a configuration problem
+            log.error(
+                    "Login failed for: " + getCredentials().getUsername(),
+                    e);
+            handleLoginException(e);
         }
 
         return null;
     }
 
+    /**
+     * Caches username and other details, so that we can use them during
+     * {@link #preDestroy()}.
+     */
+    // TODO should we fire an event when username/name/email is changed (rare)?
+    private void cacheUserDetails() {
+        if (cachedUsername == null) {
+            cachedUsername = getCredentials().getUsername();
+        }
+        if (cachedPersonName == null) {
+            HAccount account =
+                    accountDAO.getByUsername(cachedUsername);
+            HPerson person = account.getPerson();
+            if (person != null) {
+                cachedPersonName = person.getName();
+                cachedPersonEmail = person.getEmail();
+            } else {
+//                cachedPersonName = null;
+                cachedPersonEmail = null;
+            }
+        }
+    }
+
+    private void removeCachedUserDetails() {
+        cachedUsername = null;
+        cachedPersonEmail = null;
+        cachedPersonName = null;
+    }
+
+    private void handleLoginException(LoginException e) {
+        credentials.invalidate();
+        removeCachedUserDetails();
+
+        // used by org.zanata.security.FacesSecurityEvents.addLoginFailedMessage()
+        getLoginFailedEvent().fire(new LoginFailedEvent(e));
+    }
+
     private Event<AlreadyLoggedInEvent> getAlreadyLoggedInEvent() {
-        return ServiceLocator.instance().getInstance("event", Event.class);
+        return alreadyLoggedInEventEvent;
     }
 
     private Event<LoginSuccessfulEvent> getLoginSuccessfulEvent() {
-        return ServiceLocator.instance().getInstance("event", Event.class);
+        return loginSuccessfulEventEvent;
     }
 
     private Event<LoginFailedEvent> getLoginFailedEvent() {
-        return ServiceLocator.instance().getInstance("event", Event.class);
+        return loginFailedEventEvent;
     }
 
     /**
      * Utility method to get the authenticated account username. This differs
-     * from {@link org.jboss.seam.security.Credentials#getUsername()} in that
+     * from org.jboss.seam.security.Credentials.getUsername() in that
      * this returns the actual account's username, not the user provided one
      * (which for some authentication systems is non-existent).
      *
@@ -614,8 +657,8 @@ public class ZanataIdentity implements Identity, Serializable {
     @Nullable
     public String getAccountUsername() {
         HAccount authenticatedAccount =
-                ServiceLocator.instance().getInstance(
-                        ZanataJpaIdentityStore.AUTHENTICATED_USER, HAccount.class);
+                ServiceLocator.instance().getInstance(HAccount.class,
+                        new AuthenticatedLiteral());
         if (authenticatedAccount != null) {
             return authenticatedAccount.getUsername();
         }

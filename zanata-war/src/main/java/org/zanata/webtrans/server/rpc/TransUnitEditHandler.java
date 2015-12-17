@@ -24,10 +24,9 @@ package org.zanata.webtrans.server.rpc;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
@@ -36,15 +35,15 @@ import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.TransUnitEdit;
 import org.zanata.webtrans.shared.rpc.TransUnitEditAction;
 
-@Name("webtrans.gwt.TransUnitEditHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.TransUnitEditHandler")
+@RequestScoped
 @ActionHandlerFor(TransUnitEditAction.class)
 public class TransUnitEditHandler extends
         AbstractActionHandler<TransUnitEditAction, NoOpResult> {
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private TranslationWorkspaceManager translationWorkspaceManager;
 
     @Override

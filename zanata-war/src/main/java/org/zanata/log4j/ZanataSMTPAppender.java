@@ -52,8 +52,7 @@ public class ZanataSMTPAppender extends AlternateSMTPAppender {
     public void activateOptions() {
         // Get Seam's email session instead
         Session session =
-                ServiceLocator.instance().getInstance("mailSession",
-                        Session.class);
+                ServiceLocator.instance().getInstance(Session.class);
         // session.setDebug(true);
         msg = new MimeMessage(session);
 

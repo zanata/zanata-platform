@@ -23,7 +23,8 @@ public class TranslationMergeServiceFactoryTest extends ZanataTest {
     @Before
     public void before() {
         factory =
-                SeamAutowire.instance().reset().ignoreNonResolvable()
+                SeamAutowire.instance().reset()
+                        .ignoreNonResolvable()
                         .autowire(TranslationMergeServiceFactory.class);
     }
 

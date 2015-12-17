@@ -60,11 +60,30 @@ public class ProjectLanguagesTab extends ProjectBasePage {
         return LanguageList.getListedLocales(readyElement(activeLocales));
     }
 
+    /**
+     * Get a list of locales available for this project
+     *
+     * @return String list of language/locale names
+     */
+    public List<String> getAvailableLocaleList() {
+        log.info("Query available locales");
+        return LanguageList.getListedLocales(readyElement(inactiveLocales));
+    }
+
     public ProjectLanguagesTab expectEnabledLocaleListCount(final int count) {
         waitForAMoment().until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver input) {
                 return getEnabledLocaleList().size() == count;
+            }
+        });
+        return new ProjectLanguagesTab(getDriver());
+    }
+    public ProjectLanguagesTab expectAvailableLocaleListCount(final int count) {
+        waitForAMoment().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                return getAvailableLocaleList().size() == count;
             }
         });
         return new ProjectLanguagesTab(getDriver());

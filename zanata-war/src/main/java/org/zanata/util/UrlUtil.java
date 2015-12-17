@@ -20,6 +20,7 @@
  */
 package org.zanata.util;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -27,19 +28,18 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.contexts.ServletLifecycle;
-import org.zanata.ApplicationConfiguration;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.LocaleId;
+import org.zanata.servlet.annotations.ContextPath;
+import com.google.common.base.Throwables;
+import org.zanata.servlet.annotations.ServerPath;
 
 /**
  * Get the URL for the current page in URL encoded format for use in the query
@@ -47,25 +47,21 @@ import org.zanata.common.LocaleId;
  *
  * @author David Mason, damason@redhat.com
  */
-@AutoCreate
-@Name("urlUtil")
-@Scope(ScopeType.SESSION)
+
+@Named("urlUtil")
+// TODO use a narrower scope
+@javax.enterprise.context.SessionScoped
 @Slf4j
 public class UrlUtil implements Serializable {
     private static final long serialVersionUID = 1L;
     private final static String ENCODING = "UTF-8";
-    private static String contextPath;
 
-    @In
-    private ApplicationConfiguration applicationConfiguration;
+    @Inject @ServerPath
+    private String serverPath;
 
-    public static String getContextPath() {
-        if (contextPath == null) {
-            contextPath = ServletLifecycle
-                    .getCurrentServletContext().getContextPath();
-        }
-        return contextPath;
-    }
+    @Inject
+    @ContextPath
+    private String contextPath;
 
     /**
      * Get the local url part, including context path, for the given page
@@ -112,23 +108,22 @@ public class UrlUtil implements Serializable {
     }
 
     public String projectUrl(String projectSlug) {
-        return getContextPath() + "/project/view/" + projectSlug;
+        return contextPath + "/project/view/" + projectSlug;
     }
 
     public String createNewVersionUrl(String projectSlug) {
-        return getContextPath() + "/project/add_iteration.seam?projectSlug="
+        return contextPath + "/project/add_iteration.seam?projectSlug="
                 + projectSlug;
     }
 
     public String versionUrl(String projectSlug, String versionSlug) {
-        return getContextPath() + "/iteration/view/" + projectSlug + "/"
+        return contextPath + "/iteration/view/" + projectSlug + "/"
                 + versionSlug;
     }
 
     public String editorDocumentListUrl(String projectSlug, String versionSlug,
             LocaleId targetLocaleId, LocaleId sourceLocaleId, boolean fullPath) {
-        String prefix = fullPath ? applicationConfiguration.getServerPath()
-                        : getContextPath();
+        String prefix = fullPath ? serverPath : contextPath;
 
         return prefix + "/webtrans/translate?project=" + projectSlug
                 + "&iteration=" + versionSlug + "&localeId=" + targetLocaleId
@@ -155,7 +150,7 @@ public class UrlUtil implements Serializable {
     }
 
     public String dashboardUrl() {
-        return getContextPath() + "/dashboard/";
+        return contextPath + "/dashboard/";
     }
 
     /**
@@ -190,5 +185,30 @@ public class UrlUtil implements Serializable {
         } catch (MalformedURLException e) {
             return false;
         }
+    }
+
+    public void redirectTo(String url) {
+        try {
+            FacesContext.getCurrentInstance().getExternalContext().redirect(url);
+        } catch (IOException e) {
+            log.error("fail to redirect to {}", url, e);
+            throw Throwables.propagate(e);
+        }
+    }
+
+    public String languageHome() {
+        return contextPath + "/language/list";
+    }
+
+    public String genericErrorPage() {
+        return contextPath + "/error";
+    }
+
+    public String signInPage() {
+        return contextPath + "/account/sign_in";
+    }
+
+    public String home() {
+        return contextPath + "/";
     }
 }

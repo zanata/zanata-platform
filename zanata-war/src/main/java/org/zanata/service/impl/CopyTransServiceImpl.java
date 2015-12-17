@@ -23,19 +23,19 @@ package org.zanata.service.impl;
 import java.util.List;
 import java.util.concurrent.Future;
 
-import javax.validation.constraints.NotNull;
+import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Throwables;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskResult;
-import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.async.handle.CopyTransTaskHandle;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectDAO;
@@ -54,29 +54,28 @@ import org.zanata.util.ServiceLocator;
 import com.google.common.base.Optional;
 import com.google.common.base.Stopwatch;
 
-@Name("copyTransServiceImpl")
-@Scope(ScopeType.STATELESS)
+@Named("copyTransServiceImpl")
+@RequestScoped
 @Slf4j
-@ContainsAsyncMethods
 @AllArgsConstructor
 @NoArgsConstructor
 public class CopyTransServiceImpl implements CopyTransService {
 
     private static final int COPY_TRANS_BATCH_SIZE = 20;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
-    @In
+    @Inject
     private ProjectDAO projectDAO;
-    @In
+    @Inject
     private DocumentDAO documentDAO;
-    @In
+    @Inject
     private CopyTransWorkFactory copyTransWorkFactory;
-    @In
+    @Inject
     private TextFlowTargetDAO textFlowTargetDAO;
-    @In
+    @Inject
     private TranslationStateCache translationStateCacheImpl;
-    @In
+    @Inject
     private TextFlowDAO textFlowDAO;
 
     /**
@@ -94,7 +93,7 @@ public class CopyTransServiceImpl implements CopyTransService {
      */
     private void copyTransForDocumentLocale(HDocument document,
             final HLocale targetLocale, final HCopyTransOptions options,
-            Optional<CopyTransTaskHandle> taskHandleOpt) {
+            Optional<CopyTransTaskHandle> taskHandleOpt) throws Exception {
 
         int numCopied = 0;
         int start = 0;
@@ -176,29 +175,23 @@ public class CopyTransServiceImpl implements CopyTransService {
             final int batchLength, final HLocale targetLocale,
             final HCopyTransOptions options,
             Optional<CopyTransTaskHandle> taskHandleOpt,
-            boolean requireTranslationReview) {
+            boolean requireTranslationReview) throws Exception {
+        HDocument hDocument = documentDAO.findById(document.getId());
+        List<HTextFlow> docTextFlows = hDocument.getTextFlows();
+        int batchEnd =
+                Math.min(batchStart + batchLength, docTextFlows.size());
+        int batchSize = batchEnd - batchStart;
+        List<HTextFlow> copyTargets =
+                docTextFlows.subList(batchStart, batchEnd);
+        Integer numCopied =
+                copyTransWorkFactory.runCopyTransInNewTx(targetLocale,
+                        options, document, requireTranslationReview,
+                        copyTargets);
 
-        try {
-            HDocument hDocument = documentDAO.findById(document.getId());
-            List<HTextFlow> docTextFlows = hDocument.getTextFlows();
-            int batchEnd =
-                    Math.min(batchStart + batchLength, docTextFlows.size());
-            int batchSize = batchEnd - batchStart;
-            List<HTextFlow> copyTargets =
-                    docTextFlows.subList(batchStart, batchEnd);
-            Integer numCopied =
-                    copyTransWorkFactory.runCopyTransInNewTx(targetLocale,
-                            options, document, requireTranslationReview,
-                            copyTargets);
-
-            if (taskHandleOpt.isPresent()) {
-                taskHandleOpt.get().increaseProgress(batchSize);
-            }
-            return numCopied;
-        } catch (Exception e) {
-            log.warn("exception during copy trans", e);
-            return 0;
+        if (taskHandleOpt.isPresent()) {
+            taskHandleOpt.get().increaseProgress(batchSize);
         }
+        return numCopied;
     }
 
     @Override
@@ -206,8 +199,20 @@ public class CopyTransServiceImpl implements CopyTransService {
         copyTransForDocument(document, null, handle);
     }
 
-    @Override
-    public void copyTransForDocument(HDocument document,
+    /**
+     * Similar to
+     * {@link CopyTransService#copyTransForDocument(org.zanata.model.HDocument, org.zanata.async.handle.CopyTransTaskHandle)}
+     * , with custom copy trans options.
+     *
+     * @param document
+     *            the document to copy translations into
+     * @param copyTransOpts
+     *            The copy Trans options to use.
+     * @param handle
+     *            Optional Task handle to track progress for the operation.
+     */
+    @VisibleForTesting
+    void copyTransForDocument(HDocument document,
             HCopyTransOptions copyTransOpts, CopyTransTaskHandle handle) {
 
         Optional<CopyTransTaskHandle> taskHandleOpt =
@@ -241,8 +246,12 @@ public class CopyTransServiceImpl implements CopyTransService {
             if (taskHandleOpt.isPresent() && taskHandleOpt.get().isCancelled()) {
                 return;
             }
-            copyTransForDocumentLocale(document, targetLocale, copyTransOpts,
-                    taskHandleOpt);
+            try {
+                copyTransForDocumentLocale(document, targetLocale, copyTransOpts,
+                        taskHandleOpt);
+            } catch (Exception e) {
+                Throwables.propagate(e);
+            }
         }
         log.info("copyTrans finished: document \"{}\"", document.getDocId());
     }
@@ -263,10 +272,26 @@ public class CopyTransServiceImpl implements CopyTransService {
         return AsyncTaskResult.taskResult();
     }
 
-    @Override
-    public void copyTransForIteration(HProjectIteration iteration,
+    /**
+     * Copies previous matching translations for all available locales and
+     * documents in a given project iteration. Translations are matching if
+     * their document id, textflow id and source content are identical, and
+     * their state is approved. Only performs copyTrans on non-obsolete
+     * documents.
+     *
+     * The text flow revision for copied targets is set to the current text flow
+     * revision.
+     *
+     * @param iteration
+     *            The project iteration to copy translations into
+     * @param copyTransOptions
+     *            The copy Trans options to use.
+     * @param handle Optional Task handle to track progress for the operation.
+     */
+    @VisibleForTesting
+    void copyTransForIteration(HProjectIteration iteration,
             HCopyTransOptions copyTransOptions,
-            @NotNull CopyTransTaskHandle handle) {
+            @Nonnull CopyTransTaskHandle handle) {
         Optional<CopyTransTaskHandle> taskHandleOpt =
                 Optional.fromNullable(handle);
 

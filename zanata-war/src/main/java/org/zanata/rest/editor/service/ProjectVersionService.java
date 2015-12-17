@@ -6,6 +6,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
@@ -15,9 +16,9 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.util.GenericType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.DocumentDAO;
@@ -52,31 +53,32 @@ import lombok.NoArgsConstructor;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("editor.projectVersionService")
+@RequestScoped
+@Named("editor.projectVersionService")
 @Path(ProjectVersionResource.SERVICE_PATH)
 @Transactional
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProjectVersionService implements ProjectVersionResource {
-    @In
+    @Inject
     private TextFlowDAO textFlowDAO;
 
-    @In
+    @Inject
     private DocumentDAO documentDAO;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
     @Context
     private Request request;
 
-    @In
+    @Inject
     private ETagUtils eTagUtils;
 
-    @In
+    @Inject
     private ResourceUtils resourceUtils;
 
     @Override

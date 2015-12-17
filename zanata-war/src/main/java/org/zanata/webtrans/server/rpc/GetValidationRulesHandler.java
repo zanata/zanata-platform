@@ -25,26 +25,28 @@ import java.util.*;
 import net.customware.gwt.dispatch.server.*;
 import net.customware.gwt.dispatch.shared.*;
 
-import org.jboss.seam.*;
-import org.jboss.seam.annotations.*;
 import org.zanata.service.*;
 import org.zanata.webtrans.server.*;
 import org.zanata.webtrans.shared.model.*;
 import org.zanata.webtrans.shared.model.ValidationAction.*;
 import org.zanata.webtrans.shared.rpc.*;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
-@Name("webtrans.gwt.GetValidationRulesHandler")
+@Named("getValidationRulesHandler")
 @ActionHandlerFor(GetValidationRulesAction.class)
-@Scope(ScopeType.STATELESS)
+@RequestScoped
 public class GetValidationRulesHandler
         extends
         AbstractActionHandler<GetValidationRulesAction, GetValidationRulesResult> {
-    @In
+    @Inject
     private ValidationService validationServiceImpl;
 
     @Override

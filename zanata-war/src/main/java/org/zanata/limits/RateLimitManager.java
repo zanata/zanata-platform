@@ -8,12 +8,8 @@ import java.util.concurrent.ExecutionException;
 
 import com.google.common.annotations.VisibleForTesting;
 import lombok.AccessLevel;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
+import javax.annotation.PostConstruct;
+import javax.inject.Named;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.events.ConfigurationChanged;
 import org.zanata.util.Introspectable;
@@ -33,9 +29,9 @@ import javax.enterprise.event.TransactionPhase;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Name("rateLimitManager")
-@Scope(ScopeType.APPLICATION)
-@AutoCreate
+@Named("rateLimitManager")
+@javax.enterprise.context.ApplicationScoped
+
 @Slf4j
 public class RateLimitManager implements Introspectable {
 
@@ -55,7 +51,7 @@ public class RateLimitManager implements Introspectable {
         return ServiceLocator.instance().getInstance(RateLimitManager.class);
     }
 
-    @Create
+    @PostConstruct
     public void loadConfig() {
         readRateLimitState();
     }
@@ -68,8 +64,6 @@ public class RateLimitManager implements Introspectable {
         maxActive = appConfig.getMaxActiveRequestsPerApiKey();
     }
 
-    @Observer(ConfigurationChanged.EVENT_NAME)
-    // TODO only do this if the relevant values have changed
     public void configurationChanged(
             @Observes(during = TransactionPhase.AFTER_SUCCESS)
             ConfigurationChanged payload) {

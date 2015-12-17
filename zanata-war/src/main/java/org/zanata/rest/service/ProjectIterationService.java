@@ -24,6 +24,7 @@ import static org.zanata.common.EntityStatus.OBSOLETE;
 import static org.zanata.common.EntityStatus.READONLY;
 
 import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
@@ -40,9 +41,9 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.util.HttpHeaderNames;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -54,7 +55,8 @@ import org.zanata.service.ConfigurationService;
 
 import com.google.common.base.Objects;
 
-@Name("projectIterationService")
+@RequestScoped
+@Named("projectIterationService")
 @Path(ProjectIterationResource.SERVICE_PATH)
 @Transactional
 public class ProjectIterationService implements ProjectIterationResource {
@@ -84,19 +86,19 @@ public class ProjectIterationService implements ProjectIterationResource {
     @Context
     private Request request;
 
-    @In
+    @Inject
     ProjectDAO projectDAO;
 
-    @In
+    @Inject
     ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     ETagUtils eTagUtils;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private ConfigurationService configurationServiceImpl;
 
     @SuppressWarnings("null")

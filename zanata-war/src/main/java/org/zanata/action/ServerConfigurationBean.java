@@ -25,6 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.enterprise.event.Event;
 import javax.validation.constraints.Pattern;
 
 import lombok.Data;
@@ -34,16 +35,13 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.hibernate.validator.constraints.Email;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
-import org.jboss.seam.core.Events;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.action.validator.EmailList;
 import org.zanata.dao.ApplicationConfigurationDAO;
@@ -51,31 +49,33 @@ import org.zanata.events.HomeContentChangedEvent;
 import org.zanata.model.HApplicationConfiguration;
 import org.zanata.model.validator.Url;
 import org.zanata.rest.service.ServerConfigurationService;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.ui.faces.FacesMessages;
 
 import static org.zanata.model.HApplicationConfiguration.*;
 
-@Name("serverConfigurationBean")
-@Scope(ScopeType.PAGE)
-@ZanataSecured
+@Named("serverConfigurationBean")
+@javax.faces.bean.ViewScoped
+
 @CheckRole("admin")
 @Slf4j
 public class ServerConfigurationBean implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
     public static final String DEFAULT_HELP_URL = "http://zanata.org/help";
 
     public static final String DEFAULT_TERM_OF_USE_URL = "http://zanata.org/terms";
 
-    @In
+    @Inject
     private ApplicationConfigurationDAO applicationConfigurationDAO;
 
-    @In
+    @Inject
     private ApplicationConfiguration applicationConfiguration;
+
+    @Inject
+    private Event<HomeContentChangedEvent> homeContentChangedEventEvent;
 
     @Url(canEndInSlash = true)
     @Getter
@@ -176,11 +176,11 @@ public class ServerConfigurationBean implements Serializable {
         applicationConfigurationDAO.flush();
 
         facesMessages.addGlobal("Home content was successfully updated.");
-        Events.instance().raiseTransactionSuccessEvent(HomeContentChangedEvent.EVENT_NAME);
+        homeContentChangedEventEvent.fire(new HomeContentChangedEvent());
         return "/home.xhtml";
     }
 
-    @Create
+    @PostConstruct
     public void onCreate() {
         setPropertiesFromConfigIfNotNull(commonStringProperties);
         setBooleanPropertyFromConfigIfNotNull(enableLogEmailProperty);

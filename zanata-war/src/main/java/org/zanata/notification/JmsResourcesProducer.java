@@ -22,6 +22,7 @@ package org.zanata.notification;
 
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.jms.Connection;
@@ -33,52 +34,83 @@ import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 import javax.jms.Session;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import com.google.common.base.Throwables;
+
 /**
- * Produce JMS related resources for CDI injection.
+ * Produce JMS connection for CDI injection.
  *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @ApplicationScoped
 public class JmsResourcesProducer {
-    @Resource(name = "JmsXA")
+    private static final Logger log =
+            LoggerFactory.getLogger(JmsResourcesProducer.class);
+
+    // == JMS thread safety note ==
+    // The following JMS objects are threadsafe:
+    // Destination ConnectionFactory Connection
+    // These objects are not threadsafe and must not be shared:
+    // Session MessageProducer MessageConsumer
+    // The threadsafe objects can be shared, but for better JMS performance
+    // it may be better to create a Connection per Session (or per thread,
+    // eg ThreadScoped), instead of multiplexing.
+    // See http://stackoverflow.com/a/18630122/14379
+
+    @Resource(lookup = "JmsXA")
     private QueueConnectionFactory connectionFactory;
 
-    @Resource(name = "jms/queue/MailsQueue")
+    @Resource(lookup = "jms/queue/MailsQueue")
     private Queue mailQueue;
 
-    @Produces @InVMJMS
-    public QueueConnection createOrderConnection() throws JMSException {
-        return connectionFactory.createQueueConnection();
+    @Produces @RequestScoped @InVMJMS
+    public QueueConnection createJMSConnection() throws JMSException {
+        QueueConnection queueConnection =
+                connectionFactory.createQueueConnection();
+        queueConnection.start();
+        return queueConnection;
     }
 
-    public void closeOrderConnection(
+    public void closeJMSConnection(
             @Disposes @InVMJMS Connection connection)
             throws JMSException {
+        log.debug("________ closing JMS connection");
         connection.close();
     }
 
-    @Produces @InVMJMS
+    @Produces @RequestScoped @InVMJMS
     public QueueSession createQueueSession(@InVMJMS QueueConnection connection)
             throws JMSException {
-        return connection.createQueueSession(true, Session.AUTO_ACKNOWLEDGE);
+        return connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
     }
 
-    public void closeOrderSession(@Disposes @InVMJMS QueueSession session)
-            throws JMSException {
-        session.close();
+    public void closeQueueSession(@Disposes @InVMJMS QueueSession session) {
+        try {
+            log.debug("________ closing JMS session");
+            session.close();
+        } catch (JMSException e) {
+            throw Throwables.propagate(e);
+        }
     }
 
     @Produces
     @EmailQueueSender
-    public QueueSender createEmailQueueSender(
-            @InVMJMS QueueSession session) throws JMSException {
+    public QueueSender createEmailQueueSender(@InVMJMS
+            QueueSession session) throws JMSException {
         return session.createSender(mailQueue);
     }
 
-    public void closeEmailQueueSender(
-            @Disposes @EmailQueueSender QueueSender queueSender)
-            throws JMSException {
-        queueSender.close();
+    public void closeQueueSender(@Disposes @EmailQueueSender QueueSender queueSender) {
+        try {
+            log.debug("________ closing email queue sender");
+            queueSender.close();
+        } catch (JMSException e) {
+            throw Throwables.propagate(e);
+        }
     }
+
+
 }

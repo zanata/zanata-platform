@@ -106,6 +106,8 @@ public class AddReviewCommentHandlerTest extends ZanataTest {
                                 textFlowTargetReviewCommentsDAO)
                         .use(ZanataJpaIdentityStore.AUTHENTICATED_USER,
                                 authenticatedAccount)
+                        .use("authenticatedAccount",
+                                authenticatedAccount)
                         .use("localeServiceImpl", localeService)
                         .use("translationWorkspaceManager",
                                 translationWorkspaceManager)

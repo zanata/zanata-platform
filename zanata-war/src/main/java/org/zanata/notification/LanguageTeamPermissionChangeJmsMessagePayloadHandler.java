@@ -24,17 +24,15 @@ import java.io.Serializable;
 
 import javax.mail.internet.InternetAddress;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.email.Addresses;
 import org.zanata.email.EmailBuilder;
 import org.zanata.email.LanguageTeamPermissionChangeEmailStrategy;
 import org.zanata.events.LanguageTeamPermissionChangedEvent;
 import org.zanata.i18n.Messages;
+import org.zanata.servlet.annotations.ServerPath;
 
 import com.google.common.collect.Lists;
 import lombok.AccessLevel;
@@ -52,22 +50,23 @@ import lombok.extern.slf4j.Slf4j;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Name("languageTeamPermissionChangeJmsMessagePayloadHandler")
-@Scope(ScopeType.STATELESS)
-@AutoCreate
+@Named("languageTeamPermissionChangeJmsMessagePayloadHandler")
+@javax.enterprise.context.Dependent
+
 @Slf4j
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class LanguageTeamPermissionChangeJmsMessagePayloadHandler implements
         EmailQueueMessageReceiver.JmsMessagePayloadHandler {
-    @In
+    @Inject
     private EmailBuilder emailBuilder;
 
-    @In
+    @Inject
     private Messages msgs;
 
-    @In
-    private ApplicationConfiguration applicationConfiguration;
+    @Inject
+    @ServerPath
+    private String serverPath;
 
 
     @Override
@@ -90,7 +89,7 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandler implements
                 msgs.format("jsf.email.languageteam.permission.ReceivedReason",
                         changedEvent.getLanguage());
         String contactTeamCoordinatorLink =
-                applicationConfiguration.getServerPath() +
+                serverPath +
                         "/language/view/" + changedEvent.getLanguage();
         LanguageTeamPermissionChangeEmailStrategy emailStrategy =
                 new LanguageTeamPermissionChangeEmailStrategy(

@@ -23,12 +23,13 @@ package org.zanata.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.dao.AccountDAO;
@@ -49,28 +50,28 @@ import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.service.RegisterService;
 import org.zanata.util.HashUtil;
 
-@Name("registerServiceImpl")
-@Scope(ScopeType.STATELESS)
+@Named("registerServiceImpl")
+@RequestScoped
 public class RegisterServiceImpl implements RegisterService {
-    @In
+    @Inject
     EntityManager entityManager;
 
-    @In
+    @Inject
     ZanataJpaIdentityStore identityStore;
 
-    @In
+    @Inject
     AccountDAO accountDAO;
 
-    @In
+    @Inject
     PersonDAO personDAO;
 
-    @In
+    @Inject
     AccountRoleDAO accountRoleDAO;
 
-    @In
+    @Inject
     AccountActivationKeyDAO accountActivationKeyDAO;
 
-    @In
+    @Inject
     ApplicationConfiguration applicationConfiguration;
 
     /**
@@ -117,6 +118,7 @@ public class RegisterServiceImpl implements RegisterService {
         return key.getKeyHash();
     }
 
+    @Transactional
     public String register(final String username, final String password,
             String name, String email) {
         new AbstractRunAsOperation() {

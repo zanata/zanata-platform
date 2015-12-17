@@ -20,18 +20,14 @@
  */
 package org.zanata.security.permission;
 
-import static org.jboss.seam.ScopeType.APPLICATION;
-import static org.jboss.seam.annotations.Install.BUILT_IN;
 
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Startup;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import javax.inject.Named;
 import org.zanata.util.ServiceLocator;
 
 /**
@@ -43,11 +39,8 @@ import org.zanata.util.ServiceLocator;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("customPermissionResolver")
-@Scope(APPLICATION)
-@BypassInterceptors
-@Install(precedence = BUILT_IN)
-@Startup
+@Named("customPermissionResolver")
+@javax.enterprise.context.ApplicationScoped
 public class CustomPermissionResolver implements Serializable {
 
     private static final long serialVersionUID = 6302681723997573877L;

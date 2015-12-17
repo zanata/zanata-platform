@@ -20,6 +20,7 @@
  */
 package org.zanata.service.impl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -31,10 +32,9 @@ import java.util.TreeMap;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.PersonDAO;
@@ -59,8 +59,8 @@ import lombok.extern.slf4j.Slf4j;
  * This implementation provides all the business logic related to Locale.
  *
  */
-@Name("localeServiceImpl")
-@Scope(ScopeType.STATELESS)
+@Named("localeServiceImpl")
+@RequestScoped
 @Slf4j
 public class LocaleServiceImpl implements LocaleService {
     private LocaleDAO localeDAO;
@@ -99,32 +99,32 @@ public class LocaleServiceImpl implements LocaleService {
         return localeAliases;
     }
 
-    @In
+    @Inject
     public void setTextFlowTargetDAO(TextFlowTargetDAO textFlowTargetDAO) {
         this.textFlowTargetDAO = textFlowTargetDAO;
     }
 
-    @In
+    @Inject
     public void setLocaleDAO(LocaleDAO localeDAO) {
         this.localeDAO = localeDAO;
     }
 
-    @In
+    @Inject
     public void setProjectDAO(ProjectDAO projectDAO) {
         this.projectDAO = projectDAO;
     }
 
-    @In
+    @Inject
     public void setProjectIterationDAO(ProjectIterationDAO projectIterationDAO) {
         this.projectIterationDAO = projectIterationDAO;
     }
 
-    @In
+    @Inject
     public void setPersonDAO(PersonDAO personDAO) {
         this.personDAO = personDAO;
     }
 
-    @In
+    @Inject
     public void setVersionGroupDAO(VersionGroupDAO versionGroupDAO) {
         this.versionGroupDAO = versionGroupDAO;
     }

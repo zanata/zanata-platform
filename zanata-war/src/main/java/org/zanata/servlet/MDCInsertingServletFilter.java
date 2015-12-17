@@ -14,8 +14,6 @@
 package org.zanata.servlet;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,7 +25,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.collect.ImmutableList;
 import org.slf4j.MDC;
@@ -43,7 +40,6 @@ import org.slf4j.MDC;
  */
 @WebFilter(filterName = "MDCInsertingServletFilter")
 public class MDCInsertingServletFilter implements Filter {
-    private static final org.slf4j.Logger logReq = org.slf4j.LoggerFactory.getLogger("org.zanata.requests");
     public static final String REQUEST_REMOTE_HOST_MDC_KEY = "req.remoteHost";
     public static final String REQUEST_USER_AGENT_MDC_KEY = "req.userAgent";
     public static final String REQUEST_REQUEST_URI = "req.requestURI";
@@ -51,7 +47,7 @@ public class MDCInsertingServletFilter implements Filter {
     public static final String REQUEST_REQUEST_URL = "req.requestURL";
     public static final String REQUEST_X_FORWARDED_FOR = "req.xForwardedFor";
     /**
-     * This MDC value is set by LoggingFilter
+     * This MDC value is set by UsernameLoggingFilter
      */
     public static final String USERNAME = "username";
 
@@ -75,31 +71,10 @@ public class MDCInsertingServletFilter implements Filter {
 
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain) throws IOException, ServletException {
-        @Nullable
-        String location = null;
-        if (logReq.isDebugEnabled() && request instanceof HttpServletRequest) {
-            HttpServletRequest httpRequest = (HttpServletRequest) request;
-            String uri = httpRequest.getRequestURI();
-            String query = httpRequest.getQueryString();
-            location = (query == null) ? uri : (uri + "?" + query);
-        }
         insertIntoMDC(request);
         try {
-            if (location != null) {
-                logReq.debug("> " + location);
-            }
             chain.doFilter(request, response);
         } finally {
-            if (location != null) {
-                @Nullable
-                String result = null;
-                if (response instanceof HttpServletResponse) {
-                    HttpServletResponse httpResponse =
-                            (HttpServletResponse) response;
-                    result = String.valueOf(httpResponse.getStatus());
-                }
-                logReq.debug("< " + location + " : " + result);
-            }
             clearMDC();
         }
     }

@@ -29,11 +29,10 @@ import java.util.Map;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.transform.ResultTransformer;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HDocument;
@@ -47,16 +46,15 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 
-@Name("textFlowDAO")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("textFlowDAO")
+@RequestScoped
 @Slf4j
 public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
     private static final long serialVersionUID = 1L;
 
     // TODO replace all getSession() code to use entityManager
 
-    @In
+    @Inject
     LocaleDAO localeDAO;
 
     public TextFlowDAO() {

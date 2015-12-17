@@ -22,29 +22,32 @@ package org.zanata.action;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.seam.framework.EntityHome;
+import org.zanata.security.annotations.Authenticated;
+
+import java.io.Serializable;
 
 /**
  * A simple bean to hold the currently authenticated account.
  */
-@Name("authenticatedAccountHome")
-@Scope(ScopeType.CONVERSATION)
+@Named("authenticatedAccountHome")
+@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
 @Slf4j
-public class AuthenticatedAccountHome extends EntityHome<HAccount> {
+public class AuthenticatedAccountHome extends EntityHome<HAccount>
+        implements Serializable {
 
     /**
     *
     */
     private static final long serialVersionUID = 1L;
 
-    @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
+    @Inject
+    @Authenticated
     HAccount authenticatedAccount;
 
     @Override

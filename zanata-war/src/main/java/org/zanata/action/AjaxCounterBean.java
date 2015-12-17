@@ -21,17 +21,21 @@
 package org.zanata.action;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.deltaspike.core.api.common.DeltaSpike;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@AutoCreate
-@Name("ajaxCounter")
+
+@Named("ajaxCounter")
+@Dependent
 @Slf4j
 public class AjaxCounterBean {
     // NB this doesn't handle setInterval or setTimeout
@@ -62,7 +66,8 @@ public class AjaxCounterBean {
             "})(XMLHttpRequest);\n" +
             "</script>\n";
 
-    @In
+    @Inject
+    @DeltaSpike
     private HttpServletRequest httpRequest;
 
     public String getAjaxCounterScript() {

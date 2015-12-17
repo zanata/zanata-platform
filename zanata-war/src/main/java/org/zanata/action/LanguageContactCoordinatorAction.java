@@ -25,11 +25,10 @@ import java.io.Serializable;
 
 import javax.faces.application.FacesMessage;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
@@ -40,7 +39,6 @@ import org.zanata.email.EmailStrategy;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.EmailService;
 import org.zanata.service.LocaleService;
 import org.zanata.ui.faces.FacesMessages;
@@ -52,26 +50,27 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@AutoCreate
-@Name("languageContactCoordinatorAction")
-@Scope(ScopeType.PAGE)
-@ZanataSecured
+
+@Named("languageContactCoordinatorAction")
+@javax.faces.bean.ViewScoped
+
 @Slf4j
 public class LanguageContactCoordinatorAction implements Serializable {
 
-    @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER, required = false)
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
-    @In
+    @Inject
     private EmailService emailServiceImpl;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In
+    @Inject
     private Messages msgs;
 
     @Getter

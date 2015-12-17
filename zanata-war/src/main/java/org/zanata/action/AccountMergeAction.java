@@ -27,18 +27,16 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Out;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.contexts.Contexts;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
+import javax.annotation.Nullable;
+import javax.enterprise.context.SessionScoped;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdAuthenticationResult;
 import org.zanata.security.openid.OpenIdProviderType;
@@ -50,35 +48,49 @@ import org.zanata.util.ServiceLocator;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("accountMergeAction")
-@Scope(ScopeType.PAGE)
+@Named("accountMergeAction")
+@javax.faces.bean.ViewScoped
 public class AccountMergeAction implements Serializable {
+
+    @SessionScoped
+    static class ObsoleteHolder implements Serializable {
+        private static final long serialVersionUID = 1L;
+        @Nullable HAccount account;
+    }
+
     private static final long serialVersionUID = 1L;
 
-    @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
-    @In
+    @Inject
     private AuthenticationManager authenticationManager;
 
-    @In
+    @Inject
     private RegisterService registerServiceImpl;
 
     @Getter
     @Setter
     private String openId = "http://";
 
-    @In(required = false, scope = ScopeType.SESSION)
-    @Out(required = false, scope = ScopeType.SESSION)
-    @Getter
-    private HAccount obsoleteAccount;
+    @Inject
+    private ObsoleteHolder obsolete;
 
     private boolean accountsValid;
 
-    @Create
+    public @Nullable HAccount getObsoleteAccount() {
+        return obsolete.account;
+    }
+
+    private void setObsoleteAccount(@Nullable HAccount obsoleteAccount) {
+        obsolete.account = obsoleteAccount;
+    }
+
+    @PostConstruct
     public void onCreate() {
         ZanataIdentity.instance().checkLoggedIn();
     }
@@ -109,13 +121,14 @@ public class AccountMergeAction implements Serializable {
     }
 
     public boolean isAccountSelected() {
-        return obsoleteAccount != null;
+        return getObsoleteAccount() != null;
     }
 
     public void validateAccounts() {
         boolean valid = true;
 
         // The account to merge in has been authenticated
+        HAccount obsoleteAccount = getObsoleteAccount();
         if (obsoleteAccount != null) {
             if (obsoleteAccount.getId() == null) {
                 facesMessages.addGlobal(SEVERITY_ERROR,
@@ -134,14 +147,15 @@ public class AccountMergeAction implements Serializable {
 
     public void mergeAccounts() {
         registerServiceImpl
-                .mergeAccounts(authenticatedAccount, obsoleteAccount);
-        obsoleteAccount = null; // reset the obsolete account
+                .mergeAccounts(authenticatedAccount, getObsoleteAccount());
+        setObsoleteAccount(null); // reset the obsolete account
         facesMessages.addGlobal("Your accounts have been merged.");
     }
 
-    public void cancel() {
-        // see pages.xml
-        obsoleteAccount = null;
+    public String cancel() {
+        // see faces-config.xml
+        setObsoleteAccount(null);
+        return "cancel";
     }
 
     private static class AccountMergeAuthCallback implements
@@ -159,9 +173,7 @@ public class AccountMergeAction implements Serializable {
                 if (account == null) {
                     account = new HAccount(); // In case an account is not found
                 }
-                Contexts.getSessionContext().set("obsoleteAccount", account); // Outject
-                                                                              // the
-                                                                              // account
+                ServiceLocator.instance().getInstance(ObsoleteHolder.class).account = account;
             }
         }
 

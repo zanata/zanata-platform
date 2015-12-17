@@ -29,14 +29,15 @@ import java.io.InputStream;
 import java.util.Collections;
 
 import javax.annotation.Nonnull;
+import javax.enterprise.context.Dependent;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FilenameUtils;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -68,28 +69,29 @@ import com.google.common.base.Strings;
 
 //TODO damason: add thorough unit testing
 @Slf4j
-@Name("sourceDocumentUploader")
+@Dependent
+@Named("sourceDocumentUploader")
 public class SourceDocumentUpload {
 
     private static final HLocale NULL_LOCALE = null;
 
-    @In(create = true, value = "documentUploadUtil")
+    @Inject
     private DocumentUploadUtil util;
-    @In("filePersistService")
+    @Inject
     private FilePersistService filePersistService;
-    @In
+    @Inject
     private ZanataIdentity identity;
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
-    @In
+    @Inject
     private TranslationFileService translationFileServiceImpl;
-    @In
+    @Inject
     private VirusScanner virusScanner;
-    @In
+    @Inject
     private DocumentDAO documentDAO;
-    @In
+    @Inject
     private DocumentUploadDAO documentUploadDAO;
-    @In
+    @Inject
     private DocumentService documentServiceImpl;
 
     public Response tryUploadSourceFileWithoutHash(GlobalDocumentId id,
@@ -211,7 +213,8 @@ public class SourceDocumentUpload {
         return projectIteration.getStatus() == EntityStatus.ACTIVE
                 && projectIteration.getProject().getStatus() == EntityStatus.ACTIVE
                 && identity != null
-                && identity.hasPermission("import-template", projectIteration);
+                && identity.hasPermissionWithAnyTargets("import-template",
+                projectIteration);
     }
 
     private void failIfFileTypeNotValid(DocumentFileUploadForm uploadForm)

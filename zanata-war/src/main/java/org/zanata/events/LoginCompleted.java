@@ -30,10 +30,6 @@ import org.zanata.security.AuthenticationType;
  */
 @Value
 public class LoginCompleted {
-    // TODO remove constant after switching to CDI
-    // NB must be a constant string equal to class name
-    public static final String EVENT_NAME = "org.zanata.events.LoginCompleted";
-
     AuthenticationType authType;
 //    String username;
 }

@@ -20,18 +20,18 @@
  */
 package org.zanata.seam.test;
 
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
 
-@Name("ComponentWithNonRequiredChild")
+@Named("ComponentWithNonRequiredChild")
 public class ComponentWithNonRequiredChild {
-    @In(required = false)
+    @Inject
     private Child childComponent;
 
     private boolean postConstructInvoked = false;
 
-    @Create
+    @PostConstruct
     public void postConstruct() {
         this.postConstructInvoked = true;
     }

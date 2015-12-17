@@ -19,11 +19,7 @@
   <ui:define name="page_title">#{msgs['jsf.ManageUsers']}</ui:define>
   <ui:define name="center_content">
 
-    <a4j:jsFunction name="deleteUser"
-      action="#{userAction.deleteUser(username)}" render="usermanagerForm,
-      userSearch-pager, userSearch-page-info, userSearchBottom-pager, userSearchBottom-page-info">
-      <a4j:param name="val1" assignTo="#{username}"/>
-    </a4j:jsFunction>
+
 
     <div class="g--centered">
       <div class="g__item w--2-3 l--push-bottom-half">
@@ -55,6 +51,12 @@
           </a4j:status>
 
           <h:form id="usermanagerForm" styleClass="l--push-bottom-0">
+
+            <a4j:jsFunction name="deleteUser"
+              action="#{userAction.deleteUser(username)}" render="usermanagerForm,
+      userSearch-pager, userSearch-page-info, userSearchBottom-pager, userSearchBottom-page-info">
+              <a4j:param name="val1" assignTo="#{username}"/>
+            </a4j:jsFunction>
 
             <script type="text/javascript">
               function confirmDelete() {

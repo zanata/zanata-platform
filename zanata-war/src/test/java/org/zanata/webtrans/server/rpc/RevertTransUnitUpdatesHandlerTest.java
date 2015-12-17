@@ -36,6 +36,8 @@ import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import com.google.common.collect.Lists;
 
+import javax.enterprise.event.Event;
+
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -50,6 +52,8 @@ public class RevertTransUnitUpdatesHandlerTest extends ZanataTest {
     private SecurityService securityServiceImpl;
     @Mock
     private TranslationWorkspace translationWorkspace;
+    @Mock
+    private Event textFlowTargetUpdateContextEvent;
 
     @Before
     public void setUp() throws Exception {
@@ -64,6 +68,7 @@ public class RevertTransUnitUpdatesHandlerTest extends ZanataTest {
                 .use("translationServiceImpl", translationServiceImpl)
             .use("transUnitTransformer", transUnitTransformer)
             .use("securityServiceImpl", securityServiceImpl)
+            .use("textFlowTargetUpdateContextEvent", textFlowTargetUpdateContextEvent)
             .ignoreNonResolvable()
             .autowire(RevertTransUnitUpdatesHandler.class);
       // @formatter:on

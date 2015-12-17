@@ -1,5 +1,6 @@
 package org.zanata.webtrans.server;
 
+import static com.google.common.base.MoreObjects.firstNonNull;
 import static org.zanata.transaction.TransactionUtil.runInTransaction;
 
 import java.util.Collection;
@@ -8,19 +9,16 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.servlet.http.HttpServletRequest;
 
+import com.google.common.annotations.VisibleForTesting;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.web.ServletContexts;
+import javax.annotation.PreDestroy;
+import javax.inject.Named;
+
 import org.zanata.async.Async;
-import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountDAO;
@@ -29,15 +27,12 @@ import org.zanata.events.LogoutEvent;
 import org.zanata.events.ProjectIterationUpdate;
 import org.zanata.events.ProjectUpdate;
 import org.zanata.events.ServerStarted;
-import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
-import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.GravatarService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.ValidationService;
-import org.zanata.util.ServiceLocator;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
@@ -65,12 +60,26 @@ import de.novanic.eventservice.service.registry.EventRegistryFactory;
 import de.novanic.eventservice.service.registry.user.UserManager;
 import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 
-@Scope(ScopeType.APPLICATION)
-@Name("translationWorkspaceManager")
+@javax.enterprise.context.ApplicationScoped
+@Named("translationWorkspaceManager")
 @Slf4j
-@ContainsAsyncMethods
 public class TranslationWorkspaceManagerImpl implements
         TranslationWorkspaceManager {
+
+    @Inject
+    private GravatarService gravatarServiceImpl;
+
+    @Inject
+    private ProjectIterationDAO projectIterationDAO;
+
+    @Inject
+    private EntityManager entityManager;
+
+    @Inject
+    private LocaleService localeServiceImpl;
+
+    @Inject
+    private ValidationService validationServiceImpl;
 
     private final ConcurrentHashMap<WorkspaceId, TranslationWorkspace> workspaceMap;
     private final Multimap<ProjectIterationId, TranslationWorkspace> projIterWorkspaceMap;
@@ -86,73 +95,26 @@ public class TranslationWorkspaceManagerImpl implements
                 EventRegistryFactory.getInstance().getEventRegistry();
     }
 
-    // TODO Requesting component by name for testability. This should be fixed
-    // in subsequent versions of AutoWire
-    AccountDAO getAccountDAO() {
-        return ServiceLocator.instance().getInstance("accountDAO",
-                AccountDAO.class);
-    }
-
-    // TODO Requesting component by name for testability. This should be fixed
-    // in subsequent versions of AutoWire
-    GravatarService getGravatarService() {
-        return ServiceLocator.instance().getInstance("gravatarServiceImpl",
-                GravatarService.class);
-    }
-
-    // TODO Requesting component by name for testability. This should be fixed
-    // in subsequent versions of AutoWire
-    ProjectIterationDAO getProjectIterationDAO() {
-        return ServiceLocator.instance().getInstance("projectIterationDAO",
-                ProjectIterationDAO.class);
-    }
-
-    EntityManager getEntityManager() {
-        return ServiceLocator.instance().getEntityManager();
-    }
-
-    // TODO Requesting component by name for testability. This should be fixed
-    // in subsequent versions of AutoWire
-    LocaleService getLocaleService() {
-        return ServiceLocator.instance().getInstance("localeServiceImpl",
-                LocaleService.class);
-    }
-
-    // TODO Requesting component by name for testability. This should be fixed
-    // in subsequent versions of AutoWire
-    ValidationService getValidationService() {
-        return ServiceLocator.instance().getInstance("validationServiceImpl",
-                ValidationService.class);
-    }
-
-    @Observer(ServerStarted.EVENT_NAME)
     public void start(@Observes ServerStarted payload) {
         log.info("starting...");
     }
 
-    @Observer(LogoutEvent.EVENT_NAME)
     public void exitWorkspace(@Observes LogoutEvent payload) {
-        exitWorkspace(payload.getUsername());
+        // NB: avoid using session-scoped beans, because this event is
+        // fired during session expiry.
+        exitWorkspace(payload.getUsername(), payload.getSessionId(),
+                firstNonNull(payload.getPersonName(), "<unknown>"),
+                firstNonNull(payload.getPersonEmail(), "<unknown>"));
     }
 
-    void exitWorkspace(String username) {
-        String httpSessionId = getSessionId();
+    @VisibleForTesting
+    void exitWorkspace(String username, String httpSessionId, String personName,
+            String personEmail) {
         if (httpSessionId == null) {
             log.debug("Logout: null session");
             return;
         }
-        log.info("Logout: Removing user {} from all workspaces, session: {}",
-                username, httpSessionId);
-        String personName = "<unknown>";
-        String personEmail = "<unknown>";
-        HAccount account = getAccountDAO().getByUsername(username);
-        if (account != null) {
-            HPerson person = account.getPerson();
-            if (person != null) {
-                personName = person.getName();
-                personEmail = person.getEmail();
-            }
-        }
+
         ImmutableSet<TranslationWorkspace> workspaceSet =
                 ImmutableSet.copyOf(workspaceMap.values());
         for (TranslationWorkspace workspace : workspaceSet) {
@@ -160,38 +122,32 @@ public class TranslationWorkspaceManagerImpl implements
                     workspace.removeEditorClients(httpSessionId);
             for (EditorClientId editorClientId : editorClients) {
                 log.info(
-                        "Publishing ExitWorkspace event for user {} with editorClientId {} from workspace {}",
-                        new Object[] { username, editorClientId,
-                                workspace.getWorkspaceContext() });
+                        "Publishing ExitWorkspace event for user {} " +
+                                "with editorClientId {} from workspace {}",
+                        username, editorClientId,
+                        workspace.getWorkspaceContext());
                 // Send GWT Event to client to update the userlist
                 ExitWorkspace event =
                         new ExitWorkspace(editorClientId, new Person(
                                 new PersonId(username), personName,
-                                getGravatarService().getUserImageUrl(16,
+                                gravatarServiceImpl.getUserImageUrl(16,
                                         personEmail)));
                 workspace.publish(event);
             }
         }
     }
 
-    protected String getSessionId() {
-        HttpServletRequest request = ServletContexts.instance().getRequest();
-        if (request == null) {
-            return null;
-        }
-        return request.getSession().getId();
-    }
-
-    @Observer(ProjectUpdate.EVENT_NAME)
     // transaction has already been committed and marked as rolled back only for
     // current thread. We have to open a new transaction to load any lazy
     // properties (otherwise exception like javax.resource.ResourceException:
     // IJ000460: Error checking for a transaction: Transactions are not active)
     @Async
     public void projectUpdate(@Observes final ProjectUpdate payload) {
+        // avoid WELD-2019
+        final ProjectUpdate event = payload;
         try {
-            runInTransaction(() -> projectUpdate(payload.getProject(),
-                    payload.getOldSlug()));
+            runInTransaction(() -> projectUpdate(event.getProject(),
+                    event.getOldSlug()));
         } catch (Exception e) {
             throw Throwables.propagate(e);
         }
@@ -200,7 +156,7 @@ public class TranslationWorkspaceManagerImpl implements
 
     void projectUpdate(HProject project, String oldProjectSlug) {
         // need to reload the entity since it's in separate thread/transaction
-        project = getEntityManager().find(HProject.class, project.getId());
+        project = entityManager.find(HProject.class, project.getId());
         String projectSlug = project.getSlug();
         log.info("Project newSlug={}, oldSlug={} updated, status={}",
                 projectSlug, oldProjectSlug, project.getStatus());
@@ -211,7 +167,6 @@ public class TranslationWorkspaceManagerImpl implements
         }
     }
 
-    @Observer(ProjectIterationUpdate.EVENT_NAME)
     @Async
     public void projectIterationUpdate(@Observes ProjectIterationUpdate payload) {
         projectIterationUpdate(payload.getIteration(),
@@ -222,7 +177,7 @@ public class TranslationWorkspaceManagerImpl implements
             Optional<String> oldProjectSlug, Optional<String> oldIterationSlug) {
         HashMap<ValidationId, State> validationStates = Maps.newHashMap();
 
-        for (ValidationAction validationAction : getValidationService()
+        for (ValidationAction validationAction : validationServiceImpl
                 .getValidationActions(projectIteration.getProject().getSlug(),
                         projectIteration.getSlug())) {
             validationStates.put(validationAction.getId(),
@@ -312,7 +267,7 @@ public class TranslationWorkspaceManagerImpl implements
                 .equals(EntityStatus.ACTIVE));
     }
 
-    @Destroy
+    @PreDestroy
     public void stop() {
         log.info("stopping...");
         log.info("closing down {} workspaces: ", workspaceMap.size());
@@ -367,7 +322,7 @@ public class TranslationWorkspaceManagerImpl implements
         String iterationSlug =
                 workspaceId.getProjectIterationId().getIterationSlug();
         HProjectIteration projectIteration =
-                getProjectIterationDAO().getBySlug(projectSlug, iterationSlug);
+                projectIterationDAO.getBySlug(projectSlug, iterationSlug);
 
         if (projectIteration == null) {
             throw new NoSuchWorkspaceException("Invalid workspace Id");
@@ -380,7 +335,7 @@ public class TranslationWorkspaceManagerImpl implements
             throw new NoSuchWorkspaceException("Project Iteration is obsolete");
         }
         HLocale locale =
-                getLocaleService().getByLocaleId(workspaceId.getLocaleId());
+                localeServiceImpl.getByLocaleId(workspaceId.getLocaleId());
         if (locale == null) {
             throw new NoSuchWorkspaceException("Invalid Workspace Locale");
         }

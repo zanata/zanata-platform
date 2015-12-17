@@ -2,23 +2,20 @@ package org.zanata.dao;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HAccount;
 import org.zanata.model.LanguageRequest;
 import org.zanata.model.type.RequestState;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 import java.util.List;
 
 /**
  * @author Alex Eng <a href="aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("languageRequestDAO")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("languageRequestDAO")
+@RequestScoped
 public class LanguageRequestDAO extends AbstractDAOImpl<LanguageRequest, Long> {
 
     public LanguageRequestDAO() {

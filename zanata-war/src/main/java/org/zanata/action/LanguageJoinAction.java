@@ -31,12 +31,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.zanata.security.annotations.Authenticated;
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
 import org.zanata.exception.RequestExistsException;
 import org.zanata.model.HPerson;
 import org.zanata.model.LanguageRequest;
@@ -52,7 +51,6 @@ import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.EmailService;
 import org.zanata.service.LanguageTeamService;
 import org.zanata.service.LocaleService;
@@ -63,27 +61,27 @@ import org.zanata.ui.faces.FacesMessages;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 
-@AutoCreate
-@Name("languageJoinAction")
-@Scope(ScopeType.PAGE)
-@ZanataSecured
+
+@Named("languageJoinAction")
+@javax.faces.bean.ViewScoped
+
 @Slf4j
 public class LanguageJoinAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @In
+    @Inject
     private LocaleMemberDAO localeMemberDAO;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In
+    @Inject
     private EmailService emailServiceImpl;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
-    @In
+    @Inject
     private Messages msgs;
 
     @Setter
@@ -101,16 +99,17 @@ public class LanguageJoinAction implements Serializable {
     @Getter
     private String declineMessage;
 
-    @In
+    @Inject
     private RequestService requestServiceImpl;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private LanguageTeamService languageTeamServiceImpl;
 
-    @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER, required = false)
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
     /**

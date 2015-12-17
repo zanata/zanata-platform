@@ -27,10 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.security.ZanataIdentity;
@@ -42,18 +40,18 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.Getter;
 
-@Name("languagesAction")
-@Scope(ScopeType.PAGE)
+@Named("languagesAction")
+@javax.faces.bean.ViewScoped
 public class LanguagesAction extends InMemoryListFilter<HLocale> implements
         Serializable {
     private static final long serialVersionUID = 1L;
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In
+    @Inject
     private LanguageTeamService languageTeamServiceImpl;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
     private List<HLocale> allLanguages;

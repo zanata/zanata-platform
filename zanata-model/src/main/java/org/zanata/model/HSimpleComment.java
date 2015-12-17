@@ -29,6 +29,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -66,7 +67,7 @@ public class HSimpleComment implements HashableState, Serializable {
     }
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getId() {
         return id;
     }
@@ -76,7 +77,7 @@ public class HSimpleComment implements HashableState, Serializable {
     }
 
     @NotNull
-    @Type(type = "text")
+    @javax.persistence.Lob
     public String getComment() {
         return comment;
     }

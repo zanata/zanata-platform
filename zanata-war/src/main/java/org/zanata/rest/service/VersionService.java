@@ -1,13 +1,15 @@
 package org.zanata.rest.service;
 
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
-import org.jboss.seam.annotations.Name;
+import javax.inject.Named;
 import org.zanata.rest.dto.VersionInfo;
 import org.zanata.util.VersionUtility;
 
-@Name("versionService")
+@RequestScoped
+@Named("versionService")
 @Path(VersionResource.SERVICE_PATH)
 public class VersionService implements VersionResource {
 

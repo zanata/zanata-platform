@@ -27,9 +27,6 @@ import org.zanata.common.LocaleId;
 
 @Value
 public final class DocumentStatisticUpdatedEvent {
-    public static final String EVENT_NAME =
-            "org.zanata.events.DocumentStatisticUpdatedEvent";
-
     private final Long projectIterationId;
     private final Long documentId;
     private final LocaleId localeId;

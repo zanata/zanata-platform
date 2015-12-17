@@ -21,10 +21,8 @@
 package org.zanata.action;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.ApplicationConfiguration;
 
 /**
@@ -35,10 +33,10 @@ import org.zanata.ApplicationConfiguration;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("applicationConfigurationAction")
-@Scope(ScopeType.STATELESS)
+@Named("applicationConfigurationAction")
+@javax.enterprise.context.Dependent
 public class ApplicationConfigurationAction {
-    @In
+    @Inject
     private ApplicationConfiguration applicationConfiguration;
 
     public boolean isLoginHandledByInternalPage() {

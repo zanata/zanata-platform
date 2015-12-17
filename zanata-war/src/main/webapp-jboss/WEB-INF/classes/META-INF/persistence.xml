@@ -53,6 +53,10 @@
     <class>org.zanata.model.tm.TransMemory</class>
     <class>org.zanata.model.WebHook</class>
 
+    <!-- TODO This may be removed once the class files are packaged in the zanata-model jar as intended
+     Otherwise, hibernate will scan the whole war file and dependency jars -->
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
     <properties>
       <!--
           Binds the EntityManagerFactory to JNDI where Seam can look it up. This is only relevant when
@@ -68,6 +72,9 @@
       <!-- TODO this won't work with Hibernate 4.3 or later -->
       <property name="hibernate.connection.provider_class"
         value="org.zanata.database.WrappedDatasourceConnectionProvider" />
+
+      <!--<property name="hibernate.dialect"-->
+        <!--value="org.hibernate.dialect.MySQL5InnoDBDialect"/>-->
 
       <!-- Logging -->
       <property name="hibernate.show_sql" value="${env.hibernate.show_sql}" />
@@ -135,7 +142,8 @@
       <property name="hibernate.cache.use_query_cache" value="true" />
 
       <!-- https://docs.jboss.org/author/display/AS71/JPA+Reference+Guide#JPAReferenceGuide-Persistenceunitproperties -->
-      <property name="jboss.as.jpa.managed" value="false" />
+      <property name="jboss.as.jpa.managed" value="true" />
+      <property name="javax.persistence.validation.factory" value="org.apache.deltaspike.beanvalidation.impl.CDIAwareConstraintValidatorFactory"/>
     </properties>
   </persistence-unit>
 

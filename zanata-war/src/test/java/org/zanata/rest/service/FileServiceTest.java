@@ -79,7 +79,9 @@ public class FileServiceTest extends ZanataTest {
         seam.reset();
         seam.ignoreNonResolvable()
                 .use("sourceDocumentUploader", sourceUploader)
+                .use("sourceUploader", sourceUploader)
                 .use("translationDocumentUploader", transUploader)
+                .use("translationUploader", transUploader)
                 .allowCycles();
 
         fileService = seam.autowire(FileService.class);

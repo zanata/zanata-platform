@@ -46,7 +46,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.StaleStateException;
 import org.hibernate.exception.ConstraintViolationException;
-import org.jboss.seam.servlet.ContextualHttpServletRequest;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,8 +54,10 @@ import org.zanata.common.DocumentType;
 import org.zanata.file.GlobalDocumentId;
 import org.zanata.file.SourceDocumentUpload;
 import org.zanata.file.UserFileUploadTracker;
+import org.zanata.model.HAccount;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.dto.ChunkUploadResponse;
+import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.util.FileUtil;
 import org.zanata.util.ServiceLocator;
 
@@ -84,12 +85,7 @@ public class MultiFileUploadServlet extends HttpServlet {
      */
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-        new ContextualHttpServletRequest(request) {
-            @Override
-            public void process() throws Exception {
-                respondWithUploadAvailability(response);
-            }
-        }.run();
+        respondWithUploadAvailability(response);
     }
 
     /**
@@ -129,22 +125,22 @@ public class MultiFileUploadServlet extends HttpServlet {
         return Optional.absent();
     }
 
+    // FIXME consolidate to one Optional
     private Optional<Long> getAccountId() {
-        AuthenticatedAccountHome accountHome = ServiceLocator.instance().getInstance(
-                AuthenticatedAccountHome.class);
-        return Optional.fromNullable((Long) accountHome.getId());
+        java.util.Optional<HAccount> optionalAuthenticatedAccount =
+                ServiceLocator.instance().getOptionalInstance(
+                        HAccount.class, new AuthenticatedLiteral());
+        if (optionalAuthenticatedAccount.isPresent()) {
+            return Optional.of(optionalAuthenticatedAccount.get().getId());
+        }
+        return Optional.absent();
     }
 
     @Override
     protected void doPost(final HttpServletRequest request,
                           final HttpServletResponse response) throws ServletException,
             IOException {
-        new ContextualHttpServletRequest(request) {
-            @Override
-            public void process() throws Exception {
-                processPost(request, response);
-            }
-        }.run();
+        processPost(request, response);
     }
 
     /**

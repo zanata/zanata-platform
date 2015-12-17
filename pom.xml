@@ -25,19 +25,19 @@
     <cobertura.total-branch-rate>30</cobertura.total-branch-rate>
     <cobertura.halt.failure>false</cobertura.halt.failure>
     <delombok.dir>${project.build.directory}/delombok/org/zanata</delombok.dir>
-    <failsafe.rerunFailingTestsCount>3</failsafe.rerunFailingTestsCount>
+    <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
     <failsafe.useFile>false</failsafe.useFile>
     <surefire.useFile>false</surefire.useFile>
     <surefire.version>2.19</surefire.version>
     <!-- Applies to surefire and failsafe (if enabled) -->
     <failIfNoTests>true</failIfNoTests>
 
-    <deltaspike.version>1.4.1</deltaspike.version>
-    <cdi.runtime>provided</cdi.runtime>
-    <cdi.compile>provided</cdi.compile>
+    <deltaspike.version>1.5.1</deltaspike.version>
+    <cdi.runtime>runtime</cdi.runtime>
+    <cdi.compile>compile</cdi.compile>
     <picketlink.version>2.5.4.SP4</picketlink.version>
     <infinispan.version>6.0.2.Final</infinispan.version>
-    <weld.version>1.1.29.Final</weld.version>
+    <weld.version>1.1.31.Final</weld.version>
     <weld.se.version>${weld.version}</weld.se.version>
     <groovy.version>2.4.5</groovy.version>
     <guava.version>18.0</guava.version>
@@ -125,7 +125,8 @@
     <jdbc.version>5.1.26</jdbc.version>
 
     <resteasy.scope>compile</resteasy.scope>
-    <resteasy.version>3.0.11.Final</resteasy.version>
+    <resteasy.version>3.0.13.Final</resteasy.version>
+    <jaxrsapi.version>3.0.12.Final</jaxrsapi.version>
 
     <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
     <!-- This URL must be set by a profile (wildfly), settings.xml or mvn command line -->
@@ -199,6 +200,31 @@
         <groupId>org.apache.deltaspike.modules</groupId>
         <artifactId>deltaspike-jpa-module-impl</artifactId>
         <version>${deltaspike.version}</version>
+        <scope>${cdi.compile}</scope>
+        <!--<scope>${cdi.runtime}</scope>-->
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.cdictrl</groupId>
+        <artifactId>deltaspike-cdictrl-api</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>${cdi.compile}</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.cdictrl</groupId>
+        <artifactId>deltaspike-cdictrl-weld</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>${cdi.runtime}</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-scheduler-module-api</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>${cdi.compile}</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-scheduler-module-impl</artifactId>
+        <version>${deltaspike.version}</version>
         <scope>${cdi.runtime}</scope>
       </dependency>
 
@@ -231,19 +257,6 @@
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
         <version>1.13</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.picketlink</groupId>
-        <artifactId>picketlink-api</artifactId>
-        <version>${picketlink.version}</version>
-        <scope>${cdi.compile}</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.picketlink</groupId>
-        <artifactId>picketlink-impl</artifactId>
-        <version>${picketlink.version}</version>
-        <scope>${cdi.runtime}</scope>
       </dependency>
 
       <dependency>
@@ -338,37 +351,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.jboss.seam</groupId>
-        <artifactId>jboss-seam</artifactId>
-        <type>ejb</type>
-        <version>${seam.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>javax.el</groupId>
-            <artifactId>el-api</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.seam</groupId>
-        <artifactId>jboss-seam-debug</artifactId>
-        <version>${seam.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.seam</groupId>
-        <artifactId>jboss-seam-mail</artifactId>
-        <version>${seam.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.seam</groupId>
-        <artifactId>jboss-seam-ui</artifactId>
-        <version>${seam.version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.jboss.security</groupId>
         <artifactId>jboss-negotiation-common</artifactId>
         <version>2.3.6.Final</version>
@@ -435,6 +417,12 @@
         <artifactId>assertj-core</artifactId>
         <version>1.6.0</version>
         <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.atteo.classindex</groupId>
+        <artifactId>classindex</artifactId>
+        <version>3.3</version>
       </dependency>
 
       <dependency>
@@ -576,9 +564,9 @@
       </dependency>
 
       <dependency>
-        <groupId>org.opensymphony.quartz</groupId>
+        <groupId>org.quartz-scheduler</groupId>
         <artifactId>quartz</artifactId>
-        <version>1.6.5</version>
+        <version>2.2.1</version>
       </dependency>
 
       <!-- zanata assets -->
@@ -628,6 +616,10 @@
           <exclusion>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-core</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -749,6 +741,12 @@
         <artifactId>gwt-user</artifactId>
         <version>${gwt.version}</version>
         <scope>provided</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>com.google.gwt.inject</groupId>
@@ -1027,7 +1025,17 @@
             <groupId>org.jboss.logging</groupId>
             <artifactId>jboss-logging</artifactId>
           </exclusion>
+          <exclusion>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+          </exclusion>
         </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-validator-cdi</artifactId>
+        <version>${hibernate.validator.version}</version>
       </dependency>
 
       <dependency>
@@ -1073,24 +1081,112 @@
       </dependency>
 
       <dependency>
-        <groupId>org.jboss.seam</groupId>
-        <artifactId>jboss-seam</artifactId>
-        <version>${seam.version}</version>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>jaxrs-api</artifactId>
+        <version>${jaxrsapi.version}</version>
+        <scope>${resteasy.scope}</scope>
       </dependency>
 
       <dependency>
-        <groupId>org.jboss.seam</groupId>
-        <artifactId>jboss-seam-resteasy</artifactId>
-        <version>${seam.version}</version>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-cdi</artifactId>
+        <version>${resteasy.version}</version>
+        <scope>${resteasy.scope}</scope>
         <exclusions>
-          <!-- We use Jackson for json, so exclude the default jettison provider -->
+          <exclusion>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-jaxrs</artifactId>
+        <version>${resteasy.version}</version>
+        <scope>${resteasy.scope}</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>javassist</groupId>
+            <artifactId>javassist</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <artifactId>jcip-annotations</artifactId>
+            <groupId>net.jcip</groupId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.spec.javax.annotation</groupId>
+            <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-jaxb-provider</artifactId>
+        <version>${resteasy.version}</version>
+        <scope>${resteasy.scope}</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-jackson-provider</artifactId>
+        <version>${resteasy.version}</version>
+        <scope>${resteasy.scope}</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-multipart-provider</artifactId>
+        <version>${resteasy.version}</version>
+        <scope>${resteasy.scope}</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+          </exclusion>
           <exclusion>
             <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jettison-provider</artifactId>
+            <artifactId>resteasy-jaxrs</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
 
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-servlet-initializer</artifactId>
+        <version>${resteasy.version}</version>
+        <scope>${resteasy.scope}</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
       <dependency>
         <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-core</artifactId>
@@ -1440,6 +1536,9 @@
                 <!-- Use org.jboss.spec.javax.xml.bind:jboss-jaxb-api_2.2_spec -->
                 <exclude>javax.xml.bind:jaxb-api</exclude>
 
+                <!-- use jdk and javax.xml.stream:stax-api -->
+                <exclude>javax.xml.bind:jsr173_api</exclude>
+
                 <!-- Use org.jboss.resteasy:jaxrs-api (since we package resteasy) -->
                 <exclude>org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_1.1_spec</exclude>
 
@@ -1449,8 +1548,8 @@
                 <!-- use org.jboss.spec.javax.annotation:jboss-annotations-api_1.1_spec -->
                 <exclude>org.jboss.spec.javax.annotation:jboss-annotations-api_1.2_spec</exclude>
 
-                <!-- use jdk and javax.xml.stream:stax-api -->
-                <exclude>javax.xml.bind:jsr173_api</exclude>
+                <!-- use org.quartz-scheduler:quartz -->
+                <exclude>org.opensymphony.quartz:quartz</exclude>
               </excludes>
             </bannedDependencies>
             <requireNoRepositories>
@@ -1731,8 +1830,6 @@
 
         <!-- Versions of our compatibility modules for wildfly -->
         <module.wildfly.version>8.1.0.Final</module.wildfly.version>
-        <mojarra.module.version>2.1.29-01</mojarra.module.version>
-        <mojarra.module.name>wildfly-${module.wildfly.version}-module-mojarra-${mojarra.module.version}.zip</mojarra.module.name>
         <hibernate.module.version>4.2.19.Final</hibernate.module.version>
         <hibernate.module.name>wildfly-${module.wildfly.version}-module-hibernate-main-${hibernate.module.version}.zip</hibernate.module.name>
       </properties>
@@ -1755,9 +1852,7 @@
                 <configuration>
                   <target unless="skipITs">
                     <mkdir dir="${download.dir}" />
-                    <get src="http://sourceforge.net/projects/zanata/files/wildfly/${mojarra.module.name}/download" dest="${download.dir}/${mojarra.module.name}" skipexisting="true" />
                     <get src="http://sourceforge.net/projects/zanata/files/wildfly/${hibernate.module.name}/download" dest="${download.dir}/${hibernate.module.name}" skipexisting="true" />
-                    <unzip src="${download.dir}/${mojarra.module.name}" dest="${appserver.home}" />
                     <unzip src="${download.dir}/${hibernate.module.name}" dest="${appserver.home}" />
                   </target>
                 </configuration>

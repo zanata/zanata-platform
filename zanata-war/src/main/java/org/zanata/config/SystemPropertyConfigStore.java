@@ -20,11 +20,10 @@
  */
 package org.zanata.config;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
+import javax.inject.Named;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Property Store that delegates to system properties.
@@ -32,14 +31,27 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("systemPropertyConfigStore")
-@Scope(ScopeType.STATELESS)
-@AutoCreate
-@BypassInterceptors
+@Named("systemPropertyConfigStore")
+@javax.enterprise.context.Dependent
 public class SystemPropertyConfigStore implements ConfigStore {
+    private static final Logger log =
+            LoggerFactory.getLogger(SystemPropertyConfigStore.class);
 
     @Override
     public String get(String propertyName) {
         return System.getProperty(propertyName);
+    }
+
+    @Override
+    public int get(String propertyName, int defaultValue) {
+        String value = get(propertyName);
+        try {
+            return Integer.valueOf(value);
+        } catch (NumberFormatException e) {
+            log.warn(
+                    "Invalid system property value [{}] is given to {}. Fall back to default {}",
+                    value, propertyName, defaultValue);
+            return defaultValue;
+        }
     }
 }

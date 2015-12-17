@@ -57,7 +57,6 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.type.TranslationSourceType;
 import org.zanata.seam.AutowireTransaction;
 import org.zanata.seam.SeamAutowire;
-import org.zanata.service.CopyTransService;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -108,6 +107,8 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
                 .use("entityManagerFactory", getEmf())
                 .use("session", new FullTextSessionImpl(getSession()))
                 .use("cacheContainer", new InfinispanTestCacheContainer())
+                .useJndi("java:jboss/UserTransaction",
+                        AutowireTransaction.instance())
                 .use(ZanataJpaIdentityStore.AUTHENTICATED_USER,
                         seam.autowire(AccountDAO.class).getByUsername("demo"))
                 .useImpl(LocaleServiceImpl.class)
@@ -124,8 +125,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
      */
     @Ignore
     @Test
-    public void individualTest() {
-
+    public void individualTest() throws Exception {
         this.testCopyTrans(new CopyTransExecution(REJECT, IGNORE,
                 DOWNGRADE_TO_FUZZY, false, true, false, false, Approved)
                 .expectTransState(NeedReview));
@@ -148,7 +148,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
     @UseDataProvider("copyTransParams")
     // (about 2 seconds)
     @SlowTest
-    public void testCopyTrans(CopyTransExecution execution) {
+    public void testCopyTrans(CopyTransExecution execution) throws Exception {
         // Prepare Execution
         ProjectIterationDAO iterationDAO =
                 seam.autowire(ProjectIterationDAO.class);
@@ -211,7 +211,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
                 new HCopyTransOptions(execution.getContextMismatchAction(),
                         execution.getDocumentMismatchAction(),
                         execution.getProjectMismatchAction());
-        CopyTransService copyTransService =
+        CopyTransServiceImpl copyTransService =
                 seam.autowire(CopyTransServiceImpl.class);
         copyTransService.copyTransForIteration(projectIteration, options,
                 new CopyTransTaskHandle());

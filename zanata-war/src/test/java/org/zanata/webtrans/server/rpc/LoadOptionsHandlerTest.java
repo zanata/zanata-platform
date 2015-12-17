@@ -54,12 +54,14 @@ public class LoadOptionsHandlerTest extends ZanataDbunitJpaTest {
         handler = seam
             .reset()
             .use(ZanataJpaIdentityStore.AUTHENTICATED_USER, authenticatedAccount)
+            .use("authenticatedAccount", authenticatedAccount)
             .use("accountDAO", accountDAO)
             .autowire(LoadOptionsHandler.class);
 
         saveHandler = SeamAutowire.instance()
             .reset()
             .use(ZanataJpaIdentityStore.AUTHENTICATED_USER, authenticatedAccount)
+            .use("authenticatedAccount", authenticatedAccount)
             .use("accountDAO", accountDAO)
             .use("accountOptionDAO", accountOptionDAO)
             .autowire(SaveOptionsHandler.class);

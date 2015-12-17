@@ -1,15 +1,13 @@
 package org.zanata.dao;
 
 import org.hibernate.Session;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 import org.zanata.model.WebHook;
 
-@Name("webHookDAO")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("webHookDAO")
+@RequestScoped
 public class WebHookDAO extends AbstractDAOImpl<WebHook, Long> {
 
     public WebHookDAO() {

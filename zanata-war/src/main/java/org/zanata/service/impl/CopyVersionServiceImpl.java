@@ -12,14 +12,11 @@ import javax.annotation.Nullable;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskResult;
-import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -53,11 +50,9 @@ import com.google.common.collect.Maps;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("copyVersionServiceImpl")
-@Scope(ScopeType.STATELESS)
+@Named("copyVersionServiceImpl")
+@RequestScoped
 @Slf4j
-@AutoCreate
-@ContainsAsyncMethods
 public class CopyVersionServiceImpl implements CopyVersionService {
 
     // Document batch size
@@ -69,25 +64,25 @@ public class CopyVersionServiceImpl implements CopyVersionService {
     // TextFlowTarget batch size
     protected final static int TFT_BATCH_SIZE = 20;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private DocumentDAO documentDAO;
 
-    @In
+    @Inject
     private TextFlowDAO textFlowDAO;
 
-    @In
+    @Inject
     private TextFlowTargetDAO textFlowTargetDAO;
 
-    @In
+    @Inject
     private VersionStateCache versionStateCacheImpl;
 
-    @In
+    @Inject
     private FilePersistService filePersistService;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
     // Stop watch for textFlow and target copy process

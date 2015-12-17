@@ -120,7 +120,7 @@ public class HProject extends SlugEntityBase implements Serializable,
     @Field(analyzer = @Analyzer(impl = CaseInsensitiveWhitespaceAnalyzer.class))
     private String description;
 
-    @Type(type = "text")
+    @javax.persistence.Lob
     private String homeContent;
 
     @Url(canEndInSlash = true)

@@ -84,7 +84,7 @@ public class HGlossaryEntry extends ModelEntityBase {
         return glossaryTerms;
     }
 
-    @Type(type = "text")
+    @javax.persistence.Lob
     public String getSourceRef() {
         return sourceRef;
     }

@@ -27,14 +27,12 @@ import javax.annotation.Nonnull;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.core.Events;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskResult;
-import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.common.ContentState;
 import org.zanata.dao.ProjectIterationDAO;
@@ -51,7 +49,6 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.MergeTranslationsService;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.service.VersionStateCache;
-import org.zanata.transaction.TransactionUtil;
 import org.zanata.util.TranslationUtil;
 
 import com.google.common.base.Optional;
@@ -66,29 +63,31 @@ import static org.zanata.transaction.TransactionUtil.runInTransaction;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("mergeTranslationsServiceImpl")
-@Scope(ScopeType.STATELESS)
+@Named("mergeTranslationsServiceImpl")
+@RequestScoped
 @Slf4j
-@ContainsAsyncMethods
 public class MergeTranslationsServiceImpl implements MergeTranslationsService {
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private TextFlowDAO textFlowDAO;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private VersionStateCache versionStateCacheImpl;
 
-    @In
+    @Inject
     private TranslationStateCache translationStateCacheImpl;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
+
+    @Inject
+    private Event<TextFlowTargetStateEvent> textFlowTargetStateEventEvent;
 
     private final static int TRANSLATION_BATCH_SIZE = 10;
 
@@ -264,17 +263,14 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
         targetTft.setSourceType(TranslationSourceType.MERGE_VERSION);
         TranslationUtil.copyEntity(sourceTft, targetTft);
 
-        if (Events.exists()) {
-            TextFlowTargetStateEvent event =
-                    new TextFlowTargetStateEvent(null, targetVersionId,
-                            targetTft.getTextFlow().getDocument().getId(),
-                            targetTft.getTextFlow().getId(),
-                            targetTft.getLocale().getLocaleId(),
-                            targetTft.getId(), targetTft.getState(), oldState);
+        TextFlowTargetStateEvent event =
+                new TextFlowTargetStateEvent(null, targetVersionId,
+                        targetTft.getTextFlow().getDocument().getId(),
+                        targetTft.getTextFlow().getId(),
+                        targetTft.getLocale().getLocaleId(),
+                        targetTft.getId(), targetTft.getState(), oldState);
 
-            Events.instance().raiseTransactionSuccessEvent(
-                    TextFlowTargetStateEvent.EVENT_NAME, event);
-        }
+        textFlowTargetStateEventEvent.fire(event);
     }
 
     /**

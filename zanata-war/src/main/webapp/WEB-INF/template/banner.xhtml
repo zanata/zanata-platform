@@ -2,7 +2,6 @@
   xmlns="http://www.w3.org/1999/xhtml"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:rich="http://richfaces.org/rich"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
@@ -103,6 +102,7 @@
 
   <ui:fragment
     rendered="#{identity.loggedIn and authenticatedAccountHome.instance.enabled}">
+    <h:form id="banner_form">
     <nav class="header__user-nav js-dropdown">
       <a href="#nav-user" class="header__user-nav__toggle js-dropdown__toggle"
         id="user--avatar"
@@ -138,14 +138,14 @@
           </li>
         </ui:fragment>
         <li>
-          <a jsfc="s:link" id="right_menu_sign_out_link"
-            view="/home.xhtml"
-            action="#{identity.logout}" propagation="none">
+          <a jsfc="h:commandLink" id="right_menu_sign_out_link"
+            action="#{identity.logout}">
             #{msgs['jsf.Logout']} <i class="l--float-right i--inline i--logout"/>
           </a>
         </li>
       </ul>
     </nav>
+    </h:form>
   </ui:fragment>
 
   <ui:fragment rendered="#{not identity.loggedIn}">

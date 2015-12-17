@@ -26,10 +26,11 @@ import lombok.Value;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Value
+// NB: avoid using session-scoped beans, because this event is
+// fired during session expiry.
 public class LogoutEvent {
-    // TODO remove constant after switching to CDI
-    // NB must be a constant string equal to class name
-    public static final String EVENT_NAME = "org.zanata.events.LogoutEvent";
-
     String username;
+    String sessionId;
+    private String personName;
+    private String personEmail;
 }

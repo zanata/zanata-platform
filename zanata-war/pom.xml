@@ -148,7 +148,6 @@
             <usedDependency>org.jboss.spec.javax.xml.bind:jboss-jaxb-api_2.2_spec</usedDependency>
             <!-- runtime dep for liquibase logging -->
             <usedDependency>com.mattbertolini:liquibase-slf4j</usedDependency>
-            <usedDependency>org.opensymphony.quartz:quartz</usedDependency>
             <!-- Used indirectly by org.zanata.arquillian.Deployments -->
             <usedDependency>org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api</usedDependency>
             <!-- Used by javamelody for email/pdf support -->
@@ -164,8 +163,6 @@
             <usedDependency>org.apache.solr:solr-core</usedDependency>
             <usedDependency>org.apache.solr:solr-solrj</usedDependency>
             <usedDependency>org.antlr:antlr</usedDependency>
-            <!-- Used by lucene search -->
-            <usedDependency>org.hibernate.common:hibernate-commons-annotations</usedDependency>
             <!-- Used by hibernate -->
             <usedDependency>org.hibernate:hibernate-search-analyzers</usedDependency>
             <!-- used for arquillian deployment (org.zanata.Deployments) -->
@@ -173,10 +170,6 @@
             <usedDependency>org.jboss.arquillian.junit:arquillian-junit-container</usedDependency>
             <usedDependency>org.jboss.arquillian.protocol:arquillian-protocol-servlet</usedDependency>
             <usedDependency>org.codehaus.jackson:jackson-xc</usedDependency>
-            <!-- Used in arquillian test - zanata-war/arquillian/components.properties -->
-            <usedDependency>org.jboss.seam:jboss-seam-debug</usedDependency>
-            <!-- runtime dependency for email implementations -->
-            <usedDependency>org.jboss.seam:jboss-seam-mail</usedDependency>
             <!-- Used for email unit tests -->
             <usedDependency>org.jvnet.mock-javamail:mock-javamail</usedDependency>
             <!-- Needed for urlrewrite.xml impl -->
@@ -1135,6 +1128,7 @@
         <dependency>
           <groupId>org.jboss.as</groupId>
           <artifactId>jboss-as-arquillian-common</artifactId>
+          <!-- this brings in a bunch of out of date arquillian-testenricher-XXX as transitive dependencies -->
           <version>${jboss.as.version}</version>
           <scope>test</scope>
           <exclusions>
@@ -1143,6 +1137,12 @@
               <artifactId>log4j-jboss-logmanager</artifactId>
             </exclusion>
           </exclusions>
+        </dependency>
+        <dependency>
+          <groupId>org.jboss.arquillian.testenricher</groupId>
+          <artifactId>arquillian-testenricher-cdi</artifactId>
+          <version>${arquillian.version}</version>
+          <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -1348,7 +1348,7 @@
     <dependency>
       <groupId>com.tngtech.java</groupId>
       <artifactId>junit-dataprovider</artifactId>
-      <version>1.9.3</version>
+      <version>1.10.2</version>
       <scope>test</scope>
     </dependency>
 
@@ -1400,6 +1400,11 @@
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.atteo.classindex</groupId>
+      <artifactId>classindex</artifactId>
     </dependency>
 
     <dependency>
@@ -1488,7 +1493,7 @@
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
-      <scope>test</scope>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -1503,92 +1508,35 @@
       <artifactId>commons-collections</artifactId>
     </dependency>
 
-    <!-- Seam Dependencies -->
-
-    <dependency>
-      <groupId>org.jboss.seam</groupId>
-      <artifactId>jboss-seam</artifactId>
-      <type>ejb</type>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.seam</groupId>
-      <artifactId>jboss-seam-ui</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.seam</groupId>
-      <artifactId>jboss-seam-debug</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.seam</groupId>
-      <artifactId>jboss-seam-mail</artifactId>
-    </dependency>
-
     <!-- RestEasy dependencies -->
 
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-cdi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
-      <version>${resteasy.version}</version>
-      <scope>${resteasy.scope}</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>javassist</groupId>
-          <artifactId>javassist</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>javax.annotation</groupId>
-          <artifactId>jsr250-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <artifactId>jcip-annotations</artifactId>
-          <groupId>net.jcip</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxb-provider</artifactId>
-      <scope>${resteasy.scope}</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.xml.bind</groupId>
-          <artifactId>jaxb-api</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jackson-provider</artifactId>
-      <scope>${resteasy.scope}</scope>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-multipart-provider</artifactId>
-      <scope>${resteasy.scope}</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>javax.servlet</groupId>
-          <artifactId>servlet-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.jboss.logging</groupId>
-          <artifactId>jboss-logging</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.jboss.resteasy</groupId>
-          <artifactId>resteasy-jaxrs</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
+
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-servlet-initializer</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-core-asl</artifactId>
@@ -1680,6 +1628,19 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
       <scope>${hibernate.scope}</scope>
+    </dependency>
+
+    <!--<dependency>-->
+      <!--<groupId>org.hibernate</groupId>-->
+      <!--<artifactId>hibernate-validator-cdi</artifactId>-->
+      <!--<scope>${hibernate.scope}</scope>-->
+    <!--</dependency>-->
+
+    <dependency>
+      <groupId>org.apache.deltaspike.modules</groupId>
+      <artifactId>deltaspike-bean-validation-module-impl</artifactId>
+      <version>${deltaspike.version}</version>
+      <scope>runtime</scope>
     </dependency>
 
     <dependency>
@@ -1869,13 +1830,6 @@
       <artifactId>openprops</artifactId>
     </dependency>
 
-    <!-- Quartz -->
-
-    <dependency>
-      <groupId>org.opensymphony.quartz</groupId>
-      <artifactId>quartz</artifactId>
-    </dependency>
-
     <dependency>
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-core</artifactId>
@@ -2038,12 +1992,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.spec.javax.annotation</groupId>
-      <artifactId>jboss-annotations-api_1.1_spec</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
       <groupId>javax.xml.stream</groupId>
       <artifactId>stax-api</artifactId>
       <scope>provided</scope>
@@ -2183,21 +2131,14 @@
     <dependency>
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
-      <version>3.1.3.GA</version>
+      <version>3.1.4.GA</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.arquillian.extension</groupId>
-      <artifactId>arquillian-seam2</artifactId>
-      <version>1.0.0.Beta1</version>
-      <exclusions>
-        <!-- This obsolete package duplicates some of the classes found in the newer descriptors-spi package -->
-        <exclusion>
-          <groupId>org.jboss.shrinkwrap.descriptors</groupId>
-          <artifactId>shrinkwrap-descriptors-api</artifactId>
-        </exclusion>
-      </exclusions>
+      <groupId>org.jboss.shrinkwrap.resolver</groupId>
+      <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+      <version>2.0.0</version>
       <scope>test</scope>
     </dependency>
 
@@ -2308,6 +2249,31 @@
       <groupId>org.apache.deltaspike.modules</groupId>
       <artifactId>deltaspike-jpa-module-impl</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.deltaspike.cdictrl</groupId>
+      <artifactId>deltaspike-cdictrl-api</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.deltaspike.cdictrl</groupId>
+      <artifactId>deltaspike-cdictrl-weld</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.deltaspike.modules</groupId>
+      <artifactId>deltaspike-scheduler-module-api</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.deltaspike.modules</groupId>
+      <artifactId>deltaspike-scheduler-module-impl</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.quartz-scheduler</groupId>
+      <artifactId>quartz</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.ocpsoft.prettytime</groupId>
@@ -2346,15 +2312,6 @@
       <artifactId>picketbox</artifactId>
       <version>4.0.15.Final</version>
       <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.picketlink</groupId>
-      <artifactId>picketlink-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.picketlink</groupId>
-      <artifactId>picketlink-impl</artifactId>
     </dependency>
 
     <dependency>
@@ -2426,8 +2383,6 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>jaxrs-api</artifactId>
-      <version>${resteasy.version}</version>
-      <scope>${resteasy.scope}</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.spec.javax.xml.bind</groupId>

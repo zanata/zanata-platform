@@ -20,24 +20,26 @@
  */
 package org.zanata.i18n;
 
-import static org.jboss.seam.ScopeType.APPLICATION;
 
 import lombok.Getter;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import org.zanata.util.DefaultLocale;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+import javax.inject.Named;
 
 import java.util.Locale;
 
 /**
- * Factory bean to return an instance of Messages based on a parameter.
+ * Factory bean to return an instance of Messages, based on a parameter, or
+ * for the server default locale.
  *
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@AutoCreate
-@Name("messagesFactory")
-@Scope(APPLICATION)
+
+@Named("messagesFactory")
+@javax.enterprise.context.ApplicationScoped
 public class MessagesFactory {
 
     /**
@@ -51,5 +53,12 @@ public class MessagesFactory {
      */
     public Messages getMessages(Locale locale) {
         return new Messages(locale);
+    }
+
+    @Produces
+    @DefaultLocale
+    @ApplicationScoped
+    public Messages getApplicationMessages() {
+        return defaultLocaleMessages;
     }
 }

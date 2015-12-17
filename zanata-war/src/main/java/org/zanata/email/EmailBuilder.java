@@ -9,6 +9,7 @@ import java.net.ConnectException;
 import java.util.List;
 import java.util.Locale;
 
+import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Session;
@@ -29,51 +30,45 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.log.CommonsLogLogChute;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.international.LocaleSelector;
-import org.jboss.seam.mail.MailSession;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.action.LocaleSelectorAction;
 import org.zanata.i18n.Messages;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import org.zanata.i18n.MessagesFactory;
+import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.util.HtmlUtil;
 
 import static com.googlecode.totallylazy.collections.PersistentMap.constructors.map;
-import static org.jboss.seam.ScopeType.EVENT;
-import static org.jboss.seam.ScopeType.STATELESS;
 
 /**
  * Uses an instance of EmailBuilderStrategy to build an email from a Velocity
  * template and send it via the default JavaMail Transport.
  */
 @AllArgsConstructor
-@AutoCreate
-@Name("emailBuilder")
-@Scope(STATELESS)
+
+@Named("emailBuilder")
+@javax.enterprise.context.Dependent
 @Slf4j
 public class EmailBuilder {
+    public static final String MAIL_SESSION_JNDI = "jboss/mail/Default";
     // Use this if you want emails logged on stderr
     // Warning: The full message may contain sensitive information
     private static final boolean LOG_FULL_MESSAGES = false;
     private static final VelocityEngine velocityEngine = makeVelocityEngine();
 
     public EmailBuilder() {
-        this.mailSession = MailSession.instance();
     }
 
-    // it seems to be impossible to inject this in Seam 2:
-    private final Session mailSession;
-    @In
+    @Resource(lookup = MAIL_SESSION_JNDI)
+    private Session mailSession;
+    @Inject
     private Context emailContext;
-    @In
+    @Inject
     private MessagesFactory messagesFactory;
-    @In
-    private LocaleSelector localeSelector;
 
     private static VelocityEngine makeVelocityEngine() {
         VelocityEngine ve = new VelocityEngine();
@@ -109,8 +104,6 @@ public class EmailBuilder {
      */
     public void sendMessage(EmailStrategy strategy,
             List<String> receivedReasons, InternetAddress[] toAddresses) {
-        Locale pervLocale = localeSelector.getLocale();
-        localeSelector.setLocale(new Locale("en"));
 
         try {
             MimeMessage email = new MimeMessage(mailSession);
@@ -123,8 +116,6 @@ public class EmailBuilder {
                 throw new RuntimeException("The system failed to connect to mail service. Please contact the administrator!", e);
             }
             throw new RuntimeException(e);
-        } finally {
-            localeSelector.setLocale(pervLocale);
         }
     }
 
@@ -213,14 +204,17 @@ public class EmailBuilder {
      * A Seam component which can inject the required configuration and
      * components needed to create EmailBuilder at runtime.
      */
-    @AutoCreate
-    @Name("emailContext")
-    @Scope(EVENT)
+
+    @Named("emailContext")
+    @javax.enterprise.context.RequestScoped
     public static class Context {
-        @In
+        @Inject
+        @ServerPath
+        String serverPath;
+        @Inject
         private ApplicationConfiguration applicationConfiguration;
         String getServerPath() {
-            return applicationConfiguration.getServerPath();
+            return this.serverPath;
         }
         String getFromAddress() {
             return applicationConfiguration.getFromEmailAddr();

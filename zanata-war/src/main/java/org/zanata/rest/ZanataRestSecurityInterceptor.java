@@ -2,6 +2,7 @@ package org.zanata.rest;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.Provider;
@@ -18,6 +19,7 @@ import org.zanata.util.HttpUtil;
 import java.io.IOException;
 
 @Provider
+@PreMatching
 @SecurityPrecedence
 @Slf4j
 public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
@@ -28,10 +30,11 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
         String username = HttpUtil.getUsername(context.getHeaders());
         String apiKey = HttpUtil.getApiKey(context.getHeaders());
         if (StringUtils.isNotEmpty(username) || StringUtils.isNotEmpty(apiKey)) {
-            ZanataIdentity.instance().getCredentials().setUsername(username);
-            ZanataIdentity.instance().setApiKey(apiKey);
-            ZanataIdentity.instance().tryLogin();
-            if (!SecurityFunctions.canAccessRestPath(ZanataIdentity.instance(),
+            ZanataIdentity zanataIdentity = ZanataIdentity.instance();
+            zanataIdentity.getCredentials().setUsername(username);
+            zanataIdentity.setApiKey(apiKey);
+            zanataIdentity.tryLogin();
+            if (!SecurityFunctions.canAccessRestPath(zanataIdentity,
                     context.getMethod(), context.getUriInfo().getPath())) {
                 log.info(InvalidApiKeyUtil.getMessage(username, apiKey));
                 context.abortWith(Response.status(Status.UNAUTHORIZED)

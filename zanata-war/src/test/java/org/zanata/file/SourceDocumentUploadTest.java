@@ -75,6 +75,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
         seam.reset();
         seam.ignoreNonResolvable()
                 .use("documentUploadUtil", documentUploadUtil)
+                .use("util", documentUploadUtil)
                 .use("identity", identity)
                 .use("projectIterationDAO", projectIterationDAO)
                 .use("translationFileServiceImpl", translationFileService)
@@ -135,7 +136,8 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
     }
 
     private void mockHasUploadPermission() {
-        when(identity.hasPermission("import-template", projectIteration))
+        when(identity.hasPermissionWithAnyTargets("import-template",
+                projectIteration))
                 .thenReturn(conf.hasImportTemplatePermission);
     }
 

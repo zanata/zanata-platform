@@ -31,6 +31,8 @@ import org.zanata.page.account.ProfilePage;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
+import com.google.common.base.Splitter;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -59,8 +61,9 @@ public class PersonSearchTest extends ZanataTestCase {
                 .isEqualTo("translator");
         assertThat(profilePage.getDisplayName().trim())
                 .isEqualTo("translator");
-        assertThat(profilePage.getLanguages().trim())
-                .isEqualTo("Hindi, Polish, French");
+        String languages = profilePage.getLanguages().trim();
+        assertThat(Splitter.on(",").trimResults().split(languages))
+                .contains("Hindi", "Polish", "French");
 
     }
 

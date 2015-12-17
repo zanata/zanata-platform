@@ -61,8 +61,11 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
 
     @Before
     public void initializeSeam() {
-        seam.reset().use("entityManager", getEm()).use("session", getSession())
-                .useImpl(UserAccountServiceImpl.class).ignoreNonResolvable();
+        seam.reset()
+                .use("entityManager", getEm())
+                .use("session", getSession())
+                .useImpl(UserAccountServiceImpl.class)
+                .ignoreNonResolvable();
     }
 
     private HAccount createFedoraAccount() {

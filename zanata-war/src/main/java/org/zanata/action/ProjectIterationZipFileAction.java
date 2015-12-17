@@ -5,40 +5,36 @@ import java.text.DecimalFormat;
 
 import lombok.Getter;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.End;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationArchiveService;
 
-@Name("projectIterationZipFileAction")
-@Scope(ScopeType.CONVERSATION)
+@Named("projectIterationZipFileAction")
+@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
 public class ProjectIterationZipFileAction implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @In
+    @Inject
     private AsyncTaskHandleManager asyncTaskHandleManager;
 
     @Getter
     private AsyncTaskHandle<String> zipFilePrepHandle;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private TranslationArchiveService translationArchiveServiceImpl;
 
-    @Begin(join = true)
+    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public void prepareIterationZipFile(boolean isPoProject,
             String projectSlug, String versionSlug, String localeId) {
 
@@ -62,7 +58,7 @@ public class ProjectIterationZipFileAction implements Serializable {
         }
     }
 
-    @End
+//    @End /* TODO [CDI] commented out end conversation. verify it still work */
     public void cancelFileDownload() {
         if(zipFilePrepHandle != null) {
             zipFilePrepHandle.cancel(true);

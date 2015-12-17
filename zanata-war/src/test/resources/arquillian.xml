@@ -15,9 +15,7 @@
       <property name="jbossHome">${jboss.home}</property>
       <!-- We can use the JAVA_HOME env variable instead of this -->
       <!--             <property name="javaHome">/usr/lib/jvm/jre-1.6.0-openjdk.x86_64</property> -->
-      <!--
-                  <property name="javaVmArguments">-Xms1536m -Xmx1536m -XX:MaxPermSize=256m -Dorg.jboss.as.logging.per-deployment=false -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8787</property>
-      -->
+                  <!--<property name="javaVmArguments">-Xms1536m -Xmx1536m -XX:MaxPermSize=256m -Dorg.jboss.as.logging.per-deployment=false -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8787</property>-->
       <property
         name="javaVmArguments">-Xms1536m -Xmx1536m -XX:MaxPermSize=256m -Dorg.jboss.as.logging.per-deployment=false
       </property>
@@ -42,10 +40,6 @@
       <property name="managementPort">${jboss.management.http.port,env.JBOSS_MANAGEMENT_HTTP_PORT:10090}</property>
     </configuration>
   </container>
-  <extension qualifier="seam2">
-    <property name="seamVersion">2.3.1.Final</property>
-    <property name="autoPackage">false</property>
-  </extension>
   <extension qualifier="suite">
     <property name="deploymentClass"
       xml:space="preserve">org.zanata.arquillian.Deployments</property>

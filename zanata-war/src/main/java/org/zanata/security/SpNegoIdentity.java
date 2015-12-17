@@ -20,35 +20,34 @@ R * Copyright 2010, Red Hat, Inc. and individual contributors
  */
 package org.zanata.security;
 
-import static org.jboss.seam.ScopeType.SESSION;
-import static org.jboss.seam.annotations.Install.APPLICATION;
-
 import java.io.Serializable;
 import java.lang.reflect.Field;
 
 import javax.faces.context.FacesContext;
 
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.jboss.security.SecurityContextAssociation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.events.AlreadyLoggedInEvent;
-import org.zanata.util.Event;
+import javax.enterprise.event.Event;
 import org.zanata.util.ServiceLocator;
 
-@Name("org.jboss.seam.security.spNegoIdentity")
-@Scope(SESSION)
-@Install(precedence = APPLICATION)
-@BypassInterceptors
+@Named("spNegoIdentity")
+@javax.enterprise.context.SessionScoped
 public class SpNegoIdentity implements Serializable {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(SpNegoIdentity.class);
     private static final long serialVersionUID = 5341594999046279309L;
     private static final String SUBJECT = "subject";
     private static final String PRINCIPAL = "principal";
+
+    @Inject
+    private Event<AlreadyLoggedInEvent> alreadyLoggedInEventEvent;
 
     public void authenticate() {
         ZanataIdentity identity =
@@ -78,7 +77,7 @@ public class SpNegoIdentity implements Serializable {
     }
 
     private Event<AlreadyLoggedInEvent> getAlreadyLoggedInEvent() {
-        return ServiceLocator.instance().getInstance("event", Event.class);
+        return alreadyLoggedInEventEvent;
     }
 
     public void login() {
@@ -97,8 +96,8 @@ public class SpNegoIdentity implements Serializable {
             field = ZanataIdentity.class.getDeclaredField(SUBJECT);
             field.setAccessible(true);
             field.set(identity, SecurityContextAssociation.getSubject());
-        } catch (Exception e) {
-            LOGGER.warn("exception", e);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new RuntimeException(e);
         }
     }
 }

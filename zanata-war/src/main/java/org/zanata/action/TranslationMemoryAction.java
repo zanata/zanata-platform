@@ -34,12 +34,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Out;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.enterprise.inject.Produces;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
@@ -50,7 +48,6 @@ import org.zanata.exception.EntityMissingException;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.rest.service.TranslationMemoryResourceService;
 
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.ui.faces.FacesMessages;
 import com.google.common.collect.Lists;
 
@@ -60,23 +57,23 @@ import com.google.common.collect.Lists;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("translationMemoryAction")
-@ZanataSecured
+@Named("translationMemoryAction")
+
 @CheckRole("admin")
-@Scope(ScopeType.PAGE)
+@javax.faces.bean.ViewScoped
 @Slf4j
 public class TranslationMemoryAction implements Serializable {
     private static final long serialVersionUID = -6791743907133760028L;
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
-    @In
+    @Inject
     private TransMemoryDAO transMemoryDAO;
 
-    @In
+    @Inject
     private TranslationMemoryResourceService translationMemoryResource;
 
-    @In
+    @Inject
     private AsyncTaskHandleManager asyncTaskHandleManager;
 
     private List<TransMemory> transMemoryList;
@@ -84,8 +81,10 @@ public class TranslationMemoryAction implements Serializable {
     /**
      * Stores the last process handle, in page scope (ie for this user).
      */
-    @In(scope = ScopeType.PAGE, required = false)
-    @Out(scope = ScopeType.PAGE, required = false)
+//    @Inject /* TODO [CDI] check this: migrated from @In(scope = ScopeType.PAGE, required = false) */
+    @Produces /* FIXME [CDI] check this: migrated from @Out *//*(scope = ScopeType.PAGE, required = false)*/
+    // @ViewScoped
+    // TODO lastTaskResult is apparently always null. See asyncTaskHandleManager
     private Future lastTaskResult;
 
     @Getter

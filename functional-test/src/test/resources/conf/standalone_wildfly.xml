@@ -22,6 +22,7 @@
     <extension module="org.jboss.as.security"/>
     <extension module="org.jboss.as.transactions"/>
     <extension module="org.jboss.as.webservices"/>
+    <extension module="org.jboss.as.weld" />
     <extension module="org.wildfly.extension.batch"/>
     <extension module="org.wildfly.extension.io"/>
     <extension module="org.wildfly.extension.undertow"/>
@@ -317,7 +318,7 @@
     <subsystem xmlns="urn:jboss:domain:jpa:1.1">
       <jpa default-datasource="" default-extended-persistence-inheritance="DEEP"/>
     </subsystem>
-    <subsystem xmlns="urn:jboss:domain:jsf:1.0" default-jsf-impl-slot="mojarra-2.1.29-01"/>
+    <subsystem xmlns="urn:jboss:domain:jsf:1.0"/>
     <subsystem xmlns="urn:jboss:domain:mail:2.0">
       <mail-session name="default" jndi-name="java:jboss/mail/Default">
         <smtp-server outbound-socket-binding-ref="mail-smtp"/>
@@ -547,6 +548,7 @@
         </jms-destinations>
       </hornetq-server>
     </subsystem>
+    <subsystem xmlns="urn:jboss:domain:weld:2.0"/>
   </profile>
 
   <interfaces>

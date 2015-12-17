@@ -1,5 +1,6 @@
 package org.zanata.security.jaas;
 
+import java.io.IOException;
 import java.security.acl.Group;
 import java.util.HashSet;
 import java.util.List;
@@ -10,15 +11,19 @@ import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
+import javax.security.auth.callback.UnsupportedCallbackException;
+import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.tuckey.web.filters.urlrewrite.Run;
 import org.zanata.security.SimpleGroup;
 import org.zanata.security.SimplePrincipal;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.seam.security.IdentityManager;
+import org.zanata.util.ServiceLocator;
 
 import static org.zanata.security.ZanataIdentity.*;
 
@@ -85,42 +90,36 @@ public class InternalLoginModule implements LoginModule {
             // Get the username and password from the callback handler
             callbackHandler.handle(new Callback[] { cbName, cbPassword });
             username = cbName.getName();
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             log.warn("Error logging in", ex);
             LoginException le = new LoginException(ex.getMessage());
             le.initCause(ex);
             throw le;
+        } catch (UnsupportedCallbackException e) {
+            throw new RuntimeException(e);
         }
 
-        IdentityManager identityManager = IdentityManager.instance();
+        IdentityManager identityManager =
+                ServiceLocator.instance().getInstance(IdentityManager.class);
         if (identityManager != null && identityManager.isEnabled()) {
             ZanataIdentity identity = ZanataIdentity.instance();
-
-            try {
-                boolean success =
-                        identityManager.authenticate(username, identity
-                                .getCredentials().getPassword());
-
-                if (success) {
-                    List<String> impliedRoles =
-                            identityManager.getImpliedRoles(username);
-                    for (String role : impliedRoles) {
-                        identity.addRole(role);
-                    }
+            boolean success =
+                    identityManager.authenticate(username, identity
+                            .getCredentials().getPassword());
+            if (success) {
+                List<String> impliedRoles =
+                        identityManager.getImpliedRoles(username);
+                for (String role : impliedRoles) {
+                    identity.addRole(role);
                 }
-
-                return success;
-            } catch (Exception ex) {
-                log.warn("Error invoking login method");
-                LoginException le = new LoginException(ex.getMessage());
-                le.initCause(ex);
-                throw le;
+                return true;
+            } else {
+                throw new FailedLoginException();
             }
         } else {
-            log.error("No authentication method defined - "
-                    +
-                    "please define authenticate-method for <security:identity/> in components.xml");
-            throw new LoginException("No authentication method defined");
+            String msg = "No authentication method defined";
+            log.error(msg);
+            throw new LoginException(msg);
         }
 
     }

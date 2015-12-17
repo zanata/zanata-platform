@@ -6,21 +6,17 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
-import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.util.Strings;
+import javax.annotation.PostConstruct;
+import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.util.Contexts;
 import org.zanata.util.ServiceLocator;
 
+import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 
-import static org.jboss.seam.ScopeType.EVENT;
-import static org.jboss.seam.annotations.Install.APPLICATION;
 
 /**
  * Based on seam's IdentityManager.
@@ -28,11 +24,8 @@ import static org.jboss.seam.annotations.Install.APPLICATION;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Scope(EVENT)
-@Name("org.jboss.seam.security.identityManager")
-@Install(precedence = APPLICATION)
-@AutoCreate
-@BypassInterceptors
+@javax.enterprise.context.RequestScoped
+@Named("identityManager")
 @Slf4j
 public class IdentityManager implements Serializable {
     public static final String USER_PERMISSION_NAME = "seam.user";
@@ -46,31 +39,13 @@ public class IdentityManager implements Serializable {
 
     private ZanataJpaIdentityStore identityStore;
 
-    @Create
+    @PostConstruct
     public void create() {
         if (identityStore == null) {
             identityStore =
                     ServiceLocator.instance().getInstance(
                             ZanataJpaIdentityStore.class);
         }
-    }
-
-    // TODO [CDI] revisit this
-    public static IdentityManager instance() {
-        if (!Contexts.isEventContextActive()) {
-            throw new IllegalStateException("No active event context");
-        }
-
-        IdentityManager instance =
-                ServiceLocator.instance().getInstance(
-                        IdentityManager.class);
-
-        if (instance == null) {
-            throw new IllegalStateException(
-                    "No IdentityManager could be created");
-        }
-
-        return instance;
     }
 
     public boolean createUser(String name, String password) {
@@ -215,6 +190,7 @@ public class IdentityManager implements Serializable {
      *            The user for which to return the list of roles
      * @return List containing the names of the implied roles
      */
+    @Transactional
     public List<String> getImpliedRoles(String name) {
         return identityStore.getImpliedRoles(name);
     }
@@ -230,8 +206,9 @@ public class IdentityManager implements Serializable {
     }
 
     public boolean authenticate(String username, String password) {
-        if (Strings.isEmpty(username))
+        if (Strings.isNullOrEmpty(username)) {
             return false;
+        }
         return identityStore.authenticate(username, password);
     }
 

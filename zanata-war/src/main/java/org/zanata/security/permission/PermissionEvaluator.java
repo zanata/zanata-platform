@@ -20,25 +20,15 @@
  */
 package org.zanata.security.permission;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Collection;
-import java.util.List;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import org.apache.commons.lang.ArrayUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Startup;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 import org.zanata.security.SecurityFunctions;
-
-import com.google.common.collect.Lists;
 
 /**
  * Holds all application permissions and provides a way to evaluate these
@@ -47,10 +37,8 @@ import com.google.common.collect.Lists;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("permissions")
-@AutoCreate
-@Scope(ScopeType.APPLICATION)
-@Startup
+@Named("permissions")
+@ApplicationScoped
 public class PermissionEvaluator {
 
     private static final String ALL_ACTION_GRANTER = "__**__";
@@ -58,7 +46,7 @@ public class PermissionEvaluator {
     private final Multimap<String, PermissionGranter> permissionGrantMethods =
             ArrayListMultimap.create();
 
-    @Create
+    @PostConstruct
     public void buildIndex() {
         registerPermissionGranters(SecurityFunctions.class);
     }
@@ -67,7 +55,8 @@ public class PermissionEvaluator {
      * Registers all permission granter methods found in clazz to be used to
      * check permissions.
      *
-     * @param clazz
+     * @param clazz Class for which GrantsPermission methods should be
+     *              registered
      */
     public void registerPermissionGranters(Class<?> clazz) {
         for (Method m : clazz.getDeclaredMethods()) {

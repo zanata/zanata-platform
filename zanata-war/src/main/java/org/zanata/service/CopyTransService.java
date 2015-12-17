@@ -25,7 +25,7 @@ import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 
-import javax.validation.constraints.NotNull;
+import javax.annotation.Nonnull;
 import java.util.concurrent.Future;
 
 public interface CopyTransService {
@@ -44,21 +44,6 @@ public interface CopyTransService {
      *            the document to copy translations into
      */
     void copyTransForDocument(HDocument document, CopyTransTaskHandle handle);
-
-    /**
-     * Similar to
-     * {@link CopyTransService#copyTransForDocument(org.zanata.model.HDocument, org.zanata.async.handle.CopyTransTaskHandle)}
-     * , with custom copy trans options.
-     *
-     * @param document
-     *            the document to copy translations into
-     * @param copyTransOptions
-     *            The copy Trans options to use.
-     * @param handle
-     *            Optional Task handle to track progress for the operation.
-     */
-    void copyTransForDocument(HDocument document,
-            HCopyTransOptions copyTransOptions, CopyTransTaskHandle handle);
 
     /**
      *
@@ -83,24 +68,6 @@ public interface CopyTransService {
      */
     Future<Void> startCopyTransForIteration(HProjectIteration iteration,
             HCopyTransOptions copyTransOptions,
-            @NotNull CopyTransTaskHandle handle);
+            @Nonnull CopyTransTaskHandle handle);
 
-    /**
-     * Copies previous matching translations for all available locales and
-     * documents in a given project iteration. Translations are matching if
-     * their document id, textflow id and source content are identical, and
-     * their state is approved. Only performs copyTrans on non-obsolete
-     * documents.
-     *
-     * The text flow revision for copied targets is set to the current text flow
-     * revision.
-     *
-     * @param iteration
-     *            The project iteration to copy translations into
-     * @param copyTransOptions
-     *            The copy Trans options to use.
-     * @param handle Optional Task handle to track progress for the operation.
-     */
-    void copyTransForIteration(HProjectIteration iteration,
-            HCopyTransOptions copyTransOptions, CopyTransTaskHandle handle);
 }

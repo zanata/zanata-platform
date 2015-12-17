@@ -63,6 +63,10 @@
     <class>org.zanata.model.tm.TransMemory</class>
     <class>org.zanata.model.WebHook</class>
 
+    <!-- TODO This may be removed once the class files are packaged in the zanata-model jar as intended
+     Otherwise, hibernate will scan the whole war file and dependency jars -->
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
     <properties>
       <property name="hibernate.show_sql" value="false" />
       <!-- Use test version of hibernate cache -->
@@ -112,7 +116,7 @@
         value="./target/zanatasearchindex" />
       <property name="hibernate.search.lucene_version" value="LUCENE_36" />
       <property name="hibernate.search.worker.batch_size" value="50" />
-
+      <property name="javax.persistence.validation.factory" value="org.apache.deltaspike.beanvalidation.impl.CDIAwareConstraintValidatorFactory"/>
     </properties>
   </persistence-unit>
 </persistence>

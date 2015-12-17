@@ -9,10 +9,8 @@ import javax.ws.rs.core.EntityTag;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -22,14 +20,14 @@ import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;
 import org.zanata.util.HashUtil;
 
-@Name("eTagUtils")
-@Scope(ScopeType.STATELESS)
+@Named("eTagUtils")
+@javax.enterprise.context.Dependent
 public class ETagUtils {
 
-    @In
+    @Inject
     private Session session;
 
-    @In
+    @Inject
     private DocumentDAO documentDAO;
 
     /**

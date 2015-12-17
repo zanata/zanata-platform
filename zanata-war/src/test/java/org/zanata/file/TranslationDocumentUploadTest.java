@@ -20,24 +20,18 @@
  */
 package org.zanata.file;
 
-import static javax.ws.rs.core.Response.Status.NOT_ACCEPTABLE;
-import static org.mockito.Mockito.doThrow;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.zanata.exception.ChunkUploadException;
 import org.zanata.model.type.TranslationSourceType;
+
+import javax.ws.rs.core.Response;
 
 public class TranslationDocumentUploadTest extends DocumentUploadTest {
 
     private static final String ANY_LOCALE = "es";
     private static final String ANY_MERGETYPE = "auto";
-
-    @Mock
-    DocumentUploadUtil documentUploadUtil;
 
     private TranslationDocumentUpload transUpload;
 
@@ -45,9 +39,7 @@ public class TranslationDocumentUploadTest extends DocumentUploadTest {
     public void beforeTest() {
         MockitoAnnotations.initMocks(this);
         seam.reset();
-        seam.ignoreNonResolvable()
-                .use("documentUploadUtil", documentUploadUtil).allowCycles();
-
+        seam.ignoreNonResolvable();
         transUpload = seam.autowire(TranslationDocumentUpload.class);
     }
 
@@ -57,16 +49,12 @@ public class TranslationDocumentUploadTest extends DocumentUploadTest {
     }
 
     @Test
-    public void checksValidityAndFailsIfNotValid() {
+    public void failsIfNotLoggedIn() {
         conf = defaultUpload().build();
-        doThrow(new ChunkUploadException(NOT_ACCEPTABLE, "Test message")).when(
-                documentUploadUtil).failIfUploadNotValid(conf.id,
-                conf.uploadForm);
         response =
                 transUpload.tryUploadTranslationFile(conf.id, ANY_LOCALE,
                         ANY_MERGETYPE, false, conf.uploadForm, TranslationSourceType.API_UPLOAD);
-        assertResponseHasStatus(NOT_ACCEPTABLE);
-        assertResponseHasErrorMessage("Test message");
+        assertResponseHasStatus(Response.Status.UNAUTHORIZED);
         assertUploadTerminated();
     }
 

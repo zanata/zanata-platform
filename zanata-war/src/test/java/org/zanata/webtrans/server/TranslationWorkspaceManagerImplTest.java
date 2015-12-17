@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -83,7 +82,6 @@ public class TranslationWorkspaceManagerImplTest extends ZanataTest {
         // @formatter:off
       manager = SeamAutowire.instance()
             .reset()
-            .use("accountDAO", accountDAO)
             .use("gravatarServiceImpl", gravatarServiceImpl)
             .use("projectIterationDAO", projectIterationDAO)
             .use("localeServiceImpl", localeServiceImpl)
@@ -271,15 +269,14 @@ public class TranslationWorkspaceManagerImplTest extends ZanataTest {
     @Test
     public void testExitWorkspaceWithNullSessionId() throws Exception {
         TranslationWorkspaceManagerImpl spy = spy(manager);
-        doReturn(null).when(spy).getSessionId();
 
-        spy.exitWorkspace("admin");
+        spy.exitWorkspace("admin", null, "Administrator", "admin@example.com");
 
         verifyZeroInteractions(accountDAO);
     }
 
     @Test
-    public void testExitWorkspaceWithAccount() throws Exception {
+    public void testExitWorkspace() throws Exception {
         HProjectIteration projectIteration =
                 makeHProjectIteration("project", "master");
         WorkspaceId workspaceId = TestFixture.workspaceId(LocaleId.DE);
@@ -294,7 +291,6 @@ public class TranslationWorkspaceManagerImplTest extends ZanataTest {
                 .thenReturn(hLocale);
         TranslationWorkspaceManagerImpl spy = spy(manager);
         doReturn(mockWorkspace).when(spy).createWorkspace(workspaceId);
-        doReturn("sessionId").when(spy).getSessionId();
         ArrayList<EditorClientId> editorClientIds =
                 Lists.newArrayList(new EditorClientId("sessionId", 1L),
                         new EditorClientId("sessionId", 2L));
@@ -302,14 +298,7 @@ public class TranslationWorkspaceManagerImplTest extends ZanataTest {
                 editorClientIds);
         spy.getOrRegisterWorkspace(workspaceId);
 
-        HAccount hAccount = new HAccount();
-        HPerson person = new HPerson();
-        person.setName("patrick");
-        person.setEmail("pahuang@redhat.com");
-        hAccount.setPerson(person);
-        when(accountDAO.getByUsername("admin")).thenReturn(hAccount);
-
-        spy.exitWorkspace("admin");
+        spy.exitWorkspace("admin", "sessionId", "patrick", "admin@example.com");
 
         verify(mockWorkspace).removeEditorClients("sessionId");
         verify(mockWorkspace, times(2)).publish(eventCaptor.capture());
@@ -326,49 +315,7 @@ public class TranslationWorkspaceManagerImplTest extends ZanataTest {
                 Matchers.equalTo(editorClientIds.get(1)));
         verify(mockWorkspace).publish(exitWorkspace2);
         verify(gravatarServiceImpl, times(2)).getUserImageUrl(16,
-                "pahuang@redhat.com");
+                "admin@example.com");
     }
 
-    @Test
-    public void testExitWorkspaceWithNullAccount() throws Exception {
-        HProjectIteration projectIteration =
-                makeHProjectIteration("project", "master");
-        WorkspaceId workspaceId = TestFixture.workspaceId(LocaleId.DE);
-        when(
-                projectIterationDAO.getBySlug(workspaceId
-                        .getProjectIterationId().getProjectSlug(), workspaceId
-                        .getProjectIterationId().getIterationSlug()))
-                .thenReturn(projectIteration);
-        HLocale hLocale = new HLocale(LocaleId.DE);
-        hLocale.setActive(true);
-        when(localeServiceImpl.getByLocaleId(workspaceId.getLocaleId()))
-                .thenReturn(hLocale);
-        TranslationWorkspaceManagerImpl spy = spy(manager);
-        doReturn(mockWorkspace).when(spy).createWorkspace(workspaceId);
-        doReturn("sessionId").when(spy).getSessionId();
-        ArrayList<EditorClientId> editorClientIds =
-                Lists.newArrayList(new EditorClientId("sessionId", 1L),
-                        new EditorClientId("sessionId", 2L));
-        when(mockWorkspace.removeEditorClients("sessionId")).thenReturn(
-                editorClientIds);
-        spy.getOrRegisterWorkspace(workspaceId);
-
-        spy.exitWorkspace("admin");
-
-        verify(mockWorkspace).removeEditorClients("sessionId");
-        verify(mockWorkspace, times(2)).publish(eventCaptor.capture());
-
-        ExitWorkspace exitWorkspace1 = eventCaptor.getAllValues().get(0);
-        assertThat(exitWorkspace1.getEditorClientId(),
-                Matchers.equalTo(editorClientIds.get(0)));
-        assertThat(exitWorkspace1.getPerson().getName(),
-                Matchers.equalTo("<unknown>"));
-        verify(mockWorkspace).publish(exitWorkspace1);
-
-        ExitWorkspace exitWorkspace2 = eventCaptor.getAllValues().get(1);
-        assertThat(exitWorkspace2.getEditorClientId(),
-                Matchers.equalTo(editorClientIds.get(1)));
-        verify(mockWorkspace).publish(exitWorkspace2);
-        verify(gravatarServiceImpl, times(2)).getUserImageUrl(16, "<unknown>");
-    }
 }

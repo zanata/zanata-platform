@@ -24,20 +24,17 @@ import java.io.InputStream;
 import java.sql.Blob;
 
 import org.hibernate.Session;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.model.HDocumentUploadPart;
 
 // TODO damason: replace with file system implementation, named something like "filePartPersistService"
-@Name("blobPersistService")
-@Scope(ScopeType.STATELESS)
-@AutoCreate
+@Named("blobPersistService")
+@javax.enterprise.context.Dependent
+
 public class BlobPersistService implements UploadPartPersistService {
 
-    @In
+    @Inject
     private Session session;
 
     public HDocumentUploadPart newUploadPartFromStream(

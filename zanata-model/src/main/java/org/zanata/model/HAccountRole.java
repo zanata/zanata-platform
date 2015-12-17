@@ -25,6 +25,7 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -35,9 +36,6 @@ import lombok.Setter;
 
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
-import org.jboss.seam.annotations.security.management.RoleConditional;
-import org.jboss.seam.annotations.security.management.RoleGroups;
-import org.jboss.seam.annotations.security.management.RoleName;
 import org.zanata.model.type.RoleTypeType;
 
 @Entity
@@ -54,18 +52,16 @@ public class HAccountRole implements Serializable, HasUserFriendlyToString {
     private Set<HAccountRole> groups;
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getId() {
         return id;
     }
 
     // TODO PERF @NaturalId(mutable=false) for better criteria caching
-    @RoleName
     public String getName() {
         return name;
     }
 
-    @RoleGroups
     @ManyToMany(targetEntity = HAccountRole.class)
     @JoinTable(name = "HAccountRoleGroup", joinColumns = @JoinColumn(
             name = "roleId"), inverseJoinColumns = @JoinColumn(
@@ -74,8 +70,7 @@ public class HAccountRole implements Serializable, HasUserFriendlyToString {
         return groups;
     }
 
-    // TODO [CDI] check whether we actually use this field (doesn't seem to in prod db and in code)
-    @RoleConditional
+    // used in JQL: org.zanata.seam.security.ZanataJpaIdentityStore.listGrantableRoles()
     public boolean isConditional() {
         return conditional;
     }

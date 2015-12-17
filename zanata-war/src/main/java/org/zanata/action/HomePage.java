@@ -21,12 +21,11 @@
 package org.zanata.action;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
+
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.TransactionPhase;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.events.HomeContentChangedEvent;
 import org.zanata.util.CommonMarkRenderer;
@@ -36,16 +35,16 @@ import org.zanata.util.CommonMarkRenderer;
  *
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@AutoCreate
-@Name("homePage")
-@Scope(ScopeType.APPLICATION)
+
+@Named("homePage")
+@javax.enterprise.context.ApplicationScoped
 @Slf4j
 public class HomePage {
 
-    @In
+    @Inject
     private ApplicationConfiguration applicationConfiguration;
 
-    @In("commonMarkRenderer")
+    @Inject
     private CommonMarkRenderer renderer;
 
     private String html;
@@ -56,16 +55,15 @@ public class HomePage {
      */
     public String getHtml() {
         if (html == null) {
-            updateHtml();
+            updateHtml(null);
         }
         return html;
     }
 
-    @Observer(HomeContentChangedEvent.EVENT_NAME)
     /**
      * Event handler to update the cached HTML based on the latest CommonMark home content.
      */
-    public void updateHtml() {
+    public void updateHtml(@Observes(during = TransactionPhase.AFTER_SUCCESS) HomeContentChangedEvent event) {
         String text = applicationConfiguration.getHomeContent();
         if (text == null) {
             html = "";

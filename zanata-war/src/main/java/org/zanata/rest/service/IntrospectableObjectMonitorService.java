@@ -3,6 +3,7 @@ package org.zanata.rest.service;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.List;
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -18,8 +19,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.resteasy.util.GenericType;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
@@ -27,7 +28,6 @@ import org.zanata.common.Namespaces;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Link;
 import org.zanata.limits.RateLimitManager;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.util.Introspectable;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Function;
@@ -44,12 +44,13 @@ import lombok.extern.slf4j.Slf4j;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Name("introspectableObjectMonitorService")
+@RequestScoped
+@Named("introspectableObjectMonitorService")
 @Path("/monitor")
 @Produces({ "application/xml" })
 @Consumes({ "application/xml" })
 @Transactional
-@ZanataSecured
+
 @CheckRole("admin")
 @Slf4j
 @Beta

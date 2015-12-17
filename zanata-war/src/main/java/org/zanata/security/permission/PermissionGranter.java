@@ -169,4 +169,9 @@ public class PermissionGranter {
         }
         return null;
     }
+
+    @Override
+    public String toString() {
+        return "PermissionGranter("+granterMethod.getDeclaringClass().getSimpleName()+"."+granterMethod.getName()+")";
+    }
 }
