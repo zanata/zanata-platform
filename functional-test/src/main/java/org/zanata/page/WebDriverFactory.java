@@ -26,6 +26,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ObjectNode;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.firefox.FirefoxBinary;
@@ -66,6 +69,8 @@ public enum WebDriverFactory {
                     return new SimpleDateFormat("HH:mm:ss.SSS");
                 }
             };
+    // can reuse, share globally
+    private static ObjectMapper mapper = new ObjectMapper();
 
     private volatile EventFiringWebDriver driver = createDriver();
     private DriverService driverService;
@@ -130,10 +135,10 @@ public enum WebDriverFactory {
         return getDriver().manage().logs().get(type);
     }
 
-    private String toString(LogEntry logEntry) {
+    private String toString(long timestamp, String text, @Nullable String json) {
         String time =
-                TIME_FORMAT.get().format(new Date(logEntry.getTimestamp()));
-        return time + " " + logEntry.getMessage();
+                TIME_FORMAT.get().format(new Date(timestamp));
+        return time + " " + text + (json != null ? ": " + json : "");
     }
 
     private boolean ignorable(String message) {
@@ -159,23 +164,46 @@ public enum WebDriverFactory {
         int logCount = 0;
         for (LogEntry logEntry : getLogs(type)) {
             ++logCount;
+            Level level;
+            long time = logEntry.getTimestamp();
+            String text, json;
             String msg = logEntry.getMessage();
-            if (logEntry.getLevel().intValue() >= Level.SEVERE.intValue()) {
-                log.error(toString(logEntry));
-                if (firstException == null || !firstException.isErrorLog()) {
-                    firstException = new WebDriverLogException(logEntry.getLevel(),
-                            toString(logEntry));
+            if (msg.startsWith("{")) {
+                // looks like it might be json
+                json = msg;
+                try {
+                    JsonNode message = mapper.readValue(json, ObjectNode.class).path("message");
+                    String levelString = message.path("level").asText();
+                    level = toLogLevel(levelString);
+                    text = message.path("text").asText();
+                } catch (Exception e) {
+                    log.warn("unable to parse as json: " + json, e);
+                    level = logEntry.getLevel();
+                    text = msg;
+                    json = null;
                 }
-            } else if (logEntry.getLevel().intValue() >= Level.WARNING.intValue()) {
-                log.warn(toString(logEntry));
+            } else {
+                level = logEntry.getLevel();
+                text = msg;
+                json = null;
+            }
+            String logString = toString(time, text, json);
+            if (level.intValue() >= Level.SEVERE.intValue()) {
+                log.error(logString);
+                if (firstException == null || !firstException.isErrorLog()) {
+                    firstException = new WebDriverLogException(level,
+                            logString);
+                }
+            } else if (level.intValue() >= Level.WARNING.intValue()) {
+                log.warn(logString);
                 if (throwIfWarn && firstException == null && !ignorable(msg)) {
                     firstException = new WebDriverLogException(logEntry.getLevel(),
-                            toString(logEntry));
+                            logString);
                 }
-            } else if (logEntry.getLevel().intValue() >= Level.INFO.intValue()) {
-                log.info(toString(logEntry));
+            } else if (level.intValue() >= Level.INFO.intValue()) {
+                log.info(logString);
             } else {
-                log.debug(toString(logEntry));
+                log.debug(logString);
             }
         }
         if (logCount == 0) {
@@ -184,6 +212,14 @@ public enum WebDriverFactory {
         if (throwIfWarn && firstException != null) {
             throw firstException;
         }
+    }
+
+    private Level toLogLevel(String jsLevel) {
+        String upperCase = jsLevel.toUpperCase();
+        if (upperCase.equals("WARN")) {
+            return Level.WARNING;
+        }
+        return Level.parse(upperCase);
     }
 
     /**
