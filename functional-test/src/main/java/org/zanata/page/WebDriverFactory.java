@@ -22,7 +22,8 @@ package org.zanata.page;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 
 import org.openqa.selenium.WebDriver;
@@ -58,10 +59,28 @@ import static org.zanata.util.Constants.zanataInstance;
 public enum WebDriverFactory {
     INSTANCE;
 
+    private static final ThreadLocal<SimpleDateFormat> TIME_FORMAT =
+            new ThreadLocal<SimpleDateFormat>() {
+                @Override
+                protected SimpleDateFormat initialValue() {
+                    return new SimpleDateFormat("HH:mm:ss.SSS");
+                }
+            };
+
     private volatile EventFiringWebDriver driver = createDriver();
     private DriverService driverService;
     private TestEventForScreenshotListener eventListener;
     private int webdriverWait;
+
+    private final String[] ignoredLogPatterns = {
+            ".*/org.richfaces/jquery.js .* " +
+                    "'webkit(?:Cancel)?RequestAnimationFrame' is vendor-specific. " +
+                    "Please use the standard " +
+                    "'(?:request|cancel)AnimationFrame' instead.",
+            ".*/org.richfaces/jquery.js .* " +
+                    "'webkitMovement[XY]' is deprecated. " +
+                    "Please use 'movement[XY]' instead.",
+    };
 
     public WebDriver getDriver() {
         return driver;
@@ -111,6 +130,21 @@ public enum WebDriverFactory {
         return getDriver().manage().logs().get(type);
     }
 
+    private String toString(LogEntry logEntry) {
+        String time =
+                TIME_FORMAT.get().format(new Date(logEntry.getTimestamp()));
+        return time + " " + logEntry.getMessage();
+    }
+
+    private boolean ignorable(String message) {
+        for (String ignorable : ignoredLogPatterns) {
+            if (message.matches(ignorable)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Logs all the outstanding WebDriver logs of the specified type.
      * @param type a log type from org.openqa.selenium.logging.LogType
@@ -125,22 +159,23 @@ public enum WebDriverFactory {
         int logCount = 0;
         for (LogEntry logEntry : getLogs(type)) {
             ++logCount;
+            String msg = logEntry.getMessage();
             if (logEntry.getLevel().intValue() >= Level.SEVERE.intValue()) {
-                log.error(logEntry.toString());
+                log.error(toString(logEntry));
                 if (firstException == null || !firstException.isErrorLog()) {
                     firstException = new WebDriverLogException(logEntry.getLevel(),
-                            logEntry.toString());
+                            toString(logEntry));
                 }
             } else if (logEntry.getLevel().intValue() >= Level.WARNING.intValue()) {
-                log.warn(logEntry.toString());
-                if (throwIfWarn && firstException == null) {
+                log.warn(toString(logEntry));
+                if (throwIfWarn && firstException == null && !ignorable(msg)) {
                     firstException = new WebDriverLogException(logEntry.getLevel(),
-                            logEntry.toString());
+                            toString(logEntry));
                 }
             } else if (logEntry.getLevel().intValue() >= Level.INFO.intValue()) {
-                log.info(logEntry.toString());
+                log.info(toString(logEntry));
             } else {
-                log.debug(logEntry.toString());
+                log.debug(toString(logEntry));
             }
         }
         if (logCount == 0) {
