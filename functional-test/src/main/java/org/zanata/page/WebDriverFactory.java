@@ -74,7 +74,7 @@ public enum WebDriverFactory {
 
     private volatile EventFiringWebDriver driver = createDriver();
     private DriverService driverService;
-    private TestEventForScreenshotListener eventListener;
+    private TestEventForScreenshotListener screenshotListener;
     private int webdriverWait;
 
     private final String[] ignoredLogPatterns = {
@@ -252,21 +252,21 @@ public enum WebDriverFactory {
 
     public void registerScreenshotListener(String testName) {
         log.info("Enabling screenshot module...");
-        if (eventListener == null && ScreenshotDirForTest.isScreenshotEnabled()) {
-            eventListener  = new TestEventForScreenshotListener(driver);
+        if (screenshotListener == null && ScreenshotDirForTest.isScreenshotEnabled()) {
+            screenshotListener = new TestEventForScreenshotListener(driver);
         }
-        driver.register(eventListener);
-        eventListener.updateTestID(testName);
+        driver.register(screenshotListener);
+        screenshotListener.updateTestID(testName);
     }
 
     public void unregisterScreenshotListener() {
         log.info("Deregistering screenshot module...");
-        driver.unregister(eventListener);
+        driver.unregister(screenshotListener);
     }
 
     public void injectScreenshot(String tag) {
-        if (null != eventListener) {
-            eventListener.customEvent(tag);
+        if (null != screenshotListener) {
+            screenshotListener.customEvent(tag);
         }
     }
 
