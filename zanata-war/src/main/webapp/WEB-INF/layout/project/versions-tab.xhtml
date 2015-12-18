@@ -20,9 +20,9 @@
     <a4j:param name="val1" assignTo="#{versionSlug}"/>
   </a4j:jsFunction>
 
-  <a4j:jsFunction name="renderVersionInfo" limitRender="true"
-    render="#{versionInfoId}">
-    <a4j:param name="val1" assignTo="#{versionInfoId}"/>
+  <a4j:jsFunction name="renderComponent" limitRender="true"
+    render="#{componentId}">
+    <a4j:param name="val1" assignTo="#{componentId}"/>
   </a4j:jsFunction>
 
   <a4j:jsFunction name="cancelCopyVersion" limitRender="true"
@@ -123,7 +123,7 @@
           <h:panelGroup id="copy-version-info">
             <h:outputScript
               rendered="#{not projectHomeAction.isVersionCopying(version.project.slug, version.slug)}">
-              renderVersionInfo('#{rich:clientId('version-info')}');
+              renderComponent('#{rich:clientId('version-info')}');
             </h:outputScript>
           </h:panelGroup>
 
