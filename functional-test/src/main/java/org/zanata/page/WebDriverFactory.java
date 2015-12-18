@@ -90,6 +90,7 @@ public enum WebDriverFactory {
             ".*/org.richfaces/jquery.js .* " +
                     "'webkitMovement[XY]' is deprecated. " +
                     "Please use 'movement[XY]' instead.",
+            "http://example.com/piwik/piwik.js .*",
     };
 
     @Nullable
@@ -198,13 +199,13 @@ public enum WebDriverFactory {
             String logString = toString(time, text, json);
             if (level.intValue() >= Level.SEVERE.intValue()) {
                 log.error(logString);
-                if (firstException == null || !firstException.isErrorLog()) {
+                if ((firstException == null || !firstException.isErrorLog()) && !ignorable(msg)) {
                     firstException = new WebDriverLogException(level,
                             logString);
                 }
             } else if (level.intValue() >= Level.WARNING.intValue()) {
                 log.warn(logString);
-                if (throwIfWarn && firstException == null && !ignorable(msg)) {
+                if ((throwIfWarn && firstException == null) && !ignorable(msg)) {
                     firstException = new WebDriverLogException(logEntry.getLevel(),
                             logString);
                 }
