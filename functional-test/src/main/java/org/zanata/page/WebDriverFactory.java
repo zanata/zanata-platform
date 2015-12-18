@@ -22,10 +22,13 @@ package org.zanata.page;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 
+import com.google.common.reflect.AbstractInvocationHandler;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
@@ -44,6 +47,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
+import org.openqa.selenium.support.events.WebDriverEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.util.PropertiesHolder;
@@ -53,6 +57,7 @@ import org.zanata.util.ScreenshotDirForTest;
 import org.zanata.util.TestEventForScreenshotListener;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static org.zanata.util.Constants.webDriverType;
 import static org.zanata.util.Constants.webDriverWait;
@@ -86,6 +91,9 @@ public enum WebDriverFactory {
                     "'webkitMovement[XY]' is deprecated. " +
                     "Please use 'movement[XY]' instead.",
     };
+
+    @Nullable
+    private WebDriverEventListener logListener;
 
     public WebDriver getDriver() {
         return driver;
@@ -257,6 +265,30 @@ public enum WebDriverFactory {
         }
         driver.register(screenshotListener);
         screenshotListener.updateTestID(testName);
+    }
+
+    @ParametersAreNonnullByDefault
+    public void registerLogListener() {
+        if (logListener == null) {
+            logListener = (WebDriverEventListener) Proxy.newProxyInstance(
+                    WebDriverEventListener.class.getClassLoader(),
+                    new Class<?>[]{ WebDriverEventListener.class },
+                    new AbstractInvocationHandler() {
+                        @Override
+                        protected Object handleInvocation(
+                                Object proxy,
+                                Method method,
+                                Object[] args) throws Throwable {
+                            logLogs();
+                            return null;
+                        }
+                    });
+        }
+        driver.register(logListener);
+    }
+
+    public void unregisterLogListener() {
+        driver.unregister(logListener);
     }
 
     public void unregisterScreenshotListener() {
