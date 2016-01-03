@@ -35,12 +35,16 @@ import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.ProjectIteration;
 
 /**
+ * Deprecated. See {@link ProjectVersionResource}
+ *
+ *
  * projectSlug: Project Identifier. iterationSlug: Project Iteration identifier.
  *
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
+@Deprecated
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public interface ProjectIterationResource {
