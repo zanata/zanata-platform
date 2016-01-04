@@ -27,7 +27,7 @@ var UserProfile = React.createClass({
 
   render: function() {
     var user = Configs.data.profileUser,
-      authenticated = Configs.user ? Configs.user.loggedIn : false,
+      authenticated = Configs.data.permission.authenticated,
       recentContribution = (<div></div>),
       imageUrl = '',
       name = '',
@@ -56,7 +56,7 @@ var UserProfile = React.createClass({
       username =  user.username;
       imageUrl = user.imageUrl;
       name = user.name;
-      languageTeams = user.languageTeams;
+      languageTeams = user.languageTeams.join();
     }
 
     return (

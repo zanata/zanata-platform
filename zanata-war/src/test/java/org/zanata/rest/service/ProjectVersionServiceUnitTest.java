@@ -1,8 +1,7 @@
-package org.zanata.rest.editor.service;
+package org.zanata.rest.service;
 
 import java.util.List;
 import javax.ws.rs.core.EntityTag;
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
@@ -26,7 +25,9 @@ import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.rest.dto.ProjectIteration;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.editor.dto.Locale;
+import org.zanata.rest.editor.service.UserService;
 import org.zanata.rest.service.ETagUtils;
+import org.zanata.rest.service.ProjectVersionService;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.search.FilterConstraints;
 import org.zanata.service.LocaleService;
@@ -43,7 +44,7 @@ import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class ProjectVersionServiceTest {
+public class ProjectVersionServiceUnitTest {
     private ProjectVersionService service;
     @Mock
     private Request request;
@@ -57,14 +58,16 @@ public class ProjectVersionServiceTest {
     private ProjectIterationDAO projectIterationDAO;
     @Mock
     private LocaleService localeService;
+    @Mock
+    private UserService userService;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         service =
-                new ProjectVersionService(textFlowDAO, documentDAO,
-                        projectIterationDAO, localeService, request, etagUtil,
-                        new ResourceUtils());
+            new ProjectVersionService(textFlowDAO, documentDAO, null,
+                projectIterationDAO, localeService, request, etagUtil,
+                new ResourceUtils(), null, null, userService, null);
 
     }
 

@@ -15,8 +15,8 @@
 
     <div id="main-content"
       base-url="#{request.contextPath}/rest"
-      user="#{profileHome.authenticatedUser.getJSON()}"
-      data='{"view": "profile", "profileUser": #{profileHome.user.getJSON()}}'/>
+      user="#{profileHome.convertToJSON(profileHome.authenticatedUser)}"
+      data='{"view": "profile", "permission": #{profileHome.userPermission.getJSON()}, "profileUser": #{profileHome.convertToJSON(profileHome.getUser())}}'/>
 
     <script type="text/javascript"
       src="#{request.contextPath}/frontend.bundle.min.js"></script>

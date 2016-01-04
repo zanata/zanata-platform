@@ -20,6 +20,7 @@
  */
 package org.zanata.action;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 import javax.faces.application.FacesMessage;
@@ -29,9 +30,10 @@ import javax.inject.Named;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import org.zanata.rest.editor.dto.User;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.zanata.rest.dto.User;
+import org.zanata.rest.editor.dto.Permission;
 import org.zanata.rest.editor.service.UserService;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.i18n.Messages;
@@ -90,7 +92,7 @@ public class ProfileHome implements Serializable {
                 return;
             }
         }
-        user = userService.transferToUser(account);
+        user = userService.transferToUser(account, true);
     }
 
     private HAccount useAuthenticatedAccount() {
@@ -108,7 +110,7 @@ public class ProfileHome implements Serializable {
         if(authenticatedAccount == null) {
             return authenticatedUser;
         }
-        return userService.transferToUser(authenticatedAccount);
+        return userService.transferToUser(authenticatedAccount, true);
     }
 
     public String getUsername() {
@@ -122,5 +124,22 @@ public class ProfileHome implements Serializable {
     public void setUsername(String username) {
         this.username = username;
         init();
+    }
+
+    public Permission getUserPermission() {
+        Permission permission = new Permission();
+        boolean authenticated = authenticatedAccount != null;
+        permission.put("authenticated", authenticated);
+        return permission;
+    }
+
+    public String convertToJSON(User user) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(user);
+        } catch (IOException e) {
+            return this.getClass().getName() + "@"
+                + Integer.toHexString(this.hashCode());
+        }
     }
 }

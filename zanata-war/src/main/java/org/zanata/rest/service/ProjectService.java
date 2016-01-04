@@ -229,7 +229,7 @@ public class ProjectService implements ProjectResource {
         transfer(hProject, project);
         for (HProjectIteration pIt : hProject.getProjectIterations()) {
             ProjectIteration iteration = new ProjectIteration();
-            ProjectIterationService.transfer(pIt, iteration);
+            ProjectVersionService.transfer(pIt, iteration);
 
             iteration
                     .getLinks(true)
