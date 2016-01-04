@@ -75,7 +75,7 @@ public class GenerateHashForGlossaryEntry implements CustomTaskChange {
      */
     private String generateConflictMessage(Long id) {
         return " (Zanata: This description has been updated during data migration to prevent conflict: "
-                + formatter.format(new Date()) + id + ")";
+                + formatter.format(new Date()) + " -" + id + ")";
     }
 
     @Override
@@ -96,6 +96,9 @@ public class GenerateHashForGlossaryEntry implements CustomTaskChange {
                 long entryId = rs1.getLong(1);
                 String pos = rs1.getString(2);
                 String desc = rs1.getString(3);
+                if(desc == null) {
+                    desc = "";
+                }
                 String localeId = rs1.getString(4);
                 String content = rs1.getString(5);
 

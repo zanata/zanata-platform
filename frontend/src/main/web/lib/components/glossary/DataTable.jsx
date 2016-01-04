@@ -279,7 +279,7 @@ var DataTable = React.createClass({
       placeholder = 'enter description';
 
     var entry = this._getGlossaryEntry(id);
-    var tooltip = entry.description;
+    var tooltip = entry ? entry.description : '';
 
     return this._renderCell({
       id: id,
