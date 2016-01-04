@@ -8,9 +8,13 @@
 -----------------------
 
 ## 3.8
+## 3.8.2
+* [ZNTA-854](https://zanata.atlassian.net/browse/ZNTA-854) - Fast scrolling(infinite scroll) in glossary table not loading data
+
 ## 3.8.1
 <h5>Bug fixes</h5>
 * [ZNTA-844](https://zanata.atlassian.net/browse/ZNTA-844) - Merge Translations dialog broken
+
 
 ## 3.8.0
 <h5>Infrastructure Changes</h5>
