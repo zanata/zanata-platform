@@ -35,7 +35,7 @@ public class FedoraOpenIdProvider extends GenericOpenIdProvider {
 
     @Override
     public String getOpenId(String username) {
-        return "http://id.fedoraproject.org/";
+        return "https://id.fedoraproject.org/";
     }
 
     @Override
