@@ -1,5 +1,18 @@
 ## 3.9
 
+<h5>Infrastructure Changes</h5>
+* [ZNTA-530](https://zanata.atlassian.net/browse/ZNTA-530) - Replace Seam 2 with CDI
+  * In WildFly or EAP `standalone.xml`, please make sure the CDI/Weld
+    subsystem is enabled, by adding this line just before
+    `</extensions>`:
+
+        <extension module="org.jboss.as.weld" />
+
+  * Secondly, please add this line just before `</profile>`:
+
+        <subsystem xmlns="urn:jboss:domain:weld:1.0" />
+
+
 <h5>Bug fixes</h5>
 * [ZNTA-804](https://zanata.atlassian.net/browse/ZNTA-804) - Coordinators' email addresses should be BCC in Contact Coordinator
 * [ZNTA-693](https://zanata.atlassian.net/browse/ZNTA-693) - Handle ClientAbortException exception and reduce severity.
