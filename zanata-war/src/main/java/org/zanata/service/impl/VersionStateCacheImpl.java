@@ -68,12 +68,12 @@ public class VersionStateCacheImpl implements VersionStateCache {
     @Inject
     private IServiceLocator serviceLocator;
 
-    // constructor for Seam
+    // constructor for CDI
     public VersionStateCacheImpl() {
-        this(new VersionStatisticLoader());
     }
 
     // Constructor for testing
+    @VisibleForTesting
     public VersionStateCacheImpl(
             CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader) {
         this.versionStatisticLoader = versionStatisticLoader;
@@ -81,6 +81,9 @@ public class VersionStateCacheImpl implements VersionStateCache {
 
     @PostConstruct
     public void create() {
+        if (versionStatisticLoader == null) {
+            versionStatisticLoader = new VersionStatisticLoader();
+        }
         versionStatisticCache =
                 InfinispanCacheWrapper.create(VERSION_STATISTIC_CACHE_NAME,
                         cacheContainer, versionStatisticLoader);

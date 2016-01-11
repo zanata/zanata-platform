@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -81,13 +82,13 @@ public class TranslationWorkspaceManagerImpl implements
     @Inject
     private ValidationService validationServiceImpl;
 
-    private final ConcurrentHashMap<WorkspaceId, TranslationWorkspace> workspaceMap;
-    private final Multimap<ProjectIterationId, TranslationWorkspace> projIterWorkspaceMap;
-    private final EventRegistry eventRegistry;
+    private ConcurrentHashMap<WorkspaceId, TranslationWorkspace> workspaceMap;
+    private Multimap<ProjectIterationId, TranslationWorkspace> projIterWorkspaceMap;
+    private EventRegistry eventRegistry;
 
-    public TranslationWorkspaceManagerImpl() {
-        this.workspaceMap =
-                new ConcurrentHashMap<WorkspaceId, TranslationWorkspace>();
+    @PostConstruct
+    public void postConstruct() {
+        this.workspaceMap = new ConcurrentHashMap<>();
         Multimap<ProjectIterationId, TranslationWorkspace> piwm =
                 HashMultimap.create();
         this.projIterWorkspaceMap = Multimaps.synchronizedMultimap(piwm);
