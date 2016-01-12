@@ -2,7 +2,6 @@ package org.zanata.rest.dto.stats.contribution;
 
 import org.hamcrest.core.StringContains;
 import org.junit.Test;
-import org.zanata.common.BaseTranslationCount;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.DTOUtil;
 
@@ -44,11 +43,11 @@ public class ContributionStatisticsTest {
     private ContributionStatistics generateObject() {
         BaseContributionStatistic data =
                 new BaseContributionStatistic(40, 20, 10, 50);
-        LocaleStatistics localeStatistics = new LocaleStatistics();
-        localeStatistics.put(LocaleId.DE, data);
+        LocaleStatistics localeStatistics = new LocaleStatistics(LocaleId.DE, data, null);
 
         ContributionStatistics statistics = new ContributionStatistics();
-        statistics.put("user1", localeStatistics);
+        statistics.setUsername("user1");
+        statistics.getContributions().add(localeStatistics);
 
         return statistics;
     }

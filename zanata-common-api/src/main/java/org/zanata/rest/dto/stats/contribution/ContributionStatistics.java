@@ -1,96 +1,78 @@
 package org.zanata.rest.dto.stats.contribution;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 /**
- * Map that holds user contribution statistics
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-public class ContributionStatistics implements Map<String, LocaleStatistics>,
-        Serializable {
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@JsonPropertyOrder({ "username", "contributions" })
+public class ContributionStatistics implements Serializable {
 
-    private Map<String, LocaleStatistics> map =
-            new HashMap<String, LocaleStatistics>();
+    private String username;
 
-    @Override
-    public int size() {
-        return map.size();
+    private List<LocaleStatistics> contributions;
+
+    public ContributionStatistics() {
     }
 
-    @Override
-    public boolean isEmpty() {
-        return map.isEmpty();
+    public ContributionStatistics(String username,
+            List<LocaleStatistics> contributions) {
+        this.username = username;
+        this.contributions = contributions;
     }
 
-    @Override
-    public boolean containsKey(Object key) {
-        return map.containsKey(key);
+    @JsonProperty("username")
+    public String getUsername() {
+        return username;
     }
 
-    @Override
-    public boolean containsValue(Object value) {
-        return map.containsValue(value);
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    @Override
-    public LocaleStatistics get(Object key) {
-        return map.get(key);
+    @JsonProperty("contributions")
+    public List<LocaleStatistics> getContributions() {
+        if (contributions == null) {
+            contributions = new ArrayList<LocaleStatistics>();
+        }
+        return contributions;
     }
 
-    @Override
-    public LocaleStatistics put(String key, LocaleStatistics value) {
-        return map.put(key, value);
-    }
-
-    @Override
-    public LocaleStatistics remove(Object key) {
-        return map.remove(key);
-    }
-
-    @Override
-    public void putAll(Map<? extends String, ? extends LocaleStatistics> m) {
-        map.putAll(m);
-    }
-
-    @Override
-    public void clear() {
-        map.clear();
-    }
-
-    @Override
-    public Set<String> keySet() {
-        return map.keySet();
-    }
-
-    @Override
-    public Collection<LocaleStatistics> values() {
-        return map.values();
-    }
-
-    @Override
-    public Set<Entry<String, LocaleStatistics>> entrySet() {
-        return map.entrySet();
+    public void setContributions(List<LocaleStatistics> contributions) {
+        this.contributions = contributions;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ContributionStatistics)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof ContributionStatistics))
+            return false;
 
         ContributionStatistics that = (ContributionStatistics) o;
 
-        if (map != null ? !map.equals(that.map) : that.map != null)
+        if (username != null ? !username.equals(that.username)
+                : that.username != null)
             return false;
+        return !(contributions != null
+                ? !contributions.equals(that.contributions)
+                : that.contributions != null);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
-        return map != null ? map.hashCode() : 0;
+        int result = username != null ? username.hashCode() : 0;
+        result =
+                31 * result +
+                        (contributions != null ? contributions.hashCode() : 0);
+        return result;
     }
 }

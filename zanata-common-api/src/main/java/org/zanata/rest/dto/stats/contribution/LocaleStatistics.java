@@ -1,101 +1,92 @@
 package org.zanata.rest.dto.stats.contribution;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.LocaleId;
 
 /**
- * Map that hold user contribution data
- *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-public class LocaleStatistics implements Serializable,
-        Map<LocaleId, BaseContributionStatistic> {
-
-    private Map<LocaleId, BaseContributionStatistic> localeStatsMap =
-            new HashMap<LocaleId, BaseContributionStatistic>();
-
-    @Override
-    public int size() {
-        return localeStatsMap.size();
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@JsonPropertyOrder({ "locale", "translation-stats", "review-stats" })
+public class LocaleStatistics implements Serializable {
+    public LocaleStatistics() {
     }
 
-    @Override
-    public boolean isEmpty() {
-        return localeStatsMap.isEmpty();
+    public LocaleStatistics(LocaleId locale) {
+        this(locale, null, null);
     }
 
-    @Override
-    public boolean containsKey(Object key) {
-        return localeStatsMap.containsKey(key);
+    public LocaleStatistics(LocaleId locale,
+            BaseContributionStatistic translationStats,
+            BaseContributionStatistic reviewStats) {
+        this.locale = locale;
+        this.translationStats = translationStats;
+        this.reviewStats = reviewStats;
     }
 
-    @Override
-    public boolean containsValue(Object value) {
-        return localeStatsMap.containsValue(value);
+    private LocaleId locale;
+
+    private BaseContributionStatistic translationStats;
+
+    private BaseContributionStatistic reviewStats;
+
+    @JsonProperty("locale")
+    public LocaleId getLocale() {
+        return locale;
     }
 
-    @Override
-    public BaseContributionStatistic get(Object key) {
-        return localeStatsMap.get(key);
+    @JsonProperty("translation-stats")
+    public BaseContributionStatistic getTranslationStats() {
+        return translationStats;
     }
 
-    @Override
-    public BaseContributionStatistic put(LocaleId key,
-        BaseContributionStatistic value) {
-        return localeStatsMap.put(key, value);
+    @JsonProperty("review-stats")
+    public BaseContributionStatistic getReviewStats() {
+        return reviewStats;
     }
 
-    @Override
-    public BaseContributionStatistic remove(Object key) {
-        return localeStatsMap.remove(key);
+    public void setTranslationStats(
+            BaseContributionStatistic translationStats) {
+        this.translationStats = translationStats;
     }
 
-    @Override
-    public void putAll(Map<? extends LocaleId, ? extends BaseContributionStatistic> m) {
-        localeStatsMap.putAll(m);
-    }
-
-    @Override
-    public void clear() {
-        localeStatsMap.clear();
-    }
-
-    @Override
-    public Set<LocaleId> keySet() {
-        return localeStatsMap.keySet();
-    }
-
-    @Override
-    public Collection<BaseContributionStatistic> values() {
-        return localeStatsMap.values();
-    }
-
-    @Override
-    public Set<Entry<LocaleId, BaseContributionStatistic>> entrySet() {
-        return localeStatsMap.entrySet();
+    public void setReviewStats(
+            BaseContributionStatistic reviewStats) {
+        this.reviewStats = reviewStats;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof LocaleStatistics)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof LocaleStatistics))
+            return false;
 
         LocaleStatistics that = (LocaleStatistics) o;
 
-        if (localeStatsMap != null ?
-            !localeStatsMap.equals(that.localeStatsMap) :
-            that.localeStatsMap != null) return false;
+        if (locale != null ? !locale.equals(that.locale) : that.locale != null)
+            return false;
+        if (translationStats != null
+                ? !translationStats.equals(that.translationStats)
+                : that.translationStats != null)
+            return false;
+        return !(reviewStats != null ? !reviewStats.equals(that.reviewStats)
+                : that.reviewStats != null);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
-        return localeStatsMap != null ? localeStatsMap.hashCode() : 0;
+        int result = locale != null ? locale.hashCode() : 0;
+        result = 31 * result +
+                (translationStats != null ? translationStats.hashCode() : 0);
+        result =
+                31 * result
+                        + (reviewStats != null ? reviewStats.hashCode() : 0);
+        return result;
     }
 }
