@@ -23,6 +23,7 @@ package org.zanata.rest.service;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +76,7 @@ import org.zanata.util.DateUtil;
 import org.zanata.util.StatisticsUtil;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 import com.google.common.base.Optional;
+import com.google.common.collect.Maps;
 
 import static org.apache.commons.lang.StringUtils.abbreviate;
 
@@ -336,34 +338,69 @@ public class StatisticsServiceImpl implements StatisticsResource {
 
         DateRange dateRange = DateRange.from(dateRangeParam);
 
-        LocaleStatistics localeStatistics = new LocaleStatistics();
-
-        List<Object[]> data =
-                textFlowTargetHistoryDAO.getUserContributionStatisticInVersion(
+        List<Object[]> translationData =
+                textFlowTargetHistoryDAO.getUserTranslationStatisticInVersion(
                         version.getId(), person.getId(),
                         dateRange.getFromDate().toDate(),
                         dateRange.getToDate().toDate(),
                         automatedEntry);
 
-        for (Object[] entry : data) {
+        List<Object[]> reviewData =
+            textFlowTargetHistoryDAO.getUserReviewStatisticInVersion(
+                version.getId(), person.getId(),
+                dateRange.getFromDate().toDate(),
+                dateRange.getToDate().toDate(),
+                automatedEntry);
+
+        Map<LocaleId, LocaleStatistics> localeStatsMap = Maps.newHashMap();
+
+        for (Object[] entry : translationData) {
             int count = ((BigDecimal) entry[0]).intValue();
             ContentState state = ContentState.values()[(int) entry[1]];
             LocaleId localeId = new LocaleId(entry[2].toString());
 
-            BaseContributionStatistic stats;
-            if (localeStatistics.containsKey(localeId)) {
-                stats = localeStatistics.get(localeId);
-            } else {
-                stats = new BaseContributionStatistic(0, 0, 0, 0);
+            BaseContributionStatistic translationStats = null;
+            LocaleStatistics localeStatistics = null;
+            if (localeStatsMap.containsKey(localeId)) {
+                localeStatistics = localeStatsMap.get(localeId);
+                translationStats = localeStatistics.getTranslationStats();
             }
-            stats.set(state, count);
-            localeStatistics.put(localeId, stats);
+            if(localeStatistics == null) {
+                localeStatistics = new LocaleStatistics(localeId);
+            }
+            if(translationStats == null) {
+                translationStats = new BaseContributionStatistic(0, 0, 0, 0);
+            }
+            translationStats.set(state, count);
+            localeStatistics.setTranslationStats(translationStats);
+            localeStatsMap.put(localeId, localeStatistics);
         }
 
-        ContributionStatistics result = new ContributionStatistics();
-        result.put(username, localeStatistics);
+        for (Object[] entry : reviewData) {
+            int count = ((BigDecimal) entry[0]).intValue();
+            ContentState state = ContentState.values()[(int) entry[1]];
+            LocaleId localeId = new LocaleId(entry[2].toString());
 
-        return result;
+            BaseContributionStatistic reviewStats = null;
+            LocaleStatistics localeStatistics = null;
+            if (localeStatsMap.containsKey(localeId)) {
+                localeStatistics = localeStatsMap.get(localeId);
+                reviewStats = localeStatistics.getReviewStats();
+            }
+            if(localeStatistics == null) {
+                localeStatistics = new LocaleStatistics(localeId);
+            }
+            if(reviewStats == null) {
+                reviewStats = new BaseContributionStatistic(0, null, null, 0);
+            }
+            reviewStats.set(state, count);
+            localeStatistics.setReviewStats(reviewStats);
+
+            localeStatsMap.put(localeId, localeStatistics);
+        }
+
+        return new ContributionStatistics(username,
+            new ArrayList(localeStatsMap.values()));
     }
 
     private HPerson findPersonOrExceptionOnNotFound(String username) {
@@ -378,10 +415,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
             LocaleId locale, Date lastChanged, String lastModifiedBy) {
         TranslationStatistics stats =
                 new TranslationStatistics(wordCount, locale.getId());
-        stats.setLastTranslatedBy(lastModifiedBy);
-        stats.setLastTranslatedDate(lastChanged);
-        stats.setLastTranslated(getLastTranslated(lastChanged, lastModifiedBy));
-
+        stats = setLastTranslated(stats, lastChanged, lastModifiedBy);
         return stats;
     }
 
@@ -389,10 +423,15 @@ public class StatisticsServiceImpl implements StatisticsResource {
             LocaleId locale, Date lastChanged, String lastModifiedBy) {
         TranslationStatistics stats =
                 new TranslationStatistics(unitCount, locale.getId());
+        stats = setLastTranslated(stats, lastChanged, lastModifiedBy);
+        return stats;
+    }
+
+    private TranslationStatistics setLastTranslated(TranslationStatistics stats,
+            Date lastChanged, String lastModifiedBy) {
         stats.setLastTranslatedBy(lastModifiedBy);
         stats.setLastTranslatedDate(lastChanged);
         stats.setLastTranslated(getLastTranslated(lastChanged, lastModifiedBy));
-
         return stats;
     }
 
@@ -416,16 +455,24 @@ public class StatisticsServiceImpl implements StatisticsResource {
                 documentDAO.getStatistics(documentId, localeId);
 
         TranslationStatistics wordStatistics =
-                result.getStats(localeId.getId(), StatUnit.WORD);
-        wordStatistics.setRemainingHours(StatisticsUtil
-                .getRemainingHours(wordStatistics));
+                extractStatistics(result, localeId, StatUnit.WORD);
 
         TranslationStatistics msgStatistics =
-                result.getStats(localeId.getId(), StatUnit.MESSAGE);
+                extractStatistics(result, localeId, StatUnit.MESSAGE);
         msgStatistics.setRemainingHours(StatisticsUtil
                 .getRemainingHours(wordStatistics));
 
         return result;
+    }
+
+    private TranslationStatistics extractStatistics(
+            ContainerTranslationStatistics containerTranslationStatistics,
+            LocaleId localeId, StatUnit statUnit) {
+        TranslationStatistics stats = containerTranslationStatistics
+                .getStats(localeId.getId(), statUnit);
+
+        stats.setRemainingHours(StatisticsUtil.getRemainingHours(stats));
+        return stats;
     }
 
     /**
@@ -486,11 +533,11 @@ public class StatisticsServiceImpl implements StatisticsResource {
             ResultTransformer {
         private static final long serialVersionUID = 1L;
         private final EntityManager entityManager;
-        private final DateTimeFormatter dateFormater;
+        private final DateTimeFormatter dateFormatter;
 
         @Override
         public Object transformTuple(Object[] tuple, String[] aliases) {
-            String savedDate = dateFormater.print(
+            String savedDate = dateFormatter.print(
                     new DateTime(tuple[0]).toDate().getTime());
             HProjectIteration iteration =
                     entityManager.find(HProjectIteration.class,
