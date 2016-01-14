@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+  "name": "Zanata Testing Extension",
+  "version": "0.1",
+
+  "content_scripts": [
+    {
+      "matches": ["https://*/*", "http://*/*"],
+      "js": ["startup.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["https://*/*", "http://*/*"],
+      "js": ["idle.js"],
+      "run_at": "document_idle"
+    }  ],
+  "web_accessible_resources": ["finished.js", "inject.js"]
+}

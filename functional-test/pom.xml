@@ -750,6 +750,11 @@
         </includes>
       </testResource>
       <testResource>
+        <directory>src/test/resources/zanata-testing-extension</directory>
+        <filtering>false</filtering>
+        <targetPath>${project.build.testOutputDirectory}/zanata-testing-extension</targetPath>
+      </testResource>
+      <testResource>
         <directory>src/test/resources/zanata-user-config</directory>
         <filtering>true</filtering>
       </testResource>

@@ -151,7 +151,7 @@ public class AbstractPage {
         return 0;
     }
 
-
+    // TODO use this to wait for a page load after user input (eg click)
     public void execAndWaitForNewPage(Runnable runnable) {
         final WebElement oldPage = driver.findElement(By.tagName("html"));
         runnable.run();
@@ -172,7 +172,7 @@ public class AbstractPage {
                             // This exception means the new page has loaded
                             // (or started to).
                             String script = "return document.readyState === " +
-                                    "'complete' && window.javascriptFinished";
+                                    "'complete' && window.deferScriptsFinished";
                             Boolean documentComplete =
                                     (Boolean) getExecutor().executeScript(
                                             script);
@@ -202,16 +202,17 @@ public class AbstractPage {
                         String url = getDriver().getCurrentUrl();
                         String pageSource = ShortString.shorten(
                                 getDriver().getPageSource(), 2000);
-                        log.warn("XMLHttpRequest.active is null. Is AjaxCounterBean missing? URL: {}\nPartial page source follows:\n{}", url, pageSource);
+                        log.warn("XMLHttpRequest.active is null. Is zanata-testing-extension installed? URL: {}\nPartial page source follows:\n{}", url, pageSource);
                     }
                     return true;
                 }
                 if (outstanding < 0) {
                     throw new RuntimeException("XMLHttpRequest.active " +
                             "and/or window.timeoutCounter " +
-                            "is negative.  Please ensure that " +
-                            "AjaxCounterBean's script is run before " +
-                            "any other JavaScript in the page.");
+                            "is negative.  Please check the " +
+                            "implementation of zanata-testing-extension, " +
+                            "and ensure that the injected script is run " +
+                            "before any other JavaScript in the page.");
                 }
                 int expected = getExpectedBackgroundRequests();
                 if (outstanding < expected) {

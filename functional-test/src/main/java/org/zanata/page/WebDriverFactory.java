@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
@@ -34,6 +35,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
@@ -310,6 +312,14 @@ public enum WebDriverFactory {
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
         capabilities.setCapability("chrome.binary", PropertiesHolder.properties
                         .getProperty("webdriver.chrome.bin"));
+
+        ChromeOptions options = new ChromeOptions();
+        URL url = Thread.currentThread().getContextClassLoader().getResource("zanata-testing-extension/chrome/manifest.json");
+        assert url != null : "can't find extension (check testResource config in pom.xml)";
+        File file = new File(url.getPath()).getParentFile();
+        options.addArguments("load-extension=" + file.getAbsolutePath());
+        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
+
         enableLogging(capabilities);
 
         try {
@@ -356,6 +366,9 @@ public enum WebDriverFactory {
         firefoxProfile.setAlwaysLoadNoFocusLib(true);
         firefoxProfile.setEnableNativeEvents(true);
         firefoxProfile.setAcceptUntrustedCertificates(true);
+        // TODO port zanata-testing-extension to firefox
+//        File file = new File("extension.xpi");
+//        firefoxProfile.addExtension(file);
         return firefoxProfile;
     }
 
