@@ -15,6 +15,10 @@
   <html class="no-js new-zanata">
   <!--<![endif]-->
   <h:head>
+    <ui:remove>
+      <!-- This needs to appear before all other JavaScript, for accurate testing -->
+    </ui:remove>
+    <h:outputText value="#{javaScriptTestHelper.headScript}" escape="false" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 

@@ -25,7 +25,7 @@
     }
   }
 })(XMLHttpRequest);
-
+/*
 // This enables ChromeDriver to pick up stack traces in the browser logs
 console.debug('injecting error stack logger');
 window.addEventListener("error", function (e) {
@@ -33,5 +33,5 @@ window.addEventListener("error", function (e) {
   // console.error('error stack:', e.error.stack.toString());
   console.error('error stack: ' + e.error.stack.toString());
 });
-
+*/
 console.debug('finished injecting');
