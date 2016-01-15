@@ -29,7 +29,9 @@
 // This enables ChromeDriver to pick up stack traces in the browser logs
 console.debug('injecting error stack logger');
 window.addEventListener("error", function (e) {
-  console.error('error stack:', e.error.stack.toString());
+  // For some reason, this form (with a comma) won't let WebDriver see the stack trace:
+  // console.error('error stack:', e.error.stack.toString());
+  console.error('error stack: ' + e.error.stack.toString());
 });
 
 console.debug('finished injecting');
