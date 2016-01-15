@@ -32,6 +32,9 @@ import org.zanata.rest.dto.stats.contribution.BaseContributionStatistic;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
 import org.zanata.rest.dto.stats.contribution.LocaleStatistics;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -54,8 +57,7 @@ public class MockStatisticsResource implements StatisticsResource {
         stats.setId(id);
         for (String locale : locales) {
             stats.addStats(new TranslationStatistics(new TransUnitCount(
-                    100, 0,
-                    0, 100, 0), locale.trim()));
+                    100, 0, 0, 100, 0), locale.trim()));
         }
         return stats;
     }
@@ -70,12 +72,19 @@ public class MockStatisticsResource implements StatisticsResource {
     @Override
     public ContributionStatistics getContributionStatistics(String projectSlug,
             String versionSlug, String username, String dateRange, boolean includeAutomatedEntry) {
+
+        BaseContributionStatistic transStats = new BaseContributionStatistic(100, 90, 100, 0);
+        BaseContributionStatistic reviewStats = new BaseContributionStatistic(100, 0, 0, 10);
+
+        LocaleStatistics localeStatistics =
+            new LocaleStatistics(new LocaleId("zh"), transStats, reviewStats);
+
+        List<LocaleStatistics> localeStatisticsList = new ArrayList<>();
+        localeStatisticsList.add(localeStatistics);
+
         ContributionStatistics contributionStatistics =
-                new ContributionStatistics();
-        LocaleStatistics localeStatistics = new LocaleStatistics();
-        localeStatistics.put(new LocaleId("zh"), new BaseContributionStatistic(
-                100, 90, 100, 0));
-        contributionStatistics.put(username, localeStatistics);
+            new ContributionStatistics(username, localeStatisticsList);
+
         return contributionStatistics;
     }
 }

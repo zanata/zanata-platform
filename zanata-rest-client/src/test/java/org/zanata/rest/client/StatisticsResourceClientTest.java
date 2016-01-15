@@ -74,7 +74,7 @@ public class StatisticsResourceClientTest {
         ContributionStatistics statistics =
                 client.getContributionStatistics("about-fedora", "master",
                         "pahuang", "2014-10-01..2014-11-10", false);
-        assertThat(statistics, Matchers.hasKey("pahuang"));
+        assertThat(statistics.getUsername(), Matchers.equalTo("pahuang"));
     }
 }
 
