@@ -28,7 +28,6 @@
     <extension module="org.wildfly.extension.undertow"/>
   </extensions>
   <system-properties>
-    <property name="zanata.javaScriptTestHelper" value="true" />
     <property name="jboss.as.management.blocking.timeout" value="1000"/>
   </system-properties>
   <management>
