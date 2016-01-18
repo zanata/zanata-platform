@@ -44,20 +44,23 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class HasEmailRule extends ExternalResource {
+    private static final Object wiserLock = new Object();
     private volatile static Wiser wiser;
 
     @Override
     protected void before() throws Throwable {
         super.before();
-        if (HasEmailRule.wiser == null) {
-            String port = PropertiesHolder.getProperty("smtp.port");
-            int portNum = Integer.parseInt(port);
-            HasEmailRule.wiser = new Wiser(portNum);
-            HasEmailRule.wiser.getServer().setBindAddress(
-                    InetAddress.getByName("127.0.0.1"));
-            HasEmailRule.wiser.start();
-            // NB we never call wiser.stop() because we want the email
-            // server to stay running for all tests in this VM
+        synchronized (wiserLock) {
+            if (HasEmailRule.wiser == null) {
+                String port = PropertiesHolder.getProperty("smtp.port");
+                int portNum = Integer.parseInt(port);
+                HasEmailRule.wiser = new Wiser(portNum);
+                HasEmailRule.wiser.getServer().setBindAddress(
+                        InetAddress.getByName("127.0.0.1"));
+                HasEmailRule.wiser.start();
+                // NB we never call wiser.stop() because we want the email
+                // server to stay running for all tests in this VM
+            }
         }
     }
 
