@@ -21,7 +21,7 @@
 package org.zanata.feature.account;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Rule;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.subethamail.wiser.WiserMessage;
@@ -47,8 +47,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class InactiveUserLoginTest extends ZanataTestCase {
 
-    @Rule
-    public HasEmailRule hasEmailRule = new HasEmailRule();
+    @ClassRule
+    public static final HasEmailRule hasEmailRule = new HasEmailRule();
 
     @Feature(summary = "The user needs to verify their account before they may " +
             "log in",
