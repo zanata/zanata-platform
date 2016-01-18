@@ -44,7 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ContactAdminTest extends ZanataTestCase {
 
     @ClassRule
-    public static HasEmailRule emailRule = new HasEmailRule();
+    public static final HasEmailRule emailRule = new HasEmailRule();
 
     @Feature(summary = "The user can contact the site administrator",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 181717)

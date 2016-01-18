@@ -42,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ContactLanguageTeamTest extends ZanataTestCase {
 
     @ClassRule
-    public static HasEmailRule emailRule = new HasEmailRule();
+    public static final HasEmailRule emailRule = new HasEmailRule();
 
     @Feature(summary = "The user can contact a language team coordinator",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)

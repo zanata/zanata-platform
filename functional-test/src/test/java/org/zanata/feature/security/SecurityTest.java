@@ -46,7 +46,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SecurityTest extends ZanataTestCase {
 
     @ClassRule
-    public static HasEmailRule hasEmailRule = new HasEmailRule();
+    public static final HasEmailRule hasEmailRule = new HasEmailRule();
 
     @Feature(summary = "The user can log in",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86815)

@@ -44,7 +44,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ManageUsersTest extends ZanataTestCase {
 
     @ClassRule
-    public static HasEmailRule emailRule = new HasEmailRule();
+    public static final HasEmailRule emailRule = new HasEmailRule();
 
     private DashboardBasePage dashboardPage;
 

@@ -44,7 +44,7 @@ import static org.zanata.util.HasEmailRule.getEmailContent;
 public class JoinLanguageTeamTest extends ZanataTestCase {
 
     @ClassRule
-    public static HasEmailRule hasEmailRule = new HasEmailRule();
+    public static final HasEmailRule hasEmailRule = new HasEmailRule();
 
     @Feature(summary = "The administrator can add a member to a language team",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 181703)

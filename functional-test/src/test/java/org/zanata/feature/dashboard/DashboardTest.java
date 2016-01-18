@@ -47,7 +47,7 @@ import static org.zanata.util.ZanataRestCaller.buildTextFlow;
 public class DashboardTest extends ZanataTestCase {
 
     @ClassRule
-    public static HasEmailRule emailRule = new HasEmailRule();
+    public static final HasEmailRule emailRule = new HasEmailRule();
 
     private DashboardBasePage dashboard;
 
