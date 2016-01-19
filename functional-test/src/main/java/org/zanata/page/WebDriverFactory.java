@@ -203,22 +203,19 @@ public enum WebDriverFactory {
                 log.error(logString);
                 if ((firstException == null || !firstException.isErrorLog()) && !ignorable(msg)) {
                     firstException = new WebDriverLogException(level,
-                            logString);
+                            logString, driver.getPageSource());
                 }
             } else if (level.intValue() >= Level.WARNING.intValue()) {
                 log.warn(logString);
                 if ((throwIfWarn && firstException == null) && !ignorable(msg)) {
                     firstException = new WebDriverLogException(logEntry.getLevel(),
-                            logString);
+                            logString, driver.getPageSource());
                 }
             } else if (level.intValue() >= Level.INFO.intValue()) {
                 log.info(logString);
             } else {
                 log.debug(logString);
             }
-        }
-        if (logCount == 0) {
-            log.info("no messages found for LogType.{}", type);
         }
         if (throwIfWarn && firstException != null) {
             throw firstException;

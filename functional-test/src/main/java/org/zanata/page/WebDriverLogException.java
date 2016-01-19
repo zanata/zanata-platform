@@ -28,8 +28,9 @@ import java.util.logging.Level;
 public class WebDriverLogException extends RuntimeException {
     private final boolean errorLog;
 
-    public WebDriverLogException(Level logLevel, String logMessage) {
-        super(logLevel + ": " + logMessage);
+    public WebDriverLogException(Level logLevel, String logMessage,
+            String pageSource) {
+        super(logLevel + ": " + logMessage + "\nPage source follows:\n" + pageSource);
         this.errorLog = (logLevel.intValue() >= Level.SEVERE.intValue());
     }
 
