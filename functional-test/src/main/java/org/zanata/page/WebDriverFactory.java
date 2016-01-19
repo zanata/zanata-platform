@@ -23,16 +23,20 @@ package org.zanata.page;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 
 import com.google.common.reflect.AbstractInvocationHandler;
+import net.lightbody.bmp.BrowserMobProxy;
+import net.lightbody.bmp.BrowserMobProxyServer;
+import net.lightbody.bmp.client.ClientUtil;
+import net.lightbody.bmp.filters.ResponseFilterAdapter;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -61,6 +65,7 @@ import org.zanata.util.TestEventForScreenshotListener;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import static java.lang.reflect.Proxy.newProxyInstance;
 import static org.zanata.util.Constants.webDriverType;
 import static org.zanata.util.Constants.webDriverWait;
 import static org.zanata.util.Constants.zanataInstance;
@@ -270,7 +275,7 @@ public enum WebDriverFactory {
     @ParametersAreNonnullByDefault
     public void registerLogListener() {
         if (logListener == null) {
-            logListener = (WebDriverEventListener) Proxy.newProxyInstance(
+            logListener = (WebDriverEventListener) newProxyInstance(
                     WebDriverEventListener.class.getClassLoader(),
                     new Class<?>[]{ WebDriverEventListener.class },
                     new AbstractInvocationHandler() {
@@ -319,6 +324,21 @@ public enum WebDriverFactory {
 
         enableLogging(capabilities);
 
+        // start the proxy
+        BrowserMobProxy proxy = new BrowserMobProxyServer();
+        proxy.start(0);
+
+        proxy.addFirstHttpFilterFactory(new ResponseFilterAdapter.FilterSource(
+                (response, contents, messageInfo) -> {
+                    // TODO fail test if response >= 500?
+                    if (response.getStatus().code() >= 400) {
+                        log.warn("Response {} for URI {}", response.getStatus(), messageInfo.getOriginalRequest().getUri());
+                    } else {
+                        log.info("Response {} for URI {}", response.getStatus(), messageInfo.getOriginalRequest().getUri());
+                    }
+                }, 0));
+        Proxy seleniumProxy = ClientUtil.createSeleniumProxy(proxy);
+        capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
         try {
             driverService.start();
         } catch (IOException e) {
