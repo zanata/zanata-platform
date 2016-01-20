@@ -167,4 +167,8 @@ public class DatabaseBackedConfig implements Serializable {
     public String getMaxFilesPerUpload() {
         return getConfigValue(HApplicationConfiguration.KEY_MAX_FILES_PER_UPLOAD);
     }
+
+    public boolean isDisplayUserEmail() {
+        return Boolean.valueOf(getConfigValue(HApplicationConfiguration.KEY_DISPLAY_USER_EMAIL));
+    }
 }

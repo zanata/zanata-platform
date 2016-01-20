@@ -114,6 +114,11 @@ public class ServerConfigurationBean implements Serializable {
 
     @Getter
     @Setter
+    private boolean displayUserEmail;
+    private PropertyWithKey<Boolean> displayUserEmailProperty = new PropertyWithKey<Boolean>("displayUserEmail", KEY_DISPLAY_USER_EMAIL);
+
+    @Getter
+    @Setter
     private String logDestinationEmails;
 
     @Getter
@@ -168,6 +173,7 @@ public class ServerConfigurationBean implements Serializable {
             new PropertyWithKey<String>("maxConcurrentRequestsPerApiKey", KEY_MAX_CONCURRENT_REQ_PER_API_KEY),
             new PropertyWithKey<String>("maxActiveRequestsPerApiKey", KEY_MAX_ACTIVE_REQ_PER_API_KEY),
             new PropertyWithKey<String>("maxFilesPerUpload", KEY_MAX_FILES_PER_UPLOAD),
+            new PropertyWithKey<String>("displayUserEmail", KEY_DISPLAY_USER_EMAIL),
             homeContentProperty
     );
 

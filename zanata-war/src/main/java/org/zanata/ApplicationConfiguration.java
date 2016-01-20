@@ -430,4 +430,8 @@ public class ApplicationConfiguration implements Serializable {
                         defaultAnonymousSessionTimeoutMinutes * 60);
         }
     }
+
+    public boolean isDisplayUserEmail() {
+        return databaseBackedConfig.isDisplayUserEmail();
+    }
 }

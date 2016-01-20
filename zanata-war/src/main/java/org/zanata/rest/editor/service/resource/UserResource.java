@@ -53,18 +53,5 @@ public interface UserResource {
             MediaType.APPLICATION_JSON })
     @Path("/{username:[a-z\\d_]{3,20}}")
     public Response getUserInfo(@PathParam("username") String username);
-
-    /**
-     * Generate {@link org.zanata.rest.dto.User} object from username
-     *
-     * @param username
-     */
-    public User generateUser(String username);
-
-    /**
-     * Generate {@link org.zanata.rest.dto.User} object from HAccount
-     *
-     * @param username
-     */
-    public User transferToUser(HAccount account, boolean includeEmail);
 }
+

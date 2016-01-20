@@ -67,16 +67,21 @@
       <ui:fragment
         rendered="#{not empty cc.attrs.filterActionBean.currentPage}">
         <ul class="list--slat">
-          <ui:repeat value="#{cc.attrs.filterActionBean.currentPage}"
-            var="maintainer">
+          <ui:repeat value="#{cc.attrs.filterActionBean.currentPage}" var="maintainer">
             <li class="l--pad-all-half">
-            <span class="w--r-1 bx--round l--push-right-quarter">
-              <img
-                src="#{gravatarServiceImpl.getUserImageUrl(48, maintainer.email)}"
-                alt="#{maintainer.name}"/>
-            </span>
-              #{maintainer.name}
-              <span class="txt--meta">@#{maintainer.account.username}</span>
+              <a href="#{request.contextPath}/profile/view/#{maintainer.account.username}" class="bx--block list__item__info">
+                <h3 class="list__title">
+                  <span class="w--r-1 bx--round l--push-right-quarter">
+                    <img
+                      src="#{gravatarServiceImpl.getUserImageUrl(48, maintainer.email)}"
+                      alt="#{maintainer.name}"/>
+                  </span>
+                  #{maintainer.name}
+                </h3>
+                <span class="txt--meta">
+                    #{maintainer.account.username}
+                </span>
+              </a>
             </li>
           </ui:repeat>
         </ul>
