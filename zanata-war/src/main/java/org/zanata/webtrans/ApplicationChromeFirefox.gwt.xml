@@ -9,6 +9,7 @@
   <extend-property name="log_level" values="DEBUG" />
   <set-property name="log_level" value="DEBUG" />
   <set-property name="user.agent" value="gecko1_8,safari" />
+  <set-property name="compiler.useSourceMaps" value="true" />
 
   <!-- support gwt super dev mode -->
   <add-linker name="xsiframe" />

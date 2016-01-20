@@ -8,6 +8,7 @@
   <set-property name="locale" value="default" />
   <extend-property name="log_level" values="DEBUG" />
   <set-property name="log_level" value="DEBUG" />
+  <set-property name="compiler.useSourceMaps" value="true" />
 
   <!-- support gwt super dev mode -->
   <add-linker name="xsiframe" />
