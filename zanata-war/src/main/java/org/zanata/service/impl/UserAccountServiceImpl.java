@@ -89,10 +89,8 @@ public class UserAccountServiceImpl implements UserAccountService {
             + account.getPerson().getName() + System.currentTimeMillis()));
 
         account.setAccountResetPasswordKey(key);
-        accountResetPasswordKeyDAO.makePersistent(key);
+        key = accountResetPasswordKeyDAO.makePersistent(key);
 
-        log.info("Sent password reset key to {} ({})", account.getPerson()
-                .getName(), account.getUsername());
         return key;
     }
 
