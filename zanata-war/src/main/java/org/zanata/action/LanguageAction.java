@@ -32,6 +32,7 @@ import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.repository.LocaleRepository;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.model.LanguageRequest;
 import org.zanata.model.LocaleRole;
@@ -79,6 +80,9 @@ public class LanguageAction implements Serializable {
 
     @Inject
     private LocaleDAO localeDAO;
+
+    @Inject
+    private LocaleRepository localeRepo;
 
     @Inject
     private PersonDAO personDAO;
@@ -263,7 +267,7 @@ public class LanguageAction implements Serializable {
         }
         hLocale.setDisplayName(hLocale.getDisplayName().trim());
         hLocale.setNativeName(hLocale.getNativeName().trim());
-        localeDAO.makePersistent(getLocale());
+        localeRepo.save(getLocale());
         facesMessages.addGlobal(msgs.format("jsf.language.updated", getLocale()
             .getLocaleId()));
     }

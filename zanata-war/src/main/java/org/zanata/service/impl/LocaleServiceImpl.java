@@ -20,10 +20,8 @@
  */
 package org.zanata.service.impl;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +34,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.LocaleDAO;
+import org.zanata.repository.LocaleRepository;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -63,7 +61,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestScoped
 @Slf4j
 public class LocaleServiceImpl implements LocaleService {
-    private LocaleDAO localeDAO;
+    private LocaleRepository localeRepo;
 
     private ProjectDAO projectDAO;
 
@@ -78,10 +76,10 @@ public class LocaleServiceImpl implements LocaleService {
     public LocaleServiceImpl() {
     }
 
-    public LocaleServiceImpl(LocaleDAO localeDAO, ProjectDAO projectDAO,
+    public LocaleServiceImpl(LocaleRepository localeRepo, ProjectDAO projectDAO,
             ProjectIterationDAO projectIterationDAO, PersonDAO personDAO,
             TextFlowTargetDAO textFlowTargetDAO, VersionGroupDAO versionGroupDAO) {
-        setLocaleDAO(localeDAO);
+        setLocaleRepository(localeRepo);
         setProjectDAO(projectDAO);
         setProjectIterationDAO(projectIterationDAO);
         setPersonDAO(personDAO);
@@ -105,8 +103,8 @@ public class LocaleServiceImpl implements LocaleService {
     }
 
     @Inject
-    public void setLocaleDAO(LocaleDAO localeDAO) {
-        this.localeDAO = localeDAO;
+    public void setLocaleRepository(LocaleRepository localeRepo) {
+        this.localeRepo = localeRepo;
     }
 
     @Inject
@@ -130,7 +128,7 @@ public class LocaleServiceImpl implements LocaleService {
     }
 
     public List<HLocale> getAllLocales() {
-        List<HLocale> hSupportedLanguages = localeDAO.findAll();
+        List<HLocale> hSupportedLanguages = localeRepo.findAll();
         if (hSupportedLanguages == null) {
             return Collections.EMPTY_LIST;
         }
@@ -146,17 +144,15 @@ public class LocaleServiceImpl implements LocaleService {
         entity.setLocaleId(localeId);
         entity.setActive(true);
         entity.setEnabledByDefault(enabledByDefault);
-        localeDAO.makePersistent(entity);
-        localeDAO.flush();
+        localeRepo.saveAndFlush(entity);
     }
 
     @Override
     public void disable(@Nonnull LocaleId localeId) {
-        HLocale entity = localeDAO.findByLocaleId(localeId);
+        HLocale entity = localeRepo.findByLocaleId(localeId);
         if (entity != null) {
             entity.setActive(false);
-            localeDAO.makePersistent(entity);
-            localeDAO.flush();
+            localeRepo.saveAndFlush(entity);
         }
     }
 
@@ -172,36 +168,35 @@ public class LocaleServiceImpl implements LocaleService {
     }
 
     public void enable(@Nonnull LocaleId localeId) {
-        HLocale entity = localeDAO.findByLocaleId(localeId);
+        HLocale entity = localeRepo.findByLocaleId(localeId);
         if (entity != null) {
             entity.setActive(true);
-            localeDAO.makePersistent(entity);
-            localeDAO.flush();
+            localeRepo.saveAndFlush(entity);
         }
     }
 
     public boolean localeExists(@Nonnull LocaleId locale) {
-        HLocale entity = localeDAO.findByLocaleId(locale);
+        HLocale entity = localeRepo.findByLocaleId(locale);
         return entity != null;
     }
 
     @Override
     public List<HLocale> getSupportedLocales() {
-        List<HLocale> activeLocales = localeDAO.findAllActive();
+        List<HLocale> activeLocales = localeRepo.findByActive();
         Collections.sort(activeLocales, ComparatorUtil.LOCALE_COMPARATOR);
         return activeLocales;
     }
 
     @Override
     public List<HLocale> getSupportedAndEnabledLocales() {
-        List<HLocale> locales = localeDAO.findAllActiveAndEnabledByDefault();
+        List<HLocale> locales = localeRepo.findAllActiveAndEnabledByDefault();
         Collections.sort(locales, ComparatorUtil.LOCALE_COMPARATOR);
         return locales;
     }
 
     @Override
     public boolean localeSupported(@Nonnull LocaleId locale) {
-        HLocale entity = localeDAO.findByLocaleId(locale);
+        HLocale entity = localeRepo.findByLocaleId(locale);
         return entity != null && entity.isActive();
     }
 
@@ -210,7 +205,7 @@ public class LocaleServiceImpl implements LocaleService {
     HLocale validateLocaleByProject(@Nonnull LocaleId locale,
             @Nonnull String project) throws ZanataServiceException {
         List<HLocale> allList = getSupportedLanguageByProject(project);
-        HLocale hLocale = localeDAO.findByLocaleId(locale);
+        HLocale hLocale = localeRepo.findByLocaleId(locale);
         if (hLocale == null || !hLocale.isActive()) {
             throw new ZanataServiceException("Locale " + locale.getId()
                     + " is not enabled on this server. Please contact admin.",
@@ -231,7 +226,7 @@ public class LocaleServiceImpl implements LocaleService {
             throws ZanataServiceException {
         List<HLocale> allList =
                 getSupportedLanguageByProjectIteration(project, iterationSlug);
-        HLocale hLocale = localeDAO.findByLocaleId(locale);
+        HLocale hLocale = localeRepo.findByLocaleId(locale);
         if (hLocale == null || !hLocale.isActive()) {
             throw new ZanataServiceException("Locale " + locale.getId()
                     + " is not enabled on this server. Please contact admin.",
@@ -260,7 +255,7 @@ public class LocaleServiceImpl implements LocaleService {
 
     @Override
     public HLocale getByLocaleId(@Nonnull LocaleId locale) {
-        return localeDAO.findByLocaleId(locale);
+        return localeRepo.findByLocaleId(locale);
     }
 
     @Override
@@ -293,7 +288,7 @@ public class LocaleServiceImpl implements LocaleService {
         if (proj != null && proj.isOverrideLocales()) {
             return new ArrayList<HLocale>(proj.getCustomizedLocales());
         }
-        return localeDAO.findAllActiveAndEnabledByDefault();
+        return localeRepo.findAllActiveAndEnabledByDefault();
     }
 
     @Override
@@ -382,14 +377,14 @@ public class LocaleServiceImpl implements LocaleService {
         for (String op : var.keySet()) {
             String[] list = op.split("\\[");
             String seVar = list[1].split("\\]")[0];
-            HLocale entity = localeDAO.findByLocaleId(new LocaleId(seVar));
+            HLocale entity = localeRepo.findByLocaleId(new LocaleId(seVar));
             result.add(entity);
         }
         return result;
     }
 
     public HLocale getSourceLocale(String projectSlug, String iterationSlug) {
-        return localeDAO.findByLocaleId(new LocaleId("en-US"));
+        return localeRepo.findByLocaleId(new LocaleId("en-US"));
     }
 
     @Override

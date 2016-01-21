@@ -33,7 +33,7 @@
     <!-- Applies to surefire and failsafe (if enabled) -->
     <failIfNoTests>true</failIfNoTests>
 
-    <deltaspike.version>1.5.1</deltaspike.version>
+    <deltaspike.version>1.5.2</deltaspike.version>
     <cdi.runtime>runtime</cdi.runtime>
     <cdi.compile>compile</cdi.compile>
     <picketlink.version>2.5.4.SP4</picketlink.version>
@@ -225,6 +225,30 @@
       <dependency>
         <groupId>org.apache.deltaspike.modules</groupId>
         <artifactId>deltaspike-scheduler-module-impl</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>${cdi.runtime}</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-partial-bean-module-api</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>${cdi.compile}</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-partial-bean-module-impl</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>${cdi.runtime}</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-data-module-api</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>${cdi.compile}</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-data-module-impl</artifactId>
         <version>${deltaspike.version}</version>
         <scope>${cdi.runtime}</scope>
       </dependency>
