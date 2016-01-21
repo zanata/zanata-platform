@@ -24,14 +24,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.enterprise.context.RequestScoped;
-import javax.faces.context.FacesContext;
 import javax.security.auth.login.LoginException;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.commons.lang.StringUtils;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -73,6 +71,7 @@ public class ValidateEmailAction implements Serializable {
 
     @Inject
     private UrlUtil urlUtil;
+
     @Getter
     @Setter
     private String activationKey;
@@ -85,8 +84,6 @@ public class ValidateEmailAction implements Serializable {
     @Transactional
     @CheckLoggedIn
     public void validate() throws LoginException {
-        String returnUrl = "/home.xhtml";
-
         if (activationKey != null && !activationKey.isEmpty()) {
             HPersonEmailValidationKey entry =
                     emailChangeService.getActivationKey(activationKey);
@@ -95,39 +92,40 @@ public class ValidateEmailAction implements Serializable {
                         + activationKey);
             }
 
-            String checkResult = checkExpiryDate(entry.getCreationDate());
-
-            if (StringUtils.isEmpty(checkResult)) {
-                HPerson person = entry.getPerson();
-                HAccount account = person.getAccount();
-                if (!account.getUsername().equals(
-                        identity.getCredentials().getUsername())) {
-                    throw new LoginException();
-                }
-
-                person.setEmail(entry.getEmail());
-                account.setEnabled(true);
-                personDAO.makePersistent(person);
-                personDAO.flush();
-                emailChangeService.removeEntry(entry);
-                facesMessages.addGlobal(
-                        "You have successfully changed your email account.");
-                log.info("update email address to {}  successfully",
-                        entry.getEmail());
-            } else {
-                returnUrl = checkResult;
+            if(isExpiredDate(entry.getCreationDate())) {
+                urlUtil.redirectTo(urlUtil.dashboardUrl());
             }
+
+            HPerson person = entry.getPerson();
+            HAccount account = person.getAccount();
+            if (!account.getUsername().equals(
+                    identity.getCredentials().getUsername())) {
+                throw new LoginException();
+            }
+
+            person.setEmail(entry.getEmail());
+            account.setEnabled(true);
+            personDAO.makePersistent(person);
+            personDAO.flush();
+            emailChangeService.removeEntry(entry);
+
+            facesMessages.addGlobal(
+                "You have successfully changed your email account.");
+
+            log.info("update email address to {} successfully",
+                entry.getEmail());
         }
-        urlUtil.redirectTo(returnUrl);
+        urlUtil.redirectTo(urlUtil.home());
     }
 
-    private String checkExpiryDate(Date createdDate) {
+    private boolean isExpiredDate(Date createdDate) {
         if (emailChangeService.isExpired(createdDate, LINK_ACTIVE_DAYS)) {
             log.info("Creation date expired:" + createdDate);
+
             facesMessages.addGlobal(SEVERITY_ERROR,
                     "Link expired. Please update your email again.");
-            return urlUtil.dashboardUrl();
+            return true;
         }
-        return "";
+        return false;
     }
 }

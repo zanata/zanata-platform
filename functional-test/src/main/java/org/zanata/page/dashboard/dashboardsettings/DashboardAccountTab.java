@@ -43,7 +43,7 @@ public class DashboardAccountTab extends DashboardBasePage {
             "This email address is already taken";
 
     private By emailField = By.id("email-update-form:emailField:input:email");
-    private By updateEmailButton = By.id("email-update-form:updateEmailButton");
+    private By updateEmailButton = By.linkText("Update email");
     private By oldPasswordField = By.id("passwordChangeForm:oldPasswordField:input:oldPassword");
     private By newPasswordField = By.id("passwordChangeForm:newPasswordField:input:newPassword");
     private By changePasswordButton = By.cssSelector("button[id^='passwordChangeForm:changePasswordButton']");

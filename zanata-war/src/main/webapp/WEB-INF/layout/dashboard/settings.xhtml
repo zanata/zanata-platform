@@ -64,15 +64,10 @@
                 </h:inputText>
               </zanata:decorate>
           </div>
-          <input id="updateEmailButton" type="submit"
-            value="Update email"
-            action="#{userSettingsAction.updateEmail}"
-            render="email-update-form"
-            status="update-email-loader"
-            styleClass="button" jsfc="a4j:commandButton"/>
-          <a4j:status name="update-email-loader">
-            <f:facet name="start"><zanata:loader layout="inline" type="loader--small"/></f:facet>
-          </a4j:status>
+          <zanata:ajax-command-button action="#{userSettingsAction.updateEmail()}" styleClass="button"
+            render="email-update-form" id="updateEmailButton">
+            #{msgs['jsf.UpdateEmail']}
+          </zanata:ajax-command-button>
         </h:form>
         <hr/>
         <ui:fragment rendered="#{applicationConfiguration.internalAuth}">
