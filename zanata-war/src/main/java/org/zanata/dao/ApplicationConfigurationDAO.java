@@ -1,12 +1,14 @@
 package org.zanata.dao;
 
 import org.hibernate.Session;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.model.HApplicationConfiguration;
 
 @Named("applicationConfigurationDAO")
 
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class ApplicationConfigurationDAO extends
         AbstractDAOImpl<HApplicationConfiguration, Long> {
 
