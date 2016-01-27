@@ -45,4 +45,12 @@ public class AccountResetPasswordKeyDAO extends
             .setLong("accountId", accountId)
             .setComment("AccountResetPasswordKeyDAO.findByAccount").uniqueResult();
     }
+
+    public String getUsername(String keyHash) {
+        return (String) getSession()
+            .createQuery(
+                "select key.account.username from HAccountResetPasswordKey key where key.keyHash = :keyHash")
+            .setParameter("keyHash", keyHash)
+            .setComment("AccountResetPasswordKeyDAO.getUsername").uniqueResult();
+    }
 }

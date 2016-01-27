@@ -7,9 +7,12 @@ import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.validator.constraints.NotEmpty;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.zanata.dao.AccountResetPasswordKeyDAO;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.exception.NotLoggedInException;
 import org.zanata.ApplicationConfiguration;
@@ -37,6 +40,9 @@ public class PasswordResetAction implements Serializable {
 
     @Inject
     private Messages msgs;
+
+    @Inject
+    private AccountResetPasswordKeyDAO accountResetPasswordKeyDAO;
 
     @Inject
     private ApplicationConfiguration applicationConfiguration;
@@ -98,27 +104,31 @@ public class PasswordResetAction implements Serializable {
 
     private boolean passwordChanged;
 
-//    @End /* TODO [CDI] commented out end conversation. verify it still work */
+    @Transactional
     public String changePassword() {
-
+        // need to get username from DAO due to lazy loading of account in key
+        String username =
+            accountResetPasswordKeyDAO.getUsername(key.getKeyHash());
         if (!validatePasswordsMatch())
             return null;
+
+        key = entityManager
+            .find(HAccountResetPasswordKey.class, getActivationKey());
+        entityManager.remove(key);
+        entityManager.flush();
 
         new AbstractRunAsOperation() {
             public void execute() {
                 try {
                     passwordChanged =
-                            identityManager.changePassword(getKey()
-                                    .getAccount().getUsername(), getPassword());
+                        identityManager.changePassword(username, getPassword());
                 } catch (AuthorizationException | NotLoggedInException e) {
                     passwordChanged = false;
                     facesMessages.addGlobal(
-                            "Error changing password: " + e.getMessage());
+                        "Error changing password: " + e.getMessage());
                 }
             }
         }.addRole("admin").run();
-
-        entityManager.remove(getKey());
 
         if (passwordChanged) {
             facesMessages

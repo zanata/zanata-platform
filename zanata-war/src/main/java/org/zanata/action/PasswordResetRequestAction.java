@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.validator.constraints.NotEmpty;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -58,6 +59,7 @@ public class PasswordResetRequestAction implements Serializable {
     private HAccount account;
 
 
+    @Transactional
     public String requestReset() {
         if(getAccount() == null) {
             return getAccountNoFoundMessage();
