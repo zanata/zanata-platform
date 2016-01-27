@@ -32,9 +32,14 @@ import javax.inject.Inject;
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
+
+import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.i18n.Messages;
+import org.zanata.model.HAccount;
+import org.zanata.model.HAccountActivationKey;
+import org.zanata.model.HPerson;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.service.EmailService;
 import org.zanata.service.UserAccountService;
@@ -78,6 +83,12 @@ public class UserAction implements Serializable {
 
     @Inject
     private PersonDAO personDAO;
+
+    @Inject
+    private AccountDAO accountDAO;
+
+    @Inject
+    private AccountActivationKeyDAO accountActivationKeyDAO;
 
     private String originalUsername;
 
@@ -135,6 +146,7 @@ public class UserAction implements Serializable {
         originalUsername = username;
     }
 
+    @Transactional
     public String save() {
         boolean usernameChanged = false;
         String newUsername = getUsername();
@@ -193,12 +205,25 @@ public class UserAction implements Serializable {
         }
 
         if (enabled) {
-            identityManager.enableUser(username);
+            enableAccount(username);
         } else {
             identityManager.disableUser(username);
         }
 
         return "success";
+    }
+
+    private void enableAccount(String username) {
+        identityManager.enableUser(username);
+        identityManager.grantRole(username, "user");
+
+        HAccount account = accountDAO.getByUsername(username);
+        HAccountActivationKey key = account.getAccountActivationKey();
+        if(key != null) {
+            account.setAccountActivationKey(null);
+            accountDAO.makePersistent(account);
+            accountActivationKeyDAO.makeTransient(key);
+        }
     }
 
     /**
