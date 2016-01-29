@@ -29,7 +29,7 @@ Contribute
 ----------
 
 - [Issue Tracker](https://zanata.atlassian.net)
-- [Source Code on GitHub](http://github.com/zanata-client)
+- [Source Code on GitHub](http://github.com/zanata/zanata-client)
 
 Release notes
 -------
