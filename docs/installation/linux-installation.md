@@ -143,7 +143,7 @@ There are two ways to install zanata-client, via `0install` or `dnf`.
 
 1. Install 0install
 
-        sudo apt-get install 0install
+        sudo apt-get install zeroinstall-injector
 
 2. Install Java runtime: 
 
