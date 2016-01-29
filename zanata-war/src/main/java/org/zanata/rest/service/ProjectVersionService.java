@@ -26,6 +26,7 @@ import com.google.common.base.Objects;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.jboss.resteasy.util.GenericType;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
@@ -103,6 +104,9 @@ public class ProjectVersionService implements ProjectVersionResource {
 
     @Inject
     private UserService userService;
+
+    @Inject
+    private ApplicationConfiguration applicationConfiguration;
 
     @Context
     private UriInfo uri;
@@ -255,9 +259,11 @@ public class ProjectVersionService implements ProjectVersionResource {
         List<HAccount> accountList = projectIterationDAO.getContributors(
             projectSlug, versionSlug, dateRangeObject);
 
+        boolean displayEmail = applicationConfiguration.isDisplayUserEmail();
+
         List<User> userList = Lists.newArrayList();
         userList.addAll(accountList.stream()
-            .map(account -> userService.transferToUser(account, false))
+            .map(account -> userService.transferToUser(account, displayEmail))
             .collect(Collectors.toList()));
 
 

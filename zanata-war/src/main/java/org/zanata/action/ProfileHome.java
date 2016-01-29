@@ -31,6 +31,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.rest.dto.User;
 import org.zanata.rest.editor.dto.Permission;
 import org.zanata.rest.editor.service.UserService;
@@ -64,23 +65,24 @@ public class ProfileHome implements Serializable {
     private User user;
 
     @Inject
-    ZanataIdentity identity;
+    private ZanataIdentity identity;
     @Inject @Authenticated
-    HAccount authenticatedAccount;
+    private HAccount authenticatedAccount;
     @Inject
-    PersonDAO personDAO;
+    private PersonDAO personDAO;
     @Inject
-    AccountDAO accountDAO;
+    private AccountDAO accountDAO;
     @Inject
-    Messages msgs;
+    private Messages msgs;
     @Inject
     private UserService userService;
     @Inject
     private FacesMessages jsfMessages;
+    @Inject
+    private ApplicationConfiguration applicationConfiguration;
 
     private void init() {
-        HAccount account;
-        account = accountDAO.getByUsername(username);
+        HAccount account = accountDAO. getByUsername(username);
         if (account == null) {
             jsfMessages.clear();
             jsfMessages.addGlobal(FacesMessage.SEVERITY_ERROR,
@@ -92,7 +94,12 @@ public class ProfileHome implements Serializable {
                 return;
             }
         }
-        user = userService.transferToUser(account, true);
+        user = userService.transferToUser(account, displayEmail());
+    }
+
+    private boolean displayEmail() {
+        return (applicationConfiguration.isDisplayUserEmail()
+                && identity.isLoggedIn()) || identity.hasRole("admin");
     }
 
     private HAccount useAuthenticatedAccount() {
@@ -106,10 +113,10 @@ public class ProfileHome implements Serializable {
     }
 
     public User getAuthenticatedUser() {
-        User authenticatedUser = new User();
         if(authenticatedAccount == null) {
-            return authenticatedUser;
+            return new User();
         }
+        //This is to get self information, email should be visible
         return userService.transferToUser(authenticatedAccount, true);
     }
 

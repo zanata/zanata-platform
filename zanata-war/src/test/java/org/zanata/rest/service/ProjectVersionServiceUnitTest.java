@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.common.ContentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -60,6 +61,8 @@ public class ProjectVersionServiceUnitTest {
     private LocaleService localeService;
     @Mock
     private UserService userService;
+    @Mock
+    private ApplicationConfiguration applicationConfiguration;
 
     @Before
     public void setUp() throws Exception {
@@ -67,7 +70,7 @@ public class ProjectVersionServiceUnitTest {
         service =
             new ProjectVersionService(textFlowDAO, documentDAO, null,
                 projectIterationDAO, localeService, request, etagUtil,
-                new ResourceUtils(), null, null, userService, null);
+                new ResourceUtils(), null, null, userService, applicationConfiguration, null);
 
     }
 

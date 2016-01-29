@@ -1,7 +1,6 @@
 package org.zanata.rest.editor.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import javax.ws.rs.core.Response;
@@ -10,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
@@ -26,6 +26,8 @@ public class UserServiceTest {
     private HAccount authenticatedAccount;
     @Mock
     private GravatarService gravatarService;
+    @Mock
+    private ApplicationConfiguration applicationConfiguration;
     private HPerson person;
 
     @Before
@@ -40,12 +42,12 @@ public class UserServiceTest {
         authenticatedAccount.setPerson(person);
         service =
                 new UserService(authenticatedAccount, gravatarService,
-                        accountDAO, personDAO);
+                        accountDAO, personDAO, applicationConfiguration);
     }
 
     @Test
     public void getMyInfoWillReturnNotFoundIfNotAuthenticated() {
-        service = new UserService(null, gravatarService, accountDAO, personDAO);
+        service = new UserService(null, gravatarService, accountDAO, personDAO, applicationConfiguration);
         Response response = service.getMyInfo();
         assertThat(response.getStatus()).isEqualTo(404);
     }
@@ -79,12 +81,31 @@ public class UserServiceTest {
         when(gravatarService.getUserImageUrl(GravatarService.USER_IMAGE_SIZE,
             person.getEmail())).thenReturn("imageurl");
 
+        testUser(false);
+    }
+
+    @Test
+    public void getUserInfoWillReturnInfoAboutThePersonWithoutEmail() {
+        when(accountDAO.getByUsername("a")).thenReturn(person.getAccount());
+        when(personDAO.findById(person.getId())).thenReturn(person);
+        when(gravatarService.getUserImageUrl(GravatarService.USER_IMAGE_SIZE,
+            person.getEmail())).thenReturn("imageurl");
+
+        testUser(true);
+    }
+
+    private void testUser(boolean includeEmail) {
+        when(applicationConfiguration.isDisplayUserEmail()).thenReturn(includeEmail);
         Response response = service.getUserInfo("a");
         assertThat(response.getStatus()).isEqualTo(200);
         assertThat(response.getEntity()).isInstanceOf(User.class);
 
         User user = (User) response.getEntity();
-        assertThat(user.getEmail()).isEqualTo(person.getEmail());
+        if(includeEmail) {
+            assertThat(user.getEmail()).isEqualTo(person.getEmail());
+        } else {
+            assertThat(user.getEmail()).isEqualTo(null);
+        }
         assertThat(user.getName()).isEqualTo(person.getName());
     }
 }

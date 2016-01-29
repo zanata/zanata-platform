@@ -32,6 +32,7 @@ var UserProfile = React.createClass({
       imageUrl = '',
       name = '',
       languageTeams = '',
+      email = '',
       username;
 
     if(authenticated) {
@@ -57,6 +58,19 @@ var UserProfile = React.createClass({
       imageUrl = user.imageUrl;
       name = user.name;
       languageTeams = user.languageTeams.join();
+      email = user.email;
+    }
+
+    if(email) {
+      var emailEle = <span class="txt--meta">({email})</span>
+    }
+
+    if (user.languageTeams) {
+      var langTeamsEle = (
+        <li id="profile-languages">
+        <i className="i i--language list__icon" title="Spoken languages"></i>
+        {languageTeams}
+      </li>)
     }
 
     return (
@@ -73,13 +87,9 @@ var UserProfile = React.createClass({
                 <li id="profile-username">
                   <i className="i i--user list__icon"
                     title="Username"></i>
-                  {username}
+                  {username} {emailEle}
                 </li>
-                <li id="profile-languages">
-                  <i className="i i--language list__icon"
-                    title="Spoken languages"></i>
-                  {languageTeams}
-                </li>
+                {langTeamsEle}
               </ul>
             </div>
           </div>
