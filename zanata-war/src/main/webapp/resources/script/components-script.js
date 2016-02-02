@@ -43,6 +43,15 @@ function updateStateFromUrl() {
 function changeBrowserUrl(url, refresh) {
   refresh = refresh || false;
 
+  if (window.dswh && window.dswh.windowId) {
+    var dswid = window.dswh.windowId;
+    if (url.indexOf('?') === -1) {
+      url = url + '?dswid=' + dswid;
+    } else {
+      url = url + '&dswid=' + dswid;
+    }
+  }
+
   var status = {
     path : url
   };
