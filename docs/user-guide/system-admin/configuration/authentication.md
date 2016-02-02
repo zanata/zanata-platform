@@ -226,6 +226,10 @@ It's possible to configure Zanata to use a single pre-defined Open Id authentica
       ...
 ```
 
+### Attribute Exchange
+
+By default Zanata will try to fetch the user's full name, email and username from the Open Id provider using [Attribute Exchange 1.0](https://openid.net/specs/openid-attribute-exchange-1_0.html) and [Simple Registration 1.1](https://openid.net/specs/openid-simple-registration-extension-1_0.html). If successful, Zanata will make suggestions when a new user signs up.
+
 ### Upgrading the Java security provider (for OpenID on Java 1.7)
 
 Java 1.7 is unable to connect to some websites, such as the [Fedora OpenID provider](https://id.fedoraproject.org/).  See [Fedora bug 1163501](https://bugzilla.redhat.com/show_bug.cgi?id=1163501) for details.

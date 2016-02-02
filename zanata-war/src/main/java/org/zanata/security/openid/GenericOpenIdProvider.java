@@ -20,9 +20,19 @@
  */
 package org.zanata.security.openid;
 
-import org.openid4java.message.MessageException;
-import org.openid4java.message.ParameterList;
-import org.openid4java.message.ax.FetchRequest;
+import com.google.common.collect.Sets;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import org.openid4java.message.AuthSuccess;
+import org.openid4java.message.MessageExtension;
+import org.openid4java.message.Parameter;
+import org.openid4java.message.ax.AxMessage;
+import org.openid4java.message.sreg.SRegMessage;
+
+import javax.enterprise.inject.Alternative;
+import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * Open Id Provider for most Open Id services.
@@ -30,7 +40,17 @@ import org.openid4java.message.ax.FetchRequest;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Alternative
 public class GenericOpenIdProvider implements OpenIdProvider {
+
+    @Setter(AccessLevel.PROTECTED)
+    @Getter(AccessLevel.PROTECTED)
+    private boolean sregEnabled = true;
+
+    @Setter(AccessLevel.PROTECTED)
+    @Getter(AccessLevel.PROTECTED)
+    private boolean aexEnabled = true;
+
     @Override
     public String getOpenId(String username) {
         return username; // The user name should be the open Id
@@ -42,18 +62,105 @@ public class GenericOpenIdProvider implements OpenIdProvider {
     }
 
     @Override
-    public void prepareRequest(FetchRequest req) {
-        try {
-            // Request email
-            req.addAttribute("email", "http://schema.openid.net/contact/email",
-                    true);
-        } catch (MessageException e) {
-            throw new RuntimeException(e);
+    public Collection<MessageExtension> createExtensions() {
+        HashSet<MessageExtension> extensions = Sets.newHashSet();
+
+        if(aexEnabled) {
+            AxMessage aexExt = new AxMessage();
+            aexExt.getParameters().set(new Parameter("mode", "fetch_request"));
+            aexExt.getParameters()
+                    .set(new Parameter("required", "email,fullname,nickname"));
+            aexExt.getParameters().set(new Parameter("type.email",
+                    "http://axschema.org/contact/email"));
+            aexExt.getParameters().set(new Parameter("type.fullname",
+                    "http://axschema.org/namePerson"));
+            aexExt.getParameters().set(new Parameter("type.nickname",
+                    "http://axschema.org/namePerson/friendly"));
+
+            extensions.add(aexExt);
         }
+
+        if(sregEnabled) {
+            SRegMessage sregExt = new SRegMessage();
+            // We use the 1.1 SREG spec
+            sregExt.setTypeUri(SRegMessage.OPENID_NS_SREG11);
+            sregExt.getParameters()
+                    .set(new Parameter("required", "email,fullname,nickname"));
+
+            extensions.add(sregExt);
+        }
+
+        return extensions;
     }
 
     @Override
-    public String getEmail(ParameterList params) {
-        return params.getParameterValue("openid.ext1.value.email");
+    public String getAliasForExtension(MessageExtension ext) {
+        if(ext instanceof AxMessage) {
+            return "ax";
+        } else if (ext instanceof SRegMessage) {
+            return "sreg";
+        }
+        return null;
+    }
+
+    private String getAttExchangeParameter(AuthSuccess authSuccess,
+            String parameterName) {
+        String paramValue = null;
+        if (authSuccess.hasExtension(AxMessage.OPENID_NS_AX)) {
+            // Get email from different possible parameters (single or multiple)
+            paramValue = authSuccess
+                    .getParameterValue("openid.ext1.value." + parameterName);
+            if (paramValue == null) {
+                paramValue = authSuccess.getParameterValue(
+                        "openid.ax.value." + parameterName + ".1");
+            }
+        }
+        return paramValue;
+    }
+
+    private String getSregParameter(AuthSuccess authSuccess,
+            String parameterName) {
+        String paramValue = null;
+        if (authSuccess.hasExtension(SRegMessage.OPENID_NS_SREG11)) {
+            paramValue = authSuccess
+                    .getParameterValue("openid.sreg." + parameterName);
+        }
+        return paramValue;
+    }
+
+    @Override
+    public String getEmail(AuthSuccess authSuccess) {
+        String email = null;
+        if(aexEnabled) {
+            email = getAttExchangeParameter(authSuccess, "email");
+        }
+        if(email == null && sregEnabled) {
+            email = getSregParameter(authSuccess, "email");
+        }
+        return email;
+    }
+
+    @Override
+    public String getUsername(AuthSuccess authSuccess) {
+        String username = null;
+        if(aexEnabled) {
+            username = getAttExchangeParameter(authSuccess, "nickname");
+        }
+        if(username == null && sregEnabled) {
+            username = getSregParameter(authSuccess, "nickname");
+        }
+        return username;
+    }
+
+    @Override
+    public String getFullName(AuthSuccess authSuccess) {
+        String fullName = null;
+        if(aexEnabled) {
+            fullName = getAttExchangeParameter(authSuccess, "fullname");
+        }
+        if(fullName == null && sregEnabled) {
+            fullName = getSregParameter(authSuccess, "fullname");
+        }
+        return fullName;
     }
 }

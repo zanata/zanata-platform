@@ -193,7 +193,6 @@ public class AuthenticationManager {
      * @return A String with the result of the operation.
      */
     public String openIdLogin() {
-        zanataOpenId.setProvider(credentials.getOpenIdProviderType());
         String loginResult = identity.login(AuthenticationType.OPENID);
         return loginResult;
     }

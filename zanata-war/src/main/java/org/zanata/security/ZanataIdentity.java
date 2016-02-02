@@ -417,14 +417,14 @@ public class ZanataIdentity implements Identity, Serializable {
                 }
             }
         } catch (LoginException ex) {
-            credentials.invalidate();
+            // Quiet login, exceptions are not displayed
         }
     }
 
     // based on org.jboss.seam.security.Identity.authenticate()
     private synchronized void authenticate() throws LoginException {
         // If we're already authenticated, then don't authenticate again
-        if (!isLoggedIn() && !credentials.isInvalid()) {
+        if (!isLoggedIn()) {
             principal = null;
             subject = new Subject();
             try {
@@ -626,7 +626,6 @@ public class ZanataIdentity implements Identity, Serializable {
     }
 
     private void handleLoginException(LoginException e) {
-        credentials.invalidate();
         removeCachedUserDetails();
 
         // used by org.zanata.security.FacesSecurityEvents.addLoginFailedMessage()

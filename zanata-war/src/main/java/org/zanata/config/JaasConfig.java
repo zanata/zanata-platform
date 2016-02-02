@@ -79,6 +79,8 @@ public class JaasConfig {
                 getAppConfigurationEntries(loginModuleName);
         if(entries != null) {
             for (AppConfigurationEntry e : entries) {
+                // This is poorly named, the getLoginModuleName method returns
+                // the class
                 if (e.getLoginModuleName().equals(loginModuleType.getName())) {
                     return e;
                 }

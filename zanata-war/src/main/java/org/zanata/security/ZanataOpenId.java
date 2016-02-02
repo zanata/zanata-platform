@@ -20,24 +20,15 @@
  */
 package org.zanata.security;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.List;
-
-import javax.faces.context.ExternalContext;
-import javax.servlet.http.HttpServletRequest;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.openid4java.OpenIDException;
 import org.openid4java.consumer.ConsumerManager;
 import org.openid4java.consumer.VerificationResult;
 import org.openid4java.discovery.DiscoveryInformation;
 import org.openid4java.discovery.Identifier;
 import org.openid4java.message.AuthRequest;
+import org.openid4java.message.AuthSuccess;
+import org.openid4java.message.MessageExtension;
 import org.openid4java.message.ParameterList;
-import org.openid4java.message.ax.FetchRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.ApplicationConfiguration;
@@ -45,7 +36,6 @@ import org.zanata.dao.AccountDAO;
 import org.zanata.events.LoginCompleted;
 import org.zanata.events.PostAuthenticateEvent;
 import org.zanata.model.HAccount;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.security.openid.FedoraOpenIdProvider;
 import org.zanata.security.openid.GenericOpenIdProvider;
@@ -57,11 +47,21 @@ import org.zanata.security.openid.OpenIdProvider;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.security.openid.YahooOpenIdProvider;
 import org.zanata.ui.faces.FacesMessages;
-import javax.enterprise.event.Event;
-
 import org.zanata.util.Contexts;
 import org.zanata.util.ServiceLocator;
 import org.zanata.util.UrlUtil;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Produces;
+import javax.faces.context.ExternalContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
 
 @Named("zanataOpenId")
 @javax.enterprise.context.SessionScoped
@@ -97,10 +97,12 @@ public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
     @Inject
     private UrlUtil urlUtil;
 
+    @Inject
+    private OpenIdProvider openIdProvider;
+
     private String id;
     private OpenIdAuthenticationResult authResult;
     private OpenIdAuthCallback callback;
-    private OpenIdProvider openIdProvider;
 
     private ConsumerManager manager;
     private DiscoveryInformation discovered;
@@ -138,12 +140,14 @@ public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
             // providerType
             AuthRequest authReq = manager.authenticate(discovered, returnToUrl);
 
-            // Attribute Exchange example: fetching the 'email' attribute
-            FetchRequest fetch = FetchRequest.createFetchRequest();
-            openIdProvider.prepareRequest(fetch);
+            Collection<MessageExtension> extensions =
+                    openIdProvider.createExtensions();
 
-            // attach the extension to the authentication request
-            authReq.addExtension(fetch);
+            // attach the extensions to the authentication request
+            for(MessageExtension ext : extensions) {
+                authReq.addExtension(ext,
+                        openIdProvider.getAliasForExtension(ext));
+            }
 
             return authReq.getDestinationUrl(true);
         } catch (OpenIDException e) {
@@ -176,8 +180,9 @@ public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
         try {
             // extract the parameters from the authentication response
             // (which comes in as a HTTP request from the OpenID providerType)
-            ParameterList response =
+            ParameterList respParams =
                     new ParameterList(httpReq.getParameterMap());
+            AuthSuccess authSuccess = AuthSuccess.createAuthSuccess(respParams);
 
             StringBuilder receivingURL = new StringBuilder(returnToUrl());
             String queryString = httpReq.getQueryString();
@@ -188,11 +193,11 @@ public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
             // verify the response; ConsumerManager needs to be the same
             // (static) instance used to place the authentication request
             VerificationResult verification =
-                    manager.verify(receivingURL.toString(), response,
+                    manager.verify(receivingURL.toString(), respParams,
                             discovered);
 
             // The OpenId provider cancelled the authentication
-            if ("cancel".equals(response.getParameterValue("openid.mode"))) {
+            if ("cancel".equals(respParams.getParameterValue("openid.mode"))) {
                 // TODO This should be done at a higher level. i.e. instead of
                 // returning a string, return an
                 // object that holds more information for the UI to render
@@ -205,10 +210,9 @@ public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
             if (verified != null) {
                 authResult = new OpenIdAuthenticationResult();
                 authResult.setAuthenticatedId(verified.getIdentifier());
-                authResult.setEmail(openIdProvider.getEmail(response)); // Get
-                                                                        // the
-                                                                        // email
-                                                                        // address
+                authResult.setEmail(openIdProvider.getEmail(authSuccess));
+                authResult.setFullName(openIdProvider.getFullName(authSuccess));
+                authResult.setUsername(openIdProvider.getUsername(authSuccess));
             }
 
             // invoke the callbacks
@@ -265,7 +269,6 @@ public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
 
     private void login(String username, OpenIdProviderType openIdProviderType,
             OpenIdAuthCallback callback) {
-        this.setProvider(openIdProviderType);
         String var = openIdProvider.getOpenId(username);
         setId(var);
         setCallback(callback);
@@ -339,33 +342,27 @@ public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
         return null;
     }
 
-    public void setProvider(OpenIdProviderType providerType) {
-        if (providerType != null) {
-            switch (providerType) {
+    @Produces
+    @RequestScoped
+    public OpenIdProvider getOpenIdProvider() {
+        switch (credentials.getOpenIdProviderType()) {
             case Fedora:
-                this.openIdProvider = new FedoraOpenIdProvider();
-                break;
+                return new FedoraOpenIdProvider();
 
             case Google:
-                this.openIdProvider = new GoogleOpenIdProvider();
-                break;
+                return new GoogleOpenIdProvider();
 
             case MyOpenId:
-                this.openIdProvider = new MyOpenIdProvider();
-                break;
+                return new MyOpenIdProvider();
 
             case Yahoo:
-                this.openIdProvider = new YahooOpenIdProvider();
-                break;
+                return new YahooOpenIdProvider();
 
             case Generic:
-                this.openIdProvider = new GenericOpenIdProvider();
-                break;
+                return new GenericOpenIdProvider();
 
             default:
-                this.openIdProvider = new GenericOpenIdProvider();
-                break;
-            }
+                return new GenericOpenIdProvider();
         }
     }
 }

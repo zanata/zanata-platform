@@ -66,22 +66,19 @@ public class NewProfileAction extends AbstractProfileAction implements Serializa
 
     @PostConstruct
     public void onCreate() {
+        AuthenticationType authType = identity.getCredentials().getAuthType();
         if (!identity.isPreAuthenticated()) {
             throw new AuthorizationException("Need to be in pre authenticated state");
         }
-        if (identity.getCredentials().getAuthType() != AuthenticationType.OPENID) {
+
+        if (authType != AuthenticationType.OPENID) {
             // Open id user names are url's so they don't make good defaults
             username = identity.getCredentials().getUsername();
-        }
-        String domain = applicationConfiguration.getDomainName();
-        if (domain == null) {
-            email = "";
         } else {
-            if (applicationConfiguration.isOpenIdAuth()) {
-                email = zanataOpenId.getAuthResult().getEmail();
-            } else {
-                email = identity.getCredentials().getUsername() + "@" + domain;
-            }
+            // Try to get the information from the openid provider
+            username = zanataOpenId.getAuthResult().getUsername();
+            name = zanataOpenId.getAuthResult().getFullName();
+            email = zanataOpenId.getAuthResult().getEmail();
         }
     }
 
