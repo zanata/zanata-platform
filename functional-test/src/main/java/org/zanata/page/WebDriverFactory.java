@@ -241,6 +241,9 @@ public enum WebDriverFactory {
      * @throws WebDriverLogException exception containing the first error message, if any
      */
     public void logLogs() {
+        // DeltaSpike's LAZY mode uses client-side redirects, which cause
+        // other scripts to abort loading in strange ways when dswid is
+        // missing/wrong. Revisit if we switch to CLIENTWINDOW mode.
         logLogs(false);
     }
 
