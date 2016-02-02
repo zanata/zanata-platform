@@ -26,27 +26,32 @@ import java.io.Serializable;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import com.google.common.collect.Lists;
+import org.apache.deltaspike.core.api.scope.GroupedConversation;
+import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.zanata.util.ServiceLocator;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Named("conversationScopeMessages")
-@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
+@GroupedConversationScoped
 
+// TODO use FacesMessages instead, where possible
 public class ConversationScopeMessages implements Serializable {
+
+    @Inject
+    private GroupedConversation conversation;
 
     private List<FacesMessage> messages = Lists.newArrayList();
 
-    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public void setMessage(FacesMessage.Severity severity, String message) {
         FacesMessage facesMessage = new FacesMessage(severity, message, null);
         setMessages(Lists.newArrayList(facesMessage));
     }
 
-    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public void setMessages(List<FacesMessage> messages) {
         this.messages = messages;
     }
@@ -54,6 +59,7 @@ public class ConversationScopeMessages implements Serializable {
     public List<FacesMessage> getAndClearMessages() {
         List<FacesMessage> tempMsgs = Lists.newArrayList(messages);
         messages.clear();
+        conversation.close();
         return tempMsgs;
     }
 

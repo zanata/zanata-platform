@@ -23,13 +23,11 @@ package org.zanata.action;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -38,13 +36,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.core.api.scope.ConversationGroup;
+import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 
 import javax.annotation.Nullable;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.DocumentType;
@@ -84,8 +83,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 @Named("versionHome")
-//@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
-@RequestScoped
+@GroupedConversationScoped
+@ConversationGroup(ProjectAndVersionSlug.class)
 @Slf4j
 public class VersionHome extends SlugHome<HProjectIteration> implements
     HasLanguageSettings, Serializable {

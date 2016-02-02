@@ -26,11 +26,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
-import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.event.ValueChangeEvent;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.core.api.scope.ConversationGroup;
+import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
@@ -64,13 +65,13 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Named("versionGroupHome")
-@RequestScoped
+@GroupedConversationScoped
+@ConversationGroup(VersionGroupSlug.class)
 public class VersionGroupHome extends SlugHome<HIterationGroup>
         implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -180,6 +181,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         return super.update();
     }
 
+    // TODO ask camunoz if this is still needed
     /**
      * This is for autocomplete components of which ConversationScopeMessages
      * will be null

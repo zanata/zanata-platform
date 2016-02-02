@@ -7,6 +7,9 @@ import lombok.Getter;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.deltaspike.core.api.scope.GroupedConversation;
+import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.dao.ProjectIterationDAO;
@@ -14,10 +17,13 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationArchiveService;
 
 @Named("projectIterationZipFileAction")
-@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
+@GroupedConversationScoped
 public class ProjectIterationZipFileAction implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @Inject
+    private GroupedConversation conversation;
 
     @Inject
     private AsyncTaskHandleManager asyncTaskHandleManager;
@@ -34,7 +40,6 @@ public class ProjectIterationZipFileAction implements Serializable {
     @Inject
     private TranslationArchiveService translationArchiveServiceImpl;
 
-    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public void prepareIterationZipFile(boolean isPoProject,
             String projectSlug, String versionSlug, String localeId) {
 
@@ -58,11 +63,11 @@ public class ProjectIterationZipFileAction implements Serializable {
         }
     }
 
-//    @End /* TODO [CDI] commented out end conversation. verify it still work */
     public void cancelFileDownload() {
-        if(zipFilePrepHandle != null) {
+        if (zipFilePrepHandle != null) {
             zipFilePrepHandle.cancel(true);
         }
+        conversation.close();
     }
     final DecimalFormat PERCENT_FORMAT = new DecimalFormat("###.##");
 

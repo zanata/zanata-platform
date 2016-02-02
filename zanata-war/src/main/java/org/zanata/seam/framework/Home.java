@@ -25,7 +25,6 @@ import org.zanata.util.ServiceLocator;
  *
  * @author Gavin King
  */
-//@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
 public abstract class Home<T, E> extends MutableController<T>
         implements Serializable {
     private static final Logger log = LoggerFactory.getLogger(Home.class);

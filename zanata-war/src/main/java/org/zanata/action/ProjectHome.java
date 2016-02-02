@@ -47,6 +47,8 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.core.api.scope.ConversationGroup;
+import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
@@ -93,8 +95,8 @@ import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 @Named("projectHome")
 @Slf4j
-//@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
-@RequestScoped
+@GroupedConversationScoped
+@ConversationGroup(ProjectSlug.class)
 public class ProjectHome extends SlugHome<HProject> implements
     HasLanguageSettings {
 

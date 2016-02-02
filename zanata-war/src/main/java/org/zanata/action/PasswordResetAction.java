@@ -7,6 +7,8 @@ import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.deltaspike.core.api.scope.GroupedConversation;
+import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.validator.constraints.NotEmpty;
 import javax.inject.Inject;
@@ -24,10 +26,13 @@ import org.zanata.seam.security.IdentityManager;
 import org.zanata.ui.faces.FacesMessages;
 
 @Named("passwordReset")
-@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
+@GroupedConversationScoped
 public class PasswordResetAction implements Serializable {
 
     private static final long serialVersionUID = -3966625589007754411L;
+
+    @Inject
+    private GroupedConversation conversation;
 
     @Inject
     private EntityManager entityManager;
@@ -79,27 +84,24 @@ public class PasswordResetAction implements Serializable {
 
     public void setActivationKey(String activationKey) {
         this.activationKey = activationKey;
-        key =
-                entityManager.find(HAccountResetPasswordKey.class,
+        key = entityManager.find(HAccountResetPasswordKey.class,
                         getActivationKey());
     }
 
-    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
+    // @Begin(join = true)
     public void validateActivationKey() {
         if (!applicationConfiguration.isInternalAuth()) {
             throw new AuthorizationException(
                     "Password reset is only available for server using internal authentication");
         }
-
-        if (getActivationKey() == null)
+        if (getActivationKey() == null) {
             throw new KeyNotFoundException();
-
-        key =
-                entityManager.find(HAccountResetPasswordKey.class,
-                        getActivationKey());
-
-        if (key == null)
+        }
+        key = entityManager.find(HAccountResetPasswordKey.class,
+                getActivationKey());
+        if (key == null) {
             throw new KeyNotFoundException();
+        }
     }
 
     private boolean passwordChanged;
@@ -130,6 +132,7 @@ public class PasswordResetAction implements Serializable {
             }
         }.addRole("admin").run();
 
+        conversation.close();
         if (passwordChanged) {
             facesMessages
                     .addGlobal(msgs.get("jsf.password.change.success"));
@@ -139,7 +142,6 @@ public class PasswordResetAction implements Serializable {
                     .addGlobal(msgs.get("jsf.password.change.failed"));
             return null;
         }
-
     }
 
 }

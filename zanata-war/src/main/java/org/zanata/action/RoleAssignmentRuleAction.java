@@ -30,6 +30,8 @@ import javax.validation.constraints.NotNull;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.deltaspike.core.api.scope.ConversationGroup;
+import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,8 +48,8 @@ import org.zanata.security.AuthenticationType;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("roleAssignmentRuleAction")
-@RequestScoped
-
+@GroupedConversationScoped
+@ConversationGroup(RoleAssignmentRuleId.class)
 @CheckRole("admin")
 public class RoleAssignmentRuleAction extends EntityHome<HRoleAssignmentRule>
         implements Serializable {
@@ -78,7 +80,6 @@ public class RoleAssignmentRuleAction extends EntityHome<HRoleAssignmentRule>
         } else {
             roleAssignmentRuleId.setId(null);
         }
-
     }
 
     @Override
