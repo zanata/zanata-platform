@@ -34,6 +34,7 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
 import javax.faces.application.FacesMessage;
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityManager;
@@ -95,8 +96,9 @@ import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 @Named("projectHome")
 @Slf4j
-@GroupedConversationScoped
-@ConversationGroup(ProjectSlug.class)
+//@GroupedConversationScoped
+//@ConversationGroup(ProjectSlug.class)
+@RequestScoped
 public class ProjectHome extends SlugHome<HProject> implements
     HasLanguageSettings {
 
@@ -110,6 +112,7 @@ public class ProjectHome extends SlugHome<HProject> implements
 
     @Getter
     @Inject
+    @Any
     private ProjectSlug projectSlug;
 
     /**

@@ -26,6 +26,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
 import javax.faces.application.FacesMessage;
 import javax.faces.event.ValueChangeEvent;
 
@@ -70,13 +72,15 @@ import lombok.Getter;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Named("versionGroupHome")
-@GroupedConversationScoped
-@ConversationGroup(VersionGroupSlug.class)
+//@GroupedConversationScoped
+//@ConversationGroup(VersionGroupSlug.class)
+@RequestScoped
 public class VersionGroupHome extends SlugHome<HIterationGroup>
         implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Inject
+    @Any
     @Getter
     private VersionGroupSlug versionGroupSlug;
 

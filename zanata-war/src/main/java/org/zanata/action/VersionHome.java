@@ -44,6 +44,8 @@ import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 
 import javax.annotation.Nullable;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.DocumentType;
@@ -83,8 +85,9 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 @Named("versionHome")
-@GroupedConversationScoped
-@ConversationGroup(ProjectAndVersionSlug.class)
+//@GroupedConversationScoped
+//@ConversationGroup(ProjectAndVersionSlug.class)
+@RequestScoped
 @Slf4j
 public class VersionHome extends SlugHome<HProjectIteration> implements
     HasLanguageSettings, Serializable {
@@ -112,6 +115,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 //    private String projectSlug;
 
     @Inject
+    @Any
     private ProjectAndVersionSlug projectAndVersionSlug;
 
     @Inject

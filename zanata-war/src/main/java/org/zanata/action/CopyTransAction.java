@@ -22,6 +22,8 @@ package org.zanata.action;
 
 import java.io.Serializable;
 import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
 import javax.faces.application.FacesMessage;
 
 import javax.annotation.PostConstruct;
@@ -50,8 +52,9 @@ import com.google.common.base.Optional;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("copyTransAction")
-@GroupedConversationScoped
-@ConversationGroup(ProjectAndVersionSlug.class)
+//@GroupedConversationScoped
+//@ConversationGroup(ProjectAndVersionSlug.class)
+@RequestScoped
 public class CopyTransAction extends CopyAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -77,6 +80,7 @@ public class CopyTransAction extends CopyAction implements Serializable {
     private org.zanata.ui.faces.FacesMessages jsfMessages;
 
     @Inject
+    @Any
     private ProjectAndVersionSlug projectAndVersionSlug;
 
     private HProjectIteration projectIteration;

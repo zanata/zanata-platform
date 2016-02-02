@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
 import javax.validation.constraints.NotNull;
 
 import javax.inject.Inject;
@@ -48,8 +49,9 @@ import org.zanata.security.AuthenticationType;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("roleAssignmentRuleAction")
-@GroupedConversationScoped
-@ConversationGroup(RoleAssignmentRuleId.class)
+//@GroupedConversationScoped
+//@ConversationGroup(RoleAssignmentRuleId.class)
+@RequestScoped
 @CheckRole("admin")
 public class RoleAssignmentRuleAction extends EntityHome<HRoleAssignmentRule>
         implements Serializable {
@@ -58,6 +60,7 @@ public class RoleAssignmentRuleAction extends EntityHome<HRoleAssignmentRule>
     private static final long serialVersionUID = 1L;
 
     @Inject
+    @Any
     private RoleAssignmentRuleId roleAssignmentRuleId;
 
     @Inject
