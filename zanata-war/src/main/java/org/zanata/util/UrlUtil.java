@@ -24,10 +24,13 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
@@ -36,6 +39,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.deltaspike.core.spi.scope.window.WindowContext;
+import org.apache.http.client.utils.URIBuilder;
 import org.zanata.common.LocaleId;
 import org.zanata.servlet.annotations.ContextPath;
 import com.google.common.base.Throwables;
@@ -49,8 +55,7 @@ import org.zanata.servlet.annotations.ServerPath;
  */
 
 @Named("urlUtil")
-// TODO use a narrower scope
-@javax.enterprise.context.SessionScoped
+@RequestScoped
 @Slf4j
 public class UrlUtil implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -62,6 +67,9 @@ public class UrlUtil implements Serializable {
     @Inject
     @ContextPath
     private String contextPath;
+
+    @Inject
+    private WindowContext windowContext;
 
     /**
      * Get the local url part, including context path, for the given page
@@ -189,9 +197,18 @@ public class UrlUtil implements Serializable {
 
     public void redirectTo(String url) {
         try {
-            FacesContext.getCurrentInstance().getExternalContext().redirect(url);
-        } catch (IOException e) {
-            log.error("fail to redirect to {}", url, e);
+            // to fix https://zanata.atlassian.net/browse/ZNTA-887
+            String windowId = windowContext.getCurrentWindowId();
+            String urlWithWindowId;
+            if (windowId == null) {
+                urlWithWindowId = url;
+            } else {
+                URI uri = new URIBuilder(url).addParameter("dswid", windowId).build();
+                urlWithWindowId = uri.toString();
+            }
+            FacesContext.getCurrentInstance().getExternalContext().redirect(urlWithWindowId);
+        } catch (Exception e) {
+            log.error("failed to redirect to {}", url, e);
             throw Throwables.propagate(e);
         }
     }
