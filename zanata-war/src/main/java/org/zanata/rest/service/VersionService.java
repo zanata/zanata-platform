@@ -1,5 +1,6 @@
 package org.zanata.rest.service;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
@@ -13,14 +14,11 @@ import org.zanata.util.VersionUtility;
 @Path(VersionResource.SERVICE_PATH)
 public class VersionService implements VersionResource {
 
-    private final VersionInfo version;
+    private VersionInfo version;
 
-    public VersionService() {
-        this(VersionUtility.getAPIVersionInfo());
-    }
-
-    VersionService(VersionInfo ver) {
-        this.version = ver;
+    @PostConstruct
+    public void postConstruct() {
+        this.version = VersionUtility.getAPIVersionInfo();
     }
 
     @Override

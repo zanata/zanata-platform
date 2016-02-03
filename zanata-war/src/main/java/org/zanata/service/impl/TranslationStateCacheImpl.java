@@ -106,10 +106,8 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     @Inject
     private LocaleDAO localeDAO;
 
-    // constructor for Seam
+    // constructor for CDI
     public TranslationStateCacheImpl() {
-        this(new DocumentStatisticLoader(), new HTextFlowTargetIdLoader(),
-                new HTextFlowTargetValidationLoader());
     }
 
     // Constructor for testing
@@ -125,6 +123,15 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
 
     @PostConstruct
     public void create() {
+        if (documentStatisticLoader == null) {
+            documentStatisticLoader = new DocumentStatisticLoader();
+        }
+        if (docStatusLoader == null) {
+            docStatusLoader = new HTextFlowTargetIdLoader();
+        }
+        if (targetValidationLoader == null) {
+            targetValidationLoader = new HTextFlowTargetValidationLoader();
+        }
         documentStatisticCache =
                 InfinispanCacheWrapper.create(DOC_STATISTIC_CACHE_NAME,
                         cacheContainer, documentStatisticLoader);
