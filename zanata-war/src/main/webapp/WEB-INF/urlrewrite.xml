@@ -338,8 +338,8 @@
     <to>$1/project/create/$2</to>
   </outbound-rule>
   <outbound-rule>
-    <from>^(/.+)?/project/project.seam\?slug=(.+)$</from>
-    <to>$1/project/view/$2</to>
+    <from>^(/.+)?/project/project.seam\?slug=([^&amp;]+)&amp;?(.*)$</from>
+    <to>$1/project/view/$2?$3</to>
   </outbound-rule>
   <outbound-rule>
     <from>^(/.+)?/project/project.seam\?projectSlug=([^&amp;]+)&amp;iterationSlug=([^&amp;]+)(?:&amp;slug=[^&amp;]+)?&amp;actionMethod=project%2Fproject\.xhtml%3AconfigurationAction\.getData.*$</from>
