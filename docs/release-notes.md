@@ -2,15 +2,24 @@
 
 <h5>Infrastructure Changes</h5>
 * [ZNTA-530](https://zanata.atlassian.net/browse/ZNTA-530) - Replace Seam 2 with CDI
-  * In WildFly or EAP `standalone.xml`, please make sure the CDI/Weld
-    subsystem is enabled, by adding this line just before
-    `</extensions>`:
+  * In WildFly or EAP `standalone.xml`, please make sure the Weld
+    extension is present in the `extensions` section like this:
 
-        <extension module="org.jboss.as.weld" />
+        <extensions>
+            ...
+            <extension module="org.jboss.as.weld" />
+            ...
+        </extensions>
 
-  * Secondly, please add this line just before `</profile>`:
 
-        <subsystem xmlns="urn:jboss:domain:weld:1.0" />
+  * Secondly, please ensure the Weld subsystem is present in the
+    `profiles` section, eg like this:
+
+        <profiles>
+            ...
+            <subsystem xmlns="urn:jboss:domain:weld:1.0" />
+            ...
+        </profiles>
 
 
 <h5>Bug fixes</h5>
