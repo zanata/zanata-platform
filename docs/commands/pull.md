@@ -1,11 +1,11 @@
 To download documents from your project-version, the command-line client's `pull` command can be used.
 
-These instructions assume that you have installed Zanata-CLI as shown in [Installing the Client](/#installation), and have saved user and project configuration as shown in [Configuring the Client][configuration].
+These instructions assume that you have installed Zanata-CLI as shown in [Installing the Client](/#installation), and have saved user and project configuration as shown in [Configuring the Client](/configuration).
 
 
 ## Translation Document Download
 
-The basic command for downloading documents is `zanata-cli pull`. The pull command should always be run from the directory that contains `zanata.xml` for your project (find information about `zanata.xml` at [Configuring the Client][configuration]).
+The basic command for downloading documents is `zanata-cli pull`. The pull command should always be run from the directory that contains `zanata.xml` for your project (find information about `zanata.xml` at [Configuring the Client](/configuration)).
 
 At the time of writing, you will have to specify source and translation directories with the command, even though the default pull command will pull only translated documents from the server. This will be fixed in a future version. This means that the simplest pull command is:
 
