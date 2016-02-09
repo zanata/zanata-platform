@@ -241,7 +241,11 @@ public class UserRedirectBean implements Serializable {
      *@see UserRedirectBean#captureCurrentView
      */
     public boolean returnToCapturedView(@Observes LoginSuccessfulEvent event) {
-        if (viewId != null) {
+        if (isRedirect()) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesNavigationUtil.redirect(context, url);
+            return true;
+        } else if (viewId != null) {
             FacesNavigationUtil.redirect(viewId, parameters);
             return true;
         } else {
