@@ -32,8 +32,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.event.ValueChangeEvent;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.deltaspike.core.api.scope.ConversationGroup;
-import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
@@ -139,6 +137,11 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
 
     public void setSlug(String slug) {
         versionGroupSlug.setValue(slug);
+    }
+
+    public void createNew() {
+        clearSlugs();
+        identity.checkPermission(getInstance(), "insert");
     }
 
     public void verifySlugAvailable(ValueChangeEvent e) {
@@ -291,11 +294,11 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         return getSlug();
     }
 
-    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public void validateSuppliedId() {
         getInstance(); // this will raise an EntityNotFound exception
         // when id is invalid and conversation will not
         // start
+        clearSlugs();
     }
 
     public class GroupMaintainerAutocomplete extends MaintainerAutocomplete {

@@ -30,7 +30,7 @@ import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @GroupedConversationScoped
-@ConversationGroup(VersionGroupSlug.class)
+@ConversationGroup(SlugHome.class)
 public class VersionGroupSlug implements Serializable {
     private String value;
 

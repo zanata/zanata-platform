@@ -30,7 +30,7 @@ import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @GroupedConversationScoped
-@ConversationGroup(ProjectAndVersionSlug.class)
+@ConversationGroup(SlugHome.class)
 public class ProjectAndVersionSlug implements Serializable {
     private static final long serialVersionUID = 5968985635386162165L;
     private String projectSlug;

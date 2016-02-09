@@ -36,8 +36,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.apache.deltaspike.core.api.scope.ConversationGroup;
-import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
@@ -201,10 +199,12 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         setEntityClass(HProjectIteration.class);
     }
 
-    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public void init(boolean isNewInstance) {
         this.isNewInstance = isNewInstance;
         if (isNewInstance) {
+            String projectSlug = getProjectSlug();
+            clearSlugs();
+            setProjectSlug(projectSlug);
             identity.checkPermission(getProject(), "insert");
             ProjectType projectType = getProject().getDefaultProjectType();
             if (projectType != null) {

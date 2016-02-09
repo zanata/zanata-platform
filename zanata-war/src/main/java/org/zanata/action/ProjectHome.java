@@ -48,8 +48,6 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.deltaspike.core.api.scope.ConversationGroup;
-import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
@@ -283,8 +281,8 @@ public class ProjectHome extends SlugHome<HProject> implements
                 }
             };
 
-    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public void createNew() {
+        clearSlugs();
         identity.checkPermission(getInstance(), "insert");
         getInstance().setDefaultProjectType(ProjectType.File);
         selectedProjectType = getInstance().getDefaultProjectType().name();
