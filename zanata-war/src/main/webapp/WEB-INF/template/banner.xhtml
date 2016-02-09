@@ -161,12 +161,13 @@
           class="is-hidden--s button">#{msgs['jsf.Signup']}</a>
       </ui:fragment>
 
-      <h:outputLink id="signin_link"
-        value="#{request.contextPath}/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}"
+      <h:link id="signin_link"
+        outcome="/account/login.xhtml"
+        value="#{msgs['jsf.Login']}"
         propagation="none" styleClass="l--push-left-half button--primary"
         rendered="#{applicationConfigurationAction.loginHandledByInternalPage}">
-        #{msgs['jsf.Login']}
-      </h:outputLink>
+        <f:param name="continue" value="#{urlUtil.getEncodedLocalUrl(request)}"/>
+      </h:link>
 
       <h:form rendered="#{applicationConfigurationAction.singleOpenId}" styleClass="bx--inline">
         <h:commandLink id="openid_single_signin_link"

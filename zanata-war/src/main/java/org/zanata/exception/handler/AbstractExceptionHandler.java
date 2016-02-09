@@ -71,6 +71,7 @@ public abstract class AbstractExceptionHandler {
             messages.clear();
             messages.addFromResourceBundle(severity, messageKey, messageArgs);
             urlUtil.redirectTo(redirectUrl);
+//            TODO urlUtil.forwardTo(redirectPath);
 
             // required - "stops" the JSF lifecycle
             FacesContext.getCurrentInstance().responseComplete();

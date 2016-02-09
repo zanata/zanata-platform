@@ -344,6 +344,7 @@
       </redirect>
     </navigation-case>
     <navigation-case>
+      <from-outcome>persisted</from-outcome>
       <to-view-id>/iteration/view.xhtml</to-view-id>
       <redirect>
         <view-param>

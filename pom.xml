@@ -33,7 +33,7 @@
     <!-- Applies to surefire and failsafe (if enabled) -->
     <failIfNoTests>true</failIfNoTests>
 
-    <deltaspike.version>1.5.1</deltaspike.version>
+    <deltaspike.version>1.5.2</deltaspike.version>
     <cdi.runtime>runtime</cdi.runtime>
     <cdi.compile>compile</cdi.compile>
     <picketlink.version>2.5.4.SP4</picketlink.version>
@@ -47,6 +47,7 @@
     <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
     <lucene.version>3.6.2</lucene.version>
     <org.mock-server.version>3.9.17</org.mock-server.version>
+    <rewrite.version>3.0.0.Alpha10</rewrite.version>
 
     <!--
     Version of java compiler used for building. (Specified as major.minor,

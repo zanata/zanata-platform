@@ -172,8 +172,6 @@
             <usedDependency>org.codehaus.jackson:jackson-xc</usedDependency>
             <!-- Used for email unit tests -->
             <usedDependency>org.jvnet.mock-javamail:mock-javamail</usedDependency>
-            <!-- Needed for urlrewrite.xml impl -->
-            <usedDependency>org.tuckey:urlrewritefilter</usedDependency>
             <!-- Need for test scope -->
             <usedDependency>${jdbc.groupId}:${jdbc.artifactId}</usedDependency>
             <!-- Required for jboss startup at org.jboss.seam.init.Initialization.initComponentsFromXmlDocuments(Initialization.java:205) -->
@@ -1768,9 +1766,9 @@
     </dependency>
 
     <dependency>
-      <groupId>org.tuckey</groupId>
-      <artifactId>urlrewritefilter</artifactId>
-      <version>4.0.4</version>
+      <groupId>org.ocpsoft.rewrite</groupId>
+      <artifactId>rewrite-servlet</artifactId>
+      <version>${rewrite.version}</version>
     </dependency>
 
     <dependency>
