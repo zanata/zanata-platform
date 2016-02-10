@@ -1,64 +1,48 @@
 package org.zanata.util;
 
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-
-import org.apache.deltaspike.jpa.api.entitymanager.PersistenceUnitName;
-import org.hibernate.search.jpa.FullTextEntityManager;
-import org.hibernate.search.jpa.Search;
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.common.ContentType;
-import org.zanata.common.LocaleId;
-import org.zanata.model.Activity;
-import org.zanata.model.HAccount;
-import org.zanata.model.HAccountActivationKey;
-import org.zanata.model.HAccountResetPasswordKey;
-import org.zanata.model.HAccountRole;
-import org.zanata.model.HApplicationConfiguration;
-import org.zanata.model.HDocument;
-import org.zanata.model.HDocumentHistory;
-import org.zanata.model.HGlossaryEntry;
-import org.zanata.model.HGlossaryTerm;
-import org.zanata.model.HIterationGroup;
-import org.zanata.model.HLocale;
-import org.zanata.model.HLocaleMember;
-import org.zanata.model.HPerson;
-import org.zanata.model.HPersonEmailValidationKey;
-import org.zanata.model.HProject;
-import org.zanata.model.HProjectIteration;
-import org.zanata.model.HRoleAssignmentRule;
-import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.HTextFlowTargetHistory;
-import org.zanata.model.po.HPoTargetHeader;
-import org.zanata.model.security.HCredentials;
-import org.zanata.model.tm.TransMemory;
-import org.zanata.model.tm.TransMemoryUnit;
-import org.zanata.model.tm.TransMemoryUnitVariant;
 import com.github.huangp.entityunit.entity.Callbacks;
 import com.github.huangp.entityunit.entity.EntityCleaner;
 import com.github.huangp.entityunit.entity.EntityMaker;
 import com.github.huangp.entityunit.entity.EntityMakerBuilder;
 import com.github.huangp.entityunit.entity.FixIdCallback;
 import com.github.huangp.entityunit.maker.FixedValueMaker;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.ibm.icu.util.ULocale;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.Search;
+import org.slf4j.Logger;
+import org.zanata.common.ContentType;
+import org.zanata.common.LocaleId;
+import org.zanata.model.HAccount;
+import org.zanata.model.HAccountRole;
+import org.zanata.model.HApplicationConfiguration;
+import org.zanata.model.HDocument;
+import org.zanata.model.HGlossaryEntry;
+import org.zanata.model.HGlossaryTerm;
+import org.zanata.model.HLocale;
+import org.zanata.model.HLocaleMember;
+import org.zanata.model.HPerson;
+import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
+import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.tm.TransMemoryUnit;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import java.util.List;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
-@javax.enterprise.context.ApplicationScoped
-
+@ApplicationScoped
 @Transactional
 public class SampleProjectProfile {
+    private static final Logger log = getLogger(SampleProjectProfile.class);
 
     @Inject
     private EntityManager entityManager;

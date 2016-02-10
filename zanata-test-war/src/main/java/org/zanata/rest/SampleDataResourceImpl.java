@@ -11,11 +11,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-import lombok.extern.slf4j.Slf4j;
-
 import javax.inject.Inject;
-import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
 import org.zanata.security.Identity;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
@@ -28,14 +26,16 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.Uninterruptibles;
 
+import static org.slf4j.LoggerFactory.getLogger;
+
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @RequestScoped
 @Path("/data/sample")
-@Slf4j
 public class SampleDataResourceImpl implements SampleDataResource {
+    private static final Logger log = getLogger(SampleDataResourceImpl.class);
 
     @Inject
     private SampleProjectProfile sampleProjectProfile;
