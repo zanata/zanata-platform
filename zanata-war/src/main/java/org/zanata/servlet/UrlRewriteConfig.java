@@ -1,3 +1,4 @@
+package org.zanata.servlet;
 
 import org.ocpsoft.rewrite.annotation.RewriteConfiguration;
 import org.ocpsoft.rewrite.config.Configuration;
@@ -14,9 +15,6 @@ import javax.servlet.ServletContext;
 /*
  * This class replaces urlrewrite.xml, with simpler bidirectional mappings for external/internal URLs.
  */
-
-// TODO copy comments from urlrewrite.xml
-// TODO delete urlrewrite.xml and tuckey dependency
 @RewriteConfiguration
 public class UrlRewriteConfig extends HttpConfigurationProvider {
 
@@ -25,6 +23,13 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
         String contextPath = context.getContextPath();
         // NB: inbound rules are processed in order, outbound rules in reverse order (as of Rewrite 3.0.0.Alpha1)
         return ConfigurationBuilder.begin()
+
+                // strip trailling slash as recommended:
+                // https://github.com/ocpsoft/rewrite/issues/158#issuecomment-154597796
+                .addRule()
+                .when(Path.matches("/{path}/"))
+                .perform(Redirect.permanent(contextPath + "/{path}"))
+                .where("path").matches("[.*]")
 
                 // TODO test this
                 .addRule()
@@ -53,12 +58,12 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/account/register").to("/account/register.seam"))
                 .addRule(Join.path("/account/sign_out").to("/account/logout.seam"))
                 .addRule(Join.path("/account/validate_email/{key}").to("/account/email_validation.seam"))
-                .addRule(Join.path("/admin/").to("/admin/home.seam"))
+                .addRule(Join.path("/admin").to("/admin/home.seam"))
                 .addRule(Join.pathNonBinding("/admin/{page}").to("/admin/{page}.seam"))
-                .addRule(Join.path("/dashboard/").to("/dashboard/home.seam"))
-                .addRule(Join.path("/error/").to("/error.seam"))
+                .addRule(Join.path("/dashboard").to("/dashboard/home.seam"))
+                .addRule(Join.path("/error").to("/error.seam"))
                 .addRule(Join.pathNonBinding("/error/{path}").to("/error/{path}.seam"))
-                .addRule(Join.path("/glossary/").to("/glossary/view.seam"))
+                .addRule(Join.path("/glossary").to("/glossary/view.seam"))
                 //.addRule(Join.path("/help/view").to("/help/view.seam"))
                 .addRule(Join.path("/iteration/view/{projectSlug}/{iterationSlug}").to("/iteration/view.seam"))
                 .addRule(Join.path("/iteration/view/{projectSlug}/{iterationSlug}/{section}").to("/iteration/view.seam"))
@@ -76,9 +81,9 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .when(Direction.isInbound())
                 .where("path").matches(".*(?<!.seam)")
 
-                .addRule(Join.path("/language/list/").to("/language/home.seam"))
+                .addRule(Join.path("/language/list").to("/language/home.seam"))
                 .addRule(Join.path("/language/view/{id}").to("/language/language.seam"))
-                .addRule(Join.path("/profile/").to("/profile/home.seam"))
+                .addRule(Join.path("/profile").to("/profile/home.seam"))
                 .addRule(Join.path("/profile/add_identity").to("/profile/add_identity.seam"))
                 .addRule(Join.path("/profile/create").to("/profile/create_user.seam"))
                 .addRule(Join.path("/profile/edit").to("/profile/edit.seam"))
@@ -87,23 +92,23 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/project/add_iteration/{projectSlug}").to("/project/add_iteration.seam"))
                 .addRule(Join.path("/project/add_iteration/{projectSlug}/{copyFromVersionSlug}").to("/project/add_iteration.seam"))
                 .addRule(Join.path("/project/create").to("/project/create_project.seam"))
-                .addRule(Join.path("/project/list/").to("/project/home.seam"))
+                .addRule(Join.path("/project/list").to("/project/home.seam"))
                 .addRule(Join.path("/project/view/{slug}").to("/project/project.seam"))
                 .addRule(Join.path("/project/view/{slug}/{section}").to("/project/project.seam"))
                 .when(Direction.isInbound())
                 .where("section").matches(".*")
 
                 // generate zanata.xml config
-                .addRule(Join.path("/project/view/{projectSlug}/iter/{iterationSlug}/config/").
+                .addRule(Join.path("/project/view/{projectSlug}/iter/{iterationSlug}/config").
                         to("/project/project.seam?actionMethod=project%2Fproject.xhtml%3AconfigurationAction.getData"))
                 // TODO fix this
-                .addRule(Join.path("/rest/").to("/rest/index.xrd"))
+                .addRule(Join.path("/rest").to("/rest/index.xrd"))
                 .addRule(Join.path("/search/{query}").to("/search.seam"))
                 // Translation Memory
-                .addRule(Join.path("/tm/").to("/tm/home.seam"))
+                .addRule(Join.path("/tm").to("/tm/home.seam"))
                 .addRule(Join.path("/tm/create").to("/tm/create.seam"))
                 .addRule(Join.path("/version-group/create").to("/version-group/create_version_group.seam"))
-                .addRule(Join.path("/version-group/list/").to("/version-group/home.seam"))
+                .addRule(Join.path("/version-group/list").to("/version-group/home.seam"))
                 .addRule(Join.path("/version-group/view/{versionGroupSlug}").to("/version-group/version_group.seam"))
                 .addRule(Join.path("/webtrans/Application.html").to("/webtrans/Application.seam")).when(Direction.isInbound())
                 .addRule(Join.path("/webtrans/translate").to("/webtrans/Application.seam"))
