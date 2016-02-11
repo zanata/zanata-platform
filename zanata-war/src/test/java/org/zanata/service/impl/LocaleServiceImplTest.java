@@ -37,6 +37,7 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.repository.LocaleRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -51,7 +52,7 @@ public class LocaleServiceImplTest {
     private ProjectDAO projectDAO;
 
     @Mock
-    private LocaleDAO localeDAO;
+    private LocaleRepository localeRepo;
 
     @Mock
     private HProject hProject;
@@ -69,7 +70,7 @@ public class LocaleServiceImplTest {
         this.testLocaleServiceImpl = new LocaleServiceImpl();
         this.testLocaleServiceImpl.setProjectIterationDAO(projectIterationDAO);
         this.testLocaleServiceImpl.setProjectDAO(projectDAO);
-        this.testLocaleServiceImpl.setLocaleDAO(localeDAO);
+        this.testLocaleServiceImpl.setLocaleRepository(localeRepo);
 
         Set<HLocale> iterationLocales = new HashSet<HLocale>();
         iterationLocales.add(new HLocale(LocaleId.EN_US));
@@ -91,7 +92,7 @@ public class LocaleServiceImplTest {
         defaultLocales.add(new HLocale(LocaleId.FR));
         defaultLocales.add(new HLocale(LocaleId.EN));
         defaultLocales.add(new HLocale(LocaleId.DE));
-        when(localeDAO.findAllActiveAndEnabledByDefault()).thenReturn(
+        when(localeRepo.findAllActiveAndEnabledByDefault()).thenReturn(
                 defaultLocales);
     }
 
@@ -115,7 +116,7 @@ public class LocaleServiceImplTest {
         List<HLocale> lan = new ArrayList<HLocale>();
         lan.add(new HLocale(new LocaleId("as-IN")));
         lan.add(new HLocale(new LocaleId("pt-BR")));
-        when(localeDAO.findAll()).thenReturn(lan);
+        when(localeRepo.findAll()).thenReturn(lan);
         List<HLocale> sup = testLocaleServiceImpl.getAllLocales();
         assertThat(sup.size()).isEqualTo(2);
         String loc1 = sup.get(0).getLocaleId().getId();
