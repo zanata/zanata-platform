@@ -73,15 +73,15 @@ public class UrlUtil implements Serializable {
 
     /**
      * Get the local url part, including context path, for the given page
-     * request, encoded for use in query string.
+     * request.
      *
      * Current implementation only works for forwarded requests
      *
      * @param request
      *            the current request
-     * @return local part of url from original request, url encoded
+     * @return local part of url from original request
      */
-    public String getEncodedLocalUrl(HttpServletRequest request) {
+    public String getLocalUrl(HttpServletRequest request) {
         String url, queryString;
         if (request.getAttribute("javax.servlet.forward.request_uri") != null) {
             url =
@@ -103,7 +103,21 @@ public class UrlUtil implements Serializable {
         if (queryString != null && queryString.length() > 0) {
             url += "?" + queryString;
         }
+        return url;
+    }
 
+    /**
+     * Get the local url part, including context path, for the given page
+     * request, encoded for use in query string.
+     *
+     * Current implementation only works for forwarded requests
+     *
+     * @param request
+     *            the current request
+     * @return local part of url from original request, url encoded
+     */
+    public String getEncodedLocalUrl(HttpServletRequest request) {
+        String url = getLocalUrl(request);
         try {
             return URLEncoder.encode(url, ENCODING);
         } catch (UnsupportedEncodingException e) {
