@@ -37,8 +37,9 @@
       <artifactId>stax-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
+      <groupId>net.sf.saxon</groupId>
+      <artifactId>Saxon-HE</artifactId>
+      <version>9.4.0-9</version>
     </dependency>
   </dependencies>
 </project>
