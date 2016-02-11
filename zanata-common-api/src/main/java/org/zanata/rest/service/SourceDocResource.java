@@ -51,14 +51,14 @@ import java.util.Set;
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public interface SourceDocResource {
-    public static final String SERVICE_PATH =
+    String SERVICE_PATH =
             ProjectIterationResource.SERVICE_PATH + "/r";
-    public static final String RESOURCE_SLUG_REGEX =
-            "[a-zA-Z0-9]+([a-zA-Z0-9_\\-,{.}]*[a-zA-Z0-9]+)?";
-    public static final String RESOURCE_NAME_REGEX =
-            // as above, plus the '/'
-            "[a-zA-Z0-9]+([/a-zA-Z0-9_\\-,{.}]*[a-zA-Z0-9]+)?";
-    public static final String RESOURCE_SLUG_TEMPLATE = "/{id:"
+    String RESOURCE_SLUG_REGEX =
+            "[\\-_a-zA-Z0-9]+([a-zA-Z0-9_\\-,{.}]*[a-zA-Z0-9]+)?";
+    String RESOURCE_NAME_REGEX =
+            // as above, with ',' replaced by '/'
+            "[\\-_a-zA-Z0-9]+([a-zA-Z0-9_\\-/{.}]*[a-zA-Z0-9]+)?";
+    String RESOURCE_SLUG_TEMPLATE = "/{id:"
             + RESOURCE_SLUG_REGEX + "}";
 
     /**
