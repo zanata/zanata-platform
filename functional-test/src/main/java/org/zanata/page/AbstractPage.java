@@ -295,7 +295,7 @@ public class AbstractPage {
         String msg = "element exists " + elementBy;
         logWaiting(msg);
         waitForPageSilence();
-        return waitForAMoment().until(new Function<WebDriver, WebElement>() {
+        return waitForAMoment().withMessage(msg).until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver input) {
                 return getDriver().findElement(elementBy);
@@ -315,7 +315,7 @@ public class AbstractPage {
         String msg = "element exists " + elementBy;
         logWaiting(msg);
         waitForPageSilence();
-        return waitForAMoment().until(new Function<WebDriver, WebElement>() {
+        return waitForAMoment().withMessage(msg).until(new Function<WebDriver, WebElement>() {
             @Override
             public WebElement apply(WebDriver input) {
                 return parentElement.findElement(elementBy);
