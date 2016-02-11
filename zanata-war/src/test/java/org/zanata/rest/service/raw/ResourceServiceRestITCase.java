@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.common.ContentType;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
@@ -28,6 +29,7 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.service.ResourceTestObjectFactory;
 import org.zanata.rest.service.ResourceTestUtil;
 import org.zanata.rest.service.SourceDocResource;
+import org.zanata.util.RawRestTestUtils;
 
 import com.google.common.collect.ImmutableList;
 
@@ -151,9 +153,11 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         Resource base = resourceTestFactory.getTextFlowTest();
         ResourceTestUtil.clearRevs(base);
         ResourceTestUtil.clearRevs(get);
-        log.debug("expect:" + base.toString());
-        log.debug("actual:" + get.toString());
-        assertThat(get.toString(), is(base.toString()));
+        String expected = RawRestTestUtils.jaxbMarhsal(base);
+        log.debug("expect:" + expected);
+        String got = RawRestTestUtils.jaxbMarhsal(get);
+        log.debug("actual:" + got);
+        assertThat(got, is(expected));
     }
 
     @Test
@@ -246,6 +250,27 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
                 getSourceDocResource().deleteResource(rs2.getName());
         assertThat(resourceGetResponse2.getStatus(),
                 is(Status.NOT_FOUND.getStatusCode()));
+    }
+
+    @Test
+    @RunAsClient
+    public void testPostGetResourceWithUnderscoreInFileNameWithExtension() {
+        Resource resource = new Resource("_test1.file-a");
+        resource.setContentType(sr.getContentType());
+        resource.setExtensions(sr.getExtensions());
+        resource.setLang(sr.getLang());
+        resource.setType(sr.getType());
+        getSourceDocResource().post(resource, new StringSet("gettext;comment"), false);
+        Resource get = getResourceFromResponse(
+                getSourceDocResource().getResource(resource.getName(),
+                        new StringSet("gettext;comment")));
+        ResourceTestUtil.clearRevs(resource);
+        ResourceTestUtil.clearRevs(get);
+        String expected = RawRestTestUtils.jaxbMarhsal(resource);
+        log.debug("expect:" + expected);
+        String got = RawRestTestUtils.jaxbMarhsal(get);
+        log.debug("actual:" + got);
+        assertThat(got, is(expected));
     }
 
 }
