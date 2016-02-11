@@ -1,4 +1,3 @@
-package org.zanata.servlet;
 
 import org.ocpsoft.rewrite.annotation.RewriteConfiguration;
 import org.ocpsoft.rewrite.config.Configuration;
@@ -62,7 +61,10 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/glossary/").to("/glossary/view.seam"))
                 //.addRule(Join.path("/help/view").to("/help/view.seam"))
                 .addRule(Join.path("/iteration/view/{projectSlug}/{iterationSlug}").to("/iteration/view.seam"))
-                .addRule(Join.path("/iteration/view/{projectSlug}/{iterationSlug}/{section}").to("/iteration/view.seam")).when(Direction.isInbound())
+                .addRule(Join.path("/iteration/view/{projectSlug}/{iterationSlug}/{section}").to("/iteration/view.seam"))
+                .when(Direction.isInbound())
+                .where("section").matches(".*")
+
                 /* JSF serves zanata-assets with suffix of .seam only.
                    This is to make sure any reference to zanata-assets
                    without .seam can access the resource.
@@ -87,7 +89,10 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/project/create").to("/project/create_project.seam"))
                 .addRule(Join.path("/project/list/").to("/project/home.seam"))
                 .addRule(Join.path("/project/view/{slug}").to("/project/project.seam"))
-                .addRule(Join.path("/project/view/{slug}/{section}").to("/project/project.seam")).when(Direction.isInbound())
+                .addRule(Join.path("/project/view/{slug}/{section}").to("/project/project.seam"))
+                .when(Direction.isInbound())
+                .where("section").matches(".*")
+
                 // generate zanata.xml config
                 .addRule(Join.path("/project/view/{projectSlug}/iter/{iterationSlug}/config/").
                         to("/project/project.seam?actionMethod=project%2Fproject.xhtml%3AconfigurationAction.getData"))
