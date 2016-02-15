@@ -29,7 +29,7 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule()
                 .when(Path.matches("/{path}/"))
                 .perform(Redirect.permanent(contextPath + "/{path}"))
-                .where("path").matches("[.*]")
+                .where("path").matches(".*")
 
                 // TODO test this
                 .addRule()
