@@ -134,7 +134,7 @@ public class UrlUtil implements Serializable {
     }
 
     public String createNewVersionUrl(String projectSlug) {
-        return contextPath + "/project/add_iteration.seam?projectSlug="
+        return contextPath + "/project/add_iteration.xhtml?projectSlug="
                 + projectSlug;
     }
 

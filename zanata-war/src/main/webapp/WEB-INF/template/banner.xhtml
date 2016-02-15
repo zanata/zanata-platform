@@ -178,7 +178,7 @@
       </h:form>
 
       <h:outputLink id="ksignin_link"
-        value="#{request.contextPath}/account/klogin.seam?continue=#{urlUtil.getEncodedLocalUrl(request)}"
+        value="#{request.contextPath}/account/klogin.xhtml?continue=#{urlUtil.getEncodedLocalUrl(request)}"
         propagation="none" styleClass="l--push-left-half button--primary"
         rendered="#{applicationConfiguration.kerberosAuth}">
         #{msgs['jsf.Login']}

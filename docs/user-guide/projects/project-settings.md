@@ -160,7 +160,7 @@ Example webhook response:
     "docId": "zanata-war/src/main/resources/messages",
     "version": "master",
     "project": "zanata-server",
-    "editorDocumentUrl": "https://translate.zanata.org/zanata/webtrans/Application.seam?project=zanata-server&iteration=master&localeId=de&locale=en#view:doc;doc:zanata-war/src/main/resources/messages"
+    "editorDocumentUrl": "https://translate.zanata.org/zanata/webtrans/Application.xhtml?project=zanata-server&iteration=master&localeId=de&locale=en#view:doc;doc:zanata-war/src/main/resources/messages"
 }
 ```
 

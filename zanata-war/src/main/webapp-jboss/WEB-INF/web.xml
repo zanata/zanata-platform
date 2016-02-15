@@ -153,6 +153,7 @@
   <filter-mapping>
     <filter-name>RestLimitingFilter</filter-name>
     <url-pattern>/rest/*</url-pattern>
+    <url-pattern>/seam/resource/restv1/*</url-pattern>
   </filter-mapping>
 
   <filter-mapping>
@@ -258,7 +259,7 @@
 
   <servlet-mapping>
     <servlet-name>Faces Servlet</servlet-name>
-    <url-pattern>*.seam</url-pattern>
+    <url-pattern>*.xhtml</url-pattern>
   </servlet-mapping>
 
   <!-- GWTEventService -->
@@ -284,15 +285,6 @@
     <url-pattern>/files/upload/*</url-pattern>
   </servlet-mapping>
 
-  <security-constraint>
-    <display-name>Restrict raw XHTML Documents</display-name>
-    <web-resource-collection>
-      <web-resource-name>XHTML</web-resource-name>
-      <url-pattern>*.xhtml</url-pattern>
-    </web-resource-collection>
-    <auth-constraint />
-  </security-constraint>
-
   <mime-mapping>
     <extension>xrd</extension>
     <mime-type>application/xrd+xml</mime-type>
@@ -307,5 +299,11 @@
     <extension>woff</extension>
     <mime-type>application/font-woff</mime-type>
   </mime-mapping>
+
+  <!-- If included, this causes the home page (/) to generate a Log In link
+  with the unwanted parameter continue=home.xhtml   -->
+  <!--<welcome-file-list>-->
+    <!--<welcome-file>home.xhtml</welcome-file>-->
+  <!--</welcome-file-list>-->
 
 </web-app>
