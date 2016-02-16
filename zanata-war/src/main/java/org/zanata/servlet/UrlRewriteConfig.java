@@ -64,7 +64,7 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .when(Direction.isInbound())
                 .where("section").matches(".*")
 
-                .addRule(Join.path("/error").to("/error.xhtml"))
+                .addRule(Join.path("/error/").to("/error.xhtml"))
                 .addRule(Join.pathNonBinding("/error/{path}").to("/error/{path}.xhtml"))
                 .addRule(Join.path("/glossary/").to("/glossary/view.xhtml"))
                 .addRule(Join.path("/iteration/view/{projectSlug}/{iterationSlug}").to("/iteration/view.xhtml"))
@@ -109,7 +109,7 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/rest").to("/rest/index.xrd"))
                 .addRule(Join.path("/search/{query}").to("/search.xhtml"))
                 // Translation Memory
-                .addRule(Join.path("/tm").to("/tm/home.xhtml"))
+                .addRule(Join.path("/tm/").to("/tm/home.xhtml"))
                 .addRule(Join.path("/tm/create").to("/tm/create.xhtml"))
                 .addRule(Join.path("/version-group/create").to("/version-group/create_version_group.xhtml"))
                 .addRule(Join.path("/version-group/list").to("/version-group/home.xhtml"))
