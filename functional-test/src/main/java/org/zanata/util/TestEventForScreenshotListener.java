@@ -64,6 +64,10 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
     }
 
     private void createScreenshot(String ofType) {
+        if (isAlertPresent(driver)) {
+            log.info("[Screenshot]: Prevented by Alert");
+            return;
+        }
         File testIDDir = null;
         try {
             testIDDir = ScreenshotDirForTest.screenshotForTest(testId);
@@ -117,10 +121,6 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
 
     @Override
     public void afterClickOn(WebElement element, WebDriver driver) {
-        if (isAlertPresent(driver)) {
-            log.info("[Screenshot]: Prevented by Alert");
-            return;
-        }
         createScreenshot("_click");
     }
 
@@ -129,7 +129,7 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
         try {
             createScreenshot("_exc");
         } catch (Throwable all) {
-            log.error("error creating screenshot on exception");
+            log.error("error creating screenshot on exception", all);
         }
     }
 
