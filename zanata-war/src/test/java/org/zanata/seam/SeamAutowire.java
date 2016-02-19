@@ -23,37 +23,34 @@ package org.zanata.seam;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import javassist.CannotCompileException;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtMethod;
+import javassist.NotFoundException;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import org.zanata.util.AutowireLocator;
 
+import javax.annotation.Resource;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import javassist.CannotCompileException;
-import javassist.ClassPool;
-import javassist.CtClass;
-import javassist.CtMethod;
-import javassist.NotFoundException;
-
-import javax.annotation.Resource;
-import javax.inject.Inject;
-
-import lombok.extern.slf4j.Slf4j;
-
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.deltaspike.core.api.exclude.Exclude;
-import org.apache.deltaspike.core.api.projectstage.ProjectStage;
-
-import com.google.common.collect.Lists;
-import org.zanata.util.AutowireLocator;
 
 /**
  * Helps with Auto-wiring of beans for integrated tests without the
@@ -224,8 +221,8 @@ public class SeamAutowire {
 
     private SeamAutowire use(Object key, Object bean) {
         if(namedComponents.containsKey(key)) {
-            throw new AutowireException("The bean " + key
-                    + " was already created.  You should register it before "
+            throw new AutowireException("The bean '" + key
+                    + "' was already created.  You should register it before "
                     + "it is resolved.");
         }
         namedComponents.put(key, bean);

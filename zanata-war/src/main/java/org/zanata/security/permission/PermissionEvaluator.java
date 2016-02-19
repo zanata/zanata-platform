@@ -20,15 +20,15 @@
  */
 package org.zanata.security.permission;
 
-import java.lang.reflect.Method;
-import java.util.Collection;
-
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 import javax.inject.Named;
-import org.zanata.security.SecurityFunctions;
+import java.util.Collection;
 
 /**
  * Holds all application permissions and provides a way to evaluate these
@@ -41,43 +41,31 @@ import org.zanata.security.SecurityFunctions;
 @ApplicationScoped
 public class PermissionEvaluator {
 
-    private static final String ALL_ACTION_GRANTER = "__**__";
+    static final String ALL_ACTION_GRANTER = "__**__";
 
     private final Multimap<String, PermissionGranter> permissionGrantMethods =
             ArrayListMultimap.create();
 
+    @Inject
+    private Instance<PermissionProvider> permissionProviders;
+
     @PostConstruct
     public void buildIndex() {
-        registerPermissionGranters(SecurityFunctions.class);
+        permissionProviders.iterator().forEachRemaining(provider -> {
+            registerPermissionGranters(provider);
+        });
+    }
+
+    public <T extends PermissionProvider> void registerPermissionGranters(
+            T provider) {
+        permissionGrantMethods.putAll(provider.getPermissionGranters());
     }
 
     /**
-     * Registers all permission granter methods found in clazz to be used to
-     * check permissions.
-     *
-     * @param clazz Class for which GrantsPermission methods should be
-     *              registered
-     */
-    public void registerPermissionGranters(Class<?> clazz) {
-        for (Method m : clazz.getDeclaredMethods()) {
-            if (m.isAnnotationPresent(GrantsPermission.class)) {
-                PermissionGranter granter = new PermissionGranter(m);
-                granter.validate();
-
-                if (granter.getEvaluatedActions().size() == 0) {
-                    // This granter is to apply to every action
-                    permissionGrantMethods.put(ALL_ACTION_GRANTER, granter);
-                } else {
-                    for (String action : granter.getEvaluatedActions()) {
-                        permissionGrantMethods.put(action, granter);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Checks a permission for a given action on a set of targets.
+     * Checks a permission for a given action on a set of targets. As soon as a
+     * granter responds positively, then the permission is granted. A permission
+     * request will be denied when all applicable granters respond negatively
+     * to it.
      *
      * @param action
      *            The action to perform.

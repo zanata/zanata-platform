@@ -6,6 +6,7 @@ import java.util.Iterator;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.util.TypeLiteral;
 
+import com.google.common.collect.Lists;
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 
@@ -23,8 +24,7 @@ class AutowireInstance implements Instance {
 
     @Override
     public Iterator iterator() {
-        throw new UnsupportedOperationException(
-                "SeamAutowire doesn't support this");
+        return Lists.newArrayList(value).iterator();
     }
 
     @Override
