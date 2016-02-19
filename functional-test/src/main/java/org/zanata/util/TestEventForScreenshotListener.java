@@ -20,10 +20,8 @@
  */
 package org.zanata.util;
 
-import java.awt.AWTException;
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.Toolkit;
+import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -86,9 +84,12 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
 
             Optional<Alert> alert = getAlert(driver);
             if (alert.isPresent()) {
-                log.error("ChromeDriver screenshot({}) prevented by browser alert: \"{}\" Attempting Robot screenshot instead.", testId, alert.get().getText());
-                Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-                BufferedImage capture = new Robot().createScreenCapture(screenRect);
+                log.error("ChromeDriver screenshot({}) prevented by browser " +
+                        "alert. Attempting Robot screenshot instead. " +
+                        "Alert text: {}",
+                        testId, alert.get().getText());
+                BufferedImage capture = new Robot().createScreenCapture(
+                        getScreenRectangle());
                 if (!ImageIO.write(capture, "png", screenshotFile)) {
                     log.error("png writer not found for screenshot");
                 }
@@ -108,6 +109,18 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
         } catch (AWTException e) {
             throw new RuntimeException("[Screenshot]: ", e);
         }
+    }
+
+    private Rectangle getScreenRectangle() {
+        // http://stackoverflow.com/a/13380999/14379
+        Rectangle2D result = new Rectangle2D.Double();
+        GraphicsEnvironment localGE = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        for (GraphicsDevice gd : localGE.getScreenDevices()) {
+            for (GraphicsConfiguration graphicsConfiguration : gd.getConfigurations()) {
+                Rectangle2D.union(result, graphicsConfiguration.getBounds(), result);
+            }
+        }
+        return new Rectangle((int) result.getWidth(), (int) result.getHeight());
     }
 
     private String generateFileName(String ofType) {
