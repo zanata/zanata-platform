@@ -31,6 +31,7 @@ import javax.inject.Named;
 
 import org.apache.deltaspike.core.api.scope.GroupedConversation;
 import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.exception.KeyNotFoundException;
 import org.zanata.exception.ActivationLinkExpiredException;
@@ -96,6 +97,7 @@ public class ActivateAction implements Serializable {
         return expiryDate.before(new Date());
     }
 
+    @Transactional
     public void activate() {
         new AbstractRunAsOperation() {
             public void execute() {
