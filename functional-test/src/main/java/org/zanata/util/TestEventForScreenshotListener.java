@@ -20,6 +20,11 @@
  */
 package org.zanata.util;
 
+import java.awt.AWTException;
+import java.awt.Rectangle;
+import java.awt.Robot;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -36,6 +41,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.events.AbstractWebDriverEventListener;
+
+import javax.imageio.ImageIO;
 
 /**
  * @author Damian Jansen <a
@@ -66,11 +73,6 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
     }
 
     private void createScreenshot(String ofType) {
-        Optional<Alert> alert = getAlert(driver);
-        if (alert.isPresent()) {
-            log.error("Screenshot({}) prevented by browser alert: {}", testId, alert.get().getText());
-            return;
-        }
         File testIDDir = null;
         try {
             testIDDir = ScreenshotDirForTest.screenshotForTest(testId);
@@ -79,22 +81,32 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
                 boolean createdDirs = testIDDir.mkdirs();
                 assert createdDirs;
             }
-            File screenshotFile =
-                    ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
             String filename = generateFileName(ofType);
-            log.info("Screenshot: {}", filename);
-            FileUtils.copyFile(screenshotFile,
-                new File(testIDDir, filename));
+            File screenshotFile = new File(testIDDir, filename);
 
-        } catch (WebDriverException wde) {
-            throw new RuntimeException("[Screenshot]: Invalid WebDriver: "
-                    + wde.getMessage());
-        } catch (IOException ioe) {
+            Optional<Alert> alert = getAlert(driver);
+            if (alert.isPresent()) {
+                log.error("ChromeDriver screenshot({}) prevented by browser alert: \"{}\" Attempting Robot screenshot instead.", testId, alert.get().getText());
+                Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+                BufferedImage capture = new Robot().createScreenCapture(screenRect);
+                if (!ImageIO.write(capture, "png", screenshotFile)) {
+                    log.error("png writer not found for screenshot");
+                }
+            } else {
+                File tempFile =
+                        ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+                FileUtils.moveFile(tempFile, screenshotFile);
+            }
+            log.info("Screenshot saved to file: {}", filename);
+        } catch (WebDriverException e) {
+            throw new RuntimeException("[Screenshot]: Invalid WebDriver: ", e);
+        } catch (IOException e) {
             throw new RuntimeException("[Screenshot]: Failed to write to "
-                    + testIDDir);
-        } catch (NullPointerException npe) {
-            throw new RuntimeException("[Screenshot]: Null Object: "
-                    + npe.getMessage());
+                    + testIDDir, e);
+        } catch (NullPointerException e) {
+            throw new RuntimeException("[Screenshot]: Null Object: ", e);
+        } catch (AWTException e) {
+            throw new RuntimeException("[Screenshot]: ", e);
         }
     }
 
