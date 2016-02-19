@@ -8,6 +8,7 @@ import org.ocpsoft.rewrite.servlet.config.Forward;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.Path;
 import org.ocpsoft.rewrite.servlet.config.Redirect;
+import org.ocpsoft.rewrite.servlet.config.bind.RequestBinding;
 import org.ocpsoft.rewrite.servlet.config.rule.Join;
 
 import javax.servlet.ServletContext;
@@ -32,7 +33,7 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 // a redirect would be nicer (preferably to a pretty url, not
                 // to .xhtml), but make sure you handle parameters, eg for
                 // /search.seam?query=foo
-                .addRule(Join.path("/{path}.seam").to("{path}.xhtml"))
+                .addRule(Join.pathNonBinding("/{path}.seam").to("{path}.xhtml"))
                 .when(Direction.isInbound())
                 .where("path").matches(".*")
 
@@ -57,11 +58,10 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/account/sign_out").to("/account/logout.xhtml"))
                 .addRule(Join.path("/account/validate_email/{key}").to("/account/email_validation.xhtml"))
                 .addRule(Join.path("/admin/").to("/admin/home.xhtml"))
-                .addRule(Join.pathNonBinding("/admin/{page}").to("/admin/{page}.xhtml"))
+                .addRule(Join.pathNonBinding("/admin/{page}").to("/admin/{page}.xhtml")).where("page").matches(".+")
                 .addRule(Join.path("/dashboard/").to("/dashboard/home.xhtml"))
 
                 .addRule(Join.path("/dashboard/{section}").to("/dashboard/home.xhtml"))
-                .when(Direction.isInbound())
                 .where("section").matches(".*")
 
                 .addRule(Join.path("/error/").to("/error.xhtml"))
@@ -70,7 +70,6 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/iteration/view/{projectSlug}/{iterationSlug}").to("/iteration/view.xhtml"))
 
                 .addRule(Join.path("/iteration/view/{projectSlug}/{iterationSlug}/{section}").to("/iteration/view.xhtml"))
-                .when(Direction.isInbound())
                 .where("section").matches(".*")
 
                 /* JSF serves zanata-assets with suffix of .xhtml only.
@@ -79,13 +78,17 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                    e.g. jars/assets/style.css forwards to
                    jars/assets/style.css.xhtml
                 */
-                .addRule(Join.path("/javax.faces.resource/jars/assets/{path}")
+                .addRule(Join.pathNonBinding("/javax.faces.resource/jars/assets/{path}")
                         .to("/javax.faces.resource/jars/assets/{path}.xhtml"))
                 .when(Direction.isInbound())
                 .where("path").matches(".*(?<!.xhtml)")
 
                 .addRule(Join.path("/language/list").to("/language/home.xhtml"))
                 .addRule(Join.path("/language/view/{id}").to("/language/language.xhtml"))
+
+                .addRule(Join.path("/language/view/{id}/{section}").to("/language/language.xhtml"))
+                .where("section").matches(".*")
+
                 .addRule(Join.path("/profile/").to("/profile/home.xhtml"))
                 .addRule(Join.path("/profile/add_identity").to("/profile/add_identity.xhtml"))
                 .addRule(Join.path("/profile/create").to("/profile/create_user.xhtml"))
@@ -99,7 +102,6 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/project/view/{slug}").to("/project/project.xhtml"))
 
                 .addRule(Join.path("/project/view/{slug}/{section}").to("/project/project.xhtml"))
-                .when(Direction.isInbound())
                 .where("section").matches(".*")
 
                 // generate zanata.xml config
@@ -116,7 +118,6 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/version-group/view/{versionGroupSlug}").to("/version-group/version_group.xhtml"))
 
                 .addRule(Join.path("/version-group/view/{versionGroupSlug}/{section}").to("/version-group/version_group.xhtml"))
-                .when(Direction.isInbound())
                 .where("section").matches(".*")
 
                 .addRule(Join.path("/webtrans/Application.html").to("/webtrans/Application.xhtml")).when(Direction.isInbound())
