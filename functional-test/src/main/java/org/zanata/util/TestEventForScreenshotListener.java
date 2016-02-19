@@ -23,10 +23,12 @@ package org.zanata.util;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Optional;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -64,8 +66,9 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
     }
 
     private void createScreenshot(String ofType) {
-        if (isAlertPresent(driver)) {
-            log.info("[Screenshot]: Prevented by Alert");
+        Optional<Alert> alert = getAlert(driver);
+        if (alert.isPresent()) {
+            log.error("Screenshot({}) prevented by browser alert: {}", testId, alert.get().getText());
             return;
         }
         File testIDDir = null;
@@ -100,12 +103,11 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
                 .concat(ofType).concat(".png");
     }
 
-    private boolean isAlertPresent(WebDriver driver) {
+    private Optional<Alert> getAlert(WebDriver driver) {
         try {
-            driver.switchTo().alert();
-            return true;
+            return Optional.of(driver.switchTo().alert());
         } catch (NoAlertPresentException nape) {
-            return false;
+            return Optional.empty();
         }
     }
 
