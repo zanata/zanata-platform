@@ -123,10 +123,11 @@
           </h:link>
         </li>
         <li>
-          <a href="#{request.contextPath}/dashboard/settings">
-            #{msgs['jsf.Settings']} <i
-            class="l--float-right i--inline i--settings"></i>
-          </a>
+          <h:link id="dashboard-settings" outcome="/dashboard/home.xhtml">
+            <f:param name="section" value="settings" />
+            #{msgs['jsf.Settings']}
+            <i class="l--float-right i--inline i--settings"></i>
+          </h:link>
         </li>
         <ui:fragment rendered="#{identity.hasRole('admin')}">
           <li>
@@ -157,6 +158,9 @@
 
       <ui:fragment
         rendered="#{applicationConfigurationAction.registrationLinkNeeded}">
+        <ui:remove>
+          <!-- TODO add dswid, but only if Zanata URL -->
+        </ui:remove>
         <a id="register_link" href="#{applicationConfiguration.registerPath}"
           class="is-hidden--s button">#{msgs['jsf.Signup']}</a>
       </ui:fragment>

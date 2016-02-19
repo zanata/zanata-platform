@@ -69,7 +69,7 @@
         <ul class="list--slat">
           <ui:repeat value="#{cc.attrs.filterActionBean.currentPage}" var="maintainer">
             <li class="l--pad-all-half">
-              <a href="#{request.contextPath}/profile/view/#{maintainer.account.username}" class="bx--block list__item__info">
+              <a href="#{request.contextPath}/profile/view/#{maintainer.account.username}#{dswidQuery}" class="bx--block list__item__info">
                 <h3 class="list__title">
                   <span class="w--r-1 bx--round l--push-right-quarter">
                     <img

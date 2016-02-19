@@ -22,8 +22,8 @@
     <script type="text/javascript">
       //<![CDATA[
       jQuery(function () {
-        crossroads.addRoute(':pre*:/language/view/{localeId}/:section:',
-          function (pre, localeId, section) {
+        crossroads.addRoute(':pre*:/language/view/{localeId}/:section::?query:',
+          function (pre, localeId, section, query) {
             section = section || 'members';
             section = validateTab('#' + section + "_tab", section, "members");
             zanata.tabs.activate(jQuery('#' + section + "_tab"))

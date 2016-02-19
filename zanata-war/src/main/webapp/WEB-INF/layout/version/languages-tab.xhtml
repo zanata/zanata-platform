@@ -374,6 +374,9 @@
                 </h:panelGroup>
 
                 <ui:fragment rendered="#{versionHomeAction.selectedLocale.active}">
+                  <ui:remove>
+                    <!-- TODO add dswid -->
+                  </ui:remove>
                   <a
                     href="#{versionHomeAction.getEditorUrl(locale.language, document.docId)}">
                     <div class="list__item__content">

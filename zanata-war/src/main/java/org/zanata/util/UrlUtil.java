@@ -71,6 +71,14 @@ public class UrlUtil implements Serializable {
     @Inject
     private WindowContext windowContext;
 
+    @Inject
+    @Named("dswidQuery")
+    private String dswidQuery;
+
+    @Inject
+    @Named("dswidParam")
+    private String dswidParam;
+
     /**
      * Get the local url part, including context path, for the given page
      * request.
@@ -125,45 +133,76 @@ public class UrlUtil implements Serializable {
         }
     }
 
+    /**
+     * Get source files url with dswid parameter
+     */
     public String sourceFilesViewUrl(String projectSlug, String versionSlug) {
-        return versionUrl(projectSlug, versionSlug) + "#documents";
+        return versionUrl(projectSlug, versionSlug, false) + "/documents" + dswidQuery;
     }
 
+    /**
+     * Get project url with dswid parameter
+     */
     public String projectUrl(String projectSlug) {
-        return contextPath + "/project/view/" + projectSlug;
+        return contextPath + "/project/view/" + projectSlug + dswidQuery;
     }
 
+    /**
+     * Get add-version url with dswid parameter
+     */
     public String createNewVersionUrl(String projectSlug) {
         return contextPath + "/project/add_iteration.xhtml?projectSlug="
-                + projectSlug;
+                + projectSlug + dswidParam;
     }
 
+    /**
+     * Get version url with dswid parameter
+     */
     public String versionUrl(String projectSlug, String versionSlug) {
-        return contextPath + "/iteration/view/" + projectSlug + "/"
-                + versionSlug;
+        return versionUrl(projectSlug, versionSlug, true);
     }
 
+    /**
+     * Get version url with or without dswid parameter
+     */
+    private String versionUrl(String projectSlug, String versionSlug, boolean addDswid) {
+        return contextPath + "/iteration/view/" + projectSlug + "/"
+                + versionSlug + (addDswid ? dswidQuery : "");
+    }
+
+    /**
+     * Get editor url for document with dswid parameter, without or without full server path
+     */
     public String editorDocumentListUrl(String projectSlug, String versionSlug,
             LocaleId targetLocaleId, LocaleId sourceLocaleId, boolean fullPath) {
         String prefix = fullPath ? serverPath : contextPath;
 
         return prefix + "/webtrans/translate?project=" + projectSlug
                 + "&iteration=" + versionSlug + "&localeId=" + targetLocaleId
-                + "&locale=" + sourceLocaleId;
+                + "&locale=" + sourceLocaleId + dswidParam;
     }
 
+    /**
+     * Get editor url for document with dswid parameter but without full server path
+     */
     public String editorDocumentUrl(String projectSlug, String versionSlug,
             LocaleId targetLocaleId, LocaleId sourceLocaleId, String docId) {
         return editorDocumentListUrl(projectSlug, versionSlug, targetLocaleId,
                 sourceLocaleId, false) + "#view:doc;doc:" + docId;
     }
 
+    /**
+     * Get editor url for document, with dswid parameter and full server path
+     */
     public String fullEditorDocumentUrl(String projectSlug, String versionSlug,
         LocaleId targetLocaleId, LocaleId sourceLocaleId, String docId) {
         return editorDocumentListUrl(projectSlug, versionSlug, targetLocaleId,
                 sourceLocaleId, true) + "#view:doc;doc:" + docId;
     }
 
+    /**
+     * Get editor url for textflow, with dswid parameter
+     */
     public String editorTransUnitUrl(String projectSlug, String versionSlug,
             LocaleId targetLocaleId, LocaleId sourceLocaleId, String docId,
             Long tuId) {
@@ -171,8 +210,11 @@ public class UrlUtil implements Serializable {
                 sourceLocaleId, docId) + ";textflow:" + tuId;
     }
 
+    /**
+     * Get url with dswid parameter
+     */
     public String dashboardUrl() {
-        return contextPath + "/dashboard/";
+        return contextPath + "/dashboard/" + dswidQuery;
     }
 
     /**
@@ -209,6 +251,9 @@ public class UrlUtil implements Serializable {
         }
     }
 
+    /**
+     * Redirect to url, adding dswid parameter if missing
+     */
     public void redirectTo(String url) {
         try {
             // to fix https://zanata.atlassian.net/browse/ZNTA-887
@@ -217,7 +262,7 @@ public class UrlUtil implements Serializable {
             if (windowId == null) {
                 urlWithWindowId = url;
             } else {
-                URI uri = new URIBuilder(url).addParameter("dswid", windowId).build();
+                URI uri = new URIBuilder(url).setParameter("dswid", windowId).build();
                 urlWithWindowId = uri.toString();
             }
             FacesContext.getCurrentInstance().getExternalContext().redirect(urlWithWindowId);
@@ -227,19 +272,31 @@ public class UrlUtil implements Serializable {
         }
     }
 
+    /**
+     * Get languages url with dswid parameter
+     */
     public String languageHome() {
-        return contextPath + "/language/list";
+        return contextPath + "/language/list" + dswidQuery;
     }
 
+    /**
+     * Get error url with dswid parameter
+     */
     public String genericErrorPage() {
-        return contextPath + "/error";
+        return contextPath + "/error" + dswidQuery;
     }
 
+    /**
+     * Get sign-in url with dswid parameter
+     */
     public String signInPage() {
-        return contextPath + "/account/sign_in";
+        return contextPath + "/account/sign_in" + dswidQuery;
     }
 
+    /**
+     * Get home url with dswid parameter
+     */
     public String home() {
-        return contextPath + "/";
+        return contextPath + "/" + dswidQuery;
     }
 }
