@@ -185,6 +185,9 @@ public class ZanataIdentity implements Identity, Serializable {
 
     /**
      * Accepts an external subject and principal. (Use with caution)
+     * This method is used to propagate an authentication context. For
+     * example when spawing a new thread for an async task, or when
+     * authenticating externally through Kerberos.
      */
     public void acceptExternalSubjectAndPpal(Subject subject,
             Principal principal) {
