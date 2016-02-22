@@ -28,6 +28,7 @@
 * [ZNTA-742](https://zanata.atlassian.net/browse/ZNTA-742) - Get a list of contributors for a Project version via the API
 * [ZNTA-744](https://zanata.atlassian.net/browse/ZNTA-744) - Add review data to the contribution statistics API
 * [ZNTA-879](https://zanata.atlassian.net/browse/ZNTA-879) - Allow admin to configure the visibility of user email
+* [ZNTA-905](https://zanata.atlassian.net/browse/ZNTA-905) - Remove 0% matching translation memory entry
 
 -----------------------
 
