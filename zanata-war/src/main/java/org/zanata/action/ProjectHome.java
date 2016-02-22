@@ -33,9 +33,9 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.annotation.Nullable;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -96,7 +96,7 @@ import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 @Slf4j
 //@GroupedConversationScoped
 //@ConversationGroup(ProjectSlug.class)
-@RequestScoped
+@ViewScoped
 public class ProjectHome extends SlugHome<HProject> implements
     HasLanguageSettings {
 
@@ -263,8 +263,8 @@ public class ProjectHome extends SlugHome<HProject> implements
     private String selectedProjectType;
 
     @Getter
-    private ProjectMaintainersAutocomplete maintainerAutocomplete =
-            new ProjectMaintainersAutocomplete();
+    @Inject
+    private ProjectMaintainersAutocomplete maintainerAutocomplete;
 
     @Getter
     private AbstractListFilter<HPerson> maintainerFilter =
@@ -650,6 +650,7 @@ public class ProjectHome extends SlugHome<HProject> implements
         disabledLocales = null;
     }
 
+    @Transactional
     public void setRestrictedByRole(String key, boolean checked) {
         identity.checkPermission(instance, "update");
         getInstance().setRestrictedByRoles(checked);
@@ -1142,7 +1143,16 @@ public class ProjectHome extends SlugHome<HProject> implements
                 && identity.hasPermission("HProject", "view-obsolete");
     }
 
-    public class ProjectMaintainersAutocomplete extends MaintainerAutocomplete {
+    @ViewScoped
+    public static class ProjectMaintainersAutocomplete extends MaintainerAutocomplete {
+
+        @Inject
+        private ProjectHome projectHome;
+
+        private HProject getInstance() {
+            return projectHome.getInstance();
+        }
+
 
         @Override
         protected List<HPerson> getMaintainers() {
@@ -1155,6 +1165,7 @@ public class ProjectHome extends SlugHome<HProject> implements
          * Action when an item is selected
          */
         @Override
+        @Transactional
         public void onSelectItemAction() {
             if (StringUtils.isEmpty(getSelectedItem())) {
                 return;
@@ -1169,7 +1180,7 @@ public class ProjectHome extends SlugHome<HProject> implements
                     .getInstance(ProjectHome.class);
             projectHome.update();
             reset();
-            maintainerFilter.reset();
+            projectHome.getMaintainerFilter().reset();
 
             getFacesMessages().addGlobal(FacesMessage.SEVERITY_INFO,
                     msgs.format("jsf.project.MaintainerAdded",

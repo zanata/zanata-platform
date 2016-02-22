@@ -34,6 +34,7 @@ import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.common.EntityStatus;
@@ -155,6 +156,7 @@ public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
     }
 
     @CheckLoggedIn
+    @Transactional
     public void send() {
         if (hasSelectedVersion()) {
             String fromName = authenticatedAccount.getPerson().getName();

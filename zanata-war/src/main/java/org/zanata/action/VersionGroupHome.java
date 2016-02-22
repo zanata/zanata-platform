@@ -26,9 +26,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.faces.event.ValueChangeEvent;
 
 import org.apache.commons.lang.StringUtils;
@@ -51,7 +51,6 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.SlugEntityService;
 import org.zanata.service.VersionGroupService;
-import org.zanata.service.impl.VersionGroupServiceImpl;
 import org.zanata.ui.AbstractAutocomplete;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.InMemoryListFilter;
@@ -59,7 +58,6 @@ import org.zanata.ui.autocomplete.LocaleAutocomplete;
 import org.zanata.ui.autocomplete.MaintainerAutocomplete;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ComparatorUtil;
-import org.zanata.util.ServiceLocator;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
@@ -72,7 +70,7 @@ import lombok.Getter;
 @Named("versionGroupHome")
 //@GroupedConversationScoped
 //@ConversationGroup(VersionGroupSlug.class)
-@RequestScoped
+@ViewScoped
 public class VersionGroupHome extends SlugHome<HIterationGroup>
         implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -102,15 +100,16 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
     private ZanataIdentity identity;
 
     @Getter
-    private GroupMaintainerAutocomplete maintainerAutocomplete =
-            new GroupMaintainerAutocomplete();
+    @Inject
+    private GroupMaintainerAutocomplete maintainerAutocomplete;
 
     @Getter
-    private VersionAutocomplete versionAutocomplete = new VersionAutocomplete();
+    @Inject
+    private VersionAutocomplete versionAutocomplete;
 
     @Getter
-    private GroupLocaleAutocomplete localeAutocomplete =
-            new GroupLocaleAutocomplete();
+    @Inject
+    private GroupLocaleAutocomplete localeAutocomplete;
 
     @Getter
     private AbstractListFilter<HPerson> maintainerFilter =
@@ -301,26 +300,38 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         clearSlugs();
     }
 
-    public class GroupMaintainerAutocomplete extends MaintainerAutocomplete {
+    @ViewScoped
+    public static class GroupMaintainerAutocomplete extends MaintainerAutocomplete {
+
+        @Inject
+        private VersionGroupHome versionGroupHome;
+
+        @Inject
+        private ZanataIdentity identity;
 
         @Override
         protected List<HPerson> getMaintainers() {
-            return getInstanceMaintainers();
+            return versionGroupHome.getInstanceMaintainers();
+        }
+
+        private HIterationGroup getInstance() {
+            return versionGroupHome.getInstance();
         }
 
         /**
          * Action when an item is selected
          */
         @Override
+        @Transactional
         public void onSelectItemAction() {
             if (StringUtils.isEmpty(getSelectedItem())) {
                 return;
             }
 
-            identity.checkPermission(instance, "update");
+            identity.checkPermission(getInstance(), "update");
             HPerson maintainer = personDAO.findByUsername(getSelectedItem());
             getInstance().getMaintainers().add(maintainer);
-            getVersionGroupHome().update(conversationScopeMessages);
+            versionGroupHome.update(conversationScopeMessages);
             reset();
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                     msgs.format("jsf.MaintainerAddedToGroup",
@@ -328,16 +339,24 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         }
     }
 
-    public class VersionAutocomplete extends
+    @ViewScoped
+    public static class VersionAutocomplete extends
             AbstractAutocomplete<HProjectIteration> {
-        private ProjectIterationDAO projectIterationDAO = ServiceLocator
-                .instance().getInstance(ProjectIterationDAO.class);
+        @Inject
+        private ProjectIterationDAO projectIterationDAO;
 
-        private VersionGroupService versionGroupServiceImpl = ServiceLocator
-                .instance().getInstance(VersionGroupServiceImpl.class);
+        @Inject
+        private VersionGroupService versionGroupServiceImpl;
 
-        private ZanataIdentity identity = ServiceLocator.instance()
-                .getInstance(ZanataIdentity.class);
+        @Inject
+        private VersionGroupHome versionGroupHome;
+
+        @Inject
+        private ZanataIdentity identity;
+
+        private HIterationGroup getInstance() {
+            return versionGroupHome.getInstance();
+        }
 
         @Override
         public List<HProjectIteration> suggest() {
@@ -366,12 +385,12 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
                 return;
             }
 
-            identity.checkPermission(instance, "update");
+            identity.checkPermission(getInstance(), "update");
             HProjectIteration version =
                     projectIterationDAO.findById(new Long(getSelectedItem()));
             getInstance().getProjectIterations().add(version);
 
-            getVersionGroupHome().update(conversationScopeMessages);
+            versionGroupHome.update(conversationScopeMessages);
             reset();
 
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
@@ -380,14 +399,17 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         }
     }
 
-    private static VersionGroupHome getVersionGroupHome() {
-        return ServiceLocator.instance()
-                        .getInstance(VersionGroupHome.class);
-    }
+    @ViewScoped
+    public static class GroupLocaleAutocomplete extends LocaleAutocomplete {
+        @Inject
+        private VersionGroupHome versionGroupHome;
 
-    public class GroupLocaleAutocomplete extends LocaleAutocomplete {
-        private ZanataIdentity identity = ServiceLocator.instance()
-                .getInstance(ZanataIdentity.class);
+        @Inject
+        private ZanataIdentity identity;
+
+        private HIterationGroup getInstance() {
+            return versionGroupHome.getInstance();
+        }
 
         @Override
         protected Set<HLocale> getLocales() {
@@ -424,15 +446,15 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
             if (StringUtils.isEmpty(getSelectedItem())) {
                 return;
             }
-            identity.checkPermission(instance, "update");
+            identity.checkPermission(getInstance(), "update");
 
             HLocale locale = localeServiceImpl.getByLocaleId(getSelectedItem());
 
             getInstance().getActiveLocales().add(locale);
 
-            getVersionGroupHome().update(conversationScopeMessages);
+            versionGroupHome.update(conversationScopeMessages);
             reset();
-            maintainerFilter.reset();
+            versionGroupHome.getMaintainerFilter().reset();
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                     msgs.format("jsf.LanguageAddedToGroup",
                             locale.retrieveDisplayName()));
