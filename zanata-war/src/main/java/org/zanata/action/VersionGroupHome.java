@@ -317,6 +317,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
                 return;
             }
 
+            identity.checkPermission(instance, "update");
             HPerson maintainer = personDAO.findByUsername(getSelectedItem());
             getInstance().getMaintainers().add(maintainer);
             getVersionGroupHome().update(conversationScopeMessages);
@@ -359,6 +360,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         }
 
         @Override
+        @Transactional
         public void onSelectItemAction() {
             if (StringUtils.isEmpty(getSelectedItem())) {
                 return;
@@ -417,6 +419,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
          * Action when an item is selected
          */
         @Override
+        @Transactional
         public void onSelectItemAction() {
             if (StringUtils.isEmpty(getSelectedItem())) {
                 return;
