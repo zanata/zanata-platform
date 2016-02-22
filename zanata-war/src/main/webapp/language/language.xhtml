@@ -49,13 +49,16 @@
     </script>
 
     <h:form styleClass="l--push-bottom-0">
-      <a4j:jsFunction name="refreshMembersForm" action="#{languageAction.reset}" limitRender="true"
+      <a4j:jsFunction name="refreshMembersForm" action="#{languageAction.reset}"
+        limitRender="true"
         render="member-info, members-size, members-form" oncomplete="zanata.form.appendCheckboxes('#members-form')"/>
 
-      <a4j:jsFunction name="refreshRequestsForm" action="#{languageJoinAction.clearMessage}" limitRender="true"
+      <a4j:jsFunction name="refreshRequestsForm" action="#{languageJoinAction.clearMessage}"
+        limitRender="true"
         render="requests-form" oncomplete="zanata.form.appendCheckboxes('#requests-form')"/>
 
-      <a4j:jsFunction name="refreshRequestsSection" limitRender="true"
+      <a4j:jsFunction name="refreshRequestsSection"
+        limitRender="true"
         render="language-tabs" oncomplete="zanata.form.appendCheckboxes('#requests-form');zanata.form.appendCheckboxes('#members-form')"/>
 
       <a4j:jsFunction name="bindAsTranslator" action="#{languageAction.updatePersonRole(personId, 'T', asTranslator)}"
