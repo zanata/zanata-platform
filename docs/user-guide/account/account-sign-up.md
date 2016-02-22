@@ -3,7 +3,7 @@
 
 You can create an account on Zanata using an OpenID login (such as Google or Fedora), or by creating a password specific to Zanata. You can set or change your password and add OpenID accounts to your Zanata account at any time.
 
-*Note: If you want to translate a JBoss-related project, use the translate.jboss.org site, which requires a jboss.org account. You can create a jboss.org account at the [jboss.org registration page](https://community.jboss.org/register.jspa). The following instructions are for general open source projects on [translate.zanata.org](http://translate.zanata.org).*
+*Note: If you want to translate a JBoss-related project, use the [translate.jboss.org](https://translate.jboss.org) site, which requires a jboss.org account. You can create a jboss.org account at the [jboss.org registration page](https://community.jboss.org/register.jspa); Fedora projects should use [fedora.zanata.org](https://fedora.zanata.org); The general open source projects should use [translate.zanata.org](https://translate.zanata.org), which is used in the following instructions.
 
 ## Sign up Using OpenID
 
@@ -51,3 +51,4 @@ To add an OpenID account to your Zanata account:
  1. In the `Actions` menu, click `Add New Identity` and follow the procedure described earlier.
 
 *Note: if you want to translate a project that falls under the Fedora CLA, you must add a Fedora OpenID to your Zanata account. You can then sign in with your password or any OpenID account and be allowed to translate Fedora projects.*
+
