@@ -452,7 +452,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
 
             getInstance().getActiveLocales().add(locale);
 
-            versionGroupHome.update(conversationScopeMessages);
+            versionGroupHome.update();
             reset();
             versionGroupHome.getMaintainerFilter().reset();
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,

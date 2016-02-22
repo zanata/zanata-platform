@@ -206,6 +206,11 @@ public class FacesMessages implements Serializable {
         addToControl(null, severity, null, messageTemplate, params);
     }
 
+    public void addGlobal(FacesMessage msg) {
+        log.info("FacesMessage to user (wid: {}): {})", windowContext.getCurrentWindowId(), msg.getSummary());
+        globalMessages.add(msg);
+    }
+
     /**
      * Adds a global message from the configured resource bundle.
      * @param severity Message severity.

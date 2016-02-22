@@ -90,11 +90,9 @@
         <ul class="list--no-bullets message--global">
           <zanata:global-messages value="#{jsfMessages.globalMessagesList}"
             rendered="#{not facesContext.validationFailed and not empty jsfMessages.globalMessagesList}"/>
-          <zanata:global-messages value="#{conversationScopeMessages.getAndClearMessages()}"
-            rendered="#{conversationScopeMessages.hasMessages()}"/>
         </ul>
         <h:outputScript
-          rendered="#{conversationScopeMessages.hasMessages() or (not facesContext.validationFailed and not empty jsfMessages.globalMessagesList)}">
+          rendered="#{not facesContext.validationFailed and not empty jsfMessages.globalMessagesList}">
           startGlobalMessageTimer();
         </h:outputScript>
       </ui:fragment>

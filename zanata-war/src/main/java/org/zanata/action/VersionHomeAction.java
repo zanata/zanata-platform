@@ -1061,7 +1061,7 @@ public class VersionHomeAction extends AbstractSortAction implements
                     warningMessages.add(new FacesMessage(
                             FacesMessage.SEVERITY_WARN, warning, null));
                 }
-                conversationScopeMessages.setMessages(warningMessages);
+                conversationScopeMessages.addMessages(warningMessages);
             }
         } catch (ZanataServiceException e) {
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_ERROR,
