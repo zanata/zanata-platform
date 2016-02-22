@@ -63,6 +63,10 @@ public abstract class EntityHome<E> extends Home<EntityManager, E> {
     @Transactional
     public String update() {
         joinTransaction();
+        // The EntityManager is RequestScoped, so merge the old instance
+        // (ViewScoped) before saving:
+        E mergedInstance = getEntityManager().merge(getInstance());
+        setInstance(mergedInstance);
         getEntityManager().flush();
         updatedMessage();
         return "updated";
