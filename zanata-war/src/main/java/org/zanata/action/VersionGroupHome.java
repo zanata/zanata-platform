@@ -170,7 +170,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
     @Override
     @Transactional
     public String persist() {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         if (!validateSlug(getInstance().getSlug(), "slug"))
             return null;
 
@@ -183,7 +183,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
     @Override
     @Transactional
     public String update() {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         return super.update();
     }
 
@@ -209,7 +209,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
 
     @Transactional
     public void removeLanguage(HLocale locale) {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         getInstance().getActiveLocales().remove(locale);
         update();
         conversationScopeMessages.setMessage(
@@ -220,7 +220,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
 
     @Transactional
     public void removeVersion(HProjectIteration version) {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         getInstance().getProjectIterations().remove(version);
         update();
         conversationScopeMessages.setMessage(
@@ -231,7 +231,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
 
     @Transactional
     public void removeMaintainer(HPerson maintainer) {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         if (getInstance().getMaintainers().size() <= 1) {
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                     msgs.get("jsf.group.NeedAtLeastOneMaintainer"));
