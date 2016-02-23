@@ -1374,7 +1374,7 @@
       <dependency>
         <groupId>org.fedorahosted.openprops</groupId>
         <artifactId>openprops</artifactId>
-        <version>0.6</version>
+        <version>0.7.1</version>
       </dependency>
       <dependency>
         <groupId>org.infinitest</groupId>
