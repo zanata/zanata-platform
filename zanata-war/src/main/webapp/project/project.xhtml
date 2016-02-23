@@ -72,7 +72,9 @@
 
     <h:panelGroup layout="block"  styleClass="media l--push-bottom-half" id="project-info">
       <div class="media__body">
-        <h1 class="l--push-all-0">#{projectHome.instance.name}</h1>
+        <h1 class="l--push-all-0">
+          <zanata:project-label project="#{projectHome.instance}"/>
+        </h1>
 
         <p class="txt--understated">
           <ui:fragment
