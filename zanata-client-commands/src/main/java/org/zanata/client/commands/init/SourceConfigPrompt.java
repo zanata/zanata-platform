@@ -23,6 +23,8 @@ package org.zanata.client.commands.init;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.kohsuke.args4j.Option;
@@ -36,13 +38,23 @@ import org.zanata.client.commands.push.AbstractPushStrategy;
 import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.push.PushOptions;
 import org.zanata.client.commands.push.PushOptionsImpl;
+import org.zanata.client.commands.push.RawPushCommand;
+import org.zanata.client.commands.push.RawPushStrategy;
+import org.zanata.common.DocumentType;
+import org.zanata.rest.client.FileResourceClient;
 import org.zanata.rest.client.RestClientFactory;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Hint;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Warning;
 import static org.zanata.client.commands.StringUtil.indent;
 import static org.zanata.client.commands.ConsoleInteractorImpl.AnswerValidatorImpl.*;
+import static org.zanata.common.ProjectType.File;
 import static org.zanata.client.commands.Messages.get;
 
 /**
@@ -60,13 +72,15 @@ class SourceConfigPrompt {
     private final ConsoleInteractor console;
     private final ConfigurableProjectOptions opts;
     private final PushOptions pushOptions;
+    private final SrcDocsFinder
+            srcDocsFinder;
     // includes and excludes in ConfigurableProjectOptions do not have symmetric
     // setter/getter (set method accepts String but get method returns
     // ImmutableList) therefore we have to keep instance variables here
     private String includes;
     private String excludes;
-    private PushCommand pushCommand;
     private Set<String> docNames;
+    private List<DocumentType> rawDocumentTypes;
 
     public SourceConfigPrompt(
             ConsoleInteractor console,
@@ -83,13 +97,7 @@ class SourceConfigPrompt {
         pushOptions.setKey(opts.getKey());
         pushOptions.setLocaleMapList(opts.getLocaleMapList());
 
-        RestClientFactory clientFactory =
-                OptionsUtil.createClientFactoryWithoutVersionCheck(pushOptions);
-        pushCommand =
-                new PushCommand(pushOptions,
-                        clientFactory.getCopyTransClient(),
-                        clientFactory.getAsyncProcessClient(),
-                        clientFactory);
+        srcDocsFinder = makeSrcDocFinder();
     }
 
     SourceConfigPrompt promptUser() throws Exception {
@@ -117,6 +125,24 @@ class SourceConfigPrompt {
         pushOptions.setSrcDir(srcDir);
         pushOptions.setIncludes(includes);
         pushOptions.setExcludes(excludes);
+
+
+        // if project type is file, we need to ask file type in order to find source documents
+        if (File.name().equalsIgnoreCase(pushOptions.getProjectType())) {
+
+            console.blankLine();
+            console.printfln(Question, get("project.file.type.question"));
+            RestClientFactory clientFactory = getClientFactory(pushOptions);
+            FileResourceClient client =
+                    clientFactory.getFileResourceClient();
+            rawDocumentTypes = client.acceptedFileTypes();
+            // this answer is not persisted in zanata.xml so user will still need to type it when they do the actual push
+            console.printfln(Hint, PushOptionsImpl.fileTypeHelp);
+            console.printf(Question, get("file.type.prompt"));
+            String answer = console.expectAnyNotBlankAnswer();
+            ((PushOptionsImpl) pushOptions).setFileTypes(answer);
+        }
+
         console.blankLine();
         docNames = findDocNames();
         if (docNames.isEmpty()) {
@@ -140,13 +166,14 @@ class SourceConfigPrompt {
         return this;
     }
 
+    @VisibleForTesting
+    protected RestClientFactory getClientFactory(PushOptions pushOptions) {
+        return OptionsUtil
+                .createClientFactoryWithoutVersionCheck(pushOptions);
+    }
+
     private Set<String> findDocNames() throws IOException {
-        AbstractPushStrategy strategy = pushCommand.getStrategy(pushOptions);
-        return strategy.findDocNames(pushOptions.getSrcDir(),
-                pushOptions.getIncludes(), pushOptions.getExcludes(),
-                pushOptions.getDefaultExcludes(),
-                pushOptions.getCaseSensitive(),
-                pushOptions.getExcludeLocaleFilenames());
+        return srcDocsFinder.findSrcDocNames();
     }
 
     private void hintAdvancedConfigurations() {
@@ -191,4 +218,92 @@ class SourceConfigPrompt {
     public Set<String> getDocNames() {
         return docNames;
     }
+
+    private SrcDocsFinder makeSrcDocFinder() {
+        String projectType = pushOptions.getProjectType();
+        if (projectType.equalsIgnoreCase(File.name())) {
+            return new RawSrcDocsFinder(pushOptions);
+        } else {
+            return new OtherSrcDocsFinder(pushOptions);
+        }
+    }
+
+    interface SrcDocsFinder {
+        Set<String> findSrcDocNames();
+    }
+
+    class RawSrcDocsFinder implements SrcDocsFinder {
+
+        private final RawPushStrategy strategy;
+
+        RawSrcDocsFinder(PushOptions pushOptions) {
+            strategy = new RawPushStrategy();
+            strategy.setPushOptions(pushOptions);
+        }
+
+        @Override
+        public Set<String> findSrcDocNames() {
+            PushOptions opts = strategy.getOpts();
+            ImmutableList<String> extensions = filteredFileExtensions(opts);
+            return ImmutableSet.copyOf(strategy.getSrcFiles(
+                    opts.getSrcDir(), opts.getIncludes(),
+                    opts.getExcludes(), extensions,
+                    opts.getDefaultExcludes(),
+                    opts.getCaseSensitive()));
+        }
+
+        private ImmutableList<String> filteredFileExtensions(PushOptions opts) {
+            // mostly duplicated in RawPushCommand
+            RestClientFactory clientFactory = getClientFactory(opts);
+            RawPushCommand rawPushCommand =
+                    new RawPushCommand(opts, clientFactory, console);
+            Map<DocumentType, Set<String>> filteredDocTypes =
+                    rawPushCommand.validateFileTypes(rawDocumentTypes,
+                            opts.getFileTypes());
+
+            if (filteredDocTypes.isEmpty()) {
+                log.info("no valid types specified; nothing to do");
+                return ImmutableList.of();
+            }
+
+            ImmutableList.Builder<String> sourceFileExtensionsBuilder =
+                    ImmutableList.builder();
+            for (Set<String> filteredSourceExtensions : filteredDocTypes
+                    .values()) {
+                sourceFileExtensionsBuilder.addAll(filteredSourceExtensions);
+            }
+            return sourceFileExtensionsBuilder.build();
+        }
+    }
+
+    class OtherSrcDocsFinder implements SrcDocsFinder {
+        private final AbstractPushStrategy strategy;
+        private PushOptions opts;
+
+        OtherSrcDocsFinder(PushOptions pushOptions) {
+            opts = pushOptions;
+            RestClientFactory clientFactory = getClientFactory(pushOptions);
+            PushCommand pushCommand =
+                    new PushCommand(pushOptions,
+                            clientFactory.getCopyTransClient(),
+                            clientFactory.getAsyncProcessClient(),
+                            clientFactory);
+            strategy = pushCommand.getStrategy(pushOptions);
+        }
+
+        @Override
+        public Set<String> findSrcDocNames() {
+            try {
+                return strategy
+                        .findDocNames(opts.getSrcDir(), opts.getIncludes(),
+                                opts.getExcludes(),
+                                opts.getDefaultExcludes(),
+                                opts.getCaseSensitive(),
+                                opts.getExcludeLocaleFilenames());
+            } catch (IOException e) {
+                throw Throwables.propagate(e);
+            }
+        }
+    }
 }
+
