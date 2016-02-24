@@ -189,7 +189,7 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
         return fileTypes;
     }
 
-    private static final String fileTypeHelp = "File types to locate and transmit to the server. \n" +
+    public static final String fileTypeHelp = "File types to locate and transmit to the server. \n" +
         "Default file extension will be used unless it is being specified. \n" +
         "Pattern: TYPE[extension;extension],TYPE[extension] \n" +
         "Supported types: \n" +

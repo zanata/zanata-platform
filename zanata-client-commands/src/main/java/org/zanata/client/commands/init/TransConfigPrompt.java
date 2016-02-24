@@ -23,16 +23,20 @@ package org.zanata.client.commands.init;
 import java.io.File;
 import java.util.Set;
 
+import org.apache.commons.io.FilenameUtils;
 import org.zanata.client.commands.ConfigurableProjectOptions;
 import org.zanata.client.commands.ConsoleInteractor;
 import org.zanata.client.commands.OptionsUtil;
-import org.zanata.client.commands.pull.PullCommand;
+import org.zanata.client.commands.QualifiedSrcDocName;
+import org.zanata.client.commands.TransFileResolver;
+import org.zanata.client.commands.UnqualifiedSrcDocName;
+import org.zanata.client.commands.pull.PullOptions;
 import org.zanata.client.commands.pull.PullOptionsImpl;
-import org.zanata.client.commands.pull.PullStrategy;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
-import org.zanata.rest.client.RestClientFactory;
+import org.zanata.common.ProjectType;
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 
@@ -55,7 +59,8 @@ class TransConfigPrompt {
     private final ConfigurableProjectOptions opts;
     private final Set<String> srcFilesSample;
     private final PullOptionsImpl pullOptions;
-    private final PullCommand pullCommand;
+    private final TransFilePathFinder
+            transFilePathFinder;
     private int remainingFileNumber;
 
     public TransConfigPrompt(ConsoleInteractor console,
@@ -74,10 +79,7 @@ class TransConfigPrompt {
         pullOptions.setProjectType(opts.getProjectType());
         pullOptions.setLocaleMapList(opts.getLocaleMapList());
 
-        RestClientFactory clientFactory =
-                OptionsUtil.createClientFactoryWithoutVersionCheck(opts);
-        pullCommand = new PullCommand(pullOptions,
-                clientFactory);
+        transFilePathFinder = makeTransFilePathFinder(pullOptions);
     }
 
     TransConfigPrompt promptUser() throws Exception {
@@ -86,12 +88,11 @@ class TransConfigPrompt {
         File transDir = new File(localTransDir);
         pullOptions.setTransDir(transDir);
 
-        final PullStrategy strategy = pullCommand.createStrategy(pullOptions);
         LocaleList localeMapList = pullOptions.getLocaleMapList();
         LocaleMapping localeMapping = getSampleLocaleMapping(localeMapList);
 
         Iterable<String> transFiles = Iterables.transform(srcFilesSample,
-                new ToTransFileNameFunction(strategy, localeMapping));
+                new ToTransFileNameFunction(transFilePathFinder, localeMapping));
         console.printfln(Hint, get("trans.doc.preview"), localeMapping.getLocale());
         for (String transFile : transFiles) {
             console.printfln("%s%s", indent(8), transFile);
@@ -110,6 +111,14 @@ class TransConfigPrompt {
         return this;
     }
 
+    private TransFilePathFinder makeTransFilePathFinder(PullOptions opts) {
+        if (ProjectType.File.name().equalsIgnoreCase(opts.getProjectType())) {
+            return new RawTransFilePathFinder(opts);
+        } else {
+            return new OtherTransFilePathFinder(opts);
+        }
+    }
+
     private static LocaleMapping
             getSampleLocaleMapping(LocaleList localeMapList) {
         LocaleMapping localeMapping;
@@ -123,19 +132,61 @@ class TransConfigPrompt {
 
     private static class ToTransFileNameFunction
             implements Function<String, String> {
-        private final PullStrategy strategy;
+        private final TransFilePathFinder transFilePathFinder;
         private final LocaleMapping localeMapping;
 
-        public ToTransFileNameFunction(PullStrategy strategy,
+        public ToTransFileNameFunction(TransFilePathFinder transFilePathFinder,
                 LocaleMapping localeMapping) {
-            this.strategy = strategy;
+            this.transFilePathFinder = transFilePathFinder;
             this.localeMapping = localeMapping;
         }
 
         @Override
         public String apply(String input) {
-            return strategy.getTransFileToWrite(input, localeMapping).getPath();
+            return transFilePathFinder.getTransFileToWrite(input, localeMapping);
 
+        }
+    }
+
+    interface TransFilePathFinder {
+        String getTransFileToWrite(String srcDoc, LocaleMapping localeMapping);
+    }
+
+    static class RawTransFilePathFinder implements TransFilePathFinder {
+        private final TransFileResolver transFileResolver;
+
+        RawTransFilePathFinder(PullOptions opts) {
+            transFileResolver = new TransFileResolver(opts);
+        }
+
+        @Override
+        public String getTransFileToWrite(String srcDoc,
+                LocaleMapping localeMapping) {
+            String targetFileExt = FilenameUtils
+                    .getExtension(srcDoc);
+
+            Optional<String> translationFileExtension =
+                    Optional.fromNullable(targetFileExt);
+            File file = transFileResolver.resolveTransFile(
+                    QualifiedSrcDocName.from(srcDoc),
+                    localeMapping, translationFileExtension);
+            return file.getPath();
+        }
+    }
+
+    static class OtherTransFilePathFinder implements TransFilePathFinder {
+        private final TransFileResolver transFileResolver;
+
+        OtherTransFilePathFinder(PullOptions opts) {
+            this.transFileResolver = new TransFileResolver(opts);
+        }
+
+        @Override
+        public String getTransFileToWrite(String srcDoc,
+                LocaleMapping localeMapping) {
+            File transFile = transFileResolver.getTransFile(
+                    UnqualifiedSrcDocName.from(srcDoc), localeMapping);
+            return transFile.getPath();
         }
     }
 }
