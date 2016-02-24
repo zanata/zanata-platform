@@ -106,6 +106,9 @@ public class AsynchronousProcessResourceService implements
         HProjectIteration hProjectIteration =
                 retrieveAndCheckIteration(projectSlug, iterationSlug, true);
 
+        // Check permission
+        identity.checkPermission(hProjectIteration, "import-template");
+
         resourceUtils.validateExtensions(extensions); // gettext, comment
 
         HDocument document =
@@ -147,6 +150,9 @@ public class AsynchronousProcessResourceService implements
                 retrieveAndCheckIteration(projectSlug, iterationSlug, true);
 
         resourceUtils.validateExtensions(extensions); // gettext, comment
+
+        // Check permission
+        identity.checkPermission(hProjectIteration, "import-template");
 
         String name = "SourceDocCreationOrUpdate: "+projectSlug+"-"+iterationSlug+"-"+idNoSlash;
         AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
