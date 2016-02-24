@@ -11,9 +11,12 @@ import java.io.FileNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.adapter.xliff.XliffCommon.ValidationType;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
+import org.zanata.rest.dto.resource.TextFlowTarget;
+import org.zanata.rest.dto.resource.TranslationsResource;
 
 public class XliffWriterTest {
     private String testDir = "src/test/resources/";
@@ -73,5 +76,22 @@ public class XliffWriterTest {
         doc.setName(generatedDocName);
 
         XliffWriter.write(new File(generateDir), doc, "en-US");
+    }
+
+    @Test
+    public void testWriteXliff() throws Exception {
+
+        Resource doc = new Resource("hello");
+        doc.getTextFlows()
+                .add(new TextFlow("first", LocaleId.EN_US, "first text"));
+        TranslationsResource translationsResource = new TranslationsResource();
+
+        TextFlowTarget target = new TextFlowTarget("first");
+        target.setContents("第一个");
+        target.setState(ContentState.Translated);
+        translationsResource.getTextFlowTargets().add(target);
+        XliffWriter
+                .writeFile(new File(generateDir, "xliff_writer.xml"), doc, "zh",
+                        translationsResource, true);
     }
 }
