@@ -204,6 +204,7 @@ public class XliffWriter extends XliffCommon {
         Serializer serializer = processor.newSerializer();
         serializer.setOutputProperty(Serializer.Property.METHOD, "xml");
         serializer.setOutputProperty(Serializer.Property.INDENT, "yes");
+        serializer.setOutputProperty(Serializer.Property.ENCODING, "utf-8");
         StreamWriterToReceiver writer = null;
 
         try (FileOutputStream fileStream = new FileOutputStream(file)) {
