@@ -287,6 +287,13 @@ public class UrlUtil implements Serializable {
     }
 
     /**
+     * Get view expired url with dswid parameter
+     */
+    public String viewExpiredErrorPage() {
+        return contextPath + "/error/viewexpiredexception" + dswidQuery;
+    }
+
+    /**
      * Get sign-in url with dswid parameter
      */
     public String signInPage() {

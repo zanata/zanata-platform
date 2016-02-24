@@ -35,7 +35,7 @@ import javax.faces.application.ViewExpiredException;
 @ExceptionHandler
 public class ViewExpiredExceptionHandler extends AbstractExceptionHandler {
     public void handleException(@Handles ExceptionEvent<ViewExpiredException> event) {
-        handle(event, LogLevel.Debug, "/error/viewexpiredexception", FacesMessage.SEVERITY_WARN,
+        handle(event, LogLevel.Debug, urlUtil.viewExpiredErrorPage(), FacesMessage.SEVERITY_WARN,
                 "jsf.YourSessionHasTimedOutPleaseTryAgain");
     }
 }
