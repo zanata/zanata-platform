@@ -114,8 +114,9 @@ public class LanguagePage extends BasePage {
         WebElement form = existingElement(By.id("members-form"));
         for (WebElement listEntry : form
                 .findElements(By.className("list__item--actionable"))) {
-            names.add(listEntry.findElement(By.tagName("a")).getText().trim());
+            names.add(listEntry.findElement(By.className("list__item__info")).getText().trim());
         }
+        log.info("Found {}", names);
         return names;
     }
 
