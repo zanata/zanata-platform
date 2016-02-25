@@ -21,6 +21,7 @@
 package org.zanata.jpa;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Disposes;
@@ -28,10 +29,8 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceContext;
 
 import org.hibernate.Session;
-import org.hibernate.event.spi.EventSource;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -94,16 +93,9 @@ public class EntityManagerProducer {
 
     @Produces
     @Default
-    @RequestScoped
+    @Dependent
     protected Session getSession(EntityManager entityManager) {
         return entityManager.unwrap(Session.class);
-    }
-
-    protected void closeSession(@Disposes Session session) {
-        if (session.isOpen()) {
-            log.debug("___________ closing session: {}", session);
-            session.close();
-        }
     }
 
     @Produces

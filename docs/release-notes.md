@@ -1,11 +1,36 @@
 ## 3.9
 
+<h5>Infrastructure Changes</h5>
+* [ZNTA-530](https://zanata.atlassian.net/browse/ZNTA-530) - Replace Seam 2 with CDI
+  * In WildFly or EAP `standalone.xml`, please make sure the Weld
+    extension is present in the `extensions` section like this:
+
+        <extensions>
+            ...
+            <extension module="org.jboss.as.weld" />
+            ...
+        </extensions>
+
+
+  * Secondly, please ensure the Weld subsystem is present in the
+    `profiles` section, eg like this:
+
+        <profiles>
+            ...
+            <subsystem xmlns="urn:jboss:domain:weld:1.0" />
+            ...
+        </profiles>
+
+
 <h5>Bug fixes</h5>
 * [ZNTA-804](https://zanata.atlassian.net/browse/ZNTA-804) - Coordinators' email addresses should be BCC in Contact Coordinator
 * [ZNTA-693](https://zanata.atlassian.net/browse/ZNTA-693) - Handle ClientAbortException exception and reduce severity.
 * [ZNTA-742](https://zanata.atlassian.net/browse/ZNTA-742) - Get a list of contributors for a Project version via the API
 * [ZNTA-744](https://zanata.atlassian.net/browse/ZNTA-744) - Add review data to the contribution statistics API
 * [ZNTA-879](https://zanata.atlassian.net/browse/ZNTA-879) - Allow admin to configure the visibility of user email
+* [ZNTA-412](https://zanata.atlassian.net/browse/ZNTA-412) - Profile link to project maintainers, language members, and version group maintainers
+* [ZNTA-905](https://zanata.atlassian.net/browse/ZNTA-905) - Remove 0% matching translation memory entry
+* [ZNTA-928](https://zanata.atlassian.net/browse/ZNTA-928) - Readonly project doesn't have "lock" icon in UI
 
 -----------------------
 

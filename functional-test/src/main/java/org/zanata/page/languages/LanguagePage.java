@@ -111,10 +111,12 @@ public class LanguagePage extends BasePage {
             return Collections.emptyList();
         }
         List<String> names = new ArrayList<>();
-        for (WebElement listEntry : readyElement(By.id("members-form"))
-            .findElements(By.className("list__item--actionable"))) {
-            names.add(listEntry.findElement(By.tagName("h3")).getText().trim());
+        WebElement form = existingElement(By.id("members-form"));
+        for (WebElement listEntry : form
+                .findElements(By.className("list__item--actionable"))) {
+            names.add(listEntry.findElement(By.className("list__item__info")).getText().trim());
         }
+        log.info("Found {}", names);
         return names;
     }
 

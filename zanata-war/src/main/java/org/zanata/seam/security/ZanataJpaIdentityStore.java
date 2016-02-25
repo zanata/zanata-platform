@@ -20,6 +20,36 @@
  */
 package org.zanata.seam.security;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.dao.AccountDAO;
+import org.zanata.events.PostAuthenticateEvent;
+import org.zanata.events.UserCreatedEvent;
+import org.zanata.exception.IdentityManagementException;
+import org.zanata.exception.NoSuchRoleException;
+import org.zanata.exception.NoSuchUserException;
+import org.zanata.model.HAccount;
+import org.zanata.model.HAccountRole;
+import org.zanata.security.AuthenticatedAccountHolder;
+import org.zanata.security.AuthenticatedAccountSessionScopeHolder;
+import org.zanata.security.Role;
+import org.zanata.security.SimplePrincipal;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
+import org.zanata.util.PasswordUtil;
+import org.zanata.util.ServiceLocator;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.io.Serializable;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -28,40 +58,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-
-import javax.inject.Named;
-
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.events.PostAuthenticateEvent;
-import org.zanata.exception.IdentityManagementException;
-import org.zanata.exception.NoSuchRoleException;
-import org.zanata.exception.NoSuchUserException;
-import org.zanata.security.AuthenticatedAccountHolder;
-import org.zanata.security.AuthenticatedAccountSessionScopeHolder;
-import org.zanata.security.Role;
-import org.zanata.dao.AccountDAO;
-import org.zanata.events.UserCreatedEvent;
-import org.zanata.model.HAccount;
-import org.zanata.model.HAccountRole;
-import org.zanata.security.SimplePrincipal;
-import org.zanata.security.ZanataIdentity;
-import javax.enterprise.event.Event;
-
-import org.zanata.security.annotations.Authenticated;
-import org.zanata.util.PasswordUtil;
-import org.zanata.util.ServiceLocator;
-
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -185,6 +183,18 @@ public class ZanataJpaIdentityStore implements Serializable {
         }
         return null;
     }
+
+    /**
+     * Alternative producer for the Authenticated account which produces an
+     * optional instead of a nullable instance.
+     */
+    @Produces
+    @Authenticated
+    Optional<HAccount> getAuthenticatedAccount(
+            @Authenticated HAccount account) {
+        return Optional.ofNullable(account);
+    }
+
 
     public List<String> listUsers() {
         List<String> users = entityManager.createQuery(

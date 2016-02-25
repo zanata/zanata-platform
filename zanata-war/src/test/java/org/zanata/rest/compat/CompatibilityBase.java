@@ -36,6 +36,7 @@ import org.zanata.apicompat.rest.dto.resource.Resource;
 import org.zanata.apicompat.rest.dto.resource.ResourceMeta;
 import org.zanata.apicompat.rest.dto.resource.TranslationsResource;
 import org.zanata.apicompat.rest.dto.stats.ContainerTranslationStatistics;
+import org.zanata.apicompat.rest.dto.stats.contribution.ContributionStatistics;
 import org.zanata.apicompat.rest.service.AccountResource;
 import org.zanata.apicompat.rest.service.SourceDocResource;
 import org.zanata.apicompat.rest.service.StatisticsResource;
@@ -407,6 +408,31 @@ public abstract class CompatibilityBase extends RestTest {
                 };
                 return (ContainerTranslationStatistics) resourceRequest.runWithResult()
                         .getEntity(ContainerTranslationStatistics.class);
+            }
+
+            @Override
+            public ContributionStatistics getContributionStatistics(String projectSlug,
+                    String versionSlug,
+                    String username, String dateRange, @DefaultValue("false") boolean includeAutomatedEntry) {
+                ResourceRequest resourceRequest = new ResourceRequest(
+                        getRestEndpointUrl(String.format("/stats/project/%s/version/%s/contributor/%s/%s",
+                                projectSlug, versionSlug, username, dateRange)),
+                        "GET") {
+                    @Override
+                    protected void prepareRequest(ClientRequest request) {
+                        request.header(HttpHeaders.ACCEPT,
+                                MediaType.APPLICATION_JSON);
+                        request.queryParameter("includeAutomatedEntry",
+                                String.valueOf(includeAutomatedEntry));
+                    }
+
+                    @Override
+                    protected void onResponse(ClientResponse response) {
+                    }
+
+                };
+                return (ContributionStatistics) resourceRequest.runWithResult()
+                        .getEntity(ContributionStatistics.class);
             }
         };
     }

@@ -50,7 +50,6 @@ public class ZanataCredentials implements Serializable {
     private String username;
     private String password;
     private boolean initialized;
-    private boolean invalid;
 
     private AuthenticationType authType;
 
@@ -76,10 +75,6 @@ public class ZanataCredentials implements Serializable {
         return getUsername() != null && password != null;
     }
 
-    public boolean isInvalid() {
-        return invalid;
-    }
-
     public void clear() {
         username = null;
         password = null;
@@ -96,7 +91,6 @@ public class ZanataCredentials implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
-        invalid = false;
     }
 
     public String getPassword() {
@@ -105,7 +99,6 @@ public class ZanataCredentials implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
-        invalid = false;
     }
 
     public boolean isInitialized() {
@@ -114,10 +107,6 @@ public class ZanataCredentials implements Serializable {
 
     public void setInitialized(boolean initialized) {
         this.initialized = initialized;
-    }
-
-    public void invalidate() {
-        invalid = true;
     }
 
     public CallbackHandler createCallbackHandler() {

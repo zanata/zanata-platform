@@ -2292,7 +2292,7 @@
     <dependency>
       <groupId>org.openid4java</groupId>
       <artifactId>openid4java</artifactId>
-      <version>0.9.8</version>
+      <version>1.0.0</version>
       <exclusions>
         <exclusion>
           <groupId>xml-apis</groupId>

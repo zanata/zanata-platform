@@ -123,6 +123,8 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
 //    private static final float BOOST_PROJITERSLUG = SysProperties.getFloat(
 //            SysProperties.TM_BOOST_PROJITERSLUG, 1.5f);
 
+    private static final double MINIMUM_SIMILARITY = 1.0;
+
     @Inject @FullText
     private FullTextEntityManager entityManager;
 
@@ -359,8 +361,18 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                     Lists.newArrayList(textFlowTarget.getContents());
             TransMemoryResultItem.MatchType matchType =
                     fromContentState(textFlowTarget.getState());
-            TransMemoryResultItem item = createOrGetResultItem(transMemoryQuery, matchesMap, match, matchType,
-                    textFlowContents, targetContents);
+
+            double percent =
+                calculateSimilarityPercentage(transMemoryQuery,
+                    textFlowContents);
+            if (percent < MINIMUM_SIMILARITY) {
+                log.info("Ignoring TM - {} with less than {}% matching.",
+                    textFlowContents, MINIMUM_SIMILARITY);
+                return;
+            }
+            TransMemoryResultItem item = createOrGetResultItem(
+                    matchesMap, match, matchType,
+                    textFlowContents, targetContents, percent);
             addTextFlowTargetToResultMatches(textFlowTarget, item);
         } else if (entity instanceof TransMemoryUnit) {
             TransMemoryUnit transUnit = (TransMemoryUnit) entity;
@@ -370,8 +382,17 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             ArrayList<String> targetContents =
                     Lists.newArrayList(transUnit.getTransUnitVariants()
                             .get(targetLocaleId.getId()).getPlainTextSegment());
-            TransMemoryResultItem item = createOrGetResultItem(transMemoryQuery, matchesMap, match,
-                    TransMemoryResultItem.MatchType.Imported, sourceContents, targetContents);
+            double percent =
+                calculateSimilarityPercentage(transMemoryQuery, sourceContents);
+            if (percent < MINIMUM_SIMILARITY) {
+                log.info("Ignoring TM - {} with less than {}% matching.",
+                        sourceContents, MINIMUM_SIMILARITY);
+                return;
+            }
+            TransMemoryResultItem item =
+                createOrGetResultItem(matchesMap, match,
+                    TransMemoryResultItem.MatchType.Imported,
+                    sourceContents, targetContents, percent);
             addTransMemoryUnitToResultMatches(item, transUnit);
         }
     }
@@ -430,16 +451,15 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
      *
      * @return the item for the given source and target contents, which may be newly created.
      */
-    private TransMemoryResultItem createOrGetResultItem(TransMemoryQuery transMemoryQuery, Map<TMKey,
-            TransMemoryResultItem> matchesMap, Object[] match, TransMemoryResultItem.MatchType matchType,
-                                                        ArrayList<String> sourceContents, ArrayList<String> targetContents) {
+    private TransMemoryResultItem createOrGetResultItem(
+            Map<TMKey, TransMemoryResultItem> matchesMap, Object[] match,
+            TransMemoryResultItem.MatchType matchType,
+            ArrayList<String> sourceContents, ArrayList<String> targetContents,
+            double percent) {
         TMKey key = new TMKey(sourceContents, targetContents);
         TransMemoryResultItem item = matchesMap.get(key);
         if (item == null) {
             float score = (Float) match[0];
-            double percent =
-                    calculateSimilarityPercentage(transMemoryQuery,
-                            sourceContents);
             item =
                     new TransMemoryResultItem(sourceContents, targetContents,
                             matchType, score, percent);

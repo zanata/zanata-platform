@@ -29,10 +29,13 @@
   shortDescription="Avatar image and username for a person, that links to their profile.">
   <composite:attribute name="person" type="org.zanata.model.HPerson"
       shortDescription="Person to display"/>
+
+  <composite:attribute name="styleClass" type="java.lang.String"
+    shortDescription="css style for wrapper of a href"/>
 </composite:interface>
 
 <composite:implementation>
-  <a id="#{cc.clientId}"
+  <a id="#{cc.clientId}" class="#{cc.attrs.styleClass}"
     href="#{request.contextPath}/profile/view/#{cc.attrs.person.account.username}#{dswidQuery}">
     <span class="w--r-1 bx--round l--push-right-quarter">
       <img src="#{gravatarServiceImpl.getUserImageUrl(48, cc.attrs.person.email)}" alt=""/>

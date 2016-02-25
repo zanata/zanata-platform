@@ -103,14 +103,7 @@
               </h:panelGroup>
 
               <div class="list__item__content">
-                <a href="#{request.contextPath}/profile/view/#{member.person.account.username}#{dswidQuery}" class="list__item__info">
-                  <h3 class="list__title">
-                    #{member.person.name}
-                  </h3>
-                  <span class="list__item__meta">
-                    #{member.person.account.username}
-                  </span>
-                </a>
+                <zanata:person-tile person="#{member.person}" styleClass="list__item__info"/>
                 <div id="#{member.person.id}-members-actions-roles" class="list__item__actions">
                   <ul class="list--horizontal txt--meta">
                     <ui:fragment rendered="#{identity.hasPermission(languageAction.locale, 'manage-language-team')}">

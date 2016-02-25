@@ -185,6 +185,9 @@ public class ZanataIdentity implements Identity, Serializable {
 
     /**
      * Accepts an external subject and principal. (Use with caution)
+     * This method is used to propagate an authentication context. For
+     * example when spawing a new thread for an async task, or when
+     * authenticating externally through Kerberos.
      */
     public void acceptExternalSubjectAndPpal(Subject subject,
             Principal principal) {
@@ -417,14 +420,14 @@ public class ZanataIdentity implements Identity, Serializable {
                 }
             }
         } catch (LoginException ex) {
-            credentials.invalidate();
+            // Quiet login, exceptions are not displayed
         }
     }
 
     // based on org.jboss.seam.security.Identity.authenticate()
     private synchronized void authenticate() throws LoginException {
         // If we're already authenticated, then don't authenticate again
-        if (!isLoggedIn() && !credentials.isInvalid()) {
+        if (!isLoggedIn()) {
             principal = null;
             subject = new Subject();
             try {
@@ -626,7 +629,6 @@ public class ZanataIdentity implements Identity, Serializable {
     }
 
     private void handleLoginException(LoginException e) {
-        credentials.invalidate();
         removeCachedUserDetails();
 
         // used by org.zanata.security.FacesSecurityEvents.addLoginFailedMessage()

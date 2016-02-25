@@ -25,12 +25,15 @@ import java.util.regex.Pattern;
 
 import org.openid4java.message.ParameterList;
 
+import javax.enterprise.inject.Alternative;
+
 /**
  * Provider implementation for MyOpenID
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Alternative
 public class MyOpenIdProvider extends GenericOpenIdProvider {
     private static final String FEDORA_OPENID_FORMAT =
             "http://{0}.myopenid.com/";
@@ -45,13 +48,5 @@ public class MyOpenIdProvider extends GenericOpenIdProvider {
     @Override
     public boolean accepts(String openId) {
         return FEDORA_OPENID_PATTERN.matcher(openId).matches();
-    }
-
-    @Override
-    public String getEmail(ParameterList params) {
-        return params.getParameterValue("openid.ax.value.email.1"); // Return
-                                                                    // the first
-                                                                    // email
-                                                                    // address
     }
 }
