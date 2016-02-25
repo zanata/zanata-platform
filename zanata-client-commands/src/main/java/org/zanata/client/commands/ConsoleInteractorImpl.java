@@ -33,7 +33,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import static org.zanata.client.commands.StringUtil.indent;
-import static org.zanata.client.commands.Messages._;
+import static org.zanata.client.commands.Messages.get;
 
 /**
  * @author Patrick Huang <a
@@ -74,7 +74,7 @@ public class ConsoleInteractorImpl implements ConsoleInteractor {
             return line;
         } else {
             printfln(DisplayMode.Warning, answersValidator.invalidErrorMessage(line));
-            printf(_("re-enter.prompt"));
+            printf(get("re-enter.prompt"));
             return expectAnswerWithRetry(answersValidator);
         }
     }
@@ -188,10 +188,10 @@ public class ConsoleInteractorImpl implements ConsoleInteractor {
             String expected =
                     Iterables.toString(expectedAnswers);
             if (expected.length() < 200) {
-                return String.format(_("expected.and.actual.answer"),
+                return String.format(get("expected.and.actual.answer"),
                         expectedAnswers, answer);
             } else {
-                return String.format(_("invalid.answer"), answer);
+                return String.format(get("invalid.answer"), answer);
             }
         }
 

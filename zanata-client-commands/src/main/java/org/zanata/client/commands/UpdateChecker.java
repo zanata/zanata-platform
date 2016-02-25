@@ -21,7 +21,7 @@
 package org.zanata.client.commands;
 
 import static org.zanata.client.commands.ConsoleInteractorImpl.AnswerValidator;
-import static org.zanata.client.commands.Messages._;
+import static org.zanata.client.commands.Messages.get;
 import static org.zanata.util.VersionUtility.getVersionInfo;
 
 import java.io.BufferedWriter;
@@ -103,8 +103,8 @@ public class UpdateChecker {
         try {
             if (!updateMarker.exists()) {
                 createUpdateMarkerFile(updateMarker);
-                console.printfln(_("update.marker.created"), updateMarker);
-                console.printfln(_("update.marker.hint"));
+                console.printfln(get("update.marker.created"), updateMarker);
+                console.printfln(get("update.marker.hint"));
                 return true;
             }
             // read the content and see if we need to check
@@ -115,7 +115,7 @@ public class UpdateChecker {
             boolean timeToCheck = daysPassed.compareTo(frequency.days()) >= 0;
             boolean noAsking = readNoAsking(props);
             if (timeToCheck && !noAsking && interactiveMode) {
-                console.printf(_("check.update.yes.no"), daysPassed.getDays());
+                console.printf(get("check.update.yes.no"), daysPassed.getDays());
                 String check = console.expectAnswerWithRetry(
                         AnswerValidator.YES_NO);
                 if (check.toLowerCase().startsWith("n")) {
@@ -159,15 +159,15 @@ public class UpdateChecker {
     private static void createUpdateMarkerFile(File updateMarker)
             throws IOException {
         boolean created = updateMarker.createNewFile();
-        Preconditions.checkState(created, _("create.file.failure"),
+        Preconditions.checkState(created, get("create.file.failure"),
                 updateMarker);
         String today = DATE_FORMATTER.print(new DateTime());
         Properties props = new Properties();
         props.setProperty(LAST_CHECKED, today);
-        props.setComment(FREQUENCY, _("valid.frequency"));
+        props.setComment(FREQUENCY, get("valid.frequency"));
         props.setProperty(FREQUENCY, "weekly");
         props.setProperty(NO_ASKING, "true");
-        props.setComment(NO_ASKING, _("no.check.update.prompt"));
+        props.setComment(NO_ASKING, get("no.check.update.prompt"));
         props.store(new BufferedWriter(new FileWriterWithEncoding(updateMarker,
                 Charsets.UTF_8)), null);
     }
@@ -178,9 +178,9 @@ public class UpdateChecker {
             return;
         }
         if (latestVersion.get().compareTo(currentVersionNo) > 0) {
-            console.printfln(_("suggest.update"), latestVersion.get());
+            console.printfln(get("suggest.update"), latestVersion.get());
         } else {
-            console.printfln(_("latest.version.confirm"));
+            console.printfln(get("latest.version.confirm"));
         }
         try {
             Properties props = loadFileToProperties(updateMarker);
@@ -220,12 +220,12 @@ public class UpdateChecker {
                 log.debug(
                         "Failed to resolve latest client artifact [status {}]. Ignored",
                         response.getStatus());
-                console.printfln(_("check.update.failed"));
+                console.printfln(get("check.update.failed"));
                 return Optional.absent();
             }
         } catch (Exception e) {
             log.warn("Exception when checking updates", e);
-            console.printfln(_("check.update.failed"));
+            console.printfln(get("check.update.failed"));
             return Optional.absent();
         }
         // cheap xml parsing
