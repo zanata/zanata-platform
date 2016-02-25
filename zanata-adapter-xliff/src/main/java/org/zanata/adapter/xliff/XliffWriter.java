@@ -209,20 +209,26 @@ public class XliffWriter extends XliffCommon {
 
         try (FileOutputStream fileStream = new FileOutputStream(file)) {
             serializer.setOutputStream(fileStream);
-            writer = serializer.getXMLStreamWriter();
+            try {
+                writer = serializer.getXMLStreamWriter();
 
-            writeHeader(writer, doc, locale);
+                writeHeader(writer, doc, locale);
 
-            writeTransUnits(writer, doc, targetDoc, createSkeletons);
+                writeTransUnits(writer, doc, targetDoc, createSkeletons);
 
-            // end body tag
-            writer.writeEndElement();
-            // end file tag
-            writer.writeEndElement();
-            // end xliff tag
-            writer.writeEndDocument();
-            writer.flush();
-            writer.close();
+                // end body tag
+                writer.writeEndElement();
+                // end file tag
+                writer.writeEndElement();
+                // end xliff tag
+                writer.writeEndDocument();
+                writer.flush();
+            } finally {
+                if (writer != null) {
+                    writer.close();
+                }
+            }
+
         } catch (XMLStreamException e) {
             throw new RuntimeException("Error generating XLIFF file format   ",
                 e);
