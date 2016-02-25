@@ -24,6 +24,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
 
@@ -80,28 +81,38 @@ public class DswidParamChecker {
 
     private Object invoke(Object proxy, Method method, Object[] args)
             throws Throwable {
-        String url = driver.getCurrentUrl();
-        String query = new URL(url).getQuery();
-        Optional<String> dswid = URLEncodedUtils.parse(query, UTF_8)
-                .stream()
-                .filter(p -> p.getName().equals("dswid"))
-                .map(NameValuePair::getValue)
-                .findFirst();
-        if (oldDswid != null) {
-            assert oldUrl != null;
-            if (!dswid.isPresent()) {
-                log.warn("missing dswid on transition from {} to {}",
-                        oldUrl, url);
+        try {
+            String url = driver.getCurrentUrl();
+            String query = new URL(url).getQuery();
+            Optional<String> dswid;
+            if (query == null) {
+                dswid = Optional.empty();
             } else {
-                if (!oldDswid.equals(dswid.get())) {
-                    throw new AssertionError(
-                            "changed dswid on transition from " +
-                                    oldUrl + " to " + url);
+                dswid = URLEncodedUtils.parse(query, UTF_8)
+                        .stream()
+                        .filter(p -> p.getName().equals("dswid"))
+                        .map(NameValuePair::getValue)
+                        .findFirst();
+            }
+            if (oldDswid != null) {
+                assert oldUrl != null;
+                if (!dswid.isPresent()) {
+                    log.warn("missing dswid on transition from {} to {}",
+                            oldUrl, url);
+                } else {
+                    if (!oldDswid.equals(dswid.get())) {
+                        throw new AssertionError(
+                                "changed dswid on transition from " +
+                                        oldUrl + " to " + url);
+                    }
                 }
             }
+            oldDswid = dswid.orElse(null);
+            oldUrl = url;
+            return null;
+        } catch (MalformedURLException e) {
+            // just ignore this URL entirely
+            return null;
         }
-        oldDswid = dswid.orElse(null);
-        oldUrl = url;
-        return null;
     }
 }
