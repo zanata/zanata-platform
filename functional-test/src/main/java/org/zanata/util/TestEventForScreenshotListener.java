@@ -31,13 +31,11 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.NoAlertPresentException;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.security.Credentials;
 import org.openqa.selenium.support.events.AbstractWebDriverEventListener;
 
 import javax.imageio.ImageIO;
@@ -88,8 +86,17 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
                         "alert. Attempting Robot screenshot instead. " +
                         "Alert text: {}",
                         testId, alert.get().getText());
+
+                // warning: beta API: if it breaks, you can always use getScreenRectangle()
+                WebDriver.Window window = driver.manage().window();
+                Point pos = window.getPosition();
+                Dimension size = window.getSize();
+
+                Rectangle captureRectangle = new Rectangle(pos.x, pos.y, size.width, size.height);
+//                Rectangle captureRectangle = getScreenRectangle();
+
                 BufferedImage capture = new Robot().createScreenCapture(
-                        getScreenRectangle());
+                        captureRectangle);
                 if (!ImageIO.write(capture, "png", screenshotFile)) {
                     log.error("png writer not found for screenshot");
                 }
@@ -155,6 +162,12 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
     public void onException(Throwable throwable, WebDriver driver) {
         try {
             createScreenshot("_exc");
+            // try to let the browser recover for the next test
+            Optional<Alert> alert = getAlert(driver);
+            if (alert.isPresent()) {
+                log.error("dismissing unexpected alert with text: ", alert.get().getText());
+                alert.get().dismiss();
+            }
         } catch (Throwable all) {
             log.error("error creating screenshot on exception", all);
         }
