@@ -22,7 +22,6 @@ package org.zanata.page;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.logging.Level;
 
 import org.openqa.selenium.WebDriver;
@@ -81,9 +80,10 @@ public enum WebDriverFactory {
                 throw new UnsupportedOperationException("only support chrome " +
                         "and firefox driver");
         }
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook());
         webdriverWait = Integer.parseInt(PropertiesHolder
                 .getProperty(webDriverWait.value()));
-        Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+        newDriver.register(new DswidParamChecker(newDriver).getEventListener());
         return newDriver;
     }
 
