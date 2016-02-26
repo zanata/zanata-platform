@@ -29,8 +29,8 @@
   </licenses>
 
   <issueManagement>
-    <system>Bugzilla</system>
-    <url>https://bugzilla.redhat.com/buglist.cgi?product=Zanata&amp;bug_status=__open__</url>
+    <system>Jira</system>
+    <url>https://zanata.atlassian.net/</url>
   </issueManagement>
 
   <ciManagement>
@@ -57,14 +57,6 @@
       <subscribe>https://www.redhat.com/mailman/listinfo/zanata-devel/</subscribe>
       <unsubscribe>zanata-devel-request@redhat.com?subject=unsubscribe</unsubscribe>
       <archive>https://www.redhat.com/archives/zanata-devel/</archive>
-    </mailingList>
-
-    <mailingList>
-      <name>zanata-bugs</name>
-      <!-- users can't post messages: <post>zanata-bugs@redhat.com</post> -->
-      <subscribe>https://www.redhat.com/mailman/listinfo/zanata-bugs/</subscribe>
-      <unsubscribe>zanata-bugs-request@redhat.com?subject=unsubscribe</unsubscribe>
-      <archive>https://www.redhat.com/archives/zanata-bugs/</archive>
     </mailingList>
 
     <mailingList>
@@ -150,6 +142,7 @@
       <organization>Red Hat</organization>
       <organizationUrl>http://www.redhat.com/</organizationUrl>
       <roles>
+        <role>packager</role>
         <role>tester</role>
       </roles>
       <timezone>10</timezone>
@@ -465,9 +458,6 @@
         <configuration>
           <useFile>false</useFile>
           <failIfNoTests>true</failIfNoTests>
-          <!-- TODO set to true?
-          <failIfNoTests>false</failIfNoTests>
-           -->
         </configuration>
       </plugin>
 
@@ -835,7 +825,10 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
             <version>2.9.1</version>
-            <executions>
+	    <configuration>
+              <additionalparam>-Xdoclint:none</additionalparam>
+	    </configuration>
+	    <executions>
               <execution>
                 <id>attach-javadocs</id>
                 <goals>
@@ -849,7 +842,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.5</version>
+	    <version>1.6</version>
             <executions>
               <execution>
                 <id>sign-artifacts</id>
@@ -863,19 +856,6 @@
               <useAgent>true</useAgent>
             </configuration>
           </plugin>
-
-          <!--<plugin>-->
-          <!--<groupId>org.sonatype.plugins</groupId>-->
-          <!--<artifactId>nexus-staging-maven-plugin</artifactId>-->
-          <!--<version>1.6.5</version>-->
-          <!--<extensions>true</extensions>-->
-          <!--<configuration>-->
-          <!--<serverId>sonatype-nexus-staging</serverId>-->
-          <!--<nexusUrl>https://oss.sonatype.org/</nexusUrl>-->
-          <!--<autoReleaseAfterClose>true</autoReleaseAfterClose>-->
-          <!--</configuration>-->
-          <!--</plugin>-->
-
         </plugins>
       </build>
     </profile>
