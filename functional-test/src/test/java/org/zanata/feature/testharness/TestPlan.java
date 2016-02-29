@@ -84,12 +84,11 @@ import org.zanata.feature.versionGroup.VersionGroupUrlTest;
          * translation memory sets
          */
         AutoRoleAssignmentTest.class,
-        // TODO: ZNTA-668
-        // ServerSettingsTest.class,
         EditHomePageTest.class,
         EditTranslationMemoryTest.class,
         ManageSearchTest.class,
         ManageUsersTest.class,
+        ServerSettingsTest.class,
 
         /* Client-Server
          * Usage of the mvn client

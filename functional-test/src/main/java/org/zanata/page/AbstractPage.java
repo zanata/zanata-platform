@@ -22,13 +22,9 @@ package org.zanata.page;
 
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.StringDescription;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
@@ -410,6 +406,23 @@ public class AbstractPage {
             log.info("Not checking text entered");
         }
         triggerScreenshot("_text");
+    }
+
+    /**
+     * 'Touch' a text field to see if it's writable. For cases
+     * where fields are available but briefly won't accept text
+     * for some reason
+     * @param textField
+     */
+    public void touchTextField(WebElement textField) {
+        waitForAMoment().until(new Predicate<WebDriver>() {
+            @Override
+            public boolean apply(WebDriver input) {
+                enterText(textField, ".", true, false, false);
+                return textField.getAttribute("value").equals(".");
+            }
+        });
+        textField.clear();
     }
 
     private void waitForElementReady(final WebElement element) {
