@@ -22,7 +22,6 @@ package org.zanata.page;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
 import java.util.logging.Level;
 
 import org.openqa.selenium.WebDriver;
@@ -48,6 +47,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.zanata.util.ScreenshotDirForTest;
 import org.zanata.util.TestEventForScreenshotListener;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import static org.zanata.util.Constants.webDriverType;
@@ -59,6 +59,7 @@ public enum WebDriverFactory {
     INSTANCE;
 
     private volatile EventFiringWebDriver driver = createDriver();
+    private @Nonnull DswidParamChecker dswidParamChecker;
     private DriverService driverService;
     private TestEventForScreenshotListener eventListener;
     private int webdriverWait;
@@ -81,9 +82,11 @@ public enum WebDriverFactory {
                 throw new UnsupportedOperationException("only support chrome " +
                         "and firefox driver");
         }
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook());
         webdriverWait = Integer.parseInt(PropertiesHolder
                 .getProperty(webDriverWait.value()));
-        Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+        dswidParamChecker = new DswidParamChecker(newDriver);
+        newDriver.register(dswidParamChecker.getEventListener());
         return newDriver;
     }
 
@@ -253,6 +256,14 @@ public enum WebDriverFactory {
         firefoxProfile.setEnableNativeEvents(true);
         firefoxProfile.setAcceptUntrustedCertificates(true);
         return firefoxProfile;
+    }
+
+    public void testEntry() {
+        dswidParamChecker.clear();
+    }
+
+    public void testExit() {
+        dswidParamChecker.clear();
     }
 
     private class ShutdownHook extends Thread {
