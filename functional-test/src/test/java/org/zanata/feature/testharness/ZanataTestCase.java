@@ -88,13 +88,14 @@ public class ZanataTestCase {
     }
 
     @Before
-    public void testEntry() {
+    public final void testEntry() {
         log.info("Starting ".concat(getTestDescription()));
         testFunctionStart = new DateTime();
+        WebDriverFactory.INSTANCE.testEntry();
     }
 
     @After
-    public void testExit() {
+    public final void testExit() {
         WebDriverFactory.INSTANCE.logLogs();
         Duration duration = new Duration(testFunctionStart, new DateTime());
         PeriodFormatter periodFormatter = new PeriodFormatterBuilder()
@@ -109,6 +110,7 @@ public class ZanataTestCase {
                 .appendSuffix("ms")
                 .toFormatter();
         log.info(periodFormatter.print(duration.toPeriod()));
+        WebDriverFactory.INSTANCE.testExit();
     }
 
 }

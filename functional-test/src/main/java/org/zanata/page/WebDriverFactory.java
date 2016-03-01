@@ -62,6 +62,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.zanata.util.ScreenshotDirForTest;
 import org.zanata.util.TestEventForScreenshotListener;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -85,6 +86,7 @@ public enum WebDriverFactory {
     private static ObjectMapper mapper = new ObjectMapper();
 
     private volatile EventFiringWebDriver driver = createDriver();
+    private @Nonnull DswidParamChecker dswidParamChecker;
     private DriverService driverService;
     private TestEventForScreenshotListener screenshotListener;
     private int webdriverWait;
@@ -121,9 +123,11 @@ public enum WebDriverFactory {
                 throw new UnsupportedOperationException("only support chrome " +
                         "and firefox driver");
         }
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook());
         webdriverWait = Integer.parseInt(PropertiesHolder
                 .getProperty(webDriverWait.value()));
-        Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+        dswidParamChecker = new DswidParamChecker(newDriver);
+        newDriver.register(dswidParamChecker.getEventListener());
         return newDriver;
     }
 
@@ -390,6 +394,14 @@ public enum WebDriverFactory {
 //        File file = new File("extension.xpi");
 //        firefoxProfile.addExtension(file);
         return firefoxProfile;
+    }
+
+    public void testEntry() {
+        dswidParamChecker.clear();
+    }
+
+    public void testExit() {
+        dswidParamChecker.clear();
     }
 
     private class ShutdownHook extends Thread {
