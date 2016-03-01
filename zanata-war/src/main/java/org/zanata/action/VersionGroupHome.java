@@ -68,8 +68,6 @@ import lombok.Getter;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Named("versionGroupHome")
-//@GroupedConversationScoped
-//@ConversationGroup(VersionGroupSlug.class)
 @ViewScoped
 public class VersionGroupHome extends SlugHome<HIterationGroup>
         implements Serializable {

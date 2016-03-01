@@ -52,8 +52,6 @@ import com.google.common.base.Optional;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("copyTransAction")
-//@GroupedConversationScoped
-//@ConversationGroup(ProjectAndVersionSlug.class)
 @RequestScoped
 public class CopyTransAction extends CopyAction implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -80,7 +78,6 @@ public class CopyTransAction extends CopyAction implements Serializable {
     private org.zanata.ui.faces.FacesMessages jsfMessages;
 
     @Inject
-    @Any
     private ProjectAndVersionSlug projectAndVersionSlug;
 
     private HProjectIteration projectIteration;

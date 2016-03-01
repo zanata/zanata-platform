@@ -49,8 +49,6 @@ import org.zanata.security.AuthenticationType;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("roleAssignmentRuleAction")
-//@GroupedConversationScoped
-//@ConversationGroup(RoleAssignmentRuleId.class)
 @RequestScoped
 @CheckRole("admin")
 public class RoleAssignmentRuleAction extends EntityHome<HRoleAssignmentRule>

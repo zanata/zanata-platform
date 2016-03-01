@@ -27,7 +27,8 @@ import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 
 /**
  * We set this to GroupedConversationScoped so that it can retain the value
- * across requests (original request, subsequent ajax requests)
+ * across requests (original request and subsequent ajax requests, eg
+ * filter and autocomplete, where the viewid may change).
  *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>

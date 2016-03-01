@@ -83,8 +83,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 @Named("versionHome")
-//@GroupedConversationScoped
-//@ConversationGroup(ProjectAndVersionSlug.class)
 @RequestScoped
 @Slf4j
 public class VersionHome extends SlugHome<HProjectIteration> implements
