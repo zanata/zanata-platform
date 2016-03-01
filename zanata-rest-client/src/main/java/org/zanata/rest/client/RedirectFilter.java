@@ -1,5 +1,5 @@
 /*
- * Copyright 2015, Red Hat, Inc. and individual contributors
+ * Copyright 2016, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -48,14 +48,22 @@ public class RedirectFilter extends ClientFilter {
                 Response.Status.Family.REDIRECTION) {
             return resp;
         } else {
-            // try location
-            log.debug("Server returns redirection status: {}. Try to follow it",
-                    resp.getClientResponseStatus());
-            URI redirectTarget = resp.getLocation();
-            if (redirectTarget != null) {
-                clientRequest.setURI(redirectTarget);
+            // try location only if for GET and HEAD
+            String method = clientRequest.getMethod();
+            if ("HEAD".equals(method) || "GET".equals(method)) {
+                log.debug(
+                        "Server returns redirection status: {}. Try to follow it",
+                        resp.getClientResponseStatus());
+                URI redirectTarget = resp.getLocation();
+                if (redirectTarget != null) {
+                    clientRequest.setURI(redirectTarget);
+                }
+                return ch.handle(clientRequest);
+            } else {
+                throw new IllegalStateException(
+                        "Received status " + resp.getClientResponseStatus() +
+                                ". Check your server URL (e.g. used http instead of https)");
             }
-            return ch.handle(clientRequest);
         }
     }
 }

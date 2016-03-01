@@ -3,11 +3,14 @@ package org.zanata.rest.client;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.ws.rs.core.MediaType;
+
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.*;
+import static org.zanata.rest.client.InvalidContentTypeFilter.isContentTypeCompatible;
 
 public class InvalidContentTypeFilterTest {
 
@@ -26,7 +29,8 @@ public class InvalidContentTypeFilterTest {
 
     @Test
     public void testPatternMatch() {
-        Pattern pattern = Pattern.compile(".*<title>(.*)</title>.*", Pattern.CASE_INSENSITIVE);
+        Pattern pattern = Pattern.compile(".*<title>(.*)</title>.*",
+                Pattern.CASE_INSENSITIVE);
 
         Matcher matcher = pattern.matcher(sampleText.replaceAll("\\n", " "));
 
@@ -34,4 +38,36 @@ public class InvalidContentTypeFilterTest {
         MatcherAssert.assertThat(matcher.group(1), equalTo("Zanata: Home"));
     }
 
+    @Test
+    public void testValidateContentTypes() {
+
+        MatcherAssert.assertThat(
+                isContentTypeCompatible(MediaType.TEXT_HTML_TYPE),
+                equalTo(false));
+        MatcherAssert.assertThat(
+                isContentTypeCompatible(
+                                MediaType.APPLICATION_FORM_URLENCODED_TYPE),
+                equalTo(false));
+        MatcherAssert.assertThat(
+                isContentTypeCompatible(MediaType.MULTIPART_FORM_DATA_TYPE),
+                equalTo(false));
+
+        MatcherAssert.assertThat(
+                isContentTypeCompatible(MediaType.APPLICATION_XML_TYPE),
+                equalTo(true));
+        MatcherAssert.assertThat(
+                isContentTypeCompatible(MediaType.APPLICATION_JSON_TYPE),
+                equalTo(true));
+        MatcherAssert.assertThat(
+                isContentTypeCompatible(MediaType.WILDCARD_TYPE),
+                equalTo(true));
+        MatcherAssert.assertThat(isContentTypeCompatible(
+                new MediaType("application", "vnd.zanata+xml")), equalTo(true));
+        MatcherAssert.assertThat(
+                isContentTypeCompatible(MediaType.TEXT_PLAIN_TYPE),
+                equalTo(true));
+        MatcherAssert.assertThat(
+                isContentTypeCompatible(null),
+                equalTo(true));
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015, Red Hat, Inc. and individual contributors
+ * Copyright 2016, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -20,12 +20,17 @@
  */
 package org.zanata.rest.client;
 
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ws.rs.core.MediaType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 import com.sun.jersey.api.client.ClientHandler;
 import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.ClientRequest;
@@ -38,10 +43,15 @@ import com.sun.jersey.api.client.filter.ClientFilter;
 public class InvalidContentTypeFilter extends ClientFilter {
     private static final Logger log =
             LoggerFactory.getLogger(InvalidContentTypeFilter.class);
-    private static final String ERROR_MSG = "Receiving HTML from the server. " +
-            "Most likely hitting a redirect or server returning error page. " +
-            "Please check the server URL is correct (in zanata.ini and in zanata.xml) and make sure you use the non-redirected address.";
+    private static final String ERROR_MSG =
+            "Received invalid content type from the server. " +
+                    "Most likely you're hitting an error page or being redirected. " +
+                    "Please check the server URL is correct (in zanata.ini and in zanata.xml) and make sure you use the correct address.";
 
+
+    // we assume only xml or json are the valid types (wildcard type is also considered compatible)
+    private static final Pattern VALID_TYPES_REGEX =
+            Pattern.compile("application/.*\\+?(\\*|xml|json)");
 
     @Override
     public ClientResponse handle(ClientRequest clientRequest)
@@ -49,10 +59,11 @@ public class InvalidContentTypeFilter extends ClientFilter {
         ClientHandler ch = getNext();
         ClientResponse resp = ch.handle(clientRequest);
 
-        if (MediaType.TEXT_HTML_TYPE.isCompatible(resp.getType())) {
+        if (!isContentTypeCompatible(resp.getType())) {
             log.error(ERROR_MSG);
             String title = findPageTitle(resp);
-            String snippet = String.format("Wrong content type received: [%s]. Content page title: [%s]",
+            String snippet = String.format(
+                    "Wrong content type received: [%s]. Content page title: [%s]",
                     resp.getType(), title);
 
             log.error(snippet);
@@ -60,6 +71,23 @@ public class InvalidContentTypeFilter extends ClientFilter {
         } else {
             return resp;
         }
+    }
+
+    @VisibleForTesting
+    protected static boolean isContentTypeCompatible(
+            final MediaType responseContentType) {
+        if (responseContentType == null ||
+                responseContentType.isWildcardType() ||
+                responseContentType.isWildcardSubtype()) {
+            return true;
+        }
+        // a few end points will return text/plain
+        if (MediaType.TEXT_PLAIN_TYPE.isCompatible(responseContentType)) {
+            return true;
+        }
+        Matcher matcher =
+                VALID_TYPES_REGEX.matcher(responseContentType.toString());
+        return matcher.matches();
     }
 
     private String findPageTitle(ClientResponse resp) {
