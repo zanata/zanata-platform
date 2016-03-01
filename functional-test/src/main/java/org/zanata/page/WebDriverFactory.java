@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 
 import com.google.common.reflect.AbstractInvocationHandler;
@@ -36,6 +37,7 @@ import net.lightbody.bmp.filters.ResponseFilterAdapter;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
@@ -107,6 +109,10 @@ public enum WebDriverFactory {
 
     public WebDriver getDriver() {
         return driver;
+    }
+
+    private JavascriptExecutor getExecutor() {
+        return (JavascriptExecutor) getDriver();
     }
 
     private EventFiringWebDriver createDriver() {
@@ -397,11 +403,34 @@ public enum WebDriverFactory {
     }
 
     public void testEntry() {
-        dswidParamChecker.clear();
+        clearDswid();
     }
 
     public void testExit() {
+        clearDswid();
+    }
+
+    private void clearDswid() {
+        // clear the browser's memory of the dswid
+        getExecutor().executeScript("window.name = ''");
         dswidParamChecker.clear();
+    }
+
+    public <T> T ignoringDswid(Supplier<T> supplier) {
+        dswidParamChecker.stopChecking();
+        try {
+            return supplier.get();
+        } finally {
+            dswidParamChecker.startChecking();
+        }
+    }
+    public void ignoringDswid(Runnable r) {
+        dswidParamChecker.stopChecking();
+        try {
+            r.run();
+        } finally {
+            dswidParamChecker.startChecking();
+        }
     }
 
     private class ShutdownHook extends Thread {
