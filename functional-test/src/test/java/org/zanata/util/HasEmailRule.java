@@ -62,13 +62,18 @@ public class HasEmailRule extends ExternalResource {
                 // server to stay running for all tests in this VM
             }
         }
+        clearQueue();
     }
 
     @Override
     protected void after() {
+        clearQueue();
+        super.after();
+    }
+
+    private void clearQueue() {
         log.info("Clearing email queue");
         wiser.getMessages().clear();
-        super.after();
     }
 
     public List<WiserMessage> getMessages() {
