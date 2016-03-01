@@ -4,6 +4,12 @@
   xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
   version="3.0">
 
+  <absolute-ordering>
+    <name>com_ocpsoft_rewrite</name>
+    <name>deltaspike_servlet_module</name>
+    <others/>
+  </absolute-ordering>
+
   <session-config>
     <!-- Prevent jsessionid session tracking (breaks WildFly 9) -->
     <tracking-mode>COOKIE</tracking-mode>
