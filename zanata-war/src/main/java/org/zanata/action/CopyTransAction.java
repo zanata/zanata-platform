@@ -78,6 +78,7 @@ public class CopyTransAction extends CopyAction implements Serializable {
     private org.zanata.ui.faces.FacesMessages jsfMessages;
 
     @Inject
+    @Any
     private ProjectAndVersionSlug projectAndVersionSlug;
 
     private HProjectIteration projectIteration;

@@ -108,6 +108,7 @@ public class ProjectHome extends SlugHome<HProject> implements
 
     @Getter
     @Inject
+    @Any
     private ProjectSlug projectSlug;
 
     /**
