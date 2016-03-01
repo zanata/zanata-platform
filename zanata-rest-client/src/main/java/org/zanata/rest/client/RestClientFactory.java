@@ -81,10 +81,12 @@ public class RestClientFactory {
         clientConfig.getClasses().add(JacksonJsonProvider.class);
 
         client = Client.create(clientConfig);
+        client.addFilter(new RedirectFilter());
         client.addFilter(
                 new ApiKeyHeaderFilter(username, apiKey, clientVersion));
         client.addFilter(new AcceptTypeFilter());
         client.addFilter(new TraceDebugFilter(logHttp));
+        client.addFilter(new InvalidContentTypeFilter());
     }
 
     private static void sslConfiguration(boolean sslCertDisabled,
