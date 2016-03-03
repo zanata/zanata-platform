@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -36,10 +35,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.enterprise.inject.Produces;
+
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
@@ -78,14 +75,7 @@ public class TranslationMemoryAction implements Serializable {
 
     private List<TransMemory> transMemoryList;
 
-    /**
-     * Stores the last process handle, in page scope (ie for this user).
-     */
-//    @Inject /* TODO [CDI] check this: migrated from @In(scope = ScopeType.PAGE, required = false) */
-    @Produces /* FIXME [CDI] check this: migrated from @Out *//*(scope = ScopeType.PAGE, required = false)*/
-    // @ViewScoped
-    // TODO lastTaskResult is apparently always null. See asyncTaskHandleManager
-    private Future lastTaskResult;
+    private ClearTransMemoryProcessKey lastTaskTMKey;
 
     @Getter
     private SortingType tmSortingList = new SortingType(
@@ -112,16 +102,21 @@ public class TranslationMemoryAction implements Serializable {
     }
 
     public void clearTransMemory(final String transMemorySlug) {
+        lastTaskTMKey = new ClearTransMemoryProcessKey(transMemorySlug);
         AsyncTaskHandle handle = new AsyncTaskHandle();
-        asyncTaskHandleManager.registerTaskHandle(handle,
-                new ClearTransMemoryProcessKey(transMemorySlug));
+        asyncTaskHandleManager.registerTaskHandle(handle, lastTaskTMKey);
         translationMemoryResource
                 .deleteTranslationUnitsUnguardedAsync(transMemorySlug, handle);
         transMemoryList = null; // Force refresh next time list is requested
     }
 
     private boolean isProcessing() {
-        return lastTaskResult != null;
+        if (lastTaskTMKey != null) {
+            AsyncTaskHandle<Void> handle =
+                    asyncTaskHandleManager.getHandleByKey(lastTaskTMKey);
+            return handle != null && !handle.isDone();
+        }
+        return false;
     }
 
     public boolean isProcessErrorPollEnabled() {
@@ -138,20 +133,25 @@ public class TranslationMemoryAction implements Serializable {
      * @return
      */
     public String getProcessError() {
-        if (myProcessError != null)
+        if (myProcessError != null) {
             return myProcessError;
-        if (lastTaskResult != null && lastTaskResult.isDone()) {
-            try {
-                lastTaskResult.get();
-            } catch (InterruptedException e) {
-                // no error, just interrupted
-            } catch (ExecutionException e) {
-                // remember the result, just until this event finishes
-                this.myProcessError =
+        }
+        if(lastTaskTMKey != null) {
+            AsyncTaskHandle<Void> handle =
+                asyncTaskHandleManager.getHandleByKey(lastTaskTMKey);
+            if(handle != null && handle.isDone()) {
+                try {
+                    handle.getResult();
+                } catch (InterruptedException e) {
+                    // no error, just interrupted
+                } catch (ExecutionException e) {
+                    // remember the result, just until this event finishes
+                    this.myProcessError =
                         e.getCause() != null ? e.getCause().getMessage() : "";
+                }
+                lastTaskTMKey = null;
+                return myProcessError;
             }
-            lastTaskResult = null;
-            return myProcessError;
         }
         return "";
     }
