@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +60,9 @@ public class InvalidContentTypeFilter extends ClientFilter {
         ClientHandler ch = getNext();
         ClientResponse resp = ch.handle(clientRequest);
 
-        if (!isContentTypeCompatible(resp.getType())) {
+        if (resp.getClientResponseStatus().getFamily().equals(
+                Response.Status.Family.SUCCESSFUL) &&
+                !isContentTypeCompatible(resp.getType())) {
             log.error(ERROR_MSG);
             String title = findPageTitle(resp);
             String snippet = String.format(
