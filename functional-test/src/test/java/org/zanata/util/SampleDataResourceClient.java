@@ -23,6 +23,8 @@ package org.zanata.util;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
+import javax.annotation.Nullable;
+
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -84,8 +86,9 @@ public class SampleDataResourceClient {
         createRequest("/languages").put();
     }
 
-    public static void addLanguage(String localeId) throws Exception {
-        createRequest("/languages/l/" + localeId).put();
+    public static void addLanguage(String localeId, @Nullable String pluralForms) throws Exception {
+        String path = "/languages/l/" + localeId + (pluralForms != null ? "?pluralForms=" + pluralForms : "");
+        createRequest(path).put();
     }
 
 }

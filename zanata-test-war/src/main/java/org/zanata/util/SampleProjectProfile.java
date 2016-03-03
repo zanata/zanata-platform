@@ -27,6 +27,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.tm.TransMemoryUnit;
 
+import javax.annotation.Nullable;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -100,13 +101,15 @@ public class SampleProjectProfile {
     }
 
     public HLocale makeLanguage(boolean enabledByDefault, LocaleId localeId,
-            String displayName, String nativeName, String pluralForms) {
+            String displayName, String nativeName,
+            @Nullable String pluralForms) {
         return forLocale(enabledByDefault, localeId, displayName, nativeName, pluralForms)
                 .makeAndPersist(entityManager,
                     HLocale.class);
     }
 
-    public HLocale makeLanguage(boolean enabledByDefault, LocaleId localeId, String pluralForms) {
+    public HLocale makeLanguage(boolean enabledByDefault, LocaleId localeId,
+            @Nullable String pluralForms) {
         ULocale uLocale = new ULocale(localeId.getId());
         return forLocale(enabledByDefault, localeId, uLocale.getDisplayName(),
             uLocale.getDisplayName(uLocale), pluralForms).makeAndPersist(entityManager,
