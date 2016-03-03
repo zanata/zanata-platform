@@ -216,13 +216,16 @@ public enum WebDriverFactory {
             String logString = toString(time, text, json);
             if (level.intValue() >= Level.SEVERE.intValue()) {
                 log.error(logString);
+                // If firstException was a warning, replace it with this error.
                 if ((firstException == null || !firstException.isErrorLog()) && !ignorable(msg)) {
+                    // We only throw this if throwIfWarn is true
                     firstException = new WebDriverLogException(level,
                             logString, driver.getPageSource());
                 }
             } else if (level.intValue() >= Level.WARNING.intValue()) {
                 log.warn(logString);
-                if ((throwIfWarn && firstException == null) && !ignorable(msg)) {
+                if ((firstException == null) && !ignorable(msg)) {
+                    // We only throw this if throwIfWarn is true
                     firstException = new WebDriverLogException(logEntry.getLevel(),
                             logString, driver.getPageSource());
                 }
@@ -253,8 +256,10 @@ public enum WebDriverFactory {
     public void logLogs() {
         // DeltaSpike's LAZY mode uses client-side redirects, which cause
         // other scripts to abort loading in strange ways when dswid is
-        // missing/wrong. Revisit if we switch to CLIENTWINDOW mode.
-        logLogs(false);
+        // missing/wrong. However, the server code currently preserves dswid
+        // whenever possible, and DswidParamChecker aims to make sure it
+        // continues to, so we can treat JS warnings/errors as failures.
+        logLogs(true);
     }
 
     /**
