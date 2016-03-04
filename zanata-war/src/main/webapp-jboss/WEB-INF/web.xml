@@ -168,6 +168,11 @@
   </filter-mapping>
 
   <filter-mapping>
+    <filter-name>OAuthFilter</filter-name>
+    <url-pattern>/authorize/*</url-pattern>
+  </filter-mapping>
+
+  <filter-mapping>
     <filter-name>MDCInsertingServletFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
@@ -181,6 +186,7 @@
     <filter-name>gwtCacheControlFilter</filter-name>
     <url-pattern>/webtrans/*</url-pattern>
   </filter-mapping>
+
 
   <filter>
     <filter-name>noCacheFilter</filter-name>

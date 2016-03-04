@@ -577,6 +577,10 @@ public class SecurityFunctions extends PermissionProvider {
         if (HttpUtil.isReadMethod(httpMethod)) {
             return true;
         }
+        // TODO temporary hack while we still check for apiKey or authenticated user
+        if (restServicePath.matches(".*/oauth/.*")) {
+            return true;
+        }
         return false;
     }
 

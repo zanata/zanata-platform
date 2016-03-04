@@ -123,6 +123,8 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/webtrans/translate").to("/webtrans/Application.xhtml"))
 
                 .addRule(Join.path("/404").to("/404.xhtml"))
+                // OAuth authorization
+                .addRule(Join.path("/authorize/").to("/authorize/home.xhtml"))
                 ;
     }
 

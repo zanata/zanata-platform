@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.Produces;
@@ -47,6 +48,7 @@ import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 import org.zanata.config.SystemPropertyConfigStore;
+import org.zanata.security.annotations.AuthType;
 import org.zanata.servlet.HttpRequestAndSessionHolder;
 import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.util.DefaultLocale;
@@ -311,6 +313,21 @@ public class ApplicationConfiguration implements Serializable {
 
     public boolean isSingleOpenIdProvider() {
         return openIdProvider.isPresent();
+    }
+
+    @Produces
+    @AuthType
+    @Dependent
+    protected AuthenticationType authenticationType() {
+        if (isInternalAuth()) {
+            return AuthenticationType.INTERNAL;
+        } else if (isJaasAuth()) {
+            return AuthenticationType.JAAS;
+        } else if (isKerberosAuth()) {
+            return AuthenticationType.KERBEROS;
+        }
+        throw new RuntimeException(
+                "only supports internal, jaas, or kerberos authentication");
     }
 
     public String getOpenIdProviderUrl() {

@@ -151,7 +151,7 @@ public class AccountService implements AccountResource {
         to.setUsername(from.getUsername());
     }
 
-    private void transfer(HAccount from, Account to) {
+    public static void transfer(HAccount from, Account to) {
         to.setApiKey(from.getApiKey());
         to.setEnabled(from.isEnabled());
         to.setPasswordHash(from.getPasswordHash());

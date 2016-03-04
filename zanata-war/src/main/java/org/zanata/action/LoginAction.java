@@ -32,12 +32,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
 import org.zanata.ApplicationConfiguration;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.security.AuthenticationType;
 import org.zanata.security.UserRedirectBean;
 import org.zanata.security.ZanataCredentials;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.AuthType;
 import org.zanata.security.openid.FedoraOpenIdProvider;
 import org.zanata.security.openid.GoogleOpenIdProvider;
 import org.zanata.security.openid.OpenIdProviderType;
@@ -84,16 +86,14 @@ public class LoginAction implements Serializable {
     @Inject
     private UserRedirectBean userRedirect;
 
+    @Inject
+    @AuthType
+    private AuthenticationType authenticationType;
+
     public String login() {
         credentials.setUsername(username);
         credentials.setPassword(password);
-        if (applicationConfiguration.isInternalAuth()) {
-            credentials.setAuthType(AuthenticationType.INTERNAL);
-        } else if (applicationConfiguration.isJaasAuth()) {
-            credentials.setAuthType(AuthenticationType.JAAS);
-        } else if (applicationConfiguration.isKerberosAuth()) {
-            credentials.setAuthType(AuthenticationType.KERBEROS);
-        }
+        credentials.setAuthType(authenticationType);
 
         String loginResult;
 
