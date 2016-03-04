@@ -21,9 +21,7 @@
 package org.zanata.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
-import java.util.Arrays;
 import java.util.logging.LogManager;
 
 import javax.enterprise.context.RequestScoped;
@@ -34,18 +32,13 @@ import org.jglue.cdiunit.InRequestScope;
 import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameter;
-import org.junit.runners.Parameterized.Parameters;
-import org.junit.runners.Parameterized.UseParametersRunnerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.zanata.seam.SeamAutowire;
-import org.zanata.test.CdiUnitRunnerWithParameters;
+import org.zanata.test.CdiUnitRunner;
 
 @SupportDeltaspikeCore
 @InRequestScope
-@RunWith(Parameterized.class)
-@UseParametersRunnerFactory(CdiUnitRunnerWithParameters.Factory.class)
+@RunWith(CdiUnitRunner.class)
 public class ServiceLocatorTest {
 
     static {
@@ -53,23 +46,6 @@ public class ServiceLocatorTest {
         // redirect JUL to slf4j
         LogManager.getLogManager().reset();
         SLF4JBridgeHandler.install();
-    }
-
-    @Parameters(name = "{index}: fib[{0}]={1}")
-    public static Iterable<Object[]> data() {
-        return Arrays.asList(new Object[][] { { 0, 0 }, { 1, 1 } });
-    }
-
-    @Parameter(0)
-    private int fInput;
-
-    @Parameter(1)
-    private int fExpected;
-
-
-    @Test
-    public void testFib() {
-        assertEquals(fExpected, (fInput));
     }
 
     @Named
