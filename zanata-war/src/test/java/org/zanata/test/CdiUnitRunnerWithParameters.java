@@ -20,9 +20,20 @@
  */
 package org.zanata.test;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.util.List;
 
+import org.jboss.weld.bootstrap.WeldBootstrap;
+import org.jboss.weld.bootstrap.api.Bootstrap;
+import org.jboss.weld.bootstrap.spi.Deployment;
+import org.jboss.weld.environment.se.Weld;
+import org.jboss.weld.environment.se.WeldContainer;
+import org.jboss.weld.resources.spi.ResourceLoader;
+import org.jboss.weld.util.reflection.Formats;
+import org.jglue.cdiunit.CdiRunner;
+import org.jglue.cdiunit.internal.WeldTestUrlDeployment;
 import org.junit.runner.Runner;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.model.FrameworkField;
@@ -45,12 +56,6 @@ public class CdiUnitRunnerWithParameters extends CdiUnitRunner {
         this.paramsName = test.getName();
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    protected <T> T createTest(Class<T> testClass) throws Exception {
-        T test = super.createTest(testClass);
-        return injectParameterFields(test);
-    }
 
     private boolean fieldsAreAnnotated() {
         return !getParameterFields().isEmpty();
@@ -115,4 +120,119 @@ public class CdiUnitRunnerWithParameters extends CdiUnitRunner {
             return new CdiUnitRunnerWithParameters(test);
         }
     }
+
+
+    // TODO once https://github.com/BrynCooke/cdi-unit/pull/81 is accepted and released
+    // we just need this method override instead of the horrible hacks below
+//    @Override
+//    @SuppressWarnings("unchecked")
+//    protected <T> T createTest(Class<T> testClass) throws Exception {
+//        T test = super.createTest(testClass);
+//        return injectParameterFields(test);
+//    }
+
+    // TODO delete below here
+    private Object get(String field) {
+        try {
+            Field f = CdiRunner.class.getDeclaredField(field);
+            f.setAccessible(true);
+            return f.get(this);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void set(String field, Object value) {
+        try {
+            Field f = CdiRunner.class.getDeclaredField(field);
+            f.setAccessible(true);
+            f.set(this, value);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Class<?> clazz() {
+        return (Class<?>) get("clazz");
+    }
+    private void weld(Weld weld) {
+        set("weld", weld);
+    }
+    private Weld weld() {
+        return (Weld) get("weld");
+    }
+    private void container(WeldContainer container) {
+        set("container", container);
+    }
+    private WeldContainer container() {
+        return (WeldContainer) get("container");
+    }
+    private Throwable startupException() {
+        return (Throwable) get("startupException");
+    }
+    private void startupException(Throwable e) {
+        set("startupException", e);
+    }
+
+    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
+    @Override
+    protected Object createTest() throws Exception {
+        try {
+            String version = Formats.version(WeldBootstrap.class.getPackage());
+            if("2.2.8 (Final)".equals(version) || "2.2.7 (Final)".equals(version)) {
+                startupException(new Exception("Weld 2.2.8 and 2.2.7 are not supported. Suggest upgrading to 2.2.9"));
+            }
+            weld(new Weld() {
+//                protected Deployment createDeployment(ResourceLoader resourceLoader, CDI11Bootstrap bootstrap) {
+//                    try {
+//                        return new Weld11TestUrlDeployment(resourceLoader, bootstrap, clazz());
+//                    } catch (IOException e) {
+//                        setStartupException(e);
+//                        throw new RuntimeException(e);
+//                    }
+//                }
+                protected Deployment createDeployment(ResourceLoader resourceLoader, Bootstrap bootstrap) {
+                    try {
+                        return new WeldTestUrlDeployment(resourceLoader, bootstrap, clazz());
+                    } catch (IOException e) {
+                        startupException(e);
+                        throw new RuntimeException(e);
+                    }
+                };
+            });
+
+            try {
+                container(weld().initialize());
+            } catch (Throwable e) {
+                if (startupException() == null) {
+                    startupException(e);
+                }
+                if (e instanceof ClassFormatError) {
+                    throw e;
+                }
+            }
+        } catch (ClassFormatError e) {
+            startupException(parseClassFormatError(e));
+        } catch (Throwable e) {
+            startupException(new Exception("Unable to start weld", e));
+        }
+        Object test = container().instance().select(clazz()).get();
+        return injectParameterFields(test);
+    }
+
+    private static final String ABSENT_CODE_PREFIX = "Absent Code attribute in method that is not native or abstract in class file ";
+    private static ClassFormatError parseClassFormatError(ClassFormatError e) {
+        if (e.getMessage().startsWith(ABSENT_CODE_PREFIX)) {
+            String offendingClass = e.getMessage().substring(ABSENT_CODE_PREFIX.length());
+            URL url = CdiUnitRunnerWithParameters.class.getClassLoader().getResource(offendingClass + ".class");
+
+            return new ClassFormatError("'" + offendingClass.replace('/', '.')
+                    + "' is an API only class. You need to remove '"
+                    + url.toString().substring(9, url.toString().indexOf("!")) + "' from your classpath");
+        } else {
+            return e;
+        }
+    }
+
+    // TODO delete above here
 }

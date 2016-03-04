@@ -3,6 +3,7 @@ package org.zanata.test;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 import org.junit.runners.Parameterized.UseParametersRunnerFactory;
 
@@ -21,14 +22,11 @@ public class FibonacciTest {
         return Arrays.asList(new Object[][] { { 0, 0 }, { 1, 1 } });
     }
 
+    @Parameter(0)
     private int fInput;
 
+    @Parameter(1)
     private int fExpected;
-
-    public FibonacciTest(int input, int expected) {
-        fInput = input;
-        fExpected = expected;
-    }
 
     @Test
     public void test() {
