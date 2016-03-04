@@ -26,13 +26,13 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.concurrent.Callable;
 
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.resteasy.client.ClientRequest;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
-import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.rest.client.AsyncProcessClient;
 import org.zanata.rest.client.CopyTransClient;
 import org.zanata.rest.client.ProjectClient;
@@ -53,6 +53,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.jayway.awaitility.Awaitility;
 import com.jayway.awaitility.Duration;
+
+import javax.ws.rs.core.UriBuilder;
 
 /**
  * @author Patrick Huang <a
@@ -268,28 +270,32 @@ public class ZanataRestCaller {
                 iterationSlug, processStatus.getStatusCode());
     }
 
-    private void postTest(String uri, String testClass, String methodName) {
-        // see also org.zanata.RestTest.signalBeforeTest()
-        // see also org.zanata.RestTest.signalAfterTest()
-        ClientRequest clientRequest = new ClientRequest(uri);
-        clientRequest.header("X-Auth-User", username);
-        clientRequest.header("X-Auth-Token", apiKey);
-        try {
-            clientRequest
-                    .queryParameter("c", testClass)
-                    .queryParameter("m", methodName)
-                    .post();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private WebResource.Builder createRequest(URI uri) {
+        WebResource.Builder resource =
+                Client.create()
+                        .resource(uri)
+                        // having null username will bypass
+                        // ZanataRestSecurityInterceptor
+                        // clientRequest.header("X-Auth-User", null);
+                        .header("X-Auth-Token", apiKey)
+                        .header("Content-Type", "application/xml");
+        return resource;
+    }
+
+    private void postTest(String path, String testClass, String methodName) {
+        UriBuilder uri = UriBuilder.fromUri(baseUrl + path);
+        uri.queryParam("testClass", testClass);
+        uri.queryParam("method", methodName);
+        WebResource.Builder request = createRequest(uri.build());
+        request.post();
     }
 
     public void signalBeforeTest(String testClass, String methodName) {
-        postTest(baseUrl + "test/remote/signal/before", testClass, methodName);
+        postTest("rest/test/remote/signal/before", testClass, methodName);
     }
 
     public void signalAfterTest(String testClass, String methodName) {
-        postTest(baseUrl + "test/remote/signal/after", testClass, methodName);
+        postTest("rest/test/remote/signal/after", testClass, methodName);
     }
 
 }

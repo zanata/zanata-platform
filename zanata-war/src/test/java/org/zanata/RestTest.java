@@ -149,7 +149,6 @@ public abstract class RestTest {
 
     @Before
     public void signalBeforeTest() {
-        // see also org.zanata.util.ZanataRestCaller.postTest()
         ClientRequest clientRequest =
                 new ClientRequest(getRestEndpointUrl() + "test/remote/signal/before");
         clientRequest.header("X-Auth-User", ADMIN);
@@ -166,7 +165,6 @@ public abstract class RestTest {
 
     @After
     public void signalAfterTest() {
-        // see also org.zanata.util.ZanataRestCaller.postTest()
         ClientRequest clientRequest =
                 new ClientRequest(getRestEndpointUrl() + "test/remote/signal/after");
         clientRequest.header("X-Auth-User", ADMIN);
