@@ -538,8 +538,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
 
         @Override
         public Object transformTuple(Object[] tuple, String[] aliases) {
-            String savedDate = dateFormatter.format(
-                    ((Date) tuple[0]).toInstant());
+            String savedDate = (String) tuple[0];
             HProjectIteration iteration =
                     entityManager.find(HProjectIteration.class,
                             ((BigInteger) tuple[1]).longValue());

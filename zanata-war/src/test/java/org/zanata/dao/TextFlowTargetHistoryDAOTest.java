@@ -15,6 +15,7 @@ import org.zanata.ZanataJpaTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.TranslationMatrix;
+import org.zanata.rest.service.StatisticsResource;
 import org.zanata.rest.service.StatisticsServiceImpl;
 import org.zanata.model.HAccount;
 import org.zanata.model.HDocument;
@@ -48,7 +49,8 @@ public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
     private HDocument hDocument;
     private ResultTransformer resultTransformer;
     private static final DateTimeFormatter dateFormatter =
-            DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
+            DateTimeFormatter.ofPattern(StatisticsResource.DATE_FORMAT)
+                    .withZone(ZoneId.systemDefault());
 
     @Before
     public void setUp() throws Exception {
