@@ -31,6 +31,7 @@
 * [ZNTA-412](https://zanata.atlassian.net/browse/ZNTA-412) - Profile link to project maintainers, language members, and version group maintainers
 * [ZNTA-905](https://zanata.atlassian.net/browse/ZNTA-905) - Remove 0% matching translation memory entry
 * [ZNTA-928](https://zanata.atlassian.net/browse/ZNTA-928) - Readonly project doesn't have "lock" icon in UI
+* [ZNTA-793](https://zanata.atlassian.net/browse/ZNTA-793) - Remove unused method in TranslationMemoryAction
 
 -----------------------
 
