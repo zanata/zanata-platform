@@ -10,13 +10,9 @@ import java.util.Map;
 import java.util.Properties;
 import javax.persistence.EntityManager;
 
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
@@ -43,12 +39,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(DataProviderRunner.class)
 public class ResourceUtilsTest extends ZanataTest {
     private static final Logger log = LoggerFactory
             .getLogger(ResourceUtilsTest.class);
 
-    private static ResourceUtils resourceUtils;
+    private ResourceUtils resourceUtils;
 
     @Mock
     private EntityManager mockEm;
@@ -315,29 +310,6 @@ public class ResourceUtilsTest extends ZanataTest {
         List<String> expected = Collections.emptyList();
         List<String> lines = ResourceUtils.splitLines(s, "#zanata");
         assertThat("", lines, is(expected));
-    }
-
-    @DataProvider
-    public static Object[][] urlPatterns() {
-        return new Object[][] {
-                { ",my,doc,id", "/my/doc/id" },
-                { ",my,,doc,id", "/my//doc/id" },
-                { "x+y", "x y" }
-        };
-    }
-
-    @Test
-    @UseDataProvider("urlPatterns")
-    public void decodeDocIds(String encoded, String decoded) {
-        assertThat("Decoding " + encoded, resourceUtils.decodeDocId(encoded),
-                is(decoded));
-    }
-
-    @Test
-    @UseDataProvider("urlPatterns")
-    public void encodeDocIds(String encoded, String decoded) {
-        assertThat("Encoding " + decoded, resourceUtils.encodeDocId(decoded),
-                is(encoded));
     }
 
     /**
