@@ -22,7 +22,7 @@ class ProcessPortInfo {
     }
 
     static String getProcessInfo(Collection pids) {
-        def command = 'ps -ww -o args -p ' + pids.join(',')
+        def command = '/bin/ps -ww -o args -p ' + pids.join(',')
         def text = command.execute().text
         log.debug("command: ${command}\noutput:\n${text}")
         return text
@@ -30,7 +30,8 @@ class ProcessPortInfo {
 
     static Set<Integer> getProcessIdsForPort(int portNum) {
         def pids = new HashSet()
-        def command = 'ss --processes --listening --tcp --numeric sport = :' + portNum
+        // NB this may not work if the other process is owned by another user
+        def command = '/sbin/ss --processes --listening --tcp --numeric sport = :' + portNum
         def text = command.execute().text
         log.info("command: ${command}\noutput:\n${text}")
 
