@@ -203,8 +203,6 @@
             <ignoredResourcePattern>com/lowagie/text/pdf/fonts/cmap_info.txt</ignoredResourcePattern>
             <!-- drools and quartz -->
             <ignoredResourcePattern>build.properties</ignoredResourcePattern>
-            <!-- Seam -->
-            <ignoredResourcePattern>seam.properties</ignoredResourcePattern>
             <!-- jboss-metadata-common and zanata-adapter-xliff -->
             <ignoredResourcePattern>schema/xml.xsd</ignoredResourcePattern>
           </ignoredResourcePatterns>
@@ -484,9 +482,6 @@
           </includes>
           <excludes>
             <exclude>**/*_*.properties</exclude>
-            <exclude>**/components.properties</exclude>
-            <exclude>**/seam.properties</exclude>
-            <exclude>**/seam-deployment.properties</exclude>
             <exclude>**/eventservice.properties</exclude>
             <exclude>**/pluralforms.properties</exclude>
           </excludes>
@@ -1500,7 +1495,6 @@
       <version>20090211</version>
     </dependency>
 
-    <!-- NB: This must be before jboss-seam, because beanutils includes old commons collections classes -->
     <dependency>
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
