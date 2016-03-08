@@ -361,4 +361,9 @@
     <mime-type>image/x-icon</mime-type>
   </mime-mapping>
 
+  <mime-mapping>
+    <extension>woff</extension>
+    <mime-type>application/font-woff</mime-type>
+  </mime-mapping>
+
 </web-app>
