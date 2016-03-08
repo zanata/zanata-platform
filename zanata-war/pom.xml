@@ -174,8 +174,6 @@
             <usedDependency>org.jvnet.mock-javamail:mock-javamail</usedDependency>
             <!-- Need for test scope -->
             <usedDependency>${jdbc.groupId}:${jdbc.artifactId}</usedDependency>
-            <!-- Required for jboss startup at org.jboss.seam.init.Initialization.initComponentsFromXmlDocuments(Initialization.java:205) -->
-            <usedDependency>dom4j:dom4j</usedDependency>
             <!-- NB: Don't add anything without a comment explaining how the
                  dependency is used -->
           </usedDependencies>
@@ -1571,11 +1569,6 @@
     <dependency>
       <groupId>antlr</groupId>
       <artifactId>antlr</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>dom4j</groupId>
-      <artifactId>dom4j</artifactId>
     </dependency>
 
     <dependency>
