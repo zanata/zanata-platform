@@ -117,15 +117,15 @@ public class SourceConfigPromptTest {
         String expectedSrcDir = tempFolder.getRoot().getAbsolutePath() + "/resources";
         ConsoleInteractor console =
                 MockConsoleInteractor.predefineAnswers(
-                        expectedSrcDir, "messages.txt",
-                        "*Excluded.txt", "PLAIN_TEXT[txt]", "y");
+                        expectedSrcDir, "messages.md",
+                        "*Excluded.txt", "PLAIN_TEXT[md;txt]", "y");
         opts.setProj("fileProject");
         opts.setProjectVersion("master");
         opts.setProjectType("file");
         opts.setLocaleMapList(new LocaleList());
         File folder = tempFolder.newFolder("resources");
 
-        assertThat(new File(folder, "messages.txt").createNewFile(),
+        assertThat(new File(folder, "messages.md").createNewFile(),
                 Matchers.is(true));
         assertThat(
                 new File(folder, "shouldBeExcluded.txt").createNewFile(),
@@ -144,10 +144,10 @@ public class SourceConfigPromptTest {
                 Matchers.equalTo(new File(expectedSrcDir)));
 
         assertThat(prompt.getIncludes(),
-                Matchers.equalTo("messages.txt"));
+                Matchers.equalTo("messages.md"));
         assertThat(prompt.getExcludes(), Matchers.equalTo("*Excluded.txt"));
         assertThat(opts.getIncludes(),
-                Matchers.contains("messages.txt"));
+                Matchers.contains("messages.md"));
         assertThat(opts.getExcludes(), Matchers.contains("*Excluded.txt"));
     }
 }
