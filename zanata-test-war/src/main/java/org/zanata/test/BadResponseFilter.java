@@ -37,10 +37,10 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * This utility filter provides a second chance for some sort of partially
- * useful logging when the server returns a 500 response. It logs an ERROR
- * with a stack trace whenever a 500 response is generated, in case Zanata
- * (or a third party library) somehow returns a 500 without otherwise logging
- * anything.
+ * useful logging when the server returns a 500 response (or higher). It logs
+ * an ERROR with a stack trace whenever a 5xx response is generated, in case
+ * Zanata (or a third party library) somehow returns a 5xx without otherwise
+ * logging anything.
  * @author Sean Flanigan
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
@@ -75,8 +75,8 @@ public class BadResponseFilter implements Filter {
         @Override
         public void setStatus(int sc) {
             super.setStatus(sc);
-            if (sc == 500) {
-                log500Message();
+            if (sc >= 500) {
+                log5xxMessage(sc);
             }
         }
 
@@ -84,12 +84,12 @@ public class BadResponseFilter implements Filter {
         @Override
         public void setStatus(int sc, String sm) {
             super.setStatus(sc, sm);
-            if (sc == 500) {
-                log500Message();
+            if (sc >= 500) {
+                log5xxMessage(sc);
             }
         }
 
-        public void log500Message() {
+        public void log5xxMessage(int statusCode) {
             // We can't access the actual exception which triggered the 500
             // response here, but the problem should be somewhere in the stack
             // trace. There *should* be another log message which includes
@@ -104,7 +104,7 @@ public class BadResponseFilter implements Filter {
             // 3. Fix the error handler so that it always logs an exception
             // as ERROR (with stack trace) for 500 codes.
             // 4. Fix the bug which triggered the exception.
-            log.error("500 response for {}", getRequestURL(),
+            log.error("Server error response {} for {}", statusCode, getRequestURL(),
                     new Throwable("stack trace"));
         }
 
