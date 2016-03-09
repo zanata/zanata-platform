@@ -28,8 +28,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.deltaspike.core.api.projectstage.ProjectStage;
-import org.apache.deltaspike.core.util.ProjectStageProducer;
 import org.jglue.cdiunit.InRequestScope;
 import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.Test;
