@@ -923,7 +923,6 @@
         <configuration>
           <usedDependencies combine.children="append">
             <usedDependency>mysql:mysql-connector-java</usedDependency>
-            <usedDependency>org.codehaus.groovy:groovy-all</usedDependency>
             <usedDependency>org.projectlombok:lombok</usedDependency>
           </usedDependencies>
         </configuration>
