@@ -80,7 +80,6 @@ class SourceConfigPrompt {
     private String includes;
     private String excludes;
     private Set<String> docNames;
-    private List<DocumentType> rawDocumentTypes;
 
     public SourceConfigPrompt(
             ConsoleInteractor console,
@@ -132,10 +131,7 @@ class SourceConfigPrompt {
 
             console.blankLine();
             console.printfln(Question, get("project.file.type.question"));
-            RestClientFactory clientFactory = getClientFactory(pushOptions);
-            FileResourceClient client =
-                    clientFactory.getFileResourceClient();
-            rawDocumentTypes = client.acceptedFileTypes();
+
             // this answer is not persisted in zanata.xml so user will still need to type it when they do the actual push
             console.printfln(Hint, PushOptionsImpl.fileTypeHelp);
             console.printf(Question, get("file.type.prompt"));
@@ -257,6 +253,9 @@ class SourceConfigPrompt {
             RestClientFactory clientFactory = getClientFactory(opts);
             RawPushCommand rawPushCommand =
                     new RawPushCommand(opts, clientFactory, console);
+            FileResourceClient client =
+                    clientFactory.getFileResourceClient();
+            List<DocumentType> rawDocumentTypes = client.acceptedFileTypes();
             Map<DocumentType, Set<String>> filteredDocTypes =
                     rawPushCommand.validateFileTypes(rawDocumentTypes,
                             opts.getFileTypes());
