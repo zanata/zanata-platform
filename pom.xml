@@ -179,13 +179,17 @@
 
     <hamcrest.version>1.3</hamcrest.version>
     <lombok.version>1.12.6</lombok.version>
-    <resteasy.version>2.3.7.Final</resteasy.version>
     <findbugs.maven.version>3.0.1</findbugs.maven.version>
     <groovy.version>1.8.9</groovy.version>
     <guava.version>13.0.1</guava.version>
     <jackson.version>1.9.13</jackson.version>
-    <powermock.version>1.5.4</powermock.version>
+    <jaxb.api.version>2.2.12</jaxb.api.version>
+    <maven.javadoc.version>2.9.1</maven.javadoc.version>
+    <maven.jxr.version>2.5</maven.jxr.version>
+    <powermock.version>1.6.2</powermock.version>
+    <resteasy.version>3.0.13.Final</resteasy.version>
     <surefire.version>2.18.1</surefire.version>
+    <maven.source.version>2.2.1</maven.source.version>
 
     <checkstyle.skip>false</checkstyle.skip>
     <!-- When testing checkstyle changes, use -Dcheckstyle.config.location to point to a local file: -->
@@ -193,13 +197,14 @@
     <checkstyle.propertiesLocation />
     <checkstyle.suppressions.location>https://raw.github.com/zanata/zanata-parent/master/checkstyle-suppressions.xml</checkstyle.suppressions.location>
     <checkstyle.suppressionsFileExpression />
+    <checkstyle.version>2.13</checkstyle.version>
     <findbugs.excludeFilterFile>https://raw.github.com/zanata/zanata-parent/master/findbugs-filter.xml</findbugs.excludeFilterFile>
 
     <enunciate.version>1.27</enunciate.version>
 
     <reports-plugin.dependencyDetailsEnabled>false</reports-plugin.dependencyDetailsEnabled>
     <reports-plugin.dependencyLocationsEnabled>false</reports-plugin.dependencyLocationsEnabled>
-    <slf4j.version>1.7.5</slf4j.version>
+    <slf4j.version>1.7.12</slf4j.version>
     <victims.updates>daily</victims.updates>
   </properties>
 
@@ -241,7 +246,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.13</version>
+        <version>${checkstyle.version}</version>
         <configuration>
           <configLocation>${checkstyle.config.location}</configLocation>
           <!-- report violations to stdout (not console!) -->
@@ -324,29 +329,6 @@
           <failBuildInCaseOfDifferentContentConflict>true</failBuildInCaseOfDifferentContentConflict>
           <!--<printEqualFiles>true</printEqualFiles>-->
           <skip>${dupfind.skip}</skip>
-          <exceptions>
-            <!-- TODO remove this when Fedora 20 is retired -->
-            <exception>
-              <conflictingDependencies>
-                <dependency>
-                  <groupId>commons-beanutils</groupId>
-                  <artifactId>commons-beanutils</artifactId>
-                  <version>1.8.3</version>
-                </dependency>
-                <dependency>
-                  <groupId>commons-collections</groupId>
-                  <artifactId>commons-collections</artifactId>
-                  <version>3.2.2</version>
-                </dependency>
-              </conflictingDependencies>
-              <classes>
-                <class>org.apache.commons.collections.ArrayStack</class>
-                <class>org.apache.commons.collections.Buffer</class>
-                <class>org.apache.commons.collections.BufferUnderflowException</class>
-                <class>org.apache.commons.collections.FastHashMap</class>
-              </classes>
-            </exception>
-          </exceptions>
         </configuration>
         <executions>
           <execution>
@@ -360,7 +342,7 @@
 
       <plugin>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>1.3.1</version>
+        <version>1.4</version>
         <executions>
           <execution>
             <id>enforce-maven</id>
@@ -409,6 +391,9 @@
 
                 <!-- use org.opensymphony.quartz:quartz -->
                 <exclude>quartz:quartz</exclude>
+
+                <!-- use com.io7m.xom:xom -->
+                <exclude>xom:xom</exclude>
               </excludes>
               <searchTransitive>true</searchTransitive>
             </bannedDependencies>
@@ -600,11 +585,11 @@
       <plugins>
         <plugin>
           <artifactId>maven-antrun-plugin</artifactId>
-          <version>1.7</version>
+          <version>1.8</version>
         </plugin>
         <plugin>
           <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>2.10</version>
+          <version>${checkstyle.version}</version>
         </plugin>
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
@@ -647,7 +632,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-source-plugin</artifactId>
-          <version>2.4</version>
+          <version>${maven.source.version}</version>
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
@@ -663,7 +648,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-jxr-plugin</artifactId>
-          <version>2.5</version>
+          <version>${maven.jxr.version}</version>
         </plugin>
         <plugin>
           <artifactId>maven-site-plugin</artifactId>
@@ -810,7 +795,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>
-            <version>2.2.1</version>
+      <version>${maven.source.version}</version>
             <executions>
               <execution>
                 <id>attach-sources</id>
@@ -825,7 +810,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.9.1</version>
+            <version>${maven.javadoc.version}</version>
             <configuration>
               <additionalparam>-Xdoclint:none</additionalparam>
     </configuration>
@@ -1024,7 +1009,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-checkstyle-plugin</artifactId>
-            <version>2.10</version>
+            <version>${checkstyle.version}</version>
             <configuration>
               <configLocation>${checkstyle.config.location}</configLocation>
               <propertiesLocation>${checkstyle.propertiesLocation}</propertiesLocation>
@@ -1044,7 +1029,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-jxr-plugin</artifactId>
-            <version>2.2</version>
+            <version>${maven.jxr.version}</version>
             <configuration>
               <aggregate>true</aggregate>
             </configuration>
@@ -1055,7 +1040,7 @@
             <artifactId>maven-pmd-plugin</artifactId>
             <version>2.5</version>
             <configuration>
-              <targetJdk>1.6</targetJdk>
+              <targetJdk>${required.java}</targetJdk>
             </configuration>
           </plugin>
 
@@ -1069,7 +1054,7 @@
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.11</version>
+        <version>4.12</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -1147,20 +1132,20 @@
       <dependency>
         <groupId>org.testng</groupId>
         <artifactId>testng</artifactId>
-        <version>6.8</version>
+        <version>6.8.21</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.easymock</groupId>
         <artifactId>easymock</artifactId>
-        <version>3.1</version>
+        <version>3.3.1</version>
         <scope>test</scope>
       </dependency>
 
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
-        <version>1.9.5</version>
+        <version>1.10.19</version>
         <scope>test</scope>
       </dependency>
 
@@ -1193,7 +1178,7 @@
       <dependency>
         <groupId>com.google.code.findbugs</groupId>
         <artifactId>annotations</artifactId>
-        <version>3.0.0</version>
+        <version>${findbugs.maven.version}</version>
         <scope>provided</scope>
       </dependency>
 
@@ -1231,7 +1216,7 @@
       <dependency>
         <groupId>commons-beanutils</groupId>
         <artifactId>commons-beanutils</artifactId>
-        <version>1.8.3</version>
+        <version>1.9.2</version>
         <exclusions>
           <exclusion>
             <groupId>commons-logging</groupId>
@@ -1243,7 +1228,7 @@
       <dependency>
         <groupId>commons-codec</groupId>
         <artifactId>commons-codec</artifactId>
-        <version>1.7</version>
+        <version>1.10</version>
       </dependency>
 
       <dependency>
@@ -1276,27 +1261,28 @@
       <dependency>
         <groupId>javax.transaction</groupId>
         <artifactId>jta</artifactId>
-        <version>1.1</version>
+        <version>1.1.1</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>javax.xml.bind</groupId>
         <artifactId>jaxb-api</artifactId>
-        <version>2.2.3</version>
+        <version>${jaxb.api.version}</version>
       </dependency>
       <dependency>
         <groupId>javax.xml.bind</groupId>
         <artifactId>jaxb-api</artifactId>
-        <version>2.2.3</version>
+        <version>${jaxb.api.version}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
         <groupId>javax.xml.stream</groupId>
         <artifactId>stax-api</artifactId>
-        <version>1.0-2</version>
+        <version>1.0</version>
       </dependency>
 
       <!-- RestEasy dependencies -->
+      <!-- We still need RestEasy, as zanata-common-api need it -->
       <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-bom</artifactId>
@@ -1343,7 +1329,7 @@
       <dependency>
         <groupId>commons-configuration</groupId>
         <artifactId>commons-configuration</artifactId>
-        <version>1.9</version>
+        <version>1.10</version>
         <exclusions>
           <exclusion>
             <groupId>commons-logging</groupId>
@@ -1383,7 +1369,7 @@
       <dependency>
         <groupId>net.sf.opencsv</groupId>
         <artifactId>opencsv</artifactId>
-        <version>2.1</version>
+        <version>2.3</version>
       </dependency>
 
       <dependency>
@@ -1393,10 +1379,11 @@
       </dependency>
 
       <dependency>
-        <groupId>xom</groupId>
+        <!-- New group Id -->
+        <groupId>com.io7m.xom</groupId>
         <artifactId>xom</artifactId>
         <!-- NB: the latest version currently packaged for Fedora: -->
-        <version>1.0</version>
+        <version>1.2.10</version>
         <exclusions>
           <exclusion>
             <artifactId>xml-apis</artifactId>
@@ -1504,7 +1491,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.9.1</version>
+        <version>${maven.javadoc.version}</version>
       </plugin>
     </plugins>
   </reporting>
