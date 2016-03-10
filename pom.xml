@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>25</version>
+    <version>26-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -1342,19 +1342,15 @@
         <version>3.1</version>
       </dependency>
       <!--
-        In the server, we can use a newer version than Fedora has.
-        This one also has a source jar!
+        Fedora now has com.io7m.xom:xom 1.2.10,
+        so just use the one that defined in parent
       -->
+     
       <dependency>
-        <groupId>xom</groupId>
+        <!-- New group Id -->
+        <groupId>com.io7m.xom</groupId>
         <artifactId>xom</artifactId>
-        <version>1.2.5</version>
-        <exclusions>
-          <exclusion>
-            <artifactId>xml-apis</artifactId>
-            <groupId>xml-apis</groupId>
-          </exclusion>
-        </exclusions>
+        <version>1.2.10</version>
       </dependency>
 
       <dependency>
