@@ -20,6 +20,7 @@
  */
 package org.zanata.rest;
 
+import lombok.extern.slf4j.Slf4j;
 import org.zanata.exception.ZanataServiceException;
 
 import javax.ws.rs.core.Response;
@@ -31,11 +32,16 @@ import javax.ws.rs.ext.Provider;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Provider
+@Slf4j
 public class ZanataServiceExceptionMapper implements
         ExceptionMapper<ZanataServiceException> {
     @Override
     public Response toResponse(ZanataServiceException exception) {
-        return Response.status(exception.getHttpStatus())
+        int code = exception.getHttpStatus();
+        if (code >= 500) {
+            log.error("Returning response with server error code {}", code, exception);
+        }
+        return Response.status(code)
                 .entity(exception.getMessage()).build();
     }
 }
