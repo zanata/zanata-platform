@@ -20,7 +20,6 @@
  */
 package org.zanata.action;
 
-import java.io.IOException;
 import java.io.Serializable;
 
 import javax.persistence.EntityManager;
@@ -30,6 +29,8 @@ import javax.validation.constraints.Size;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.deltaspike.core.api.scope.GroupedConversation;
+import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import javax.inject.Inject;
@@ -43,15 +44,17 @@ import org.zanata.service.RegisterService;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.UrlUtil;
 
-
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 @Named("register")
-@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
+@GroupedConversationScoped
 @Slf4j
 public class RegisterAction implements Serializable {
 
     private static final long serialVersionUID = -7883627570614588182L;
+
+    @Inject
+    private GroupedConversation conversation;
 
     @Inject
     private EntityManager entityManager;
@@ -90,7 +93,6 @@ public class RegisterAction implements Serializable {
         return null;
     }
 
-    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public HPerson getPerson() {
         if (person == null)
             person = new HPerson();
@@ -166,7 +168,6 @@ public class RegisterAction implements Serializable {
 
     }
 
-//    @End /* TODO [CDI] commented out end conversation. verify it still work */
     public String register() {
         valid = true;
         validateUsername(getUsername());
@@ -187,6 +188,7 @@ public class RegisterAction implements Serializable {
                 emailServiceImpl.sendActivationEmail(user, email, key);
         facesMessages.addGlobal(message);
 
+        conversation.close();
         return "/home.xhtml";
     }
 

@@ -25,11 +25,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
 import javax.validation.constraints.NotNull;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.deltaspike.core.api.scope.ConversationGroup;
+import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +50,6 @@ import org.zanata.security.AuthenticationType;
  */
 @Named("roleAssignmentRuleAction")
 @RequestScoped
-
 @CheckRole("admin")
 public class RoleAssignmentRuleAction extends EntityHome<HRoleAssignmentRule>
         implements Serializable {
@@ -56,6 +58,7 @@ public class RoleAssignmentRuleAction extends EntityHome<HRoleAssignmentRule>
     private static final long serialVersionUID = 1L;
 
     @Inject
+    @Any
     private RoleAssignmentRuleId roleAssignmentRuleId;
 
     @Inject
@@ -78,7 +81,6 @@ public class RoleAssignmentRuleAction extends EntityHome<HRoleAssignmentRule>
         } else {
             roleAssignmentRuleId.setId(null);
         }
-
     }
 
     @Override

@@ -2,6 +2,7 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <f:view contentType="text/html" xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ds="http://deltaspike.apache.org/jsf"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core">
@@ -15,7 +16,7 @@
     <ui:remove>
       <!-- This needs to appear before all other JavaScript, for accurate testing -->
     </ui:remove>
-    <h:outputText value="#{ajaxCounter.ajaxCounterScript}" escape="false" />
+    <h:outputText value="#{javaScriptTestHelper.headScript}" escape="false" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 
@@ -56,6 +57,7 @@
   </h:head>
 
   <h:body>
+    <ds:windowId/>
     <div class="new-zanata new-zanata-base">
       <ui:include src="banner.xhtml"/>
     </div>
@@ -69,6 +71,5 @@
       <ui:include src="scripts.xhtml"/>
     </div>
   </h:body>
-  <h:outputText value="#{ajaxCounter.javascriptFinishedScript}" escape="false" />
   </html>
 </f:view>

@@ -180,6 +180,9 @@ public class ActivityEntry {
         return wordCount + " words";
     }
 
+    /**
+     * Get project url with dswid parameter
+     */
     public String getProjectUrl(Activity activity) {
         Object context =
                 getEntity(activity.getContextType(), activity.getContextId());
@@ -193,6 +196,9 @@ public class ActivityEntry {
         return "";
     }
 
+    /**
+     * Get editor url with dswid parameter
+     */
     public String getEditorUrl(Activity activity) {
         Object context =
                 getEntity(activity.getContextType(), activity.getContextId());
@@ -230,6 +236,9 @@ public class ActivityEntry {
         return "";
     }
 
+    /**
+     * Get document url with dswid parameter
+     */
     public String getDocumentUrl(Activity activity) {
         String url = "";
         Object context =
@@ -269,6 +278,9 @@ public class ActivityEntry {
         return url;
     }
 
+    /**
+     * Get project version url with dswid parameter
+     */
     public String getVersionUrl(Activity activity) {
         Object context =
             getEntity(activity.getContextType(), activity.getContextId());
@@ -286,6 +298,9 @@ public class ActivityEntry {
         return url;
     }
 
+    /**
+     * Get editor document list url with dswid parameter
+     */
     public String getDocumentListUrl(Activity activity) {
         Object context =
             getEntity(activity.getContextType(), activity.getContextId());

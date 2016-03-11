@@ -26,39 +26,32 @@ import java.io.Serializable;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import com.google.common.collect.Lists;
+import org.apache.deltaspike.core.api.scope.GroupedConversation;
+import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
+import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ServiceLocator;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
+ * @deprecated use FacesMessages
  */
+@Deprecated
 @Named("conversationScopeMessages")
-@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
-
 public class ConversationScopeMessages implements Serializable {
 
-    private List<FacesMessage> messages = Lists.newArrayList();
+    @Inject
+    private FacesMessages jsfMessages;
 
-    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public void setMessage(FacesMessage.Severity severity, String message) {
         FacesMessage facesMessage = new FacesMessage(severity, message, null);
-        setMessages(Lists.newArrayList(facesMessage));
+        jsfMessages.addGlobal(facesMessage);
     }
 
-    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
-    public void setMessages(List<FacesMessage> messages) {
-        this.messages = messages;
-    }
-
-    public List<FacesMessage> getAndClearMessages() {
-        List<FacesMessage> tempMsgs = Lists.newArrayList(messages);
-        messages.clear();
-        return tempMsgs;
-    }
-
-    public boolean hasMessages() {
-        return !messages.isEmpty();
+    public void addMessages(List<FacesMessage> messages) {
+        messages.forEach(msg -> jsfMessages.addGlobal(msg));
     }
 
     public static ConversationScopeMessages instance() {

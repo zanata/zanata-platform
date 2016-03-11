@@ -21,8 +21,8 @@
 package org.zanata.feature.administration;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.ClassRule;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.testharness.TestPlan;
@@ -44,8 +44,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(TestPlan.DetailedTest.class)
 public class ServerSettingsTest extends ZanataTestCase {
 
-    @ClassRule
-    public static HasEmailRule hasEmailRule = new HasEmailRule();
+    @Rule
+    public final HasEmailRule hasEmailRule = new HasEmailRule();
 
     @Test
     @Ignore("unstable")

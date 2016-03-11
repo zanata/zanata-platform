@@ -23,13 +23,11 @@ package org.zanata.action;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -45,6 +43,7 @@ import org.hibernate.criterion.Restrictions;
 
 import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.DocumentType;
@@ -84,7 +83,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 @Named("versionHome")
-//@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
 @RequestScoped
 @Slf4j
 public class VersionHome extends SlugHome<HProjectIteration> implements
@@ -113,6 +111,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 //    private String projectSlug;
 
     @Inject
+    @Any
     private ProjectAndVersionSlug projectAndVersionSlug;
 
     @Inject
@@ -198,10 +197,12 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         setEntityClass(HProjectIteration.class);
     }
 
-    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public void init(boolean isNewInstance) {
         this.isNewInstance = isNewInstance;
         if (isNewInstance) {
+            String projectSlug = getProjectSlug();
+            clearSlugs();
+            setProjectSlug(projectSlug);
             identity.checkPermission(getProject(), "insert");
             ProjectType projectType = getProject().getDefaultProjectType();
             if (projectType != null) {
@@ -299,7 +300,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
     @Transactional
     public void updateRequireTranslationReview(String key, boolean checked) {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         getInstance().setRequireTranslationReview(checked);
         update();
         if (checked) {
@@ -502,7 +503,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     @Override
     @Transactional
     public String update() {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         if (!getSlug().equals(getInputSlugValue()) && !validateSlug(getInputSlugValue(), "slug")) {
             return null;
         }
@@ -542,7 +543,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
     @Transactional
     public void updateStatus(char initial) {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         String message = msgs.format("jsf.iteration.status.updated",
                 EntityStatus.valueOf(initial));
         getInstance().setStatus(EntityStatus.valueOf(initial));
@@ -619,7 +620,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
     @Transactional
     public void updateValidationOption(String name, String state) {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         ValidationId validationId = ValidationId.valueOf(name);
 
         for (Map.Entry<ValidationId, ValidationAction> entry : getValidations()
@@ -671,7 +672,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
     @Transactional
     public void setOverrideLocales(boolean overrideLocales) {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         getInstance().setOverrideLocales(overrideLocales);
     }
 
@@ -681,7 +682,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
     @Transactional
     public void removeAllLocaleAliases() {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         List<LocaleId> removed = new ArrayList<>();
         List<LocaleId> aliasedLocales =
             new ArrayList<>(getLocaleAliases().keySet());
@@ -745,7 +746,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
     @Transactional
     public void removeSelectedLocaleAliases() {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         List<LocaleId> removed = new ArrayList<>();
         for (Map.Entry<LocaleId, Boolean> entry :
             getSelectedEnabledLocales().entrySet()) {
@@ -804,7 +805,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
     @Transactional
     public void updateToEnteredLocaleAlias(LocaleId localeId) {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         String enteredAlias = enteredLocaleAliases.get(localeId);
         setLocaleAlias(localeId, enteredAlias);
     }
@@ -856,7 +857,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
     @Transactional
     public void useDefaultLocales() {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         setOverrideLocales(false);
         refreshDisabledLocales();
     }
@@ -898,7 +899,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
     @Transactional
     public void disableSelectedLocales() {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         List<LocaleId> toRemove = Lists.newArrayList();
 
         for (Map.Entry<LocaleId, Boolean> entry :
@@ -936,7 +937,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
     @Transactional
     public void disableLocale(HLocale locale) {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         boolean wasEnabled = disableLocaleSilently(locale);
         if (wasEnabled) {
             facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
@@ -1000,7 +1001,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
     @Transactional
     public void enableSelectedLocales() {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         List<LocaleId> enabled = new ArrayList<>();
         for (Map.Entry<LocaleId, Boolean> entry : selectedDisabledLocales
                 .entrySet()) {
@@ -1028,7 +1029,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
     @Transactional
     public void enableLocale(HLocale locale) {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         boolean wasDisabled = enableLocaleSilently(locale);
 
         if (wasDisabled) {

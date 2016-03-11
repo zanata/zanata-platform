@@ -50,7 +50,7 @@
           <ui:repeat value="#{zanataSearch.userTabUserFilter.currentPage}"
             var="account">
             <li class="l--pad-all-half">
-              <a href="#{request.contextPath}/profile/view/#{account.username}">
+              <a href="#{request.contextPath}/profile/view/#{account.username}#{dswidQuery}">
                 <span class="w--r-1 bx--round l--push-right-quarter">
                   <img
                     src="#{gravatarServiceImpl.getUserImageUrl(48, account.person.email)}"

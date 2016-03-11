@@ -302,7 +302,7 @@ public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
     }
 
     public String returnToUrl() {
-        return applicationConfiguration.getServerPath() + "/openid.seam";
+        return applicationConfiguration.getServerPath() + "/openid.xhtml";
     }
 
     /**

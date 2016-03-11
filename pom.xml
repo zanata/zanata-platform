@@ -33,7 +33,7 @@
     <!-- Applies to surefire and failsafe (if enabled) -->
     <failIfNoTests>true</failIfNoTests>
 
-    <deltaspike.version>1.5.1</deltaspike.version>
+    <deltaspike.version>1.5.2</deltaspike.version>
     <cdi.runtime>runtime</cdi.runtime>
     <cdi.compile>compile</cdi.compile>
     <picketlink.version>2.5.4.SP4</picketlink.version>
@@ -42,12 +42,13 @@
     <weld.version>1.1.31.Final</weld.version>
     <weld.se.version>${weld.version}</weld.se.version>
     <groovy.version>2.4.5</groovy.version>
-    <guava.version>18.0</guava.version>
+    <guava.version>19.0</guava.version>
     <gwt.version>2.7.0</gwt.version>
     <icu4j.version>50.1.1</icu4j.version>
     <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
     <lucene.version>3.6.2</lucene.version>
     <org.mock-server.version>3.9.17</org.mock-server.version>
+    <rewrite.version>3.0.0.Alpha10</rewrite.version>
 
     <!--
     Version of java compiler used for building. (Specified as major.minor,
@@ -80,8 +81,7 @@
     -->
 
     <solr.version>${lucene.version}</solr.version>
-    <seam.version>2.3.1.Final</seam.version>
-    <slf4j.version>1.7.12</slf4j.version>
+    <slf4j.version>1.7.18</slf4j.version>
     <gwteventservice.version>1.2.1</gwteventservice.version>
     <okapi.version>0.22</okapi.version>
 
@@ -92,7 +92,7 @@
     <zanata.client.version>3.8.1</zanata.client.version>
     <zanata.common.version>3.8.1</zanata.common.version>
 
-    <richfaces.version>4.5.4.Final</richfaces.version>
+    <richfaces.version>4.5.11.Final</richfaces.version>
 
     <arquillian.version>1.1.5.Final</arquillian.version>
     <shrinkwrap.api.version>1.2.2</shrinkwrap.api.version>
@@ -324,19 +324,6 @@
         <groupId>commons-codec</groupId>
         <artifactId>commons-codec</artifactId>
         <version>1.9</version>
-      </dependency>
-
-      <dependency>
-        <groupId>dom4j</groupId>
-        <artifactId>dom4j</artifactId>
-        <version>1.6.1</version>
-        <scope>provided</scope>
-        <exclusions>
-          <exclusion>
-            <groupId>xml-apis</groupId>
-            <artifactId>xml-apis</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
@@ -937,7 +924,7 @@
       <dependency>
         <groupId>net.sourceforge.cssparser</groupId>
         <artifactId>cssparser</artifactId>
-        <version>0.9.14</version>
+        <version>0.9.18</version>
       </dependency>
 
       <dependency>

@@ -123,10 +123,11 @@
           </h:link>
         </li>
         <li>
-          <a href="#{request.contextPath}/dashboard/settings">
-            #{msgs['jsf.Settings']} <i
-            class="l--float-right i--inline i--settings"></i>
-          </a>
+          <h:link id="dashboard-settings" outcome="/dashboard/home.xhtml">
+            <f:param name="section" value="settings" />
+            #{msgs['jsf.Settings']}
+            <i class="l--float-right i--inline i--settings"></i>
+          </h:link>
         </li>
         <ui:fragment rendered="#{identity.hasRole('admin')}">
           <li>
@@ -157,16 +158,20 @@
 
       <ui:fragment
         rendered="#{applicationConfigurationAction.registrationLinkNeeded}">
+        <ui:remove>
+          <!-- TODO add dswid, but only if Zanata URL -->
+        </ui:remove>
         <a id="register_link" href="#{applicationConfiguration.registerPath}"
           class="is-hidden--s button">#{msgs['jsf.Signup']}</a>
       </ui:fragment>
 
-      <h:outputLink id="signin_link"
-        value="#{request.contextPath}/account/sign_in?continue=#{urlUtil.getEncodedLocalUrl(request)}"
+      <h:link id="signin_link"
+        outcome="/account/login.xhtml"
+        value="#{msgs['jsf.Login']}"
         propagation="none" styleClass="l--push-left-half button--primary"
         rendered="#{applicationConfigurationAction.loginHandledByInternalPage}">
-        #{msgs['jsf.Login']}
-      </h:outputLink>
+        <f:param name="continue" value="#{urlUtil.getEncodedLocalUrl(request)}"/>
+      </h:link>
 
       <h:form rendered="#{applicationConfigurationAction.singleOpenId}" styleClass="bx--inline">
         <h:commandLink id="openid_single_signin_link"
@@ -177,7 +182,7 @@
       </h:form>
 
       <h:outputLink id="ksignin_link"
-        value="#{request.contextPath}/account/klogin.seam?continue=#{urlUtil.getEncodedLocalUrl(request)}"
+        value="#{request.contextPath}/account/klogin.xhtml?continue=#{urlUtil.getEncodedLocalUrl(request)}"
         propagation="none" styleClass="l--push-left-half button--primary"
         rendered="#{applicationConfiguration.kerberosAuth}">
         #{msgs['jsf.Login']}

@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.validation.ConstraintViolationException;
 
 import org.apache.commons.io.FilenameUtils;
@@ -106,7 +107,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Named("versionHomeAction")
-@javax.faces.bean.ViewScoped
+@ViewScoped
 @Slf4j
 public class VersionHomeAction extends AbstractSortAction implements
         Serializable {
@@ -1060,7 +1061,7 @@ public class VersionHomeAction extends AbstractSortAction implements
                     warningMessages.add(new FacesMessage(
                             FacesMessage.SEVERITY_WARN, warning, null));
                 }
-                conversationScopeMessages.setMessages(warningMessages);
+                conversationScopeMessages.addMessages(warningMessages);
             }
         } catch (ZanataServiceException e) {
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_ERROR,
@@ -1092,6 +1093,7 @@ public class VersionHomeAction extends AbstractSortAction implements
         translationFileUpload = new TranslationFileUploadHelper();
     }
 
+    // TODO turn this into a CDI bean?
     private class DocumentFilter extends InMemoryListFilter<HDocument> {
         private DocumentDAO documentDAO =
                 ServiceLocator.instance().getInstance(DocumentDAO.class);
@@ -1108,6 +1110,7 @@ public class VersionHomeAction extends AbstractSortAction implements
         }
     };
 
+    // TODO turn this into a CDI bean?
     private class SourceDocumentFilter extends InMemoryListFilter<HDocument> {
         private DocumentDAO documentDAO = ServiceLocator.instance()
                 .getInstance(DocumentDAO.class);

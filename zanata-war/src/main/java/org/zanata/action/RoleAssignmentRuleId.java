@@ -23,21 +23,25 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
-import org.apache.deltaspike.core.api.scope.ViewAccessScoped;
+import org.apache.deltaspike.core.api.scope.ConversationGroup;
+import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
+
+import javax.annotation.Nullable;
 
 /**
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@ViewAccessScoped
+@GroupedConversationScoped
+@ConversationGroup(RoleAssignmentRuleId.class)
 public class RoleAssignmentRuleId implements Serializable {
-    private Long id;
+    private @Nullable Long id;
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(@Nullable Long id) {
         this.id = id;
     }
 }

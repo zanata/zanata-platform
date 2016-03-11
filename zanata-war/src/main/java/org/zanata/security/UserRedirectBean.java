@@ -24,20 +24,18 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.Map;
 
 import javax.enterprise.event.Observes;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.events.LoginSuccessfulEvent;
 import org.zanata.events.NotLoggedInEvent;
 import org.zanata.servlet.annotations.ContextPath;
-import org.zanata.util.FacesNavigationUtil;
-import com.google.common.collect.Maps;
+import org.zanata.util.UrlUtil;
 
 /**
  * This bean is used store a url from the query string for use with redirects.
@@ -57,10 +55,10 @@ import com.google.common.collect.Maps;
 public class UserRedirectBean implements Serializable {
     private static final Logger log =
             LoggerFactory.getLogger(UserRedirectBean.class);
-    private static final String HOME_URL = "/";
-    private static final String REGISTER_URL = "/register";
-    private static final String ERROR_URL = "/error";
-    private static final String LOGIN_URL = "/sign_in";
+    private static final String HOME_PATH = "/";
+    private static final String REGISTER_PATH = "/register";
+    private static final String ERROR_PATH = "/error/";
+    private static final String LOGIN_PATH = "/sign_in";
 
     /**
     *
@@ -70,48 +68,10 @@ public class UserRedirectBean implements Serializable {
 
     @Inject @ContextPath
     private String contextPath;
+    @Inject
+    private UrlUtil urlUtil;
 
     private String url;
-    private Map<String, Object> parameters = Maps.newHashMap();
-    private String viewId;
-
-    /**
-     * Modifies the redirect url to apply extra rules about redirects that
-     * cannot be expressed in pages.xml.
-     *
-     * Currently replaces the error url with the home url to prevent redirect to
-     * error page after signing in from the error page.
-     *
-     * @param originalUrl
-     *            the url of the page redirected from
-     * @return the adjusted url if any adjustment is required, originalUrl
-     *         otherwise
-     */
-    private String applyRedirectModifications(String originalUrl) {
-        if (originalUrl == null) {
-            return originalUrl;
-        }
-
-        String newUrl, queryString;
-
-        int qsIndex = originalUrl.indexOf('?');
-        if (qsIndex < 0) {
-            newUrl = originalUrl;
-            queryString = "";
-        } else {
-            newUrl = originalUrl.substring(0, qsIndex);
-            queryString = originalUrl.substring(qsIndex);
-        }
-
-        if (newUrl.endsWith(ERROR_URL)) {
-            newUrl = newUrl.substring(0, newUrl.length() - ERROR_URL.length());
-            newUrl = newUrl.concat(HOME_URL);
-            return newUrl.concat(queryString);
-        } else {
-            return originalUrl;
-        }
-
-    }
 
     /**
      * Sets the redirect url to a context local url.
@@ -132,7 +92,7 @@ public class UserRedirectBean implements Serializable {
      * @see {@link #applyRedirectModifications(String)}
      */
     public void setUrl(String url) {
-        this.url = applyRedirectModifications(url);
+        this.url = url;
     }
 
     public String getUrl() {
@@ -174,34 +134,53 @@ public class UserRedirectBean implements Serializable {
     }
 
     public boolean isRedirectToHome() {
-        return isRedirectTo(HOME_URL);
+        return isRedirectTo(HOME_PATH);
+    }
+
+    public boolean isRedirectToError() {
+        return isRedirectTo(ERROR_PATH);
     }
 
     public boolean isRedirectToRegister() {
-        return isRedirectTo(REGISTER_URL);
+        return isRedirectTo(REGISTER_PATH);
     }
 
     public boolean isRedirectToLoginPage() {
-        return isRedirectTo(LOGIN_URL);
+        return isRedirectTo(LOGIN_PATH);
     }
 
     // provided user is logged in, they should be redirect to dashboard
     public boolean shouldRedirectToDashboard() {
-        return !isRedirect() || isRedirectToHome() || isRedirectToRegister() || isRedirectToLoginPage();
+        return !isRedirect() || isRedirectToHome() || isRedirectToRegister()
+                || isRedirectToError() || isRedirectToLoginPage();
     }
 
-    private boolean isRedirectTo(String url) {
+    /**
+     * Removes context path and any query params from a local url
+     * @param localUrl
+     * @return
+     */
+    private String getPath(String localUrl) {
+        assert localUrl.startsWith(contextPath);
+        String localPath;
+        // strip off any query params
+        int qsIndex = localUrl.indexOf('?');
+        if (qsIndex >= 0) {
+            localPath = localUrl.substring(0, qsIndex);
+        } else {
+            localPath = localUrl;
+        }
+        String path = localPath.substring(contextPath.length());
+        return path;
+    }
+
+    private boolean isRedirectTo(String pathWithoutContext) {
         if (isRedirect()) {
             String redirectingUrl = getUrl();
-            int qsIndex = redirectingUrl.indexOf('?');
-            if (qsIndex > 0) {
-                redirectingUrl = redirectingUrl.substring(0, qsIndex);
-            }
-
-            if (redirectingUrl.endsWith(url)) {
+            String redirectPath = getPath(redirectingUrl);
+            if (redirectPath.equals(pathWithoutContext)) {
                 return true;
             }
-
         }
         return false;
     }
@@ -220,33 +199,8 @@ public class UserRedirectBean implements Serializable {
             return;
         }
 
-        // first capture all request parameters
-        parameters.putAll(context.getExternalContext().getRequestParameterMap());
-        // then preserve page parameters, overwriting request parameters with same names
-        // we should have migrated all pages.xml parameter to jsf pages
-//        parameters.putAll( Pages.instance().getStringValuesFromPageContext(context) );
-
-        // special case only needed for actionMethod if decide not to capture all request parameters
-        //if (context.getExternalContext().getRequestParameterMap().containsKey("actionMethod"))
-        //{
-        //   parameters.put("actionMethod", context.getExternalContext().getRequestParameterMap().get("actionMethod"));
-        //}
-
-        viewId = FacesNavigationUtil.getCurrentViewId();
-    }
-
-    /**
-     * Redirect to the captured view.
-     *
-     *@see UserRedirectBean#captureCurrentView
-     */
-    public boolean returnToCapturedView(@Observes LoginSuccessfulEvent event) {
-        if (viewId != null) {
-            FacesNavigationUtil.redirect(viewId, parameters);
-            return true;
-        } else {
-            return false;
-        }
+        HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+        setUrl(urlUtil.getLocalUrl(request));
     }
 
 }

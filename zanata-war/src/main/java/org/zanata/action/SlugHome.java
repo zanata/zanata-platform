@@ -20,18 +20,29 @@
  */
 package org.zanata.action;
 
+import org.apache.deltaspike.core.spi.scope.conversation.GroupedConversationManager;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
+import org.zanata.model.ModelEntityBase;
 import org.zanata.seam.framework.EntityHome;
+
+import javax.inject.Inject;
 
 /**
  * This implementation uses a field 'slug' to refer to the id of the object.
  *
  * @author asgeirf
  */
-public abstract class SlugHome<E> extends EntityHome<E> {
+public abstract class SlugHome<E extends ModelEntityBase> extends EntityHome<E> {
 
     private static final long serialVersionUID = 1L;
+
+    @Inject
+    private GroupedConversationManager conversationManager;
+
+    public void clearSlugs() {
+        conversationManager.closeConversationGroup(SlugHome.class);
+    }
 
     @SuppressWarnings("unchecked")
     @Override

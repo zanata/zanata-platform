@@ -52,11 +52,11 @@
   </ui:fragment>
 
   <ui:remove>
-  <!--                                                                         -->
-  <!-- jQuery needs to be imported before assets/js/script.min.js (dependency) -->
-  <!--                                                                         -->
+  <!-- jQuery will be loaded automatically if there are RichFaces tags, but
+       we need jQuery on other pages. Also, jQuery needs to be loaded in head
+       so that we can use jQuery(document).ready(). -->
   </ui:remove>
-  <h:outputScript name="jquery.js"/>
+  <h:outputScript library="org.richfaces" name="jquery.js" target="head"/>
   <script type="text/javascript" src="#{assets['js/script.min.js']}"></script>
   <h:outputScript library="script" name="components-script.js"/>
   <h:outputScript library="script" name="signals.min.js"/>

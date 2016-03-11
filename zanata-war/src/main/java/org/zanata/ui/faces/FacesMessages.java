@@ -39,9 +39,11 @@ import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.deltaspike.core.spi.scope.window.WindowContext;
 import org.zanata.i18n.Messages;
 import org.zanata.util.ServiceLocator;
 
@@ -60,6 +62,9 @@ public class FacesMessages implements Serializable {
     private final List<FacesMessage> globalMessages = new ArrayList<>();
     private final Map<String, List<FacesMessage>> keyedMessages =
             new HashMap<>();
+
+    @Inject
+    private WindowContext windowContext;
 
     @PostConstruct
     void postConstruct() {
@@ -147,6 +152,9 @@ public class FacesMessages implements Serializable {
         // NB This needs to change when migrating out of Seam
         String interpolatedMessage =
                 String.format(messageTemplate, params);
+
+        log.info("message to user (wid: {}): {})", windowContext.getCurrentWindowId(), interpolatedMessage);
+
         FacesMessage jsfMssg =
                 new FacesMessage(severity, interpolatedMessage, null);
 
@@ -196,6 +204,11 @@ public class FacesMessages implements Serializable {
     public void addGlobal(Severity severity, String messageTemplate,
             final Object... params) {
         addToControl(null, severity, null, messageTemplate, params);
+    }
+
+    public void addGlobal(FacesMessage msg) {
+        log.info("FacesMessage to user (wid: {}): {})", windowContext.getCurrentWindowId(), msg.getSummary());
+        globalMessages.add(msg);
     }
 
     /**

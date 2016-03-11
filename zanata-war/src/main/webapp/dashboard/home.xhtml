@@ -15,8 +15,7 @@
 
     <script type="text/javascript">
       jQuery(function(){
-
-        crossroads.addRoute(':pre*:/dashboard/settings/{subSection}', function(pre, subSection) {
+        crossroads.addRoute(':pre*:/dashboard/settings/{subSection}/:?query:', function(pre, subSection, query) {
           zanata.tabs.activate(jQuery('#settings_tab'))
           subSection = subSection || 'account';
           subSection =
@@ -24,7 +23,7 @@
           zanata.tabs.activate(jQuery('#' + subSection + '_tab'))
         });
 
-        crossroads.addRoute(':pre*:/dashboard/:section::?query:', function(pre, section, query) {
+        crossroads.addRoute(':pre*:/dashboard/:section:/:?query:', function(pre, section, query) {
           section = section || 'activity'
           section = validateTab('#' + section + "_tab", section, "activity");
           zanata.tabs.activate(jQuery('#' + section + "_tab"))

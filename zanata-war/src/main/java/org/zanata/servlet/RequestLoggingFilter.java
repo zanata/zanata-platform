@@ -75,14 +75,14 @@ public class RequestLoggingFilter implements Filter {
             }
             String query = httpRequest.getQueryString();
             String location = (query == null) ? uri : (uri + "?" + query);
-            logger.debug("> {}", location);
+            logger.debug("> {} {}", httpRequest.getMethod(), location);
             try {
                 chain.doFilter(request, response);
             } finally {
                 HttpServletResponse httpResponse =
                         (HttpServletResponse) response;
                 String result = String.valueOf(httpResponse.getStatus());
-                logger.debug("< {} : {}", location, result);
+                logger.debug("< {} {} : {}", httpRequest.getMethod(), location, result);
             }
         } else {
             chain.doFilter(request, response);

@@ -22,16 +22,19 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
-import org.apache.deltaspike.core.api.scope.ViewAccessScoped;
+import org.apache.deltaspike.core.api.scope.ConversationGroup;
+import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 
 /**
- * We set this to ViewAccessScoped so that it can retain the value accross
- * requests (original request, subsequent ajax requests)
+ * We set this to GroupedConversationScoped so that it can retain the value
+ * across requests (original request and subsequent ajax requests, eg
+ * filter and autocomplete, where the viewid may change).
  *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@ViewAccessScoped
+@GroupedConversationScoped
+@ConversationGroup(SlugHome.class)
 public class ProjectSlug implements Serializable {
     private static final long serialVersionUID = -2815530471069045162L;
     private String value;

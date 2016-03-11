@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.rpc;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.StatusCodeException;
 
 /**
  * @author Patrick Huang <a
@@ -31,7 +32,20 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public abstract class AbstractAsyncCallback<T> implements AsyncCallback<T> {
     @Override
     public void onFailure(Throwable caught) {
-        Log.error("failure", caught);
+        String className = getClass().getSimpleName();
+        if (caught instanceof StatusCodeException) {
+            StatusCodeException sce = (StatusCodeException) caught;
+            if (sce.getStatusCode() == 0) {
+                // This is typically caused by navigating away from
+                // the GWT page, which cancels any outstanding AJAX calls
+                // with code 0.
+                // See https://code.google.com/p/google-web-toolkit/issues/detail?id=2858
+                Log.info("GWT-RPC response code: 0 for " + "class " +
+                        className);
+                return;
+            }
+        }
+        Log.error("Async callback failure for class " + className, caught);
     }
 
 }

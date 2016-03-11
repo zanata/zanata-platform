@@ -17,14 +17,15 @@
 
     <h:form styleClass="l--push-bottom-0">
       <a4j:jsFunction name="documentReady"
+        limitRender="true"
         action="#{adminStatsAction.setDocumentReady(true)}"/>
 
-      <a4j:jsFunction name="loadUsers" render="userStats"/>
-      <a4j:jsFunction name="loadProjects" render="projectStats"/>
-      <a4j:jsFunction name="loadVersions" render="versionStats"/>
-      <a4j:jsFunction name="loadDocuments" render="documentStats"/>
-      <a4j:jsFunction name="loadTextFlows" render="textFlowStats"/>
-      <a4j:jsFunction name="loadTranslations" render="translationStats"/>
+      <a4j:jsFunction name="loadUsers" limitRender="true" render="userStats"/>
+      <a4j:jsFunction name="loadProjects" limitRender="true" render="projectStats"/>
+      <a4j:jsFunction name="loadVersions" limitRender="true" render="versionStats"/>
+      <a4j:jsFunction name="loadDocuments" limitRender="true" render="documentStats"/>
+      <a4j:jsFunction name="loadTextFlows" limitRender="true" render="textFlowStats"/>
+      <a4j:jsFunction name="loadTranslations" limitRender="true" render="translationStats"/>
     </h:form>
 
     <script type="text/javascript">

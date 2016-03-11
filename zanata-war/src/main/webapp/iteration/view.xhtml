@@ -134,6 +134,7 @@
     <a4j:jsFunction name="reloadLocale" status="languageTab-documentsLoader"
       onbegin="clearHTML('#{rich:clientId('languages-document_list')}');clearHTML('#{rich:clientId('language-label')}');zanata.loader.activate('#languagesTab-language-label-loader')"
       oncomplete="zanata.loader.deactivate('#languagesTab-language-label-loader'); zanata.panel.init()"
+      limitRender="true"
       render="languages-document_list, language-label, languages-export_options, languageTabDocumentSearch-pager, languageTabDocumentSearch-page-info, languageTabDocumentSearchBottom-pager, languageTabDocumentSearchBottom-page-info">
       <a4j:param name="val1" assignTo="#{versionHomeAction.selectedLocaleId}"/>
     </a4j:jsFunction>
@@ -141,6 +142,7 @@
     <a4j:jsFunction name="reloadDocument" status="documentsTab-languagesLoader"
       onbegin="clearHTML('#{rich:clientId('documents-language_list')}');clearHTML('#{rich:clientId('document-label')}');zanata.loader.activate('#documentsTab-document-label-loader')"
       oncomplete="zanata.loader.deactivate('#documentsTab-document-label-loader'); zanata.panel.init()"
+      limitRender="true"
       render="documents-language_list, document-label, documents-language-size, documentsTabLanguageSearch-pager, documentsTabLanguageSearch-page-info, documentsTabLanguageSearchBottom-pager, documentsTabLanguageSearchBottom-page-info"
       action="#{versionHomeAction.setSelectedDocumentId(projSlug, verSlug, docId)}">
       <a4j:param name="val1" assignTo="#{projSlug}"/>
@@ -149,12 +151,14 @@
     </a4j:jsFunction>
 
     <a4j:jsFunction name="refreshStatistics" status="statistic-loader"
-      oncomplete="refreshTooltip('version-page')" limitRender="true"
+      oncomplete="refreshTooltip('version-page')"
+      limitRender="true"
       render="overall_statistic, languages-language_form, languages-document_list, documents-document_form, documents-language_list, settings-document_form, languages-size, documents-size, language-label, document-label"
       action="#{versionHomeAction.resetPageData}"/>
 
     <a4j:jsFunction name="renderStatistics" status="statistic-loader"
       oncomplete="refreshTooltip('version-page'); updateStateFromUrl(); zanata.panel.init()"
+      limitRender="true"
       render="overall_statistic, languages-language_form, documents-document_form, settings-document_form"
       action="#{versionHomeAction.setPageRendered(true)}"/>
 
@@ -173,22 +177,26 @@
 
     <a4j:jsFunction name="onCopyTransComplete"
       action="#{copyTransAction.onComplete()}"
+      limitRender="true"
       render="copyTrans, copy-trans-buttons"
       oncomplete="refreshStatistics();"/>
 
     <a4j:jsFunction name="onCopyVersionComplete"
       action="#{versionHomeAction.copyVersionHandler.onComplete()}"
+      limitRender="true"
       render="copyVersion, version-info, version-more-actions, version-settings"
       oncomplete="refreshStatistics();"/>
 
     <a4j:jsFunction name="onMergeTransComplete"
       action="#{mergeTransAction.onComplete()}"
+      limitRender="true"
       render="mergeTrans, version-more-actions, merge-trans-buttons, selection-section"
       oncomplete="refreshStatistics();"/>
 
     <a4j:jsFunction name="renderSourceDocTypeSelector"
       oncomplete="setUploadSourceButtonEnabled(getSourceDocTypeSelection().val() != '')"
-      render="source-documentType-selection" limitRender="true">
+      limitRender="true"
+      render="source-documentType-selection">
       <a4j:param name="val1" assignTo="#{selectedSourceDocName}"/>
     </a4j:jsFunction>
 

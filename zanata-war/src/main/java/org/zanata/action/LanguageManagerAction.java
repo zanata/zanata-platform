@@ -38,6 +38,8 @@ import org.apache.commons.lang.StringUtils;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
@@ -110,6 +112,7 @@ public class LanguageManagerAction extends AbstractAutocomplete<HLocale>
     }
 
     @CheckRole("admin")
+    @Transactional
     public String save() {
         if (!isLanguageNameValid()) {
             return null; // not success

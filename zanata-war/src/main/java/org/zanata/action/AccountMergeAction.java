@@ -179,7 +179,7 @@ public class AccountMergeAction implements Serializable {
 
         @Override
         public String getRedirectToUrl() {
-            return "/profile/merge_account.seam";
+            return "/profile/merge_account.xhtml";
         }
     }
 }

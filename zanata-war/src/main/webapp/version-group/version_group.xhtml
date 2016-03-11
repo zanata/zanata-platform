@@ -79,6 +79,7 @@
     <a4j:jsFunction name="reloadLocale" status="languageTab-projectsLoader"
       onbegin="clearHTML('#{rich:clientId('languages-project_list')}');clearHTML('#{rich:clientId('language-label')}');zanata.loader.activate('#languagesTab-language-label-loader')"
       oncomplete="zanata.loader.deactivate('#languagesTab-language-label-loader'); zanata.panel.init()"
+      limitRender="true"
       render="languages-project_list, language-label, languageTabVersionFilter-pager, languageTabVersionFilter-page-info">
       <a4j:param name="val1" assignTo="#{versionGroupHomeAction.selectedLocaleId}"/>
     </a4j:jsFunction>
@@ -86,6 +87,7 @@
     <a4j:jsFunction name="reloadVersion" status="projectsTab-languagesLoader"
       onbegin="clearHTML('#{rich:clientId('projects-language_list')}');clearHTML('#{rich:clientId('project-label')}');zanata.loader.activate('#projectsTab-project-label-loader')"
       oncomplete="zanata.loader.deactivate('#projectsTab-project-label-loader'); zanata.panel.init()"
+      limitRender="true"
       render="projects-language_list, project-label, projectTabLanguageFilter-pager, projectTabLanguageFilter-page-info"
       action="#{versionGroupHomeAction.setSelectedVersionSlug(projSlug, verSlug)}">
       <a4j:param name="val1" assignTo="#{projSlug}"/>
@@ -94,9 +96,11 @@
 
     <a4j:jsFunction name="refreshStatisticsData" status="statistic-loader"
       action="#{versionGroupHomeAction.resetPageData}"
+      limitRender="true"
       render="overall_statistic,languages-language_form,languages-project_list,language-label,projects-project_form,projects-language_list,project-label,languages-size,projects-size"/>
 
     <a4j:jsFunction name="renderStatistics" status="statistic-loader"
+      limitRender="true"
       render="overall_statistic, languages-language_form, projects-project_form"
       action="#{versionGroupHomeAction.setPageRendered(true)}"
       oncomplete="updateStateFromUrl(); zanata.panel.init()"/>

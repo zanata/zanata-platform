@@ -49,7 +49,6 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.zanata.action.AuthenticatedAccountHome;
 import org.zanata.common.DocumentType;
 import org.zanata.file.GlobalDocumentId;
 import org.zanata.file.SourceDocumentUpload;

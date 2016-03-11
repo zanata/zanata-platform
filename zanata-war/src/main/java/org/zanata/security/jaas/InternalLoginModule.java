@@ -18,7 +18,6 @@ import javax.security.auth.spi.LoginModule;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.tuckey.web.filters.urlrewrite.Run;
 import org.zanata.security.SimpleGroup;
 import org.zanata.security.SimplePrincipal;
 import org.zanata.security.ZanataIdentity;

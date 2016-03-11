@@ -147,7 +147,8 @@ public class WebElementUtil {
 
     public static FluentWait<WebDriver> waitForSeconds(WebDriver webDriver,
             int durationInSec) {
-        return new WebDriverWait(webDriver, durationInSec).ignoring(
+        return new WebDriverLogWait(WebDriverFactory.INSTANCE, durationInSec)
+                .ignoring(
                         // TODO is ignoring this safe?
                         StaleElementReferenceException.class);
     }

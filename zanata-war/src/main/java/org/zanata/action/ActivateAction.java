@@ -29,6 +29,9 @@ import org.apache.commons.lang.time.DateUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.deltaspike.core.api.scope.GroupedConversation;
+import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.exception.KeyNotFoundException;
 import org.zanata.exception.ActivationLinkExpiredException;
@@ -42,12 +45,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Named("activate")
-@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
+@GroupedConversationScoped
 public class ActivateAction implements Serializable {
 
     private static final long serialVersionUID = -8079131168179421345L;
 
-    private static int LINK_ACTIVE_DAYS = 1;
+    private static final int LINK_ACTIVE_DAYS = 1;
+
+    @Inject
+    private GroupedConversation conversation;
 
     @Inject
     private AccountActivationKeyDAO accountActivationKeyDAO;
@@ -91,6 +97,7 @@ public class ActivateAction implements Serializable {
         return expiryDate.before(new Date());
     }
 
+    @Transactional
     public void activate() {
         new AbstractRunAsOperation() {
             public void execute() {
@@ -105,5 +112,6 @@ public class ActivateAction implements Serializable {
                 "Your account was successfully activated. You can now sign in.");
 
         urlUtil.redirectTo(urlUtil.signInPage());
+        conversation.close();
     }
 }

@@ -32,6 +32,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.exception.AuthorizationException;
@@ -228,6 +230,7 @@ public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
     /**
      * Save the permissions selections from permissionDialogData to the database.
      */
+    @Transactional
     public void saveSelections() {
         if (data == null) {
             log.error("Tried to save permissionDialogData but it is null");

@@ -22,6 +22,7 @@ package org.zanata.workflow;
 
 import org.openqa.selenium.support.PageFactory;
 import org.zanata.page.AbstractPage;
+import org.zanata.page.WebDriverFactory;
 import org.zanata.page.webtrans.EditorPage;
 import com.google.common.base.Preconditions;
 
@@ -34,13 +35,17 @@ public class BasicWorkFlow extends AbstractWebWorkFlow {
     public static final String PROJECT_VERSION_TEMPLATE = "iteration/view/%s/%s";
 
     public <P extends AbstractPage> P goToPage(String url, Class<P> pageClass) {
-        driver.get(toUrl(url));
-        return PageFactory.initElements(driver, pageClass);
+        return WebDriverFactory.INSTANCE.ignoringDswid(() -> {
+            driver.get(toUrl(url));
+            return PageFactory.initElements(driver, pageClass);
+        });
     }
 
     public <P extends AbstractPage> P goToUrl(String url, Class<P> pageClass) {
-        driver.navigate().to(url);
-        return PageFactory.initElements(driver, pageClass);
+        return WebDriverFactory.INSTANCE.ignoringDswid(() -> {
+            driver.navigate().to(url);
+            return PageFactory.initElements(driver, pageClass);
+        });
     }
 
     private String toUrl(String relativeUrl) {

@@ -1,5 +1,6 @@
 package org.zanata.security;
 
+import org.apache.deltaspike.core.spi.scope.window.WindowContext;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -74,6 +75,19 @@ public class ZanataIdentityTest extends ZanataJpaTest {
                 .use("notLoggedInEventEvent", event)
                 .use("session", getSession())
                 .use("serverPath", "/")
+                .use("windowContext", new WindowContext() {
+                    @Override
+                    public String getCurrentWindowId() {
+                        return "dummyWindowId";
+                    }
+                    @Override
+                    public void activateWindow(String windowId) {
+                    }
+                    @Override
+                    public boolean closeWindow(String windowId) {
+                        return false;
+                    }
+                })
                 .autowire(ZanataIdentity.class);
         seam.use("identity", identity);
         seam.use("permissionProviders", seam.autowire(SecurityFunctions.class))

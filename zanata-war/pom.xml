@@ -172,12 +172,8 @@
             <usedDependency>org.codehaus.jackson:jackson-xc</usedDependency>
             <!-- Used for email unit tests -->
             <usedDependency>org.jvnet.mock-javamail:mock-javamail</usedDependency>
-            <!-- Needed for urlrewrite.xml impl -->
-            <usedDependency>org.tuckey:urlrewritefilter</usedDependency>
             <!-- Need for test scope -->
             <usedDependency>${jdbc.groupId}:${jdbc.artifactId}</usedDependency>
-            <!-- Required for jboss startup at org.jboss.seam.init.Initialization.initComponentsFromXmlDocuments(Initialization.java:205) -->
-            <usedDependency>dom4j:dom4j</usedDependency>
             <!-- NB: Don't add anything without a comment explaining how the
                  dependency is used -->
           </usedDependencies>
@@ -205,8 +201,6 @@
             <ignoredResourcePattern>com/lowagie/text/pdf/fonts/cmap_info.txt</ignoredResourcePattern>
             <!-- drools and quartz -->
             <ignoredResourcePattern>build.properties</ignoredResourcePattern>
-            <!-- Seam -->
-            <ignoredResourcePattern>seam.properties</ignoredResourcePattern>
             <!-- jboss-metadata-common and zanata-adapter-xliff -->
             <ignoredResourcePattern>schema/xml.xsd</ignoredResourcePattern>
           </ignoredResourcePatterns>
@@ -486,9 +480,6 @@
           </includes>
           <excludes>
             <exclude>**/*_*.properties</exclude>
-            <exclude>**/components.properties</exclude>
-            <exclude>**/seam.properties</exclude>
-            <exclude>**/seam-deployment.properties</exclude>
             <exclude>**/eventservice.properties</exclude>
             <exclude>**/pluralforms.properties</exclude>
           </excludes>
@@ -1501,7 +1492,6 @@
       <version>20090211</version>
     </dependency>
 
-    <!-- NB: This must be before jboss-seam, because beanutils includes old commons collections classes -->
     <dependency>
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
@@ -1578,11 +1568,6 @@
     <dependency>
       <groupId>antlr</groupId>
       <artifactId>antlr</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>dom4j</groupId>
-      <artifactId>dom4j</artifactId>
     </dependency>
 
     <dependency>
@@ -1767,9 +1752,9 @@
     </dependency>
 
     <dependency>
-      <groupId>org.tuckey</groupId>
-      <artifactId>urlrewritefilter</artifactId>
-      <version>4.0.4</version>
+      <groupId>org.ocpsoft.rewrite</groupId>
+      <artifactId>rewrite-servlet</artifactId>
+      <version>${rewrite.version}</version>
     </dependency>
 
     <dependency>

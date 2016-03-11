@@ -86,7 +86,7 @@ public class LoginWorkFlow extends AbstractWebWorkFlow {
             .enterUsername(username)
             .enterPassword(password)
             .clickSignIn()
-            .waitForAMoment().until(new Predicate<WebDriver>() {
+            .waitForAMoment().withMessage("login").until(new Predicate<WebDriver>() {
             @Override
             public boolean apply(WebDriver driver) {
                 // only enable this if you temporarily disable implicit waits:

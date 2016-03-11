@@ -44,7 +44,6 @@ import java.io.Serializable;
  *
  */
 @Named("webtrans.gwt.DownloadAllFilesHandler")
-//@org.apache.deltaspike.core.api.scope.ViewAccessScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
 @RequestScoped
 @ActionHandlerFor(DownloadAllFilesAction.class)
 public class DownloadAllFilesHandler extends

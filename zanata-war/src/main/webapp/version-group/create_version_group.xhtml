@@ -7,7 +7,7 @@
   template="../WEB-INF/template/template.xhtml">
 
   <f:metadata>
-    <f:event type="preRenderView" listener="#{identity.checkPermission(versionGroupHome.instance, 'insert')}"/>
+    <f:event type="preRenderView" listener="#{versionGroupHome.createNew}"/>
   </f:metadata>
 
   <ui:define

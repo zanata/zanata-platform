@@ -18,7 +18,7 @@
     <ui:remove>
       <!-- This needs to appear before all other JavaScript, for accurate testing -->
     </ui:remove>
-    <h:outputText value="#{ajaxCounter.ajaxCounterScript}" escape="false" />
+    <h:outputText value="#{javaScriptTestHelper.headScript}" escape="false" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 
@@ -90,11 +90,9 @@
         <ul class="list--no-bullets message--global">
           <zanata:global-messages value="#{jsfMessages.globalMessagesList}"
             rendered="#{not facesContext.validationFailed and not empty jsfMessages.globalMessagesList}"/>
-          <zanata:global-messages value="#{conversationScopeMessages.getAndClearMessages()}"
-            rendered="#{conversationScopeMessages.hasMessages()}"/>
         </ul>
         <h:outputScript
-          rendered="#{conversationScopeMessages.hasMessages() or (not facesContext.validationFailed and not empty jsfMessages.globalMessagesList)}">
+          rendered="#{not facesContext.validationFailed and not empty jsfMessages.globalMessagesList}">
           startGlobalMessageTimer();
         </h:outputScript>
       </ui:fragment>
@@ -110,10 +108,5 @@
 
     <ui:include src="scripts.xhtml"/>
   </h:body>
-  <ui:remove>
-    <!-- The javascriptFinished script needs to appear after all other
-            JavaScript, for accurate testing: -->
-  </ui:remove>
-  <h:outputText value="#{ajaxCounter.javascriptFinishedScript}" escape="false" />
   </html>
 </f:view>

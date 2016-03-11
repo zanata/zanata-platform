@@ -52,12 +52,14 @@
 
   <h:form styleClass="l--push-bottom-0">
     <a4j:jsFunction name="refreshStatistics" status="statistic-loader"
+      limitRender="true"
       render="versions_form"
       oncomplete="refreshTooltip('#{rich:clientId('versions_form')}')"
       action="#{projectHomeAction.resetPageData}"/>
 
     <a4j:jsFunction name="renderStatistics" status="statistic-loader"
       oncomplete="refreshTooltip('#{rich:clientId('versions_form')}')"
+      limitRender="true"
       render="versions_form"
       action="#{projectHomeAction.setPageRendered(true)}"/>
 

@@ -20,7 +20,7 @@
  */
 package org.zanata.feature.misc;
 
-import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.subethamail.wiser.WiserMessage;
@@ -43,8 +43,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class ContactAdminTest extends ZanataTestCase {
 
-    @ClassRule
-    public static HasEmailRule emailRule = new HasEmailRule();
+    @Rule
+    public final HasEmailRule emailRule = new HasEmailRule();
 
     @Feature(summary = "The user can contact the site administrator",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 181717)

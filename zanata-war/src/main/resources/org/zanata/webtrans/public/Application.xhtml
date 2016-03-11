@@ -18,7 +18,7 @@
     <ui:remove>
       <!-- This needs to appear before all other JavaScript, for accurate testing -->
     </ui:remove>
-    <h:outputText value="#{ajaxCounter.ajaxCounterScript}" escape="false" />
+    <h:outputText value="#{javaScriptTestHelper.headScript}" escape="false" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>#{msgs['jsf.PageTitle']}</title>
     <link rel="shortcut icon" href="#{assets['img/logo/logo.ico']}"
@@ -86,11 +86,6 @@
   <ui:include src="../WEB-INF/template/scripts.xhtml"/>
 
   </h:body>
-  <ui:remove>
-    <!-- The javascriptFinished script needs to appear after all other
-            JavaScript, for accurate testing: -->
-  </ui:remove>
-  <h:outputText value="#{ajaxCounter.javascriptFinishedScript}" escape="false" />
   </html>
 </f:view>
 

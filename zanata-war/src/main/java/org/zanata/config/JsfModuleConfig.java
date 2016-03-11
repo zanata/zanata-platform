@@ -23,7 +23,7 @@ package org.zanata.config;
 import javax.enterprise.inject.Specializes;
 
 /**
- * Specilization of DeltaSpike's JSFModule config
+ * Specialization of DeltaSpike's JSFModule config
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Specializes
@@ -31,6 +31,8 @@ public class JsfModuleConfig extends
         org.apache.deltaspike.jsf.api.config.JsfModuleConfig {
     @Override
     public boolean isInitialRedirectEnabled() {
-        return false;
+        // without a valid dswid (added by the redirect), FacesMessages
+        // can't find the correct window scope
+        return true;
     }
 }

@@ -36,7 +36,7 @@
 
 <composite:implementation>
   <a id="#{cc.clientId}" class="#{cc.attrs.styleClass}"
-    href="#{request.contextPath}/profile/view/#{cc.attrs.person.account.username}">
+    href="#{request.contextPath}/profile/view/#{cc.attrs.person.account.username}#{dswidQuery}">
     <span class="w--r-1 bx--round l--push-right-quarter">
       <img src="#{gravatarServiceImpl.getUserImageUrl(48, cc.attrs.person.email)}" alt=""/>
     </span>

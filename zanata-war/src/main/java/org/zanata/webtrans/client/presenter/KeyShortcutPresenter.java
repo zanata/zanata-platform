@@ -229,7 +229,7 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay> {
                         }).build();
         register(cancelAttentionShortcut);
 
-        Log.info("creating attention timer");
+        Log.debug("creating attention timer");
         attentionTimer = timers.create(new TimedAction() {
             @Override
             public void run() {
@@ -276,7 +276,8 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay> {
             ensureActiveContexts().add(context);
         } else {
             if (context == ShortcutContext.Application) {
-                Log.warn("set global shortcut context inactive.");
+                // this may happen when activating modal context
+                Log.debug("disabling global shortcut context.");
             }
             ensureActiveContexts().remove(context);
         }

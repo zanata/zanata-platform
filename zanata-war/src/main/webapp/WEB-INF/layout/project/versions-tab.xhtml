@@ -14,25 +14,6 @@
     }
   }
 </script>
-<h:form>
-  <a4j:jsFunction name="clearVersionStats"
-    action="#{projectHomeAction.clearVersionStats(versionSlug)}">
-    <a4j:param name="val1" assignTo="#{versionSlug}"/>
-  </a4j:jsFunction>
-
-  <a4j:jsFunction name="renderVersionInfo" limitRender="true"
-    render="#{versionInfoId}">
-    <a4j:param name="val1" assignTo="#{versionInfoId}"/>
-  </a4j:jsFunction>
-
-  <a4j:jsFunction name="cancelCopyVersion" limitRender="true"
-    action="#{projectHomeAction.cancelCopyVersion(projectSlug, versionSlug)}"
-    render="poll, version-info, messages">
-    <a4j:param name="val1" assignTo="#{projectSlug}"/>
-    <a4j:param name="val2" assignTo="#{versionSlug}"/>
-  </a4j:jsFunction>
-</h:form>
-
 <div class="panel">
 <div class="panel__header">
   <div class="panel__header__actions">
@@ -85,6 +66,23 @@
 </a4j:status>
 
 <h:form id="versions_form" styleClass="l--push-bottom-1">
+  <a4j:jsFunction name="clearVersionStats"
+    action="#{projectHomeAction.clearVersionStats(versionSlug)}">
+    <a4j:param name="val1" assignTo="#{versionSlug}"/>
+  </a4j:jsFunction>
+
+  <a4j:jsFunction name="renderComponent" limitRender="true"
+    render="#{componentId}">
+    <a4j:param name="val1" assignTo="#{componentId}"/>
+  </a4j:jsFunction>
+
+  <a4j:jsFunction name="cancelCopyVersion" limitRender="true"
+    action="#{projectHomeAction.cancelCopyVersion(projectSlug, versionSlug)}"
+    render="poll, version-info, messages">
+    <a4j:param name="val1" assignTo="#{projectSlug}"/>
+    <a4j:param name="val2" assignTo="#{versionSlug}"/>
+  </a4j:jsFunction>
+
   <h:panelGroup layout="block"  styleClass="l--pad-all-half"
     rendered="#{empty projectHomeAction.projectVersions}">
     <p class="txt--meta">#{msgs['jsf.NoVersions']}</p>
@@ -123,7 +121,7 @@
           <h:panelGroup id="copy-version-info">
             <h:outputScript
               rendered="#{not projectHomeAction.isVersionCopying(version.project.slug, version.slug)}">
-              renderVersionInfo('#{rich:clientId('version-info')}');
+              renderComponent('#{rich:clientId('version-info')}');
             </h:outputScript>
           </h:panelGroup>
 
@@ -157,7 +155,7 @@
                     var="hLocale">
                     <li>
                       <h:outputLink styleClass="i__item--right"
-                        value="#{request.contextPath}/webtrans/Application.seam">
+                        value="#{request.contextPath}/webtrans/Application.xhtml">
                         <f:param name="project"
                           value="#{projectHomeAction.slug}"/>
                         <f:param name="iteration" value="#{version.slug}"/>

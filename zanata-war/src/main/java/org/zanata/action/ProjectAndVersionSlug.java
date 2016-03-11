@@ -22,13 +22,15 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
-import org.apache.deltaspike.core.api.scope.ViewAccessScoped;
+import org.apache.deltaspike.core.api.scope.ConversationGroup;
+import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 
 /**
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@ViewAccessScoped
+@GroupedConversationScoped
+@ConversationGroup(SlugHome.class)
 public class ProjectAndVersionSlug implements Serializable {
     private static final long serialVersionUID = 5968985635386162165L;
     private String projectSlug;

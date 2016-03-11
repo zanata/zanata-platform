@@ -33,6 +33,7 @@ import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
 
@@ -83,25 +84,25 @@ public class VersionGroupUrlTest extends ZanataTestCase {
     private void testLanguageTabClick(VersionGroupPage versionGroupPage) {
         versionGroupPage.clickLanguagesTab();
         assertThat(versionGroupPage.getUrl(),
-                endsWith("/version-group/view/test-group/languages"));
+                containsString("/version-group/view/test-group/languages"));
     }
 
     private void testProjectTabClick(VersionGroupPage versionGroupPage) {
         versionGroupPage.clickProjectsTab();
         assertThat(versionGroupPage.getUrl(),
-                endsWith("/version-group/view/test-group/projects"));
+                containsString("/version-group/view/test-group/projects"));
     }
 
     private void testMaintainersTabClick(VersionGroupPage versionGroupPage) {
         versionGroupPage.clickMaintainersTab();
         assertThat(versionGroupPage.getUrl(),
-                endsWith("/version-group/view/test-group/maintainers"));
+                containsString("/version-group/view/test-group/maintainers"));
     }
 
     private void testSettingsTabClick(VersionGroupPage versionGroupPage) {
         versionGroupPage.clickSettingsTab();
         assertThat(versionGroupPage.getUrl(),
-                endsWith("/version-group/view/test-group/settings"));
+                containsString("/version-group/view/test-group/settings"));
     }
 
     private VersionGroupPage createVersionGroup() {

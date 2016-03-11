@@ -45,40 +45,48 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class HasEmailRule extends ExternalResource {
+    private static final Object wiserLock = new Object();
     private volatile static Wiser wiser;
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     @Override
     protected void before() throws Throwable {
         super.before();
-        if (HasEmailRule.wiser == null) {
-            String port = PropertiesHolder.getProperty("smtp.port");
-            int portNum = Integer.parseInt(port);
-            Wiser w = new Wiser(portNum);
-            w.getServer().setBindAddress(InetAddress.getByName("127.0.0.1"));
-            try {
-                w.start();
-            } catch (RuntimeException e) {
-                if (Throwables.getRootCause(e) instanceof BindException) {
-                    String processInfo =
-                            ProcessPortInfo.getPortProcessInfo(portNum);
-                    log.error("The following process is already listening " +
-                            "to port {}:\n{}", portNum, processInfo);
-                    throw new RuntimeException("Error binding port " +
-                            portNum + ". See log for more info.", e);
+        synchronized (wiserLock) {
+            if (HasEmailRule.wiser == null) {
+                String port = PropertiesHolder.getProperty("smtp.port");
+                int portNum = Integer.parseInt(port);
+                Wiser w = new Wiser(portNum);
+                w.getServer().setBindAddress(InetAddress.getByName("127.0.0.1"));
+                try {
+                    w.start();
+                } catch (RuntimeException e) {
+                    if (Throwables.getRootCause(e) instanceof BindException) {
+                        String processInfo =
+                                ProcessPortInfo.getPortProcessInfo(portNum);
+                        log.error("The following process is already listening " +
+                                "to port {}:\n{}", portNum, processInfo);
+                        throw new RuntimeException("Error binding port " +
+                                portNum + ". See log for more info.", e);
+                    }
                 }
+                HasEmailRule.wiser = w;
+                // NB we never call wiser.stop() because we want the email
+                // server to stay running for all tests in this VM
             }
-            HasEmailRule.wiser = w;
-            // NB we never call wiser.stop() because we want the email
-            // server to stay running for all tests in this VM
         }
+        clearQueue();
     }
 
     @Override
     protected void after() {
+        clearQueue();
+        super.after();
+    }
+
+    private void clearQueue() {
         log.info("Clearing email queue");
         wiser.getMessages().clear();
-        super.after();
     }
 
     public List<WiserMessage> getMessages() {
