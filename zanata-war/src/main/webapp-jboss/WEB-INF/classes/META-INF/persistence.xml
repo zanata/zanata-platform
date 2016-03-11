@@ -56,6 +56,8 @@
 
     <!-- TODO This may be removed once the class files are packaged in the zanata-model jar as intended
      Otherwise, hibernate will scan the whole war file and dependency jars -->
+    <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     <properties>
@@ -132,7 +134,9 @@
            See http://stackoverflow.com/a/8701914
       -->
       <property name="hibernate.cache.region.factory_class"
-        value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory" />
+        value="org.hibernate.cache.infinispan.JndiInfinispanRegionFactory" />
+      <property name="hibernate.cache.infinispan.cachemanager"
+        value="java:jboss/infinispan/container/hibernate" />
       <property name="hibernate.cache.region_prefix" value="" />
 
       <!-- Default EHcache config location -->

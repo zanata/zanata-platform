@@ -56,7 +56,7 @@ import org.zanata.util.GlossaryUtil;
  **/
 @Entity
 @EntityListeners({ HGlossaryEntry.EntityListener.class })
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 @Indexed
 @Setter
 @EqualsAndHashCode(callSuper = true, doNotUseGetters = true,

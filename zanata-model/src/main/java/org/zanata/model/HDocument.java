@@ -84,7 +84,7 @@ import org.zanata.util.Contexts;
  */
 @Entity
 @EntityListeners({HDocument.EntityListener.class})
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 @TypeDef(name = "contentType", typeClass = ContentTypeType.class)
 @Setter
 @NoArgsConstructor

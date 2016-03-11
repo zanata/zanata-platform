@@ -51,7 +51,7 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @EntityListeners({ HSimpleComment.EntityListener.class })
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 @BatchSize(size = 20)
 @Setter
 @NoArgsConstructor

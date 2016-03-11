@@ -94,7 +94,7 @@ import org.zanata.model.type.TranslationSourceTypeType;
  */
 @Entity
 @EntityListeners({ HTextFlowTarget.EntityListener.class })
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 @TypeDefs({
     @TypeDef(name = "sourceType", typeClass = TranslationSourceTypeType.class),
     @TypeDef(name = "entityType", typeClass = EntityTypeType.class)

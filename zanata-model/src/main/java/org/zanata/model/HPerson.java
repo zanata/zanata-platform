@@ -55,7 +55,7 @@ import org.zanata.rest.dto.Person;
  *
  */
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 @Setter
 @EqualsAndHashCode(callSuper = true, of = { "id", "email", "name" })
 @ToString(callSuper = true, of = "name")
