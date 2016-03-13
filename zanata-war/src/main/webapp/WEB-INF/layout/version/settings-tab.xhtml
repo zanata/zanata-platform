@@ -144,8 +144,8 @@
         rendered="#{identity.hasPermission(versionHome.instance, 'mark-obsolete')}">
         <h:panelGroup layout="block"  styleClass="g__item w--1-2"
           rendered="#{versionHome.instance.status ne 'OBSOLETE'}">
-          <a href="javascript:void(0)" class="button--danger l--push-bottom-half"
-            onclick="zanata.modal.show('#delete-confirmation-modal')">
+          <a href="#" class="button--danger l--push-bottom-half"
+            data-toggle="modal" data-target="#delete-confirmation-modal">
             #{msgs['jsf.iteration.DeleteThisVersion']}
             <i class="i--left i--trash"></i>
           </a>
