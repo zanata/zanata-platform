@@ -68,16 +68,16 @@
   <!-- Placed at the end of the list content so that it runs when all the
        content from ajax is present in the DOM -->
   <script type="text/javascript">
-  //<![CDATA[
-    // refresh checkbox facades on language lists
-    if (typeof zanata != 'undefined') {
+    //<![CDATA[
+    jQuery(document).ready(function () {
+      // refresh checkbox facades on language lists
       zanata.form.appendCheckboxes(jQuery('##{id}').element);
-    }
-    // ensure active locales filter is applied correctly after items are refreshed
-    filterLocalesFromTextBox("[id='#{component.namingContainer.clientId}:#{id}-filter-input']", '##{id}-list');
-    // Triggers appropriate button visibility.
-    jQuery('##{id}-list').change();
-  //]]>
+      // ensure active locales filter is applied correctly after items are refreshed
+      filterLocalesFromTextBox("[id='#{component.namingContainer.clientId}:#{id}-filter-input']", '##{id}-list');
+      // Triggers appropriate button visibility.
+      jQuery('##{id}-list').change();
+    });
+    //]]>
   </script>
 
 </ui:composition>
