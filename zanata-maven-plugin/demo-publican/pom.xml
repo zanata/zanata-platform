@@ -14,7 +14,7 @@
       <plugin>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-maven-plugin</artifactId>
-        <version>3.8.0</version>
+        <version>3.8.1</version>
         <configuration>
           <srcDir>${zanata.srcDir}</srcDir>
           <transDir>${zanata.transDir}</transDir>
