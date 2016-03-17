@@ -365,6 +365,11 @@
                 <exclude>net.jcip:jcip-annotations</exclude>
                 <exclude>com.google.code.findbugs:jsr305</exclude>
 
+                <!-- use org.glassfish.jaxb:jaxb-core -->
+                <exclude>com.sun.xml.bind:jaxb-core</exclude>
+                <!-- use org.glassfish.jaxb:jaxb-runtime -->
+                <exclude>com.sun.xml.bind:jaxb-impl</exclude>
+
                 <!-- use org.jboss.spec.javax.servlet -->
                 <exclude>javax.servlet:servlet-api</exclude>
                 <exclude>javax.servlet:javax.servlet-api</exclude>
