@@ -1341,11 +1341,6 @@
         <artifactId>functionaljava</artifactId>
         <version>3.1</version>
       </dependency>
-      <!--
-        Fedora now has com.io7m.xom:xom 1.2.10,
-        so just use the one that defined in parent
-      -->
-     
       <dependency>
         <!-- New group Id -->
         <groupId>com.io7m.xom</groupId>
