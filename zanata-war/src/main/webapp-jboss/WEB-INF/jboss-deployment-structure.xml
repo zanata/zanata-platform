@@ -38,6 +38,8 @@
       <module name="org.antlr" />
       <module name="org.apache.commons.logging" />
       <module name="org.apache.log4j" />
+      <!-- dom4j needed for wildfly (WFLY-5549)  -->
+      <module name="org.dom4j" />
       <module name="org.hibernate" />
       <module name="org.hibernate.commons-annotations" />
       <module name="org.hibernate.validator" />
