@@ -103,8 +103,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         consoleInteractor = new ConsoleInteractorImpl(opts);
     }
 
-    @VisibleForTesting
-    protected RawPushCommand(PushOptions opts, RestClientFactory clientFactory,
+    public RawPushCommand(PushOptions opts, RestClientFactory clientFactory,
         ConsoleInteractor console) {
         super(opts, clientFactory);
         client = getClientFactory().getFileResourceClient();
@@ -188,7 +187,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
      * @param acceptedTypes
      * @param inputFileTypes
      */
-    private Map<DocumentType, Set<String>> validateFileTypes(
+    public Map<DocumentType, Set<String>> validateFileTypes(
             List<DocumentType> acceptedTypes, List<String> inputFileTypes) {
 
         Map<DocumentType, Set<String>> filteredFileTypes = new HashMap<>();

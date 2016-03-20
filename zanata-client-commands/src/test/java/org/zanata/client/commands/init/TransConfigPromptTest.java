@@ -109,4 +109,29 @@ public class TransConfigPromptTest {
 
         assertThat(opts.getTransDir(), Matchers.equalTo(new File("po")));
     }
+
+    @Test
+    public void canHandleFileTypeProjectAndDisplayTransFiles() throws Exception {
+        ConsoleInteractor console =
+                MockConsoleInteractor.predefineAnswers(".", "y");
+        opts.setProjectType("file");
+        opts.setProj("about-fedora");
+        opts.setProjectVersion("master");
+        // provides locale list
+        LocaleList locales = new LocaleList();
+        locales.add(new LocaleMapping("de"));
+        opts.setLocaleMapList(locales);
+        prompt =
+                new TransConfigPrompt(console, opts, Sets.newHashSet("a.txt",
+                        "b.txt"));
+
+        prompt = prompt.promptUser();
+
+        assertThat(opts.getTransDir(), Matchers.equalTo(new File(".")));
+        List<String> capturedPrompts =
+                MockConsoleInteractor.getCapturedPrompts(console);
+        assertThat(capturedPrompts, Matchers.hasItems(
+                "        ./de/a.txt",
+                "        ./de/b.txt"));
+    }
 }

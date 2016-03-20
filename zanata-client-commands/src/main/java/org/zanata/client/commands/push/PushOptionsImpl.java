@@ -189,7 +189,7 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
         return fileTypes;
     }
 
-    private static final String fileTypeHelp = "File types to locate and transmit to the server. \n" +
+    public static final String fileTypeHelp = "File types to locate and transmit to the server. \n" +
         "Default file extension will be used unless it is being specified. \n" +
         "Pattern: TYPE[extension;extension],TYPE[extension] \n" +
         "Supported types: \n" +
@@ -206,7 +206,7 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
         "\t PROPERTIES[properties] \n" +
         "\t PROPERTIES_UTF8[properties] \n" +
         "\t XLIFF[xml] \n" +
-        "Usage --file-types \"XML_DOCUMENT_TYPE_DEFINITION,IDML[txt]\"";
+        "Usage --file-types \"XML_DOCUMENT_TYPE_DEFINITION,PLAIN_TEXT[md;txt]\"";
 
     @Option(name = "--file-types", metaVar = "TYPES",
             usage = fileTypeHelp)

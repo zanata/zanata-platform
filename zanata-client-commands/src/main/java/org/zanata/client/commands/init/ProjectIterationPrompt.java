@@ -25,15 +25,13 @@ import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Confirmat
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Hint;
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
 import static org.zanata.client.commands.ConsoleInteractorImpl.AnswerValidatorImpl.expect;
-import static org.zanata.client.commands.Messages._;
+import static org.zanata.client.commands.Messages.get;
 
 import java.util.List;
 
 import org.zanata.client.commands.ConsoleInteractor;
 import org.zanata.client.commands.ConsoleInteractorImpl;
 import org.zanata.common.EntityStatus;
-import org.zanata.rest.client.ProjectClient;
-import org.zanata.rest.client.ProjectIterationClient;
 import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
@@ -41,7 +39,6 @@ import org.zanata.rest.dto.ProjectIteration;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
-import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.sun.jersey.api.client.UniformInterfaceException;
@@ -63,12 +60,12 @@ class ProjectIterationPrompt {
     }
 
     public void selectOrCreateNewVersion() {
-        consoleInteractor.printfln(_("do.you.want.to"));
+        consoleInteractor.printfln(get("do.you.want.to"));
         consoleInteractor.printf("1)")
-                .printfln(Hint, _("project.version.select"));
+                .printfln(Hint, get("project.version.select"));
         consoleInteractor.printf("2)")
-                .printfln(Hint, _("project.version.create"));
-        consoleInteractor.printf(Question, _("select.or.create"));
+                .printfln(Hint, get("project.version.create"));
+        consoleInteractor.printf(Question, get("select.or.create"));
         String answer = consoleInteractor.expectAnswerWithRetry(
                 expect("1", "2"));
         if (answer.equals("1")) {
@@ -81,7 +78,7 @@ class ProjectIterationPrompt {
     @VisibleForTesting
     protected void selectVersion() {
         Project project = clientFactory.getProjectClient(opts.getProj()).get();
-        consoleInteractor.printfln(_("available.versions"), project.getName());
+        consoleInteractor.printfln(get("available.versions"), project.getName());
         int oneBasedIndex = 1;
         List<String> versionIndexes = Lists.newArrayList();
         Iterable<ProjectIteration> activeIterations = Iterables
@@ -94,7 +91,7 @@ class ProjectIterationPrompt {
                     .printfln(Hint, iteration.getId());
             oneBasedIndex++;
         }
-        consoleInteractor.printf(Question, _("select.version.prompt"));
+        consoleInteractor.printf(Question, get("select.version.prompt"));
         String selection =
                 consoleInteractor.expectAnswerWithRetry(expect(versionIndexes));
         ProjectIteration projectIteration = Iterables.get(activeIterations,
@@ -113,7 +110,7 @@ class ProjectIterationPrompt {
         } else {
             String projectTypes =
                     Joiner.on(", ").join(ProjectPrompt.PROJECT_TYPE_LIST);
-            consoleInteractor.printfln(Question, _("project.type.prompt"),
+            consoleInteractor.printfln(Question, get("project.type.prompt"),
                     projectTypes);
             return consoleInteractor.expectAnswerWithRetry(
                     ConsoleInteractorImpl.AnswerValidatorImpl
@@ -123,7 +120,7 @@ class ProjectIterationPrompt {
 
     @VisibleForTesting
     protected void createNewVersion() {
-        consoleInteractor.printfln(Question, _("project.version.id.prompt"));
+        consoleInteractor.printfln(Question, get("project.version.id.prompt"));
         String versionId = consoleInteractor.expectAnyAnswer();
         ProjectIteration iteration = new ProjectIteration(versionId);
         iteration.setProjectType(opts.getProjectType());
@@ -135,7 +132,7 @@ class ProjectIterationPrompt {
             createNewVersion();
         }
         opts.setProjectVersion(versionId);
-        consoleInteractor.printfln(Confirmation, _("project.version.created"));
+        consoleInteractor.printfln(Confirmation, get("project.version.created"));
 
     }
 

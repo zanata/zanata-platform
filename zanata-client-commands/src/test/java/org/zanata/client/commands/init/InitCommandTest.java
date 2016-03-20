@@ -100,7 +100,7 @@ public class InitCommandTest {
             throws Exception {
         expectException.expect(RuntimeException.class);
         expectException.expectMessage(Matchers.equalTo(Messages
-                ._("server.incompatible")));
+                .get("server.incompatible")));
 
         when(clientFactory.getServerVersionInfo()).thenReturn(
                 new VersionInfo("3.3.1", "unknown", "unknown"));
