@@ -1,3 +1,14 @@
+## 3.8.2
+
+##### Bug fixes
+ * [ZNTA-519](https://zanata.atlassian.net/browse/ZNTA-519) - Unable to push the POT file beginning from the underscore (_) in the filename
+ * [ZNTA-843](https://zanata.atlassian.net/browse/ZNTA-843) - Improve/fix 0install bug
+ * [ZNTA-901](https://zanata.atlassian.net/browse/ZNTA-901) - txw2 should be included in zanata-cli 0install
+ * [ZNTA-930](https://zanata.atlassian.net/browse/ZNTA-930) - Zanata init command fails when specifying &quot;file&quot; project type
+ * [ZNTA-937](https://zanata.atlassian.net/browse/ZNTA-937) - zanata-client: need better error message for unexpected html response
+
+-----------------------
+
 ## 3.8.1
 
 ##### Changes
