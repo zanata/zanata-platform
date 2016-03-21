@@ -80,7 +80,10 @@ public class EditVersionLanguagesTest extends ZanataTestCase {
         versionLanguagesTab = versionLanguagesTab
                 .gotoSettingsTab()
                 .gotoSettingsLanguagesTab()
-                .enterSearchLanguage("en-US")
+                .filterDisabledLanguages("nonexistentLocale")
+                .expectAvailableLocaleListCount(0)
+                .filterDisabledLanguages("en-US")
+                .expectAvailableLocaleListCount(1)
                 .addLocale("en-US");
         versionLanguagesTab.expectNotification("Language \"en-US\" has been " +
                 "enabled.");
@@ -92,5 +95,7 @@ public class EditVersionLanguagesTest extends ZanataTestCase {
         assertThat(enabledLocaleList)
                 .contains("en-US", "fr", "hi", "pl")
                 .as("The languages are available to translate");
+        versionLanguagesTab.filterEnabledLanguages("en-US")
+                .expectEnabledLocaleListCount(1);
     }
 }
