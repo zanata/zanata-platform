@@ -65,25 +65,22 @@ public class VersionLanguagesPage extends VersionBasePage {
 
     public VersionLanguagesPage clickLocale(final String locale) {
         log.info("Click locale {}", locale);
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                new BasePage(getDriver()).waitForPageSilence();
-                for (WebElement localeRow : getLanguageTabLocaleList()) {
-                    // Top <a>
-                    WebElement link = localeRow
-                            .findElement(By.xpath(".//a"));
-                    if (link.findElement(languageItemTitle)
-                            .getText().equals(locale)) {
-                        // Clicking too fast can often confuse
-                        // the button:
-                        slightPause();
-                        clickLinkAfterAnimation(link);
-                        return true;
-                    }
+        waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
+            new BasePage(getDriver()).waitForPageSilence();
+            for (WebElement localeRow : getLanguageTabLocaleList()) {
+                // Top <a>
+                WebElement link = localeRow
+                        .findElement(By.xpath(".//a"));
+                if (link.findElement(languageItemTitle)
+                        .getText().equals(locale)) {
+                    // Clicking too fast can often confuse
+                    // the button:
+                    slightPause();
+                    clickLinkAfterAnimation(link);
+                    return true;
                 }
-                return false;
             }
+            return false;
         });
 
         return new VersionLanguagesPage(getDriver());
@@ -92,19 +89,16 @@ public class VersionLanguagesPage extends VersionBasePage {
     public EditorPage clickDocument(final String docName) {
         log.info("Click document {}", docName);
         WebElement document = waitForAMoment()
-                .until(new Function<WebDriver, WebElement>() {
-                    @Override
-                    public WebElement apply(WebDriver input) {
-                        for (WebElement document : getLanguageTabDocumentList()) {
-                            if (existingElement(document,
-                                    documentListItemTitle)
-                                    .getText().equals(docName)) {
-                                return document
-                                        .findElement(documentListItemTitle);
-                            }
+                .until((Function<WebDriver, WebElement>) webDriver -> {
+                    for (WebElement document1 : getLanguageTabDocumentList()) {
+                        if (existingElement(document1,
+                                documentListItemTitle)
+                                .getText().equals(docName)) {
+                            return document1
+                                    .findElement(documentListItemTitle);
                         }
-                        return null;
                     }
+                    return null;
                 });
         clickLinkAfterAnimation(document);
         return new EditorPage(getDriver());
@@ -121,25 +115,23 @@ public class VersionLanguagesPage extends VersionBasePage {
         log.info("Query stats for {}", localeId);
         gotoLanguageTab();
 
-        return refreshPageUntil(this, new Function<WebDriver, String>() {
-            @Override
-            public String apply(WebDriver webDriver) {
-                String figure = null;
+        return refreshPageUntil(this,
+                (Function<WebDriver, String>) webDriver -> {
+                    String figure = null;
 
-                List<WebElement> localeList = getLanguageTabLocaleList();
-                for (WebElement locale : localeList) {
-                    if (locale.findElement(languageItemTitle)
-                            .getText()
-                            .equals(localeId)) {
-                        figure = locale.findElement(languageItemStats)
-                                .getText();
-                        break;
+                    List<WebElement> localeList = getLanguageTabLocaleList();
+                    for (WebElement locale : localeList) {
+                        if (locale.findElement(languageItemTitle)
+                                .getText()
+                                .equals(localeId)) {
+                            figure = locale.findElement(languageItemStats)
+                                    .getText();
+                            break;
+                        }
                     }
-                }
-                Preconditions.checkState(figure != null,
-                        "can not find statistics for locale: %s", localeId);
-                return figure;
-            }
-        }, "Find the stats for locale " + localeId);
+                    Preconditions.checkState(figure != null,
+                            "can not find statistics for locale: %s", localeId);
+                    return figure;
+                }, "Find the stats for locale " + localeId);
     }
 }

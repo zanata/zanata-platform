@@ -86,21 +86,20 @@ public class LoginWorkFlow extends AbstractWebWorkFlow {
             .enterUsername(username)
             .enterPassword(password)
             .clickSignIn()
-            .waitForAMoment().withMessage("login").until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver driver) {
-                // only enable this if you temporarily disable implicit waits:
-                // fail-fast logic
-//                List<WebElement> messages =
-//                        driver.findElements(By.className("message--danger"));
-//                if (messages.size() > 0 && messages.get(0)
-//                        .getText().contains(" Login failed ")) {
-//                    throw new IllegalAccessError("Login failed");
-//                }
-                driver.findElement(By.id("user--avatar"));
-                return true;
-            }
-        });
+            .waitForAMoment().withMessage("login").until(
+                (Predicate<WebDriver>) driver1 -> {
+                    // only enable this if you temporarily disable implicit waits:
+                    // fail-fast logic
+                    // TODO can we enable this now?
+//                    List<WebElement> messages =
+//                            driver.findElements(By.className("message--danger"));
+//                    if (messages.size() > 0 && messages.get(0)
+//                            .getText().contains(" Login failed ")) {
+//                        throw new IllegalAccessError("Login failed");
+//                    }
+                    driver1.findElement(By.id("user--avatar"));
+                    return true;
+                });
     }
 
 }

@@ -93,17 +93,14 @@ public class ClientWorkFlow {
                 Lists.newArrayList(Splitter.on(" ").split(command));
 
         SimpleTimeLimiter timeLimiter = new SimpleTimeLimiter();
-        Callable<List<String>> work = new Callable<List<String>>() {
-            @Override
-            public List<String> call() throws Exception {
-                Process process =
-                        ClientWorkFlow.invokeClient(workingDirectory,
-                                commands);
-                process.waitFor();
-                List<String> output = ClientWorkFlow.getOutput(process);
-                logOutputLines(output);
-                return output;
-            }
+        Callable<List<String>> work = () -> {
+            Process process =
+                    ClientWorkFlow.invokeClient(workingDirectory,
+                            commands);
+            process.waitFor();
+            List<String> output = ClientWorkFlow.getOutput(process);
+            logOutputLines(output);
+            return output;
         };
         try {
             return timeLimiter
@@ -115,12 +112,8 @@ public class ClientWorkFlow {
 
     public boolean isPushSuccessful(List<String> output) {
         Optional<String> successOutput =
-                Iterables.tryFind(output, new Predicate<String>() {
-                    @Override
-                    public boolean apply(String input) {
-                        return input.contains("BUILD SUCCESS");
-                    }
-                });
+                Iterables.tryFind(output,
+                        input -> input.contains("BUILD SUCCESS"));
         return successOutput.isPresent();
     }
 

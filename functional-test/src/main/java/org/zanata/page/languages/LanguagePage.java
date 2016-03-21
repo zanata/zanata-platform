@@ -179,23 +179,20 @@ public class LanguagePage extends BasePage {
 
         for (final TeamPermission permission : permissionToAdd) {
             log.info("Set checked as {}", permission.name());
-            waitForAMoment().until(new Predicate<WebDriver>() {
-                @Override
-                public boolean apply(@Nullable WebDriver webDriver) {
-                    WebElement inputDiv = getSearchedForUser(username)
-                        .findElement(By.className("list--horizontal"))
-                        .findElements(By.tagName("li"))
-                        .get(permission.columnIndex)
-                        .findElement(By.className("form__checkbox"));
-                    WebElement input =
-                            inputDiv.findElement(By.tagName("input"));
-                    Checkbox checkbox = Checkbox.of(input);
-                    if (!checkbox.checked()) {
-                        inputDiv.click();
-                        waitForPageSilence();
-                    }
-                    return checkbox.checked();
+            waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
+                WebElement inputDiv = getSearchedForUser(username)
+                    .findElement(By.className("list--horizontal"))
+                    .findElements(By.tagName("li"))
+                    .get(permission.columnIndex)
+                    .findElement(By.className("form__checkbox"));
+                WebElement input =
+                        inputDiv.findElement(By.tagName("input"));
+                Checkbox checkbox = Checkbox.of(input);
+                if (!checkbox.checked()) {
+                    inputDiv.click();
+                    waitForPageSilence();
                 }
+                return checkbox.checked();
             });
         }
         return new LanguagePage(getDriver());
@@ -203,34 +200,29 @@ public class LanguagePage extends BasePage {
 
     private LanguagePage confirmAdded(final String personUsername) {
         // we need to wait for the page to refresh
-        refreshPageUntil(this, new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver driver) {
-                return getMemberUsernames().contains(personUsername);
-            }
+        refreshPageUntil(this, (Predicate<WebDriver>) driver -> {
+            return getMemberUsernames().contains(personUsername);
         }, "Wait for names to contain " + personUsername);
         return new LanguagePage(getDriver());
     }
 
 
     private WebElement getSearchedForUser(final String username) {
-        return waitForAMoment().until(new Function<WebDriver, WebElement>() {
-            @Override
-            public WebElement apply(WebDriver input) {
-                WebElement list = readyElement(personTable)
-                    .findElement(By.className("list--slat"));
-                List<WebElement> rows = list
-                    .findElements(By.className("txt--meta"));
-                rows.addAll(list
-                    .findElements(By.className("txt--mini")));
-                for (WebElement row : rows) {
-                    if (getListItemUsername(row).equals(username)) {
-                        return row;
+        return waitForAMoment().until(
+                (Function<WebDriver, WebElement>) webDriver -> {
+                    WebElement list = readyElement(personTable)
+                        .findElement(By.className("list--slat"));
+                    List<WebElement> rows = list
+                        .findElements(By.className("txt--meta"));
+                    rows.addAll(list
+                        .findElements(By.className("txt--mini")));
+                    for (WebElement row : rows) {
+                        if (getListItemUsername(row).equals(username)) {
+                            return row;
+                        }
                     }
-                }
-                return null;
-            }
-        });
+                    return null;
+                });
     }
 
     private String getListItemUsername(WebElement listItem) {
