@@ -41,10 +41,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 public class ProjectLanguagesTab extends ProjectBasePage {
 
-    private By activeLocales = By.id("active-locales-list");
-    private By inactiveLocales = By.id("available-locales-list");
+    private By activeLocales = By.id("activeLocales-list");
+    private By inactiveLocales = By.id("availableLocales-list");
     private By disabledLocalesFilter = By.id(
-            "settings-languages-form:available-locales-filter-input");
+            "settings-languages-form:availableLocales-filter-input");
 
     public ProjectLanguagesTab(WebDriver driver) {
         super(driver);

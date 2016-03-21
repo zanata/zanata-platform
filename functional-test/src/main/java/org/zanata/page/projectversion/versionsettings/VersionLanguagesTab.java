@@ -43,9 +43,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class VersionLanguagesTab extends VersionBasePage {
 
     private By languagesSettingForm = By.id("settings-languages-form");
-    private By activeLocales = By.id("active-locales-list");
-    private By inactiveLocales = By.id("available-locales-list");
-    private By disabledLocalesFilter = By.id("settings-languages-form:available-locales-filter-input");
+    private By activeLocales = By.id("activeLocales-list");
+    private By inactiveLocales = By.id("availableLocales-list");
+    private By disabledLocalesFilter = By.id("settings-languages-form:availableLocales-filter-input");
 
     public VersionLanguagesTab(WebDriver driver) {
         super(driver);
