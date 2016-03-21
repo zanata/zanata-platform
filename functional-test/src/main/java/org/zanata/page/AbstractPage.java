@@ -191,7 +191,11 @@ public class AbstractPage {
                             String url = getDriver().getCurrentUrl();
                             String pageSource = ShortString.shorten(
                                     getDriver().getPageSource(), 2000);
-                            log.warn("XMLHttpRequest.active is null. Is zanata-testing-extension installed? URL: {}\nPartial page source follows:\n{}", url, pageSource);
+                            log.warn("XMLHttpRequest.active is null. " +
+                                    "Is zanata-testing-extension installed? " +
+                                    "URL: {}\n" +
+                                    "Partial page source follows:\n{}",
+                                    url, pageSource);
                         }
                         return true;
                     }
