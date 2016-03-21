@@ -21,6 +21,7 @@
 package org.zanata.rest.service;
 
 import org.codehaus.enunciate.jaxrs.TypeHint;
+import org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.zanata.common.Namespaces;
 import org.zanata.rest.dto.resource.Resource;
@@ -48,9 +49,11 @@ import java.util.Set;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Path(SourceDocResource.SERVICE_PATH)
+@ExternallyManagedLifecycle
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-public interface SourceDocResource {
+public interface SourceDocResource extends RestResource {
     String SERVICE_PATH =
             ProjectIterationResource.SERVICE_PATH + "/r";
     String RESOURCE_SLUG_REGEX =

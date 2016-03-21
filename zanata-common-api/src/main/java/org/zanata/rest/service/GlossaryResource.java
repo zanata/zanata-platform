@@ -35,6 +35,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.codehaus.enunciate.jaxrs.TypeHint;
+import org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.GlossaryFileUploadForm;
@@ -49,13 +50,15 @@ import org.zanata.rest.dto.ResultList;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
+@Path(GlossaryResource.SERVICE_PATH)
+@ExternallyManagedLifecycle
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
         MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML,
         MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
         MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML,
         MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON })
-public interface GlossaryResource {
+public interface GlossaryResource extends RestResource {
     public static final String SERVICE_PATH = "/glossary";
 
     /**

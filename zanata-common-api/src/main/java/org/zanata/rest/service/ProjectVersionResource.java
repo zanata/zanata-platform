@@ -22,6 +22,7 @@
 package org.zanata.rest.service;
 
 import org.codehaus.enunciate.jaxrs.TypeHint;
+import org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.dto.ProjectIteration;
@@ -46,9 +47,11 @@ import javax.ws.rs.core.Response;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
+@Path(ProjectVersionResource.SERVICE_PATH)
+@ExternallyManagedLifecycle
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-public interface ProjectVersionResource {
+public interface ProjectVersionResource extends RestResource {
     public static final String PROJECT_SERVICE_PATH = "/project";
 
     public static final String VERSION_SLUG_TEMPLATE = "/{versionSlug:"

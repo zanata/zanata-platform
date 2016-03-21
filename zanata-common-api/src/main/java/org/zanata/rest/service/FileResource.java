@@ -33,6 +33,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.codehaus.enunciate.jaxrs.TypeHint;
+import org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.zanata.common.DocumentType;
 import org.zanata.rest.DocumentFileUploadForm;
@@ -41,9 +42,11 @@ import org.zanata.rest.dto.ChunkUploadResponse;
 /**
  * Interface for file upload and download REST methods.
  */
+@Path(FileResource.SERVICE_PATH)
+@ExternallyManagedLifecycle
 @Produces({ MediaType.APPLICATION_OCTET_STREAM })
 @Consumes({ MediaType.APPLICATION_OCTET_STREAM })
-public interface FileResource {
+public interface FileResource extends RestResource {
     public static final String SERVICE_PATH = "/file";
     @Deprecated
     public static final String FILE_RESOURCE = SERVICE_PATH;
