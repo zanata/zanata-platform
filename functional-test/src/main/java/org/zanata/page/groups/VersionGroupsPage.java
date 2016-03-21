@@ -73,14 +73,10 @@ public class VersionGroupsPage extends BasePage {
         if (show != showArchived.isSelected()) {
             showArchived.click();
         }
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return readyElement(groupTable)
+        waitForAMoment().until((Predicate<WebDriver>) webDriver ->
+                readyElement(groupTable)
                         .findElements(archiveLink)
-                        .isEmpty() == !show;
-            }
-        });
+                        .isEmpty() == !show);
         return new VersionGroupsPage(getDriver());
     }
 

@@ -41,7 +41,7 @@ import com.google.common.collect.Lists;
 public class FeatureInventoryRecorder extends RunListener {
 
     private boolean fileReport;
-    private ThreadLocal<Feature> currentFeature = new ThreadLocal<Feature>();
+    private ThreadLocal<Feature> currentFeature = new ThreadLocal<>();
     private File report;
     private ObjectMapper objectMapper = new ObjectMapper();
     private List<FeatureEntry> entries = Lists.newArrayList();

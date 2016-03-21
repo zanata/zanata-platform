@@ -83,13 +83,9 @@ public class EditorPage extends BasePage {
 
     public EditorPage searchGlossary(final String term) {
         log.info("Search glossary for {}", term);
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return input.findElements(glossaryNoResult).size() == 1
-                        || input.findElements(glossaryTable).size() == 1;
-            }
-        });
+        waitForAMoment().until((Predicate<WebDriver>) webDriver ->
+                webDriver.findElements(glossaryNoResult).size() == 1
+                        || webDriver.findElements(glossaryTable).size() == 1);
         readyElement(glossarySearchInput).clear();
         enterText(readyElement(glossarySearchInput), term);
         clickElement(By.id("gwt-debug-glossarySearchButton"));
@@ -114,19 +110,16 @@ public class EditorPage extends BasePage {
     public List<List<String>> getGlossaryResultTable() {
         log.info("Query glossary results");
         return waitForAMoment().until(
-                new Function<WebDriver, List<List<String>>>() {
-                    @Override
-                    public List<List<String>> apply(WebDriver input) {
-                        if (input.findElements(glossaryNoResult).size() ==
-                                1) {
-                            return Collections.emptyList();
-                        }
-                        List<List<String>> resultTable =
-                                WebElementUtil.getTwoDimensionList(input,
-                                        glossaryTable);
-                        log.info("glossary result: {}", resultTable);
-                        return resultTable;
+                (Function<WebDriver, List<List<String>>>) webDriver -> {
+                    if (webDriver.findElements(glossaryNoResult).size() ==
+                            1) {
+                        return Collections.emptyList();
                     }
+                    List<List<String>> resultTable =
+                            WebElementUtil.getTwoDimensionList(webDriver,
+                                    glossaryTable);
+                    log.info("glossary result: {}", resultTable);
+                    return resultTable;
                 });
     }
 
@@ -166,18 +159,16 @@ public class EditorPage extends BasePage {
 
     private String getCodeMirrorContent(final long rowIndex,
             final String idFormat, final Plurals plurals) {
-        return waitForAMoment().until(new Function<WebDriver, String>() {
-            @Override
-            public String apply(WebDriver input) {
-                // code mirror will turn text into list of <pre>.
-                List<WebElement> cmTextLines = input.findElement(
-                        By.id(String.format(idFormat, rowIndex, plurals.index())))
-                        .findElements(By.tagName("pre"));
-                List<String> contents =
-                        WebElementUtil.elementsToText(cmTextLines);
-                return Joiner.on("\n").skipNulls().join(contents);
-            }
-        });
+        return waitForAMoment().until(
+                (Function<WebDriver, String>) webDriver -> {
+                    // code mirror will turn text into list of <pre>.
+                    List<WebElement> cmTextLines = webDriver.findElement(
+                            By.id(String.format(idFormat, rowIndex, plurals.index())))
+                            .findElements(By.tagName("pre"));
+                    List<String> contents =
+                            WebElementUtil.elementsToText(cmTextLines);
+                    return Joiner.on("\n").skipNulls().join(contents);
+                });
     }
 
     public EditorPage setSyntaxHighlighting(boolean option) {
@@ -192,25 +183,20 @@ public class EditorPage extends BasePage {
 
     private Boolean openConfigurationPanel() {
         log.info("Click to open Configuration options");
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getDriver()
-                        .findElement(By.className("i--settings"))
-                        .isEnabled();
-            }
+        waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
+            return getDriver()
+                    .findElement(By.className("i--settings"))
+                    .isEnabled();
         });
         new Actions(getDriver())
                 .click(readyElement(configurationPanel))
                 .perform();
-        return waitForAMoment().until(new Function<WebDriver, Boolean>() {
-            @Override
-            public Boolean apply(WebDriver input) {
-                return input.findElement(
-                        By.className("gwt-TabLayoutPanelContentContainer"))
-                        .isDisplayed();
-            }
-        });
+        return waitForAMoment().until(
+                (Function<WebDriver, Boolean>) webDriver -> {
+                    return webDriver.findElement(
+                            By.className("gwt-TabLayoutPanelContentContainer"))
+                            .isDisplayed();
+                });
     }
 
     /**
@@ -231,12 +217,10 @@ public class EditorPage extends BasePage {
     public boolean expectBasicTranslationAtRowIndex(final int rowIndex,
                                                     final String expected) {
         log.info("Wait for text flow target at {} to be {}", rowIndex, expected);
-        return waitForAMoment().until(new  Function<WebDriver, Boolean>() {
-            @Override
-            public Boolean apply(WebDriver input) {
-                return getBasicTranslationTargetAtRowIndex(rowIndex).equals(expected);
-            }
-        });
+        return waitForAMoment().until(
+                (Function<WebDriver, Boolean>) webDriver -> {
+                    return getBasicTranslationTargetAtRowIndex(rowIndex).equals(expected);
+                });
     }
 
     private String getContentAtRowIndex(final long rowIndex,
@@ -326,12 +310,8 @@ public class EditorPage extends BasePage {
      */
     public String getValidationMessageCurrentTarget() {
         log.info("Query validation messages on current item");
-        waitForAMoment().until(new Function<WebDriver, Boolean>() {
-            @Override
-            public Boolean apply(WebDriver driver) {
-                return !getTargetValidationBox().getText().isEmpty();
-            }
-        });
+        waitForAMoment().until((Function<WebDriver, Boolean>) webDriver ->
+                !getTargetValidationBox().getText().isEmpty());
         return getTargetValidationBox().getText();
     }
 
@@ -364,13 +344,10 @@ public class EditorPage extends BasePage {
     public EditorPage openValidationBox() {
         log.info("Click to open Validation panel");
         getTargetValidationBox().click();
-        waitForAMoment().until(new Function<WebDriver, Boolean>() {
-            @Override
-            public Boolean apply(WebDriver driver) {
-                String errorText = getValidationMessageCurrentTarget();
-                return errorText.contains("Unexpected")
-                        || errorText.contains("Target");
-            }
+        waitForAMoment().until((Function<WebDriver, Boolean>) webDriver -> {
+            String errorText = getValidationMessageCurrentTarget();
+            return errorText.contains("Unexpected")
+                    || errorText.contains("Target");
         });
         return new EditorPage(getDriver());
     }
@@ -485,11 +462,8 @@ public class EditorPage extends BasePage {
         readyElement(getTranslationTargetColumn(), By
                 .id("gwt-debug-target-" + row + "-history"))
                 .click();
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getTranslationHistoryBox().isDisplayed();
-            }
+        waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
+            return getTranslationHistoryBox().isDisplayed();
         });
         return new EditorPage(getDriver());
 
@@ -517,16 +491,13 @@ public class EditorPage extends BasePage {
 
     public EditorPage clickCompareOn(final int entry) {
         log.info("Click Compare on history entry {}", entry);
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                try {
-                    return getTranslationHistoryList().get(entry)
-                            .findElement(By.linkText("Compare"))
-                            .isDisplayed();
-                } catch (IndexOutOfBoundsException ioobe) {
-                    return false;
-                }
+        waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
+            try {
+                return getTranslationHistoryList().get(entry)
+                        .findElement(By.linkText("Compare"))
+                        .isDisplayed();
+            } catch (IndexOutOfBoundsException ioobe) {
+                return false;
             }
         });
         getTranslationHistoryList().get(entry)

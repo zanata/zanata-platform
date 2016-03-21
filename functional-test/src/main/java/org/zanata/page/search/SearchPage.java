@@ -58,7 +58,7 @@ public class SearchPage extends BasePage {
 
         log.info("Query project name");
 
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         for (WebElement row : readyElement(searchProjectForm)
             .findElements(By.xpath("//h3[@class='list__title']"))) {
             names.add(row.getText());

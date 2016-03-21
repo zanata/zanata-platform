@@ -58,18 +58,16 @@ public class ProjectsPage extends BasePage {
     public ProjectVersionsPage goToProject(final String projectName) {
         log.info("Click Project {}", projectName);
         // TODO this can't handle project on different page
-        return refreshPageUntil(this, new Function<WebDriver, ProjectVersionsPage>() {
-            @Override
-            public ProjectVersionsPage apply(WebDriver input) {
-                WebElement table = input.findElement(projectTable);
-                log.info("current projects: {}", WebElementUtil
-                        .getColumnContents(input, projectTable,
-                                PROJECT_NAME_COLUMN));
-                WebElement link = table.findElement(By.linkText(projectName));
-                link.click();
-                return new ProjectVersionsPage(getDriver());
-            }
-        }, "Find and go to project " + projectName);
+        return refreshPageUntil(this,
+                (Function<WebDriver, ProjectVersionsPage>) webDriver -> {
+                    WebElement table = webDriver.findElement(projectTable);
+                    log.info("current projects: {}", WebElementUtil
+                            .getColumnContents(webDriver, projectTable,
+                                    PROJECT_NAME_COLUMN));
+                    WebElement link = table.findElement(By.linkText(projectName));
+                    link.click();
+                    return new ProjectVersionsPage(getDriver());
+                }, "Find and go to project " + projectName);
     }
 
     public List<String> getProjectNamesOnCurrentPage() {

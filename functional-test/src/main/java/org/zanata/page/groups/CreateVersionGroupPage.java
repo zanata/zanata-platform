@@ -90,14 +90,10 @@ public class CreateVersionGroupPage extends BasePage {
         readyElement(groupIdField).clear();
         readyElement(groupNameField).clear();
         readyElement(groupDescriptionField).clear();
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getGroupIdValue().equals("") &&
+        waitForAMoment().until(
+                (Predicate<WebDriver>) webDriver -> getGroupIdValue().equals("") &&
                         readyElement(groupNameField).getAttribute("value")
-                                .equals("");
-            }
-        });
+                                .equals(""));
         return new CreateVersionGroupPage(getDriver());
     }
 }

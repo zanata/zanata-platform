@@ -317,21 +317,18 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
     private static List<Integer> getResultStatusCodes(
             List<Future<Integer>> futures) {
         return Lists.transform(futures,
-                new Function<Future<Integer>, Integer>() {
-                    @Override
-                    public Integer apply(Future<Integer> input) {
-                        try {
-                            return input.get();
-                        } catch (Exception e) {
-                            // by using filter we lose RESTeasy's exception
-                            // translation
-                            String message = e.getMessage().toLowerCase();
-                            if (message
-                                    .matches(".+429.+too many concurrent request.+")) {
-                                return 429;
-                            }
-                            throw Throwables.propagate(e);
+                input -> {
+                    try {
+                        return input.get();
+                    } catch (Exception e) {
+                        // by using filter we lose RESTeasy's exception
+                        // translation
+                        String message = e.getMessage().toLowerCase();
+                        if (message
+                                .matches(".+429.+too many concurrent request.+")) {
+                            return 429;
                         }
+                        throw Throwables.propagate(e);
                     }
                 });
     }

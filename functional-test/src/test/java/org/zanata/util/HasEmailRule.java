@@ -116,21 +116,17 @@ public class HasEmailRule extends ExternalResource {
         final TimeUnit sleepUnit = TimeUnit.MILLISECONDS;
         final long sleepTime = sleepUnit.convert(sleepFor, sleepUnit);
         final long timeoutTime = sleepUnit.convert(timeoutDuration, timeoutUnit);
-        Runnable runnable = new Runnable() {
+        Runnable runnable = () -> {
+            long slept = 0;
+            while (wiser.getMessages().size() < expectedEmailNum
+                    && slept < timeoutTime) {
 
-            @Override
-            public void run() {
-                long slept = 0;
-                while (wiser.getMessages().size() < expectedEmailNum
-                        && slept < timeoutTime) {
-
-                    log.info("Number of arrived emails: {}",
-                            wiser.getMessages().size());
-                    Uninterruptibles.sleepUninterruptibly(sleepFor, sleepUnit);
-                    slept += sleepTime;
-                }
-                countDownLatch.countDown();
+                log.info("Number of arrived emails: {}",
+                        wiser.getMessages().size());
+                Uninterruptibles.sleepUninterruptibly(sleepFor, sleepUnit);
+                slept += sleepTime;
             }
+            countDownLatch.countDown();
         };
         Executors.newFixedThreadPool(1).submit(runnable);
         try {

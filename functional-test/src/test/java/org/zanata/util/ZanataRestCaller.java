@@ -198,13 +198,8 @@ public class ZanataRestCaller {
         log.info("copyTrans started: {}-{}-{}", projectSlug, iterationSlug,
                 docId);
         Awaitility.await().pollInterval(Duration.ONE_SECOND)
-                .until(new Callable<Boolean>() {
-                    @Override
-                    public Boolean call() throws Exception {
-                        return !copyTransClient.getCopyTransStatus(projectSlug,
-                                iterationSlug, docId).isInProgress();
-                    }
-                });
+                .until(() -> !copyTransClient.getCopyTransStatus(projectSlug,
+                        iterationSlug, docId).isInProgress());
         log.info("copyTrans completed: {}-{}-{}", projectSlug, iterationSlug,
                 docId);
     }
@@ -232,13 +227,10 @@ public class ZanataRestCaller {
         final String processId = processStatus.getUrl();
         Awaitility.await()
                 .pollInterval(Duration.ONE_SECOND)
-                .until(new Callable<Boolean>() {
-                    @Override
-                    public Boolean call() throws Exception {
-                        return DONE_STATUS.contains(
-                                asyncProcessClient.getProcessStatus(processId)
-                                        .getStatusCode());
-                    }
+                .until(() -> {
+                    return DONE_STATUS.contains(
+                            asyncProcessClient.getProcessStatus(processId)
+                                    .getStatusCode());
                 });
 
         if (processStatus.getStatusCode().equals(

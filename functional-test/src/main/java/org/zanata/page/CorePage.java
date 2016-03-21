@@ -111,12 +111,8 @@ public class CorePage extends AbstractPage {
      */
     public List<String> getErrors(final int expectedNumber) {
         log.info("Query page errors, expecting {}", expectedNumber);
-        refreshPageUntil(this, new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getErrors().size() == expectedNumber;
-            }
-        }, "errors = " + expectedNumber);
+        refreshPageUntil(this, (Predicate<WebDriver>) webDriver ->
+                getErrors().size() == expectedNumber, "errors = " + expectedNumber);
         return getErrors();
     }
 
@@ -129,12 +125,9 @@ public class CorePage extends AbstractPage {
     public List<String> expectError(final String expected) {
         String msg = "expected error: " + expected;
         logWaiting(msg);
-        waitForAMoment().withMessage(msg).until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getErrors().contains(expected);
-            }
-        });
+        waitForAMoment().withMessage(msg).until(
+                (Predicate<WebDriver>) webDriver ->
+                        getErrors().contains(expected));
         return getErrors();
     }
 
@@ -153,22 +146,19 @@ public class CorePage extends AbstractPage {
         String msg = "notification " + notification;
         logWaiting(msg);
         return waitForAMoment().withMessage(msg).until(
-                new Function<WebDriver, Boolean>() {
-                    @Override
-                    public Boolean apply(WebDriver driver) {
-                        List<WebElement> messages = getDriver()
-                                .findElement(By.id("messages"))
-                                .findElements(By.tagName("li"));
-                        List<String> notifications = new ArrayList<String>();
-                        for (WebElement message : messages) {
-                            notifications.add(message.getText().trim());
-                        }
-                        if (!notifications.isEmpty()) {
-                            triggerScreenshot("_notify");
-                            log.info("Notifications: {}", notifications);
-                        }
-                        return notifications.contains(notification);
+                (Function<WebDriver, Boolean>) driver -> {
+                    List<WebElement> messages = getDriver()
+                            .findElement(By.id("messages"))
+                            .findElements(By.tagName("li"));
+                    List<String> notifications = new ArrayList<String>();
+                    for (WebElement message : messages) {
+                        notifications.add(message.getText().trim());
                     }
+                    if (!notifications.isEmpty()) {
+                        triggerScreenshot("_notify");
+                        log.info("Notifications: {}", notifications);
+                    }
+                    return notifications.contains(notification);
                 });
     }
 

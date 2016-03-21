@@ -48,12 +48,7 @@ public class LanguageList {
 
     public static List<String> getListedLocales(WebElement localeList) {
         return Lists.transform(getListElements(localeList),
-                new Function<WebElement, String>() {
-                    @Override
-                    public String apply(WebElement li) {
-                        return li.findElement(localeId).getText();
-                    }
-                });
+                li -> li.findElement(localeId).getText());
     }
 
     public static List<WebElement> getListElements(WebElement localeList) {

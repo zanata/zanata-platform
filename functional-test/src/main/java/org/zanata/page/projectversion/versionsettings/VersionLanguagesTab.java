@@ -99,12 +99,9 @@ public class VersionLanguagesTab extends VersionBasePage {
 
     private void waitForLanguageEntryExpected(final String language,
                                               final boolean exists) {
-        waitForAMoment().until(new Function<WebDriver, Boolean>() {
-            @Override
-            public Boolean apply(WebDriver driver) {
-                return getEnabledLocaleList().contains(language) == exists;
-            }
-        });
+        waitForAMoment().until(
+                (Function<WebDriver, Boolean>) driver ->
+                        getEnabledLocaleList().contains(language) == exists);
     }
 
     public VersionLanguagesTab enterSearchLanguage(String localeQuery) {
@@ -117,20 +114,14 @@ public class VersionLanguagesTab extends VersionBasePage {
     public VersionLanguagesTab removeLocale(final String localeId) {
         log.info("Click Disable on {}", localeId);
         String message = "can not find locale - " + localeId;
-        waitForAMoment().withMessage(message).until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver driver) {
-                return LanguageList.toggleLanguageInList(
-                        getDriver().findElement(activeLocales), localeId);
-            }
-        });
+        waitForAMoment().withMessage(message).until(
+                (Predicate<WebDriver>) driver -> LanguageList.toggleLanguageInList(
+                        getDriver().findElement(activeLocales), localeId));
 
-        refreshPageUntil(this, new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver driver) {
-                return !getEnabledLocaleList().contains(localeId);
-            }
-        }, "Wait for the locale list to not contain " + localeId);
+        refreshPageUntil(this,
+                (Predicate<WebDriver>) driver ->
+                        !getEnabledLocaleList().contains(localeId),
+                "Wait for the locale list to not contain " + localeId);
 
         return new VersionLanguagesTab(getDriver());
     }
@@ -138,20 +129,12 @@ public class VersionLanguagesTab extends VersionBasePage {
     public VersionLanguagesTab addLocale(final String localeId) {
         log.info("Click Enable on {}", localeId);
         String message = "can not find locale - " + localeId;
-        waitForAMoment().withMessage(message).until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver driver) {
-                return LanguageList.toggleLanguageInList(
-                        getDriver().findElement(inactiveLocales), localeId);
-            }
-        });
+        waitForAMoment().withMessage(message).until(
+                (Predicate<WebDriver>) driver -> LanguageList.toggleLanguageInList(
+                        getDriver().findElement(inactiveLocales), localeId));
 
-        refreshPageUntil(this, new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver driver) {
-                return getEnabledLocaleList().contains(localeId);
-            }
-        }, "Wait for the locale list to contain " + localeId);
+        refreshPageUntil(this, (Predicate<WebDriver>) driver ->
+                getEnabledLocaleList().contains(localeId), "Wait for the locale list to contain " + localeId);
 
         return new VersionLanguagesTab(getDriver());
     }

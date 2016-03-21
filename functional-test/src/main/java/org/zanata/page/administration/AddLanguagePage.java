@@ -58,24 +58,21 @@ public class AddLanguagePage extends BasePage {
 
     public AddLanguagePage selectSearchLanguage(final String language) {
         log.info("Select language {}", language);
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver driver) {
-                List<WebElement> searchResults =
-                        WebElementUtil.getSearchAutocompleteResults(
-                                driver,
-                                "addLanguageForm",
-                                "localeAutocomplete");
-                boolean clickedLanguage = false;
-                for (WebElement searchResult : searchResults) {
-                    if (searchResult.getText().contains(language)) {
-                        searchResult.click();
-                        clickedLanguage = true;
-                        break;
-                    }
+        waitForAMoment().until((Predicate<WebDriver>) driver -> {
+            List<WebElement> searchResults =
+                    WebElementUtil.getSearchAutocompleteResults(
+                            driver,
+                            "addLanguageForm",
+                            "localeAutocomplete");
+            boolean clickedLanguage = false;
+            for (WebElement searchResult : searchResults) {
+                if (searchResult.getText().contains(language)) {
+                    searchResult.click();
+                    clickedLanguage = true;
+                    break;
                 }
-                return clickedLanguage;
             }
+            return clickedLanguage;
         });
         return new AddLanguagePage(getDriver());
     }
@@ -109,15 +106,11 @@ public class AddLanguagePage extends BasePage {
         @SuppressWarnings("unchecked")
         Map<String, String> map = new HashMap();
         // Wait for the fields to be populated
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return !existingElement(languageInfo)
+        waitForAMoment().until((Predicate<WebDriver>) webDriver ->
+                !existingElement(languageInfo)
                         .findElements(By.className("l--push-top-half"))
                         .get(0).findElement(languageInfoItem)
-                        .getText().isEmpty();
-            }
-        });
+                        .getText().isEmpty());
         for (WebElement item : existingElement(languageInfo)
                 .findElements(By.className("l--push-top-half"))) {
             String name = item.getText();

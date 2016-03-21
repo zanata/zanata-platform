@@ -42,7 +42,7 @@ public class ProjectPeoplePage extends ProjectBasePage {
 
     public List<String> getPeople() {
         log.info("Query maintainers list");
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         for (WebElement row : readyElement(peopleList)
                 .findElements(By.tagName("li"))) {
             String username = row.findElement(By.tagName("a")).getText().trim();

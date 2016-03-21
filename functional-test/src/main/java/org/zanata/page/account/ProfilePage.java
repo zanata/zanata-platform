@@ -60,12 +60,8 @@ public class ProfilePage extends BasePage {
     public boolean expectContributionsMatrixVisible() {
         log.info("Wait for contributions matrix to be visible");
         try {
-            waitForAMoment().until(new Predicate<WebDriver>() {
-                @Override
-                public boolean apply(WebDriver input) {
-                    return getDriver().findElements(contributionsBy).size() > 0;
-                }
-            });
+            waitForAMoment().until((Predicate<WebDriver>) webDriver ->
+                    webDriver.findElements(contributionsBy).size() > 0);
         } catch (TimeoutException te) {
             log.info("Contributions matrix was not discovered");
             return false;

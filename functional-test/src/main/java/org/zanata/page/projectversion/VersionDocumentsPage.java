@@ -57,18 +57,16 @@ public class VersionDocumentsPage extends VersionBasePage {
     public List<String> getSourceDocumentNames() {
         log.info("Query source documents list");
         // getText often falls into a UI change
-        return waitForAMoment().until(new Function<WebDriver, List<String>>() {
-            @Override
-            public List<String> apply(WebDriver input) {
-                List<String> fileNames = new ArrayList<String>();
-                for (WebElement element : getDocumentsTabDocumentList()) {
-                    fileNames.add(element.findElement(
-                            By.className("list__title"))
-                            .getText());
-                }
-                return fileNames;
-            }
-        });
+        return waitForAMoment().until(
+                (Function<WebDriver, List<String>>) webDriver -> {
+                    List<String> fileNames = new ArrayList<>();
+                    for (WebElement element : getDocumentsTabDocumentList()) {
+                        fileNames.add(element.findElement(
+                                By.className("list__title"))
+                                .getText());
+                    }
+                    return fileNames;
+                });
     }
 
     private List<WebElement> getDocumentsTabDocumentList() {

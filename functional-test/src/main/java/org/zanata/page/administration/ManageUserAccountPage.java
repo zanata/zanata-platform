@@ -48,7 +48,7 @@ public class ManageUserAccountPage extends BasePage {
 
     public ManageUserAccountPage(WebDriver driver) {
         super(driver);
-        roleMap = new HashMap<String, String>();
+        roleMap = new HashMap<>();
         roleMap.put("admin", "0");
         roleMap.put("glossarist", "1");
         roleMap.put("glossary-admin", "2");

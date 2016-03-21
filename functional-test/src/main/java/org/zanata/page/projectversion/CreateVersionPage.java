@@ -119,19 +119,16 @@ public class CreateVersionPage extends BasePage {
     public CreateVersionPage selectProjectType(final String projectType) {
         log.info("Click project type {}", projectType);
         WebElement projectTypeCheck = waitForAMoment()
-                .until(new Function<WebDriver, WebElement>() {
-            @Override
-            public WebElement apply(WebDriver input) {
-                for (WebElement item : readyElement(projectTypeSelection)
-                        .findElements(By.tagName("li"))) {
-                    if (item.findElement(By.tagName("label")).getText()
-                            .startsWith(projectType)) {
-                        return item;
+                .until((Function<WebDriver, WebElement>) webDriver -> {
+                    for (WebElement item : readyElement(projectTypeSelection)
+                            .findElements(By.tagName("li"))) {
+                        if (item.findElement(By.tagName("label")).getText()
+                                .startsWith(projectType)) {
+                            return item;
+                        }
                     }
-                }
-                return null;
-            }
-        });
+                    return null;
+                });
         projectTypeCheck.click();
         return new CreateVersionPage(getDriver());
     }
