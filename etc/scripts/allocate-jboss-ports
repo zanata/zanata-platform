@@ -13,3 +13,6 @@ JBOSS_TXN_STATUS_PORT
 SMTP_PORT
 EOF
 )
+# we might want these in future:
+# JBOSS_IIOP_PORT
+# JBOSS_IIOP_SSL_PORT

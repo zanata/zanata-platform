@@ -15,10 +15,24 @@
       <module name="org.jboss.as.jaxrs" />
     </exclusions>
     <dependencies>
+
+      <!-- start of unsupported modules -->
       <module name="org.infinispan" />
-      <module name="org.infinispan.commons" optional="true" />
       <!-- needed by arquillian test -->
       <module name="com.h2database.h2" />
+      <!-- end of unsupported modules -->
+
+      <!-- start of private modules -->
+      <module name="org.antlr" />
+      <!-- end of private modules -->
+
+      <!-- start of deprecated modules -->
+      <module name="org.jboss.security.negotiation" />
+      <module name="org.picketbox" />
+      <!-- end of deprecated modules -->
+
+      <!-- other modules -->
+      <module name="org.infinispan.commons" optional="true" />
       <module name="javax.annotation.api" />
       <!-- not needed for wildfly: -->
       <module name="javax.ejb.api" />
@@ -34,8 +48,6 @@
       <module name="javax.validation.api" />
       <!-- not needed for wildfly: -->
       <module name="javax.xml.bind.api" />
-      <!-- not needed for wildfly: -->
-      <module name="org.antlr" />
       <module name="org.apache.commons.logging" />
       <module name="org.apache.log4j" />
       <!-- dom4j needed for wildfly (WFLY-5549)  -->
@@ -43,8 +55,6 @@
       <module name="org.hibernate" />
       <module name="org.hibernate.commons-annotations" />
       <module name="org.hibernate.validator" />
-      <module name="org.jboss.security.negotiation" />
-      <module name="org.picketbox" />
       <module name="org.slf4j" />
     </dependencies>
   </deployment>

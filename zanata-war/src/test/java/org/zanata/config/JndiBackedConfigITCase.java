@@ -48,15 +48,16 @@ public class JndiBackedConfigITCase extends ArquillianTest {
     @Test
     public void getAdminUsers() throws Exception {
         String result = jndiBackedConfig.getAdminUsersList();
-        assertThat(result, equalTo("user1,user2,user3"));
+        assertThat(result, equalTo("admin"));
     }
 
     @Test
     public void getEnabledAuthenticationPolicies() throws Exception {
         Set<String> results =
                 jndiBackedConfig.getEnabledAuthenticationPolicies();
-        assertThat(results.size(), is(1));
+        assertThat(results.size(), is(2));
         assertThat(results.contains("internal"), is(true));
+        assertThat(results.contains("openid"), is(true));
     }
 
     @Test

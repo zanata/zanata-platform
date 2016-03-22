@@ -28,7 +28,12 @@
   </extensions>
   <system-properties>
     <property name="zanata.javaScriptTestHelper" value="true" />
+    <property name="document.storage.directory"
+      value="./target/documents" />
     <property name="jboss.as.management.blocking.timeout" value="1000"/>
+    <property name="javamelody.storage-directory" value="${jboss.server.data.dir}/zanata/stats"/>
+    <property name="hibernate.search.default.indexBase" value="${jboss.server.data.dir}/zanata/indexes"/>
+    <property name="ehcache.disk.store.dir" value="${jboss.server.data.dir}/zanata/ehcache"/>
   </system-properties>
   <management>
     <security-realms>
@@ -94,16 +99,24 @@
       <logger category="org.jboss.as.config">
         <level name="DEBUG" />
       </logger>
+      <!-- Disable some startup warnings triggered by third-party jars -->
+      <logger category="org.jboss.as.server.deployment">
+        <filter-spec value="not(any( match(&quot;JBAS015960&quot;), match(&quot;JBAS015893&quot;) ))"/>
+      </logger>
       <!-- Disable WARN about GWT's org.hibernate.validator.ValidationMessages -->
       <logger category="org.jboss.modules">
         <level name="ERROR"/>
       </logger>
-      <!-- Disable WARN: "Queue with name '...' has already been registered" -->
-      <logger category="org.richfaces.log.Components">
-        <level name="ERROR"/>
-      </logger>
       <!-- Disable WARN: "RP discovery / realm validation disabled;" -->
       <logger category="org.openid4java.server.RealmVerifier">
+        <level name="ERROR"/>
+      </logger>
+      <!-- Disable WARN: "JMS API was found on the classpath..." -->
+      <logger category="org.richfaces.log.Application">
+        <filter-spec value="not( match(&quot;JMS API was found on the classpath&quot;) )"/>
+      </logger>
+      <!-- Disable WARN: "Queue with name '...' has already been registered" -->
+      <logger category="org.richfaces.log.Components">
         <level name="ERROR"/>
       </logger>
       <!-- Enable if you want to log all HTTP requests to server.log: -->
@@ -354,9 +367,9 @@
           value="no-reply@zanata.org" />
         <simple name="java:global/zanata/smtp/port" value="${smtp.port,env.SMTP_PORT:2552}" />
         <simple name="java:global/zanata/files/document-storage-directory"
-          value="${project.build.directory}/zanata-documents" />
+          value="${jboss.server.data.dir}/zanata/documents"/>
         <lookup name="java:jboss/exported/zanata/files/document-storage-directory"
-          lookup="java:global/zanata/files/document-storage-directory" />
+          lookup="java:global/zanata/files/document-storage-directory"/>
       </bindings>
       <remote-naming />
     </subsystem>

@@ -2,11 +2,11 @@ Zanata can be installed by downloading a web archive (war) file, and configuring
 
 ## What you need
 
-- JBoss Enterprise Application Platform 6.4 (EAP). This is the recommended container for Zanata, and it can be [downloaded here](http://www.jboss.org/jbossas/downloads/).
-- ... OR WildFly (recommended version is 9.0) which can be [downloaded here](http://wildfly.org/downloads/)
+- JBoss Enterprise Application Platform 6 (EAP 6), version 6.4.6 or later. This is the recommended container for Zanata, and it can be [downloaded here](https://www.jboss.org/products/eap/download/).
+- ... OR WildFly (version 10.0.0.Final) which can be [downloaded here](http://wildfly.org/downloads/)
 - A suitable MySQL database. This is NOT included in the Zanata archive. You can [download MySQL here](http://dev.mysql.com/downloads/mysql/).
 - An email (SMTP) server for email verification and notifications.
-- JDK version 1.7 or later. [OpenJDK](http://openjdk.java.net/install/) is recommended, but you can also download [Oracle's JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+- JDK version 1.8 or later. [OpenJDK](http://openjdk.java.net/install/) is recommended, but you can also download [Oracle's JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
 
 The following packages are optional, but recommended:
 
@@ -37,6 +37,11 @@ $ ./install.sh
 ```
 
 (there's also a .bat file if you are on Windows) The installation script will start asking some configuration questions. It will also download the Zanata web application and place it in the JBoss installation.
+
+## Editing standalone.xml yourself
+
+This is not generally recommended, but if you want to create the configuration yourself, please ensure you start with `standalone-full.xml`, not `standalone.xml`, since `standalone-full.xml` enables subsystems which are required by Zanata. Either copy `standalone-full.xml` to `standalone.xml`, or make sure `standalone.sh` is always launched with arguments to activate the desired configuration, for instance `$JBOSS_HOME/bin/standalone.sh --server-config=standalone-full.xml`.
+
 
 ## Some advanced configuration
 
