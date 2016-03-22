@@ -13,17 +13,16 @@ language: java
 install: /bin/true
 
 script: |
-  mvn test \
+  mvn test site \
     --batch-mode \
     --settings .travis-settings.xml \
-    -Darquillian.jboss.home=/dev/null \
-    -Dgwt.validateOnly \
     -DstaticAnalysis
 
 jdk:
   - openjdk7
   - oraclejdk7
-  - oraclejdk8
+# Enunciate 1.x doesn't support javac 1.8:
+#  - oraclejdk8
 
 matrix:
   fast_finish: true
