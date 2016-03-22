@@ -160,6 +160,7 @@
       generation. Should correspond with animal.sniffer.signature.
     -->
     <required.jvm>1.7</required.jvm>
+
     <!--
       Version of Java used for API compatibility checking. Should
       correspond with required.jvm.
@@ -616,7 +617,7 @@
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>${maven.javadoc.version}</version>
           <configuration>
-            <additionalparam>-Xdoclint:none</additionalparam>
+            <additionalparam>${javadoc.opts}</additionalparam>
           </configuration>
         </plugin>
         <plugin>
@@ -797,8 +798,17 @@
     </extensions>
   </build>
 
-
   <profiles>
+    <profile>
+      <id>doclint-java8-disable</id>
+      <activation>
+        <jdk>[1.8,)</jdk>
+      </activation>
+      <properties>
+        <javadoc.opts>-Xdoclint:none</javadoc.opts>
+      </properties>
+    </profile>
+
     <profile>
       <id>release</id>
       <build>
@@ -823,7 +833,7 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
             <configuration>
-              <additionalparam>-Xdoclint:none</additionalparam>
+              <additionalparam>${javadoc.opts}</additionalparam>
             </configuration>
             <executions>
               <execution>
@@ -1005,7 +1015,6 @@
         <skipTests>true</skipTests>
       </properties>
     </profile>
-
 
     <profile>
       <id>allReports</id>
@@ -1530,7 +1539,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>${maven.javadoc.version}</version>
       </plugin>
     </plugins>
   </reporting>
