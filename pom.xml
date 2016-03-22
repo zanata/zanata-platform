@@ -178,7 +178,6 @@
     <mdep.analyze.skip>true</mdep.analyze.skip>
 
     <hamcrest.version>1.3</hamcrest.version>
-    <lombok.version>1.12.6</lombok.version>
     <findbugs.maven.version>3.0.1</findbugs.maven.version>
     <groovy.version>1.8.9</groovy.version>
     <guava.version>13.0.1</guava.version>
@@ -1028,12 +1027,6 @@
         <artifactId>powermock-module-junit4</artifactId>
         <version>${powermock.version}</version>
         <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <version>${lombok.version}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
