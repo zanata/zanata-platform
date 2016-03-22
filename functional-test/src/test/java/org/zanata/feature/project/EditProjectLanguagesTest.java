@@ -89,9 +89,10 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
         projectLanguagesTab = projectLanguagesTab
                 .gotoSettingsTab()
                 .gotoSettingsLanguagesTab()
-                .enterSearchLanguage("en-US");
-                // count doesn't account for filtered search results:
-//                .expectAvailableLocaleListCount(1);
+                .filterDisabledLanguages("nonexistentLocale")
+                .expectAvailableLocaleListCount(0)
+                .filterDisabledLanguages("en-US")
+                .expectAvailableLocaleListCount(1);
         projectLanguagesTab = projectLanguagesTab
                 .addLanguage("en-US")
                 .expectEnabledLocaleListCount(3);
@@ -101,6 +102,8 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
         Assertions.assertThat(enabledLocaleList)
                 .contains("en-US", "fr", "hi")
                 .as("The enabled language list contains en-US, fr and hi");
+        projectLanguagesTab.filterEnabledLanguages("en-US")
+                .expectEnabledLocaleListCount(1);
     }
 
     @Feature(summary = "The administrator can set an alias for a project " +
