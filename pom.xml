@@ -27,6 +27,7 @@
     <delombok.dir>${project.build.directory}/delombok/org/zanata</delombok.dir>
     <failsafe.rerunFailingTestsCount>3</failsafe.rerunFailingTestsCount>
     <failsafe.useFile>false</failsafe.useFile>
+    <maven.javadoc.version>2.9.1</maven.javadoc.version>
     <surefire.useFile>false</surefire.useFile>
     <surefire.version>2.19</surefire.version>
     <!-- Applies to surefire and failsafe (if enabled) -->
@@ -1382,7 +1383,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
-          <additionalparam>-Xdoclint:none</additionalparam>
+          <additionalparam>${javadoc.opts}</additionalparam>
         </configuration>
       </plugin>
       <plugin>
@@ -1587,6 +1588,13 @@
           </configuration>
         </plugin>
         <plugin>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${maven.javadoc.version}</version>
+          <configuration>
+            <additionalparam>${javadoc.opts}</additionalparam>
+          </configuration>
+        </plugin>
+        <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
           <version>1.8</version>
@@ -1614,6 +1622,15 @@
   </build>
 
   <profiles>
+    <profile>
+      <id>doclint-java8-disable</id>
+      <activation>
+        <jdk>[1.8,)</jdk>
+      </activation>
+      <properties>
+        <javadoc.opts>-Xdoclint:none</javadoc.opts>
+      </properties>
+    </profile>
 
     <profile>
       <!-- This profile runs a single integration test with
