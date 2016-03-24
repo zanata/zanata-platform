@@ -13,6 +13,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import com.sun.xml.txw2.output.IndentingXMLStreamWriter;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.extensions.gettext.TextFlowExtension;
 import org.zanata.rest.dto.resource.Resource;
@@ -20,11 +21,6 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.PathUtil;
-import net.sf.saxon.Configuration;
-import net.sf.saxon.event.StreamWriterToReceiver;
-import net.sf.saxon.s9api.Processor;
-import net.sf.saxon.s9api.SaxonApiException;
-import net.sf.saxon.s9api.Serializer;
 
 public class XliffWriter extends XliffCommon {
     /**
@@ -36,7 +32,7 @@ public class XliffWriter extends XliffCommon {
      *            (use hyphen, not underscore)
      * @throws XMLStreamException
      */
-    private static void writeHeader(StreamWriterToReceiver writer,
+    private static void writeHeader(XMLStreamWriter writer,
             Resource doc, String targetLocale) throws XMLStreamException {
         // XML tag
         writer.writeStartDocument("utf-8", "1.0");
@@ -66,12 +62,12 @@ public class XliffWriter extends XliffCommon {
         writer.writeStartElement(ELE_BODY);
     }
 
-    private static void writeTransUnits(StreamWriterToReceiver writer,
+    private static void writeTransUnits(XMLStreamWriter writer,
             Resource doc, TranslationsResource targetDoc,
             boolean createSkeletons) throws XMLStreamException {
         Map<String, TextFlowTarget> targets = Collections.emptyMap();
         if (targetDoc != null) {
-            targets = new HashMap<String, TextFlowTarget>();
+            targets = new HashMap<>();
             for (TextFlowTarget target : targetDoc.getTextFlowTargets()) {
                 targets.put(target.getResId(), target);
             }
@@ -94,7 +90,7 @@ public class XliffWriter extends XliffCommon {
         }
     }
 
-    private static void writeTransUnitSource(StreamWriterToReceiver writer,
+    private static void writeTransUnitSource(XMLStreamWriter writer,
             TextFlow textFlow) throws XMLStreamException {
         writer.writeStartElement(ELE_SOURCE);
         List<String> contents = textFlow.getContents();
@@ -108,7 +104,7 @@ public class XliffWriter extends XliffCommon {
         writer.writeEndElement();
     }
 
-    private static void writeTransUnitTarget(StreamWriterToReceiver writer,
+    private static void writeTransUnitTarget(XMLStreamWriter writer,
             TextFlowTarget target) throws XMLStreamException {
         writer.writeStartElement(ELE_TARGET);
         List<String> contents = target.getContents();
@@ -122,11 +118,11 @@ public class XliffWriter extends XliffCommon {
         writer.writeEndElement();
     }
 
-    private static void writeTransUnitContext(StreamWriterToReceiver writer,
+    private static void writeTransUnitContext(XMLStreamWriter writer,
             TextFlow textFlow) throws XMLStreamException {
         if (!textFlow.getExtensions(true).isEmpty()) {
             Map<String, ArrayList<String[]>> contextGroupMap =
-                    new HashMap<String, ArrayList<String[]>>();
+                    new HashMap<>();
 
             for (TextFlowExtension textFlowExtension : textFlow.getExtensions()) {
                 SimpleComment comment = (SimpleComment) textFlowExtension;
@@ -199,23 +195,14 @@ public class XliffWriter extends XliffCommon {
             throw new RuntimeException("Error writing XLIFF file  ", e);
         }
 
-        Configuration config = new Configuration();
-        Processor processor = new Processor(config);
-        Serializer serializer = processor.newSerializer();
-        serializer.setOutputProperty(Serializer.Property.METHOD, "xml");
-        serializer.setOutputProperty(Serializer.Property.INDENT, "yes");
-        serializer.setOutputProperty(Serializer.Property.ENCODING, "utf-8");
-        StreamWriterToReceiver writer = null;
-
         try (FileOutputStream fileStream = new FileOutputStream(file)) {
-            serializer.setOutputStream(fileStream);
+            XMLOutputFactory output = XMLOutputFactory.newInstance();
+            XMLStreamWriter writer =
+                    new IndentingXMLStreamWriter(
+                            output.createXMLStreamWriter(fileStream, "utf-8"));
             try {
-                writer = serializer.getXMLStreamWriter();
-
                 writeHeader(writer, doc, locale);
-
                 writeTransUnits(writer, doc, targetDoc, createSkeletons);
-
                 // end body tag
                 writer.writeEndElement();
                 // end file tag
@@ -224,16 +211,10 @@ public class XliffWriter extends XliffCommon {
                 writer.writeEndDocument();
                 writer.flush();
             } finally {
-                if (writer != null) {
-                    writer.close();
-                }
+                writer.close();
             }
-
-        } catch (XMLStreamException e) {
-            throw new RuntimeException("Error generating XLIFF file format   ",
-                e);
-        } catch (IOException | SaxonApiException e) {
-            throw new RuntimeException("Error writing XLIFF file  ", e);
+        } catch (XMLStreamException | IOException e) {
+            throw new RuntimeException("Error writing XLIFF file", e);
         }
     }
 
