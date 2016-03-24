@@ -1031,9 +1031,10 @@ public class ResourceUtils {
 
     /**
      * return plural count info from
-     * 1) Header entry if available, else
+     * 1) PO Header entry if available, else
      * 2) HLocale.plurals if available, else
-     * 3) pluralforms.properties
+     * 3) pluralforms.properties, else
+     * 4) assume no plural forms (nplurals=1)
      *
      * @param poHeaders - HPoTargetHeader.entries
      * @param localeId - locale identifier
