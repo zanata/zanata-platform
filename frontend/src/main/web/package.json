@@ -41,7 +41,8 @@
     "react-chartjs": "^0.4.0",
     "react-router": "^0.13.3",
     "superagent": "^0.21.0",
-    "zanata-ui": "^1.0.11"
+    "zanata-ui": "^1.0.11",
+    "dom-event": "https://github.com/zanata/zanata.github.io/raw/master/files/npm/dom-event-0.0.5.tgz"
   },
   "jest": {
     "unmockedModulePathPatterns": [
