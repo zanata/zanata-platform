@@ -39,6 +39,7 @@ import org.junit.runners.model.Statement;
 import org.zanata.page.WebDriverFactory;
 import org.zanata.util.EnsureLogoutRule;
 import org.zanata.util.SampleProjectRule;
+import org.zanata.util.ZanataRestCaller;
 
 /**
  * Global application of rules to Zanata functional tests
@@ -65,7 +66,7 @@ public class ZanataTestCase {
     };
 
     @Rule
-    public TestName testName = new TestName();
+    public final TestName testName = new TestName();
 
     @Rule
     public RuleChain theOneRule = RuleChain
@@ -81,6 +82,8 @@ public class ZanataTestCase {
 
     public DateTime testFunctionStart;
 
+    private ZanataRestCaller zanataRestCaller = new ZanataRestCaller();
+
     private String getTestDescription() {
         return this.getClass().getCanonicalName()
                 .concat(".")
@@ -89,18 +92,20 @@ public class ZanataTestCase {
 
     @Before
     public final void testEntry() {
-        log.info("Starting ".concat(getTestDescription()));
+        log.info("Test starting: {}", getTestDescription());
         testFunctionStart = new DateTime();
         WebDriverFactory.INSTANCE.testEntry();
+        zanataRestCaller.signalBeforeTest(getClass().getName(), testName.getMethodName());
     }
 
     @After
     public final void testExit() {
         WebDriverFactory.INSTANCE.logLogs();
+        zanataRestCaller.signalAfterTest(getClass().getName(), testName.getMethodName());
         Duration duration = new Duration(testFunctionStart, new DateTime());
         PeriodFormatter periodFormatter = new PeriodFormatterBuilder()
-                .appendLiteral("Finished "
-                        .concat(getTestDescription()).concat(" in "))
+                .appendLiteral("Test finished: "
+                        .concat(getTestDescription()).concat(": in "))
                 .printZeroAlways()
                 .appendMinutes()
                 .appendSuffix(" minutes, ")

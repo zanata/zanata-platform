@@ -23,7 +23,6 @@ package org.zanata.rest;
 
 import java.util.Set;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.ApplicationPath;
 
 import com.google.common.collect.ImmutableSet;
@@ -33,12 +32,12 @@ import com.google.common.collect.ImmutableSet;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @ApplicationPath("/rest/test")
-@ApplicationScoped
 public class TestApplication extends javax.ws.rs.core.Application {
 
     private static final ImmutableSet<Class<?>> CLASSES =
             ImmutableSet.<Class<?>>builder()
-                    .add(SampleDataResourceImpl.class).build();
+                    .add(SampleDataResourceImpl.class,
+                            RemoteTestSignalerImpl.class).build();
 
     @Override
     public Set<Class<?>> getClasses() {

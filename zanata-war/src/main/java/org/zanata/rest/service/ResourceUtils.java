@@ -79,6 +79,7 @@ import com.google.common.base.Optional;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isEmpty;
+import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
 @Named("resourceUtils")
 @RequestScoped
@@ -108,6 +109,7 @@ public class ResourceUtils {
     private static final String CONTENT_TYPE_HDR = HeaderFields.KEY_ContentType;
     private static final String PLURAL_FORMS_HDR = "Plural-Forms";
 
+    // TODO we should need only one regex, with a capture group for nplurals
     private static final Pattern PLURAL_FORM_PATTERN =
         Pattern.compile("nplurals=[0-9]+;\\s?plural=*");
     private static final Pattern NPLURALS_TAG_PATTERN = Pattern
@@ -985,7 +987,7 @@ public class ResourceUtils {
     public String getPluralForms(LocaleId localeId, boolean checkDB, boolean useDefault) {
         if(checkDB) {
             String dbPluralForms = getPluralFormsFromDB(localeId);
-            if (StringUtils.isNotEmpty(dbPluralForms)) {
+            if (isNotEmpty(dbPluralForms)) {
                 return dbPluralForms;
             }
         }
@@ -1029,36 +1031,57 @@ public class ResourceUtils {
 
     /**
      * return plural count info from
-     * 1) Header entry if available, else
+     * 1) PO Header entry if available, else
      * 2) HLocale.plurals if available, else
-     * 3) pluralforms.properties
+     * 3) pluralforms.properties, else
+     * 4) assume no plural forms (nplurals=1)
      *
      * @param poHeaders - HPoTargetHeader.entries
      * @param localeId - locale identifier
      *
      */
     int getNumPlurals(@Nullable String poHeaders, LocaleId localeId) {
-        String pluralForms = null;
-        try {
-            if (!isEmpty(poHeaders)) {
-                Properties headerList = new Properties();
-                headerList.load(new StringReader(poHeaders));
-
-                pluralForms = headerList.getProperty(PLURAL_FORMS_HDR);
-                if (pluralForms != null && pluralForms.isEmpty()) {
+        if (!isEmpty(poHeaders)) {
+            Properties headerList = loadHeaders(poHeaders);
+            String pluralFormsHeader = headerList.getProperty(PLURAL_FORMS_HDR);
+            if (pluralFormsHeader != null) {
+                if (!pluralFormsHeader.isEmpty()) {
+                    try {
+                        // try to parse plurals from the header
+                        return extractNPlurals(pluralFormsHeader);
+                    } catch (NumberFormatException | PluralParseException e) {
+                        log.debug("Unable to parse plurals", e);
+                        // TODO return a warning to the user when uploading
+                        log.warn("Error parsing plural forms header; using defaults for locale {}; headers: {}",
+                                localeId, poHeaders);
+                    }
+                } else {
                     // TODO return a warning to the user when uploading
                     log.warn("Empty plural forms header; using defaults for locale {}; headers: {}",
                             localeId, poHeaders);
-                    pluralForms = getPluralFormsForLocale(localeId);
                 }
+            } else {
+                // otherwise (no header) use the locale default
+                log.debug("No plural forms header; using defaults for locale {}; headers: {}",
+                        localeId, poHeaders);
             }
-            if (pluralForms == null) {
-                pluralForms = getPluralFormsForLocale(localeId);
-            }
-            return extractNPlurals(pluralForms);
-        } catch (Exception e) {
-            log.error("Error getting nplurals; using defaults; headers: " + poHeaders, e);
+        }
+        String localePluralForms = getPluralFormsForLocale(localeId);
+        if (localePluralForms == null) {
+            log.warn("Assuming no plurals for locale {}; no plural info found in database or in {}; headers: {}",
+                    localeId, PLURALS_FILE, poHeaders);
             return DEFAULT_NPLURALS;
+        }
+        return extractNPlurals(localePluralForms);
+    }
+
+    private Properties loadHeaders(String poHeaders) {
+        try {
+            Properties headerList = new Properties();
+            headerList.load(new StringReader(poHeaders));
+            return headerList;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -1069,7 +1092,7 @@ public class ResourceUtils {
      * @return the plural forms string
      * @throws RuntimeException if no plural forms are found
      */
-    private @Nonnull String getPluralFormsForLocale(LocaleId localeId) {
+    private @Nullable String getPluralFormsForLocale(LocaleId localeId) {
         String pluralForms;
         pluralForms = getPluralFormsFromDB(localeId);
         if (isEmpty(pluralForms)) {
@@ -1083,7 +1106,7 @@ public class ResourceUtils {
      */
     @Nullable String getPluralFormsFromDB(LocaleId localeId) {
         HLocale hLocale = localeDAO.findByLocaleId(localeId);
-        if(hLocale != null && StringUtils.isNotEmpty(hLocale.getPluralForms())) {
+        if(hLocale != null && isNotEmpty(hLocale.getPluralForms())) {
             return hLocale.getPluralForms();
         }
         return null;
@@ -1094,46 +1117,34 @@ public class ResourceUtils {
      *
      * @param localeId
      */
-    @Nonnull String getPluralFormsFromFile(@Nonnull LocaleId localeId) {
-        String pluralForms = getPluralForms(localeId);
-
-        if (pluralForms == null) {
-            log.warn("No plural forms for locale {} found in {}",
-                    localeId, PLURALS_FILE);
-            throw new RuntimeException(
-                    "No plural forms found; contact admin. Locale: "
-                            + localeId);
-        }
-        return pluralForms;
+    @Nullable String getPluralFormsFromFile(@Nonnull LocaleId localeId) {
+        return getPluralForms(localeId, false, false);
     }
 
     /**
      * Process pluralforms string and return plural count.
      *
-     * @param pluralForms
+     * @param pluralForms string to parse
      */
-    int extractNPlurals(@Nonnull String pluralForms) {
-        int nPlurals = 1;
-
+    int extractNPlurals(@Nonnull String pluralForms)
+            throws NumberFormatException, PluralParseException {
         Matcher nPluralsMatcher = NPLURALS_PATTERN.matcher(pluralForms);
-        String nPluralsString = "";
-        while (nPluralsMatcher.find()) {
-            nPluralsString = nPluralsMatcher.group();
+        if (nPluralsMatcher.find()) {
+            String nPluralsString = nPluralsMatcher.group();
             Matcher nPluralsValueMatcher =
                     NPLURALS_TAG_PATTERN.matcher(nPluralsString);
             nPluralsString = nPluralsValueMatcher.replaceAll("");
-            break;
+            if (isNotEmpty(nPluralsString)) {
+                return Integer.parseInt(nPluralsString);
+            }
         }
-        if (StringUtils.isNotEmpty(nPluralsString)) {
-            nPlurals = Integer.parseInt(nPluralsString);
-        }
-        return nPlurals;
+        throw new PluralParseException("can't find valid nplurals in plural forms string: " + pluralForms);
     }
 
     /**
      * Return if pluralForms is valid (positive value)
      *
-     * @param pluralForms
+     * @param pluralForms string to check
      */
     public boolean isValidPluralForms(@Nonnull String pluralForms) {
 
@@ -1151,7 +1162,7 @@ public class ResourceUtils {
             break;
         }
         try {
-            if (StringUtils.isNotEmpty(nPluralsString)) {
+            if (isNotEmpty(nPluralsString)) {
                 int count = Integer.parseInt(nPluralsString);
                 return count >= 1 && count <= MAX_TARGET_CONTENTS;
             }
@@ -1479,4 +1490,11 @@ public class ResourceUtils {
         }
     }
 
+    public static class PluralParseException extends RuntimeException {
+        private static final long serialVersionUID = 1L;
+
+        public PluralParseException(String string) {
+            super(string);
+        }
+    }
 }

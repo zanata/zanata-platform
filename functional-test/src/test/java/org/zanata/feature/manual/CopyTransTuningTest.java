@@ -47,8 +47,10 @@ public class CopyTransTuningTest {
 
     @Before
     public void setUp() throws Exception {
+        // use defaults
+        String pluralForms = null;
         for (LocaleId locale : translatedLocales) {
-            SampleDataResourceClient.addLanguage(locale.getId());
+            SampleDataResourceClient.addLanguage(locale.getId(), pluralForms);
         }
 
         restCaller = new ZanataRestCaller();

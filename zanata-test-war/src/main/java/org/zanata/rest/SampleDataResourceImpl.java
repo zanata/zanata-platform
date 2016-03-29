@@ -3,6 +3,7 @@ package org.zanata.rest;
 import java.security.Principal;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.security.auth.Subject;
@@ -60,11 +61,12 @@ public class SampleDataResourceImpl implements SampleDataResource {
 
     @Override
     @Transactional
-    public Response addLanguage(final String localeId) {
+    public Response addLanguage(final String localeId,
+            @Nullable String pluralForms) {
         new RunAsOperationForTest() {
             @Override
             public void execute() {
-                sampleProjectProfile.makeLanguage(true, new LocaleId(localeId));
+                sampleProjectProfile.makeLanguage(true, new LocaleId(localeId), pluralForms);
             }
         }.run();
 
