@@ -3,6 +3,8 @@ package org.zanata.rest.service;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hibernate.Session;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -23,30 +25,43 @@ import org.zanata.rest.dto.extensions.gettext.PoHeader;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TextFlow;
-import org.zanata.seam.SeamAutowire;
 import com.github.huangp.entityunit.entity.EntityMakerBuilder;
 import com.github.huangp.entityunit.maker.FixedValueMaker;
 import com.google.common.collect.Sets;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.test.CdiUnitRunner;
+
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
 
 @Slf4j
+@RunWith(CdiUnitRunner.class)
 public class ResourceUtilsJpaTest extends ZanataJpaTest {
-    static SeamAutowire seam = SeamAutowire.instance();
+    @Inject
     private ResourceUtils resourceUtils;
+
+    @Override
+    @Produces
+    protected Session getSession() {
+        return super.getSession();
+    }
+
+    @Override
+    @Produces
+    protected EntityManager getEm() {
+        return super.getEm();
+    }
 
     @Before
     public void setUp() {
         deleteAllTables();
-        resourceUtils =
-                seam.reset()
-                    .use("session", getSession())
-                    .use("entityManager", getEm())
-                        .autowire(ResourceUtils.class);
     }
 
     @Test
+    @InRequestScope
     public void transferFromResourceMetadata() {
         ResourceMeta from = new ResourceMeta("resId");
         from.setContentType(ContentType.TextPlain);
@@ -74,6 +89,7 @@ public class ResourceUtilsJpaTest extends ZanataJpaTest {
     @Test
     @SlowTest
     @PerformanceProfiling
+    @InRequestScope
     // ideally change persistence.xml to use a local mysql database and monitor general log etc.
     public void transferFromResource() {
         HLocale locale = EntityMakerBuilder.builder().addConstructorParameterMaker(HLocale.class, 0, FixedValueMaker.fix(LocaleId.ES)).build()

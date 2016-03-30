@@ -23,26 +23,28 @@ package org.zanata.service.impl;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import org.junit.Before;
+import org.hibernate.Session;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.zanata.ZanataTest;
 import org.zanata.common.DocumentType;
-import org.zanata.seam.SeamAutowire;
-import org.zanata.service.TranslationFileService;
+import org.zanata.test.CdiUnitRunner;
 
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+
+@RunWith(CdiUnitRunner.class)
 public class TranslationFileServiceImplTest extends ZanataTest {
 
-    TranslationFileService transFileService;
+    @Inject
+    TranslationFileServiceImpl transFileService;
 
-    @Before
-    public void beforeTest() {
-        transFileService =
-                SeamAutowire.instance().reset().ignoreNonResolvable()
-                        .autowire(TranslationFileServiceImpl.class);
-    }
+    @Produces @Mock Session session;
 
     @Test
+    @InRequestScope
     public void hasPlainTextAdapter() {
         assertThat(transFileService.hasAdapterFor(DocumentType.PLAIN_TEXT),
                 is(true));

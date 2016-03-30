@@ -20,14 +20,44 @@
  */
 package org.zanata.tmx;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.hasKey;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import com.google.common.collect.Sets;
+import nu.xom.Element;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
+import org.dbunit.operation.DatabaseOperation;
+import org.hibernate.Session;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.jglue.cdiunit.AdditionalClasses;
+import org.jglue.cdiunit.InRequestScope;
+import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.zanata.cdi.TestTransaction;
+import org.zanata.dao.TransMemoryDAO;
+import org.zanata.jpa.FullText;
+import org.zanata.model.tm.TMMetadataType;
+import org.zanata.model.tm.TMXMetadataHelper;
+import org.zanata.model.tm.TransMemory;
+import org.zanata.model.tm.TransMemoryUnit;
+import org.zanata.model.tm.TransMemoryUnitVariant;
+import org.zanata.test.CdiUnitRunner;
+import org.zanata.test.DBUnitDataSetRunner;
+import org.zanata.test.rule.DataSetOperation;
+import org.zanata.test.rule.JpaRule;
+import org.zanata.transaction.TransactionUtil;
+import org.zanata.util.IServiceLocator;
+import org.zanata.util.TMXParseException;
 
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.transaction.UserTransaction;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Collection;
@@ -37,55 +67,68 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
-import nu.xom.Element;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
-import org.dbunit.operation.DatabaseOperation;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.zanata.ZanataDbunitJpaTest;
-import org.zanata.dao.TransMemoryDAO;
-import org.zanata.model.tm.TMMetadataType;
-import org.zanata.model.tm.TMXMetadataHelper;
-import org.zanata.model.tm.TransMemory;
-import org.zanata.model.tm.TransMemoryUnit;
-import org.zanata.model.tm.TransMemoryUnitVariant;
-import org.zanata.seam.AutowireTransaction;
-import org.zanata.seam.SeamAutowire;
-import org.zanata.util.TMXParseException;
-
-import com.google.common.collect.Sets;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class TMXParserTest extends ZanataDbunitJpaTest {
-    private SeamAutowire seam = SeamAutowire.instance();
+@RunWith(CdiUnitRunner.class)
+@SupportDeltaspikeCore
+@AdditionalClasses({
+        TransactionUtil.class
+})
+public class TMXParserTest {
 
-    @Override
-    protected void prepareDBUnitOperations() {
-        beforeTestOperations.add(new DataSetOperation(
-                "org/zanata/test/model/ClearAllTables.dbunit.xml",
-                DatabaseOperation.DELETE_ALL));
-        afterTestOperations.add(new DataSetOperation(
-                "org/zanata/test/model/ClearAllTables.dbunit.xml",
-                DatabaseOperation.DELETE_ALL));
+    @ClassRule
+    @Rule
+    public static JpaRule jpaRule = new JpaRule();
+
+    @Inject
+    TMXParser parser;
+
+    @Inject
+    TransMemoryDAO transMemoryDAO;
+
+    @Produces @FullText @Mock FullTextEntityManager fullTextEntityManager;
+    @Produces @FullText @Mock FullTextSession fullTextSession;
+    @Produces @Named("java:jboss/UserTransaction") @Mock
+    UserTransaction userTransaction;
+    @Produces @Mock IServiceLocator serviceLocator;
+
+    @Produces
+    protected Session getSession() {
+        return jpaRule.getSession();
+    }
+
+    @Produces
+    protected EntityManager getEm() {
+        return jpaRule.getEntityManager();
     }
 
     @Before
-    public void initializeSeam() {
-        seam.reset()
-                .ignoreNonResolvable()
-                .use("entityManager", getEm())
-                .useJndi("java:jboss/UserTransaction", AutowireTransaction.instance())
-                .use("session", getSession());
+    public void beforeTest() throws Exception {
+        new DBUnitDataSetRunner(jpaRule.getEntityManager())
+            .runDataSetOperations(
+                new DataSetOperation("org/zanata/test/model/ClearAllTables.dbunit.xml",
+                    DatabaseOperation.DELETE_ALL),
+                new DataSetOperation(
+                    "org/zanata/test/model/ClearAllTables.dbunit.xml",
+                    DatabaseOperation.DELETE_ALL));
+
+        when(serviceLocator.getJndiComponent("java:jboss/UserTransaction",
+                UserTransaction.class))
+                .thenReturn(new TestTransaction(getEm()));
     }
 
     private TransMemory createTMFromFile(String file) throws Exception {
-        TransMemoryDAO transMemoryDAO = seam.autowire(TransMemoryDAO.class);
         TransMemory tm = new TransMemory();
         tm.setSlug("new-tm");
         tm.setDescription("New test tm");
@@ -97,7 +140,6 @@ public class TMXParserTest extends ZanataDbunitJpaTest {
 
     private void populateTMFromFile(TransMemory tm, String file)
             throws Exception {
-        TMXParser parser = seam.autowire(TMXParser.class);
         InputStream is = getClass().getResourceAsStream(file);
 
         parser.parseAndSaveTMX(is, tm);
@@ -115,27 +157,32 @@ public class TMXParserTest extends ZanataDbunitJpaTest {
 
     @Test(expected = TMXParseException.class)
 //            expectedExceptionsMessageRegExp = ".*Wrong root element.*"
+    @InRequestScope
     public void parseInvalidXML() throws Exception {
         createTMFromFile("/tmx/invalid.xml");
     }
 
     @Test(expected = TMXParseException.class)
+    @InRequestScope
     public void parseEmptyTXT() throws Exception {
         createTMFromFile("/tmx/empty.txt");
     }
 
     @Test(expected = TMXParseException.class)
+    @InRequestScope
     public void parseInvalidTXT() throws Exception {
         createTMFromFile("/tmx/invalid.txt");
     }
 
     @Test(expected = TMXParseException.class)
 //            expectedExceptionsMessageRegExp = ".*Invalid TMX document.*"
+    @InRequestScope
     public void parseInvalidHTML() throws Exception {
         createTMFromFile("/tmx/invalid.xhtml");
     }
 
     @Test
+    @InRequestScope
     public void parseTMX() throws Exception {
         // Create a TM
         TransMemory tm = createTMFromFile("/tmx/default-valid-tm.tmx");
@@ -164,6 +211,7 @@ public class TMXParserTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void parseDubiousTMXDespiteUnderscoresInLocales() throws Exception {
         // Create a TM
         TransMemory tm =
@@ -185,6 +233,7 @@ public class TMXParserTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void parseTMXWithMetadata() throws Exception {
         // Create a TM
         TransMemory tm = createTMFromFile("/tmx/valid-tmx-with-metadata.tmx");
@@ -268,18 +317,21 @@ public class TMXParserTest extends ZanataDbunitJpaTest {
     }
 
     @Test(expected = TMXParseException.class)
+    @InRequestScope
     public void invalidTMXNoContents() throws Exception {
         // Create a TM
         createTMFromFile("/tmx/invalid-tmx-no-contents.xml");
     }
 
     @Test(expected = TMXParseException.class)
+    @InRequestScope
     public void undiscernibleSourceLang() throws Exception {
         // Create a TM
         createTMFromFile("/tmx/invalid-tmx-no-discernible-srclang.xml");
     }
 
     @Test
+    @InRequestScope
     public void mergeSameTM() throws Exception {
         // Initial load
         TransMemory tm = createTMFromFile("/tmx/default-valid-tm.tmx");
@@ -296,6 +348,7 @@ public class TMXParserTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void mergeComplementaryTM() throws Exception {
         // Initial load
         TransMemory tm = createTMFromFile("/tmx/default-valid-tm.tmx");

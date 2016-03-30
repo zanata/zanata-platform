@@ -15,26 +15,31 @@ import java.util.Map;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
 
+import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.hamcrest.Matchers;
+import org.jglue.cdiunit.InRequestScope;
+import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataTest;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
+import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.TestFixture;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.GravatarService;
 import org.zanata.service.LocaleService;
+import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.server.TranslationWorkspace;
@@ -59,69 +64,69 @@ import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
 
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
+
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
+@SupportDeltaspikeCore
 public class ActivateWorkspaceHandlerTest extends ZanataTest {
     public static final String HTTP_SESSION_ID = "httpSessionId";
+    @Inject @Any
     private ActivateWorkspaceHandler handler;
-    @Mock
+    @Produces @Mock
     private ZanataIdentity identity;
-    @Mock
+    @Produces @Mock
     private TranslationWorkspaceManager translationWorkspaceManager;
-    @Mock
+    @Produces @Mock
     private WorkspaceContext workspaceContext;
-    @Mock
+    @Produces @Mock
     private TranslationWorkspace translationWorkspace;
-    @Mock
+    @Produces @Mock
     private GravatarService gravatarServiceImpl;
-    @Mock
+    @Produces @Mock
     private AccountDAO accountDAO;
-    @Mock
+    @Produces @Mock
     private ProjectDAO projectDAO;
-    @Mock
+    @Produces @Mock
     private ProjectIterationDAO projectIterationDAO;
-    @Mock
+    @Produces @Mock
     private LocaleService localeServiceImpl;
+    @Produces @Mock @DeltaSpike
+    private HttpSession httpSession;
     private Person person;
-    @Mock
+    @Produces @Mock @Authenticated
     private HAccount hAccount;
+    @Mock
+    private HPerson authenticatedPerson;
     @Captor
     private ArgumentCaptor<EnterWorkspace> enterWorkspaceEventCaptor;
     @Captor
     private ArgumentCaptor<EditorClientId> editorClientIdCaptor;
-    @Mock
+    @Produces @Mock
     private LoadOptionsHandler loadOptionsHandler;
-    @Mock
+    @Produces @Mock
     private GetValidationRulesHandler getValidationRulesHandler;
 
     private ValidationFactory validationFactory;
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        // @formatter:off
-        ActivateWorkspaceHandler activateWorkspaceHandler = SeamAutowire.instance()
-            .reset()
-            .use("authenticatedAccount", hAccount)
-            .use("identity", identity)
-            .use("translationWorkspaceManager", translationWorkspaceManager)
-            .use("accountDAO", accountDAO)
-            .use("projectDAO", projectDAO)
-            .use("projectIterationDAO", projectIterationDAO)
-            .use("localeServiceImpl", localeServiceImpl)
-            .use("loadOptionsHandler", loadOptionsHandler)
-            .use("getValidationRulesHandler", getValidationRulesHandler)
-            .ignoreNonResolvable()
-            .autowire(ActivateWorkspaceHandler.class);
-        // @formatter:on
-        handler = spy(activateWorkspaceHandler);
+        handler = spy(handler);
         person = TestFixture.person();
         doReturn(person).when(handler).retrievePerson();
         doReturn(HTTP_SESSION_ID).when(handler).getHttpSessionId();
         long accountId = 7;
         when(hAccount.getId()).thenReturn(accountId);
+        when(hAccount.getUsername()).thenReturn("pid");
+        when(hAccount.getPerson()).thenReturn(authenticatedPerson);
+        when(authenticatedPerson.getName()).thenReturn("Demo");
+        when(httpSession.getId()).thenReturn(HTTP_SESSION_ID);
         when(accountDAO.findById(accountId, true)).thenReturn(hAccount);
 
         ValidationMessages message =
@@ -130,6 +135,7 @@ public class ActivateWorkspaceHandlerTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void testExecute() throws Exception {
         WorkspaceId workspaceId = TestFixture.workspaceId();
         ActivateWorkspaceAction action =
@@ -215,6 +221,7 @@ public class ActivateWorkspaceHandlerTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void testRollback() throws Exception {
         handler.rollback(null, null, null);
     }

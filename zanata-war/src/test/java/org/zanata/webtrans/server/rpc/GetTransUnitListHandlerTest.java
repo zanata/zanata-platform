@@ -12,30 +12,31 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
-import org.hibernate.search.impl.FullTextSessionImpl;
-import org.hibernate.search.jpa.impl.FullTextEntityManagerImpl;
+import org.hibernate.Session;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.jpa.FullTextEntityManager;
 import org.infinispan.manager.CacheContainer;
+import org.jglue.cdiunit.AdditionalClasses;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
-import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.dao.TextFlowDAO;
+import org.zanata.jpa.FullText;
 import org.zanata.model.HLocale;
 import org.zanata.model.TestFixture;
 import org.zanata.rest.service.ResourceUtils;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.impl.TextFlowSearchServiceImpl;
 import org.zanata.service.impl.TranslationStateCacheImpl;
 import org.zanata.service.impl.ValidationServiceImpl;
+import org.zanata.test.CdiUnitRunner;
+import org.zanata.util.Zanata;
 import org.zanata.webtrans.client.service.GetTransUnitActionContext;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
@@ -46,21 +47,51 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
+@RunWith(CdiUnitRunner.class)
+@AdditionalClasses({
+        TranslationStateCacheImpl.class,
+        TextFlowSearchServiceImpl.class,
+        ValidationServiceImpl.class
+})
 public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
+    @Inject @Any
     private GetTransUnitListHandler handler;
-    @Mock
+    @Produces @Mock
     private ZanataIdentity identity;
-    @Mock
+    @Produces @Mock
     private LocaleService localeService;
-    @Mock
+    @Produces @Mock
     private GetTransUnitsNavigationService getTransUnitsNavigationService;
-    @Mock
+    @Produces @Mock
     private ResourceUtils resourceUtils;
+    @Produces @Zanata
+    private CacheContainer cacheContainer = new InfinispanTestCacheContainer();
+    @Produces @FullText @Mock
+    FullTextSession fullTextSession;
+    @Produces @FullText @Mock
+    FullTextEntityManager fullTextEntityManager;
+
+    @Override
+    @Produces
+    protected EntityManager getEm() {
+        return super.getEm();
+    }
+
+    @Override
+    @Produces
+    protected Session getSession() {
+        return super.getSession();
+    }
 
     private final DocumentInfo document = TestFixture.documentInfo(1L, "");
     private final LocaleId localeId = new LocaleId("ja");
@@ -75,29 +106,6 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        SeamAutowire seam = SeamAutowire.instance().reset();
-        // must create resourceUtils before transUnitTransformer
-        seam.use("resourceUtils", resourceUtils);
-        TransUnitTransformer transUnitTransformer =
-                seam.autowire(TransUnitTransformer.class);
-        seam.use("localeServiceImpl", localeService)
-                        .use("documentDAO", new DocumentDAO(getSession()))
-                        .use("projectIterationDAO",
-                                new ProjectIterationDAO(getSession()))
-                        .use("entityManager",
-                                new FullTextEntityManagerImpl(getEm()))
-                        .use("session", new FullTextSessionImpl(getSession()))
-                        .use("identity", identity)
-                        .use("textFlowDAO", new TextFlowDAO(getSession()))
-                        .use("transUnitTransformer", transUnitTransformer)
-                        .use("getTransUnitsNavigationService",
-                                getTransUnitsNavigationService)
-                        .use("cacheContainer", new InfinispanTestCacheContainer())
-                        .useImpl(TranslationStateCacheImpl.class)
-                        .useImpl(TextFlowSearchServiceImpl.class)
-                        .useImpl(ValidationServiceImpl.class).allowCycles();
-        handler = seam.autowire(GetTransUnitListHandler.class);
         jaHLocale = getEm().find(HLocale.class, 3L);
     }
 
@@ -116,6 +124,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testExecuteToGetAll() throws Exception {
         GetTransUnitList action =
                 GetTransUnitList.newAction(new GetTransUnitActionContext(
@@ -135,6 +144,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testExecuteWithStatusFilterOnly() throws Exception {
         GetTransUnitList action =
                 GetTransUnitList.newAction(new GetTransUnitActionContext(
@@ -152,6 +162,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testExecuteWithHasErrorFilterOnly() throws Exception {
         GetTransUnitList action =
                 GetTransUnitList.newAction(new GetTransUnitActionContext(
@@ -168,6 +179,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testExecuteWithSearchOnly() throws Exception {
         // Given: we want to search for file (mixed case) and we change page
         // size
@@ -190,6 +202,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testExecuteWithSearchAndStatusFilter() throws Exception {
         // Given: we want to search for file (mixed case) in fuzzy and
         // untranslated text flows
@@ -213,6 +226,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testExecuteWithSearchAndStatusFilter2() throws Exception {
         GetTransUnitList action =
                 GetTransUnitList.newAction(new GetTransUnitActionContext(
@@ -233,6 +247,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testExecuteWithPageSize() throws Exception {
         /**
          * Client request for page 4 data
@@ -256,6 +271,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testExecuteWithPageSizeNeedReload() throws Exception {
         /**
          * Client request for page 4 data - Offset:75 Count per page: 25

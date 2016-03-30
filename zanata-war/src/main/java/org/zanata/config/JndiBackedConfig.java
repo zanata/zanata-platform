@@ -124,9 +124,11 @@ public class JndiBackedConfig implements Serializable {
             Context ctx = new InitialContext();
             NamingEnumeration<NameClassPair> pairs = ctx.list(base);
             Set<String> results = new HashSet<String>();
-            while (pairs.hasMore()) {
-                NameClassPair pair = pairs.next();
-                results.add(pair.getName());
+            if(pairs != null) {
+                while (pairs.hasMore()) {
+                    NameClassPair pair = pairs.next();
+                    results.add(pair.getName());
+                }
             }
 
             return results;

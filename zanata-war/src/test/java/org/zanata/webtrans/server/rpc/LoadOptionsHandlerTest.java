@@ -7,16 +7,15 @@ import java.util.List;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
-import org.junit.Before;
+import org.hibernate.Session;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.zanata.ZanataDbunitJpaTest;
-import org.zanata.dao.AccountDAO;
-import org.zanata.dao.AccountOptionDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountOption;
-import org.zanata.seam.SeamAutowire;
+import org.zanata.security.annotations.Authenticated;
+import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.model.UserOptions;
 import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
@@ -24,15 +23,38 @@ import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 import org.zanata.webtrans.shared.rpc.NavOption;
 import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
 
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
 public class LoadOptionsHandlerTest extends ZanataDbunitJpaTest {
+    @Inject @Any
     private LoadOptionsHandler handler;
+    @Inject @Any
     private SaveOptionsHandler saveHandler;
 
-    private final static SeamAutowire seam = SeamAutowire.instance();
+    @Override
+    @Produces
+    protected EntityManager getEm() {
+        return super.getEm();
+    }
+
+    @Override
+    @Produces
+    protected Session getSession() {
+        return super.getSession();
+    }
+
+    @Produces @Authenticated
+    HAccount getAuthenticatedAccount(EntityManager em) {
+        return em.find(HAccount.class, 1L);
+    }
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -43,29 +65,6 @@ public class LoadOptionsHandlerTest extends ZanataDbunitJpaTest {
         afterTestOperations.add(new DataSetOperation(
                 "org/zanata/test/model/ClearAllTables.dbunit.xml",
                 DatabaseOperation.DELETE_ALL));
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        AccountDAO accountDAO = new AccountDAO(getSession());
-        AccountOptionDAO accountOptionDAO = new AccountOptionDAO(getSession());
-        HAccount authenticatedAccount = getEm().find(HAccount.class, 1L);
-        // @formatter:off
-        handler = seam
-            .reset()
-            .use(ZanataJpaIdentityStore.AUTHENTICATED_USER, authenticatedAccount)
-            .use("authenticatedAccount", authenticatedAccount)
-            .use("accountDAO", accountDAO)
-            .autowire(LoadOptionsHandler.class);
-
-        saveHandler = SeamAutowire.instance()
-            .reset()
-            .use(ZanataJpaIdentityStore.AUTHENTICATED_USER, authenticatedAccount)
-            .use("authenticatedAccount", authenticatedAccount)
-            .use("accountDAO", accountDAO)
-            .use("accountOptionDAO", accountOptionDAO)
-            .autowire(SaveOptionsHandler.class);
-        // @formatter:on
     }
 
     private HashMap<UserOptions, String> generateConfigMap(
@@ -98,6 +97,7 @@ public class LoadOptionsHandlerTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testExecuteWithOptionsInDatabase() throws Exception {
         UserConfigHolder configHolder = new UserConfigHolder();
         configHolder.setShowError(true); // we change one default value
@@ -117,6 +117,7 @@ public class LoadOptionsHandlerTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testExecuteWithNoOptionsInDatabase() throws Exception {
         // clear data result from testExecuteWithOptionsInDatabase()
         getEm().createQuery("Delete from HAccountOption").executeUpdate();
@@ -139,6 +140,7 @@ public class LoadOptionsHandlerTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testRollback() throws Exception {
         handler.rollback(null, null, null);
     }

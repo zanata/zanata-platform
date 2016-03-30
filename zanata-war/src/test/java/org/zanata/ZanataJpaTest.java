@@ -18,7 +18,6 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.util.ZanataEntities;
 
 // single threaded because of ehcache (perhaps other reasons too)
@@ -65,8 +64,6 @@ public abstract class ZanataJpaTest extends ZanataTest {
 
     @BeforeClass
     public static void initializeEMF() {
-        // let SeamAutowire patch Seam before someone else loads it:
-        SeamAutowire.instance();
         log.debug("Initializing EMF");
         emf =
                 Persistence.createEntityManagerFactory(PERSIST_NAME,

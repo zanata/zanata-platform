@@ -8,11 +8,12 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 
 import org.hamcrest.Matchers;
-import org.junit.Before;
+import org.jglue.cdiunit.AdditionalClasses;
+import org.jglue.cdiunit.InRequestScope;
+import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -23,9 +24,11 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.TestFixture;
 import org.zanata.rest.service.ResourceUtils;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.service.SecurityService;
 import org.zanata.service.TranslationService;
+import org.zanata.test.CdiUnitRunner;
+import org.zanata.util.IServiceLocator;
+import org.zanata.util.ServiceLocator;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
@@ -36,45 +39,36 @@ import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import com.google.common.collect.Lists;
 
-import javax.enterprise.event.Event;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
+@SupportDeltaspikeCore
+@AdditionalClasses({
+        // required by ServiceLocator
+        TransUnitTransformer.class
+})
 public class RevertTransUnitUpdatesHandlerTest extends ZanataTest {
+    @Inject @Any
     private RevertTransUnitUpdatesHandler handler;
-    @Mock
+    @Produces @Mock
     private ResourceUtils resourceUtils;
-    @Mock
+    @Produces @Mock
     private TranslationService translationServiceImpl;
-    @Mock
+    @Produces @Mock
     private SecurityService securityServiceImpl;
-    @Mock
+    @Produces @Mock
     private TranslationWorkspace translationWorkspace;
-    @Mock
-    private Event textFlowTargetUpdateContextEvent;
-
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        SeamAutowire seam = SeamAutowire.instance().reset();
-        // must create before transUnitTransformer
-        seam.use("resourceUtils", resourceUtils);
-        TransUnitTransformer transUnitTransformer =
-                seam.autowire(TransUnitTransformer.class);
-        // @formatter:off
-        handler = seam
-                .use("translationServiceImpl", translationServiceImpl)
-            .use("transUnitTransformer", transUnitTransformer)
-            .use("securityServiceImpl", securityServiceImpl)
-            .use("textFlowTargetUpdateContextEvent", textFlowTargetUpdateContextEvent)
-            .ignoreNonResolvable()
-            .autowire(RevertTransUnitUpdatesHandler.class);
-      // @formatter:on
-    }
+    @Produces
+    private IServiceLocator serviceLocator = ServiceLocator.instance();
 
     @Test
+    @InRequestScope
     public void testExecute() throws Exception {
         List<TransUnitUpdateInfo> updatesToRevert =
                 Lists.newArrayList(new TransUnitUpdateInfo(true, true,
@@ -121,6 +115,7 @@ public class RevertTransUnitUpdatesHandlerTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void testRollback() throws Exception {
         handler.rollback(null, null, null);
     }

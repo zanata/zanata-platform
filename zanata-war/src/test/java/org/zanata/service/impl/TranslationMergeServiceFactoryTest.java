@@ -1,15 +1,19 @@
 package org.zanata.service.impl;
 
 import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.hibernate.Session;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.zanata.ZanataTest;
 import org.zanata.common.MergeType;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.service.TranslationMergeService;
+import org.zanata.test.CdiUnitRunner;
+
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 
 import static org.hamcrest.MatcherAssert.*;
 
@@ -17,18 +21,16 @@ import static org.hamcrest.MatcherAssert.*;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
 public class TranslationMergeServiceFactoryTest extends ZanataTest {
+
+    @Inject
     private TranslationMergeServiceFactory factory;
 
-    @Before
-    public void before() {
-        factory =
-                SeamAutowire.instance().reset()
-                        .ignoreNonResolvable()
-                        .autowire(TranslationMergeServiceFactory.class);
-    }
+    @Produces @Mock Session session;
 
     @Test
+    @InRequestScope
     public void getMergeServiceWhenServerHasNoTarget() {
         TranslationMergeServiceFactory.MergeContext mergeContext =
                 new TranslationMergeServiceFactory.MergeContext(null, null,
@@ -39,6 +41,7 @@ public class TranslationMergeServiceFactoryTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void getMergeServiceWhenServerHasTargetAndMergeTypeIsAuto() {
         TranslationMergeServiceFactory.MergeContext mergeContext =
                 new TranslationMergeServiceFactory.MergeContext(MergeType.AUTO,
@@ -49,6 +52,7 @@ public class TranslationMergeServiceFactoryTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void getMergeServiceWhenServerHasTargetAndMergeTypeIsImport() {
         TranslationMergeServiceFactory.MergeContext mergeContext =
                 new TranslationMergeServiceFactory.MergeContext(

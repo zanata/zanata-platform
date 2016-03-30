@@ -200,7 +200,7 @@ public class Deployments {
                 || context.contains("RestTest")
                 || context.contains("TestAsyncBean")
                 || context.contains("ResourceTestObjectFactory")
-                || !context.matches(".+Test.*");
+                || !context.matches(".+Test(s)?\\.class$");
     }
 
     private static boolean notUnusedGwtClientCode(ArchivePath object) {

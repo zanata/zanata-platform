@@ -21,10 +21,15 @@
 package org.zanata.config;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.junit.Before;
+import org.hibernate.Session;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.zanata.ZanataDbunitJpaTest;
-import org.zanata.seam.SeamAutowire;
+import org.zanata.test.CdiUnitRunner;
+
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -36,14 +41,14 @@ import static org.hamcrest.Matchers.nullValue;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
 public class DatabaseBackedConfigTest extends ZanataDbunitJpaTest {
+    @Inject
     private DatabaseBackedConfig databaseBackedConfig;
 
-    @Before
-    public void prepare() {
-        databaseBackedConfig =
-                SeamAutowire.instance().reset().use("session", getSession())
-                        .autowire(DatabaseBackedConfig.class);
+    @Produces
+    public Session getSession() {
+        return super.getSession();
     }
 
     @Override
@@ -59,12 +64,14 @@ public class DatabaseBackedConfigTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void getHomeContent() {
         assertThat(databaseBackedConfig.getHomeContent(),
                 equalTo("This is the home content"));
     }
 
     @Test
+    @InRequestScope
     public void getNonExistentValue() throws Exception {
         // This value is NOT provided in the DB Unit script above
         assertThat(databaseBackedConfig.getAdminEmailAddress(), nullValue());

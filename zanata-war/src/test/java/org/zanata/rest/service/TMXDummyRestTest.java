@@ -1,5 +1,7 @@
 package org.zanata.rest.service;
 
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
 import org.hibernate.Session;
@@ -12,16 +14,24 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataRestTest;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.TextFlowStreamingDAO;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.test.CdiUnitRunner;
 
+@RunWith(CdiUnitRunner.class)
 public class TMXDummyRestTest extends ZanataRestTest {
 
+    @Produces
     @Mock
     private ZanataIdentity mockIdentity;
+
+    @Inject
     private TranslationMemoryResource tmService;
-    private SeamAutowire seam = SeamAutowire.instance();
+
+    @Override
+    @Produces
+    protected Session getSession() {
+        return super.getSession();
+    }
 
     @BeforeClass
     public static void disableSecurity() {
@@ -56,17 +66,9 @@ public class TMXDummyRestTest extends ZanataRestTest {
 
     @Override
     protected void prepareResources() {
-        seam.reset();
-        Session session = getSession();
-        // @formatter:off
-      seam.ignoreNonResolvable()
-            .use("session", session)
-            .use("identity", mockIdentity);
-      // @formatter:on
-
-        TranslationMemoryResourceService tmService =
-                seam.autowire(TranslationMemoryResourceService.class);
-        resources.add(seam.autowire(TextFlowStreamingDAO.class));
+//        TranslationMemoryResourceService tmService =
+//                seam.autowire(TranslationMemoryResourceService.class);
+//        resources.add(seam.autowire(TextFlowStreamingDAO.class));
         resources.add(tmService);
     }
 

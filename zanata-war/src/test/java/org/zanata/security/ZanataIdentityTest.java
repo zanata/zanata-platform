@@ -1,102 +1,102 @@
 package org.zanata.security;
 
 import org.apache.deltaspike.core.spi.scope.window.WindowContext;
+import org.hibernate.Session;
+import org.jglue.cdiunit.AdditionalClasses;
+import org.jglue.cdiunit.ContextController;
+import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataJpaTest;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.exception.NotLoggedInException;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HProjectIteration;
-import org.zanata.seam.AutowireContexts;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.seam.security.IdentityManager;
-import org.zanata.security.permission.CustomPermissionResolver;
-import org.zanata.security.permission.PermissionEvaluator;
+import org.zanata.security.annotations.Authenticated;
+import org.zanata.servlet.annotations.ContextPath;
+import org.zanata.servlet.annotations.ServerPath;
+import org.zanata.servlet.annotations.SessionId;
+import org.zanata.test.CdiUnitRunner;
 
-import javax.enterprise.event.Event;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static org.zanata.util.PasswordUtil.generateSaltedHash;
 
+@RunWith(CdiUnitRunner.class)
+@SupportDeltaspikeCore
+@AdditionalClasses({SecurityFunctions.class})
 public class ZanataIdentityTest extends ZanataJpaTest {
-    private static final SeamAutowire seam = SeamAutowire.instance();
     private static final String username = "translator";
     private static final String apiKey = "d83882201764f7d339e97c4b087f0806";
     private static final String validPassword = "translator";
     private static boolean securityEnabled;
+
+    @Inject
     private ZanataIdentity identity;
-    @Mock
-    private Event event;
-    @Mock
-    private IdentityManager identityManager;
-    private HAccount account;
-    //    private CustomPermissionResolver permissionResolver;
+
+    @Inject
+    private ContextController contextController;
+
+    @Produces @Mock IdentityManager identityManager;
+    @Produces @SessionId String sessionId = "";
+    @Produces @ServerPath String serverPath = "/";
+    @Produces @ContextPath String contextPath = "";
+    @Produces @Named("dswidQuery") String dswidQuery = "";
+    @Produces @Named("dswidParam") String dswidParam = "";
+
+    private HAccount authenticatedAccount;
+
+    @Override
+    @Produces
+    protected Session getSession() {
+        return super.getSession();
+    }
+
+    @Produces @Authenticated
+    HAccount getAuthenticatedAccount() {
+        return authenticatedAccount;
+    }
+
+    @Produces @Authenticated
+    Optional<HAccount> getAuthenticatedAccountOptional() {
+        return Optional.of(getAuthenticatedAccount());
+    }
 
     @BeforeClass
     public static void setUpEnvironment() {
-        seam.simulateSessionContext(true).simulateEventContext(true);
         securityEnabled = ZanataIdentity.isSecurityEnabled();
         ZanataIdentity.setSecurityEnabled(true);
     }
 
     @AfterClass
     public static void cleanUp() {
-        seam.simulateEventContext(false).simulateSessionContext(false);
         ZanataIdentity.setSecurityEnabled(securityEnabled);
     }
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+        // NB: this is easier than adding @InRequestScope to all test methods
+        contextController.openRequest();
         deleteAllTables();
         getEm().flush();
-        ZanataCredentials credentials = new ZanataCredentials();
-        PermissionEvaluator permissionEvaluator = new PermissionEvaluator();
         when(identityManager.isEnabled()).thenReturn(true);
         when(identityManager.authenticate(username, validPassword)).thenReturn(true);
         when(identityManager.authenticate(username, apiKey)).thenReturn(true);
-
-        identity = seam
-                .reset().ignoreNonResolvable()
-                .use("credentials", credentials)
-                .use("entityManager", getEm())
-                .use("identityManager", identityManager)
-                .use("loginSuccessfulEventEvent", event)
-                .use("logoutEvent", event)
-                .use("alreadyLoggedInEventEvent", event)
-                .use("loginFailedEventEvent", event)
-                .use("notLoggedInEventEvent", event)
-                .use("session", getSession())
-                .use("serverPath", "/")
-                .use("windowContext", new WindowContext() {
-                    @Override
-                    public String getCurrentWindowId() {
-                        return "dummyWindowId";
-                    }
-                    @Override
-                    public void activateWindow(String windowId) {
-                    }
-                    @Override
-                    public boolean closeWindow(String windowId) {
-                        return false;
-                    }
-                })
-                .autowire(ZanataIdentity.class);
-        seam.use("identity", identity);
-        seam.use("permissionProviders", seam.autowire(SecurityFunctions.class))
-            .use("permissionEvaluator", seam.autowire(permissionEvaluator));
         identity.setJaasConfigName(null);
-        identity.setPermissionResolver(new CustomPermissionResolver());
-        AutowireContexts.simulateSessionContext(true);
-        account = makeAccount();
-        getEm().persist(account);
+        authenticatedAccount = makeAccount();
+        getEm().persist(authenticatedAccount);
     }
 
 

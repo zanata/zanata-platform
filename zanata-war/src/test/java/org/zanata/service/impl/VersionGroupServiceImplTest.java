@@ -30,33 +30,61 @@ import java.util.Set;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
-import org.junit.Before;
+import org.hibernate.Session;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.infinispan.manager.CacheContainer;
+import org.jglue.cdiunit.AdditionalClasses;
+import org.jglue.cdiunit.InRequestScope;
+import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.dao.VersionGroupDAO;
-import org.zanata.model.HIterationGroup;
+import org.zanata.jpa.FullText;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.service.VersionLocaleKey;
+import org.zanata.test.CdiUnitRunner;
 import org.zanata.ui.model.statistic.WordStatistic;
+import org.zanata.util.IServiceLocator;
+import org.zanata.util.ServiceLocator;
+import org.zanata.util.Zanata;
+
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
+@SupportDeltaspikeCore
+@AdditionalClasses({
+        VersionStateCacheImpl.class,
+        LocaleServiceImpl.class
+})
 public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
-    private SeamAutowire seam = SeamAutowire.instance();
 
+    @Inject
     private VersionGroupServiceImpl versionGroupServiceImpl;
 
     private final String GROUP1_SLUG = "group1";
     private final String GROUP2_SLUG = "group2";
     private final String GROUP3_SLUG = "group3";
+
+    @Produces @Zanata CacheContainer cacheContainer =
+            new InfinispanTestCacheContainer();
+    @Produces @FullText @Mock FullTextEntityManager fullTextEntityManager;
+    @Produces IServiceLocator serviceLocator = ServiceLocator.instance();
+
+    @Override
+    @Produces
+    protected Session getSession() {
+        return super.getSession();
+    }
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -80,20 +108,8 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
                 DatabaseOperation.CLEAN_INSERT));
     }
 
-    @Before
-    public void initializeSeam() {
-        seam.reset()
-                .use("versionGroupDAO", new VersionGroupDAO(getSession()))
-                .use("projectIterationDAO",
-                        new ProjectIterationDAO(getSession()))
-                .use("session", getSession())
-                .use("cacheContainer", new InfinispanTestCacheContainer())
-                .useImpl(VersionStateCacheImpl.class).useImpl(LocaleServiceImpl.class).ignoreNonResolvable();
-
-        versionGroupServiceImpl = seam.autowire(VersionGroupServiceImpl.class);
-    }
-
     @Test
+    @InRequestScope
     public void getLocaleStatisticTest1() {
         LocaleId localeId = LocaleId.DE;
 
@@ -106,6 +122,7 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void getLocaleStatisticTest2() {
         LocaleId localeId = LocaleId.DE;
 
@@ -118,6 +135,7 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void getTotalMessageCountTest1() {
         int totalMessageCount =
                 versionGroupServiceImpl.getTotalMessageCount(GROUP1_SLUG);
@@ -125,6 +143,7 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void getTotalMessageCountTest2() {
         int totalMessageCount =
                 versionGroupServiceImpl.getTotalMessageCount(GROUP2_SLUG);
@@ -132,6 +151,7 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void getMaintainersBySlugTest() {
         List<HPerson> maintainers =
                 versionGroupServiceImpl.getMaintainersBySlug(GROUP1_SLUG);
@@ -139,6 +159,7 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void isVersionInGroupTest() {
         boolean result =
                 versionGroupServiceImpl.isVersionInGroup(GROUP1_SLUG, new Long(
@@ -152,6 +173,7 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void getGroupActiveLocalesTest() {
         Set<HLocale> activeLocales =
                 versionGroupServiceImpl.getGroupActiveLocales(GROUP1_SLUG);
@@ -163,6 +185,7 @@ public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void getMissingLocaleVersionMapTest() {
         Map<LocaleId, List<HProjectIteration>> map =
                 versionGroupServiceImpl.getMissingLocaleVersionMap(GROUP1_SLUG);

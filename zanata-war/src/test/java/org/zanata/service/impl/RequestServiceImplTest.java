@@ -1,49 +1,71 @@
 package org.zanata.service.impl;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.junit.Before;
+import org.hibernate.Session;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.dao.AccountDAO;
-import org.zanata.dao.LanguageRequestDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.RequestDAO;
 import org.zanata.events.RequestUpdatedEvent;
+import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.LanguageRequest;
 import org.zanata.model.Request;
 import org.zanata.model.type.RequestState;
 import org.zanata.model.type.RequestType;
-import org.zanata.seam.SeamAutowire;
+import org.zanata.service.EmailService;
+import org.zanata.test.CdiUnitRunner;
+import org.zanata.test.EventListener;
 
-import javax.enterprise.event.Event;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.verify;
 
 /**
  * @author Alex Eng <a href="aeng@redhat.com">aeng@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
 public class RequestServiceImplTest extends ZanataDbunitJpaTest {
-    private SeamAutowire seam = SeamAutowire.instance();
 
+    @Inject
     private RequestServiceImpl service;
 
+    @Inject
     private RequestDAO requestDAO;
 
-    private LanguageRequestDAO languageRequestDAO;
-
-    private AccountDAO accountDAO;
-
+    @Inject
     private LocaleDAO localeDAO;
 
-    @Mock
-    private Event<RequestUpdatedEvent> requestUpdatedEvent;
+    @Inject
+    private AccountDAO accountDAO;
+
+    @Inject
+    private EventListener eventListener;
+
+    @Produces @Mock ApplicationConfiguration applicationConfiguration;
+    @Produces @Mock EmailService emailService;
+    @Produces @Mock Messages messages;
+
+    @Override
+    @Produces
+    protected EntityManager getEm() {
+        return super.getEm();
+    }
+
+    @Override
+    @Produces
+    protected Session getSession() {
+        return super.getSession();
+    }
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -58,26 +80,8 @@ public class RequestServiceImplTest extends ZanataDbunitJpaTest {
             DatabaseOperation.CLEAN_INSERT));
     }
 
-    @Before
-    public void beforeMethod() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        seam.reset();
-        requestDAO = new RequestDAO(getSession());
-        languageRequestDAO = new LanguageRequestDAO(getSession());
-        accountDAO = new AccountDAO(getSession());
-        localeDAO = new LocaleDAO(getSession());
-
-        service = seam
-            .use("requestDAO", requestDAO)
-            .use("languageRequestDAO", languageRequestDAO)
-            .use("requestUpdatedEvent", requestUpdatedEvent)
-            .use("entityManager", getEm())
-            .use("session", getSession())
-            .ignoreNonResolvable()
-            .autowire(RequestServiceImpl.class);
-    }
-
     @Test
+    @InRequestScope
     public void testCreateRequest() {
         //admin user
         HAccount requester = accountDAO.findById(1L);
@@ -112,6 +116,7 @@ public class RequestServiceImplTest extends ZanataDbunitJpaTest {
      * Use result from testCreateRequest
      */
     @Test
+    @InRequestScope
     public void testUpdateLanguageRequest() {
         //admin user
         HAccount requester = accountDAO.findById(1L);
@@ -132,7 +137,9 @@ public class RequestServiceImplTest extends ZanataDbunitJpaTest {
         service.updateLanguageRequest(languageRequest.getId(), requester,
             RequestState.ACCEPTED, comment);
 
-        verify(requestUpdatedEvent).fire(isA(RequestUpdatedEvent.class));
+        List<RequestUpdatedEvent> firedEvents =
+                eventListener.getFiredEvents(RequestUpdatedEvent.class);
+        assertThat(firedEvents.size()).isEqualTo(1);
 
         assertThat(
             service.getPendingLanguageRequests(requester, locale.getLocaleId()))

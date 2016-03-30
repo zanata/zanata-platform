@@ -1,39 +1,47 @@
 package org.zanata.rest.editor.service;
 
-import java.util.List;
-import javax.ws.rs.core.Response;
-
 import org.dbunit.operation.DatabaseOperation;
-import org.jboss.resteasy.client.ClientResponse;
+import org.hibernate.Session;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.jglue.cdiunit.AdditionalClasses;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.zanata.ZanataDbunitJpaTest;
-import org.zanata.dao.ActivityDAO;
-import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.TextFlowTargetDAO;
-import org.zanata.rest.editor.dto.Locale;
-import org.zanata.seam.SeamAutowire;
-import org.zanata.service.impl.ActivityServiceImpl;
+import org.zanata.cdi.StaticProducer;
+import org.zanata.jpa.FullText;
 import org.zanata.service.impl.LocaleServiceImpl;
+import org.zanata.test.CdiUnitRunner;
+
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.ws.rs.core.Response;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.sameInstance;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-public class LocalesServiceTest extends ZanataDbunitJpaTest {
+@RunWith(CdiUnitRunner.class)
+@AdditionalClasses({ LocaleServiceImpl.class })
+public class LocalesServiceTest extends ZanataDbunitJpaTest implements
+        StaticProducer {
 
-    private Response okResponse;
     private Response response;
 
-
-    private SeamAutowire seam = SeamAutowire.instance();
-
+    @Inject
     private LocalesService localesService;
+
+    @Produces
+    public Session getSession() {
+        return super.getSession();
+    }
+
+    @Produces @FullText @Mock
+    private FullTextEntityManager fullTextEntityManager;
 
     /**
      * Implement this in a subclass.
@@ -51,22 +59,13 @@ public class LocalesServiceTest extends ZanataDbunitJpaTest {
                 DatabaseOperation.CLEAN_INSERT));
     }
 
-    @Before
-    public void initializeSeam() {
-        seam.reset().useImpl(LocaleServiceImpl.class)
-                .use("session", getSession()).ignoreNonResolvable();
-        localesService = seam.autowire(LocalesService.class);
-
-        okResponse = Response.ok().build();
-    }
-
     @After
     public void afterMethod() {
-        okResponse = null;
         response = null;
     }
 
     @Test
+    @InRequestScope
     public void testGetLocales() {
         response = localesService.get();
         assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));

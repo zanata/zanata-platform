@@ -2,18 +2,18 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
 
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataTest;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.model.TestFixture;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.impl.LocaleServiceImpl;
+import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetLocaleList;
 import org.zanata.webtrans.shared.rpc.GetLocaleListResult;
@@ -21,34 +21,30 @@ import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @Slf4j
+@RunWith(CdiUnitRunner.class)
 public class GetLocaleListHandlerTest extends ZanataTest {
+    @Inject @Any
     private GetLocaleListHandler handler;
 
-    @Mock
+    @Produces @Mock
     private ZanataIdentity identity;
 
-    @Mock
+    @Produces @Mock
     private LocaleServiceImpl localeServiceImpl;
 
     private GetLocaleList action;
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        // @formatter:off
-        handler = SeamAutowire.instance()
-                .reset()
-                .use("identity", identity)
-                .use("localeServiceImpl", localeServiceImpl)
-                .ignoreNonResolvable()
-                .autowire(GetLocaleListHandler.class);
-        // @formatter:on
-
         WorkspaceId workspaceId = TestFixture.workspaceId();
         action = new GetLocaleList();
         action.setWorkspaceId(workspaceId);
@@ -58,6 +54,7 @@ public class GetLocaleListHandlerTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void testExecute() throws Exception {
         GetLocaleListResult result = handler.execute(action, null);
         verify(identity).checkLoggedIn();
@@ -66,6 +63,7 @@ public class GetLocaleListHandlerTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void testRollback() throws Exception {
         handler.rollback(null, null, null);
     }

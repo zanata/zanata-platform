@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import javax.validation.Validation;
+import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -17,8 +20,8 @@ import javax.xml.transform.stream.StreamSource;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.jboss.resteasy.core.Headers;
 import org.jboss.resteasy.spi.NoLogWebApplicationException;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.ZanataTest;
@@ -27,30 +30,32 @@ import org.zanata.rest.dto.VersionInfo;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.seam.SeamAutowire;
+import org.zanata.test.CdiUnitRunner;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+@RunWith(CdiUnitRunner.class)
 public class RestUtilsTest extends ZanataTest {
+
+    @Inject
     RestUtils restUtils;
+
+    @Produces
+    public ValidatorFactory getValidatorFactory() {
+        return Validation.buildDefaultValidatorFactory();
+    }
+
+    @Produces
+    public Validator getValidator() {
+        return getValidatorFactory().getValidator();
+    }
 
     private static ResourceTestObjectFactory resourceTestFactory =
             new ResourceTestObjectFactory();
     private static TranslationsResourceTestObjectFactory transTestFactory =
             new TranslationsResourceTestObjectFactory();
     private static final Logger log = LoggerFactory.getLogger(RestUtilsTest.class);
-
-    @Before
-    public void prepareSeam() {
-        ValidatorFactory validatorFactory =
-                Validation.buildDefaultValidatorFactory();
-        SeamAutowire seam = SeamAutowire.instance();
-        restUtils = seam.reset()
-                .use("validatorFactory", validatorFactory)
-                .use("validator", validatorFactory.getValidator())
-                .autowire(RestUtils.class);
-    }
 
     @Test
     public void getPoHeaderTest() throws Exception {

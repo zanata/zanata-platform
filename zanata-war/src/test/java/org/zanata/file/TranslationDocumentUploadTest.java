@@ -20,28 +20,43 @@
  */
 package org.zanata.file;
 
+import org.apache.deltaspike.core.spi.scope.window.WindowContext;
+import org.hibernate.Session;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.MockitoAnnotations;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.zanata.model.type.TranslationSourceType;
+import org.zanata.service.TranslationFileService;
+import org.zanata.service.TranslationService;
+import org.zanata.servlet.annotations.ContextPath;
+import org.zanata.servlet.annotations.ServerPath;
+import org.zanata.servlet.annotations.SessionId;
+import org.zanata.test.CdiUnitRunner;
+import org.zanata.util.UrlUtil;
 
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
+@RunWith(CdiUnitRunner.class)
 public class TranslationDocumentUploadTest extends DocumentUploadTest {
 
     private static final String ANY_LOCALE = "es";
     private static final String ANY_MERGETYPE = "auto";
 
+    @Inject
     private TranslationDocumentUpload transUpload;
 
-    @Before
-    public void beforeTest() {
-        MockitoAnnotations.initMocks(this);
-        seam.reset();
-        seam.ignoreNonResolvable();
-        transUpload = seam.autowire(TranslationDocumentUpload.class);
-    }
+    @Produces @Mock TranslationService translationService;
+    @Produces @Mock TranslationFileService translationFileService;
+    @Produces @Mock UploadPartPersistService uploadPartPersistService;
+    @Produces @Mock WindowContext windowContext;
+    @Produces @Mock UrlUtil urlUtil;
+    @Produces @Mock Session session;
+    @Produces @SessionId String sessionId = "";
+    @Produces @ServerPath String serverPath = "";
+    @Produces @ContextPath String contextPath = "";
 
     @After
     public void clearResponse() {

@@ -21,19 +21,17 @@
 package org.zanata.config;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.zanata.util.IServiceLocator;
+import com.google.common.collect.Maps;
 import org.zanata.util.Synchronized;
 import org.zanata.ServerConstants;
 import org.zanata.dao.ApplicationConfigurationDAO;
 import org.zanata.model.HApplicationConfiguration;
-import org.zanata.util.ServiceLocator;
 
 /**
  * Configuration store implementation that is backed by database tables.
@@ -49,10 +47,10 @@ public class DatabaseBackedConfig implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Map<String, String> configurationValues;
+    private final Map<String, String> configurationValues = Maps.newHashMap();
 
     @Inject
-    private IServiceLocator serviceLocator;
+    private ApplicationConfigurationDAO applicationConfigurationDAO;
 
     /**
      * Resets the store by clearing out all values. This means that values will
@@ -60,7 +58,7 @@ public class DatabaseBackedConfig implements Serializable {
      */
     @PostConstruct
     public void reset() {
-        configurationValues = new HashMap<String, String>();
+        configurationValues.clear();
     }
 
     /**
@@ -76,10 +74,8 @@ public class DatabaseBackedConfig implements Serializable {
 
     private String getConfigValue(String key) {
         if (!configurationValues.containsKey(key)) {
-            ApplicationConfigurationDAO appConfigDAO =
-                    serviceLocator.getInstance(ApplicationConfigurationDAO.class);
             HApplicationConfiguration configRecord =
-                    appConfigDAO.findByKey(key);
+                    applicationConfigurationDAO.findByKey(key);
             String storedVal = null;
             if (configRecord != null) {
                 storedVal = configRecord.getValue();

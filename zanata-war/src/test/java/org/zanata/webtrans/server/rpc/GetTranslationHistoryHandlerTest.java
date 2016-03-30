@@ -5,14 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 
 import org.hamcrest.Matchers;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -28,9 +31,9 @@ import org.zanata.model.HTextFlowTargetHistory;
 import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.model.TestFixture;
 import org.zanata.rest.service.ResourceUtils;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
+import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
@@ -52,44 +55,36 @@ import static org.mockito.Mockito.when;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
 public class GetTranslationHistoryHandlerTest extends ZanataTest {
+    @Inject @Any
     private GetTranslationHistoryHandler handler;
-    @Mock
+    @Produces @Mock
     private ZanataIdentity identity;
-    @Mock
+    @Produces @Mock
     private LocaleService localeService;
-    @Mock
+    @Produces @Mock
     private TextFlowDAO textFlowDAO;
-    @Mock
+    @Produces @Mock
     private ExecutionContext executionContext;
+    @Produces @Mock
+    private TextFlowTargetReviewCommentsDAO reviewCommentsDAO;
+    @Produces @Mock
+    private ResourceUtils resourceUtils;
 
     private GetTranslationHistoryAction action;
     private TransUnitId transUnitId = new TransUnitId(1L);
     @Mock
     private HLocale hLocale;
     private LocaleId localeId = new LocaleId("en-US");
-    @Mock
-    private TextFlowTargetReviewCommentsDAO reviewCommentsDAO;
-    @Mock
-    private ResourceUtils resourceUtils;
 
     @Before
     public void beforeMethod() {
-        MockitoAnnotations.initMocks(this);
-        // @formatter:off
-      handler = SeamAutowire.instance()
-            .reset()
-            .use("identity", identity)
-            .use("localeServiceImpl", localeService)
-            .use("textFlowDAO", textFlowDAO)
-            .use("textFlowTargetReviewCommentsDAO", reviewCommentsDAO)
-            .use("resourceUtils", resourceUtils)
-            .autowire(GetTranslationHistoryHandler.class);
-      // @formatter:on
         action = new GetTranslationHistoryAction(transUnitId);
     }
 
     @Test(expected = ActionException.class)
+    @InRequestScope
     public void invalidLocaleWillThrowException() throws ActionException {
         // Given:
         String projectSlug = "rhel";
@@ -109,6 +104,7 @@ public class GetTranslationHistoryHandlerTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void canGetEmptyHistoryForTextFlowWithNoTranslation()
             throws ActionException {
         // Given: text flow has empty targets
@@ -134,6 +130,7 @@ public class GetTranslationHistoryHandlerTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void canGetHistoryAndCurrentTranslation() throws ActionException {
         // Given: text flow has 2 history translation
         action.setWorkspaceId(new WorkspaceId(new ProjectIterationId("rhel",
@@ -177,6 +174,7 @@ public class GetTranslationHistoryHandlerTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void canGetCurrentTranslationWithoutLastModifiedBy()
             throws ActionException {
         // Given: text flow has no history translation and only current
@@ -214,6 +212,7 @@ public class GetTranslationHistoryHandlerTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void canStripObsoleteTargetContentBasedOnCurrentNPlural()
             throws ActionException {
         // Given: text flow has no history translation
@@ -279,6 +278,7 @@ public class GetTranslationHistoryHandlerTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void canGetReviewComments() {
         GetTranslationHistoryAction action =
                 new GetTranslationHistoryAction(new TransUnitId(1L));

@@ -39,14 +39,14 @@ import java.sql.Blob;
 import java.sql.SQLException;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.deltaspike.core.spi.scope.window.WindowContext;
 import org.hibernate.Session;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.zanata.common.EntityStatus;
 import org.zanata.exception.ChunkUploadException;
 import org.zanata.model.HDocumentUpload;
@@ -56,17 +56,34 @@ import org.zanata.service.TranslationFileService;
 
 import com.google.common.base.Optional;
 import com.google.common.io.Files;
+import org.zanata.servlet.annotations.ContextPath;
+import org.zanata.servlet.annotations.ServerPath;
+import org.zanata.servlet.annotations.SessionId;
+import org.zanata.test.CdiUnitRunner;
+import org.zanata.util.UrlUtil;
 
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+
+@RunWith(CdiUnitRunner.class)
 public class DocumentUploadUtilTest extends DocumentUploadTest {
 
     private static final String HASH_OF_ABCDEFGHI =
             "d41d8cd98f00b204e9800998ecf8427e";
-    @Mock
+    @Produces @Mock
     Session session;
-    @Mock
+    @Produces @Mock
     TranslationFileService translationFileService;
-    @Mock
+    @Produces @Mock
     UploadPartPersistService uploadPartPersistService;
+    @Produces @Mock
+    WindowContext windowContext;
+    @Produces @Mock
+    UrlUtil urlUtil;
+
+    @Produces @SessionId String sessionId = "";
+    @Produces @ServerPath String serverPath = "";
+    @Produces @ContextPath String contextPath = "";
 
     @Mock
     Blob partBlob0;
@@ -76,22 +93,8 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
     @Captor
     private ArgumentCaptor<InputStream> persistedInputStreamCaptor;
 
+    @Inject
     private DocumentUploadUtil util;
-
-    @Before
-    public void beforeEachMethod() {
-        MockitoAnnotations.initMocks(this);
-        seam.reset();
-        seam.ignoreNonResolvable().use("identity", identity)
-                .use("session", session).use("documentDAO", documentDAO)
-                .use("documentUploadDAO", documentUploadDAO)
-                .use("projectIterationDAO", projectIterationDAO)
-                .use("translationFileServiceImpl", translationFileService)
-                .use("uploadPartPersistService", uploadPartPersistService)
-                .allowCycles();
-
-        util = seam.autowire(DocumentUploadUtil.class);
-    }
 
     @Test
     public void notValidIfNotLoggedIn() {

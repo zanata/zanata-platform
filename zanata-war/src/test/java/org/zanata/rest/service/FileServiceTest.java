@@ -20,14 +20,11 @@
  */
 package org.zanata.rest.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.sameInstance;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.when;
-
-import javax.ws.rs.core.Response;
-
+import org.apache.deltaspike.core.spi.scope.window.WindowContext;
+import org.hibernate.Session;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.jglue.cdiunit.AdditionalClasses;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,19 +32,44 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.ZanataTest;
+import org.zanata.file.FilePersistService;
 import org.zanata.file.GlobalDocumentId;
 import org.zanata.file.SourceDocumentUpload;
 import org.zanata.file.TranslationDocumentUpload;
+import org.zanata.i18n.Messages;
+import org.zanata.jpa.FullText;
 import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.DocumentFileUploadForm;
-import org.zanata.seam.SeamAutowire;
+import org.zanata.service.CopyTransService;
+import org.zanata.service.FileSystemService;
+import org.zanata.service.LocaleService;
+import org.zanata.service.TranslationFileService;
+import org.zanata.service.TranslationService;
+import org.zanata.servlet.annotations.ContextPath;
+import org.zanata.servlet.annotations.ServerPath;
+import org.zanata.servlet.annotations.SessionId;
+import org.zanata.test.CdiUnitRunner;
+import org.zanata.util.UrlUtil;
+
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.ws.rs.core.Response;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
 
 /**
  * @author David Mason, <a
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
+@AdditionalClasses({FileService.class})
 public class FileServiceTest extends ZanataTest {
     private static final String PROJ_SLUG = "project-slug";
     private static final String VER_SLUG = "version-slug";
@@ -55,16 +77,34 @@ public class FileServiceTest extends ZanataTest {
     private static final String LOCALE = "es";
     private static final String MERGE = "auto";
 
-    SeamAutowire seam = SeamAutowire.instance();
-
-    @Mock
+    @Produces @Mock
     private SourceDocumentUpload sourceUploader;
-    @Mock
+    @Produces @Mock
     private TranslationDocumentUpload transUploader;
+
+    // Mocked injected items
+    @Produces @ContextPath String contextPath = "/mock-context";
+    @Produces @SessionId String sessionId = "mock-session-id";
+    @Produces @ServerPath String serverPath = "mock-server-path";
+    @Produces @Mock Session session;
+    @Produces @Mock @FullText FullTextEntityManager fullTextEntityManager;
+    @Produces @Mock EntityManager entityManager;
+    @Produces @Mock LocaleService localeService;
+    @Produces @Mock CopyTransService copyTransService;
+    @Produces @Mock FilePersistService filePersistService;
+    @Produces @Mock FileSystemService fileSystemService;
+    @Produces @Mock TranslationFileService translationFileService;
+    @Produces @Mock TranslationService translationService;
+    @Produces @Mock WindowContext windowContext;
+    @Produces @Mock UrlUtil urlUtil;
+    // needed to override the producers of the original class
+    @Produces @Mock ApplicationConfiguration applicationConfiguration;
+    @Produces @Mock Messages messages;
 
     @Captor
     private ArgumentCaptor<DocumentFileUploadForm> formCaptor;
 
+    @Inject
     private FileResource fileService;
 
     private GlobalDocumentId id;
@@ -74,18 +114,6 @@ public class FileServiceTest extends ZanataTest {
 
     @Before
     public void beforeTest() {
-        MockitoAnnotations.initMocks(this);
-
-        seam.reset();
-        seam.ignoreNonResolvable()
-                .use("sourceDocumentUploader", sourceUploader)
-                .use("sourceUploader", sourceUploader)
-                .use("translationDocumentUploader", transUploader)
-                .use("translationUploader", transUploader)
-                .allowCycles();
-
-        fileService = seam.autowire(FileService.class);
-
         id = new GlobalDocumentId(PROJ_SLUG, VER_SLUG, DOC_ID);
         form = new DocumentFileUploadForm();
         okResponse = Response.ok().build();
@@ -100,6 +128,7 @@ public class FileServiceTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void sourceUploadParamsHandledCorrectly() {
         when(sourceUploader.tryUploadSourceFile(eq(id), formCaptor.capture()))
                 .thenReturn(okResponse);
@@ -108,6 +137,7 @@ public class FileServiceTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void sourceUploadResponseReturnedDirectly() {
         when(sourceUploader.tryUploadSourceFile(id, form)).thenReturn(
                 okResponse);
@@ -117,6 +147,7 @@ public class FileServiceTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void translationUploadParamsHandledCorrectly() {
         when(
                 transUploader.tryUploadTranslationFile(eq(id), eq(LOCALE),
@@ -128,6 +159,7 @@ public class FileServiceTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void translationUploadResponseReturnedDirectly() {
         when(transUploader.tryUploadTranslationFile(id, LOCALE, MERGE, false, form, TranslationSourceType.API_UPLOAD))
                 .thenReturn(okResponse);

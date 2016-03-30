@@ -1,5 +1,5 @@
 /*
- * Copyright 2010, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2016, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,24 +18,21 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.seam.test;
+package org.zanata.cdi;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.zanata.util.IServiceLocator;
+import org.zanata.util.ServiceLocator;
+
+import javax.enterprise.inject.Produces;
 
 /**
- * Child component that forms a dependency cycle with
- * {@link ComponentWithChildCycle}
- *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Named("ChildWithCycle")
-public class ChildWithCycle {
-    @Inject
-    private ComponentWithChildCycle cyclicParentComponent;
+public interface StaticProducer {
 
-    public ComponentWithChildCycle getCyclicParentComponent() {
-        return cyclicParentComponent;
+    @Produces
+    default IServiceLocator getServiceLocator() {
+        return ServiceLocator.instance();
     }
+
 }

@@ -8,13 +8,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
+import org.jglue.cdiunit.ContextController;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.ZanataTest;
@@ -31,7 +34,7 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.po.HPoTargetHeader;
 import org.zanata.rest.dto.extensions.gettext.PoTargetHeader;
 import org.zanata.rest.dto.resource.TextFlow;
-import org.zanata.seam.SeamAutowire;
+import org.zanata.test.CdiUnitRunner;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -39,16 +42,21 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(CdiUnitRunner.class)
 public class ResourceUtilsTest extends ZanataTest {
     private static final Logger log = LoggerFactory
             .getLogger(ResourceUtilsTest.class);
 
+    @Inject
     private ResourceUtils resourceUtils;
 
-    @Mock
+    @Inject
+    private ContextController contextController;
+
+    @Produces @Mock
     private EntityManager mockEm;
 
-    @Mock
+    @Produces @Mock
     private LocaleDAO mockLocaleDAO;
 
     @BeforeClass
@@ -60,13 +68,9 @@ public class ResourceUtilsTest extends ZanataTest {
     }
 
     @Before
-    public void initializeResourceUtils() {
-        MockitoAnnotations.initMocks(this);
-        resourceUtils =
-                SeamAutowire.instance().reset()
-                    .use("entityManager", mockEm)
-                    .use("localeDAO", mockLocaleDAO)
-                    .autowire(ResourceUtils.class);
+    public void initializeRequestScope() {
+        // NB: this is easier than adding @InRequestScope to all test methods
+        contextController.openRequest();
     }
 
     @Test

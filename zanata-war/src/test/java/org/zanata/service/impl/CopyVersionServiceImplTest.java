@@ -21,8 +21,9 @@
 package org.zanata.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -31,14 +32,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.dbunit.operation.DatabaseOperation;
+import org.hibernate.Session;
+import org.infinispan.manager.CacheContainer;
+import org.jglue.cdiunit.AdditionalClasses;
+import org.jglue.cdiunit.InRequestScope;
+import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.cache.InfinispanTestCacheContainer;
+import org.zanata.cdi.TestTransaction;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
@@ -58,36 +64,75 @@ import org.zanata.model.HTextFlowTargetHistory;
 import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.model.po.HPoTargetHeader;
 import org.zanata.model.type.TranslationSourceType;
-import org.zanata.seam.AutowireTransaction;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataCredentials;
 import org.zanata.security.ZanataIdentity;
 import com.google.common.collect.Lists;
+import org.zanata.test.CdiUnitRunner;
+import org.zanata.transaction.TransactionUtil;
+import org.zanata.util.IServiceLocator;
+import org.zanata.util.ServiceLocator;
 import org.zanata.util.TranslationUtil;
+import org.zanata.util.Zanata;
 
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.transaction.UserTransaction;
+
+@RunWith(CdiUnitRunner.class)
+@SupportDeltaspikeCore
+@AdditionalClasses({
+        VersionStateCacheImpl.class,
+        // needed by service locator
+        TransactionUtil.class
+})
 public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
-    private SeamAutowire seam = SeamAutowire.instance();
-
-    @Mock
-    private ZanataIdentity identity;
-
-    @Mock
-    private ZanataCredentials credentials;
-
-    @Mock
-    private FileSystemPersistService fileSystemPersistService;
-
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
+    @Inject
     private DocumentDAO documentDAO;
 
+    @Inject
     private TextFlowTargetDAO textFlowTargetDAO;
 
+    @Inject
     private TextFlowDAO textFlowDAO;
 
+    @Inject
     private RawDocumentDAO rawDocumentDAO;
 
+    @Inject
     private CopyVersionServiceImpl service;
+
+    @Produces @Mock
+    private ZanataIdentity identity;
+
+    @Produces @Mock
+    private ZanataCredentials credentials;
+
+    @Produces @Mock
+    private FileSystemPersistService fileSystemPersistService;
+
+    @Produces @Zanata
+    CacheContainer cacheContainer = new InfinispanTestCacheContainer();
+
+    @Produces
+    IServiceLocator serviceLocator = spy(ServiceLocator.instance());
+
+    private UserTransaction tx;
+
+    @Override
+    @Produces
+    protected Session getSession() {
+        return super.getSession();
+    }
+
+    @Override
+    @Produces
+    protected EntityManager getEm() {
+        return super.getEm();
+    }
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -107,36 +152,17 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
 
     @Before
     public void beforeMethod() throws Exception {
-        MockitoAnnotations.initMocks(this);
-
         when(identity.getCredentials()).thenReturn(credentials);
         when(credentials.getUsername()).thenReturn("mock user");
 
-        projectIterationDAO = new ProjectIterationDAO(getSession());
-        documentDAO = new DocumentDAO(getSession());
-        textFlowTargetDAO = new TextFlowTargetDAO(getSession());
-        textFlowDAO = new TextFlowDAO(getSession());
-        rawDocumentDAO = new RawDocumentDAO((getSession()));
-
-        seam.reset()
-                .use("projectIterationDAO",
-                        projectIterationDAO)
-                .use("documentDAO", documentDAO)
-                .use("textFlowDAO", textFlowDAO)
-                .use("textFlowTargetDAO", textFlowTargetDAO)
-                .use("entityManager", getEm())
-                .use("session", getSession())
-                .use("identity", identity)
-                .use("filePersistService", fileSystemPersistService)
-                .use("cacheContainer", new InfinispanTestCacheContainer())
-                .useJndi("java:jboss/UserTransaction",
-                        AutowireTransaction.instance())
-                .useImpl(VersionStateCacheImpl.class)
-                .ignoreNonResolvable();
-        service = seam.autowire(CopyVersionServiceImpl.class);
+        tx = spy(new TestTransaction(getEm()));
+        doReturn(tx).when(serviceLocator)
+                .getJndiComponent("java:jboss/UserTransaction",
+                        UserTransaction.class);
     }
 
     @Test
+    @InRequestScope
     public void testCopyVersionNotExist() {
         String projectSlug = "non-exists-project";
         String versionSlug = "1.0";
@@ -147,7 +173,8 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
-    public void testTextFlowBatching() {
+    @InRequestScope
+    public void testTextFlowBatching() throws Exception {
         String newVersionSlug = "new-version";
         CopyVersionServiceImpl spyService = spy(service);
         int tfCount = CopyVersionServiceImpl.TF_BATCH_SIZE + 1;
@@ -170,13 +197,13 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
                 (tfCount / CopyVersionServiceImpl.TF_BATCH_SIZE)
                         + (tfCount % CopyVersionServiceImpl.TF_BATCH_SIZE == 0 ? 0 : 1);
 
-        verify(spyService, times(expectedTfBatchRuns)).copyTextFlowBatch(
-                Matchers.eq(existingDoc.getId()), Matchers.anyLong(),
-                Matchers.anyInt(), Matchers.anyInt());
+        // verify that it calls a transaction commit at least once per batch
+        verify(tx, atLeast(expectedTfBatchRuns)).commit();
     }
 
     @Test
-    public void testTextFlowTargetBatching() {
+    @InRequestScope
+    public void testTextFlowTargetBatching() throws Exception {
         String newVersionSlug = "new-version";
         CopyVersionServiceImpl spyService = spy(service);
         HDocument existingDoc = getTestDocWithNoTF();
@@ -197,10 +224,8 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
         int expectedTftBatchRuns =
                 (tftSize / CopyVersionServiceImpl.TFT_BATCH_SIZE)
                         + (tftSize % CopyVersionServiceImpl.TF_BATCH_SIZE == 0 ? 0 : 1);
-        verify(spyService, times(expectedTftBatchRuns))
-                .copyTextFlowTargetBatch(
-                        Matchers.anyLong(), Matchers.anyLong(),
-                        Matchers.anyInt(), Matchers.anyInt());
+        // verify that it calls a transaction commit at least once per batch
+        verify(tx, atLeast(expectedTftBatchRuns)).commit();
     }
 
     /**
@@ -244,6 +269,7 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testCopyVersion() {
         String projectSlug = "sample-project";
         String versionSlug = "1.0";
@@ -254,6 +280,7 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testCopyVersion2() {
         String projectSlug = "sample-project";
         String versionSlug = "2.0";
@@ -337,6 +364,7 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testCopyVersionSettings() {
         String projectSlug = "sample-project";
         String versionSlug = "1.0";
@@ -357,6 +385,7 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testCopyDocument() throws Exception {
         HProjectIteration dummyVersion = getDummyVersion("new-version");
         HDocument existingDoc = documentDAO.getById(1L);
@@ -368,6 +397,7 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testCopyRawDocument() throws Exception {
         HDocument existingDoc = documentDAO.getById(1L);
         HRawDocument newRawDoc =
@@ -378,6 +408,7 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testCopyTextFlow() throws Exception {
         HDocument dummyDoc = getDummyDocument();
         HTextFlow existingTextFlow = textFlowDAO.findById(1L);
@@ -388,6 +419,7 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testCopyTextFlowTarget() throws Exception {
         HTextFlow dummyTextFlow = getDummyTextFlow();
         HTextFlowTarget existingTarget = textFlowTargetDAO.findById(3L, false);

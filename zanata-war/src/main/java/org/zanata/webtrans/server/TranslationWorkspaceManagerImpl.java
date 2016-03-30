@@ -1,28 +1,22 @@
 package org.zanata.webtrans.server;
 
-import static com.google.common.base.MoreObjects.firstNonNull;
-import static org.zanata.transaction.TransactionUtil.runInTransaction;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
+import com.google.common.base.Throwables;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
+import com.ibm.icu.util.ULocale;
+import de.novanic.eventservice.service.registry.EventRegistry;
+import de.novanic.eventservice.service.registry.EventRegistryFactory;
+import de.novanic.eventservice.service.registry.user.UserManager;
+import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.annotation.PreDestroy;
-import javax.inject.Named;
-
 import org.zanata.async.Async;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
-import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.events.LogoutEvent;
 import org.zanata.events.ProjectIterationUpdate;
@@ -47,19 +41,19 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
 import org.zanata.webtrans.shared.rpc.WorkspaceContextUpdate;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Throwables;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
-import com.ibm.icu.util.ULocale;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.persistence.EntityManager;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
-import de.novanic.eventservice.service.registry.EventRegistry;
-import de.novanic.eventservice.service.registry.EventRegistryFactory;
-import de.novanic.eventservice.service.registry.user.UserManager;
-import de.novanic.eventservice.service.registry.user.UserManagerFactory;
+import static com.google.common.base.MoreObjects.firstNonNull;
+import static org.zanata.transaction.TransactionUtil.runInTransaction;
 
 @javax.enterprise.context.ApplicationScoped
 @Named("translationWorkspaceManager")
@@ -81,6 +75,9 @@ public class TranslationWorkspaceManagerImpl implements
 
     @Inject
     private ValidationService validationServiceImpl;
+
+    @Inject
+    private TranslationWorkspaceFactory translationWorkspaceFactory;
 
     private ConcurrentHashMap<WorkspaceId, TranslationWorkspace> workspaceMap;
     private Multimap<ProjectIterationId, TranslationWorkspace> projIterWorkspaceMap;
@@ -297,7 +294,8 @@ public class TranslationWorkspaceManagerImpl implements
             throws NoSuchWorkspaceException {
         TranslationWorkspace workspace = workspaceMap.get(workspaceId);
         if (workspace == null) {
-            workspace = createWorkspace(workspaceId);
+            workspace =
+                    translationWorkspaceFactory.createWorkspace(workspaceId);
             TranslationWorkspace prev =
                     workspaceMap.putIfAbsent(workspaceId, workspace);
 
@@ -314,51 +312,5 @@ public class TranslationWorkspaceManagerImpl implements
     @Override
     public Optional<TranslationWorkspace> tryGetWorkspace(WorkspaceId workspaceId) {
         return Optional.fromNullable(workspaceMap.get(workspaceId));
-    }
-
-    private WorkspaceContext validateAndGetWorkspaceContext(
-            WorkspaceId workspaceId) throws NoSuchWorkspaceException {
-        String projectSlug =
-                workspaceId.getProjectIterationId().getProjectSlug();
-        String iterationSlug =
-                workspaceId.getProjectIterationId().getIterationSlug();
-        HProjectIteration projectIteration =
-                projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-
-        if (projectIteration == null) {
-            throw new NoSuchWorkspaceException("Invalid workspace Id");
-        }
-        HProject project = projectIteration.getProject();
-        if (project.getStatus() == EntityStatus.OBSOLETE) {
-            throw new NoSuchWorkspaceException("Project is obsolete");
-        }
-        if (projectIteration.getStatus() == EntityStatus.OBSOLETE) {
-            throw new NoSuchWorkspaceException("Project Iteration is obsolete");
-        }
-        HLocale locale =
-                localeServiceImpl.getByLocaleId(workspaceId.getLocaleId());
-        if (locale == null) {
-            throw new NoSuchWorkspaceException("Invalid Workspace Locale");
-        }
-        if (!locale.isActive()) {
-            throw new NoSuchWorkspaceException("Locale '"
-                    + locale.retrieveDisplayName() + "' disabled in server");
-        }
-
-        String workspaceName =
-                project.getName() + " (" + projectIteration.getSlug() + ")";
-        String localeDisplayName =
-                ULocale.getDisplayName(workspaceId.getLocaleId().toJavaName(),
-                        ULocale.ENGLISH);
-
-        return new WorkspaceContext(workspaceId, workspaceName,
-                localeDisplayName);
-    }
-
-    protected TranslationWorkspace createWorkspace(WorkspaceId workspaceId)
-            throws NoSuchWorkspaceException {
-        WorkspaceContext workspaceContext =
-                validateAndGetWorkspaceContext(workspaceId);
-        return new TranslationWorkspaceImpl(workspaceContext);
     }
 }

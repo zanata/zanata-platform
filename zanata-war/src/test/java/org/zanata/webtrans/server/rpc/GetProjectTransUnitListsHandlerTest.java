@@ -3,14 +3,13 @@ package org.zanata.webtrans.server.rpc;
 import java.util.List;
 
 import org.hamcrest.Matchers;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -20,11 +19,11 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.TestFixture;
 import org.zanata.rest.service.ResourceUtils;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
+import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
@@ -33,6 +32,11 @@ import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.shared.ActionException;
+
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -46,16 +50,18 @@ import static org.zanata.model.TestFixture.makeHTextFlow;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
+@RunWith(CdiUnitRunner.class)
 public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
     public static final long DOC_ID = 1L;
+    @Inject @Any
     private GetProjectTransUnitListsHandler handler;
-    @Mock
+    @Produces @Mock
     private ZanataIdentity identity;
-    @Mock
+    @Produces @Mock
     private LocaleService localeService;
-    @Mock
+    @Produces @Mock
     private ResourceUtils resourceUtils;
-    @Mock
+    @Produces @Mock
     private TextFlowSearchService textFlowSearchServiceImpl;
     private List<HTextFlow> textFlows;
     private HLocale hLocale;
@@ -81,21 +87,6 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
     @Before
     @SuppressWarnings("unchecked")
     public void beforeMethod() {
-        SeamAutowire seam = SeamAutowire.instance().reset();
-        MockitoAnnotations.initMocks(this);
-        // must create before transUnitTransformer
-        seam.use("resourceUtils", resourceUtils);
-        TransUnitTransformer transUnitTransformer =
-                seam.autowire(TransUnitTransformer.class);
-        // @formatter:off
-        handler = seam
-            .use("identity", identity)
-            .use("localeServiceImpl", localeService)
-            .use("transUnitTransformer", transUnitTransformer)
-            .use("textFlowSearchServiceImpl", textFlowSearchServiceImpl)
-            .ignoreNonResolvable()
-            .autowire(GetProjectTransUnitListsHandler.class);
-        // @formatter:on
         when(
                 localeService.validateLocaleByProjectIteration(localeId,
                         workspaceId.getProjectIterationId().getProjectSlug(),
@@ -120,6 +111,7 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
     }
 
     @Test(expected = ActionException.class)
+    @InRequestScope
     public void exceptionIfLocaleIsInvalid() throws Exception {
         GetProjectTransUnitLists action =
                 new GetProjectTransUnitLists("a", true, true, false);
@@ -134,6 +126,7 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void emptySearchTermWillReturnEmpty() throws Exception {
         GetProjectTransUnitLists action =
                 new GetProjectTransUnitLists("", true, true, false);
@@ -147,6 +140,7 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void searchWithNoLeadingAndTrailingWhiteSpace() throws Exception {
         GetProjectTransUnitLists action =
                 new GetProjectTransUnitLists("file", true, true, true);
@@ -171,6 +165,7 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void searchWithLeadingWhiteSpace() throws Exception {
         GetProjectTransUnitLists action =
                 new GetProjectTransUnitLists(" file", true, true, true);
@@ -195,6 +190,7 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void searchWithTrailingWhiteSpace() throws Exception {
         GetProjectTransUnitLists action =
                 new GetProjectTransUnitLists("file ", true, false, false);
@@ -219,6 +215,7 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void testRollback() throws Exception {
         handler.rollback(null, null, null);
     }

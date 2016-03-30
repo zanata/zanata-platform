@@ -18,7 +18,11 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.seam;
+package org.zanata.cdi;
+
+import lombok.Getter;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 
 import javax.persistence.EntityManager;
 import javax.transaction.HeuristicMixedException;
@@ -27,38 +31,29 @@ import javax.transaction.InvalidTransactionException;
 import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.Status;
-import javax.transaction.Synchronization;
 import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;
 
-import org.apache.deltaspike.core.api.exclude.Exclude;
-import org.apache.deltaspike.core.api.projectstage.ProjectStage;
-import lombok.Getter;
-
 /**
- * Simulates a seam transaction for use with {@link SeamAutowire}. Since
- * transactions are not created/injected with {@link SeamAutowire}, this class
- * provides support for methods that use transactions explicitly.
- *
- * This class will always represent an active, non-committed, non-rollbacked
- * transaction.
+ * Test transaction to use in CDI tests. This will simulate a real transaction
+ * when accesing an entity manager.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Exclude(ifProjectStage = ProjectStage.IntegrationTest.class)
-public class AutowireTransaction implements UserTransaction,
+public class TestTransaction implements UserTransaction,
         TransactionManager {
 
-    private static final AutowireTransaction instance =
-            new AutowireTransaction();
     @Getter
     private boolean active;
 
-    public static UserTransaction instance() {
-        return instance;
+    private EntityManager entityManager;
+
+    public TestTransaction(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 
     @Override
@@ -67,8 +62,7 @@ public class AutowireTransaction implements UserTransaction,
     }
 
     private EntityManager getEntityManager() {
-        return (EntityManager) SeamAutowire.instance().getComponent(
-                "entityManager");
+        return entityManager;
     }
 
     @Override

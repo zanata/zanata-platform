@@ -48,7 +48,6 @@ import org.zanata.arquillian.RemoteAfter;
 import org.zanata.arquillian.RemoteBefore;
 import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.ResourceRequestEnvironment;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.util.ServiceLocator;
 
 import com.google.common.collect.Lists;

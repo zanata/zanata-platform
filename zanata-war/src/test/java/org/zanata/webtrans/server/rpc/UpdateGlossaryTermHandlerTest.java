@@ -3,25 +3,32 @@ package org.zanata.webtrans.server.rpc;
 import java.util.Date;
 
 import org.hamcrest.Matchers;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataTest;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HLocale;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
+import org.zanata.test.CdiUnitRunner;
 import org.zanata.util.GlossaryUtil;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
 import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermAction;
 import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermResult;
 
 import net.customware.gwt.dispatch.shared.ActionException;
+
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -30,34 +37,28 @@ import static org.mockito.Mockito.when;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
 public class UpdateGlossaryTermHandlerTest extends ZanataTest {
+    @Inject @Any
     private UpdateGlossaryTermHandler handler;
-    @Mock
+    @Produces @Mock
     private ZanataIdentity identity;
-    @Mock
+    @Produces @Mock
     private GlossaryDAO glossaryDAO;
-    @Mock
+    @Produces @Mock
     private LocaleService localeServiceImpl;
+
     private HGlossaryEntry hGlossaryEntry;
     private HLocale targetHLocale = new HLocale(LocaleId.DE);
     private HLocale srcLocale = new HLocale(LocaleId.EN_US);
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        // @formatter:off
-      handler = SeamAutowire.instance()
-            .reset()
-            .use("identity", identity)
-            .use("glossaryDAO", glossaryDAO)
-            .use("localeServiceImpl", localeServiceImpl)
-            .ignoreNonResolvable()
-            .autowire(UpdateGlossaryTermHandler.class);
-      // @formatter:on
         hGlossaryEntry = new HGlossaryEntry();
     }
 
     @Test
+    @InRequestScope
     public void testExecute() throws Exception {
         Long id = 1L;
         GlossaryDetails selectedDetailEntry =
@@ -95,6 +96,7 @@ public class UpdateGlossaryTermHandlerTest extends ZanataTest {
     }
 
     @Test(expected = ActionException.class)
+    @InRequestScope
     public void testExecuteWhenTargetTermNotFound() throws Exception {
         GlossaryDetails selectedDetailEntry =
             new GlossaryDetails(null, "source", "target", "desc", "pos",
@@ -119,6 +121,7 @@ public class UpdateGlossaryTermHandlerTest extends ZanataTest {
     }
 
     @Test(expected = ActionException.class)
+    @InRequestScope
     public void testExecuteWhenTargetTermVersionNotMatch() throws Exception {
         GlossaryDetails selectedDetailEntry =
             new GlossaryDetails(null, "source", "target", "desc", "pos",
@@ -144,6 +147,7 @@ public class UpdateGlossaryTermHandlerTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void testRollback() throws Exception {
         handler.rollback(null, null, null);
     }

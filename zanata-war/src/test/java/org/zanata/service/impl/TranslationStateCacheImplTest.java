@@ -20,61 +20,69 @@
  */
 package org.zanata.service.impl;
 
+import com.google.common.cache.CacheLoader;
+import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.hibernate.Session;
+import org.infinispan.manager.CacheContainer;
+import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.zanata.cache.InfinispanTestCacheContainer;
+import org.zanata.common.LocaleId;
+import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.LocaleDAO;
+import org.zanata.dao.TextFlowDAO;
+import org.zanata.dao.TextFlowTargetDAO;
+import org.zanata.service.impl.TranslationStateCacheImpl.DocumentLocaleKey;
+import org.zanata.test.CdiUnitRunner;
+import org.zanata.ui.model.statistic.WordStatistic;
+import org.zanata.util.Zanata;
+import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.DocumentStatus;
+import org.zanata.webtrans.shared.model.ValidationId;
+
+import javax.enterprise.inject.Produces;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+@RunWith(CdiUnitRunner.class)
+@SupportDeltaspikeCore
+public class TranslationStateCacheImplTest {
 
-import org.infinispan.manager.CacheContainer;
-import org.infinispan.manager.DefaultCacheManager;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.zanata.ZanataTest;
-import org.zanata.cache.InfinispanTestCacheContainer;
-import org.zanata.common.LocaleId;
-import org.zanata.dao.TextFlowTargetDAO;
-import org.zanata.seam.SeamAutowire;
-import org.zanata.service.impl.TranslationStateCacheImpl.DocumentLocaleKey;
-import org.zanata.ui.model.statistic.WordStatistic;
-import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.DocumentStatus;
-import org.zanata.webtrans.shared.model.ValidationId;
-
-import com.google.common.cache.CacheLoader;
-
-public class TranslationStateCacheImplTest extends ZanataTest {
     TranslationStateCacheImpl tsCache;
+
     @Mock
     private CacheLoader<DocumentLocaleKey, WordStatistic> docStatisticLoader;
-
     @Mock
     private CacheLoader<DocumentLocaleKey, DocumentStatus> docStatusLoader;
-    @Mock
-    private TextFlowTargetDAO textFlowTargetDAO;
+
     @Mock
     private CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
 
+    @Produces @Mock Session session;
+    @Produces @Mock TextFlowTargetDAO textFlowTargetDAO;
+    @Produces @Mock TextFlowDAO textFlowDAO;
+    @Produces @Mock LocaleDAO localeDAO;
+    @Produces @Mock DocumentDAO documentDAO;
+
+    @Produces
+    @Zanata
+    CacheContainer cacheContainer = new InfinispanTestCacheContainer();
+
     @Before
     public void beforeMethod() {
-        MockitoAnnotations.initMocks(this);
         tsCache =
                 new TranslationStateCacheImpl(docStatisticLoader,
                         docStatusLoader, targetValidationLoader);
-
-        SeamAutowire seam = SeamAutowire.instance();
-        seam.reset()
-            .use("textFlowTargetDAO", textFlowTargetDAO)
-            .use("cacheContainer", new InfinispanTestCacheContainer())
-            .ignoreNonResolvable();
-        tsCache = seam.autowire(tsCache);
-
+        BeanProvider.injectFields(tsCache);
         tsCache.create();
     }
 

@@ -5,19 +5,22 @@ import java.util.List;
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
 import org.hibernate.Session;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.jglue.cdiunit.InRequestScope;
+import org.jglue.cdiunit.ProducesAlternative;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
+import org.zanata.jpa.FullText;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HLocale;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
+import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.shared.rpc.GetGlossary;
 import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType;
@@ -25,6 +28,12 @@ import org.zanata.webtrans.shared.rpc.HasSearchType;
 import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
+
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
@@ -35,15 +44,36 @@ import static org.mockito.Mockito.when;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
+@RunWith(CdiUnitRunner.class)
 public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
     private static final LocaleId TARGET_LOCALE_ID = new LocaleId("zh");
+    @Inject @Any
     private GetGlossaryHandler handler;
-    @Mock
+    @Produces @Mock
     private ZanataIdentity identity;
-    @Mock
+    @Produces @Mock
     private LocaleService localeService;
+    @Produces @Mock @FullText
+    private FullTextEntityManager fullTextEntityManager;
     private HLocale targetHLocale;
-    private GlossaryDAO glossaryDAOSpy;
+    private GlossaryDAO glossaryDAO;
+
+    @Produces @ProducesAlternative
+    GlossaryDAO getGlossaryDAO() {
+        return glossaryDAO;
+    };
+
+    @Override
+    @Produces
+    protected EntityManager getEm() {
+        return super.getEm();
+    }
+
+    @Override
+    @Produces
+    protected Session getSession() {
+        return super.getSession();
+    }
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -54,23 +84,13 @@ public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        GlossaryDAO dao = new GlossaryDAO((Session) getEm().getDelegate());
-        glossaryDAOSpy = spy(dao);
-
-        // @formatter:off
-      handler = SeamAutowire.instance()
-            .reset()
-            .use("identity", identity)
-            .use("localeServiceImpl", localeService)
-            .use("glossaryDAO", glossaryDAOSpy)
-            .ignoreNonResolvable()
-            .autowire(GetGlossaryHandler.class);
-      // @formatter:on
+        GlossaryDAO dao = new GlossaryDAO(getSession());
+        glossaryDAO = spy(dao);
         targetHLocale = getEm().find(HLocale.class, 2L);
     }
 
     @Test
+    @InRequestScope
     public void canGetGlossary() throws Exception {
         // Given:
         when(localeService.getByLocaleId(TARGET_LOCALE_ID)).thenReturn(
@@ -84,7 +104,7 @@ public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
         List<Object[]> matches =
                 Lists.newArrayList(new Object[] { 1.0F, srcGlossaryTerm1 },
                         new Object[] { 1.1F, srcGlossaryTerm2 });
-        doReturn(matches).when(glossaryDAOSpy).getSearchResult("fedora",
+        doReturn(matches).when(glossaryDAO).getSearchResult("fedora",
                 HasSearchType.SearchType.FUZZY, LocaleId.EN_US, 20);
 
         // When:
@@ -106,6 +126,7 @@ public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testRollback() throws Exception {
         handler.rollback(null, null, null);
     }

@@ -4,26 +4,29 @@ import java.util.List;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
-import org.hibernate.search.impl.FullTextSessionImpl;
-import org.hibernate.search.jpa.impl.FullTextEntityManagerImpl;
+import org.hibernate.Session;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.Search;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
-import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.jpa.FullText;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.TestFixture;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.search.FilterConstraints;
 import org.zanata.service.LocaleService;
-import org.zanata.service.TextFlowSearchService;
+import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.*;
@@ -32,16 +35,36 @@ import static org.mockito.Mockito.*;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
 public class TextFlowSearchServiceImplTest extends ZanataDbunitJpaTest {
-    private SeamAutowire seam = SeamAutowire.instance();
 
-    private TextFlowSearchService service;
-    @Mock
-    private LocaleService localeService;
+    @Inject
+    private TextFlowSearchServiceImpl service;
+
     private final LocaleId localeId = new LocaleId("ja");
     private final WorkspaceId workspaceId = TestFixture.workspaceId(localeId,
             "plurals", "master", ProjectType.Podir);
     private HLocale jaHLocale;
+
+    @Produces @Mock private LocaleService localeService;
+
+    @Override
+    @Produces
+    protected Session getSession() {
+        return super.getSession();
+    }
+
+    @Produces
+    @FullText
+    FullTextEntityManager getFullTextEntityManager() {
+        return Search.getFullTextEntityManager(getEm());
+    }
+
+    @Produces
+    @FullText
+    FullTextSession getFullTextSession() {
+        return org.hibernate.search.Search.getFullTextSession(getSession());
+    }
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -52,15 +75,6 @@ public class TextFlowSearchServiceImplTest extends ZanataDbunitJpaTest {
 
     @Before
     public void beforeMethod() {
-        MockitoAnnotations.initMocks(this);
-        // @formatter:off
-        seam.reset()
-            .use("localeServiceImpl", localeService)
-            .use("documentDAO", new DocumentDAO(getSession()))
-            .use("projectIterationDAO", new ProjectIterationDAO(getSession()))
-            .use("entityManager", new FullTextEntityManagerImpl(getEm()))
-            .use("session", new FullTextSessionImpl(getSession()));
-        // @formatter:on
         jaHLocale = getEm().find(HLocale.class, 3L);
         when(
                 localeService.validateLocaleByProjectIteration(localeId,
@@ -70,9 +84,8 @@ public class TextFlowSearchServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testFindTextFlows() throws Exception {
-        service = seam.autowire(TextFlowSearchServiceImpl.class);
-
         List<HTextFlow> result =
                 service.findTextFlows(workspaceId, FilterConstraints.builder()
                         .filterBy("file").build());

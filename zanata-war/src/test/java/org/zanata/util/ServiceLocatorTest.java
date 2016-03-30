@@ -33,7 +33,6 @@ import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.bridge.SLF4JBridgeHandler;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.test.CdiUnitRunner;
 
 @SupportDeltaspikeCore
@@ -42,7 +41,6 @@ import org.zanata.test.CdiUnitRunner;
 public class ServiceLocatorTest {
 
     static {
-        SeamAutowire.instance();
         // redirect JUL to slf4j
         LogManager.getLogManager().reset();
         SLF4JBridgeHandler.install();
@@ -71,7 +69,6 @@ public class ServiceLocatorTest {
     @Inject
     private NamedBean namedBean;
 
-//    @Inject
     private IServiceLocator locator = ServiceLocator.instance();
 
     @Test

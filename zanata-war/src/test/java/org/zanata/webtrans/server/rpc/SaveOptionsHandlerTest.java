@@ -10,29 +10,51 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
+import org.hibernate.Session;
+import org.jglue.cdiunit.InRequestScope;
+import org.junit.runner.RunWith;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.ZanataDbunitJpaTest;
-import org.zanata.dao.AccountDAO;
-import org.zanata.dao.AccountOptionDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountOption;
-import org.zanata.seam.SeamAutowire;
+import org.zanata.security.annotations.Authenticated;
+import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.shared.model.UserOptions;
 import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
 import org.zanata.webtrans.shared.rpc.SaveOptionsResult;
+
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
+@RunWith(CdiUnitRunner.class)
 public class SaveOptionsHandlerTest extends ZanataDbunitJpaTest {
+    @Inject @Any
     private SaveOptionsHandler handler;
-    private HAccount authenticatedAccount;
 
-    private final static SeamAutowire seam = SeamAutowire.instance();
+    @Produces @Authenticated
+    HAccount getAuthenticatedAcount(EntityManager em) {
+        return em.find(HAccount.class, 1L);
+    }
+
+    @Override
+    @Produces
+    protected EntityManager getEm() {
+        return super.getEm();
+    }
+
+    @Override
+    @Produces
+    protected Session getSession() {
+        return super.getSession();
+    }
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -45,23 +67,8 @@ public class SaveOptionsHandlerTest extends ZanataDbunitJpaTest {
                 DatabaseOperation.DELETE_ALL));
     }
 
-    @Before
-    public void beforeMethod() {
-        authenticatedAccount = getEm().find(HAccount.class, 1L);
-        // @formatter:off
-      handler = seam
-            .reset()
-            .use(ZanataJpaIdentityStore.AUTHENTICATED_USER, authenticatedAccount)
-            .use("authenticatedAccount", authenticatedAccount)
-            .use("accountDAO", new AccountDAO(getSession()))
-            .use("accountOptionDAO", new AccountOptionDAO(getSession()))
-            .ignoreNonResolvable()
-            .autowire(SaveOptionsHandler.class);
-      // @formatter:on
-
-    }
-
     @Test
+    @InRequestScope
     public void testExecute() throws Exception {
         HashMap<UserOptions, String> configMap =
                 new HashMap<UserOptions, String>();
@@ -79,7 +86,7 @@ public class SaveOptionsHandlerTest extends ZanataDbunitJpaTest {
 
         assertThat(accountOptions, Matchers.hasSize(configMap.size()));
         Map<String, HAccountOption> editorOptions =
-                authenticatedAccount.getEditorOptions();
+                getAuthenticatedAcount(getEm()).getEditorOptions();
 
         assertThat(editorOptions.values(),
                 Matchers.containsInAnyOrder(accountOptions.toArray()));
@@ -95,6 +102,7 @@ public class SaveOptionsHandlerTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testRollback() throws Exception {
         handler.rollback(null, null, null);
     }

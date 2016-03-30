@@ -22,13 +22,9 @@ package org.zanata.security.permission;
 
 
 import java.io.Serializable;
-import java.util.Iterator;
-import java.util.Set;
 
-import org.apache.deltaspike.core.api.exclude.Exclude;
-import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import javax.inject.Inject;
 import javax.inject.Named;
-import org.zanata.util.ServiceLocator;
 
 /**
  * This permission resolver will use the
@@ -42,6 +38,9 @@ import org.zanata.util.ServiceLocator;
 @Named("customPermissionResolver")
 @javax.enterprise.context.ApplicationScoped
 public class CustomPermissionResolver implements Serializable {
+
+    @Inject
+    private PermissionEvaluator evaluator;
 
     private static final long serialVersionUID = 6302681723997573877L;
 
@@ -57,9 +56,6 @@ public class CustomPermissionResolver implements Serializable {
     }
 
     private boolean hasPermission(String action, Object... targets) {
-        PermissionEvaluator evaluator =
-                ServiceLocator.instance()
-                        .getInstance(PermissionEvaluator.class);
         return evaluator.checkPermission(action, targets);
     }
 

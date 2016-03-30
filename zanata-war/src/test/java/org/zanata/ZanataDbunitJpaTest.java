@@ -32,6 +32,10 @@ import org.junit.runner.RunWith;
  *
  * @see org.jboss.seam.mock.DBUnitSeamTest
  * @see org.jboss.seam.mock.DBJUnitSeamTest
+ *
+ * For a better alternative to prepare a test database:
+ * @see org.zanata.test.DBUnitDataSetRunner
+ * @see org.zanata.test.rule.JpaRule
  */
 @Slf4j
 public abstract class ZanataDbunitJpaTest extends ZanataJpaTest {

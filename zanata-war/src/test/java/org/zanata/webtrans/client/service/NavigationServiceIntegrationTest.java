@@ -21,36 +21,37 @@
 
 package org.zanata.webtrans.client.service;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-
-import java.util.List;
-
+import com.google.common.collect.ImmutableList;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.presenter.client.EventBus;
-
 import org.hamcrest.Matchers;
+import org.hibernate.transform.ResultTransformer;
+import org.jglue.cdiunit.ContextController;
+import org.jglue.cdiunit.ProducesAlternative;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.zanata.common.ContentState;
+import org.zanata.common.LocaleId;
+import org.zanata.dao.TextFlowDAO;
+import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.TestFixture;
+import org.zanata.rest.service.ResourceUtils;
+import org.zanata.search.FilterConstraints;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.service.LocaleService;
+import org.zanata.service.TextFlowSearchService;
+import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.client.events.LoadingEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
@@ -61,6 +62,7 @@ import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.server.rpc.GetTransUnitListHandler;
+import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
@@ -69,12 +71,30 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 
-import com.google.common.collect.ImmutableList;
-import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 // This test uses mockito to simulate an RPC call environment
 @Slf4j
+@RunWith(CdiUnitRunner.class)
 public class NavigationServiceIntegrationTest {
     private static final WorkspaceId WORKSPACE_ID = TestFixture.workspaceId();
     private static final HLocale LOCALE = new HLocale(
@@ -91,6 +111,25 @@ public class NavigationServiceIntegrationTest {
     // @formatter:on
     private static final DocumentInfo DOCUMENT = TestFixture
             .documentInfo(1, "");
+
+    @Inject
+    private ContextController contextController;
+
+    @Inject @Any
+    private GetTransUnitListHandler handler;
+    // used by GetTransUnitListHandler
+    @Produces @Mock @ProducesAlternative
+    private TextFlowDAO textFlowDAO;
+    @Produces @Mock
+    private LocaleService localeServiceImpl;
+    @Produces @Mock @ProducesAlternative
+    private ResourceUtils resourceUtils;
+    @Produces @Mock @ProducesAlternative
+    private ZanataIdentity identity;
+    @Produces @Mock
+    private TextFlowSearchService textFlowSearchServiceImpl;
+    @Produces @Mock
+    private org.zanata.service.ValidationService validationServiceImpl;
 
     private NavigationService service;
     @Mock
@@ -119,7 +158,8 @@ public class NavigationServiceIntegrationTest {
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+        // This works the same as annotating each method with @InRequestScope
+        contextController.openRequest();
 
         pageModel = new SinglePageDataModelImpl();
         configHolder = new UserConfigHolder();
@@ -142,16 +182,38 @@ public class NavigationServiceIntegrationTest {
                 Object[] arguments = invocation.getArguments();
                 GetTransUnitList action = (GetTransUnitList) arguments[0];
                 action.setWorkspaceId(WORKSPACE_ID);
-                GetTransUnitListHandler handler =
-                        new MockHandlerFactory()
-                                .createGetTransUnitListHandlerWithBehavior(
-                                        DOCUMENT.getId(), TEXT_FLOWS, LOCALE,
-                                        action.getOffset(), action.getCount());
+                mockGetTransUnitLastHandlerBehaviour(
+                        DOCUMENT.getId(), TEXT_FLOWS, LOCALE,
+                        action.getOffset(), action.getCount());
                 getTransUnitListResult = handler.execute(action, null);
                 return null;
             }
         }).when(dispatcher).execute(actionCaptor.capture(),
                 asyncCallbackCaptor.capture());
+    }
+
+    public void mockGetTransUnitLastHandlerBehaviour(
+            DocumentId documentId, List<HTextFlow> hTextFlows, HLocale hLocale,
+            int startIndex, int count) {
+        int maxSize = Math.min(startIndex + count, hTextFlows.size());
+        when(
+                textFlowDAO.getTextFlowsByDocumentId(documentId.getId(),
+                        startIndex,
+                        count)).thenReturn(
+                hTextFlows.subList(startIndex, maxSize));
+        when(
+                localeServiceImpl.validateLocaleByProjectIteration(
+                        any(LocaleId.class), anyString(), anyString()))
+                .thenReturn(hLocale);
+        when(
+                resourceUtils.getNumPlurals(any(HDocument.class),
+                        any(HLocale.class))).thenReturn(1);
+
+        // trans unit navigation index handler
+        when(
+                textFlowDAO.getNavigationByDocumentId(eq(documentId),
+                        eq(hLocale), isA(ResultTransformer.class),
+                        isA(FilterConstraints.class))).thenReturn(hTextFlows);
     }
 
     private void verifyDispatcherAndCallOnSuccess() {
