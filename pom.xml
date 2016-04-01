@@ -635,6 +635,10 @@
             <artifactId>jersey-core</artifactId>
           </exclusion>
           <exclusion>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
+          </exclusion>
+          <exclusion>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
           </exclusion>
