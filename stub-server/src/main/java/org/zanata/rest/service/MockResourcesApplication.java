@@ -31,21 +31,27 @@ import com.google.common.collect.ImmutableSet;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class MockResourcesApplication extends Application {
-    private static final ImmutableSet<Class<?>> services = ImmutableSet
-            .of(
-                    MockVersionResource.class,
-                    MockSourceDocResource.class,
-                    MockTranslatedDocResource.class,
-                    MockStatisticsResource.class,
-                    MockFileResource.class,
-                    MockProjectsResource.class,
-                    MockProjectIterationResource.class,
-                    MockProjectResource.class,
-                    MockGlossaryResource.class,
-                    MockCopyTransResource.class,
-                    MockAccountResource.class,
-                    MockAsynchronousProcessResource.class
-            );
+
+    private static final ImmutableSet<Class<?>> services;
+
+    static {
+        ImmutableSet.Builder<Class<?>> builder = ImmutableSet.builder();
+        builder.add(
+                MockVersionResource.class,
+                MockSourceDocResource.class,
+                MockTranslatedDocResource.class,
+                MockStatisticsResource.class,
+                MockFileResource.class,
+                MockProjectsResource.class,
+                MockProjectIterationResource.class,
+                MockProjectResource.class,
+                MockGlossaryResource.class,
+                MockCopyTransResource.class,
+                MockAccountResource.class,
+                MockAsynchronousProcessResource.class
+        );
+        services = builder.build();
+    }
 
     @Override
     public Set<Class<?>> getClasses() {
