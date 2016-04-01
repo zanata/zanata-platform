@@ -19,6 +19,7 @@
   </scm>
 
   <properties>
+    <enunciate.version>1.27</enunciate.version>
     <jersey.version>1.19</jersey.version>
   </properties>
 
@@ -49,6 +50,7 @@
       <plugin>
         <groupId>org.codehaus.enunciate</groupId>
         <artifactId>maven-enunciate-plugin</artifactId>
+        <version>${enunciate.version}</version>
         <configuration>
           <configFile>etc/enunciate/enunciate.xml</configFile>
         </configuration>
@@ -224,8 +226,13 @@
       <artifactId>junit</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.jboss.spec.javax.ws.rs</groupId>
+      <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.codehaus.enunciate</groupId>
       <artifactId>enunciate-core-annotations</artifactId>
+      <version>${enunciate.version}</version>
       <exclusions>
         <exclusion>
           <groupId>javax.annotation</groupId>
@@ -236,7 +243,26 @@
     <dependency>
       <groupId>org.codehaus.enunciate</groupId>
       <artifactId>enunciate-jersey-rt</artifactId>
+      <version>${enunciate.version}</version>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.ws.rs</groupId>
+          <artifactId>jsr311-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.jersey</groupId>
+          <artifactId>jersey-server</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.xml.bind</groupId>
+          <artifactId>jaxb-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.xml.bind</groupId>
+          <artifactId>jaxb-impl</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
@@ -312,6 +338,12 @@
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-asl</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-xc</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
