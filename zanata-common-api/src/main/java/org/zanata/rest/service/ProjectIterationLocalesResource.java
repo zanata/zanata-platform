@@ -22,16 +22,20 @@
 package org.zanata.rest.service;
 
 import org.codehaus.enunciate.jaxrs.TypeHint;
+import org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.LocaleDetails;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+@Path(ProjectIterationLocalesResource.SERVICE_PATH)
+@ExternallyManagedLifecycle
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-public interface ProjectIterationLocalesResource {
+public interface ProjectIterationLocalesResource extends RestResource {
     public static final String SERVICE_PATH = ProjectIterationResource.SERVICE_PATH
             + "/locales";
 

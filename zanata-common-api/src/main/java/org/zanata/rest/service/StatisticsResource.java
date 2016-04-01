@@ -30,6 +30,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.codehaus.enunciate.jaxrs.TypeHint;
+import org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
 
@@ -37,9 +38,11 @@ import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Path(StatisticsResource.SERVICE_PATH)
+@ExternallyManagedLifecycle
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-public interface StatisticsResource {
+public interface StatisticsResource extends RestResource {
     public static final String DATE_FORMAT = "yyyy-MM-dd";
 
     public static final String SERVICE_PATH = "/stats";

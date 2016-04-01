@@ -29,15 +29,18 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.codehaus.enunciate.jaxrs.TypeHint;
+import org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle;
 import org.zanata.rest.dto.CopyTransStatus;
 
 /**
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Path(CopyTransResource.SERVICE_PATH)
+@ExternallyManagedLifecycle
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-public interface CopyTransResource {
+public interface CopyTransResource extends RestResource {
     public static final String SERVICE_PATH = "/copytrans";
 
     /**

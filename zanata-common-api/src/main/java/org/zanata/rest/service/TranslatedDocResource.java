@@ -37,6 +37,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.codehaus.enunciate.jaxrs.TypeHint;
+import org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -50,9 +51,11 @@ import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
+@Path(TranslatedDocResource.SERVICE_PATH)
+@ExternallyManagedLifecycle
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-public interface TranslatedDocResource {
+public interface TranslatedDocResource extends RestResource {
     public static final String SERVICE_PATH =
             ProjectIterationResource.SERVICE_PATH + "/r";
 

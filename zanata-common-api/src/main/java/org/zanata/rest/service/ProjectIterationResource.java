@@ -31,6 +31,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.codehaus.enunciate.jaxrs.TypeHint;
+import org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.ProjectIteration;
 
@@ -44,10 +45,12 @@ import org.zanata.rest.dto.ProjectIteration;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
+@Path(ProjectIterationResource.SERVICE_PATH)
+@ExternallyManagedLifecycle
 @Deprecated
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-public interface ProjectIterationResource {
+public interface ProjectIterationResource extends RestResource {
     public static final String ITERATION_SLUG_TEMPLATE = "{iterationSlug:"
             + RestConstants.SLUG_PATTERN + "}";
     public static final String SERVICE_PATH = ProjectResource.SERVICE_PATH
