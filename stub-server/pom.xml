@@ -30,10 +30,14 @@
       <groupId>org.zanata</groupId>
       <artifactId>zanata-common-api</artifactId>
       <exclusions>
+        <!-- mock server uses RESTEasy -->
         <exclusion>
-          <!-- mock server uses RESTEasy -->
           <groupId>com.sun.jersey</groupId>
           <artifactId>jersey-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.ws.rs</groupId>
+          <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
