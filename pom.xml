@@ -168,7 +168,7 @@
     <animal.sniffer.sig.group>org.codehaus.mojo.signature</animal.sniffer.sig.group>
     <animal.sniffer.signature>java17</animal.sniffer.signature>
     <animal.sniffer.sig.version>1.0</animal.sniffer.sig.version>
-    <required.maven>3.0.5</required.maven>
+    <required.maven>3.2.3</required.maven>
     <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
@@ -1542,11 +1542,6 @@
       </plugin>
     </plugins>
   </reporting>
-
-  <prerequisites>
-    <!-- NB: This check doesn't seem to work in Maven 3... -->
-    <maven>${required.maven}</maven>
-  </prerequisites>
 
   <distributionManagement>
     <snapshotRepository>
