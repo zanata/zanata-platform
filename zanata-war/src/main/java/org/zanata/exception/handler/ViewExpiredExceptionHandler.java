@@ -24,7 +24,6 @@ package org.zanata.exception.handler;
 import org.apache.deltaspike.core.api.exception.control.ExceptionHandler;
 import org.apache.deltaspike.core.api.exception.control.Handles;
 import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
-import org.zanata.exception.NotLoggedInException;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.application.ViewExpiredException;
@@ -35,7 +34,8 @@ import javax.faces.application.ViewExpiredException;
 @ExceptionHandler
 public class ViewExpiredExceptionHandler extends AbstractExceptionHandler {
     public void handleException(@Handles ExceptionEvent<ViewExpiredException> event) {
-        handle(event, LogLevel.Debug, urlUtil.viewExpiredErrorPage(), FacesMessage.SEVERITY_WARN,
+        handle(event, LogLevel.Debug, urlUtil.viewExpiredErrorPage(),
+                FacesMessage.SEVERITY_WARN,
                 "jsf.YourSessionHasTimedOutPleaseTryAgain");
     }
 }
