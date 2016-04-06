@@ -11,6 +11,8 @@ import org.zanata.service.TranslationMergeService;
 import org.zanata.transformer.TargetTransformer;
 
 /**
+ * This strategy is used when HTextFlowTarget already exists, and merge-type
+ * 'auto' is used.
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
@@ -58,6 +60,7 @@ class TranslationMergeAuto implements TranslationMergeService {
                 targetChanged |=
                         targetTransformer.transform(incomingTarget, hTarget);
             }
+            // FIXME if content matches latest, but comment has changed, update it
         }
         return targetChanged;
     }
@@ -76,6 +79,7 @@ class TranslationMergeAuto implements TranslationMergeService {
                     targetTransformer.transform(incomingTarget, hTarget);
             hTarget.setState(ContentState.Translated);
         }
+        // FIXME if content matches latest, but comment has changed, update it
         return targetChanged;
     }
 

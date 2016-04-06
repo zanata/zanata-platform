@@ -681,8 +681,8 @@ public class TranslationServiceImpl implements TranslationService {
         }
 
         // NB: removedTargets only applies for MergeType.IMPORT
-        final Collection<HTextFlowTarget> removedTargets =
-                new HashSet<HTextFlowTarget>();
+        final Collection<Long> removedTextFlowTargetIds =
+                new HashSet<>();
         final List<String> warnings = new ArrayList<String>();
 
         if (mergeType == MergeType.IMPORT) {
@@ -690,7 +690,7 @@ public class TranslationServiceImpl implements TranslationService {
                 HTextFlowTarget hTarget =
                         textFlow.getTargets().get(hLocale.getId());
                 if (hTarget != null) {
-                    removedTargets.add(hTarget);
+                    removedTextFlowTargetIds.add(hTarget.getId());
                 }
             }
         }
@@ -703,8 +703,8 @@ public class TranslationServiceImpl implements TranslationService {
             try {
                 changed |=
                         runInTransaction(() -> saveBatch(
-                                extensions, warnings, hLocale,
-                                document, mergeType, removedTargets, handleOp,
+                                extensions, warnings, hLocale, document,
+                                mergeType, removedTextFlowTargetIds, handleOp,
                                 hProjectIteration.getId(),
                                 batch, assignCreditToUploader,
                                 translationSourceType));
@@ -717,14 +717,13 @@ public class TranslationServiceImpl implements TranslationService {
 
         }
 
-        if (changed || !removedTargets.isEmpty()) {
+        if (changed || !removedTextFlowTargetIds.isEmpty()) {
             try {
                 runInTransaction(() -> {
-                    for (HTextFlowTarget target : removedTargets) {
-                        target =
-                                textFlowTargetDAO.findById(target.getId(),
-                                        true); // need to refresh from
-                        // persistence
+                    for (Long targetId : removedTextFlowTargetIds) {
+                        // need to refresh from persistence
+                        HTextFlowTarget target =
+                                textFlowTargetDAO.findById(targetId, true);
                         target.clear();
                     }
                     textFlowTargetDAO.flush();
@@ -766,7 +765,7 @@ public class TranslationServiceImpl implements TranslationService {
             final HLocale locale,
             HDocument document,
             final MergeType mergeType,
-            final Collection<HTextFlowTarget> removedTargets,
+            final Collection<Long> removedTextFlowTargetIds,
             final Optional<AsyncTaskHandle> handleOp,
             final Long projectIterationId,
             final List<TextFlowTarget> batch,
@@ -843,7 +842,7 @@ public class TranslationServiceImpl implements TranslationService {
                 }
 
                 if (mergeType == MergeType.IMPORT) {
-                    removedTargets.remove(hTarget);
+                    removedTextFlowTargetIds.remove(hTarget.getId());
                 }
 
                 TranslationMergeServiceFactory.MergeContext mergeContext =
