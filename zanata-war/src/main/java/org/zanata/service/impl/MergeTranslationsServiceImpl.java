@@ -21,6 +21,7 @@
 package org.zanata.service.impl;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Future;
 
 import javax.annotation.Nonnull;
@@ -56,6 +57,8 @@ import org.zanata.util.TranslationUtil;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import static org.zanata.transaction.TransactionUtil.runInTransaction;
 
@@ -203,6 +206,7 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
             HTextFlow sourceTf = results[0];
             HTextFlow targetTf = results[1];
             boolean foundChange = false;
+            Map<Long, ContentState> localeContentStateMap = Maps.newHashMap();
 
             for (HLocale hLocale : supportedLocales) {
                 HTextFlowTarget sourceTft =
@@ -223,7 +227,10 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
                 if (MergeTranslationsServiceImpl.shouldMerge(sourceTft,
                         targetTft, useNewerTranslation)) {
                     foundChange = true;
-                    mergeTextFlowTarget(sourceTft, targetTft, targetVersionId);
+
+                    ContentState oldState = targetTft.getState();
+                    localeContentStateMap.put(hLocale.getId(), oldState);
+                    mergeTextFlowTarget(sourceTft, targetTft);
                 }
             }
             if (foundChange) {
@@ -231,6 +238,28 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
                         .getDocument().getId());
                 textFlowDAO.makePersistent(targetTf);
                 textFlowDAO.flush();
+
+                // TODO: Fire single event with batch of updated textFlowTarget
+                if (Events.exists() && !localeContentStateMap.isEmpty()) {
+                    for (Map.Entry<Long, ContentState> entry : localeContentStateMap
+                            .entrySet()) {
+                        HTextFlowTarget updatedTarget =
+                                targetTf.getTargets().get(entry.getKey());
+
+                        TextFlowTargetStateEvent event =
+                                new TextFlowTargetStateEvent(null,
+                                        targetVersionId,
+                                        targetTf.getDocument().getId(),
+                                        targetTf.getId(),
+                                        updatedTarget.getLocale().getLocaleId(),
+                                        updatedTarget.getId(),
+                                        updatedTarget.getState(),
+                                        entry.getValue());
+
+                        Events.instance().raiseTransactionSuccessEvent(
+                                TextFlowTargetStateEvent.EVENT_NAME, event);
+                    }
+                }
             }
         }
         stopwatch.stop();
@@ -240,9 +269,7 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
     }
 
     private void mergeTextFlowTarget(HTextFlowTarget sourceTft,
-            HTextFlowTarget targetTft, Long targetVersionId) {
-        ContentState oldState = targetTft.getState();
-
+            HTextFlowTarget targetTft) {
         targetTft.setContents(sourceTft.getContents());
         targetTft.setState(sourceTft.getState());
         targetTft.setLastChanged(sourceTft.getLastChanged());
@@ -263,18 +290,6 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
                 .getMergeTranslationMessage(sourceTft));
         targetTft.setSourceType(TranslationSourceType.MERGE_VERSION);
         TranslationUtil.copyEntity(sourceTft, targetTft);
-
-        if (Events.exists()) {
-            TextFlowTargetStateEvent event =
-                    new TextFlowTargetStateEvent(null, targetVersionId,
-                            targetTft.getTextFlow().getDocument().getId(),
-                            targetTft.getTextFlow().getId(),
-                            targetTft.getLocale().getLocaleId(),
-                            targetTft.getId(), targetTft.getState(), oldState);
-
-            Events.instance().raiseTransactionSuccessEvent(
-                    TextFlowTargetStateEvent.EVENT_NAME, event);
-        }
     }
 
     /**
