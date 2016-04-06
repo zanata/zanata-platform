@@ -205,6 +205,10 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
         return state;
     }
 
+    public void setState(@Nonnull ContentState newState) {
+        state = newState;
+    }
+
     @NotNull
     @Column(name = "tf_revision")
     @Override
@@ -446,7 +450,7 @@ public class HTextFlowTarget extends ModelEntityBase implements HasContents,
 
     @Transient
     public void clear() {
-        setContents();
+        setContents(null, null, null, null, null, null);
         setState(ContentState.New);
         setComment(null);
         setLastModifiedBy(null);

@@ -145,10 +145,12 @@ public class ClientWorkFlow {
     private static List<String> getOutput(Process process) throws IOException {
         try (
                 InputStream in = process.getInputStream();
-                InputStream ignored = process.getErrorStream();
+                InputStream stdErr = process.getErrorStream();
                 OutputStream ignored2 = process.getOutputStream();
         ) {
-            return IOUtils.readLines(in, Charsets.UTF_8);
+            List<String> output = IOUtils.readLines(in, Charsets.UTF_8);
+            output.addAll(IOUtils.readLines(stdErr, Charsets.UTF_8));
+            return output;
         }
     }
 }

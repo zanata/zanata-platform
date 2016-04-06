@@ -9,6 +9,8 @@ import org.zanata.service.TranslationMergeService;
 import org.zanata.transformer.TargetTransformer;
 
 /**
+ * This strategy is used when HTextFlowTarget already exists, and merge-type
+ * 'import' is used.
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
