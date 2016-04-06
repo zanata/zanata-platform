@@ -1,13 +1,19 @@
+/**
+ * System Properties:
+ * zanata.version: Zanata version being built
+ * zanata.war.location: Location of the war file to package (optional)
+ */
+
 defaultTasks 'package'
 apply plugin: 'java'
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
     runtime "mysql:mysql-connector-java:5.1.29"
-    runtime "org.codehaus.groovy:groovy-all:2.1.5"
 }
 
 final def BUILD_DIR = "target"
@@ -39,15 +45,27 @@ task 'package'(dependsOn: 'copyToLib') << {
             globmapper(from: "mysql-connector-java-*.jar",
                 to: "mysql-connector-java.jar")
         }
-        ant.copy(todir: "$distroDir/bin/zanata-installer") {
-            fileset(dir: "$BUILD_DIR/deps") {
-                include(name: "groovy-all-*.jar")
+        // Copy the Zanata file
+        // If the system property zanata.war.location is passed, it will use
+        // it as the location of the Zanata war file, otherwise it will try to
+        // determine one from the locally installed dependencies
+        def zanataWarLocation = System.getProperty("zanata.war.location")
+        if(zanataWarLocation) {
+            // use one passed in
+            ant.copy(file: zanataWarLocation,
+                tofile: "$distroDir/standalone/deployments/zanata.war")
+        } else {
+            // Use zanata.war copied from the maven local or remote repo
+            ant.copy(todir: "$distroDir/standalone/deployments") {
+                fileset(dir: "$BUILD_DIR/deps") {
+                    include(name: "*.war")
+                }
+                globmapper(from: "*.war",
+                    to: "zanata.war")
             }
         }
         // Download remote dependencies
         downloadRemoteDeps(distro, distroDir)
-        // Replace templates
-        replaceTemplates(distroDir, zanataVersion)
         // Zip it up
         ant.zip(destfile: "$BUILD_DIR/${distroName}.zip", basedir: distroDir)
         // Cleanup
@@ -67,8 +85,16 @@ List findAvailableDistros() {
         .collect { it.name }
 }
 
-String readProjectVersion() {
-    (new groovy.util.XmlParser()).parse(new File("../pom.xml")).version.text()
+static String readProjectVersion() {
+    // Read from system properties first
+    if( System.properties['zanata.version'] ) {
+        return System.properties['zanata.version']
+    }
+    // Parse from the top-level pom
+    else {
+        (new groovy.util.XmlParser()).parse(new File("../pom.xml")).version.
+            text()
+    }
 }
 
 def replaceTemplates(String distroDir, String zanataVersion) {

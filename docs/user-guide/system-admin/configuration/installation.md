@@ -24,19 +24,17 @@ The following packages are optional, but recommended:
 
 You can run Zanata on JBoss EAP 6 or Wildfly. Just download one of the installer archives below for your platform, and then extract it on top of your JBoss or Wildfly installation.
 
-- [Zanata for JBoss EAP](http://sourceforge.net/projects/zanata/files/installer/zanata-3.6.0-eap-6.zip/download)
-- [Zanata for Wildfly](http://sourceforge.net/projects/zanata/files/installer/zanata-3.6.0-wildfly-8.1.zip/download)
+- [Zanata for JBoss EAP or Wildfly](https://github.com/zanata/zanata-server/releases)
 
-## Run the installer
+You'll find zip files for each platform, for example: `zanata-<version>-eap-6.zip` or `zanata-<version>-wildfly.zip`
 
-Zanata comes bundled with an installer that helps with some of the initial setup. Simply run the following commands on a shell terminal:
+You will also find `war` archives. Don't download these unless you wish to manually configure JBoss, or if you are upgrading an already set up Zanata server.
 
-```sh
-$ cd <JBOSS>/bin/zanata-installer
-$ ./install.sh
-```
+## Modify the configuration properties
 
-(there's also a .bat file if you are on Windows) The installation script will start asking some configuration questions. It will also download the Zanata web application and place it in the JBoss installation.
+Zanata comes bundled with a configuration file to make it easy to set initial properties. You should modify these properties in:
+
+`<JBOSS>/standalone/configuration/zanata.properties`
 
 ## Editing standalone.xml yourself
 
@@ -120,8 +118,10 @@ Any other value will be treated as the name of a virus scanner command: the comm
 
 Go to the `<JBOSS>/bin` directory and run
 
-* `standalone.sh` or `start-zanata.sh` for Linux, Mac
-* `standalone.bat` or `start-zanata.bat` for Windows
+* `standalone-zanata.sh` for Linux, Mac
+* `standalone-zanata.bat` for Windows
+
+_Please make sure these are ran from the `<JBOSS>/bin` directory. These scripts are shortcuts which internally use JBoss' standalone running scripts._
 
 ## Using Zanata
 
