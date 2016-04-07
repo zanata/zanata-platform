@@ -297,6 +297,21 @@
     <url-pattern>/files/upload/*</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>jolokia-agent</servlet-name>
+    <servlet-class>org.jolokia.http.AgentServlet</servlet-class>
+    <init-param>
+      <param-name>restrictorClass</param-name>
+      <param-value>org.zanata.security.JolokiaRestrictor</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>jolokia-agent</servlet-name>
+    <url-pattern>/jolokia/*</url-pattern>
+  </servlet-mapping>
+
   <mime-mapping>
     <extension>xrd</extension>
     <mime-type>application/xrd+xml</mime-type>
