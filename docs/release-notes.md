@@ -1,5 +1,6 @@
 ## 3.8.4
 <h5>Bug fixes</h5>
+* [ZNTA-959](https://zanata.atlassian.net/browse/ZNTA-959) - Copy version fails silently and leaves version readonly
 * [ZNTA-1013](https://zanata.atlassian.net/browse/ZNTA-1013) - Fix Merge translation exception
 
 ## 3.8.3
