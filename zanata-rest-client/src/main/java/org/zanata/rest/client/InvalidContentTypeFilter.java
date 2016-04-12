@@ -52,7 +52,7 @@ public class InvalidContentTypeFilter extends ClientFilter {
 
     // we assume only xml or json are the valid types (wildcard type is also considered compatible)
     private static final Pattern VALID_TYPES_REGEX =
-            Pattern.compile("application/.*\\+?(\\*|xml|json)");
+            Pattern.compile("application/.*\\+?(\\*|xml|json)(;.*)?");
 
     @Override
     public ClientResponse handle(ClientRequest clientRequest)
