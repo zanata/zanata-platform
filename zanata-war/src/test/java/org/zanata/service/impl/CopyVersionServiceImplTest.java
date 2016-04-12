@@ -155,9 +155,6 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
         String existingVersionSlug =
                 existingDoc.getProjectIteration().getSlug();
 
-        createNewVersion(existingProjectSlug, existingVersionSlug,
-                newVersionSlug);
-
         insertTextFlowAndTargetToDoc(existingDoc, tfCount, false);
 
         spyService.copyVersion(existingProjectSlug, existingVersionSlug,
@@ -182,9 +179,6 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
                 existingDoc.getProjectIteration().getProject().getSlug();
         String existingVersionSlug =
                 existingDoc.getProjectIteration().getSlug();
-
-        createNewVersion(existingProjectSlug, existingVersionSlug,
-                newVersionSlug);
 
         int tftSize = insertTextFlowAndTargetToDoc(existingDoc, 1, true);
 
@@ -245,7 +239,6 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
         String projectSlug = "sample-project";
         String versionSlug = "1.0";
         String newVersionSlug = "new-version";
-        createNewVersion(projectSlug, versionSlug, newVersionSlug);
 
         runCopyVersion(projectSlug, versionSlug, newVersionSlug);
     }
@@ -255,7 +248,6 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
         String projectSlug = "sample-project";
         String versionSlug = "2.0";
         String newVersionSlug = "new-version2";
-        createNewVersion(projectSlug, versionSlug, newVersionSlug);
 
         runCopyVersion(projectSlug, versionSlug, newVersionSlug);
     }
@@ -319,18 +311,6 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
                 }
             }
         }
-    }
-
-    private HProjectIteration createNewVersion(String projectSlug,
-            String versionSlug, String newVersionSlug) {
-
-        HProjectIteration existingVersion =
-                projectIterationDAO.getBySlug(projectSlug, versionSlug);
-
-        HProjectIteration newVersion = new HProjectIteration();
-        newVersion.setSlug(newVersionSlug);
-        newVersion.setProject(existingVersion.getProject());
-        return projectIterationDAO.makePersistent(newVersion);
     }
 
     @Test

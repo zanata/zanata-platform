@@ -21,13 +21,16 @@ import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.async.handle.CopyVersionTaskHandle;
+import org.zanata.common.EntityStatus;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.file.FilePersistService;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
 import org.zanata.model.HSimpleComment;
@@ -71,6 +74,9 @@ public class CopyVersionServiceImpl implements CopyVersionService {
 
     @In
     private ProjectIterationDAO projectIterationDAO;
+
+    @In
+    private ProjectDAO projectDAO;
 
     @In
     private DocumentDAO documentDAO;
@@ -118,12 +124,15 @@ public class CopyVersionServiceImpl implements CopyVersionService {
                 + newVersionSlug);
 
         // Copy of HProjectIteration
-        HProjectIteration newVersion =
-            projectIterationDAO.getBySlug(projectSlug, newVersionSlug);
+        HProjectIteration newVersion = new HProjectIteration();
 
         try {
+            newVersion.setSlug(newVersionSlug);
+            newVersion.setStatus(EntityStatus.READONLY);
+            newVersion.setProject(version.getProject());
             newVersion = copyVersionSettings(version, newVersion);
             newVersion = projectIterationDAO.makePersistent(newVersion);
+            projectIterationDAO.flush();
 
             // Copy of HDocument
             int docSize =

@@ -377,16 +377,8 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     }
 
     public void copyVersion() {
-        getInstance().setSlug(inputSlugValue);
-        getInstance().setStatus(EntityStatus.READONLY);
-
-        // create basic version here
-        HProject project = getProject();
-        project.addIteration(getInstance());
-        super.persist();
-
         copyVersionManager.startCopyVersion(projectSlug,
-                copyFromVersionSlug, getInstance().getSlug());
+                copyFromVersionSlug, inputSlugValue);
 
         conversationScopeMessages
                 .setMessage(FacesMessage.SEVERITY_INFO, msgs.
