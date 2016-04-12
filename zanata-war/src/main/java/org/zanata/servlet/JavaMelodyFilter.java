@@ -18,7 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.seam.interceptor;
+package org.zanata.servlet;
 
 import java.io.IOException;
 import javax.inject.Inject;
@@ -33,7 +33,11 @@ import org.zanata.security.ZanataIdentity;
 
 import net.bull.javamelody.MonitoringFilter;
 
-public class MonitoringWrapper extends MonitoringFilter {
+/**
+ * Modifies JavaMelody's MonitoringFilter so that only admin users can
+ * access the JavaMelody console.
+ */
+public class JavaMelodyFilter extends MonitoringFilter {
     @Inject
     private ZanataIdentity identity;
 

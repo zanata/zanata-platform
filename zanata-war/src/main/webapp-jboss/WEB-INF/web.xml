@@ -156,12 +156,6 @@
     <!--<listener-class>net.bull.javamelody.SessionListener</listener-class>-->
   <!--</listener>-->
 
-  <!-- Seam -->
-
-  <!--<listener>-->
-    <!--<listener-class>org.jboss.seam.servlet.SeamListener</listener-class>-->
-  <!--</listener>-->
-
   <filter-mapping>
     <filter-name>RestLimitingFilter</filter-name>
     <url-pattern>/rest/*</url-pattern>
@@ -216,18 +210,13 @@
     <!-- This name must match the web-fragment.xml in javamelody's jar,
          so that we can override it. -->
     <filter-name>javamelody</filter-name>
-    <filter-class>org.zanata.seam.interceptor.MonitoringWrapper</filter-class>
+    <filter-class>org.zanata.servlet.JavaMelodyFilter</filter-class>
     <!--<async-supported>true</async-supported>-->
   </filter>
   <filter-mapping>
     <filter-name>javamelody</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
-
-  <!-- <servlet-mapping> -->
-  <!--    <servlet-name>javax.ws.rs.core.Application</servlet-name> -->
-  <!--    <url-pattern>/seam/resource/restv1/*</url-pattern> -->
-  <!-- </servlet-mapping> -->
 
   <!-- Facelets development mode (disable in production)
   To use it, add the following to $JBOSS_HOME/server/$profile/deployers/jbossweb.deployer/web.xml :-->
@@ -265,7 +254,6 @@
   <servlet>
     <servlet-name>Faces Servlet</servlet-name>
     <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-    <!-- Seam must start after ZanataBlockingServlet/Errai -->
     <load-on-startup>2</load-on-startup>
   </servlet>
 
