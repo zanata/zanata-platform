@@ -67,9 +67,6 @@ public class CopyVersionServiceImpl implements CopyVersionService {
     protected final static int TFT_BATCH_SIZE = 20;
 
     @Inject
-    private ProjectDAO projectDAO;
-
-    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
     @Inject
