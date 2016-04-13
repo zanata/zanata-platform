@@ -122,6 +122,8 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
 
                 .addRule(Join.path("/webtrans/Application.html").to("/webtrans/Application.xhtml")).when(Direction.isInbound())
                 .addRule(Join.path("/webtrans/translate").to("/webtrans/Application.xhtml"))
+
+                .addRule(Join.path("/404").to("/404.xhtml"))
                 ;
     }
 

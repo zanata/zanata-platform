@@ -1,0 +1,20 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:s="http://jboss.org/schema/seam/taglib"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  template="WEB-INF/template/template_2x.xhtml">
+
+  <ui:define name="page_title">#{msgs['jsf.PageNotFound']}</ui:define>
+  <ui:param name="showGlobalMessages" value="false"/>
+  <ui:define name="center_content">
+    <s:fragment>
+      <img alt="" src="insert funny-cool image here"/>
+      <h2 class="alert__heading">#{msgs['jsf.PageNotFound']}</h2>
+      <div class="alert__content">
+        <p>#{msgs['jsf.PageNotFoundDetail']}</p>
+      </div>
+    </s:fragment>
+  </ui:define>
+</ui:composition>
