@@ -21,6 +21,8 @@
 
 package org.zanata.client.config;
 
+import org.zanata.client.commands.DocNameWithExt;
+
 import java.io.Serializable;
 import javax.xml.bind.annotation.XmlAccessOrder;
 import javax.xml.bind.annotation.XmlAccessorOrder;
@@ -66,7 +68,7 @@ public class FileMappingRule implements Serializable {
     /**
      * If pattern is missing, this rule will be applied to matching file types.
      *
-     * @see org.zanata.client.commands.FileMappingRuleHandler#isApplicable(org.zanata.client.commands.QualifiedSrcDocName)
+     * @see org.zanata.client.commands.FileMappingRuleHandler#isApplicable(DocNameWithExt)
      */
     public FileMappingRule(String rule) {
         this.rule = rule;

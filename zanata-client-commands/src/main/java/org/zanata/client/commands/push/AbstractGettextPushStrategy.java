@@ -36,7 +36,7 @@ import com.google.common.collect.ImmutableList;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.po.PoReader2;
 import org.zanata.client.commands.TransFileResolver;
-import org.zanata.client.commands.UnqualifiedSrcDocName;
+import org.zanata.client.commands.DocNameWithoutExt;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.LocaleId;
@@ -110,7 +110,7 @@ public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy {
 
     protected File getTransFile(LocaleMapping locale, String docName) {
         File transFile = new TransFileResolver(getOpts()).getTransFile(
-                UnqualifiedSrcDocName.from(docName), locale);
+                DocNameWithoutExt.from(docName), locale);
         return transFile;
     }
 

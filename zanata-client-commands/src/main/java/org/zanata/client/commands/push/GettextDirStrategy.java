@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.ConsoleInteractorImpl;
 import org.zanata.client.commands.TransFileResolver;
-import org.zanata.client.commands.UnqualifiedSrcDocName;
+import org.zanata.client.commands.DocNameWithoutExt;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 
@@ -72,7 +72,7 @@ public class GettextDirStrategy extends AbstractGettextPushStrategy {
     private boolean hasTranslationFileForLocale(LocaleMapping loc,
             String srcDocName) {
         File transFile = new TransFileResolver(getOpts()).getTransFile(
-                UnqualifiedSrcDocName.from(srcDocName), loc);
+                DocNameWithoutExt.from(srcDocName), loc);
         return transFile.exists();
     }
 

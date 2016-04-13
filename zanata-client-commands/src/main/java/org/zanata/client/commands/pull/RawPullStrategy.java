@@ -28,7 +28,7 @@ import java.io.OutputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.client.commands.QualifiedSrcDocName;
+import org.zanata.client.commands.DocNameWithExt;
 import org.zanata.client.commands.TransFileResolver;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.util.PathUtil;
@@ -71,7 +71,7 @@ public class RawPullStrategy {
                     + localDocName);
         }
         File file = new TransFileResolver(opts).resolveTransFile(
-            QualifiedSrcDocName.from(localDocName),
+            DocNameWithExt.from(localDocName),
             localeMapping, translationFileExtension);
         logAndStreamToFile(transFile, file);
     }

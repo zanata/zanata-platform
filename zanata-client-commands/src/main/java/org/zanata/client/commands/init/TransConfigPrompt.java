@@ -26,10 +26,9 @@ import java.util.Set;
 import org.apache.commons.io.FilenameUtils;
 import org.zanata.client.commands.ConfigurableProjectOptions;
 import org.zanata.client.commands.ConsoleInteractor;
-import org.zanata.client.commands.OptionsUtil;
-import org.zanata.client.commands.QualifiedSrcDocName;
+import org.zanata.client.commands.DocNameWithExt;
 import org.zanata.client.commands.TransFileResolver;
-import org.zanata.client.commands.UnqualifiedSrcDocName;
+import org.zanata.client.commands.DocNameWithoutExt;
 import org.zanata.client.commands.pull.PullOptions;
 import org.zanata.client.commands.pull.PullOptionsImpl;
 import org.zanata.client.config.LocaleList;
@@ -168,7 +167,7 @@ class TransConfigPrompt {
             Optional<String> translationFileExtension =
                     Optional.fromNullable(targetFileExt);
             File file = transFileResolver.resolveTransFile(
-                    QualifiedSrcDocName.from(srcDoc),
+                    DocNameWithExt.from(srcDoc),
                     localeMapping, translationFileExtension);
             return file.getPath();
         }
@@ -185,7 +184,7 @@ class TransConfigPrompt {
         public String getTransFileToWrite(String srcDoc,
                 LocaleMapping localeMapping) {
             File transFile = transFileResolver.getTransFile(
-                    UnqualifiedSrcDocName.from(srcDoc), localeMapping);
+                    DocNameWithoutExt.from(srcDoc), localeMapping);
             return transFile.getPath();
         }
     }

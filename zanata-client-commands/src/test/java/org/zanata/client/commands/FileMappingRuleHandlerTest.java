@@ -78,7 +78,7 @@ public class FileMappingRuleHandlerTest {
                                 "{path}/{locale_with_underscore}.po"),
                         ProjectType.Gettext, opts);
         assertThat(handler.getRelativeTransFilePathForSourceDoc(
-                QualifiedSrcDocName.from("message.pot"),
+                DocNameWithExt.from("message.pot"),
                 new LocaleMapping("zh"), Optional.<String>absent()), Matchers.equalTo("zh.po"));
     }
 
@@ -87,12 +87,12 @@ public class FileMappingRuleHandlerTest {
         FileMappingRuleHandler handler = new FileMappingRuleHandler(
             new FileMappingRule("**/*", rule), projectType, opts);
         return handler.getRelativeTransFilePathForSourceDoc(
-                QualifiedSrcDocName.from(sourceFile),
+                DocNameWithExt.from(sourceFile),
                 new LocaleMapping(locale), Optional.<String>absent());
     }
 
     @Test
-    public void canGetPartsFromQualifiedDocName() {
+    public void canGetPartsFromFullFilename() {
         EnumMap<Placeholders, String> map =
                 FileMappingRuleHandler.parseToMap("foo/message.pot",
                         new LocaleMapping("zh-CN", "zh-Hans"), Optional.<String>absent());
@@ -104,7 +104,7 @@ public class FileMappingRuleHandlerTest {
     }
 
     @Test
-    public void canGetPartsFromQualifiedDocName2() {
+    public void canGetPartsFromFullFilename2() {
         EnumMap<Placeholders, String> map =
             FileMappingRuleHandler.parseToMap("foo/message.pot",
                 new LocaleMapping("zh-CN", "zh-Hans"), Optional.of("po"));
@@ -123,12 +123,12 @@ public class FileMappingRuleHandlerTest {
                         "{locale}/{filename}.{extension}"), ProjectType.File,
                 opts);
         assertThat(handler.isApplicable(
-                QualifiedSrcDocName.from("test/doc.odt")), equalTo(true));
+                DocNameWithExt.from("test/doc.odt")), equalTo(true));
         assertThat(handler.isApplicable(
-                QualifiedSrcDocName.from("test/doc.pot")), equalTo(false));
+                DocNameWithExt.from("test/doc.pot")), equalTo(false));
         assertThat(handler.isApplicable(
-                QualifiedSrcDocName.from("doc.pot")), equalTo(false));
+                DocNameWithExt.from("doc.pot")), equalTo(false));
         assertThat(handler.isApplicable(
-                QualifiedSrcDocName.from("doc.odt")), equalTo(true));
+                DocNameWithExt.from("doc.odt")), equalTo(true));
     }
 }

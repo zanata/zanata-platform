@@ -24,7 +24,7 @@ import java.io.File;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.client.commands.QualifiedSrcDocName;
+import org.zanata.client.commands.DocNameWithExt;
 import org.zanata.client.commands.TransFileResolver;
 import org.zanata.client.config.LocaleMapping;
 
@@ -64,7 +64,7 @@ public class RawPushStrategy extends AbstractCommonPushStrategy<PushOptions> {
         }
         for (LocaleMapping localeMapping : getOpts().getLocaleMapList()) {
             File translationFile = new TransFileResolver(getOpts())
-                    .resolveTransFile(QualifiedSrcDocName.from(
+                    .resolveTransFile(DocNameWithExt.from(
                             sourceDocument), localeMapping, translationExtension);
 
             if (translationFile.canRead()) {
