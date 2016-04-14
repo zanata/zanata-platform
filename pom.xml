@@ -34,7 +34,7 @@
     <!-- Applies to surefire and failsafe (if enabled) -->
     <failIfNoTests>true</failIfNoTests>
 
-    <deltaspike.version>1.5.2</deltaspike.version>
+    <deltaspike.version>1.5.4</deltaspike.version>
     <cdi.runtime>runtime</cdi.runtime>
     <cdi.compile>compile</cdi.compile>
     <picketlink.version>2.5.4.SP4</picketlink.version>
