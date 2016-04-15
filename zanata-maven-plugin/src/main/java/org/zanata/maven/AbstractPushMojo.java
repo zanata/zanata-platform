@@ -30,6 +30,8 @@ import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.push.PushOptions;
 import org.zanata.client.commands.push.RawPushCommand;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -211,6 +213,7 @@ public abstract class AbstractPushMojo extends
     }
 
     @Override
+    @Nonnull
     public String getValidate() {
         return validate;
     }
