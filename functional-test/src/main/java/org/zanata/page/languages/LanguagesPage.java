@@ -67,7 +67,7 @@ public class LanguagesPage extends BasePage {
     private List<WebElement> getRows() {
         return readyElement(existingElement(By.id("languageForm")),
                 By.className("list--stats"))
-                .findElements(By.tagName("li"));
+                .findElements(By.name("entry"));
     }
 
     private String getListEntryLocale(WebElement listElement) {

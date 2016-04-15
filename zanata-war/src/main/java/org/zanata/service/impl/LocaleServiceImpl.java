@@ -20,10 +20,8 @@
  */
 package org.zanata.service.impl;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +33,7 @@ import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.PersonDAO;
@@ -147,6 +146,16 @@ public class LocaleServiceImpl implements LocaleService {
         entity.setActive(true);
         entity.setEnabledByDefault(enabledByDefault);
         localeDAO.makePersistent(entity);
+        localeDAO.flush();
+    }
+
+    @Override
+    public void delete(@Nonnull LocaleId localeId) {
+        HLocale entity = getByLocaleId(localeId);
+        if (entity == null) {
+            return;
+        }
+        localeDAO.makeTransient(entity);
         localeDAO.flush();
     }
 

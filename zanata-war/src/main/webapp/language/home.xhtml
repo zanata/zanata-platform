@@ -64,43 +64,71 @@
           </a4j:status>
 
           <h:form id="languageForm" styleClass="l--push-bottom-0">
+            <a4j:jsFunction name="deleteLanguage" rendered="#{identity.hasRole('admin')}"
+              action="#{languagesAction.deleteLanguage(localeId)}" render="languageForm">
+              <a4j:param name="val1" assignTo="#{localeId}"/>
+            </a4j:jsFunction>
+
+            <script type="text/javascript">
+              function confirmDelete() {
+                return confirm("#{msgs['jsf.language.delete.description']}");
+              }
+            </script>
+
             <ul class="list--stats">
               <ui:repeat value="#{languagesAction.currentPage}" var="language">
-                <li class="l--pad-all-quarter #{not language.active ? 'is-disabled' : ''}">
-                  <h:link outcome="/language/language.xhtml">
-                    <f:param name="id" value="#{language.localeId.id}"/>
+                <li name="entry" class="l--pad-all-quarter #{not language.active ? 'is-disabled' : ''} #{identity.hasRole('admin') ? 'list__item--actionable' : ''}">
+                  <div>
+                    <h:panelGroup layout="block"  styleClass="list__item__action" rendered="#{identity.hasRole('admin')}">
+                      <div
+                        class="dropdown dropdown--small dropdown--inline dropdown--single list__item__dropdown js-dropdown">
+                        <a href="#" title="#{msgs['jsf.tooltip.options']}"
+                          class="dropdown__toggle js-dropdown__toggle txt--meta">
+                          <span
+                            class="is-invisible">#{msgs['jsf.tooltip.options']}</span>
+                        </a>
+                        <ul class="dropdown__content js-dropdown__content">
+                          <li>
+                            <a href="#" class="i__item--right txt--danger"
+                              onclick="if(confirmDelete()){deleteLanguage('#{language.localeId}')};return false">
+                              #{msgs['jsf.Delete']}
+                              <i class="i i--remove i__item__icon"></i>
+                            </a>
+                          </li>
+                        </ul>
+                      </div>
+                    </h:panelGroup>
+                    <h:link outcome="/language/language.xhtml">
+                      <f:param name="id" value="#{language.localeId.id}"/>
+                      <div class="list__item__content">
+                        <div class="list__item__info">
+                          <h3 class="list__title">
+                            #{language.retrieveDisplayName()}
+                            <h:panelGroup layout="span" rendered="#{language.enabledByDefault}" styleClass="label"
+                              title="#{msgs['jsf.language.enableByDefault']}">
+                              #{msgs['jsf.language.enabledByDefault']}
+                            </h:panelGroup>
 
-                    <div class="list__item__content">
-                      <div class="list__item__info">
-                        <h3 class="list__title">
-                          #{language.retrieveDisplayName()}
-                          <h:panelGroup layout="span" rendered="#{language.enabledByDefault}" styleClass="label"
-                            title="#{msgs['jsf.language.enableByDefault']}">
-                            #{msgs['jsf.language.enabledByDefault']}
-                          </h:panelGroup>
-
-                          <h:panelGroup layout="span" rendered="#{not language.active}" styleClass="label">
-                            <!-- TODO h:panelGroup do not support title attribute. But do we really need a title here? -->
-                            <span title="#{msgs['jsf.Disabled']}">
+                            <h:panelGroup layout="span" rendered="#{not language.active}" styleClass="label">
                               #{msgs['jsf.Disabled']}
-                            </span>
-                          </h:panelGroup>
+                            </h:panelGroup>
 
-                          <ui:fragment rendered="#{languagesAction.isUserTeamMember(language)}">
-                            <i class="i i--translate txt--neutral" title="#{msgs['jsf.language.member.joined']}"></i>
-                          </ui:fragment>
-                        </h3>
+                            <ui:fragment rendered="#{languagesAction.isUserTeamMember(language)}">
+                              <i class="i i--translate txt--neutral" title="#{msgs['jsf.language.member.joined']}"></i>
+                            </ui:fragment>
+                          </h3>
                         <span
                           class="list__item__meta">#{language.localeId.id} [#{language.retrieveNativeName()}]</span>
-                      </div>
-                      <div class="list__item__actions">
+                        </div>
+                        <div class="list__item__actions">
                         <span class="txt--understated"
                           title="#{msgs.format('jsf.language.members', languagesAction.getMemberSize(language.localeId))}">
                             <i class="i i--users"></i> #{languagesAction.getMemberSize(language.localeId)}
                         </span>
+                        </div>
                       </div>
-                    </div>
-                  </h:link>
+                    </h:link>
+                  </div>
                 </li>
               </ui:repeat>
             </ul>
