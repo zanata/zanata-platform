@@ -26,6 +26,8 @@ import org.zanata.client.commands.PushPullType;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
+import javax.annotation.Nonnull;
+
 /**
  * Push options for documents that are parsed on the client and transmitted as a
  * {@link Resource} or {@link TranslationsResource}.
@@ -52,6 +54,7 @@ public interface PushOptions extends PushPullOptions {
 
     public ImmutableList<String> getFileTypes();
 
+    @Nonnull
     public String getValidate();
 
     public boolean isMyTrans();

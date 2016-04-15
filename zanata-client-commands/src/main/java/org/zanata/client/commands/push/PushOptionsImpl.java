@@ -23,11 +23,15 @@ package org.zanata.client.commands.push;
 
 import com.google.common.collect.ImmutableList;
 import org.kohsuke.args4j.Option;
+import org.zanata.adapter.xliff.XliffCommon;
 import org.zanata.client.commands.AbstractPushPullOptionsImpl;
 import org.zanata.client.commands.BooleanValueHandler;
 import org.zanata.client.commands.PushPullType;
 import org.zanata.client.commands.ZanataCommand;
 import org.zanata.util.StringUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Sean Flanigan <a
@@ -58,6 +62,7 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
     private String pushType = DEF_PUSH_TYPE;
     private String sourceLang = "en-US";
 
+    @Nullable
     private String validate;
     private boolean myTrans = DEF_MY_TRANS;
 
@@ -250,7 +255,11 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
     }
 
     @Override
+    @Nonnull
     public String getValidate() {
+        if (validate == null) {
+            return XliffCommon.ValidationType.CONTENT.name();
+        }
         return validate;
     }
 
