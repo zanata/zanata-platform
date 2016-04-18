@@ -1,6 +1,7 @@
 ## 3.8.4
 
 ##### Bug fixes
+ * [ZNTA-1011](https://zanata.atlassian.net/browse/ZNTA-1011) - Zanata client 3.8.3 can't push file to server running on WildFly
  * [ZNTA-125](https://zanata.atlassian.net/browse/ZNTA-125) - zanata-cli on Fedora for xliff project has NullPointerException during push when --validate is not specified
 
 -----------------------
