@@ -1,3 +1,10 @@
+## 3.8.4
+
+##### Bug fixes
+ * [ZNTA-125](https://zanata.atlassian.net/browse/ZNTA-125) - zanata-cli on Fedora for xliff project has NullPointerException during push when --validate is not specified
+
+-----------------------
+
 ## 3.8.2
 
 ##### Bug fixes
