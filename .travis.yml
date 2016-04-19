@@ -21,8 +21,6 @@ script: |
     -DstaticAnalysis
 
 jdk:
-  - openjdk7
-  - oraclejdk7
   - oraclejdk8
 
 matrix:
