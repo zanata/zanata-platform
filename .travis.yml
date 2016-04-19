@@ -28,6 +28,7 @@ jdk:
   - openjdk7
   - oraclejdk7
 # Enunciate 1.x doesn't support javac 1.8:
+# see https://github.com/zanata/zanata-api/pull/46
 #  - oraclejdk8
 
 matrix:

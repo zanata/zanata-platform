@@ -34,6 +34,15 @@
     </repository>
   </repositories>
 
+  <properties>
+    <!--
+    Stick to 1.7 for Enunciate compatibility.
+    See https://github.com/zanata/zanata-api/pull/46
+    -->
+    <required.java>1.7</required.java>
+    <required.jvm>1.7</required.jvm>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
