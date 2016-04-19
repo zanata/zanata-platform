@@ -28,6 +28,8 @@
   </extensions>
   <system-properties>
     <property name="zanata.countAjax" value="true" />
+    <property name="document.storage.directory"
+      value="./target/documents" />
     <property name="jboss.as.management.blocking.timeout" value="1000"/>
   </system-properties>
   <management>
