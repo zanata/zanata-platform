@@ -26,24 +26,24 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 /**
- * Represents document name with extension.
+ * Represents a source document name with extension.
  */
-public class QualifiedSrcDocName {
+public class DocNameWithExt {
     private final String fullName;
     private final String extension;
 
-    QualifiedSrcDocName(String fullName) {
+    DocNameWithExt(String fullName) {
         this.fullName = fullName;
         extension = FilenameUtils.getExtension(fullName).toLowerCase();
     }
-    public static QualifiedSrcDocName from(String qualifiedName) {
-        String extension = FilenameUtils.getExtension(qualifiedName);
+    public static DocNameWithExt from(String filename) {
+        String extension = FilenameUtils.getExtension(filename);
         Preconditions.checkArgument(!Strings.isNullOrEmpty(extension),
-                "expect a qualified document name (with extension)");
-        return new QualifiedSrcDocName(qualifiedName);
+                "expected a full filename (with extension)");
+        return new DocNameWithExt(filename);
     }
-    public static QualifiedSrcDocName from(String unqualifiedName, String extension) {
-        return new QualifiedSrcDocName(unqualifiedName + "." + extension);
+    public static DocNameWithExt from(String docNameWithoutExt, String extension) {
+        return new DocNameWithExt(docNameWithoutExt + "." + extension);
     }
 
     public String getFullName() {

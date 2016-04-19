@@ -12,7 +12,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.zanata.adapter.xliff.XliffReader;
 import org.zanata.client.commands.TransFileResolver;
-import org.zanata.client.commands.UnqualifiedSrcDocName;
+import org.zanata.client.commands.DocNameWithoutExt;
 import org.zanata.client.commands.push.PushCommand.TranslationResourcesVisitor;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.LocaleId;
@@ -84,7 +84,7 @@ public class XliffStrategy extends AbstractPushStrategy {
             TranslationResourcesVisitor visitor) throws FileNotFoundException {
         for (LocaleMapping locale : getOpts().getLocaleMapList()) {
             File transFile = new TransFileResolver(getOpts()).getTransFile(
-                    UnqualifiedSrcDocName.from(docName),
+                    DocNameWithoutExt.from(docName),
                     locale);
             if (transFile.exists()) {
                 TranslationsResource targetDoc =

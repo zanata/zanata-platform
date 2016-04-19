@@ -75,32 +75,32 @@ public class FileMappingRuleHandler {
     /**
      * Check whether the parsed rule is applicable to a source document.
      *
-     * @param qualifiedSrcDocName
+     * @param docNameWithExt
      *            source document name with extension
      * @return true if this parsed rule is applicable
      */
-    public boolean isApplicable(QualifiedSrcDocName qualifiedSrcDocName) {
+    public boolean isApplicable(DocNameWithExt docNameWithExt) {
         if (Strings.isNullOrEmpty(mappingRule.getPattern())) {
-            return matchFileExtensionWithProjectType(qualifiedSrcDocName);
+            return matchFileExtensionWithProjectType(docNameWithExt);
         }
         PathMatcher matcher =
             FileSystems.getDefault().getPathMatcher("glob:" + mappingRule.getPattern());
-        // this will help when qualifiedSrcDocName has just file name i.e.
+        // this will help when docNameWithExt has just file name i.e.
         // test.odt whereas pattern is defined as **/*.odt
         File srcFile =
                 new File(opts.getSrcDir(),
-                        qualifiedSrcDocName.getFullName());
+                        docNameWithExt.getFullName());
         log.debug("trying to match pattern: {} to file: {}",
                 mappingRule.getPattern(), srcFile.getPath());
         return matcher.matches(Paths.get(srcFile.getPath()));
     }
 
     private boolean matchFileExtensionWithProjectType(
-            QualifiedSrcDocName qualifiedSrcDocName) {
+            DocNameWithExt docNameWithExt) {
         List<DocumentType> documentTypes = projectType.getSourceFileTypes();
         for (DocumentType docType: documentTypes) {
             if (docType.getSourceExtensions().contains(
-                    qualifiedSrcDocName.getExtension())) {
+                    docNameWithExt.getExtension())) {
                 return true;
             }
         }
@@ -110,17 +110,17 @@ public class FileMappingRuleHandler {
     /**
      * Apply the rule and return relative path of the translation file.
      *
-     * @param qualifiedSrcDocName
+     * @param docNameWithExt
      *            source document name with extension
      * @param localeMapping
      *            locale mapping
      * @return relative path (relative to trans-dir) for the translation file
      */
     public String getRelativeTransFilePathForSourceDoc(
-            QualifiedSrcDocName qualifiedSrcDocName,
+            DocNameWithExt docNameWithExt,
             @Nonnull LocaleMapping localeMapping, Optional<String> translationFileExtension) {
         EnumMap<Placeholders, String> map =
-                parseToMap(qualifiedSrcDocName.getFullName(), localeMapping, translationFileExtension);
+                parseToMap(docNameWithExt.getFullName(), localeMapping, translationFileExtension);
 
         String transFilePath = mappingRule.getRule();
         for (Map.Entry<Placeholders, String> entry : map.entrySet()) {

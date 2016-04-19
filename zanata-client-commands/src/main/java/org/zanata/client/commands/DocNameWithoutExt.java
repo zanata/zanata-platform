@@ -24,33 +24,33 @@ package org.zanata.client.commands;
 import org.zanata.common.ProjectType;
 
 /**
- * Represents document name without extension.
+ * Represents a source document name without extension.
  */
-public class UnqualifiedSrcDocName {
+public class DocNameWithoutExt {
     private final String name;
-    UnqualifiedSrcDocName(String name) {
+    DocNameWithoutExt(String name) {
         this.name = name;
     }
 
-    public static UnqualifiedSrcDocName from(String docName) {
-        return new UnqualifiedSrcDocName(docName);
+    public static DocNameWithoutExt from(String docName) {
+        return new DocNameWithoutExt(docName);
     }
 
-    public QualifiedSrcDocName toQualifiedDocName(ProjectType projectType) {
+    public DocNameWithExt toDocNameWithExt(ProjectType projectType) {
         switch (projectType) {
             case Utf8Properties:
             case Properties:
-                return QualifiedSrcDocName
+                return DocNameWithExt
                         .from(name, "properties");
             case Gettext:
             case Podir:
-                return QualifiedSrcDocName.from(name, "pot");
+                return DocNameWithExt.from(name, "pot");
             case Xliff:
             case Xml:
-                return QualifiedSrcDocName.from(name, "xml");
+                return DocNameWithExt.from(name, "xml");
             case File:
-                throw new IllegalArgumentException("You can not using unqualified document name in file type project");
+                throw new IllegalArgumentException("You cannot use document name without extension with FILE project type");
         }
-        throw new IllegalStateException("Can not convert unqualified document name for this project type: " + projectType);
+        throw new IllegalStateException("Cannot determine file extension for this project type: " + projectType);
     }
 }

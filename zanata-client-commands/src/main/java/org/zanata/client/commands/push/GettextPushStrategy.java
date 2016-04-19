@@ -10,7 +10,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.TransFileResolver;
-import org.zanata.client.commands.UnqualifiedSrcDocName;
+import org.zanata.client.commands.DocNameWithoutExt;
 import org.zanata.client.config.LocaleList;
 import org.zanata.client.config.LocaleMapping;
 
@@ -34,11 +34,11 @@ public class GettextPushStrategy extends AbstractGettextPushStrategy {
             return Collections.emptyList();
         }
 
-        final UnqualifiedSrcDocName unqualifiedSrcDocName =
-                UnqualifiedSrcDocName.from(srcDocName);
+        final DocNameWithoutExt docNameWithoutExt =
+                DocNameWithoutExt.from(srcDocName);
         List<File> transFilesDestinations =
                 Lists.transform(localeListInConfig,
-                        new LocaleMappingToTransFile(unqualifiedSrcDocName,
+                        new LocaleMappingToTransFile(docNameWithoutExt,
                                 getOpts()));
         // we remove all the ones that WILL be mapped and treated as
         // translation files
@@ -54,18 +54,18 @@ public class GettextPushStrategy extends AbstractGettextPushStrategy {
 
     private static class LocaleMappingToTransFile implements
             Function<LocaleMapping, File> {
-        private final UnqualifiedSrcDocName unqualifiedSrcDocName;
+        private final DocNameWithoutExt docNameWithoutExt;
         private TransFileResolver transFileResolver;
 
         public LocaleMappingToTransFile(
-                UnqualifiedSrcDocName unqualifiedSrcDocName, PushOptions opts) {
-            this.unqualifiedSrcDocName = unqualifiedSrcDocName;
+                DocNameWithoutExt docNameWithoutExt, PushOptions opts) {
+            this.docNameWithoutExt = docNameWithoutExt;
             transFileResolver = new TransFileResolver(opts);
         }
 
         @Override
         public File apply(LocaleMapping localeMapping) {
-            return transFileResolver.getTransFile(unqualifiedSrcDocName,
+            return transFileResolver.getTransFile(docNameWithoutExt,
                     localeMapping);
         }
     }
