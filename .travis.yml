@@ -13,7 +13,7 @@ language: java
 install: /bin/true
 
 script: |
-  mvn test \
+  mvn test enunciate:docs \
     --batch-mode \
     --settings .travis-settings.xml \
     -Darquillian.jboss.home=/dev/null \
@@ -23,7 +23,9 @@ script: |
 jdk:
   - openjdk7
   - oraclejdk7
-  - oraclejdk8
+#    Java 8 won't work with mvn enunciate:docs
+#    see https://github.com/zanata/zanata-api/pull/46
+#  - oraclejdk8
 
 matrix:
   fast_finish: true
