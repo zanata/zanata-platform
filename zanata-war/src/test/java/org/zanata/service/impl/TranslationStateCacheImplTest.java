@@ -35,7 +35,7 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
-import org.zanata.service.impl.TranslationStateCacheImpl.DocumentLocaleKey;
+import org.zanata.events.DocumentLocaleKey;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.Zanata;
@@ -91,7 +91,7 @@ public class TranslationStateCacheImplTest {
         // Given:
         Long documentId = new Long("100");
         LocaleId testLocaleId = LocaleId.DE;
-        TranslationStateCacheImpl.DocumentLocaleKey key =
+        DocumentLocaleKey key =
                 new DocumentLocaleKey(documentId, testLocaleId);
         DocumentStatus docStats =
                 new DocumentStatus(new DocumentId(documentId, ""), new Date(),

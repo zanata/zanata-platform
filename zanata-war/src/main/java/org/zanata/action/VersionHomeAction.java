@@ -44,6 +44,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.richfaces.event.FileUploadEvent;
 import org.richfaces.model.UploadedFile;
+import org.zanata.events.DocumentLocaleKey;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.common.DocumentType;
@@ -541,14 +542,6 @@ public class VersionHomeAction extends AbstractSortAction implements
             loadStatistics();
         }
         this.pageRendered = pageRendered;
-    }
-
-    @Getter
-    @AllArgsConstructor
-    @EqualsAndHashCode
-    public class DocumentLocaleKey {
-        private Long documentId;
-        private LocaleId localeId;
     }
 
     public WordStatistic getStatisticsForLocale(LocaleId localeId) {

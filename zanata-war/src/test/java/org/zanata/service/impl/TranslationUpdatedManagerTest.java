@@ -21,6 +21,8 @@
 
 package org.zanata.service.impl;
 
+import javax.enterprise.event.Event;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -29,14 +31,13 @@ import org.mockito.MockitoAnnotations;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
+import org.zanata.events.DocumentLocaleKey;
 import org.zanata.events.DocumentStatisticUpdatedEvent;
 import org.zanata.events.TextFlowTargetStateEvent;
-import org.zanata.service.DocumentService;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.StatisticsUtil;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -51,13 +52,17 @@ public class TranslationUpdatedManagerTest {
     @Mock
     private TextFlowDAO textFlowDAO;
 
+    @Mock
+    private Event<DocumentStatisticUpdatedEvent> documentStatisticUpdatedEvent;
+
     TranslationUpdatedManager manager;
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         manager = new TranslationUpdatedManager();
-        manager.init(translationStateCache, textFlowDAO);
+        manager.init(translationStateCache, textFlowDAO,
+                documentStatisticUpdatedEvent);
     }
 
     @Test
@@ -81,9 +86,15 @@ public class TranslationUpdatedManagerTest {
                 thenReturn(stats);
         when(textFlowDAO.getWordCount(tfId)).thenReturn(wordCount);
 
+        DocumentLocaleKey key =
+            new DocumentLocaleKey(docId, localeId);
+
+        TextFlowTargetStateEvent.TextFlowTargetState state =
+            new TextFlowTargetStateEvent.TextFlowTargetState(tfId,
+                1L, newState, oldState);
+
         TextFlowTargetStateEvent event =
-                new TextFlowTargetStateEvent(null, versionId, docId, tfId,
-                        localeId, 1L, newState, oldState);
+            new TextFlowTargetStateEvent(key, versionId, null, state);
 
         spyManager.textFlowStateUpdated(event);
 

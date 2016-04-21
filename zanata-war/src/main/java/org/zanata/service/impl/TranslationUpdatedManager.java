@@ -1,5 +1,7 @@
 package org.zanata.service.impl;
 
+import java.util.List;
+import java.util.Map;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -7,6 +9,7 @@ import javax.inject.Named;
 
 import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
 import org.zanata.async.Async;
+import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.events.DocumentStatisticUpdatedEvent;
 import org.zanata.events.TextFlowTargetStateEvent;
@@ -17,6 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
+
+import static org.zanata.events.TextFlowTargetStateEvent.TextFlowTargetState;
 
 /**
  * Manager that handles post update of translation. Important:
@@ -38,7 +43,8 @@ public class TranslationUpdatedManager {
     @Inject
     private TextFlowDAO textFlowDAO;
 
-
+    @Inject
+    private Event<DocumentStatisticUpdatedEvent> documentStatisticUpdatedEvent;
 
     /**
      * This method contains all logic to be run immediately after a Text Flow
@@ -55,23 +61,31 @@ public class TranslationUpdatedManager {
     // Fire asynchronous event
     void publishAsyncEvent(TextFlowTargetStateEvent event) {
         if (BeanManagerProvider.isActive()) {
-            int wordCount = textFlowDAO.getWordCount(event.getTextFlowId());
+            Long versionId = event.getProjectIterationId();
+            Long documentId = event.getKey().getDocumentId();
+            LocaleId localeId = event.getKey().getLocaleId();
 
-            // TODO use Event.fire()
-            BeanManagerProvider.getInstance().getBeanManager().fireEvent(
-                    new DocumentStatisticUpdatedEvent(
-                            event.getProjectIterationId(),
-                            event.getDocumentId(), event.getLocaleId(),
-                            wordCount,
-                            event.getPreviousState(), event.getNewState())
-            );
+            for(TextFlowTargetState state: event.getStates()) {
+                int wordCount =
+                    textFlowDAO.getWordCount(state.getTextFlowId());
+                // TODO PERF: generate one DocumentStatisticUpdatedEvent per
+                // TextFlowTargetStateEvent. See
+                // DocumentServiceImpl.documentStatisticUpdated
+                documentStatisticUpdatedEvent
+                    .fire(new DocumentStatisticUpdatedEvent(
+                        versionId, documentId, localeId,
+                        wordCount, state.getPreviousState(),
+                        state.getNewState()));
+            }
         }
     }
 
     @VisibleForTesting
     public void init(TranslationStateCache translationStateCacheImpl,
-            TextFlowDAO textFlowDAO) {
+            TextFlowDAO textFlowDAO,
+            Event<DocumentStatisticUpdatedEvent> documentStatisticUpdatedEvent) {
         this.translationStateCacheImpl = translationStateCacheImpl;
         this.textFlowDAO = textFlowDAO;
+        this.documentStatisticUpdatedEvent = documentStatisticUpdatedEvent;
     }
 }

@@ -20,12 +20,16 @@
  */
 package org.zanata.service.impl;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
 import javax.annotation.Nonnull;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Multimap;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.enterprise.context.RequestScoped;
@@ -38,7 +42,9 @@ import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.common.ContentState;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
+import org.zanata.events.DocumentLocaleKey;
 import org.zanata.events.TextFlowTargetStateEvent;
+import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HSimpleComment;
@@ -46,6 +52,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.type.TranslationSourceType;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
 import org.zanata.service.MergeTranslationsService;
 import org.zanata.service.TranslationStateCache;
@@ -56,6 +63,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Maps;
 
+import static org.zanata.events.TextFlowTargetStateEvent.TextFlowTargetState;
 import static org.zanata.transaction.TransactionUtil.runInTransaction;
 
 /**
@@ -89,7 +97,10 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
     private LocaleService localeServiceImpl;
 
     @Inject
-    private Event<TextFlowTargetStateEvent> textFlowTargetStateEventEvent;
+    private Event<TextFlowTargetStateEvent> textFlowTargetStateEvent;
+
+    @Inject @Authenticated
+    private HAccount authenticatedAccount;
 
     private final static int TRANSLATION_BATCH_SIZE = 10;
 
@@ -200,6 +211,9 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
                         sourceVersionId, targetVersionId, batchStart,
                         batchLength);
 
+        Multimap<DocumentLocaleKey, TextFlowTargetState> eventMap =
+            HashMultimap.create();
+
         for (HTextFlow[] results : matches) {
             HTextFlow sourceTf = results[0];
             HTextFlow targetTf = results[1];
@@ -237,27 +251,30 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
                 textFlowDAO.makePersistent(targetTf);
                 textFlowDAO.flush();
 
-                // TODO: Fire single event with batch of updated textFlowTarget
                 if (!localeContentStateMap.isEmpty()) {
                     for (Map.Entry<Long, ContentState> entry : localeContentStateMap
                             .entrySet()) {
                         HTextFlowTarget updatedTarget =
                                 targetTf.getTargets().get(entry.getKey());
 
-                        TextFlowTargetStateEvent event =
-                                new TextFlowTargetStateEvent(null,
-                                        targetVersionId,
-                                        targetTf.getDocument().getId(),
-                                        targetTf.getId(),
-                                        updatedTarget.getLocale().getLocaleId(),
-                                        updatedTarget.getId(),
-                                        updatedTarget.getState(),
-                                        entry.getValue());
+                        DocumentLocaleKey key = new DocumentLocaleKey(
+                            targetTf.getDocument().getId(),
+                            updatedTarget.getLocale().getLocaleId());
 
-                        textFlowTargetStateEventEvent.fire(event);
+                        eventMap.put(key, new TextFlowTargetState(targetTf.getId(),
+                            updatedTarget.getId(), updatedTarget.getState(),
+                            entry.getValue()));
                     }
                 }
             }
+        }
+        Long actorId = authenticatedAccount.getPerson().getId();
+        for (Map.Entry<DocumentLocaleKey, Collection<TextFlowTargetState>> entry : eventMap
+            .asMap().entrySet()) {
+            TextFlowTargetStateEvent tftUpdatedEvent =
+                new TextFlowTargetStateEvent(entry.getKey(), targetVersionId,
+                    actorId, ImmutableList.copyOf(entry.getValue()));
+            textFlowTargetStateEvent.fire(tftUpdatedEvent);
         }
         stopwatch.stop();
         log.info("Complete merge translations of {} in {}", matches.size()

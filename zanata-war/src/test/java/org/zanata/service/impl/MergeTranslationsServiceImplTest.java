@@ -42,12 +42,14 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.jpa.FullText;
+import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.type.TranslationSourceType;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.transaction.TransactionUtil;
 import org.zanata.util.IServiceLocator;
@@ -95,6 +97,9 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
 
     @Produces @Mock
     private ZanataIdentity identity;
+
+    @Produces @Mock @Authenticated
+    HAccount authenticatedAccount;
 
     @Produces @Zanata
     CacheContainer cacheContainer = new InfinispanTestCacheContainer();

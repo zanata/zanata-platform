@@ -24,6 +24,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 
 import javax.enterprise.context.RequestScoped;
@@ -32,6 +33,8 @@ import javax.enterprise.event.TransactionPhase;
 import javax.persistence.EntityManager;
 
 import com.google.common.base.Throwables;
+import com.google.common.collect.Maps;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.time.DateUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -184,23 +187,54 @@ public class ActivityServiceImpl implements ActivityService {
     public void logTextFlowStateUpdate(@Observes(during = TransactionPhase.AFTER_SUCCESS) TextFlowTargetStateEvent event_) {
         // workaround for https://issues.jboss.org/browse/WELD-2019
         final TextFlowTargetStateEvent event = event_;
+
         Long actorId = event.getActorId();
+
         if (actorId != null) {
             Lock lock = activityLockManager.getLock(actorId);
             lock.lock();
             try {
                 transactionUtil.run(() -> {
-                    HTextFlowTarget target =
-                            textFlowTargetDAO.findById(event.getTextFlowTargetId(),
-                                    false);
-                    HDocument document = documentDAO.getById(event.getDocumentId());
-                    ActivityType activityType =
-                            event.getNewState().isReviewed() ? ActivityType.REVIEWED_TRANSLATION
-                                    : ActivityType.UPDATE_TRANSLATION;
+                    HDocument document =
+                        documentDAO.getById(event.getKey().getDocumentId());
 
-                    logActivityAlreadyLocked(actorId,
-                            document.getProjectIteration(), target, activityType,
-                            target.getTextFlow().getWordCount().intValue());
+                    HTextFlowTarget lastReviewedTarget = null;
+                    HTextFlowTarget lastTranslatedTarget = null;
+
+                    int totalReviewedWords = 0;
+                    int totalTranslatedWords = 0;
+
+                    for (TextFlowTargetStateEvent.TextFlowTargetState state : event
+                        .getStates()) {
+                        HTextFlowTarget target =
+                            textFlowTargetDAO.findById(
+                                state.getTextFlowTargetId(), false);
+                        if (state.getNewState().isReviewed()) {
+                            lastReviewedTarget = target;
+                            totalReviewedWords +=
+                                target.getTextFlow().getWordCount()
+                                    .intValue();
+                        } else {
+                            lastTranslatedTarget = target;
+                            totalTranslatedWords +=
+                                target.getTextFlow().getWordCount()
+                                    .intValue();
+                        }
+                    }
+                    if (lastReviewedTarget != null) {
+                        logActivityAlreadyLocked(actorId,
+                            document.getProjectIteration(), lastReviewedTarget,
+                            ActivityType.REVIEWED_TRANSLATION,
+                            totalReviewedWords);
+                    }
+
+                    if (lastTranslatedTarget != null) {
+                        logActivityAlreadyLocked(actorId,
+                            document.getProjectIteration(),
+                            lastTranslatedTarget,
+                            ActivityType.UPDATE_TRANSLATION,
+                            totalTranslatedWords);
+                    }
                 });
             } catch (Exception e) {
                 Throwables.propagate(e);

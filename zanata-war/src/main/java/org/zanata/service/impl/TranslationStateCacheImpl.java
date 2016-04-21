@@ -33,7 +33,6 @@ import lombok.Getter;
 
 import org.infinispan.manager.CacheContainer;
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.cache.CacheWrapper;
@@ -43,10 +42,10 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
+import org.zanata.events.DocumentLocaleKey;
 import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
-import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.service.ValidationFactoryProvider;
@@ -59,6 +58,9 @@ import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 
 import com.google.common.cache.CacheLoader;
+import com.google.common.collect.Iterables;
+
+import static com.google.common.collect.Iterables.getLast;
 
 /**
  * Default Implementation of the Translation State Cache.
@@ -191,18 +193,20 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     // TODO why not @Observe the event directly?
     @Override
     public void textFlowStateUpdated(TextFlowTargetStateEvent event) {
-        DocumentLocaleKey key =
-                new DocumentLocaleKey(event.getDocumentId(),
-                        event.getLocaleId());
+        Long documentId = event.getKey().getDocumentId();
+        LocaleId localeId = event.getKey().getLocaleId();
 
         //invalidate document statistic cache
-        clearDocumentStatistics(event.getDocumentId(), event.getLocaleId());
+        clearDocumentStatistics(documentId, localeId);
 
+        for(TextFlowTargetStateEvent.TextFlowTargetState state: event.getStates()) {
+            // invalidate target validation
+            targetValidationCache.remove(state.getTextFlowTargetId());
+        }
+        Long tftId = getLast(event.getStates()).getTextFlowTargetId();
         // update document status information
-        updateDocStatusCache(key, event.getTextFlowTargetId());
-
-        // invalidate target validation
-        targetValidationCache.remove(event.getTextFlowTargetId());
+        updateDocStatusCache(new DocumentLocaleKey(documentId, localeId),
+            tftId);
     }
 
     private void updateDocStatusCache(DocumentLocaleKey key,
@@ -294,13 +298,5 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
                 new DocumentId(document.getId(), document.getDocId()),
                 lastTranslatedDate, lastTranslatedBy);
         return documentStatus;
-    }
-
-    @AllArgsConstructor
-    @EqualsAndHashCode
-    @Getter
-    public static final class DocumentLocaleKey implements Serializable {
-        private Long documentId;
-        private LocaleId localeId;
     }
 }
