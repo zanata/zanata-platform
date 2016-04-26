@@ -21,10 +21,9 @@
 
 package org.zanata.service.impl;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectDAO;
@@ -43,19 +42,19 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Name("securityServiceImpl")
-@Scope(ScopeType.STATELESS)
+@Named("securityServiceImpl")
+@RequestScoped
 public class SecurityServiceImpl implements SecurityService {
-    @In
+    @Inject
     private ProjectDAO projectDAO;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In
+    @Inject
     ZanataIdentity identity;
 
     @Override

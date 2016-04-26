@@ -20,7 +20,7 @@
  */
 package org.zanata.feature.language;
 
-import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.subethamail.wiser.WiserMessage;
@@ -43,8 +43,8 @@ import static org.zanata.util.HasEmailRule.getEmailContent;
 @Category(DetailedTest.class)
 public class JoinLanguageTeamTest extends ZanataTestCase {
 
-    @ClassRule
-    public static HasEmailRule hasEmailRule = new HasEmailRule();
+    @Rule
+    public final HasEmailRule hasEmailRule = new HasEmailRule();
 
     @Feature(summary = "The administrator can add a member to a language team",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 181703)

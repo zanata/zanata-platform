@@ -1,0 +1,146 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  xmlns:rich="http://richfaces.org/rich">
+  <div class="panel">
+    <div class="panel__header">
+      <ui:fragment
+        rendered="#{identity.hasPermission(languageAction.locale, 'manage-language-team')}">
+        <h2 class="panel__heading">#{msgs['jsf.language.requests']}</h2>
+      </ui:fragment>
+      <ui:fragment
+        rendered="#{not identity.hasPermission(languageAction.locale, 'manage-language-team')}">
+        <h2 class="panel__heading">#{msgs['jsf.language.myRequests']}</h2>
+      </ui:fragment>
+    </div>
+
+    <h:form id="requests-form" styleClass="l--push-bottom-0">
+      <script type="text/javascript">
+        function requestTabToggleActions(id, accept, acceptAsTranslator, acceptAsReviewer, acceptAsCoordinator) {
+          if(accept) {
+            jQuery('#' + id + '-actions').addClass('is-hidden');
+            jQuery('#' + id + '-actions-roles').removeClass('is-hidden');
+            //populate checkboxes according to request accepted
+            if(acceptAsCoordinator) {
+              requestTabToggleCoordinator(id, acceptAsCoordinator, true);
+            }
+            if(acceptAsReviewer) {
+              jQuery('#' + id + '-actions-roles').find('[id$=reviewer]').find('.js-form__checkbox__input').attr('checked', true).trigger('change');
+            }
+            if(acceptAsTranslator) {
+              jQuery('#' + id + '-actions-roles').find('[id$=translator]').find('.js-form__checkbox__input').attr('checked', true).trigger('change');
+            }
+          } else {
+            jQuery('#' + id + '-accept').addClass('is-hidden');
+            jQuery('#' + id + '-decline').attr('disabled', true);
+          }
+        }
+
+        function requestTabToggleCoordinator(id, checked, selfUpdate) {
+          if(selfUpdate) {
+            jQuery('#' + id + '-actions-roles').find('[id$=coordinator]').find('.js-form__checkbox__input').attr('checked', checked).trigger('change');
+          }
+          var actionsRoles = jQuery('#' + id + '-actions-roles');
+          toggleMemberRolesEntry(actionsRoles, checked);
+        }
+
+        function requestTabBindAsCoordinator(key, checked) {
+          var res = key.split("-");
+          var requestId = res[0];
+          var personId = res[1];
+          requestTabToggleCoordinator(requestId, checked, false);
+          bindAsCoordinator(personId, checked, refreshMembersForm());
+        }
+
+        function requestTabBindAsReviewer(key, checked) {
+          var res = key.split("-");
+          var personId = res[1];
+          bindAsReviewer(personId, checked, refreshMembersForm());
+        }
+
+        function requestTabBindAsTranslator(key, checked) {
+          var res = key.split("-");
+          var personId = res[1];
+          bindAsTranslator(personId, checked, refreshMembersForm());
+        }
+      </script>
+
+      <a4j:jsFunction name="acceptRequest"
+        oncomplete="requestTabToggleActions(#{langRequestId}, true, #{translator}, #{reviewer}, #{coordinator});refreshMembersForm()"
+        action="#{languageJoinAction.acceptRequest(langRequestId)}"
+        render="requests-size">
+        <a4j:param name="val1" assignTo="#{langRequestId}"/>
+        <a4j:param name="val2" assignTo="#{translator}"/>
+        <a4j:param name="val3" assignTo="#{reviewer}"/>
+        <a4j:param name="val4" assignTo="#{coordinator}"/>
+      </a4j:jsFunction>
+
+      <ui:fragment rendered="#{languageAction.requests.isEmpty()}">
+        <p class="txt--meta l--pad-all-half">#{msgs['jsf.language.request.empty']}</p>
+      </ui:fragment>
+
+      <ui:fragment rendered="#{not languageAction.requests.isEmpty()}">
+        <ul class="list--stats">
+          <ui:repeat value="#{languageAction.requests}" var="langRequest">
+            <li class="l--pad-all-quarter">
+              <div class="list__item__content">
+                <div class="list__item__info">
+                  <h3 class="list__title">
+                    #{langRequest.request.requester.person.name}
+                  </h3>
+                  <span class="list__item__meta">
+                    #{langRequest.request.requester.username} <span>[#{langRequest.request.requester.person.email}]</span>
+                    <span class="bx--block l--push-top-quarter">
+                      #{msgs.format('jsf.language.request.role', languageJoinAction.getLocalisedRequestedRoles(langRequest))}
+                    </span>
+                  </span>
+                </div>
+
+                <div class="list__item__actions">
+                  <div id="#{langRequest.id}-actions">
+                    <button id="#{langRequest.id}-accept" class="button button--success"
+                      onclick="acceptRequest(#{langRequest.id}, #{langRequest.isTranslator()}, #{langRequest.isReviewer()}, #{langRequest.isCoordinator()});return false;">
+                      #{msgs['jsf.language.request.accept']}
+                    </button>
+
+                    <button name="#{langRequest.id}" id="#{langRequest.id}-decline"
+                      class="button button--danger"
+                      data-toggle="modal" data-target="#declineRequestDialog"
+                      onclick="jQuery('#requestId').val(#{langRequest.id});return false;">
+                      #{msgs['jsf.language.request.decline']}
+                    </button>
+                  </div>
+
+                  <div id="#{langRequest.id}-actions-roles" class="is-hidden">
+                    <ul class="list--horizontal txt--meta">
+                      <ui:param name="isCoordinator" value="#{languageAction.isCoordinator(langRequest.request.requester.person)}"/>
+
+                      <li>
+                        <zanata:checkbox label="#{msgs['jsf.Translator']}" id="translator" styleClass="#{isCoordinator ? 'is-disabled' : ''}"
+                          checked="#{languageAction.isTranslator(langRequest.request.requester.person)}" onValueChanged="requestTabBindAsTranslator"
+                          value="#{langRequest.id}-#{langRequest.request.requester.person.id}"/>
+                      </li>
+                      <li>
+                        <zanata:checkbox label="#{msgs['jsf.Reviewer']}" id="reviewer" styleClass="#{isCoordinator ? 'is-disabled' : ''}"
+                          checked="#{languageAction.isReviewer(langRequest.request.requester.person)}" onValueChanged="requestTabBindAsReviewer"
+                          value="#{langRequest.id}-#{langRequest.request.requester.person.id}"/>
+                      </li>
+                      <li>
+                        <zanata:checkbox label="#{msgs['jsf.Coordinator']}" id="coordinator"
+                          checked="#{isCoordinator}" onValueChanged="requestTabBindAsCoordinator"
+                          value="#{langRequest.id}-#{langRequest.request.requester.person.id}"/>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ui:repeat>
+        </ul>
+      </ui:fragment>
+    </h:form>
+    <ui:include src="decline_request_modal.xhtml"/>
+  </div>
+</ui:composition>

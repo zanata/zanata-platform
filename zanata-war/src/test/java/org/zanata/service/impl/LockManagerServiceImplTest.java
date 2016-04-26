@@ -20,13 +20,20 @@
  */
 package org.zanata.service.impl;
 
+import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataTest;
 import org.zanata.lock.Lock;
-import org.zanata.seam.SeamAutowire;
+import org.zanata.model.HAccount;
+import org.zanata.security.annotations.Authenticated;
+import org.zanata.test.CdiUnitRunner;
+import org.zanata.util.IServiceLocator;
+import org.zanata.util.ServiceLocator;
+
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -39,23 +46,21 @@ import static org.hamcrest.Matchers.is;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
+@SupportDeltaspikeCore
 public class LockManagerServiceImplTest extends ZanataTest {
 
-    static {
-        SeamAutowire.instance();
-    }
-
+    @Inject
     private LockManagerServiceImpl lockManagerService;
 
-    @Before
-    public void beforeMethod() {
-        MockitoAnnotations.initMocks(this);
-        // @formatter:off
-        lockManagerService = SeamAutowire.instance()
-            .reset()
-            .autowire(LockManagerServiceImpl.class);
-        // @formatter:on
+    @Produces
+    IServiceLocator serviceLocator = ServiceLocator.instance();
 
+    @Produces @Authenticated
+    HAccount getAuthenticatedAccount() {
+        HAccount account = new HAccount();
+        account.setUsername("admin");
+        return account;
     }
 
     @Test

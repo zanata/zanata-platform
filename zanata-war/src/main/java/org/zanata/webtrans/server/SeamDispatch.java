@@ -1,11 +1,18 @@
 package org.zanata.webtrans.server;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.util.AnnotationLiteral;
+import javax.inject.Inject;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ActionResult;
@@ -16,65 +23,34 @@ import net.customware.gwt.dispatch.shared.ActionException;
 import net.customware.gwt.dispatch.shared.Result;
 import net.customware.gwt.dispatch.shared.UnsupportedActionException;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Startup;
-import org.jboss.seam.deployment.HotDeploymentStrategy;
-import org.jboss.seam.deployment.StandardDeploymentStrategy;
+import org.apache.deltaspike.core.api.common.DeltaSpike;
+import org.apache.deltaspike.core.api.lifecycle.Initialized;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.exception.NotLoggedInException;
-import org.jboss.seam.web.ServletContexts;
-import org.zanata.util.ServiceLocator;
+import org.zanata.webtrans.server.rpc.AbstractActionHandler;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.AuthorizationError;
 import org.zanata.webtrans.shared.auth.InvalidTokenError;
+import org.zanata.webtrans.shared.rpc.ExitWorkspaceAction;
+import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.WrappedAction;
 
-import com.google.common.collect.Maps;
-
-@Name("seamDispatch")
-@Scope(ScopeType.APPLICATION)
-@Startup
+@ApplicationScoped
 @Slf4j
+@NoArgsConstructor
 public class SeamDispatch implements Dispatch {
+    @Inject
+    @DeltaSpike
+    private HttpServletRequest request;
 
-    @SuppressWarnings("rawtypes")
-    private final Map<Class<? extends Action>, Class<? extends ActionHandler<?, ?>>> handlers =
-            Maps.newHashMap();
+    @Inject @Any
+    private Instance<AbstractActionHandler<?, ?>> actionHandlers;
 
-    @SuppressWarnings("rawtypes")
-    public SeamDispatch() {
-        // register all handlers with the @ActionHandlerFor annotation
-        Set<Class<?>> annotatedClasses =
-                StandardDeploymentStrategy.instance().getAnnotatedClasses()
-                        .get(ActionHandlerFor.class.getName());
-        if (annotatedClasses != null) {
-            for (Class clazz : annotatedClasses) {
-                register(clazz);
-            }
+    public void onStartup(@Observes @Initialized ServletContext context) {
+        if (actionHandlers.isUnsatisfied()) {
+            throw new RuntimeException("No ActionHandler beans found for injection");
         }
-
-        // also register hot deployed handlers
-        HotDeploymentStrategy hotDeploymentStrategy =
-                HotDeploymentStrategy.instance();
-        if (hotDeploymentStrategy != null && hotDeploymentStrategy.available()) {
-            Set<Class<?>> hotAnnotatedClasses =
-                    hotDeploymentStrategy.getAnnotatedClasses().get(
-                            ActionHandlerFor.class.getName());
-            if (hotAnnotatedClasses != null) {
-                for (Class clazz : hotAnnotatedClasses) {
-                    register(clazz);
-                }
-            }
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void register(Class<?> clazz) {
-        log.debug("Registering ActionHandler {}", clazz.getName());
-        ActionHandlerFor ahf = clazz.getAnnotation(ActionHandlerFor.class);
-        handlers.put(ahf.value(), (Class<? extends ActionHandler<?, ?>>) clazz);
+        log.debug("Found one or more ActionHandler beans");
     }
 
     private static class DefaultExecutionContext implements ExecutionContext {
@@ -124,11 +100,15 @@ public class SeamDispatch implements Dispatch {
                     + action.getClass());
         }
         WrappedAction<?> a = (WrappedAction<?>) action;
-        HttpSession session =
-                ServletContexts.instance().getRequest().getSession();
+        HttpSession session = request.getSession(false);
         if (session != null && !session.getId().equals(a.getCsrfToken())) {
             log.warn("Token mismatch. Client token: {}, Expected token: {}",
                     a.getCsrfToken(), session.getId());
+            // If we throw an exception here, the client's onWindowCloseHandler
+            // is likely to call exitWorkspace again, forever!
+            if (a.getAction() instanceof ExitWorkspaceAction) {
+                return (R) new NoOpResult();
+            }
             throw new InvalidTokenError(
                     "The csrf token sent with this request is not valid. It may be from an expired session, or may have been forged");
         }
@@ -160,16 +140,16 @@ public class SeamDispatch implements Dispatch {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private <A extends Action<R>, R extends Result> ActionHandler<A, R>
             findHandler(A action) throws UnsupportedActionException {
-
-        Class<? extends ActionHandler> handlerClazz =
-                handlers.get(action.getClass());
-        final ActionHandler<A, R> handler =
-                ServiceLocator.instance().getInstance(handlerClazz);
-
-        if (handler == null)
+        Instance<AbstractActionHandler<?, ?>> handler = actionHandlers
+                .select(new ActionHandlerForLiteral(
+                        (Class<A>) action.getClass()));
+        if (handler.isUnsatisfied()) {
             throw new UnsupportedActionException(action);
-
-        return handler;
+        }
+        if (handler.isAmbiguous()) {
+            throw new RuntimeException("Found multiple ActionHandlers for " + action.getClass());
+        }
+        return (ActionHandler<A, R>) handler.get();
     }
 
     private <A extends Action<R>, R extends Result> void doRollback(A action,
@@ -186,8 +166,7 @@ public class SeamDispatch implements Dispatch {
                     + action.getClass());
         }
         WrappedAction<?> a = (WrappedAction<?>) action;
-        HttpSession session =
-                ServletContexts.instance().getRequest().getSession();
+        HttpSession session = request.getSession(false);
         if (session != null && !session.getId().equals(a.getCsrfToken())) {
             throw new SecurityException(
                     "Blocked action without session id (CSRF attack?)");
@@ -208,6 +187,20 @@ public class SeamDispatch implements Dispatch {
             ctx.rollback();
             log.error("Error dispatching action: " + e, e);
             throw new ActionException(e);
+        }
+    }
+
+    class ActionHandlerForLiteral
+            extends AnnotationLiteral<ActionHandlerFor>
+            implements ActionHandlerFor {
+        private final Class<? extends Action<?>> clazz;
+
+        public ActionHandlerForLiteral(Class<? extends Action<?>> clazz) {
+            this.clazz = clazz;
+        }
+        @Override
+        public Class<? extends Action<?>> value() {
+            return clazz;
         }
     }
 

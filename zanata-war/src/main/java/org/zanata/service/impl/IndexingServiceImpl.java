@@ -23,23 +23,21 @@ package org.zanata.service.impl;
 import java.util.Map;
 import java.util.concurrent.Future;
 
+import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManagerFactory;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.deltaspike.jpa.api.entitymanager.PersistenceUnitName;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.action.ReindexClassOptions;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskResult;
-import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.dao.HTextFlowTargetStreamingDAO;
 import org.zanata.model.HProject;
 import org.zanata.model.HTextFlowTarget;
@@ -48,22 +46,21 @@ import org.zanata.search.ClassIndexer;
 import org.zanata.search.HTextFlowTargetIndexingStrategy;
 import org.zanata.search.SimpleClassIndexingStrategy;
 import org.zanata.service.IndexingService;
+import org.zanata.util.Zanata;
 
 /**
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("indexingServiceImpl")
-@Scope(ScopeType.STATELESS)
-@AutoCreate
+@Named("indexingServiceImpl")
+@RequestScoped
 @Slf4j
-@ContainsAsyncMethods
 public class IndexingServiceImpl implements IndexingService {
 
-    @In
+    @Inject @Zanata
     private EntityManagerFactory entityManagerFactory;
 
-    @In
+    @Inject
     private HTextFlowTargetStreamingDAO hTextFlowTargetStreamingDAO;
 
     @Override

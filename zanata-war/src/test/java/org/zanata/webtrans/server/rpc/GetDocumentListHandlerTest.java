@@ -8,11 +8,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.hamcrest.Matchers;
-import org.junit.Before;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataTest;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
@@ -23,50 +22,41 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.TestFixture;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationStateCache;
+import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
 
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
 public class GetDocumentListHandlerTest extends ZanataTest {
+    @Inject @Any
     private GetDocumentListHandler handler;
-    @Mock
+    @Produces @Mock
     private ZanataIdentity identity;
-    @Mock
+    @Produces @Mock
     private DocumentDAO documentDAO;
-    @Mock
+    @Produces @Mock
     private TranslationFileService translationFileServiceImpl;
-    @Mock
+    @Produces @Mock
     private TranslationStateCache translationStateCacheImpl;
-    @Mock
+    @Produces @Mock
     private FilePersistService filePersistService;
 
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        // @formatter:off
-      handler = SeamAutowire.instance()
-            .reset()
-            .use("identity", identity)
-            .use("documentDAO", documentDAO)
-            .use("translationFileServiceImpl", translationFileServiceImpl)
-            .use("translationStateCacheImpl", translationStateCacheImpl)
-            .use("filePersistService", filePersistService)
-            .ignoreNonResolvable()
-            .autowire(GetDocumentListHandler.class);
-      // @formatter:on
-    }
-
     @Test
+    @InRequestScope
     public void testExecute() throws Exception {
         WorkspaceId workspaceId = TestFixture.workspaceId();
         GetDocumentList action = new GetDocumentList();
@@ -89,6 +79,7 @@ public class GetDocumentListHandlerTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void testExecuteWithFilter() throws Exception {
         WorkspaceId workspaceId = TestFixture.workspaceId();
         GetDocumentList action = new GetDocumentList();
@@ -116,6 +107,7 @@ public class GetDocumentListHandlerTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void testRollback() throws Exception {
         handler.rollback(null, null, null);
     }

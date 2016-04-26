@@ -31,8 +31,6 @@ import lombok.Value;
  */
 @Value
 public final class DocumentUploadedEvent {
-    public static final String EVENT_NAME =
-            "org.zanata.events.DocumentUploadedEvent";
     private final long actorId;
     private final Long documentId;
     private final boolean isSourceDocument;

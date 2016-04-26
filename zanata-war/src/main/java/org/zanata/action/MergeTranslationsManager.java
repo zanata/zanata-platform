@@ -7,11 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.security.ZanataIdentity;
@@ -22,19 +19,19 @@ import org.zanata.service.MergeTranslationsService;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@AutoCreate
-@Name("mergeTranslationsManager")
-@Scope(ScopeType.STATELESS)
+
+@Named("mergeTranslationsManager")
+@javax.enterprise.context.Dependent
 @Slf4j
 public class MergeTranslationsManager implements Serializable {
     private static final long serialVersionUID = -8717740654253262530L;
-    @In
+    @Inject
     private AsyncTaskHandleManager asyncTaskHandleManager;
 
-    @In
+    @Inject
     private MergeTranslationsService mergeTranslationsServiceImpl;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
     /**

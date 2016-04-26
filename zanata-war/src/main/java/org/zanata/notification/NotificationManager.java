@@ -20,28 +20,15 @@
  */
 package org.zanata.notification;
 
-import java.io.Serializable;
-
-import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
-import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Startup;
 import org.zanata.events.LanguageTeamPermissionChangedEvent;
 
 import com.google.common.base.Throwables;
@@ -52,43 +39,14 @@ import com.google.common.base.Throwables;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Name("notificationManager")
-@Scope(ScopeType.APPLICATION)
-// see below Observer method comment
-@Startup
+@ApplicationScoped
 @Slf4j
-@NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class NotificationManager implements Serializable {
-    private static final long serialVersionUID = -1L;
+public class NotificationManager {
 
-    // JMS EmailQueue Producer.
-    @In
-    @EmailQueueSender
-    private QueueSender mailQueueSender;
-
-    @In
-    @InVMJMS
-    private QueueSession queueSession;
-
-
-    @Create
-    public void onCreate() {
-        try {
-            mailQueueSender.getQueue();
-        } catch (JMSException e) {
-            // it will never reach this block. As long as you call getQueue()
-            // and if the queue is not defined, seam will terminate:
-            // org.jboss.seam.jms.ManagedQueueSender.getQueue(ManagedQueueSender.java:45
-            Throwables.propagate(e);
-        }
-    }
-
-    // Once migrated to CDI events, CDI will instantiate NotificationManager bean for us. This will remove the need of Seam @Startup
-    @Observer(LanguageTeamPermissionChangedEvent.EVENT_NAME)
-    public
-            void onLanguageTeamPermissionChanged(
-                    final @Observes LanguageTeamPermissionChangedEvent event) {
+    public void onLanguageTeamPermissionChanged(
+            final @Observes LanguageTeamPermissionChangedEvent event,
+            final @InVMJMS QueueSession queueSession,
+            final @EmailQueueSender QueueSender mailQueueSender) {
         try {
             ObjectMessage message =
                     queueSession.createObjectMessage(event);
@@ -105,9 +63,9 @@ public class NotificationManager implements Serializable {
      * message/event this is and the queue consumer can base on this value to
      * find appropriate handler to handle the message payload.
      *
-     * @seeorg.zanata.notification.EmailQueueMessageReceiver
+     * @see org.zanata.notification.EmailQueueMessageReceiver
      */
-    static enum MessagePropertiesKey {
+    enum MessagePropertiesKey {
         objectType
     }
 }

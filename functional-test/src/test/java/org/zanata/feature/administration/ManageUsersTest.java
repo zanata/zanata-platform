@@ -21,7 +21,7 @@
 package org.zanata.feature.administration;
 
 import org.junit.Before;
-import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
@@ -43,8 +43,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class ManageUsersTest extends ZanataTestCase {
 
-    @ClassRule
-    public static HasEmailRule emailRule = new HasEmailRule();
+    @Rule
+    public final HasEmailRule emailRule = new HasEmailRule();
 
     private DashboardBasePage dashboardPage;
 

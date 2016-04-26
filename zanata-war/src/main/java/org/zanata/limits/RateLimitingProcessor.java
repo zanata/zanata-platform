@@ -1,13 +1,14 @@
 package org.zanata.limits;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.resteasy.spi.HttpResponse;
+import org.zanata.util.RunnableEx;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * This class is used by RestLimitingSynchronousDispatcher to dispatch API calls
@@ -31,23 +32,23 @@ public class RateLimitingProcessor {
     private final LeakyBucket logLimiter = new LeakyBucket(1, 5,
             TimeUnit.MINUTES);
 
-    public void processForApiKey(String apiKey, HttpResponse response,
-        Runnable taskToRun) throws Exception {
+    public void processForApiKey(String apiKey, HttpServletResponse response,
+            RunnableEx taskToRun) throws Exception {
         process(RateLimiterToken.fromApiKey(apiKey), response, taskToRun);
     }
 
-    public void processForUser(String username, HttpResponse response,
-        Runnable taskToRun) throws IOException {
+    public void processForUser(String username, HttpServletResponse response,
+            RunnableEx taskToRun) throws Exception {
         process(RateLimiterToken.fromUsername(username), response, taskToRun);
     }
 
-    public void processForAnonymousIP(String ip, HttpResponse response,
-        Runnable taskToRun) throws IOException {
+    public void processForAnonymousIP(String ip, HttpServletResponse response,
+            RunnableEx taskToRun) throws Exception {
         process(RateLimiterToken.fromIPAddress(ip), response, taskToRun);
     }
 
-    private void process(RateLimiterToken key, HttpResponse response,
-            Runnable taskToRun) throws IOException {
+    private void process(RateLimiterToken key, HttpServletResponse response,
+            RunnableEx taskToRun) throws Exception {
         RestCallLimiter rateLimiter = rateLimitManager.getLimiter(key);
 
         log.debug("check semaphore for {}", this);
@@ -60,16 +61,16 @@ public class RateLimitingProcessor {
             }
 
             String errorMessage;
-            if(key.getType().equals(RateLimiterToken.TYPE.API_KEY)) {
+            if (key.getType().equals(RateLimiterToken.TYPE.API_KEY)) {
                 errorMessage =
-                    String.format(
-                        "Too many concurrent requests for client API key (maximum is %d)",
-                        rateLimiter.getMaxConcurrentPermits());
+                        String.format(
+                                "Too many concurrent requests for client API key (maximum is %d)",
+                                rateLimiter.getMaxConcurrentPermits());
             } else  {
                 errorMessage =
-                    String.format(
-                        "Too many concurrent requests for client '%s' (maximum is %d)",
-                        key.getValue(), rateLimiter.getMaxConcurrentPermits());
+                        String.format(
+                                "Too many concurrent requests for client '%s' (maximum is %d)",
+                                key.getValue(), rateLimiter.getMaxConcurrentPermits());
             }
             response.sendError(TOO_MANY_REQUEST, errorMessage);
         }

@@ -113,16 +113,24 @@
             <logger category="org.jboss.as.config">
                 <level name="DEBUG"/>
             </logger>
+            <!-- Disable some startup warnings triggered by third-party jars -->
+            <logger category="org.jboss.as.server.deployment">
+                <filter-spec value="not(any( match(&quot;JBAS015960&quot;), match(&quot;JBAS015893&quot;) ))"/>
+            </logger>
             <!-- Disable WARN about GWT's org.hibernate.validator.ValidationMessages -->
             <logger category="org.jboss.modules">
                 <level name="ERROR"/>
             </logger>
-            <!-- Disable WARN: "Queue with name '...' has already been registered" -->
-            <logger category="org.richfaces.log.Components">
-                <level name="ERROR"/>
-            </logger>
             <!-- Disable WARN: "RP discovery / realm validation disabled;" -->
             <logger category="org.openid4java.server.RealmVerifier">
+                <level name="ERROR"/>
+            </logger>
+            <!-- Disable WARN: "JMS API was found on the classpath..." -->
+            <logger category="org.richfaces.log.Application">
+                <filter-spec value="not( match(&quot;JMS API was found on the classpath&quot;) )"/>
+            </logger>
+            <!-- Disable WARN: "Queue with name '...' has already been registered" -->
+            <logger category="org.richfaces.log.Components">
                 <level name="ERROR"/>
             </logger>
             <logger category="sun.rmi">

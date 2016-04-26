@@ -45,9 +45,9 @@ import com.google.common.collect.Sets;
 public class LanguagePage extends BasePage {
 
     private By contactCoordinatorsButton =
-            By.linkText("Contact Coordinators");
+        By.id("contact-coordinator");
     private By saveButton = By.id("save-button");
-    private By moreActions = By.className("dropdown__toggle");
+    private By moreActions = By.id("more-action");
     private By enableByDefault = By.id("enable-by-default");
     private By membersTab = By.id("members_tab");
     private By settingsTab = By.id("settings_tab");
@@ -111,10 +111,12 @@ public class LanguagePage extends BasePage {
             return Collections.emptyList();
         }
         List<String> names = new ArrayList<>();
-        for (WebElement listEntry : readyElement(By.id("members-form"))
-            .findElements(By.className("list__item--actionable"))) {
-            names.add(listEntry.findElement(By.tagName("h3")).getText().trim());
+        WebElement form = existingElement(By.id("members-form"));
+        for (WebElement listEntry : form
+                .findElements(By.className("list__item--actionable"))) {
+            names.add(listEntry.findElement(By.className("list__item__info")).getText().trim());
         }
+        log.info("Found {}", names);
         return names;
     }
 
@@ -157,7 +159,9 @@ public class LanguagePage extends BasePage {
 
     private LanguagePage enterUsername(String username) {
         log.info("Enter username search {}", username);
-        enterText(readyElement(addUserSearchInput), username);
+        WebElement addUserField = readyElement(addUserSearchInput);
+        touchTextField(addUserField);
+        enterText(addUserField, username);
         return new LanguagePage(getDriver());
     }
 
@@ -175,18 +179,20 @@ public class LanguagePage extends BasePage {
 
         for (final TeamPermission permission : permissionToAdd) {
             log.info("Set checked as {}", permission.name());
-            waitForAMoment().until(new Predicate<WebDriver>() {
-                @Override
-                public boolean apply(@Nullable WebDriver webDriver) {
-                    WebElement input = getSearchedForUser(username)
-                        .findElement(By.className("list--horizontal"))
-                        .findElements(By.tagName("li"))
-                        .get(permission.columnIndex)
-                        .findElement(By.tagName("input"));
-                    Checkbox checkbox = Checkbox.of(input);
-                    checkbox.check();
-                    return checkbox.checked();
+            waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
+                WebElement inputDiv = getSearchedForUser(username)
+                    .findElement(By.className("list--horizontal"))
+                    .findElements(By.tagName("li"))
+                    .get(permission.columnIndex)
+                    .findElement(By.className("form__checkbox"));
+                WebElement input =
+                        inputDiv.findElement(By.tagName("input"));
+                Checkbox checkbox = Checkbox.of(input);
+                if (!checkbox.checked()) {
+                    inputDiv.click();
+                    waitForPageSilence();
                 }
+                return checkbox.checked();
             });
         }
         return new LanguagePage(getDriver());
@@ -194,39 +200,34 @@ public class LanguagePage extends BasePage {
 
     private LanguagePage confirmAdded(final String personUsername) {
         // we need to wait for the page to refresh
-        refreshPageUntil(this, new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver driver) {
-                return getMemberUsernames().contains(personUsername);
-            }
+        refreshPageUntil(this, (Predicate<WebDriver>) driver -> {
+            return getMemberUsernames().contains(personUsername);
         }, "Wait for names to contain " + personUsername);
         return new LanguagePage(getDriver());
     }
 
 
     private WebElement getSearchedForUser(final String username) {
-        return waitForAMoment().until(new Function<WebDriver, WebElement>() {
-            @Override
-            public WebElement apply(WebDriver input) {
-                WebElement list = readyElement(personTable)
-                    .findElement(By.className("list--slat"));
-                List<WebElement> rows = list
-                    .findElements(By.className("txt--meta"));
-                rows.addAll(list
-                    .findElements(By.className("txt--mini")));
-                for (WebElement row : rows) {
-                    if (getListItemUsername(row).equals(username)) {
-                        return row;
+        return waitForAMoment().until(
+                (Function<WebDriver, WebElement>) webDriver -> {
+                    WebElement list = readyElement(personTable)
+                        .findElement(By.className("list--slat"));
+                    List<WebElement> rows = list
+                        .findElements(By.className("txt--meta"));
+                    rows.addAll(list
+                        .findElements(By.className("txt--mini")));
+                    for (WebElement row : rows) {
+                        if (getListItemUsername(row).equals(username)) {
+                            return row;
+                        }
                     }
-                }
-                return null;
-            }
-        });
+                    return null;
+                });
     }
 
     private String getListItemUsername(WebElement listItem) {
         String fullname = listItem.findElements(
-            By.className("bx--inline-block"))
+            By.className("g__item"))
             .get(0).getText();
         return fullname.substring(fullname.indexOf('[') + 1, fullname.indexOf(']'));
     }

@@ -5,40 +5,41 @@ import java.text.DecimalFormat;
 
 import lombok.Getter;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.End;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.apache.deltaspike.core.api.scope.GroupedConversation;
+import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationArchiveService;
 
-@Name("projectIterationZipFileAction")
-@Scope(ScopeType.CONVERSATION)
+@Named("projectIterationZipFileAction")
+@GroupedConversationScoped
 public class ProjectIterationZipFileAction implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @In
+    @Inject
+    private GroupedConversation conversation;
+
+    @Inject
     private AsyncTaskHandleManager asyncTaskHandleManager;
 
     @Getter
     private AsyncTaskHandle<String> zipFilePrepHandle;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private TranslationArchiveService translationArchiveServiceImpl;
 
-    @Begin(join = true)
     public void prepareIterationZipFile(boolean isPoProject,
             String projectSlug, String versionSlug, String localeId) {
 
@@ -62,11 +63,11 @@ public class ProjectIterationZipFileAction implements Serializable {
         }
     }
 
-    @End
     public void cancelFileDownload() {
-        if(zipFilePrepHandle != null) {
+        if (zipFilePrepHandle != null) {
             zipFilePrepHandle.cancel(true);
         }
+        conversation.close();
     }
     final DecimalFormat PERCENT_FORMAT = new DecimalFormat("###.##");
 

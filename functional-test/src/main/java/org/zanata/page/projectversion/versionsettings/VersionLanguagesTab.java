@@ -43,9 +43,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class VersionLanguagesTab extends VersionBasePage {
 
     private By languagesSettingForm = By.id("settings-languages-form");
-    private By activeLocales = By.id("active-locales-list");
-    private By inactiveLocales = By.id("available-locales-list");
-    private By disabledLocalesFilter = By.id("settings-languages-form:available-locales-filter-input");
+    private By activeLocales = By.id("activeLocales-list");
+    private By disabledLocales = By.id("availableLocales-list");
+    private By activeLocalesFilter = By.id("settings-languages-form:activeLocales-filter-input");
+    private By disabledLocalesFilter = By.id("settings-languages-form:availableLocales-filter-input");
 
     public VersionLanguagesTab(WebDriver driver) {
         super(driver);
@@ -80,7 +81,30 @@ public class VersionLanguagesTab extends VersionBasePage {
      */
     public List<String> getEnabledLocaleList() {
         log.info("Query enabled locales list");
-        return LanguageList.getListedLocales(readyElement(activeLocales));
+        return LanguageList.getListedLocales(existingElement(activeLocales));
+    }
+
+    /**
+     * Get a list of locales available for this version
+     *
+     * @return String list of language/locale names
+     */
+    public List<String> getAvailableLocaleList() {
+        log.info("Query available locales");
+        return LanguageList.getListedLocales(existingElement(disabledLocales));
+    }
+
+
+    public VersionLanguagesTab expectEnabledLocaleListCount(final int count) {
+        waitForAMoment().until(
+                (Predicate<WebDriver>) input -> getEnabledLocaleList().size() == count);
+        return new VersionLanguagesTab(getDriver());
+    }
+
+    public VersionLanguagesTab expectAvailableLocaleListCount(final int count) {
+        waitForAMoment().until(
+                (Predicate<WebDriver>) input -> getAvailableLocaleList().size() == count);
+        return new VersionLanguagesTab(getDriver());
     }
 
     public VersionLanguagesTab expectLanguagesContains(String language) {
@@ -99,38 +123,36 @@ public class VersionLanguagesTab extends VersionBasePage {
 
     private void waitForLanguageEntryExpected(final String language,
                                               final boolean exists) {
-        waitForAMoment().until(new Function<WebDriver, Boolean>() {
-            @Override
-            public Boolean apply(WebDriver driver) {
-                return getEnabledLocaleList().contains(language) == exists;
-            }
-        });
+        waitForAMoment().until(
+                (Function<WebDriver, Boolean>) driver ->
+                        getEnabledLocaleList().contains(language) == exists);
     }
 
-    public VersionLanguagesTab enterSearchLanguage(String localeQuery) {
-        log.info("Enter language search {}", localeQuery);
+    public VersionLanguagesTab filterDisabledLanguages(String localeQuery) {
+        log.info("Filter disabled languages for: {}", localeQuery);
         readyElement(disabledLocalesFilter).clear();
         enterText(readyElement(disabledLocalesFilter), localeQuery);
+        return new VersionLanguagesTab(getDriver());
+    }
+
+    public VersionLanguagesTab filterEnabledLanguages(String localeQuery) {
+        log.info("Filter enabled languages for: {}", localeQuery);
+        readyElement(activeLocalesFilter).clear();
+        enterText(readyElement(activeLocalesFilter), localeQuery);
         return new VersionLanguagesTab(getDriver());
     }
 
     public VersionLanguagesTab removeLocale(final String localeId) {
         log.info("Click Disable on {}", localeId);
         String message = "can not find locale - " + localeId;
-        waitForAMoment().withMessage(message).until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver driver) {
-                return LanguageList.toggleLanguageInList(
-                        getDriver().findElement(activeLocales), localeId);
-            }
-        });
+        waitForAMoment().withMessage(message).until(
+                (Predicate<WebDriver>) driver -> LanguageList.toggleLanguageInList(
+                        getDriver().findElement(activeLocales), localeId));
 
-        refreshPageUntil(this, new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver driver) {
-                return !getEnabledLocaleList().contains(localeId);
-            }
-        }, "Wait for the locale list to not contain " + localeId);
+        refreshPageUntil(this,
+                (Predicate<WebDriver>) driver ->
+                        !getEnabledLocaleList().contains(localeId),
+                "Wait for the locale list to not contain " + localeId);
 
         return new VersionLanguagesTab(getDriver());
     }
@@ -138,20 +160,12 @@ public class VersionLanguagesTab extends VersionBasePage {
     public VersionLanguagesTab addLocale(final String localeId) {
         log.info("Click Enable on {}", localeId);
         String message = "can not find locale - " + localeId;
-        waitForAMoment().withMessage(message).until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver driver) {
-                return LanguageList.toggleLanguageInList(
-                        getDriver().findElement(inactiveLocales), localeId);
-            }
-        });
+        waitForAMoment().withMessage(message).until(
+                (Predicate<WebDriver>) driver -> LanguageList.toggleLanguageInList(
+                        getDriver().findElement(disabledLocales), localeId));
 
-        refreshPageUntil(this, new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver driver) {
-                return getEnabledLocaleList().contains(localeId);
-            }
-        }, "Wait for the locale list to contain " + localeId);
+        refreshPageUntil(this, (Predicate<WebDriver>) driver ->
+                getEnabledLocaleList().contains(localeId), "Wait for the locale list to contain " + localeId);
 
         return new VersionLanguagesTab(getDriver());
     }

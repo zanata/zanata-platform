@@ -27,24 +27,29 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
+import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataTest;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
+import org.zanata.i18n.Messages;
 import org.zanata.model.HLocale;
-import org.zanata.seam.SeamAutowire;
-import org.zanata.service.LocaleService;
+import org.zanata.seam.scope.ConversationScopeMessages;
 
 import com.google.common.collect.Lists;
+import org.zanata.service.impl.LocaleServiceImpl;
+import org.zanata.test.CdiUnitRunner;
+
+import javax.enterprise.inject.Produces;
 
 /**
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
+@SupportDeltaspikeCore
 public class AutocompleteTest extends ZanataTest {
 
     static final List<HLocale> supportedLocales = Lists.newArrayList(
@@ -52,21 +57,14 @@ public class AutocompleteTest extends ZanataTest {
                     LocaleId.EN_US), new HLocale(LocaleId.ES), new HLocale(
                     LocaleId.FR));
 
-    SeamAutowire seam = SeamAutowire.instance();
-
-    @Mock
-    LocaleService localeServiceImpl;
-    @Mock
+    @Produces @Mock
+    LocaleServiceImpl localeServiceImpl;
+    @Produces @Mock
     LocaleDAO localeDAO;
-
-    @Before
-    public void prepareTest() {
-        MockitoAnnotations.initMocks(this);
-        seam.reset()
-            .use("localeServiceImpl", localeServiceImpl)
-            .use("localeDAO", localeDAO)
-            .ignoreNonResolvable();
-    }
+    @Produces @Mock
+    Messages messages;
+    @Produces @Mock
+    ConversationScopeMessages conversationScopeMessages;
 
     @Test
     public void suggestLocales() {

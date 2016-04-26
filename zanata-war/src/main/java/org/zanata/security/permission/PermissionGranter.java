@@ -29,6 +29,8 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 import lombok.Getter;
+import org.zanata.util.BeanHolder;
+import org.zanata.util.ServiceLocator;
 
 /**
  * Represents a function that grants a permission.
@@ -57,10 +59,7 @@ public class PermissionGranter {
      * Validates that the permission granter satisfies all preconditions.
      */
     public void validate() {
-        if (!Modifier.isStatic(granterMethod.getModifiers())) {
-            throw new RuntimeException("Permission method "
-                    + granterMethod.getName() + " must be static");
-        } else if (granterMethod.getReturnType() != Boolean.class &&
+        if (granterMethod.getReturnType() != Boolean.class &&
                 granterMethod.getReturnType() != boolean.class) {
             throw new RuntimeException("Permission method "
                     + granterMethod.getName() + " must return a Boolean type");
@@ -140,6 +139,7 @@ public class PermissionGranter {
      *         been granted. False otherwise.
      */
     public boolean invoke(String action, Object ... targets) {
+        Class componentClass = granterMethod.getDeclaringClass();
         Object[] granterParams = new Object[acceptedParameterTypes.size()];
         int paramIdx = 0;
         for (Class<?> paramType : acceptedParameterTypes) {
@@ -153,11 +153,14 @@ public class PermissionGranter {
             paramIdx++;
         }
 
-        try {
-            return (Boolean) granterMethod.invoke(null, granterParams);
+        try (BeanHolder componentHolder =
+                ServiceLocator.instance().getDependent(componentClass)) {
+            return (Boolean) granterMethod.invoke(componentHolder.get(), granterParams);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -168,5 +171,10 @@ public class PermissionGranter {
                 return p;
         }
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return "PermissionGranter("+granterMethod.getDeclaringClass().getSimpleName()+"."+granterMethod.getName()+")";
     }
 }

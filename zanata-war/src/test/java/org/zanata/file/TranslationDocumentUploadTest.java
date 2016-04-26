@@ -20,36 +20,43 @@
  */
 package org.zanata.file;
 
-import static javax.ws.rs.core.Response.Status.NOT_ACCEPTABLE;
-import static org.mockito.Mockito.doThrow;
-
+import org.apache.deltaspike.core.spi.scope.window.WindowContext;
+import org.hibernate.Session;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.zanata.exception.ChunkUploadException;
 import org.zanata.model.type.TranslationSourceType;
+import org.zanata.service.TranslationFileService;
+import org.zanata.service.TranslationService;
+import org.zanata.servlet.annotations.ContextPath;
+import org.zanata.servlet.annotations.ServerPath;
+import org.zanata.servlet.annotations.SessionId;
+import org.zanata.test.CdiUnitRunner;
+import org.zanata.util.UrlUtil;
 
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.ws.rs.core.Response;
+
+@RunWith(CdiUnitRunner.class)
 public class TranslationDocumentUploadTest extends DocumentUploadTest {
 
     private static final String ANY_LOCALE = "es";
     private static final String ANY_MERGETYPE = "auto";
 
-    @Mock
-    DocumentUploadUtil documentUploadUtil;
-
+    @Inject
     private TranslationDocumentUpload transUpload;
 
-    @Before
-    public void beforeTest() {
-        MockitoAnnotations.initMocks(this);
-        seam.reset();
-        seam.ignoreNonResolvable()
-                .use("documentUploadUtil", documentUploadUtil).allowCycles();
-
-        transUpload = seam.autowire(TranslationDocumentUpload.class);
-    }
+    @Produces @Mock TranslationService translationService;
+    @Produces @Mock TranslationFileService translationFileService;
+    @Produces @Mock UploadPartPersistService uploadPartPersistService;
+    @Produces @Mock WindowContext windowContext;
+    @Produces @Mock UrlUtil urlUtil;
+    @Produces @Mock Session session;
+    @Produces @SessionId String sessionId = "";
+    @Produces @ServerPath String serverPath = "";
+    @Produces @ContextPath String contextPath = "";
 
     @After
     public void clearResponse() {
@@ -57,16 +64,12 @@ public class TranslationDocumentUploadTest extends DocumentUploadTest {
     }
 
     @Test
-    public void checksValidityAndFailsIfNotValid() {
+    public void failsIfNotLoggedIn() {
         conf = defaultUpload().build();
-        doThrow(new ChunkUploadException(NOT_ACCEPTABLE, "Test message")).when(
-                documentUploadUtil).failIfUploadNotValid(conf.id,
-                conf.uploadForm);
         response =
                 transUpload.tryUploadTranslationFile(conf.id, ANY_LOCALE,
                         ANY_MERGETYPE, false, conf.uploadForm, TranslationSourceType.API_UPLOAD);
-        assertResponseHasStatus(NOT_ACCEPTABLE);
-        assertResponseHasErrorMessage("Test message");
+        assertResponseHasStatus(Response.Status.UNAUTHORIZED);
         assertUploadTerminated();
     }
 

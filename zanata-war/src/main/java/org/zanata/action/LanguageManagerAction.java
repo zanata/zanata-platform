@@ -35,11 +35,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
@@ -48,7 +48,6 @@ import org.zanata.dao.LocaleDAO;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HLocale;
 import org.zanata.rest.service.ResourceUtils;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.LocaleService;
 import org.zanata.ui.AbstractAutocomplete;
 import org.zanata.ui.FilterUtil;
@@ -60,24 +59,24 @@ import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.ibm.icu.util.ULocale;
 
-@Name("languageManagerAction")
-@Scope(ScopeType.PAGE)
-@ZanataSecured
+@Named("languageManagerAction")
+@javax.faces.bean.ViewScoped
+
 public class LanguageManagerAction extends AbstractAutocomplete<HLocale>
         implements Serializable {
     private static final long serialVersionUID = 1L;
     private static final int LENGTH_LIMIT = 254;
 
-    @In
+    @Inject
     private LocaleDAO localeDAO;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In
+    @Inject
     private ResourceUtils resourceUtils;
 
-    @In
+    @Inject
     private Messages msgs;
 
     @Getter
@@ -97,7 +96,7 @@ public class LanguageManagerAction extends AbstractAutocomplete<HLocale>
     @Getter
     private String languageNameWarningMessage;
 
-    @Create
+    @PostConstruct
     public void onCreate() {
         allLocales = localeServiceImpl.getAllJavaLanguages();
     }
@@ -113,6 +112,7 @@ public class LanguageManagerAction extends AbstractAutocomplete<HLocale>
     }
 
     @CheckRole("admin")
+    @Transactional
     public String save() {
         if (!isLanguageNameValid()) {
             return null; // not success

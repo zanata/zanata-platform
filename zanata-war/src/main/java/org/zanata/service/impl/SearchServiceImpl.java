@@ -20,17 +20,17 @@
  */
 package org.zanata.service.impl;
 
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.rest.dto.ReindexStatus;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.SearchIndexManager;
 import org.zanata.service.SearchService;
 
@@ -41,12 +41,13 @@ import org.zanata.service.SearchService;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  * @see org.zanata.action.ReindexAction
  */
-@Name("searchServiceImpl")
+@Named("searchServiceImpl")
 @Path("/search")
-@ZanataSecured
+
 @CheckRole("admin")
+@RequestScoped
 public class SearchServiceImpl implements SearchService {
-    @In
+    @Inject
     private SearchIndexManager searchIndexManager;
 
     @Override

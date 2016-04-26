@@ -7,6 +7,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import com.google.common.base.Throwables;
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.util.RunnableEx;
 
 /**
  * @author Patrick Huang <a
@@ -54,7 +55,8 @@ class RestCallLimiter {
      * @param taskAfterAcquire
      *            task to perform after acquire
      */
-    public boolean tryAcquireAndRun(Runnable taskAfterAcquire) {
+    public boolean tryAcquireAndRun(RunnableEx taskAfterAcquire)
+            throws Exception {
         // hang on to the semaphore, so that we can be certain of
         // releasing the same one we acquired
         final Semaphore concSem = maxConcurrentSemaphore;
@@ -77,7 +79,8 @@ class RestCallLimiter {
         return gotConcurrentPermit;
     }
 
-    private boolean acquireActivePermit(Runnable taskAfterAcquire) {
+    private boolean acquireActivePermit(RunnableEx taskAfterAcquire)
+            throws Exception {
         log.debug("before acquire [active] semaphore:{}", maxActiveSemaphore);
         try {
             // hang on to the semaphore, so that we can be certain of

@@ -20,60 +20,47 @@
  */
 package org.zanata.service.impl;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.dbunit.operation.DatabaseOperation;
-import org.hibernate.search.impl.FullTextSessionImpl;
-import org.hibernate.search.jpa.Search;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
-import org.junit.Before;
-import org.junit.Ignore;
+import org.hibernate.Session;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.infinispan.manager.CacheContainer;
+import org.jglue.cdiunit.AdditionalClasses;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.zanata.SlowTest;
+import org.mockito.Mock;
 import org.zanata.ZanataDbunitJpaTest;
-import org.zanata.async.handle.CopyTransTaskHandle;
 import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.ContentState;
-import org.zanata.common.ContentType;
 import org.zanata.common.EntityStatus;
-import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.model.HCopyTransOptions;
+import org.zanata.jpa.FullText;
+import org.zanata.model.HAccount;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.type.TranslationSourceType;
-import org.zanata.seam.AutowireTransaction;
-import org.zanata.seam.SeamAutowire;
-import org.zanata.service.CopyTransService;
+import org.zanata.security.annotations.Authenticated;
+import org.zanata.test.CdiUnitRunner;
+import org.zanata.util.IServiceLocator;
+import org.zanata.util.Zanata;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.common.ContentState.Approved;
-import static org.zanata.common.ContentState.NeedReview;
 import static org.zanata.common.ContentState.New;
-import static org.zanata.common.ContentState.Translated;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction;
-import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.IGNORE;
-import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
-import static org.zanata.service.impl.ExecutionHelper.cartesianProduct;
 
 /**
  * @author Carlos Munoz <a
@@ -81,9 +68,52 @@ import static org.zanata.service.impl.ExecutionHelper.cartesianProduct;
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@RunWith(DataProviderRunner.class)
+@RunWith(CdiUnitRunner.class)
+@AdditionalClasses({
+        LocaleServiceImpl.class,
+        TranslationMemoryServiceImpl.class,
+        VersionStateCacheImpl.class,
+        TranslationStateCacheImpl.class,
+        ValidationServiceImpl.class
+})
 public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
-    private SeamAutowire seam = SeamAutowire.instance();
+
+    @Inject ProjectIterationDAO iterationDAO;
+    @Inject LocaleDAO localeDAO;
+    @Inject ProjectDAO projectDAO;
+    @Inject DocumentDAO documentDAO;
+    @Inject CopyTransServiceImpl copyTransService;
+
+    @Produces @Mock IServiceLocator serviceLocator;
+    @Produces @Mock @FullText FullTextEntityManager fullTextEntityManager;
+
+    @Override
+    @Produces
+    protected EntityManager getEm() {
+        return super.getEm();
+    }
+
+    @Override
+    @Produces
+    protected EntityManagerFactory getEmf() {
+        return super.getEmf();
+    }
+
+    @Override
+    @Produces
+    protected Session getSession() {
+        return super.getSession();
+    }
+
+    @Produces @Zanata
+    protected CacheContainer getCacheContainer() {
+        return new InfinispanTestCacheContainer();
+    }
+
+    @Produces @Authenticated
+    HAccount getAuthenticatedAccount(AccountDAO accountDAO) {
+        return accountDAO.getByUsername("demo");
+    }
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -101,186 +131,16 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
                 DatabaseOperation.CLEAN_INSERT));
     }
 
-    @Before
-    public void beforeMethod() throws Exception {
-        seam.reset()
-                .use("entityManager", Search.getFullTextEntityManager(getEm()))
-                .use("entityManagerFactory", getEmf())
-                .use("session", new FullTextSessionImpl(getSession()))
-                .use("cacheContainer", new InfinispanTestCacheContainer())
-                .use(ZanataJpaIdentityStore.AUTHENTICATED_USER,
-                        seam.autowire(AccountDAO.class).getByUsername("demo"))
-                .useImpl(LocaleServiceImpl.class)
-                .useImpl(TranslationMemoryServiceImpl.class)
-                .useImpl(VersionStateCacheImpl.class)
-                .useImpl(TranslationStateCacheImpl.class)
-                .useImpl(ValidationServiceImpl.class).ignoreNonResolvable();
-
-        AutowireTransaction.instance().rollback();
-    }
-
-    /**
-     * Use this test to individually test copy trans scenarios.
-     */
-    @Ignore
     @Test
-    public void individualTest() {
-
-        this.testCopyTrans(new CopyTransExecution(REJECT, IGNORE,
-                DOWNGRADE_TO_FUZZY, false, true, false, false, Approved)
-                .expectTransState(NeedReview));
-    }
-
-    @DataProvider
-    public static Object[][] copyTransParams() {
-        Set<CopyTransExecution> expandedExecutions = generateExecutions();
-
-        Object[][] val = new Object[expandedExecutions.size()][1];
-        int i = 0;
-        for (CopyTransExecution exe : expandedExecutions) {
-            val[i++][0] = exe;
-        }
-
-        return val;
-    }
-
-    @Test
-    @UseDataProvider("copyTransParams")
-    // (about 2 seconds)
-    @SlowTest
-    public void testCopyTrans(CopyTransExecution execution) {
-        // Prepare Execution
-        ProjectIterationDAO iterationDAO =
-                seam.autowire(ProjectIterationDAO.class);
-        LocaleDAO localeDAO = seam.autowire(LocaleDAO.class);
-
-        // Get the project iteration
-        HProjectIteration projectIteration;
-        if (execution.projectMatches) {
-            projectIteration =
-                    iterationDAO.getBySlug("same-project", "different-version");
-        } else {
-            projectIteration =
-                    iterationDAO.getBySlug("different-project",
-                            "different-version");
-        }
-        assert projectIteration != null;
-
-        // Set require translation review
-        projectIteration
-                .setRequireTranslationReview(execution.requireTranslationReview);
-
-        // Change all targets to have the execution's match state
-        for (HDocument doc : projectIteration.getDocuments().values()) {
-            for (HTextFlow tf : doc.getAllTextFlows().values()) {
-                for (HTextFlowTarget tft : tf.getTargets().values()) {
-                    tft.setState(execution.matchState);
-                }
-            }
-        }
-
-        // Create the document
-        HDocument doc = new HDocument();
-        doc.setContentType(ContentType.TextPlain);
-        doc.setLocale(localeDAO.findByLocaleId(LocaleId.EN_US));
-        doc.setProjectIteration(projectIteration);
-        if (execution.documentMatches) {
-            doc.setFullPath("/same/document");
-        } else {
-            doc.setFullPath("/different/document");
-        }
-        projectIteration.getDocuments().put(doc.getDocId(), doc);
-
-        // Create the text Flow
-        HTextFlow textFlow = new HTextFlow();
-        textFlow.setContents("Source Content"); // Source content matches
-        textFlow.setPlural(false);
-        textFlow.setObsolete(false);
-        textFlow.setDocument(doc);
-        if (execution.contextMatches) {
-            textFlow.setResId("same-context");
-        } else {
-            textFlow.setResId("different-context");
-        }
-        doc.getTextFlows().add(textFlow);
-
-        projectIteration = iterationDAO.makePersistent(projectIteration);
-        getEm().flush(); // So the rest of the test sees the results
-
-        HCopyTransOptions options =
-                new HCopyTransOptions(execution.getContextMismatchAction(),
-                        execution.getDocumentMismatchAction(),
-                        execution.getProjectMismatchAction());
-        CopyTransService copyTransService =
-                seam.autowire(CopyTransServiceImpl.class);
-        copyTransService.copyTransForIteration(projectIteration, options,
-                new CopyTransTaskHandle());
-        getEm().flush();
-
-        // Validate execution
-        HTextFlow targetTextFlow =
-                (HTextFlow) getEm()
-                        .createQuery(
-                                "from HTextFlow tf where tf.document.projectIteration = :projectIteration "
-                                        + "and tf.document.docId = :docId and tf.resId = :resId")
-                        .setParameter("projectIteration", projectIteration)
-                        .setParameter("docId", doc.getDocId())
-                        .setParameter("resId", textFlow.getResId())
-                        .getSingleResult();
-        // Id: 3L for Locale de
-        HTextFlowTarget target = targetTextFlow.getTargets().get(3L);
-        if(target != null) {
-            assertThat(target.getSourceType())
-                .isEqualTo(TranslationSourceType.COPY_TRANS);
-        }
-        if (execution.isExpectUntranslated()) {
-            if (target != null && target.getState() != ContentState.New) {
-                throw new AssertionError(
-                        "Expected untranslated text flow but got state "
-                                + target.getState());
-            }
-        } else if (execution.getExpectedTranslationState() != New) {
-            if (target == null) {
-                throw new AssertionError("Expected state "
-                        + execution.getExpectedTranslationState()
-                        + ", but got untranslated.");
-            } else if (execution.getExpectedTranslationState() != target
-                    .getState()) {
-                throw new AssertionError("Expected state "
-                        + execution.getExpectedTranslationState()
-                        + ", but got " + target.getState());
-            }
-        }
-
-        // Contents
-        if (execution.getExpectedContents() != null) {
-            if (target == null) {
-                throw new AssertionError("Expected contents "
-                        + Arrays.toString(execution.getExpectedContents())
-                        + ", but got untranslated.");
-            } else if (!Arrays.equals(execution.getExpectedContents(), target
-                    .getContents().toArray())) {
-                throw new AssertionError("Expected contents "
-                        + Arrays.toString(execution.getExpectedContents())
-                        + ", but got "
-                        + Arrays.toString(target.getContents().toArray()));
-            }
-        }
-    }
-
-    @Test
+    @InRequestScope
     public void ignoreTranslationsFromObsoleteProjectAndVersion()
             throws Exception {
-        ProjectIterationDAO projectIterationDAO =
-                seam.autowire(ProjectIterationDAO.class);
-        ProjectDAO projectDAO = seam.autowire(ProjectDAO.class);
-
         // Make versions and projects obsolete
         HProjectIteration version =
-                projectIterationDAO.getBySlug("same-project", "same-version");
+                iterationDAO.getBySlug("same-project", "same-version");
         assert version != null;
         version.setStatus(EntityStatus.OBSOLETE);
-        projectIterationDAO.makePersistent(version);
+        iterationDAO.makePersistent(version);
 
         HProject project = projectDAO.getBySlug("different-project");
         assert project != null;
@@ -292,25 +152,21 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
         CopyTransExecution execution =
                 new CopyTransExecution(IGNORE, IGNORE, IGNORE, true, true,
                         true, true, Approved).expectUntranslated();
-        testCopyTrans(execution);
+//        testCopyTrans(execution);
     }
 
     @Test
+    @InRequestScope
     public void reuseTranslationsFromObsoleteDocuments() throws Exception {
-        ProjectIterationDAO projectIterationDAO =
-                seam.autowire(ProjectIterationDAO.class);
-        DocumentDAO documentDAO = seam.autowire(DocumentDAO.class);
-
         // Make all documents obsolete
         HProjectIteration version =
-                projectIterationDAO.getBySlug("same-project", "same-version");
+                iterationDAO.getBySlug("same-project", "same-version");
         assert version != null;
         for (HDocument doc : version.getDocuments().values()) {
             doc.setObsolete(true);
             documentDAO.makePersistent(doc);
         }
 
-        ProjectDAO projectDAO = seam.autowire(ProjectDAO.class);
         HProject project = projectDAO.getBySlug("different-project");
         assert project != null;
         for (HProjectIteration it : project.getProjectIterations()) {
@@ -324,74 +180,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
         CopyTransExecution execution =
                 new CopyTransExecution(IGNORE, IGNORE, IGNORE, true, true,
                         true, true, Approved).expectTransState(Approved);
-        testCopyTrans(execution);
-    }
-
-    private static ContentState getExpectedContentState(CopyTransExecution execution) {
-        ContentState expectedContentState =
-                execution.getRequireTranslationReview() ? Approved : Translated;
-
-        expectedContentState =
-                getExpectedContentState(execution.getContextMatches(),
-                        execution.getContextMismatchAction(),
-                        expectedContentState);
-        expectedContentState =
-                getExpectedContentState(execution.getProjectMatches(),
-                        execution.getProjectMismatchAction(),
-                        expectedContentState);
-        expectedContentState =
-                getExpectedContentState(execution.getDocumentMatches(),
-                        execution.getDocumentMismatchAction(),
-                        expectedContentState);
-        return expectedContentState;
-    }
-
-    private static ContentState getExpectedContentState(boolean match,
-            HCopyTransOptions.ConditionRuleAction action,
-            ContentState currentState) {
-        if (currentState == New) {
-            return currentState;
-        } else if (CopyTransWorkFactory.shouldReject(match, action)) {
-            return New;
-        } else if (CopyTransWorkFactory.shouldDowngradeToFuzzy(match, action)) {
-            return NeedReview;
-        } else {
-            return currentState;
-        }
-    }
-
-    private static Set<CopyTransExecution> generateExecutions() {
-        Set<CopyTransExecution> allExecutions =
-                new HashSet<CopyTransExecution>();
-        // NB combinations which affect the query parameters
-        // (context match/mismatch, etc) are tested in TranslationFinderTest
-        Set<Object[]> paramsSet =
-                cartesianProduct(Arrays.asList(REJECT), Arrays.asList(REJECT),
-                        Arrays.asList(REJECT), Arrays.asList(true),
-                        Arrays.asList(true), Arrays.asList(true),
-                        Arrays.asList(true, false),
-                        Arrays.asList(Translated, Approved));
-
-        for (Object[] params : paramsSet) {
-            CopyTransExecution exec =
-                    new CopyTransExecution((ConditionRuleAction) params[0],
-                            (ConditionRuleAction) params[1],
-                            (ConditionRuleAction) params[2],
-                            (Boolean) params[3], (Boolean) params[4],
-                            (Boolean) params[5], (Boolean) params[6],
-                            (ContentState) params[7]);
-
-            ContentState expectedContentState =
-                    getExpectedContentState(exec);
-            if (expectedContentState == New) {
-                exec.expectUntranslated();
-            } else {
-                exec.expectTransState(expectedContentState).withContents(
-                        "target-content-de");
-            }
-            allExecutions.add(exec);
-        }
-        return allExecutions;
+//        testCopyTrans(execution);
     }
 
     @Getter

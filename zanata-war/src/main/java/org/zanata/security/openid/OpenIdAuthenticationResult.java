@@ -26,7 +26,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Contains results of an open Id authentication.
+ * Contains results of an open Id authentication. It may also include user info
+ * returned by the open id provider like email, user name, etc.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -39,6 +40,14 @@ public class OpenIdAuthenticationResult implements Serializable {
     @Getter
     @Setter
     private String email;
+
+    @Getter
+    @Setter
+    private String fullName;
+
+    @Getter
+    @Setter
+    private String username;
 
     @Getter
     @Setter

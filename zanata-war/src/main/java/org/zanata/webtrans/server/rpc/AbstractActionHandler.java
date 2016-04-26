@@ -6,12 +6,21 @@ import net.customware.gwt.dispatch.shared.Result;
 
 import org.zanata.webtrans.server.ActionHandlerFor;
 
-abstract class AbstractActionHandler<A extends Action<R>, R extends Result>
+/**
+ * Every subclass should be annotated with @ActionHandlerFor(A.class)
+ * @param <A>
+ * @param <R>
+ */
+public abstract class AbstractActionHandler<A extends Action<R>, R extends Result>
         implements ActionHandler<A, R> {
+
+    protected AbstractActionHandler() {
+        assert getActionType() != null;
+    }
 
     @SuppressWarnings("unchecked")
     @Override
-    public final Class<A> getActionType() {
+    public Class<A> getActionType() {
         return (Class<A>) this.getClass().getAnnotation(ActionHandlerFor.class)
                 .getClass();
     }

@@ -24,32 +24,46 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
+import static org.mockito.Mockito.when;
 
 import java.util.Date;
 import java.util.List;
 
+import com.google.common.base.Throwables;
+
 import org.dbunit.operation.DatabaseOperation;
+import org.hibernate.Session;
+import org.jglue.cdiunit.InRequestScope;
+import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.zanata.ZanataDbunitJpaTest;
+import org.zanata.cdi.TestTransaction;
 import org.zanata.common.ActivityType;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.ActivityDAO;
-import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.TextFlowTargetDAO;
+import org.zanata.events.DocumentLocaleKey;
 import org.zanata.events.DocumentUploadedEvent;
 import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.model.Activity;
 import org.zanata.model.type.EntityType;
-import org.zanata.seam.SeamAutowire;
+import org.zanata.test.CdiUnitRunner;
+import org.zanata.util.IServiceLocator;
+
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.transaction.UserTransaction;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
+@SupportDeltaspikeCore
 public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
-    private SeamAutowire seam = SeamAutowire.instance();
 
     private Long personId = new Long(1L);
     private Long versionId = new Long(1L);
@@ -57,7 +71,22 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
     private Long documentId = new Long(1L);
     private Long textFlowTargetId = new Long(1L);
 
+    @Inject
     private ActivityServiceImpl activityService;
+
+    @Produces @Mock IServiceLocator serviceLocator;
+
+    @Override
+    @Produces
+    protected EntityManager getEm() {
+        return super.getEm();
+    }
+
+    @Override
+    @Produces
+    protected Session getSession() {
+        return super.getSession();
+    }
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -80,20 +109,23 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
 
     @Before
     public void initializeSeam() {
-        seam.reset().use("activityDAO", new ActivityDAO(getSession()))
-                .use("textFlowTargetDAO", new TextFlowTargetDAO(getSession()))
-                .use("documentDAO", new DocumentDAO(getSession()))
-                .use("session", getSession()).ignoreNonResolvable();
-
-        activityService = seam.autowire(ActivityServiceImpl.class);
+        try {
+            when(serviceLocator.getJndiComponent("java:jboss/UserTransaction",
+                    UserTransaction.class)).thenReturn(new TestTransaction(getEm()));
+        } catch (NamingException e) {
+            // this should not happen
+            Throwables.propagate(e);
+        }
     }
 
     @Test
+    @InRequestScope
     public void testNewReviewActivityInserted() throws Exception {
-        activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(
-                personId, versionId, documentId, null, new LocaleId("as"),
-                textFlowTargetId, ContentState.Approved,
-                ContentState.NeedReview));
+        TextFlowTargetStateEvent event =
+            buildEvent(personId, versionId, documentId, null,
+                new LocaleId("as"), textFlowTargetId, ContentState.Approved,
+                ContentState.NeedReview);
+        activityService.logTextFlowStateUpdate(event);
         Activity activity =
                 activityService.findActivity(personId,
                         EntityType.HProjectIteration, projectVersionId,
@@ -103,21 +135,25 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testNewReviewActivityUpdated() throws Exception {
-        activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(
-                personId, versionId, documentId, null, new LocaleId("as"),
+        TextFlowTargetStateEvent event =
+            buildEvent(personId, versionId, documentId, null,
+                new LocaleId("as"),
                 textFlowTargetId, ContentState.Approved,
-                ContentState.NeedReview));
-
+                ContentState.NeedReview);
+        activityService.logTextFlowStateUpdate(event);
         List<Activity> activities =
                 activityService.findLatestActivitiesForContext(personId,
                         projectVersionId, 0, 10);
         assertThat(activities.size(), equalTo(1));
 
-        activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(
-                personId, versionId, documentId, null, new LocaleId("as"),
+        TextFlowTargetStateEvent event2 =
+            buildEvent(personId, versionId, documentId, null,
+                new LocaleId("as"),
                 textFlowTargetId, ContentState.Rejected,
-                ContentState.NeedReview));
+                ContentState.NeedReview);
+        activityService.logTextFlowStateUpdate(event2);
 
         activities =
                 activityService.findLatestActivitiesForContext(personId,
@@ -132,11 +168,14 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testActivityInsertAndUpdate() throws Exception {
-        activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(
-                personId, versionId, documentId, null, new LocaleId("as"),
+        TextFlowTargetStateEvent event =
+            buildEvent(personId, versionId, documentId, null,
+                new LocaleId("as"),
                 textFlowTargetId, ContentState.Translated,
-                ContentState.NeedReview));
+                ContentState.NeedReview);
+        activityService.logTextFlowStateUpdate(event);
 
         Activity activity =
                 activityService.findActivity(personId,
@@ -146,10 +185,11 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
 
         Long id = activity.getId();
 
-        activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(
-                personId, versionId, documentId, null, new LocaleId("as"),
-                textFlowTargetId, ContentState.NeedReview, ContentState.New));
-
+        TextFlowTargetStateEvent event2 =
+            buildEvent(personId, versionId, documentId, null,
+                new LocaleId("as"), textFlowTargetId, ContentState.NeedReview,
+                ContentState.New);
+        activityService.logTextFlowStateUpdate(event2);
         activity =
                 activityService.findActivity(personId,
                         EntityType.HProjectIteration, projectVersionId,
@@ -158,16 +198,21 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testActivityInsertMultipleTypeActivities() throws Exception {
-        activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(
-                personId, versionId, documentId, null, new LocaleId("as"),
+        TextFlowTargetStateEvent event =
+            buildEvent(personId, versionId, documentId, null,
+                new LocaleId("as"),
                 textFlowTargetId, ContentState.Translated,
-                ContentState.NeedReview));
+                ContentState.NeedReview);
+        activityService.logTextFlowStateUpdate(event);
 
-        activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(
-                personId, versionId, documentId, null, new LocaleId("as"),
+        TextFlowTargetStateEvent event2 =
+            buildEvent(personId, versionId, documentId, null,
+                new LocaleId("as"),
                 textFlowTargetId, ContentState.Approved,
-                ContentState.NeedReview));
+                ContentState.NeedReview);
+        activityService.logTextFlowStateUpdate(event2);
 
         activityService.onDocumentUploaded(new DocumentUploadedEvent(personId,
                 documentId, false, new LocaleId("as")));
@@ -179,29 +224,52 @@ public class ActivityServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testGetAllPersonActivities() throws Exception {
         Long documentId2 = new Long(2L);
 
-        activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(
-                personId, versionId, documentId2, null, LocaleId.EN_US,
-                new Long(5), ContentState.Translated, ContentState.NeedReview));
+        TextFlowTargetStateEvent event =
+            buildEvent(personId, versionId, documentId2, null, LocaleId.EN_US,
+                new Long(5), ContentState.Translated, ContentState.NeedReview);
+        activityService.logTextFlowStateUpdate(event);
 
-        activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(
-                personId, versionId, documentId2, null, LocaleId.EN_US,
-                new Long(5), ContentState.Approved, ContentState.NeedReview));
+        TextFlowTargetStateEvent event2 =
+            buildEvent(personId, versionId, documentId2, null, LocaleId.EN_US,
+                new Long(5), ContentState.Approved, ContentState.NeedReview);
+        activityService.logTextFlowStateUpdate(event2);
 
-        activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(
-                personId, versionId, documentId2, null, LocaleId.EN_US,
-                new Long(6), ContentState.Rejected, ContentState.Translated));
+        TextFlowTargetStateEvent event3 =
+            buildEvent(personId, versionId, documentId2, null, LocaleId.EN_US,
+                new Long(5), ContentState.Approved, ContentState.NeedReview);
+        activityService.logTextFlowStateUpdate(event3);
 
-        activityService.logTextFlowStateUpdate(new TextFlowTargetStateEvent(
-                personId, versionId, documentId2, null, LocaleId.EN_US,
-                new Long(6), ContentState.NeedReview, ContentState.New));
+        TextFlowTargetStateEvent event4 =
+            buildEvent(personId, versionId, documentId2, null, LocaleId.EN_US,
+                new Long(6), ContentState.Rejected, ContentState.Translated);
+        activityService.logTextFlowStateUpdate(event4);
+
+        TextFlowTargetStateEvent event5 =
+            buildEvent(personId, versionId, documentId2, null, LocaleId.EN_US,
+                new Long(6), ContentState.NeedReview, ContentState.New);
+        activityService.logTextFlowStateUpdate(event5);
 
         List<Activity> activities =
-                activityService.findLatestActivitiesForContext(personId,
-                        projectVersionId, 0, 10);
+            activityService.findLatestActivitiesForContext(personId,
+                projectVersionId, 0, 10);
 
         assertThat(activities.size(), equalTo(2));
+    }
+
+    private TextFlowTargetStateEvent buildEvent(Long personId, Long versionId,
+        Long documentId, Long tfIf, LocaleId localeId,
+        Long tftId, ContentState newState, ContentState oldState) {
+
+        DocumentLocaleKey key = new DocumentLocaleKey(documentId, localeId);
+
+        TextFlowTargetStateEvent.TextFlowTargetState state =
+            new TextFlowTargetStateEvent.TextFlowTargetState(tfIf,
+                tftId, newState, oldState);
+
+        return new TextFlowTargetStateEvent(key, versionId, personId, state);
     }
 }

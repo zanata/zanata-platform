@@ -1,19 +1,10 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
-
-  <a4j:jsFunction name="nextProjectPage"
-    render="projectListForm" action="#{dashboardAction.projectList.nextPage}"
-    status="projectlist-loader"/>
-
-  <a4j:jsFunction name="prevProjectPage"
-    render="projectListForm" action="#{dashboardAction.projectList.prevPage}"
-    status="projectlist-loader"/>
 
   <div class="panel">
     <div class="tabs--accent">
@@ -26,11 +17,11 @@
               <span class="is-invisible">#{msgs['jsf.dashboard.projects.maintainedProjects.label']}</span>
             </a>
           </li>
-          <ui:fragment rendered="#{identity.hasPermission(projectHome.instance, 'insert')}">
+          <ui:fragment rendered="#{dashboardAction.canCreateProject()}">
             <li class="tab__end">
-              <a href="#" jsfc="s:link"
+              <a href="#" jsfc="h:link"
                 id="create-project-link"
-                view="/project/create_project.xhtml"
+                outcome="/project/create_project.xhtml"
                 title="#{msgs['jsf.dashboard.projects.createNewProject.label']}">
                 <i aria-hidden="true" class="i i--plus i i--large"></i>
                 <span class="is-invisible">#{msgs['jsf.dashboard.projects.newProject.label']}</span>

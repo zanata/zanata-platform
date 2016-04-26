@@ -10,6 +10,8 @@ import java.sql.Statement;
 import java.util.Hashtable;
 import java.util.Map;
 
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.spi.InitialContextFactory;
@@ -17,6 +19,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.jglue.cdiunit.AdditionalClasses;
+import org.junit.runner.RunWith;
 import org.zanata.ZanataTest;
 import liquibase.Liquibase;
 import liquibase.database.Database;
@@ -32,9 +37,9 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Environment;
 import org.hibernate.dialect.MySQL5Dialect;
-import org.hibernate.search.impl.FullTextSessionImpl;
 import org.hibernate.search.jpa.Search;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
+import org.zanata.jpa.FullText;
+import org.zanata.model.HAccount;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Ignore;
@@ -52,10 +57,8 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HTextFlowBuilder;
-import org.zanata.seam.AutowireTransaction;
-import org.zanata.seam.SeamAutowire;
-import org.zanata.service.CopyTransService;
-import org.zanata.service.SearchIndexManager;
+import org.zanata.security.annotations.Authenticated;
+import org.zanata.test.CdiUnitRunner;
 import org.zanata.util.ZanataEntities;
 
 import com.github.huangp.entityunit.entity.EntityMakerBuilder;
@@ -72,6 +75,11 @@ import com.google.common.collect.ImmutableMap;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Slf4j
+@RunWith(CdiUnitRunner.class)
+@AdditionalClasses({LocaleServiceImpl.class,
+                    TranslationMemoryServiceImpl.class,
+                    VersionStateCacheImpl.class,
+                    ValidationServiceImpl.class})
 public class CopyTransServiceImplPerformanceTest extends ZanataTest {
     private static final String PERSIST_NAME = "zanataDatasourcePU";
     private static final String MYSQL_TEST_DB_URL =
@@ -162,41 +170,38 @@ public class CopyTransServiceImplPerformanceTest extends ZanataTest {
     private static EntityManagerFactory emf;
     protected EntityManager em;
     private int numOfTextFlows;
-    private CopyTransService copyTransService;
+    @Inject
+    private CopyTransServiceImpl copyTransService;
     private HDocument copyTransTargetDoc;
-    private static SeamAutowire seam = SeamAutowire.instance();
 
+    @Produces
     protected EntityManager getEm() {
         return em;
     }
 
+    @Produces @FullText
+    FullTextEntityManager getFullTextEntityManager() {
+        return Search.getFullTextEntityManager(getEm());
+    }
+
+    @Produces
     protected EntityManagerFactory getEmf() {
         return emf;
     }
 
+    @Produces
     protected Session getSession() {
         return (Session) em.getDelegate();
+    }
+
+    @Produces @Authenticated
+    HAccount getAuthenticatedAccount(AccountDAO accountDAO) {
+        return accountDAO.getByUsername("demo");
     }
 
     @Before
     public void setUp() throws Exception {
         // runLiquibase();
-
-        seam.reset()
-                .use("entityManager", Search.getFullTextEntityManager(getEm()))
-                .use("entityManagerFactory", getEmf())
-                .use("session", new FullTextSessionImpl(getSession()))
-                .use(ZanataJpaIdentityStore.AUTHENTICATED_USER,
-                        seam.autowire(AccountDAO.class).getByUsername("demo"))
-                .useImpl(LocaleServiceImpl.class)
-                .useImpl(TranslationMemoryServiceImpl.class)
-                .useImpl(VersionStateCacheImpl.class)
-                .useImpl(ValidationServiceImpl.class).ignoreNonResolvable();
-
-        seam.autowire(SearchIndexManager.class).reindex(true, true, false);
-        AutowireTransaction.instance().rollback();
-
-        copyTransService = seam.autowire(CopyTransServiceImpl.class);
 
         deleteAll(getEm(), ZanataEntities.entitiesForRemoval());
 

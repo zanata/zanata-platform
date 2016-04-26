@@ -4,8 +4,7 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
-  xmlns:s="http://jboss.org/schema/seam/taglib">
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
 <ui:composition template="../WEB-INF/template/template.xhtml">
   <f:metadata>
@@ -41,7 +40,6 @@
 
         <h:form id="userdetailForm"
           rendered="#{identityManager.userExists(userAction.username)}">
-          <s:token allowMultiplePosts="true"/>
 
           <div class="form__item l--push-top-1">
             <h:outputLabel for="username">#{msgs['jsf.Username']}</h:outputLabel>

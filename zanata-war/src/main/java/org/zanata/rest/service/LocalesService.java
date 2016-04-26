@@ -22,8 +22,8 @@ package org.zanata.rest.service;
 
 import com.google.common.collect.Lists;
 import org.jboss.resteasy.util.GenericType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HLocale;

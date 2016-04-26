@@ -26,13 +26,10 @@ package org.zanata.webtrans.server.rpc;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-import org.jboss.seam.*;
-import org.jboss.seam.annotations.*;
-import org.jboss.seam.annotations.Observer;
 import org.zanata.events.TextFlowTargetUpdatedEvent;
 import org.zanata.model.*;
 import org.zanata.service.*;
-import org.zanata.util.ServiceLocator;
+import org.zanata.util.IServiceLocator;
 import org.zanata.webtrans.shared.model.*;
 import org.zanata.webtrans.shared.rpc.*;
 
@@ -43,23 +40,24 @@ import lombok.RequiredArgsConstructor;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("webtrans.gwt.TransUnitUpdateHelper")
-@Scope(ScopeType.APPLICATION)
-@AutoCreate
+@Named("webtrans.gwt.TransUnitUpdateHelper")
+@javax.enterprise.context.ApplicationScoped
+
 public class TransUnitUpdateHelper {
 
-    @In
-    private ServiceLocator serviceLocator;
+    @Inject
+    private IServiceLocator serviceLocator;
 
     private static Cache<CacheKey, TransUnitUpdateInfo> cache = CacheBuilder
             .newBuilder().expireAfterAccess(1, TimeUnit.MILLISECONDS)
             .softValues().maximumSize(100).build();
 
-    @Observer(TextFlowTargetUpdatedEvent.EVENT_NAME)
     public void onTargetUpdatedSuccessful(@Observes(during = TransactionPhase.AFTER_SUCCESS) TextFlowTargetUpdatedEvent event) {
         TransUnitUpdated transUnitUpdated = event.getTransUnitUpdated();
         event.getWorkspace().publish(transUnitUpdated);
@@ -101,11 +99,6 @@ public class TransUnitUpdateHelper {
             }
         }
         return result;
-    }
-
-    private static TransUnitTransformer getTransUnitTransformer() {
-        return ServiceLocator.instance()
-                .getInstance(TransUnitTransformer.class);
     }
 
     private static TransUnitUpdateInfo build(

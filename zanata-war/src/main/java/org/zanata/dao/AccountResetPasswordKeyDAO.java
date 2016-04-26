@@ -21,15 +21,12 @@
 package org.zanata.dao;
 
 import org.hibernate.Session;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.zanata.model.HAccountResetPasswordKey;
 
-@Name("accountResetPasswordKeyDAO")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("accountResetPasswordKeyDAO")
+
+@javax.enterprise.context.Dependent
 public class AccountResetPasswordKeyDAO extends
         AbstractDAOImpl<HAccountResetPasswordKey, String> {
 
@@ -47,5 +44,13 @@ public class AccountResetPasswordKeyDAO extends
                 "from HAccountResetPasswordKey key where key.account.id = :accountId")
             .setLong("accountId", accountId)
             .setComment("AccountResetPasswordKeyDAO.findByAccount").uniqueResult();
+    }
+
+    public String getUsername(String keyHash) {
+        return (String) getSession()
+            .createQuery(
+                "select key.account.username from HAccountResetPasswordKey key where key.keyHash = :keyHash")
+            .setParameter("keyHash", keyHash)
+            .setComment("AccountResetPasswordKeyDAO.getUsername").uniqueResult();
     }
 }

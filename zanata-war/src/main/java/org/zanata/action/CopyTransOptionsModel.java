@@ -24,11 +24,8 @@ import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.service.impl.CopyTransOptionFactory;
@@ -47,19 +44,19 @@ import lombok.Setter;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("copyTransOptionsModel")
-@Scope(ScopeType.PAGE)
-@AutoCreate
+@Named("copyTransOptionsModel")
+@javax.faces.bean.ViewScoped
+
 public class CopyTransOptionsModel implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @In
+    @Inject
     private EntityManager entityManager;
 
     @Setter
     private HCopyTransOptions instance;
 
-    @In
+    @Inject
     private Messages msgs;
 
     @Getter(lazy = true)

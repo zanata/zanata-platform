@@ -26,31 +26,64 @@ import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.deltaspike.core.spi.scope.window.WindowContext;
 import org.dbunit.operation.DatabaseOperation;
-import org.junit.Before;
+import org.hibernate.Session;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.jglue.cdiunit.AdditionalClasses;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.GlossaryDAO;
 import org.zanata.exception.ZanataServiceException;
+import org.zanata.jpa.FullText;
+import org.zanata.model.HAccount;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.GlossaryTerm;
-import org.zanata.seam.SeamAutowire;
 
 import com.google.common.collect.Lists;
+import org.zanata.security.annotations.Authenticated;
+import org.zanata.test.CdiUnitRunner;
+import org.zanata.util.UrlUtil;
+
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
+@AdditionalClasses({
+        LocaleServiceImpl.class
+})
 public class GlossaryFileServiceImplTest extends ZanataDbunitJpaTest {
 
-    private SeamAutowire seam = SeamAutowire.instance();
-
+    @Inject
     private GlossaryFileServiceImpl glossaryFileService;
+
+    @Produces @Mock WindowContext windowContext;
+    @Produces @Mock UrlUtil urlUtil;
+    @Produces @Mock @FullText FullTextEntityManager fullTextEntityManager;
+    @Produces @Mock @Authenticated HAccount authenticatedAccount;
+
+    @Override
+    @Produces
+    protected EntityManager getEm() {
+        return super.getEm();
+    }
+
+    @Override
+    @Produces
+    protected Session getSession() {
+        return super.getSession();
+    }
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -65,15 +98,8 @@ public class GlossaryFileServiceImplTest extends ZanataDbunitJpaTest {
             DatabaseOperation.CLEAN_INSERT));
     }
 
-    @Before
-    public void initializeSeam() {
-        seam.reset().use("glossaryDAO", new GlossaryDAO(getSession()))
-            .useImpl(LocaleServiceImpl.class)
-            .use("session", getSession()).ignoreNonResolvable();
-        glossaryFileService = seam.autowire(GlossaryFileServiceImpl.class);
-    }
-
     @Test(expected = ZanataServiceException.class)
+    @InRequestScope
     public void parseGlossaryFileTestException() {
         InputStream is = Mockito.mock(InputStream.class);
         String fileName = "fileName";
@@ -85,6 +111,7 @@ public class GlossaryFileServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void parseGlossaryFilePoTest() throws UnsupportedEncodingException {
         String poSample = "# My comment\n" +
             "#. Programmer comment\n" +
@@ -118,6 +145,7 @@ public class GlossaryFileServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void saveOrUpdateGlossaryTest() {
         String srcRef = "srcRef";
         String pos = "pos";

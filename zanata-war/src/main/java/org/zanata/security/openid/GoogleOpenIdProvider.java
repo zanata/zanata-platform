@@ -20,6 +20,7 @@
  */
 package org.zanata.security.openid;
 
+import javax.enterprise.inject.Alternative;
 import java.util.regex.Pattern;
 
 /**
@@ -28,6 +29,7 @@ import java.util.regex.Pattern;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Alternative
 public class GoogleOpenIdProvider extends GenericOpenIdProvider {
     private static final Pattern GOOGLE_OPENID_PATTERN = Pattern
             .compile("https://www.google.com/accounts/o8/id\\?id=(.*)");

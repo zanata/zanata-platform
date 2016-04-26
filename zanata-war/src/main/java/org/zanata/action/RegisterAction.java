@@ -29,44 +29,53 @@ import javax.validation.constraints.Size;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.deltaspike.core.api.scope.GroupedConversation;
+import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.End;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.action.validator.NotDuplicateEmail;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HPerson;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.EmailService;
 import org.zanata.service.RegisterService;
 import org.zanata.ui.faces.FacesMessages;
+import org.zanata.util.UrlUtil;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
-@Name("register")
-@Scope(ScopeType.CONVERSATION)
+@Named("register")
+@GroupedConversationScoped
 @Slf4j
 public class RegisterAction implements Serializable {
 
     private static final long serialVersionUID = -7883627570614588182L;
 
-    @In
+    @Inject
+    private GroupedConversation conversation;
+
+    @Inject
     private EntityManager entityManager;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
-    @In
+    @Inject
     RegisterService registerServiceImpl;
 
-    @In
+    @Inject
     PersonDAO personDAO;
 
-    @In
+    @Inject
     EmailService emailServiceImpl;
+
+    @Inject
+    private ZanataIdentity identity;
+
+    @Inject
+    private UrlUtil urlUtil;
 
     private String username;
     private String email;
@@ -77,7 +86,13 @@ public class RegisterAction implements Serializable {
 
     private HPerson person;
 
-    @Begin(join = true)
+    public String redirectIfLoggedIn() {
+        if (identity.isLoggedIn()) {
+            urlUtil.redirectTo(urlUtil.dashboardUrl());
+        }
+        return null;
+    }
+
     public HPerson getPerson() {
         if (person == null)
             person = new HPerson();
@@ -153,7 +168,6 @@ public class RegisterAction implements Serializable {
 
     }
 
-    @End
     public String register() {
         valid = true;
         validateUsername(getUsername());
@@ -174,6 +188,7 @@ public class RegisterAction implements Serializable {
                 emailServiceImpl.sendActivationEmail(user, email, key);
         facesMessages.addGlobal(message);
 
+        conversation.close();
         return "/home.xhtml";
     }
 

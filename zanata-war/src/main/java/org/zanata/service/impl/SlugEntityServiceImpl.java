@@ -22,10 +22,10 @@ package org.zanata.service.impl;
 
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.SlugEntityBase;
 import org.zanata.service.SlugEntityService;
@@ -37,10 +37,10 @@ import org.zanata.service.SlugEntityService;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("slugEntityServiceImpl")
-@Scope(ScopeType.STATELESS)
+@Named("slugEntityServiceImpl")
+@RequestScoped
 public class SlugEntityServiceImpl implements SlugEntityService {
-    @In
+    @Inject
     private Session session;
 
     @Override

@@ -25,8 +25,8 @@
   //<![CDATA[
   jQuery(function () {
     crossroads.ignoreState = true /* Make sure every url modification gets parsed */
-    crossroads.addRoute(':pre*:/version-group/view/{slug}/languages/:lang:',
-      function (pre, slug, lang) {
+    crossroads.addRoute(':pre*:/version-group/view/{slug}/languages/:lang::?query:',
+      function (pre, slug, lang, query) {
         zanata.tabs.activate(jQuery('#languages_tab'));
         var clickEle = jQuery('a.' + lang);
         if (lang && clickEle.length != 0) {
@@ -36,8 +36,8 @@
         }
       });
 
-    crossroads.addRoute(':pre*:/version-group/view/{slug}/projects/{proj}/{ver}',
-      function (pre, slug, proj, ver) {
+    crossroads.addRoute(':pre*:/version-group/view/{slug}/projects/{proj}/{ver}:?query:',
+      function (pre, slug, proj, ver, query) {
         zanata.tabs.activate(jQuery('#projects_tab'));
         var clickEle = jQuery('#' + jqSelector(proj + "[" + ver + "]") + " a");
         if (clickEle.length != 0) {
@@ -47,8 +47,8 @@
         }
       });
 
-    crossroads.addRoute(':pre*:/version-group/view/{slug}/settings/:setting:',
-      function (pre, slug, setting) {
+    crossroads.addRoute(':pre*:/version-group/view/{slug}/settings/:setting::?query:',
+      function (pre, slug, setting, query) {
         zanata.tabs.activate(jQuery('#settings_tab'));
         setting = setting || 'general';
         setting =
@@ -57,8 +57,8 @@
           "_tab"))
       });
 
-    crossroads.addRoute(':pre*:/version-group/view/{slug}/:section:',
-      function (pre, slug, section) {
+    crossroads.addRoute(':pre*:/version-group/view/{slug}/:section::?query:',
+      function (pre, slug, section, query) {
         section = section || 'languages';
         section = validateTab('#' + section + "_tab", section, "languages");
         zanata.tabs.activate(jQuery('#' + section + "_tab"))
@@ -79,6 +79,7 @@
     <a4j:jsFunction name="reloadLocale" status="languageTab-projectsLoader"
       onbegin="clearHTML('#{rich:clientId('languages-project_list')}');clearHTML('#{rich:clientId('language-label')}');zanata.loader.activate('#languagesTab-language-label-loader')"
       oncomplete="zanata.loader.deactivate('#languagesTab-language-label-loader'); zanata.panel.init()"
+      limitRender="true"
       render="languages-project_list, language-label, languageTabVersionFilter-pager, languageTabVersionFilter-page-info">
       <a4j:param name="val1" assignTo="#{versionGroupHomeAction.selectedLocaleId}"/>
     </a4j:jsFunction>
@@ -86,6 +87,7 @@
     <a4j:jsFunction name="reloadVersion" status="projectsTab-languagesLoader"
       onbegin="clearHTML('#{rich:clientId('projects-language_list')}');clearHTML('#{rich:clientId('project-label')}');zanata.loader.activate('#projectsTab-project-label-loader')"
       oncomplete="zanata.loader.deactivate('#projectsTab-project-label-loader'); zanata.panel.init()"
+      limitRender="true"
       render="projects-language_list, project-label, projectTabLanguageFilter-pager, projectTabLanguageFilter-page-info"
       action="#{versionGroupHomeAction.setSelectedVersionSlug(projSlug, verSlug)}">
       <a4j:param name="val1" assignTo="#{projSlug}"/>
@@ -94,9 +96,11 @@
 
     <a4j:jsFunction name="refreshStatisticsData" status="statistic-loader"
       action="#{versionGroupHomeAction.resetPageData}"
+      limitRender="true"
       render="overall_statistic,languages-language_form,languages-project_list,language-label,projects-project_form,projects-language_list,project-label,languages-size,projects-size"/>
 
     <a4j:jsFunction name="renderStatistics" status="statistic-loader"
+      limitRender="true"
       render="overall_statistic, languages-language_form, projects-project_form"
       action="#{versionGroupHomeAction.setPageRendered(true)}"
       oncomplete="updateStateFromUrl(); zanata.panel.init()"/>
@@ -178,7 +182,7 @@
                 #{msgs['jsf.Languages']}
               </span>
             <h:panelGroup styleClass="txt--neutral" id="languages-size">
-              #{versionGroupHomeAction.activeLocales.size}
+              #{versionGroupHomeAction.activeLocales.size()}
             </h:panelGroup>
           </a>
         </li>
@@ -191,7 +195,7 @@
                 #{msgs['jsf.Projects']}
               </span>
             <h:panelGroup id="projects-size" layout="inline" styleClass="txt--neutral">
-              #{versionGroupHomeAction.getProjectIterations().size}
+              #{versionGroupHomeAction.getProjectIterations().size()}
             </h:panelGroup>
           </a>
         </li>
@@ -204,7 +208,7 @@
                 #{msgs['jsf.Maintainers']}
               </span>
             <h:panelGroup styleClass="txt--neutral" id="maintainers-size">
-              #{versionGroupHome.instance.maintainers.size}
+              #{versionGroupHome.instance.maintainers.size()}
             </h:panelGroup>
           </a>
         </li>
@@ -262,7 +266,7 @@
 
         <li id="maintainers">
           <zanata:maintainers-tab
-            listSize="#{versionGroupHome.instanceMaintainers.size}"
+            listSize="#{versionGroupHome.instanceMaintainers.size()}"
             filterActionBean="#{versionGroupHome.maintainerFilter}"
             settingsUrl="#settings-maintainers"
             PermissionToUpdate="#{identity.hasPermission(versionGroupHome.instance, 'update')}"/>

@@ -21,16 +21,14 @@
 package org.zanata.dao;
 
 import org.hibernate.Session;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountActivationKey;
 
-@Name("accountActivationKeyDAO")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("accountActivationKeyDAO")
+@RequestScoped
 public class AccountActivationKeyDAO extends
         AbstractDAOImpl<HAccountActivationKey, String> {
 

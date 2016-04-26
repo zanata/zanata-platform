@@ -37,6 +37,8 @@ import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.management.AttributeNotFoundException;
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanException;
@@ -50,26 +52,20 @@ import javax.naming.LinkRef;
 import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-import javax.persistence.EntityManagerFactory;
 import javax.servlet.ServletContext;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.deltaspike.core.api.lifecycle.Initialized;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.contexts.ServletLifecycle;
-import org.jboss.seam.mail.MailSession;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.zanata.email.EmailBuilder;
 import org.zanata.events.ServerStarted;
 import org.zanata.exception.ZanataInitializationException;
 import org.zanata.rest.dto.VersionInfo;
-import org.zanata.util.Event;
+import javax.enterprise.event.Event;
 import org.zanata.util.VersionUtility;
 
 /**
@@ -81,14 +77,14 @@ import org.zanata.util.VersionUtility;
  * @author Christian Bauer
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Name("zanataInit")
-@Scope(ScopeType.STATELESS)
+@Named("zanataInit")
+@ApplicationScoped
 @Slf4j
 public class ZanataInit {
     private static final DefaultArtifactVersion MIN_EAP_VERSION =
-            new DefaultArtifactVersion("6.4.2.GA");
+            new DefaultArtifactVersion("6.4.6.GA");
     private static final DefaultArtifactVersion MIN_WILDFLY_VERSION =
-            new DefaultArtifactVersion("9.0.1.Final");
+            new DefaultArtifactVersion("10.0.0.Final");
 
 
     static {
@@ -103,21 +99,19 @@ public class ZanataInit {
                 Level.SEVERE);
     }
 
-    @In
+    @Inject
     private ApplicationConfiguration applicationConfiguration;
 
-    @In("event")
+    @Inject
     private Event<ServerStarted> startupEvent;
 
-    @In
-    private EntityManagerFactory entityManagerFactory;
+    public void onCreate(@Observes @Initialized ServletContext context) throws Exception {
+        initZanata(context);
+    }
 
-    @Observer("org.jboss.seam.postInitialization")
-    public void initZanata() throws Exception {
+    public void initZanata(ServletContext context) throws Exception {
         checkAppServerVersion();
-        ServletContext servletContext =
-                ServletLifecycle.getCurrentServletContext();
-        String appServerHome = servletContext.getRealPath("/");
+        String appServerHome = context.getRealPath("/");
 
         File manifestFile = new File(appServerHome, "META-INF/MANIFEST.MF");
 
@@ -141,9 +135,6 @@ public class ZanataInit {
 
         logBanner(zanataVersion);
 
-        if (this.applicationConfiguration.isDebug()) {
-            log.info("debug: enabled");
-        }
         boolean authlogged = false;
 
         if (applicationConfiguration.isInternalAuth()) {
@@ -174,22 +165,12 @@ public class ZanataInit {
         }
 
         // Email server information
-        MailSession mailSession = (MailSession) Component.forName(
-                "org.jboss.seam.mail.mailSession").newInstance();
-        log.info("Mail Session (JNDI): {}",
-                mailSession.getSessionJndiName());
+        log.info("Mail Session (JNDI): {}", EmailBuilder.MAIL_SESSION_JNDI);
 
         startupEvent.fire(new ServerStarted());
 
         log.info("Started Zanata...");
     }
-
-    @Destroy
-    private void destroy() {
-        // Tell Hibernate Search to clean up indexes and lock files
-        entityManagerFactory.close();
-    }
-
 
     private void checkAppServerVersion()
             throws MalformedObjectNameException, AttributeNotFoundException,
@@ -209,6 +190,7 @@ public class ZanataInit {
         log.info("App server release version: {}", releaseVersion);
 
         switch ((productName == null) ? "" : productName) {
+            case "JBoss EAP":
             case "EAP":
                 checkEAPVersion(productVersion);
                 break;

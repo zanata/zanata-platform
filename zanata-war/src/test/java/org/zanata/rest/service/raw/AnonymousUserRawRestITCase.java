@@ -27,6 +27,7 @@ import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
+import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
 
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response.Status;
@@ -37,10 +38,14 @@ import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
+import org.zanata.common.EntityStatus;
+import org.zanata.common.ProjectType;
 import org.zanata.rest.InvalidApiKeyUtil;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.ResourceRequestEnvironment;
+import org.zanata.rest.dto.Project;
+import org.zanata.rest.dto.ProjectIteration;
 
 public class AnonymousUserRawRestITCase extends RestTest {
 
@@ -124,12 +129,16 @@ public class AnonymousUserRawRestITCase extends RestTest {
 
     @Test
     @RunAsClient
-    public void doPOSTProjectsWithAnonymous() throws Exception {
-        new ResourceRequest(getRestEndpointUrl("/projects"), "POST") {
+    public void doPUTProjectWithAnonymous() throws Exception {
+        final Project project =
+                new Project("test-project", "Test Project",
+                        ProjectType.Gettext.toString(),
+                        "This is a Test project");
+        new ResourceRequest(getRestEndpointUrl("/projects/p/test-project"), "PUT") {
             @Override
             protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
-                    MediaTypes.APPLICATION_ZANATA_PROJECTS_XML);
+                request.body(MediaTypes.APPLICATION_ZANATA_PROJECT_XML,
+                        jaxbMarhsal(project).getBytes());
             }
 
             @Override

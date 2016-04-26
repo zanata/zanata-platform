@@ -23,18 +23,20 @@ package org.zanata.security;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.apache.deltaspike.security.api.authorization.Secures;
-import org.picketlink.Identity;
 import org.zanata.security.annotations.CheckLoggedIn;
 
 /**
+ * See org.apache.deltaspike.security.impl.extension.Authorizer
+ *
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @see org.zanata.exception.handler.AccessDeniedExceptionHandler
  */
 @ApplicationScoped
 public class CheckLoggedInProvider {
 
     @Secures
     @CheckLoggedIn
-    public boolean isLoggedIn(Identity identity) throws Exception {
+    public boolean isLoggedIn(ZanataIdentity identity) throws Exception {
         return identity.isLoggedIn();
     }
 }

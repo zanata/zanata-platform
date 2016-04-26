@@ -17,16 +17,11 @@
  * The dependency name is not relevant, just an identifier.
  */
 
-'wildfly-9' {
+'wildfly' {
     hibernatemodule {
-        url = "http://sourceforge.net/projects/zanata/files/wildfly/wildfly-8.1.0.Final-module-hibernate-main-4.2.19.Final.zip/download"
+        url = "https://bintray.com/artifact/download/sflanigan/generic/wildfly-module-hibernate-main-4.2.20.Final.zip"
         toFile = "/hibernate-module.zip"
         extract = true
     }
 
-    jsfmodule {
-        url = "http://sourceforge.net/projects/zanata/files/wildfly/wildfly-8.1.0.Final-module-mojarra-2.1.29-01.zip/download"
-        toFile = "/mojarra-module.zip"
-        extract = true
-    }
 }

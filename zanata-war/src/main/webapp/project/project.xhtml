@@ -23,16 +23,16 @@
 <script type="text/javascript">
   //<![CDATA[
   jQuery(function () {
-    crossroads.addRoute(':pre*:/project/view/{slug}/settings/{subSection}',
-      function (pre, slug, subSection) {
+    crossroads.addRoute(':pre*:/project/view/{slug}/settings/{subSection}:?query:',
+      function (pre, slug, subSection, query) {
         zanata.tabs.activate(jQuery('#settings_tab'));
         subSection = subSection || 'general';
         subSection = validateTab("#settings-" + subSection + '_tab', subSection, 'general');
         zanata.tabs.activate(jQuery('#settings-' + subSection + "_tab"));
       });
 
-    crossroads.addRoute(':pre*:/project/view/{slug}/:section:',
-      function (pre, slug, section) {
+    crossroads.addRoute(':pre*:/project/view/{slug}/:section::?query:',
+      function (pre, slug, section, query) {
         section = section || 'versions';
         // maintainers tab is replaced with people tab, so links to maintainers
         // tab should direct to the people tab
@@ -52,12 +52,14 @@
 
   <h:form styleClass="l--push-bottom-0">
     <a4j:jsFunction name="refreshStatistics" status="statistic-loader"
+      limitRender="true"
       render="versions_form"
       oncomplete="refreshTooltip('#{rich:clientId('versions_form')}')"
       action="#{projectHomeAction.resetPageData}"/>
 
     <a4j:jsFunction name="renderStatistics" status="statistic-loader"
       oncomplete="refreshTooltip('#{rich:clientId('versions_form')}')"
+      limitRender="true"
       render="versions_form"
       action="#{projectHomeAction.setPageRendered(true)}"/>
 
@@ -72,7 +74,9 @@
 
     <h:panelGroup layout="block"  styleClass="media l--push-bottom-half" id="project-info">
       <div class="media__body">
-        <h1 class="l--push-all-0">#{projectHome.instance.name}</h1>
+        <h1 class="l--push-all-0">
+          <zanata:project-label project="#{projectHome.instance}"/>
+        </h1>
 
         <p class="txt--understated">
           <ui:fragment
@@ -159,7 +163,7 @@
               <span class="is-hidden--s i__text--right">
                 #{msgs['jsf.Versions']}
                 <h:panelGroup styleClass="txt--neutral" id="versions-size">
-                  #{projectHomeAction.getProjectVersions().size}
+                  #{projectHomeAction.getProjectVersions().size()}
                 </h:panelGroup>
               </span>
         </a>
@@ -172,7 +176,7 @@
               <span class="is-hidden--s i__text--right">
                 #{msgs['jsf.People']}
                 <h:panelGroup styleClass="txt--neutral" id="people-size">
-                  #{projectHomeAction.allMembers.size}
+                  #{projectHomeAction.allMembers.size()}
                 </h:panelGroup>
               </span>
         </a>

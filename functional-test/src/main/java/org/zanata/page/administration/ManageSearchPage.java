@@ -102,12 +102,9 @@ public class ManageSearchPage extends BasePage {
     public ManageSearchPage performSelectedActions() {
         log.info("Click Perform Actions");
         clickElement(performButton);
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                // The Abort button will display
-                return readyElement(cancelButton).isDisplayed();
-            }
+        waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
+            // The Abort button will display
+            return readyElement(cancelButton).isDisplayed();
         });
         return new ManageSearchPage(getDriver());
     }

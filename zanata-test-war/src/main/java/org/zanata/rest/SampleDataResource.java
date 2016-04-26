@@ -2,6 +2,7 @@ package org.zanata.rest;
 
 
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -9,7 +10,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-@Path("/test/data/sample")
 public interface SampleDataResource {
 
 
@@ -19,7 +19,10 @@ public interface SampleDataResource {
 
     @PUT
     @Path("/languages/l/{locale}")
-    Response addLanguage(@PathParam("locale") String localeId);
+    Response addLanguage(@PathParam("locale") String localeId,
+            @QueryParam("pluralForms")
+            @DefaultValue("nplurals=2; plural=(n != 1);")
+            String pluralForms);
 
     @PUT
     @Path("/accounts/u/{username}/languages")

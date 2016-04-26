@@ -2,6 +2,7 @@ package org.zanata.notification;
 
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
+import javax.jms.QueueConnection;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 
@@ -23,11 +24,14 @@ public class NotificationManagerTest {
     private QueueSession queueSession;
     @Mock
     private ObjectMessage message;
+    @Mock
+    private QueueConnection connection;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        manager = new NotificationManager(mailQueueSender, queueSession);
+        JmsResourcesProducer producer = new JmsResourcesProducer();
+        manager = new NotificationManager();
     }
 
     @Test
@@ -36,7 +40,7 @@ public class NotificationManagerTest {
                 Mockito.mock(LanguageTeamPermissionChangedEvent.class);
         when(queueSession.createObjectMessage(event)).thenReturn(message);
 
-        manager.onLanguageTeamPermissionChanged(event);
+        manager.onLanguageTeamPermissionChanged(event, queueSession, mailQueueSender);
 
         verify(message).setObjectProperty(
                 NotificationManager.MessagePropertiesKey.objectType.name(),

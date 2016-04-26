@@ -2,12 +2,9 @@ package org.zanata.service.impl;
 
 import java.util.List;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.core.Events;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.LocaleMemberDAO;
@@ -19,25 +16,27 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HLocaleMember.HLocaleMemberPk;
 import org.zanata.model.HPerson;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LanguageTeamService;
-import org.zanata.util.Event;
+import javax.enterprise.event.Event;
 
-@Name("languageTeamServiceImpl")
-@Scope(ScopeType.STATELESS)
+@Named("languageTeamServiceImpl")
+@RequestScoped
 public class LanguageTeamServiceImpl implements LanguageTeamService {
-    @In
+    @Inject
     private PersonDAO personDAO;
 
-    @In
+    @Inject
     private LocaleDAO localeDAO;
 
-    @In
+    @Inject
     private LocaleMemberDAO localeMemberDAO;
 
-    @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION)
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
-    @In("event")
+    @Inject
     private Event<LanguageTeamPermissionChangedEvent>
             languageTeamPermissionChangedEvent;
 
@@ -58,6 +57,10 @@ public class LanguageTeamServiceImpl implements LanguageTeamService {
         LanguageTeamPermissionChangedEvent permissionChangedEvent;
 
         HPerson authenticatedUser = authenticatedAccount.getPerson();
+        if(isCoordinator) {
+            isReviewer = true;
+            isTranslator = true;
+        }
         if (!alreadyJoined) {
             if (currentPerson.getLanguageMemberships().size() >= MAX_NUMBER_MEMBERSHIP) {
                 throw new ZanataServiceException(

@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.List;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -19,11 +20,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.ws.Service;
 
+import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.resteasy.util.GenericType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
@@ -39,8 +41,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.zanata.security.annotations.ZanataSecured;
-import org.zanata.util.Event;
+import javax.enterprise.event.Event;
 import org.zanata.util.ServiceLocator;
 
 /**
@@ -49,12 +50,13 @@ import org.zanata.util.ServiceLocator;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Name("serverConfigurationResource")
+@RequestScoped
+@Named("serverConfigurationResource")
 @Path("/configurations")
 @Produces({"application/xml", "application/json"})
 @Consumes({"application/xml", "application/json"})
 @Transactional
-@ZanataSecured
+
 @CheckRole("admin")
 @Slf4j
 @Beta
@@ -67,8 +69,11 @@ public class ServerConfigurationService {
     @DefaultValue(MediaType.APPLICATION_JSON)
     @Context
     private MediaType accept;
-    @In
+    @Inject
     private ApplicationConfigurationDAO applicationConfigurationDAO;
+
+    @Inject
+    private Event<ConfigurationChanged> configurationChangedEvent;
 
     /**
      * Retrieves all existing server configurations.
@@ -182,9 +187,9 @@ public class ServerConfigurationService {
             applicationConfigurationDAO.makePersistent(appConfig);
         }
 
-        Event<ConfigurationChanged> event =
-                ServiceLocator.instance().getInstance(Event.class);
-        event.fireAfterSuccess(new ConfigurationChanged(key));
+        // TODO make method non-static, use configurationChangedEvent.fire()
+        BeanManagerProvider.getInstance().getBeanManager().fireEvent(
+                new ConfigurationChanged(key));
     }
 
     private boolean isConfigKeyValid(String configKey) {

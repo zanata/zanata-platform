@@ -29,4 +29,6 @@ package org.zanata.config;
 public interface ConfigStore {
 
     String get(String propertyName);
+
+    int get(String propertyName, int defaultValue);
 }

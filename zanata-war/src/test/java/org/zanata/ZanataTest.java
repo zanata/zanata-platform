@@ -20,7 +20,8 @@
  */
 package org.zanata;
 
-import org.zanata.seam.SeamAutowire;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import org.apache.deltaspike.core.util.ProjectStageProducer;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -28,7 +29,8 @@ import org.zanata.seam.SeamAutowire;
 public abstract class ZanataTest {
 
     static {
-        SeamAutowire.instance();
+        // Tell DeltaSpike to give more warning messages
+        ProjectStageProducer.setProjectStage(ProjectStage.UnitTest);
     }
 
 }

@@ -50,26 +50,20 @@ public class DashboardClientTab extends DashboardBasePage {
         clickElement(generateApiKeyButton);
         slightPause();
         Alert alert = waitForAMoment().withMessage("Alert dialog not displayed")
-                .until(new Function<WebDriver, Alert>() {
-            @Override
-            public Alert apply(WebDriver input) {
-                return input.switchTo().alert();
-            }
-        });
+                .until((Function<WebDriver, Alert>) webDriver -> {
+                    return webDriver.switchTo().alert();
+                });
         log.info("Press OK on alert to generate API key");
         alert.accept();
         waitForAMoment().withMessage("Alert not dismissed")
-                .until(new Predicate<WebDriver>() {
-                    @Override
-                    public boolean apply(WebDriver input) {
-                        try {
-                            getDriver().switchTo().alert();
-                        } catch (NoAlertPresentException nape) {
-                            return true;
-                        }
-                        log.info("Alert still present");
-                        return false;
+                .until((Predicate<WebDriver>) webDriver -> {
+                    try {
+                        getDriver().switchTo().alert();
+                    } catch (NoAlertPresentException nape) {
+                        return true;
                     }
+                    log.info("Alert still present");
+                    return false;
                 });
         return new DashboardClientTab(getDriver());
     }

@@ -22,7 +22,7 @@
 
         <ui:fragment
           rendered="#{not applicationConfiguration.internalAuth and not empty applicationConfiguration.registerPath}">
-          <a href="#{applicationConfiguration.registerPath}">
+          <a href="#{applicationConfiguration.registerPath}#{dswidQuery}">
             <p class="txt--meta l--push-all-0">#{msgs['jsf.Signup']}</p>
           </a>
         </ui:fragment>

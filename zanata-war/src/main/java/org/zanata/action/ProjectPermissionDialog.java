@@ -30,10 +30,10 @@ import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.exception.AuthorizationException;
@@ -54,6 +54,7 @@ import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ServiceLocator;
 
 import javax.faces.application.FacesMessage;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -64,27 +65,28 @@ import java.util.Map;
  *
  * Template is person-permissions-modal.xhtml
  */
-@Name("projectPermissionDialog")
-@Scope(ScopeType.PAGE)
+@Named("projectPermissionDialog")
+@javax.faces.bean.ViewScoped
 @Slf4j
-public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson> {
+public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
+        implements Serializable {
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
-    @In
+    @Inject
     private Messages msgs;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In
+    @Inject
     private PersonDAO personDAO;
 
-    @In
+    @Inject
     private ProjectDAO projectDAO;
 
     @Getter
@@ -228,6 +230,7 @@ public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson> {
     /**
      * Save the permissions selections from permissionDialogData to the database.
      */
+    @Transactional
     public void saveSelections() {
         if (data == null) {
             log.error("Tried to save permissionDialogData but it is null");

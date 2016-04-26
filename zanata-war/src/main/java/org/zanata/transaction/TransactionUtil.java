@@ -20,34 +20,65 @@
  */
 package org.zanata.transaction;
 
-import static org.jboss.seam.util.EJB.APPLICATION_EXCEPTION;
-import static org.jboss.seam.util.EJB.rollback;
-
 import java.util.concurrent.Callable;
 
+import javax.ejb.ApplicationException;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
+import javax.faces.convert.ConverterException;
+import javax.faces.validator.ValidatorException;
+import javax.inject.Inject;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.transaction.NotSupportedException;
 import javax.transaction.Status;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.util.IServiceLocator;
+import org.zanata.util.RunnableEx;
+import org.zanata.util.ServiceLocator;
 
-import org.jboss.seam.annotations.ApplicationException;
-import org.jboss.seam.transaction.Transaction;
-import org.jboss.seam.transaction.UserTransaction;
-import org.jboss.seam.util.JSF;
+import static javax.transaction.Status.STATUS_ACTIVE;
+import static javax.transaction.Status.STATUS_MARKED_ROLLBACK;
+import static javax.transaction.Status.STATUS_ROLLEDBACK;
 
 /**
- * Utility class to help with transactions.
+ * Utility class to help with transactions. Based on Seam 2 code including
+ * org.jboss.seam.util.Work and org.jboss.seam.transaction.*.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Slf4j
+@ApplicationScoped
+//@Stateless
+//@TransactionManagement(TransactionManagementType.BEAN)
 public class TransactionUtil {
+
+    public static TransactionUtil get() {
+        return ServiceLocator.instance().getInstance(TransactionUtil.class);
+    }
+
+    @Inject
+    private EntityManager entityManager;
+
+    @Inject
+    private IServiceLocator serviceLocator;
 
     /**
      * Runs the provided function (in the shape of a Callable) in its own
      * transaction.
      *
-     * @param function
+     * @param function the function to call
      * @param <R>
      *            Return type expected. The provided function must return this
      *            type.
@@ -56,41 +87,40 @@ public class TransactionUtil {
      *             Exception (if any) thrown by the given function.
      */
     public static <R> R runInTransaction(Callable<R> function) throws Exception {
+        return get().call(function);
+    }
+
+    public <R> R call(Callable<R> function) throws Exception {
         UserTransaction transaction = null;
+        // these values used to come from Seam's Transactional annotation
         boolean transactionActive = false;
         boolean newTransactionRequired = false;
         UserTransaction userTransaction = null;
 
-        try {
-            transaction = Transaction.instance();
+        transaction = getUserTransaction();
 
-            transactionActive = transaction.isActiveOrMarkedRollback()
-                    || transaction.isRolledBack(); // TODO: temp workaround,
-                                                   // what should we really do
-                                                   // in this case??
-            newTransactionRequired =
-                    isNewTransactionRequired(transactionActive);
-            userTransaction = newTransactionRequired ? transaction : null;
-        } catch (IllegalStateException e) {
-            // for shutdown case, when we can't get the tx object because the
-            // event context is gone
-            // but we should still check if a tx is required and fail
-            // accordingly if it is
-            newTransactionRequired = isNewTransactionRequired(false);
-            if (newTransactionRequired) {
-                throw e;
-            }
+        if (transaction.getStatus() == Status.STATUS_COMMITTED) {
+            throw new RuntimeException("Nested transactions not supported. @Async may help.");
         }
+
+        transactionActive = isActiveOrMarkedRollback(transaction)
+                || isRolledBack(transaction); // TODO: temp workaround,
+        // what should we really do
+        // in this case??
+        newTransactionRequired =
+                isNewTransactionRequired(transactionActive);
+        userTransaction = newTransactionRequired ? transaction : null;
 
         try {
             if (newTransactionRequired) {
                 log.debug("beginning transaction");
                 userTransaction.begin();
             }
+            entityManager.joinTransaction();
 
             R result = function.call();
             if (newTransactionRequired) {
-                if (transaction.isMarkedRollback()) {
+                if (isMarkedRollback(transaction)) {
                     log.debug("rolling back transaction");
                     userTransaction.rollback();
                 } else {
@@ -99,6 +129,8 @@ public class TransactionUtil {
                 }
             }
             return result;
+        } catch (IllegalStateException | NotSupportedException | SystemException e) {
+            throw e;
         } catch (Exception e) {
             if (newTransactionRequired
                     && userTransaction.getStatus() != Status.STATUS_NO_TRANSACTION) {
@@ -119,31 +151,81 @@ public class TransactionUtil {
      * Same as {@link TransactionUtil#runInTransaction(Callable)} but for
      * Runnables (functions that don't return anything)
      *
-     * @param function
+     * @param runnable
      *            The function (in the form of a Runnable) to execute.
      * @throws Exception
      *             Exception (if any) thrown by the given function.
      * @see TransactionUtil#runInTransaction(Callable)
      */
-    public static void runInTransaction(Runnable function) throws Exception {
+    public static void runInTransaction(Runnable runnable) throws Exception {
+        get().run(runnable);
+    }
+
+    public void run(Runnable runnable) throws Exception {
         runInTransaction(() -> {
-            function.run();
+            runnable.run();
             return null;
         });
     }
 
-    protected static boolean
-            isNewTransactionRequired(boolean transactionActive) {
+    public void runEx(RunnableEx runnable) throws Exception {
+        runInTransaction(() -> {
+            runnable.run();
+            return null;
+        });
+    }
+
+    // Adapted from org.jboss.seam.transaction.Transaction.getUserTransaction()
+    private UserTransaction getUserTransaction() throws NamingException {
+        return serviceLocator.getJndiComponent(
+                "java:jboss/UserTransaction",
+                UserTransaction.class);
+
+//        try {
+//            return serviceLocator.getJndiComponent("java:comp/UserTransaction",
+//                    UserTransaction.class);
+//        } catch (NamingException ne) {
+//            try {
+//                // Embedded JBoss has no java:comp/UserTransaction
+//                UserTransaction ut = serviceLocator.getJndiComponent(
+//                        "UserTransaction", UserTransaction.class);
+//                ut.getStatus(); // for glassfish, which can return an unusable
+//                // UT
+//                return ut;
+//            } catch (NamingException nnfe2) {
+//                // Try the other JBoss location in JBoss AS7
+//                return serviceLocator.getJndiComponent(
+//                        "java:jboss/UserTransaction",
+//                        UserTransaction.class);
+//            } catch (Exception e) {
+//                throw ne;
+//            }
+//        }
+    }
+
+    private static boolean isActiveOrMarkedRollback(UserTransaction
+            transaction) throws SystemException {
+        int status = transaction.getStatus();
+        return status == STATUS_ACTIVE || status == STATUS_MARKED_ROLLBACK;
+    }
+
+    private static boolean isMarkedRollback(UserTransaction transaction)
+            throws SystemException {
+        return transaction.getStatus() == STATUS_MARKED_ROLLBACK;
+    }
+
+    private static boolean isRolledBack(UserTransaction transaction)
+            throws SystemException {
+        return transaction.getStatus() == STATUS_ROLLEDBACK;
+    }
+
+    private static boolean isNewTransactionRequired(boolean transactionActive) {
         return !transactionActive;
     }
 
-    public static boolean isRollbackRequired(Exception e, boolean isJavaBean) {
+    private static boolean isRollbackRequired(Exception e, boolean isJavaBean) {
         Class<? extends Exception> clazz = e.getClass();
-        return (isSystemException(e, isJavaBean, clazz))
-                ||
-                (isJavaBean && clazz.isAnnotationPresent(APPLICATION_EXCEPTION) && rollback(clazz
-                        .getAnnotation(APPLICATION_EXCEPTION)))
-                ||
+        return (isSystemException(e, isJavaBean, clazz)) ||
                 (clazz.isAnnotationPresent(ApplicationException.class) && clazz
                         .getAnnotation(ApplicationException.class).rollback());
     }
@@ -152,11 +234,11 @@ public class TransactionUtil {
             Class<? extends Exception> clazz) {
         return isJavaBean &&
                 (e instanceof RuntimeException) &&
-                !clazz.isAnnotationPresent(APPLICATION_EXCEPTION) &&
                 !clazz.isAnnotationPresent(ApplicationException.class) &&
-                // TODO: this is hackish, maybe just turn off RollackInterceptor
+                // TODO: this is hackish, maybe just turn off RollbackInterceptor
                 // for @Converter/@Validator components
-                !JSF.VALIDATOR_EXCEPTION.isInstance(e) &&
-                !JSF.CONVERTER_EXCEPTION.isInstance(e);
+                !(e instanceof ValidatorException) &&
+                !(e instanceof ConverterException);
     }
+
 }

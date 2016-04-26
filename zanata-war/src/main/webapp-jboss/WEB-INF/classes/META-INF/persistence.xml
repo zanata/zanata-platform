@@ -41,15 +41,21 @@
     <class>org.zanata.model.HTextFlowTarget</class>
     <class>org.zanata.model.HTextFlowTargetHistory</class>
     <class>org.zanata.model.HTextFlowTargetReviewComment</class>
+    <class>org.zanata.model.LanguageRequest</class>
     <class>org.zanata.model.po.HPoHeader</class>
     <class>org.zanata.model.po.HPoTargetHeader</class>
     <class>org.zanata.model.po.HPotEntryData</class>
+    <class>org.zanata.model.Request</class>
     <class>org.zanata.model.security.HCredentials</class>
     <class>org.zanata.model.security.HOpenIdCredentials</class>
     <class>org.zanata.model.tm.TransMemoryUnit</class>
     <class>org.zanata.model.tm.TransMemoryUnitVariant</class>
     <class>org.zanata.model.tm.TransMemory</class>
     <class>org.zanata.model.WebHook</class>
+
+    <!-- TODO This may be removed once the class files are packaged in the zanata-model jar as intended
+     Otherwise, hibernate will scan the whole war file and dependency jars -->
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     <properties>
       <!--
@@ -66,6 +72,9 @@
       <!-- TODO this won't work with Hibernate 4.3 or later -->
       <property name="hibernate.connection.provider_class"
         value="org.zanata.database.WrappedDatasourceConnectionProvider" />
+
+      <!--<property name="hibernate.dialect"-->
+        <!--value="org.hibernate.dialect.MySQL5InnoDBDialect"/>-->
 
       <!-- Logging -->
       <property name="hibernate.show_sql" value="${env.hibernate.show_sql}" />
@@ -133,7 +142,7 @@
       <property name="hibernate.cache.use_query_cache" value="true" />
 
       <!-- https://docs.jboss.org/author/display/AS71/JPA+Reference+Guide#JPAReferenceGuide-Persistenceunitproperties -->
-      <property name="jboss.as.jpa.managed" value="false" />
+      <property name="jboss.as.jpa.managed" value="true" />
     </properties>
   </persistence-unit>
 

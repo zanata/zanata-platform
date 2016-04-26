@@ -27,10 +27,9 @@ import java.util.Date;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
@@ -39,15 +38,15 @@ import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChat;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatAction;
 
-@Name("webtrans.gwt.PublishWorkspaceChatHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.PublishWorkspaceChatHandler")
+@RequestScoped
 @ActionHandlerFor(PublishWorkspaceChatAction.class)
 public class PublishWorkspaceChatHandler extends
         AbstractActionHandler<PublishWorkspaceChatAction, NoOpResult> {
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private TranslationWorkspaceManager translationWorkspaceManager;
 
     @Override

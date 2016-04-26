@@ -1,20 +1,21 @@
 package org.zanata.service.impl;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.model.HAccount;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.GravatarService;
 import org.zanata.util.HashUtil;
 
-@Name("gravatarServiceImpl")
-@Scope(ScopeType.STATELESS)
+@Named("gravatarServiceImpl")
+@RequestScoped
 public class GravatarServiceImpl implements GravatarService {
     private static String GRAVATAR_URL = "//www.gravatar.com/avatar/";
 
-    @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
+    @Inject
+    @Authenticated
     HAccount authenticatedAccount;
 
     @Override

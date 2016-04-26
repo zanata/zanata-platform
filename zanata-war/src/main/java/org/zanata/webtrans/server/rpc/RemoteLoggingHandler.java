@@ -4,10 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
@@ -17,13 +16,13 @@ import org.zanata.webtrans.shared.rpc.RemoteLoggingAction;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Name("webtrans.gwt.RemoteLoggingHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.RemoteLoggingHandler")
+@RequestScoped
 @ActionHandlerFor(RemoteLoggingAction.class)
 @Slf4j
 public class RemoteLoggingHandler extends
         AbstractActionHandler<RemoteLoggingAction, NoOpResult> {
-    @In
+    @Inject
     private ZanataIdentity identity;
 
     @Override

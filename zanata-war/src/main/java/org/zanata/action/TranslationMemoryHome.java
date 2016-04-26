@@ -20,19 +20,19 @@
  */
 package org.zanata.action;
 
+import javax.enterprise.context.RequestScoped;
 import javax.faces.event.ValueChangeEvent;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.seam.framework.EntityHome;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.SlugEntityService;
 import org.zanata.ui.faces.FacesMessages;
 
@@ -42,17 +42,22 @@ import org.zanata.ui.faces.FacesMessages;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("translationMemoryHome")
-@ZanataSecured
+@Named("translationMemoryHome")
+
 @CheckRole("admin")
 @Slf4j
+@RequestScoped
 public class TranslationMemoryHome extends EntityHome<TransMemory> {
     private static final long serialVersionUID = -8557363011909155662L;
-    @In
+    @Inject
     private SlugEntityService slugEntityServiceImpl;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
+
+    public TranslationMemoryHome() {
+        setEntityClass(TransMemory.class);
+    }
 
     public void verifySlugAvailable(ValueChangeEvent e) {
         String slug = (String) e.getNewValue();

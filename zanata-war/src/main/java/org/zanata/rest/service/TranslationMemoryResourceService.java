@@ -26,23 +26,21 @@ import java.util.concurrent.Future;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.TransactionPropagationType;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskResult;
-import org.zanata.async.ContainsAsyncMethods;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowStreamingDAO;
 import org.zanata.dao.TransMemoryDAO;
@@ -57,7 +55,6 @@ import org.zanata.model.ITextFlow;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.LocaleService;
 import org.zanata.service.LockManagerService;
 import org.zanata.tmx.TMXParser;
@@ -65,32 +62,31 @@ import org.zanata.util.CloseableIterator;
 
 import com.google.common.base.Optional;
 
-@Name("translationMemoryResource")
+@RequestScoped
+@Named("translationMemoryResource")
 @Path(TranslationMemoryResource.SERVICE_PATH)
-@Transactional(TransactionPropagationType.SUPPORTS)
 @Slf4j
-@ContainsAsyncMethods
 @ParametersAreNonnullByDefault
-@ZanataSecured
+
 // TODO options to export obsolete docs and textflows to TMX?
 public class TranslationMemoryResourceService implements
         TranslationMemoryResource {
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
-    @In
+    @Inject
     private LockManagerService lockManagerServiceImpl;
-    @In
+    @Inject
     private RestSlugValidator restSlugValidator;
-    @In
+    @Inject
     private TextFlowStreamingDAO textFlowStreamDAO;
-    @In
+    @Inject
     private TransMemoryStreamingDAO transMemoryStreamingDAO;
-    @In
+    @Inject
     private TransMemoryDAO transMemoryDAO;
-    @In
+    @Inject
     private TMXParser tmxParser;
-    @In
+    @Inject
     private ZanataIdentity identity;
 
     @Override

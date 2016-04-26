@@ -35,23 +35,25 @@ public class AbstractWebWorkFlow {
         String baseUrl = WebDriverFactory.INSTANCE.getHostUrl();
         hostUrl = appendTrailingSlash(baseUrl);
         driver = WebDriverFactory.INSTANCE.getDriver();
-        driver.get(hostUrl);
+        WebDriverFactory.INSTANCE.ignoringDswid(() ->
+                driver.get(hostUrl));
     }
 
     public HomePage goToHome() {
-        new BasePage(driver).waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                driver.get(hostUrl);
-                return new HomePage(driver).isPageValid();
-            }
+        return WebDriverFactory.INSTANCE.ignoringDswid(() -> {
+            driver.get(hostUrl);
+            new BasePage(driver).waitForAMoment().until(
+                    (Predicate<WebDriver>) input ->
+                            new HomePage(driver).isPageValid());
+            return new HomePage(driver);
         });
-        return new HomePage(driver);
     }
 
     public DashboardBasePage goToDashboard() {
-        driver.get(hostUrl + "dashboard");
-        return new DashboardBasePage(driver);
+        return WebDriverFactory.INSTANCE.ignoringDswid(() -> {
+            driver.get(hostUrl + "dashboard");
+            return new DashboardBasePage(driver);
+        });
     }
 
     private static String appendTrailingSlash(String baseUrl) {

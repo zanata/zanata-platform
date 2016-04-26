@@ -36,15 +36,12 @@
   <hr/>
 #end
 
-<p>$msgs.format("jsf.email.joinrequest.AddUserInstructions",
-    $fromName, $localeId, $msgs.get("jsf.AddTeamMember"))</p>
-
-<p>$msgs.format("jsf.email.coordinator.ResponseInstructions",
+<p>$msgs.format("jsf.email.coordinator.request.responseInstructions",
     $localeId, $fromName, $replyEmail)</p>
 
 <p>
   <a
-    href="$serverPath/language/view/$localeId">
-    $serverPath/language/view/$localeId
+    href="$serverPath/language/view/$localeId/requests">
+    $serverPath/language/view/$localeId/requests
   </a>
 </p>

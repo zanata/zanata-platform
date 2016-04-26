@@ -25,8 +25,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import org.apache.deltaspike.core.util.ProjectStageProducer;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
@@ -35,7 +39,6 @@ import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.seam.util.Naming;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -56,6 +59,7 @@ import com.google.common.collect.Lists;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @RunWith(Arquillian.class)
+@Exclude
 public abstract class RestTest {
     // Admin credentials
     protected static final String ADMIN = "admin";
@@ -65,6 +69,11 @@ public abstract class RestTest {
     protected static final String TRANSLATOR = "demo";
     protected static final String TRANSLATOR_KEY =
             "23456789012345678901234567890123";
+
+    static {
+        // Tell DeltaSpike to give more warning messages
+        ProjectStageProducer.setProjectStage(ProjectStage.IntegrationTest);
+    }
 
     // Authorized environment with valid credentials
     private static final ResourceRequestEnvironment ENV_AUTHORIZED =
@@ -172,14 +181,10 @@ public abstract class RestTest {
     private static IDatabaseConnection getConnection() {
         try {
             DataSource dataSource =
-                    (DataSource) Naming.getInitialContext().lookup(
+                    (DataSource) new InitialContext().lookup(
                             "java:jboss/datasources/zanataDatasource");
             DatabaseConnection dbConn =
                     new DatabaseConnection(dataSource.getConnection());
-            // NB: Specific to H2
-            dbConn.getConfig().setProperty(
-                    DatabaseConfig.PROPERTY_DATATYPE_FACTORY,
-                    new H2DataTypeFactory());
             return dbConn;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -202,7 +207,7 @@ public abstract class RestTest {
      */
     public final String getRestEndpointUrl(String resourceUrl) {
         StringBuilder fullUrl =
-                new StringBuilder(getDeploymentUrl() + "seam/resource/restv1");
+                new StringBuilder(getDeploymentUrl() + "rest");
         if (!resourceUrl.startsWith("/")) {
             fullUrl.append("/");
         }

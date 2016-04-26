@@ -20,26 +20,26 @@
  */
 package org.zanata.action;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.StringTokenizer;
 
+import javax.enterprise.context.SessionScoped;
+import javax.enterprise.event.Event;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.ServletRequest;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.web.ServletContexts;
 import org.zanata.events.LocaleSelectedEvent;
-import org.zanata.util.Event;
-import org.zanata.util.ServiceLocator;
+import org.zanata.servlet.HttpRequestAndSessionHolder;
+import org.zanata.util.Contexts;
 
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
@@ -49,11 +49,12 @@ import com.google.common.collect.Lists;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Name("localeSelectorAction")
-@Scope(ScopeType.SESSION)
-public class LocaleSelectorAction {
-    public static final String COOKIE_NAME = "org.zanata.i18n.locale";
-    public static final int DEFAULT_MAX_AGE = 365 * 24 * 60 * 60; // 1 year in seconds
+@Named("localeSelectorAction")
+@SessionScoped
+public class LocaleSelectorAction implements Serializable {
+    private static final long serialVersionUID = -7116393807988405479L;
+    @Inject
+    private Event<LocaleSelectedEvent> localeSelectedEvent;
 
     private String language;
     private String country;
@@ -74,15 +75,13 @@ public class LocaleSelectorAction {
      */
     public void select() {
         FacesContext.getCurrentInstance().getViewRoot().setLocale(getLocale());
-//        Contexts.removeFromAllContexts("org.jboss.seam.international.messages");
 
-//        setCookieValueIfEnabled(getLocaleString());
         getLocaleSelectedEvent().fire(
-                new LocaleSelectedEvent(getLocaleString()));
+                new LocaleSelectedEvent(getLocale()));
     }
 
     private Event<LocaleSelectedEvent> getLocaleSelectedEvent() {
-        return ServiceLocator.instance().getInstance(Event.class);
+        return localeSelectedEvent;
     }
 
 
@@ -106,9 +105,10 @@ public class LocaleSelectorAction {
             }
         }
 
-        ServletContexts servletContexts = ServletContexts.getInstance();
-        if (servletContexts != null) {
-            ServletRequest request = servletContexts.getRequest();
+        Optional<HttpServletRequest> requestOpt =
+                HttpRequestAndSessionHolder.getRequest();
+        if (requestOpt.isPresent()) {
+            ServletRequest request = requestOpt.get();
             if (request != null) {
                 return calculateLocale(request.getLocale());
             }
@@ -143,32 +143,9 @@ public class LocaleSelectorAction {
         return selectItems;
     }
 
-    protected Cookie getCookie() {
-        FacesContext ctx = FacesContext.getCurrentInstance();
-        if (ctx != null) {
-            return (Cookie) ctx.getExternalContext().getRequestCookieMap()
-                    .get(COOKIE_NAME);
-        } else {
-            return null;
-        }
+    public void setLocale(Locale locale) {
+        language = Strings.emptyToNull(locale.getLanguage());
+        country = Strings.emptyToNull(locale.getCountry());
+        variant = Strings.emptyToNull(locale.getVariant());
     }
-
-    protected void setCookieValueIfEnabled(String value) {
-        FacesContext ctx = FacesContext.getCurrentInstance();
-
-        if (ctx != null) {
-            HttpServletResponse response = (HttpServletResponse) ctx.getExternalContext().getResponse();
-            Cookie cookie = new Cookie(COOKIE_NAME, value);
-            cookie.setMaxAge(DEFAULT_MAX_AGE);
-            String requestContextPath =
-                    FacesContext.getCurrentInstance().getExternalContext()
-                            .getRequestContextPath();
-            if (requestContextPath.isEmpty()) {
-                requestContextPath = "/";
-            }
-            cookie.setPath(requestContextPath);
-            response.addCookie(cookie);
-        }
-    }
-
 }

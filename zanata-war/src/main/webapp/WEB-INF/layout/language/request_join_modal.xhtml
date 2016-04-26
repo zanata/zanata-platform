@@ -2,6 +2,7 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:rich="http://richfaces.org/rich"
   xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   class="modal" id="joinLanguageDialog" tabindex="-1" role="dialog"
@@ -13,18 +14,28 @@
     }
 
     function cancelJoinLanguage() {
-      jQuery('#' + jqSelector('#{rich:clientId('request-join-message')}')).val('');
-      jQuery(getJoinLanguageForm()).find('#request-join-language-send-button').removeClass('is-active');
-      //reset all checkboxes
-      jQuery(getJoinLanguageForm()).find('#roles').
-        find('input.js-form__checkbox__input').prop('checked', false).change();
+      resetRequestToJoinLanguage();
+      clearRequestToJoinLanguageMessage();
+    }
+
+    function postSendRequest() {
+      resetRequestToJoinLanguage();
+      zanata.modal.hide('#joinLanguageDialog');
+    }
+
+    function resetRequestToJoinLanguage() {
+      getJoinLanguageForm().find('#request-join-language-send-button').removeClass('is-active');
+      jQuery('#asTranslator').val(false);
+      jQuery('#asReviewer').val(false);
+      jQuery('#asCoordinator').val(false);
+      jQuery('#' + jqSelector('#{rich:clientId('request-join-message')}')).val('')
     }
   </script>
 
   <div class="modal__dialog l--constrain-medium">
     <header class="modal__header">
       <h2 class="modal__title">
-        #{msgs.format('jsf.email.RequestToJoinLanguageTeam.title',languageJoinAction.language, languageJoinAction.locale.retrieveDisplayName())}
+        #{msgs.format('jsf.email.RequestToJoinLanguageTeam.title', languageJoinAction.locale.retrieveDisplayName())}
       </h2>
       <button type="button"
         class="modal__close button--link"
@@ -34,54 +45,35 @@
     </header>
 
     <h:form id="joinLanguageForm" styleClass="l--push-bottom-0">
-      <a4j:jsFunction name="bindRole" action="#{languageJoinAction.bindRole(key, checked)}"
-        limitRender="true" render="request-join-buttons">
-        <a4j:param name="val1" assignTo="#{key}"/>
-        <a4j:param name="val2" assignTo="#{checked}"/>
+      <a4j:jsFunction name="sendJoinLanguageRequest" action="#{languageJoinAction.processRequest(translator, reviewer, coordinator)}"
+        execute="@form"
+        oncomplete="refreshMembersForm();postSendRequest()">
+        <a4j:param name="val1" assignTo="#{translator}"/>
+        <a4j:param name="val2" assignTo="#{reviewer}"/>
+        <a4j:param name="val3" assignTo="#{coordinator}"/>
       </a4j:jsFunction>
 
-      <a4j:jsFunction name="sendJoinLanguageEmail" action="#{languageJoinAction.send}"
-        execute="@form"
-        oncomplete="jQuery(getJoinLanguageForm()).find('#request-join-language-cancel-button').click()"/>
+      <a4j:jsFunction name="clearRequestToJoinLanguageMessage" action="#{languageJoinAction.clearMessage()}"
+        render="requestToJoinLanguageMessageField" oncomplete="jQuery('#' + jqSelector('#{rich:clientId('request-join-message')}')).val('')"/>
 
       <div class="modal__content l--pad-all-1">
-        <div class="form__item" id="roles">
-          <span class="l--push-bottom-quarter">#{msgs['jsf.RequestRoleAs']}</span>
-          <ui:fragment rendered="#{!languageJoinAction.isTranslator()}">
-            <zanata:checkbox id="translatorChk" value="translator"
-              checked="#{languageJoinAction.requestAsTranslator}"
-              onValueChanged="bindRole" label="#{msgs['jsf.Translator']}"/>
-          </ui:fragment>
+        <input type="hidden" id="asTranslator" value="false"/>
+        <input type="hidden" id="asReviewer" value="false"/>
+        <input type="hidden" id="asCoordinator" value="false"/>
 
-          <ui:fragment rendered="#{!languageJoinAction.isReviewer()}">
-            <zanata:checkbox value="reviewer" checked="#{languageJoinAction.requestAsReviewer}"
-              onValueChanged="bindRole" label="#{msgs['jsf.Reviewer']}"/>
-          </ui:fragment>
-
-          <ui:fragment rendered="#{!languageJoinAction.isCoordinator()}">
-            <zanata:checkbox value="coordinator" checked="#{languageJoinAction.requestAsCoordinator}"
-              onValueChanged="bindRole" label="#{msgs['jsf.Coordinator']}"/>
-          </ui:fragment>
-        </div>
-
-        <zanata:decorate id="message" componentId="messageField">
-          <span>#{msgs['jsf.AdditionalInfo']}</span>
+        <zanata:decorate id="requestToJoinLanguageMessage" componentId="requestToJoinLanguageMessageField">
+          <span>#{msgs['jsf.language.request.introduction']}</span>
           <span class="txt--meta bx--block">#{msgs['jsf.language.email.AdditionalInfoMessage']}</span>
           <h:inputTextarea id="request-join-message" value="#{languageJoinAction.message}"
             styleClass="l--push-bottom-0">
-            <a4j:ajax event="blur" render="messageField" execute="@this"/>
+            <a4j:ajax event="blur" render="requestToJoinLanguageMessageField" execute="@this"/>
+            <f:validateLength maximum="1000" />
           </h:inputTextarea>
         </zanata:decorate>
       </div>
 
       <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
         <h:panelGroup layout="block"  id="request-join-buttons" styleClass="txt--align-right">
-          <h:outputScript rendered="#{not languageJoinAction.hasSelectedRole()}">
-            $(document).ready(function() {
-              jQuery(getJoinLanguageForm()).find('#request-join-language-send-button').attr('disabled', true);
-            });
-          </h:outputScript>
-
           <button id="request-join-language-cancel-button" onclick="cancelJoinLanguage();return false;"
             class="cancel button--link l--push-right-half"
             data-dismiss="modal">
@@ -89,8 +81,8 @@
           </button>
 
           <button id="request-join-language-send-button" class="button loader button--primary"
-            onclick="sendJoinLanguageEmail();return false;">
-            <span class="loader__label">#{msgs['jsf.email.Send']}</span>
+            onclick="sendJoinLanguageRequest(jQuery('#asTranslator').val(), jQuery('#asReviewer').val(), jQuery('#asCoordinator').val());return false;">
+            <span class="loader__label">#{msgs['jsf.language.request.send']}</span>
           </button>
         </h:panelGroup>
       </footer>

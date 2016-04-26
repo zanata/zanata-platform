@@ -20,7 +20,7 @@
  */
 package org.zanata.feature.language;
 
-import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.subethamail.wiser.WiserMessage;
@@ -41,8 +41,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class ContactLanguageTeamTest extends ZanataTestCase {
 
-    @ClassRule
-    public static HasEmailRule emailRule = new HasEmailRule();
+    @Rule
+    public final HasEmailRule emailRule = new HasEmailRule();
 
     @Feature(summary = "The user can contact a language team coordinator",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)

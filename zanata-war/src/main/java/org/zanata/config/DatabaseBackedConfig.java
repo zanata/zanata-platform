@@ -21,20 +21,17 @@
 package org.zanata.config;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Synchronized;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import com.google.common.collect.Maps;
+import org.zanata.util.Synchronized;
 import org.zanata.ServerConstants;
 import org.zanata.dao.ApplicationConfigurationDAO;
 import org.zanata.model.HApplicationConfiguration;
-import org.zanata.util.ServiceLocator;
 
 /**
  * Configuration store implementation that is backed by database tables.
@@ -42,26 +39,26 @@ import org.zanata.util.ServiceLocator;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("databaseBackedConfig")
-@Scope(ScopeType.APPLICATION)
-@AutoCreate
+@Named("databaseBackedConfig")
+@javax.enterprise.context.ApplicationScoped
+
 @Synchronized(timeout = ServerConstants.DEFAULT_TIMEOUT)
 public class DatabaseBackedConfig implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Map<String, String> configurationValues;
+    private final Map<String, String> configurationValues = Maps.newHashMap();
 
-    @In
-    private ServiceLocator serviceLocator;
+    @Inject
+    private ApplicationConfigurationDAO applicationConfigurationDAO;
 
     /**
      * Resets the store by clearing out all values. This means that values will
      * need to be reloaded as they are requested.
      */
-    @Create
+    @PostConstruct
     public void reset() {
-        configurationValues = new HashMap<String, String>();
+        configurationValues.clear();
     }
 
     /**
@@ -77,10 +74,8 @@ public class DatabaseBackedConfig implements Serializable {
 
     private String getConfigValue(String key) {
         if (!configurationValues.containsKey(key)) {
-            ApplicationConfigurationDAO appConfigDAO =
-                    serviceLocator.getInstance(ApplicationConfigurationDAO.class);
             HApplicationConfiguration configRecord =
-                    appConfigDAO.findByKey(key);
+                    applicationConfigurationDAO.findByKey(key);
             String storedVal = null;
             if (configRecord != null) {
                 storedVal = configRecord.getValue();
@@ -167,5 +162,9 @@ public class DatabaseBackedConfig implements Serializable {
 
     public String getMaxFilesPerUpload() {
         return getConfigValue(HApplicationConfiguration.KEY_MAX_FILES_PER_UPLOAD);
+    }
+
+    public boolean isDisplayUserEmail() {
+        return Boolean.valueOf(getConfigValue(HApplicationConfiguration.KEY_DISPLAY_USER_EMAIL));
     }
 }

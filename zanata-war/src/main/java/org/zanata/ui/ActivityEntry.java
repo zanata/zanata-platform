@@ -23,11 +23,8 @@
 package org.zanata.ui;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.ActivityType;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.DocumentDAO;
@@ -58,22 +55,22 @@ import static org.zanata.common.ActivityType.UPLOAD_TRANSLATION_DOCUMENT;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("activityEntry")
-@Scope(ScopeType.STATELESS)
-@AutoCreate
+@Named("activityEntry")
+@javax.enterprise.context.Dependent
+
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class ActivityEntry {
-    @In
+    @Inject
     private ActivityService activityServiceImpl;
 
-    @In
+    @Inject
     private UrlUtil urlUtil;
 
-    @In
+    @Inject
     private DocumentDAO documentDAO;
 
-    @In
+    @Inject
     private Messages msgs;
 
     public String getActivityTypeIconClass(Activity activity) {
@@ -183,6 +180,9 @@ public class ActivityEntry {
         return wordCount + " words";
     }
 
+    /**
+     * Get project url with dswid parameter
+     */
     public String getProjectUrl(Activity activity) {
         Object context =
                 getEntity(activity.getContextType(), activity.getContextId());
@@ -196,6 +196,9 @@ public class ActivityEntry {
         return "";
     }
 
+    /**
+     * Get editor url with dswid parameter
+     */
     public String getEditorUrl(Activity activity) {
         Object context =
                 getEntity(activity.getContextType(), activity.getContextId());
@@ -233,6 +236,9 @@ public class ActivityEntry {
         return "";
     }
 
+    /**
+     * Get document url with dswid parameter
+     */
     public String getDocumentUrl(Activity activity) {
         String url = "";
         Object context =
@@ -272,6 +278,9 @@ public class ActivityEntry {
         return url;
     }
 
+    /**
+     * Get project version url with dswid parameter
+     */
     public String getVersionUrl(Activity activity) {
         Object context =
             getEntity(activity.getContextType(), activity.getContextId());
@@ -289,6 +298,9 @@ public class ActivityEntry {
         return url;
     }
 
+    /**
+     * Get editor document list url with dswid parameter
+     */
     public String getDocumentListUrl(Activity activity) {
         Object context =
             getEntity(activity.getContextType(), activity.getContextId());

@@ -26,8 +26,8 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.concurrent.Callable;
 
-import javax.ws.rs.core.Response;
-
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -54,6 +54,8 @@ import com.google.common.collect.Sets;
 import com.jayway.awaitility.Awaitility;
 import com.jayway.awaitility.Duration;
 
+import javax.ws.rs.core.UriBuilder;
+
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -67,6 +69,9 @@ public class ZanataRestCaller {
             EnumSet.of(ProcessStatus.ProcessStatusCode.Failed,
                     ProcessStatus.ProcessStatusCode.Finished,
                     ProcessStatus.ProcessStatusCode.NotAccepted);
+    private final String username;
+    private final String apiKey;
+    private final String baseUrl;
 
     /**
      * Rest client as user admin.
@@ -85,11 +90,12 @@ public class ZanataRestCaller {
      *            user api key
      */
     public ZanataRestCaller(String username, String apiKey) {
+        this.username = username;
+        this.apiKey = apiKey;
+        this.baseUrl = PropertiesHolder.getProperty(Constants.zanataInstance
+                        .value());
+        VersionInfo versionInfo = VersionUtility.getAPIVersionInfo();
         try {
-            VersionInfo versionInfo = VersionUtility.getAPIVersionInfo();
-            String baseUrl =
-                    PropertiesHolder.getProperty(Constants.zanataInstance
-                            .value());
             restClientFactory =
                     new RestClientFactory(new URI(baseUrl), username, apiKey,
                             versionInfo, true, false);
@@ -198,13 +204,8 @@ public class ZanataRestCaller {
         log.info("copyTrans started: {}-{}-{}", projectSlug, iterationSlug,
                 docId);
         Awaitility.await().pollInterval(Duration.ONE_SECOND)
-                .until(new Callable<Boolean>() {
-                    @Override
-                    public Boolean call() throws Exception {
-                        return !copyTransClient.getCopyTransStatus(projectSlug,
-                                iterationSlug, docId).isInProgress();
-                    }
-                });
+                .until(() -> !copyTransClient.getCopyTransStatus(projectSlug,
+                        iterationSlug, docId).isInProgress());
         log.info("copyTrans completed: {}-{}-{}", projectSlug, iterationSlug,
                 docId);
     }
@@ -232,13 +233,10 @@ public class ZanataRestCaller {
         final String processId = processStatus.getUrl();
         Awaitility.await()
                 .pollInterval(Duration.ONE_SECOND)
-                .until(new Callable<Boolean>() {
-                    @Override
-                    public Boolean call() throws Exception {
-                        return DONE_STATUS.contains(
-                                asyncProcessClient.getProcessStatus(processId)
-                                        .getStatusCode());
-                    }
+                .until(() -> {
+                    return DONE_STATUS.contains(
+                            asyncProcessClient.getProcessStatus(processId)
+                                    .getStatusCode());
                 });
 
         if (processStatus.getStatusCode().equals(
@@ -263,5 +261,34 @@ public class ZanataRestCaller {
         log.info("finished async translation({}-{}) push: {}", projectSlug,
                 iterationSlug, processStatus.getStatusCode());
     }
+
+    private WebResource.Builder createRequest(URI uri) {
+        WebResource.Builder resource =
+                Client.create()
+                        .resource(uri)
+                        // having null username will bypass
+                        // ZanataRestSecurityInterceptor
+                        // clientRequest.header("X-Auth-User", null);
+                        .header("X-Auth-Token", apiKey)
+                        .header("Content-Type", "application/xml");
+        return resource;
+    }
+
+    private void postTest(String path, String testClass, String methodName) {
+        UriBuilder uri = UriBuilder.fromUri(baseUrl + path);
+        uri.queryParam("testClass", testClass);
+        uri.queryParam("method", methodName);
+        WebResource.Builder request = createRequest(uri.build());
+        request.post();
+    }
+
+    public void signalBeforeTest(String testClass, String methodName) {
+        postTest("rest/test/remote/signal/before", testClass, methodName);
+    }
+
+    public void signalAfterTest(String testClass, String methodName) {
+        postTest("rest/test/remote/signal/after", testClass, methodName);
+    }
+
 }
 

@@ -37,6 +37,13 @@ public interface LocaleService {
 
     void save(@Nonnull LocaleId localeId, boolean enabledByDefault);
 
+    /**
+     * Try to delete a locale from Zanata instance.
+     *
+     * @param localeId
+     */
+    void delete(@Nonnull LocaleId localeId);
+
     void disable(@Nonnull LocaleId locale);
 
     void enable(@Nonnull LocaleId locale);

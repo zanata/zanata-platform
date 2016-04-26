@@ -37,13 +37,12 @@ import java.util.List;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 import org.hamcrest.Matchers;
-import org.junit.Before;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.zanata.ZanataTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
@@ -54,12 +53,11 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.TestFixture;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.type.TranslationSourceType;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SecurityService;
-import org.zanata.service.TransMemoryMergeService;
 import org.zanata.service.TranslationMemoryService;
 import org.zanata.service.TranslationService;
+import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
@@ -76,29 +74,34 @@ import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 
 import com.google.common.base.Optional;
 
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class TransMemoryMergeServiceImplTest extends ZanataTest {
+@RunWith(CdiUnitRunner.class)
+public class TransMemoryMergeServiceImplTest {
 
-    private TransMemoryMergeService transMemoryMergeService;
+    @Inject
+    TransMemoryMergeServiceImpl transMemoryMergeService;
 
-    @Mock
+    @Produces @Mock
     private SecurityService securityService;
-    @Mock
+    @Produces @Mock
     private LocaleService localeService;
-    @Mock
+    @Produces @Mock
     private TextFlowDAO textFlowDAO;
-    @Mock
+    @Produces @Mock
     private TransMemoryUnitDAO transMemoryUnitDAO;
-    @Mock
+    @Produces @Mock
     private TranslationMemoryService translationMemoryService;
-    @Mock
+    @Produces @Mock
     private TranslationService translationService;
-    @Mock
+    @Produces @Mock
     private TranslationWorkspace workspace;
-
     @Captor
     ArgumentCaptor<List<TransUnitUpdateRequest>> updateRequestCaptor;
 
@@ -111,23 +114,6 @@ public class TransMemoryMergeServiceImplTest extends ZanataTest {
 
     private static ArrayList<String> tmSource = newArrayList("tm source");
     private static ArrayList<String> tmTarget = newArrayList("tm target");
-
-    @Before
-    public void beforeMethod() {
-        MockitoAnnotations.initMocks(this);
-        // @formatter:off
-        transMemoryMergeService = SeamAutowire.instance()
-                .reset()
-                .use("securityServiceImpl", securityService)
-                .use("localeServiceImpl", localeService)
-                .use("translationMemoryServiceImpl", translationMemoryService)
-                .use("textFlowDAO", textFlowDAO)
-                .use("transMemoryUnitDAO", transMemoryUnitDAO)
-                .use("translationServiceImpl", translationService)
-                .autowire(TransMemoryMergeServiceImpl.class);
-        // @formatter:on
-
-    }
 
     private TransMemoryMerge prepareAction(int threshold,
             List<TransUnitUpdateRequest> requests, MergeOptions opts) {
@@ -217,6 +203,7 @@ public class TransMemoryMergeServiceImplTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void willTranslateIfMatches() throws ActionException {
         // Given:
         // an action with threshold 80% and trans unit id is 1
@@ -280,6 +267,7 @@ public class TransMemoryMergeServiceImplTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void willNotTranslateIfNoMatches() throws ActionException {
         final long transUnitId = 1L;
         TransMemoryMerge action = prepareAction(80, transUnitId);
@@ -315,6 +303,7 @@ public class TransMemoryMergeServiceImplTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void canHandleMultipleTextFlows() throws ActionException {
         // Given: an action with threshold 90% and trans unit id is 1, 2, 3, 4
         final long idWith100MatchTM = 1L;
@@ -423,6 +412,7 @@ public class TransMemoryMergeServiceImplTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void canAutoTranslateImportedTMResults() throws Exception {
         // Given:
         // an action with threshold 80% and trans unit id

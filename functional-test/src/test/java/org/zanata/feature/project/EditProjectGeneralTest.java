@@ -217,5 +217,8 @@ public class EditProjectGeneralTest extends ZanataTestCase {
         assertThat(projectGeneralTab.getProjectId())
                 .isEqualTo("fedora-reborn")
                 .as("The project slug is correct");
+        // FIXME wait for async indexing to finish to avoid interfering with other tests
+
+        // TODO test that search results work for new slug
     }
 }

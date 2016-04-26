@@ -31,8 +31,6 @@ import org.codehaus.jackson.map.ObjectMapper;
  */
 public abstract class WebhookEventType implements Serializable {
 
-    public abstract String getEventType();
-
     @JsonIgnore
     public String getJSON() {
         ObjectMapper mapper = new ObjectMapper();

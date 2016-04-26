@@ -20,25 +20,27 @@
  */
 package org.zanata.action;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 import javax.faces.application.FacesMessage;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.zanata.rest.editor.dto.User;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.zanata.ApplicationConfiguration;
+import org.zanata.rest.dto.User;
+import org.zanata.rest.editor.dto.Permission;
 import org.zanata.rest.editor.service.UserService;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.ui.faces.FacesMessages;
 
 import com.google.common.base.Strings;
@@ -52,8 +54,8 @@ import static org.apache.commons.lang.StringUtils.abbreviate;
  * @see NewProfileAction for new user profile form page
  *
  */
-@Name("profileHome")
-@Scope(ScopeType.PAGE)
+@Named("profileHome")
+@javax.faces.bean.ViewScoped
 @Slf4j
 public class ProfileHome implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -62,24 +64,25 @@ public class ProfileHome implements Serializable {
     @Getter
     private User user;
 
-    @In
-    ZanataIdentity identity;
-    @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
-    HAccount authenticatedAccount;
-    @In
-    PersonDAO personDAO;
-    @In
-    AccountDAO accountDAO;
-    @In
-    Messages msgs;
-    @In(value = "editor.userService", create = true)
+    @Inject
+    private ZanataIdentity identity;
+    @Inject @Authenticated
+    private HAccount authenticatedAccount;
+    @Inject
+    private PersonDAO personDAO;
+    @Inject
+    private AccountDAO accountDAO;
+    @Inject
+    private Messages msgs;
+    @Inject
     private UserService userService;
-    @In
+    @Inject
     private FacesMessages jsfMessages;
+    @Inject
+    private ApplicationConfiguration applicationConfiguration;
 
     private void init() {
-        HAccount account;
-        account = accountDAO.getByUsername(username);
+        HAccount account = accountDAO. getByUsername(username);
         if (account == null) {
             jsfMessages.clear();
             jsfMessages.addGlobal(FacesMessage.SEVERITY_ERROR,
@@ -91,7 +94,12 @@ public class ProfileHome implements Serializable {
                 return;
             }
         }
-        user = userService.transferToUser(account);
+        user = userService.transferToUser(account, displayEmail());
+    }
+
+    private boolean displayEmail() {
+        return (applicationConfiguration.isDisplayUserEmail()
+                && identity.isLoggedIn()) || identity.hasRole("admin");
     }
 
     private HAccount useAuthenticatedAccount() {
@@ -105,11 +113,11 @@ public class ProfileHome implements Serializable {
     }
 
     public User getAuthenticatedUser() {
-        User authenticatedUser = new User();
         if(authenticatedAccount == null) {
-            return authenticatedUser;
+            return new User();
         }
-        return userService.transferToUser(authenticatedAccount);
+        //This is to get self information, email should be visible
+        return userService.transferToUser(authenticatedAccount, true);
     }
 
     public String getUsername() {
@@ -123,5 +131,22 @@ public class ProfileHome implements Serializable {
     public void setUsername(String username) {
         this.username = username;
         init();
+    }
+
+    public Permission getUserPermission() {
+        Permission permission = new Permission();
+        boolean authenticated = authenticatedAccount != null;
+        permission.put("authenticated", authenticated);
+        return permission;
+    }
+
+    public String convertToJSON(User user) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(user);
+        } catch (IOException e) {
+            return this.getClass().getName() + "@"
+                + Integer.toHexString(this.hashCode());
+        }
     }
 }

@@ -26,11 +26,8 @@ import java.text.MessageFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
@@ -46,9 +43,9 @@ import org.zanata.rest.RestUtil;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  * @since 2.0.0
  */
-@Name("zPathService")
-@Scope(ScopeType.STATELESS)
-@AutoCreate
+@Named("zPathService")
+@javax.enterprise.context.Dependent
+
 public class ZPathService {
     /*
      * Public ZPaths. Used for rest resource path declaration.
@@ -71,7 +68,7 @@ public class ZPathService {
     private static final Pattern PROJECT_ZPATH_PATTERN = Pattern
             .compile(PROJECT_ZPATH);
 
-    @In
+    @Inject
     private ProjectDAO projectDAO;
 
     public HProject resolveProject(String zPath) {

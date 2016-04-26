@@ -28,12 +28,18 @@ import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
+import org.junit.rules.ExternalResource;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestName;
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
 import org.zanata.page.WebDriverFactory;
 import org.zanata.util.EnsureLogoutRule;
 import org.zanata.util.SampleProjectRule;
+import org.zanata.util.ZanataRestCaller;
 
 /**
  * Global application of rules to Zanata functional tests
@@ -47,8 +53,20 @@ public class ZanataTestCase {
     public final static int MAX_SHORT_TEST_DURATION = 180000;
     public final static int MAX_LONG_TEST_DURATION = 600000;
 
+    @ClassRule
+    public static ExternalResource javascriptLogging = new ExternalResource() {
+        @Override
+        protected void before() throws Throwable {
+            WebDriverFactory.INSTANCE.registerLogListener();
+        }
+        @Override
+        protected void after() {
+            WebDriverFactory.INSTANCE.unregisterLogListener();
+        }
+    };
+
     @Rule
-    public TestName testName = new TestName();
+    public final TestName testName = new TestName();
 
     @Rule
     public RuleChain theOneRule = RuleChain
@@ -64,6 +82,8 @@ public class ZanataTestCase {
 
     public DateTime testFunctionStart;
 
+    private ZanataRestCaller zanataRestCaller = new ZanataRestCaller();
+
     private String getTestDescription() {
         return this.getClass().getCanonicalName()
                 .concat(".")
@@ -71,17 +91,21 @@ public class ZanataTestCase {
     }
 
     @Before
-    public void testEntry() {
-        log.info("Starting ".concat(getTestDescription()));
+    public final void testEntry() {
+        log.info("Test starting: {}", getTestDescription());
         testFunctionStart = new DateTime();
+        WebDriverFactory.INSTANCE.testEntry();
+        zanataRestCaller.signalBeforeTest(getClass().getName(), testName.getMethodName());
     }
 
     @After
-    public void testExit() {
+    public final void testExit() {
+        WebDriverFactory.INSTANCE.logLogs();
+        zanataRestCaller.signalAfterTest(getClass().getName(), testName.getMethodName());
         Duration duration = new Duration(testFunctionStart, new DateTime());
         PeriodFormatter periodFormatter = new PeriodFormatterBuilder()
-                .appendLiteral("Finished "
-                        .concat(getTestDescription()).concat(" in "))
+                .appendLiteral("Test finished: "
+                        .concat(getTestDescription()).concat(": in "))
                 .printZeroAlways()
                 .appendMinutes()
                 .appendSuffix(" minutes, ")
@@ -91,7 +115,7 @@ public class ZanataTestCase {
                 .appendSuffix("ms")
                 .toFormatter();
         log.info(periodFormatter.print(duration.toPeriod()));
-        WebDriverFactory.INSTANCE.logLogs();
+        WebDriverFactory.INSTANCE.testExit();
     }
 
 }

@@ -8,10 +8,11 @@ import static org.mockito.Mockito.when;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import javax.enterprise.inject.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.junit.runner.RunWith;
+import org.jglue.cdiunit.ProducesAlternative;
 import org.mockito.Mock;
 import org.zanata.ZanataTest;
 import org.zanata.common.EntityStatus;
@@ -24,29 +25,22 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.dto.ChunkUploadResponse;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 
 public abstract class DocumentUploadTest extends ZanataTest {
-
-    static {
-        SeamAutowire.instance();
-    }
 
     protected static final GlobalDocumentId ANY_ID = new GlobalDocumentId(
             "myproject", "myversion", "mydoc");
     protected static final DocumentFileUploadForm ANY_UPLOAD_FORM =
             new DocumentFileUploadForm();
 
-    protected SeamAutowire seam = SeamAutowire.instance();
-
-    @Mock
+    @Produces @ProducesAlternative @Mock
     protected DocumentDAO documentDAO;
-    @Mock
+    @Produces @ProducesAlternative @Mock
     protected DocumentUploadDAO documentUploadDAO;
-    @Mock
+    @Produces @ProducesAlternative @Mock
     protected ZanataIdentity identity;
-    @Mock
+    @Produces @ProducesAlternative @Mock
     protected ProjectIterationDAO projectIterationDAO;
 
     @Mock

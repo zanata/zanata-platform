@@ -20,6 +20,7 @@
  */
 package org.zanata.security;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -28,6 +29,8 @@ import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
+import javax.security.auth.callback.UnsupportedCallbackException;
+import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
@@ -70,13 +73,14 @@ public class OpenIdLoginModule implements LoginModule {
             ZanataOpenId openid =
                     ServiceLocator.instance().getInstance(ZanataOpenId.class);
             openid.login(ZanataIdentity.instance().getCredentials());
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             LoginException le = new LoginException(ex.getMessage());
             le.initCause(ex);
             throw le;
+        } catch (UnsupportedCallbackException e) {
+            throw new RuntimeException(e);
         }
-
-        return false;
+        throw new FailedLoginException();
     }
 
     public boolean logout() throws LoginException {

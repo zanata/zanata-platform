@@ -259,7 +259,7 @@
           rendered="#{empty versionHomeAction.documents}">
           <p class="txt--meta">#{msgs['jsf.iteration.NoDocumentInVersion']}</p>
           <ui:fragment
-            rendered="#{identity.hasPermission(versionGroupHome.instance, 'update')}">
+            rendered="#{identity.hasPermission(versionHome.instance, 'update')}">
             <p>
               <a class="button--primary" href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/settings/documents"
                 onclick="changeBrowserUrl(this.href, true);return false;">
@@ -374,6 +374,9 @@
                 </h:panelGroup>
 
                 <ui:fragment rendered="#{versionHomeAction.selectedLocale.active}">
+                  <ui:remove>
+                    <!-- TODO add dswid -->
+                  </ui:remove>
                   <a
                     href="#{versionHomeAction.getEditorUrl(locale.language, document.docId)}">
                     <div class="list__item__content">

@@ -11,7 +11,7 @@
 
   <div id="main-content"
     base-url="#{request.contextPath}/rest"
-    user="#{glossaryAction.user.getJSON()}"
+    user="#{glossaryAction.convertToJSON(glossaryAction.user)}"
     data='{"view": "glossary", "permission": #{glossaryAction.userPermission.getJSON()}}'/>
 
   <script type="text/javascript"

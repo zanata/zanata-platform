@@ -26,25 +26,24 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import javax.annotation.Nonnull;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.security.auth.Subject;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.contexts.Lifecycle;
-import org.zanata.action.AuthenticationEvents;
+import org.apache.deltaspike.cdise.api.ContextControl;
 import org.zanata.config.AsyncConfig;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
-import org.zanata.seam.security.AbstractRunAsOperation;
-import org.zanata.security.ZanataIdentity;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
+import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.util.ServiceLocator;
 
 import com.google.common.util.concurrent.ListenableFuture;
@@ -53,24 +52,25 @@ import com.google.common.util.concurrent.ListenableFuture;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("asyncTaskManager")
-@Scope(ScopeType.APPLICATION)
-@AutoCreate
+@Named("asyncTaskManager")
+@javax.enterprise.context.ApplicationScoped
 @Slf4j
+// TODO consider switching from Guava's ListenableFuture to Java 8's CompletableFuture
 public class AsyncTaskManager {
 
+    // TODO use ManagedExecutorService on Java EE 7, so that we can eg inject UserTransaction
     private ExecutorService scheduler;
 
-    @In
+    @Inject
     private AsyncConfig asyncConfig;
 
-    @Create
+    @PostConstruct
     public void init() {
         scheduler =
                 Executors.newFixedThreadPool(asyncConfig.getThreadPoolSize());
     }
 
-    @Destroy
+    @PreDestroy
     public void cleanup() {
         scheduler.shutdown();
     }
@@ -86,8 +86,7 @@ public class AsyncTaskManager {
     public <V> ListenableFuture<V> startTask(
             final @Nonnull AsyncTask<Future<V>> task) {
         HAccount taskOwner = ServiceLocator.instance()
-                .getInstance(ZanataJpaIdentityStore.AUTHENTICATED_USER,
-                        HAccount.class);
+                .getInstance(HAccount.class, new AuthenticatedLiteral());
         ZanataIdentity ownerIdentity = ZanataIdentity.instance();
 
         // Extract security context from current thread
@@ -99,32 +98,36 @@ public class AsyncTaskManager {
         // final result
         final AsyncTaskResult<V> taskFuture = new AsyncTaskResult<V>();
 
-        final RunnableOperation runnableOp = new RunnableOperation() {
+        // The logic to run to setup all necessary contexts and specific logic
+        final Runnable executableCommand = () -> {
+            ContextControl ctxCtrl = null;
 
-            @Override
-            public void execute() {
-                try {
-                    prepareSecurityContext(taskOwnerUsername);
-                    V returnValue = getReturnValue(task.call());
-                    taskFuture.set(returnValue);
-                } catch (Throwable t) {
-                    taskFuture.setException(t);
-                    log.error(
-                            "Exception when executing an asynchronous task.", t);
+            try {
+                // Start CDI contexts
+                ctxCtrl =
+                        ServiceLocator.instance().getInstance(
+                                ContextControl.class);
+                ctxCtrl.startContext(RequestScoped.class);
+                ctxCtrl.startContext(SessionScoped.class);
+                // Prepare the security context
+                prepareSecurityContext(taskOwnerUsername, runAsPpal, runAsSubject);
+                // run the task and capture the result
+                V returnValue = getReturnValue(task.call());
+                taskFuture.set(returnValue);
+            } catch (Throwable t) {
+                taskFuture.setException(t);
+                log.error(
+                        "Exception when executing an asynchronous task.", t);
+            } finally {
+                // stop the contexts to make sure all beans are cleaned up
+                if (ctxCtrl != null) {
+                    ctxCtrl.stopContext(RequestScoped.class);
+                    ctxCtrl.stopContext(SessionScoped.class);
                 }
             }
-
-            @Override
-            public Principal getPrincipal() {
-                return runAsPpal;
-            }
-
-            @Override
-            public Subject getSubject() {
-                return runAsSubject;
-            }
         };
-        scheduler.execute(runnableOp);
+
+        scheduler.execute(executableCommand);
         return taskFuture;
     }
 
@@ -138,13 +141,14 @@ public class AsyncTaskManager {
     }
 
     /**
-     * Prepares the Drools security context so that it contains all the
+     * Prepares the security context so that it contains all the
      * necessary facts for security checking.
      */
-    private static void prepareSecurityContext(String username) {
+    private static void prepareSecurityContext(String username, Principal ppal,
+            Subject subject) {
         /*
-         * TODO This should be changed to not need the username. There should be
-         * a way to simulate a login for asyn tasks, or at least to inherit the
+         * TODO This should be changed to not need any parameters. There should be
+         * a way to simulate a login for async tasks, or at least to inherit the
          * caller's context
          */
         if (username != null) {
@@ -155,23 +159,9 @@ public class AsyncTaskManager {
             ZanataJpaIdentityStore idStore =
                     ServiceLocator.instance().getInstance(
                             ZanataJpaIdentityStore.class);
-            AuthenticationEvents authEvts =
-                    ServiceLocator.instance().getInstance(
-                            AuthenticationEvents.class);
             HAccount authenticatedAccount = accountDAO.getByUsername(username);
             idStore.setAuthenticateUser(authenticatedAccount);
         }
+        ZanataIdentity.instance().acceptExternalSubjectAndPpal(subject, ppal);
     }
-
-    public abstract class RunnableOperation extends AbstractRunAsOperation
-            implements Runnable {
-
-        @Override
-        public void run() {
-            Lifecycle.beginCall(); // Start contexts
-            ZanataIdentity.instance().runAs(this);
-            Lifecycle.endCall(); // End contexts
-        }
-    }
-
 }

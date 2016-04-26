@@ -68,9 +68,9 @@ public class BasePage extends CorePage {
     private By glossaryLink = By.id("glossary_link");
     private By userAvatar = By.id("user--avatar");
     private static final By BY_SIGN_IN = By.id("signin_link");
-    private static final By BY_SIGN_OUT = By.id("right_menu_sign_out_link");
-    private static final By BY_DASHBOARD_LINK = By.id("dashboard");
-    private static final By BY_ADMINISTRATION_LINK = By.id("administration");
+    private static final By BY_SIGN_OUT = By.id("banner_form:right_menu_sign_out_link");
+    private static final By BY_DASHBOARD_LINK = By.id("banner_form:dashboard");
+    private static final By BY_ADMINISTRATION_LINK = By.id("banner_form:administration");
     private By searchInput = By.id("projectAutocomplete-autocomplete__input");
     private By registrationLink = By.id("register_link_internal_auth");
     private static final By contactAdminLink = By.linkText("Contact admin");
@@ -179,12 +179,7 @@ public class BasePage extends CorePage {
         List<WebElement> breadcrumbs =
                 getDriver().findElement(By.id("breadcrumbs_panel"))
                         .findElements(By.className("breadcrumbs_link"));
-        Predicate<WebElement> predicate = new Predicate<WebElement>() {
-            @Override
-            public boolean apply(WebElement input) {
-                return input.getText().equals(link);
-            }
-        };
+        Predicate<WebElement> predicate = input -> input.getText().equals(link);
         Optional<WebElement> breadcrumbLink =
                 Iterables.tryFind(breadcrumbs, predicate);
         if (breadcrumbLink.isPresent()) {
@@ -245,13 +240,8 @@ public class BasePage extends CorePage {
         waitForPageSilence();
         String msg = "Project search list contains " + expected;
         waitForAMoment().withMessage("Waiting for search contains").until(
-                new Predicate<WebDriver>() {
-                    @Override
-                    public boolean apply(WebDriver input) {
-                        return getZanataSearchAutocompleteItems()
-                                .contains(expected);
-                    }
-                }
+                (Predicate<WebDriver>) webDriver ->
+                        getZanataSearchAutocompleteItems() .contains(expected)
         );
         assertThat(getZanataSearchAutocompleteItems()).as(msg).contains(
                 expected);
@@ -280,23 +270,20 @@ public class BasePage extends CorePage {
         String msg = "search result " + searchEntry;
         WebElement searchItem =
                 waitForAMoment().withMessage(msg).until(
-                        new Function<WebDriver, WebElement>() {
-                            @Override
-                            public WebElement apply(WebDriver driver) {
-                                List<WebElement> items =
-                                        WebElementUtil
-                                                .getSearchAutocompleteResults(
-                                                        driver,
-                                                        "general-search-form",
-                                                        "projectAutocomplete");
+                        (Function<WebDriver, WebElement>) driver -> {
+                            List<WebElement> items =
+                                    WebElementUtil
+                                            .getSearchAutocompleteResults(
+                                                    driver,
+                                                    "general-search-form",
+                                                    "projectAutocomplete");
 
-                                for (WebElement item : items) {
-                                    if (item.getText().equals(searchEntry)) {
-                                        return item;
-                                    }
+                            for (WebElement item : items) {
+                                if (item.getText().equals(searchEntry)) {
+                                    return item;
                                 }
-                                return null;
                             }
+                            return null;
                         });
         clickElement(searchItem);
     }

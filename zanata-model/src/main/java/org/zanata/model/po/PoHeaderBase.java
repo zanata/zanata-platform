@@ -59,7 +59,7 @@ public abstract class PoHeaderBase extends ModelEntityBase implements
     }
 
     // see PoUtility.stringToHeaderEntries
-    @Type(type = "text")
+    @javax.persistence.Lob
     public String getEntries() {
         return entries;
     }

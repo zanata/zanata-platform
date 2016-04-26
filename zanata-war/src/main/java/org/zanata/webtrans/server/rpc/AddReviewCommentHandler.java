@@ -22,10 +22,10 @@
 package org.zanata.webtrans.server.rpc;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.dao.TextFlowTargetReviewCommentsDAO;
@@ -35,6 +35,7 @@ import org.zanata.model.HProject;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SecurityService;
 import org.zanata.webtrans.server.ActionHandlerFor;
@@ -55,31 +56,32 @@ import net.customware.gwt.dispatch.shared.ActionException;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Name("webtrans.gwt.AddReviewCommentHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.AddReviewCommentHandler")
 @ActionHandlerFor(AddReviewCommentAction.class)
+@RequestScoped
 @Slf4j
 public class AddReviewCommentHandler extends
         AbstractActionHandler<AddReviewCommentAction, AddReviewCommentResult> {
-    @In
+    @Inject
     private SecurityService securityServiceImpl;
 
-    @In
+    @Inject
     private TextFlowTargetDAO textFlowTargetDAO;
 
-    @In
+    @Inject
     private TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO;
 
-    @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In
+    @Inject
     private TranslationWorkspaceManager translationWorkspaceManager;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
     @Override

@@ -1,72 +1,54 @@
 package org.zanata.util;
 
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-
-import org.hibernate.search.jpa.FullTextEntityManager;
-import org.hibernate.search.jpa.Search;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
-import org.zanata.common.ContentType;
-import org.zanata.common.LocaleId;
-import org.zanata.model.Activity;
-import org.zanata.model.HAccount;
-import org.zanata.model.HAccountActivationKey;
-import org.zanata.model.HAccountResetPasswordKey;
-import org.zanata.model.HAccountRole;
-import org.zanata.model.HApplicationConfiguration;
-import org.zanata.model.HDocument;
-import org.zanata.model.HDocumentHistory;
-import org.zanata.model.HGlossaryEntry;
-import org.zanata.model.HGlossaryTerm;
-import org.zanata.model.HIterationGroup;
-import org.zanata.model.HLocale;
-import org.zanata.model.HLocaleMember;
-import org.zanata.model.HPerson;
-import org.zanata.model.HPersonEmailValidationKey;
-import org.zanata.model.HProject;
-import org.zanata.model.HProjectIteration;
-import org.zanata.model.HRoleAssignmentRule;
-import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.HTextFlowTargetHistory;
-import org.zanata.model.po.HPoTargetHeader;
-import org.zanata.model.security.HCredentials;
-import org.zanata.model.tm.TransMemory;
-import org.zanata.model.tm.TransMemoryUnit;
-import org.zanata.model.tm.TransMemoryUnitVariant;
 import com.github.huangp.entityunit.entity.Callbacks;
 import com.github.huangp.entityunit.entity.EntityCleaner;
 import com.github.huangp.entityunit.entity.EntityMaker;
 import com.github.huangp.entityunit.entity.EntityMakerBuilder;
 import com.github.huangp.entityunit.entity.FixIdCallback;
 import com.github.huangp.entityunit.maker.FixedValueMaker;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.ibm.icu.util.ULocale;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.Search;
+import org.slf4j.Logger;
+import org.zanata.common.ContentType;
+import org.zanata.common.LocaleId;
+import org.zanata.model.HAccount;
+import org.zanata.model.HAccountRole;
+import org.zanata.model.HApplicationConfiguration;
+import org.zanata.model.HDocument;
+import org.zanata.model.HGlossaryEntry;
+import org.zanata.model.HGlossaryTerm;
+import org.zanata.model.HLocale;
+import org.zanata.model.HLocaleMember;
+import org.zanata.model.HPerson;
+import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
+import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.tm.TransMemoryUnit;
+
+import javax.annotation.Nullable;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import java.util.List;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
-@Name("sampleProjectProfile")
-@Scope(ScopeType.APPLICATION)
-@AutoCreate
+@ApplicationScoped
 @Transactional
 public class SampleProjectProfile {
+    private static final Logger log = getLogger(SampleProjectProfile.class);
 
-    @In
+    @Inject
     private EntityManager entityManager;
 
-    @In
+    @Inject @Zanata
     private EntityManagerFactory entityManagerFactory;
 
     private HLocale enUSLocale;
@@ -78,7 +60,7 @@ public class SampleProjectProfile {
                 .entitiesForRemoval());
 
         ULocale uLocale = new ULocale(LocaleId.EN_US.getId());
-        enUSLocale = makeLanguage(false, LocaleId.EN_US);
+        enUSLocale = makeLanguage(false, LocaleId.EN_US, "nplurals=2; plural=(n != 1);");
 
         List<HApplicationConfiguration> configurations = entityManager
                 .createQuery("from HApplicationConfiguration",
@@ -111,39 +93,43 @@ public class SampleProjectProfile {
     }
 
     public void makeSampleLanguages() {
-        makeLanguage(true, LocaleId.FR);
+        makeLanguage(true, LocaleId.FR, "nplurals=2; plural=(n > 1);");
 
-        makeLanguage(true, new LocaleId("hi"));
+        makeLanguage(true, new LocaleId("hi"), "nplurals=2; plural=(n != 1);");
 
-        makeLanguage(true, new LocaleId("pl"));
+        makeLanguage(true, new LocaleId("pl"), "nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");
     }
 
     public HLocale makeLanguage(boolean enabledByDefault, LocaleId localeId,
-            String displayName, String nativeName) {
-        return forLocale(enabledByDefault, localeId, displayName, nativeName)
+            String displayName, String nativeName,
+            @Nullable String pluralForms) {
+        return forLocale(enabledByDefault, localeId, displayName, nativeName, pluralForms)
                 .makeAndPersist(entityManager,
                     HLocale.class);
     }
 
-    public HLocale makeLanguage(boolean enabledByDefault, LocaleId localeId) {
+    public HLocale makeLanguage(boolean enabledByDefault, LocaleId localeId,
+            @Nullable String pluralForms) {
         ULocale uLocale = new ULocale(localeId.getId());
         return forLocale(enabledByDefault, localeId, uLocale.getDisplayName(),
-            uLocale.getDisplayName(uLocale)).makeAndPersist(entityManager,
-            HLocale.class);
+            uLocale.getDisplayName(uLocale), pluralForms).makeAndPersist(entityManager,
+                HLocale.class);
     }
 
     private static EntityMaker forLocale(boolean enabledByDefault,
-            LocaleId localeId, String displayName, String nativeName) {
+            LocaleId localeId, String displayName, String nativeName, String pluralForms) {
         return EntityMakerBuilder
                 .builder()
                 .addFieldOrPropertyMaker(HLocale.class, "active",
                     FixedValueMaker.ALWAYS_TRUE_MAKER)
                 .addFieldOrPropertyMaker(HLocale.class, "displayName",
-                    FixedValueMaker.fix(displayName))
+                        FixedValueMaker.fix(displayName))
                 .addFieldOrPropertyMaker(HLocale.class, "nativeName",
                     FixedValueMaker.fix(nativeName))
+                .addFieldOrPropertyMaker(HLocale.class, "pluralForms",
+                    FixedValueMaker.fix(pluralForms))
                 .addFieldOrPropertyMaker(HLocale.class, "enabledByDefault",
-                    FixedValueMaker.fix(enabledByDefault))
+                        FixedValueMaker.fix(enabledByDefault))
                 .addConstructorParameterMaker(HLocale.class, 0,
                     FixedValueMaker.fix(localeId)).build();
     }

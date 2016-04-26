@@ -27,9 +27,9 @@ import lombok.NoArgsConstructor;
 
 import org.hibernate.Query;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 import org.zanata.common.EntityStatus;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
@@ -45,8 +45,8 @@ import org.zanata.util.CloseableIterator;
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Name("textFlowStreamDAO")
-@Scope(ScopeType.EVENT)
+@Named("textFlowStreamDAO")
+@RequestScoped
 // TODO queries should only return Translated/Approved TFTs
 // TODO build related queries using querydsl
 @NoArgsConstructor

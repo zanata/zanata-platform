@@ -36,16 +36,16 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.End;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.faces.FacesManager;
+
+import javax.annotation.Nullable;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -82,67 +82,72 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-@Name("versionHome")
-@Scope(ScopeType.CONVERSATION)
+@Named("versionHome")
+@RequestScoped
 @Slf4j
 public class VersionHome extends SlugHome<HProjectIteration> implements
-    HasLanguageSettings {
+    HasLanguageSettings, Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * This field is set from http parameter which will be the original slug
      */
-    @Getter
-    private String slug;
+//    @Getter
+//    private String slug;
 
     /**
      * This field is set from form input which can differ from original slug
      */
     @Setter
     @Getter
+    @Nullable
     private String inputSlugValue;
 
     private Long versionId;
 
-    @Getter
-    @Setter
-    private String projectSlug;
+//    @Getter
+//    @Setter
+//    private String projectSlug;
 
-    @In("jsfMessages")
+    @Inject
+    @Any
+    private ProjectAndVersionSlug projectAndVersionSlug;
+
+    @Inject
     private FacesMessages facesMessages;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private LocaleDAO localeDAO;
 
-    @In
+    @Inject
     private ConversationScopeMessages conversationScopeMessages;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In
+    @Inject
     private ValidationService validationServiceImpl;
 
-    @In
+    @Inject
     private SlugEntityService slugEntityServiceImpl;
 
-    @In(create = true)
+    @Inject
     private ProjectDAO projectDAO;
 
-    @In
+    @Inject
     private Messages msgs;
 
-    @In
+    @Inject
     private CopyVersionManager copyVersionManager;
 
-    @In
+    @Inject
     private UrlUtil urlUtil;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
     private Map<ValidationId, ValidationAction> availableValidations = Maps
@@ -188,10 +193,16 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         }
     }
 
-    @Begin(join = true)
+    public VersionHome() {
+        setEntityClass(HProjectIteration.class);
+    }
+
     public void init(boolean isNewInstance) {
         this.isNewInstance = isNewInstance;
         if (isNewInstance) {
+            String projectSlug = getProjectSlug();
+            clearSlugs();
+            setProjectSlug(projectSlug);
             identity.checkPermission(getProject(), "insert");
             ProjectType projectType = getProject().getDefaultProjectType();
             if (projectType != null) {
@@ -212,14 +223,26 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     }
 
     public HProject getProject() {
-        return projectDAO.getBySlug(projectSlug);
+        return projectDAO.getBySlug(getProjectSlug());
+    }
+
+    public String getProjectSlug() {
+        return projectAndVersionSlug.getProjectSlug();
+    }
+
+    public void setProjectSlug(String slug) {
+        projectAndVersionSlug.setProjectSlug(slug);
+    }
+
+    public String getSlug() {
+        return projectAndVersionSlug.getVersionSlug();
     }
 
     public List<VersionItem> getOtherVersions() {
         HProject project = getProject();
         if (project != null) {
             List<HProjectIteration> versionList =
-                    projectIterationDAO.getByProjectSlug(projectSlug,
+                    projectIterationDAO.getByProjectSlug(getProjectSlug(),
                             EntityStatus.ACTIVE, EntityStatus.READONLY);
 
             Collections.sort(versionList,
@@ -234,7 +257,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
             }
             return versionItems;
         }
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     @Getter
@@ -252,7 +275,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
             HProjectIteration iteration = (HProjectIteration) session
                     .byNaturalId(HProjectIteration.class)
                     .using("slug", getSlug())
-                    .using("project", projectDAO.getBySlug(projectSlug)).load();
+                    .using("project", projectDAO.getBySlug(getProjectSlug())).load();
             validateIterationState(iteration);
             versionId = iteration.getId();
             return iteration;
@@ -270,13 +293,14 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
                 || iteration.getStatus() == EntityStatus.OBSOLETE) {
             log.warn(
                     "Project version [id={}, slug={}], does not exist or is soft deleted: {}",
-                    versionId, slug, iteration);
+                    versionId, getSlug(), iteration);
             throw new EntityNotFoundException();
         }
     }
 
+    @Transactional
     public void updateRequireTranslationReview(String key, boolean checked) {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         getInstance().setRequireTranslationReview(checked);
         update();
         if (checked) {
@@ -300,7 +324,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     private Map<ValidationId, ValidationAction> getValidations() {
         if (availableValidations.isEmpty()) {
             Collection<ValidationAction> validationList =
-                    validationServiceImpl.getValidationActions(projectSlug,
+                    validationServiceImpl.getValidationActions(getProjectSlug(),
                             getInstance().getSlug());
 
             for (ValidationAction validationAction : validationList) {
@@ -326,14 +350,15 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         return getInstance().getProjectType();
     }
 
+    @Transactional
     public void setProjectType(ProjectType projectType) {
         getInstance().setProjectType(projectType);
     }
 
     public void validateProjectSlug() {
-        if (projectDAO.getBySlug(projectSlug) == null) {
+        if (projectDAO.getBySlug(getProjectSlug()) == null) {
             throw new EntityNotFoundException("no entity with slug "
-                    + projectSlug);
+                    + getProjectSlug());
         }
     }
 
@@ -361,9 +386,10 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
     public boolean isSlugAvailable(String slug) {
         return slugEntityServiceImpl.isProjectIterationSlugAvailable(slug,
-                projectSlug);
+                getProjectSlug());
     }
 
+    @Transactional
     public String createVersion() {
         if (!validateSlug(inputSlugValue, "slug"))
             return "invalid-slug";
@@ -376,8 +402,9 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         }
     }
 
+    @Transactional
     public void copyVersion() {
-        copyVersionManager.startCopyVersion(projectSlug,
+        copyVersionManager.startCopyVersion(getProjectSlug(),
                 copyFromVersionSlug, inputSlugValue);
 
         conversationScopeMessages
@@ -387,11 +414,12 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     }
 
     public void setSlug(String slug) {
-        this.slug = slug;
+        projectAndVersionSlug.setVersionSlug(slug);
         this.inputSlugValue = slug;
     }
 
     @Override
+    @Transactional
     public String persist() {
         if (!validateSlug(getInputSlugValue(), "slug")) {
             return null;
@@ -408,7 +436,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         //       overriding.
         List<HLocale> projectLocales =
                 localeServiceImpl
-                        .getSupportedLanguageByProject(projectSlug);
+                        .getSupportedLanguageByProject(getProjectSlug());
         getInstance().getCustomizedLocales().addAll(projectLocales);
 
 
@@ -419,30 +447,31 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
     @Override
     public Object getId() {
-        return projectSlug + "/" + slug;
+        return getProjectSlug() + "/" + getSlug();
     }
 
     @Override
     public NaturalIdentifier getNaturalId() {
-        return Restrictions.naturalId().set("slug", slug)
-                .set("project", projectDAO.getBySlug(projectSlug));
+        return Restrictions.naturalId().set("slug", getSlug())
+                .set("project", projectDAO.getBySlug(getProjectSlug()));
     }
 
     @Override
     public boolean isIdDefined() {
-        return slug != null && projectSlug != null;
+        return getSlug() != null && getProjectSlug() != null;
     }
 
     public boolean isValidationsSameAsProject() {
 
         Collection<ValidationAction> versionValidations =
-                validationServiceImpl.getValidationActions(projectSlug,
-                        slug);
+                validationServiceImpl.getValidationActions(getProjectSlug(),
+                        getSlug());
         Collection<ValidationAction> projectValidations =
-                validationServiceImpl.getValidationActions(projectSlug);
+                validationServiceImpl.getValidationActions(getProjectSlug());
         return versionValidations.equals(projectValidations);
     }
 
+    @Transactional
     public void copyValidationFromProject() {
         getInstance().getCustomizedValidations().clear();
         getInstance().getCustomizedValidations().putAll(
@@ -464,12 +493,15 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
      * @return the String "updated"
      */
     @Override
+    @Transactional
     public String update() {
-        identity.checkPermission(instance, "update");
-        if (!getInputSlugValue().equals(slug) && !validateSlug(getInputSlugValue(), "slug")) {
+        identity.checkPermission(getInstance(), "update");
+        if (!getSlug().equals(getInputSlugValue()) && !validateSlug(getInputSlugValue(), "slug")) {
             return null;
         }
-        getInstance().setSlug(getInputSlugValue());
+        if (getInputSlugValue() != null && !getSlug().equals(getInputSlugValue())) {
+            getInstance().setSlug(getInputSlugValue());
+        }
 
         boolean softDeleted = false;
         if (getInstance().getStatus() == EntityStatus.OBSOLETE) {
@@ -483,14 +515,14 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         String state = super.update();
 
         if (softDeleted) {
-            String url = urlUtil.projectUrl(projectSlug);
-            FacesManager.instance().redirectToExternalURL(url);
+            String url = urlUtil.projectUrl(getProjectSlug());
+            urlUtil.redirectTo(url);
             return state;
         }
 
-        if (!slug.equals(getInstance().getSlug())) {
-            slug = getInstance().getSlug();
-            return "versionSlugUpdated";
+        if (!getSlug().equals(getInstance().getSlug())) {
+            projectAndVersionSlug.setVersionSlug(getInstance().getSlug());
+            return "version-slug-updated";
         }
 
         return state;
@@ -501,8 +533,9 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         // Disable the default message from Seam
     }
 
+    @Transactional
     public void updateStatus(char initial) {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         String message = msgs.format("jsf.iteration.status.updated",
                 EntityStatus.valueOf(initial));
         getInstance().setStatus(EntityStatus.valueOf(initial));
@@ -513,15 +546,18 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         facesMessages.addGlobal(FacesMessage.SEVERITY_INFO, message);
     }
 
+    @Transactional
     public void deleteSelf() {
         updateStatus('O');
     }
 
+    @Transactional
     public void updateSelectedProjectType(ValueChangeEvent e) {
         selectedProjectType = (String) e.getNewValue();
         updateProjectType();
     }
 
+    @Transactional
     public void copyProjectTypeFromProject() {
         getInstance().setProjectType(
                 getInstance().getProject().getDefaultProjectType());
@@ -574,8 +610,9 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         return Arrays.asList(ValidationAction.State.values());
     }
 
+    @Transactional
     public void updateValidationOption(String name, String state) {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         ValidationId validationId = ValidationId.valueOf(name);
 
         for (Map.Entry<ValidationId, ValidationAction> entry : getValidations()
@@ -625,8 +662,9 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         return getInstance().isOverrideLocales();
     }
 
+    @Transactional
     public void setOverrideLocales(boolean overrideLocales) {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         getInstance().setOverrideLocales(overrideLocales);
     }
 
@@ -634,8 +672,9 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         return LocaleServiceImpl.getLocaleAliasesByIteration(getInstance());
     }
 
+    @Transactional
     public void removeAllLocaleAliases() {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         List<LocaleId> removed = new ArrayList<>();
         List<LocaleId> aliasedLocales =
             new ArrayList<>(getLocaleAliases().keySet());
@@ -697,8 +736,9 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         disabledLocales = null;
     }
 
+    @Transactional
     public void removeSelectedLocaleAliases() {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         List<LocaleId> removed = new ArrayList<>();
         for (Map.Entry<LocaleId, Boolean> entry :
             getSelectedEnabledLocales().entrySet()) {
@@ -755,8 +795,9 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     private Map<LocaleId, String> enteredLocaleAliases = Maps.newHashMap();
 
 
+    @Transactional
     public void updateToEnteredLocaleAlias(LocaleId localeId) {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         String enteredAlias = enteredLocaleAliases.get(localeId);
         setLocaleAlias(localeId, enteredAlias);
     }
@@ -806,8 +847,9 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         return hadAlias;
     }
 
+    @Transactional
     public void useDefaultLocales() {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         setOverrideLocales(false);
         refreshDisabledLocales();
     }
@@ -821,10 +863,10 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     private String disabledLocalesFilter;
 
     public List<HLocale> getEnabledLocales() {
-        if (StringUtils.isNotEmpty(projectSlug) && StringUtils.isNotEmpty(slug)) {
+        if (StringUtils.isNotEmpty(getProjectSlug()) && StringUtils.isNotEmpty(getSlug())) {
             List<HLocale> locales =
                     localeServiceImpl.getSupportedLanguageByProjectIteration(
-                            projectSlug, slug);
+                            getProjectSlug(), getSlug());
             Collections.sort(locales, ComparatorUtil.LOCALE_COMPARATOR);
             return locales;
         }
@@ -847,8 +889,9 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         return selectedEnabledLocales;
     }
 
+    @Transactional
     public void disableSelectedLocales() {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         List<LocaleId> toRemove = Lists.newArrayList();
 
         for (Map.Entry<LocaleId, Boolean> entry :
@@ -884,8 +927,9 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         return disableLocaleSilently(locale);
     }
 
+    @Transactional
     public void disableLocale(HLocale locale) {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         boolean wasEnabled = disableLocaleSilently(locale);
         if (wasEnabled) {
             facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
@@ -947,8 +991,9 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     @Setter
     private Map<LocaleId, Boolean> selectedDisabledLocales = Maps.newHashMap();
 
+    @Transactional
     public void enableSelectedLocales() {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         List<LocaleId> enabled = new ArrayList<>();
         for (Map.Entry<LocaleId, Boolean> entry : selectedDisabledLocales
                 .entrySet()) {
@@ -974,8 +1019,9 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         }
     }
 
+    @Transactional
     public void enableLocale(HLocale locale) {
-        identity.checkPermission(instance, "update");
+        identity.checkPermission(getInstance(), "update");
         boolean wasDisabled = enableLocaleSilently(locale);
 
         if (wasDisabled) {

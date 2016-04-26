@@ -4,8 +4,8 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   template="/WEB-INF/template/template.xhtml">
 
   <f:metadata>
@@ -22,8 +22,8 @@
     <script type="text/javascript">
       //<![CDATA[
       jQuery(function () {
-        crossroads.addRoute(':pre*:/language/view/{localeId}/:section:',
-          function (pre, localeId, section) {
+        crossroads.addRoute(':pre*:/language/view/{localeId}/:section::?query:',
+          function (pre, localeId, section, query) {
             section = section || 'members';
             section = validateTab('#' + section + "_tab", section, "members");
             zanata.tabs.activate(jQuery('#' + section + "_tab"))
@@ -32,11 +32,55 @@
         updateStateFromUrl();
       });
       //]]>
+
+      function toggleMemberRolesEntry(actionsRolesEntry, isCoordinatorChecked) {
+        if(isCoordinatorChecked) {
+          //if coordinator is checked, check reviewer and translator, disable them
+          actionsRolesEntry.find('[id$=reviewer]').find('.js-form__checkbox__input').attr('checked', isCoordinatorChecked).trigger('change');
+          actionsRolesEntry.find('[id$=reviewer]').addClass('is-disabled');
+          actionsRolesEntry.find('[id$=translator]').find('.js-form__checkbox__input').attr('checked', isCoordinatorChecked).trigger('change');
+          actionsRolesEntry.find('[id$=translator]').addClass('is-disabled');
+        } else {
+          //if coordinator is unchecked, enable reviewer and translator checkbox
+          actionsRolesEntry.find('[id$=reviewer]').removeClass('is-disabled');
+          actionsRolesEntry.find('[id$=translator]').removeClass('is-disabled');
+        }
+      }
     </script>
 
     <h:form styleClass="l--push-bottom-0">
       <a4j:jsFunction name="refreshMembersForm" action="#{languageAction.reset}"
-        render="language-more-actions, members-size, members-form"/>
+        limitRender="true"
+        render="member-info, members-size, members-form" oncomplete="zanata.form.appendCheckboxes('#members-form')"/>
+
+      <a4j:jsFunction name="refreshRequestsForm" action="#{languageJoinAction.clearMessage}"
+        limitRender="true"
+        render="requests-form" oncomplete="zanata.form.appendCheckboxes('#requests-form')"/>
+
+      <a4j:jsFunction name="refreshRequestsSection"
+        limitRender="true"
+        render="language-tabs" oncomplete="zanata.form.appendCheckboxes('#requests-form');zanata.form.appendCheckboxes('#members-form')"/>
+
+      <a4j:jsFunction name="bindAsTranslator" action="#{languageAction.updatePersonRole(personId, 'T', asTranslator)}"
+        oncomplete="#{oncompleteCallback}">
+        <a4j:param name="val1" assignTo="#{personId}"/>
+        <a4j:param name="val2" assignTo="#{asTranslator}"/>
+        <a4j:param name="val3" assignTo="#{oncompleteCallback}"/>
+      </a4j:jsFunction>
+
+      <a4j:jsFunction name="bindAsReviewer" action="#{languageAction.updatePersonRole(personId, 'R', asReviewer)}"
+        oncomplete="#{oncompleteCallback}">
+        <a4j:param name="val1" assignTo="#{personId}"/>
+        <a4j:param name="val2" assignTo="#{asReviewer}"/>
+        <a4j:param name="val3" assignTo="#{oncompleteCallback}"/>
+      </a4j:jsFunction>
+
+      <a4j:jsFunction name="bindAsCoordinator" action="#{languageAction.updatePersonRole(personId, 'C', asCoordinator)}"
+        oncomplete="#{oncompleteCallback}">
+        <a4j:param name="val1" assignTo="#{personId}"/>
+        <a4j:param name="val2" assignTo="#{asCoordinator}"/>
+        <a4j:param name="val3" assignTo="#{oncompleteCallback}"/>
+      </a4j:jsFunction>
     </h:form>
 
     <div class="g" id="language-page">
@@ -48,43 +92,131 @@
 
         <h:panelGroup layout="block"  styleClass="l--push-bottom-half" id="language-info">
           <h1 class="l--push-all-0 #{not languageAction.locale.active or not languageAction.locale.enabledByDefault ? 'txt--neutral' : ''}">
-            <i class="i i--language"></i> #{languageAction.locale.retrieveDisplayName()}
+            #{languageAction.locale.retrieveDisplayName()}
           </h1>
           <div class="txt--understated l--push-top-quarter">
             <div>
-              #{msgs['jsf.LanguageCode']}<span class="l--push-left-quarter label">#{languageAction.locale.localeId}</span>
+              #{languageAction.locale.localeId}
             </div>
             <div>
-              #{msgs['jsf.NativeName']}<span class="l--push-left-quarter label">#{languageAction.locale.retrieveNativeName()}</span>
+              #{languageAction.locale.retrieveNativeName()}
             </div>
-            <h:panelGroup layout="block"  rendered="#{languageAction.locale.asULocale().country ne ''}">
-              #{msgs['jsf.CountryCode']}<span class="l--push-left-quarter label">#{languageAction.locale.asULocale().country}</span>
+            <h:panelGroup layout="block" rendered="#{languageAction.locale.asULocale().country ne ''}">
+              #{languageAction.locale.asULocale().country}
             </h:panelGroup>
-            <h:panelGroup layout="block"  rendered="#{languageAction.locale.asULocale().variant ne ''}">
-              #{msgs['jsf.Variant']}<span class="l--push-left-quarter label">#{languageAction.locale.asULocale().variant}</span>
+            <h:panelGroup layout="block" rendered="#{languageAction.locale.asULocale().variant ne ''}">
+              #{languageAction.locale.asULocale().variant}
             </h:panelGroup>
           </div>
-          <h:panelGroup layout="block"  rendered="#{not languageAction.locale.active or not languageAction.locale.enabledByDefault}">
-            <h:panelGroup layout="span" styleClass="label" rendered="#{not languageAction.locale.active}">
-              <!-- TODO h:panelGroup do not support title attribute. But do we really need a title here? -->
-              <span title="#{msgs['jsf.Disabled']}">
-                #{msgs['jsf.Disabled']}
-              </span>
-            </h:panelGroup>
-            <h:panelGroup layout="span" styleClass="label" rendered="#{not languageAction.locale.enabledByDefault}"
-              title="#{msgs['jsf.language.disableByDefault']}">
-              <!-- TODO h:panelGroup do not support title attribute. But do we really need a title here? -->
-              <span title="#{msgs['jsf.language.disableByDefault']}">
-                #{msgs['jsf.language.disableByDefault']}
-              </span>
-            </h:panelGroup>
-          </h:panelGroup>
-
+          <ui:fragment rendered="#{not languageAction.locale.active or not languageAction.locale.enabledByDefault}">
+            <div>
+              <ui:fragment rendered="#{not languageAction.locale.active}">
+                <span class="label">#{msgs['jsf.Disabled']}</span>
+              </ui:fragment>
+              <ui:fragment rendered="#{not languageAction.locale.enabledByDefault}">
+                <span class="label">#{msgs['jsf.language.disableByDefault']}</span>
+              </ui:fragment>
+            </div>
+          </ui:fragment>
         </h:panelGroup>
+
+        <ui:fragment rendered="#{identity.loggedIn}">
+          <h:form class="l--push-botton-half" id="member-info">
+            <ui:fragment rendered="#{not languageAction.isUserInTeam()}">
+              <ui:fragment rendered="#{identity.hasRole('admin')}">
+                <zanata:ajax-command-button id="joinTeam"
+                  oncomplete="refreshMembersForm();"
+                  action="#{languageAction.joinLanguageTeam}"
+                  styleClass="button button--primary">
+                  #{msgs['jsf.JoinLanguageTeam']}
+                </zanata:ajax-command-button>
+              </ui:fragment>
+            </ui:fragment>
+
+            <ui:fragment rendered="#{languageAction.isUserInTeam()}">
+              <p>
+                <h:outputText escape="false"
+                  value="#{languageJoinAction.getMyLocalisedRoles()}">
+                </h:outputText>
+              </p>
+
+              <div class="dropdown dropdown--single js-dropdown">
+                <div class="button--group">
+                  <zanata:ajax-command-button id="leaveTeam"
+                    oncomplete="refreshMembersForm();refreshRequestsSection();"
+                    action="#{languageAction.leaveLanguageTeam}"
+                    styleClass="txt--danger button">
+                    #{msgs['jsf.LeaveLanguageTeam']}
+                  </zanata:ajax-command-button>
+                  <ui:fragment rendered="#{not languageJoinAction.isCoordinator() and not languageJoinAction.isUserAlreadyRequest()}">
+                    <button class="button button--snug js-dropdown__toggle" style="height: 2.15em">
+                      <i class="i i--large i--arrow-down"></i>
+                    </button>
+                  </ui:fragment>
+                </div>
+                <ui:fragment rendered="#{not languageJoinAction.isUserAlreadyRequest()}">
+                  <ul class="dropdown__content js-dropdown__content">
+                    <ui:fragment rendered="#{not languageJoinAction.isTranslator()}">
+                      <li>
+                        <a href="#" id="requestAsTranslator"
+                          onclick="jQuery('#asTranslator').val(true)"
+                          data-toggle="modal"
+                          data-target="#joinLanguageDialog"
+                          class="dropdown__content__link button--link">
+                          #{msgs['jsf.language.requestAsTranslator']}
+                        </a>
+                      </li>
+                    </ui:fragment>
+                    <ui:fragment rendered="#{not languageJoinAction.isReviewer()}">
+                      <li>
+                        <a href="#" id="requestAsReviewer"
+                          onclick="jQuery('#asReviewer').val(true)"
+                          data-toggle="modal"
+                          data-target="#joinLanguageDialog"
+                          class="dropdown__content__link button--link">
+                          #{msgs['jsf.language.requestAsReviewer']}
+                        </a>
+                      </li>
+                    </ui:fragment>
+                    <ui:fragment rendered="#{not languageJoinAction.isCoordinator()}">
+                      <li>
+                        <a href="#" id="requestAsCoordinator"
+                          onclick="jQuery('#asCoordinator').val(true)"
+                          data-toggle="modal"
+                          data-target="#joinLanguageDialog"
+                          class="dropdown__content__link button--link">
+                          #{msgs['jsf.language.requestAsCoordinator']}
+                        </a>
+                      </li>
+                    </ui:fragment>
+                  </ul>
+                </ui:fragment>
+              </div>
+            </ui:fragment>
+
+            <ui:fragment rendered="#{languageJoinAction.isUserAlreadyRequest()}">
+              <div class="l--push-top-quarter">
+                <button class="is-disabled" disabled="disabled">Request pending</button>
+              </div>
+              <zanata:ajax-command-button id="cancelRequest"
+                oncomplete="refreshMembersForm();"
+                action="#{languageJoinAction.cancelRequest()}"
+                styleClass="button--link link--danger txt--mini l--push-top-quarter">
+                #{msgs['jsf.language.cancelMyRequest']}
+              </zanata:ajax-command-button>
+            </ui:fragment>
+            <ui:fragment rendered="#{not languageJoinAction.isUserAlreadyRequest() and not identity.hasRole('admin') and not languageAction.isUserInTeam()}">
+              <button class="button button--primary" data-toggle="modal" onclick="jQuery('#asTranslator').val(true);return false;"
+                data-target="#joinLanguageDialog">
+                #{msgs['jsf.RequestToJoinLanguageTeam']}
+              </button>
+            </ui:fragment>
+          </h:form>
+        </ui:fragment>
       </div>
 
       <div class="g__item w--1-m w--5-8-l w--2-3">
-        <div class="tabs--lined js-tabs">
+        <h:panelGroup layout="block" styleClass="tabs--lined js-tabs" id="language-tabs">
           <ul class="tabs__nav js-tabs-nav">
             <ui:param name="languageURL" value="#{request.contextPath.concat('/language/view/').concat(languageAction.locale.localeId)}"/>
             <li>
@@ -94,74 +226,46 @@
               <span class="is-hidden--s i__text--right">
                 #{msgs['jsf.Members']}
                 <h:panelGroup styleClass="txt--neutral" id="members-size">
-                  #{languageAction.localeMembers.size}
+                  #{languageAction.localeMembers.size()}
                 </h:panelGroup>
               </span>
               </a>
             </li>
-
-            <ui:fragment rendered="#{identity.loggedIn}">
-              <li class="tab__end">
-                <h:form styleClass="l--push-bottom-0 dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown"
-                  id="language-more-actions">
-                  <a class="dropdown__toggle js-dropdown__toggle"
-                    title="#{msgs['jsf.tooltip.MoreActions']}" href="#">
-                    <i class="i i--ellipsis"></i>
-                  </a>
-                  <ul class="dropdown__content js-dropdown__content"
-                    role="content" aria-labelledby="dropdownContent">
-                    <li>
-                      <a href="#" class="i__item--right"
-                        data-toggle="modal" onclick="return false;"
-                        data-target="#contactCoordinatorDialog">
-                        #{msgs['jsf.contactLanguageTeamCoordinator']}
-                        <i class="i i--plus i__item__icon"></i>
-                      </a>
-                    </li>
-
-                    <ui:fragment rendered="#{not languageAction.isUserInTeam()}">
-                      <ui:fragment rendered="#{not identity.hasRole('admin')}">
-                        <li>
-                          <a href="#" class="i__item--right"
-                            data-toggle="modal"
-                            data-target="#joinLanguageDialog">
-                            #{msgs['jsf.RequestToJoinLanguageTeam']}
-                            <i class="i i--plus i__item__icon"></i>
-                          </a>
-                        </li>
-                      </ui:fragment>
-                      <ui:fragment rendered="#{identity.hasRole('admin')}">
-                        <li>
-                          <a4j:commandLink id="joinTeam"
-                            action="#{languageAction.joinLanguageTeam}"
-                            styleClass="i__item--right"
-                            oncomplete="refreshMembersForm()"
-                            value=" #{msgs['jsf.JoinLanguageTeam']}">
-                            <i class="i i--plus i__item__icon"></i>
-                            <s:conversationId name="id"
-                              value="#{languageAction.language}"/>
-                          </a4j:commandLink>
-                        </li>
-                      </ui:fragment>
-                    </ui:fragment>
-
-                    <ui:fragment rendered="#{languageAction.isUserInTeam()}">
-                      <li>
-                        <a4j:commandLink id="leaveTeam"
-                          styleClass="txt--danger i__item--right"
-                          action="#{languageAction.leaveLanguageTeam}"
-                          oncomplete="refreshMembersForm()"
-                          value="#{msgs['jsf.LeaveLanguageTeam']}">
-                          <i class="i i--remove i__item__icon"></i>
-                          <s:conversationId name="id"
-                            value="#{languageAction.language}"/>
-                        </a4j:commandLink>
-                      </li>
-                    </ui:fragment>
-                  </ul>
-                </h:form>
+            <ui:fragment rendered="#{identity.loggedIn and identity.hasPermission(languageAction.locale, 'manage-language-team')}">
+              <li>
+                <a id="requests_tab" href="#{languageURL}/requests"
+                  class="js-url-mod" data-content="#requests">
+                  <i class="i i--comment"></i>
+                  <span class="is-hidden--s i__text--right">
+                    #{msgs['jsf.language.requests']}
+                    <h:panelGroup styleClass="txt--neutral" id="requests-size">
+                      #{languageAction.requests.size()}
+                    </h:panelGroup>
+                  </span>
+                </a>
               </li>
             </ui:fragment>
+
+            <li class="tab__end">
+              <h:form styleClass="l--push-bottom-0 dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown"
+                id="language-more-actions">
+                <a class="dropdown__toggle js-dropdown__toggle" id="more-action"
+                  title="#{msgs['jsf.tooltip.MoreActions']}" href="#">
+                  <i class="i i--ellipsis"></i>
+                </a>
+                <ul class="dropdown__content js-dropdown__content"
+                  role="content" aria-labelledby="dropdownContent">
+                  <li>
+                    <a href="#" class="i__item--right" id="contact-coordinator"
+                      data-toggle="modal" onclick="return false;"
+                      data-target="#contactCoordinatorDialog">
+                      #{msgs['jsf.contactLanguageTeamCoordinator']}
+                      <i class="i i--plus i__item__icon"></i>
+                    </a>
+                  </li>
+                </ul>
+              </h:form>
+            </li>
 
             <ui:fragment rendered="#{identity.hasRole('admin')}">
               <li class="tab__end">
@@ -177,9 +281,16 @@
           </ul>
 
           <ul class="tabs__content panels__container js-tabs-content l--push-top-1">
-            <li id="members">
+            <li id="members" class="is-active">
               <ui:include src="/WEB-INF/layout/language/members-tab.xhtml"/>
             </li>
+
+            <ui:fragment rendered="#{identity.loggedIn and identity.hasPermission(languageAction.locale, 'manage-language-team')}">
+              <li id="requests">
+                <ui:include src="/WEB-INF/layout/language/requests-tab.xhtml"/>
+              </li>
+            </ui:fragment>
+
 
             <ui:fragment rendered="#{identity.hasRole('admin')}">
               <li id="settings">
@@ -187,12 +298,12 @@
               </li>
             </ui:fragment>
           </ul>
-        </div>
+        </h:panelGroup>
       </div>
     </div>
     <ui:fragment rendered="#{identity.loggedIn}">
       <ui:include src="/WEB-INF/layout/language/contact_coordinator_modal.xhtml"/>
-      <ui:fragment rendered="#{not languageAction.isUserInTeam()}">
+      <ui:fragment rendered="#{not identity.hasRole('admin')}">
         <ui:include src="/WEB-INF/layout/language/request_join_modal.xhtml"/>
       </ui:fragment>
     </ui:fragment>

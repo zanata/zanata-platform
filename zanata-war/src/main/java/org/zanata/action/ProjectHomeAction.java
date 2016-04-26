@@ -37,11 +37,9 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Ordering;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.LocaleMemberDAO;
@@ -61,6 +59,7 @@ import org.zanata.model.LocaleRole;
 import org.zanata.model.ProjectRole;
 import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.ActivityService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.VersionStateCache;
@@ -92,8 +91,8 @@ import static org.zanata.model.ProjectRole.TranslationMaintainer;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("projectHomeAction")
-@Scope(ScopeType.PAGE)
+@Named("projectHomeAction")
+@javax.faces.bean.ViewScoped
 @Slf4j
 public class ProjectHomeAction extends AbstractSortAction implements
         Serializable {
@@ -101,44 +100,46 @@ public class ProjectHomeAction extends AbstractSortAction implements
     public static final Ordering<LocaleRole>
             LOCALE_ROLE_ORDERING = Ordering.explicit(LocaleRole.Translator,
             LocaleRole.Reviewer, LocaleRole.Coordinator);
-    @In
+    private static final long serialVersionUID = -5163376385991003306L;
+    @Inject
     private ActivityService activityServiceImpl;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In
+    @Inject
     private VersionStateCache versionStateCacheImpl;
 
-    @In
+    @Inject
     private LocaleMemberDAO localeMemberDAO;
 
-    @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private CopyVersionManager copyVersionManager;
 
-    @In
+    @Inject
     private Messages msgs;
 
     @Setter
     @Getter
     private String slug;
 
-    @In
+    @Inject
     private PersonDAO personDAO;
 
-    @In
+    @Inject
     private ProjectDAO projectDAO;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private ConversationScopeMessages conversationScopeMessages;
 
     @Getter
@@ -463,9 +464,9 @@ public class ProjectHomeAction extends AbstractSortAction implements
                 && localeId != null
                 && isIterationActive(version)
                 && identity != null
-                && (identity.hasPermission("add-translation",
-                        version.getProject(), localeId) || identity
-                        .hasPermission("translation-review",
+                && (identity.hasPermissionWithAnyTargets("add-translation",
+                version.getProject(), localeId) || identity
+                        .hasPermissionWithAnyTargets("translation-review",
                                 version.getProject(), localeId));
     }
 
@@ -490,7 +491,7 @@ public class ProjectHomeAction extends AbstractSortAction implements
 
     @Override
     protected String getMessage(String key, Object... args) {
-        return msgs.format(key, args);
+        return msgs.formatWithAnyArgs(key, args);
     }
 
     public Map<HPerson, Collection<ProjectRole>> getMemberRoles() {
@@ -748,7 +749,7 @@ public class ProjectHomeAction extends AbstractSortAction implements
     private static final Ordering<HLocale> LOCALE_NAME_ORDERING =
             Ordering.natural().onResultOf(TO_LOCALE_NAME);
 
-    private final class PeopleFilterComparator extends InMemoryListFilter<HPerson>
+    public final class PeopleFilterComparator extends InMemoryListFilter<HPerson>
         implements Comparator<HPerson> {
 
         private final ProjectRolePredicate projectRolePredicate =

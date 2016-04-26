@@ -59,24 +59,21 @@ public class ProjectPermissionsTab extends ProjectBasePage {
     public ProjectPermissionsTab selectSearchMaintainer(final String maintainer) {
         log.info("Select user {}", maintainer);
         waitForAMoment()
-                .until(new Predicate<WebDriver>() {
-                    @Override
-                    public boolean apply(WebDriver driver) {
-                        List<WebElement> searchResults =
-                                WebElementUtil.getSearchAutocompleteResults(
-                                        driver,
-                                        "settings-permissions-form",
-                                        "maintainerAutocomplete");
-                        boolean clickedUser = false;
-                        for (WebElement searchResult : searchResults) {
-                            if (searchResult.getText().contains(maintainer)) {
-                                searchResult.click();
-                                clickedUser = true;
-                                break;
-                            }
+                .until((Predicate<WebDriver>) driver -> {
+                    List<WebElement> searchResults =
+                            WebElementUtil.getSearchAutocompleteResults(
+                                    driver,
+                                    "settings-permissions-form",
+                                    "maintainerAutocomplete");
+                    boolean clickedUser = false;
+                    for (WebElement searchResult : searchResults) {
+                        if (searchResult.getText().contains(maintainer)) {
+                            searchResult.click();
+                            clickedUser = true;
+                            break;
                         }
-                        return clickedUser;
                     }
+                    return clickedUser;
                 });
         return new ProjectPermissionsTab(getDriver());
     }
@@ -100,18 +97,16 @@ public class ProjectPermissionsTab extends ProjectBasePage {
     }
 
     private WebElement getMaintainerElementFromList(final String maintainer) {
-        return waitForAMoment().until(new Function<WebDriver, WebElement>() {
-            @Override
-            public WebElement apply(WebDriver input) {
-                for (WebElement maintainersLi : getSettingsMaintainersElement()) {
-                    String displayedUsername = getUsername(maintainersLi);
-                    if (displayedUsername.equals(maintainer)) {
-                        return maintainersLi.findElement(By.tagName("a"));
+        return waitForAMoment().until(
+                (Function<WebDriver, WebElement>) webDriver -> {
+                    for (WebElement maintainersLi : getSettingsMaintainersElement()) {
+                        String displayedUsername = getUsername(maintainersLi);
+                        if (displayedUsername.equals(maintainer)) {
+                            return maintainersLi.findElement(By.tagName("a"));
+                        }
                     }
-                }
-                return null;
-            }
-        });
+                    return null;
+                });
     }
 
     public ProjectPermissionsTab expectMaintainersContains(
@@ -140,12 +135,7 @@ public class ProjectPermissionsTab extends ProjectBasePage {
         log.info("Query maintainers list");
         List<WebElement> items = getSettingsMaintainersElement();
         List<String> rows =
-                Lists.transform(items, new Function<WebElement, String>() {
-                    @Override
-                    public String apply(WebElement li) {
-                        return getUsername(li);
-                    }
-                });
+                Lists.transform(items, this::getUsername);
 
         return ImmutableList.copyOf(rows);
     }

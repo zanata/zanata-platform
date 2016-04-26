@@ -3,19 +3,19 @@ package org.zanata.webtrans.server.rpc;
 import java.util.Map;
 
 import org.hamcrest.Matchers;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataTest;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.model.TestFixture;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GravatarService;
+import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.auth.EditorClientId;
@@ -27,6 +27,10 @@ import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
 
 import com.google.common.collect.Maps;
 
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -35,37 +39,29 @@ import static org.mockito.Mockito.when;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
 public class GetTranslatorListHandlerTest extends ZanataTest {
+    @Inject @Any
     private GetTranslatorListHandler handler;
-    @Mock
+    @Produces @Mock
     private ZanataIdentity identity;
-    @Mock
+    @Produces @Mock
     private TranslationWorkspaceManager translationWorkspaceManager;
-    @Mock
+    @Produces @Mock
     private TranslationWorkspace translationWorkspace;
-    @Mock
+    @Produces @Mock
     private AccountDAO accountDAO;
-    @Mock
+    @Produces @Mock
     private GravatarService gravatarServiceImpl;
     private Map<EditorClientId, PersonSessionDetails> users;
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        // @formatter:off
-      handler = SeamAutowire.instance()
-            .reset()
-            .use("identity", identity)
-            .use("translationWorkspaceManager", translationWorkspaceManager)
-            .use("accountDAO", accountDAO)
-            .use("gravatarServiceImpl", gravatarServiceImpl)
-            .ignoreNonResolvable()
-            .autowire(GetTranslatorListHandler.class);
-      // @formatter:on
         users = Maps.newHashMap();
     }
 
     @Test
+    @InRequestScope
     public void testExecute() throws Exception {
         GetTranslatorList action = GetTranslatorList.ACTION;
         WorkspaceId workspaceId = TestFixture.workspaceId();
@@ -104,6 +100,7 @@ public class GetTranslatorListHandlerTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void testRollback() throws Exception {
         handler.rollback(null, null, null);
     }

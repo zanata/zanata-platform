@@ -21,7 +21,7 @@
 package org.zanata.feature.security;
 
 
-import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.openqa.selenium.By;
@@ -45,8 +45,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class SecurityTest extends ZanataTestCase {
 
-    @ClassRule
-    public static HasEmailRule hasEmailRule = new HasEmailRule();
+    @Rule
+    public final HasEmailRule hasEmailRule = new HasEmailRule();
 
     @Feature(summary = "The user can log in",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86815)

@@ -20,17 +20,16 @@
  */
 package org.zanata.service.impl;
 
+import java.io.Serializable;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.action.VersionGroupJoinAction;
 import org.zanata.common.LocaleId;
@@ -61,31 +60,31 @@ import static org.zanata.email.Addresses.getAddresses;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@AutoCreate
-@Name("emailServiceImpl")
-@Scope(ScopeType.STATELESS)
+
+@Named("emailServiceImpl")
+@RequestScoped
 @Slf4j
 public class EmailServiceImpl implements EmailService {
 
-    @In
+    @Inject
     private EmailBuilder emailBuilder;
 
-    @In
+    @Inject
     private IdentityManager identityManager;
 
-    @In
+    @Inject
     private PersonDAO personDAO;
 
-    @In
+    @Inject
     private ApplicationConfiguration applicationConfiguration;
 
-    @In
+    @Inject
     private VersionGroupJoinAction versionGroupJoinAction;
 
-    @In
+    @Inject
     private LocaleDAO localeDAO;
 
-    @In
+    @Inject
     private Messages msgs;
 
     /**
@@ -243,4 +242,12 @@ public class EmailServiceImpl implements EmailService {
         return msgs.get("jsf.email.usernamechange.SentNotification");
     }
 
+    @Override
+    public void sendToLanguageRequester(EmailStrategy strategy,
+        HPerson person) {
+        if (person != null) {
+            InternetAddress to = Addresses.getAddress(person);
+            emailBuilder.sendMessage(strategy, null, to);
+        }
+    }
 }

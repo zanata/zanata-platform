@@ -23,10 +23,9 @@ package org.zanata.webtrans.server.rpc;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnitUpdatePreview;
@@ -44,12 +43,12 @@ import net.customware.gwt.dispatch.shared.ActionException;
  * @author David Mason, damason@redhat.com
  *
  */
-@Name("webtrans.gwt.PreviewReplaceTextHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.PreviewReplaceTextHandler")
+@RequestScoped
 @ActionHandlerFor(PreviewReplaceText.class)
 public class PreviewReplaceTextHandler extends
         AbstractActionHandler<PreviewReplaceText, PreviewReplaceTextResult> {
-    @In
+    @Inject
     private ZanataIdentity identity;
 
     @Override

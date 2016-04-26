@@ -28,13 +28,9 @@ import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
-import static org.jboss.seam.ScopeType.SESSION;
-import static org.jboss.seam.annotations.Install.APPLICATION;
-
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import javax.inject.Named;
 import org.zanata.security.openid.OpenIdProviderType;
 
 import lombok.extern.slf4j.Slf4j;
@@ -46,17 +42,14 @@ import lombok.extern.slf4j.Slf4j;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("org.jboss.seam.security.credentials")
-@Scope(SESSION)
-@Install(precedence = APPLICATION)
-@BypassInterceptors
+@Named("credentials")
+@javax.enterprise.context.SessionScoped
 @Slf4j
 public class ZanataCredentials implements Serializable {
     private static final long serialVersionUID = 5520824011655916917L;
     private String username;
     private String password;
     private boolean initialized;
-    private boolean invalid;
 
     private AuthenticationType authType;
 
@@ -82,10 +75,6 @@ public class ZanataCredentials implements Serializable {
         return getUsername() != null && password != null;
     }
 
-    public boolean isInvalid() {
-        return invalid;
-    }
-
     public void clear() {
         username = null;
         password = null;
@@ -102,7 +91,6 @@ public class ZanataCredentials implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
-        invalid = false;
     }
 
     public String getPassword() {
@@ -111,7 +99,6 @@ public class ZanataCredentials implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
-        invalid = false;
     }
 
     public boolean isInitialized() {
@@ -120,10 +107,6 @@ public class ZanataCredentials implements Serializable {
 
     public void setInitialized(boolean initialized) {
         this.initialized = initialized;
-    }
-
-    public void invalidate() {
-        invalid = true;
     }
 
     public CallbackHandler createCallbackHandler() {

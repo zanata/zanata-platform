@@ -3,10 +3,9 @@ package org.zanata.webtrans.server.rpc;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.exception.DuplicateGlossaryEntryException;
 import org.zanata.model.HGlossaryEntry;
@@ -22,19 +21,19 @@ import org.zanata.webtrans.shared.model.GlossaryDetails;
 import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermAction;
 import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermResult;
 
-@Name("webtrans.gwt.UpdateGlossaryTermHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.UpdateGlossaryTermHandler")
+@RequestScoped
 @ActionHandlerFor(UpdateGlossaryTermAction.class)
 public class UpdateGlossaryTermHandler
         extends
         AbstractActionHandler<UpdateGlossaryTermAction, UpdateGlossaryTermResult> {
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private GlossaryDAO glossaryDAO;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
     @Override

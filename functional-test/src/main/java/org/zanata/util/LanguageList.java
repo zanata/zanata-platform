@@ -27,6 +27,7 @@ import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Handles the behaviour of the project language lists
@@ -47,13 +48,11 @@ public class LanguageList {
     private static By editAliasLink = By.linkText("Edit alias");
 
     public static List<String> getListedLocales(WebElement localeList) {
-        return Lists.transform(getListElements(localeList),
-                new Function<WebElement, String>() {
-                    @Override
-                    public String apply(WebElement li) {
-                        return li.findElement(localeId).getText();
-                    }
-                });
+        return getListElements(localeList)
+                .stream()
+                .filter(WebElement::isDisplayed)
+                .map(li -> li.findElement(localeId).getText())
+                .collect(Collectors.toList());
     }
 
     public static List<WebElement> getListElements(WebElement localeList) {

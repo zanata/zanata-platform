@@ -3,23 +3,33 @@ package org.zanata.service.impl;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.transaction.UserTransaction;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.assertj.core.api.Assertions;
+import org.hibernate.Session;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.jglue.cdiunit.AdditionalClasses;
+import org.jglue.cdiunit.InRequestScope;
+import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.PerformanceProfiling;
 import org.zanata.ZanataJpaTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
+import org.zanata.i18n.Messages;
+import org.zanata.jpa.FullText;
 import org.zanata.model.HAccount;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -31,8 +41,6 @@ import org.zanata.model.HTextFlowTargetHistory;
 import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.seam.SeamAutowire;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.security.ZanataIdentity;
 
 import com.github.huangp.entityunit.entity.EntityMaker;
@@ -41,37 +49,70 @@ import com.github.huangp.entityunit.maker.FixedValueMaker;
 import com.google.common.collect.Sets;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+import org.zanata.security.annotations.Authenticated;
+import org.zanata.service.LockManagerService;
+import org.zanata.service.TranslationStateCache;
+import org.zanata.test.CdiUnitRunner;
+import org.zanata.transaction.TransactionUtil;
+import org.zanata.util.IServiceLocator;
+
+import static org.mockito.Mockito.when;
 
 @Slf4j
+@RunWith(CdiUnitRunner.class)
+@SupportDeltaspikeCore
+@AdditionalClasses({
+        LocaleServiceImpl.class,
+        ValidationServiceImpl.class,
+        TransactionUtil.class
+})
 public class TranslationServiceImplJpaTest extends ZanataJpaTest {
 
-    static SeamAutowire seam = SeamAutowire.instance();
-    @Mock
-    private ZanataIdentity identity;
-    private TranslationServiceImpl service;
+    @Inject
+    TranslationServiceImpl service;
+
+    private HAccount authenticatedAccount;
+
     private Set<String> extensions = Sets.newHashSet("gettext", "comment");
 
+    @Produces @Mock ZanataIdentity identity;
+    @Produces @Mock LockManagerService lockManagerService;
+    @Produces @Mock TranslationStateCache translationStateCache;
+    @Produces @Mock @FullText FullTextEntityManager fullTextEntityManager;
+    @Produces @Mock Messages messages;
+    @Produces @Mock IServiceLocator serviceLocator;
+    @Mock UserTransaction userTransaction;
+
+    @Override
+    @Produces
+    protected EntityManager getEm() {
+        return super.getEm();
+    }
+
+    @Override
+    @Produces
+    protected Session getSession() {
+        return super.getSession();
+    }
+
+    @Produces
+    @Authenticated
+    HAccount getAuthenticatedAccount() {
+        return authenticatedAccount;
+    }
+
     @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
+    public void setUp() throws Exception {
+        when(serviceLocator.getJndiComponent("java:jboss/UserTransaction",
+                UserTransaction.class)).thenReturn(userTransaction);
         deleteAllTables();
-        HAccount authenticatedUser =
+        authenticatedAccount =
                 EntityMakerBuilder.builder().includeOptionalOneToOne().build()
                         .makeAndPersist(getEm(), HAccount.class);
         HPerson person =
                 EntityMakerBuilder.builder().build()
                         .makeAndPersist(getEm(), HPerson.class);
-        authenticatedUser.setPerson(person);
-
-        service = seam.reset()
-                .use("entityManager", getEm())
-                .use("session", getSession())
-                .use(ZanataJpaIdentityStore.AUTHENTICATED_USER,
-                        authenticatedUser)
-                .use("identity", identity)
-                .useImpl(LocaleServiceImpl.class)
-                .useImpl(ValidationServiceImpl.class).ignoreNonResolvable()
-                .autowire(TranslationServiceImpl.class);
+        authenticatedAccount.setPerson(person);
     }
 
     @After
@@ -82,6 +123,7 @@ public class TranslationServiceImplJpaTest extends ZanataJpaTest {
 //    @Test(enabled = true, description = "this should only be executed manually in IDE")
     @Ignore
     @Test
+    @InRequestScope
     @PerformanceProfiling
     public void pushTranslation() {
         EntityMaker entityMaker = EntityMakerBuilder.builder()

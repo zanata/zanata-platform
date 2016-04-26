@@ -8,7 +8,7 @@ import org.hibernate.LockOptions;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Example;
-import org.jboss.seam.annotations.In;
+import javax.inject.Inject;
 
 /**
  * Based on code from http://community.jboss.org/wiki/GenericDataAccessObjects
@@ -20,6 +20,9 @@ public class AbstractDAOImpl<T, ID extends Serializable> implements
     private Class<T> persistentClass;
     private Session session;
 
+    protected AbstractDAOImpl() {
+    }
+
     public AbstractDAOImpl(Class<T> clz, Session session) {
         this(clz);
         this.session = session;
@@ -29,7 +32,7 @@ public class AbstractDAOImpl<T, ID extends Serializable> implements
         this.persistentClass = clz;
     }
 
-    @In
+    @Inject
     public void setSession(Session s) {
         this.session = s;
     }

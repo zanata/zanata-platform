@@ -25,15 +25,15 @@ import java.util.Map.Entry;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountOptionDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountOption;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.UserOptions;
 import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
@@ -43,18 +43,19 @@ import org.zanata.webtrans.shared.rpc.SaveOptionsResult;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("webtrans.gwt.SaveOptionsHandler")
-@Scope(ScopeType.STATELESS)
+@Named("webtrans.gwt.SaveOptionsHandler")
+@RequestScoped
 @ActionHandlerFor(SaveOptionsAction.class)
 public class SaveOptionsHandler extends
         AbstractActionHandler<SaveOptionsAction, SaveOptionsResult> {
-    @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
-    @In
+    @Inject
     private AccountDAO accountDAO;
 
-    @In
+    @Inject
     private AccountOptionDAO accountOptionDAO;
 
     @Override

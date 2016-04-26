@@ -1,23 +1,26 @@
 package org.zanata.webtrans.server.rpc;
 
 import org.hamcrest.Matchers;
-import org.junit.Before;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataTest;
 import org.zanata.model.TestFixture;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChat;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatAction;
+
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
@@ -27,31 +30,21 @@ import static org.mockito.Mockito.when;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
 public class PublishWorkspaceChatHandlerTest extends ZanataTest {
+    @Inject @Any
     private PublishWorkspaceChatHandler handler;
-    @Mock
+    @Produces @Mock
     private ZanataIdentity identity;
-    @Mock
+    @Produces @Mock
     private TranslationWorkspaceManager translationWorkspaceManager;
-    @Mock
+    @Produces @Mock
     private TranslationWorkspace translationWorkspace;
     @Captor
     private ArgumentCaptor<PublishWorkspaceChat> eventCaptor;
 
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        // @formatter:off
-      handler = SeamAutowire.instance()
-            .reset()
-            .use("identity", identity)
-            .use("translationWorkspaceManager", translationWorkspaceManager)
-            .ignoreNonResolvable()
-            .autowire(PublishWorkspaceChatHandler.class);
-      // @formatter:on
-    }
-
     @Test
+    @InRequestScope
     public void testExecute() throws Exception {
         WorkspaceId workspaceId = TestFixture.workspaceId();
         PublishWorkspaceChatAction action =
@@ -73,6 +66,7 @@ public class PublishWorkspaceChatHandlerTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void testRollback() throws Exception {
         handler.rollback(null, null, null);
     }

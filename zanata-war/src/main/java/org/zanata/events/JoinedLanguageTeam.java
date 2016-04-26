@@ -29,10 +29,6 @@ import org.zanata.common.LocaleId;
  */
 @Value
 public class JoinedLanguageTeam {
-    // TODO remove constant after switching to CDI
-    // NB must be a constant string equal to class name
-    public static final String EVENT_NAME = "org.zanata.events.JoinedLanguageTeam";
-
     String username;
     LocaleId localeId;
 }

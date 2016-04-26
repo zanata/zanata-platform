@@ -24,13 +24,9 @@ package org.zanata.service.impl;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.infinispan.manager.CacheContainer;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.cache.CacheWrapper;
 import org.zanata.cache.InfinispanCacheWrapper;
 import org.zanata.common.LocaleId;
@@ -43,9 +39,11 @@ import org.zanata.model.HTextFlow;
 import org.zanata.service.VersionLocaleKey;
 import org.zanata.service.VersionStateCache;
 import org.zanata.ui.model.statistic.WordStatistic;
+import org.zanata.util.IServiceLocator;
 import org.zanata.util.ServiceLocator;
 
 import com.google.common.cache.CacheLoader;
+import org.zanata.util.Zanata;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
@@ -53,8 +51,8 @@ import javax.enterprise.event.TransactionPhase;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("versionStateCacheImpl")
-@Scope(ScopeType.APPLICATION)
+@Named("versionStateCacheImpl")
+@javax.enterprise.context.ApplicationScoped
 public class VersionStateCacheImpl implements VersionStateCache {
     private static final String BASE = VersionStateCacheImpl.class.getName();
 
@@ -64,45 +62,53 @@ public class VersionStateCacheImpl implements VersionStateCache {
     private CacheWrapper<VersionLocaleKey, WordStatistic> versionStatisticCache;
     private CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader;
 
-    @In
+    @Inject @Zanata
     private CacheContainer cacheContainer;
 
-    @In
-    private ServiceLocator serviceLocator;
+    @Inject
+    private IServiceLocator serviceLocator;
 
-    // constructor for Seam
+    // constructor for CDI
     public VersionStateCacheImpl() {
-        this(new VersionStatisticLoader());
     }
 
     // Constructor for testing
+    @VisibleForTesting
     public VersionStateCacheImpl(
             CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader) {
         this.versionStatisticLoader = versionStatisticLoader;
     }
 
-    @Create
+    @PostConstruct
     public void create() {
+        if (versionStatisticLoader == null) {
+            versionStatisticLoader = new VersionStatisticLoader();
+        }
         versionStatisticCache =
                 InfinispanCacheWrapper.create(VERSION_STATISTIC_CACHE_NAME,
                         cacheContainer, versionStatisticLoader);
     }
 
-    @Observer(TextFlowTargetStateEvent.EVENT_NAME)
     @Override
-    public void textFlowStateUpdated(@Observes(during = TransactionPhase.AFTER_SUCCESS) TextFlowTargetStateEvent event) {
+    public void textFlowStateUpdated(
+        @Observes(during = TransactionPhase.AFTER_SUCCESS)
+            TextFlowTargetStateEvent event) {
         VersionLocaleKey key =
-                new VersionLocaleKey(event.getProjectIterationId(),
-                        event.getLocaleId());
+            new VersionLocaleKey(event.getProjectIterationId(),
+                event.getKey().getLocaleId());
         WordStatistic stats = versionStatisticCache.get(key);
         if (stats != null) {
-            TextFlowDAO textFlowDAO = serviceLocator.getInstance(TextFlowDAO.class);
-            HTextFlow textFlow = textFlowDAO.findById(event.getTextFlowId());
+            TextFlowDAO textFlowDAO =
+                serviceLocator.getInstance(TextFlowDAO.class);
 
-            stats.decrement(event.getPreviousState(),
-                    textFlow.getWordCount().intValue());
-            stats.increment(event.getNewState(),
-                    textFlow.getWordCount().intValue());
+            for (TextFlowTargetStateEvent.TextFlowTargetState state : event
+                .getStates()) {
+                HTextFlow textFlow = textFlowDAO.findById(state.getTextFlowId());
+                int wordCount =
+                    textFlow.getWordCount().intValue();
+                stats.decrement(state.getPreviousState(), wordCount);
+                stats.increment(state.getNewState(), wordCount);
+            }
             versionStatisticCache.put(key, stats);
         }
     }

@@ -3,6 +3,7 @@ package org.zanata.rest.service;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
@@ -14,11 +15,11 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
 import org.zanata.common.GlossarySortField;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
@@ -39,7 +40,8 @@ import org.zanata.service.GlossaryFileService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.impl.GlossaryFileServiceImpl;
 
-@Name("glossaryService")
+@RequestScoped
+@Named("glossaryService")
 @Path(GlossaryResource.SERVICE_PATH)
 @Slf4j
 @Transactional
@@ -47,16 +49,16 @@ public class GlossaryService implements GlossaryResource {
     @Context
     private Request request;
 
-    @In
+    @Inject
     private GlossaryDAO glossaryDAO;
 
-    @In
+    @Inject
     private GlossaryFileService glossaryFileServiceImpl;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
     @Override

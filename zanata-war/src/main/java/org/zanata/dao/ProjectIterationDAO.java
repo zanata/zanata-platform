@@ -28,24 +28,24 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.core.EntityTag;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
+import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.StatusCount;
+import org.zanata.rest.service.DateRange;
 import org.zanata.ui.model.statistic.MessageStatistic;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.HashUtil;
@@ -53,9 +53,8 @@ import org.zanata.util.StatisticsUtil;
 
 import com.google.common.collect.Lists;
 
-@Name("projectIterationDAO")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("projectIterationDAO")
+@RequestScoped
 public class ProjectIterationDAO extends
         AbstractDAOImpl<HProjectIteration, Long> {
 
@@ -519,6 +518,33 @@ public class ProjectIterationDAO extends
         }
         q.setCacheable(false).setComment(
                 "ProjectIterationDAO.searchByProjectIdExcludeObsolete");
+        return q.list();
+    }
+
+    public List<HAccount> getContributors(String projectSlug, String versionSlug,
+        DateRange dataRange) {
+            String query =
+                "select account from HAccount account where account.id in " +
+                    "(select tft.translator.account.id from HTextFlowTarget tft " +
+                    "where tft.textFlow.document.projectIteration.slug = :versionSlug " +
+                    "and tft.textFlow.document.projectIteration.project.slug =:projectSlug and tft.lastChanged between :fromDate and :toDate) " +
+                    "or account.id in (select tft.reviewer.account.id from HTextFlowTarget tft " +
+                    "where tft.textFlow.document.projectIteration.slug = :versionSlug " +
+                    "and tft.textFlow.document.projectIteration.project.slug =:projectSlug and tft.lastChanged between :fromDate and :toDate) " +
+                    "or account.id in (select tfth.translator.account.id from HTextFlowTargetHistory tfth " +
+                    "where tfth.textFlowTarget.textFlow.document.projectIteration.slug = :versionSlug " +
+                    "and tfth.textFlowTarget.textFlow.document.projectIteration.project.slug =:projectSlug and tfth.lastChanged between :fromDate and :toDate) " +
+                    "or account.id in (select tfth.reviewer.account.id from HTextFlowTargetHistory tfth " +
+                    "where tfth.textFlowTarget.textFlow.document.projectIteration.slug = :versionSlug " +
+                    "and tfth.textFlowTarget.textFlow.document.projectIteration.project.slug =:projectSlug and tfth.lastChanged between :fromDate and :toDate) group by account.username ";
+
+        Query q = getSession().createQuery(query);
+        q.setParameter("versionSlug", versionSlug);
+        q.setParameter("projectSlug", projectSlug);
+        q.setTimestamp("fromDate", dataRange.getFromDate().toDate());
+        q.setTimestamp("toDate", dataRange.getToDate().toDate());
+        q.setCacheable(true).setComment(
+            "ProjectIterationDAO.getContributors");
         return q.list();
     }
 }

@@ -20,19 +20,19 @@
  */
 package org.zanata.security;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.CredentialsDAO;
 import org.zanata.events.LoginCompleted;
+import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.security.HCredentials;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
@@ -44,6 +44,8 @@ import org.zanata.util.ServiceLocator;
 
 import javax.enterprise.event.Observes;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Centralizes all attempts to authenticate locally or externally.
  *
@@ -54,39 +56,42 @@ import javax.enterprise.event.Observes;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("authenticationManager")
-@Scope(ScopeType.STATELESS)
-@AutoCreate
+@Named("authenticationManager")
+@RequestScoped
+@Slf4j
 public class AuthenticationManager {
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private ZanataJpaIdentityStore identityStore;
 
-    @In
+    @Inject
     private ZanataCredentials credentials;
 
-    @In
+    @Inject
     private ZanataOpenId zanataOpenId;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
-    @In
+    @Inject
     private UserAccountService userAccountServiceImpl;
 
-    @In
+    @Inject
     private CredentialsDAO credentialsDAO;
 
-    @In
+    @Inject
     private AccountDAO accountDAO;
 
-    @In
+    @Inject
     private UserRedirectBean userRedirect;
 
-    @In
+    @Inject
     private ApplicationConfiguration applicationConfiguration;
+
+    @Inject
+    private Messages msgs;
 
     /**
      * Logs in a user using a specified authentication type.
@@ -188,7 +193,6 @@ public class AuthenticationManager {
      * @return A String with the result of the operation.
      */
     public String openIdLogin() {
-        zanataOpenId.setProvider(credentials.getOpenIdProviderType());
         String loginResult = identity.login(AuthenticationType.OPENID);
         return loginResult;
     }
@@ -257,6 +261,7 @@ public class AuthenticationManager {
                 if (userRedirect != null) {
                     if (userRedirect.isRedirect()
                             && !userRedirect.isRedirectToHome()
+                            && !userRedirect.isRedirectToError()
                             && !userRedirect.isRedirectToRegister()) {
                         return "redirect";
                     }
@@ -273,10 +278,9 @@ public class AuthenticationManager {
      * Performs operations after a successful login is completed. Currently runs
      * the role assignment rules on the logged in account.
      *
-     * @param authType
-     *            Authentication type that was used to login.
+     * @param payload
+     *            contains Authentication type that was used to login.
      */
-    @Observer(LoginCompleted.EVENT_NAME)
     public void onLoginCompleted(@Observes LoginCompleted payload) {
         AuthenticationType authType = payload.getAuthType();
         identity.setPreAuthenticated(true);
@@ -306,11 +310,6 @@ public class AuthenticationManager {
             userAccountServiceImpl.runRoleAssignmentRules(authenticatedAccount,
                     authenticatedCredentials, authType.name());
         }
-        // make sure server path is populated. Here we are sure servlet request
-        // is available. In cases where it's not in database and
-        // there is no servlet request, the value will not be null.
-        // e.g. EmailBuilder triggered by JMS message
-        applicationConfiguration.createDefaultServerPath();
     }
 
     public boolean isAccountWaitingForActivation(String username) {
@@ -380,7 +379,7 @@ public class AuthenticationManager {
         } else {
             String message = "";
             if (isAccountWaitingForActivation(username)) {
-                message = "#{msgs['org.jboss.seam.loginFailed']}";
+                message = msgs.get("authentication.loginFailed");
             } else {
                 message =
                         "User "

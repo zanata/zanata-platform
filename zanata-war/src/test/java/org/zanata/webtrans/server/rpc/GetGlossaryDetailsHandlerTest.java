@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.hamcrest.Matchers;
-import org.junit.Before;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataTest;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
@@ -17,9 +16,9 @@ import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HLocale;
 import org.zanata.model.TestFixture;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
+import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsAction;
@@ -27,6 +26,11 @@ import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsResult;
 import com.google.common.collect.Lists;
 
 import net.customware.gwt.dispatch.shared.ActionException;
+
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -35,30 +39,18 @@ import static org.mockito.Mockito.when;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
 public class GetGlossaryDetailsHandlerTest extends ZanataTest {
+    @Inject @Any
     private GetGlossaryDetailsHandler handler;
-    @Mock
+    @Produces @Mock
     private ZanataIdentity identity;
-    @Mock
+    @Produces @Mock
     private GlossaryDAO glossaryDAO;
-    @Mock
+    @Produces @Mock
     private LocaleService localeServiceImpl;
     private HLocale targetHLocale = new HLocale(LocaleId.DE);
     private final HLocale srcLocale = new HLocale(LocaleId.EN);
-
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        // @formatter:off
-      handler = SeamAutowire.instance()
-            .reset()
-            .use("identity", identity)
-            .use("glossaryDAO", glossaryDAO)
-            .use("localeServiceImpl", localeServiceImpl)
-            .ignoreNonResolvable()
-            .autowire(GetGlossaryDetailsHandler.class);
-      // @formatter:on
-    }
 
     private HGlossaryTerm glossaryTerm(String content, HLocale srcLocale) {
         HGlossaryTerm glossaryTerm = new HGlossaryTerm(content);
@@ -71,6 +63,7 @@ public class GetGlossaryDetailsHandlerTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void testExecute() throws Exception {
         WorkspaceId workspaceId =
                 TestFixture.workspaceId(targetHLocale.getLocaleId());
@@ -99,6 +92,7 @@ public class GetGlossaryDetailsHandlerTest extends ZanataTest {
     }
 
     @Test(expected = ActionException.class)
+    @InRequestScope
     public void testExecuteWithInvalidLocale() throws Exception {
         WorkspaceId workspaceId =
                 TestFixture.workspaceId(targetHLocale.getLocaleId());
@@ -118,6 +112,7 @@ public class GetGlossaryDetailsHandlerTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void testRollback() throws Exception {
         handler.rollback(null, null, null);
     }

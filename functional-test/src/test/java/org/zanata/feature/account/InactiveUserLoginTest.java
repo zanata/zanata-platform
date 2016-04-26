@@ -48,7 +48,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class InactiveUserLoginTest extends ZanataTestCase {
 
     @Rule
-    public HasEmailRule hasEmailRule = new HasEmailRule();
+    public final HasEmailRule hasEmailRule = new HasEmailRule();
 
     @Feature(summary = "The user needs to verify their account before they may " +
             "log in",

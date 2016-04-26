@@ -22,7 +22,7 @@ package org.zanata.feature.dashboard;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
-import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
@@ -46,8 +46,8 @@ import static org.zanata.util.ZanataRestCaller.buildTextFlow;
 @Slf4j
 public class DashboardTest extends ZanataTestCase {
 
-    @ClassRule
-    public static HasEmailRule emailRule = new HasEmailRule();
+    @Rule
+    public final HasEmailRule emailRule = new HasEmailRule();
 
     private DashboardBasePage dashboard;
 

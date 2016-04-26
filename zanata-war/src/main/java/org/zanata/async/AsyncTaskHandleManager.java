@@ -27,10 +27,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.collect.Lists;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -39,9 +36,9 @@ import com.google.common.collect.Maps;
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("asyncTaskHandleManager")
-@Scope(ScopeType.APPLICATION)
-@AutoCreate
+@Named("asyncTaskHandleManager")
+@javax.enterprise.context.ApplicationScoped
+
 public class AsyncTaskHandleManager {
 
     private Map<Serializable, AsyncTaskHandle> handlesByKey = Maps

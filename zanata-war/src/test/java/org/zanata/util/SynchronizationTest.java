@@ -33,15 +33,15 @@ import net.jodah.concurrentunit.ConcurrentTestCase;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import org.apache.deltaspike.core.util.ProjectStageProducer;
 import org.jglue.cdiunit.AdditionalClasses;
-import org.jglue.cdiunit.CdiRunner;
 import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+import org.zanata.test.CdiUnitRunner;
 
 @AdditionalClasses({ SynchronizationInterceptor.class})
 @SupportDeltaspikeCore
-@RunWith(CdiRunner.class)
+@RunWith(CdiUnitRunner.class)
 public class SynchronizationTest extends ConcurrentTestCase {
 
     static {

@@ -2,16 +2,20 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   template="../WEB-INF/template/template.xhtml">
+
+  <f:metadata>
+    <f:event type="preRenderView" listener="#{identity.checkLoggedIn()}"/>
+  </f:metadata>
 
   <ui:define name="page_title">#{msgs['jsf.PageTitle']}</ui:define>
   <ui:define name="center_content">
 
     <script type="text/javascript">
       jQuery(function(){
-
-        crossroads.addRoute(':pre*:/dashboard/settings/{subSection}', function(pre, subSection) {
+        crossroads.addRoute(':pre*:/dashboard/settings/{subSection}/:?query:', function(pre, subSection, query) {
           zanata.tabs.activate(jQuery('#settings_tab'))
           subSection = subSection || 'account';
           subSection =
@@ -19,7 +23,7 @@
           zanata.tabs.activate(jQuery('#' + subSection + '_tab'))
         });
 
-        crossroads.addRoute(':pre*:/dashboard/:section::?query:', function(pre, section, query) {
+        crossroads.addRoute(':pre*:/dashboard/:section:/:?query:', function(pre, section, query) {
           section = section || 'activity'
           section = validateTab('#' + section + "_tab", section, "activity");
           zanata.tabs.activate(jQuery('#' + section + "_tab"))

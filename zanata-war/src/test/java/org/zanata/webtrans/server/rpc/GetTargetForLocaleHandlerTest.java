@@ -9,11 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.dbunit.operation.DatabaseOperation;
 
 import org.hamcrest.Matchers;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowTargetDAO;
@@ -21,8 +21,8 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.TestFixture;
 import org.zanata.rest.service.ResourceUtils;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.shared.model.IdForLocale;
 import org.zanata.webtrans.shared.model.Locale;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -30,12 +30,18 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetTargetForLocale;
 import org.zanata.webtrans.shared.rpc.GetTargetForLocaleResult;
 
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+
 @Slf4j
+@RunWith(CdiUnitRunner.class)
 public class GetTargetForLocaleHandlerTest extends ZanataDbunitJpaTest {
+    @Inject @Any
     private GetTargetForLocaleHandler handler;
-    @Mock
+    @Produces @Mock
     private ZanataIdentity identity;
-    @Mock
+    @Produces @Mock
     private TextFlowTargetDAO textFlowTargetDAO;
     private GetTargetForLocale action;
     private final LocaleId localeId = new LocaleId("ja");
@@ -51,22 +57,8 @@ public class GetTargetForLocaleHandlerTest extends ZanataDbunitJpaTest {
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        // @formatter:off
         ResourceUtils resourceUtils = new ResourceUtils();
         resourceUtils.create(); // postConstruct
-        SeamAutowire.instance().reset();
-        TransUnitTransformer transUnitTransformer = SeamAutowire.instance()
-                .use("resourceUtils", resourceUtils)
-                .autowire(TransUnitTransformer.class);
-
-        handler = SeamAutowire.instance()
-                .use("identity", identity)
-                .use("textFlowTargetDAO", textFlowTargetDAO)
-                .use("transUnitTransformer", transUnitTransformer)
-                .ignoreNonResolvable()
-                .autowire(GetTargetForLocaleHandler.class);
-        // @formatter:on
 
         jaHLocale = getEm().find(HLocale.class, 3L);
 
@@ -80,6 +72,7 @@ public class GetTargetForLocaleHandlerTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testExecute() throws Exception {
         when(textFlowTargetDAO.getTextFlowTarget(sourceTransUnitId.getId(),
                 jaHLocale.getLocaleId())).thenReturn(getEm()
@@ -95,6 +88,7 @@ public class GetTargetForLocaleHandlerTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testExecuteWhenTargetLangDoesNotExsist() throws Exception {
         when(textFlowTargetDAO.getTextFlowTarget(sourceTransUnitId.getId(),
                 jaHLocale.getLocaleId())).thenReturn(null);
@@ -108,6 +102,7 @@ public class GetTargetForLocaleHandlerTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void testRollback() throws Exception {
         handler.rollback(null, null, null);
     }

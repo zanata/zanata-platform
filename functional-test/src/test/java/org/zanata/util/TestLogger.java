@@ -34,28 +34,28 @@ import org.junit.runner.notification.RunListener;
 public class TestLogger extends RunListener {
     @Override
     public void testStarted(Description description) throws Exception {
-        log.info("Test {} starting", description);
+        log.info("Test starting: {}", description);
     }
 
     @Override
     public void testFinished(Description description) throws Exception {
-        log.info("Test {} finished", description);
-    }
-
-    @Override
-    public void testFailure(Failure failure) throws Exception {
-        log.error("FAILED test " + failure, failure.getException());
-    }
-
-    @Override
-    public void testAssumptionFailure(Failure failure) {
-        log.error("FAILED ASSUMPTION in test " + failure,
-                failure.getException());
+        log.info("Test finished: {}", description);
     }
 
     @Override
     public void testIgnored(Description description) throws Exception {
-        log.error("Test {} IGNORED", description);
+        log.error("Test IGNORED: {}", description);
+    }
+
+    @Override
+    public void testFailure(Failure failure) throws Exception {
+        log.error("Test FAILED: " + failure, failure.getException());
+    }
+
+    @Override
+    public void testAssumptionFailure(Failure failure) {
+        log.error("Test FAILED ASSUMPTION: " + failure,
+                failure.getException());
     }
 
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<dataset>
+  <TransMemory
+    id="1"
+    versionNum="1"
+    creationDate="2015-11-30 20:30:16"
+    lastChanged="2015-11-30 20:30:16"
+    slug="tm-test"
+    description="TMX test"
+    source_language="en-US"
+    />
+</dataset>

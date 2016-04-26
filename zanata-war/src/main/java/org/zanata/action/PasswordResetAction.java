@@ -7,13 +7,14 @@ import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.deltaspike.core.api.scope.GroupedConversation;
+import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.End;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.zanata.dao.AccountResetPasswordKeyDAO;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.exception.NotLoggedInException;
 import org.zanata.ApplicationConfiguration;
@@ -24,25 +25,31 @@ import org.zanata.seam.security.AbstractRunAsOperation;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.ui.faces.FacesMessages;
 
-@Name("passwordReset")
-@Scope(ScopeType.CONVERSATION)
+@Named("passwordReset")
+@GroupedConversationScoped
 public class PasswordResetAction implements Serializable {
 
     private static final long serialVersionUID = -3966625589007754411L;
 
-    @In
+    @Inject
+    private GroupedConversation conversation;
+
+    @Inject
     private EntityManager entityManager;
 
-    @In
+    @Inject
     private IdentityManager identityManager;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
-    @In
+    @Inject
     private Messages msgs;
 
-    @In
+    @Inject
+    private AccountResetPasswordKeyDAO accountResetPasswordKeyDAO;
+
+    @Inject
     private ApplicationConfiguration applicationConfiguration;
 
     @Getter
@@ -51,7 +58,7 @@ public class PasswordResetAction implements Serializable {
     @Getter
     @Setter
     @NotEmpty
-    @Size(min = 6, max = 20)
+    @Size(min = 6, max = 1024)
     private String password;
 
     @Getter
@@ -77,53 +84,55 @@ public class PasswordResetAction implements Serializable {
 
     public void setActivationKey(String activationKey) {
         this.activationKey = activationKey;
-        key =
-                entityManager.find(HAccountResetPasswordKey.class,
+        key = entityManager.find(HAccountResetPasswordKey.class,
                         getActivationKey());
     }
 
-    @Begin(join = true)
+    // @Begin(join = true)
     public void validateActivationKey() {
         if (!applicationConfiguration.isInternalAuth()) {
             throw new AuthorizationException(
                     "Password reset is only available for server using internal authentication");
         }
-
-        if (getActivationKey() == null)
+        if (getActivationKey() == null) {
             throw new KeyNotFoundException();
-
-        key =
-                entityManager.find(HAccountResetPasswordKey.class,
-                        getActivationKey());
-
-        if (key == null)
+        }
+        key = entityManager.find(HAccountResetPasswordKey.class,
+                getActivationKey());
+        if (key == null) {
             throw new KeyNotFoundException();
+        }
     }
 
     private boolean passwordChanged;
 
-    @End
+    @Transactional
     public String changePassword() {
-
+        // need to get username from DAO due to lazy loading of account in key
+        String username =
+            accountResetPasswordKeyDAO.getUsername(key.getKeyHash());
         if (!validatePasswordsMatch())
             return null;
+
+        key = entityManager
+            .find(HAccountResetPasswordKey.class, getActivationKey());
+        entityManager.remove(key);
+        entityManager.flush();
 
         new AbstractRunAsOperation() {
             public void execute() {
                 try {
                     passwordChanged =
-                            identityManager.changePassword(getKey()
-                                    .getAccount().getUsername(), getPassword());
+                        identityManager.changePassword(username, getPassword());
                 } catch (AuthorizationException | NotLoggedInException e) {
                     passwordChanged = false;
                     facesMessages.addGlobal(
-                            "Error changing password: " + e.getMessage());
+                        "Error changing password: " + e.getMessage());
                 }
             }
         }.addRole("admin").run();
 
-        entityManager.remove(getKey());
-
+        conversation.close();
         if (passwordChanged) {
             facesMessages
                     .addGlobal(msgs.get("jsf.password.change.success"));
@@ -133,7 +142,6 @@ public class PasswordResetAction implements Serializable {
                     .addGlobal(msgs.get("jsf.password.change.failed"));
             return null;
         }
-
     }
 
 }

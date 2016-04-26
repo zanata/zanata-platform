@@ -18,9 +18,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.zanata.util.RunnableEx;
 
 import static java.util.concurrent.TimeUnit.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.zanata.util.RunnableEx.runnable;
 
 /**
  * @author Patrick Huang <a
@@ -51,10 +53,7 @@ public class RestCallLimiterTest {
     private static final long SAFE_TIMEOUT = 10000;
     private static final long TIMEOUT = DEBUG ? DEBUG_TIMEOUT : SAFE_TIMEOUT;
     private static final TimeUnit UNIT = MILLISECONDS;
-    private static final Runnable nullRunnable = new Runnable() {
-        @Override
-        public void run() {
-        }
+    private static final RunnableEx nullRunnable = () -> {
     };
     private volatile CountDownLatch awakenLatch;
 
@@ -85,30 +84,24 @@ public class RestCallLimiterTest {
             final CountDownLatch expectedRejects,
             final CountDownLatch execsFinished,
             final String testName) {
-        final Runnable blockingTask = new Runnable() {
-            @Override
-            public void run() {
-                log.debug("execution started");
-                execsStarted.countDown();
-                blockUntilAwoken(testName);
-                log.debug("execution finished");
-            }
+        final RunnableEx blockingTask = () -> {
+            log.debug("execution started");
+            execsStarted.countDown();
+            blockUntilAwoken(testName);
+            log.debug("execution finished");
         };
         for (int i = 0; i < numTasks; i++) {
             final int jobNum = i;
-            threadPool.submit(new Runnable() {
-                @Override
-                public void run() {
-                    if (limiter.tryAcquireAndRun(blockingTask)) {
-                        log.debug(
+            threadPool.submit(runnable(() -> {
+                if (limiter.tryAcquireAndRun(blockingTask)) {
+                    log.debug(
                             "request #" + jobNum + ": acquired and executed");
-                        execsFinished.countDown();
-                    } else {
-                        log.debug("request #" + jobNum + ": rejected");
-                        expectedRejects.countDown();
-                    }
+                    execsFinished.countDown();
+                } else {
+                    log.debug("request #" + jobNum + ": rejected");
+                    expectedRejects.countDown();
                 }
-            });
+            }));
         }
     }
 
@@ -252,7 +245,8 @@ public class RestCallLimiterTest {
     }
 
     @Test
-    public void shouldChangeMaxActiveWhenNoThreadsAreBlocked() {
+    public void shouldChangeMaxActiveWhenNoThreadsAreBlocked()
+            throws Exception {
         limiter = new RestCallLimiter(3, 3);
         limiter.tryAcquireAndRun(nullRunnable);
         assertThat(limiter.availableActivePermit()).isEqualTo(3);
@@ -338,11 +332,8 @@ public class RestCallLimiterTest {
 
     @Test
     public void shouldReleaseSemaphoreWhenRunnableThrowsException() throws Exception {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                throw new RuntimeException("bad");
-            }
+        RunnableEx runnable = () -> {
+            throw new RuntimeException("bad");
         };
         try {
             limiter.tryAcquireAndRun(runnable);

@@ -31,11 +31,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.async.handle.CopyTransTaskHandle;
@@ -52,21 +49,21 @@ import org.zanata.service.CopyTransService;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@AutoCreate
-@Name("copyTransManager")
-@Scope(ScopeType.STATELESS)
+
+@Named("copyTransManager")
+@javax.enterprise.context.Dependent
 @Slf4j
 // TODO This class should be merged with the copy trans service (?)
 public class CopyTransManager implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @In
+    @Inject
     private AsyncTaskHandleManager asyncTaskHandleManager;
 
-    @In
+    @Inject
     private CopyTransService copyTransServiceImpl;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
     public boolean isCopyTransRunning(@Nonnull Object target) {

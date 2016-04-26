@@ -65,27 +65,25 @@ public class ProjectVersionsPage extends ProjectBasePage {
 
     public VersionLanguagesPage gotoVersion(final String versionId) {
         log.info("Click Version {}", versionId);
-        waitForAMoment().until(new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                List<WebElement> versionLinks = getDriver()
-                        .findElement(By.id("versions_form"))
-                        .findElement(By.className("list--stats"))
-                        .findElements(By.tagName("li"));
-                boolean clicked = false;
-                for (WebElement links : versionLinks) {
-                    // The Translate Options menu can get picked up here
-                    for (WebElement link : links.findElements(By.tagName("a"))) {
-                        if (link.getText().contains(versionId)) {
-                            link.click();
-                            clicked = true;
-                            break;
-                        }
+        waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
+            getDriver().findElement(By.id("versions_tab")).click();
+            List<WebElement> versionLinks = getDriver()
+                    .findElement(By.id("versions_form"))
+                    .findElement(By.className("list--stats"))
+                    .findElements(By.tagName("li"));
+            boolean clicked = false;
+            for (WebElement links : versionLinks) {
+                // The Translate Options menu can get picked up here
+                for (WebElement link : links.findElements(By.tagName("a"))) {
+                    if (link.getText().contains(versionId)) {
+                        link.click();
+                        clicked = true;
+                        break;
                     }
-                    if (clicked) break;
                 }
-                return clicked;
+                if (clicked) break;
             }
+            return clicked;
         });
         return new VersionLanguagesPage(getDriver());
     }
@@ -105,12 +103,8 @@ public class ProjectVersionsPage extends ProjectBasePage {
         log.info("Wait for number of displayed versions to be {}", expected);
         waitForPageSilence();
         waitForAMoment().withMessage("Waiting for versions").until(
-                new Predicate<WebDriver>() {
-            @Override
-            public boolean apply(WebDriver input) {
-                return getNumberOfDisplayedVersions() == expected;
-            }
-        });
+                (Predicate<WebDriver>) webDriver ->
+                        getNumberOfDisplayedVersions() == expected);
         assertThat(getNumberOfDisplayedVersions()).isEqualTo(expected);
         assertThat(getVersions()).hasSize(expected);
         return new ProjectVersionsPage(getDriver());

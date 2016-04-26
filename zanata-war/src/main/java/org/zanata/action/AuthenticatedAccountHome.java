@@ -22,30 +22,31 @@ package org.zanata.action;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.seam.framework.EntityHome;
+import org.zanata.security.annotations.Authenticated;
+
+import java.io.Serializable;
 
 /**
  * A simple bean to hold the currently authenticated account.
  */
-@Name("authenticatedAccountHome")
-@Scope(ScopeType.CONVERSATION)
+@Named("authenticatedAccountHome")
+@RequestScoped
 @Slf4j
-public class AuthenticatedAccountHome extends EntityHome<HAccount> {
+public class AuthenticatedAccountHome extends EntityHome<HAccount>
+        implements Serializable {
 
-    /**
-    *
-    */
     private static final long serialVersionUID = 1L;
 
-    @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
-    HAccount authenticatedAccount;
+    @Inject
+    @Authenticated
+    private HAccount authenticatedAccount;
 
     @Override
     public Object getId() {
@@ -55,7 +56,4 @@ public class AuthenticatedAccountHome extends EntityHome<HAccount> {
         return authenticatedAccount.getId();
     }
 
-    public HPerson getAuthenticatedPerson() {
-        return getInstance().getPerson();
-    }
 }

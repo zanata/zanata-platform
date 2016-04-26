@@ -4,22 +4,25 @@ import java.util.List;
 
 import org.apache.lucene.queryParser.QueryParser;
 import org.hamcrest.Matchers;
-import org.junit.Before;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataTest;
 import org.zanata.common.LocaleId;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationMemoryService;
+import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType;
 import com.google.common.collect.Lists;
+
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -30,33 +33,21 @@ import static org.mockito.Mockito.when;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
 public class GetTransMemoryHandlerTest extends ZanataTest {
+    @Inject @Any
     private GetTransMemoryHandler handler;
 
-    @Mock
+    @Produces @Mock
     private ZanataIdentity identity;
-    @Mock
+    @Produces @Mock
     private TranslationMemoryService translationMemoryService;
 
     private LocaleId targetLocaleId = new LocaleId("ja");
     private LocaleId sourceLocaleId = LocaleId.EN_US;
 
-    private static final SeamAutowire seam = SeamAutowire.instance();
-
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        handler =
-                seam.reset()
-                        .use("identity", identity)
-                        .use("translationMemoryServiceImpl",
-                                translationMemoryService).ignoreNonResolvable()
-                        .autowire(GetTransMemoryHandler.class);
-
-        // @formatter:off
-    }
-
     @Test
+    @InRequestScope
     public void testExecute() throws Exception {
         // Given: hibernate search can not parse query
         TransMemoryQuery query =
@@ -79,6 +70,7 @@ public class GetTransMemoryHandlerTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void testRollback() throws Exception {
         handler.rollback(null, null, null);
     }

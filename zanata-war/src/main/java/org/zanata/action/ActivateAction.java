@@ -20,46 +20,51 @@
  */
 package org.zanata.action;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 
 import org.apache.commons.lang.time.DateUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.apache.deltaspike.core.api.scope.GroupedConversation;
+import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.exception.KeyNotFoundException;
 import org.zanata.exception.ActivationLinkExpiredException;
 import org.zanata.model.HAccountActivationKey;
 import org.zanata.seam.security.AbstractRunAsOperation;
 import org.zanata.seam.security.IdentityManager;
+import org.zanata.ui.faces.FacesMessages;
+import org.zanata.util.UrlUtil;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.zanata.ui.faces.FacesMessages;
 
-@Name("activate")
-@Scope(ScopeType.CONVERSATION)
+@Named("activate")
+@GroupedConversationScoped
 public class ActivateAction implements Serializable {
 
     private static final long serialVersionUID = -8079131168179421345L;
 
-    private static int LINK_ACTIVE_DAYS = 1;
+    private static final int LINK_ACTIVE_DAYS = 1;
 
-    @In
+    @Inject
+    private GroupedConversation conversation;
+
+    @Inject
     private AccountActivationKeyDAO accountActivationKeyDAO;
 
-    @In
+    @Inject
     private IdentityManager identityManager;
 
-    @In("jsfMessages")
+    @Inject
+    private UrlUtil urlUtil;
+
+    @Inject
     private FacesMessages facesMessages;
 
     @Getter
@@ -68,8 +73,8 @@ public class ActivateAction implements Serializable {
 
     private HAccountActivationKey key;
 
-    @Begin(join = true)
-    public void validateAndActivateAccount() throws IOException {
+//    @Begin(join = true)
+    public void validateActivationKey() {
         if (getActivationKey() == null) {
             throw new KeyNotFoundException("null activation key");
         }
@@ -85,27 +90,28 @@ public class ActivateAction implements Serializable {
             throw new ActivationLinkExpiredException("Activation link expired:"
                     + getActivationKey());
         }
-
-        new AbstractRunAsOperation() {
-            public void execute() {
-                identityManager.enableUser(key.getAccount().getUsername());
-                identityManager.grantRole(key.getAccount().getUsername(),
-                    "user");
-            }
-        }.addRole("admin").run();
-        accountActivationKeyDAO.makeTransient(key);
-
-        facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
-            "Your account was successfully activated. You can now sign in.");
-
-        FacesContext context = FacesContext.getCurrentInstance();
-        ExternalContext ec = context.getExternalContext();
-        ec.getFlash().setKeepMessages(true);
-        ec.redirect(ec.getRequestContextPath() + "/account/sign_in");
     }
 
     private boolean isExpired(Date creationDate, int activeDays) {
         Date expiryDate = DateUtils.addDays(creationDate, activeDays);
         return expiryDate.before(new Date());
+    }
+
+    @Transactional
+    public void activate() {
+        new AbstractRunAsOperation() {
+            public void execute() {
+                identityManager.enableUser(key.getAccount().getUsername());
+                identityManager.grantRole(key.getAccount().getUsername(),
+                        "user");
+            }
+        }.addRole("admin").run();
+        accountActivationKeyDAO.makeTransient(key);
+
+        facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                "Your account was successfully activated. You can now sign in.");
+
+        urlUtil.redirectTo(urlUtil.signInPage());
+        conversation.close();
     }
 }

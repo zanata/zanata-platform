@@ -23,10 +23,9 @@ package org.zanata.webtrans.server.rpc;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.dao.ProjectIterationDAO;
@@ -44,22 +43,23 @@ import java.io.Serializable;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
-@Name("webtrans.gwt.DownloadAllFilesHandler")
-@Scope(ScopeType.CONVERSATION)
+@Named("webtrans.gwt.DownloadAllFilesHandler")
+@RequestScoped
 @ActionHandlerFor(DownloadAllFilesAction.class)
 public class DownloadAllFilesHandler extends
-        AbstractActionHandler<DownloadAllFilesAction, DownloadAllFilesResult> {
+        AbstractActionHandler<DownloadAllFilesAction, DownloadAllFilesResult>
+        implements Serializable {
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private TranslationArchiveService translationArchiveServiceImpl;
 
-    @In
+    @Inject
     private AsyncTaskHandleManager asyncTaskHandleManager;
 
     @Override

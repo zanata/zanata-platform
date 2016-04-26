@@ -33,12 +33,9 @@ import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Synchronized;
+import javax.annotation.PostConstruct;
+import javax.inject.Named;
+import org.zanata.util.Synchronized;
 import org.zanata.ServerConstants;
 
 /**
@@ -47,9 +44,9 @@ import org.zanata.ServerConstants;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("jndiBackedConfig")
-@Scope(ScopeType.APPLICATION)
-@AutoCreate
+@Named("jndiBackedConfig")
+@javax.enterprise.context.ApplicationScoped
+
 // TODO populate HashMap in constructor; remove @Synchronized
 @Synchronized(timeout = ServerConstants.DEFAULT_TIMEOUT)
 public class JndiBackedConfig implements Serializable {
@@ -95,7 +92,7 @@ public class JndiBackedConfig implements Serializable {
      * Resets the store by clearing out all values. This means that values will
      * need to be reloaded as they are requested.
      */
-    @Create
+    @PostConstruct
     public void reset() {
         configurationValues.clear();
     }
@@ -127,9 +124,11 @@ public class JndiBackedConfig implements Serializable {
             Context ctx = new InitialContext();
             NamingEnumeration<NameClassPair> pairs = ctx.list(base);
             Set<String> results = new HashSet<String>();
-            while (pairs.hasMore()) {
-                NameClassPair pair = pairs.next();
-                results.add(pair.getName());
+            if(pairs != null) {
+                while (pairs.hasMore()) {
+                    NameClassPair pair = pairs.next();
+                    results.add(pair.getName());
+                }
             }
 
             return results;

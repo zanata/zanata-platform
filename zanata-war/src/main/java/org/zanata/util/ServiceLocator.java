@@ -18,64 +18,80 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.zanata.util;
 
+import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.enterprise.inject.Default;
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
+import java.lang.annotation.Annotation;
+import java.util.Optional;
 
 /**
- * Service Locator for Seam components, intended for obtaining short-lived
+ * Service Locator for CDI beans, intended for obtaining short-lived
  * components to use inside methods of long-lived components, such as DAOs
  * inside application scope singletons.
+ * <p>
+ * NOTE: BeanProvider will log a warning (via JUL) if getInstance returns a
+ * dependent bean (you should use getDependent instead to for correct
+ * lifecycle handling).
  * <p>
  * It's still an anti-pattern, but at least this way callers don't use
  * Component.getInstance() directly, and ServiceLocator can be subclassed
  * to return mock objects for testing.
+ * <p>
+ * Note that the deprecated methods which accept a bean name will output a
+ * debug message if enabled, and go to the trouble of creating a stack trace to
+ * find the caller's class name. This is expensive, so it would be best not to
+ * enable debug if these methods are used in production.
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- *
+ * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@AutoCreate
-@BypassInterceptors
-@Name("serviceLocator")
-@Scope(ScopeType.STATELESS)
-public class ServiceLocator {
+@Default
+public class ServiceLocator implements IServiceLocator {
+    private static Logger log = LoggerFactory.getLogger(ServiceLocator.class);
 
-    public static ServiceLocator instance() {
-        return (ServiceLocator) Component.getInstance(ServiceLocator.class);
+    protected static final ServiceLocator INSTANCE = new ServiceLocator();
+
+    public static IServiceLocator instance() {
+        return INSTANCE;
     }
 
-    public <T> T getInstance(Class<T> clazz) {
-        return (T) Component.getInstance(clazz);
+    private ServiceLocator() {
     }
 
-    public <T> T getInstance(String name, Class<T> clazz) {
-        return (T) Component.getInstance(name);
+    @Override
+    public <T> BeanHolder<T> getDependent(Class<T> clazz,
+            Annotation... qualifiers) {
+        return new BeanHolder<T>(BeanProvider.getDependent(clazz, qualifiers));
     }
 
-    public <T> T getInstance(String name, ScopeType scope, Class<T> clazz) {
-        return (T) Component.getInstance(name, scope);
+    @Override
+    public <T> T getInstance(Class<T> clazz, Annotation... qualifiers) {
+        return BeanProvider.getContextualReference(clazz, qualifiers);
     }
 
+    public <T> Optional<T> getOptionalInstance(Class<T> clazz, Annotation... qualifiers) {
+        return Optional.ofNullable(BeanProvider.getContextualReference(clazz, true, qualifiers));
+    }
+
+    @Override
     public EntityManager getEntityManager() {
-        return (EntityManager) Component.getInstance("entityManager");
+        return getInstance(EntityManager.class);
     }
 
+    @Override
     public EntityManagerFactory getEntityManagerFactory() {
-        return (EntityManagerFactory) Component.getInstance("entityManagerFactory");
+        return getInstance(EntityManagerFactory.class);
     }
 
+    @Override
     public <T> T getJndiComponent(String jndiName, Class<T> clazz)
             throws NamingException {
         Context ctx = new InitialContext();

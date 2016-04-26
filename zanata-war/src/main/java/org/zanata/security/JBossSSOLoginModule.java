@@ -28,6 +28,8 @@ import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
+import javax.security.auth.callback.UnsupportedCallbackException;
+import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
@@ -92,8 +94,8 @@ public class JBossSSOLoginModule implements LoginModule {
             String passwordHash =
                     HashUtil.md5Hex(username
                             + HashUtil.md5Hex(new String(password)));
-            requestUrl.append("u=" + username);
-            requestUrl.append("&h=" + passwordHash);
+            requestUrl.append("u=").append(username);
+            requestUrl.append("&h=").append(passwordHash);
             HttpGet getAuthRequest = new HttpGet(requestUrl.toString());
 
             HttpResponse authResponse = httpClient.execute(getAuthRequest);
@@ -110,12 +112,15 @@ public class JBossSSOLoginModule implements LoginModule {
                 //parsedResponse.get("email");
                 log.info("JBoss.org user " + username
                         + " successfully authenticated");
+                return true;
             } else {
                 log.info("JBoss.org user " + username
                         + " failed authentication");
+                throw new FailedLoginException();
             }
-            return loginSuccessful;
-        } catch (Exception ex) {
+        } catch (UnsupportedCallbackException e) {
+            throw new RuntimeException(e);
+        } catch (IOException ex) {
             LoginException le = new LoginException(ex.getMessage());
             le.initCause(ex);
             throw le;

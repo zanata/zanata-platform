@@ -20,35 +20,30 @@ R * Copyright 2010, Red Hat, Inc. and individual contributors
  */
 package org.zanata.security;
 
-import static org.jboss.seam.ScopeType.SESSION;
-import static org.jboss.seam.annotations.Install.APPLICATION;
-
-import java.io.Serializable;
-import java.lang.reflect.Field;
-
-import javax.faces.context.FacesContext;
-
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
 import org.jboss.security.SecurityContextAssociation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.events.AlreadyLoggedInEvent;
-import org.zanata.util.Event;
 import org.zanata.util.ServiceLocator;
 
-@Name("org.jboss.seam.security.spNegoIdentity")
-@Scope(SESSION)
-@Install(precedence = APPLICATION)
-@BypassInterceptors
+import javax.enterprise.event.Event;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
+
+@Named("spNegoIdentity")
+@javax.enterprise.context.SessionScoped
 public class SpNegoIdentity implements Serializable {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(SpNegoIdentity.class);
     private static final long serialVersionUID = 5341594999046279309L;
-    private static final String SUBJECT = "subject";
-    private static final String PRINCIPAL = "principal";
+
+    @Inject
+    private ZanataIdentity identity;
+
+    @Inject
+    private Event<AlreadyLoggedInEvent> alreadyLoggedInEventEvent;
 
     public void authenticate() {
         ZanataIdentity identity =
@@ -78,27 +73,17 @@ public class SpNegoIdentity implements Serializable {
     }
 
     private Event<AlreadyLoggedInEvent> getAlreadyLoggedInEvent() {
-        return ServiceLocator.instance().getInstance("event", Event.class);
+        return alreadyLoggedInEventEvent;
     }
 
     public void login() {
-        try {
-            ZanataIdentity identity =
-                    ServiceLocator.instance().getInstance(ZanataIdentity.class);
-            if (identity.isLoggedIn()) {
-                getAlreadyLoggedInEvent().fire(new AlreadyLoggedInEvent());
-                return;
-            }
-
-            Field field = ZanataIdentity.class.getDeclaredField(PRINCIPAL);
-            field.setAccessible(true);
-            field.set(identity, SecurityContextAssociation.getPrincipal());
-
-            field = ZanataIdentity.class.getDeclaredField(SUBJECT);
-            field.setAccessible(true);
-            field.set(identity, SecurityContextAssociation.getSubject());
-        } catch (Exception e) {
-            LOGGER.warn("exception", e);
+        if (identity.isLoggedIn()) {
+            getAlreadyLoggedInEvent().fire(new AlreadyLoggedInEvent());
+            return;
         }
+
+        identity.acceptExternalSubjectAndPpal(
+                SecurityContextAssociation.getSubject(),
+                SecurityContextAssociation.getPrincipal());
     }
 }

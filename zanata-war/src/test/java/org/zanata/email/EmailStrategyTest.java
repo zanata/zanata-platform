@@ -20,7 +20,7 @@
  */
 package org.zanata.email;
 
-import static javax.mail.Message.RecipientType.TO;
+import static javax.mail.Message.RecipientType.BCC;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayOutputStream;
@@ -52,16 +52,17 @@ import org.zanata.webtrans.shared.model.ProjectIterationId;
 public class EmailStrategyTest {
     // use this if you want to see the real messages on stderr
     private static final boolean DEBUG = false;
+    Locale locale = Locale.ENGLISH;
 
     // context values needed for most/all templates:
-    Messages msgs = DEBUG ? new Messages() : new Messages() {
+    Messages msgs = DEBUG ? new Messages(locale) : new Messages(locale) {
         @Override
         public String get(Object key) {
             return "MSG:key=" + key;
         }
 
         @Override
-        public String format(String key, Object... args) {
+        public String formatWithAnyArgs(String key, Object... args) {
             return get(key) + ",args={" + Joiner.on(',').join(args) + "}";
         }
     };
@@ -69,7 +70,7 @@ public class EmailStrategyTest {
     String fromName = msgs.get("jsf.Zanata");
     String toName = "User Name[测试]";
     String toAddress = "username@example.com";
-    String serverPath = "https://zanata.example.com";
+    String testServerPath = "https://zanata.example.com";
     InternetAddress toAddr;
     InternetAddress[] toAddresses;
 
@@ -89,10 +90,10 @@ public class EmailStrategyTest {
 
         @Override
         String getServerPath() {
-            return serverPath;
+            return testServerPath;
         }
     };
-    EmailBuilder builder = new EmailBuilder(session, context, msgsFactory, null);
+    EmailBuilder builder = new EmailBuilder(session, context, msgsFactory);
     MimeMessage message;
 
     // context values needed for some templates:
@@ -143,10 +144,10 @@ public class EmailStrategyTest {
         assertThat(message.getFrom()).extracting("address").contains(
                 fromAddress);
         assertThat(message.getFrom()).extracting("personal").contains(
-                fromName);
-        assertThat(message.getRecipients(TO)).extracting("address").contains(
-                toAddress);
-        assertThat(message.getRecipients(TO)).extracting("personal").contains(
+            fromName);
+        assertThat(message.getRecipients(BCC)).extracting("address").contains(
+            toAddress);
+        assertThat(message.getRecipients(BCC)).extracting("personal").contains(
                 toName);
     }
 
@@ -155,7 +156,6 @@ public class EmailStrategyTest {
         assertThat(html).contains(msgs.get(
                 "jsf.email.GeneratedFromZanataServerAt"));
     }
-
 
     @Test
     public void activation() throws Exception {
@@ -175,7 +175,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(msgs.get(
                 "jsf.email.activation.ClickLinkToActivateAccount"));
         assertThat(html).contains(
-                serverPath + "/account/activate/123456");
+                testServerPath + "/account/activate/123456");
     }
 
     @Test
@@ -196,9 +196,35 @@ public class EmailStrategyTest {
         checkGenericTemplate(html);
 
         assertThat(html).contains(msgs.format(
-                "jsf.email.admin.UserMessageIntro", fromName, fromLoginName));
+            "jsf.email.admin.UserMessageIntro", fromName, fromLoginName));
         assertThat(html).contains(
                 htmlMessage);
+    }
+
+    @Test
+    public void declineLanguageRequest() throws Exception {
+        String contactCoordinatorLink = "http://localhost/language";
+        String roles = "coordinator, translator";
+        String localeDisplayName = "Spanish";
+
+        EmailStrategy strategy =
+            new DeclineLanguageRequestEmailStrategy(
+                toName, roles, contactCoordinatorLink, localeDisplayName,
+                htmlMessage);
+
+        builder.buildMessage(message, strategy, toAddresses,
+            Lists.newArrayList("declineLanguageRequest test"));
+
+        checkFromAndTo(message);
+        assertThat(message.getSubject()).isEqualTo(msgs.format(
+            "jsf.email.languageteam.request.reject.subject", localeDisplayName));
+
+        String html = extractHtmlPart(message);
+        checkGenericTemplate(html);
+
+        assertThat(html).contains(msgs.format(
+            "jsf.email.languageteam.request.reject.message", roles, localeDisplayName));
+        assertThat(html).contains(htmlMessage);
     }
 
     @Test
@@ -225,7 +251,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(
                 htmlMessage);
         assertThat(html).contains(
-                serverPath + "/language/view/" + localeId);
+                testServerPath + "/language/view/" + localeId);
     }
 
     @Test
@@ -247,7 +273,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(msgs.get(
                 "jsf.email.accountchange.ConfirmationLink"));
         assertThat(html).contains(
-                serverPath + "/account/validate_email/123456");
+                testServerPath + "/account/validate_email/123456");
     }
 
     @Test
@@ -268,7 +294,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(msgs.get(
                 "jsf.email.passwordreset.FollowLinkToResetPassword"));
         assertThat(html).contains(
-                serverPath + "/account/password_reset/123456");
+                testServerPath + "/account/password_reset/123456");
     }
 
     @Test
@@ -292,10 +318,9 @@ public class EmailStrategyTest {
         assertThat(html).contains(msgs.format(
                 "jsf.email.joinrequest.UserRequestingToJoin",
                 fromName, fromLoginName, localeId, localeNativeName));
+        assertThat(html).contains(htmlMessage);
         assertThat(html).contains(
-                htmlMessage);
-        assertThat(html).contains(
-                serverPath + "/language/view/" + localeId);
+                testServerPath + "/language/view/" + localeId);
     }
 
     @Test
@@ -329,7 +354,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(
                 htmlMessage);
         assertThat(html).contains(
-                serverPath + "/version-group/view/" + versionGroupSlug);
+                testServerPath + "/version-group/view/" + versionGroupSlug);
     }
 
     @Test
@@ -352,7 +377,7 @@ public class EmailStrategyTest {
         assertThat(html).contains(msgs.format(
                 "jsf.email.usernamechange.YourNewUsername", newUsername));
         assertThat(html).contains(
-                serverPath + "/account/password_reset_request");
+                testServerPath + "/account/password_reset_request");
     }
 
 }

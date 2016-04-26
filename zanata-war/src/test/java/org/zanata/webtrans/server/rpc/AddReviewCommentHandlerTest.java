@@ -21,17 +21,15 @@
 
 package org.zanata.webtrans.server.rpc;
 
+import org.jglue.cdiunit.InRequestScope;
 import org.zanata.ZanataTest;
 import org.hamcrest.Matchers;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
@@ -41,9 +39,10 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.model.TestFixture;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
+import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -54,6 +53,11 @@ import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
 
 import net.customware.gwt.dispatch.shared.ActionException;
+
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.when;
@@ -62,58 +66,41 @@ import static org.mockito.Mockito.when;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
 public class AddReviewCommentHandlerTest extends ZanataTest {
+    @Inject @Any
     private AddReviewCommentHandler handler;
 
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    @Produces @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private org.zanata.service.SecurityService securityServiceImpl;
-    @Mock
+    @Produces @Mock
     private org.zanata.dao.TextFlowTargetDAO textFlowTargetDAO;
-    @Mock
+    @Produces @Mock
     private org.zanata.dao.TextFlowTargetReviewCommentsDAO textFlowTargetReviewCommentsDAO;
-    @Mock
+    @Produces @Mock @Authenticated
     private org.zanata.model.HAccount authenticatedAccount;
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    @Produces @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private HTextFlowTarget hTextFlowTarget;
-    @Mock
+    @Produces @Mock
     private HPerson hPerson;
-    @Mock
+    @Produces @Mock
     private HTextFlowTargetReviewComment hReviewComment;
     private DocumentId documentId = new DocumentId(1L, "my/doc");
-    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    @Produces @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private HTextFlow hTextFlow;
-    @Mock
+    @Produces @Mock
     private LocaleService localeService;
-    @Mock
+    @Produces @Mock
     private TranslationWorkspaceManager translationWorkspaceManager;
-    @Mock
+    @Produces @Mock
     private TranslationWorkspace workspace;
-    @Mock
+    @Produces @Mock
     private ZanataIdentity identity;
     @Mock
     private HProject hProject;
 
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        handler =
-                SeamAutowire
-                        .instance()
-                        .reset()
-                        .use("securityServiceImpl", securityServiceImpl)
-                        .use("textFlowTargetDAO", textFlowTargetDAO)
-                        .use("textFlowTargetReviewCommentsDAO",
-                                textFlowTargetReviewCommentsDAO)
-                        .use(ZanataJpaIdentityStore.AUTHENTICATED_USER,
-                                authenticatedAccount)
-                        .use("localeServiceImpl", localeService)
-                        .use("translationWorkspaceManager",
-                                translationWorkspaceManager)
-                        .use("identity", identity)
-                        .autowire(AddReviewCommentHandler.class);
-    }
-
     @Test(expected = ActionException.class)
+    @InRequestScope
     public void testExecuteWithBlankComment() throws ActionException {
         String blankComment = "   \t \n";
         AddReviewCommentAction action =
@@ -124,6 +111,7 @@ public class AddReviewCommentHandlerTest extends ZanataTest {
     }
 
     @Test
+    @InRequestScope
     public void testExecute() throws Exception {
         // Given: we want to add comment to trans unit id 2 and locale id DE
         String commentContent = "new comment";
@@ -175,6 +163,7 @@ public class AddReviewCommentHandlerTest extends ZanataTest {
     }
 
     @Test(expected = ActionException.class)
+    @InRequestScope
     public void testExecuteWhenTargetIsNull() throws Exception {
         // Given: we want to add comment to trans unit id 1 and locale id DE but
         // target is null
@@ -193,6 +182,7 @@ public class AddReviewCommentHandlerTest extends ZanataTest {
     }
 
     @Test(expected = ActionException.class)
+    @InRequestScope
     public void testExecuteWhenTargetIsUntranslated() throws Exception {
         // Given: we want to add comment to trans unit id 1 and locale id DE but
         // target is new

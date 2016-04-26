@@ -6,6 +6,13 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
+  <script type="text/javascript">
+    function #{id}FilterInputSelector() {
+      var clientId = "#{rich:clientId(id.concat('-filter-input'))}";
+      return "[id='" + clientId + "']";
+    }
+  </script>
+
   <h3 class="heading--secondary">#{heading}</h3>
 
   <ui:remove><!-- TODO consider making this a component --></ui:remove>
@@ -18,8 +25,8 @@
       required="false"
       placeholder="#{msgs['jsf.languages.FilterLanguages']}"
       value="#{filterText}"
-      oninput="return filterLocalesFromTextBox('[id=\\'#{component.namingContainer.clientId}:#{id}-filter-input\\']', '##{id}-list');"
-      onkeyup="return onFilterLocalesTextboxKeyUp('[id=\\'#{component.namingContainer.clientId}:#{id}-filter-input\\']', '##{id}-list', event);"
+      oninput="return filterLocalesFromTextBox(#{id}FilterInputSelector(), '##{id}-list');"
+      onkeyup="return onFilterLocalesTextboxKeyUp(#{id}FilterInputSelector(), '##{id}-list', event);"
       onkeypress="doNotSubmit(event);"
       maxlength="255"
       styleClass="form--search__input js-form--search__input l--push-bottom-quarter">

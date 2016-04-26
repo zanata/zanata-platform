@@ -1,16 +1,15 @@
 package org.zanata.webtrans.server.rpc;
 
 import org.hamcrest.Matchers;
-import org.junit.Before;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataTest;
 import org.zanata.common.ContentState;
 import org.zanata.model.TestFixture;
-import org.zanata.seam.SeamAutowire;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdatePreview;
 import org.zanata.webtrans.shared.rpc.PreviewReplaceText;
@@ -18,6 +17,11 @@ import org.zanata.webtrans.shared.rpc.PreviewReplaceTextResult;
 import org.zanata.webtrans.shared.rpc.ReplaceText;
 
 import net.customware.gwt.dispatch.shared.ActionException;
+
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.verify;
 
@@ -25,23 +29,15 @@ import static org.mockito.Mockito.verify;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
 public class PreviewReplaceTextHandlerTest extends ZanataTest {
+    @Inject @Any
     private PreviewReplaceTextHandler handler;
-    @Mock
+    @Produces @Mock
     private ZanataIdentity identity;
 
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        // @formatter:off
-        handler = SeamAutowire.instance()
-                .reset()
-                .use("identity", identity)
-                .autowire(PreviewReplaceTextHandler.class);
-      // @formatter:on
-    }
-
     @Test
+    @InRequestScope
     public void testExecute() throws Exception {
         TransUnit transUnit =
                 TestFixture.makeTransUnit(1, ContentState.NeedReview, "target");
@@ -61,6 +57,7 @@ public class PreviewReplaceTextHandlerTest extends ZanataTest {
     }
 
     @Test(expected = ActionException.class)
+    @InRequestScope
     public void cannotRollback() throws ActionException {
         handler.rollback(null, null, null);
     }

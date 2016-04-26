@@ -20,6 +20,7 @@
  */
 package org.zanata.security.openid;
 
+import javax.enterprise.inject.Alternative;
 import java.text.MessageFormat;
 import java.util.regex.Pattern;
 
@@ -29,13 +30,14 @@ import java.util.regex.Pattern;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Alternative
 public class FedoraOpenIdProvider extends GenericOpenIdProvider {
     private static final Pattern FEDORA_OPENID_PATTERN = Pattern
             .compile("http://((.+).)?id.fedoraproject.org/");
 
     @Override
     public String getOpenId(String username) {
-        return "http://id.fedoraproject.org/";
+        return "https://id.fedoraproject.org/";
     }
 
     @Override

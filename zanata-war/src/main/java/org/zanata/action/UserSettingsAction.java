@@ -36,13 +36,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
-import org.jboss.seam.core.Conversation;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.CredentialsDAO;
 import org.zanata.dao.PersonDAO;
@@ -55,7 +52,7 @@ import org.zanata.model.security.HOpenIdCredentials;
 import org.zanata.seam.security.AbstractRunAsOperation;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.seam.security.IdentityManager;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.openid.FedoraOpenIdProvider;
 import org.zanata.security.openid.GoogleOpenIdProvider;
 import org.zanata.security.openid.OpenIdAuthCallback;
@@ -83,38 +80,39 @@ import static javax.faces.application.FacesMessage.SEVERITY_INFO;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  * @see {@link org.zanata.action.ProfileAction}
  */
-@Name("userSettingsAction")
-@Scope(ScopeType.PAGE)
+@Named("userSettingsAction")
+@javax.faces.bean.ViewScoped
 @Slf4j
-public class UserSettingsAction {
+public class UserSettingsAction implements Serializable {
 
-    @In
+    @Inject
     private EmailService emailServiceImpl;
-    @In
+    @Inject
     private EmailChangeService emailChangeService;
 
-    @In
+    @Inject
     private PersonDAO personDAO;
 
-    @In
+    @Inject
     private AccountDAO accountDAO;
 
-    @In(create = true)
+    @Inject
     private IdentityManager identityManager;
 
-    @In
+    @Inject
     private AuthenticationManager authenticationManager;
 
-    @In
+    @Inject
     private LanguageTeamService languageTeamServiceImpl;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
-    @In
+    @Inject
     private Messages msgs;
 
-    @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
+    @Inject
+    @Authenticated
     HAccount authenticatedAccount;
 
     @Getter
@@ -126,7 +124,7 @@ public class UserSettingsAction {
     @Getter
     @Setter
     @NotEmpty
-    @Size(min = 6, max = 20)
+    @Size(min = 6, max = 1024)
     private String newPassword;
 
     @Getter
@@ -144,7 +142,7 @@ public class UserSettingsAction {
     @Size(min = 2, max = 80)
     private String accountName;
 
-    @Create
+    @PostConstruct
     public void onCreate() {
         HPerson person =
                 personDAO.findById(authenticatedAccount.getPerson().getId());
@@ -382,7 +380,8 @@ public class UserSettingsAction {
                         ServiceLocator.instance().getInstance(
                                 FacesMessages.class);
 
-                Conversation.instance().begin(true, false); // (To retain
+                // TODO [CDI] commented out programmatically starting conversation
+//                Conversation.instance().begin(true, false); // (To retain
                 // messages)
                 facesMessages.clear();
 
@@ -400,9 +399,9 @@ public class UserSettingsAction {
 
         @Override
         public String getRedirectToUrl() {
-            return "/dashboard/settings?cid="
-                    + Conversation.instance().getId(); // keep the same
-            // conversation
+            return "/dashboard/settings";
+            // TODO [CDI] was keeping the same conversation
+//                    + Conversation.instance().getId();
         }
     }
 

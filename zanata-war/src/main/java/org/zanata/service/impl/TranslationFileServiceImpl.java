@@ -26,9 +26,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.DTDAdapter;
 import org.zanata.adapter.FileFormatAdapter;
@@ -67,7 +68,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.jboss.seam.ScopeType.STATELESS;
 import static org.zanata.common.DocumentType.GETTEXT;
 import static org.zanata.common.DocumentType.HTML;
 import static org.zanata.common.DocumentType.IDML;
@@ -88,8 +88,8 @@ import static org.zanata.common.DocumentType.XML_DOCUMENT_TYPE_DEFINITION;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("translationFileServiceImpl")
-@Scope(STATELESS)
+@Named("translationFileServiceImpl")
+@RequestScoped
 @Slf4j
 public class TranslationFileServiceImpl implements TranslationFileService {
     private static Map<DocumentType, Class<? extends FileFormatAdapter>> DOCTYPEMAP =
@@ -124,10 +124,10 @@ public class TranslationFileServiceImpl implements TranslationFileService {
         return supported;
     }
 
-    @In
+    @Inject
     private DocumentDAO documentDAO;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
     @Override

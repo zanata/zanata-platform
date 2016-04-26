@@ -1,10 +1,8 @@
 package org.zanata.service.impl;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.MergeType;
 import org.zanata.dao.TextFlowTargetHistoryDAO;
 import org.zanata.model.HLocale;
@@ -21,12 +19,11 @@ import lombok.extern.slf4j.Slf4j;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Name("translationMergeServiceFactory")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("translationMergeServiceFactory")
+@RequestScoped
 @Slf4j
 public class TranslationMergeServiceFactory {
-    @In
+    @Inject
     private TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
 
     private TranslationMergeAuto translationMergeAuto;

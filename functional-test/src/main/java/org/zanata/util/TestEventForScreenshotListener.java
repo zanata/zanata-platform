@@ -20,20 +20,25 @@
  */
 package org.zanata.util;
 
+import java.awt.*;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Optional;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.NoAlertPresentException;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.security.Credentials;
 import org.openqa.selenium.support.events.AbstractWebDriverEventListener;
+
+import javax.imageio.ImageIO;
 
 /**
  * @author Damian Jansen <a
@@ -69,25 +74,60 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
             testIDDir = ScreenshotDirForTest.screenshotForTest(testId);
             if (!testIDDir.exists()) {
                 log.info("Creating screenshot dir {}", testIDDir.getAbsolutePath());
-                assert (testIDDir.mkdirs());
+                boolean createdDirs = testIDDir.mkdirs();
+                assert createdDirs;
             }
-            File screenshotFile =
-                    ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
             String filename = generateFileName(ofType);
-            log.info("Screenshot: {}", filename);
-            FileUtils.copyFile(screenshotFile,
-                new File(testIDDir, filename));
+            File screenshotFile = new File(testIDDir, filename);
 
-        } catch (WebDriverException wde) {
-            throw new RuntimeException("[Screenshot]: Invalid WebDriver: "
-                    + wde.getMessage());
-        } catch (IOException ioe) {
+            Optional<Alert> alert = getAlert(driver);
+            if (alert.isPresent()) {
+                log.error("ChromeDriver screenshot({}) prevented by browser " +
+                        "alert. Attempting Robot screenshot instead. " +
+                        "Alert text: {}",
+                        testId, alert.get().getText());
+
+                // warning: beta API: if it breaks, you can always use getScreenRectangle()
+                WebDriver.Window window = driver.manage().window();
+                Point pos = window.getPosition();
+                Dimension size = window.getSize();
+
+                Rectangle captureRectangle = new Rectangle(pos.x, pos.y, size.width, size.height);
+//                Rectangle captureRectangle = getScreenRectangle();
+
+                BufferedImage capture = new Robot().createScreenCapture(
+                        captureRectangle);
+                if (!ImageIO.write(capture, "png", screenshotFile)) {
+                    log.error("png writer not found for screenshot");
+                }
+            } else {
+                File tempFile =
+                        ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+                FileUtils.moveFile(tempFile, screenshotFile);
+            }
+            log.info("Screenshot saved to file: {}", filename);
+        } catch (WebDriverException e) {
+            throw new RuntimeException("[Screenshot]: Invalid WebDriver: ", e);
+        } catch (IOException e) {
             throw new RuntimeException("[Screenshot]: Failed to write to "
-                    + testIDDir);
-        } catch (NullPointerException npe) {
-            throw new RuntimeException("[Screenshot]: Null Object: "
-                    + npe.getMessage());
+                    + testIDDir, e);
+        } catch (NullPointerException e) {
+            throw new RuntimeException("[Screenshot]: Null Object: ", e);
+        } catch (AWTException e) {
+            throw new RuntimeException("[Screenshot]: ", e);
         }
+    }
+
+    private Rectangle getScreenRectangle() {
+        // http://stackoverflow.com/a/13380999/14379
+        Rectangle2D result = new Rectangle2D.Double();
+        GraphicsEnvironment localGE = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        for (GraphicsDevice gd : localGE.getScreenDevices()) {
+            for (GraphicsConfiguration graphicsConfiguration : gd.getConfigurations()) {
+                Rectangle2D.union(result, graphicsConfiguration.getBounds(), result);
+            }
+        }
+        return new Rectangle((int) result.getWidth(), (int) result.getHeight());
     }
 
     private String generateFileName(String ofType) {
@@ -95,12 +135,11 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
                 .concat(ofType).concat(".png");
     }
 
-    private boolean isAlertPresent(WebDriver driver) {
+    private Optional<Alert> getAlert(WebDriver driver) {
         try {
-            driver.switchTo().alert();
-            return true;
+            return Optional.of(driver.switchTo().alert());
         } catch (NoAlertPresentException nape) {
-            return false;
+            return Optional.empty();
         }
     }
 
@@ -116,10 +155,6 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
 
     @Override
     public void afterClickOn(WebElement element, WebDriver driver) {
-        if (isAlertPresent(driver)) {
-            log.info("[Screenshot]: Prevented by Alert");
-            return;
-        }
         createScreenshot("_click");
     }
 
@@ -127,8 +162,14 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
     public void onException(Throwable throwable, WebDriver driver) {
         try {
             createScreenshot("_exc");
+            // try to let the browser recover for the next test
+            Optional<Alert> alert = getAlert(driver);
+            if (alert.isPresent()) {
+                log.error("dismissing unexpected alert with text: ", alert.get().getText());
+                alert.get().dismiss();
+            }
         } catch (Throwable all) {
-            log.error("error creating screenshot on exception");
+            log.error("error creating screenshot on exception", all);
         }
     }
 

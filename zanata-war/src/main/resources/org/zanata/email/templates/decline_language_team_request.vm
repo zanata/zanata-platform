@@ -1,0 +1,7 @@
+<p>$msgs.format("jsf.email.languageteam.permission.DearName", $toName)</p>
+
+<p>$msgs.format("jsf.email.languageteam.request.reject.message", $roles, $localeDisplayName)</p>
+<hr/>
+$htmlMessage
+<hr/>
+<p>$msgs.format("jsf.email.languageteam.permission.howToReply", $contactCoordinatorLink)</p>

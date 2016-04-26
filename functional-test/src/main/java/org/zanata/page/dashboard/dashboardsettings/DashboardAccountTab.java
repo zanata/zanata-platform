@@ -37,13 +37,15 @@ public class DashboardAccountTab extends DashboardBasePage {
     public static final String FIELD_EMPTY_ERROR = "may not be empty";
 
     public static final String PASSWORD_LENGTH_ERROR =
-            "size must be between 6 and 20";
+            "size must be between 6 and 1024";
 
     public static final String EMAIL_TAKEN_ERROR =
             "This email address is already taken";
 
+    private By emailForm = By.id("email-update-form");
     private By emailField = By.id("email-update-form:emailField:input:email");
-    private By updateEmailButton = By.id("email-update-form:updateEmailButton");
+    // Use form and button tag to find the item, as its id is altered by jsf
+    private By updateEmailButton = By.tagName("button");
     private By oldPasswordField = By.id("passwordChangeForm:oldPasswordField:input:oldPassword");
     private By newPasswordField = By.id("passwordChangeForm:newPasswordField:input:newPassword");
     private By changePasswordButton = By.cssSelector("button[id^='passwordChangeForm:changePasswordButton']");
@@ -61,7 +63,7 @@ public class DashboardAccountTab extends DashboardBasePage {
 
     public DashboardAccountTab clickUpdateEmailButton() {
         log.info("Click Update Email");
-        clickElement(updateEmailButton);
+        clickElement(readyElement(emailForm).findElement(updateEmailButton));
         return new DashboardAccountTab(getDriver());
     }
 

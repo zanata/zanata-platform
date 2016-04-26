@@ -9,10 +9,11 @@
     </layout>
   </appender>
 
+<!--
   <logger name="org.zanata.page.WebDriverFactory.browser">
     <level value="error" />
   </logger>
-
+-->
   <root>
     <level value="debug" />
     <appender-ref ref="STDOUT" />

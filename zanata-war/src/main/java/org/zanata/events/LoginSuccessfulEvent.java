@@ -5,8 +5,17 @@ package org.zanata.events;
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class LoginSuccessfulEvent {
-    // TODO [CDI] remove
-    public static final String EVENT_NAME = "org.zanata.events.LoginSuccessfulEvent";
+    private String name;
 
+    /**
+     *
+     * @param name person's name
+     */
+    public LoginSuccessfulEvent(String name) {
+        this.name = name;
+    }
 
+    public String getName() {
+        return name;
+    }
 }

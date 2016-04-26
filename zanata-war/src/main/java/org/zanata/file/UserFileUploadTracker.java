@@ -20,10 +20,7 @@
  */
 package org.zanata.file;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -34,9 +31,9 @@ import java.util.Set;
  * This is intended to limit each user to a single upload operation at a time
  * to prevent an individual user tying up too many server resources.
  */
-@Name("userFileUploadTracker")
-@Scope(ScopeType.APPLICATION)
-@AutoCreate
+@Named("userFileUploadTracker")
+@javax.enterprise.context.ApplicationScoped
+
 public class UserFileUploadTracker {
 
     Set<Long> uploadingUsers = new HashSet<Long>();

@@ -23,11 +23,11 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
@@ -37,7 +37,6 @@ import org.zanata.email.ContactAdminEmailStrategy;
 import org.zanata.email.EmailStrategy;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.EmailService;
 
 import lombok.Getter;
@@ -54,22 +53,23 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("contactAdminAction")
-@Scope(ScopeType.PAGE)
+@Named("contactAdminAction")
+@javax.faces.bean.ViewScoped
 @Slf4j
-@ZanataSecured
+
 public class ContactAdminAction implements Serializable {
 
-    @In(value = ZanataJpaIdentityStore.AUTHENTICATED_USER, required = false)
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
-    @In
+    @Inject
     private EmailService emailServiceImpl;
 
-    @In
+    @Inject
     private Messages msgs;
 
-    @In("jsfMessages")
+    @Inject
     private FacesMessages facesMessages;
 
     @Getter

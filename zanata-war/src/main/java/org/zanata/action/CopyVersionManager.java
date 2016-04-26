@@ -7,11 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.security.ZanataIdentity;
@@ -22,19 +19,19 @@ import org.zanata.service.CopyVersionService;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@AutoCreate
-@Name("copyVersionManager")
-@Scope(ScopeType.STATELESS)
+
+@Named("copyVersionManager")
+@javax.enterprise.context.Dependent
 @Slf4j
 public class CopyVersionManager implements Serializable {
     private static final long serialVersionUID = 3414395834255069870L;
-    @In
+    @Inject
     private AsyncTaskHandleManager asyncTaskHandleManager;
 
-    @In
+    @Inject
     private CopyVersionService copyVersionServiceImpl;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
     /**

@@ -20,10 +20,7 @@
  */
 package org.zanata.ui;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Named;
 import org.zanata.util.StatisticsUtil;
 
 /**
@@ -31,9 +28,9 @@ import org.zanata.util.StatisticsUtil;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Name("statisticBar")
-@Scope(ScopeType.STATELESS)
-@AutoCreate
+@Named("statisticBar")
+@javax.enterprise.context.Dependent
+
 public class StatisticBar {
 
     public String formatPercentage(double percentage) {

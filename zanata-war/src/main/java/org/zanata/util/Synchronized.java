@@ -1,4 +1,4 @@
-// based on org.jboss.seam.annotations.Synchronized in Seam 2.3.1
+// based on org.zanata.util.Synchronized in Seam 2.3.1
 
 package org.zanata.util;
 

@@ -2,13 +2,10 @@ package org.zanata.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.events.ProjectIterationUpdate;
@@ -17,7 +14,7 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.SlugEntityBase;
 import org.zanata.service.IndexingService;
-import org.zanata.util.Event;
+import javax.enterprise.event.Event;
 import org.zanata.util.ServiceLocator;
 import com.google.common.collect.Lists;
 
@@ -58,7 +55,7 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
             slugFieldIndexInProject = getSlugFieldIndex(slugFieldIndexInProject, event);
             String oldSlug = event.getOldState()[slugFieldIndexInProject].toString();
             String newSlug = event.getState()[slugFieldIndexInProject].toString();
-            getProjectUpdateEvent().fire(new ProjectUpdate(project, oldSlug));
+            fireProjectUpdateEvent(project, oldSlug);
             reindexIfProjectSlugHasChanged(oldSlug, newSlug, project);
 
         } else if (slugEntityBase instanceof HProjectIteration) {
@@ -66,9 +63,21 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
                     (HProjectIteration) slugEntityBase;
             slugFieldIndexInIteration = getSlugFieldIndex(slugFieldIndexInIteration, event);
             String oldSlug = event.getOldState()[slugFieldIndexInIteration].toString();
-            getProjectIterationUpdateEvent().fire(new ProjectIterationUpdate(
-                    iteration, oldSlug));
+            fireProjectIterationUpdateEvent(iteration, oldSlug);
         }
+    }
+
+    private void fireProjectIterationUpdateEvent(HProjectIteration iteration,
+            String oldSlug) {
+        // TODO use Event.fire()
+        BeanManagerProvider.getInstance().getBeanManager().fireEvent(
+                new ProjectIterationUpdate(iteration, oldSlug));
+    }
+
+    private void fireProjectUpdateEvent(HProject project, String oldSlug) {
+        // TODO use Event.fire()
+        BeanManagerProvider.getInstance().getBeanManager().fireEvent(
+                new ProjectUpdate(project, oldSlug));
     }
 
     public void reindexIfProjectSlugHasChanged(String oldSlug, String newSlug,
@@ -123,15 +132,7 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
     }
 
     public IndexingService getIndexingServiceImpl() {
-        return ServiceLocator.instance().getInstance("indexingServiceImpl",
-                IndexingService.class);
+        return ServiceLocator.instance().getInstance(IndexingService.class);
     }
 
-    public Event<ProjectUpdate> getProjectUpdateEvent() {
-        return ServiceLocator.instance().getInstance("event", Event.class);
-    }
-
-    public Event<ProjectIterationUpdate> getProjectIterationUpdateEvent() {
-        return ServiceLocator.instance().getInstance("event", Event.class);
-    }
 }

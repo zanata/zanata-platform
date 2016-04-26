@@ -22,11 +22,10 @@ package org.zanata.action;
 
 import java.io.Serializable;
 import lombok.extern.slf4j.Slf4j;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.model.HPerson;
 import org.zanata.service.impl.EmailChangeService;
 
@@ -36,16 +35,16 @@ import org.zanata.service.impl.EmailChangeService;
  * @see org.zanata.action.NewProfileAction
  *
  */
-@Name("profileAction")
-@Scope(ScopeType.PAGE)
+@Named("profileAction")
+@javax.faces.bean.ViewScoped
 @Slf4j
 public class ProfileAction extends AbstractProfileAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @In
+    @Inject
     EmailChangeService emailChangeService;
 
-    @Create
+    @PostConstruct
     public void onCreate() {
         username = identity.getCredentials().getUsername();
         HPerson person =

@@ -12,11 +12,8 @@ import lombok.NoArgsConstructor;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.queryParser.ParseException;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectDAO;
@@ -35,26 +32,26 @@ import org.zanata.util.ServiceLocator;
 /**
  * This will search both projects and people.
  */
-@Name("zanataSearch")
-@Scope(ScopeType.PAGE)
-@AutoCreate
+@Named("zanataSearch")
+@javax.faces.bean.ViewScoped
+
 public class ZanataSearch implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    private static final boolean includeObsolete = false;
 
-    private final boolean includeObsolete = false;
-
-    @In
+    @Inject
     private ProjectDAO projectDAO;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private AccountDAO accountDAO;
 
     @Getter
-    private ProjectUserAutocomplete autocomplete = new ProjectUserAutocomplete();
+    @Inject
+    private ProjectUserAutocomplete autocomplete;
 
     @Getter
     private SortingType ProjectSortingList = new SortingType(
@@ -83,7 +80,7 @@ public class ZanataSearch implements Serializable {
 
     @AllArgsConstructor
     @NoArgsConstructor
-    public class SearchResult {
+    public static class SearchResult implements Serializable {
         @Getter
         private HProject project;
 
@@ -98,14 +95,12 @@ public class ZanataSearch implements Serializable {
         }
     }
 
-    private class ProjectUserAutocomplete extends
-            AbstractAutocomplete<SearchResult> {
-
-        private ProjectDAO projectDAO =
-                ServiceLocator.instance().getInstance(ProjectDAO.class);
-
-        private AccountDAO accountDAO = ServiceLocator.instance().getInstance(
-                AccountDAO.class);
+    private static class ProjectUserAutocomplete extends
+            AbstractAutocomplete<SearchResult> implements Serializable {
+        @Inject
+        private ProjectDAO projectDAO;
+        @Inject
+        private AccountDAO accountDAO;
 
         /**
          * Return results on search
@@ -285,7 +280,7 @@ public class ZanataSearch implements Serializable {
         userTabUserFilter.reset();
     }
 
-    private class ProjectComparator implements Comparator<HProject> {
+    private class ProjectComparator implements Comparator<HProject>, Serializable {
         private SortingType sortingType;
 
         public ProjectComparator(SortingType sortingType) {
@@ -313,7 +308,7 @@ public class ZanataSearch implements Serializable {
         }
     }
 
-    private class UserComparator implements Comparator<HAccount> {
+    private class UserComparator implements Comparator<HAccount>, Serializable {
         private SortingType sortingType;
 
         public UserComparator(SortingType sortingType) {

@@ -32,13 +32,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import org.infinispan.manager.CacheContainer;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.cache.CacheWrapper;
 import org.zanata.cache.InfinispanCacheWrapper;
 import org.zanata.common.LocaleId;
@@ -46,21 +42,25 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
+import org.zanata.events.DocumentLocaleKey;
 import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
-import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.service.ValidationFactoryProvider;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.ServiceLocator;
+import org.zanata.util.Zanata;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 
 import com.google.common.cache.CacheLoader;
+import com.google.common.collect.Iterables;
+
+import static com.google.common.collect.Iterables.getLast;
 
 /**
  * Default Implementation of the Translation State Cache.
@@ -68,10 +68,10 @@ import com.google.common.cache.CacheLoader;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("translationStateCacheImpl")
+@Named("translationStateCacheImpl")
 // TODO split into APPLICATION and STATELESS beans
-@Scope(ScopeType.APPLICATION)
-@AutoCreate
+@javax.enterprise.context.ApplicationScoped
+
 public class TranslationStateCacheImpl implements TranslationStateCache {
     private static final String BASE = TranslationStateCacheImpl.class.getName();
 
@@ -93,25 +93,23 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     private CacheWrapper<Long, Map<ValidationId, Boolean>> targetValidationCache;
     private CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
 
-    @In
+    @Inject @Zanata
     private CacheContainer cacheContainer;
 
-    @In
+    @Inject
     private TextFlowDAO textFlowDAO;
 
-    @In
+    @Inject
     private TextFlowTargetDAO textFlowTargetDAO;
 
-    @In
+    @Inject
     private DocumentDAO documentDAO;
 
-    @In
+    @Inject
     private LocaleDAO localeDAO;
 
-    // constructor for Seam
+    // constructor for CDI
     public TranslationStateCacheImpl() {
-        this(new DocumentStatisticLoader(), new HTextFlowTargetIdLoader(),
-                new HTextFlowTargetValidationLoader());
     }
 
     // Constructor for testing
@@ -125,8 +123,17 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
         this.targetValidationLoader = targetValidationLoader;
     }
 
-    @Create
+    @PostConstruct
     public void create() {
+        if (documentStatisticLoader == null) {
+            documentStatisticLoader = new DocumentStatisticLoader();
+        }
+        if (docStatusLoader == null) {
+            docStatusLoader = new HTextFlowTargetIdLoader();
+        }
+        if (targetValidationLoader == null) {
+            targetValidationLoader = new HTextFlowTargetValidationLoader();
+        }
         documentStatisticCache =
                 InfinispanCacheWrapper.create(DOC_STATISTIC_CACHE_NAME,
                         cacheContainer, documentStatisticLoader);
@@ -186,18 +193,20 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
     // TODO why not @Observe the event directly?
     @Override
     public void textFlowStateUpdated(TextFlowTargetStateEvent event) {
-        DocumentLocaleKey key =
-                new DocumentLocaleKey(event.getDocumentId(),
-                        event.getLocaleId());
+        Long documentId = event.getKey().getDocumentId();
+        LocaleId localeId = event.getKey().getLocaleId();
 
         //invalidate document statistic cache
-        clearDocumentStatistics(event.getDocumentId(), event.getLocaleId());
+        clearDocumentStatistics(documentId, localeId);
 
+        for(TextFlowTargetStateEvent.TextFlowTargetState state: event.getStates()) {
+            // invalidate target validation
+            targetValidationCache.remove(state.getTextFlowTargetId());
+        }
+        Long tftId = getLast(event.getStates()).getTextFlowTargetId();
         // update document status information
-        updateDocStatusCache(key, event.getTextFlowTargetId());
-
-        // invalidate target validation
-        targetValidationCache.remove(event.getTextFlowTargetId());
+        updateDocStatusCache(new DocumentLocaleKey(documentId, localeId),
+            tftId);
     }
 
     private void updateDocStatusCache(DocumentLocaleKey key,
@@ -289,13 +298,5 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
                 new DocumentId(document.getId(), document.getDocId()),
                 lastTranslatedDate, lastTranslatedBy);
         return documentStatus;
-    }
-
-    @AllArgsConstructor
-    @EqualsAndHashCode
-    @Getter
-    public static final class DocumentLocaleKey implements Serializable {
-        private Long documentId;
-        private LocaleId localeId;
     }
 }

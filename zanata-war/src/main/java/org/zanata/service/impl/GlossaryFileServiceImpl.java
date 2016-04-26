@@ -20,7 +20,6 @@
  */
 package org.zanata.service.impl;
 
-import static org.jboss.seam.ScopeType.STATELESS;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,11 +31,13 @@ import java.util.TreeSet;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Transactional;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.adapter.glossary.GlossaryCSVReader;
 import org.zanata.adapter.glossary.GlossaryPoReader;
 import org.zanata.common.LocaleId;
@@ -49,6 +50,7 @@ import org.zanata.model.HLocale;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.GlossaryTerm;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.GlossaryFileService;
 import org.zanata.service.LocaleService;
 import org.zanata.util.GlossaryUtil;
@@ -66,17 +68,17 @@ import lombok.extern.slf4j.Slf4j;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
-@Name("glossaryFileServiceImpl")
-@Scope(STATELESS)
-@Slf4j
+@Named("glossaryFileServiceImpl")
+@RequestScoped
 public class GlossaryFileServiceImpl implements GlossaryFileService {
-    @In
+    private static final Logger log = LoggerFactory.getLogger(GlossaryFileServiceImpl.class);
+    @Inject
     private GlossaryDAO glossaryDAO;
 
-    @In
+    @Inject
     private LocaleService localeServiceImpl;
 
-    @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER, scope = ScopeType.SESSION)
+    @Inject @Authenticated
     private HAccount authenticatedAccount;
 
     private final static int BATCH_SIZE = 50;

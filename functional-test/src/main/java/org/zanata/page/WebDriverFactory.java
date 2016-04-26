@@ -22,10 +22,26 @@ package org.zanata.page;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 
+import com.google.common.reflect.AbstractInvocationHandler;
+import net.lightbody.bmp.BrowserMobProxy;
+import net.lightbody.bmp.BrowserMobProxyServer;
+import net.lightbody.bmp.client.ClientUtil;
+import net.lightbody.bmp.filters.ResponseFilterAdapter;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ObjectNode;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
@@ -39,6 +55,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
+import org.openqa.selenium.support.events.WebDriverEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.util.PropertiesHolder;
@@ -47,6 +64,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.zanata.util.ScreenshotDirForTest;
 import org.zanata.util.TestEventForScreenshotListener;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import static java.lang.reflect.Proxy.newProxyInstance;
 import static org.zanata.util.Constants.webDriverType;
 import static org.zanata.util.Constants.webDriverWait;
 import static org.zanata.util.Constants.zanataInstance;
@@ -55,13 +77,42 @@ import static org.zanata.util.Constants.zanataInstance;
 public enum WebDriverFactory {
     INSTANCE;
 
+    private static final ThreadLocal<SimpleDateFormat> TIME_FORMAT =
+            new ThreadLocal<SimpleDateFormat>() {
+                @Override
+                protected SimpleDateFormat initialValue() {
+                    return new SimpleDateFormat("HH:mm:ss.SSS");
+                }
+            };
+    // can reuse, share globally
+    private static ObjectMapper mapper = new ObjectMapper();
+
     private volatile EventFiringWebDriver driver = createDriver();
+    private @Nonnull DswidParamChecker dswidParamChecker;
     private DriverService driverService;
-    private TestEventForScreenshotListener eventListener;
+    private TestEventForScreenshotListener screenshotListener;
     private int webdriverWait;
+
+    private final String[] ignoredLogPatterns = {
+            ".*/org.richfaces/jquery.js .* " +
+                    "'webkit(?:Cancel)?RequestAnimationFrame' is vendor-specific. " +
+                    "Please use the standard " +
+                    "'(?:request|cancel)AnimationFrame' instead.",
+            ".*/org.richfaces/jquery.js .* " +
+                    "'webkitMovement[XY]' is deprecated. " +
+                    "Please use 'movement[XY]' instead.",
+            "http://example.com/piwik/piwik.js .*",
+    };
+
+    @Nullable
+    private WebDriverEventListener logListener;
 
     public WebDriver getDriver() {
         return driver;
+    }
+
+    private JavascriptExecutor getExecutor() {
+        return (JavascriptExecutor) getDriver();
     }
 
     private EventFiringWebDriver createDriver() {
@@ -78,9 +129,11 @@ public enum WebDriverFactory {
                 throw new UnsupportedOperationException("only support chrome " +
                         "and firefox driver");
         }
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook());
         webdriverWait = Integer.parseInt(PropertiesHolder
                 .getProperty(webDriverWait.value()));
-        Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+        dswidParamChecker = new DswidParamChecker(newDriver);
+        newDriver.register(dswidParamChecker.getEventListener());
         return newDriver;
     }
 
@@ -108,33 +161,115 @@ public enum WebDriverFactory {
         return getDriver().manage().logs().get(type);
     }
 
+    private String toString(long timestamp, String text, @Nullable String json) {
+        String time =
+                TIME_FORMAT.get().format(new Date(timestamp));
+        return time + " " + text + (json != null ? ": " + json : "");
+    }
+
+    private boolean ignorable(String message) {
+        for (String ignorable : ignoredLogPatterns) {
+            if (message.matches(ignorable)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Logs all the outstanding WebDriver logs of the specified type.
      * @param type a log type from org.openqa.selenium.logging.LogType
      *             (but they don't all seem to work)
+     * @throws WebDriverLogException exception containing the first warning/error message, if any
      */
-    public void logLogs(String type) {
+    private void logLogs(String type, boolean throwIfWarn) {
+        @Nullable
+        WebDriverLogException firstException = null;
         String logName = WebDriverFactory.class.getName() + "." + type;
         Logger log = LoggerFactory.getLogger(logName);
         int logCount = 0;
         for (LogEntry logEntry : getLogs(type)) {
             ++logCount;
-            if (logEntry.getLevel().intValue() >= Level.SEVERE.intValue()) {
-                log.error(logEntry.toString());
-            } else if (logEntry.getLevel().intValue() >= Level.WARNING.intValue()) {
-                log.warn(logEntry.toString());
+            Level level;
+            long time = logEntry.getTimestamp();
+            String text, json;
+            String msg = logEntry.getMessage();
+            if (msg.startsWith("{")) {
+                // looks like it might be json
+                json = msg;
+                try {
+                    JsonNode message = mapper.readValue(json, ObjectNode.class).path("message");
+                    String levelString = message.path("level").asText();
+                    level = toLogLevel(levelString);
+                    text = message.path("text").asText();
+                } catch (Exception e) {
+                    log.warn("unable to parse as json: " + json, e);
+                    level = logEntry.getLevel();
+                    text = msg;
+                    json = null;
+                }
             } else {
-                log.info(logEntry.toString());
+                level = logEntry.getLevel();
+                text = msg;
+                json = null;
+            }
+            String logString = toString(time, text, json);
+            if (level.intValue() >= Level.SEVERE.intValue()) {
+                log.error(logString);
+                // If firstException was a warning, replace it with this error.
+                if ((firstException == null || !firstException.isErrorLog()) && !ignorable(msg)) {
+                    // We only throw this if throwIfWarn is true
+                    firstException = new WebDriverLogException(level,
+                            logString, driver.getPageSource());
+                }
+            } else if (level.intValue() >= Level.WARNING.intValue()) {
+                log.warn(logString);
+                if ((firstException == null) && !ignorable(msg)) {
+                    // We only throw this if throwIfWarn is true
+                    firstException = new WebDriverLogException(logEntry.getLevel(),
+                            logString, driver.getPageSource());
+                }
+            } else if (level.intValue() >= Level.INFO.intValue()) {
+                log.info(logString);
+            } else {
+                log.debug(logString);
             }
         }
-        if (logCount == 0) {
-            log.info("no messages found for LogType.{}", type);
+        if (throwIfWarn && firstException != null) {
+            throw firstException;
         }
     }
 
+    private Level toLogLevel(String jsLevel) {
+        String upperCase = jsLevel.toUpperCase();
+        if (upperCase.equals("WARN")) {
+            return Level.WARNING;
+        }
+        return Level.parse(upperCase);
+    }
+
+    /**
+     * Dump any outstanding browser logs to the main log.
+     *
+     * @throws WebDriverLogException exception containing the first error message, if any
+     */
     public void logLogs() {
+        // DeltaSpike's LAZY mode uses client-side redirects, which cause
+        // other scripts to abort loading in strange ways when dswid is
+        // missing/wrong. However, the server code currently preserves dswid
+        // whenever possible, and DswidParamChecker aims to make sure it
+        // continues to, so we can treat JS warnings/errors as failures.
+        logLogs(true);
+    }
+
+    /**
+     * Dump any outstanding browser logs to the main log.
+     *
+     * @throws WebDriverLogException exception containing the first warning/error message, if any
+     */
+    public void logLogs(boolean throwIfWarn) {
         for (String type : getLogTypes()) {
-            logLogs(type);
+            logLogs(type, throwIfWarn);
         }
     }
 
@@ -148,21 +283,45 @@ public enum WebDriverFactory {
 
     public void registerScreenshotListener(String testName) {
         log.info("Enabling screenshot module...");
-        if (eventListener == null && ScreenshotDirForTest.isScreenshotEnabled()) {
-            eventListener  = new TestEventForScreenshotListener(driver);
+        if (screenshotListener == null && ScreenshotDirForTest.isScreenshotEnabled()) {
+            screenshotListener = new TestEventForScreenshotListener(driver);
         }
-        driver.register(eventListener);
-        eventListener.updateTestID(testName);
+        driver.register(screenshotListener);
+        screenshotListener.updateTestID(testName);
+    }
+
+    @ParametersAreNonnullByDefault
+    public void registerLogListener() {
+        if (logListener == null) {
+            logListener = (WebDriverEventListener) newProxyInstance(
+                    WebDriverEventListener.class.getClassLoader(),
+                    new Class<?>[]{ WebDriverEventListener.class },
+                    new AbstractInvocationHandler() {
+                        @Override
+                        protected Object handleInvocation(
+                                Object proxy,
+                                Method method,
+                                Object[] args) throws Throwable {
+                            logLogs();
+                            return null;
+                        }
+                    });
+        }
+        driver.register(logListener);
+    }
+
+    public void unregisterLogListener() {
+        driver.unregister(logListener);
     }
 
     public void unregisterScreenshotListener() {
         log.info("Deregistering screenshot module...");
-        driver.unregister(eventListener);
+        driver.unregister(screenshotListener);
     }
 
     public void injectScreenshot(String tag) {
-        if (null != eventListener) {
-            eventListener.customEvent(tag);
+        if (null != screenshotListener) {
+            screenshotListener.customEvent(tag);
         }
     }
 
@@ -173,8 +332,31 @@ public enum WebDriverFactory {
         DesiredCapabilities capabilities = DesiredCapabilities.chrome();
         capabilities.setCapability("chrome.binary", PropertiesHolder.properties
                         .getProperty("webdriver.chrome.bin"));
+
+        ChromeOptions options = new ChromeOptions();
+        URL url = Thread.currentThread().getContextClassLoader().getResource("zanata-testing-extension/chrome/manifest.json");
+        assert url != null : "can't find extension (check testResource config in pom.xml)";
+        File file = new File(url.getPath()).getParentFile();
+        options.addArguments("load-extension=" + file.getAbsolutePath());
+        capabilities.setCapability(ChromeOptions.CAPABILITY, options);
+
         enableLogging(capabilities);
 
+        // start the proxy
+        BrowserMobProxy proxy = new BrowserMobProxyServer();
+        proxy.start(0);
+
+        proxy.addFirstHttpFilterFactory(new ResponseFilterAdapter.FilterSource(
+                (response, contents, messageInfo) -> {
+                    // TODO fail test if response >= 500?
+                    if (response.getStatus().code() >= 400) {
+                        log.warn("Response {} for URI {}", response.getStatus(), messageInfo.getOriginalRequest().getUri());
+                    } else {
+                        log.info("Response {} for URI {}", response.getStatus(), messageInfo.getOriginalRequest().getUri());
+                    }
+                }, 0));
+        Proxy seleniumProxy = ClientUtil.createSeleniumProxy(proxy);
+        capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
         try {
             driverService.start();
         } catch (IOException e) {
@@ -219,7 +401,41 @@ public enum WebDriverFactory {
         firefoxProfile.setAlwaysLoadNoFocusLib(true);
         firefoxProfile.setEnableNativeEvents(true);
         firefoxProfile.setAcceptUntrustedCertificates(true);
+        // TODO port zanata-testing-extension to firefox
+//        File file = new File("extension.xpi");
+//        firefoxProfile.addExtension(file);
         return firefoxProfile;
+    }
+
+    public void testEntry() {
+        clearDswid();
+    }
+
+    public void testExit() {
+        clearDswid();
+    }
+
+    private void clearDswid() {
+        // clear the browser's memory of the dswid
+        getExecutor().executeScript("window.name = ''");
+        dswidParamChecker.clear();
+    }
+
+    public <T> T ignoringDswid(Supplier<T> supplier) {
+        dswidParamChecker.stopChecking();
+        try {
+            return supplier.get();
+        } finally {
+            dswidParamChecker.startChecking();
+        }
+    }
+    public void ignoringDswid(Runnable r) {
+        dswidParamChecker.stopChecking();
+        try {
+            r.run();
+        } finally {
+            dswidParamChecker.startChecking();
+        }
     }
 
     private class ShutdownHook extends Thread {

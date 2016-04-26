@@ -1,3 +1,43 @@
+## 3.9
+
+<h5>Infrastructure Changes</h5>
+* [ZNTA-530](https://zanata.atlassian.net/browse/ZNTA-530) - Replace Seam 2 with CDI
+  * In WildFly or EAP `standalone.xml`, please make sure the Weld
+    extension is present in the `extensions` section like this:
+
+        <extensions>
+            ...
+            <extension module="org.jboss.as.weld" />
+            ...
+        </extensions>
+
+
+  * Secondly, please ensure the Weld subsystem is present in the
+    `profiles` section, eg like this:
+
+        <profiles>
+            ...
+            <subsystem xmlns="urn:jboss:domain:weld:1.0" />
+            ...
+        </profiles>
+
+
+<h5>Bug fixes</h5>
+* [ZNTA-804](https://zanata.atlassian.net/browse/ZNTA-804) - Coordinators' email addresses should be BCC in Contact Coordinator
+* [ZNTA-693](https://zanata.atlassian.net/browse/ZNTA-693) - Handle ClientAbortException exception and reduce severity.
+* [ZNTA-742](https://zanata.atlassian.net/browse/ZNTA-742) - Get a list of contributors for a Project version via the API
+* [ZNTA-744](https://zanata.atlassian.net/browse/ZNTA-744) - Add review data to the contribution statistics API
+* [ZNTA-879](https://zanata.atlassian.net/browse/ZNTA-879) - Allow admin to configure the visibility of user email
+* [ZNTA-412](https://zanata.atlassian.net/browse/ZNTA-412) - Profile link to project maintainers, language members, and version group maintainers
+* [ZNTA-905](https://zanata.atlassian.net/browse/ZNTA-905) - Remove 0% matching translation memory entry
+* [ZNTA-928](https://zanata.atlassian.net/browse/ZNTA-928) - Readonly project doesn't have "lock" icon in UI
+* [ZNTA-54](https://zanata.atlassian.net/browse/ZNTA-54) - Allow delete language
+
+<h5>Infrastructure Changes</h5>
+* Recommended platform: JBoss EAP 6 (6.4.6.GA or later).
+* Alternative platform: WildFly version 10.x.
+
+-----------------------
 ## 3.8.4
 <h5>Bug fixes</h5>
 * [ZNTA-959](https://zanata.atlassian.net/browse/ZNTA-959) - Copy version fails silently and leaves version readonly
@@ -60,6 +100,8 @@
 <h5>New Features</h5>
 * [1224912](https://bugzilla.redhat.com/show_bug.cgi?id=1224912) - Filter "Last modified by translators other than &lt;user&gt;"
 * [1213630](https://bugzilla.redhat.com/show_bug.cgi?id=1213630) - Webhook header needs to include cryptographic signature in header for identification
+* [1214502](https://bugzilla.redhat.com/show_bug.cgi?id=1214502) -  RFE: Grant project creation permission to certain sets of users
+* [ZNTA-555](https://zanata.atlassian.net/browse/ZNTA-555) - Internal "user request management" and tracking
 * [1214502](https://bugzilla.redhat.com/show_bug.cgi?id=1214502) - RFE: Grant project creation permission to certain sets of users
 * [1233524](https://bugzilla.redhat.com/show_bug.cgi?id=1233524) - Update project search page to include user
 * [ZNTA-108](https://zanata.atlassian.net/browse/ZNTA-108) - Improved glossary management: add, edit and delete individual glossary entries

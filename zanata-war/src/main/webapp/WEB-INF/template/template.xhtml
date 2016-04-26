@@ -2,6 +2,7 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <f:view contentType="text/html" xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ds="http://deltaspike.apache.org/jsf"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
@@ -17,7 +18,7 @@
     <ui:remove>
       <!-- This needs to appear before all other JavaScript, for accurate testing -->
     </ui:remove>
-    <h:outputText value="#{ajaxCounter.ajaxCounterScript}" escape="false" />
+    <h:outputText value="#{javaScriptTestHelper.headScript}" escape="false" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 
@@ -82,17 +83,16 @@
   </h:head>
 
   <h:body styleClass="new-zanata">
+    <ds:windowId/>
     <ui:include src="banner.xhtml"/>
     <a4j:outputPanel layout="block" ajaxRendered="true" id="messages">
       <ui:fragment rendered="#{showGlobalMessages != 'false'}">
         <ul class="list--no-bullets message--global">
           <zanata:global-messages value="#{jsfMessages.globalMessagesList}"
             rendered="#{not facesContext.validationFailed and not empty jsfMessages.globalMessagesList}"/>
-          <zanata:global-messages value="#{conversationScopeMessages.getAndClearMessages()}"
-            rendered="#{conversationScopeMessages.hasMessages()}"/>
         </ul>
         <h:outputScript
-          rendered="#{conversationScopeMessages.hasMessages() or (not facesContext.validationFailed and not empty jsfMessages.globalMessagesList)}">
+          rendered="#{not facesContext.validationFailed and not empty jsfMessages.globalMessagesList}">
           startGlobalMessageTimer();
         </h:outputScript>
       </ui:fragment>
@@ -108,10 +108,5 @@
 
     <ui:include src="scripts.xhtml"/>
   </h:body>
-  <ui:remove>
-    <!-- The javascriptFinished script needs to appear after all other
-            JavaScript, for accurate testing: -->
-  </ui:remove>
-  <h:outputText value="#{ajaxCounter.javascriptFinishedScript}" escape="false" />
   </html>
 </f:view>

@@ -22,15 +22,13 @@ package org.zanata.dao;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 import org.zanata.model.HPersonEmailValidationKey;
 
-@Name("personEmailValidationKeyDAO")
-@AutoCreate
-@Scope(ScopeType.STATELESS)
+@Named("personEmailValidationKeyDAO")
+@RequestScoped
 public class PersonEmailValidationKeyDAO extends
         AbstractDAOImpl<HPersonEmailValidationKey, Long> {
 

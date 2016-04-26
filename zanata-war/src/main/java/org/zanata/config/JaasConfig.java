@@ -24,11 +24,7 @@ import javax.security.auth.login.AppConfigurationEntry;
 import javax.security.auth.login.Configuration;
 import javax.security.auth.spi.LoginModule;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
+import javax.inject.Named;
 
 /**
  * Store for JAAS configuration.
@@ -36,10 +32,9 @@ import org.jboss.seam.annotations.intercept.BypassInterceptors;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("jaasConfig")
-@AutoCreate
-@BypassInterceptors
-@Scope(ScopeType.APPLICATION)
+@Named("jaasConfig")
+
+@javax.enterprise.context.ApplicationScoped
 public class JaasConfig {
 
     /**
@@ -84,6 +79,8 @@ public class JaasConfig {
                 getAppConfigurationEntries(loginModuleName);
         if(entries != null) {
             for (AppConfigurationEntry e : entries) {
+                // This is poorly named, the getLoginModuleName method returns
+                // the class
                 if (e.getLoginModuleName().equals(loginModuleType.getName())) {
                     return e;
                 }

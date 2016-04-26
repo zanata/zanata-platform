@@ -22,14 +22,16 @@ package org.zanata.action;
 
 import java.io.Serializable;
 import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
 import javax.faces.application.FacesMessage;
 
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Begin;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.apache.deltaspike.core.api.scope.ConversationGroup;
+import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.zanata.async.handle.CopyTransTaskHandle;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.i18n.Messages;
@@ -43,52 +45,45 @@ import org.zanata.ui.CopyAction;
 import org.zanata.util.DateUtil;
 import com.google.common.base.Optional;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * Copy Trans page action bean.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("copyTransAction")
-@Scope(ScopeType.CONVERSATION)
+@Named("copyTransAction")
+@RequestScoped
 public class CopyTransAction extends CopyAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @In
+    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @In
+    @Inject
     private CopyTransManager copyTransManager;
 
-    @In
+    @Inject
     private ConversationScopeMessages conversationScopeMessages;
 
-    @In
+    @Inject
     private Messages msgs;
 
-    @In
+    @Inject
     private CopyTransOptionsModel copyTransOptionsModel;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private org.zanata.ui.faces.FacesMessages jsfMessages;
 
-    @Getter
-    @Setter
-    private String iterationSlug;
-
-    @Getter
-    @Setter
-    private String projectSlug;
+    @Inject
+    @Any
+    private ProjectAndVersionSlug projectAndVersionSlug;
 
     private HProjectIteration projectIteration;
 
-    @Create
+    @PostConstruct
     public void onCreate() {
         copyTransOptionsModel.setInstance(CopyTransOptionFactory
                 .getExplicitOptions());
@@ -116,12 +111,28 @@ public class CopyTransAction extends CopyAction implements Serializable {
     public void onComplete() {
         jsfMessages.addGlobal(FacesMessage.SEVERITY_INFO,
                 msgs.format("jsf.iteration.CopyTrans.Completed",
-                        getProjectSlug(), getIterationSlug()));
+                        getProjectSlug(), getVersionSlug()));
     }
 
-    @Begin(join = true)
+    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public void updateCopyTrans(String action, String value) {
         copyTransOptionsModel.update(action, value);
+    }
+
+    public String getProjectSlug() {
+        return projectAndVersionSlug.getProjectSlug();
+    }
+
+    public void setProjectSlug(String projectSlug) {
+        projectAndVersionSlug.setProjectSlug(projectSlug);
+    }
+
+    public String getVersionSlug() {
+        return projectAndVersionSlug.getVersionSlug();
+    }
+
+    public void setVersionSlug(String versionSlug) {
+        projectAndVersionSlug.setVersionSlug(versionSlug);
     }
 
     @Override
@@ -135,10 +146,10 @@ public class CopyTransAction extends CopyAction implements Serializable {
         // TODO share code with ProjectVersionService.retrieveAndCheckIteration?
         if (projectIteration == null) {
             projectIteration =
-                    projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+                    projectIterationDAO.getBySlug(getProjectSlug(), getVersionSlug());
             if (projectIteration == null) {
-                throw new NoSuchEntityException("Project version '" + projectSlug
-                        + ":" + iterationSlug + "' not found.");
+                throw new NoSuchEntityException("Project version '" + getProjectSlug()
+                        + ":" + getVersionSlug() + "' not found.");
             }
         }
         return projectIteration;

@@ -51,15 +51,13 @@
     -->
     <!--<view-handler>org.ajax4jsf.application.AjaxViewHandler</view-handler>-->
 
+    <message-bundle>messages</message-bundle>
+
   </application>
   <lifecycle>
-    <phase-listener>org.zanata.security.FedoraOpenIdPhaseListener</phase-listener>
+    <phase-listener>org.zanata.security.OpenIdPhaseListener</phase-listener>
     <phase-listener>org.zanata.ui.faces.FacesMessagesPhaseListener</phase-listener>
   </lifecycle>
-
-  <factory>
-    <exception-handler-factory>org.zanata.exception.AjaxViewExpiredExceptionHandlerFactory</exception-handler-factory>
-  </factory>
 
   <render-kit>
     <renderer>
@@ -82,4 +80,370 @@
       <redirect/>
     </navigation-case>
   </navigation-rule>
+
+  <!-- Landing page for open id authentication -->
+  <navigation-rule>
+    <from-view-id>/openid.xhtml</from-view-id>
+    <navigation-case>
+      <if>#{authenticationManager.authenticated and authenticationManager.newUser}</if>
+      <to-view-id>/profile/create_user.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <if>#{!identity.isLoggedIn() and authenticationManager.authenticatedAccountWaitingForActivation}</if>
+      <to-view-id>/account/inactive_account.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <if>#{!identity.loggedIn and applicationConfiguration.singleOpenIdProvider}</if>
+      <to-view-id>/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <if>#{identity.loggedIn and userRedirect.shouldRedirectToDashboard()}</if>
+      <to-view-id>/dashboard/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <if>#{!identity.loggedIn}</if>
+      <to-view-id>/account/login.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+
+    <navigation-case>
+      <!-- Default redirection after a log in is to the dashboard -->
+      <if>#{identity.loggedIn}</if>
+      <to-view-id>/dashboard/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+
+  <!-- Landing page for Kerberos ticket-based Authentication -->
+  <navigation-rule>
+    <from-view-id>/account/klogin.xhtml</from-view-id>
+    <navigation-case>
+      <if>#{authenticationManager.authenticationRedirect eq 'login'}</if>
+      <to-view-id>/account/login.xhtml</to-view-id>
+      <redirect />
+    </navigation-case>
+    <navigation-case>
+      <if>#{authenticationManager.authenticationRedirect eq 'edit'}</if>
+      <to-view-id>/profile/create_user.xhtml</to-view-id>
+      <redirect />
+    </navigation-case>
+    <navigation-case>
+      <if>#{authenticationManager.authenticationRedirect eq 'inactive'}</if>
+      <to-view-id>/account/inactive_account.xhtml</to-view-id>
+      <redirect />
+    </navigation-case>
+    <navigation-case>
+      <if>#{authenticationManager.authenticationRedirect eq 'dashboard'}</if>
+      <to-view-id>/dashboard/home.xhtml</to-view-id>
+      <redirect />
+    </navigation-case>
+    <navigation-case>
+      <if>#{authenticationManager.authenticationRedirect eq 'home'}</if>
+      <to-view-id>/home.xhtml</to-view-id>
+      <redirect />
+    </navigation-case>
+  </navigation-rule>
+
+  <!-- Landing page for Internal, JAAS and Kerberos form-based
+       authentication -->
+  <navigation-rule>
+    <from-view-id>/account/login.xhtml</from-view-id>
+    <navigation-case>
+      <from-action>#{loginAction.getLoginPageRedirect()}</from-action>
+      <from-outcome>dashboard</from-outcome>
+      <to-view-id>/dashboard/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <from-outcome>dashboard</from-outcome>
+      <to-view-id>/dashboard/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <from-outcome>createUser</from-outcome>
+      <to-view-id>/profile/create_user.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <from-outcome>inactive</from-outcome>
+      <to-view-id>/account/inactive_account.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <!-- default case -->
+      <from-outcome>loggedIn</from-outcome>
+      <to-view-id>/dashboard/home.xhtml</to-view-id>
+      <redirect />
+    </navigation-case>
+  </navigation-rule>
+
+  <navigation-rule>
+    <from-view-id>/account/password_reset_request.xhtml</from-view-id>
+    <navigation-case>
+      <from-outcome>home</from-outcome>
+      <to-view-id>/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+
+  <navigation-rule>
+    <from-view-id>/account/inactive_account.xhtml</from-view-id>
+    <navigation-case>
+      <from-action>#{inactiveAccountAction.sendActivationEmail}</from-action>
+      <from-outcome>success</from-outcome>
+      <to-view-id>/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <from-action>#{inactiveAccountAction.changeEmail}</from-action>
+      <from-outcome>home</from-outcome>
+      <to-view-id>/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+
+  </navigation-rule>
+
+  <!-- Admin -->
+  <navigation-rule>
+    <from-view-id>/admin/roledetail.xhtml</from-view-id>
+    <navigation-case>
+      <from-outcome>success</from-outcome>
+      <to-view-id>/admin/rolemanager.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+
+  <navigation-rule>
+    <from-view-id>/admin/userdetail.xhtml</from-view-id>
+    <navigation-case>
+      <from-outcome>success</from-outcome>
+      <to-view-id>/admin/usermanager.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+
+  <navigation-rule>
+    <from-view-id>/admin/server_configuration.xhtml</from-view-id>
+    <navigation-case>
+      <from-action>#{serverConfigurationBean.update}</from-action>
+      <from-outcome>success</from-outcome>
+      <to-view-id>/admin/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+
+  <navigation-rule>
+    <from-view-id>/admin/roleruledetails.xhtml</from-view-id>
+    <navigation-case>
+      <from-action>#{roleAssignmentRuleAction.update}</from-action>
+      <from-outcome>updated</from-outcome>
+      <to-view-id>/admin/rolerules.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <from-action>#{roleAssignmentRuleAction.persist}</from-action>
+      <from-outcome>persisted</from-outcome>
+      <to-view-id>/admin/rolerules.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+
+  <!-- Version Group -->
+  <navigation-rule>
+    <from-view-id>/version-group/create_version_group.xhtml</from-view-id>
+    <navigation-case>
+      <from-action>#{versionGroupHome.persist}</from-action>
+      <if>#{versionGroupHome.managed}</if>
+      <to-view-id>/version-group/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+
+  <!-- User profile -->
+  <navigation-rule>
+    <from-view-id>/profile/create_user.xhtml</from-view-id>
+    <navigation-case>
+      <from-outcome>success</from-outcome>
+      <to-view-id>/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <from-outcome>failure</from-outcome>
+      <to-view-id>/profile/create_user.xhtml</to-view-id>
+    </navigation-case>
+  </navigation-rule>
+
+  <navigation-rule>
+    <from-view-id>/profile/merge_account.xhtml</from-view-id>
+    <navigation-case>
+      <from-action>#{accountMergeAction.cancel}</from-action>
+      <from-outcome>cancel</from-outcome>
+      <to-view-id>/dashboard/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+
+  <!-- Project -->
+  <navigation-rule>
+    <from-view-id>/project/project.xhtml</from-view-id>
+    <navigation-case>
+      <from-outcome>project-slug-updated</from-outcome>
+      <to-view-id>/project/project.xhtml</to-view-id>
+      <redirect>
+        <view-param>
+          <name>slug</name>
+          <value>#{projectHome.instance.slug}</value>
+        </view-param>
+      </redirect>
+    </navigation-case>
+  </navigation-rule>
+
+  <navigation-rule>
+    <from-view-id>/project/create_project.xhtml</from-view-id>
+    <navigation-case>
+      <from-action>#{projectHome.persist}</from-action>
+      <to-view-id>/project/project.xhtml</to-view-id>
+      <redirect>
+        <view-param>
+          <name>slug</name>
+          <value>#{projectHome.instance.slug}</value>
+        </view-param>
+      </redirect>
+    </navigation-case>
+  </navigation-rule>
+
+  <navigation-rule>
+    <from-view-id>/project/add_iteration.xhtml</from-view-id>
+    <navigation-case>
+      <from-action>#{versionHome.createVersion}</from-action>
+      <from-outcome>invalid-slug</from-outcome>
+      <to-view-id>/project/add_iteration.xhtml</to-view-id>
+      <redirect>
+        <view-param>
+          <name>projectSlug</name>
+          <value>#{versionHome.projectSlug}</value>
+        </view-param>
+      </redirect>
+    </navigation-case>
+    <navigation-case>
+      <from-outcome>copy-version</from-outcome>
+      <to-view-id>/project/project.xhtml</to-view-id>
+      <redirect>
+        <view-param>
+          <name>slug</name>
+          <value>#{versionHome.projectSlug}</value>
+        </view-param>
+      </redirect>
+    </navigation-case>
+    <navigation-case>
+      <from-outcome>persisted</from-outcome>
+      <to-view-id>/iteration/view.xhtml</to-view-id>
+      <redirect>
+        <view-param>
+          <name>projectSlug</name>
+          <value>#{versionHome.projectSlug}</value>
+        </view-param>
+        <view-param>
+          <name>iterationSlug</name>
+          <value>#{versionHome.instance.slug}</value>
+        </view-param>
+      </redirect>
+    </navigation-case>
+  </navigation-rule>
+
+  <!-- Project Iteration -->
+  <navigation-rule>
+    <from-view-id>/iteration/view.xhtml</from-view-id>
+    <navigation-case>
+      <from-action>#{versionHomeAction.uploadSourceFile}</from-action>
+      <from-outcome>success</from-outcome>
+      <to-view-id>/iteration/view.xhtml</to-view-id>
+      <redirect>
+        <view-param>
+          <name>projectSlug</name>
+          <value>#{versionHome.projectSlug}</value>
+        </view-param>
+        <view-param>
+          <name>iterationSlug</name>
+          <value>#{versionHome.instance.slug}</value>
+        </view-param>
+      </redirect>
+    </navigation-case>
+    <navigation-case>
+      <from-action>#{versionHomeAction.uploadTranslationFile(versionHomeAction.selectedLocale)}</from-action>
+      <from-outcome>success</from-outcome>
+      <to-view-id>/iteration/view.xhtml</to-view-id>
+      <redirect>
+        <view-param>
+          <name>projectSlug</name>
+          <value>#{versionHome.projectSlug}</value>
+        </view-param>
+        <view-param>
+          <name>iterationSlug</name>
+          <value>#{versionHome.instance.slug}</value>
+        </view-param>
+      </redirect>
+    </navigation-case>
+    <navigation-case>
+      <from-outcome>merge-translation</from-outcome>
+      <to-view-id>/iteration/view.xhtml</to-view-id>
+      <redirect>
+        <view-param>
+          <name>projectSlug</name>
+          <value>#{versionHome.projectSlug}</value>
+        </view-param>
+        <view-param>
+          <name>iterationSlug</name>
+          <value>#{versionHome.instance.slug}</value>
+        </view-param>
+      </redirect>
+    </navigation-case>
+    <navigation-case>
+      <from-action>#{versionHome.update}</from-action>
+      <from-outcome>version-slug-updated</from-outcome>
+      <to-view-id>/iteration/view.xhtml</to-view-id>
+      <redirect>
+        <view-param>
+          <name>projectSlug</name>
+          <value>#{versionHome.projectSlug}</value>
+        </view-param>
+        <view-param>
+          <name>iterationSlug</name>
+          <value>#{versionHome.instance.slug}</value>
+        </view-param>
+      </redirect>
+    </navigation-case>
+  </navigation-rule>
+
+  <!-- Language -->
+  <navigation-rule>
+    <from-view-id>/language/home.xhtml</from-view-id>
+    <navigation-case>
+      <from-action>#{languageManagerAction.save}</from-action>
+      <to-view-id>/language/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+
+  <!-- Translation Memory -->
+  <navigation-rule>
+    <from-view-id>/tm/create.xhtml</from-view-id>
+    <navigation-case>
+      <from-action>#{translationMemoryHome.persist}</from-action>
+      <from-outcome>persisted</from-outcome>
+      <to-view-id>/tm/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <from-action>#{translationMemoryHome.update}</from-action>
+      <from-outcome>updated</from-outcome>
+      <to-view-id>/tm/home.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+
 </faces-config>

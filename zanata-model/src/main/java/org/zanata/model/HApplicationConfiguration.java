@@ -59,6 +59,7 @@ public class HApplicationConfiguration extends ModelEntityBase {
     public static String KEY_HOME_CONTENT = "pages.home.content";
     public static String KEY_LOG_DESTINATION_EMAIL = "log.destination.email";
     public static String KEY_EMAIL_LOG_EVENTS = "log.email.active";
+    public static String KEY_DISPLAY_USER_EMAIL = "display.user.email";
     public static String KEY_EMAIL_LOG_LEVEL = "log.email.level";
     public static String KEY_PIWIK_URL = "piwik.url";
     public static String KEY_HELP_URL = "help.url";
@@ -85,7 +86,7 @@ public class HApplicationConfiguration extends ModelEntityBase {
     }
 
     @NotNull
-    @Type(type = "text")
+    @javax.persistence.Lob
     @Column(name = "config_value", nullable = false)
     public String getValue() {
         return value;

@@ -28,25 +28,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
-import javax.servlet.http.HttpServletRequest;
+import javax.enterprise.inject.Produces;
 
 import com.google.common.base.Optional;
 import lombok.extern.slf4j.Slf4j;
 import lombok.Getter;
 import lombok.Setter;
 
+import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.apache.log4j.Level;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Observer;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Startup;
-import org.jboss.seam.annotations.Synchronized;
-import org.jboss.seam.web.ServletContexts;
+import javax.annotation.PostConstruct;
+import javax.enterprise.util.AnnotationLiteral;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.servlet.http.HttpSession;
+
+import org.zanata.config.SystemPropertyConfigStore;
+import org.zanata.servlet.HttpRequestAndSessionHolder;
+import org.zanata.servlet.annotations.ServerPath;
+import org.zanata.util.DefaultLocale;
+import org.zanata.util.ServiceLocator;
+import org.zanata.util.Synchronized;
 import org.zanata.config.DatabaseBackedConfig;
 import org.zanata.config.JaasConfig;
 import org.zanata.config.JndiBackedConfig;
@@ -66,9 +71,8 @@ import org.zanata.security.OpenIdLoginModule;
 
 import static java.lang.Math.max;
 
-@Name("applicationConfiguration")
-@Scope(ScopeType.APPLICATION)
-@Startup
+@Named("applicationConfiguration")
+@ApplicationScoped
 @Synchronized(timeout = ServerConstants.DEFAULT_TIMEOUT)
 @Slf4j
 public class ApplicationConfiguration implements Serializable {
@@ -83,23 +87,23 @@ public class ApplicationConfiguration implements Serializable {
     @Getter
     private static final int defaultAnonymousSessionTimeoutMinutes = 30;
 
-    @In
+    @Inject
     private DatabaseBackedConfig databaseBackedConfig;
-    @In
+    @Inject
     private JndiBackedConfig jndiBackedConfig;
-    @In
+    @Inject
     private JaasConfig jaasConfig;
-    @In
+    @Inject @DefaultLocale
     private Messages msgs;
+
+    @Inject
+    private SystemPropertyConfigStore sysPropConfigStore;
 
     private static final ZanataSMTPAppender smtpAppenderInstance =
             new ZanataSMTPAppender();
 
     @Getter
-    private boolean debug;
-
-    @Getter
-    private int authenticatedSessionTimeoutMinutes = 0;
+    private int authenticatedSessionTimeoutMinutes;
 
     @Getter
     @Setter
@@ -123,18 +127,17 @@ public class ApplicationConfiguration implements Serializable {
 
     private Optional<String> openIdProvider; // Cache the OpenId provider
 
-    private String defaultServerPath;
-
-    @Create
+    @PostConstruct
     public void load() {
         log.info("Reloading configuration");
         this.loadLoginModuleNames();
         this.validateConfiguration();
         this.applyLoggingConfiguration();
         this.loadJaasConfig();
+        authenticatedSessionTimeoutMinutes = sysPropConfigStore
+                .get("authenticatedSessionTimeoutMinutes", 180);
     }
 
-    @Observer(ConfigurationChanged.EVENT_NAME)
     public void resetConfigValue(
             @Observes(during = TransactionPhase.AFTER_SUCCESS)
             ConfigurationChanged configChange) {
@@ -240,28 +243,14 @@ public class ApplicationConfiguration implements Serializable {
         return databaseBackedConfig.getRegistrationUrl();
     }
 
+    @Produces
+    @ServerPath
     public String getServerPath() {
         String configuredValue = databaseBackedConfig.getServerHost();
         if (configuredValue != null) {
             return configuredValue;
-        } else if (defaultServerPath != null) {
-            return defaultServerPath;
         } else {
-            createDefaultServerPath();
-            return defaultServerPath;
-        }
-    }
-
-
-    //@see comment at org.zanata.security.AuthenticationManager.onLoginCompleted()
-    public void createDefaultServerPath() {
-        HttpServletRequest request =
-                ServletContexts.instance().getRequest();
-        if (request != null) {
-            defaultServerPath =
-                    request.getScheme() + "://" + request.getServerName()
-                            + ":" + request.getServerPort()
-                            + request.getContextPath();
+            return HttpRequestAndSessionHolder.getDefaultServerPath();
         }
     }
 
@@ -416,31 +405,33 @@ public class ApplicationConfiguration implements Serializable {
                 String.valueOf(Calendar.getInstance().get(Calendar.YEAR)));
     }
 
-    @Observer(PostAuthenticateEvent.EVENT_NAME)
     public void setAuthenticatedSessionTimeout(
             @Observes PostAuthenticateEvent payload) {
-        HttpServletRequest request = ServletContexts
-                .getInstance()
-                .getRequest();
-        if (request != null) {
+        HttpSession session =
+                ServiceLocator.instance().getInstance(HttpSession.class,
+                        new AnnotationLiteral<DeltaSpike>() {
+                        });
+        if (session != null) {
             int timeoutInSecs = max(authenticatedSessionTimeoutMinutes * 60,
                     defaultAnonymousSessionTimeoutMinutes * 60);
-            request
-                .getSession()
-                .setMaxInactiveInterval(timeoutInSecs);
+            session.setMaxInactiveInterval(timeoutInSecs);
         }
     }
 
-    @Observer(LogoutEvent.EVENT_NAME)
     public void setUnauthenticatedSessionTimeout(@Observes LogoutEvent payload) {
-        HttpServletRequest request = ServletContexts
-                .getInstance()
-                .getRequest();
-        if (request != null) {
-            request
-                .getSession()
-                .setMaxInactiveInterval(
+        // if we use ServiceLocator and get deltaspike session, upon invoking
+        // setMaxInactiveInterval method, it will throw Request Scope not active
+        // exception
+        java.util.Optional<HttpSession> httpSession =
+                HttpRequestAndSessionHolder.getHttpSession(false);
+
+        if (httpSession.isPresent()) {
+            httpSession.get().setMaxInactiveInterval(
                         defaultAnonymousSessionTimeoutMinutes * 60);
         }
+    }
+
+    public boolean isDisplayUserEmail() {
+        return databaseBackedConfig.isDisplayUserEmail();
     }
 }

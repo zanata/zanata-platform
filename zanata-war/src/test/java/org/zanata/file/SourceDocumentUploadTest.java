@@ -32,14 +32,16 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
+import org.apache.deltaspike.core.spi.scope.window.WindowContext;
+import org.hibernate.Session;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Matchers;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.common.DocumentType;
 import org.zanata.exception.ChunkUploadException;
 import org.zanata.model.HDocument;
@@ -50,40 +52,43 @@ import org.zanata.service.DocumentService;
 import org.zanata.service.TranslationFileService;
 
 import com.google.common.base.Optional;
+import org.zanata.servlet.annotations.ContextPath;
+import org.zanata.servlet.annotations.ServerPath;
+import org.zanata.servlet.annotations.SessionId;
+import org.zanata.test.CdiUnitRunner;
+import org.zanata.util.UrlUtil;
 
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+
+@RunWith(CdiUnitRunner.class)
 public class SourceDocumentUploadTest extends DocumentUploadTest {
-    @Mock
+    @Produces @Mock
     DocumentUploadUtil documentUploadUtil;
 
-    @Mock
+    @Produces @Mock
     private TranslationFileService translationFileService;
-    @Mock
+    @Produces @Mock
     private DocumentService documentService;
-    @Mock
+    @Produces @Mock
     private FilePersistService filePersistService;
+    @Produces @Mock
+    WindowContext windowContext;
+    @Produces @Mock
+    UrlUtil urlUtil;
+
+    @Produces @Mock Session session;
+    @Produces @SessionId String sessionId = "";
+    @Produces @ServerPath String serverPath = "";
+    @Produces @ContextPath String contextPath = "";
 
     @Captor
     private ArgumentCaptor<Optional<String>> paramCaptor;
     @Captor
     private ArgumentCaptor<HRawDocument> persistedRawDocument;
 
+    @Inject
     private SourceDocumentUpload sourceUpload;
-
-    @Before
-    public void beforeTest() {
-        MockitoAnnotations.initMocks(this);
-        seam.reset();
-        seam.ignoreNonResolvable()
-                .use("documentUploadUtil", documentUploadUtil)
-                .use("identity", identity)
-                .use("projectIterationDAO", projectIterationDAO)
-                .use("translationFileServiceImpl", translationFileService)
-                .use("documentServiceImpl", documentService)
-                .use("documentDAO", documentDAO)
-                .use("filePersistService", filePersistService).allowCycles();
-
-        sourceUpload = seam.autowire(SourceDocumentUpload.class);
-    }
 
     @After
     public void clearResponse() {
@@ -135,7 +140,8 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
     }
 
     private void mockHasUploadPermission() {
-        when(identity.hasPermission("import-template", projectIteration))
+        when(identity.hasPermissionWithAnyTargets("import-template",
+                projectIteration))
                 .thenReturn(conf.hasImportTemplatePermission);
     }
 
@@ -189,6 +195,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
     }
 
     @Test
+    @InRequestScope
     public void canUploadNewDocument() throws IOException {
         conf = defaultUpload().build();
         mockRequiredServices();
@@ -204,6 +211,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
     }
 
     @Test
+    @InRequestScope
     public void canUploadExistingDocument() throws IOException {
         conf = defaultUpload().existingDocument(new HDocument()).build();
         mockRequiredServices();
@@ -219,6 +227,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
     }
 
     @Test
+    @InRequestScope
     public void usesGivenParameters() throws IOException {
         conf = defaultUpload().build();
         mockRequiredServices();
@@ -227,6 +236,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
     }
 
     @Test
+    @InRequestScope
     public void fallsBackOnStoredParameters() throws IOException {
         conf = defaultUpload().params(null).build();
         mockRequiredServices();
@@ -235,6 +245,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
     }
 
     @Test
+    @InRequestScope
     public void uploadParametersAreStored() throws IOException {
         conf = defaultUpload().build();
         mockRequiredServices();
@@ -244,6 +255,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
     }
 
     @Test
+    @InRequestScope
     public void storedParametersNotOverwrittenWithEmpty() throws IOException {
         conf = defaultUpload().params("").build();
         mockRequiredServices();

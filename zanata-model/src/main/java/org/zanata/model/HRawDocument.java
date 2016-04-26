@@ -83,8 +83,8 @@ public class HRawDocument extends ModelEntityBase implements Serializable {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@"
-                + Integer.toHexString(hashCode()) + "[id=" + id
-                + ",versionNum=" + versionNum + ",contentHash=" + contentHash
+                + Integer.toHexString(hashCode()) + "[id=" + getId()
+                + ",versionNum=" + getVersionNum() + ",contentHash=" + contentHash
                 + "]";
     }
     // TODO override equals to use contentHash, type, parameters, etc.

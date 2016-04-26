@@ -18,9 +18,6 @@ import lombok.Value;
  */
 @Value
 public class TextFlowTargetUpdateContextEvent {
-    public static final String EVENT_NAME =
-            "org.zanata.events.TextFlowTargetUpdateContextEvent";
-
     private final TransUnitId transUnitId;
     private final LocaleId localeId;
     private final EditorClientId editorClientId;

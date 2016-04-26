@@ -30,11 +30,10 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import lombok.NonNull;
 import org.apache.commons.lang.StringUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.AccountDAO;
@@ -45,52 +44,54 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.ZanataSecured;
 import org.zanata.service.ActivityService;
 import org.zanata.service.GravatarService;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.service.LanguageTeamService;
 import org.zanata.util.DateUtil;
+import org.zanata.util.IServiceLocator;
 import org.zanata.util.ServiceLocator;
 
 import javax.annotation.Nullable;
 
 import lombok.Getter;
 
-@Name("dashboardAction")
-@Scope(ScopeType.PAGE)
-@ZanataSecured
+@Named("dashboardAction")
+@javax.faces.bean.ViewScoped
+
 @CheckLoggedIn
 public class DashboardAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @In
+    @Inject
     private GravatarService gravatarServiceImpl;
 
-    @In
+    @Inject
     private ActivityService activityServiceImpl;
 
-    @In
+    @Inject
     private LanguageTeamService languageTeamServiceImpl;
 
-    @In
+    @Inject
     private AccountDAO accountDAO;
 
-    @In
+    @Inject
     private ProjectDAO projectDAO;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private Messages msgs;
 
-    @In(required = false, value = ZanataJpaIdentityStore.AUTHENTICATED_USER)
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
+    @Inject
     @Getter
-    private ProjectFilter projectList = new ProjectFilter();
+    private ProjectFilter projectList;
 
     @Getter(lazy = true)
     private final int userMaintainedProjectsCount =
@@ -117,15 +118,15 @@ public class DashboardAction implements Serializable {
         HAccount account = accountDAO.findById(authenticatedAccount.getId());
         return StringUtils.join(
                 Collections2.transform(account.getPerson()
-                .getLanguageMemberships(),
-                 new Function<HLocale, Object>() {
-                    @Nullable
-                    @Override
-                    public Object apply(@NonNull HLocale locale) {
-                        return locale.retrieveDisplayName();
-                    }
-                }),
-            ", ");
+                                .getLanguageMemberships(),
+                        new Function<HLocale, Object>() {
+                            @Nullable
+                            @Override
+                            public Object apply(@NonNull HLocale locale) {
+                                return locale.retrieveDisplayName();
+                            }
+                        }),
+                ", ");
     }
 
     private int countUserMaintainedProjects() {
@@ -213,35 +214,32 @@ public class DashboardAction implements Serializable {
         return "";
     }
 
+    public boolean canCreateProject() {
+        return identity.hasPermission(new HProject(), "insert");
+    }
+
     /**
      * Project list filter. Pages its elements directly from the database.
      */
-    public class ProjectFilter
-            extends AbstractListFilter<HProject> {
+    public static class ProjectFilter
+            extends AbstractListFilter<HProject> implements Serializable {
+
+        @Inject
+        @Authenticated
+        private HAccount authenticatedAccount;
+
+        @Inject
+        private ProjectDAO projectDAO;
 
         @Override
         protected List<HProject> fetchRecords(int start, int max,
                 String filter) {
-            ServiceLocator serviceLocator = ServiceLocator.instance();
-            ProjectDAO projectDAO =
-                    serviceLocator.getInstance(ProjectDAO.class);
-            HAccount authenticatedAccount =
-                    serviceLocator
-                            .getInstance(ZanataJpaIdentityStore.AUTHENTICATED_USER,
-                                    HAccount.class);
             return projectDAO.getProjectsForMaintainer(
                     authenticatedAccount.getPerson(), filter, start, max);
         }
 
         @Override
         protected long fetchTotalRecords(String filter) {
-            ServiceLocator serviceLocator = ServiceLocator.instance();
-            ProjectDAO projectDAO =
-                    serviceLocator.getInstance(ProjectDAO.class);
-            HAccount authenticatedAccount =
-                    serviceLocator
-                            .getInstance(ZanataJpaIdentityStore.AUTHENTICATED_USER,
-                                    HAccount.class);
             return projectDAO.getMaintainedProjectCount(
                     authenticatedAccount.getPerson(), filter);
         }

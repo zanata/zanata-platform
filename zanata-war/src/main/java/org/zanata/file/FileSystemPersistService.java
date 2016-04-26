@@ -29,11 +29,10 @@ import java.io.InputStream;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FilenameUtils;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
@@ -44,19 +43,18 @@ import org.zanata.rest.service.VirusScanner;
 
 import com.google.common.io.Files;
 
-@Name("filePersistService")
-@Scope(ScopeType.STATELESS)
-@AutoCreate
+@Named("filePersistService")
+@RequestScoped
 @Slf4j
 public class FileSystemPersistService implements FilePersistService {
 
     private static final String RAW_DOCUMENTS_SUBDIRECTORY = "documents";
 
-    @In("applicationConfiguration")
+    @Inject
     private ApplicationConfiguration appConfig;
-    @In
+    @Inject
     private DocumentDAO documentDAO;
-    @In
+    @Inject
     private VirusScanner virusScanner;
 
     @Override

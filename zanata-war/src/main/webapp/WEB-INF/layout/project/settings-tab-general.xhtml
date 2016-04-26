@@ -89,7 +89,7 @@
         rendered="#{projectHome.instance.status eq 'ACTIVE'}">
       <a4j:commandLink styleClass="button--warning l--push-bottom-half"
           id="button-lock-project"
-          action="#{projectHome.updateStatus('R')}" render="status">
+          action="#{projectHome.updateStatus('R')}" render="status, project-info">
         <i class="i--left i--lock"></i> #{msgs['jsf.project.readonly']}
       </a4j:commandLink>
 
@@ -105,7 +105,7 @@
       <a4j:commandLink styleClass="button--success l--push-bottom-half"
           id="button-unlock-project"
           rendered="#{projectHome.instance.status == 'READONLY'}"
-          action="#{projectHome.updateStatus('A')}" render="status">
+          action="#{projectHome.updateStatus('A')}" render="status, project-info">
         <i class="i--left i--lock"></i> #{msgs['jsf.project.writable']}
       </a4j:commandLink>
 

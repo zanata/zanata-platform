@@ -20,19 +20,11 @@
  */
 package org.zanata.security.permission;
 
-import static org.jboss.seam.ScopeType.APPLICATION;
-import static org.jboss.seam.annotations.Install.BUILT_IN;
 
 import java.io.Serializable;
-import java.util.Iterator;
-import java.util.Set;
 
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Startup;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
-import org.zanata.util.ServiceLocator;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * This permission resolver will use the
@@ -43,12 +35,12 @@ import org.zanata.util.ServiceLocator;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Name("customPermissionResolver")
-@Scope(APPLICATION)
-@BypassInterceptors
-@Install(precedence = BUILT_IN)
-@Startup
+@Named("customPermissionResolver")
+@javax.enterprise.context.ApplicationScoped
 public class CustomPermissionResolver implements Serializable {
+
+    @Inject
+    private PermissionEvaluator evaluator;
 
     private static final long serialVersionUID = 6302681723997573877L;
 
@@ -64,9 +56,6 @@ public class CustomPermissionResolver implements Serializable {
     }
 
     private boolean hasPermission(String action, Object... targets) {
-        PermissionEvaluator evaluator =
-                ServiceLocator.instance()
-                        .getInstance(PermissionEvaluator.class);
         return evaluator.checkPermission(action, targets);
     }
 

@@ -24,6 +24,8 @@ import java.util.ArrayList;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
+import org.hibernate.Session;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,8 +34,11 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.security.HCredentials;
 import org.zanata.model.security.HOpenIdCredentials;
-import org.zanata.seam.SeamAutowire;
-import org.zanata.service.UserAccountService;
+import org.zanata.test.CdiUnitRunner;
+
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasProperty;
@@ -43,8 +48,23 @@ import static org.hamcrest.Matchers.not;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
 public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
-    private SeamAutowire seam = SeamAutowire.instance();
+
+    @Inject
+    UserAccountServiceImpl userAccountService;
+
+    @Override
+    @Produces
+    protected Session getSession() {
+        return super.getSession();
+    }
+
+    @Override
+    @Produces
+    protected EntityManager getEm() {
+        return super.getEm();
+    }
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -57,12 +77,6 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
         beforeTestOperations.add(new DataSetOperation(
                 "org/zanata/test/model/RoleAssignmentRulesData.dbunit.xml",
                 DatabaseOperation.CLEAN_INSERT));
-    }
-
-    @Before
-    public void initializeSeam() {
-        seam.reset().use("entityManager", getEm()).use("session", getSession())
-                .useImpl(UserAccountServiceImpl.class).ignoreNonResolvable();
     }
 
     private HAccount createFedoraAccount() {
@@ -80,9 +94,8 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void assignedRule() {
-        UserAccountService userAccountService =
-                seam.autowire(UserAccountServiceImpl.class);
         // Non admin account
         HAccount account = em.find(HAccount.class, 3L);
         assertThat(new ArrayList<HAccountRole>(account.getRoles()),
@@ -100,9 +113,8 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void assignedFedoraRule() {
-        UserAccountService userAccountService =
-                seam.autowire(UserAccountServiceImpl.class);
         // Non Fedora account
         HAccount account = createFedoraAccount();
         assertThat(new ArrayList<HAccountRole>(account.getRoles()),
@@ -120,9 +132,8 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
     }
 
     @Test
+    @InRequestScope
     public void notAssignedFedoraRule() {
-        UserAccountService userAccountService =
-                seam.autowire(UserAccountServiceImpl.class);
         // Non Fedora account
         HAccount account = em.find(HAccount.class, 3L);
         assertThat(new ArrayList<HAccountRole>(account.getRoles()),

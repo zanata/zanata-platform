@@ -26,6 +26,9 @@ import java.util.regex.Pattern;
 import org.openid4java.message.MessageException;
 import org.openid4java.message.ParameterList;
 import org.openid4java.message.ax.FetchRequest;
+import org.openid4java.message.sreg.SRegRequest;
+
+import javax.enterprise.inject.Alternative;
 
 /**
  * Yahoo Open Id provider.
@@ -33,6 +36,7 @@ import org.openid4java.message.ax.FetchRequest;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Alternative
 public class YahooOpenIdProvider extends GenericOpenIdProvider {
     private static final String YAHOO_OPENID_FORMAT =
             "https://me.yahoo.com/{0}";
@@ -47,21 +51,5 @@ public class YahooOpenIdProvider extends GenericOpenIdProvider {
     @Override
     public boolean accepts(String openId) {
         return YAHOO_OPENID_PATTERN.matcher(openId).matches();
-    }
-
-    @Override
-    public void prepareRequest(FetchRequest req) {
-        super.prepareRequest(req);
-        try {
-            // Request email
-            req.addAttribute("email", "http://axschema.org/contact/email", true);
-        } catch (MessageException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public String getEmail(ParameterList params) {
-        return params.getParameterValue("openid.ax.value.email");
     }
 }

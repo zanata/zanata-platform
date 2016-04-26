@@ -3,6 +3,7 @@ package org.zanata.rest.service;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.enterprise.context.RequestScoped;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -16,9 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.Session;
 import org.jboss.resteasy.spi.NoLogWebApplicationException;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Transactional;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
@@ -32,13 +33,13 @@ import org.zanata.model.HAccountRole;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.rest.dto.Account;
-import org.zanata.security.annotations.ZanataSecured;
 
-@Name("accountService")
+@RequestScoped
+@Named("accountService")
 @Path(AccountResource.SERVICE_PATH)
 @Slf4j
 @Transactional
-@ZanataSecured
+
 @CheckRole("admin")
 public class AccountService implements AccountResource {
     /** User name that identifies an account. */
@@ -51,19 +52,19 @@ public class AccountService implements AccountResource {
     @Context
     private UriInfo uri;
 
-    @In
+    @Inject
     private AccountDAO accountDAO;
 
-    @In
+    @Inject
     private AccountRoleDAO accountRoleDAO;
 
-    @In
+    @Inject
     private LocaleDAO localeDAO;
 
-    @In
+    @Inject
     private ZanataIdentity identity;
 
-    @In
+    @Inject
     private Session session;
 
     @Override

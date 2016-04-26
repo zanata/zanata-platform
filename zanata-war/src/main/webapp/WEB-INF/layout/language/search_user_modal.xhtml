@@ -15,14 +15,11 @@
         return false;
       }
     }
+
+    function getLanguageSearchUserResultsId() {
+      return "[id='#{rich:clientId('searchResults')}']";
+    }
   </script>
-
-  <a4j:jsFunction name="clearSearch"
-    action="#{languageAction.clearSearchResult}" render="searchResults"/>
-
-  <a4j:jsFunction name="addSelected" limitRender="true"
-    action="#{languageAction.addSelected}" render="searchResults"
-    oncomplete="refreshMembersForm();jQuery('#cancel').click();zanata.modal.hide('#searchUserDialog')"/>
 
   <div class="modal__dialog l--constrain-medium">
     <header class="modal__header">
@@ -35,21 +32,47 @@
 
     <div class="modal__content l--pad-all-1">
       <h:form id="searchForm">
-          <div class="form--inline">
-            <h:inputText value="#{languageAction.searchTerm}" id="searchField"
-              onkeydown="return submitSearchOnEnter(event);"
-              styleClass="form--inline__input">
-              <rich:placeholder value="#{msgs['jsf.SearchUsers']}" styleClass="txt--neutral" />
-            </h:inputText>
-            <div class="form--inline__suffix">
-              <a4j:commandButton id="searchBtn"
-                value="#{msgs['jsf.Search']}"
-                styleClass="form--inline__addon button--primary"
-                action="#{languageAction.searchForTeamMembers}"
-                render="searchResults"
-                status="searchStatus"/>
-            </div>
+        <a4j:jsFunction name="clearSearch"
+          action="#{languageAction.clearSearchResult}" render="searchResults" oncomplete="zanata.form.appendCheckboxes(getLanguageSearchUserResultsId())"/>
+
+        <a4j:jsFunction name="addSelected" limitRender="true"
+          action="#{languageAction.addSelected}" render="searchResults"
+          oncomplete="refreshMembersForm();jQuery('#cancel').click();zanata.modal.hide('#searchUserDialog');zanata.form.appendCheckboxes(getLanguageSearchUserResultsId())"/>
+
+        <a4j:jsFunction name="bindSearchResultTranslator" action="#{languageAction.bindSearchResultTranslator(personId, checked)}"
+          render="searchResults" oncomplete="zanata.form.appendCheckboxes(getLanguageSearchUserResultsId())">
+          <a4j:param name="val1" assignTo="#{personId}"/>
+          <a4j:param name="val2" assignTo="#{checked}"/>
+        </a4j:jsFunction>
+
+        <a4j:jsFunction name="bindSearchResultReviewer" action="#{languageAction.bindSearchResultReviewer(personId, checked)}"
+          render="searchResults" oncomplete="zanata.form.appendCheckboxes(getLanguageSearchUserResultsId())">
+          <a4j:param name="val1" assignTo="#{personId}"/>
+          <a4j:param name="val2" assignTo="#{checked}"/>
+        </a4j:jsFunction>
+
+        <a4j:jsFunction name="bindSearchResultCoordinator" action="#{languageAction.bindSearchResultCoordinator(personId, checked)}"
+          render="searchResults" oncomplete="zanata.form.appendCheckboxes(getLanguageSearchUserResultsId())">
+          <a4j:param name="val1" assignTo="#{personId}"/>
+          <a4j:param name="val2" assignTo="#{checked}"/>
+        </a4j:jsFunction>
+
+        <div class="form--inline">
+          <h:inputText value="#{languageAction.searchTerm}" id="searchField"
+            onkeydown="return submitSearchOnEnter(event);"
+            styleClass="form--inline__input">
+            <rich:placeholder value="#{msgs['jsf.SearchUsers']}" styleClass="txt--neutral" />
+          </h:inputText>
+          <div class="form--inline__suffix">
+            <a4j:commandButton id="searchBtn"
+              value="#{msgs['jsf.Search']}"
+              styleClass="form--inline__addon button--primary"
+              action="#{languageAction.searchForTeamMembers}"
+              render="searchResults"
+              oncomplete="zanata.form.appendCheckboxes(getLanguageSearchUserResultsId())"
+              status="searchStatus"/>
           </div>
+        </div>
       </h:form>
       <a4j:status name="searchStatus">
         <f:facet name="start">
@@ -67,29 +90,28 @@
             <ul class="list--slat">
               <ui:repeat value="#{languageAction.searchResults}"
                 var="selectablePerson">
-                <li class="#{selectablePerson.selected ? 'txt--mini' : 'txt--meta'}">
-                  <div class="bx--inline-block w--3-5">
+                <li class="#{selectablePerson.selected ? 'txt--mini' : 'txt--meta'} g--tight">
+                  <div class="w--3-10 g__item">
                     #{selectablePerson.person.name} [#{selectablePerson.person.account.username}]
                   </div>
-                  <div class="bx--inline-block txt--align-right">
+                  <div class="w--6-10 g__item txt--align-right">
                     <ul class="list--horizontal">
+                      <ui:param name="isCoordinator" value="#{selectablePerson.coordinator}"/>
+
                       <li>
-                        #{msgs['jsf.Translator']}
-                        <h:selectBooleanCheckbox value="#{selectablePerson.translator}">
-                          <a4j:ajax event="change" render="searchResults"/>
-                        </h:selectBooleanCheckbox>
+                        <zanata:checkbox label="#{msgs['jsf.Translator']}" id="translator" styleClass="#{isCoordinator ? 'is-disabled' : ''}"
+                          checked="#{selectablePerson.translator}" onValueChanged="bindSearchResultTranslator"
+                          value="#{selectablePerson.person.id}"/>
                       </li>
                       <li>
-                        #{msgs['jsf.Reviewer']}
-                        <h:selectBooleanCheckbox value="#{selectablePerson.reviewer}">
-                          <a4j:ajax event="change" render="searchResults"/>
-                        </h:selectBooleanCheckbox>
+                        <zanata:checkbox label="#{msgs['jsf.Reviewer']}" id="reviewer" styleClass="#{isCoordinator ? 'is-disabled' : ''}"
+                          checked="#{selectablePerson.reviewer}" onValueChanged="bindSearchResultReviewer"
+                          value="#{selectablePerson.person.id}"/>
                       </li>
                       <li>
-                        #{msgs['jsf.Coordinator']}
-                        <h:selectBooleanCheckbox value="#{selectablePerson.coordinator}">
-                          <a4j:ajax event="change" render="searchResults"/>
-                        </h:selectBooleanCheckbox>
+                        <zanata:checkbox label="#{msgs['jsf.Coordinator']}" id="coordinator"
+                          checked="#{selectablePerson.coordinator}" onValueChanged="bindSearchResultCoordinator"
+                          value="#{selectablePerson.person.id}"/>
                       </li>
                     </ul>
                   </div>
