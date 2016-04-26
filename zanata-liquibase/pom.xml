@@ -3,7 +3,7 @@
   <parent>
     <artifactId>server</artifactId>
     <groupId>org.zanata</groupId>
-    <version>3.9.0-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
