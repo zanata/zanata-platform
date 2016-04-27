@@ -1,4 +1,9 @@
 ## 3.8.4
+##### Changes
+* [ZNTA-1000](https://zanata.atlassian.net/browse/ZNTA-1000) - Try catch finally on copy version action, logging exception
+* [ZNTA-1001](https://zanata.atlassian.net/browse/ZNTA-1001) - Investigate and fix: copy version fails silently after triggering
+
+
 <h5>Bug fixes</h5>
 * [ZNTA-959](https://zanata.atlassian.net/browse/ZNTA-959) - Copy version fails silently and leaves version readonly
 * [ZNTA-1013](https://zanata.atlassian.net/browse/ZNTA-1013) - Fix Merge translation exception
