@@ -62,6 +62,21 @@ Zanata does not create an admin user by default. You need to register specific u
 
  This is the default email address that will appear as the sender on Zanata emails.
 
+## Enabling Cross-Origin Resource Sharing (advanced)
+
+If you have an alternative front-end for Zanata where the browser needs direct access to Zanata REST
+APIs (and authenticated user sessions), you will need to enable Cross-Origin Resource Sharing, by
+adding a system property like this to `<JBOSS>/standalone/configuration/standalone.xml`:
+
+    <property name="zanata.originWhitelist" value="http://localhost:8000" />
+
+You should adjust the protocol, hostname and port to suit your use case. Multiple origins should
+be separated via space characters.
+
+This setting will cause Zanata to output CORS headers for REST requests, including
+`Access-Control-Allow-Origin` (if Origin is in the whitelist above),
+`Access-Control-Allow-Credentials: true` and
+`Access-Control-Allow-Methods: PUT,POST,DELETE,GET,OPTIONS`.
 ### Email configuration (Zanata 3.6 or earlier)
 
 In Zanata 3.6 or earlier, email is configured by admin in the server settings screen.  By default, an SMTP server on localhost port 25 is expected.
