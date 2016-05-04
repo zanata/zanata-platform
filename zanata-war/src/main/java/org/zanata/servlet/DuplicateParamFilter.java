@@ -72,16 +72,23 @@ public class DuplicateParamFilter implements Filter {
             super((HttpServletRequest) request);
         }
 
-        public String getParameter(String paramName) {
-            // avoid constructing the entire map unless requested
-            String[] value = getRequest().getParameterValues(paramName);
-            return value == null ? null : value[0];
+        private boolean isEmpty(@Nullable String[] values) {
+            return values == null || values.length == 0;
         }
 
-        public String[] getParameterValues(String paramName) {
-            // avoid constructing the entire map unless requested
-            String[] value = getRequest().getParameterValues(paramName);
-            return value == null ? null : new String[] { value[0] };
+        public @Nullable String getParameter(String paramName) {
+            @Nullable String[] values = getRequest().getParameterValues(paramName);
+            return isEmpty(values) ? null : values[0];
+        }
+
+        // Return array of first element, if any, otherwise null.
+        private @Nullable String[] head(@Nullable String[] values) {
+            return isEmpty(values) ? null : new String[] { values[0] };
+        }
+
+        public @Nullable String[] getParameterValues(String paramName) {
+            @Nullable String[] values = getRequest().getParameterValues(paramName);
+            return head(values);
         }
 
         @Override
@@ -95,8 +102,10 @@ public class DuplicateParamFilter implements Filter {
                             ImmutableMap.builder();
                     for (Entry<String, String[]> e : origMap.entrySet()) {
                         String key = e.getKey();
-                        String[] value = e.getValue();
-                        mapBuilder.put(key, new String[] { value[0]});
+                        String[] values = head(e.getValue());
+                        if (values != null) {
+                            mapBuilder.put(key, values);
+                        }
                     }
                     lazyMap = mapBuilder.build();
                 }
