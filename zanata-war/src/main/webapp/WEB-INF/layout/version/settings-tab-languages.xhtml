@@ -225,6 +225,7 @@
           <zanata:ajax-command-button
             action="#{versionHome.enableSelectedLocales}"
             styleClass="button--link link--success"
+            oncomplete="refreshStatistics()"
             render="settings-languages-list">
             <f:facet name="loading">
               <span class="txt--neutral">
