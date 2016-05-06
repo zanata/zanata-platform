@@ -140,7 +140,7 @@ var SystemGlossary = React.createClass({
               onChange={this._onTranslationLocaleChange}/>
             {loader}
           </div>
-          <div className='dfx aic'>
+          <div className='dfx aic' style={{zIndex: '0'}}>
             {messageModal}
             {uploadSection}
             {newEntrySection}
