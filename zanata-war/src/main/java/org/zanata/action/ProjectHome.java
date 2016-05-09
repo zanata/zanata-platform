@@ -918,9 +918,14 @@ public class ProjectHome extends SlugHome<HProject> implements
             }
         }
         update();
-        facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
-            msgs.format("jsf.project.status.updated",
-                EntityStatus.valueOf(initial)));
+        EntityStatus status = EntityStatus.valueOf(initial);
+        if (status.equals(EntityStatus.OBSOLETE)) {
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                msgs.format("jsf.project.notification.deleted", getSlug()));
+        } else {
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                msgs.format("jsf.project.status.updated", status));
+        }
     }
 
     @Transactional
