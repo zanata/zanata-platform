@@ -13,8 +13,20 @@ var MessageModal = React.createClass({
     }).isRequired
   },
 
+  getInitialState: function() {
+    return {
+      showDetails: false
+    };
+  },
+
   _closeModal: function() {
+    this.setState({showDetails: !this.state.showDetails})
     Actions.clearMessage();
+  },
+
+  _toggleDetails: function() {
+    const showDetails = !this.state.showDetails
+    this.setState({showDetails: showDetails})
   },
 
   _getSeverityClass: function (severity) {
@@ -30,9 +42,11 @@ var MessageModal = React.createClass({
 
   render: function () {
     const severityClass = this._getSeverityClass(this.props.value.SEVERITY);
+    const hasDetails = !StringUtils.isEmptyOrNull(this.props.value.DETAILS);
+    const detailsButtonText = this.state.showDetails ? 'Hide details' : 'Show details'
     var detailsSection;
 
-    if(!StringUtils.isEmptyOrNull(this.props.value.DETAILS)) {
+    if(hasDetails) {
       detailsSection = (
         <div className='bdrs1/4 bxsh1 p1/2 fzn1'>
           {this.props.value.DETAILS}
@@ -50,7 +64,12 @@ var MessageModal = React.createClass({
           <div className='mv1/2'>
             {this.props.value.MESSAGE}
           </div>
-          {detailsSection}
+          {hasDetails &&
+            <Button className='whsnw tove ovh' onClick={this._toggleDetails} link>
+              {detailsButtonText}
+            </Button>
+          }
+          {this.state.showDetails && detailsSection}
         </Modal.Body>
         <Modal.Footer>
           <Button
