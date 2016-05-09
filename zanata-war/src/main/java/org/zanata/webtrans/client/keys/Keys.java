@@ -41,6 +41,7 @@ public class Keys implements Comparable<Keys> {
     public static final int META_KEY = 0x8;
     public static final int SHIFT_ALT_KEYS = ALT_KEY | SHIFT_KEY;
     public static final int CTRL_ALT_KEYS = CTRL_KEY | ALT_KEY;
+    public static final int CTRL_SHIFT_KEYS = CTRL_KEY | SHIFT_KEY;
 
     public static final int KEY_1 = 49;
     public static final int KEY_2 = 50;

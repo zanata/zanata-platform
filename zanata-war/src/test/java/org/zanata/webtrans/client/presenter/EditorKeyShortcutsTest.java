@@ -210,23 +210,29 @@ public class EditorKeyShortcutsTest {
     public void testRegisterEditorActionKeys() {
         // by default user config settings
         when(messages.saveAsFuzzy()).thenReturn("save fuzzy");
-        when(messages.saveAsTranslated()).thenReturn("save approved");
+        when(messages.saveAsTranslated()).thenReturn("save translated");
+        when(messages.saveAsApproved()).thenReturn("save approved");
+        when(messages.saveAsReject()).thenReturn("save reject");
         when(messages.copyFromSource()).thenReturn("copy from source");
         when(messages.switchBetweenEditor()).thenReturn("switch editor");
 
         keyShortcuts.registerEditorActionKeys(targetContentsPresenter);
 
-        verify(keyShortcutPresenter, times(4)).register(
+        verify(keyShortcutPresenter, times(6)).register(
                 keyShortcutCaptor.capture());
         List<KeyShortcut> keys = keyShortcutCaptor.getAllValues();
         assertKeys(keys.get(0), "save fuzzy", true, true, new Keys(
                 Keys.CTRL_KEY, 'S'));
-        assertKeys(keys.get(1), "save approved", true, true, new Keys(
+        assertKeys(keys.get(1), "save translated", true, true, new Keys(
                 Keys.CTRL_KEY, KeyCodes.KEY_ENTER));
-        assertKeys(keys.get(2), "copy from source", true, true, new Keys(
+        assertKeys(keys.get(2), "save approved", true, true, new Keys(
+            Keys.CTRL_SHIFT_KEYS, 'A'));
+        assertKeys(keys.get(3), "save reject", true, true, new Keys(
+            Keys.CTRL_SHIFT_KEYS, 'R'));
+        assertKeys(keys.get(4), "copy from source", true, true, new Keys(
                 Keys.ALT_KEY, 'G'));
-        assertAttentionKeys(keys.get(2), new Keys('G'));
-        assertKeys(keys.get(3), "switch editor", true, true, new Keys(
+        assertAttentionKeys(keys.get(4), new Keys('G'));
+        assertKeys(keys.get(5), "switch editor", true, true, new Keys(
                 Keys.CTRL_ALT_KEYS, 'H'));
     }
 
@@ -234,7 +240,9 @@ public class EditorKeyShortcutsTest {
     public void registerEditorActionKeysAfterChangeUserConfig() {
         // enter and esc now active
         when(messages.saveAsFuzzy()).thenReturn("save fuzzy");
-        when(messages.saveAsTranslated()).thenReturn("save approved");
+        when(messages.saveAsTranslated()).thenReturn("save translated");
+        when(messages.saveAsApproved()).thenReturn("save approved");
+        when(messages.saveAsReject()).thenReturn("save reject");
         when(messages.copyFromSource()).thenReturn("copy from source");
         when(messages.switchBetweenEditor()).thenReturn("switch editor");
 
@@ -242,19 +250,23 @@ public class EditorKeyShortcutsTest {
 
         keyShortcuts.registerEditorActionKeys(targetContentsPresenter);
 
-        verify(keyShortcutPresenter, times(5)).register(
+        verify(keyShortcutPresenter, times(7)).register(
                 keyShortcutCaptor.capture());
         List<KeyShortcut> keys = keyShortcutCaptor.getAllValues();
         assertKeys(keys.get(0), "save fuzzy", true, true, new Keys(
                 Keys.CTRL_KEY, 'S'));
-        assertKeys(keys.get(1), "save approved", true, true, new Keys(
+        assertKeys(keys.get(1), "save translated", true, true, new Keys(
                 Keys.CTRL_KEY, KeyCodes.KEY_ENTER));
-        assertKeys(keys.get(2), "save approved", true, true, new Keys(
+        assertKeys(keys.get(2), "save translated", true, true, new Keys(
                 Keys.NO_MODIFIER, KeyCodes.KEY_ENTER));
-        assertKeys(keys.get(3), "copy from source", true, true, new Keys(
+        assertKeys(keys.get(3), "save approved", true, true, new Keys(
+            Keys.CTRL_SHIFT_KEYS, KeyCodes.KEY_A));
+        assertKeys(keys.get(4), "save reject", true, true, new Keys(
+            Keys.CTRL_SHIFT_KEYS, KeyCodes.KEY_R));
+        assertKeys(keys.get(5), "copy from source", true, true, new Keys(
                 Keys.ALT_KEY, 'G'));
-        assertAttentionKeys(keys.get(3), new Keys('G'));
-        assertKeys(keys.get(4), "switch editor", true, true, new Keys(
+        assertAttentionKeys(keys.get(5), new Keys('G'));
+        assertKeys(keys.get(6), "switch editor", true, true, new Keys(
                 Keys.CTRL_ALT_KEYS, 'H'));
     }
 
@@ -288,7 +300,7 @@ public class EditorKeyShortcutsTest {
         keyShortcuts.registerEditorActionKeys(targetContentsPresenter);
         verify(keyShortcutPresenter, atLeastOnce()).register(
                 keyShortcutCaptor.capture());
-        KeyShortcut keys = keyShortcutCaptor.getAllValues().get(2);
+        KeyShortcut keys = keyShortcutCaptor.getAllValues().get(4);
 
         keys.getHandler().onKeyShortcut(null);
 

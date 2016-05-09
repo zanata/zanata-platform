@@ -75,6 +75,12 @@ public interface TableEditorMessages extends Messages {
     @DefaultMessage("Save as Translated")
     String saveAsTranslated();
 
+    @DefaultMessage("Approve translation")
+    String saveAsApproved();
+
+    @DefaultMessage("Reject translation")
+    String saveAsReject();
+
     @DefaultMessage("Cancel")
     String editCancelShortcut();
 

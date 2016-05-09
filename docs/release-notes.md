@@ -1,3 +1,10 @@
+## 4.0
+
+<h5>New feature</h5>
+* [ZNTA-746](https://zanata.atlassian.net/browse/ZNTA-746) - Add shorcut key for approve and reject translation
+
+-----------------------
+
 ## 3.9
 
 <h5>Infrastructure Changes</h5>
