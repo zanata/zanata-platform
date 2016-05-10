@@ -174,5 +174,5 @@ There are two ways to install zanata-client, via `0install` or `dnf`.
 
  * Update Zanata-CLI manually
  
-        0install update https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
+        0install update zanata-cli
 
