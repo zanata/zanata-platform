@@ -60,7 +60,7 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
     }
 
     public List<List<GlossaryEntry>> extractGlossary(Reader reader)
-            throws IOException {
+        throws IOException {
         int entryCount = 0;
         try {
             Iterable<CSVRecord> rawRecords = CSVFormat.RFC4180.parse(reader);
@@ -132,7 +132,7 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
             //checking each row size is matching with header size
             if (records.get(0).size() != record.size()) {
                 throw new RuntimeException(
-                    "Invalid CSV file - inconsistency of columns with header");
+                        "Invalid CSV file - inconsistency of columns with header");
             }
         }
     }
@@ -148,7 +148,8 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
         for (int row = 0; row <= headerRow.size()
                 && !descriptionMap.containsValue(row); row++) {
 
-            LocaleId locale = new LocaleId(StringUtils.trim(headerRow.get(row)));
+            LocaleId locale =
+                    new LocaleId(StringUtils.trim(headerRow.get(row)));
             localeColMap.put(row, locale);
         }
         return localeColMap;

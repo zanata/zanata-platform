@@ -2,21 +2,29 @@ package org.zanata.adapter.glossary;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.lang.CharSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.GlossaryEntry;
 
 import org.zanata.rest.dto.GlossaryTerm;
+import org.zanata.rest.dto.resource.Resource;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.List;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
+
+import javax.annotation.Nonnull;
 
 /**
  * Class to write glossary entries into CSV file format.
+ *
  * @author Alex Eng<a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public class GlossaryCSVWriter extends AbstractGlossaryPullWriter {
@@ -28,18 +36,48 @@ public class GlossaryCSVWriter extends AbstractGlossaryPullWriter {
     public GlossaryCSVWriter() {
     }
 
-    public void write(final Writer fileWriter,
-        final List<GlossaryEntry> entries, final LocaleId srcLocale,
-        final List<LocaleId> transLocales)
-        throws IOException {
-        if (entries == null || entries.isEmpty()) {
+    /**
+     * This output a csv files of given <code>transLocales</code>.
+     * First column - source string of <code>srcLocale</code> from {@link GlossaryEntry#glossaryTerms}
+     * Second last column (part of speech)- {@link GlossaryEntry#pos}
+     * Last column (description)-  {@link GlossaryEntry#description}
+     * Between first and second last column - translations of <code>transLocales</code> from {@link GlossaryEntry#glossaryTerms}
+     */
+    public void write(@Nonnull OutputStream stream,
+            @Nonnull final List<GlossaryEntry> entries,
+            @Nonnull final LocaleId srcLocale,
+            @Nonnull final List<LocaleId> transLocales) throws IOException {
+        OutputStreamWriter osWriter =
+                new OutputStreamWriter(stream, Charsets.UTF_8);
+        write(osWriter, entries, srcLocale, transLocales);
+    }
+
+    /**
+     * This output a csv files of given <code>transLocales</code>.
+     * First column - source string of <code>srcLocale</code> from {@link GlossaryEntry#glossaryTerms}
+     * Second last column (part of speech)- {@link GlossaryEntry#pos}
+     * Last column (description)-  {@link GlossaryEntry#description}
+     * Between first and second last column - translations of <code>transLocales</code> from {@link GlossaryEntry#glossaryTerms}
+     */
+    public void write(@Nonnull final Writer fileWriter,
+            @Nonnull final List<GlossaryEntry> entries,
+            @Nonnull final LocaleId srcLocale,
+            @Nonnull final List<LocaleId> transLocales) throws IOException {
+        if (fileWriter == null) {
+            log.warn("Missing fileWriter.");
+            return;
+        }
+        if (entries == null) {
             log.warn("No glossary entries to process.");
+            return;
+        }
+        if (srcLocale == null || transLocales == null) {
+            log.warn("Missing source locale and translation locales.");
             return;
         }
         CSVPrinter csvPrinter = new CSVPrinter(fileWriter,
                 CSVFormat.DEFAULT.withRecordSeparator(NEW_LINE_SEPARATOR));
         try {
-            int size = transLocales.size() + 3;
             List<String> header = generateHeader(srcLocale, transLocales);
             log.debug("Writing header-" + header);
             csvPrinter.printRecord(header);
@@ -51,7 +89,6 @@ public class GlossaryCSVWriter extends AbstractGlossaryPullWriter {
                 List<String> row = Lists.newArrayList();
                 row.add(0, srcTerm != null ? srcTerm.getContent() : "");
 
-
                 int index = 1;
                 for (LocaleId transLocale : transLocales) {
                     GlossaryTerm transTerm =
@@ -61,19 +98,20 @@ public class GlossaryCSVWriter extends AbstractGlossaryPullWriter {
                     index++;
                 }
 
-                row.add(size - 2, entry.getPos());
-                row.add(size - 1, entry.getDescription());
+                final int totalSize = header.size();
+                row.add(getPosColumn(totalSize), entry.getPos());
+                row.add(getDescColumn(totalSize), entry.getDescription());
 
                 log.debug("Writing row-" + row);
                 csvPrinter.printRecord(row);
             }
         } finally {
             csvPrinter.flush();
-            csvPrinter.close();
         }
     }
 
-    private List<String> generateHeader(LocaleId srcLocale, List<LocaleId> transLocales) {
+    private List<String> generateHeader(LocaleId srcLocale,
+        List<LocaleId> transLocales) {
         final int size = transLocales.size() + 3;
 
         List<String> result = Lists.newArrayList();
@@ -86,9 +124,17 @@ public class GlossaryCSVWriter extends AbstractGlossaryPullWriter {
         }
         String pos = "pos";
         String desc = "description";
-        result.add(size - 2, pos);
-        result.add(size - 1, desc);
+        result.add(getPosColumn(size), pos);
+        result.add(getDescColumn(size), desc);
 
         return result;
+    }
+
+    private int getPosColumn(int totalSize) {
+        return totalSize - 2;
+    }
+
+    private int getDescColumn(int totalSize) {
+        return totalSize - 1;
     }
 }

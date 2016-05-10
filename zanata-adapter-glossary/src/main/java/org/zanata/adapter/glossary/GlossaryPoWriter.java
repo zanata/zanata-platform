@@ -1,6 +1,6 @@
 package org.zanata.adapter.glossary;
 
-import com.google.common.base.Joiner;
+import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.tennera.jgettext.Message;
 import org.fedorahosted.tennera.jgettext.PoWriter;
 import org.slf4j.Logger;
@@ -9,9 +9,14 @@ import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.GlossaryTerm;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.List;
+
+import com.google.common.base.Charsets;
 
 /**
  * @author Alex Eng<a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -26,11 +31,41 @@ public class GlossaryPoWriter extends AbstractGlossaryPullWriter {
         this.poWriter = new PoWriter(encodeTabs);
     }
 
-    public void write(final Writer writer, String charset,
-        final List<GlossaryEntry> entries, final LocaleId srcLocale,
-        final LocaleId targetLocale) throws IOException {
-        if (entries == null || entries.isEmpty()) {
+    /**
+     * This output a single po files of given <code>targetLocale</code>.
+     * {@link GlossaryEntry#description} and comment from source term
+     * {@link GlossaryEntry#srcLang} and translation term will be used
+     * as comments.
+     */
+    public void write(@Nonnull OutputStream stream,
+            @Nonnull final List<GlossaryEntry> entries,
+            @Nonnull final LocaleId srcLocale,
+            @Nonnull final LocaleId targetLocale) throws IOException {
+        OutputStreamWriter osWriter =
+                new OutputStreamWriter(stream, Charsets.UTF_8);
+        write(osWriter, entries, srcLocale, targetLocale);
+    }
+
+    /**
+     * This output a single po files of given <code>targetLocale</code>.
+     * {@link GlossaryEntry#description} and comment from source term
+     * {@link GlossaryEntry#srcLang} and translation term will be used
+     * as comments.
+     */
+    public void write(@Nonnull final Writer fileWriter,
+        @Nonnull final List<GlossaryEntry> entries,
+        @Nonnull final LocaleId srcLocale,
+        @Nonnull final LocaleId targetLocale) throws IOException {
+        if (fileWriter == null) {
+            log.warn("Missing fileWriter.");
+            return;
+        }
+        if (entries == null) {
             log.warn("No glossary entries to process.");
+            return;
+        }
+        if (srcLocale == null || targetLocale == null) {
+            log.warn("Missing source locale and translation locale.");
             return;
         }
         try {
@@ -47,18 +82,27 @@ public class GlossaryPoWriter extends AbstractGlossaryPullWriter {
                 message.setMsgid(srcTerm.getContent());
                 message
                     .setMsgstr(transTerm == null ? "" : transTerm.getContent());
+
                 String srcRef = entry.getSourceReference();
-                String description = entry.getDescription();
-                String comment = srcTerm.getComment();
-                message.getSourceReferences().add(srcRef);
-                message.getComments()
-                    .add(Joiner.on("\n").join(description, comment));
-                poWriter.write(message, writer);
-                writer.write("\n");
+                if (!StringUtils.isEmpty(srcRef)) {
+                    message.getSourceReferences().add(srcRef);
+                }
+                addCommentIfNotEmpty(message, entry.getDescription());
+                addCommentIfNotEmpty(message, srcTerm.getComment());
+                addCommentIfNotEmpty(message,
+                        transTerm == null ? null : transTerm.getComment());
+
+                poWriter.write(message, fileWriter);
+                fileWriter.write("\n");
             }
         } finally {
-            writer.flush();
-            writer.close();
+            fileWriter.flush();
+        }
+    }
+
+    private void addCommentIfNotEmpty(Message message, String comment) {
+        if (!StringUtils.isEmpty(comment)) {
+            message.addComment(comment);
         }
     }
 }
