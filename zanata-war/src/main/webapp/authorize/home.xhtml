@@ -10,6 +10,7 @@
   <f:metadata>
     <f:viewParam name="#{authorizeAction.redirectUriParam}" value="#{authorizeAction.redirectUri}" />
     <f:viewParam name="#{authorizeAction.clientIdParam}" value="#{authorizeAction.clientId}" />
+    <f:event type="preRenderView" listener="#{authorizeAction.checkAuthorization}"/>
   </f:metadata>
 
   <ui:define name="page_title">#{msgs['jsf.Authorize']}</ui:define>

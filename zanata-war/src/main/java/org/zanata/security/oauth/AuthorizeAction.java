@@ -21,6 +21,7 @@
 
 package org.zanata.security.oauth;
 
+import java.util.Optional;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -28,14 +29,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.deltaspike.core.api.common.DeltaSpike;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.oltu.oauth2.as.response.OAuthASResponse;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.dao.AuthorizationCodeDAO;
+import org.zanata.dao.AllowedAppDAO;
+import org.zanata.model.AllowedApp;
 import org.zanata.model.HAccount;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.util.FacesNavigationUtil;
@@ -72,17 +76,29 @@ public class AuthorizeAction {
     private HAccount authenticatedAccount;
 
     @Inject
-    private AuthorizationCodeDAO authorizationCodeDAO;
+    private AllowedAppDAO allowedAppDAO;
 
-    public void authorize() {
-        // TODO handle cancel/reject action
+    @Inject
+    private ZanataIdentity identity;
+
+    /**
+     * This will check whether the requesting app has already been authorized
+     */
+    public void checkAuthorization() {
+        identity.checkLoggedIn();
+
+        Optional<AllowedApp> authorized = allowedAppDAO
+                .getAllowedAppForAccount(authenticatedAccount, clientId);
+        if (authorized.isPresent()) {
+            generateAuthCodeAndRedirect();
+        }
+    }
+
+    private void generateAuthCodeAndRedirect() {
         try {
-            String username = authenticatedAccount.getUsername();
-
             String code = securityTokens
-                    .generateAuthorizationCode(username, clientId);
-
-            authorizationCodeDAO.persistClientId(username, clientId);
+                    .generateAuthorizationCode(
+                            authenticatedAccount.getUsername(), clientId);
 
             OAuthResponse resp = OAuthASResponse
                     .authorizationResponse(request,
@@ -90,12 +106,22 @@ public class AuthorizeAction {
                     .setCode(code)
                     .location(redirectUri)
                     .buildQueryMessage();
-            log.info("========== redirect back to:{}", resp.getLocationUri());
+            log.info("========== redirect back to:{}",
+                    resp.getLocationUri());
             FacesNavigationUtil
                     .redirectToExternal(resp.getLocationUri());
         } catch (OAuthSystemException e) {
             throw Throwables.propagate(e);
         }
+    }
+
+    @Transactional
+    public void authorize() {
+        // TODO handle cancel/reject action
+        allowedAppDAO
+                .persistClientId(authenticatedAccount.getUsername(), clientId);
+
+        generateAuthCodeAndRedirect();
     }
 
     public String getRedirectUriParam() {
