@@ -22,6 +22,7 @@ package org.zanata.servlet;
 
 import com.google.common.collect.ImmutableMap;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -33,15 +34,17 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.IOException;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import static java.util.Collections.addAll;
 import static javax.servlet.DispatcherType.*;
 
 /**
- * Replaces any duplicated request parameter keys with a single parameter
- * (using the first parameter value). Intended only as a workaround for
- * https://github.com/ocpsoft/rewrite/issues/223
+ * Removes duplicated values for each parameter name (multiple values are
+ * preserved in order, as long as the values are diferent). Intended only as
+ * a workaround for https://github.com/ocpsoft/rewrite/issues/223
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @WebFilter(filterName = "DuplicateParamFilter", urlPatterns = "/*", dispatcherTypes = {
@@ -72,16 +75,29 @@ public class DuplicateParamFilter implements Filter {
             super((HttpServletRequest) request);
         }
 
-        public String getParameter(String paramName) {
-            // avoid constructing the entire map unless requested
-            String[] value = getRequest().getParameterValues(paramName);
-            return value == null ? null : value[0];
+        @Override
+        public @Nullable String getParameter(String paramName) {
+            return getRequest().getParameter(paramName);
         }
 
-        public String[] getParameterValues(String paramName) {
-            // avoid constructing the entire map unless requested
-            String[] value = getRequest().getParameterValues(paramName);
-            return value == null ? null : new String[] { value[0] };
+        // Remove duplicate strings, preserving order
+        @Nonnull static String[] deduplicate(@Nonnull String[] values) {
+            // premature optimisation:
+            if (values.length < 2) {
+                return values;
+            }
+            LinkedHashSet<String> set = new LinkedHashSet<>();
+            addAll(set, values);
+            return set.toArray(new String[set.size()]);
+        }
+
+        @Override
+        public @Nullable String[] getParameterValues(String paramName) {
+            @Nullable String[] values = getRequest().getParameterValues(paramName);
+            if (values == null) {
+                return null;
+            }
+            return deduplicate(values);
         }
 
         @Override
@@ -95,8 +111,10 @@ public class DuplicateParamFilter implements Filter {
                             ImmutableMap.builder();
                     for (Entry<String, String[]> e : origMap.entrySet()) {
                         String key = e.getKey();
-                        String[] value = e.getValue();
-                        mapBuilder.put(key, new String[] { value[0]});
+                        String[] values = e.getValue();
+                        if (values != null) {
+                            mapBuilder.put(key, deduplicate(values));
+                        }
                     }
                     lazyMap = mapBuilder.build();
                 }
