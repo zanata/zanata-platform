@@ -22,18 +22,21 @@ package org.zanata.adapter.glossary;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
+import org.apache.commons.lang.StringUtils;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.GlossaryTerm;
 
-import au.com.bytecode.opencsv.CSVReader;
+import com.google.common.collect.Lists;
+
 
 /**
  *
@@ -57,23 +60,16 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
     }
 
     public List<List<GlossaryEntry>> extractGlossary(Reader reader)
-            throws IOException {
+        throws IOException {
         int entryCount = 0;
-        // TODO replace opencsv with apache-commons-csv (a replacement of
-        // opencsv and is in fedora maintained by someone)
-        // apache-commons-csv is not yet released in maven but has been in
-        // fedora. see http://commons.apache.org/csv/
-        CSVReader csvReader = new CSVReader(reader);
         try {
-            List<List<GlossaryEntry>> glossaries =
-                    new ArrayList<List<GlossaryEntry>>();
-            List<String[]> entries = csvReader.readAll();
+            Iterable<CSVRecord> rawRecords = CSVFormat.RFC4180.parse(reader);
+            List<CSVRecord> records = Lists.newArrayList(rawRecords);
 
-            validateCSVEntries(entries);
-
-            Map<String, Integer> descriptionMap = setupDescMap(entries);
+            validateCSVEntries(records);
+            Map<String, Integer> descriptionMap = setupDescMap(records);
             Map<Integer, LocaleId> localeColMap =
-                    setupLocalesMap(entries, descriptionMap);
+                    setupLocalesMap(records, descriptionMap);
 
             LocaleId srcLocale = localeColMap.get(0);
 
@@ -83,19 +79,20 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
                         + srcLocale + "'");
             }
 
-            List<GlossaryEntry> glossaryEntries =
-                    new ArrayList<GlossaryEntry>();
+            List<List<GlossaryEntry>> glossaries = Lists.newArrayList();
+            List<GlossaryEntry> glossaryEntries = Lists.newArrayList();
 
-            for (int i = 1; i < entries.size(); i++) {
-                String[] row = entries.get(i);
+            for (int i = 1; i < records.size(); i++) {
+                CSVRecord row = records.get(i);
                 GlossaryEntry entry = new GlossaryEntry();
                 entry.setSrcLang(srcLocale);
-                entry.setPos(row[descriptionMap.get(POS)]);
-                entry.setDescription(row[descriptionMap.get(DESC)]);
+                entry.setPos(row.get(descriptionMap.get(POS)));
+                entry.setDescription(row.get(descriptionMap.get(DESC)));
 
-                for (int x = 0; x < row.length && localeColMap.containsKey(x); x++) {
+                for (int x = 0; x < row.size()
+                    && localeColMap.containsKey(x); x++) {
                     LocaleId locale = localeColMap.get(x);
-                    String content = row[x];
+                    String content = row.get(x);
 
                     GlossaryTerm term = new GlossaryTerm();
 
@@ -107,15 +104,15 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
                 glossaryEntries.add(entry);
                 entryCount++;
 
-                if (entryCount == batchSize || i == entries.size() - 1) {
+                if (entryCount == batchSize || i == records.size() - 1) {
                     glossaries.add(glossaryEntries);
                     entryCount = 0;
-                    glossaryEntries = new ArrayList<GlossaryEntry>();
+                    glossaryEntries = Lists.newArrayList();
                 }
             }
             return glossaries;
         } finally {
-            csvReader.close();
+            reader.close();
         }
     }
 
@@ -123,15 +120,17 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
      * Basic validation of CVS file format - At least 2 rows in the CVS file -
      * Empty content validation - All row must have the same column count
      */
-    private void validateCSVEntries(@Nonnull List<String[]> entries) {
-        if (entries.isEmpty()) {
+    private void validateCSVEntries(@Nonnull List<CSVRecord> records) {
+        if (records.isEmpty()) {
             throw new RuntimeException("Invalid CSV file - empty file");
         }
-        if (entries.size() < 2) {
+        if (records.size() < 2) {
             throw new RuntimeException("Invalid CSV file - no entries found");
         }
-        for (String[] row : entries) {
-            if (entries.get(0).length != row.length) {
+        for (int i = 1; i < records.size(); i++) {
+            CSVRecord record = records.get(i);
+            //checking each row size is matching with header size
+            if (records.get(0).size() != record.size()) {
                 throw new RuntimeException(
                         "Invalid CSV file - inconsistency of columns with header");
             }
@@ -142,14 +141,15 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
      * Parser reads from all from first row and exclude column from description
      * map. Format of CVS: {source locale},{locale},{locale}...,pos,description
      */
-    private Map<Integer, LocaleId> setupLocalesMap(List<String[]> entries,
+    private Map<Integer, LocaleId> setupLocalesMap(List<CSVRecord> records,
             Map<String, Integer> descriptionMap) {
         Map<Integer, LocaleId> localeColMap = new HashMap<Integer, LocaleId>();
-        String[] headerRow = entries.get(0);
-        for (int row = 0; row < headerRow.length
+        CSVRecord headerRow = records.get(0);
+        for (int row = 0; row <= headerRow.size()
                 && !descriptionMap.containsValue(row); row++) {
 
-            LocaleId locale = new LocaleId(headerRow[row]);
+            LocaleId locale =
+                    new LocaleId(StringUtils.trim(headerRow.get(row)));
             localeColMap.put(row, locale);
         }
         return localeColMap;
@@ -159,13 +159,13 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
      * Read last 2 columns in CSV:
      * {source locale},{locale},{locale}...,pos,description
      *
-     * @param entries
+     * @param records
      */
-    private Map<String, Integer> setupDescMap(List<String[]> entries) {
+    private Map<String, Integer> setupDescMap(List<CSVRecord> records) {
         Map<String, Integer> descMap = new HashMap<String, Integer>();
-        String[] headerRow = entries.get(0);
-        descMap.put(POS, headerRow.length - 2);
-        descMap.put(DESC, headerRow.length - 1);
+        CSVRecord headerRow = records.get(0);
+        descMap.put(POS, headerRow.size() - 2);
+        descMap.put(DESC, headerRow.size() - 1);
         return descMap;
     }
 }
