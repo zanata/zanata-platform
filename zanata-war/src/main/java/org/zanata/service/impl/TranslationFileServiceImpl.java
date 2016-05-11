@@ -213,11 +213,11 @@ public class TranslationFileServiceImpl implements TranslationFileService {
                 return parsePotFile(fileContents, docId, offlinePo);
             } catch (Exception e) {
                 throw new ZanataServiceException(
-                        "Invalid POT file contents on file: " + fileName, e);
+                        "Invalid POT file contents on file: " + docId, e);
             }
         } else {
             throw new ZanataServiceException("Unsupported Document file: "
-                    + fileName);
+                    + docId);
         }
     }
 

@@ -37,6 +37,7 @@
 * [ZNTA-1074](https://zanata.atlassian.net/browse/ZNTA-1074) - Hide notification details section
 * [ZNTA-1065](https://zanata.atlassian.net/browse/ZNTA-1065) - Drop-down user menu does not obscure the Glossary buttons
 
+* [ZNTA-981](https://zanata.atlassian.net/browse/ZNTA-981) - Remove file extension for gettext project file type
 
 <h5>Infrastructure Changes</h5>
 * Recommended platform: JBoss EAP 6 (6.4.6.GA or later).
