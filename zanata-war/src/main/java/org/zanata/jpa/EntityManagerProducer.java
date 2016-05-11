@@ -93,7 +93,7 @@ public class EntityManagerProducer {
 
     @Produces
     @Default
-    @Dependent
+    @RequestScoped
     protected Session getSession(EntityManager entityManager) {
         return entityManager.unwrap(Session.class);
     }
