@@ -1,3 +1,10 @@
+## 3.9.0
+
+##### Changes
+ * [ZNTA-1028](https://zanata.atlassian.net/browse/ZNTA-1028) - Refactor QualifiedSrcDocName and UnqualifiedSrcDocName
+
+-----------------------
+
 ## 3.8.4
 
 ##### Bug fixes
