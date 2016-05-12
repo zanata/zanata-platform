@@ -279,12 +279,14 @@ public class TranslationServiceImpl implements TranslationService {
             new DocumentLocaleKey(
                 sampleHTextFlow.getDocument().getId(), hLocale.getLocaleId());
 
-        TextFlowTargetStateEvent tftUpdatedEvent =
-            new TextFlowTargetStateEvent(documentLocaleKey,
-                projectIteration.getId(),
-                authenticatedAccount.getPerson().getId(),
-                ImmutableList.copyOf(states));
-        textFlowTargetStateEvent.fire(tftUpdatedEvent);
+        if (!states.isEmpty()) {
+            TextFlowTargetStateEvent tftUpdatedEvent =
+                    new TextFlowTargetStateEvent(documentLocaleKey,
+                            projectIteration.getId(),
+                            authenticatedAccount.getPerson().getId(),
+                            ImmutableList.copyOf(states));
+            textFlowTargetStateEvent.fire(tftUpdatedEvent);
+        }
         return results;
     }
 
@@ -886,10 +888,12 @@ public class TranslationServiceImpl implements TranslationService {
             new DocumentLocaleKey(
                 document.getId(), locale.getLocaleId());
 
-        TextFlowTargetStateEvent tftUpdatedEvent =
-            new TextFlowTargetStateEvent(documentLocaleKey,
-                projectIterationId, actorId, ImmutableList.copyOf(states));
-        textFlowTargetStateEvent.fire(tftUpdatedEvent);
+        if (!states.isEmpty()) {
+            TextFlowTargetStateEvent tftUpdatedEvent =
+                    new TextFlowTargetStateEvent(documentLocaleKey,
+                            projectIterationId, actorId, ImmutableList.copyOf(states));
+            textFlowTargetStateEvent.fire(tftUpdatedEvent);
+        }
 
         textFlowTargetDAO.flush();
         return changed;

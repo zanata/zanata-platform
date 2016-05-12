@@ -23,6 +23,7 @@ package org.zanata.events;
 
 import java.io.Serializable;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -36,7 +37,6 @@ import javax.annotation.Nullable;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@AllArgsConstructor
 public final class TextFlowTargetStateEvent {
     @Getter
     private final DocumentLocaleKey key;
@@ -50,6 +50,16 @@ public final class TextFlowTargetStateEvent {
 
     @Getter
     private final ImmutableList<TextFlowTargetState> states;
+
+    public TextFlowTargetStateEvent(DocumentLocaleKey key,
+            Long projectIterationId, Long actorId,
+            ImmutableList<TextFlowTargetState> states) {
+        this.key = key;
+        this.projectIterationId = projectIterationId;
+        this.actorId = actorId;
+        this.states = states;
+        Preconditions.checkArgument(!states.isEmpty(), "states is empty");
+    }
 
     public TextFlowTargetStateEvent(DocumentLocaleKey key,
         Long projectIterationId, Long actorId, TextFlowTargetState state) {
