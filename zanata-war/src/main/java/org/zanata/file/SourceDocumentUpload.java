@@ -168,7 +168,7 @@ public class SourceDocumentUpload {
                 processAdapterFile(tempFile.get(), id, uploadForm);
             } else if (DocumentType.getByName(uploadForm.getFileType()) == DocumentType.GETTEXT) {
                 InputStream potStream = getInputStream(tempFile, uploadForm);
-                parsePotFile(potStream, id, uploadForm);
+                parsePotFile(potStream, id);
             } else {
                 throw new ZanataServiceException("Unsupported source file: "
                     + id.getDocId());
@@ -333,13 +333,19 @@ public class SourceDocumentUpload {
         documentDAO.flush();
     }
 
-    private void parsePotFile(InputStream potStream, GlobalDocumentId id,
-            DocumentFileUploadForm uploadForm) {
-        // real upload filename not available, but the service only cares about
-        // the suffix.
+    /**
+     * This method should only process gettext project type
+     * @param potStream
+     * @param id
+     */
+    private void parsePotFile(InputStream potStream, GlobalDocumentId id) {
+        //remove .pot extension from docId as per zanata-cli
+        String docIdWithoutExtension =
+            FilenameUtils.removeExtension(id.getDocId());
+
         Resource doc = translationFileServiceImpl.parseUpdatedPotFile(potStream,
-                        id.getDocId(), ".pot",
-                        useOfflinePo(id));
+                docIdWithoutExtension, ".pot",
+                useOfflinePo(id));
         doc.setLang(LocaleId.EN_US);
         // TODO Copy Trans values
 
