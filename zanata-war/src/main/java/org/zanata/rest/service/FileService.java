@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
@@ -53,6 +54,7 @@ import org.zanata.adapter.FileFormatAdapter;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.ContentState;
 import org.zanata.common.DocumentType;
+import org.zanata.common.FileTypeInfo;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.file.FilePersistService;
@@ -115,7 +117,7 @@ public class FileService implements FileResource {
 
     /**
      * Deprecated.
-     * @see #acceptedFileTypeList
+     * @see #fileTypeInfoList
      */
     @Override
     @Deprecated
@@ -126,7 +128,12 @@ public class FileService implements FileResource {
         return Response.ok(acceptedTypes.toString()).build();
     }
 
+    /**
+     * Deprecated.
+     * @see #fileTypeInfoList
+     */
     @Override
+    @Deprecated
     public Response acceptedFileTypeList() {
         Type genericType = new GenericType<List<DocumentType>>() {
         }.getGenericType();
@@ -134,6 +141,21 @@ public class FileService implements FileResource {
         Object entity =
             new GenericEntity<List<DocumentType>>(Lists.newArrayList(translationFileServiceImpl
                 .getSupportedDocumentTypes()), genericType);
+        return Response.ok(entity).build();
+    }
+
+    @Override
+    public Response fileTypeInfoList() {
+        Type genericType = new GenericType<List<FileTypeInfo>>() {
+        }.getGenericType();
+
+        Set<DocumentType> supportedDocumentTypes = translationFileServiceImpl.
+                getSupportedDocumentTypes();
+        List<FileTypeInfo> docTypes = supportedDocumentTypes.stream()
+                .sorted((a, b) -> a.toString().compareTo(b.toString()))
+                .map(DocumentType::toFileTypeInfo)
+                .collect(Collectors.toList());
+        Object entity = new GenericEntity<>(docTypes, genericType);
         return Response.ok(entity).build();
     }
 
