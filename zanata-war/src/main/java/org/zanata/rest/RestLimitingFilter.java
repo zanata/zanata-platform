@@ -21,6 +21,7 @@
 package org.zanata.rest;
 
 import java.io.IOException;
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.servlet.Filter;
@@ -32,10 +33,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.ext.Provider;
 
 import com.google.common.base.Throwables;
 import org.apache.commons.lang.StringUtils;
+import org.apache.oltu.oauth2.common.OAuth;
 import org.zanata.dao.AccountDAO;
 import org.zanata.limits.RateLimitingProcessor;
 import org.zanata.model.HAccount;
@@ -43,17 +44,17 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 
-import org.zanata.security.SecurityFunctions;
+import org.zanata.rest.oauth.OAuthUtil;
 import org.zanata.security.annotations.AuthenticatedLiteral;
+import org.zanata.security.oauth.SecurityTokens;
 import org.zanata.util.HttpUtil;
 import org.zanata.util.RunnableEx;
 import org.zanata.util.ServiceLocator;
 
-import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
-
 /**
  * This class filters JAX-RS calls to limit API calls per
- * API key (via RateLimitingProcessor and RateLimitManager).
+ * user if identifiable. Otherwise will limit API calls per IP address
+ * (via RateLimitingProcessor and RateLimitManager).
  *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -100,37 +101,24 @@ public class RestLimitingFilter implements Filter {
         HAccount authenticatedUser = getAuthenticatedUser();
 
         /**
-         * If apiKey is empty, request is from anonymous user,
-         * If apiKey is not empty, it must be an authenticated
-         * user from pre-process in ZanataRestSecurityInterceptor.
+         * If apiKey is empty, request is either from anonymous user or from
+         * OAuth request,
          */
         String apiKey = request.getHeader(HttpUtil.X_AUTH_TOKEN_HEADER);
+
 
         // Get user account with apiKey if request is from client
         if(authenticatedUser == null && StringUtils.isNotEmpty(apiKey)) {
             authenticatedUser = getUser(apiKey);
-        }
-
-        if (!SecurityFunctions.canAccessRestPath(authenticatedUser,
-                request.getMethod(), request.getRequestURI())) {
-            /**
-             * Not using response.sendError because the app server will generate
-             * an HTML page which includes the message. We want to return
-             * the message string as is.
-             * TODO is this true in a servlet Filter?
-             */
-//            response.sendError(UNAUTHORIZED.getStatusCode(),
-//                    InvalidApiKeyUtil.getMessage(API_KEY_ABSENCE_WARNING));
-            response.setStatus(UNAUTHORIZED.getStatusCode());
-            response.getOutputStream().write(InvalidApiKeyUtil.getMessage(
-                    API_KEY_ABSENCE_WARNING).getBytes());
-            return;
+        } else if (authenticatedUser == null) {
+            authenticatedUser = tryGetAuthenticatedAccountUsingOAuthTokens(
+                    request);
         }
 
         RunnableEx invokeChain = () -> chain.doFilter(req, resp);
 
         try {
-            //authenticatedUser can be from browser or client request
+            // authenticatedUser can be from browser or client request
             if (authenticatedUser == null) {
                 /**
                  * Process anonymous request for rate limiting
@@ -141,19 +129,45 @@ public class RestLimitingFilter implements Filter {
                 String clientIP = HttpUtil.getClientIp(request);
                 processor.processForAnonymousIP(clientIP, response, invokeChain);
             } else {
-                if (!Strings.isNullOrEmpty(authenticatedUser.getApiKey())) {
+                if (!Strings.isNullOrEmpty(apiKey) && !Strings.isNullOrEmpty(authenticatedUser.getApiKey())) {
                     processor.processForApiKey(authenticatedUser.getApiKey(),
                             response, invokeChain);
                 } else {
+                    // TODO OAuth request will fall into here. Do we want this?
                     processor.processForUser(authenticatedUser.getUsername(),
                             response, invokeChain);
                 }
             }
-        } catch (IOException | ServletException e) {
-            throw e;
         } catch (Exception e) {
             Throwables.propagate(e);
         }
+    }
+
+    private HAccount tryGetAuthenticatedAccountUsingOAuthTokens(
+            HttpServletRequest request) {
+        String authCode = request.getParameter(OAuth.OAUTH_CODE);
+        Optional<String> accessTokenOpt = OAuthUtil.getAccessToken(request);
+        Optional<String> usernameOpt = Optional.empty();
+        if (StringUtils.isNotEmpty(authCode)) {
+            // Get user account with OAuth authorizationCode if it presents
+            usernameOpt = getSecurityTokens()
+                    .findUsernameForAuthorizationCode(authCode);
+        } else if (accessTokenOpt.isPresent()) {
+            // Get user account with OAuth accessToken if it presents
+            usernameOpt = getSecurityTokens()
+                    .matchAccessToken(accessTokenOpt.get());
+        }
+        if (usernameOpt.isPresent()) {
+            return getAccountDAO()
+                    .getByUsername(usernameOpt.get());
+        }
+        return null;
+    }
+
+    @VisibleForTesting
+    protected SecurityTokens getSecurityTokens() {
+        return ServiceLocator.instance().getInstance(
+                SecurityTokens.class);
     }
 
     @VisibleForTesting
@@ -163,7 +177,12 @@ public class RestLimitingFilter implements Filter {
     }
 
     private @Nullable HAccount getUser(@Nonnull String apiKey) {
-        return ServiceLocator.instance().getInstance(AccountDAO.class)
+        return getAccountDAO()
                 .getByApiKey(apiKey);
+    }
+
+    @VisibleForTesting
+    protected AccountDAO getAccountDAO() {
+        return ServiceLocator.instance().getInstance(AccountDAO.class);
     }
 }

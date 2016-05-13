@@ -45,8 +45,6 @@ import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AllowedAppDAO;
 import org.zanata.model.AllowedApp;
 import org.zanata.model.HAccount;
-import org.zanata.security.AuthenticationType;
-import org.zanata.security.annotations.AuthType;
 import org.zanata.security.oauth.SecurityTokens;
 
 /**
@@ -66,10 +64,6 @@ public class TokenService {
 
     @Inject
     private AccountDAO accountDAO;
-
-    @Inject
-    @AuthType
-    private AuthenticationType authenticationType;
 
 
     /**

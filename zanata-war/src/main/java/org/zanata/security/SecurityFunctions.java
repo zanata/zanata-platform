@@ -44,6 +44,7 @@ import org.zanata.util.ServiceLocator;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import javax.ws.rs.HttpMethod;
 
 import java.util.Optional;
 
@@ -559,32 +560,12 @@ public class SecurityFunctions extends PermissionProvider {
      *
      * This rule apply to all REST endpoint.
      *
-     * @param account - Authenticated account
+     * @param identity - zanata identity representing authenticated account
      * @param httpMethod - {@link javax.ws.rs.HttpMethod}
      * @param restServicePath - service path of rest request.
      *                        See annotation @Path in REST service class.
      */
-    public static final boolean canAccessRestPath(@Nullable HAccount account,
-            String httpMethod, String restServicePath) {
-        //This is to allow data injection for function-test/rest-test
-        if(isTestServicePath(restServicePath)) {
-            log.debug("Allow rest access for Zanata test");
-            return true;
-        }
-        if (account != null) {
-            return true;
-        }
-        if (HttpUtil.isReadMethod(httpMethod)) {
-            return true;
-        }
-        // TODO temporary hack while we still check for apiKey or authenticated user
-        if (restServicePath.matches(".*/oauth/.*")) {
-            return true;
-        }
-        return false;
-    }
-
-    public static final boolean canAccessRestPath(
+    public static boolean canAccessRestPath(
             @Nonnull ZanataIdentity identity,
             String httpMethod, String restServicePath) {
         // This is to allow data injection for function-test/rest-test
@@ -595,7 +576,11 @@ public class SecurityFunctions extends PermissionProvider {
         if (identity.isLoggedIn()) {
             return true;
         }
-        return false;
+        return isRestPathAllowedAnonymousAccess(httpMethod);
+    }
+
+    private static boolean isRestPathAllowedAnonymousAccess(String httpMethod) {
+        return HttpUtil.isReadMethod(httpMethod);
     }
 
     /**

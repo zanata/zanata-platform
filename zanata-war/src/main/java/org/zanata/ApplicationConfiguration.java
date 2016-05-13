@@ -47,6 +47,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
+import org.zanata.config.SysConfig;
 import org.zanata.config.SystemPropertyConfigStore;
 import org.zanata.security.annotations.AuthType;
 import org.zanata.servlet.HttpRequestAndSessionHolder;
@@ -87,6 +88,8 @@ public class ApplicationConfiguration implements Serializable {
 
     @Getter
     private static final int defaultAnonymousSessionTimeoutMinutes = 30;
+    public static final String ACCESS_TOKEN_EXPIRES_IN_SECONDS =
+            "accessTokenExpiresInSeconds";
 
     @Inject
     private DatabaseBackedConfig databaseBackedConfig;
@@ -125,6 +128,7 @@ public class ApplicationConfiguration implements Serializable {
     private Set<String> adminUsers;
 
     private Optional<String> openIdProvider; // Cache the OpenId provider
+    private int tokenExpiresInSeconds;
 
     @PostConstruct
     public void load() {
@@ -135,6 +139,8 @@ public class ApplicationConfiguration implements Serializable {
         this.loadJaasConfig();
         authenticatedSessionTimeoutMinutes = sysPropConfigStore
                 .get("authenticatedSessionTimeoutMinutes", 180);
+        tokenExpiresInSeconds =
+                sysPropConfigStore.get(ACCESS_TOKEN_EXPIRES_IN_SECONDS, 3600);
     }
 
     public void resetConfigValue(
@@ -452,5 +458,11 @@ public class ApplicationConfiguration implements Serializable {
 
     public boolean isDisplayUserEmail() {
         return databaseBackedConfig.isDisplayUserEmail();
+    }
+
+    @Produces
+    @SysConfig(ACCESS_TOKEN_EXPIRES_IN_SECONDS)
+    protected Long getTokenExpiresInSeconds() {
+        return (long) tokenExpiresInSeconds;
     }
 }

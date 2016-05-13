@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -36,23 +37,31 @@ import org.apache.oltu.oauth2.as.issuer.OAuthIssuerImpl;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.token.BasicOAuthToken;
 import org.apache.oltu.oauth2.common.token.OAuthToken;
+import org.zanata.ApplicationConfiguration;
+import org.zanata.config.SysConfig;
 import org.zanata.events.LogoutEvent;
 import org.zanata.model.HAccount;
+import org.zanata.rest.dto.DTOUtil;
 import org.zanata.security.annotations.Authenticated;
+import org.zanata.util.Introspectable;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Throwables;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @ApplicationScoped
 public class SecurityTokens
-        implements Serializable, RemovalListener<String, String> {
-    public static final long TOKEN_EXPIRE_IN_SEC = 3600;
+        implements Serializable, RemovalListener<String, String>,
+        Introspectable {
     private OAuthIssuerImpl oAuthIssuer =
             new OAuthIssuerImpl(new MD5Generator());
 
@@ -62,16 +71,30 @@ public class SecurityTokens
                     .build();
 
     // access token -> username
-    private Cache<String, String> accessTokens =
-            CacheBuilder.newBuilder()
-                    .expireAfterWrite(TOKEN_EXPIRE_IN_SEC, TimeUnit.SECONDS)
-                    .removalListener(this)
-                    .build();
+    private Cache<String, String> accessTokens;
+
 
     // access token -> username
     private Cache<String, String> expiredAccessCode =
             CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.SECONDS)
                     .build();
+
+    @Inject
+    @SysConfig(ApplicationConfiguration.ACCESS_TOKEN_EXPIRES_IN_SECONDS)
+    private Long tokenExpiresInSeconds;
+
+    @VisibleForTesting
+    protected void setTokenExpiresInSeconds(Long tokenExpiresInSeconds) {
+        this.tokenExpiresInSeconds = tokenExpiresInSeconds;
+    }
+
+    @PostConstruct
+    public void setUp() {
+        accessTokens = CacheBuilder.newBuilder()
+                .expireAfterWrite(tokenExpiresInSeconds, TimeUnit.SECONDS)
+                .removalListener(this)
+                .build();
+    }
 
     @Override
     public void onRemoval(RemovalNotification<String, String> notification) {
@@ -84,7 +107,7 @@ public class SecurityTokens
         authorizationCodes.invalidate(authenticatedAccount.getUsername());
     }
 
-    public String generateAuthorizationCode(String username, String clientId)
+    String getAuthorizationCode(String username, String clientId)
             throws OAuthSystemException {
         Map<String, String> ifPresent =
                 authorizationCodes.getIfPresent(username);
@@ -107,12 +130,7 @@ public class SecurityTokens
     }
 
 
-    public boolean matchAuthorizationCode(String code) {
-        return authorizationCodes.asMap().values().stream()
-                .anyMatch(value -> value.containsValue(code));
-    }
-
-    public Optional<String> tryGetByUsername(String username, String clientId) {
+    public Optional<String> tryFineAuthorizationCode(String username, String clientId) {
         Map<String, String> ifPresent =
                 authorizationCodes.getIfPresent(username);
         if (ifPresent != null && ifPresent.containsKey(clientId)) {
@@ -141,7 +159,7 @@ public class SecurityTokens
         BasicOAuthToken oAuthToken =
                 new BasicOAuthToken(
                         accessToken,
-                        TOKEN_EXPIRE_IN_SEC,
+                        tokenExpiresInSeconds,
                         oAuthIssuer.refreshToken(), null
                 );
         accessTokens.put(accessToken, account.getUsername());
@@ -161,7 +179,7 @@ public class SecurityTokens
         BasicOAuthToken oAuthToken =
                 new BasicOAuthToken(
                         accessToken,
-                        TOKEN_EXPIRE_IN_SEC,
+                        tokenExpiresInSeconds,
                         refreshToken, null
                 );
         accessTokens.put(accessToken, account.getUsername());
@@ -182,6 +200,11 @@ public class SecurityTokens
         return Optional.empty();
     }
 
+    /**
+     * Match accessToken to a username
+     * @param accessToken access token for a user
+     * @return optional username
+     */
     public Optional<String> matchAccessToken(String accessToken) {
         return Optional.ofNullable(accessTokens.getIfPresent(accessToken));
     }
@@ -198,10 +221,36 @@ public class SecurityTokens
         accessTokens.put(accessToken, account.getUsername());
         return new BasicOAuthToken(
                 accessToken,
-                TOKEN_EXPIRE_IN_SEC,
+                tokenExpiresInSeconds,
                 refreshToken, null
         );
     }
 
+    @Override
+    public String getIntrospectableId() {
+        return this.getClass().getCanonicalName();
+    }
 
+    @Override
+    public String getFieldValuesAsJSON() {
+
+        Map<String, Map<String, String>> usernameToClientIdAuthCodeMap =
+                ImmutableMap.copyOf(authorizationCodes.asMap());
+
+        Map<String, String> accessTokenToUsername =
+                ImmutableMap.copyOf(accessTokens.asMap());
+
+        Tokens tokens = new Tokens();
+        tokens.accessTokenToUsername = accessTokenToUsername;
+        tokens.usernameToClientIdAuthCodeMap = usernameToClientIdAuthCodeMap;
+        return DTOUtil.toJSON(tokens);
+    }
+
+    @Getter
+    @Setter
+    protected static class Tokens {
+        private Map<String, Map<String, String>> usernameToClientIdAuthCodeMap;
+        private Map<String, String> accessTokenToUsername;
+
+    }
 }

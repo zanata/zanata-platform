@@ -66,7 +66,7 @@ public class OAuthFilter implements Filter {
         String authorizationCode = null;
         if (identity.isLoggedIn()) {
             Optional<String> code = securityTokens
-                    .tryGetByUsername(identity.getAccountUsername(),
+                    .tryFineAuthorizationCode(identity.getAccountUsername(),
                             clientId);
             if (code.isPresent()) {
                 authorizationCode = code.get();

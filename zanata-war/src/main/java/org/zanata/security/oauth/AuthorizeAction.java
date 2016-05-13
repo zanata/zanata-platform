@@ -97,7 +97,7 @@ public class AuthorizeAction {
     private void generateAuthCodeAndRedirect() {
         try {
             String code = securityTokens
-                    .generateAuthorizationCode(
+                    .getAuthorizationCode(
                             authenticatedAccount.getUsername(), clientId);
 
             OAuthResponse resp = OAuthASResponse
