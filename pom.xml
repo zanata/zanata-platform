@@ -690,6 +690,10 @@
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
           </exclusion>
+          <exclusion>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
 
@@ -1591,6 +1595,7 @@
 
                 <!-- Use org.jboss.resteasy:jaxrs-api (since we package resteasy) -->
                 <exclude>org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_1.1_spec</exclude>
+                <exclude>org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.0_spec</exclude>
 
                 <!-- use org.jboss.spec.javax.servlet:jboss-servlet-api_3.0_spec -->
                 <exclude>org.jboss.spec.javax.servlet:jboss-servlet-api_3.1_spec</exclude>
