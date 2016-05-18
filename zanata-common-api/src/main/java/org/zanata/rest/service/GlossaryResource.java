@@ -111,9 +111,8 @@ public interface GlossaryResource extends RestResource {
      */
     @GET
     @Path("/entries")
-    @Produces({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML,
-            MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON,
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @Produces({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON,
+            MediaType.APPLICATION_JSON })
     @TypeHint(ResultList.class)
     public Response getEntries(
             @DefaultValue("en-US") @QueryParam("srcLocale") LocaleId srcLocale,
