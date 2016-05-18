@@ -111,7 +111,15 @@ public class FacesNavigationUtil {
         }
     }
 
-    public static void redirect(FacesContext context, String url) {
+    /**
+     * Performs an HTTP redirect to a given url
+     * @param context The FacesContext to use.
+     * @param url The url where to redirect
+     * @throws IOException If there is a problem performing the redirection.
+     * @see ExternalContext#redirect(String)
+     */
+    public static void redirect(FacesContext context, String url)
+            throws IOException {
         url = encodeScheme(context, url);
         if (log.isDebugEnabled()) {
             log.debug("redirecting to: " + url);
@@ -123,6 +131,7 @@ public class FacesNavigationUtil {
             externalContext.redirect(externalContext.encodeActionURL(url));
         } catch (IOException | IllegalStateException e) {
             log.warn("error redirecting to url:" + url, e);
+            throw e;
         } /*finally {
 //            Contexts.getEventContext().remove(REDIRECT_FROM_MANAGER);
 //            controllingRedirect = false;
@@ -130,7 +139,8 @@ public class FacesNavigationUtil {
         context.responseComplete();
     }
 
-    public static void redirect(String viewId, Map<String, Object> parameters) {
+    public static void redirect(String viewId, Map<String, Object> parameters)
+            throws IOException {
         if (viewId == null) {
             return;
         }
