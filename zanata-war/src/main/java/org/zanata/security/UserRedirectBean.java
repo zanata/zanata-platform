@@ -25,6 +25,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
+import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -35,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.events.NotLoggedInEvent;
 import org.zanata.servlet.annotations.ContextPath;
+import org.zanata.util.Synchronized;
 import org.zanata.util.UrlUtil;
 
 /**
@@ -50,8 +52,8 @@ import org.zanata.util.UrlUtil;
  */
 @Named("userRedirect")
 // TODO verify that SESSION scope will not persist this too long
-@javax.enterprise.context.SessionScoped
-
+@SessionScoped
+@Synchronized
 public class UserRedirectBean implements Serializable {
     private static final Logger log =
             LoggerFactory.getLogger(UserRedirectBean.class);

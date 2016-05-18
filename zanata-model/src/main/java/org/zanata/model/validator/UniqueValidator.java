@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
@@ -35,7 +36,7 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.metadata.ClassMetadata;
 
 /**
- * Unique validator implementation. NB: <b>Requires Seam and Hibernate</b>.
+ * Unique validator implementation. NB: <b>Requires CDI and Hibernate</b>.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -43,8 +44,9 @@ import org.hibernate.metadata.ClassMetadata;
  */
 public class UniqueValidator implements ConstraintValidator<Unique, Object> {
     private Unique parameters;
+
     @Inject
-    private Session session;
+    private EntityManager entityManager;
 
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
@@ -55,6 +57,10 @@ public class UniqueValidator implements ConstraintValidator<Unique, Object> {
     }
 
     private int countRows(Object value) {
+        // we need to use entityManager.unwrap because  injected session will
+        // be a weld proxy and criteria.getExecutableCriteria method will try
+        // to cast it to SessionImplementor (ClassCastException)
+        Session session = entityManager.unwrap(Session.class);
         ClassMetadata metadata =
                 session.getSessionFactory().getClassMetadata(value.getClass());
         String idName = metadata.getIdentifierPropertyName();

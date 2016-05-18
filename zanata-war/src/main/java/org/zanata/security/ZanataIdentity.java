@@ -29,6 +29,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
@@ -65,13 +66,15 @@ import org.zanata.servlet.annotations.SessionId;
 import org.zanata.util.Contexts;
 import org.zanata.util.RequestContextValueStore;
 import org.zanata.util.ServiceLocator;
+import org.zanata.util.Synchronized;
 import org.zanata.util.UrlUtil;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 
 @Named("identity")
-@javax.enterprise.context.SessionScoped
+@SessionScoped
+@Synchronized
 public class ZanataIdentity implements Identity, Serializable {
     private static final Logger log = LoggerFactory.getLogger(
             ZanataIdentity.class);
@@ -437,7 +440,7 @@ public class ZanataIdentity implements Identity, Serializable {
                 postAuthenticate();
             } finally {
                 // Set password to null whether authentication is successful or not
-                credentials.setPassword(null);
+                credentials.clearPassword();
                 authenticating = false;
             }
         }
@@ -467,7 +470,7 @@ public class ZanataIdentity implements Identity, Serializable {
             preAuthenticationRoles.clear();
         }
 
-        credentials.setPassword(null);
+        credentials.clearPassword();
 
         // It's used in:
         // - org.jboss.seam.security.management.JpaIdentityStore.setUserAccountForSession()

@@ -106,13 +106,12 @@ public class ZanataJpaIdentityStore implements Serializable {
 
     /**
      * Custom authentication that ignores the account's enabled state.
-     *
      * @param username
      * @param password
      * @return
      * @see {@link ZanataJpaIdentityStore#authenticate(String, String)}
      */
-    public boolean authenticateEvenIfDisabled(String username, String password) {
+    public boolean checkPasswordIgnoringActivation(String username, String password) {
         HAccount user = lookupUser(username);
         if (user == null) {
             return false;

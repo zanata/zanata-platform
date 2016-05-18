@@ -52,7 +52,6 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/account/password_reset/{key}").to("/account/password_reset.xhtml"))
                 .addRule(Join.path("/account/password_reset_request").to("/account/password_reset_request.xhtml"))
                 .addRule(Join.path("/account/inactive").to("/account/inactive_account.xhtml"))
-                .addRule(Join.path("/account/klogin").to("/account/klogin.xhtml"))
                 .addRule(Join.path("/account/sign_in").to("/account/login.xhtml"))
                 .addRule(Join.path("/account/register").to("/account/register.xhtml"))
                 .addRule(Join.path("/account/sign_out").to("/account/logout.xhtml"))

@@ -118,36 +118,6 @@
     </navigation-case>
   </navigation-rule>
 
-  <!-- Landing page for Kerberos ticket-based Authentication -->
-  <navigation-rule>
-    <from-view-id>/account/klogin.xhtml</from-view-id>
-    <navigation-case>
-      <if>#{authenticationManager.authenticationRedirect eq 'login'}</if>
-      <to-view-id>/account/login.xhtml</to-view-id>
-      <redirect />
-    </navigation-case>
-    <navigation-case>
-      <if>#{authenticationManager.authenticationRedirect eq 'edit'}</if>
-      <to-view-id>/profile/create_user.xhtml</to-view-id>
-      <redirect />
-    </navigation-case>
-    <navigation-case>
-      <if>#{authenticationManager.authenticationRedirect eq 'inactive'}</if>
-      <to-view-id>/account/inactive_account.xhtml</to-view-id>
-      <redirect />
-    </navigation-case>
-    <navigation-case>
-      <if>#{authenticationManager.authenticationRedirect eq 'dashboard'}</if>
-      <to-view-id>/dashboard/home.xhtml</to-view-id>
-      <redirect />
-    </navigation-case>
-    <navigation-case>
-      <if>#{authenticationManager.authenticationRedirect eq 'home'}</if>
-      <to-view-id>/home.xhtml</to-view-id>
-      <redirect />
-    </navigation-case>
-  </navigation-rule>
-
   <!-- Landing page for Internal, JAAS and Kerberos form-based
        authentication -->
   <navigation-rule>

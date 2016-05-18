@@ -20,20 +20,24 @@ R * Copyright 2010, Red Hat, Inc. and individual contributors
  */
 package org.zanata.security;
 
+import org.apache.deltaspike.core.api.literal.DeltaSpikeLiteral;
 import org.jboss.security.SecurityContextAssociation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.events.AlreadyLoggedInEvent;
 import org.zanata.util.ServiceLocator;
+import org.zanata.util.Synchronized;
 
+import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Event;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 
 @Named("spNegoIdentity")
-@javax.enterprise.context.SessionScoped
+@SessionScoped
+@Synchronized
 public class SpNegoIdentity implements Serializable {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(SpNegoIdentity.class);
@@ -53,12 +57,10 @@ public class SpNegoIdentity implements Serializable {
             return;
         }
 
-        // String username =
-        // FacesContext.getCurrentInstance().getExternalContext().getRemoteUser();
-        // Workaround for SECURITY-719, remove once it's fixed
+        HttpServletRequest servletRequest = ServiceLocator.instance()
+                .getInstance(HttpServletRequest.class, new DeltaSpikeLiteral());
         String username =
-                FacesContext.getCurrentInstance().getExternalContext()
-                        .getUserPrincipal().getName();
+                servletRequest.getUserPrincipal().getName();
         // Remove the domain name, if there is one
         if (username.indexOf('@') > 0) {
             username = username.substring(0, username.indexOf('@'));

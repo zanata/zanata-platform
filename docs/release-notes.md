@@ -32,6 +32,13 @@
 * [ZNTA-905](https://zanata.atlassian.net/browse/ZNTA-905) - Remove 0% matching translation memory entry
 * [ZNTA-928](https://zanata.atlassian.net/browse/ZNTA-928) - Readonly project doesn't have "lock" icon in UI
 * [ZNTA-54](https://zanata.atlassian.net/browse/ZNTA-54) - Allow delete language
+* [ZNTA-1066](https://zanata.atlassian.net/browse/ZNTA-1066) - Delete project still indicates "Obsolete" in the notification
+* [ZNTA-1068](https://zanata.atlassian.net/browse/ZNTA-1068) - Refresh page after adding language in project page
+* [ZNTA-1074](https://zanata.atlassian.net/browse/ZNTA-1074) - Hide notification details section
+* [ZNTA-1065](https://zanata.atlassian.net/browse/ZNTA-1065) - Drop-down user menu does not obscure the Glossary buttons
+* [ZNTA-1086](https://zanata.atlassian.net/browse/ZNTA-1086) - NullPointerException when uploading from client (tested with cs-CZ)
+
+* [ZNTA-981](https://zanata.atlassian.net/browse/ZNTA-981) - Remove file extension for gettext project file type
 
 <h5>Infrastructure Changes</h5>
 * Recommended platform: JBoss EAP 6 (6.4.6.GA or later).

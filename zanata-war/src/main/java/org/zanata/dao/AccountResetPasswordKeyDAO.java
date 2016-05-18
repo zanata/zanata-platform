@@ -21,12 +21,13 @@
 package org.zanata.dao;
 
 import org.hibernate.Session;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.model.HAccountResetPasswordKey;
 
 @Named("accountResetPasswordKeyDAO")
-
-@javax.enterprise.context.Dependent
+@RequestScoped
 public class AccountResetPasswordKeyDAO extends
         AbstractDAOImpl<HAccountResetPasswordKey, String> {
 
