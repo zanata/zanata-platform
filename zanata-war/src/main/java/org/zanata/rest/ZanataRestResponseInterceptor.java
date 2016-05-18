@@ -22,7 +22,9 @@
 package org.zanata.rest;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
@@ -33,8 +35,8 @@ import com.google.common.collect.ImmutableList;
 import org.jboss.resteasy.annotations.interception.HeaderDecoratorPrecedence;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
 
+import static java.util.Collections.emptyList;
 import static org.apache.commons.lang.StringUtils.isEmpty;
 
 /**
@@ -79,35 +81,39 @@ public class ZanataRestResponseInterceptor implements ContainerResponseFilter {
 
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext)
         throws IOException {
-        MultivaluedMap<String, String> requestHeaders =
-                requestContext.getHeaders();
-
-        // Client will use these headers for the next request (assuming this is
-        // a pre-flight request).
-        List<String> nextRequestHeaders = requestHeaders.get("Access-Control-Request-Headers");
-        if (nextRequestHeaders == null) {
-            nextRequestHeaders = Lists.newArrayList();
+        if (originWhitelist.isEmpty()) {
+            return;
         }
+
         MultivaluedMap<String, Object> responseHeaders = responseContext.getHeaders();
+        // Response will be different if Origin request header is different:
+        responseHeaders.add("Vary", "Origin");
 
         // Allow the specified Origin, but only if it is whitelisted.
         String origin = requestContext.getHeaderString("Origin");
         if (!isEmpty(origin) && originWhitelist.contains(origin)) {
             responseHeaders.add("Access-Control-Allow-Origin", origin);
-            responseHeaders.add("Vary", "Origin");
+
+            // Allow standard HTTP methods.
+            responseHeaders.add("Access-Control-Allow-Methods", ALLOW_METHODS);
+
+            // Allow credentials in requests (eg session cookie).
+            // This is potentially very dangerous, so check your Origin!
+            responseHeaders.add("Access-Control-Allow-Credentials", true);
+
+            // Client will use these headers for the next request (assuming this is
+            // a pre-flight request).
+            List<String> nextRequestHeaders = requestContext.getHeaders().getOrDefault(
+                    "Access-Control-Request-Headers", emptyList());
+            Set<String> allowedHeaders = new HashSet<>(nextRequestHeaders);
+            allowedHeaders.add("X-Requested-With");
+            allowedHeaders.add("Content-Type");
+            allowedHeaders.add("Accept");
+
+            // Allow any requested headers. Again, check your Origin!
+            responseHeaders.add("Access-Control-Allow-Headers",
+                    Joiner.on(",").join(nextRequestHeaders));
         }
-
-        // Allow standard HTTP methods.
-        responseHeaders.add("Access-Control-Allow-Methods", ALLOW_METHODS);
-
-        // Allow credentials in requests (eg session cookie).
-        // This is potentially very dangerous, so check your Origin!
-        responseHeaders.add("Access-Control-Allow-Credentials", true);
-
-        // Allow any requested headers. Again, check your Origin!
-        responseHeaders.add("Access-Control-Allow-Headers",
-            "X-Requested-With, Content-Type, Accept, " + Joiner.on(",").join(
-                nextRequestHeaders));
     }
 
 }
