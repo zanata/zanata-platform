@@ -42,6 +42,7 @@ import org.zanata.security.openid.FedoraOpenIdProvider;
 import org.zanata.security.openid.GoogleOpenIdProvider;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.security.openid.YahooOpenIdProvider;
+import org.zanata.util.FacesNavigationUtil;
 
 /**
  * This action takes care of logging a user into the system. It contains logic
@@ -133,14 +134,13 @@ public class LoginAction implements Serializable {
     }
 
     private String continueToPreviousUrl() {
-        ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
         try {
-            ec.redirect(userRedirect.getUrl());
-            return "continue";
+            FacesNavigationUtil.redirect(FacesContext.getCurrentInstance(),
+                    userRedirect.getUrl());
         } catch (IOException e) {
-            log.warn("error redirecting user to previous url: {}", userRedirect.getUrl(), e);
             return "dashboard";
         }
+        return "continue";
     }
 
     /**
