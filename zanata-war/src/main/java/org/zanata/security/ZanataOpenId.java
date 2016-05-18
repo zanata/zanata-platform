@@ -49,10 +49,12 @@ import org.zanata.security.openid.YahooOpenIdProvider;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.Contexts;
 import org.zanata.util.ServiceLocator;
+import org.zanata.util.Synchronized;
 import org.zanata.util.UrlUtil;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Produces;
 import javax.faces.context.ExternalContext;
@@ -64,8 +66,8 @@ import java.util.Collection;
 import java.util.List;
 
 @Named("zanataOpenId")
-@javax.enterprise.context.SessionScoped
-
+@SessionScoped
+@Synchronized
 /*
  * based on org.jboss.seam.security.openid.OpenId class
  */

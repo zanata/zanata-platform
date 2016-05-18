@@ -20,7 +20,6 @@
  */
 package org.zanata.security;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -332,7 +331,7 @@ public class AuthenticationManager {
         if (credentials.getAuthType() == AuthenticationType.INTERNAL
                 && applicationConfiguration.isInternalAuth()) {
             userIsAuthenticated =
-                    identityStore.authenticateEvenIfDisabled(
+                    identityStore.checkPasswordIgnoringActivation(
                             credentials.getUsername(),
                             credentials.getPassword());
         }
