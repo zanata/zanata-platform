@@ -43,6 +43,7 @@ import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.service.RegisterService;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ServiceLocator;
+import org.zanata.util.Synchronized;
 
 /**
  * @author Carlos Munoz <a
@@ -53,6 +54,7 @@ import org.zanata.util.ServiceLocator;
 public class AccountMergeAction implements Serializable {
 
     @SessionScoped
+    @Synchronized
     static class ObsoleteHolder implements Serializable {
         private static final long serialVersionUID = 1L;
         @Nullable HAccount account;

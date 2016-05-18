@@ -25,7 +25,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.events.AlreadyLoggedInEvent;
 import org.zanata.util.ServiceLocator;
+import org.zanata.util.Synchronized;
 
+import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Event;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -33,7 +35,8 @@ import javax.inject.Named;
 import java.io.Serializable;
 
 @Named("spNegoIdentity")
-@javax.enterprise.context.SessionScoped
+@SessionScoped
+@Synchronized
 public class SpNegoIdentity implements Serializable {
     private static final Logger LOGGER = LoggerFactory
             .getLogger(SpNegoIdentity.class);

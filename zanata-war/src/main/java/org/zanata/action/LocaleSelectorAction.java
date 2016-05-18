@@ -44,6 +44,7 @@ import org.zanata.util.Contexts;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import org.zanata.util.Synchronized;
 
 /**
  * @author Patrick Huang <a
@@ -51,6 +52,7 @@ import com.google.common.collect.Lists;
  */
 @Named("localeSelectorAction")
 @SessionScoped
+@Synchronized
 public class LocaleSelectorAction implements Serializable {
     private static final long serialVersionUID = -7116393807988405479L;
     @Inject

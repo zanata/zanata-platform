@@ -22,6 +22,7 @@
 package org.zanata.security;
 
 import org.zanata.model.HAccount;
+import org.zanata.util.Synchronized;
 
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
@@ -30,6 +31,7 @@ import java.io.Serializable;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @SessionScoped
+@Synchronized
 public class AuthenticatedAccountSessionScopeHolder
         implements AuthenticatedAccountHolder, Serializable {
     private HAccount authenticatedAccount;
