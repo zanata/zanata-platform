@@ -1,6 +1,7 @@
-## 3.9
-
-<h5>Infrastructure Changes</h5>
+## 3.9.0
+##### Infrastructure Changes
+* Recommended platform: JBoss EAP 6 (6.4.6.GA or later).
+* Alternative platform: WildFly version 10.x.
 * [ZNTA-530](https://zanata.atlassian.net/browse/ZNTA-530) - Replace Seam 2 with CDI
   * In WildFly or EAP `standalone.xml`, please make sure the Weld
     extension is present in the `extensions` section like this:
@@ -21,8 +22,7 @@
             ...
         </profiles>
 
-
-<h5>Bug fixes</h5>
+##### Bug Fixes
 * [ZNTA-804](https://zanata.atlassian.net/browse/ZNTA-804) - Coordinators' email addresses should be BCC in Contact Coordinator
 * [ZNTA-693](https://zanata.atlassian.net/browse/ZNTA-693) - Handle ClientAbortException exception and reduce severity.
 * [ZNTA-742](https://zanata.atlassian.net/browse/ZNTA-742) - Get a list of contributors for a Project version via the API
@@ -39,10 +39,6 @@
 * [ZNTA-1086](https://zanata.atlassian.net/browse/ZNTA-1086) - NullPointerException when uploading from client (tested with cs-CZ)
 
 * [ZNTA-981](https://zanata.atlassian.net/browse/ZNTA-981) - Remove file extension for gettext project file type
-
-<h5>Infrastructure Changes</h5>
-* Recommended platform: JBoss EAP 6 (6.4.6.GA or later).
-* Alternative platform: WildFly version 10.x.
 
 -----------------------
 ## 3.8.4
