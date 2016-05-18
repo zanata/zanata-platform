@@ -3,17 +3,15 @@
 # Introduction
 
 ## Configure Zanata security
-Open `$JBOSS_HOME/standalone/configuration/standalone.xml` and look for the `naming` subsystem. Add the following sections to the `bindings` section:
+Open `$JBOSS_HOME/standalone/configuration/standalone.xml` and look for the `system-properties` section. Add the following properties like this:
 
 ```xml
-<subsystem xmlns="urn:jboss:domain:naming:1.3">
-    ...
-    <bindings>
-        <simple name="java:global/zanata/security/auth-policy-names/<authtype>" value="<policy-name>"/>
-        <simple name="java:global/zanata/security/admin-users" value="<list of usernames>"/>
-    </bindings>
-    ...
-</subsystem>
+<system-properties>
+  ...
+  <property name="zanata.security.authpolicy.<authtype>" value="<policy-name>"/>
+  <property name="zanata.security.adminusers" value="myusername"/>
+  ...
+</system-properties>
 ```
 
 ... where `<authtype>` is the authentication type enabled for the Zanata instance.
@@ -23,9 +21,9 @@ Accepted values are: internal, jaas, openid, kerberos
 
 In most cases, only a single authentication mechanism should be active at any given time, and Zanata will refuse to start if these settings are incorrect. However, the 'internal' and 'openid' mechanisms can be enabled simultaneously.
 
-The `java:global/zanata/security/admin-users` property above must contain a comma-separated list of user names. Zanata will check that these users have administrator privileges, when they are created. This feature is recommended for the first time Zanata is started, and to avoid being locked out of the system at any time. However it is not meant to be used to manage administrator users system wide.
+The `zanata.security.adminusers` property above must contain a comma-separated list of user names. Zanata will check that these users have administrator privileges, when they are created. This feature is recommended for the first time Zanata is started, and to avoid being locked out of the system at any time. However it is not meant to be used to manage administrator users system wide.
 
-Use the 'register' page to add the admin users, with user names exactly matching the names in the zanata.properties file. The accounts will have to be activated using the activation links in the activation emails sent during the registration process before login is possible. If there is an issue with delivery of activation emails, accounts can be activated manually using:
+Use the 'register' page to add the admin users, with user names exactly matching the names listed above. The accounts will have to be activated using the activation links in the activation emails sent during the registration process before login is possible. If there is an issue with delivery of activation emails, accounts can be activated manually by running the following scripts directly on the Zanata database:
 
 ```sql
 UPDATE HAccount SET enabled = true WHERE username = 'myusername';
@@ -63,11 +61,13 @@ After this, you will need to configure one (or more) of the following modules fo
 
 ## Internal Authentication
 
-Make sure `standalone.xml` has the following jndi property
+Make sure `standalone.xml` has the following system property defined in the xml:
 
 ```xml
-<simple name="java:global/zanata/security/auth-policy-names/internal" value="zanata.internal"/>
+<property name="zanata.security.authpolicy.internal" value="zanata.internal"/>
 ```
+
+Alternatively, you can pass this and other system properties to JBoss when starting it (see JBoss documentation for details on how to do this).
 
 (Note the value of the property matches the security-domain name below).
 
@@ -88,10 +88,10 @@ standalone.xml
 
 ## Pure JAAS
 
-Make sure `standalone.xml` has the following jndi property
+Make sure `standalone.xml` has the following system property
 
 ```xml
-<simple name="java:global/zanata/security/auth-policy-names/jaas" value="zanata.jaas"/>
+<property name="zanata.security.authpolicy.jaas" value="zanata.jaas"/>
 ```
 (Note the value of the property matches the security-domain name below).
 
@@ -120,10 +120,10 @@ standalone.xml:
 Kerberos authentication allows for both ticket based and form based authentication. Zanata will first check for a valid Kerberos ticket (if the browser supports it). If it is not possible to obtain a valid ticket, then Zanata will show a form to enter a user name and password to be authenticated using Kerberos.
 **Note:** It is recommended to use SSL when dealing with form based Kerberos authentication.
 
-Make sure `standalone.xml` has the following jndi property
+Make sure `standalone.xml` has the following system property
 
 ```xml
-<simple name="java:global/zanata/security/auth-policy-names/kerberos" value="zanata.kerberos"/>
+<property name="zanata.security.authpolicy.kerberos" value="zanata.kerberos"/>
 ```
 (Note the value of the property matches the security-domain name below).
 
@@ -187,10 +187,10 @@ Important note: If you are running your server on Java 1.7, it will not be able 
 Java 1.8 on *some* Fedora-based systems has a similar problem contacting some OpenID providers (related to https://bugzilla.redhat.com/show_bug.cgi?id=1167153).  See the section "Disabling the SunEC provider".
 
 
-Make sure `standalone.xml` has the following jndi property:
+Make sure `standalone.xml` has the following system property:
 
 ```xml
-<simple name="java:global/zanata/security/auth-policy-names/openid" value="zanata.openid"/>
+<property name="zanata.security.authpolicy.openid" value="zanata.openid"/>
 ```
 
 (Note the value of the property matches the security-domain name below).
