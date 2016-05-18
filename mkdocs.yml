@@ -12,7 +12,6 @@ pages:
 - Getting Started:
   - Translator Guide: 'user-guide/translator-guide.md'
   - Project Maintainer Guide: 'user-guide/project-maintainer-guide.md'
-  - System admin guide: 'user-guide/system-admin/configuration/installation.md'
 # Accounts
 - Accounts:
   - Create new account: 'user-guide/account/account-sign-up.md'
