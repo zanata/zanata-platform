@@ -410,7 +410,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         conversationScopeMessages
                 .setMessage(FacesMessage.SEVERITY_INFO, msgs.
                         format("jsf.copyVersion.started",
-                                getInstance().getSlug(), copyFromVersionSlug));
+                            inputSlugValue, copyFromVersionSlug));
     }
 
     public void setSlug(String slug) {
