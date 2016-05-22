@@ -21,6 +21,7 @@
 
 package org.zanata.security.oauth;
 
+import java.io.IOException;
 import java.util.Optional;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -110,7 +111,7 @@ public class AuthorizeAction {
                     resp.getLocationUri());
             FacesNavigationUtil
                     .redirectToExternal(resp.getLocationUri());
-        } catch (OAuthSystemException e) {
+        } catch (OAuthSystemException | IOException e) {
             throw Throwables.propagate(e);
         }
     }
