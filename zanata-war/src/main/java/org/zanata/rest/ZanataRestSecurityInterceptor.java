@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.Provider;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
@@ -29,6 +30,7 @@ import org.zanata.rest.oauth.OAuthUtil;
 import org.zanata.security.SecurityFunctions;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
+import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.security.oauth.SecurityTokens;
 import org.zanata.util.HttpUtil;
 import com.google.common.annotations.VisibleForTesting;
@@ -52,10 +54,6 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
     private ZanataIdentity zanataIdentity;
 
     @Inject
-    @Authenticated
-    private HAccount authenticatedAccount;
-
-    @Inject
     @SysConfig(SystemPropertyConfigStore.KEY_SUPPORT_OAUTH)
     private Boolean isOAuthSupported;
 
@@ -67,17 +65,17 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
     @VisibleForTesting
     protected ZanataRestSecurityInterceptor(HttpServletRequest request,
             SecurityTokens securityTokens, ZanataIdentity zanataIdentity,
-            HAccount authenticatedAccount) {
+            boolean isOAuthSupported) {
         this.request = request;
         this.securityTokens = securityTokens;
         this.zanataIdentity = zanataIdentity;
-        this.authenticatedAccount = authenticatedAccount;
+        this.isOAuthSupported = isOAuthSupported;
     }
 
     @Override
     public void filter(ContainerRequestContext context)
             throws IOException {
-        if (authenticatedAccount != null) {
+        if (hasAuthenticatedAccount()) {
             // request come from the same browser and the user has logged in
             return;
         }
@@ -180,6 +178,11 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
 
     private Response buildServerErrorResponse(String message) {
         return Response.serverError().entity(message).build();
+    }
+
+    @VisibleForTesting
+    protected boolean hasAuthenticatedAccount() {
+        return BeanProvider.getContextualReference(HAccount.class, new AuthenticatedLiteral()) != null;
     }
 
     private static class Tokens {

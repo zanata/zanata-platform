@@ -130,7 +130,7 @@ public class SecurityTokens
     }
 
 
-    public Optional<String> tryFineAuthorizationCode(String username, String clientId) {
+    public Optional<String> tryFindAuthorizationCode(String username, String clientId) {
         Map<String, String> ifPresent =
                 authorizationCodes.getIfPresent(username);
         if (ifPresent != null && ifPresent.containsKey(clientId)) {

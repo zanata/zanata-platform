@@ -81,11 +81,9 @@ public class AnonymousUserRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(ClientResponse response) {
-                assertThat(response.getEntity(String.class).toString(),
-                    is(InvalidApiKeyUtil.getMessage(ADMIN, invalidAPI)));
 
                 assertThat(response.getStatus(),
-                    is(Status.UNAUTHORIZED.getStatusCode()));
+                    is(Status.OK.getStatusCode()));
             }
         }.run();
     }
@@ -143,9 +141,6 @@ public class AnonymousUserRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(ClientResponse response) {
-                assertThat(response.getEntity(String.class).toString(),
-                    is(InvalidApiKeyUtil.getMessage(
-                        API_KEY_ABSENCE_WARNING)));
 
                 assertThat(response.getStatus(),
                     is(Status.UNAUTHORIZED.getStatusCode()));

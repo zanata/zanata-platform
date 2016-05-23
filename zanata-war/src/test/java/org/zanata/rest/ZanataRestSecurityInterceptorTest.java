@@ -69,7 +69,12 @@ public class ZanataRestSecurityInterceptorTest {
         MockitoAnnotations.initMocks(this);
         securityInterceptor =
                 new ZanataRestSecurityInterceptor(request, securityTokens, identity,
-                        authenticatedAccount);
+                        true) {
+                    @Override
+                    protected boolean hasAuthenticatedAccount() {
+                        return false;
+                    }
+                };
         headers = new MultivaluedHashMap<>();
 
         // some common set up
@@ -84,7 +89,12 @@ public class ZanataRestSecurityInterceptorTest {
     public void willPassIfAuthenticatedAccountIsNotNull() throws Exception {
         securityInterceptor =
                 new ZanataRestSecurityInterceptor(request, securityTokens, identity,
-                        new HAccount());
+                        true) {
+                    @Override
+                    protected boolean hasAuthenticatedAccount() {
+                        return true;
+                    }
+                };
 
         securityInterceptor.filter(context);
 
