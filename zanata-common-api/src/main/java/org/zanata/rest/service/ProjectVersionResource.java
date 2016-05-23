@@ -260,12 +260,12 @@ public interface ProjectVersionResource extends RestResource {
     @GET
     @Produces({ MediaTypes.APPLICATION_ZANATA_TRANS_UNIT_RESOURCE_JSON,
             MediaType.APPLICATION_JSON })
-    @Path(VERSION_SLUG_TEMPLATE + "/status")
+    @Path(VERSION_SLUG_TEMPLATE + "/doc/{docId}/status/{localeId}")
     @TypeHint(TransUnitStatus[].class)
     public Response getTransUnitStatus(
         @PathParam("projectSlug") String projectSlug,
         @PathParam("versionSlug") String versionSlug,
-        @QueryParam("docId") String docId,
-        @DefaultValue("en-US") @QueryParam("localeId")  String localeId);
+        @PathParam("docId") String docId,
+        @DefaultValue("en-US") @PathParam("localeId")  String localeId);
 
 }
