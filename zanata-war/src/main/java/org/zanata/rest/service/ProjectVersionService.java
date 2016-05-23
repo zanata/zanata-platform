@@ -332,8 +332,8 @@ public class ProjectVersionService implements ProjectVersionResource {
     public Response getTransUnitStatus(
             @PathParam("projectSlug") String projectSlug,
             @PathParam("versionSlug") String versionSlug,
-            @QueryParam("docId") String docId,
-            @DefaultValue("en-US") @QueryParam("localeId") String localeId) {
+            @PathParam("docId") String docId,
+            @DefaultValue("en-US") @PathParam("localeId") String localeId) {
         if(StringUtils.isEmpty(docId)) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
