@@ -42,9 +42,7 @@ import org.zanata.util.HttpUtil;
 import org.zanata.util.ServiceLocator;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.inject.Inject;
-import javax.ws.rs.HttpMethod;
 
 import java.util.Optional;
 
@@ -568,19 +566,23 @@ public class SecurityFunctions extends PermissionProvider {
     public static boolean canAccessRestPath(
             @Nonnull ZanataIdentity identity,
             String httpMethod, String restServicePath) {
-        // This is to allow data injection for function-test/rest-test
-        if (isTestServicePath(restServicePath)) {
-            log.debug("Allow rest access for Zanata test");
+        if (doesRestPathAllowAnonymousAccess(httpMethod, restServicePath)) {
             return true;
         }
-        if (identity.isLoggedIn()) {
-            return true;
-        }
-        return isRestPathAllowedAnonymousAccess(httpMethod);
+        return identity.isLoggedIn();
     }
 
-    private static boolean isRestPathAllowedAnonymousAccess(String httpMethod) {
-        return HttpUtil.isReadMethod(httpMethod);
+    /**
+     * Check if the REST api allow anonymous access
+     * @param httpMethod {@link javax.ws.rs.HttpMethod}
+     * @param servicePath service path of rest request.
+     *                        See annotation @Path in REST service class.
+     * @return
+     */
+    public static boolean doesRestPathAllowAnonymousAccess(String httpMethod,
+            String servicePath) {
+        return HttpUtil.isReadMethod(httpMethod) ||
+                isTestServicePath(servicePath);
     }
 
     /**
@@ -590,6 +592,7 @@ public class SecurityFunctions extends PermissionProvider {
      *                        See annotation @Path in REST service class.
      */
     private static boolean isTestServicePath(String servicePath) {
+        // This is to allow data injection for function-test/rest-test
         return servicePath != null
                 && (
                 // when being called in RestLimitingFilter

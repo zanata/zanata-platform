@@ -23,12 +23,14 @@ import org.apache.oltu.oauth2.rs.request.OAuthAccessResourceRequest;
 import org.apache.oltu.oauth2.rs.response.OAuthRSResponse;
 import org.jboss.resteasy.annotations.interception.SecurityPrecedence;
 import org.zanata.model.HAccount;
+import org.zanata.rest.oauth.OAuthUtil;
 import org.zanata.security.SecurityFunctions;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.oauth.SecurityTokens;
 import org.zanata.util.HttpUtil;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.googlecode.totallylazy.Either;
 import lombok.extern.slf4j.Slf4j;
@@ -73,34 +75,37 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
             return;
         }
 
-        String username = HttpUtil.getUsername(context.getHeaders());
-        String apiKey = HttpUtil.getApiKey(context.getHeaders());
+        Tokens tokens = new Tokens(context, request);
 
-        if (StringUtils.isNotEmpty(username) && StringUtils.isNotEmpty(apiKey)) {
+        if (!tokens.canAuthenticate() &&
+                SecurityFunctions.doesRestPathAllowAnonymousAccess(
+                        context.getMethod(), context.getUriInfo().getPath())) {
+            // if we don't have any information to authenticate but the
+            // requesting API allows anonymous access, we let it go
+            return;
+        }
+
+        if (tokens.canAuthenticateUsingApiKey()) {
             // if apiKey presents, we use apiKey for security check
-            zanataIdentity.getCredentials().setUsername(username);
-            zanataIdentity.setApiKey(apiKey);
+            zanataIdentity.getCredentials().setUsername(tokens.username.get());
+            zanataIdentity.setApiKey(tokens.apiKey.get());
+            zanataIdentity.tryLogin();
         } else {
             Either<String, Response> usernameOrResponse =
                 getUsernameOrResponse();
             if (usernameOrResponse.isRight()) {
-                if (SecurityFunctions
-                        .canAccessRestPath(zanataIdentity, context.getMethod(),
-                                context.getUriInfo().getPath())) {
-                    return;
-                }
                 context.abortWith(usernameOrResponse.right());
                 return;
             }
-            username = usernameOrResponse.left();
+            String username = usernameOrResponse.left();
             zanataIdentity.getCredentials().setUsername(username);
             zanataIdentity.setOAuthRequest(true);
+            zanataIdentity.tryLogin();
         }
 
-        zanataIdentity.tryLogin();
         if (!SecurityFunctions.canAccessRestPath(zanataIdentity,
                 context.getMethod(), context.getUriInfo().getPath())) {
-            log.info(InvalidApiKeyUtil.getMessage(username, apiKey));
+            log.info("can not authenticate REST request: {}", tokens);
             context.abortWith(Response.status(Status.UNAUTHORIZED)
                     .entity("Invalid token")
                     .build());
@@ -170,5 +175,49 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
 
     private Response buildServerErrorResponse(String message) {
         return Response.serverError().entity(message).build();
+    }
+
+    private static class Tokens {
+
+        private final Optional<String> username;
+        private final Optional<String> apiKey;
+        private final Optional<String> accessToken;
+        private final Optional<String> authorizationCode;
+
+        Tokens(ContainerRequestContext context, HttpServletRequest request) {
+            String username = HttpUtil.getUsername(context.getHeaders());
+            String apiKey = HttpUtil.getApiKey(context.getHeaders());
+            this.username = optionalNotEmptyString(username);
+            this.apiKey = optionalNotEmptyString(apiKey);
+            accessToken = OAuthUtil.getAccessToken(request);
+            String authorizationCode = request.getParameter(OAuth.OAUTH_CODE);
+            this.authorizationCode = optionalNotEmptyString(authorizationCode);
+        }
+
+        private static Optional<String> optionalNotEmptyString(String value) {
+            return StringUtils.isNotEmpty(value) ? Optional.of(value) : Optional.empty();
+        }
+
+        boolean canAuthenticateUsingApiKey() {
+            return username.isPresent() && apiKey.isPresent();
+        }
+
+        boolean canAuthenticateUsingOAuth() {
+            return authorizationCode.isPresent() || accessToken.isPresent();
+        }
+
+        boolean canAuthenticate() {
+            return canAuthenticateUsingApiKey() || authorizationCode.isPresent() || accessToken.isPresent();
+        }
+
+        @Override
+        public String toString() {
+            return MoreObjects.toStringHelper(this)
+                    .add("username", username)
+                    .add("apiKey", apiKey)
+                    .add("accessToken", accessToken)
+                    .add("authorizationCode", authorizationCode)
+                    .toString();
+        }
     }
 }
