@@ -37,6 +37,8 @@ import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.config.SysConfig;
+import org.zanata.config.SystemPropertyConfigStore;
 import org.zanata.dao.AllowedAppDAO;
 import org.zanata.model.AllowedApp;
 import org.zanata.model.HAccount;
@@ -82,6 +84,10 @@ public class AuthorizeAction {
     @Inject
     private ZanataIdentity identity;
 
+    @Inject
+    @SysConfig(SystemPropertyConfigStore.KEY_SUPPORT_OAUTH)
+    private Boolean supportOAuth;
+
     /**
      * This will check whether the requesting app has already been authorized
      */
@@ -118,11 +124,16 @@ public class AuthorizeAction {
 
     @Transactional
     public void authorize() {
-        // TODO handle cancel/reject action
-        allowedAppDAO
-                .persistClientId(authenticatedAccount.getUsername(), clientId);
+        if (supportOAuth) {
+            // TODO handle cancel/reject action
+            allowedAppDAO
+                    .persistClientId(authenticatedAccount.getUsername(), clientId);
+            generateAuthCodeAndRedirect();
+        }
+    }
 
-        generateAuthCodeAndRedirect();
+    public Boolean getSupportOAuth() {
+        return supportOAuth;
     }
 
     public String getRedirectUriParam() {

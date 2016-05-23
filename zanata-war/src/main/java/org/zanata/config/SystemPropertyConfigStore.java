@@ -49,6 +49,7 @@ public class SystemPropertyConfigStore implements ConfigStore {
     public static final String KEY_DOCUMENT_FILE_STORE =
             "zanata.file.directory";
 
+    public static final String KEY_SUPPORT_OAUTH = "zanata.support.oauth";
     private static final Logger log =
             LoggerFactory.getLogger(SystemPropertyConfigStore.class);
 
@@ -98,5 +99,9 @@ public class SystemPropertyConfigStore implements ConfigStore {
 
     public String getDocumentFileStorageLocation() {
         return System.getProperty(KEY_DOCUMENT_FILE_STORE);
+    }
+
+    public Boolean isOAuthEnabled() {
+        return Boolean.valueOf(System.getProperty(KEY_SUPPORT_OAUTH, "false"));
     }
 }

@@ -465,4 +465,10 @@ public class ApplicationConfiguration implements Serializable {
     protected Long getTokenExpiresInSeconds() {
         return (long) tokenExpiresInSeconds;
     }
+
+    @Produces
+    @SysConfig(SystemPropertyConfigStore.KEY_SUPPORT_OAUTH)
+    protected Boolean isOAuthSupported() {
+        return sysPropConfigStore.isOAuthEnabled();
+    }
 }

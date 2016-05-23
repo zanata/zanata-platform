@@ -15,12 +15,15 @@
 
   <ui:define name="page_title">#{msgs['jsf.Authorize']}</ui:define>
   <ui:define name="center_content">
-    <rich:panel id="loggedIn" rendered="#{identity.loggedIn}">
+    <rich:panel id="loggedIn" rendered="#{identity.loggedIn and authorizeAction.supportOAuth}">
       <h:form id="loginForm">
         <h:outputText value="#{msgs.format('jsf.allowApp', authorizeAction.clientId)}"/>
         <h:commandButton action="#{authorizeAction.authorize}" value="Allow" />
       </h:form>
     </rich:panel>
+    <h:panelGroup rendered="#{not authorizeAction.supportOAuth}">
+      <h:outputText value="#{msgs.get('jsf.oauth.disabled')}" />
+    </h:panelGroup>
   </ui:define>
 
   <ui:define name="right_content">
