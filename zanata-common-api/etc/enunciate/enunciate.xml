@@ -8,7 +8,8 @@
   </api-classes>
   <modules>
     <docs docsDir="rest-api-docs" title="Zanata REST API"
-      copyright="Copyright 2008-2013 Red Hat, Inc and others." />
+      splashPackage="org.zanata.rest.service"
+      copyright="Copyright 2008-2016 Red Hat, Inc and others." />
     <c disabled="true" />
     <csharp disabled="true" />
     <gwt disabled="true" />
