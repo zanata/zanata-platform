@@ -92,6 +92,7 @@
                   <ul class="dropdown__content js-dropdown__content">
                     <li>
                       <a4j:commandLink value="#{msgs['jsf.Remove']}"
+                        render="contactMembersModal"
                         action="#{languageAction.removeMembership(member)}"
                         execute="@this" oncomplete="refreshMembersForm()"
                         styleClass="i__item--right txt--danger">
