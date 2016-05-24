@@ -1,5 +1,8 @@
 ## 4.0
 
+##### Bug Fixes
+* [ZNTA-846](https://zanata.atlassian.net/browse/ZNTA-846) - Group "request add project version" needs field limit
+
 <h5>Infrastructure Changes</h5>
 * Zanata has eliminated all JNDI-based configuration and replaced it with system properties. Please see the following sections for how certain values are now configured:
   * (/user-guide/system-admin/configuration/installation)
@@ -13,9 +16,6 @@
 
 -----------------------
 
-## 3.9
-
-<h5>Infrastructure Changes</h5>
 ## 3.9.0
 ##### Infrastructure Changes
 * Recommended platform: JBoss EAP 6 (6.4.6.GA or later).
