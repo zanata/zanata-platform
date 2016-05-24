@@ -42,8 +42,8 @@ import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 
 import javax.annotation.Nullable;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
+import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.DocumentType;
@@ -83,18 +83,12 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 @Named("versionHome")
-@RequestScoped
+@ViewScoped
 @Slf4j
 public class VersionHome extends SlugHome<HProjectIteration> implements
     HasLanguageSettings, Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    /**
-     * This field is set from http parameter which will be the original slug
-     */
-//    @Getter
-//    private String slug;
 
     /**
      * This field is set from form input which can differ from original slug
@@ -105,10 +99,6 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     private String inputSlugValue;
 
     private Long versionId;
-
-//    @Getter
-//    @Setter
-//    private String projectSlug;
 
     @Inject
     @Any
