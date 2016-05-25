@@ -5,13 +5,12 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:a4j="http://richfaces.org/a4j"
-  template="../WEB-INF/template/template.xhtml">
+  template="/WEB-INF/template/template.xhtml">
 
   <ui:define
     name="page_title">#{msgs['jsf.Profile']}:#{msgs['jsf.NewUser.Label']}</ui:define>
 
   <ui:define name="center_content">
-    <a4j:jsFunction name="cancelCreateUser" action="#{newProfileAction.cancel}" />
     <div class="g--centered">
       <div class="g__item w--1-2-m w--3-8-l w--1-3 l--push-bottom-1">
 
@@ -84,12 +83,12 @@
           </ui:fragment>
 
           <div class="l--push-top-1">
-            <h:commandButton id="user-create-new"
-              value="#{msgs['jsf.Save']}"
+            <h:commandButton id="user-create-new" value="#{msgs['jsf.Save']}"
               action="#{newProfileAction.createUser}"
               styleClass="l--push-right-half button--primary"/>
-            <h:button id="user-create-cancel" styleClass="button button-link"
-              value="#{msgs['jsf.Cancel']}" onclick="cancelCreateUser()"/>
+            <h:commandButton id="user-create-cancel" styleClass="button button-link"
+              value="#{msgs['jsf.Cancel']}" action="#{newProfileAction.cancel}"
+              immediate="true"/>
           </div>
         </h:form>
       </div>

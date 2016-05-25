@@ -2,6 +2,7 @@
 
 ##### Bug Fixes
 * [ZNTA-846](https://zanata.atlassian.net/browse/ZNTA-846) - Group "request add project version" needs field limit
+* [ZNTA-872](https://zanata.atlassian.net/browse/ZNTA-872) - Redirect to home from cancel button in create user page
 
 <h5>Infrastructure Changes</h5>
 * Zanata has eliminated all JNDI-based configuration and replaced it with system properties. Please see the following sections for how certain values are now configured:
@@ -10,14 +11,14 @@
   * (/user-guide/system-admin/configuration/document-storage-directory)
 <h5>New feature</h5>
 * [ZNTA-746](https://zanata.atlassian.net/browse/ZNTA-746) - Add shorcut key for approve and reject translation
-<h5>New Features</h5>
 * [ZNTA-1059](https://zanata.atlassian.net/browse/ZNTA-1059) - Language coordinator can contact team members
+
 
 
 -----------------------
 
 ## 3.9.0
-##### Infrastructure Changes
+<h5>Infrastructure Changes</h5>
 * Recommended platform: JBoss EAP 6 (6.4.6.GA or later).
 * Alternative platform: WildFly version 10.x.
 * [ZNTA-530](https://zanata.atlassian.net/browse/ZNTA-530) - Replace Seam 2 with CDI

@@ -35,6 +35,7 @@ import org.zanata.security.ZanataOpenId;
 import org.zanata.service.EmailService;
 import org.zanata.service.RegisterService;
 import org.zanata.ui.faces.FacesMessages;
+import org.zanata.util.UrlUtil;
 
 /**
  * This action handles new user profile creation.
@@ -54,6 +55,9 @@ public class NewProfileAction extends AbstractProfileAction implements Serializa
 
     @Inject
     private FacesMessages facesMessages;
+
+    @Inject
+    private UrlUtil urlUtil;
 
     @Inject
     Messages msgs;
@@ -110,9 +114,9 @@ public class NewProfileAction extends AbstractProfileAction implements Serializa
         return "success";
     }
 
-    public String cancel() {
+    public void cancel() {
         identity.logout();
-        return "success";
+        urlUtil.redirectTo(urlUtil.home());
     }
 
 }
