@@ -18,8 +18,6 @@
 
 -----------------------
 
-## 3.9
-<h5>Infrastructure Changes</h5>
 ## 3.9.0
 <h5>Infrastructure Changes</h5>
 * Recommended platform: JBoss EAP 6 (6.4.6.GA or later).
