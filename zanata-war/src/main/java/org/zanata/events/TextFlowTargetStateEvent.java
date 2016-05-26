@@ -49,11 +49,11 @@ public final class TextFlowTargetStateEvent {
     private final @Nullable Long actorId;
 
     @Getter
-    private final ImmutableList<TextFlowTargetState> states;
+    private final ImmutableList<TextFlowTargetStateChange> states;
 
     public TextFlowTargetStateEvent(DocumentLocaleKey key,
             Long projectIterationId, Long actorId,
-            ImmutableList<TextFlowTargetState> states) {
+            ImmutableList<TextFlowTargetStateChange> states) {
         this.key = key;
         this.projectIterationId = projectIterationId;
         this.actorId = actorId;
@@ -62,14 +62,14 @@ public final class TextFlowTargetStateEvent {
     }
 
     public TextFlowTargetStateEvent(DocumentLocaleKey key,
-        Long projectIterationId, Long actorId, TextFlowTargetState state) {
+        Long projectIterationId, Long actorId, TextFlowTargetStateChange state) {
         this(key, projectIterationId, actorId, ImmutableList.of(state));
     }
 
     @Getter
     @EqualsAndHashCode
     @AllArgsConstructor
-    public static final class TextFlowTargetState implements Serializable {
+    public static final class TextFlowTargetStateChange implements Serializable {
         private final Long textFlowId;
         private final Long textFlowTargetId;
         private final ContentState newState;

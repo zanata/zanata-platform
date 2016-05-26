@@ -43,6 +43,7 @@ import javax.persistence.EntityNotFoundException;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -69,6 +70,7 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.WebHook;
+import org.zanata.model.type.WebhookType;
 import org.zanata.model.validator.SlugValidator;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
@@ -1056,12 +1058,35 @@ public class ProjectHome extends SlugHome<HProject> implements
         return sortedList;
     }
 
+    @Getter
+    public class WebhookTypeItem {
+        private String name;
+        private String description;
+
+        public WebhookTypeItem(WebhookType type, String desc) {
+            this.name = type.name();
+            this.description = desc;
+        }
+    }
+
+    public List<WebhookTypeItem> getWebhookTypes() {
+        List<WebhookTypeItem> results = Lists.newArrayList();
+        results.add(new WebhookTypeItem(WebhookType.DocumentMilestoneEvent,
+                msgs.get("jsf.webhookType.DocumentMilestoneEvent.desc")));
+        results.add(new WebhookTypeItem(WebhookType.DocumentStatsEvent,
+                msgs.get("jsf.webhookType.DocumentStatsEvent.desc")));
+        return results;
+    }
+
     @Transactional
-    public void addWebHook(String url, String secret) {
+    public void addWebHook(String url, String secret, String strType) {
         identity.checkPermission(getInstance(), "update");
-        if (isValidUrl(url)) {
+
+        WebhookType type = WebhookType.valueOf(strType);
+        if (isValidUrl(url, type)) {
             secret = StringUtils.isBlank(secret) ? null : secret;
-            WebHook webHook = new WebHook(this.getInstance(), url, secret);
+            WebHook webHook =
+                    new WebHook(this.getInstance(), url, type, secret);
             getInstance().getWebHooks().add(webHook);
             update();
             facesMessages.addGlobal(
@@ -1081,16 +1106,20 @@ public class ProjectHome extends SlugHome<HProject> implements
         }
     }
 
-    private boolean isValidUrl(String url) {
+    /**
+     * Check if url is valid and there is no duplication of url+type
+     */
+    private boolean isValidUrl(String url, WebhookType type) {
         if (!UrlUtil.isValidUrl(url)) {
             facesMessages.addGlobal(SEVERITY_ERROR,
                     msgs.format("jsf.project.InvalidUrl", url));
             return false;
         }
         for(WebHook webHook: getInstance().getWebHooks()) {
-            if(StringUtils.equalsIgnoreCase(webHook.getUrl(), url)) {
+            if (StringUtils.equalsIgnoreCase(webHook.getUrl(), url)
+                    && type.equals(webHook.getWebhookType())) {
                 facesMessages.addGlobal(SEVERITY_ERROR,
-                        msgs.format("jsf.project.DuplicateUrl", url));
+                        msgs.get("jsf.project.DuplicateUrl"));
                 return false;
             }
         }

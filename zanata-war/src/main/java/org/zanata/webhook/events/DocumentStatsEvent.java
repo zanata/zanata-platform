@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2016, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,63 +18,72 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.events;
+package org.zanata.webhook.events;
+
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
+import org.zanata.events.WebhookEventType;
+import org.zanata.model.type.WebhookType;
 
 /**
  *
- * Event for when a document in a language reached a milestone in translations.
+ * Event for when a translation being updated in Zanata
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
-@JsonPropertyOrder({ "project", "version", "docId", "locale", "editorDocumentUrl", "milestone"})
+@JsonPropertyOrder({"username", "project", "version", "docId", "locale", "wordDeltasByState", "type"})
 @EqualsAndHashCode
-public class DocumentMilestoneEvent extends WebhookEventType {
+public class DocumentStatsEvent extends WebhookEventType {
+
+    private static final String EVENT_TYPE =
+            WebhookType.DocumentStatsEvent.name();
+
+    /**
+     * Username of the actor
+     */
+    private final String username;
+
     /**
      * Target project slug.
      * {@link org.zanata.model.HProject#slug}
      */
-    private String project;
+    private final String project;
 
     /**
      * Target project version slug.
      * {@link org.zanata.model.HProjectIteration#slug}
      */
-    private String version;
+    private final String version;
 
     /**
      * Target document full path id.
      * {@link org.zanata.model.HDocument#docId}
      */
-    private String docId;
+    private final String docId;
 
     /**
      * Target locale id.
-     * {@link org.zanata.common.LocaleId}
+     * {@link LocaleId}
      */
-    private LocaleId locale;
+    private final LocaleId locale;
 
     /**
-     * Message for milestone reached.
+     * Updated content states with word counts
      */
-    private String milestone;
+    private final Map<ContentState, Long> wordDeltasByState;
 
-    /**
-     * Editor url in target document.
-     * {@link org.zanata.util.UrlUtil#fullEditorDocumentUrl}
-     */
-    private String editorDocumentUrl;
-
+    @Override
+    public String getType() {
+        return EVENT_TYPE;
+    }
 }

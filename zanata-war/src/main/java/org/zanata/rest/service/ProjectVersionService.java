@@ -263,7 +263,7 @@ public class ProjectVersionService implements ProjectVersionResource {
 
         List<User> userList = Lists.newArrayList();
         userList.addAll(accountList.stream()
-            .map(account -> userService.transferToUser(account, displayEmail))
+            .map(account -> userService.getUserInfo(account, displayEmail))
             .collect(Collectors.toList()));
 
 

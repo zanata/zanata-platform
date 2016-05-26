@@ -37,7 +37,7 @@ public class GlossaryAction implements Serializable {
 
     public User getUser() {
         if (user == null) {
-            user = userService.transferToUser(authenticatedAccount, true);
+            user = userService.getUserInfo(authenticatedAccount, true);
         }
         return user;
     }

@@ -94,7 +94,7 @@ public class ProfileHome implements Serializable {
                 return;
             }
         }
-        user = userService.transferToUser(account, displayEmail());
+        user = userService.getUserInfo(account, displayEmail());
     }
 
     private boolean displayEmail() {
@@ -117,7 +117,7 @@ public class ProfileHome implements Serializable {
             return new User();
         }
         //This is to get self information, email should be visible
-        return userService.transferToUser(authenticatedAccount, true);
+        return userService.getUserInfo(authenticatedAccount, true);
     }
 
     public String getUsername() {
