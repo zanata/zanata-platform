@@ -109,24 +109,22 @@ public class ContactLanguageTeamMembersAction implements Serializable {
     public void send() {
         List<HLocaleMember> members = getMembers();
         if(!members.isEmpty()) {
-            String fromName = authenticatedAccount.getPerson().getName();
             String fromLoginName = authenticatedAccount.getUsername();
-            String replyEmail = authenticatedAccount.getPerson().getEmail();
             String contactCoordinatorLink =
                 applicationConfiguration.getServerPath() +
                     "/language/view/" + localeId;
 
             String localeNativeName = getLocale().retrieveNativeName();
+            LocaleId localeId = getLocale().getLocaleId();
 
             EmailStrategy strategy =
                     new ContactLanguageTeamMembersEmailStrategy(
-                            fromLoginName, fromName, replyEmail,
-                            getSubject(),
-                            getLocale().getLocaleId().getId(),
-                            localeNativeName, message, contactCoordinatorLink);
+                            fromLoginName, getSubject(),
+                            localeId.getId(), localeNativeName, message,
+                            contactCoordinatorLink);
             try {
                 String msg = emailServiceImpl.sendToLanguageTeamMembers(
-                        getLocale().getLocaleId(), strategy, members);
+                        localeId, strategy, members);
                 facesMessages.addGlobal(msg);
             } catch (Exception e) {
                 String subject = strategy.getSubject(msgs);
@@ -138,8 +136,8 @@ public class ContactLanguageTeamMembersAction implements Serializable {
                                 .append("' , message '").append(message)
                                 .append("'");
                 log.error(
-                        "Failed to send email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}'. {}",
-                        fromName, fromLoginName, replyEmail, subject, message, e);
+                        "Failed to send email: fromLoginName '{}', subject '{}', message '{}'. {}",
+                        fromLoginName, subject, message, e);
                 facesMessages.addGlobal(sb.toString());
             } finally {
                 message = null;
