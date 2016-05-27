@@ -10,13 +10,13 @@ The path for document storage should be set using a system property when startin
 Open `$JBOSS_HOME/standalone/configuration/standalone.xml` and look for the `system-properties` section. Add the following property declaration:
 
 ```xml
-<property name="zanata.files.documentstorage.directory" value="/example/path"/>
+<property name="zanata.file.directory" value="/example/path"/>
 ```
 
 Alternatively, you can pass this and other system properties to JBoss when starting it (see JBoss documentation for details on how to do this).
 
 ## Running Liquibase from command line
-This section will not explain how to run liquibase from the command line, just how to add the required parameter. The parameter is ```document.storage.directory``` and should be added to the liquibase command in the form ```-Ddocument.storage.directory=/example/path```. The value passed to this parameter should exactly match the value bound to the system property above.
+This section will not explain how to run liquibase from the command line, just how to add the required parameter. The parameter is ```file.directory``` and should be added to the liquibase command in the form ```-Dzanata.file.directory=/example/path```. The value passed to this parameter should exactly match the value bound to the system property above.
 
 ## Moving files
 The recommended process to change the document storage directory after migration is:
