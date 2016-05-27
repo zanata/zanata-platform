@@ -22,6 +22,7 @@ script: |
   mvn test \
     --batch-mode \
     --settings .travis-settings.xml \
+    --update-snapshots \
     -Darquillian.jboss.home=/dev/null \
     -Dgwt.validateOnly \
     -DstaticAnalysis
