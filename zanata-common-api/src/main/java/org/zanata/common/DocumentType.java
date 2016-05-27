@@ -47,7 +47,7 @@ public enum DocumentType {
 
     SUBTITLE("srt", "sbt", "sub", "vtt"),
     PROPERTIES("properties"), PROPERTIES_UTF8("properties"),
-    XML("xml"), XLIFF("xml");
+    XML("xml"), XLIFF("xml"), TS("ts");
 
     private static final Set<String> allSourceExtensions = buildExtensionsList(true);
 
