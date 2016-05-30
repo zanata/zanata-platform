@@ -207,6 +207,7 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
         "\t OPEN_DOCUMENT_GRAPHICS[odg] \n" +
         "\t OPEN_DOCUMENT_SPREADSHEET[ods] \n" +
         "\t SUBTITLE[srt;sbt;sub;vtt] \n" +
+        "\t TS[ts] \n" +
         "\t GETTEXT[pot] \n" +
         "\t PROPERTIES[properties] \n" +
         "\t PROPERTIES_UTF8[properties] \n" +
