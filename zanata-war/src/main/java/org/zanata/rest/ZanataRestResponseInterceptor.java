@@ -47,10 +47,10 @@ import static org.apache.commons.lang.StringUtils.isEmpty;
  * domains, eg when testing alternative front-ends to Zanata.
  * <p>
  * By default, cross origin support is disabled, but the server administrator
- * can enable it by setting the system property zanata.originWhitelist. For
+ * can enable it by setting the system property zanata.origin.whitelist. For
  * instance, in standalone.xml:
  * <pre>
- *   {@code <property name="zanata.originWhitelist" value="http://localhost:8000" />}
+ *   {@code <property name="zanata.origin.whitelist" value="http://localhost:8000" />}
  * </pre>
  * </p>
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -69,7 +69,7 @@ import static org.apache.commons.lang.StringUtils.isEmpty;
 //
 public class ZanataRestResponseInterceptor implements ContainerResponseFilter {
     private static final String ZANATA_ORIGIN_WHITELIST =
-            "zanata.originWhitelist";
+            "zanata.origin.whitelist";
     private static final String ALLOW_METHODS =
             "PUT, POST, DELETE, GET, OPTIONS";
     private static final ImmutableList<String> originWhitelist;
