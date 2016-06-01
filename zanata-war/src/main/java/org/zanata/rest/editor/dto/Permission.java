@@ -38,9 +38,8 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class Permission implements Map<String, Boolean>, Serializable {
+public class Permission extends JsonObject implements Map<String, Boolean> {
     private Map<String, Boolean> map = new HashMap<String, Boolean>();
-
 
     @Override
     public int size() {
@@ -100,16 +99,5 @@ public class Permission implements Map<String, Boolean>, Serializable {
     @Override
     public Set<Entry<String, Boolean>> entrySet() {
         return map.entrySet();
-    }
-
-    @JsonIgnore
-    public String getJSON() {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.writeValueAsString(this);
-        } catch (IOException e) {
-            return this.getClass().getName() + "@"
-                + Integer.toHexString(this.hashCode());
-        }
     }
 }

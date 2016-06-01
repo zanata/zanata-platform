@@ -13,7 +13,7 @@ import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
+
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectDAO;
@@ -174,7 +174,7 @@ public class MergeTransAction extends CopyAction implements Serializable {
                     .getProject(), "merge-trans");
         if (canMergeFromAllProjects) {
             return projectDAO
-                    .getOffsetListOrderByName(0, Integer.MAX_VALUE, false,
+                    .getOffsetList(0, Integer.MAX_VALUE, false,
                         true, true);
         }
         return Lists.newArrayList();

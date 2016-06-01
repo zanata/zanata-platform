@@ -25,6 +25,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import org.zanata.common.LocaleId;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HGlossaryEntry;
@@ -48,6 +50,6 @@ public interface GlossaryFileService {
 
     List<List<GlossaryEntry>> parseGlossaryFile(InputStream inputStream,
             String fileName,
-            LocaleId sourceLang, LocaleId transLang) throws
+            LocaleId sourceLang, @Nullable LocaleId transLang) throws
             ZanataServiceException;
 }

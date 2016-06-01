@@ -17,7 +17,9 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.rest.dto.User;
+import org.zanata.rest.editor.dto.Permission;
 import org.zanata.rest.editor.service.resource.UserResource;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.service.GravatarService;
@@ -49,6 +51,9 @@ public class UserService implements UserResource {
 
     @Inject
     private PersonDAO personDAO;
+
+    @Inject
+    private ZanataIdentity identity;
 
     @Inject
     private ApplicationConfiguration applicationConfiguration;
@@ -92,7 +97,8 @@ public class UserService implements UserResource {
     /**
      * Generate {@link org.zanata.rest.dto.User} object from HAccount
      *
-     * @param username - username in HPerson
+     * @param account - HAccount
+     * @param includeEmail - Display user email
      */
     public User getUserInfo(HAccount account, boolean includeEmail) {
         if(account == null) {
@@ -116,5 +122,33 @@ public class UserService implements UserResource {
         }
         return new User(account.getUsername(), email, person.getName(),
             userImageUrl, userLanguageTeams);
+    }
+
+    /**
+     * Return user's permission for js module.
+     * ServiceImpl will do security check again upon execution of any action.
+     */
+    public Permission getUserPermission() {
+        Permission permission = new Permission();
+        boolean canUpdate = false;
+        boolean canInsert = false;
+        boolean canDelete = false;
+        boolean isAdmin = false;
+        boolean isLoggedIn = authenticatedAccount != null;
+
+        if(authenticatedAccount != null) {
+            canUpdate = identity.hasPermission("", "glossary-update");
+            canInsert = identity.hasPermission("", "glossary-insert");
+            canDelete = identity.hasPermission("", "glossary-delete");
+            isAdmin = identity.hasRole("admin");
+        }
+
+        permission.put("updateGlossary", canUpdate);
+        permission.put("insertGlossary", canInsert);
+        permission.put("deleteGlossary", canDelete);
+        permission.put("isAdmin", isAdmin);
+        permission.put("isLoggedIn", isLoggedIn);
+
+        return permission;
     }
 }

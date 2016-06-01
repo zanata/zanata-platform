@@ -16,6 +16,7 @@
 * [ZNTA-938](https://zanata.atlassian.net/browse/ZNTA-938) - Webhook event for translation update by user.
 * [ZNTA-746](https://zanata.atlassian.net/browse/ZNTA-746) - Add shorcut key for approve and reject translation
 * [ZNTA-1059](https://zanata.atlassian.net/browse/ZNTA-1059) - Language coordinator can contact team members
+* [ZNTA-858](https://zanata.atlassian.net/browse/ZNTA-858) - New side menu bar replace top and bottom panel
 * [ZNTA-855](https://zanata.atlassian.net/browse/ZNTA-855) - Add system property to enforce username for registration
 
 

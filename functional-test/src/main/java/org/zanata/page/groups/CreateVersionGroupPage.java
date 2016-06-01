@@ -26,6 +26,7 @@ import org.openqa.selenium.WebDriver;
 import org.zanata.page.BasePage;
 
 import com.google.common.base.Predicate;
+import org.zanata.page.dashboard.DashboardGroupsTab;
 
 /**
  * @author Patrick Huang <a
@@ -74,10 +75,10 @@ public class CreateVersionGroupPage extends BasePage {
         return new CreateVersionGroupPage(getDriver());
     }
 
-    public VersionGroupsPage saveGroup() {
+    public VersionGroupPage saveGroup() {
         log.info("Click Save");
         clickAndCheckErrors(readyElement(saveButton));
-        return new VersionGroupsPage(getDriver());
+        return new VersionGroupPage(getDriver());
     }
 
     public CreateVersionGroupPage saveGroupFailure() {

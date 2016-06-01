@@ -22,7 +22,6 @@ package org.zanata.feature.versionGroup;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
@@ -34,7 +33,6 @@ import org.zanata.workflow.LoginWorkFlow;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
 
 /**
@@ -108,13 +106,13 @@ public class VersionGroupUrlTest extends ZanataTestCase {
     private VersionGroupPage createVersionGroup() {
         String groupID = "test-group";
         String groupName = "A Test group";
-        return new BasicWorkFlow().goToHome()
-                .goToGroups()
+        return new BasicWorkFlow()
+                .goToDashboard()
+                .gotoGroupsTab()
                 .createNewGroup()
                 .inputGroupId(groupID)
                 .inputGroupName(groupName)
-                .saveGroup()
-                .goToGroup(groupName);
+                .saveGroup();
     }
 
     private void createProject() {

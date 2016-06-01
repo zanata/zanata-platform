@@ -105,17 +105,29 @@ public class PersonDAO extends AbstractDAOImpl<HPerson, Long> {
 
     }
 
-    @SuppressWarnings("unchecked")
+    public int findAllContainingNameSize(String name) {
+        return findAllContainingName(name).size();
+    }
+
     public List<HPerson> findAllContainingName(String name) {
+        return findAllContainingName(name, -1, 0);
+    }
+
+    public List<HPerson> findAllContainingName(String name, int maxResult,
+        int firstResult) {
         if (!StringUtils.isEmpty(name)) {
             Query query =
-                    getSession()
-                            .createQuery(
-                                    "from HPerson as p " +
-                                    "where lower(p.account.username) like :name " +
-                                    "or lower(p.name) like :name");
+                getSession()
+                    .createQuery(
+                        "from HPerson as p " +
+                            "where lower(p.account.username) like :name " +
+                            "or lower(p.name) like :name");
             query.setParameter("name", "%" + name.toLowerCase() + "%");
             query.setCacheable(false);
+            query.setFirstResult(firstResult);
+            if(maxResult != -1) {
+                query.setMaxResults(maxResult);
+            }
             query.setComment("PersonDAO.findAllContainingName");
             return query.list();
         }

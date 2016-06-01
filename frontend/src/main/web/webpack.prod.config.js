@@ -1,62 +1,50 @@
 var webpack = require('webpack')
 var path = require('path')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
+var _ = require('lodash')
+var defaultConfig = require('./webpack.config.js')
+var bundleDest = __dirname
 
-// bundle destination (default is current directory)
-var bundleDest = process.env.npm_config_env_bundleDest || __dirname;
-
-module.exports = {
-  context: __dirname,
-  entry: [
-    './index'
-  ],
+module.exports = _.merge({}, defaultConfig, {
+  cache: false,
   output: {
     path: bundleDest,
-    filename: 'frontend.bundle.min.js',
-    pathinfo: true
+    filename: 'frontend.bundle.min.js'
   },
   module: {
     loaders: [
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        loaders: ['babel-loader']
+        include: path.join(__dirname, 'src'),
+        loader: 'babel',
+        query: {
+          presets: ['react', 'stage-0', 'es2015']
+        },
+        babelrc: false
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader?safe')
+        loader: ExtractTextPlugin.extract(
+          'style',
+          'css',
+          'autoprefixer?browsers=last 2 versions'
+        )
       }
     ]
   },
-  cssnext: {
-    compress: true,
-    features: {
-      rem: false,
-      pseudoElements: false,
-      colorRgba: false
-    }
-  },
-  plugins: [
-    new webpack.DefinePlugin({ "global.GENTLY": false }),
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+  plugins: defaultConfig.plugins.concat([
     new ExtractTextPlugin('bundle.css'),
-    new webpack.optimize.UglifyJsPlugin({
-        compress: {
-            warnings: false
-        }
-    }),
     new webpack.optimize.DedupePlugin(),
-    new webpack.DefinePlugin({
-      "process.env": {
-        NODE_ENV: JSON.stringify("production")
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false
       }
     }),
-    new webpack.NoErrorsPlugin()
-  ],
-  resolve: {
-    extensions: ['', '.js', '.jsx', '.json', '.css']
-  },
-  node: {
-    __dirname: true
-  }
-};
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
+    })
+  ])
+})

@@ -36,7 +36,7 @@ public class ProfilePage extends BasePage {
     private By displayNameBy = By.id("profile-displayname");
     private By userNameBy = By.id("profile-username");
     private By languagesBy = By.id("profile-languages");
-    private By contributionsBy = By.id("userMatrixRoot");
+    private By contributionsBy = By.id("profile-matrix");
 
     public ProfilePage(WebDriver driver) {
         super(driver);

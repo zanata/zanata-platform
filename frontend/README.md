@@ -1,8 +1,18 @@
 ## This is a module to build zanata frontend javascript projects
 
-At the moment it only contains "user profile page" bundle.
+This module contains: User profile page, Glossary page, and Zanata side menu bar.
 
-To build it, just run
+## To run in dev mode (need http://localhost:8080/zanata to run separately):
+
+Navigate to frontend/src/main/web and run
+
+```npm install```
+
+to install all dependencies. To start
+
+```npm start```
+
+## To build it just run
 
 ```mvn install```
 
@@ -13,8 +23,8 @@ See [Servlet 3 static resources](http://www.webjars.org/documentation#servlet3).
 The following Maven properties can be overridden on the command line with ```-Dkey=value```:
 
 ```
-<node.version>v0.12.2</node.version>
-<npm.version>2.7.6</npm.version>
+<node.version>v5.6.0</node.version>
+<npm.version>3.6.0</npm.version>
 <node.install.directory>${download.dir}/zanata-frontend/node-${node.version}-npm-${npm.version}</node.install.directory>
 <npm.cli.script>${node.install.directory}/node/npm/bin/npm-cli.js</npm.cli.script>
 ```
@@ -24,7 +34,6 @@ If you activate profile ```-DnpmOffline``` the cache-min option will become 9999
 
 ## NPM shrinkwrap
 
-Currently the user profile page module has been "shrinkwrapped" which means its npm module dependencies has been fixed to certain version. If you want to add or upgrade an individual version, you will need to consult [npm shrinkwrap documentation](https://docs.npmjs.com/cli/shrinkwrap#building-shrinkwrapped-packages) for detail instruction.
+Currently this module has been "shrinkwrapped" which means its npm module dependencies has been fixed to certain version. If you want to add or upgrade an individual version, you will need to consult [npm shrinkwrap documentation](https://docs.npmjs.com/cli/shrinkwrap#building-shrinkwrapped-packages) for detail instruction.
 
 Since we use maven to copy our source to target/ then run npm from maven, you will need to run above commands under target/ then copy the new npm-shrinkwrap.json file back to src/.
-

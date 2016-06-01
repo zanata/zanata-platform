@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<f:view contentType="text/html"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:ds="http://deltaspike.apache.org/jsf">
+
+  <html class="no-js Ff(zsans) Lh(1.5) Bgc(#fff) Fz(16px)">
+  <h:head>
+    <h:outputText value="#{javaScriptTestHelper.headScript}" escape="false" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+
+    <title>#{msgs['jsf.Zanata']}: <ui:insert name="page_title"/></title>
+
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0"/>
+    <meta http-equiv="cleartype" content="on"/>
+
+    <link rel="shortcut icon" href="#{assets['img/logo/logo.ico']}" type="image/x-icon" />
+    <link type="text/css" rel="stylesheet" href="#{request.contextPath}/bundle.css"/>
+  </h:head>
+
+  <h:body styleClass="M(0) C(dark)">
+    <ds:windowId/>
+    <div id="config"
+      data-base-url="#{request.contextPath}"
+      data-api-root="/rest"
+      data-user="#{authenticatedAccountHome.getUser()}"
+      data-permission="#{authenticatedAccountHome.getUserPermission().getJSON()}"
+      data-links='{"loginUrl": "#{applicationConfigurationAction.getLoginUrl(request)}",
+                     "registerUrl": "#{applicationConfigurationAction.registerUrl}"}'>
+    </div>
+    <script type="application/javascript">
+      window.config = JSON.parse(JSON.stringify(document.getElementById('config').dataset))
+    </script>
+    <div id="root" />
+    <script type="text/javascript"
+      src="#{request.contextPath}/frontend.bundle.min.js"></script>
+    <ui:include src="/WEB-INF/template/scripts.xhtml"/>
+  </h:body>
+  </html>
+</f:view>
