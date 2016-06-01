@@ -5,16 +5,18 @@
 * [ZNTA-872](https://zanata.atlassian.net/browse/ZNTA-872) - Redirect to home from cancel button in create user page
 
 ##### Infrastructure Changes
+* System admin can set system property `zanata.enforce.matchingusernames` to enforce matching username to be used for new user registration.
 * Zanata has eliminated all JNDI-based configuration and replaced it with system properties. Please see the following sections for how certain values are now configured:
   * (/user-guide/system-admin/configuration/installation)
   * (/user-guide/system-admin/configuration/authentication)
   * (/user-guide/system-admin/configuration/document-storage-directory)
-  
+
 ##### New feature
 * [ZNTA-746](https://zanata.atlassian.net/browse/ZNTA-746) - Add shortcut key for approve and reject translation
 * [ZNTA-938](https://zanata.atlassian.net/browse/ZNTA-938) - Webhook event for translation update by user.
 * [ZNTA-746](https://zanata.atlassian.net/browse/ZNTA-746) - Add shorcut key for approve and reject translation
 * [ZNTA-1059](https://zanata.atlassian.net/browse/ZNTA-1059) - Language coordinator can contact team members
+* [ZNTA-855](https://zanata.atlassian.net/browse/ZNTA-855) - Add system property to enforce username for registration
 
 
 -----------------------
@@ -83,7 +85,7 @@
  * [ZNTA-870](https://zanata.atlassian.net/browse/ZNTA-870) - Reset Password feature not inserting key into database
  * [ZNTA-850](https://zanata.atlassian.net/browse/ZNTA-850) - org.zanata.async.AsyncTaskManager:  Exception when executing an asynchronous task.
  * [ZNTA-804](https://zanata.atlassian.net/browse/ZNTA-804) - Coordinators' email addresses should be BCC in Contact Coordinator
- * [ZNTA-693](https://zanata.atlassian.net/browse/ZNTA-693) - ClientAbortException: java.net.SocketException: Connection reset 
+ * [ZNTA-693](https://zanata.atlassian.net/browse/ZNTA-693) - ClientAbortException: java.net.SocketException: Connection reset
  * [ZNTA-668](https://zanata.atlassian.net/browse/ZNTA-668) - ServerConfiguration tests unstable
  * [ZNTA-537](https://zanata.atlassian.net/browse/ZNTA-537) - Expired sessions have poor usability
  * [ZNTA-470](https://zanata.atlassian.net/browse/ZNTA-470) - RFE: Prevent user sending large text in 'contact admin' emails

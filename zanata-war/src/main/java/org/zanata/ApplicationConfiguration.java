@@ -117,6 +117,24 @@ public class ApplicationConfiguration implements Serializable {
     @Getter
     private boolean copyTransEnabled = true;
 
+    /**
+     * To be used with single sign-up module with openId. Default is false
+     *
+     * When set to true:
+     *
+     * This is to enforce username to match with username returned from
+     * openId server when new user register.
+     *
+     * Usage:
+     * server administrator can enable this in system property zanata.enforce.matchingusernames.
+     * In standalone.xml:
+     * <pre>
+     *   {@code <property name="zanata.enforce.matchingusernames" value="true" />}
+     * </pre>
+     */
+    @Getter
+    private boolean enforceMatchingUsernames;
+
     private Map<AuthenticationType, String> loginModuleNames = Maps
             .newHashMap();
 
@@ -133,6 +151,8 @@ public class ApplicationConfiguration implements Serializable {
         this.loadJaasConfig();
         authenticatedSessionTimeoutMinutes = sysPropConfigStore
                 .get("authenticatedSessionTimeoutMinutes", 180);
+        enforceMatchingUsernames = Boolean
+            .parseBoolean(sysPropConfigStore.get("zanata.enforce.matchingusernames"));
     }
 
     public void resetConfigValue(
