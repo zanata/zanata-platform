@@ -62,6 +62,7 @@ import org.zanata.dao.AccountRoleDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.WebHookDAO;
+import org.zanata.exception.ProjectNotFoundException;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
@@ -691,7 +692,7 @@ public class ProjectHome extends SlugHome<HProject> implements
             log.warn(
                     "Project [id={}, slug={}], does not exist or is soft deleted: {}",
                     projectId, getSlug(), project);
-            throw new EntityNotFoundException();
+            throw new ProjectNotFoundException(getSlug());
         }
     }
 
