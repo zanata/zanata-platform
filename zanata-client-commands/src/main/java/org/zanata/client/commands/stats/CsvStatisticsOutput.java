@@ -23,12 +23,16 @@ package org.zanata.client.commands.stats;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 
+import org.apache.commons.csv.CSVPrinter;
+
+import com.google.common.collect.Lists;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import au.com.bytecode.opencsv.CSVWriter;
 
 /**
  * Outputs statistics in CSV format to the console.
@@ -37,18 +41,22 @@ import au.com.bytecode.opencsv.CSVWriter;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class CsvStatisticsOutput implements ContainerStatisticsCommandOutput {
+    private static final String NEW_LINE_SEPARATOR = "\n";
+
     @Override
     @SuppressFBWarnings("DM_DEFAULT_ENCODING")
     public void write(ContainerTranslationStatistics statistics) {
         try {
             OutputStreamWriter streamWriter = new OutputStreamWriter(System.out);
             try {
-                CSVWriter csvWriter = new CSVWriter(streamWriter);
+                CSVPrinter csvPrinter = new CSVPrinter(streamWriter,
+                    CSVFormat.DEFAULT.withRecordSeparator(NEW_LINE_SEPARATOR));
+
                 try {
-                    writeToCsv(statistics, csvWriter);
-                    csvWriter.flush();
+                    writeToCsv(statistics, csvPrinter);
+                    csvPrinter.flush();
                 } finally {
-                    csvWriter.close();
+                    csvPrinter.close();
                 }
             } finally {
                 streamWriter.close();
@@ -59,36 +67,38 @@ public class CsvStatisticsOutput implements ContainerStatisticsCommandOutput {
     }
 
     private void writeToCsv(ContainerTranslationStatistics statistics,
-            CSVWriter writer) {
-        writer.writeNext(new String[] {});
+            CSVPrinter writer) throws IOException {
+
+        writer.printRecord(Lists.newArrayList());
 
         // Display headers
         Link sourceRef = statistics.getRefs().findLinkByRel("statSource");
         if (sourceRef.getType().equals("PROJ_ITER")) {
-            writer.writeNext(new String[] { "Project Version: ",
-                    statistics.getId() });
+            writer.printRecord(Lists.newArrayList("Project Version: ",
+                    statistics.getId()));
         } else if (sourceRef.getType().equals("DOC")) {
-            writer.writeNext(new String[] { "Document: ", statistics.getId() });
+            writer.printRecord(
+                    Lists.newArrayList("Document: ", statistics.getId()));
         }
 
         // Write headers
-        writer.writeNext(new String[] { "Locale", "Unit", "Total",
-                "Translated", "Need Review", "Untranslated", "Last Translated" });
+        writer.printRecord(Lists.newArrayList("Locale", "Unit", "Total",
+                "Translated", "Need Review", "Untranslated", "Last Translated"));
 
         // Write stats
         if (statistics.getStats() != null) {
             for (TranslationStatistics transStats : statistics.getStats()) {
-                writer.writeNext(new String[] { transStats.getLocale(),
+                writer.printRecord(Lists.newArrayList(transStats.getLocale(),
                         transStats.getUnit().toString(),
                         Long.toString(transStats.getTotal()),
                         Long.toString(transStats.getTranslatedAndApproved()),
                         Long.toString(transStats.getDraft()),
                         Long.toString(transStats.getUntranslated()),
-                        transStats.getLastTranslated() });
+                        transStats.getLastTranslated()));
             }
         }
 
-        writer.writeNext(new String[] {});
+        writer.printRecord(Lists.newArrayList());
 
         try {
             writer.flush();
