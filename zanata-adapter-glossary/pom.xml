@@ -26,8 +26,8 @@
     </dependency>
 
     <dependency>
-      <groupId>net.sf.opencsv</groupId>
-      <artifactId>opencsv</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-csv</artifactId>
     </dependency>
     <dependency>
       <groupId>org.fedorahosted.tennera</groupId>
@@ -48,6 +48,10 @@
       <artifactId>zanata-common-util</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
 
   </dependencies>
 </project>
