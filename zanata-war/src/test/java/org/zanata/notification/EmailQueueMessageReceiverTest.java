@@ -1,5 +1,7 @@
 package org.zanata.notification;
 
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import javax.jms.BytesMessage;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
@@ -7,27 +9,30 @@ import javax.jms.Message;
 import javax.jms.ObjectMessage;
 import javax.jms.TextMessage;
 
-import org.junit.Before;
+import org.jglue.cdiunit.InRequestScope;
+import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.zanata.events.LanguageTeamPermissionChangedEvent;
 
 import com.google.common.collect.Lists;
+import org.zanata.test.CdiUnitRunner;
+import org.zanata.util.IServiceLocator;
+import org.zanata.util.ServiceLocator;
 
 import static org.mockito.Mockito.*;
 
+@RunWith(CdiUnitRunner.class)
+@InRequestScope
+@SupportDeltaspikeCore
 public class EmailQueueMessageReceiverTest {
+    @Inject
     private EmailQueueMessageReceiver receiver;
-    @Mock
+    @Produces @Mock
     private LanguageTeamPermissionChangeJmsMessagePayloadHandler languageTeamHandler;
-
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        receiver = new EmailQueueMessageReceiver(languageTeamHandler);
-    }
+    @Produces
+    private IServiceLocator serviceLocator = ServiceLocator.instance();
 
     @Test
     public void willSkipNonObjectJmsMessage() {

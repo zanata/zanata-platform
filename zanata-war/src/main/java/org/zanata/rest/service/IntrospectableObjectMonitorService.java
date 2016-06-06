@@ -55,7 +55,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Beta
 public class IntrospectableObjectMonitorService {
-    // TODO check http://code.google.com/p/reflections/ and re-implement this
+    // TODO use org.atteo ClassIndexProcessor.indexSubclasses() (see JaxRSClassIndexProcessor)
     private static List<Introspectable> introspectables = ImmutableList
             .<Introspectable> builder()
             .add(RateLimitManager.getInstance())

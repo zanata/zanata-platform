@@ -47,7 +47,13 @@ public class NoNestingTransactionStrategy extends BeanManagedUserTransactionStra
         try {
             UserTransaction ut = resolveUserTransaction();
             if (ut.getStatus() == Status.STATUS_COMMITTED) {
-                throw new RuntimeException("Nested transactions not supported. @Async may help.");
+                RuntimeException e = new RuntimeException(
+                        "Nested transactions not supported. @Async may help.");
+                // If this happens in an event observer, Weld doesn't log the
+                // exception type or stack trace, just
+                // "WELD-000401 Failure while notifying an observer of event ..."
+                log.warn("Attempted nested transaction", e);
+                throw e;
             }
             super.beforeProceed(invocationContext, entityManagerEntry, transaction);
         } catch (SystemException e) {
