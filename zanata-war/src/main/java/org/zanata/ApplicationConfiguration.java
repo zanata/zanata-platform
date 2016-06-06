@@ -30,7 +30,6 @@ import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
-import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.Produces;
 
 import com.google.common.base.Optional;
@@ -54,7 +53,6 @@ import org.zanata.util.ServiceLocator;
 import org.zanata.util.Synchronized;
 import org.zanata.config.DatabaseBackedConfig;
 import org.zanata.config.JaasConfig;
-import org.zanata.events.ConfigurationChanged;
 import org.zanata.events.LogoutEvent;
 import org.zanata.events.PostAuthenticateEvent;
 import org.zanata.i18n.Messages;
@@ -153,14 +151,6 @@ public class ApplicationConfiguration implements Serializable {
                 .get("authenticatedSessionTimeoutMinutes", 180);
         enforceMatchingUsernames = Boolean
             .parseBoolean(sysPropConfigStore.get("zanata.enforce.matchingusernames"));
-    }
-
-    public void resetConfigValue(
-            @Observes(during = TransactionPhase.AFTER_SUCCESS)
-            ConfigurationChanged configChange) {
-        String configName = configChange.getConfigKey();
-        // Remove the value from all stores
-        databaseBackedConfig.reset(configName);
     }
 
     /**
