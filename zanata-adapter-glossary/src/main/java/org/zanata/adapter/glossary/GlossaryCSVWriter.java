@@ -37,11 +37,7 @@ public class GlossaryCSVWriter extends AbstractGlossaryPullWriter {
     }
 
     /**
-     * This output a csv files of given <code>transLocales</code>.
-     * First column - source string of <code>srcLocale</code> from {@link GlossaryEntry#glossaryTerms}
-     * Second last column (part of speech)- {@link GlossaryEntry#pos}
-     * Last column (description)-  {@link GlossaryEntry#description}
-     * Between first and second last column - translations of <code>transLocales</code> from {@link GlossaryEntry#glossaryTerms}
+     * @see {@link #write(Writer, List, LocaleId, List)}
      */
     public void write(@Nonnull OutputStream stream,
             @Nonnull final List<GlossaryEntry> entries,
@@ -87,18 +83,15 @@ public class GlossaryCSVWriter extends AbstractGlossaryPullWriter {
                     getGlossaryTerm(entry.getGlossaryTerms(), srcLocale);
 
                 List<String> row = Lists.newArrayList();
-                row.add(0, srcTerm != null ? srcTerm.getContent() : "");
+                row.add(srcTerm != null ? srcTerm.getContent() : "");
 
-                int index = 1;
                 for (LocaleId transLocale : transLocales) {
                     GlossaryTerm transTerm =
                         getGlossaryTerm(entry.getGlossaryTerms(), transLocale);
-                    row.add(index,
-                            transTerm != null ? transTerm.getContent() : "");
-                    index++;
+                    row.add(transTerm != null ? transTerm.getContent() : "");
                 }
 
-                final int totalSize = header.size();
+                int totalSize = header.size();
                 row.add(getPosColumn(totalSize), entry.getPos());
                 row.add(getDescColumn(totalSize), entry.getDescription());
 

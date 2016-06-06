@@ -32,10 +32,7 @@ public class GlossaryPoWriter extends AbstractGlossaryPullWriter {
     }
 
     /**
-     * This output a single po files of given <code>targetLocale</code>.
-     * {@link GlossaryEntry#description} and comment from source term
-     * {@link GlossaryEntry#srcLang} and translation term will be used
-     * as comments.
+     * @see {@link #write(Writer, List, LocaleId, LocaleId)}
      */
     public void write(@Nonnull OutputStream stream,
             @Nonnull final List<GlossaryEntry> entries,
@@ -84,7 +81,7 @@ public class GlossaryPoWriter extends AbstractGlossaryPullWriter {
                     .setMsgstr(transTerm == null ? "" : transTerm.getContent());
 
                 String srcRef = entry.getSourceReference();
-                if (!StringUtils.isEmpty(srcRef)) {
+                if (StringUtils.isNotBlank(srcRef)) {
                     message.getSourceReferences().add(srcRef);
                 }
                 addCommentIfNotEmpty(message, entry.getDescription());
@@ -100,8 +97,8 @@ public class GlossaryPoWriter extends AbstractGlossaryPullWriter {
         }
     }
 
-    private void addCommentIfNotEmpty(Message message, String comment) {
-        if (!StringUtils.isEmpty(comment)) {
+    private static void addCommentIfNotEmpty(Message message, String comment) {
+        if (StringUtils.isNotBlank(comment)) {
             message.addComment(comment);
         }
     }
