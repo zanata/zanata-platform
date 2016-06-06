@@ -94,6 +94,7 @@ module.exports = {
       'Or(0)--sm',
       'Ov(a)',
       'Ovx(h)',
+      'Ovx(h)--lg',
       'Ovx(s)',
       'Ovs(touch)',
       'Ov(h)',
