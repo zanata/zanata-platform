@@ -67,10 +67,14 @@
  * [ZNTA-684](https://zanata.atlassian.net/browse/ZNTA-684) - Migrate suggestions panel from AngularJS to ReactJS
 
 ##### Bug Fixes
+ * [ZNTA-1128](https://zanata.atlassian.net/browse/ZNTA-1128) - Create version - entering a name before unchecking 'copy' breaks the list
+ * [ZNTA-1125](https://zanata.atlassian.net/browse/ZNTA-1125) - TransactionRequiredException on enabling project Invite Only
  * [ZNTA-1120](https://zanata.atlassian.net/browse/ZNTA-1120) - Rest endpoint broken for alpha editor
+ * [ZNTA-1116](https://zanata.atlassian.net/browse/ZNTA-1116) - ResourceExceptions when saving a server config
  * [ZNTA-1086](https://zanata.atlassian.net/browse/ZNTA-1086) - NullPointerException when uploading from client (tested with cs-CZ)
  * [ZNTA-1084](https://zanata.atlassian.net/browse/ZNTA-1084) - NoSuchElementException when uploading empty data
  * [ZNTA-1081](https://zanata.atlassian.net/browse/ZNTA-1081) - Should use @Synchronized for @SessionScoped beans
+ * [ZNTA-1075](https://zanata.atlassian.net/browse/ZNTA-1075) - Occasional NullPointerException in PasswordUtil.generateSaltedHash
  * [ZNTA-1074](https://zanata.atlassian.net/browse/ZNTA-1074) - Glossary blurts entire exception stacktrace to user dialog
  * [ZNTA-1072](https://zanata.atlassian.net/browse/ZNTA-1072) - [Regression] Cannot set multiple roles for a user
  * [ZNTA-1068](https://zanata.atlassian.net/browse/ZNTA-1068) - Adding multiple languages to a project does not update the page
