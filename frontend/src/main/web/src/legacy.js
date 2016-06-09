@@ -48,7 +48,7 @@ window.config = mapValues(window.config, (value) =>
   isJsonString(value) ? JSON.parse(value) : value)
 
 const links = {
-  'context': window.config.baseUrl,
+  'context': window.config.baseUrl || '',
   '/login': window.config.links.loginUrl,
   '/signup': window.config.links.registerUrl
 }
