@@ -1,45 +1,31 @@
 var webpack = require('webpack')
-var ExtractTextPlugin = require('extract-text-webpack-plugin')
+var path = require('path')
 
 module.exports = {
-  context: __dirname,
-  devtool: 'eval',
-  entry: [
-    'webpack-dev-server/client?http://localhost:3000',
-    'webpack/hot/only-dev-server',
-    './index'
-  ],
+  entry: './src/index',
   output: {
     path: __dirname,
-    filename: 'bundle.js',
-    pathinfo: true
+    filename: 'bundle.js'
   },
   module: {
     loaders: [
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        loaders: ['react-hot', 'babel-loader']
+        include: path.join(__dirname, 'src'),
+        loader: 'atomic-loader?configPath=' + __dirname +
+          '/atomicCssConfig.js' +
+          '!babel?presets[]=react,presets[]=stage-0,presets[]=es2015'
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract('style-loader', 'css-loader?safe')
+        include: path.join(__dirname, 'src'),
+        loader: 'style!css!autoprefixer?browsers=last 2 versions'
       }
     ]
   },
-  cssnext: {
-    compress: true,
-    features: {
-      rem: false,
-      pseudoElements: false,
-      colorRgba: false
-    }
-  },
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-    new ExtractTextPlugin('bundle.css'),
-    new webpack.DefinePlugin({ 'global.GENTLY': false }),
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.NoErrorsPlugin()
   ],
   resolve: {

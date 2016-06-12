@@ -329,8 +329,7 @@ public class EmailStrategyTest {
         String contactAdminLink = "link";
         EmailStrategy strategy =
             new ContactLanguageTeamMembersEmailStrategy(
-                fromLoginName, fromName, replyEmail, subject,
-                localeId, localeNativeName, htmlMessage,
+                fromLoginName, subject, localeId, localeNativeName, htmlMessage,
                 contactAdminLink);
 
         builder.buildMessage(message, strategy, toAddresses,

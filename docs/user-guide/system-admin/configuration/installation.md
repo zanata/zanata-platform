@@ -78,7 +78,7 @@ If you have an alternative front-end for Zanata where the browser needs direct a
 APIs (and authenticated user sessions), you will need to enable Cross-Origin Resource Sharing, by
 adding a system property like this to `<JBOSS>/standalone/configuration/standalone.xml`:
 
-    <property name="zanata.originWhitelist" value="http://localhost:8000" />
+    <property name="zanata.origin.whitelist" value="http://localhost:8000" />
 
 You should adjust the protocol, hostname and port to suit your use case. Multiple origins should
 be separated via space characters.

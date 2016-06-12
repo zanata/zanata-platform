@@ -37,6 +37,10 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 public interface TranslationService {
     /**
      * Batch size processing for large file upload
+     *
+     * This will determine how many DocStatsEvent will be trigger as part of webhook event.
+     * The larger the number, the less DocStatsEvent will be triggered as it aggregates
+     * related translated states.
      */
     final static int BATCH_SIZE = 100;
 

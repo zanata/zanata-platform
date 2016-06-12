@@ -21,13 +21,14 @@
 package org.zanata.feature.project;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.page.explore.ExplorePage;
 import org.zanata.page.projects.ProjectVersionsPage;
-import org.zanata.page.projects.ProjectsPage;
 import org.zanata.page.projects.projectsettings.ProjectGeneralTab;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
@@ -49,31 +50,27 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .as("Admin is logged in");
     }
 
+
+    @Ignore("Duplicate test with setAProjectToWritable")
     @Feature(summary = "The administrator can set a project to read-only",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 135848)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setAProjectToReadOnly() throws Exception {
-        ProjectsPage projectsPage = new ProjectWorkFlow()
+        ExplorePage explorePage = new ProjectWorkFlow()
                 .goToProjectByName("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsGeneral()
                 .lockProject()
-                .goToProjects()
-                .setActiveFilterEnabled(true)
-                .setReadOnlyFilterEnabled(false)
-                .expectProjectNotVisible("about fedora");
+                .gotoExplore()
+                .enterSearch("about fedora")
+                .expectProjectListContains("about fedora")
+                .logout()
+                .gotoExplore()
+                .enterSearch("about fedora");
 
-        assertThat(projectsPage.getProjectNamesOnCurrentPage())
-                .doesNotContain("about fedora")
+        assertThat(explorePage.getProjectSearchResults())
+            .doesNotContain("about fedora")
                 .as("The project is not displayed");
-
-        projectsPage = projectsPage.setActiveFilterEnabled(false)
-                .setReadOnlyFilterEnabled(true)
-                .expectProjectVisible("about fedora");
-
-        assertThat(projectsPage.getProjectNamesOnCurrentPage())
-                .contains("about fedora")
-                .as("The project is now displayed");
     }
 
     @Feature(summary = "The administrator can set a read-only project " +
@@ -86,27 +83,23 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .gotoSettingsTab()
                 .gotoSettingsGeneral()
                 .lockProject()
-                .goToProjects()
-                .setActiveFilterEnabled(false)
-                .setReadOnlyFilterEnabled(true)
-                .expectProjectVisible("about fedora")
-                .getProjectNamesOnCurrentPage())
-                .contains("about fedora")
+                .gotoExplore()
+                .enterSearch("about fedora")
+                .expectProjectListContains("about fedora"))
                 .as("The project is locked");
 
-        ProjectsPage projectsPage = new BasicWorkFlow()
+        ExplorePage explorePage = new BasicWorkFlow()
                 .goToHome()
-                .goToProjects()
-                .goToProject("about fedora")
+                .gotoExplore()
+                .searchAndGotoProjectByName("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsGeneral()
                 .unlockProject()
-                .goToProjects()
-                .setActiveFilterEnabled(true)
-                .setReadOnlyFilterEnabled(false)
-                .expectProjectVisible("about fedora");
+                .gotoExplore()
+                .enterSearch("about fedora")
+                .expectProjectListContains("about fedora");
 
-        assertThat(projectsPage.getProjectNamesOnCurrentPage())
+        assertThat(explorePage.getProjectSearchResults())
                 .contains("about fedora")
                 .as("The project is now displayed");
     }
@@ -122,8 +115,8 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .gotoSettingsGeneral()
                 .enterProjectName(replacementText)
                 .updateProject()
-                .goToProjects()
-                .goToProject(replacementText);
+                .gotoExplore()
+                .searchAndGotoProjectByName(replacementText);
 
         assertThat(projectVersionsPage.getProjectName())
                 .isEqualTo(replacementText)
@@ -185,8 +178,8 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .enterHomePage("http://www.example.com")
                 .enterRepository("http://git.example.com")
                 .updateProject()
-                .goToProjects()
-                .goToProject("about fedora");
+                .gotoExplore()
+                .searchAndGotoProjectByName("about fedora");
 
         assertThat(projectVersionsPage.getHomepage())
                 .isEqualTo("http://www.example.com")

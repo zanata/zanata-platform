@@ -226,6 +226,19 @@ It's possible to configure Zanata to use a single pre-defined Open Id authentica
       ...
 ```
 
+### Enforce username for new user
+
+System admin can enforce username to match with username returned from openId server for new user registration.
+Open `$JBOSS_HOME/standalone/configuration/standalone.xml` and look for the `system-properties` section. Add the following property like this:
+
+```xml
+<system-properties>
+  ...
+  <property name="zanata.enforce.matchingusernames" value="true"/>
+  ...
+</system-properties>
+```
+
 ### Attribute Exchange
 
 By default Zanata will try to fetch the user's full name, email and username from the Open Id provider using [Attribute Exchange 1.0](https://openid.net/specs/openid-attribute-exchange-1_0.html) and [Simple Registration 1.1](https://openid.net/specs/openid-simple-registration-extension-1_0.html). If successful, Zanata will make suggestions when a new user signs up.

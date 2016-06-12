@@ -22,6 +22,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowBuilder;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.WebHook;
+import org.zanata.model.type.WebhookType;
 import org.zanata.webtrans.server.rpc.GetTransUnitsNavigationService;
 import org.zanata.webtrans.shared.model.ContentStateGroup;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -72,7 +73,9 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
                         .reuseEntity(hLocale).build()
                         .makeAndPersist(getEm(), HDocument.class);
         HProject hProject = hDocument.getProjectIteration().getProject();
-        hProject.getWebHooks().add(new WebHook(hProject, "http://www.test.example.com", "key"));
+        hProject.getWebHooks()
+                .add(new WebHook(hProject, "http://www.test.example.com",
+                        WebhookType.DocumentMilestoneEvent, "key"));
         documentId = new DocumentId(hDocument.getId(), hDocument.getDocId());
 
         HTextFlowBuilder baseBuilder =

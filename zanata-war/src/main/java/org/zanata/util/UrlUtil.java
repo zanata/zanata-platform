@@ -287,6 +287,13 @@ public class UrlUtil implements Serializable {
     }
 
     /**
+     * Get missing entity page url with dswid parameter
+     */
+    public String missingEntityPage() {
+        return contextPath + "/error/missing_entity" + dswidQuery;
+    }
+
+    /**
      * Get view expired url with dswid parameter
      */
     public String viewExpiredErrorPage() {

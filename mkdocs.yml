@@ -16,6 +16,8 @@ pages:
 - Getting Started:
   - Translator Guide: 'user-guide/translator-guide.md'
   - Project Maintainer Guide: 'user-guide/project-maintainer-guide.md'
+# Explore
+- Explore: 'user-guide/explore/explore.md'
 # Accounts
 - Accounts:
   - Create new account: 'user-guide/account/account-sign-up.md'

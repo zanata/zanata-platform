@@ -31,7 +31,6 @@ import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
-import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.Produces;
 
 import com.google.common.base.Optional;
@@ -57,7 +56,6 @@ import org.zanata.util.ServiceLocator;
 import org.zanata.util.Synchronized;
 import org.zanata.config.DatabaseBackedConfig;
 import org.zanata.config.JaasConfig;
-import org.zanata.events.ConfigurationChanged;
 import org.zanata.events.LogoutEvent;
 import org.zanata.events.PostAuthenticateEvent;
 import org.zanata.i18n.Messages;
@@ -122,6 +120,24 @@ public class ApplicationConfiguration implements Serializable {
     @Getter
     private boolean copyTransEnabled = true;
 
+    /**
+     * To be used with single sign-up module with openId. Default is false
+     *
+     * When set to true:
+     *
+     * This is to enforce username to match with username returned from
+     * openId server when new user register.
+     *
+     * Usage:
+     * server administrator can enable this in system property zanata.enforce.matchingusernames.
+     * In standalone.xml:
+     * <pre>
+     *   {@code <property name="zanata.enforce.matchingusernames" value="true" />}
+     * </pre>
+     */
+    @Getter
+    private boolean enforceMatchingUsernames;
+
     private Map<AuthenticationType, String> loginModuleNames = Maps
             .newHashMap();
 
@@ -139,16 +155,10 @@ public class ApplicationConfiguration implements Serializable {
         this.loadJaasConfig();
         authenticatedSessionTimeoutMinutes = sysPropConfigStore
                 .get("authenticatedSessionTimeoutMinutes", 180);
+        enforceMatchingUsernames = Boolean
+            .parseBoolean(sysPropConfigStore.get("zanata.enforce.matchingusernames"));
         tokenExpiresInSeconds =
                 sysPropConfigStore.get(ACCESS_TOKEN_EXPIRES_IN_SECONDS, 3600);
-    }
-
-    public void resetConfigValue(
-            @Observes(during = TransactionPhase.AFTER_SUCCESS)
-            ConfigurationChanged configChange) {
-        String configName = configChange.getConfigKey();
-        // Remove the value from all stores
-        databaseBackedConfig.reset(configName);
     }
 
     /**

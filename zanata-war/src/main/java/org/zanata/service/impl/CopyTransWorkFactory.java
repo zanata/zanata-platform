@@ -29,6 +29,7 @@ import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
 import static org.zanata.transaction.TransactionUtil.runInTransaction;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -38,8 +39,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.ContentState;
 import org.zanata.dao.TextFlowTargetDAO;
+import org.zanata.events.DocStatsEvent;
 import org.zanata.events.DocumentLocaleKey;
-import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.model.HAccount;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
@@ -58,7 +59,7 @@ import org.zanata.webtrans.shared.model.ValidationAction;
 import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -315,7 +316,8 @@ public class CopyTransWorkFactory {
 
             // TODO Maybe we should think about registering a Hibernate
             // integrator for these updates
-            signalCopiedTranslation(actorId, hTarget, prevState);
+            signalCopiedTranslation(hTarget, prevState,
+                originalTf.getWordCount());
         }
     }
 
@@ -401,8 +403,8 @@ public class CopyTransWorkFactory {
         return true;
     }
 
-    private void signalCopiedTranslation(Long actorId, HTextFlowTarget target,
-            ContentState previousState) {
+    private void signalCopiedTranslation(HTextFlowTarget target,
+            ContentState previousState, Long wordCount) {
         /*
          * Using a direct method call instead of an event because it's easier to
          * read. Since these events are being called synchronously (as opposed
@@ -416,17 +418,15 @@ public class CopyTransWorkFactory {
         DocumentLocaleKey key =
             new DocumentLocaleKey(document.getId(), target.getLocaleId());
 
-        TextFlowTargetStateEvent.TextFlowTargetState state =
-            new TextFlowTargetStateEvent.TextFlowTargetState(
-                target.getTextFlow().getId(),
-                target.getId(), target.getState(),
-                previousState);
+        Map<ContentState, Long> contentStates = Maps.newHashMap();
+        DocStatsEvent.updateContentStateDeltas(contentStates, target.getState(),
+                previousState, wordCount);
 
-        TextFlowTargetStateEvent event =
-            new TextFlowTargetStateEvent(key,
-                document.getProjectIteration().getId(), actorId, state);
+        DocStatsEvent docEvent =
+                new DocStatsEvent(key, document.getProjectIteration().getId(),
+                        contentStates, target.getId());
 
-        versionStateCacheImpl.textFlowStateUpdated(event);
+        versionStateCacheImpl.docStatsUpdated(docEvent);
     }
 
     /**

@@ -25,6 +25,22 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
+  <changeSet id="1" author="aeng@redhat.com">
+    <comment>Add webhookType to WebHook</comment>
+    <addColumn tableName="WebHook">
+      <column name="webhookType" type="varchar(50)">
+        <constraints nullable="false" />
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet id="2" author="aeng@redhat.com">
+    <comment>Migrate all WebHook to type DocumentMilestoneEvent</comment>
+    <sql>
+      UPDATE WebHook set webhookType='DocumentMilestoneEvent'
+    </sql>
+  </changeSet>
+
   <changeSet id="1" author="pahuang@redhat.com">
     <comment>Add table AllowedApp.</comment>
     <createTable tableName="AllowedApp">

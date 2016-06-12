@@ -21,27 +21,23 @@
 package org.zanata.notification;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Map;
 
+import javax.annotation.Nullable;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
-import javax.jms.JMSException;
+import javax.inject.Inject;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.inject.Inject;
-import javax.inject.Named;
+import com.google.common.collect.ImmutableMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.events.LanguageTeamPermissionChangedEvent;
 
 import com.google.common.base.Throwables;
-import com.google.common.collect.ImmutableMap;
+import org.zanata.util.IServiceLocator;
 
 import static com.google.common.base.Strings.nullToEmpty;
 import static org.zanata.notification.NotificationManager.MessagePropertiesKey;
@@ -54,6 +50,7 @@ import static org.zanata.notification.NotificationManager.MessagePropertiesKey;
  *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @MessageDriven(activationConfig = {
         @ActivationConfigProperty(
@@ -65,65 +62,64 @@ import static org.zanata.notification.NotificationManager.MessagePropertiesKey;
                 propertyValue = "jms/queue/MailsQueue"
         )
 })
-@Slf4j
-@NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class EmailQueueMessageReceiver implements MessageListener {
+    private static final Logger log = LoggerFactory.getLogger(EmailQueueMessageReceiver.class);
+    private static final Map<String, Class<? extends JmsMessagePayloadHandler>> handlers;
 
-    private static Map<String, JmsMessagePayloadHandler> handlers = Collections
-            .emptyMap();
+    static {
+        handlers =
+                ImmutableMap.of(
+                        LanguageTeamPermissionChangedEvent.class.getCanonicalName(),
+                        LanguageTeamPermissionChangeJmsMessagePayloadHandler.class);
+        log.info("email queue payload handlers: {}", handlers);
+    }
 
-    @Inject
-    private LanguageTeamPermissionChangeJmsMessagePayloadHandler languageTeamHandler;
+    private IServiceLocator serviceLocator;
+
+    @SuppressWarnings("unused")
+    public EmailQueueMessageReceiver() {
+    }
+
+    public @Inject EmailQueueMessageReceiver(
+            IServiceLocator serviceLocator) {
+        this.serviceLocator = serviceLocator;
+    }
 
     @Override
     public void onMessage(Message message) {
         if (message instanceof ObjectMessage) {
             try {
-                String objectType =
-                        nullToEmpty(
+                ObjectMessage om = (ObjectMessage) message;
+                String objectType = nullToEmpty(
                         message.getStringProperty(
                                 MessagePropertiesKey.objectType.name()));
-
-                JmsMessagePayloadHandler jmsMessagePayloadHandler =
-                        getHandlers().get(objectType);
-                if (jmsMessagePayloadHandler != null) {
+                JmsMessagePayloadHandler handler = getHandler(objectType);
+                if (handler != null) {
                     log.debug("found handler for message object type [{}]",
                             objectType);
-                    jmsMessagePayloadHandler.handle(((ObjectMessage) message)
-                            .getObject());
+                    handler.handle(om.getObject());
                 } else {
-                    log.warn("can not find handler for message:{}", message);
+                    log.warn("cannot find handler for message: {}", message);
                 }
-
-            } catch (JMSException e) {
+            } catch (Exception e) {
                 log.warn("error handling jms message: {}", message);
                 Throwables.propagate(e);
-            } catch (Throwable e) {
-                log.warn("error handling jms message: {}", message, e);
             }
         }
     }
 
-    public Map<String, JmsMessagePayloadHandler> getHandlers() {
-        if (handlers.isEmpty()) {
-            synchronized (this) {
-                if (handlers.isEmpty()) {
-                    handlers =
-                            ImmutableMap
-                                    .<String, JmsMessagePayloadHandler> builder()
-                                    .put(LanguageTeamPermissionChangedEvent.class
-                                            .getCanonicalName(),
-                                            languageTeamHandler)
-                                    .build();
-                }
-            }
-            log.info("email queue payload handlers: {}", handlers);
+    private @Nullable JmsMessagePayloadHandler getHandler(
+            String objectType) throws ClassNotFoundException {
+        Class<? extends JmsMessagePayloadHandler> handlerClass =
+                handlers.get(objectType);
+        if (handlerClass != null) {
+            return serviceLocator.getInstance(handlerClass);
+        } else {
+            return null;
         }
-        return handlers;
     }
 
-    public static interface JmsMessagePayloadHandler {
+    public interface JmsMessagePayloadHandler {
         void handle(Serializable data);
     }
 }

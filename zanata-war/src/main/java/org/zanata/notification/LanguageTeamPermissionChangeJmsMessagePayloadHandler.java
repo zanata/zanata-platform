@@ -43,8 +43,8 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Handles language team permissions change JMS message. This will build and
  * send out an email to the person affected.
- * N.B. We can only have application or
- * stateless scope beans in here.
+ * N.B. We can only have application, request or
+ * stateless scope beans in here, not session.
  *
  * @see EmailQueueMessageReceiver
  * @author Patrick Huang <a

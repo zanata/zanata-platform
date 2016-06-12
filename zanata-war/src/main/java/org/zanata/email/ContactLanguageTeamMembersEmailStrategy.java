@@ -20,15 +20,12 @@
  */
 package org.zanata.email;
 
-import com.google.common.base.Optional;
 import com.googlecode.totallylazy.collections.PersistentMap;
 import lombok.RequiredArgsConstructor;
 import org.zanata.i18n.Messages;
 import org.zanata.util.HtmlUtil;
 
 import javax.mail.internet.InternetAddress;
-
-import static org.zanata.email.Addresses.getReplyTo;
 
 /**
  * @author Alex Eng <a href="aeng@redhat.com">aeng@redhat.com</a>
@@ -37,8 +34,6 @@ import static org.zanata.email.Addresses.getReplyTo;
 public class ContactLanguageTeamMembersEmailStrategy
         extends EmailStrategy {
     private final String fromLoginName;
-    private final String fromName;
-    private final String replyEmail;
     private final String userSubject;
     private final String localeId;
     private final String localeNativeName;
@@ -48,11 +43,6 @@ public class ContactLanguageTeamMembersEmailStrategy
     @Override
     public String getBodyResourceName() {
         return "org/zanata/email/templates/email_language_team_members.vm";
-    }
-
-    @Override
-    public Optional<InternetAddress[]> getReplyToAddress() {
-        return Optional.of(getReplyTo(replyEmail, fromName));
     }
 
     @Override
@@ -69,10 +59,6 @@ public class ContactLanguageTeamMembersEmailStrategy
                 toAddresses);
         String safeHTML = HtmlUtil.SANITIZER.sanitize(htmlMessage);
         return context
-                .insert("fromLoginName", fromLoginName)
-                .insert("fromName", fromName)
-                .insert("replyEmail", replyEmail)
-                .insert("localeId", localeId)
                 .insert("contactCoordinatorLink", contactCoordinatorLink)
                 .insert("localeNativeName", localeNativeName)
                 .insert("htmlMessage", safeHTML);

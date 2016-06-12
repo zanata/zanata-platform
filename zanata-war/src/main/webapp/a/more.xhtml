@@ -1,0 +1,72 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  template="/WEB-INF/template/template.xhtml">
+
+  <ui:define name="page_title">
+    #{msgs['jsf.More']}
+  </ui:define>
+
+  <ui:define name="center_content">
+    <div class="Ai(c) D(f) Fld(c) Flxg(1) Ov(a) Ovx(h) Ovs(touch)">
+      <div class="Ai(st) D(f) Fld(c) Flxs(0) Flxg(1) Px(rh) Px(r1)--sm Pos(r) W(100%)">
+        <div class="D(f) Ai(fs) Ac(fs) Fld(c) Jc(fs) Flw(nw) Fz(ms1)--md My(r2) Mx(a) Maw(20em) W(100%)">
+          <ul class="W(100%) list--no-bullets l--pad-h-quarter">
+            <li class="Py(rq) Bdb(bd1) Bdc(light)">
+              <a href="#{applicationConfigurationAction.helpUrl}" id="more_help"
+                class="C(pri) Td(n) Trs(aeo) Brightness(.75):h Brightness(.75):f Brightness(.5):a" target="_blank">
+                #{msgs['jsf.Help']}</a>
+            </li>
+            <li class="Py(rq) Bdb(bd1) Bdc(light)">
+              <a href="#{applicationConfigurationAction.termOfUseUrl}"
+                class="C(pri) Td(n) Trs(aeo) Brightness(.75):h Brightness(.75):f Brightness(.5):a"
+                target="_blank">#{msgs['jsf.TermsOfUse']}</a>
+            </li>
+            <li class="Py(rq) Bdb(bd1) Bdc(light)">
+              <a href="http://zanata.org/about"
+                class="C(pri) Td(n) Trs(aeo) Brightness(.75):h Brightness(.75):f Brightness(.5):a"
+                target="_blank">#{msgs['jsf.About']}</a>
+            </li>
+            <li class="Py(rq) Bdb(bd1) Bdc(light)">
+              <a href="http://zanata.org/issues"
+                class="C(pri) Td(n) Trs(aeo) Brightness(.75):h Brightness(.75):f Brightness(.5):a"
+                target="_blank">#{msgs['jsf.ReportAProblem']}</a>
+            </li>
+            <ui:fragment rendered="#{identity.loggedIn}">
+              <ui:include src="/WEB-INF/layout/admin/contact_admin_modal.xhtml"/>
+              <li class="Py(rq)">
+                <a href="#" data-toggle="modal" data-target="#contactAdminDialog" id="more_contact_admin"
+                  class="C(pri) Td(n) Trs(aeo) Brightness(.75):h Brightness(.75):f Brightness(.5):a">
+                  #{msgs['jsf.ContactAdmin']}</a>
+              </li>
+            </ui:fragment>
+            <li class="Pt(r1)">
+              <h:form id="localeSelector_form" styleClass="l--push-bottom-0">
+                <h:selectOneMenu id="Select"
+                  value="#{localeSelectorAction.localeString}"
+                  valueChangeListener="#{localeSelectorAction.select}"
+                  onchange="submit()">
+                  <f:selectItems
+                    value="#{localeSelectorAction.supportedLocales}"/>
+                </h:selectOneMenu>
+              </h:form>
+            </li>
+            <li class="Pt(r1) Fz(msn1)! C(muted)">
+              <h:outputText escape="false"
+                value="#{msgs.format('jsf.RunningVersionInfo',
+                  msgs['jsf.Zanata'], applicationConfiguration.version,
+                  applicationConfiguration.buildTimestamp,
+                  applicationConfiguration.scmDescribe)}"/>
+              <br/>
+              <h:outputText escape="false"
+                value="#{applicationConfiguration.copyrightNotice()}"/>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </ui:define>
+</ui:composition>

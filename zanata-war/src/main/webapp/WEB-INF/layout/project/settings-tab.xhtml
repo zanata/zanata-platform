@@ -28,10 +28,11 @@
 <a4j:jsFunction name="addWebhook"
   onbegin="zanata.loader.activate('#add-webhook-button');jQuery('#add-webhook-button').removeClass('button--primary')"
   oncomplete="zanata.loader.deactivate('#add-webhook-button');jQuery('#add-webhook-button').addClass('button--primary')"
-  action="#{projectHome.addWebHook(url, secret)}"
+  action="#{projectHome.addWebHook(url, secret, type)}"
   render="settings-webhooks-list">
   <a4j:param name="val1" assignTo="#{url}"/>
   <a4j:param name="val2" assignTo="#{secret}"/>
+  <a4j:param name="val3" assignTo="#{type}"/>
 </a4j:jsFunction>
 
 <a4j:jsFunction name="bindRestrictedByRoleValue" render="user-roles"
@@ -205,7 +206,8 @@
     <ul class="list--slat list--highlight l--push-top-half">
       <ui:repeat value="#{projectHome.instance.webHooks}" var="webhook">
         <li class="list-item">
-          #{webhook.url}
+          <span name="url">#{webhook.url}</span>
+          <span class="txt--meta l--push-left-quarter" name="type">#{webhook.webhookType.name()}</span>
           <button id="remove-webhook-#{webhook.id}"
             class="loader button--link l--float-right txt--danger"
             onclick="removeWebhook(this.id, '#{webhook.id}')">
@@ -228,6 +230,14 @@
             class="form--inline__input"/>
         </div>
         <div class="form__item">
+          <label for="webhookType">#{msgs['jsf.project.WebhookType.label']}</label>
+          <select id="webhookType">
+            <ui:repeat value="#{projectHome.webhookTypes}" var="webhookType">
+              <option value="#{webhookType.name}">#{webhookType.name} - #{webhookType.description}</option>
+            </ui:repeat>
+          </select>
+        </div>
+        <div class="form__item">
           <label for="secretInput">#{msgs['jsf.project.WebHooks.secret']}</label>
           <input type="password" id="secretInput" autocomplete="off" maxlength="255"
             placeholder="#{msgs['jsf.project.WebHooks.secret.placeholder']}"
@@ -235,7 +245,7 @@
         </div>
 
         <button id="add-webhook-button" class="l--push-top-1 button--primary button loader"
-          onclick="addWebhook(jQuery('#payloadUrlInput').val(), jQuery('#secretInput').val())">
+          onclick="addWebhook(jQuery('#payloadUrlInput').val(), jQuery('#secretInput').val(), jQuery('#webhookType').val())">
           <span class="loader__label">#{msgs['jsf.project.AddWebhook']}</span>
         </button>
       </li>

@@ -1,23 +1,29 @@
 ## 4.0
 
-<h5>Infrastructure Changes</h5>
+##### Bug Fixes
+* [ZNTA-846](https://zanata.atlassian.net/browse/ZNTA-846) - Group "request add project version" needs field limit
+* [ZNTA-872](https://zanata.atlassian.net/browse/ZNTA-872) - Redirect to home from cancel button in create user page
+
+##### Infrastructure Changes
+* System admin can set system property `zanata.enforce.matchingusernames` to enforce matching username to be used for new user registration.
 * Zanata has eliminated all JNDI-based configuration and replaced it with system properties. Please see the following sections for how certain values are now configured:
   * (/user-guide/system-admin/configuration/installation)
   * (/user-guide/system-admin/configuration/authentication)
   * (/user-guide/system-admin/configuration/document-storage-directory)
-<h5>New feature</h5>
+
+##### New feature
+* [ZNTA-746](https://zanata.atlassian.net/browse/ZNTA-746) - Add shortcut key for approve and reject translation
+* [ZNTA-938](https://zanata.atlassian.net/browse/ZNTA-938) - Webhook event for translation update by user.
 * [ZNTA-746](https://zanata.atlassian.net/browse/ZNTA-746) - Add shorcut key for approve and reject translation
-<h5>New Features</h5>
 * [ZNTA-1059](https://zanata.atlassian.net/browse/ZNTA-1059) - Language coordinator can contact team members
+* [ZNTA-858](https://zanata.atlassian.net/browse/ZNTA-858) - New side menu bar replace top and bottom panel
+* [ZNTA-855](https://zanata.atlassian.net/browse/ZNTA-855) - Add system property to enforce username for registration
 
 
 -----------------------
 
-## 3.9
-
-<h5>Infrastructure Changes</h5>
 ## 3.9.0
-##### Infrastructure Changes
+<h5>Infrastructure Changes</h5>
 * Recommended platform: JBoss EAP 6 (6.4.6.GA or later).
 * Alternative platform: WildFly version 10.x.
 * [ZNTA-530](https://zanata.atlassian.net/browse/ZNTA-530) - Replace Seam 2 with CDI
@@ -61,10 +67,14 @@
  * [ZNTA-684](https://zanata.atlassian.net/browse/ZNTA-684) - Migrate suggestions panel from AngularJS to ReactJS
 
 ##### Bug Fixes
+ * [ZNTA-1128](https://zanata.atlassian.net/browse/ZNTA-1128) - Create version - entering a name before unchecking 'copy' breaks the list
+ * [ZNTA-1125](https://zanata.atlassian.net/browse/ZNTA-1125) - TransactionRequiredException on enabling project Invite Only
  * [ZNTA-1120](https://zanata.atlassian.net/browse/ZNTA-1120) - Rest endpoint broken for alpha editor
+ * [ZNTA-1116](https://zanata.atlassian.net/browse/ZNTA-1116) - ResourceExceptions when saving a server config
  * [ZNTA-1086](https://zanata.atlassian.net/browse/ZNTA-1086) - NullPointerException when uploading from client (tested with cs-CZ)
  * [ZNTA-1084](https://zanata.atlassian.net/browse/ZNTA-1084) - NoSuchElementException when uploading empty data
  * [ZNTA-1081](https://zanata.atlassian.net/browse/ZNTA-1081) - Should use @Synchronized for @SessionScoped beans
+ * [ZNTA-1075](https://zanata.atlassian.net/browse/ZNTA-1075) - Occasional NullPointerException in PasswordUtil.generateSaltedHash
  * [ZNTA-1074](https://zanata.atlassian.net/browse/ZNTA-1074) - Glossary blurts entire exception stacktrace to user dialog
  * [ZNTA-1072](https://zanata.atlassian.net/browse/ZNTA-1072) - [Regression] Cannot set multiple roles for a user
  * [ZNTA-1068](https://zanata.atlassian.net/browse/ZNTA-1068) - Adding multiple languages to a project does not update the page
@@ -80,7 +90,7 @@
  * [ZNTA-870](https://zanata.atlassian.net/browse/ZNTA-870) - Reset Password feature not inserting key into database
  * [ZNTA-850](https://zanata.atlassian.net/browse/ZNTA-850) - org.zanata.async.AsyncTaskManager:  Exception when executing an asynchronous task.
  * [ZNTA-804](https://zanata.atlassian.net/browse/ZNTA-804) - Coordinators' email addresses should be BCC in Contact Coordinator
- * [ZNTA-693](https://zanata.atlassian.net/browse/ZNTA-693) - ClientAbortException: java.net.SocketException: Connection reset 
+ * [ZNTA-693](https://zanata.atlassian.net/browse/ZNTA-693) - ClientAbortException: java.net.SocketException: Connection reset
  * [ZNTA-668](https://zanata.atlassian.net/browse/ZNTA-668) - ServerConfiguration tests unstable
  * [ZNTA-537](https://zanata.atlassian.net/browse/ZNTA-537) - Expired sessions have poor usability
  * [ZNTA-470](https://zanata.atlassian.net/browse/ZNTA-470) - RFE: Prevent user sending large text in 'contact admin' emails
