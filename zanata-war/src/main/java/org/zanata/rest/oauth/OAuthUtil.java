@@ -32,6 +32,7 @@ import org.apache.oltu.oauth2.rs.request.OAuthAccessResourceRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -39,7 +40,7 @@ import com.google.common.base.Strings;
 public class OAuthUtil {
     private static final Logger log = LoggerFactory.getLogger(OAuthUtil.class);
 
-    public static Optional<String> getAccessToken(HttpServletRequest request) {
+    public static Optional<String> getAccessTokenFromHeader(HttpServletRequest request) {
         OAuthAccessResourceRequest oauthRequest = null;
         if (!Strings.isNullOrEmpty(request.getHeader(OAuth.HeaderType.AUTHORIZATION))) {
 
@@ -49,12 +50,8 @@ public class OAuthUtil {
                 oauthRequest = new
                         OAuthAccessResourceRequest(request, ParameterStyle.HEADER);
                 return Optional.of(oauthRequest.getAccessToken());
-            } catch (OAuthSystemException e) {
-                log.warn("OAuth exception", e);
-                return Optional.empty();
-            } catch (OAuthProblemException e) {
-                log.debug("OAuth problem", e);
-                return Optional.empty();
+            } catch (OAuthSystemException | OAuthProblemException e) {
+                throw Throwables.propagate(e);
             }
         }
         log.debug("no Authorization header");

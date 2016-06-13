@@ -5,7 +5,7 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:rich="http://richfaces.org/rich"
-  template="../WEB-INF/template/template_2x.xhtml">
+  template="../WEB-INF/template/template.xhtml">
 
   <f:metadata>
     <f:viewParam name="#{authorizeAction.redirectUriParam}" value="#{authorizeAction.redirectUri}" />
@@ -15,13 +15,13 @@
 
   <ui:define name="page_title">#{msgs['jsf.Authorize']}</ui:define>
   <ui:define name="center_content">
-    <rich:panel id="loggedIn" rendered="#{identity.loggedIn and authorizeAction.supportOAuth}">
+    <rich:panel id="loggedIn" rendered="#{identity.loggedIn and authorizeAction.serverEnabledOAuth}">
       <h:form id="loginForm">
         <h:outputText value="#{msgs.format('jsf.allowApp', authorizeAction.clientId)}"/>
         <h:commandButton action="#{authorizeAction.authorize}" value="Allow" />
       </h:form>
     </rich:panel>
-    <h:panelGroup rendered="#{not authorizeAction.supportOAuth}">
+    <h:panelGroup rendered="#{not authorizeAction.serverEnabledOAuth}">
       <h:outputText value="#{msgs.get('jsf.oauth.disabled')}" />
     </h:panelGroup>
   </ui:define>

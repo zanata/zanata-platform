@@ -31,10 +31,14 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.oltu.oauth2.as.issuer.MD5Generator;
 import org.apache.oltu.oauth2.as.issuer.OAuthIssuerImpl;
+import org.apache.oltu.oauth2.as.response.OAuthASResponse;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
+import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import org.apache.oltu.oauth2.common.token.BasicOAuthToken;
 import org.apache.oltu.oauth2.common.token.OAuthToken;
 import org.zanata.ApplicationConfiguration;
@@ -64,27 +68,38 @@ public class SecurityTokens
         Introspectable {
     private OAuthIssuerImpl oAuthIssuer =
             new OAuthIssuerImpl(new MD5Generator());
-
-    // username -> [clientId : authorizationCode]
+    /**
+     * username -> [clientId : authorizationCode].
+     * the entry will live as long as the user session. Once user session times
+     * out or user logged out, it will be removed from the cache.
+     */
     private Cache<String, Map<String, String>> authorizationCodes =
             CacheBuilder.newBuilder()
                     .build();
 
-    // access token -> username
+    /**
+     * access token -> username.
+     * stores the current valid access token which has an expiry time from
+     * system property.
+     */
     private Cache<String, String> accessTokens;
 
 
-    // access token -> username
-    private Cache<String, String> expiredAccessCode =
+    /**
+     * access token -> username.
+     * stores the newly expired access token so that we can indicate the user
+     * agent the access token has expired.
+     */
+    private Cache<String, String> expiredAccessToken =
             CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.SECONDS)
                     .build();
 
-    @Inject
-    @SysConfig(ApplicationConfiguration.ACCESS_TOKEN_EXPIRES_IN_SECONDS)
-    private Long tokenExpiresInSeconds;
+    private final long tokenExpiresInSeconds;
 
-    @VisibleForTesting
-    protected void setTokenExpiresInSeconds(Long tokenExpiresInSeconds) {
+    @Inject
+    public SecurityTokens(
+            @SysConfig(ApplicationConfiguration.ACCESS_TOKEN_EXPIRES_IN_SECONDS)
+                    long tokenExpiresInSeconds) {
         this.tokenExpiresInSeconds = tokenExpiresInSeconds;
     }
 
@@ -96,12 +111,20 @@ public class SecurityTokens
                 .build();
     }
 
+    /**
+     * This method listens to accessTokens cache entry expiration. Once an
+     * access token expires, it will be put into expiredAccessToken cache so
+     * that it can be recognized by next request.
+     * @param notification the expired access token
+     */
     @Override
     public void onRemoval(RemovalNotification<String, String> notification) {
-        expiredAccessCode.put(notification.getKey(), notification.getValue());
+        expiredAccessToken.put(notification.getKey(), notification.getValue());
     }
 
-    // remove authorization code once session expires
+    /**
+     * remove authorization code once session expires
+     */
     public void onLogout(@Observes LogoutEvent event,
             @Authenticated HAccount authenticatedAccount) {
         authorizationCodes.invalidate(authenticatedAccount.getUsername());
@@ -109,10 +132,10 @@ public class SecurityTokens
 
     String getAuthorizationCode(String username, String clientId)
             throws OAuthSystemException {
-        Map<String, String> ifPresent =
+        Map<String, String> clientIdToAuthCode =
                 authorizationCodes.getIfPresent(username);
-        if (ifPresent != null && ifPresent.containsKey(clientId)) {
-            return ifPresent.get(clientId);
+        if (clientIdToAuthCode != null && clientIdToAuthCode.containsKey(clientId)) {
+            return clientIdToAuthCode.get(clientId);
         }
         String authorizationCode = oAuthIssuer.authorizationCode();
         try {
@@ -120,7 +143,7 @@ public class SecurityTokens
                     () -> {
                         ConcurrentMap<String, String>
                                 map = Maps.newConcurrentMap();
-                        map.putIfAbsent(clientId, authorizationCode);
+                        map.put(clientId, authorizationCode);
                         return map;
                     });
         } catch (ExecutionException e) {
@@ -130,11 +153,11 @@ public class SecurityTokens
     }
 
 
-    public Optional<String> tryFindAuthorizationCode(String username, String clientId) {
-        Map<String, String> ifPresent =
+    public Optional<String> findAuthorizationCode(String username, String clientId) {
+        Map<String, String> clientIdToAuthCode =
                 authorizationCodes.getIfPresent(username);
-        if (ifPresent != null && ifPresent.containsKey(clientId)) {
-            return Optional.of(ifPresent.get(clientId));
+        if (clientIdToAuthCode != null && clientIdToAuthCode.containsKey(clientId)) {
+            return Optional.of(clientIdToAuthCode.get(clientId));
         }
         return Optional.empty();
     }
@@ -152,7 +175,7 @@ public class SecurityTokens
     public OAuthToken generateAccessAndRefreshTokens(HAccount account)
             throws OAuthSystemException {
 
-        // TODO we may consider using a self contained access token like json web token
+        // TODO enhancement: use a self contained access token like json web token (JWT)
         // http://stackoverflow.com/questions/12296017/how-to-validate-an-oauth-2-0-access-token-for-a-resource-server
         String accessToken = oAuthIssuer.accessToken();
 
@@ -205,15 +228,15 @@ public class SecurityTokens
      * @param accessToken access token for a user
      * @return optional username
      */
-    public Optional<String> matchAccessToken(String accessToken) {
+    public Optional<String> findUsernameByAccessToken(String accessToken) {
         return Optional.ofNullable(accessTokens.getIfPresent(accessToken));
     }
 
     public boolean isTokenExpired(String accessToken) {
-        return expiredAccessCode.getIfPresent(accessToken) != null;
+        return expiredAccessToken.getIfPresent(accessToken) != null;
     }
 
-    public OAuthToken reissueAccessToken(HAccount account, String refreshToken)
+    public OAuthToken refreshAccessToken(HAccount account, String refreshToken)
             throws OAuthSystemException {
 
         String accessToken = oAuthIssuer.accessToken();
@@ -224,6 +247,32 @@ public class SecurityTokens
                 tokenExpiresInSeconds,
                 refreshToken, null
         );
+    }
+
+    /**
+     * Generate full URl from OAuth redirect and authorization code.
+     *
+     * @param request
+     *         original request
+     * @param redirectUrl
+     *         original redirect url
+     * @param authorizationCode
+     *         granted authorization code
+     * @return full url with authorization code
+     */
+    public String getRedirectLocationUrl(HttpServletRequest request,
+            String redirectUrl, String authorizationCode) {
+        try {
+            OAuthResponse resp = OAuthASResponse
+                    .authorizationResponse(request,
+                            HttpServletResponse.SC_FOUND)
+                    .setCode(authorizationCode)
+                    .location(redirectUrl)
+                    .buildQueryMessage();
+            return resp.getLocationUri();
+        } catch (OAuthSystemException e) {
+            throw Throwables.propagate(e);
+        }
     }
 
     @Override

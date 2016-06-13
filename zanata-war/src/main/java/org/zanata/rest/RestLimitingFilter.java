@@ -129,7 +129,7 @@ public class RestLimitingFilter implements Filter {
                 String clientIP = HttpUtil.getClientIp(request);
                 processor.processForAnonymousIP(clientIP, response, invokeChain);
             } else {
-                if (!Strings.isNullOrEmpty(apiKey) && !Strings.isNullOrEmpty(authenticatedUser.getApiKey())) {
+                if (!Strings.isNullOrEmpty(apiKey)) {
                     processor.processForApiKey(authenticatedUser.getApiKey(),
                             response, invokeChain);
                 } else {
@@ -143,10 +143,10 @@ public class RestLimitingFilter implements Filter {
         }
     }
 
-    private HAccount tryGetAuthenticatedAccountUsingOAuthTokens(
+    private @Nullable HAccount tryGetAuthenticatedAccountUsingOAuthTokens(
             HttpServletRequest request) {
         String authCode = request.getParameter(OAuth.OAUTH_CODE);
-        Optional<String> accessTokenOpt = OAuthUtil.getAccessToken(request);
+        Optional<String> accessTokenOpt = OAuthUtil.getAccessTokenFromHeader(request);
         Optional<String> usernameOpt = Optional.empty();
         if (StringUtils.isNotEmpty(authCode)) {
             // Get user account with OAuth authorizationCode if it presents
@@ -155,7 +155,7 @@ public class RestLimitingFilter implements Filter {
         } else if (accessTokenOpt.isPresent()) {
             // Get user account with OAuth accessToken if it presents
             usernameOpt = getSecurityTokens()
-                    .matchAccessToken(accessTokenOpt.get());
+                    .findUsernameByAccessToken(accessTokenOpt.get());
         }
         if (usernameOpt.isPresent()) {
             return getAccountDAO()

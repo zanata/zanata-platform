@@ -144,7 +144,7 @@ public class ZanataRestSecurityInterceptorTest {
         securityInterceptor.filter(context);
 
         verify(credential).setUsername("admin");
-        verify(identity).setOAuthRequest(true);
+        verify(identity).setRequestUsingOAuth(true);
         verify(identity).tryLogin();
 
         verify(context, never()).abortWith(any(Response.class));
@@ -166,14 +166,14 @@ public class ZanataRestSecurityInterceptorTest {
     @Test
     public void canAuthenticateUsingAccessToken() throws Exception {
         when(request.getHeader(AUTHORIZATION)).thenReturn("Bearer abc123");
-        when(securityTokens.matchAccessToken("abc123")).thenReturn(
+        when(securityTokens.findUsernameByAccessToken("abc123")).thenReturn(
                 Optional.of("admin"));
         when(identity.isLoggedIn()).thenReturn(true);
 
         securityInterceptor.filter(context);
 
         verify(credential).setUsername("admin");
-        verify(identity).setOAuthRequest(true);
+        verify(identity).setRequestUsingOAuth(true);
         verify(identity).tryLogin();
 
         verify(context, never()).abortWith(any(Response.class));
@@ -182,7 +182,7 @@ public class ZanataRestSecurityInterceptorTest {
     @Test
     public void willAbortIfAccessTokenIsInvalid() throws Exception {
         when(request.getHeader(AUTHORIZATION)).thenReturn("Bearer invalid");
-        when(securityTokens.matchAccessToken("invalid")).thenReturn(
+        when(securityTokens.findUsernameByAccessToken("invalid")).thenReturn(
                 Optional.empty());
 
         securityInterceptor.filter(context);

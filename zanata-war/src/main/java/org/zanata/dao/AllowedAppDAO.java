@@ -48,7 +48,7 @@ public class AllowedAppDAO extends AbstractDAOImpl<AllowedApp, Long> {
         super(AllowedApp.class);
     }
 
-    // TODO support client secret as well?
+    // TODO support client secret when we support pre-register client
     public void persistClientId(String username, String clientId) {
         HAccount hAccount = accountDAO.getByUsername(username);
         AllowedApp allowedApp = new AllowedApp(hAccount, clientId);
@@ -65,7 +65,7 @@ public class AllowedAppDAO extends AbstractDAOImpl<AllowedApp, Long> {
     public void persistRefreshToken(HAccount hAccount, String clientId,
             String refreshToken) {
         AllowedApp allowedApp = (AllowedApp) getSession()
-                .getNamedQuery(AllowedApp.QUERY_GET_By_ACCOUNT_AND_CLIENT_ID)
+                .getNamedQuery(AllowedApp.QUERY_GET_BY_ACCOUNT_AND_CLIENT_ID)
                 .setParameter("account", hAccount)
                 .setParameter("clientId", clientId)
                 .uniqueResult();
@@ -89,7 +89,7 @@ public class AllowedAppDAO extends AbstractDAOImpl<AllowedApp, Long> {
 
     public Optional<AllowedApp> getAllowedAppForAccount(HAccount account, String clientId) {
         AllowedApp allowedApp = (AllowedApp) getSession()
-                .getNamedQuery(AllowedApp.QUERY_GET_By_ACCOUNT_AND_CLIENT_ID)
+                .getNamedQuery(AllowedApp.QUERY_GET_BY_ACCOUNT_AND_CLIENT_ID)
                 .setParameter("account", account)
                 .setParameter("clientId", clientId)
                 .uniqueResult();

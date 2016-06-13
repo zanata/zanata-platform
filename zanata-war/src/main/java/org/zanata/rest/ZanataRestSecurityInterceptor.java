@@ -14,13 +14,9 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.Provider;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.apache.oltu.oauth2.common.OAuth;
-import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
-import org.apache.oltu.oauth2.common.message.types.ParameterStyle;
-import org.apache.oltu.oauth2.rs.request.OAuthAccessResourceRequest;
 import org.apache.oltu.oauth2.rs.response.OAuthRSResponse;
 import org.jboss.resteasy.annotations.interception.SecurityPrecedence;
 import org.zanata.config.SysConfig;
@@ -29,13 +25,12 @@ import org.zanata.model.HAccount;
 import org.zanata.rest.oauth.OAuthUtil;
 import org.zanata.security.SecurityFunctions;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.security.oauth.SecurityTokens;
 import org.zanata.util.HttpUtil;
+import org.zanata.util.ServiceLocator;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Strings;
 import com.googlecode.totallylazy.Either;
 import lombok.extern.slf4j.Slf4j;
 
@@ -96,15 +91,15 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
             zanataIdentity.setApiKey(tokens.apiKey.get());
             zanataIdentity.tryLogin();
         } else if (tokens.canAuthenticateUsingOAuth()) {
-            Either<String, Response> usernameOrResponse =
-                getUsernameOrResponse();
-            if (usernameOrResponse.isRight()) {
-                context.abortWith(usernameOrResponse.right());
+            Either<String, Response> usernameOrError =
+                getAuthenticatedUsernameOrError();
+            if (usernameOrError.isRight()) {
+                context.abortWith(usernameOrError.right());
                 return;
             }
-            String username = usernameOrResponse.left();
+            String username = usernameOrError.left();
             zanataIdentity.getCredentials().setUsername(username);
-            zanataIdentity.setOAuthRequest(true);
+            zanataIdentity.setRequestUsingOAuth(true);
             zanataIdentity.tryLogin();
         }
 
@@ -115,50 +110,34 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
         }
     }
 
-    private String getAccessToken() throws OAuthSystemException, OAuthProblemException {
-        OAuthAccessResourceRequest oauthRequest = new
-                OAuthAccessResourceRequest(request, ParameterStyle.HEADER);
-        return oauthRequest.getAccessToken();
-    }
+    private Either<String, Response> getAuthenticatedUsernameOrError() {
 
-    private Optional<String> checkAccess(String accessToken) {
-        if (Strings.isNullOrEmpty(accessToken)) {
-            return Optional.empty();
+        String authorizationCode = request.getParameter(OAuth.OAUTH_CODE);
+
+        Optional<String> usernameOpt;
+        Optional<String> accessTokenOpt = Optional.empty();
+        if (StringUtils.isNotEmpty(authorizationCode)) {
+            usernameOpt =
+                    securityTokens.findUsernameForAuthorizationCode(authorizationCode);
+        } else {
+            accessTokenOpt = OAuthUtil.getAccessTokenFromHeader(request);
+            usernameOpt = accessTokenOpt.flatMap(
+                    token -> securityTokens.findUsernameByAccessToken(token));
         }
-        return securityTokens.matchAccessToken(accessToken);
-    }
 
-    private Either<String, Response> getUsernameOrResponse() {
-
-        try {
-            String authorizationCode = request.getParameter(OAuth.OAUTH_CODE);
-
-            Optional<String> usernameOpt;
-            String accessToken = null;
-            if (StringUtils.isNotEmpty(authorizationCode)) {
-                usernameOpt =
-                        securityTokens.findUsernameForAuthorizationCode(authorizationCode);
-            } else {
-                accessToken = getAccessToken();
-                usernameOpt = checkAccess(accessToken);
+        if (!usernameOpt.isPresent()) {
+            if (accessTokenOpt.isPresent() && securityTokens.isTokenExpired(accessTokenOpt.get())) {
+                log.info("access token [{}] expired", accessTokenOpt.get());
+                return Either.right(buildUnauthorizedResponse("access token expired"));
             }
-
-            if (!usernameOpt.isPresent()) {
-                if (!Strings.isNullOrEmpty(accessToken) && securityTokens.isTokenExpired(accessToken)) {
-                    return Either.right(buildUnauthorizedResponse("access token expired"));
-                }
-                return Either.right(buildUnauthorizedResponse("failed authorization"));
-            }
-            String username = usernameOpt.get();
-            return Either.left(username);
-
-        } catch (OAuthProblemException e) {
-            log.warn("OAuth problem: {}", e.getMessage());
-            return Either.right(buildUnauthorizedResponse(e.getMessage()));
-        } catch (OAuthSystemException e) {
-            log.error("OAuth system exception", e);
-            return Either.right(buildServerErrorResponse(e.getMessage()));
+            log.info(
+                    "Bad OAuth request, invalid or missing tokens: authorization code: {}, access token: {}",
+                    authorizationCode, accessTokenOpt);
+            return Either.right(buildUnauthorizedResponse("failed authorization"));
         }
+        String username = usernameOpt.get();
+        return Either.left(username);
+
     }
 
     private Response buildUnauthorizedResponse(String message) {
@@ -182,7 +161,9 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
 
     @VisibleForTesting
     protected boolean hasAuthenticatedAccount() {
-        return BeanProvider.getContextualReference(HAccount.class, new AuthenticatedLiteral()) != null;
+        return ServiceLocator.instance()
+                .getInstance(HAccount.class, new AuthenticatedLiteral()) !=
+                null;
     }
 
     private static class Tokens {
@@ -193,13 +174,13 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
         private final Optional<String> authorizationCode;
 
         Tokens(ContainerRequestContext context, HttpServletRequest request,
-                Boolean isOAuthSupported) {
+                boolean isOAuthSupported) {
             String username = HttpUtil.getUsername(context.getHeaders());
             String apiKey = HttpUtil.getApiKey(context.getHeaders());
             this.username = optionalNotEmptyString(username);
             this.apiKey = optionalNotEmptyString(apiKey);
             if (isOAuthSupported) {
-                accessToken = OAuthUtil.getAccessToken(request);
+                accessToken = OAuthUtil.getAccessTokenFromHeader(request);
                 String authorizationCode = request.getParameter(OAuth.OAUTH_CODE);
                 this.authorizationCode = optionalNotEmptyString(authorizationCode);
             } else {

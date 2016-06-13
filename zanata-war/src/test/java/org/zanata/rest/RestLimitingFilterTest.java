@@ -133,7 +133,7 @@ public class RestLimitingFilterTest extends ZanataTest {
         authenticatedUser.setUsername("admin");
         when(request.getHeader(OAuth.HeaderType.AUTHORIZATION)).thenReturn(
                 "Bearer abc123");
-        when(securityTokens.matchAccessToken("abc123"))
+        when(securityTokens.findUsernameByAccessToken("abc123"))
                 .thenReturn(Optional.of("admin"));
         when(accountDAO.getByUsername("admin")).thenReturn(authenticatedUser);
 

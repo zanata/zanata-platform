@@ -23,7 +23,6 @@ package org.zanata.action;
 import java.io.IOException;
 import java.io.Serializable;
 
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import lombok.Getter;
@@ -39,7 +38,6 @@ import org.zanata.security.AuthenticationType;
 import org.zanata.security.UserRedirectBean;
 import org.zanata.security.ZanataCredentials;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.AuthType;
 import org.zanata.security.openid.FedoraOpenIdProvider;
 import org.zanata.security.openid.GoogleOpenIdProvider;
 import org.zanata.security.openid.OpenIdProviderType;
@@ -87,7 +85,6 @@ public class LoginAction implements Serializable {
     private UserRedirectBean userRedirect;
 
     @Inject
-    @AuthType
     private AuthenticationType authenticationType;
 
     public String login() {

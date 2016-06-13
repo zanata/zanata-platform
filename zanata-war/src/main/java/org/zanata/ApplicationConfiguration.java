@@ -48,7 +48,6 @@ import javax.servlet.http.HttpSession;
 
 import org.zanata.config.SysConfig;
 import org.zanata.config.SystemPropertyConfigStore;
-import org.zanata.security.annotations.AuthType;
 import org.zanata.servlet.HttpRequestAndSessionHolder;
 import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.util.DefaultLocale;
@@ -144,7 +143,7 @@ public class ApplicationConfiguration implements Serializable {
     private Set<String> adminUsers;
 
     private Optional<String> openIdProvider; // Cache the OpenId provider
-    private int tokenExpiresInSeconds;
+    private long tokenExpiresInSeconds;
 
     @PostConstruct
     public void load() {
@@ -158,7 +157,7 @@ public class ApplicationConfiguration implements Serializable {
         enforceMatchingUsernames = Boolean
             .parseBoolean(sysPropConfigStore.get("zanata.enforce.matchingusernames"));
         tokenExpiresInSeconds =
-                sysPropConfigStore.get(ACCESS_TOKEN_EXPIRES_IN_SECONDS, 3600);
+                sysPropConfigStore.getAsLong(ACCESS_TOKEN_EXPIRES_IN_SECONDS, 3600);
     }
 
     /**
@@ -332,7 +331,6 @@ public class ApplicationConfiguration implements Serializable {
     }
 
     @Produces
-    @AuthType
     @Dependent
     protected AuthenticationType authenticationType() {
         if (isInternalAuth()) {
@@ -472,13 +470,13 @@ public class ApplicationConfiguration implements Serializable {
 
     @Produces
     @SysConfig(ACCESS_TOKEN_EXPIRES_IN_SECONDS)
-    protected Long getTokenExpiresInSeconds() {
-        return (long) tokenExpiresInSeconds;
+    protected long getTokenExpiresInSeconds() {
+        return tokenExpiresInSeconds;
     }
 
     @Produces
     @SysConfig(SystemPropertyConfigStore.KEY_SUPPORT_OAUTH)
-    protected Boolean isOAuthSupported() {
+    protected boolean isOAuthSupported() {
         return sysPropConfigStore.isOAuthEnabled();
     }
 }

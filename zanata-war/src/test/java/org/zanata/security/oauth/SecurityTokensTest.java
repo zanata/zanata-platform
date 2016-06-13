@@ -27,16 +27,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.zanata.model.HAccount;
 
-import static org.junit.Assert.*;
-
 public class SecurityTokensTest {
 
     private SecurityTokens securityTokens;
 
     @Before
     public void setUp() throws Exception {
-        securityTokens = new SecurityTokens();
-        securityTokens.setTokenExpiresInSeconds(1L);
+        securityTokens = new SecurityTokens(1L);
         securityTokens.setUp();
     }
 

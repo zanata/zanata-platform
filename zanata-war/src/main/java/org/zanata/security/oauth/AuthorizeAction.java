@@ -51,6 +51,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
+ * JSF backed bean for OAuth authorization page.
+ *
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @RequestScoped
@@ -86,7 +88,7 @@ public class AuthorizeAction {
 
     @Inject
     @SysConfig(SystemPropertyConfigStore.KEY_SUPPORT_OAUTH)
-    private Boolean supportOAuth;
+    private boolean serverEnabledOAuth;
 
     /**
      * This will check whether the requesting app has already been authorized
@@ -113,8 +115,7 @@ public class AuthorizeAction {
                     .setCode(code)
                     .location(redirectUri)
                     .buildQueryMessage();
-            log.info("========== redirect back to:{}",
-                    resp.getLocationUri());
+            log.info("redirect back to:{}", resp.getLocationUri());
             FacesNavigationUtil
                     .redirectToExternal(resp.getLocationUri());
         } catch (OAuthSystemException | IOException e) {
@@ -124,7 +125,7 @@ public class AuthorizeAction {
 
     @Transactional
     public void authorize() {
-        if (supportOAuth) {
+        if (serverEnabledOAuth) {
             // TODO handle cancel/reject action
             allowedAppDAO
                     .persistClientId(authenticatedAccount.getUsername(), clientId);
@@ -132,8 +133,8 @@ public class AuthorizeAction {
         }
     }
 
-    public Boolean getSupportOAuth() {
-        return supportOAuth;
+    public boolean isServerEnabledOAuth() {
+        return serverEnabledOAuth;
     }
 
     public String getRedirectUriParam() {

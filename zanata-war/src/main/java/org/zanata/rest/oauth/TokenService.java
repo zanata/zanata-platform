@@ -41,6 +41,8 @@ import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.apache.oltu.oauth2.common.token.OAuthToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AllowedAppDAO;
 import org.zanata.model.AllowedApp;
@@ -52,7 +54,8 @@ import org.zanata.security.oauth.SecurityTokens;
  */
 @Path("/oauth/token")
 public class TokenService {
-
+    private static final Logger log =
+            LoggerFactory.getLogger(TokenService.class);
     private static final String INVALID_CLIENT_DESCRIPTION =
             "Client authentication failed (e.g., unknown client, no client authentication included, or unsupported authentication method).";
 
@@ -67,8 +70,15 @@ public class TokenService {
 
 
     /**
-     * This api will verify the short-lived authorization code and if success
-     * will generate access token and refresh token then return them.
+     * This api will verify the short-lived (session-based) authorization code
+     * and if successful will generate a short-term access token (time-based)
+     * and long-term refresh token (persisted in database), then return them
+     * to the user's agent/browser, where they will be passed to the
+     * requesting client application.
+     *
+     * @see org.zanata.security.oauth.AuthorizeAction
+     * @see org.zanata.servlet.OAuthFilter
+     * @see org.zanata.security.oauth.SecurityTokens
      *
      * @param request http request
      * @return generated access token and refresh token
@@ -77,7 +87,7 @@ public class TokenService {
     @POST
     @Produces("application/json")
     @Transactional
-    public Response register(@Context HttpServletRequest request) throws
+    public Response requestTokens(@Context HttpServletRequest request) throws
             OAuthSystemException {
 
         OAuthTokenRequest oauthRequest = null;
@@ -88,12 +98,14 @@ public class TokenService {
             String clientId = oauthRequest.getClientId();
             String authCodeParam = oauthRequest.getParam(OAuth.OAUTH_CODE);
 
-            Optional<String> usernameOpt = securityTokens
+            Optional<String> username = securityTokens
                     .findUsernameForAuthorizationCode(authCodeParam);
-            Optional<HAccount> accountOptional;
-            if (usernameOpt.isPresent()) {
-                accountOptional = Optional.of(accountDAO.getByUsername(usernameOpt.get()));
+            Optional<HAccount> account;
+            if (username.isPresent()) {
+                account = accountDAO.tryGetByUsername(username.get());
             } else {
+                log.warn("invalid authorization code [{}] for client id [{}]",
+                        authCodeParam, clientId);
                 OAuthResponse response = OAuthASResponse
                         .errorResponse(HttpServletResponse.SC_BAD_REQUEST)
                         .setError(OAuthError.TokenResponse.INVALID_GRANT)
@@ -103,12 +115,15 @@ public class TokenService {
                         .entity(response.getBody()).build();
             }
 
-            if (!accountOptional.isPresent()) {
+            if (!account.isPresent()) {
+                log.warn(
+                        "can not match HAccount to a username {} (which has a linked authorization code {}",
+                        username, authCodeParam);
                 OAuthResponse response =
                         OAuthASResponse.errorResponse(
-                                HttpServletResponse.SC_BAD_REQUEST)
+                                HttpServletResponse.SC_INTERNAL_SERVER_ERROR)
                                 .setError(
-                                        OAuthError.TokenResponse.INVALID_CLIENT)
+                                        OAuthError.CodeResponse.SERVER_ERROR)
                                 .setErrorDescription(INVALID_CLIENT_DESCRIPTION)
                                 .buildJSONMessage();
                 return Response.status(response.getResponseStatus())
@@ -140,15 +155,15 @@ public class TokenService {
 
             // check if access token and refresh token have already been generated
             Optional<AllowedApp> allowedAppOptional = allowedAppDAO
-                    .getAllowedAppForAccount(accountOptional.get(), clientId);
+                    .getAllowedAppForAccount(account.get(), clientId);
             OAuthToken token;
             if (allowedAppOptional.isPresent() && allowedAppOptional.get().getRefreshToken() != null) {
-                token = securityTokens.generateAccessTokenOnly(accountOptional.get(), allowedAppOptional.get().getRefreshToken());
+                token = securityTokens.generateAccessTokenOnly(account.get(), allowedAppOptional.get().getRefreshToken());
             } else {
                 token =
-                        securityTokens.generateAccessAndRefreshTokens(accountOptional.get());
+                        securityTokens.generateAccessAndRefreshTokens(account.get());
                 allowedAppDAO
-                        .persistRefreshToken(accountOptional.get(), clientId, token.getRefreshToken());
+                        .persistRefreshToken(account.get(), clientId, token.getRefreshToken());
             }
 
             OAuthResponse response = OAuthASResponse
@@ -192,23 +207,6 @@ public class TokenService {
         try {
             oauthRequest = new OAuthTokenRequest(request);
 
-            // check if clientid is valid
-            String clientId = oauthRequest.getClientId();
-            /*Optional<HAccount> accountOptional = authorizationCodeDAO.getClientIdAuthorizer(
-                    clientId);
-
-            if (!accountOptional.isPresent()) {
-                OAuthResponse response =
-                        OAuthASResponse.errorResponse(
-                                HttpServletResponse.SC_BAD_REQUEST)
-                                .setError(
-                                        OAuthError.TokenResponse.INVALID_CLIENT)
-                                .setErrorDescription(INVALID_CLIENT_DESCRIPTION)
-                                .buildJSONMessage();
-                return Response.status(response.getResponseStatus())
-                        .entity(response.getBody()).build();
-            }
-*/
             if (!oauthRequest.getParam(OAuth.OAUTH_GRANT_TYPE)
                     .equals(GrantType.REFRESH_TOKEN.toString())) {
                 OAuthResponse response = OAuthASResponse
@@ -236,7 +234,7 @@ public class TokenService {
                         .entity(response.getBody()).build();
             }
 
-            OAuthToken token = securityTokens.reissueAccessToken(accountOpt.get(), refreshTokenParam);
+            OAuthToken token = securityTokens.refreshAccessToken(accountOpt.get(), refreshTokenParam);
 
             OAuthResponse response = OAuthASResponse
                     .tokenResponse(HttpServletResponse.SC_OK)

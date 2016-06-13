@@ -35,6 +35,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
+ * Represents an authorized third party app that is allowed to access Zanata on
+ * behave of the associated account.
+ *
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Entity
@@ -44,12 +47,12 @@ import lombok.Setter;
 @NamedQueries(
         {
                 @NamedQuery(
-                        name = AllowedApp.QUERY_GET_By_ACCOUNT_AND_CLIENT_ID,
+                        name = AllowedApp.QUERY_GET_BY_ACCOUNT_AND_CLIENT_ID,
                         query = "from AllowedApp where account = :account and clientId = :clientId")
         }
 )
 public class AllowedApp extends ModelEntityBase {
-    public static final String QUERY_GET_By_ACCOUNT_AND_CLIENT_ID =
+    public static final String QUERY_GET_BY_ACCOUNT_AND_CLIENT_ID =
             "AllowedApp.getByAccountAndClientId";
     @ManyToOne(targetEntity = HAccount.class, optional = false)
     @JoinColumn(name = "accountId", nullable = false)

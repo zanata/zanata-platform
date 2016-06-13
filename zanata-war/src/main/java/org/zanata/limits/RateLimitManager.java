@@ -104,9 +104,8 @@ public class RateLimitManager implements Introspectable {
     private Map<String, String> peekCurrentBuckets() {
         ConcurrentMap<RateLimiterToken, RestCallLimiter> map = activeCallers.asMap();
         ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
-        map.entrySet().stream().forEach(input -> {
-            RestCallLimiter rateLimiter = input.getValue();
-            builder.put(input.getKey().toString(), rateLimiter.toString());
+        map.forEach((key, value) -> {
+            builder.put(key.toString(), value.toString());
         });
         return builder.build();
     }

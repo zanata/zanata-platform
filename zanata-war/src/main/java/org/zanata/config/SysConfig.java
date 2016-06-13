@@ -32,14 +32,14 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * For producing config values
+ * When you need to produce a system configuration value from CDI, use this
+ * qualifier and set the value to the system property name.
  */
 @Qualifier
 @Retention(RUNTIME)
-@Target({ TYPE, METHOD, FIELD, PARAMETER})
+@Target({ TYPE, METHOD, FIELD, PARAMETER })
 public @interface SysConfig {
     /**
-     *
      * @return The name of the config
      */
     String value();

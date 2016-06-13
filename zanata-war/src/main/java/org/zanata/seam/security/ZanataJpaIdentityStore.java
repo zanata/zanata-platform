@@ -135,7 +135,7 @@ public class ZanataJpaIdentityStore implements Serializable {
         }
 
 
-        if (identity.isOAuthRequest()) {
+        if (identity.isRequestUsingOAuth()) {
             // we've already validated accessToken in org.zanata.rest.ZanataRestSecurityInterceptor
             getPostAuthenticateEvent().fire(new PostAuthenticateEvent(user));
             return true;

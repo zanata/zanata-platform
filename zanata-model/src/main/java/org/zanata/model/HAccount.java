@@ -163,6 +163,10 @@ public class HAccount extends ModelEntityBase implements Serializable,
         return editorOptions;
     }
 
+    /**
+     *
+     * @return all authorized third party apps that is allowed by this user
+     */
     @OneToMany(mappedBy = "account", cascade = {CascadeType.ALL}, orphanRemoval = true)
     public Set<AllowedApp> getAllowedApps() {
         if (allowedApps == null) {

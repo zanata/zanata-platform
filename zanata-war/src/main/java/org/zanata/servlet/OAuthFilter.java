@@ -1,14 +1,11 @@
 package org.zanata.servlet;
 
-import org.apache.deltaspike.core.api.provider.BeanProvider;
-import org.apache.oltu.oauth2.as.response.OAuthASResponse;
 import org.apache.oltu.oauth2.common.OAuth;
-import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
-import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.oauth.SecurityTokens;
+import org.zanata.util.ServiceLocator;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -23,7 +20,6 @@ import java.io.IOException;
 import java.util.Optional;
 
 import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
 
 /**
  * @author <a href='mailto:pahuang@redhat.com>pahuang</a>
@@ -48,17 +44,15 @@ public class OAuthFilter implements Filter {
         HttpServletResponse httpServletResponse =
                 (HttpServletResponse) response;
         String oauthRedirect = request.getParameter(OAuth.OAUTH_REDIRECT_URI);
-        // injection to fields doesn't seem to work
         if (Strings.isNullOrEmpty(oauthRedirect)) {
             // TODO should we throw error here?
             chain.doFilter(request, response);
             return;
         }
 
-        ZanataIdentity identity =
-                BeanProvider.getContextualReference(ZanataIdentity.class);
-        SecurityTokens securityTokens =
-                BeanProvider.getContextualReference(
+        // injection to fields doesn't seem to work
+        ZanataIdentity identity = ZanataIdentity.instance();
+        SecurityTokens securityTokens = ServiceLocator.instance().getInstance(
                         SecurityTokens.class);
 
         String clientId = request.getParameter(OAuth.OAUTH_CLIENT_ID);
@@ -66,7 +60,7 @@ public class OAuthFilter implements Filter {
         String authorizationCode = null;
         if (identity.isLoggedIn()) {
             Optional<String> code = securityTokens
-                    .tryFindAuthorizationCode(identity.getAccountUsername(),
+                    .findAuthorizationCode(identity.getAccountUsername(),
                             clientId);
             if (code.isPresent()) {
                 authorizationCode = code.get();
@@ -74,21 +68,14 @@ public class OAuthFilter implements Filter {
         }
 
         if (authorizationCode != null) {
-            try {
-                OAuthResponse resp = OAuthASResponse
-                        .authorizationResponse(httpServletRequest,
-                                HttpServletResponse.SC_FOUND)
-                        .setCode(authorizationCode)
-                        .location(oauthRedirect)
-                        .buildQueryMessage();
-                log.info(
-                        "authorization code already issued for this session. Username {}, client id: {}",
-                        identity.getAccountUsername(), clientId);
-                httpServletResponse.sendRedirect(resp.getLocationUri());
-                return;
-            } catch (OAuthSystemException e) {
-                throw Throwables.propagate(e);
-            }
+            String redirectLocationUrl = securityTokens
+                    .getRedirectLocationUrl(httpServletRequest,
+                            oauthRedirect, authorizationCode);
+            log.debug(
+                    "authorization code already issued for this session. Username {}, client id: {}",
+                    identity.getAccountUsername(), clientId);
+            httpServletResponse.sendRedirect(redirectLocationUrl);
+            return;
         }
         chain.doFilter(request, response);
     }

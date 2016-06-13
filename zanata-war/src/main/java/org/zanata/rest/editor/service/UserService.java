@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 import javax.inject.Named;
@@ -16,14 +18,17 @@ import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
+import org.zanata.rest.dto.Account;
 import org.zanata.rest.dto.User;
 import org.zanata.rest.editor.dto.Permission;
 import org.zanata.rest.editor.service.resource.UserResource;
+import org.zanata.rest.service.AccountService;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.service.GravatarService;
 
+import com.google.common.base.Strings;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -75,6 +80,22 @@ public class UserService implements UserResource {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         return Response.ok(user).build();
+    }
+
+    @Override
+    public Response accountDetail() {
+        if(authenticatedAccount == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        HAccount account = accountDAO.getByUsername(authenticatedAccount.getUsername());
+        // we may not need to return apiKey (and generating it
+        // without asking) anymore once client switched to OAuth
+        if (Strings.isNullOrEmpty(authenticatedAccount.getApiKey())) {
+            accountDAO.createApiKey(account);
+        }
+        Account dto = new Account();
+        AccountService.transfer(account, dto);
+        return Response.ok(dto).build();
     }
 
     /**
