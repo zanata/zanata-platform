@@ -169,7 +169,7 @@
 
   <filter-mapping>
     <filter-name>OAuthFilter</filter-name>
-    <url-pattern>/authorize/*</url-pattern>
+    <url-pattern>/oauth/*</url-pattern>
   </filter-mapping>
 
   <filter-mapping>
