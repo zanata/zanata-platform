@@ -53,7 +53,7 @@ class DeleteEntryModal extends Component {
               </ButtonLink>
               <ButtonRound type='danger' size='n1'
                 disabled={isDeleting}
-                onClick={() => handleDeleteEntry(entry.id)}>
+                onClick={() => { handleDeleteEntry(entry.id); handleDeleteEntryDisplay(false) }}>
                 <LoaderText loading={isDeleting} size='n1'
                   loadingText='Deleting'>
                   Delete all

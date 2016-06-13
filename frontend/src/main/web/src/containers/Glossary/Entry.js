@@ -182,7 +182,7 @@ class Entry extends Component {
                 show={this.state.showDeleteModal}
                 handleDeleteEntryDisplay={(display) =>
                   this.setShowingDeleteEntryModal(display)}
-                handleDeleteEntry={handleDeleteTerm}/>)
+                handleDeleteEntry={handleDeleteTerm} />)
             }
           </div>
         </TableCell>
