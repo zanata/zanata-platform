@@ -201,6 +201,8 @@
             <ignoredResourcePattern>build.properties</ignoredResourcePattern>
             <!-- jboss-metadata-common and zanata-adapter-xliff -->
             <ignoredResourcePattern>schema/xml.xsd</ignoredResourcePattern>
+            <!-- infinispan-core/common -->
+            <ignoredResourcePattern>features.xml</ignoredResourcePattern>
           </ignoredResourcePatterns>
         </configuration>
       </plugin>
@@ -1895,9 +1897,7 @@
     <dependency>
       <groupId>org.infinispan</groupId>
       <artifactId>infinispan-core</artifactId>
-      <!-- TODO Use a bom for EAP or wildfly (This is the EAP 6.3 version) -->
-      <version>5.2.4.Final</version>
-      <scope>provided</scope>
+      <version>${infinispan.version}</version>
     </dependency>
 
     <!-- These two are being explicitly added as jboss-as-parent
