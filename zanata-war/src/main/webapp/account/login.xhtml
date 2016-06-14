@@ -5,7 +5,7 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:f="http://java.sun.com/jsf/core"
-  template="../WEB-INF/template/template_nobanner.xhtml">
+  template="/WEB-INF/template/template_nobanner.xhtml">
 
   <f:metadata>
     <f:event type="preRenderView" listener="#{loginAction.getLoginPageRedirect()}"/>
@@ -14,6 +14,13 @@
 
   <ui:define name="page_title">#{msgs['jsf.Login']}</ui:define>
   <ui:define name="center_content">
+
+    <script type="application/javascript">
+      jQuery(document).ready(function () {
+        var usernameFieldId = "[id='#{rich:clientId('username')}']";
+        jQuery(usernameFieldId).focus()
+      })
+    </script>
 
     <div class="header__logo-only">
       <h:link outcome="/home.xhtml" id="home" tabindex="1">

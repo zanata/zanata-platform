@@ -6,7 +6,7 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
-  template="../WEB-INF/template/template_nobanner.xhtml">
+  template="/WEB-INF/template/template_nobanner.xhtml">
 
   <f:metadata>
     <f:event type="preRenderView" listener="#{register.redirectIfLoggedIn()}"/>
@@ -14,6 +14,13 @@
 
   <ui:define name="page_title">#{msgs['jsf.Register']}</ui:define>
   <ui:define name="center_content">
+
+    <script type="application/javascript">
+      jQuery(document).ready(function () {
+        var nameFieldId = "[id='#{rich:clientId('nameField')}']";
+        jQuery(nameFieldId).find('input').focus()
+      })
+    </script>
 
     <div class="header__logo-only">
       <h:link outcome="/home.xhtml" id="home" tabindex="1">
@@ -46,7 +53,7 @@
                 styleClass="l--push-top-half l--pad-all-1 bg--pop-higher js-form-password-parent">
                 <h:outputLabel
                   for="name">#{msgs['jsf.register.FullName.label']}</h:outputLabel>
-                <zanata:decorate id="nameField">
+                <zanata:decorate id="name" componentId="nameField">
                   <h:inputText id="name" value="#{register.person.name}"
                     tabindex="2"/>
                 </zanata:decorate>
