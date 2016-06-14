@@ -97,7 +97,7 @@ public class LoginWorkFlow extends AbstractWebWorkFlow {
 //                            .getText().contains(" Login failed ")) {
 //                        throw new IllegalAccessError("Login failed");
 //                    }
-                    driver1.findElement(By.id("nav_logout"));
+                    driver1.findElement(By.id("user--avatar"));
                     return true;
                 });
     }

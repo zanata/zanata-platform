@@ -53,8 +53,6 @@ import org.zanata.common.ProjectType;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.LocaleDAO;
-import org.zanata.exception.ProjectNotFoundException;
-import org.zanata.exception.VersionNotFoundException;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
@@ -263,9 +261,6 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     @Override
     protected HProjectIteration loadInstance() {
         Session session = (Session) getEntityManager().getDelegate();
-        HProject project = (HProject) session.byNaturalId(HProject.class)
-           .using("slug", getProjectSlug()).load();
-        validateProjectState(project);
         if (versionId == null) {
             HProjectIteration iteration = (HProjectIteration) session
                     .byNaturalId(HProjectIteration.class)
@@ -289,16 +284,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
             log.warn(
                     "Project version [id={}, slug={}], does not exist or is soft deleted: {}",
                     versionId, getSlug(), iteration);
-            throw new VersionNotFoundException(getProjectSlug(), getSlug());
-        }
-    }
-
-    private void validateProjectState(HProject project) {
-        if (project == null || project.getStatus() == EntityStatus.OBSOLETE) {
-            log.warn(
-                "Project [slug={}], does not exist or is soft deleted: {}",
-                getProjectSlug(), project);
-            throw new ProjectNotFoundException(getProjectSlug());
+            throw new EntityNotFoundException();
         }
     }
 

@@ -23,6 +23,7 @@ package org.zanata.model;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -33,16 +34,14 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.Size;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
-import org.zanata.model.type.WebhookType;
-import org.zanata.model.type.WebhookTypeType;
 import org.zanata.model.validator.Url;
+
+import com.google.common.annotations.VisibleForTesting;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -51,9 +50,6 @@ import org.zanata.model.validator.Url;
 @Getter
 @Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor
-@TypeDefs({
-    @TypeDef(name = "webhookType", typeClass = WebhookTypeType.class)
-})
 public class WebHook implements Serializable {
 
     private Long id;
@@ -63,8 +59,6 @@ public class WebHook implements Serializable {
     @Url
     private String url;
 
-    private WebhookType webhookType;
-
     /**
      * Secret key used to generate webhook header in hmac-sha1 encryption.
      */
@@ -72,10 +66,9 @@ public class WebHook implements Serializable {
     @Column(nullable = true)
     private String secret;
 
-    public WebHook(HProject project, String url, WebhookType webhookType, String secret) {
+    public WebHook(HProject project, String url, String secret) {
         this.project = project;
         this.url = url;
-        this.webhookType = webhookType;
         this.secret = secret;
     }
 
@@ -90,10 +83,4 @@ public class WebHook implements Serializable {
     public HProject getProject() {
         return project;
     }
-
-    @Type(type = "webhookType")
-    public WebhookType getWebhookType() {
-        return webhookType;
-    }
-
 }

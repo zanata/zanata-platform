@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition template="../WEB-INF/template/template_ui.xhtml">
+
+<ui:define name="page_title">#{msgs['jsf.Glossary']}</ui:define>
+<ui:define name="center_content">
+
+
+  <div id="main-content"
+    base-url="#{request.contextPath}/rest"
+    user="#{glossaryAction.convertToJSON(glossaryAction.user)}"
+    data='{"view": "glossary", "permission": #{glossaryAction.userPermission.getJSON()}}'/>
+
+  <script type="text/javascript"
+    src="#{request.contextPath}/frontend.bundle.min.js"></script>
+
+</ui:define>
+</ui:composition>
+</html>

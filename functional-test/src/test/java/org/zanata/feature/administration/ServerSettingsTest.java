@@ -29,7 +29,6 @@ import org.zanata.feature.testharness.TestPlan;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.page.administration.ServerConfigurationPage;
-import org.zanata.page.more.MorePage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.HasEmailRule;
 import org.zanata.workflow.LoginWorkFlow;
@@ -57,7 +56,7 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .goToServerConfigPage()
                 .inputServerURL("http://myserver.com/zanata")
                 .save()
-                .gotoMorePage()
+                .goToHomePage()
                 .clickContactAdmin()
                 .inputMessage("Test pattern")
                 .send(HomePage.class);
@@ -92,7 +91,7 @@ public class ServerSettingsTest extends ZanataTestCase {
                 .goToServerConfigPage()
                 .inputAdminEmail("lara@example.com")
                 .save()
-                .gotoMorePage()
+                .goToHomePage()
                 .clickContactAdmin()
                 .inputMessage("Test pattern")
                 .send(HomePage.class);
@@ -128,15 +127,15 @@ public class ServerSettingsTest extends ZanataTestCase {
 
     @Test
     public void setHelpURLTest() {
-        MorePage morePage = new LoginWorkFlow()
+        HomePage homePage = new LoginWorkFlow()
                 .signIn("admin", "admin")
                 .goToAdministration()
                 .goToServerConfigPage()
                 .inputHelpURL("http://www.test.com")
                 .save()
-                .gotoMorePage();
+                .goToHomePage();
 
-        assertThat(morePage.getHelpURL())
+        assertThat(homePage.getHelpURL())
                 .isEqualTo("http://www.test.com/")
                 .as("The help URL was set correctly");
     }

@@ -42,7 +42,6 @@ import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.common.ContentState;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
-import org.zanata.events.DocStatsEvent;
 import org.zanata.events.DocumentLocaleKey;
 import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.model.HAccount;
@@ -64,7 +63,7 @@ import com.google.common.base.Optional;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Maps;
 
-import static org.zanata.events.TextFlowTargetStateEvent.TextFlowTargetStateChange;
+import static org.zanata.events.TextFlowTargetStateEvent.TextFlowTargetState;
 import static org.zanata.transaction.TransactionUtil.runInTransaction;
 
 /**
@@ -100,21 +99,10 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
     @Inject
     private Event<TextFlowTargetStateEvent> textFlowTargetStateEvent;
 
-    @Inject
-    private Event<DocStatsEvent> docStatsEvent;
-
     @Inject @Authenticated
     private HAccount authenticatedAccount;
 
-    /**
-     * Batch size for find matching HTextFlow to process merging of translations.
-     * Each TextFlow may lead to changes in multiple TextFlowTargets (up to one per locale)
-     *
-     * This will determine how many DocStatsEvent will be trigger as part of webhook event.
-     * The larger the number, the less DocStatsEvent will be triggered as it aggregates
-     * related translated states.
-     */
-    private final static int TEXTFLOWS_PER_BATCH = 20;
+    private final static int TRANSLATION_BATCH_SIZE = 10;
 
     @Override
     @Async
@@ -177,12 +165,12 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
             int processedCount =
                     mergeTranslationBatch(sourceVersion, targetVersion,
                             supportedLocales, useNewerTranslation, startCount,
-                            TEXTFLOWS_PER_BATCH);
+                            TRANSLATION_BATCH_SIZE);
             if (taskHandleOpt.isPresent()) {
                 taskHandleOpt.get().increaseProgress(processedCount);
             }
 
-            startCount += TEXTFLOWS_PER_BATCH;
+            startCount += TRANSLATION_BATCH_SIZE;
             textFlowDAO.clear();
         }
         versionStateCacheImpl.clearVersionStatsCache(targetVersion.getId());
@@ -223,14 +211,8 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
                         sourceVersionId, targetVersionId, batchStart,
                         batchLength);
 
-        Multimap<DocumentLocaleKey, TextFlowTargetStateChange> eventMap =
+        Multimap<DocumentLocaleKey, TextFlowTargetState> eventMap =
             HashMultimap.create();
-
-        Map<DocumentLocaleKey, Map<ContentState, Long>> docStatsMap =
-            Maps.newHashMap();
-
-        Map<DocumentLocaleKey, Long> lastUpdatedTargetId =
-            Maps.newHashMap();;
 
         for (HTextFlow[] results : matches) {
             HTextFlow sourceTf = results[0];
@@ -269,48 +251,30 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
                 textFlowDAO.makePersistent(targetTf);
                 textFlowDAO.flush();
 
-                for (Map.Entry<Long, ContentState> entry : localeContentStateMap
-                        .entrySet()) {
-                    HTextFlowTarget updatedTarget =
-                            targetTf.getTargets().get(entry.getKey());
+                if (!localeContentStateMap.isEmpty()) {
+                    for (Map.Entry<Long, ContentState> entry : localeContentStateMap
+                            .entrySet()) {
+                        HTextFlowTarget updatedTarget =
+                                targetTf.getTargets().get(entry.getKey());
 
-                    DocumentLocaleKey key = new DocumentLocaleKey(
+                        DocumentLocaleKey key = new DocumentLocaleKey(
                             targetTf.getDocument().getId(),
                             updatedTarget.getLocale().getLocaleId());
 
-                    eventMap.put(key, new TextFlowTargetStateEvent.TextFlowTargetStateChange(targetTf.getId(),
+                        eventMap.put(key, new TextFlowTargetState(targetTf.getId(),
                             updatedTarget.getId(), updatedTarget.getState(),
                             entry.getValue()));
-
-                    lastUpdatedTargetId.put(key, updatedTarget.getId());
-
-                    Map<ContentState, Long> contentStateDeltas =
-                            docStatsMap.get(key) == null ? Maps.newHashMap()
-                                    : docStatsMap.get(key);
-
-                    DocStatsEvent.updateContentStateDeltas(contentStateDeltas,
-                            updatedTarget.getState(), entry.getValue(),
-                            targetTf.getWordCount());
-
-                    docStatsMap.put(key, contentStateDeltas);
+                    }
                 }
             }
         }
         Long actorId = authenticatedAccount.getPerson().getId();
-        for (Map.Entry<DocumentLocaleKey, Collection<TextFlowTargetStateChange>> entry : eventMap
+        for (Map.Entry<DocumentLocaleKey, Collection<TextFlowTargetState>> entry : eventMap
             .asMap().entrySet()) {
             TextFlowTargetStateEvent tftUpdatedEvent =
                 new TextFlowTargetStateEvent(entry.getKey(), targetVersionId,
                     actorId, ImmutableList.copyOf(entry.getValue()));
             textFlowTargetStateEvent.fire(tftUpdatedEvent);
-        }
-        for (Map.Entry<DocumentLocaleKey, Map<ContentState, Long>> entry : docStatsMap
-                .entrySet()) {
-            DocStatsEvent docEvent =
-                    new DocStatsEvent(entry.getKey(), targetVersionId,
-                            entry.getValue(),
-                            lastUpdatedTargetId.get(entry.getKey()));
-            docStatsEvent.fire(docEvent);
         }
         stopwatch.stop();
         log.info("Complete merge translations of {} in {}", matches.size()

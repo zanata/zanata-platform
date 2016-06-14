@@ -27,10 +27,15 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.stream.StreamSource;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.jboss.resteasy.client.ClientResponse;
-import org.zanata.rest.dto.DTOUtil;
 
 /**
  * Provides utilities when testing Raw REST APIs.
@@ -126,6 +131,11 @@ public class RawRestTestUtils {
     }
 
     public static String jsonMarshal(Object jsonObject) {
-        return DTOUtil.toJSON(jsonObject);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(jsonObject);
+        } catch (IllegalStateException | IOException e) {
+            throw new AssertionError(e);
+        }
     }
 }

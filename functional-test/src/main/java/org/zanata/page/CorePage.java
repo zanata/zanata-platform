@@ -30,7 +30,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.zanata.page.more.MorePage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.WebElementUtil;
 
@@ -49,9 +48,7 @@ import com.google.common.collect.Lists;
 @Slf4j
 public class CorePage extends AbstractPage {
 
-    private By homeLink = By.id("nav_home");
-
-    private By moreLink = By.id("nav_more");
+    private By homeLink = By.id("home");
 
     public CorePage(WebDriver driver) {
         super(driver);
@@ -67,12 +64,6 @@ public class CorePage extends AbstractPage {
         scrollToTop();
         clickElement(homeLink);
         return new HomePage(getDriver());
-    }
-
-    public MorePage gotoMorePage() {
-        log.info("Click More icon");
-        clickElement(moreLink);
-        return new MorePage(getDriver());
     }
 
     protected void clickAndCheckErrors(WebElement button) {

@@ -22,15 +22,15 @@ package org.zanata.workflow;
 
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
-import org.zanata.page.dashboard.DashboardBasePage;
-import org.zanata.page.explore.ExplorePage;
 import org.zanata.page.projects.CreateProjectPage;
 import org.zanata.page.projects.ProjectVersionsPage;
+import org.zanata.page.projects.ProjectsPage;
 import org.zanata.page.projects.projectsettings.ProjectPermissionsTab;
 import org.zanata.page.projectversion.CreateVersionPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * This class represents the work-flows involved when interacting with
@@ -51,22 +51,21 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
      */
     public ProjectVersionsPage createNewSimpleProject(String projectId,
             String projectName) {
-        ExplorePage explorePage = goToHome().gotoExplore();
+        ProjectsPage projectsPage = goToHome().goToProjects();
+        List<String> projects = projectsPage.getProjectNamesOnCurrentPage();
+        log.info("current projects: {}", projects);
 
-        explorePage = explorePage.enterSearch(projectName);
-        if (!explorePage.getProjectSearchResults().isEmpty() &&
-            explorePage.getProjectSearchResults().contains(projectName)) {
+        if (projects.contains(projectName)) {
             log.warn("{} already exists. This test environment is not clean.",
-                projectId);
+                    projectId);
             // since we can't create same project multiple times,
             // if we run this test more than once manually, we don't want it to
             // fail
-            return explorePage.clickProjectEntry(projectName);
+            return projectsPage.goToProject(projectName);
         }
-        return goToHome().goToMyDashboard().gotoProjectsTab()
-            .clickOnCreateProjectLink()
-            .enterProjectId(projectId).enterProjectName(projectName)
-            .pressCreateProject();
+        return projectsPage.clickOnCreateProjectLink()
+                .enterProjectId(projectId).enterProjectName(projectName)
+                .pressCreateProject();
     }
 
     /**
@@ -79,9 +78,10 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
      * @see {@link #projectDefaults()}
      */
     public ProjectVersionsPage createNewProject(HashMap<String, String> settings) {
-        DashboardBasePage dashboard = goToHome().goToMyDashboard();
-        CreateProjectPage createProjectPage = dashboard
-                .gotoProjectsTab()
+        ProjectsPage projectsPage = goToHome().goToProjects();
+        List<String> projects = projectsPage.getProjectNamesOnCurrentPage();
+        log.info("current projects: {}", projects);
+        CreateProjectPage createProjectPage = projectsPage
                 .clickOnCreateProjectLink()
                 .enterProjectName(settings.get("Name"))
                 .enterProjectId(settings.get("Project ID"))
@@ -146,14 +146,17 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
     }
 
     public ProjectVersionsPage goToProjectByName(String projectName) {
-        ExplorePage explorePage = goToHome().gotoExplore();
-        return explorePage.searchAndGotoProjectByName(projectName);
+        ProjectsPage projects = goToHome().goToProjects();
+        log.info("go to project by name with current projects: {}, name: {}",
+                projects.getProjectNamesOnCurrentPage(), projectName);
+        return projects.goToProject(projectName);
     }
 
     public ProjectPermissionsTab addMaintainer(String projectName,
-        final String username) {
-        ProjectPermissionsTab projectPermissionsTab =
-            goToProjectByName(projectName)
+                                               final String username) {
+        ProjectPermissionsTab projectPermissionsTab = goToHome()
+                .goToProjects()
+                .goToProject(projectName)
                 .gotoSettingsTab()
                 .gotoSettingsPermissionsTab()
                 .enterSearchMaintainer(username)
@@ -163,14 +166,16 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
     }
 
     public ProjectPermissionsTab removeMaintainer(String projectName,
-        final String username) {
+            final String username) {
         ProjectPermissionsTab projectPermissionsTab =
-            goToProjectByName(projectName)
-                .gotoSettingsTab()
-                .gotoSettingsPermissionsTab();
+                new BasicWorkFlow().goToHome()
+                        .goToProjects()
+                        .goToProject(projectName)
+                        .gotoSettingsTab()
+                        .gotoSettingsPermissionsTab();
 
         projectPermissionsTab.clickRemoveOn(username)
-            .expectMaintainersNotContains(username);
+                .expectMaintainersNotContains(username);
 
         return new ProjectPermissionsTab(driver);
     }

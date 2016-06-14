@@ -30,7 +30,6 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
-import lombok.Getter;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
@@ -59,8 +58,6 @@ public class DswidParamChecker {
     private final EventFiringWebDriver driver;
     private final WebDriverEventListener urlListener;
     private @Nullable String oldUrl;
-
-    @Getter
     private @Nullable String oldDswid;
     private boolean checkingDswids = true;
     private boolean insideInvoke;

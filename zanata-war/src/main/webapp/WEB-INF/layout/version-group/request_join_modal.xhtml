@@ -4,7 +4,6 @@
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
-  xmlns:f="http://java.sun.com/jsf/core"
   class="modal" id="joinGroupDialog" tabindex="-1" role="dialog"
   aria-labelledby="myModalLabel" aria-hidden="true">
 
@@ -25,31 +24,14 @@
       toggleButtons();
     }
 
-    function getRequestJoinSendButton() {
-      return getJoinGroupForm().find('#request-join-group-send-button');
-    }
-
     function toggleButtons() {
-      var sendButton = getRequestJoinSendButton();
+      var sendButton = jQuery(getJoinGroupForm()).find('#request-join-group-send-button');
       var hasSelection = jQuery(getJoinGroupVersionList()).find('.js-form__checkbox.is-checked').length > 0;
       sendButton.prop('disabled', !hasSelection);
     }
 
     function refreshCheckbox() {
       zanata.form.appendCheckboxes(getJoinGroupVersionList().element);
-    }
-
-    //returns error message for text area
-    function getContactAdminMessageErrorField() {
-      return jQuery('#' + jqSelector('#{rich:clientId('request-join-group-error-message')}')).val('');
-    }
-
-    function completeSendingJoinRequest() {
-      var errMsg = getContactAdminMessageErrorField().text();
-      if(errMsg.length == 0 ){
-        getJoinGroupForm().find('#request-join-group-cancel-button').click();
-      }
-      getRequestJoinSendButton().removeClass('is-active');
     }
 
   </script>
@@ -70,7 +52,7 @@
 
     <h:form id="joinGroupForm" styleClass="l--push-bottom-0">
       <a4j:jsFunction name="sendJoinGroupEmail" action="#{versionGroupJoinAction.send()}"
-        execute="@form" oncomplete="completeSendingJoinRequest()"/>
+        execute="@form" oncomplete="jQuery(getJoinGroupForm()).find('#request-join-group-cancel-button').click()"/>
 
       <a4j:jsFunction name="cancelJoinGroupEmail" action="#{versionGroupJoinAction.clearFormFields()}"
         execute="@form" oncomplete="cancelJoinGroup()"/>
@@ -116,10 +98,8 @@
           <span class="txt--meta bx--block">#{msgs['jsf.group.email.AdditionalInfoMessage']}</span>
           <h:inputTextarea id="request-join-group-message" value="#{versionGroupJoinAction.message}"
             styleClass="l--push-bottom-0">
-            <f:validateLength maximum="300"/>
+            <a4j:ajax event="blur" render="messageField" execute="@this"/>
           </h:inputTextarea>
-          <rich:message for="request-join-group-message" ajaxRendered="true"
-            id="request-join-group-error-message" name="request-join-group-error-message" errorClass="bg--danger"/>
         </zanata:decorate>
       </div>
 

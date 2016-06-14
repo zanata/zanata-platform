@@ -1,0 +1,193 @@
+<header role="banner" class="header bg--highest"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
+
+  <script type="text/javascript">
+    function selectItem(item) {
+      window.location.href = jQuery(item).find('a').attr("href");
+    }
+  </script>
+
+  <h1 class="header__title">
+    <h:link outcome="/home.xhtml"  id="home">
+      <img class="header__site-logo" src="#{assets['img/logo/logo.svg']}"/>
+      #{msgs['jsf.Zanata']}
+    </h:link>
+  </h1>
+
+  <nav id="nav-main" class="header__main-nav js-dropdown">
+    <a href="#nav-main" class="header__main-nav__toggle js-dropdown__toggle">
+      <i class="i i--huge i--list"></i>
+      <span class="is-invisible">#{msgs['jsf.Menu']}</span>
+    </a>
+
+    <div class="header__main-nav__group js-dropdown__content">
+      <h:form styleClass="form--search header__search js-form--search" id="general-search-form">
+        <label class="form--search__label"
+          for="#{rich:clientId('projectAutocomplete')}-autocomplete__input">
+          #{msgs['jsf.Search']}
+        </label>
+
+        <zanata:autocomplete actionBean="#{zanataSearch.autocomplete}"
+          maxlength="100" minlength="1" id="projectAutocomplete"
+          fetchValue="#{result.project.slug}"
+          placeholder="#{msgs['jsf.Search']}"
+          activePlaceholder="#{msgs['jsf.SearchProjectsAndPeople']}"
+          onSelectItem="selectItem"
+          inputClass="form--search__input js-form--search__input">
+
+          <h:link  outcome="/project/project.xhtml"
+            rendered="#{!result.isProjectNull()}">
+            <i class="i i--project"></i> #{result.project.name}
+            <f:param name="slug" value="#{result.project.slug}"/>
+          </h:link>
+
+          <h:link  outcome="/profile/home.xhtml"
+            rendered="#{!result.isUserNull()}">
+            <i class="i i--user"></i> #{result.account.username}
+            <f:param name="username" value="#{result.account.username}"/>
+          </h:link>
+
+          <h:link outcome="/search.xhtml" rendered="#{result.isProjectNull() and result.isUserNull()}">
+            <i class="i i--search"></i> Search Zanata for
+            '#{zanataSearch.autocomplete.query}'
+            <f:param name="query" value="#{zanataSearch.autocomplete.query}"/>
+          </h:link>
+
+        </zanata:autocomplete>
+
+      </h:form>
+      <ul class="header__main-nav__menu">
+        <li>
+          <h:link id="projects_link" outcome="/project/home.xhtml"
+            >#{msgs['jsf.Projects']}
+            <i class="is-hidden--m-up l--float-right i--inline i--project"></i>
+          </h:link>
+        </li>
+        <li>
+          <h:link id="version-groups_link" outcome="/version-group/home.xhtml"
+            >#{msgs['jsf.Groups']}
+            <i class="is-hidden--m-up l--float-right i--inline i--group"></i>
+          </h:link>
+        </li>
+        <li>
+          <h:link id="languages_link" outcome="/language/home.xhtml"
+            >#{msgs['jsf.Languages']}
+            <i class="is-hidden--m-up l--float-right i--inline i--language"></i>
+          </h:link>
+        </li>
+        <ui:fragment rendered="#{identity.loggedIn}">
+          <li>
+            <h:link id="glossary_link" outcome="/glossary/view.xhtml"
+              >#{msgs['jsf.Glossary']}
+              <i
+                class="is-hidden--m-up l--float-right i--inline i--glossary"></i>
+            </h:link>
+          </li>
+        </ui:fragment>
+
+        <li>
+          <a id="help_link" target="_blank" href="#{applicationConfigurationAction.helpUrl}">
+            #{msgs['jsf.Help']}
+            <i class="is-hidden--m-up l--float-right i--inline i--help"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <ui:fragment
+    rendered="#{identity.loggedIn and authenticatedAccountHome.instance.enabled}">
+    <h:form id="banner_form">
+    <nav class="header__user-nav js-dropdown">
+      <a href="#nav-user" class="header__user-nav__toggle js-dropdown__toggle"
+        id="user--avatar"
+        title="#{authenticatedAccountHome.instance.username}">
+        <div class="badge__container">
+          <div class="bx--round header__avatar">
+            <img src="#{gravatarServiceImpl.getUserImageUrl(72)}"
+              alt="#{authenticatedAccountHome.instance.person.name}"/>
+          </div>
+        </div>
+      </a>
+      <ul id="nav-user" class="header__user-nav__menu js-dropdown__content">
+        <li>
+          <h:link id="dashboard" outcome="/dashboard/home.xhtml"
+            >
+            #{msgs['jsf.Dashboard']} <i
+            class="l--float-right i--inline i--dashboard"></i>
+          </h:link>
+        </li>
+        <li>
+          <h:link id="dashboard-settings" outcome="/dashboard/home.xhtml">
+            <f:param name="section" value="settings" />
+            #{msgs['jsf.Settings']}
+            <i class="l--float-right i--inline i--settings"></i>
+          </h:link>
+        </li>
+        <ui:fragment rendered="#{identity.hasRole('admin')}">
+          <li>
+            <h:link id="administration" outcome="/admin/home.xhtml"
+              >
+              #{msgs['jsf.Administration']} <i
+              class="l--float-right i--inline i--admin"></i>
+            </h:link>
+          </li>
+        </ui:fragment>
+        <li>
+          <a jsfc="h:commandLink" id="right_menu_sign_out_link"
+            action="#{identity.logout}">
+            #{msgs['jsf.Logout']} <i class="l--float-right i--inline i--logout"/>
+          </a>
+        </li>
+      </ul>
+    </nav>
+    </h:form>
+  </ui:fragment>
+
+  <ui:fragment rendered="#{not identity.loggedIn}">
+    <h:panelGroup layout="block"  styleClass="header__login l--float-right">
+      <h:link id="register_link_internal_auth" outcome="/account/register.xhtml"
+        value="#{msgs['jsf.Signup']}"
+         styleClass="is-hidden--s button"
+        rendered="#{applicationConfiguration.internalAuth}"/>
+
+      <ui:fragment
+        rendered="#{applicationConfigurationAction.registrationLinkNeeded}">
+        <ui:remove>
+          <!-- TODO add dswid, but only if Zanata URL -->
+        </ui:remove>
+        <a id="register_link" href="#{applicationConfiguration.registerPath}"
+          class="is-hidden--s button">#{msgs['jsf.Signup']}</a>
+      </ui:fragment>
+
+      <h:link id="signin_link"
+        outcome="/account/login.xhtml"
+        value="#{msgs['jsf.Login']}"
+        propagation="none" styleClass="l--push-left-half button--primary"
+        rendered="#{applicationConfigurationAction.loginHandledByInternalPage}">
+        <f:param name="continue" value="#{urlUtil.getEncodedLocalUrl(request)}"/>
+      </h:link>
+
+      <h:form rendered="#{applicationConfigurationAction.singleOpenId}" styleClass="bx--inline">
+        <h:commandLink id="openid_single_signin_link"
+          action="#{loginAction.getLoginPageRedirect()}"
+          propagation="none" styleClass="l--push-left-half button--primary">
+          #{messages['jsf.Login']}
+        </h:commandLink>
+      </h:form>
+
+      <h:outputLink id="ksignin_link"
+        value="#{request.contextPath}/account/klogin?continue=#{urlUtil.getEncodedLocalUrl(request)}"
+        propagation="none" styleClass="l--push-left-half button--primary"
+        rendered="#{applicationConfiguration.kerberosAuth}">
+        #{msgs['jsf.Login']}
+      </h:outputLink>
+    </h:panelGroup>
+  </ui:fragment>
+
+</header>

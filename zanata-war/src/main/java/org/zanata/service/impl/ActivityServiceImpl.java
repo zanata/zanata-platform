@@ -24,6 +24,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.Lock;
 
 import javax.enterprise.context.RequestScoped;
@@ -32,6 +33,8 @@ import javax.enterprise.event.TransactionPhase;
 import javax.persistence.EntityManager;
 
 import com.google.common.base.Throwables;
+import com.google.common.collect.Maps;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang.time.DateUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -201,7 +204,7 @@ public class ActivityServiceImpl implements ActivityService {
                     int totalReviewedWords = 0;
                     int totalTranslatedWords = 0;
 
-                    for (TextFlowTargetStateEvent.TextFlowTargetStateChange state : event
+                    for (TextFlowTargetStateEvent.TextFlowTargetState state : event
                         .getStates()) {
                         HTextFlowTarget target =
                             textFlowTargetDAO.findById(

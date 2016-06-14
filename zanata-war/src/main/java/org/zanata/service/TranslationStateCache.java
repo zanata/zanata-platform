@@ -22,7 +22,6 @@
 package org.zanata.service;
 
 import org.zanata.common.LocaleId;
-import org.zanata.events.DocStatsEvent;
 import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.webtrans.shared.model.DocumentStatus;
@@ -40,8 +39,12 @@ public interface TranslationStateCache {
      * Informs the cache that a text flow has changed its state in a given
      * locale. (It's really a Text Flow Target state)
      *
-     * @param event
-     *            The text flow target state event
+     * @param textFlowId
+     *            The id of the text flow that has changed state.
+     * @param localeId
+     *            The locale for which state has changed.
+     * @param newState
+     *            The new state after the change.
      */
     void textFlowStateUpdated(TextFlowTargetStateEvent event);
 
@@ -56,7 +59,7 @@ public interface TranslationStateCache {
 
     /**
      * Return boolean of textFlowTarget has validation error against validation
-     * rules {@link org.zanata.webtrans.shared.model.ValidationAction}
+     * rules {@link org.zanata.webtrans.share.model.ValidationAction}
      *
      * @param textFlowTargetId
      * @param validationId

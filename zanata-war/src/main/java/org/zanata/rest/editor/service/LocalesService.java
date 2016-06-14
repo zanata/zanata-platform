@@ -22,7 +22,6 @@ package org.zanata.rest.editor.service;
 
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
@@ -57,16 +56,18 @@ public class LocalesService implements LocalesResource {
         List<HLocale> locales = localeServiceImpl.getAllLocales();
 
         List<Locale> localesRefs =
-            Lists.newArrayListWithExpectedSize(locales.size());
+                Lists.newArrayListWithExpectedSize(locales.size());
 
-        localesRefs.addAll(
-            locales.stream().map(hLocale -> new Locale(hLocale.getLocaleId(),
-                hLocale.retrieveDisplayName())).collect(Collectors.toList()));
+        for (HLocale hLocale : locales) {
+            localesRefs.add(new Locale(hLocale.getLocaleId(),
+                    hLocale.retrieveDisplayName()));
+        }
 
         Type genericType = new GenericType<List<Locale>>() {
         }.getGenericType();
         Object entity =
-            new GenericEntity<List<Locale>>(localesRefs, genericType);
+                new GenericEntity<List<Locale>>(localesRefs, genericType);
         return Response.ok(entity).build();
     }
+
 }

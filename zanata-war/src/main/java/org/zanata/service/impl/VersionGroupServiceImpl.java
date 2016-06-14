@@ -107,6 +107,11 @@ public class VersionGroupServiceImpl implements VersionGroupService {
     }
 
     @Override
+    public List<HIterationGroup> getAllGroups(EntityStatus... statuses) {
+        return versionGroupDAO.getAllGroups(statuses);
+    }
+
+    @Override
     public List<HProjectIteration>
             searchLikeSlugOrProjectSlug(String searchTerm) {
         return projectIterationDAO.searchLikeSlugOrProjectSlug(searchTerm);

@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
@@ -46,18 +47,19 @@ public class WebHooksPublisher {
 
     public static final String WEBHOOK_HEADER = "X-Zanata-Webhook";
 
-    public static void publish(@Nonnull String callbackURL,
+    public static Response publish(@Nonnull String callbackURL,
         @Nonnull WebhookEventType event, Optional<String> secretKey) {
-        publish(callbackURL, event.getJSON(), MediaType.APPLICATION_JSON_TYPE,
+        return publish(callbackURL, event.getJSON(), MediaType.APPLICATION_JSON_TYPE,
             MediaType.APPLICATION_JSON_TYPE, secretKey);
     }
 
-    protected static void publish(@Nonnull String callbackURL,
+    protected static Response publish(@Nonnull String callbackURL,
             @Nonnull String data, @Nonnull MediaType acceptType,
             @Nonnull MediaType mediaType, Optional<String> secretKey) {
         try {
             ResteasyClient client = new ResteasyClientBuilder().build();
             ResteasyWebTarget target = client.target(callbackURL);
+
             Invocation.Builder postBuilder =
                     target.request().accept(acceptType);
 
@@ -67,11 +69,11 @@ public class WebHooksPublisher {
                         signWebhookHeader(data, secretKey.get(), callbackURL);
                 postBuilder.header(WEBHOOK_HEADER, sha);
             }
-            log.debug("firing async webhook: {}:{}", callbackURL, data);
-            postBuilder.async().post(Entity.entity(data, mediaType));
+            return postBuilder.post(Entity.entity(data, mediaType));
         } catch (Exception e) {
             log.error("Error on webhooks post {}, {}", callbackURL, e);
         }
+        return null;
     }
 
     protected static String signWebhookHeader(String data, String key,

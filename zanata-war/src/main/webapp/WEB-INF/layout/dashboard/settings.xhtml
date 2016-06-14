@@ -274,7 +274,7 @@
             </a>.
           </p>
           <div class="form__item">
-            <label for="client_settings_apiKey">
+            <label for="apiKey">
               #{msgs['jsf.dashboard.settings.apiKey.label']}
             </label>
             <ui:fragment id="no_api_key"
@@ -284,7 +284,7 @@
             <ui:fragment id="api_key"
               rendered="#{userSettingsAction.apiKeyGenerated}">
               <p>#{msgs['jsf.YourCurrentApiKeyIs']}
-                <input id="client_settings_apiKey" type="text" class="js-form__input--copyable"
+                <input id="apiKey" type="text" class="js-form__input--copyable"
                   value="#{userSettingsAction.accountApiKey}" readonly=""
                   size="30"/>
               </p>
@@ -302,8 +302,8 @@
             #{msgs['jsf.dashboard.settings.generateNewApiKey.label']}
           </button>
           <div class="form__item l--push-top-1">
-            <label for="client_settings_config">Configuration (zanata.ini)</label>
-            <textarea id="client_settings_config" rows="4" readonly="" class="js-form__input--copyable">[servers]
+            <label for="config">Configuration (zanata.ini)</label>
+            <textarea id="config" rows="4" readonly="" class="js-form__input--copyable">[servers]
 #{userSettingsAction.urlKeyLabel}#{applicationConfiguration.serverPath}/
 #{userSettingsAction.usernameKeyLabel}#{userSettingsAction.accountUsername}
 #{userSettingsAction.apiKeyLabel}#{userSettingsAction.accountApiKey}

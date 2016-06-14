@@ -128,7 +128,6 @@ public class Deployments {
                 "META-INF/persistence.xml");
         archive.addAsResource("import.sql");
         archive.addAsResource("messages.properties");
-        archive.addAsResource("zanata-infinispan.xml");
         archive.addAsWebInfResource(
                 new File("src/main/webapp-jboss/WEB-INF/jboss-web.xml"));
         archive.addAsWebInfResource(

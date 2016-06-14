@@ -709,14 +709,4 @@ public class TargetContentsPresenter implements TargetContentsDisplay.Listener,
             getCurrentDisplay().toggleSyntaxHighlighting();
         }
     }
-
-    public void acceptTranslation() {
-        TransUnitId id = getCurrentTransUnitIdOrNull();
-        acceptTranslation(id);
-    }
-
-    public void rejectTranslation() {
-        TransUnitId id = getCurrentTransUnitIdOrNull();
-        rejectTranslation(id);
-    }
 }
