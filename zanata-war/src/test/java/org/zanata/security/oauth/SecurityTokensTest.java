@@ -21,11 +21,12 @@
 
 package org.zanata.security.oauth;
 
-import org.assertj.core.api.Assertions;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.model.HAccount;
+
+import static org.assertj.core.api.Assertions.*;
 
 public class SecurityTokensTest {
 
@@ -33,22 +34,24 @@ public class SecurityTokensTest {
 
     @Before
     public void setUp() throws Exception {
-        securityTokens = new SecurityTokens(1L);
+        securityTokens = new SecurityTokens();
+        securityTokens.tokenExpiresInSeconds = 1L;
         securityTokens.setUp();
     }
 
     @Test
     public void canConvertToJson() throws Exception {
-        securityTokens.getAuthorizationCode("admin", "client_id");
+        String username = "aUser";
+        securityTokens.getAuthorizationCode(username, "client_id");
         HAccount account = new HAccount();
-        account.setUsername("admin");
+        account.setUsername(username);
         securityTokens.generateAccessAndRefreshTokens(account);
         String fieldValuesAsJSON = securityTokens.getFieldValuesAsJSON();
 
         SecurityTokens.Tokens tokens = new ObjectMapper().reader(SecurityTokens.Tokens.class)
                 .readValue(fieldValuesAsJSON);
-        Assertions.assertThat(tokens.getAccessTokenToUsername()).containsValue("admin");
-        Assertions.assertThat(tokens.getUsernameToClientIdAuthCodeMap()).containsKey("admin");
+        assertThat(tokens.getAccessTokenToUsername()).containsValue(username);
+        assertThat(tokens.getUsernameToClientIdAuthCodeMap()).containsKey(username);
     }
 
 }

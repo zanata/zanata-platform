@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -64,18 +65,23 @@ import org.zanata.util.ServiceLocator;
 @Slf4j
 @WebFilter(filterName = "RestLimitingFilter")
 public class RestLimitingFilter implements Filter {
-    private static final String API_KEY_ABSENCE_WARNING =
-            "You must have a valid API key. You can create one by logging " +
-                    "in to Zanata and visiting the settings page.";
     private final RateLimitingProcessor processor;
 
+    @Inject
+    private AccountDAO accountDAO;
+
+    @Inject
+    private SecurityTokens securityTokens;
+
     public RestLimitingFilter() {
-        this(new RateLimitingProcessor());
+        this.processor = new RateLimitingProcessor();
     }
 
     @VisibleForTesting
-    RestLimitingFilter(RateLimitingProcessor processor) {
+    RestLimitingFilter(RateLimitingProcessor processor, AccountDAO accountDAO, SecurityTokens securityTokens) {
         this.processor = processor;
+        this.accountDAO = accountDAO;
+        this.securityTokens = securityTokens;
     }
 
 
@@ -150,24 +156,18 @@ public class RestLimitingFilter implements Filter {
         Optional<String> usernameOpt = Optional.empty();
         if (StringUtils.isNotEmpty(authCode)) {
             // Get user account with OAuth authorizationCode if it presents
-            usernameOpt = getSecurityTokens()
+            usernameOpt = securityTokens
                     .findUsernameForAuthorizationCode(authCode);
         } else if (accessTokenOpt.isPresent()) {
             // Get user account with OAuth accessToken if it presents
-            usernameOpt = getSecurityTokens()
+            usernameOpt = securityTokens
                     .findUsernameByAccessToken(accessTokenOpt.get());
         }
         if (usernameOpt.isPresent()) {
-            return getAccountDAO()
+            return accountDAO
                     .getByUsername(usernameOpt.get());
         }
         return null;
-    }
-
-    @VisibleForTesting
-    protected SecurityTokens getSecurityTokens() {
-        return ServiceLocator.instance().getInstance(
-                SecurityTokens.class);
     }
 
     @VisibleForTesting
@@ -177,12 +177,8 @@ public class RestLimitingFilter implements Filter {
     }
 
     private @Nullable HAccount getUser(@Nonnull String apiKey) {
-        return getAccountDAO()
+        return accountDAO
                 .getByApiKey(apiKey);
     }
 
-    @VisibleForTesting
-    protected AccountDAO getAccountDAO() {
-        return ServiceLocator.instance().getInstance(AccountDAO.class);
-    }
 }

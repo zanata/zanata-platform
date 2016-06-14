@@ -58,14 +58,12 @@ public class RestLimitingFilterTest extends ZanataTest {
         MockitoAnnotations.initMocks(this);
         when(request.getMethod()).thenReturn("GET");
 
-        filter = spy(new RestLimitingFilter(processor));
+        filter = spy(new RestLimitingFilter(processor, accountDAO, securityTokens));
 
         // this way we can verify the task actually called super.invoke()
         doNothing().when(filterChain).doFilter(request, response);
         authenticatedUser = null;
         doReturn(authenticatedUser).when(filter).getAuthenticatedUser();
-        doReturn(securityTokens).when(filter).getSecurityTokens();
-        doReturn(accountDAO).when(filter).getAccountDAO();
     }
 
     @Test

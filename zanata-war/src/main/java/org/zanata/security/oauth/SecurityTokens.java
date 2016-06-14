@@ -94,14 +94,9 @@ public class SecurityTokens
             CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.SECONDS)
                     .build();
 
-    private final long tokenExpiresInSeconds;
-
     @Inject
-    public SecurityTokens(
-            @SysConfig(ApplicationConfiguration.ACCESS_TOKEN_EXPIRES_IN_SECONDS)
-                    long tokenExpiresInSeconds) {
-        this.tokenExpiresInSeconds = tokenExpiresInSeconds;
-    }
+    @SysConfig(ApplicationConfiguration.ACCESS_TOKEN_EXPIRES_IN_SECONDS)
+    protected long tokenExpiresInSeconds;
 
     @PostConstruct
     public void setUp() {

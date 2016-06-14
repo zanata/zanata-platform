@@ -36,8 +36,11 @@ import org.mockito.MockitoAnnotations;
 import org.zanata.model.HAccount;
 import org.zanata.security.ZanataCredentials;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.security.oauth.SecurityTokens;
 import org.zanata.util.HttpUtil;
+import org.zanata.util.IServiceLocator;
+import org.zanata.util.ServiceLocator;
 
 import com.google.common.collect.Lists;
 
@@ -63,18 +66,15 @@ public class ZanataRestSecurityInterceptorTest {
     private MultivaluedHashMap<String, String> headers;
     @Mock
     private ZanataCredentials credential;
+    @Mock
+    private IServiceLocator serviceLocator;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         securityInterceptor =
                 new ZanataRestSecurityInterceptor(request, securityTokens, identity,
-                        true) {
-                    @Override
-                    protected boolean hasAuthenticatedAccount() {
-                        return false;
-                    }
-                };
+                        true, serviceLocator);
         headers = new MultivaluedHashMap<>();
 
         // some common set up
@@ -87,14 +87,9 @@ public class ZanataRestSecurityInterceptorTest {
 
     @Test
     public void willPassIfAuthenticatedAccountIsNotNull() throws Exception {
-        securityInterceptor =
-                new ZanataRestSecurityInterceptor(request, securityTokens, identity,
-                        true) {
-                    @Override
-                    protected boolean hasAuthenticatedAccount() {
-                        return true;
-                    }
-                };
+        when(serviceLocator
+                .getInstance(HAccount.class, new AuthenticatedLiteral()))
+                .thenReturn(new HAccount());
 
         securityInterceptor.filter(context);
 

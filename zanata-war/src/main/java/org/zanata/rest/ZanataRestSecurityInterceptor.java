@@ -28,6 +28,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.security.oauth.SecurityTokens;
 import org.zanata.util.HttpUtil;
+import org.zanata.util.IServiceLocator;
 import org.zanata.util.ServiceLocator;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
@@ -50,7 +51,8 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
 
     @Inject
     @SysConfig(SystemPropertyConfigStore.KEY_SUPPORT_OAUTH)
-    private Boolean isOAuthSupported;
+    private boolean isOAuthEnabled;
+    private IServiceLocator serviceLocator = ServiceLocator.instance();
 
 
     @SuppressWarnings("unused")
@@ -60,11 +62,12 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
     @VisibleForTesting
     protected ZanataRestSecurityInterceptor(HttpServletRequest request,
             SecurityTokens securityTokens, ZanataIdentity zanataIdentity,
-            boolean isOAuthSupported) {
+            boolean isOAuthEnabled, IServiceLocator serviceLocator) {
         this.request = request;
         this.securityTokens = securityTokens;
         this.zanataIdentity = zanataIdentity;
-        this.isOAuthSupported = isOAuthSupported;
+        this.isOAuthEnabled = isOAuthEnabled;
+        this.serviceLocator = serviceLocator;
     }
 
     @Override
@@ -75,7 +78,7 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
             return;
         }
 
-        Tokens tokens = new Tokens(context, request, isOAuthSupported);
+        Tokens tokens = new Tokens(context, request, isOAuthEnabled);
 
         if (!tokens.canAuthenticate() &&
                 SecurityFunctions.doesRestPathAllowAnonymousAccess(
@@ -159,9 +162,8 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
         return Response.serverError().entity(message).build();
     }
 
-    @VisibleForTesting
-    protected boolean hasAuthenticatedAccount() {
-        return ServiceLocator.instance()
+    private boolean hasAuthenticatedAccount() {
+        return serviceLocator
                 .getInstance(HAccount.class, new AuthenticatedLiteral()) !=
                 null;
     }
