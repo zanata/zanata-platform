@@ -12,7 +12,7 @@
   <!--[if IE 7]>         <html class="no-js new-zanata lt-ie9 lt-ie8"> <![endif]-->
   <!--[if IE 8]>         <html class="no-js new-zanata lt-ie9"> <![endif]-->
   <!--[if gt IE 8]><!-->
-  <html class="no-js new-zanata">
+  <html class="no-js new-zanata Bgc(#fff) Fz(16px)!">
   <!--<![endif]-->
   <h:head>
     <ui:remove>
@@ -30,6 +30,8 @@
     <meta http-equiv="cleartype" content="on"/>
 
     <link rel="shortcut icon" href="#{assets['img/logo/logo.ico']}" type="image/x-icon" />
+    <link rel="stylesheet" href="#{request.contextPath}/bundle.css" type="text/css"/>
+    <link rel="icon" href="#{assets['img/logo/logo.ico']}" type="image/x-icon" />
 
     <!--[if gt IE 8]><!-->
     <link type="text/css" rel="stylesheet" href="#{assets['css/style.min.css']}"/>
@@ -38,22 +40,6 @@
     <!--[if (lt IE 9) & (!IEMobile)]>
     <script src="js/vendor/selectivizr-min.js"></script>
     <![endif]-->
-
-    <!-- Async Google Fonts -->
-    <script type="text/javascript">
-      WebFontConfig = {
-        google: { families: [ 'Source+Sans+Pro:300,400,600,700,400italic:latin,latin-ext' ] }
-      };
-      (function() {
-        var wf = document.createElement('script');
-        wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
-          '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-        wf.type = 'text/javascript';
-        wf.async = 'true';
-        var s = document.getElementsByTagName('script')[0];
-        s.parentNode.insertBefore(wf, s);
-      })();
-    </script>
 
     <ui:insert name="head"/>
 
@@ -82,9 +68,9 @@
     </script>
   </h:head>
 
-  <h:body styleClass="new-zanata">
+  <h:body styleClass="Bgc(i)! Fz(i) Ov(h)!">
     <ds:windowId/>
-    <ui:include src="banner.xhtml"/>
+
     <a4j:outputPanel layout="block" ajaxRendered="true" id="messages">
       <ui:fragment rendered="#{showGlobalMessages != 'false'}">
         <ul class="list--no-bullets message--global">
@@ -98,13 +84,31 @@
       </ui:fragment>
     </a4j:outputPanel>
 
-    <main role="main" class="l--pad-top-1">
-      <div class="l__wrapper">
-        <ui:insert name="center_content"/>
-      </div>
-    </main>
+    <div id="config"
+      data-base-url="#{request.contextPath}"
+      data-api-root="/rest"
+      data-user="#{authenticatedAccountHome.getUser()}"
+      data-permission="#{authenticatedAccountHome.getUserPermission().getJSON()}"
+      data-links='{"loginUrl": "#{applicationConfigurationAction.getLoginUrl(request)}",
+                   "registerUrl": "#{applicationConfigurationAction.registerUrl}"}'>
+    </div>
+    <script type="application/javascript">
+      window.config = JSON.parse(JSON.stringify(document.getElementById('config').dataset))
+    </script>
+    <div class='Ai(st) D(f) Fld(c) Flxs(0)'>
+      <div class="Ai(st) D(f) Fld(c) Fld(r)--sm Flxs(0) H(100%) Mih(100vh)">
+        <div id="root" class="Or(1) Or(0)--sm" />
+        <main role="main" class="W(100%) D(f) Flxg(1) Ov(a) Ovx(h) Ovs(touch) Pt(0)!">
+          <div class="l__wrapper Ai(st) D(f) Fld(c) Flx(flx1) Ov(h) H(100%) Mih(maxc) l--pad-top-half">
+            <ui:insert name="center_content"/>
+          </div>
+        </main>
 
-    <ui:include src="footer.xhtml"/>
+      </div>
+    </div>
+
+    <script type="text/javascript"
+      src="#{request.contextPath}/frontend.legacy.min.js"></script>
 
     <ui:include src="scripts.xhtml"/>
   </h:body>

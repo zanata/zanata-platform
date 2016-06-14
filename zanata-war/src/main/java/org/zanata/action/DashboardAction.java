@@ -32,6 +32,9 @@ import lombok.NonNull;
 import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.zanata.dao.VersionGroupDAO;
+import org.zanata.model.HIterationGroup;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
@@ -93,6 +96,10 @@ public class DashboardAction implements Serializable {
     @Getter
     private ProjectFilter projectList;
 
+    @Inject
+    @Getter
+    private GroupFilter groupList;
+
     @Getter(lazy = true)
     private final int userMaintainedProjectsCount =
             countUserMaintainedProjects();
@@ -117,21 +124,21 @@ public class DashboardAction implements Serializable {
     public String getUserLanguageTeams() {
         HAccount account = accountDAO.findById(authenticatedAccount.getId());
         return StringUtils.join(
-                Collections2.transform(account.getPerson()
-                                .getLanguageMemberships(),
-                        new Function<HLocale, Object>() {
-                            @Nullable
-                            @Override
-                            public Object apply(@NonNull HLocale locale) {
-                                return locale.retrieveDisplayName();
-                            }
-                        }),
-                ", ");
+            Collections2.transform(account.getPerson()
+                    .getLanguageMemberships(),
+                new Function<HLocale, Object>() {
+                    @Nullable
+                    @Override
+                    public Object apply(@NonNull HLocale locale) {
+                        return locale.retrieveDisplayName();
+                    }
+                }),
+            ", ");
     }
 
     private int countUserMaintainedProjects() {
         return projectDAO.getMaintainedProjectCount(
-                authenticatedAccount.getPerson(), null);
+            authenticatedAccount.getPerson(), null);
     }
 
     private List<HProject> fetchUserMaintainedProjects() {
@@ -161,8 +168,8 @@ public class DashboardAction implements Serializable {
                 DateUtil.getHowLongAgoDescription(lastTranslatedDate);
     }
 
-    public String getLastTranslatedTime(HProject project) {
-        return DateUtil.formatShortDate(project.getLastChanged());
+    public String getShortTime(Date date) {
+        return DateUtil.formatShortDate(date);
     }
 
     public boolean canViewObsolete() {
@@ -193,7 +200,7 @@ public class DashboardAction implements Serializable {
 
     public boolean isUserReviewer() {
         return languageTeamServiceImpl.isUserReviewer(
-                authenticatedAccount.getPerson().getId());
+            authenticatedAccount.getPerson().getId());
     }
 
     public String getLastTranslatorMessage(HProject project) {
@@ -216,6 +223,10 @@ public class DashboardAction implements Serializable {
 
     public boolean canCreateProject() {
         return identity.hasPermission(new HProject(), "insert");
+    }
+
+    public boolean canCreateGroup() {
+        return identity.hasPermission(new HIterationGroup(), "insert");
     }
 
     /**
@@ -242,6 +253,34 @@ public class DashboardAction implements Serializable {
         protected long fetchTotalRecords(String filter) {
             return projectDAO.getMaintainedProjectCount(
                     authenticatedAccount.getPerson(), filter);
+        }
+    }
+
+    /**
+     * Group list filter. Pages its elements directly from the database.
+     */
+    public static class GroupFilter
+        extends AbstractListFilter<HIterationGroup> implements Serializable {
+
+        @Inject
+        @Authenticated
+        private HAccount authenticatedAccount;
+
+        @Inject
+        private VersionGroupDAO versionGroupDAO;
+
+        @Override
+        protected List<HIterationGroup> fetchRecords(int start, int max,
+            String filter) {
+            return versionGroupDAO
+                .getGroupsByMaintainer(authenticatedAccount.getPerson(), filter,
+                    start, max);
+        }
+
+        @Override
+        protected long fetchTotalRecords(String filter) {
+            return versionGroupDAO.getMaintainedGroupCount(
+                authenticatedAccount.getPerson(), filter);
         }
     }
 }

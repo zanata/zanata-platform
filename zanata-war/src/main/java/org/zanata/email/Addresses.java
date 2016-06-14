@@ -31,6 +31,7 @@ import javax.mail.internet.InternetAddress;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 
 /**
@@ -57,6 +58,16 @@ public class Addresses {
         List<InternetAddress> toAddresses = new ArrayList<InternetAddress>();
         for (HPerson coord : personList) {
             toAddresses.add(getAddress(coord.getEmail(), coord.getName()));
+        }
+        return toAddresses.toArray(new InternetAddress[toAddresses.size()]);
+    }
+
+    public static InternetAddress[] getLocaleMemberAddresses(
+        List<HLocaleMember> members) {
+        List<InternetAddress> toAddresses = new ArrayList<InternetAddress>();
+        for (HLocaleMember member : members) {
+            toAddresses.add(getAddress(member.getPerson().getEmail(),
+                member.getPerson().getName()));
         }
         return toAddresses.toArray(new InternetAddress[toAddresses.size()]);
     }

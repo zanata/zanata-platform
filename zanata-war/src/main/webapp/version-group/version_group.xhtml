@@ -10,9 +10,9 @@
   template="/WEB-INF/template/template.xhtml">
 
   <f:metadata>
-    <f:viewParam name="versionGroupSlug" value="#{versionGroupHomeAction.slug}"/>
-    <f:viewParam name="versionGroupSlug" value="#{versionGroupHome.slug}"/>
-    <f:viewParam name="versionGroupSlug" value="#{versionGroupJoinAction.slug}"/>
+    <f:viewParam name="slug" value="#{versionGroupHomeAction.slug}"/>
+    <f:viewParam name="slug" value="#{versionGroupHome.slug}"/>
+    <f:viewParam name="slug" value="#{versionGroupJoinAction.slug}"/>
     <f:event type="preRenderView" listener="#{versionGroupHome.validateSuppliedId}"/>
   </f:metadata>
 

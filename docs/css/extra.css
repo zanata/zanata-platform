@@ -1,0 +1,58 @@
+body {
+  font-family: "Source Sans Pro", "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
+  color: #444c54;
+}
+
+.wy-side-nav-search {
+  background-color: #03A6D7;
+}
+
+.wy-side-nav-search>a {
+  font-size: 125%
+}
+
+.wy-menu-vertical a {
+  font-size: 100%;
+}
+
+.wy-menu-vertical span {
+  font-size: 100%;
+}
+
+h1,h2,h3 {
+  color: #03A6D7;
+}
+
+h1, h2, h3, h4, h5, h6, legend {
+    font-family: "Source Sans Pro", "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
+}
+
+.btn-neutral {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  -moz-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.125);
+  -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.125);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.125);
+  background-color: #029dcc !important;
+  color: #f2f2f2 !important;
+}
+
+.btn-neutral:visited {
+  color: #f2f2f2 !important;
+}
+
+.btn-neutral:hover {
+  -moz-box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+  -webkit-box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background-color: #03A6D7 !important;
+  color: #fff !important;
+}
+
+code {
+  padding: 4px;
+}
+
+.hljs {
+  padding: 10px
+}

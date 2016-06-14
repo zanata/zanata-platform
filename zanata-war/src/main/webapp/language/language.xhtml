@@ -12,6 +12,7 @@
     <f:viewParam name="id" value="#{languageAction.language}" />
     <f:viewParam name="id" value="#{languageJoinAction.language}" />
     <f:viewParam name="id" value="#{languageContactCoordinatorAction.localeId}" />
+    <f:viewParam name="id" value="#{contactLanguageTeamMembersAction.localeId}" />
     <f:event type="preRenderView" listener="#{languageAction.validateLanguage}"/>
   </f:metadata>
 
@@ -51,7 +52,8 @@
     <h:form styleClass="l--push-bottom-0">
       <a4j:jsFunction name="refreshMembersForm" action="#{languageAction.reset}"
         limitRender="true"
-        render="member-info, members-size, members-form" oncomplete="zanata.form.appendCheckboxes('#members-form')"/>
+        render="member-info, members-size, members-form, language-more-actions, membersSearch-page-info, membersSearchBottom-page-info, contactMembersModalTitle"
+        oncomplete="zanata.form.appendCheckboxes('#members-form')"/>
 
       <a4j:jsFunction name="refreshRequestsForm" action="#{languageJoinAction.clearMessage}"
         limitRender="true"
@@ -246,26 +248,38 @@
               </li>
             </ui:fragment>
 
-            <li class="tab__end">
-              <h:form styleClass="l--push-bottom-0 dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown"
-                id="language-more-actions">
-                <a class="dropdown__toggle js-dropdown__toggle" id="more-action"
-                  title="#{msgs['jsf.tooltip.MoreActions']}" href="#">
-                  <i class="i i--ellipsis"></i>
-                </a>
-                <ul class="dropdown__content js-dropdown__content"
-                  role="content" aria-labelledby="dropdownContent">
-                  <li>
-                    <a href="#" class="i__item--right" id="contact-coordinator"
-                      data-toggle="modal" onclick="return false;"
-                      data-target="#contactCoordinatorDialog">
-                      #{msgs['jsf.contactLanguageTeamCoordinator']}
-                      <i class="i i--plus i__item__icon"></i>
-                    </a>
-                  </li>
-                </ul>
-              </h:form>
-            </li>
+            <ui:fragment rendered="#{identity.loggedIn}">
+              <li class="tab__end">
+                <h:form styleClass="l--push-bottom-0 dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown"
+                  id="language-more-actions">
+                  <a class="dropdown__toggle js-dropdown__toggle" id="more-action"
+                    title="#{msgs['jsf.tooltip.MoreActions']}" href="#">
+                    <i class="i i--ellipsis"></i>
+                  </a>
+                  <ul class="dropdown__content js-dropdown__content"
+                    role="content" aria-labelledby="dropdownContent">
+                    <li>
+                      <a href="#" class="i__item--right" id="contact-coordinator"
+                        data-toggle="modal" onclick="return false;"
+                        data-target="#contactCoordinatorDialog">
+                        #{msgs['jsf.contactLanguageTeamCoordinator']}
+                        <i class="i i--plus i__item__icon"></i>
+                      </a>
+                    </li>
+                    <ui:fragment rendered="#{!contactLanguageTeamMembersAction.getMembers().isEmpty() and identity.hasPermission(languageAction.locale, 'manage-language-team')}">
+                      <li>
+                        <a href="#" class="i__item--right" id="contact-members"
+                          data-toggle="modal" onclick="return false;"
+                          data-target="#contactMembersDialog">
+                          #{msgs['jsf.contactLanguageTeamMembers']}
+                          <i class="i i--plus i__item__icon"></i>
+                        </a>
+                      </li>
+                    </ui:fragment>
+                  </ul>
+                </h:form>
+              </li>
+            </ui:fragment>
 
             <ui:fragment rendered="#{identity.hasRole('admin')}">
               <li class="tab__end">
@@ -306,6 +320,11 @@
       <ui:fragment rendered="#{not identity.hasRole('admin')}">
         <ui:include src="/WEB-INF/layout/language/request_join_modal.xhtml"/>
       </ui:fragment>
+      <h:panelGroup id="contactMembersModal" layout="block">
+        <ui:fragment rendered="#{identity.hasPermission(languageAction.locale, 'manage-language-team')}">
+          <ui:include src="/WEB-INF/layout/language/contact_members_modal.xhtml"/>
+        </ui:fragment>
+      </h:panelGroup>
     </ui:fragment>
   </ui:define>
 </ui:composition>

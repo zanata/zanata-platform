@@ -11,13 +11,14 @@
     <exclusions>
       <module name="javax.ws.rs.api" />
       <module name="javaee.api" />
+      <!-- Workaround for EAP 6: https://access.redhat.com/solutions/2218051 -->
+      <module name="org.hibernate" />
       <module name="org.hibernate.search.orm" />
       <module name="org.jboss.as.jaxrs" />
     </exclusions>
     <dependencies>
 
       <!-- start of unsupported modules -->
-      <module name="org.infinispan" />
       <!-- needed by arquillian test -->
       <module name="com.h2database.h2" />
       <!-- end of unsupported modules -->
@@ -32,7 +33,6 @@
       <!-- end of deprecated modules -->
 
       <!-- other modules -->
-      <module name="org.infinispan.commons" optional="true" />
       <module name="javax.annotation.api" />
       <!-- not needed for wildfly: -->
       <module name="javax.ejb.api" />

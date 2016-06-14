@@ -276,7 +276,7 @@ public class LanguageAction implements Serializable {
          * to access the 'members' collection from inside the security
          * listener's postLoad method to evaluate rules.
          */
-        if(locale == null) {
+        if(locale == null && StringUtils.isNotBlank(language)) {
             locale = localeServiceImpl.getByLocaleId(new LocaleId(language));
             locale.getMembers();
         }

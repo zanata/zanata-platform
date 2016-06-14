@@ -106,7 +106,7 @@ public class RegisterAction implements Serializable {
 
     @NotEmpty
     @Size(min = 3, max = 20)
-    @Pattern(regexp = "^([a-z\\d][a-z\\d_]*){3,20}$",
+    @Pattern(regexp = AbstractProfileAction.USERNAME_REGEX,
             message = "{validation.username.constraints}")
     public String getUsername() {
         return username;

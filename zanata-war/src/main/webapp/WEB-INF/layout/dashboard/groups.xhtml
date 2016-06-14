@@ -1,0 +1,66 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
+
+  <div class="panel">
+    <div class="panel__header">
+      <h:panelGroup layout="block" styleClass="panel__header__actions" rendered="#{dashboardAction.canCreateGroup()}">
+        <a href="#" jsfc="h:link" class="button button--snug l--push-top-half l--push-right-half"
+          id="create-group-link"
+          outcome="/version-group/create_version_group.xhtml"
+          title="#{msgs['jsf.dashboard.groups.createNewGroup.label']}">
+          <i aria-hidden="true" class="i i--plus i i--large"></i>
+          <span class="is-invisible">#{msgs['jsf.dashboard.groups.createNewGroup.label']}</span>
+        </a>
+      </h:panelGroup>
+      <h2 class="panel__heading">#{msgs['jsf.dashboard.groups.maintainedGroups.label']}</h2>
+    </div>
+
+    <div class="panel__sub-header js-reveal">
+      <zanata:list-filter status="groupList-loader"
+        listId="groupListForm"
+        render="groupListForm, groupSearchBottom-pager groupSearchBottom-page-info"
+        id="groupSearch" iconClass="i--group"
+        placeholder="#{msgs['jsf.dashboard.groups.search.placeholder']}"
+        actionBean="#{dashboardAction.groupList}"/>
+    </div>
+
+    <a4j:status name="groupList-loader">
+      <f:facet name="start"><zanata:loader/></f:facet>
+    </a4j:status>
+
+    <h:form id="groupListForm" class="l--push-bottom-1">
+      <ul id="maintainedGroups" class="list--stats">
+        <ui:repeat value="#{dashboardAction.groupList.currentPage}" var="group">
+          <li class="list_item">
+            <h:link outcome="/version-group/version_group.xhtml">
+              <f:param name="versionGroupSlug" value="#{group.slug}"/>
+              <div class="list__item__content">
+                <div class="list__item__info">
+                  <h3 class="list__title bx--inline-block">#{group.name}</h3>
+                  <p class="list__item__meta">#{group.description}</p>
+                </div>
+                <div class="list__item__stats">
+                  <span class="stats--mini" title="#{msgs.format('jsf.dashboard.createdOn', dashboardAction.getShortTime(group.creationDate))}">
+                    <span class="stats__figure">#{msgs.format('jsf.dashboard.createdOn', dashboardAction.getShortTime(group.creationDate))}</span>
+                  </span>
+                </div>
+              </div>
+            </h:link>
+          </li>
+        </ui:repeat>
+      </ul>
+    </h:form>
+    <zanata:list-filter status="groupList-loader"
+      listId="groupListForm"
+      render="groupListForm, groupSearch-pager groupSearch-page-info"
+      id="groupSearchBottom" iconClass="i--group"
+      placeholder="#{msgs['jsf.dashboard.groups.search.placeholder']}"
+      bottomPanel="true"
+      actionBean="#{dashboardAction.groupList}"/>
+  </div>
+
+</ui:composition>

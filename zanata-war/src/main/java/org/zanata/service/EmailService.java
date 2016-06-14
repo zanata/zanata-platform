@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 
 import org.zanata.common.LocaleId;
 import org.zanata.email.EmailStrategy;
-import org.zanata.model.HLocale;
+import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 
 /**
@@ -85,4 +85,10 @@ public interface EmailService {
      * sends email to requester of the language request
      */
     void sendToLanguageRequester(EmailStrategy strategy, HPerson person);
+
+    /**
+     * sends email to language team members.
+     */
+    String sendToLanguageTeamMembers(LocaleId localeId, EmailStrategy strategy,
+        List<HLocaleMember> members);
 }

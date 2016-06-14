@@ -1,5 +1,10 @@
 1. Login to Zanata.
-1. At the bottom of the page, click on `Contact admin`.
+1. On the left side menu, click on `More` 
+<figure>
+![More](/images/menu-more.png)
+</figure>
+<br/>
+1. Click on `Contact admin` in the page
 <figure>
 ![Contact admin link](/images/admin-contact-link.png)
 </figure>

@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>3.9.1-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>zanata-war</artifactId>
   <packaging>war</packaging>
@@ -36,8 +36,6 @@
     <!--this will get set by maven dependency:properties goal and be used in gwt-maven-plugin-->
     <lombok.lib>${org.projectlombok:lombok:jar}</lombok.lib>
 
-    <!-- TODO check whether this is still used anywhere -->
-    <zanata.web.assets.version>7</zanata.web.assets.version>
     <jboss.as.standalone.version>7.5.0</jboss.as.standalone.version>
     <rpm.name>${project.build.finalName}</rpm.name>
 
@@ -203,6 +201,8 @@
             <ignoredResourcePattern>build.properties</ignoredResourcePattern>
             <!-- jboss-metadata-common and zanata-adapter-xliff -->
             <ignoredResourcePattern>schema/xml.xsd</ignoredResourcePattern>
+            <!-- infinispan-core/common -->
+            <ignoredResourcePattern>features.xml</ignoredResourcePattern>
           </ignoredResourcePatterns>
         </configuration>
       </plugin>
@@ -1897,9 +1897,7 @@
     <dependency>
       <groupId>org.infinispan</groupId>
       <artifactId>infinispan-core</artifactId>
-      <!-- TODO Use a bom for EAP or wildfly (This is the EAP 6.3 version) -->
-      <version>5.2.4.Final</version>
-      <scope>provided</scope>
+      <version>${infinispan.version}</version>
     </dependency>
 
     <!-- These two are being explicitly added as jboss-as-parent
