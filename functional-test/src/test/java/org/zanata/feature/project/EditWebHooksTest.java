@@ -60,7 +60,6 @@ public class EditWebHooksTest extends ZanataTestCase {
                 .expectWebHooksContains(testUrl);
 
         assertThat(projectWebHooksTab.getWebHooks())
-                .extracting("url")
                 .contains(testUrl)
                 .as("The web hook was added");
     }
@@ -81,7 +80,6 @@ public class EditWebHooksTest extends ZanataTestCase {
                 .expectWebHooksNotContains(testUrl);
 
         assertThat(projectWebHooksTab.getWebHooks())
-                .extracting("url")
                 .doesNotContain(testUrl)
                 .as("The web hook was removed");
     }

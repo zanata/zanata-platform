@@ -1,4 +1,4 @@
-# React Front-end
+# React Profile
 
 ## Setup
 
@@ -15,8 +15,3 @@
 #### (a HTTP server to serve index.html with webpack produced bundle.js)
 
 `npm start`
-
-## Documentation
-
-For extensive details on each part of the front-end see the
-[documentation](./docs).

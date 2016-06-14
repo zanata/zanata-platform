@@ -8,7 +8,7 @@ Anyone with an account can upload source strings to Zanata. The first step is to
 
 ## Project creation through the website
 
-To start creating a project on the Zanata website, click the `+` button on the `Project` tab in your dashboard.
+To start creating a project on the Zanata website, click the `New Project` button on the `Projects` page.
 <figure>
 ![Project creation button on Projects page](/images/create-project.png)
 <figcaption>Project creation button on `Projects` page.</figcaption>

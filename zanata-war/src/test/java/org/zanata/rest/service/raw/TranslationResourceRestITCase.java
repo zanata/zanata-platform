@@ -42,7 +42,6 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.ResourceTestUtil;
-import org.zanata.rest.service.ResourceUtils;
 
 import com.google.common.collect.Lists;
 
@@ -654,24 +653,13 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                     headerFound, is(true));
         }
 
-        /**
-         * Since it is a first push with no headers,
-         * the Last Translator should contain ResourceUtils.COPIED_BY_ZANATA_NAME and ResourceUtils.COPIED_BY_ZANATA_NAME_Email
-         * Last Revision Date header should not be empty
-         */
+        // Since it is a first push with no headers, the Last Translator and
+        // Last Revision Date header should be empty
         for (HeaderEntry entry : translations.getExtensions()
                 .findByType(PoTargetHeader.class).getEntries()) {
-
-            String value = entry.getValue().trim();
-            if (entry.getKey().equals(HeaderFields.KEY_LastTranslator)) {
-                assertThat(value,
-                        containsString(ResourceUtils.COPIED_BY_ZANATA_NAME));
-                assertThat(value, containsString(
-                        ResourceUtils.COPIED_BY_ZANATA_NAME_EMAIL));
-            }
-
-            if (entry.getKey().equals(HeaderFields.KEY_PoRevisionDate)) {
-                assertThat(value, not(isEmptyOrNullString()));
+            if (entry.getKey().equals(HeaderFields.KEY_LastTranslator)
+                    || entry.getKey().equals(HeaderFields.KEY_PoRevisionDate)) {
+                assertThat(entry.getValue().trim(), is(""));
             }
         }
     }
@@ -769,14 +757,12 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         // Make sure the header values are the same as the ones pushed with the
         // document
         for (HeaderEntry entry : header.getEntries()) {
-            String value = entry.getValue().trim();
             if (entry.getKey().equals(HeaderFields.KEY_LastTranslator)) {
-                assertThat(value,
-                    containsString(ResourceUtils.COPIED_BY_ZANATA_NAME));
-                assertThat(value, containsString(
-                    ResourceUtils.COPIED_BY_ZANATA_NAME_EMAIL));
+                assertThat(entry.getValue().trim(),
+                        is("Test User <test@zanata.org>"));
             } else if (entry.getKey().equals(HeaderFields.KEY_PoRevisionDate)) {
-                assertThat(value, is(dateFormat.format(poRevDate.getTime())));
+                assertThat(entry.getValue().trim(),
+                        is(dateFormat.format(poRevDate.getTime())));
             }
         }
     }

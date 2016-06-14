@@ -20,15 +20,25 @@
  */
 package org.zanata.events;
 
-import org.zanata.rest.editor.dto.JsonObject;
+import java.io.IOException;
+import java.io.Serializable;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.ObjectMapper;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-public abstract class WebhookEventType extends JsonObject {
+public abstract class WebhookEventType implements Serializable {
 
-    /**
-     * Return type of webhook
-     */
-    public abstract String getType();
+    @JsonIgnore
+    public String getJSON() {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (IOException e) {
+            return this.getClass().getName() + "@"
+                + Integer.toHexString(this.hashCode());
+        }
+    }
 }

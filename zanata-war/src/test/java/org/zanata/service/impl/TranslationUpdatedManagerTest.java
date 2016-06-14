@@ -21,40 +21,23 @@
 
 package org.zanata.service.impl;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.enterprise.event.Event;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.TextFlowTargetDAO;
-import org.zanata.events.DocStatsEvent;
+import org.zanata.dao.TextFlowDAO;
 import org.zanata.events.DocumentLocaleKey;
-import org.zanata.model.type.WebhookType;
-import org.zanata.webhook.events.DocumentStatsEvent;
-import org.zanata.model.HAccount;
-import org.zanata.model.HDocument;
-import org.zanata.model.HPerson;
-import org.zanata.model.HProject;
-import org.zanata.model.HProjectIteration;
-import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.WebHook;
+import org.zanata.events.DocumentStatisticUpdatedEvent;
+import org.zanata.events.TextFlowTargetStateEvent;
+import org.zanata.service.TranslationStateCache;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.StatisticsUtil;
 
-import com.google.common.collect.Lists;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -64,96 +47,58 @@ import static org.mockito.Mockito.when;
 public class TranslationUpdatedManagerTest {
 
     @Mock
-    private DocumentDAO documentDAO;
+    private TranslationStateCache translationStateCache;
 
     @Mock
-    private TextFlowTargetDAO textFlowTargetDAO;
+    private TextFlowDAO textFlowDAO;
+
+    @Mock
+    private Event<DocumentStatisticUpdatedEvent> documentStatisticUpdatedEvent;
 
     TranslationUpdatedManager manager;
-
-    List<WebHook> webHooks = Lists.newArrayList();
-
-    private String key = null;
-
-    private String strDocId = "doc/test.txt";
-    private Long docId = 1L;
-    private Long tfId = 1L;
-    private Long tftId = 1L;
-    private Long versionId = 1L;
-    private Long personId = 1L;
-    private LocaleId localeId = LocaleId.DE;
-    private String versionSlug = "versionSlug";
-    private String projectSlug = "projectSlug";
-    private int wordCount = 10;
-    private ContentState oldState = ContentState.New;
-    private ContentState newState = ContentState.Translated;
-    private String username = "username1";
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         manager = new TranslationUpdatedManager();
-        manager.init(documentDAO, textFlowTargetDAO);
-
-        HProjectIteration version = Mockito.mock(HProjectIteration.class);
-        HProject project = Mockito.mock(HProject.class);
-        HDocument document = Mockito.mock(HDocument.class);
-        HPerson person = Mockito.mock(HPerson.class);
-        HAccount account = Mockito.mock(HAccount.class);
-        HTextFlowTarget target = Mockito.mock(HTextFlowTarget.class);
-
-        webHooks = Lists
-                .newArrayList(new WebHook(project, "http://test.example.com",
-                        WebhookType.DocumentMilestoneEvent, key),
-                        new WebHook(project, "http://test.example.com",
-                                WebhookType.DocumentStatsEvent, key));
-
-        when(person.getAccount()).thenReturn(account);
-        when(account.getUsername()).thenReturn(username);
-        when(documentDAO.findById(docId)).thenReturn(document);
-        when(document.getDocId()).thenReturn(strDocId);
-        when(document.getProjectIteration()).thenReturn(version);
-        when(version.getSlug()).thenReturn(versionSlug);
-        when(version.getProject()).thenReturn(project);
-        when(project.getSlug()).thenReturn(projectSlug);
-        when(project.getWebHooks()).thenReturn(webHooks);
-        when(textFlowTargetDAO.findById(tftId)).thenReturn(target);
-        when(target.getLastModifiedBy()).thenReturn(person);
+        manager.init(translationStateCache, textFlowDAO,
+                documentStatisticUpdatedEvent);
     }
 
     @Test
-    public void onDocStatUpdateTest() {
+    public void onTranslationUpdateTest() {
         TranslationUpdatedManager spyManager = Mockito.spy(manager);
+
+        Long docId = 1L;
+        Long tfId = 1L;
+        Long versionId = 1L;
+        LocaleId localeId = LocaleId.DE;
+        int wordCount = 10;
+        ContentState oldState = ContentState.New;
+        ContentState newState = ContentState.Translated;
 
         WordStatistic stats = new WordStatistic(10, 10, 10, 10, 10);
         WordStatistic oldStats = StatisticsUtil.copyWordStatistic(stats);
         oldStats.decrement(newState, wordCount);
         oldStats.increment(oldState, wordCount);
 
+        when(translationStateCache.getDocumentStatistics(docId, localeId)).
+                thenReturn(stats);
+        when(textFlowDAO.getWordCount(tfId)).thenReturn(wordCount);
+
         DocumentLocaleKey key =
-                new DocumentLocaleKey(docId, localeId);
+            new DocumentLocaleKey(docId, localeId);
 
-        Map<ContentState, Long> contentStates = new HashMap<>();
-        Long longWordCount = new Long(wordCount);
-        contentStates.put(newState, longWordCount);
-        contentStates.put(oldState, longWordCount);
+        TextFlowTargetStateEvent.TextFlowTargetState state =
+            new TextFlowTargetStateEvent.TextFlowTargetState(tfId,
+                1L, newState, oldState);
 
-        DocStatsEvent event =
-                new DocStatsEvent(key, versionId, contentStates, tftId);
+        TextFlowTargetStateEvent event =
+            new TextFlowTargetStateEvent(key, versionId, null, state);
 
-        DocumentStatsEvent webhookEvent =
-                new DocumentStatsEvent(username, projectSlug,
-                        versionSlug, strDocId, event.getKey().getLocaleId(),
-                        contentStates);
+        spyManager.textFlowStateUpdated(event);
 
-        spyManager.docStatsUpdated(event);
-
-        verify(spyManager).processWebHookEvent(event);
-        ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
-        verify(spyManager).publishWebhookEvent(captor.capture(),
-                eq(webhookEvent));
-        assertThat(captor.getValue().size(), is(1));
-        assertThat(((WebHook) captor.getValue().get(0)).getWebhookType(),
-                is(WebhookType.DocumentStatsEvent));
+        verify(translationStateCache).textFlowStateUpdated(event);
+        verify(spyManager).publishAsyncEvent(event);
     }
 }

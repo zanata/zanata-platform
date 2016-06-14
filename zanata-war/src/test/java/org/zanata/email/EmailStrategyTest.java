@@ -324,29 +324,6 @@ public class EmailStrategyTest {
     }
 
     @Test
-    public void contactLanguageMember() throws Exception {
-        String subject = "email subject";
-        String contactAdminLink = "link";
-        EmailStrategy strategy =
-            new ContactLanguageTeamMembersEmailStrategy(
-                fromLoginName, subject, localeId, localeNativeName, htmlMessage,
-                contactAdminLink);
-
-        builder.buildMessage(message, strategy, toAddresses,
-            Lists.newArrayList("contactLanguageMember test"));
-
-        checkFromAndTo(message);
-        assertThat(message.getSubject()).isEqualTo(msgs.format(
-            "jsf.email.language.members.SubjectPrefix", localeId, fromLoginName) + " " + subject);
-
-        String html = extractHtmlPart(message);
-        checkGenericTemplate(html);
-
-        assertThat(html).contains(htmlMessage);
-        assertThat(html).contains(contactAdminLink);
-    }
-
-    @Test
     public void requestToJoinVersionGroup() throws Exception {
         String versionGroupName = "GROUP_NAME[测试]";
         String versionGroupSlug = "GROUP_SLUG";

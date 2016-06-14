@@ -1,15 +1,12 @@
 Currently, only admin can create a group:
 
  1. Login as user with admin role.
- 1. Click on `Dashboard` on the left side menu.
-  <figure>
-  ![Dashboard](/images/menu-dashboard.png)
-  </figure>
- 1. Click on `Groups` section on the secondary menu.
- 1. Click on '+' button on right panel.
+ 1. Click on `Groups` section on the top menu.
+ 1. Click on 'New Group' button on right panel.
  <figure>
  ![New group menu](/images/create-group.png)
  </figure>
+ 
  The following screenshot shows the group creation page.
 <figure>
 ![Group create form](/images/create-group-completed.png)

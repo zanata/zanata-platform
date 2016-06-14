@@ -2,11 +2,7 @@ site_name: Zanata Server
 docs_dir: docs
 repo_name: GitHub
 repo_url: http://www.github.com/zanata/zanata-server
-site_favicon: http://assets-zanata.rhcloud.com/master/favicon.ico
 theme: readthedocs
-extra_css:
-  - css/extra.css
-  - 'http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,400italic'
 # theme_dir: For custom themes
 
 pages:
@@ -16,8 +12,6 @@ pages:
 - Getting Started:
   - Translator Guide: 'user-guide/translator-guide.md'
   - Project Maintainer Guide: 'user-guide/project-maintainer-guide.md'
-# Explore
-- Explore: 'user-guide/explore/explore.md'
 # Accounts
 - Accounts:
   - Create new account: 'user-guide/account/account-sign-up.md'

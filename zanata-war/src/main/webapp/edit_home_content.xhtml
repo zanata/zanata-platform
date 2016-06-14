@@ -2,45 +2,52 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
   xmlns:h="http://java.sun.com/jsf/html"
-  template="/WEB-INF/template/template.xhtml">
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:rich="http://richfaces.org/rich"
+  template="/WEB-INF/template/template_2x.xhtml">
+
+  <f:metadata>
+    <f:event type="preRenderView" listener="#{breadcrumbs.clear}"/>
+    <f:event type="preRenderView" listener="#{breadcrumbs.addLocation('', msgs['jsf.server.EditHomePage.label'])}"/>
+  </f:metadata>
 
   <ui:define name="page_title">#{msgs['jsf.EditHomePage']}</ui:define>
   <ui:define name="center_content">
-    <div class="g--centered">
-      <div class="g__item w--1 l--push-bottom-1">
-        <h1>#{msgs['jsf.HomepageContent']}</h1>
+    <h1>#{msgs['jsf.HomepageContent']}</h1>
 
-        <h:form id="homeContentForm">
-          <div class="js-commonmark">
-            <h:inputTextarea id="homeContent"
-              required="false"
-              value="#{serverConfigurationBean.homeContent}"
-              styleClass="js-commonmark__editor"/>
+    <h:form id="homeContentForm">
+      <div class="js-commonmark">
 
-            <div class="l--push-top-half">
-              <h:commandButton id="update" styleClass="button button--primary l--push-right-quarter"
-                value="#{msgs['jsf.Update']}"
-                action="#{serverConfigurationBean.updateHomeContent}"/>
-              <h:button id="cancel" outcome="/home.xhtml" styleClass="button"
-                value="#{msgs['jsf.Cancel']}"/>
-            </div>
+        <rich:panel id="loggedIn">
+          <h:inputTextarea id="homeContent"
+            required="false"
+            value="#{serverConfigurationBean.homeContent}"
+            styleClass="code_editor text-editor js-commonmark__editor"/>
+          <div style="clear:both"></div>
+        </rich:panel>
 
-            <hr/>
-            <div id="home-content-preview" class="prose prose--preview js-commonmark__preview"></div>
+        <div class="actionButtons">
+          <h:commandButton id="update"
+            value="#{msgs['jsf.Update']}"
+            action="#{serverConfigurationBean.updateHomeContent}"/>
+          <h:button id="cancel" outcome="/home.xhtml"
+            value="#{msgs['jsf.Cancel']}"/>
+        </div>
 
-          </div>
+        <hr/>
 
-          <h:outputScript target="body" library="webjars" name="${commonMarkRenderer.outputScriptNameSanitizer}"/>
-          <h:outputScript target="body" library="webjars" name="${commonMarkRenderer.outputScriptName}"/>
-          <h:outputScript target="body" library="script" name="commonmark-preview.js"/>
-
-        </h:form>
+        <div id="home-content-preview" class="prose prose--preview js-commonmark__preview"></div>
 
       </div>
-    </div>
 
+        <h:outputScript target="body" library="webjars" name="${commonMarkRenderer.outputScriptNameSanitizer}"/>
+        <h:outputScript target="body" library="webjars" name="${commonMarkRenderer.outputScriptName}"/>
+        <h:outputScript target="body" library="script" name="commonmark-preview.js"/>
 
+    </h:form>
   </ui:define>
 
 </ui:composition>

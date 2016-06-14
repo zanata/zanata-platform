@@ -20,8 +20,6 @@
  */
 package org.zanata.page.projects.projectsettings;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
@@ -31,9 +29,6 @@ import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.util.WebElementUtil;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
-import com.google.common.collect.Lists;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -59,26 +54,21 @@ public class ProjectWebHooksTab extends ProjectBasePage {
         return new ProjectWebHooksTab(getDriver());
     }
 
-    public List<WebhookItem> getWebHooks() {
-        List<WebElement> list = readyElement(webHooksList)
-            .findElement(By.className("list--slat"))
-            .findElements(By.className("list-item"));
-
-        return list.stream().map(element -> new WebhookItem(
-            element.findElement(By.name("url")).getText(),
-            element.findElement(By.name("type")).getText()))
-            .collect(Collectors.toList());
+    public List<String> getWebHooks() {
+        return WebElementUtil.elementsToText(readyElement(webHooksList)
+                .findElement(By.className("list--slat"))
+                .findElements(By.className("list-item")));
     }
 
     public ProjectWebHooksTab expectWebHooksContains(final String url) {
         waitForPageSilence();
-        assertThat(getWebHooks()).extracting("url").contains(url);
+        assertThat(getWebHooks()).contains(url);
         return new ProjectWebHooksTab(getDriver());
     }
 
     public ProjectWebHooksTab expectWebHooksNotContains(final String url) {
         waitForPageSilence();
-        assertThat(getWebHooks()).extracting("url").doesNotContain(url);
+        assertThat(getWebHooks()).doesNotContain(url);
         return new ProjectWebHooksTab(getDriver());
     }
 
@@ -98,12 +88,5 @@ public class ProjectWebHooksTab extends ProjectBasePage {
             log.info("Did not find item {}", url);
         }
         return new ProjectWebHooksTab(getDriver());
-    }
-
-    @Getter
-    @AllArgsConstructor
-    public class WebhookItem {
-        private String url;
-        private String type;
     }
 }

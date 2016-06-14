@@ -28,7 +28,6 @@ import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.BasePage;
 import org.zanata.page.account.ProfilePage;
-import org.zanata.page.explore.ExplorePage;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -47,17 +46,16 @@ public class PersonSearchTest extends ZanataTestCase {
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void successfulPersonSearchAndDisplay() throws Exception {
-        ExplorePage explorePage = new BasicWorkFlow()
+        BasePage basePage = new BasicWorkFlow()
                 .goToHome()
-                .gotoExplore()
                 .enterSearch("trans")
-                .expectPersonListContains("translator");
+                .expectSearchListContains("translator");
 
-        assertThat(explorePage.getUserSearchResults())
+        assertThat(basePage.getZanataSearchAutocompleteItems())
                 .contains("translator")
                 .as("Normal user can see the person listed");
 
-        ProfilePage profilePage = explorePage.clickUserSearchEntry("translator");
+        ProfilePage profilePage = basePage.clickUserSearchEntry("translator");
 
         assertThat(profilePage.getUsername().trim())
                 .isEqualTo("translator");
@@ -74,28 +72,25 @@ public class PersonSearchTest extends ZanataTestCase {
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void unsuccessfulPersonSearch() throws Exception {
-        ExplorePage explorePage = new BasicWorkFlow()
+        BasePage basePage = new BasicWorkFlow()
                 .goToHome()
-                .gotoExplore()
-                .enterSearch("snart");
+                .enterSearch("snart")
+                .expectSearchListContains("Search Zanata for 'snart'");
 
-        assertThat(explorePage.getUserSearchResults().isEmpty())
-                .isTrue()
+        assertThat(basePage.getZanataSearchAutocompleteItems())
+                .doesNotContain("translator")
                 .as("The user is not displayed");
     }
 
     @Feature(summary = "The user can access another user's profile via the URL",
-        tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void viewProfileViaUrl() throws Exception {
-        BasicWorkFlow basicWorkFlow = new BasicWorkFlow();
-        ProfilePage profilePage = basicWorkFlow
-            .goToHome()
-            .gotoExplore()
-            .enterSearch("translator")
-            .clickUserSearchEntry("translator");
+        ProfilePage profilePage = new BasicWorkFlow()
+                .goToPage("profile/view/translator", ProfilePage.class);
+
         assertThat(profilePage.getUsername().trim())
-            .isEqualTo("translator");
+                .isEqualTo("translator");
     }
 
     @Feature(summary = "A logged user can see another user's contributions",
@@ -105,9 +100,8 @@ public class PersonSearchTest extends ZanataTestCase {
         new LoginWorkFlow().signIn("glossarist", "glossarist");
         ProfilePage profilePage = new BasicWorkFlow()
                 .goToHome()
-                .gotoExplore()
                 .enterSearch("trans")
-                .expectPersonListContains("translator")
+                .expectSearchListContains("translator")
                 .clickUserSearchEntry("translator");
 
         assertThat(profilePage.expectContributionsMatrixVisible())

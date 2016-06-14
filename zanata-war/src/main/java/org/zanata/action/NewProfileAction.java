@@ -21,27 +21,20 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-import java.util.regex.Pattern;
 
 import lombok.extern.slf4j.Slf4j;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.ApplicationConfiguration;
-import org.zanata.exception.ZanataServiceException;
 import org.zanata.i18n.Messages;
 import org.zanata.security.AuthenticationType;
 import org.zanata.security.ZanataOpenId;
 import org.zanata.service.EmailService;
 import org.zanata.service.RegisterService;
 import org.zanata.ui.faces.FacesMessages;
-import org.zanata.util.UrlUtil;
-
-import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 /**
  * This action handles new user profile creation.
@@ -61,9 +54,6 @@ public class NewProfileAction extends AbstractProfileAction implements Serializa
 
     @Inject
     private FacesMessages facesMessages;
-
-    @Inject
-    private UrlUtil urlUtil;
 
     @Inject
     Messages msgs;
@@ -89,41 +79,7 @@ public class NewProfileAction extends AbstractProfileAction implements Serializa
             username = zanataOpenId.getAuthResult().getUsername();
             name = zanataOpenId.getAuthResult().getFullName();
             email = zanataOpenId.getAuthResult().getEmail();
-
-            //validate username if enforcing matching username is enabled
-            if (applicationConfiguration.isEnforceMatchingUsernames()) {
-                if (StringUtils.isBlank(username)) {
-                    throw new ZanataServiceException(
-                            "Server option zanata.enforce.matchingusernames is set, but username from external authentication is missing.");
-                } else if (isUsernameTaken(username)) {
-                    throw new ZanataServiceException(
-                            "Server option zanata.enforce.matchingusernames is set, but username from external authentication is already in use: "
-                                    + username);
-                } else if (!isUsernameValid(username)) {
-                    throw new ZanataServiceException(
-                            "Server option zanata.enforce.matchingusernames is set, but username from external authentication is not valid for Zanata: "
-                                    + username + ", valid pattern: "
-                                    + USERNAME_REGEX);
-                }
-            }
         }
-    }
-
-    /**
-     * Make username readonly if
-     * - enforce by system property {@link ApplicationConfiguration#isEnforceMatchingUsernames()}
-     */
-    public boolean isReadOnlyUsername() {
-        return applicationConfiguration.isEnforceMatchingUsernames();
-    }
-
-    /**
-     * Manual check if username is valid pattern
-     * {@link #USERNAME_REGEX}
-     */
-    private boolean isUsernameValid(String username) {
-        Pattern p = Pattern.compile(USERNAME_REGEX);
-        return p.matcher(username).matches();
     }
 
     @Transactional
@@ -154,9 +110,9 @@ public class NewProfileAction extends AbstractProfileAction implements Serializa
         return "success";
     }
 
-    public void cancel() {
+    public String cancel() {
         identity.logout();
-        urlUtil.redirectTo(urlUtil.home());
+        return "success";
     }
 
 }

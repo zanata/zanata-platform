@@ -1,0 +1,69 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  template="/WEB-INF/template/template.xhtml">
+
+  <f:metadata>
+    <f:event type="preRenderView" listener="#{breadcrumbs.clear}"/>
+    <f:event type="preRenderView" listener="#{breadcrumbs.addLocation('', msgs['jsf.SearchProjects'])}"/>
+    <f:viewParam name="query" value="#{zanataSearch.autocomplete.query}" />
+  </f:metadata>
+
+  <ui:define
+    name="page_title">#{msgs.format('jsf.search.searchQuery.title',
+    zanataSearch.autocomplete.query)}</ui:define>
+  <ui:define name="center_content">
+    <div class="g--centered" id="search-page">
+      <div class="g__item w--1-s w--1 l--push-bottom-half">
+        <p class="txt--meta l--push-all-0">
+          #{msgs.format('jsf.search.searchQuery.title', zanataSearch.autocomplete.query)}
+        </p>
+
+        <div class="tabs--vertical js-tabs">
+          <ul class="tabs__nav js-tabs-nav">
+            <li>
+              <a id="projects_tab"
+                href="#{request.contextPath}/search/#{zanataSearch.autocomplete.query}/projects"
+                class="js-url-mod is-active" data-content="#projects">
+                <i class="i i--project"></i>
+              <span class="is-hidden--s i__text--right">
+                #{msgs['jsf.Projects']}
+              </span>
+                <h:panelGroup styleClass="txt--neutral" id="projects-size">
+                  #{zanataSearch.getTotalProjectCount()}
+                </h:panelGroup>
+              </a>
+            </li>
+            <li>
+              <a id="users_tab"
+                href="#{request.contextPath}/search/#{zanataSearch.autocomplete.query}/users"
+                class="js-url-mod" data-content="#users">
+                <i class="i i--users"></i>
+              <span class="is-hidden--s i__text--right">
+                #{msgs['jsf.Users']}
+              </span>
+                <h:panelGroup styleClass="txt--neutral" id="users-size">
+                  #{zanataSearch.getTotalUserCount()}
+                </h:panelGroup>
+              </a>
+            </li>
+          </ul>
+
+          <ul class="tabs__content js-tabs-content">
+            <li id="projects" class="is-active">
+              <ui:include src="/WEB-INF/layout/search/projects-tab.xhtml"/>
+            </li>
+            <li id="users">
+              <ui:include src="/WEB-INF/layout/search/users-tab.xhtml"/>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </ui:define>
+
+</ui:composition>

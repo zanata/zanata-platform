@@ -1,7 +1,6 @@
 package org.zanata.rest.editor.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import javax.ws.rs.core.Response;
@@ -16,7 +15,6 @@ import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.rest.dto.User;
-import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GravatarService;
 
 public class UserServiceTest {
@@ -28,8 +26,6 @@ public class UserServiceTest {
     private HAccount authenticatedAccount;
     @Mock
     private GravatarService gravatarService;
-    @Mock
-    private ZanataIdentity identity;
     @Mock
     private ApplicationConfiguration applicationConfiguration;
     private HPerson person;
@@ -46,12 +42,12 @@ public class UserServiceTest {
         authenticatedAccount.setPerson(person);
         service =
                 new UserService(authenticatedAccount, gravatarService,
-                        accountDAO, personDAO, identity, applicationConfiguration);
+                        accountDAO, personDAO, applicationConfiguration);
     }
 
     @Test
     public void getMyInfoWillReturnNotFoundIfNotAuthenticated() {
-        service = new UserService(null, gravatarService, accountDAO, personDAO, identity, applicationConfiguration);
+        service = new UserService(null, gravatarService, accountDAO, personDAO, applicationConfiguration);
         Response response = service.getMyInfo();
         assertThat(response.getStatus()).isEqualTo(404);
     }

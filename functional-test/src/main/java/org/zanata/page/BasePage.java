@@ -23,19 +23,33 @@ package org.zanata.page;
 import java.util.List;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
+import org.zanata.page.account.ProfilePage;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.page.account.SignInPage;
 import org.zanata.page.administration.AdministrationPage;
 import org.zanata.page.dashboard.DashboardBasePage;
-import org.zanata.page.explore.ExplorePage;
+import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.page.languages.LanguagesPage;
+import org.zanata.page.projects.ProjectVersionsPage;
+import org.zanata.page.projects.ProjectsPage;
+import org.zanata.page.search.SearchPage;
+import org.zanata.page.utility.ContactAdminFormPage;
 import org.zanata.page.utility.HomePage;
+import org.zanata.util.WebElementUtil;
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 import lombok.extern.slf4j.Slf4j;
 import org.zanata.workflow.BasicWorkFlow;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * A Base Page is an extension of the Core Page, providing the navigation bar
@@ -47,16 +61,19 @@ import org.zanata.workflow.BasicWorkFlow;
 @Slf4j
 public class BasePage extends CorePage {
 
-    private static final By NAV = By.id("nav");
-    private static final By languagesLink = By.id("nav_language");
-    private static final By exploreLink = By.id("nav_search");
-    private static final By glossaryLink = By.id("nav_glossary");
-    private static final By BY_SIGN_IN = By.id("nav_login");
-    private static final By BY_SIGN_OUT = By.id("nav_logout");
-    private static final By BY_PROFILE = By.id("nav_profile");
-    private static final By BY_DASHBOARD_LINK = By.id("nav_dashboard");
-    private static final By BY_ADMINISTRATION_LINK = By.id("nav_admin");
-    private static final By registrationLink = By.id("nav_sign_up");
+    private final By NavMenuBy = By.id("nav-main");
+    private By projectsLink = By.id("projects_link");
+    private By groupsLink = By.id("version-groups_link");
+    private By languagesLink = By.id("languages_link");
+    private By glossaryLink = By.id("glossary_link");
+    private By userAvatar = By.id("user--avatar");
+    private static final By BY_SIGN_IN = By.id("signin_link");
+    private static final By BY_SIGN_OUT = By.id("banner_form:right_menu_sign_out_link");
+    private static final By BY_DASHBOARD_LINK = By.id("banner_form:dashboard");
+    private static final By BY_ADMINISTRATION_LINK = By.id("banner_form:administration");
+    private By searchInput = By.id("projectAutocomplete-autocomplete__input");
+    private By registrationLink = By.id("register_link_internal_auth");
+    private static final By contactAdminLink = By.linkText("Contact admin");
 
     public BasePage(final WebDriver driver) {
         super(driver);
@@ -64,19 +81,31 @@ public class BasePage extends CorePage {
 
     public DashboardBasePage goToMyDashboard() {
         log.info("Click Dashboard menu link");
+        clickElement(userAvatar);
         clickLinkAfterAnimation(BY_DASHBOARD_LINK);
         return new DashboardBasePage(getDriver());
     }
 
-    public ExplorePage gotoExplore() {
-        log.info("Click Explore menu link");
-        clickLinkAfterAnimation(exploreLink);
-        return new ExplorePage(getDriver());
+    public ProjectsPage goToProjects() {
+        log.info("Click Projects");
+        clickNavMenuItem(existingElement(projectsLink));
+        return new ProjectsPage(getDriver());
     }
 
     private void clickNavMenuItem(final WebElement menuItem) {
+        scrollToTop();
         slightPause();
+        if (!menuItem.isDisplayed()) {
+            // screen is too small the menu become dropdown
+            clickElement(readyElement(existingElement(By.id("nav-main")), By.tagName("a")));
+        }
         clickElement(menuItem);
+    }
+
+    public VersionGroupsPage goToGroups() {
+        log.info("Click Groups");
+        clickNavMenuItem(existingElement(groupsLink));
+        return new VersionGroupsPage(getDriver());
     }
 
     public LanguagesPage goToLanguages() {
@@ -87,6 +116,7 @@ public class BasePage extends CorePage {
 
     public AdministrationPage goToAdministration() {
         log.info("Click Administration menu link");
+        clickElement(userAvatar);
         clickLinkAfterAnimation(BY_ADMINISTRATION_LINK);
         return new AdministrationPage(getDriver());
     }
@@ -110,17 +140,18 @@ public class BasePage extends CorePage {
     public boolean hasLoggedIn() {
         log.info("Query user is logged in");
         waitForPageSilence();
-        List<WebElement> logoutLink = getDriver().findElements(BY_SIGN_OUT);
-        return logoutLink.size() > 0;
+        List<WebElement> avatar = getDriver().findElements(userAvatar);
+        return avatar.size() > 0;
     }
 
     public String loggedInAs() {
         log.info("Query logged in user name");
-        return existingElement(NAV).getAttribute("name");
+        return existingElement(userAvatar).getAttribute("data-original-title");
     }
 
     public HomePage logout() {
         log.info("Click Log Out");
+        clickElement(userAvatar);
         clickLinkAfterAnimation(BY_SIGN_OUT);
         //Handle RHBZ1197955
         if (getDriver().findElements(By.className("error-div")).size() > 0) {
@@ -128,6 +159,41 @@ public class BasePage extends CorePage {
             new BasicWorkFlow().goToHome();
         }
         return new HomePage(getDriver());
+    }
+
+    public List<String> getBreadcrumbLinks() {
+        List<WebElement> breadcrumbs =
+                getDriver().findElement(By.id("breadcrumbs_panel"))
+                        .findElements(By.className("breadcrumbs_link"));
+        return WebElementUtil.elementsToText(breadcrumbs);
+    }
+
+    public String getLastBreadCrumbText() {
+        WebElement breadcrumb =
+                getDriver().findElement(By.id("breadcrumbs_panel"))
+                        .findElement(By.className("breadcrumbs_display"));
+        return breadcrumb.getText();
+    }
+
+    public <P> P clickBreadcrumb(final String link, Class<P> pageClass) {
+        List<WebElement> breadcrumbs =
+                getDriver().findElement(By.id("breadcrumbs_panel"))
+                        .findElements(By.className("breadcrumbs_link"));
+        Predicate<WebElement> predicate = input -> input.getText().equals(link);
+        Optional<WebElement> breadcrumbLink =
+                Iterables.tryFind(breadcrumbs, predicate);
+        if (breadcrumbLink.isPresent()) {
+            breadcrumbLink.get().click();
+            return PageFactory.initElements(getDriver(), pageClass);
+        }
+        throw new RuntimeException("can not find " + link + " in breadcrumb: "
+                + WebElementUtil.elementsToText(breadcrumbs));
+    }
+
+    public <P> P goToPage(String navLinkText, Class<P> pageClass) {
+        readyElement(existingElement(NavMenuBy),
+                By.linkText(navLinkText)).click();
+        return PageFactory.initElements(getDriver(), pageClass);
     }
 
     /**
@@ -145,6 +211,83 @@ public class BasePage extends CorePage {
         getExecutor().executeScript("arguments[0].click();", element);
     }
 
+    public String getHelpURL() {
+        log.info("Query Help URL");
+        WebElement help_link = existingElement(By.id("help_link"));
+        return help_link.getAttribute("href");
+    }
+
+    public ContactAdminFormPage clickContactAdmin() {
+        log.info("Click Contact Admin button");
+        clickElement(contactAdminLink);
+        return new ContactAdminFormPage(getDriver());
+    }
+
+    public BasePage enterSearch(String searchText) {
+        log.info("Enter Project/Person search {}", searchText);
+        WebElementUtil.searchAutocomplete(getDriver(), "projectAutocomplete",
+                searchText);
+        return new BasePage(getDriver());
+    }
+
+    public SearchPage submitSearch() {
+        log.info("Press Enter on Zanata search");
+        existingElement(searchInput).sendKeys(Keys.ENTER);
+        return new SearchPage(getDriver());
+    }
+
+    public BasePage expectSearchListContains(final String expected) {
+        waitForPageSilence();
+        String msg = "Project search list contains " + expected;
+        waitForAMoment().withMessage("Waiting for search contains").until(
+                (Predicate<WebDriver>) webDriver ->
+                        getZanataSearchAutocompleteItems() .contains(expected)
+        );
+        assertThat(getZanataSearchAutocompleteItems()).as(msg).contains(
+                expected);
+        return new BasePage(getDriver());
+    }
+
+    public List<String> getZanataSearchAutocompleteItems() {
+        log.info("Query Project/Person search results list");
+        return WebElementUtil.getSearchAutocompleteItems(getDriver(),
+                "general-search-form", "projectAutocomplete");
+    }
+
+    public ProfilePage clickUserSearchEntry(final String searchEntry) {
+        log.info("Click Person search result {}", searchEntry);
+        clickSearchEntry(searchEntry);
+        return new ProfilePage(getDriver());
+    }
+
+    public ProjectVersionsPage clickProjectSearchEntry(String searchEntry) {
+        log.info("Click Projects search result {}", searchEntry);
+        clickSearchEntry(searchEntry);
+        return new ProjectVersionsPage(getDriver());
+    }
+
+    private void clickSearchEntry(final String searchEntry) {
+        String msg = "search result " + searchEntry;
+        WebElement searchItem =
+                waitForAMoment().withMessage(msg).until(
+                        (Function<WebDriver, WebElement>) driver -> {
+                            List<WebElement> items =
+                                    WebElementUtil
+                                            .getSearchAutocompleteResults(
+                                                    driver,
+                                                    "general-search-form",
+                                                    "projectAutocomplete");
+
+                            for (WebElement item : items) {
+                                if (item.getText().equals(searchEntry)) {
+                                    return item;
+                                }
+                            }
+                            return null;
+                        });
+        clickElement(searchItem);
+    }
+
     public void clickWhenTabEnabled(final WebElement tab) {
         waitForPageSilence();
         clickElement(tab);
@@ -155,7 +298,7 @@ public class BasePage extends CorePage {
      * @return boolean is valid
      */
     public boolean isPageValid() {
-        return (getDriver().findElements(By.id("nav"))).size() > 0;
+        return (getDriver().findElements(By.id("home"))).size() > 0;
     }
 
 }

@@ -105,14 +105,6 @@
                   <span class="is-hidden--s i__text--right">#{msgs['jsf.dashboard.projects.title']}</span>
                 </a>
               </li>
-              <li>
-                <a id="groups_tab"
-                  href="#{request.contextPath}/dashboard/groups"
-                  class="js-url-mod" data-content="#groups">
-                  <i class="i i--group"></i>
-                  <span class="is-hidden--s i__text--right">#{msgs['jsf.dashboard.groups.title']}</span>
-                </a>
-              </li>
               <li class="tab__end">
                 <a href="#{request.contextPath}/dashboard/settings"
                   id="settings_tab" class="js-url-mod" title="Account Settings"
@@ -125,16 +117,13 @@
             </ul>
             <ul class="tabs__content panels__container js-tabs-content l--push-top-1">
               <li id="activity">
-                <ui:include src="/WEB-INF/layout/dashboard/activity.xhtml"/>
+                <ui:include src="../WEB-INF/layout/dashboard/activity.xhtml"/>
               </li>
               <li id="projects">
-                <ui:include src="/WEB-INF/layout/dashboard/projects.xhtml"/>
-              </li>
-              <li id="groups">
-                <ui:include src="/WEB-INF/layout/dashboard/groups.xhtml"/>
+                <ui:include src="../WEB-INF/layout/dashboard/projects.xhtml"/>
               </li>
               <li id="settings">
-                <ui:include src="/WEB-INF/layout/dashboard/settings.xhtml"/>
+                <ui:include src="../WEB-INF/layout/dashboard/settings.xhtml"/>
               </li>
             </ul>
           </div>

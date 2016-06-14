@@ -76,23 +76,19 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     }
 
     @SuppressWarnings("unchecked")
-    public List<HProject> getOffsetList(int offset, int count,
+    public List<HProject>
+            getOffsetListOrderByName(int offset, int count,
                     boolean filterOutActive, boolean filterOutReadOnly,
                     boolean filterOutObsolete) {
-
         String condition =
                 constructFilterCondition(filterOutActive, filterOutReadOnly,
                     filterOutObsolete);
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("Select distinct p from HProject p ")
-            .append(condition)
-            .append("order by UPPER(p.name) asc");
-        Query q = getSession().createQuery(sb.toString())
-            .setMaxResults(count)
-            .setFirstResult(offset)
-            .setCacheable(true)
-            .setComment("ProjectDAO.getOffsetList");
+        Query q =
+                getSession().createQuery(
+                        "from HProject p " + condition
+                                + "order by UPPER(p.name)");
+        q.setMaxResults(count).setFirstResult(offset);
+        q.setCacheable(true).setComment("ProjectDAO.getOffsetListOrderByName");
         return q.list();
     }
 
@@ -278,12 +274,11 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
 
     private FullTextQuery buildSearchQuery(@Nonnull String searchQuery,
         boolean includeObsolete) throws ParseException {
-        String queryText = QueryParser.escape(searchQuery);
 
         BooleanQuery booleanQuery = new BooleanQuery();
-        booleanQuery.add(buildSearchFieldQuery(queryText, "slug"), BooleanClause.Occur.SHOULD);
-        booleanQuery.add(buildSearchFieldQuery(queryText, "name"), BooleanClause.Occur.SHOULD);
-        booleanQuery.add(buildSearchFieldQuery(queryText, "description"), BooleanClause.Occur.SHOULD);
+        booleanQuery.add(buildSearchFieldQuery(searchQuery, "slug"), BooleanClause.Occur.SHOULD);
+        booleanQuery.add(buildSearchFieldQuery(searchQuery, "name"), BooleanClause.Occur.SHOULD);
+        booleanQuery.add(buildSearchFieldQuery(searchQuery, "description"), BooleanClause.Occur.SHOULD);
 
         if (!includeObsolete) {
             TermQuery obsoleteStateQuery =

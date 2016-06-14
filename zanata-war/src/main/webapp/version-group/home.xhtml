@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  template="../WEB-INF/template/template_2x.xhtml">
+
+  <f:metadata>
+    <f:event type="preRenderView" listener="#{breadcrumbs.clear}"/>
+    <f:event type="preRenderView" listener="#{breadcrumbs.addLocation('', msgs['jsf.Groups'])}"/>
+  </f:metadata>
+
+  <ui:define name="page_title">#{msgs['jsf.Groups']}</ui:define>
+
+  <ui:define name="right_content">
+    <rich:panel
+        rendered="#{identity.loggedIn and identity.hasPermission(versionGroupHome.instance, 'insert')}">
+      <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
+      <h:link styleClass="action_link" id="group-create"
+        outcome="/version-group/create_version_group.xhtml"
+        rendered="#{identity.hasPermission(versionGroupHome.instance, 'insert')}"
+        value="#{msgs['jsf.NewGroup.Label']}"/>
+    </rich:panel>
+  </ui:define>
+
+  <ui:define name="center_content">
+
+    <f:facet name="header">#{msgs['jsf.Groups']}</f:facet>
+
+    <h:form id="groupForm">
+      <h:panelGroup layout="block"  styleClass="float-right">
+        <a4j:region>
+          <ui:fragment
+            rendered="#{identity.hasPermission('HIterationGroup','view-obsolete')}">
+            <h:selectBooleanCheckbox id="showObsolete"
+              title="#{msgs['jsf.groups.ShowObsoleteGroups']}"
+              value="#{versionGroupAction.showObsoleteGroups}">
+              <a4j:ajax event="change" render="groupTable"/>
+            </h:selectBooleanCheckbox>
+            <h:outputText value="#{msgs['jsf.Obsolete']}"/>
+          </ui:fragment>
+        </a4j:region>
+      </h:panelGroup>
+      <br/>
+      <rich:dataTable id="groupTable"
+        value="#{versionGroupAction.allVersionGroups}" var="group">
+        <rich:column filterValue="#{versionGroupAction.groupNameFilter}"
+          filterExpression="#{fn:containsIgnoreCase(group.name, versionGroupAction.groupNameFilter)}">
+          <f:facet name="header">
+            <h:panelGroup>
+              <h:outputText value="#{msgs['jsf.Name']}"/>
+              <br/>
+              <h:inputText value="#{versionGroupAction.groupNameFilter}"
+                id="name_filter_input" styleClass="filter_input">
+                <a4j:ajax event="keyup" render="groupTable@body">
+                  <a4j:attachQueue ignoreDupResponses="true"
+                    requestDelay="700"/>
+                </a4j:ajax>
+              </h:inputText>
+            </h:panelGroup>
+          </f:facet>
+          <h:link id="versionGroup" styleClass="table_link"
+            value="#{group.name}"
+            outcome="/version-group/version_group.xhtml"
+            rendered="#{group.status == 'ACTIVE'}">
+            <f:param name="versionGroupSlug" value="#{group.slug}"/>
+          </h:link>
+          <h:link id="versionGroup_obsolete"
+            styleClass="table_link obsolete_link" value="#{group.name}"
+            outcome="/version-group/version_group.xhtml"
+            rendered="#{group.status == 'OBSOLETE'}">
+            <f:param name="versionGroupSlug" value="#{group.slug}"/>
+          </h:link>
+
+        </rich:column>
+        <rich:column>
+          <f:facet name="header">#{msgs['jsf.Description']}</f:facet>
+          #{group.description}
+        </rich:column>
+        <rich:column sortBy="#{group.creationDate}">
+          <f:facet name="header">#{msgs['jsf.CreationDate']}</f:facet>
+          <h:outputText value="#{group.creationDate}">
+            <f:convertDateTime type="date" dateStyle="default"/>
+          </h:outputText>
+        </rich:column>
+
+        <rich:column styleClass="centered" width="60px" sortBy="#{group.status}"
+          filterMethod="#{versionGroupAction.filterGroupByStatus}">
+          <f:facet name="header">#{msgs['jsf.Status']}</f:facet>
+          <h:outputText value="#{msgs[group.status.messageKey]}"/>
+        </rich:column>
+
+      </rich:dataTable>
+    </h:form>
+  </ui:define>
+
+</ui:composition>

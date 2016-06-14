@@ -227,13 +227,9 @@
     <from-view-id>/version-group/create_version_group.xhtml</from-view-id>
     <navigation-case>
       <from-action>#{versionGroupHome.persist}</from-action>
-      <to-view-id>/version-group/version_group.xhtml</to-view-id>
-      <redirect>
-        <view-param>
-          <name>slug</name>
-          <value>#{versionGroupHome.instance.slug}</value>
-        </view-param>
-      </redirect>
+      <if>#{versionGroupHome.managed}</if>
+      <to-view-id>/version-group/home.xhtml</to-view-id>
+      <redirect/>
     </navigation-case>
   </navigation-rule>
 

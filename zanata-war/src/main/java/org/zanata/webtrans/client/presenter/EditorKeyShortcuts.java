@@ -31,11 +31,11 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler {
     private final UserConfigHolder configHolder;
     private final TableEditorMessages messages;
 
-    private KeyShortcut enterSavesTranslatedShortcut;
+    private KeyShortcut enterSavesApprovedShortcut;
     private KeyShortcut nextStateShortcut;
     private KeyShortcut prevStateShortcut;
 
-    private HandlerRegistration enterSavesTranslatedHandlerRegistration;
+    private HandlerRegistration enterSavesApprovedHandlerRegistration;
     private UserConfigHolder.ConfigurationState configuration;
 
     @Inject
@@ -182,7 +182,7 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler {
                         }).build();
         keyShortcutPresenter.register(saveFuzzyShortcut);
 
-        KeyShortcutEventHandler saveAsTranslatedKeyShortcutHandler =
+        KeyShortcutEventHandler saveAsApprovedKeyShortcutHandler =
                 new KeyShortcutEventHandler() {
                     @Override
                     public void onKeyShortcut(KeyShortcutEvent event) {
@@ -196,53 +196,19 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler {
                         .setContext(ShortcutContext.Edit)
                         .setDescription(messages.saveAsTranslated())
                         .setPreventDefault(true).setStopPropagation(true)
-                        .setHandler(saveAsTranslatedKeyShortcutHandler).build();
+                        .setHandler(saveAsApprovedKeyShortcutHandler).build();
         keyShortcutPresenter.register(ctrlEnterShortcut);
-        enterSavesTranslatedShortcut =
+        enterSavesApprovedShortcut =
                 KeyShortcut.Builder.builder()
                         .addKey(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER))
                         .setContext(ShortcutContext.Edit)
                         .setDescription(messages.saveAsTranslated())
                         .setPreventDefault(true).setStopPropagation(true)
-                        .setHandler(saveAsTranslatedKeyShortcutHandler).build();
+                        .setHandler(saveAsApprovedKeyShortcutHandler).build();
         if (configHolder.getState().isEnterSavesApproved()) {
-            enterSavesTranslatedHandlerRegistration =
-                    keyShortcutPresenter.register(enterSavesTranslatedShortcut);
+            enterSavesApprovedHandlerRegistration =
+                    keyShortcutPresenter.register(enterSavesApprovedShortcut);
         }
-
-        KeyShortcutEventHandler saveAsApprovedKeyShortcutHandler =
-            new KeyShortcutEventHandler() {
-                @Override
-                public void onKeyShortcut(KeyShortcutEvent event) {
-                    targetContentsPresenter.acceptTranslation();
-                }
-            };
-
-        KeyShortcut savesApprovedShortcut =
-            KeyShortcut.Builder.builder()
-                .addKey(new Keys(Keys.CTRL_SHIFT_KEYS, KeyCodes.KEY_A))
-                .setContext(ShortcutContext.Edit)
-                .setDescription(messages.saveAsApproved())
-                .setPreventDefault(true).setStopPropagation(true)
-                .setHandler(saveAsApprovedKeyShortcutHandler).build();
-        keyShortcutPresenter.register(savesApprovedShortcut);
-
-        KeyShortcutEventHandler saveAsRejectKeyShortcutHandler =
-            new KeyShortcutEventHandler() {
-                @Override
-                public void onKeyShortcut(KeyShortcutEvent event) {
-                    targetContentsPresenter.rejectTranslation();
-                }
-            };
-
-        KeyShortcut savesRejectShortcut =
-            KeyShortcut.Builder.builder()
-                .addKey(new Keys(Keys.CTRL_SHIFT_KEYS, KeyCodes.KEY_R))
-                .setContext(ShortcutContext.Edit)
-                .setDescription(messages.saveAsReject())
-                .setPreventDefault(true).setStopPropagation(true)
-                .setHandler(saveAsRejectKeyShortcutHandler).build();
-        keyShortcutPresenter.register(savesRejectShortcut);
 
         KeyShortcut copySourceShortcut =
                 KeyShortcut.Builder.builder()
@@ -295,12 +261,12 @@ public class EditorKeyShortcuts implements UserConfigChangeHandler {
                 .isEnterSavesApproved()) {
             boolean enterSavesApproved = configuration.isEnterSavesApproved();
             if (enterSavesApproved) {
-                enterSavesTranslatedHandlerRegistration =
+                enterSavesApprovedHandlerRegistration =
                         keyShortcutPresenter
-                                .register(enterSavesTranslatedShortcut);
+                                .register(enterSavesApprovedShortcut);
             } else {
-                if (enterSavesTranslatedHandlerRegistration != null) {
-                    enterSavesTranslatedHandlerRegistration.removeHandler();
+                if (enterSavesApprovedHandlerRegistration != null) {
+                    enterSavesApprovedHandlerRegistration.removeHandler();
                 }
             }
         }

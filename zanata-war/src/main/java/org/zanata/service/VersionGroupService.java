@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
+import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
@@ -34,6 +36,12 @@ import org.zanata.ui.model.statistic.WordStatistic;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public interface VersionGroupService {
+
+    /**
+     * Return all groups in given status
+     *
+     */
+    List<HIterationGroup> getAllGroups(EntityStatus... statuses);
 
     /**
      * Search not obsolete project version by fuzzy matching of version slug or

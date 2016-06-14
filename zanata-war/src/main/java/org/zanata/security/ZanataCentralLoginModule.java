@@ -30,7 +30,7 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
-import org.zanata.config.SystemPropertyConfigStore;
+import org.zanata.config.JndiBackedConfig;
 
 /**
  * This is a login module that works as a central dispatcher for all other
@@ -55,23 +55,20 @@ public class ZanataCentralLoginModule implements LoginModule {
         this.subject = subject;
         this.callbackHandler = callbackHandler;
 
-        // Avoid using CDI components in Login Modules
-        SystemPropertyConfigStore systemPropCfg =
-                new SystemPropertyConfigStore();
+        // Avoid using Seam components in Login Modules
+        JndiBackedConfig jndiConfig = new JndiBackedConfig();
 
         internalAuthDomain =
-                systemPropCfg
-                        .getAuthPolicyName(AuthenticationType.INTERNAL.name()
-                                .toLowerCase());
+                jndiConfig.getAuthPolicyName(AuthenticationType.INTERNAL.name()
+                        .toLowerCase());
         kerberosDomain =
-                systemPropCfg
-                        .getAuthPolicyName(AuthenticationType.KERBEROS.name()
-                                .toLowerCase());
+                jndiConfig.getAuthPolicyName(AuthenticationType.KERBEROS.name()
+                        .toLowerCase());
         openIdDomain =
-                systemPropCfg.getAuthPolicyName(AuthenticationType.OPENID.name()
+                jndiConfig.getAuthPolicyName(AuthenticationType.OPENID.name()
                         .toLowerCase());
         jaasDomain =
-                systemPropCfg.getAuthPolicyName(AuthenticationType.JAAS.name()
+                jndiConfig.getAuthPolicyName(AuthenticationType.JAAS.name()
                         .toLowerCase());
     }
 

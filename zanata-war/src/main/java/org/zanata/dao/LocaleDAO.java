@@ -20,17 +20,18 @@
  */
 package org.zanata.dao;
 
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
-import org.zanata.common.LocaleId;
-import org.zanata.model.HLocale;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
-import java.util.List;
+import org.zanata.common.LocaleId;
+import org.zanata.model.HLocale;
 
 @Named("localeDAO")
 @RequestScoped
@@ -69,25 +70,5 @@ public class LocaleDAO extends AbstractDAOImpl<HLocale, Long> {
 
     public List<HLocale> findAll() {
         return findByCriteria(); // Return all of them
-    }
-
-    public List<HLocale> searchByName(String query, int maxResult,
-        int firstResult) {
-        Query q = getSession().createQuery(
-            "from HLocale l where " +
-                "lower(l.localeId) like :query " +
-                "or lower(l.displayName) like :query " +
-                "or lower(l.nativeName) like :query")
-            .setString("query", "%" + query.toLowerCase() + "%")
-            .setFirstResult(firstResult);
-        if (maxResult != -1) {
-            q.setMaxResults(maxResult);
-        }
-        q.setComment("LocaleDAO.searchByName");
-        return q.list();
-    }
-
-    public int countByNameLike(String query) {
-        return searchByName(query, -1, 0).size();
     }
 }

@@ -81,8 +81,8 @@ public class EditProjectValidationsTest extends ZanataTestCase {
                 .setValidationLevel("XML entity reference", "Error");
 
         projectTranslationTab = projectTranslationTab.goToHomePage()
-                .gotoExplore()
-                .searchAndGotoProjectByName("about fedora")
+                .goToProjects()
+                .goToProject("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsTranslationTab();
 

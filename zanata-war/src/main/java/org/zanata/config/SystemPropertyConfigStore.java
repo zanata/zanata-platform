@@ -25,11 +25,6 @@ import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Set;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toSet;
-
 /**
  * Property Store that delegates to system properties.
  *
@@ -39,16 +34,6 @@ import static java.util.stream.Collectors.toSet;
 @Named("systemPropertyConfigStore")
 @javax.enterprise.context.Dependent
 public class SystemPropertyConfigStore implements ConfigStore {
-
-    private static final String KEY_AUTH_POLICY =
-            "zanata.security.authpolicy.";
-    private static final String KEY_ADMIN_USERS =
-            "zanata.security.adminusers";
-    private static final String KEY_DEFAULT_FROM_ADDRESS =
-            "zanata.email.defaultfromaddress";
-    public static final String KEY_DOCUMENT_FILE_STORE =
-            "zanata.file.directory";
-
     private static final Logger log =
             LoggerFactory.getLogger(SystemPropertyConfigStore.class);
 
@@ -68,35 +53,5 @@ public class SystemPropertyConfigStore implements ConfigStore {
                     value, propertyName, defaultValue);
             return defaultValue;
         }
-    }
-
-    /**
-     * ========================================================================
-     * Specific property accessormethods for configuration values
-     * ========================================================================
-     */
-    public Set<String> getEnabledAuthenticationPolicies() {
-        Stream<String> authPolicyKeys =
-                System.getProperties().stringPropertyNames().stream()
-                        .filter(propName -> propName
-                                .startsWith(KEY_AUTH_POLICY));
-        return authPolicyKeys.map(k -> k.replace(KEY_AUTH_POLICY, ""))
-                .collect(toSet());
-    }
-
-    public String getAuthPolicyName(String authType) {
-        return System.getProperty(KEY_AUTH_POLICY + authType);
-    }
-
-    public String getAdminUsersList() {
-        return System.getProperty(KEY_ADMIN_USERS);
-    }
-
-    public String getDefaultFromEmailAddress() {
-        return System.getProperty(KEY_DEFAULT_FROM_ADDRESS);
-    }
-
-    public String getDocumentFileStorageLocation() {
-        return System.getProperty(KEY_DOCUMENT_FILE_STORE);
     }
 }

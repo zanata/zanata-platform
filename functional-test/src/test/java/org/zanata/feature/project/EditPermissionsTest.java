@@ -57,8 +57,8 @@ public class EditPermissionsTest extends ZanataTestCase {
     public void maintainerDetailsAreDisplayed() throws Exception {
         ProjectPermissionsTab projectPermissionsTab = new LoginWorkFlow()
                 .signIn("admin", "admin")
-                .gotoExplore()
-                .searchAndGotoProjectByName("about fedora")
+                .goToProjects()
+                .goToProject("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsPermissionsTab();
 
@@ -80,8 +80,8 @@ public class EditPermissionsTest extends ZanataTestCase {
     public void addMaintainerAsAdmin() throws Exception {
         ProjectPermissionsTab projectPermissionsTab = new LoginWorkFlow()
                 .signIn("admin", "admin")
-                .gotoExplore()
-                .searchAndGotoProjectByName("about fedora")
+                .goToProjects()
+                .goToProject("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsPermissionsTab();
 
@@ -110,8 +110,8 @@ public class EditPermissionsTest extends ZanataTestCase {
 
         assertThat(new LoginWorkFlow()
                 .signIn("translator", "translator")
-                .gotoExplore()
-                .searchAndGotoProjectByName("about fedora")
+                .goToProjects()
+                .goToProject("about fedora")
                 .settingsTabIsDisplayed())
                 .isTrue()
                 .as("The settings tab is now available to the user");
@@ -158,8 +158,8 @@ public class EditPermissionsTest extends ZanataTestCase {
 
         ProjectVersionsPage projectVersionsPage = new LoginWorkFlow()
                 .signIn("glossarist", "glossarist")
-                .gotoExplore()
-                .searchAndGotoProjectByName("addmaintainer");
+                .goToProjects()
+                .goToProject("addmaintainer");
 
         assertThat(projectVersionsPage.settingsTabIsDisplayed())
                 .isTrue()
@@ -231,9 +231,8 @@ public class EditPermissionsTest extends ZanataTestCase {
                 "been removed from project.");
         ProjectVersionsPage projectVersionsPage = projectBasePage
                 .goToHomePage()
-                .gotoExplore()
-                .searchAndGotoProjectByName("removemaintainer");
-
+                .goToProjects()
+                .goToProject("removemaintainer");
 
         assertThat(projectVersionsPage.settingsTabIsDisplayed())
                 .isFalse()

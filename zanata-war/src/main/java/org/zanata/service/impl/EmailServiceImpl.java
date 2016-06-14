@@ -56,7 +56,6 @@ import javax.mail.internet.InternetAddress;
 import com.google.common.collect.Lists;
 
 import static org.zanata.email.Addresses.getAddresses;
-import static org.zanata.email.Addresses.getLocaleMemberAddresses;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -250,20 +249,5 @@ public class EmailServiceImpl implements EmailService {
             InternetAddress to = Addresses.getAddress(person);
             emailBuilder.sendMessage(strategy, null, to);
         }
-    }
-
-    @Override
-    public String sendToLanguageTeamMembers(LocaleId localeId,
-        EmailStrategy strategy, List<HLocaleMember> members) {
-        if (!members.isEmpty()) {
-            String receivedReason = msgs.format(
-                "jsf.email.language.members.ReceivedReason", localeId);
-            emailBuilder.sendMessage(strategy,
-                Lists.newArrayList(receivedReason),
-                getLocaleMemberAddresses(members));
-            return msgs.format("jsf.email.language.members.SentNotification",
-               localeId);
-        }
-        return msgs.format("jsf.email.language.members.EmptyMembersNotification", localeId);
     }
 }

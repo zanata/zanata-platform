@@ -28,7 +28,7 @@ import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.dashboard.DashboardBasePage;
-import org.zanata.page.more.ContactAdminFormPage;
+import org.zanata.page.utility.ContactAdminFormPage;
 import org.zanata.util.HasEmailRule;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -52,7 +52,6 @@ public class ContactAdminTest extends ZanataTestCase {
     public void testContactAdmin() {
         ContactAdminFormPage contactAdminFormPage = new LoginWorkFlow()
                 .signIn("translator", "translator")
-                .gotoMorePage()
                 .clickContactAdmin();
 
         DashboardBasePage dashboardBasePage = contactAdminFormPage

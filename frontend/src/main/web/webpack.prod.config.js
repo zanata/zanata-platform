@@ -1,50 +1,62 @@
 var webpack = require('webpack')
 var path = require('path')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
-var _ = require('lodash')
-var defaultConfig = require('./webpack.config.js')
-var bundleDest = __dirname
 
-module.exports = _.merge({}, defaultConfig, {
-  cache: false,
+// bundle destination (default is current directory)
+var bundleDest = process.env.npm_config_env_bundleDest || __dirname;
+
+module.exports = {
+  context: __dirname,
+  entry: [
+    './index'
+  ],
   output: {
     path: bundleDest,
-    filename: 'frontend.bundle.min.js'
+    filename: 'frontend.bundle.min.js',
+    pathinfo: true
   },
   module: {
     loaders: [
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        include: path.join(__dirname, 'src'),
-        loader: 'babel',
-        query: {
-          presets: ['react', 'stage-0', 'es2015']
-        },
-        babelrc: false
+        loaders: ['babel-loader']
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract(
-          'style',
-          'css',
-          'autoprefixer?browsers=last 2 versions'
-        )
+        loader: ExtractTextPlugin.extract('style-loader', 'css-loader?safe')
       }
     ]
   },
-  plugins: defaultConfig.plugins.concat([
+  cssnext: {
+    compress: true,
+    features: {
+      rem: false,
+      pseudoElements: false,
+      colorRgba: false
+    }
+  },
+  plugins: [
+    new webpack.DefinePlugin({ "global.GENTLY": false }),
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
     new ExtractTextPlugin('bundle.css'),
-    new webpack.optimize.DedupePlugin(),
     new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false
+        compress: {
+            warnings: false
+        }
+    }),
+    new webpack.optimize.DedupePlugin(),
+    new webpack.DefinePlugin({
+      "process.env": {
+        NODE_ENV: JSON.stringify("production")
       }
     }),
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('production')
-      }
-    })
-  ])
-})
+    new webpack.NoErrorsPlugin()
+  ],
+  resolve: {
+    extensions: ['', '.js', '.jsx', '.json', '.css']
+  },
+  node: {
+    __dirname: true
+  }
+};

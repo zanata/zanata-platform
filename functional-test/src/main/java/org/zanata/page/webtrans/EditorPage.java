@@ -402,10 +402,9 @@ public class EditorPage extends BasePage {
      */
     public EditorPage clickValidationCheckbox(Validations validation) {
         log.info("Click validation checkbox {}", validation);
-        clickElement(
-                readyElement(existingElement(By.xpath("//*[@title='" +
+        readyElement(existingElement(By.xpath("//*[@title='" +
                         getValidationTitle(validation) + "']")),
-                        By.tagName("input")));
+                By.tagName("input")).click();
         return new EditorPage(getDriver());
     }
 

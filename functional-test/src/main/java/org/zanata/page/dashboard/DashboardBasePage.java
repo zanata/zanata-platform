@@ -35,12 +35,10 @@ public class DashboardBasePage extends BasePage {
 
     private By activityTab = By.id("activity_tab");
     private By projectsTab = By.id("projects_tab");
-    private By groupsTab = By.id("groups_tab");
     private By settingsTab = By.id("settings_tab");
 
     private By activityTabBody = By.id("activity");
     private By projectsTabBody = By.id("projects");
-    private By groupsTabBody = By.id("groups");
     private By settingsTabBody = By.id("settings");
 
     private By settingsAccountTab = By.id("account_tab");
@@ -88,14 +86,6 @@ public class DashboardBasePage extends BasePage {
         clickWhenTabEnabled(readyElement(projectsTab));
         return new DashboardProjectsTab(getDriver());
     }
-
-    public DashboardGroupsTab gotoGroupsTab() {
-        log.info("Click Projects tab");
-        existingElement(groupsTabBody);
-        clickWhenTabEnabled(readyElement(groupsTab));
-        return new DashboardGroupsTab(getDriver());
-    }
-
 
     public DashboardBasePage goToSettingsTab() {
         log.info("Click Settings tab");

@@ -21,9 +21,11 @@
 package org.zanata.service;
 
 import org.zanata.async.AsyncTaskHandle;
-import org.zanata.events.DocStatsEvent;
+import org.zanata.events.DocumentStatisticUpdatedEvent;
+import org.zanata.events.TextFlowTargetStateEvent;
 import org.zanata.model.HDocument;
 import org.zanata.rest.dto.resource.Resource;
+import org.zanata.ui.model.statistic.WordStatistic;
 
 import java.util.Set;
 import java.util.concurrent.Future;
@@ -111,9 +113,9 @@ public interface DocumentService {
 
     /**
      * Post process when statistic in document changes
-     * (on DocStatsEvent)
+     * (on DocumentStatisticUpdatedEvent)
      *
      * @param event
      */
-    public void documentStatisticUpdated(DocStatsEvent event);
+    public void documentStatisticUpdated(DocumentStatisticUpdatedEvent event);
 }
