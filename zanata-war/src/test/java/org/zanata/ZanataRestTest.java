@@ -18,7 +18,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.zanata.config.JndiBackedConfig;
+import org.zanata.config.SystemPropertyConfigStore;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.rest.AuthorizationExceptionMapper;
@@ -43,13 +43,14 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
     protected final Set<Class<?>> providers = newHashSet();
     protected final Set<Object> providerInstances = newHashSet();
     @Mock
-    private JndiBackedConfig jndiBackedConfig;
+    private SystemPropertyConfigStore systemPropertyConfigStore;
 
     @Before
     public final void prepareRestEasyFramework() {
         MockitoAnnotations.initMocks(this);
-        when(jndiBackedConfig.getEnabledAuthenticationPolicies()).thenReturn(
-                newHashSet(AuthenticationType.INTERNAL.name()));
+        when(systemPropertyConfigStore.getEnabledAuthenticationPolicies())
+                .thenReturn(
+                        newHashSet(AuthenticationType.INTERNAL.name()));
         Dispatcher dispatcher = MockDispatcherFactory.createDispatcher();
         prepareAccount();
         prepareResources();

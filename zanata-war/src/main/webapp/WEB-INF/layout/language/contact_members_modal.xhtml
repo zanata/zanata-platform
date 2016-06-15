@@ -1,0 +1,121 @@
+<div xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:f="http://java.sun.com/jsf/core"
+  class="modal" id="contactMembersDialog" tabindex="-1" role="dialog"
+  aria-labelledby="myModalLabel" aria-hidden="true">
+
+  <script>
+    jQuery(document).ready(function () {
+      getContactMembersMessageField().bind('input propertychange', function() {
+        updateContactMembersSendButton();
+      });
+      getContactMembersSubjectField().bind('input propertychange', function() {
+        updateContactMembersSendButton();
+      });
+    });
+
+    function cancelContactMembers() {
+      getContactMembersMessageField().val('');
+      getContactMembersSubjectField().val('');
+      getContactMembersSendButton().removeClass('is-active');
+      updateContactMembersSendButton();
+    }
+
+    function getContactMembersMessageField() {
+      return getContactMembersForm().find('#' + jqSelector('#{rich:clientId('contact-members-message')}'));
+    }
+
+    function getContactMembersSubjectField() {
+      return getContactMembersForm().find('#' + jqSelector('#{rich:clientId('contact-members-subject')}'));
+    }
+
+    function getContactMembersForm() {
+      return jQuery('#' + jqSelector('#{rich:clientId('contactMembersForm')}'));
+    }
+
+    function updateContactMembersSendButton() {
+      var isEmpty = getContactMembersMessageField().val().trim() === ''
+        || getContactMembersSubjectField().val().trim() === '' ;
+      getContactMembersSendButton().prop('disabled', isEmpty);
+    }
+
+    function getContactMembersSendButton() {
+      return getContactMembersForm().find('#contact-members-send-button');
+    }
+
+    function getContactMemberErrorField() {
+      return getContactMembersForm().find('#' + jqSelector('#{rich:clientId('contact-members-error-message')}'));
+    }
+
+    function completeContactMembersSending() {
+      var errMsg = getContactMemberErrorField().text();
+      if(errMsg.length == 0 ){
+        getContactMembersForm().find('#contact-members-cancel-button').click()
+      }
+      getContactMembersSendButton().removeClass('is-active');
+    }
+  </script>
+
+  <div class="modal__dialog l--constrain-medium">
+    <header class="modal__header">
+      <h2 class="modal__title">
+        <h:panelGroup id="contactMembersModalTitle" layout="span">
+          #{msgs.format('jsf.message.contact.members.title',contactLanguageTeamMembersAction.getMembers().size(), contactLanguageTeamMembersAction.getLocale().retrieveDisplayName())}
+        </h:panelGroup>
+      </h2>
+      <button type="button"
+        class="modal__close button--link"
+        data-dismiss="modal" onclick="cancelContactMembers();return false;">
+        <i class="i i--huge i--cancel"></i>
+      </button>
+    </header>
+
+    <h:form id="contactMembersForm" styleClass="l--push-bottom-0">
+
+      <a4j:jsFunction name="sendContactMembersEmail" execute="@form"
+        action="#{contactLanguageTeamMembersAction.send()}"
+        oncomplete="completeContactMembersSending()"/>
+
+      <div class="modal__content l--pad-all-1">
+        <div class="l--push-buttom-quarter">
+          <h:outputLabel for="contact-members-error-subject">#{msgs['jsf.email.Subject']}</h:outputLabel>
+          <zanata:decorate id="subjectField" componentId="subject">
+            <h:inputText id="contact-members-subject" value="#{contactLanguageTeamMembersAction.subject}"
+              styleClass="l--push-bottom-0" maxlength="100" required="true">
+              <rich:message for="contact-members-subject" ajaxRendered="true" id="contact-members-error-subject" name="contact-members-error-subject"/>
+            </h:inputText>
+          </zanata:decorate>
+        </div>
+
+        <h:outputLabel for="contact-members-message">#{msgs['jsf.email.MessageBody']}</h:outputLabel>
+        <zanata:decorate id="messageField" componentId="message">
+          <h:inputTextarea id="contact-members-message" value="#{contactLanguageTeamMembersAction.message}"
+            styleClass="l--push-bottom-0" required="true">
+            <f:validateLength maximum="300"/>
+          </h:inputTextarea>
+          <rich:message for="contact-members-message" ajaxRendered="true" styleClass="bg--danger"
+            id="contact-members-error-message" name="contact-members-error-message"/>
+        </zanata:decorate>
+      </div>
+
+      <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
+        <div class="txt--align-right">
+          <button id="contact-members-cancel-button" onclick="cancelContactMembers();return false;"
+            class="cancel button--link l--push-right-half"
+            data-dismiss="modal">
+            #{msgs['jsf.Cancel']}
+          </button>
+
+          <button id="contact-members-send-button" class="button loader button--primary" disabled="disabled"
+            onclick="sendContactMembersEmail();return false;">
+            <span class="loader__label">#{msgs['jsf.email.Send']}</span>
+          </button>
+        </div>
+      </footer>
+    </h:form>
+  </div>
+
+</div>

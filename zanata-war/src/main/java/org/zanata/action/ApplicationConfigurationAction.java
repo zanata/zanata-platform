@@ -23,7 +23,11 @@ package org.zanata.action;
 import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
+
 import org.zanata.ApplicationConfiguration;
+import org.zanata.rest.editor.dto.BuildInfo;
+import org.zanata.util.UrlUtil;
 
 /**
  * This class serves as a UI proxy for the application configuration bean.
@@ -38,6 +42,9 @@ import org.zanata.ApplicationConfiguration;
 public class ApplicationConfigurationAction {
     @Inject
     private ApplicationConfiguration applicationConfiguration;
+
+    @Inject
+    private UrlUtil urlUtil;
 
     public boolean isLoginHandledByInternalPage() {
         return applicationConfiguration.isInternalAuth()
@@ -69,5 +76,22 @@ public class ApplicationConfigurationAction {
             return applicationConfiguration.getTermsOfUseUrl();
         }
         return ServerConfigurationBean.DEFAULT_TERM_OF_USE_URL;
+    }
+
+    public String getLoginUrl(HttpServletRequest request) {
+        if(applicationConfiguration.isKerberosAuth()) {
+            return "/account/klogin?continue=" + urlUtil.getEncodedLocalUrl(request);
+        }
+        if(isSingleOpenId()) {
+            return "/account/singleopenidlogin";
+        }
+        return "/account/sign_in?continue=" + urlUtil.getEncodedLocalUrl(request);
+    }
+
+    public String getRegisterUrl() {
+        if(isRegistrationLinkNeeded()) {
+            return applicationConfiguration.getRegisterPath();
+        }
+        return "/account/register";
     }
 }

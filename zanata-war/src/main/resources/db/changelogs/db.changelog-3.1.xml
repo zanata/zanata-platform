@@ -260,10 +260,9 @@
     </changeSet>
 
     <changeSet author="damason@redhat.com" id="6">
+        <validCheckSum>7:737116f7cf793839ecdd89a08c7b41b6</validCheckSum>
         <comment>Migrate existing raw document contents from database to file system</comment>
-        <customChange class="org.zanata.liquibase.custom.MigrateRawDocumentsToFileSystem">
-            <param name="basePathParam" value="${document.storage.directory}" />
-        </customChange>
+        <customChange class="org.zanata.liquibase.custom.MigrateRawDocumentsToFileSystem"/>
     </changeSet>
 
     <changeSet author="damason@redhat.com" id="7">

@@ -35,6 +35,7 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.LocaleRole;
 import org.zanata.model.ProjectRole;
+import org.zanata.rest.editor.service.resource.LocalesResource;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.permission.GrantsPermission;
 import org.zanata.security.permission.PermissionProvider;
@@ -571,6 +572,10 @@ public class SecurityFunctions extends PermissionProvider {
             log.debug("Allow rest access for Zanata test");
             return true;
         }
+        if(isLocalesServicePath(restServicePath)) {
+            log.debug("Allow rest access for /locales path (Zanata UI)");
+            return true;
+        }
         if (account != null) {
             return true;
         }
@@ -608,6 +613,16 @@ public class SecurityFunctions extends PermissionProvider {
                         // when being called in ZanataRestSecurityInterceptor
                 servicePath.startsWith("/test")
         );
+    }
+
+    /**
+     * Check if request path is Zanata UI locale endpoint.
+     * This endpoint is used for getting list of locales internationalised
+     * in Zanata, update locale in Zanata instance.
+     */
+    private static boolean isLocalesServicePath(String servicePath) {
+        return servicePath != null && servicePath.contains("/rest" +
+            LocalesResource.SERVICE_PATH);
     }
 
     private static class AutoCloseSession implements AutoCloseable {

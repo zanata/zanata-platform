@@ -47,21 +47,46 @@ Zanata does not create an admin user by default. You need to register specific u
 
  1. Open the `<JBOSS>/standalone/configuration/standalone.xml` file.
 
- 1. Locate the following line, and replace `admin` with a comma-separated list of users that require administrator privileges on the system.
+ 1. Locate the following line, and replace `admin` with a comma-separated list of users that require administrator privileges on the system if necessary.
 
 ```xml
-<simple name="java:global/zanata/security/admin-users" value="admin"/>
+<system-properties>
+  ...
+  <property name="zanata.security.adminusers" value="admin"/>
+  ...
+</system-properties>
 ```
 
- 1. Register a user under the name "admin", and it will automatically have administrator privileges. Any number of users may be added to this list in a comma-separated format.
+ 1. Register a user under a name on this list, and it will automatically have administrator privileges. Any number of users may be added to this list in a comma-separated format.
 
- 1. In the same file, configure other properties to your particular setup by adding more lines if necessary. The following properties must be configured in order for Zanata to run properly:
+ 1. In the same file, configure other system properties to your particular setup by adding more lines if necessary. The following properties must be configured in order for Zanata to run properly:
 ```xml
-<simple name="java:global/zanata/email/default-from-address" value="admin@example.com"/>
+<system-properties>
+  ...
+  <property name="zanata.email.defaultfromaddress" value="admin@example.com"/>
+  ...
+</system-properties>
 ```
 
  This is the default email address that will appear as the sender on Zanata emails.
 
+ Alternatively, you can pass this and other system properties to JBoss when starting it (see JBoss documentation for details on how to do this).
+
+## Enabling Cross-Origin Resource Sharing (advanced)
+
+If you have an alternative front-end for Zanata where the browser needs direct access to Zanata REST
+APIs (and authenticated user sessions), you will need to enable Cross-Origin Resource Sharing, by
+adding a system property like this to `<JBOSS>/standalone/configuration/standalone.xml`:
+
+    <property name="zanata.origin.whitelist" value="http://localhost:8000" />
+
+You should adjust the protocol, hostname and port to suit your use case. Multiple origins should
+be separated via space characters.
+
+This setting will cause Zanata to output CORS headers for REST requests, including
+`Access-Control-Allow-Origin` (if Origin is in the whitelist above),
+`Access-Control-Allow-Credentials: true` and
+`Access-Control-Allow-Methods: PUT,POST,DELETE,GET,OPTIONS`.
 ### Email configuration (Zanata 3.6 or earlier)
 
 In Zanata 3.6 or earlier, email is configured by admin in the server settings screen.  By default, an SMTP server on localhost port 25 is expected.

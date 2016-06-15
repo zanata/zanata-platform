@@ -38,8 +38,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DashboardClientTab extends DashboardBasePage {
 
     private By generateApiKeyButton = By.id("generateKeyButton");
-    private By apiKeyLabel = By.id("apiKey");
-    private By configurationTextArea = By.id("config");
+    private By apiKeyLabel = By.id("client_settings_apiKey");
+    private By configurationTextArea = By.id("client_settings_config");
 
     public DashboardClientTab(WebDriver driver) {
         super(driver);

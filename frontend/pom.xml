@@ -4,19 +4,19 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>3.9.1-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>frontend</artifactId>
   <name>frontend</name>
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <node.version>v0.12.7</node.version>
-    <npm.version>2.14.7</npm.version>
+    <node.version>v5.6.0</node.version>
+    <npm.version>3.6.0</npm.version>
     <web.target>${project.build.directory}/web</web.target>
     <bundle.dest>${project.build.outputDirectory}/META-INF/resources</bundle.dest>
     <node.install.directory>${download.dir}/zanata-frontend/node-${node.version}-npm-${npm.version}</node.install.directory>
-    <npm.cli.script>${node.install.directory}/node/npm/bin/npm-cli.js</npm.cli.script>
+    <npm.cli.script>${node.install.directory}/node/node_modules/npm/bin/npm-cli.js</npm.cli.script>
     <!-- in seconds. 10 is the default value -->
     <npm.cache.min>10</npm.cache.min>
   </properties>
@@ -38,7 +38,7 @@
       <plugin>
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
-        <version>0.0.23</version>
+        <version>0.0.28</version>
         <configuration>
           <workingDirectory>${node.install.directory}</workingDirectory>
         </configuration>
@@ -64,7 +64,7 @@
         <version>1.4.0</version>
         <configuration>
           <environmentVariables>
-            <PATH>${node.install.directory}/node:${node.install.directory}/node/npm/bin:${env.PATH}</PATH>
+            <PATH>${node.install.directory}/node:${node.install.directory}/node/node_modules/npm/bin:${env.PATH}</PATH>
           </environmentVariables>
           <executable>${node.install.directory}/node/node</executable>
         </configuration>
@@ -99,7 +99,6 @@
                 <argument>${npm.cli.script}</argument>
                 <argument>run</argument>
                 <argument>build</argument>
-                <argument>--env.bundleDest=${bundle.dest}</argument>
               </arguments>
             </configuration>
           </execution>
@@ -112,6 +111,28 @@
           <skip>true</skip>
           <failIfNoTests>false</failIfNoTests>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${bundle.dest}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${web.target}</directory>
+                  <include>frontend.*.min.js</include>
+                  <include>bundle.css</include>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
     </plugins>

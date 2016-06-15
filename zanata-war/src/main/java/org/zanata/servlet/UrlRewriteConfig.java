@@ -26,7 +26,8 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
         return ConfigurationBuilder.begin()
 
                 .addRule()
-                .when(Direction.isInbound().and(Path.matches("/seam/resource/restv1/{path}")))
+                .when(Direction.isInbound()
+                    .and(Path.matches("/seam/resource/restv1/{path}")))
                 .perform(Forward.to("/rest/{path}"))
                 .where("path").matches(".*")
 
@@ -38,15 +39,21 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .where("path").matches(".*")
 
                 .addRule()
-                .when(Direction.isInbound().and(Path.matches("/iteration/files/{projectSlug}/{iterationSlug}")))
-                .perform(Redirect.permanent(contextPath + "/iteration/view/{projectSlug}/{iterationSlug}/documents"))
+                .when(Direction.isInbound().and(Path.matches(
+                    "/iteration/files/{projectSlug}/{iterationSlug}")))
+                .perform(Redirect.permanent(contextPath +
+                    "/iteration/view/{projectSlug}/{iterationSlug}/documents"))
 
                 .addRule()
-                .when(Direction.isInbound().and(Path.matches("/iteration/source_files/{projectSlug}/{iterationSlug}")))
-                .perform(Redirect.permanent(contextPath + "/iteration/view/{projectSlug}/{iterationSlug}/documents"))
+                .when(Direction.isInbound().and(Path.matches(
+                    "/iteration/source_files/{projectSlug}/{iterationSlug}")))
+                .perform(Redirect.permanent(contextPath +
+                    "/iteration/view/{projectSlug}/{iterationSlug}/documents"))
 
 
                 .addRule(Join.path("/").to("/home.xhtml"))
+                .addRule(Join.path("/a/").to("/a/index.xhtml"))
+                .addRule(Join.path("/a/more").to("/a/more.xhtml"))
                 .addRule(Join.path("/account/activate/{key}").to("/account/activate.xhtml"))
                 .addRule(Join.path("/account/google_password_reset_request").to("/account/google_password_reset_request.xhtml"))
                 .addRule(Join.path("/account/password_reset/{key}").to("/account/password_reset.xhtml"))
@@ -114,9 +121,9 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/tm/create").to("/tm/create.xhtml"))
                 .addRule(Join.path("/version-group/create").to("/version-group/create_version_group.xhtml"))
                 .addRule(Join.path("/version-group/list").to("/version-group/home.xhtml"))
-                .addRule(Join.path("/version-group/view/{versionGroupSlug}").to("/version-group/version_group.xhtml"))
+                .addRule(Join.path("/version-group/view/{slug}").to("/version-group/version_group.xhtml"))
 
-                .addRule(Join.path("/version-group/view/{versionGroupSlug}/{section}").to("/version-group/version_group.xhtml"))
+                .addRule(Join.path("/version-group/view/{slug}/{section}").to("/version-group/version_group.xhtml"))
                 .where("section").matches(".*")
 
                 .addRule(Join.path("/webtrans/Application.html").to("/webtrans/Application.xhtml")).when(Direction.isInbound())

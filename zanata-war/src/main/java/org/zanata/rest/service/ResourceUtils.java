@@ -124,6 +124,10 @@ public class ResourceUtils {
 
     private static Properties pluralForms;
 
+    public static final String COPIED_BY_ZANATA_NAME = "Copied by Zanata";
+    public static final String COPIED_BY_ZANATA_NAME_EMAIL =
+            "copied-by-zanata@zanata.org";
+
     @Inject
     private EntityManager entityManager;
 
@@ -704,8 +708,7 @@ public class ResourceUtils {
             final List<HTextFlowTarget> hTargets, final HLocale locale) {
         final Map<String, HeaderEntry> containedHeaders =
                 new LinkedHashMap<String, HeaderEntry>(headerEntries.size());
-        HTextFlowTarget lastTranslatedTarget =
-                this.getLastTranslatedTarget(hTargets);
+        HTextFlowTarget lastChangedTarget = getLastChangedTarget(hTargets);
 
         // Collect the existing header entries
         for (HeaderEntry entry : headerEntries) {
@@ -714,7 +717,7 @@ public class ResourceUtils {
 
         // Add / Replace headers
         Date revisionDate =
-                this.getRevisionDate(headerEntries, lastTranslatedTarget);
+                this.getRevisionDate(headerEntries, lastChangedTarget);
         HeaderEntry headerEntry = containedHeaders.get(PO_REVISION_DATE_HDR);
         if (headerEntry == null) {
             headerEntry =
@@ -729,11 +732,11 @@ public class ResourceUtils {
         if (headerEntry == null) {
             headerEntry =
                     new HeaderEntry(LAST_TRANSLATOR_HDR,
-                            this.getLastTranslator(lastTranslatedTarget,
+                            this.getLastTranslator(lastChangedTarget,
                                     headerEntries));
             headerEntries.add(headerEntry);
         } else {
-            headerEntry.setValue(this.getLastTranslator(lastTranslatedTarget,
+            headerEntry.setValue(this.getLastTranslator(lastChangedTarget,
                     headerEntries));
         }
 
@@ -851,25 +854,21 @@ public class ResourceUtils {
     }
 
     /**
-     * @param translations
-     *            A list of Translations for a document.
-     * @return The most recently translated target. If there are more than one,
-     *         this method will return one of those, no assurances o
+     * @param translations - List of HTextFlowTarget
+     * @return last changed/updated HTextFlowTarget from the list
      */
-    private HTextFlowTarget getLastTranslatedTarget(
-            final List<HTextFlowTarget> translations) {
+    private HTextFlowTarget getLastChangedTarget(
+        final List<HTextFlowTarget> translations) {
         Date lastUpdate = new Date(Long.MIN_VALUE);
-        HTextFlowTarget lastTranslated = null;
+        HTextFlowTarget lastChanged = null;
 
-        for (HTextFlowTarget trans : translations) {
-            if (trans.getTranslator() != null
-                    && trans.getLastChanged().after(lastUpdate)) {
-                lastTranslated = trans;
-                lastUpdate = trans.getLastChanged();
+        for (HTextFlowTarget tft : translations) {
+            if (tft.getLastChanged().after(lastUpdate)) {
+                lastChanged = tft;
+                lastUpdate = tft.getLastChanged();
             }
         }
-
-        return lastTranslated;
+        return lastChanged;
     }
 
     /**
@@ -891,22 +890,38 @@ public class ResourceUtils {
             HPerson lastTranslatedBy = lastTranslated.getTranslator();
             Date lastModifiedDate = lastTranslated.getLastChanged();
 
-            // Last translated target is more recent than the Revision Date on
-            // the
-            // Header
-            if (lastTranslatedBy != null && lastModifiedDate != null
-                    && lastModifiedDate.after(headerRevisionDate)) {
-                lastTranslator =
-                        lastTranslatedBy.getName() + " <"
-                                + lastTranslatedBy.getEmail() + ">";
-            } else if (lastTranslatedBy != null && lastModifiedDate == null) {
-                lastTranslator =
-                        lastTranslatedBy.getName() + " <"
-                                + lastTranslatedBy.getEmail() + ">";
+            if (lastTranslatedBy != null) {
+                if (lastModifiedDate == null
+                        || lastModifiedDate.after(headerRevisionDate)) {
+                    /**
+                     * Use translator details from last translated target if
+                     * the lastModifiedDate is null or if lastModifiedDate is
+                     * after date in header entries
+                     */
+                    lastTranslator =
+                        generateLastTranslator(lastTranslatedBy.getName(),
+                            lastTranslatedBy.getEmail());
+                }
+            } else {
+                /**
+                 * When last translated target is being created in Zanata
+                 * without user (e.g upload, copyTrans), set translator to be
+                 * Zanata
+                 */
+                lastTranslator = generateLastTranslator(COPIED_BY_ZANATA_NAME,
+                        COPIED_BY_ZANATA_NAME_EMAIL);
             }
         }
-
         return lastTranslator;
+    }
+
+    /**
+     * @param name - name of person
+     * @param email - email of person
+     * @return {name} <{email}>
+     */
+    private String generateLastTranslator(String name, String email) {
+        return name + " <" + email + ">";
     }
 
     /**

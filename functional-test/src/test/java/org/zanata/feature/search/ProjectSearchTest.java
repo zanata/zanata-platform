@@ -26,11 +26,12 @@ import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
-import org.zanata.page.BasePage;
+import org.zanata.page.explore.ExplorePage;
 import org.zanata.page.projects.ProjectBasePage;
-import org.zanata.page.search.SearchPage;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,17 +46,18 @@ public class ProjectSearchTest extends ZanataTestCase {
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void successfulProjectSearchAndDisplay() throws Exception {
-        BasePage basePage = new BasicWorkFlow()
+        ExplorePage explorePage = new BasicWorkFlow()
                 .goToHome()
+                .gotoExplore()
                 .enterSearch("about")
-                .expectSearchListContains("about fedora");
+                .expectProjectListContains("about fedora");
 
-        assertThat(basePage.getZanataSearchAutocompleteItems())
+        assertThat(explorePage.getProjectSearchResults())
                 .contains("about fedora")
                 .as("Normal user can see the project");
 
         ProjectBasePage projectPage =
-                basePage.clickProjectSearchEntry("about fedora");
+            explorePage.clickProjectEntry("about fedora");
 
         assertThat(projectPage.getProjectName().trim())
                 .isEqualTo("about fedora")
@@ -67,13 +69,12 @@ public class ProjectSearchTest extends ZanataTestCase {
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void unsuccessfulProjectSearch() throws Exception {
-        SearchPage searchPage = new BasicWorkFlow()
+        ExplorePage explorePage = new BasicWorkFlow()
                 .goToHome()
-                .enterSearch("arodef")
-                .expectSearchListContains("Search Zanata for 'arodef'")
-                .submitSearch();
+                .gotoExplore()
+                .enterSearch("arodef");
 
-        assertThat(searchPage.getProjectNamesOnSearchPage().isEmpty())
+        assertThat(explorePage.getProjectSearchResults().isEmpty())
                 .isTrue()
                 .as("No projects are displayed");
     }
@@ -83,8 +84,8 @@ public class ProjectSearchTest extends ZanataTestCase {
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void userCannotSearchDeleteProject() throws Exception {
         new LoginWorkFlow().signIn("admin", "admin")
-                .goToProjects()
-                .goToProject("about fedora")
+                .gotoExplore()
+                .searchAndGotoProjectByName("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsGeneral()
                 .deleteProject()
@@ -92,14 +93,14 @@ public class ProjectSearchTest extends ZanataTestCase {
                 .confirmDeleteProject()
                 .logout();
 
-        BasePage basePage = new BasicWorkFlow()
+        ExplorePage explorePage = new BasicWorkFlow()
                 .goToHome()
-                .enterSearch("about")
-                .expectSearchListContains("Search Zanata for 'about'");
+                .gotoExplore()
+                .enterSearch("about");
 
-        assertThat(basePage.getZanataSearchAutocompleteItems())
-                .doesNotContain("About Fedora")
-                .as("User cannot see the archived project");
+        assertThat(explorePage.getProjectSearchResults().isEmpty())
+            .isTrue()
+            .as("No projects are displayed");
     }
 
 }

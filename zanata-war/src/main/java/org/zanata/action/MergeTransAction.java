@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nullable;
 import javax.faces.application.FacesMessage;
 
 import com.google.common.collect.Lists;
@@ -13,7 +14,7 @@ import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
+
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectDAO;
@@ -112,7 +113,7 @@ public class MergeTransAction extends CopyAction implements Serializable {
             this.sourceProjectSlug = sourceProjectSlug;
             refreshSourceProject();
             this.sourceVersionSlug = null;
-            if (!getSourceProject().getProjectIterations().isEmpty()) {
+            if (getSourceProject() != null && !getSourceProject().getProjectIterations().isEmpty()) {
                 this.sourceVersionSlug =
                     getSourceProject().getProjectIterations().get(0).getSlug();
             }
@@ -133,7 +134,7 @@ public class MergeTransAction extends CopyAction implements Serializable {
         return targetVersion;
     }
 
-    public HProject getSourceProject() {
+    public @Nullable HProject getSourceProject() {
         if(sourceProject == null && StringUtils.isNotEmpty(sourceProjectSlug)) {
             sourceProject = projectDAO.getBySlug(sourceProjectSlug);
         }
@@ -174,7 +175,7 @@ public class MergeTransAction extends CopyAction implements Serializable {
                     .getProject(), "merge-trans");
         if (canMergeFromAllProjects) {
             return projectDAO
-                    .getOffsetListOrderByName(0, Integer.MAX_VALUE, false,
+                    .getOffsetList(0, Integer.MAX_VALUE, false,
                         true, true);
         }
         return Lists.newArrayList();

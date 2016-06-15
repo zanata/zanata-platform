@@ -27,9 +27,9 @@ import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.page.dashboard.DashboardGroupsTab;
 import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.page.groups.VersionGroupPage;
-import org.zanata.page.groups.VersionGroupsPage;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
@@ -43,14 +43,15 @@ import static org.zanata.util.FunctionalTestHelper.assumeTrue;
 @Category(DetailedTest.class)
 public class VersionGroupTest extends ZanataTestCase {
 
-    private VersionGroupsPage versionGroupsPageBase;
+    private DashboardGroupsTab dashboardGroupsTab;
 
     @Before
     public void before() {
         assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
                 .isEqualTo("admin")
                 .as("Admin is logged in");
-        versionGroupsPageBase = new BasicWorkFlow().goToHome().goToGroups();
+        dashboardGroupsTab =
+            new BasicWorkFlow().goToHome().goToMyDashboard().gotoGroupsTab();
     }
 
     @Feature(summary = "The administrator can create a basic group",
@@ -60,19 +61,16 @@ public class VersionGroupTest extends ZanataTestCase {
     public void createABasicGroup() throws Exception {
         String groupID = "basic-group";
         String groupName = "A Basic Group";
-        VersionGroupsPage versionGroupsPage = versionGroupsPageBase
-                .createNewGroup()
-                .inputGroupId(groupID)
-                .inputGroupName(groupName)
-                .inputGroupDescription("A basic group can be saved")
-                .saveGroup();
-        assertThat(versionGroupsPage.getGroupNames())
-                .contains(groupName)
-                .as("The version group was created");
-        VersionGroupPage groupView = versionGroupsPage.goToGroup(groupName);
-        assertThat(groupView.getTitle())
-                .isEqualTo("Zanata: Groups - ".concat(groupName))
-                .as("The group is displayed");
+        VersionGroupPage versionGroupPage = dashboardGroupsTab
+            .createNewGroup()
+            .inputGroupId(groupID)
+            .inputGroupName(groupName)
+            .inputGroupDescription("A basic group can be saved")
+            .saveGroup();
+
+        assertThat(versionGroupPage.getGroupName().trim())
+            .isEqualTo(groupName)
+            .as("The group name is correct");
     }
 
     @Feature(summary = "The administrator must fill in the required fields " +
@@ -84,7 +82,7 @@ public class VersionGroupTest extends ZanataTestCase {
         String groupID = "verifyRequiredFieldsGroupID";
         String groupName = "verifyRequiredFieldsGroupName";
 
-        CreateVersionGroupPage groupPage = versionGroupsPageBase
+        CreateVersionGroupPage groupPage = dashboardGroupsTab
                 .createNewGroup()
                 .saveGroupFailure();
 
@@ -122,7 +120,7 @@ public class VersionGroupTest extends ZanataTestCase {
         assumeTrue("Description length is greater than 100 characters",
                 groupDescription.length() == 101);
 
-        CreateVersionGroupPage groupPage = versionGroupsPageBase
+        CreateVersionGroupPage groupPage = dashboardGroupsTab
                 .createNewGroup()
                 .inputGroupId(groupID)
                 .inputGroupName(groupName)
@@ -134,16 +132,16 @@ public class VersionGroupTest extends ZanataTestCase {
                 .as("Invalid length error is shown");
 
         groupDescription = groupDescription.substring(0, 100);
-        VersionGroupsPage verGroupsPage = groupPage
-                .clearFields()
-                .inputGroupId("verifyDescriptionFieldSizeID")
-                .inputGroupName(groupName)
-                .inputGroupDescription(groupDescription)
-                .saveGroup();
+        VersionGroupPage versionGroupPage = groupPage
+            .clearFields()
+            .inputGroupId("verifyDescriptionFieldSizeID")
+            .inputGroupName(groupName)
+            .inputGroupDescription(groupDescription)
+            .saveGroup();
 
-        assertThat(verGroupsPage.getGroupNames())
-                .contains(groupName)
-                .as("A group description of 100 chars is valid");
+        assertThat(versionGroupPage.getGroupName().trim())
+            .isEqualTo(groupName)
+            .as("A group description of 100 chars is valid");
     }
 
     @Feature(summary = "The administrator can add a project version to " +
@@ -153,12 +151,11 @@ public class VersionGroupTest extends ZanataTestCase {
     public void addANewProjectVersionToAnEmptyGroup() throws Exception {
         String groupID = "add-version-to-empty-group";
         String groupName = "AddVersionToEmptyGroup";
-        VersionGroupPage versionGroupPage = versionGroupsPageBase
+        VersionGroupPage versionGroupPage = dashboardGroupsTab
                 .createNewGroup()
                 .inputGroupId(groupID)
                 .inputGroupName(groupName)
                 .saveGroup()
-                .goToGroup(groupName)
                 .clickProjectsTab()
                 .clickAddProjectVersionsButton()
                 .enterProjectVersion("about-fedora")
@@ -177,12 +174,11 @@ public class VersionGroupTest extends ZanataTestCase {
     public void groupIdCharactersAreAcceptable() throws Exception {
         String groupID = "test-_.1";
         String groupName = "TestValidIdCharacters";
-        VersionGroupPage versionGroupPage = versionGroupsPageBase
+        VersionGroupPage versionGroupPage = dashboardGroupsTab
                 .createNewGroup()
                 .inputGroupId(groupID)
                 .inputGroupName(groupName)
-                .saveGroup()
-                .goToGroup(groupName);
+                .saveGroup();
 
         assertThat(versionGroupPage.getGroupName())
                 .isEqualTo(groupName)
@@ -195,7 +191,7 @@ public class VersionGroupTest extends ZanataTestCase {
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void inputValidationForID() throws Exception {
         String inputText = "group|name";
-        CreateVersionGroupPage groupPage = versionGroupsPageBase
+        CreateVersionGroupPage groupPage = dashboardGroupsTab
                 .createNewGroup()
                 .inputGroupId(inputText)
                 .inputGroupName(inputText);
@@ -211,12 +207,11 @@ public class VersionGroupTest extends ZanataTestCase {
     public void addLanguageToGroup() {
         String groupID = "add-language-to-a-group";
         String groupName = "AddLanguageToGroup";
-        VersionGroupPage versionGroupPage = versionGroupsPageBase
+        VersionGroupPage versionGroupPage = dashboardGroupsTab
                 .createNewGroup()
                 .inputGroupId(groupID)
                 .inputGroupName(groupName)
                 .saveGroup()
-                .goToGroup(groupName)
                 .clickLanguagesTab()
                 .clickAddLanguagesButton()
                 .activateLanguageList()

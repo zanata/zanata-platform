@@ -2,26 +2,24 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html"
-  xmlns:rich="http://richfaces.org/rich"
-  template="./WEB-INF/template/template_2x.xhtml">
+  template="./WEB-INF/template/template.xhtml">
 
   <ui:define name="page_title">#{msgs['jsf.Home']}</ui:define>
   <ui:define name="center_content">
-    <div id="home-content-rendered" class="prose">
-      <h:outputText value="#{homePage.html}" escape="false" />
-    </div>
-  </ui:define>
+    <div class="g--centered">
+      <div class="g__item w--1 l--push-bottom-1">
+        <div id="home-content-rendered" class="prose l--push-v-half l--pad-v-half">
+          <h:outputText value="#{homePage.html}" escape="false" />
+        </div>
 
-  <ui:define name="right_content">
-    <rich:panel id="loggedIn" rendered="#{identity.hasRole('admin')}">
-      <f:facet name="header">#{msgs['jsf.Actions']}</f:facet>
-      <h:link styleClass="action_link"
-        value="#{msgs['jsf.server.EditHomePage.label']}"
-        outcome="/edit_home_content.xhtml">
-      </h:link>
-    </rich:panel>
+        <ui:fragment rendered="#{identity.hasRole('admin')}">
+          <h:link value="#{msgs['jsf.server.EditHomePage.label']}"
+            outcome="/edit_home_content.xhtml" styleClass="button button--primary l--push-top-1">
+          </h:link>
+        </ui:fragment>
+      </div>
+    </div>
   </ui:define>
 
 </ui:composition>

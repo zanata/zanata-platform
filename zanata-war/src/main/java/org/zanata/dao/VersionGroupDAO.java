@@ -29,6 +29,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
+import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.common.EntityStatus;
@@ -51,19 +52,31 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long> {
         super(HIterationGroup.class, session);
     }
 
-    public List<HIterationGroup> getAllGroups(EntityStatus... statuses) {
+    public int getAllGroupsCount(EntityStatus... statuses) {
+        return getAllGroups(-1, 0, statuses).size();
+    }
+
+    public List<HIterationGroup> getAllGroups(int maxResult, int firstResult,
+        EntityStatus... statuses) {
         StringBuilder sb = new StringBuilder();
-        sb.append("from HIterationGroup g ");
+        sb.append("from HIterationGroup ");
         if (statuses != null && statuses.length >= 1) {
-            sb.append("where g.status in :statuses");
+            sb.append("where status in :statuses ");
         }
+
+        sb.append("order by name asc");
         Query query = getSession().createQuery(sb.toString());
 
         if (statuses != null && statuses.length >= 1) {
             query.setParameterList("statuses", Lists.newArrayList(statuses));
         }
 
+        query.setFirstResult(firstResult);
+        if(maxResult != -1) {
+            query.setMaxResults(maxResult);
+        }
         query.setComment("VersionGroupDAO.getAllGroups");
+        query.setCacheable(true);
         return query.list();
     }
 
@@ -86,17 +99,66 @@ public class VersionGroupDAO extends AbstractDAOImpl<HIterationGroup, Long> {
         return q.list();
     }
 
-    public List<HIterationGroup> searchGroupBySlugAndName(String searchTerm) {
+    public List<HIterationGroup> getGroupsByMaintainer(HPerson maintainer,
+        String filter, int firstResult, int maxResults) {
+        final String sqlFilter = filter == null ? "" : filter;
+        Query q = getSession().createQuery(
+            "from HIterationGroup g " +
+                "where :maintainer in elements(g.maintainers) " +
+                "and g.status <> :obsolete " +
+                "and (g.name like :filter " +
+                "or g.slug like :filter) " +
+                "order by g.name")
+            .setParameter("maintainer", maintainer)
+            .setParameter("obsolete", EntityStatus.OBSOLETE)
+            .setParameter("filter", "%" + sqlFilter + "%")
+            .setFirstResult(firstResult)
+            .setMaxResults(maxResults);
+        return q.list();
+    }
+
+    public int getMaintainedGroupCount(HPerson maintainer, String filter) {
+        final String sqlFilter = filter == null ? "" : filter;
+        Query q = getSession().createQuery(
+            "select count(g) from HIterationGroup g " +
+                "where :maintainer in elements(g.maintainers) " +
+                "and g.status <> :obsolete " +
+                "and (g.name like :filter " +
+                "or g.slug like :filter) " +
+                "order by g.name")
+            .setParameter("maintainer", maintainer)
+            .setParameter("obsolete", EntityStatus.OBSOLETE)
+            .setParameter("filter", "%" + sqlFilter + "%");
+        return ((Long) q.uniqueResult()).intValue();
+    }
+
+    public List<HIterationGroup> searchGroupBySlugAndName(String searchTerm,
+            int maxResult, int firstResult, EntityStatus... statuses) {
         if (StringUtils.isEmpty(searchTerm)) {
             return new ArrayList<HIterationGroup>();
         }
-        Query query =
-                getSession()
-                        .createQuery(
-                                "from HIterationGroup g where (lower(g.slug) LIKE :searchTerm OR lower(g.name) LIKE :searchTerm) AND g.status = :status");
+        StringBuilder sb = new StringBuilder();
+        sb.append("from HIterationGroup ")
+                .append("where (lower(slug) LIKE :searchTerm OR lower(name) LIKE :searchTerm) ");
+        if (statuses != null && statuses.length >= 1) {
+            sb.append("AND status in :statuses ");
+        }
+        sb.append("order by name asc");
+        Query query = getSession().createQuery(sb.toString());
         query.setParameter("searchTerm", "%" + searchTerm.toLowerCase() + "%");
-        query.setParameter("status", EntityStatus.ACTIVE);
+        query.setFirstResult(firstResult);
+        if(maxResult != -1) {
+            query.setMaxResults(maxResult);
+        }
+        if (statuses != null && statuses.length >= 1) {
+            query.setParameterList("statuses", Lists.newArrayList(statuses));
+        }
         query.setComment("VersionGroupDAO.searchGroupBySlugAndName");
+        query.setCacheable(true);
         return query.list();
+    }
+
+    public int searchGroupBySlugAndNameCount(String searchTerm, EntityStatus... statuses) {
+        return searchGroupBySlugAndName(searchTerm, -1, 0, statuses).size();
     }
 }

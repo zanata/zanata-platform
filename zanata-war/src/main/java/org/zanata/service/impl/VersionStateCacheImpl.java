@@ -22,6 +22,8 @@
 
 package org.zanata.service.impl;
 
+import java.util.Map;
+
 import com.google.common.annotations.VisibleForTesting;
 import org.infinispan.manager.CacheContainer;
 import javax.annotation.PostConstruct;
@@ -29,13 +31,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.cache.CacheWrapper;
 import org.zanata.cache.InfinispanCacheWrapper;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.dao.TextFlowDAO;
-import org.zanata.events.TextFlowTargetStateEvent;
+import org.zanata.events.DocStatsEvent;
 import org.zanata.model.HLocale;
-import org.zanata.model.HTextFlow;
 import org.zanata.service.VersionLocaleKey;
 import org.zanata.service.VersionStateCache;
 import org.zanata.ui.model.statistic.WordStatistic;
@@ -90,24 +91,18 @@ public class VersionStateCacheImpl implements VersionStateCache {
     }
 
     @Override
-    public void textFlowStateUpdated(
+    public void docStatsUpdated(
         @Observes(during = TransactionPhase.AFTER_SUCCESS)
-            TextFlowTargetStateEvent event) {
+        DocStatsEvent event) {
         VersionLocaleKey key =
-            new VersionLocaleKey(event.getProjectIterationId(),
+            new VersionLocaleKey(event.getProjectVersionId(),
                 event.getKey().getLocaleId());
         WordStatistic stats = versionStatisticCache.get(key);
         if (stats != null) {
-            TextFlowDAO textFlowDAO =
-                serviceLocator.getInstance(TextFlowDAO.class);
-
-            for (TextFlowTargetStateEvent.TextFlowTargetState state : event
-                .getStates()) {
-                HTextFlow textFlow = textFlowDAO.findById(state.getTextFlowId());
-                int wordCount =
-                    textFlow.getWordCount().intValue();
-                stats.decrement(state.getPreviousState(), wordCount);
-                stats.increment(state.getNewState(), wordCount);
+            for (Map.Entry<ContentState, Long> entry : event
+                    .getWordDeltasByState().entrySet()) {
+                stats.increment(entry.getKey(),
+                        Math.toIntExact(entry.getValue()));
             }
             versionStatisticCache.put(key, stats);
         }

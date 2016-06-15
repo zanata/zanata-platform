@@ -28,10 +28,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.naming.InitialContext;
-import javax.naming.NameNotFoundException;
-import javax.naming.NamingException;
-
 import liquibase.change.custom.CustomTaskChange;
 import liquibase.database.Database;
 import liquibase.database.jvm.JdbcConnection;
@@ -40,21 +36,19 @@ import liquibase.exception.DatabaseException;
 import liquibase.exception.SetupException;
 import liquibase.exception.ValidationErrors;
 import liquibase.resource.ResourceAccessor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.zanata.common.DocumentType;
 
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
+import org.zanata.config.SystemPropertyConfigStore;
 
 @Slf4j
 public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
 
-    private static final String BASE_PATH_JNDI_NAME =
-            "java:global/zanata/files/document-storage-directory";
-    private static final String BASE_PATH_LIQUIBASE_PARAM =
-            "document.storage.directory";
+    private static final String FILE_DIR_PROP_NAME =
+            SystemPropertyConfigStore.KEY_DOCUMENT_FILE_STORE;
     private static final String RAW_DOCUMENTS_SUBDIRECTORY = "documents";
 
     private static final String CONTENTS_SQL =
@@ -67,8 +61,7 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
     private static final String DELETE_OLD_CONTENT_SQL =
             "delete from HRawDocumentContent where fileId = ?";
 
-    @Setter
-    private String basePathParam;
+    private String basePath;
 
     private File docsDirectory;
 
@@ -97,6 +90,14 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
     public void setUp() throws SetupException {
         resetCounts();
         createDocsDirectoryFromConfig();
+        basePath = System.getProperty(FILE_DIR_PROP_NAME);
+        if (Strings.isNullOrEmpty(basePath)) {
+            throw new SetupException(
+                    "No information for document storage directory. "
+                            + "System property \""
+                            + FILE_DIR_PROP_NAME + "\" needs to be provided. "
+                            + "Cannot migrate documents to file system.");
+        }
     }
 
     private void resetCounts() {
@@ -106,7 +107,6 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
     }
 
     private void createDocsDirectoryFromConfig() throws SetupException {
-        String basePath = getCongiguredBasePath();
         log.info("Raw documents will be migrated to: " + basePath);
         docsDirectory = new File(basePath, RAW_DOCUMENTS_SUBDIRECTORY);
         try {
@@ -114,65 +114,6 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
         } catch (SecurityException e) {
             throw new SetupException(e);
         }
-    }
-
-    private String getCongiguredBasePath() throws SetupException {
-        try {
-            return getPathFromJndi();
-        } catch (SetupException e) {
-            return tryGetFallbackBasePath(e);
-        }
-    }
-
-    private String getPathFromJndi() throws SetupException {
-        String messageJndiNameNotBound =
-                "Could not look up document storage directory under jndi name \""
-                        + BASE_PATH_JNDI_NAME + "\".";
-        InitialContext initContext = null;
-        String basePath;
-        try {
-            initContext = new InitialContext();
-            basePath = (String) initContext.lookup(BASE_PATH_JNDI_NAME);
-
-            if (basePath == null) {
-                throw new SetupException(messageJndiNameNotBound);
-            }
-        } catch (NameNotFoundException e) {
-            throw new SetupException(messageJndiNameNotBound, e);
-        } catch (NamingException e) {
-            throw new SetupException(messageJndiNameNotBound, e);
-        } finally {
-            if (initContext != null) {
-                try {
-                    initContext.close();
-                } catch (NamingException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return basePath;
-    }
-
-    private String tryGetFallbackBasePath(SetupException initialFailureCause)
-            throws SetupException {
-        if (!basePathParamIsSet()) {
-            throw new SetupException(
-                    "No information for document storage directory. "
-                            + "Fallback liquibase parameter \""
-                            + BASE_PATH_LIQUIBASE_PARAM + "\" not set. "
-                            + "Cannot migrate documents to file system.",
-                    initialFailureCause);
-        }
-        return basePathParam;
-    }
-
-    private boolean basePathParamIsSet() {
-        if (Strings.isNullOrEmpty(basePathParam)) {
-            return false;
-        }
-        boolean paramIsExpanded =
-                !basePathParam.equals("${" + BASE_PATH_LIQUIBASE_PARAM + "}");
-        return paramIsExpanded;
     }
 
     @Override

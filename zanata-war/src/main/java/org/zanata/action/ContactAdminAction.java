@@ -47,6 +47,7 @@ import org.zanata.util.HttpUtil;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Size;
 
 /**
  * Handles send email to admin - Contact admin(Registered and non-registered users)
@@ -74,6 +75,7 @@ public class ContactAdminAction implements Serializable {
 
     @Getter
     @Setter
+    @Size(max = 300)
     private String message;
 
     @Getter
