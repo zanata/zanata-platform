@@ -49,7 +49,7 @@ public class InvalidContentTypeFilterTest {
         MatcherAssert.assertThat(
                 isContentTypeCompatible(
                                 MediaType.APPLICATION_FORM_URLENCODED_TYPE),
-                equalTo(false));
+                equalTo(true));
         MatcherAssert.assertThat(
                 isContentTypeCompatible(MediaType.MULTIPART_FORM_DATA_TYPE),
                 equalTo(false));
@@ -59,6 +59,10 @@ public class InvalidContentTypeFilterTest {
                 equalTo(true));
         MatcherAssert.assertThat(
                 isContentTypeCompatible(MediaType.APPLICATION_JSON_TYPE),
+                equalTo(true));
+
+        MatcherAssert.assertThat(
+                isContentTypeCompatible(MediaType.APPLICATION_OCTET_STREAM_TYPE),
                 equalTo(true));
         MatcherAssert.assertThat(
                 isContentTypeCompatible(MediaType.WILDCARD_TYPE),
