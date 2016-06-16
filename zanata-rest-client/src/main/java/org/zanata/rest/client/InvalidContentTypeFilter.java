@@ -50,9 +50,9 @@ public class InvalidContentTypeFilter extends ClientFilter {
                     "Please check the server URL is correct (in zanata.ini and in zanata.xml) and make sure you use the correct address.";
 
 
-    // we assume only xml or json are the valid types (wildcard type is also considered compatible)
+    // we assume application/* are all the valid types (wildcard type is also considered compatible)
     private static final Pattern VALID_TYPES_REGEX =
-            Pattern.compile("application/.*\\+?(\\*|xml|json)(;.*)?");
+            Pattern.compile("application/.*");
 
     @Override
     public ClientResponse handle(ClientRequest clientRequest)
