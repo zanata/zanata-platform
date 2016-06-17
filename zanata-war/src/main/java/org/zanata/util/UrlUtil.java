@@ -252,9 +252,19 @@ public class UrlUtil implements Serializable {
     }
 
     /**
-     * Redirect to url, adding dswid parameter if missing
+     * Redirect to a Zanata url, adding dswid parameter if missing. Do not use for external URLs!
      */
     public void redirectTo(String url) {
+        try {
+            String urlWithWindowId = addWindowId(url);
+            FacesContext.getCurrentInstance().getExternalContext().redirect(urlWithWindowId);
+        } catch (IOException e) {
+            log.error("failed to redirect to {}", url, e);
+            throw Throwables.propagate(e);
+        }
+    }
+
+    public String addWindowId(String url) {
         try {
             // to fix https://zanata.atlassian.net/browse/ZNTA-887
             String windowId = windowContext.getCurrentWindowId();
@@ -265,9 +275,8 @@ public class UrlUtil implements Serializable {
                 URI uri = new URIBuilder(url).setParameter("dswid", windowId).build();
                 urlWithWindowId = uri.toString();
             }
-            FacesContext.getCurrentInstance().getExternalContext().redirect(urlWithWindowId);
-        } catch (Exception e) {
-            log.error("failed to redirect to {}", url, e);
+            return urlWithWindowId;
+        } catch (URISyntaxException e) {
             throw Throwables.propagate(e);
         }
     }

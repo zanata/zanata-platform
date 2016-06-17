@@ -22,6 +22,8 @@ package org.zanata.security.openid;
 
 import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.Serializable;
 
 /**
@@ -29,13 +31,13 @@ import java.io.Serializable;
  */
 @GroupedConversationScoped
 public class OpenIdProviderTypeHolder implements Serializable {
-    private OpenIdProviderType openIdProviderType;
+    private @Nullable OpenIdProviderType openIdProviderType;
 
-    public OpenIdProviderType get() {
+    public @Nullable OpenIdProviderType get() {
         return openIdProviderType;
     }
 
-    public void set(OpenIdProviderType openIdProviderType) {
+    public void set(@Nonnull OpenIdProviderType openIdProviderType) {
         this.openIdProviderType = openIdProviderType;
     }
 }
