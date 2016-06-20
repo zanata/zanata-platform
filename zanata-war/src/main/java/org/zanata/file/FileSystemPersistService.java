@@ -34,6 +34,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.config.SystemPropertyConfigStore;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
@@ -97,7 +98,8 @@ public class FileSystemPersistService implements FilePersistService {
                 appConfig.getDocumentFileStorageLocation();
         if (basePathStringOrNull == null) {
             throw new RuntimeException(
-                    "Document storage location is not configured in JNDI.");
+                    "Document storage location is not configured as system property:" +
+                            SystemPropertyConfigStore.KEY_DOCUMENT_FILE_STORE);
         }
         File docsDirectory =
                 new File(basePathStringOrNull, RAW_DOCUMENTS_SUBDIRECTORY);
