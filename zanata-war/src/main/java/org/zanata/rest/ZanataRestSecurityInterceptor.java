@@ -35,6 +35,18 @@ import com.google.common.base.MoreObjects;
 import com.googlecode.totallylazy.Either;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * This class is responsible for checking for all REST requests:
+ * a) valid authentication presents when accessing protected resources (e.g. no open to anonymous access)
+ * b) no authentication when accessing resource that allows anonymous access
+ * This class will not do specific access control for individual end-points.
+ * Individual REST services can and should control their specific access rules
+ * by using annotation or identity.checkPermission etc.
+ *
+ * @see org.zanata.security.Identity
+ * @see org.zanata.security.annotations.CheckRole
+ * @see org.zanata.security.annotations.CheckLoggedIn
+ */
 @Provider
 @PreMatching
 @SecurityPrecedence
@@ -78,22 +90,17 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
             return;
         }
 
-        Tokens tokens = new Tokens(context, request, isOAuthEnabled);
+        RestCredentials restCredentials = new RestCredentials(context, request, isOAuthEnabled);
 
-        if (!tokens.canAuthenticate() &&
-                SecurityFunctions.doesRestPathAllowAnonymousAccess(
-                        context.getMethod(), context.getUriInfo().getPath())) {
-            // if we don't have any information to authenticate but the
-            // requesting API allows anonymous access, we let it go
-            return;
-        }
-
-        if (tokens.canAuthenticateUsingApiKey()) {
+        String unauthenticatedMessage = "User authentication required for REST request";
+        if (restCredentials.canAuthenticateUsingApiKey()) {
             // if apiKey presents, we use apiKey for security check
-            zanataIdentity.getCredentials().setUsername(tokens.username.get());
-            zanataIdentity.setApiKey(tokens.apiKey.get());
+            unauthenticatedMessage = InvalidApiKeyUtil
+                    .getMessage(restCredentials.username.get(), restCredentials.apiKey.get());
+            zanataIdentity.getCredentials().setUsername(restCredentials.username.get());
+            zanataIdentity.setApiKey(restCredentials.apiKey.get());
             zanataIdentity.tryLogin();
-        } else if (tokens.canAuthenticateUsingOAuth()) {
+        } else if (restCredentials.canAuthenticateUsingOAuth()) {
             Either<String, Response> usernameOrError =
                 getAuthenticatedUsernameOrError();
             if (usernameOrError.isRight()) {
@@ -104,12 +111,20 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
             zanataIdentity.getCredentials().setUsername(username);
             zanataIdentity.setRequestUsingOAuth(true);
             zanataIdentity.tryLogin();
+        } else if (SecurityFunctions
+                .doesRestPathAllowAnonymousAccess(context.getMethod(),
+                        context.getUriInfo().getPath())){
+            // if we don't have any information to authenticate but the
+            // requesting API allows anonymous access, we let it go
+            return;
         }
 
         if (!SecurityFunctions.canAccessRestPath(zanataIdentity,
-                context.getMethod(), context.getUriInfo().getPath())) {
-            log.info("can not authenticate REST request: {}", tokens);
-            context.abortWith(Response.status(Status.UNAUTHORIZED).build());
+                context.getUriInfo().getPath())) {
+            log.info("can not authenticate REST request: {}", restCredentials);
+            context.abortWith(Response.status(Status.UNAUTHORIZED)
+                    .entity(unauthenticatedMessage)
+                    .build());
         }
     }
 
@@ -136,7 +151,10 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
             log.info(
                     "Bad OAuth request, invalid or missing tokens: authorization code: {}, access token: {}",
                     authorizationCode, accessTokenOpt);
-            return Either.right(buildUnauthorizedResponse("failed authorization"));
+            return Either.right(buildUnauthorizedResponse(
+                    "Bad OAuth request, invalid or missing tokens: authorization code [" +
+                            authorizationCode + "] or access token [" +
+                            accessTokenOpt + "]"));
         }
         String username = usernameOpt.get();
         return Either.left(username);
@@ -168,14 +186,17 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
                 null;
     }
 
-    private static class Tokens {
+    /**
+     * Encapsulate all possible authentication values from a REST request.
+     */
+    private static class RestCredentials {
 
         private final Optional<String> username;
         private final Optional<String> apiKey;
         private final Optional<String> accessToken;
         private final Optional<String> authorizationCode;
 
-        Tokens(ContainerRequestContext context, HttpServletRequest request,
+        RestCredentials(ContainerRequestContext context, HttpServletRequest request,
                 boolean isOAuthSupported) {
             String username = HttpUtil.getUsername(context.getHeaders());
             String apiKey = HttpUtil.getApiKey(context.getHeaders());

@@ -58,4 +58,20 @@ public class OAuthUtil {
         return Optional.empty();
 
     }
+
+    public static Optional<String> getOAuthRedirectURI(HttpServletRequest request) {
+        String uri = request.getParameter(OAuth.OAUTH_REDIRECT_URI);
+        return getNonEmptyString(uri);
+    }
+
+    private static Optional<String> getNonEmptyString(String str) {
+        return Optional.ofNullable(str).flatMap(
+                value -> Strings.isNullOrEmpty(value.trim()) ? Optional.empty() :
+                        Optional.of(value));
+    }
+
+    public static Optional<String> getOAuthClientId(HttpServletRequest request) {
+        String clientId = request.getParameter(OAuth.OAUTH_CLIENT_ID);
+        return getNonEmptyString(clientId);
+    }
 }

@@ -107,8 +107,8 @@ public class RestLimitingFilter implements Filter {
         HAccount authenticatedUser = getAuthenticatedUser();
 
         /**
-         * If apiKey is empty, request is either from anonymous user or from
-         * OAuth request,
+         * If apiKey is empty, request is either coming from anonymous user or
+         * using OAuth.
          */
         String apiKey = request.getHeader(HttpUtil.X_AUTH_TOKEN_HEADER);
 
@@ -139,7 +139,8 @@ public class RestLimitingFilter implements Filter {
                     processor.processForApiKey(authenticatedUser.getApiKey(),
                             response, invokeChain);
                 } else {
-                    // TODO OAuth request will fall into here. Do we want this?
+                    // this request may come from logged-in browser, or from
+                    // REST client using OAuth
                     processor.processForUser(authenticatedUser.getUsername(),
                             response, invokeChain);
                 }

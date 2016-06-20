@@ -56,17 +56,17 @@ public interface UserResource {
 
 
     /**
-     * Retrieves account information of current authenticated user
+     * Retrieves account information of current authenticated user.
      *
      * @return The following response status codes will be returned from this
      *         operation:<br>
-     *         OK(200) - Response containing account information <br>
-     *         NOT FOUND(404) - If no authenticated user found. <br>
+     *         OK(200) - Response containing account information {@link org.zanata.rest.dto.Account}<br>
+     *         FORBIDDEN(403) - If no authenticated user found. <br>
      *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
      *         the server while performing this operation.
      */
     @Path("/myaccount")
     @GET
-    Response accountDetail();
+    Response getAccountDetails();
 }
 

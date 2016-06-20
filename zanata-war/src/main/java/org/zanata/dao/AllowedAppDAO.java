@@ -48,7 +48,7 @@ public class AllowedAppDAO extends AbstractDAOImpl<AllowedApp, Long> {
         super(AllowedApp.class);
     }
 
-    // TODO support client secret when we support pre-register client
+    // TODO support client secret when we support pre-registration of clients
     public void persistClientId(String username, String clientId) {
         HAccount hAccount = accountDAO.getByUsername(username);
         AllowedApp allowedApp = new AllowedApp(hAccount, clientId);

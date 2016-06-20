@@ -32,5 +32,5 @@ public interface ConfigStore {
 
     int get(String propertyName, int defaultValue);
 
-    long getAsLong(String propertyName, long defaultValue);
+    long getLong(String propertyName, long defaultValue);
 }

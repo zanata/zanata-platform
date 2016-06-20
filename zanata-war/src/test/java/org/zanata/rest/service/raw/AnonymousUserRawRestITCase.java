@@ -38,14 +38,11 @@ import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
-import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
-import org.zanata.rest.InvalidApiKeyUtil;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.ResourceRequestEnvironment;
 import org.zanata.rest.dto.Project;
-import org.zanata.rest.dto.ProjectIteration;
 
 public class AnonymousUserRawRestITCase extends RestTest {
 
@@ -83,7 +80,7 @@ public class AnonymousUserRawRestITCase extends RestTest {
             protected void onResponse(ClientResponse response) {
 
                 assertThat(response.getStatus(),
-                    is(Status.OK.getStatusCode()));
+                    is(Status.UNAUTHORIZED.getStatusCode()));
             }
         }.run();
     }

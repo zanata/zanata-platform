@@ -32,8 +32,9 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * When you need to produce a system configuration value from CDI, use this
- * qualifier and set the value to the system property name.
+ * When you system configuration value that is keyed with a string (e.g. system
+ * properties or HApplicationConfiguration entries), you can use this qualifier
+ * and set the key as org.zanata.config.SysConfig#value().
  */
 @Qualifier
 @Retention(RUNTIME)

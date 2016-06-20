@@ -83,9 +83,9 @@ public class UserService implements UserResource {
     }
 
     @Override
-    public Response accountDetail() {
+    public Response getAccountDetails() {
         if(authenticatedAccount == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
         HAccount account = accountDAO.getByUsername(authenticatedAccount.getUsername());
         // we may not need to return apiKey (and generating it

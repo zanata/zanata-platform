@@ -48,7 +48,6 @@ import org.zanata.model.HAccount;
 import org.zanata.rest.dto.DTOUtil;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.util.Introspectable;
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Throwables;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -60,12 +59,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
+ * Responsible for storing OAuth access tokens and authorization codes in memory.
+ * It also provide methods for creating and access/validate different OAuth tokens.
+ *
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @ApplicationScoped
-public class SecurityTokens
-        implements Serializable, RemovalListener<String, String>,
-        Introspectable {
+public class SecurityTokens implements Serializable, Introspectable {
     private OAuthIssuerImpl oAuthIssuer =
             new OAuthIssuerImpl(new MD5Generator());
     /**
@@ -73,48 +73,48 @@ public class SecurityTokens
      * the entry will live as long as the user session. Once user session times
      * out or user logged out, it will be removed from the cache.
      */
-    private Cache<String, Map<String, String>> authorizationCodes =
+    private Cache<String, Map<String, String>> authorizationCodesByUsername =
             CacheBuilder.newBuilder()
                     .build();
 
     /**
      * access token -> username.
-     * stores the current valid access token which has an expiry time from
-     * system property.
+     * stores the current valid access token. Expiry time configured by system
+     * property.
      */
-    private Cache<String, String> accessTokens;
+    private Cache<String, String> usernameByAccessTokens;
 
 
     /**
      * access token -> username.
-     * stores the newly expired access token so that we can indicate the user
-     * agent the access token has expired.
+     * stores the newly expired access token so that we can indicate to the user
+     * agent that the access token has expired.
      */
-    private Cache<String, String> expiredAccessToken =
+    private Cache<String, Boolean> expiredAccessTokens =
             CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.SECONDS)
                     .build();
 
+    private long tokenExpiresInSeconds;
+
+    protected SecurityTokens() {
+    }
+
     @Inject
-    @SysConfig(ApplicationConfiguration.ACCESS_TOKEN_EXPIRES_IN_SECONDS)
-    protected long tokenExpiresInSeconds;
+    public SecurityTokens(@SysConfig(ApplicationConfiguration.ACCESS_TOKEN_EXPIRES_IN_SECONDS)
+            long tokenExpiresInSeconds) {
+        this.tokenExpiresInSeconds = tokenExpiresInSeconds;
+    }
 
     @PostConstruct
     public void setUp() {
-        accessTokens = CacheBuilder.newBuilder()
-                .expireAfterWrite(tokenExpiresInSeconds, TimeUnit.SECONDS)
-                .removalListener(this)
+        // Once an access token expires, it will be put into expiredAccessTokens cache
+        // so that it can be recognized by next request.
+        usernameByAccessTokens = CacheBuilder.newBuilder()
+                .expireAfterAccess(tokenExpiresInSeconds, TimeUnit.SECONDS)
+                .<String, String>removalListener(
+                        notification -> expiredAccessTokens
+                                .put(notification.getKey(), true))
                 .build();
-    }
-
-    /**
-     * This method listens to accessTokens cache entry expiration. Once an
-     * access token expires, it will be put into expiredAccessToken cache so
-     * that it can be recognized by next request.
-     * @param notification the expired access token
-     */
-    @Override
-    public void onRemoval(RemovalNotification<String, String> notification) {
-        expiredAccessToken.put(notification.getKey(), notification.getValue());
     }
 
     /**
@@ -122,19 +122,19 @@ public class SecurityTokens
      */
     public void onLogout(@Observes LogoutEvent event,
             @Authenticated HAccount authenticatedAccount) {
-        authorizationCodes.invalidate(authenticatedAccount.getUsername());
+        authorizationCodesByUsername.invalidate(authenticatedAccount.getUsername());
     }
 
     String getAuthorizationCode(String username, String clientId)
             throws OAuthSystemException {
         Map<String, String> clientIdToAuthCode =
-                authorizationCodes.getIfPresent(username);
+                authorizationCodesByUsername.getIfPresent(username);
         if (clientIdToAuthCode != null && clientIdToAuthCode.containsKey(clientId)) {
             return clientIdToAuthCode.get(clientId);
         }
         String authorizationCode = oAuthIssuer.authorizationCode();
         try {
-            authorizationCodes.get(username,
+            authorizationCodesByUsername.get(username,
                     () -> {
                         ConcurrentMap<String, String>
                                 map = Maps.newConcurrentMap();
@@ -150,7 +150,7 @@ public class SecurityTokens
 
     public Optional<String> findAuthorizationCode(String username, String clientId) {
         Map<String, String> clientIdToAuthCode =
-                authorizationCodes.getIfPresent(username);
+                authorizationCodesByUsername.getIfPresent(username);
         if (clientIdToAuthCode != null && clientIdToAuthCode.containsKey(clientId)) {
             return Optional.of(clientIdToAuthCode.get(clientId));
         }
@@ -180,7 +180,7 @@ public class SecurityTokens
                         tokenExpiresInSeconds,
                         oAuthIssuer.refreshToken(), null
                 );
-        accessTokens.put(accessToken, account.getUsername());
+        usernameByAccessTokens.put(accessToken, account.getUsername());
         return oAuthToken;
     }
 
@@ -200,14 +200,14 @@ public class SecurityTokens
                         tokenExpiresInSeconds,
                         refreshToken, null
                 );
-        accessTokens.put(accessToken, account.getUsername());
+        usernameByAccessTokens.put(accessToken, account.getUsername());
         return oAuthToken;
     }
 
     public Optional<String> findUsernameForAuthorizationCode(
             String authorizationCode) {
         Optional<Map.Entry<String, Map<String, String>>> found =
-                authorizationCodes.asMap()
+                authorizationCodesByUsername.asMap()
                         .entrySet().stream()
                         .filter(entry -> entry.getValue()
                                 .containsValue(authorizationCode))
@@ -224,11 +224,11 @@ public class SecurityTokens
      * @return optional username
      */
     public Optional<String> findUsernameByAccessToken(String accessToken) {
-        return Optional.ofNullable(accessTokens.getIfPresent(accessToken));
+        return Optional.ofNullable(usernameByAccessTokens.getIfPresent(accessToken));
     }
 
     public boolean isTokenExpired(String accessToken) {
-        return expiredAccessToken.getIfPresent(accessToken) != null;
+        return expiredAccessTokens.getIfPresent(accessToken) != null;
     }
 
     public OAuthToken refreshAccessToken(HAccount account, String refreshToken)
@@ -236,7 +236,7 @@ public class SecurityTokens
 
         String accessToken = oAuthIssuer.accessToken();
 
-        accessTokens.put(accessToken, account.getUsername());
+        usernameByAccessTokens.put(accessToken, account.getUsername());
         return new BasicOAuthToken(
                 accessToken,
                 tokenExpiresInSeconds,
@@ -279,10 +279,10 @@ public class SecurityTokens
     public String getFieldValuesAsJSON() {
 
         Map<String, Map<String, String>> usernameToClientIdAuthCodeMap =
-                ImmutableMap.copyOf(authorizationCodes.asMap());
+                ImmutableMap.copyOf(authorizationCodesByUsername.asMap());
 
         Map<String, String> accessTokenToUsername =
-                ImmutableMap.copyOf(accessTokens.asMap());
+                ImmutableMap.copyOf(usernameByAccessTokens.asMap());
 
         Tokens tokens = new Tokens();
         tokens.accessTokenToUsername = accessTokenToUsername;

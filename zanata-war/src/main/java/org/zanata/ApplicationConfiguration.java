@@ -157,7 +157,7 @@ public class ApplicationConfiguration implements Serializable {
         enforceMatchingUsernames = Boolean
             .parseBoolean(sysPropConfigStore.get("zanata.enforce.matchingusernames"));
         tokenExpiresInSeconds =
-                sysPropConfigStore.getAsLong(ACCESS_TOKEN_EXPIRES_IN_SECONDS, 3600);
+                sysPropConfigStore.getLong(ACCESS_TOKEN_EXPIRES_IN_SECONDS, 3600);
     }
 
     /**

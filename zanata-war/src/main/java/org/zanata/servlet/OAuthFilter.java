@@ -1,8 +1,8 @@
 package org.zanata.servlet;
 
-import org.apache.oltu.oauth2.common.OAuth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.rest.oauth.OAuthUtil;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.oauth.SecurityTokens;
 import org.zanata.util.ServiceLocator;
@@ -18,8 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
-
-import com.google.common.base.Strings;
 
 /**
  * @author <a href='mailto:pahuang@redhat.com>pahuang</a>
@@ -43,11 +41,13 @@ public class OAuthFilter implements Filter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse =
                 (HttpServletResponse) response;
-        String oauthRedirect = request.getParameter(OAuth.OAUTH_REDIRECT_URI);
-        if (Strings.isNullOrEmpty(oauthRedirect)) {
-            // TODO should we throw error here?
-            chain.doFilter(request, response);
-            return;
+        Optional<String> oauthRedirect = OAuthUtil.getOAuthRedirectURI(httpServletRequest);
+        if (!oauthRedirect.isPresent()) {
+            // an OAuth request without an redirect uri means it's not coming
+            // from a third party app (possibly coming from a bot or
+            // the third party app is not doing a proper request).
+            // we will just present an error page
+            throw new IllegalArgumentException("Accessing authorization page without a redirect URI");
         }
 
         // injection to fields doesn't seem to work
@@ -55,13 +55,17 @@ public class OAuthFilter implements Filter {
         SecurityTokens securityTokens = ServiceLocator.instance().getInstance(
                         SecurityTokens.class);
 
-        String clientId = request.getParameter(OAuth.OAUTH_CLIENT_ID);
+        Optional<String> clientId = OAuthUtil.getOAuthClientId(httpServletRequest);
+
+        if (!clientId.isPresent()) {
+            throw new IllegalArgumentException("Accessing authorization page without a client id");
+        }
 
         String authorizationCode = null;
         if (identity.isLoggedIn()) {
             Optional<String> code = securityTokens
                     .findAuthorizationCode(identity.getAccountUsername(),
-                            clientId);
+                            clientId.get());
             if (code.isPresent()) {
                 authorizationCode = code.get();
             }
@@ -70,7 +74,7 @@ public class OAuthFilter implements Filter {
         if (authorizationCode != null) {
             String redirectLocationUrl = securityTokens
                     .getRedirectLocationUrl(httpServletRequest,
-                            oauthRedirect, authorizationCode);
+                            oauthRedirect.get(), authorizationCode);
             log.debug(
                     "authorization code already issued for this session. Username {}, client id: {}",
                     identity.getAccountUsername(), clientId);

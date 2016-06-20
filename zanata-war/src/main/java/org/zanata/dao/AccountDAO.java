@@ -24,6 +24,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
@@ -49,10 +50,7 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
         return (HAccount) cr.uniqueResult();
     }
 
-    public Optional<HAccount> tryGetByUsername(@Nullable String username) {
-        if (Strings.isNullOrEmpty(username)) {
-            return Optional.empty();
-        }
+    public Optional<HAccount> tryGetByUsername(@Nonnull String username) {
         return Optional.ofNullable(getByUsername(username));
     }
 

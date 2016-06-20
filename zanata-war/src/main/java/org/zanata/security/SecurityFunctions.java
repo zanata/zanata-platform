@@ -43,7 +43,6 @@ import org.zanata.util.HttpUtil;
 import org.zanata.util.ServiceLocator;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 import java.util.Optional;
@@ -554,32 +553,29 @@ public class SecurityFunctions extends PermissionProvider {
      * 1) Check if request can communicate to with rest service path,
      * 2) then check if request can perform the specific API action.
      *
-     * If request is from anonymous user(account == null),
-     * only 'Read' action are allowed. Additionally, role-based check will be
-     * performed in the REST service class.
      *
      * This rule apply to all REST endpoint.
      *
      * @param identity - zanata identity representing authenticated account
-     * @param httpMethod - {@link javax.ws.rs.HttpMethod}
      * @param restServicePath - service path of rest request.
      *                        See annotation @Path in REST service class.
      */
     public static boolean canAccessRestPath(
             @Nonnull ZanataIdentity identity,
-            String httpMethod, String restServicePath) {
+            String restServicePath) {
         if(isLocalesServicePath(restServicePath)) {
             log.debug("Allow rest access for /locales path (Zanata UI)");
             return true;
         }
-        if (doesRestPathAllowAnonymousAccess(httpMethod, restServicePath)) {
-            return true;
-        }
         return identity.isLoggedIn();
+
     }
 
     /**
      * Check if the REST api allow anonymous access
+     * If request is from anonymous user,
+     * only 'Read' action are allowed. Additionally, role-based check will be
+     * performed in the REST service class.
      * @param httpMethod {@link javax.ws.rs.HttpMethod}
      * @param servicePath service path of rest request.
      *                        See annotation @Path in REST service class.
@@ -600,12 +596,9 @@ public class SecurityFunctions extends PermissionProvider {
     private static boolean isTestServicePath(String servicePath) {
         // This is to allow data injection for function-test/rest-test
         return servicePath != null
-                && (
-                // when being called in RestLimitingFilter
-                servicePath.contains("/rest/test/") ||
-                        // when being called in ZanataRestSecurityInterceptor
-                servicePath.startsWith("/test")
-        );
+                &&
+                // when being called in ZanataRestSecurityInterceptor
+                servicePath.startsWith("/test/");
     }
 
     /**

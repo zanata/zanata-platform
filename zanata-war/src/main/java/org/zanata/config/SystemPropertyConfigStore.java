@@ -68,7 +68,7 @@ public class SystemPropertyConfigStore implements ConfigStore {
     }
 
     @Override
-    public long getAsLong(String propertyName, long defaultValue) {
+    public long getLong(String propertyName, long defaultValue) {
         return parseAs(propertyName, get(propertyName), defaultValue, Long::valueOf);
     }
 
@@ -119,6 +119,7 @@ public class SystemPropertyConfigStore implements ConfigStore {
      * @return whether this server instance supports OAuth
      */
     public boolean isOAuthEnabled() {
-        return Boolean.getBoolean(KEY_SUPPORT_OAUTH);
+        return Boolean
+                .parseBoolean(System.getProperty(KEY_SUPPORT_OAUTH, "false"));
     }
 }

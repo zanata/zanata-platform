@@ -34,8 +34,7 @@ public class SecurityTokensTest {
 
     @Before
     public void setUp() throws Exception {
-        securityTokens = new SecurityTokens();
-        securityTokens.tokenExpiresInSeconds = 1L;
+        securityTokens = new SecurityTokens(1L);
         securityTokens.setUp();
     }
 
