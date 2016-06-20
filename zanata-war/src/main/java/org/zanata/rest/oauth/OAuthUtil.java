@@ -65,9 +65,10 @@ public class OAuthUtil {
     }
 
     private static Optional<String> getNonEmptyString(String str) {
-        return Optional.ofNullable(str).flatMap(
-                value -> Strings.isNullOrEmpty(value.trim()) ? Optional.empty() :
-                        Optional.of(value));
+        if (Strings.isNullOrEmpty(str)) {
+            return Optional.empty();
+        }
+        return Optional.of(str.trim());
     }
 
     public static Optional<String> getOAuthClientId(HttpServletRequest request) {

@@ -86,7 +86,7 @@ public class SecurityTokens implements Serializable, Introspectable {
 
 
     /**
-     * access token -> username.
+     * access token -> true.
      * stores the newly expired access token so that we can indicate to the user
      * agent that the access token has expired.
      */

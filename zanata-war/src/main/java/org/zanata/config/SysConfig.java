@@ -32,9 +32,10 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * When you system configuration value that is keyed with a string (e.g. system
- * properties or HApplicationConfiguration entries), you can use this qualifier
- * and set the key as org.zanata.config.SysConfig#value().
+ * When a system configuration value that is keyed with a string (e.g. system
+ * properties or HApplicationConfiguration entries), you can use produce the
+ * configuration value using this qualifier with org.zanata.config.SysConfig#value()
+ * set as the key.
  */
 @Qualifier
 @Retention(RUNTIME)
