@@ -150,8 +150,8 @@ public abstract class RestTest {
     public void signalBeforeTest() {
         ClientRequest clientRequest =
                 new ClientRequest(getRestEndpointUrl() + "test/remote/signal/before");
-        clientRequest.header("X-Auth-User", ADMIN);
-        clientRequest.header("X-Auth-Token", ADMIN_KEY);
+//        clientRequest.header("X-Auth-User", ADMIN);
+//        clientRequest.header("X-Auth-Token", ADMIN_KEY);
         try {
             clientRequest
                     .queryParameter("c", this.getClass().getName())
@@ -166,8 +166,8 @@ public abstract class RestTest {
     public void signalAfterTest() {
         ClientRequest clientRequest =
                 new ClientRequest(getRestEndpointUrl() + "test/remote/signal/after");
-        clientRequest.header("X-Auth-User", ADMIN);
-        clientRequest.header("X-Auth-Token", ADMIN_KEY);
+//        clientRequest.header("X-Auth-User", ADMIN);
+//        clientRequest.header("X-Auth-Token", ADMIN_KEY);
         try {
             clientRequest
                     .queryParameter("c", this.getClass().getName())
