@@ -1,6 +1,6 @@
 import { isUndefined, filter, forOwn } from 'lodash'
 import { trim } from './StringUtils'
-import { isEmpty } from 'lodash'
+import { isEmpty, toString } from 'lodash'
 import DateHelpers from './DateHelper'
 import defined from 'defined'
 
@@ -82,18 +82,22 @@ var GlossaryHelper = {
     let srcTerm =
       this.getTermByLocale(entry.glossaryTerms, entry.srcLang)
     srcTerm.reference = entry.sourceReference
-    if (!isEmpty(srcTerm.lastModifiedDate)) {
+    const srcDate = toString(srcTerm.lastModifiedDate)
+    if (!isEmpty(srcDate)) {
       srcTerm.lastModifiedDate =
-        DateHelpers.shortDate(DateHelpers.getDate(srcTerm.lastModifiedDate))
+        DateHelpers.shortDate(DateHelpers.getDate(srcDate))
     }
 
     let transTerm
     if (transLocaleId) {
       transTerm = this.getTermByLocale(entry.glossaryTerms, transLocaleId)
       if (transTerm) {
-        transTerm.lastModifiedDate =
-          DateHelpers.shortDate(DateHelpers.getDate(transTerm.lastModifiedDate))
-        if (isUndefined(transTerm.comment)) {
+        const transDate = toString(transTerm.lastModifiedDate)
+        if (!isEmpty(transDate)) {
+          transTerm.lastModifiedDate =
+            DateHelpers.shortDate(DateHelpers.getDate(transDate))
+        }
+        if (isEmpty(transTerm.comment)) {
           transTerm.comment = ''
         }
       } else {

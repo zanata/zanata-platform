@@ -86,7 +86,7 @@ class NewEntryModal extends Component {
         <Modal.Header>
           <Modal.Title>New Term</Modal.Title>
         </Modal.Header>
-        <Modal.Body atomic={{t: 'Ta(start)'}} scrollable={false}>
+        <Modal.Body atomic={{t: 'Ta(start)'}}>
           <div className='Mb(rh)'>
             <label className='Fw(b)'>Term</label>
             <EditableText

@@ -15,6 +15,30 @@ import {
  */
 class EntryModal extends Component {
 
+  generateTermInfo(term) {
+    if (term) {
+      const person = term.lastModifiedBy
+      const date = term.lastModifiedDate
+
+      const isPersonEmpty = isEmpty(person)
+      const isDateEmpty = isEmpty(date)
+
+      if (!isPersonEmpty || !isDateEmpty) {
+        let parts = ['Last updated'];
+        if (!isPersonEmpty) {
+          parts.push('by:');
+          parts.push(person);
+        }
+        if (!isDateEmpty) {
+          parts.push(date)
+        }
+        return parts.join(' ');
+      }
+    }
+    return undefined
+  }
+
+
   render () {
     const {
       entry,
@@ -34,6 +58,10 @@ class EntryModal extends Component {
 
     const enableComment = transSelected &&
       entry.transTerm && !isEmpty(transContent)
+
+    const info = transSelected
+      ? this.generateTermInfo(entry.transTerm)
+      : this.generateTermInfo(entry.srcTerm)
 
     return (
       <Modal show={show}
@@ -118,6 +146,9 @@ class EntryModal extends Component {
               </EditableText>
             </div>
           ) : '' }
+          {!isEmpty(info) &&
+            <div className='C(muted) Pt(rq)'>{info}</div>
+          }
         </Modal.Body>
         <Modal.Footer>
           <Row theme={{ base: {j: 'Jc(c)'} }}>
