@@ -1,3 +1,12 @@
+## 3.9.1
+##### Changes
+ * [ZNTA-1023](https://zanata.atlassian.net/browse/ZNTA-1023) - Push all file-types by default
+
+##### Bug Fixes
+ * [ZNTA-1178](https://zanata.atlassian.net/browse/ZNTA-1178) - File type project can not be pulled using zanata cli
+
+-----------------------
+
 ## 3.9.0
 
 ##### Changes
@@ -27,7 +36,7 @@
 ## 3.8.1
 
 ##### Changes
-* Add a new parameter includeAutomatedEntry to API getContributionStatics 
+* Add a new parameter includeAutomatedEntry to API getContributionStatics
 * Downgrade dependency to keep enforcer happy
 * 0install feed for Zanata CLI has been migrated to https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml. Please see [installation](/#installation) for updated command.
 
