@@ -268,7 +268,8 @@ public class Application implements EntryPoint {
                 + workspaceId.getProjectIterationId().getProjectSlug() + "/"
                 + workspaceId.getProjectIterationId().getIterationSlug()
                 + "/translate/" + docId + "/"
-                + workspaceId.getLocaleId().getId();
+                + workspaceId.getLocaleId().getId()
+                + "?dswid=" + injector.getLocation().getParameter("dswid");
     }
 
     public static String getFileDownloadURL(WorkspaceId workspaceId,

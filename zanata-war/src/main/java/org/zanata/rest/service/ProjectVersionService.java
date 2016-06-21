@@ -47,7 +47,6 @@ import org.zanata.rest.dto.ProjectIteration;
 import org.zanata.rest.dto.TransUnitStatus;
 import org.zanata.rest.dto.User;
 import org.zanata.rest.dto.resource.ResourceMeta;
-import org.zanata.rest.editor.dto.Locale;
 import org.zanata.rest.editor.service.UserService;
 import org.zanata.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
@@ -293,7 +292,7 @@ public class ProjectVersionService implements ProjectVersionResource {
             locales.stream().map(hLocale -> new LocaleDetails(hLocale.getLocaleId(),
                 hLocale.retrieveDisplayName(), "")).collect(Collectors.toList()));
 
-        Type genericType = new GenericType<List<Locale>>() {
+        Type genericType = new GenericType<List<LocaleDetails>>() {
         }.getGenericType();
         Object entity = new GenericEntity<>(localesRefs, genericType);
         return Response.ok(entity).build();
@@ -370,7 +369,7 @@ public class ProjectVersionService implements ProjectVersionResource {
                     .getResId(), state));
         }
 
-        Type genericType = new GenericType<List<Locale>>() {
+        Type genericType = new GenericType<List<TransUnitStatus>>() {
         }.getGenericType();
         Object entity = new GenericEntity<>(statusList, genericType);
         return Response.ok(entity).build();
