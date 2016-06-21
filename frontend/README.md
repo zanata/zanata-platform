@@ -2,17 +2,25 @@
 
 This module contains: User profile page, Glossary page, and Zanata side menu bar.
 
-## To run in dev mode (need http://localhost:8080/zanata to run separately):
+## To run/setup in nodeJS
 
-Navigate to frontend/src/main/web and run
+Navigate to `frontend/src/main/web`, run `npm install`
 
-```npm install```
+### To run in dev mode http://localhost:8000 (a HTTP server to serve index.html with webpack produced bundle.js)
 
-to install all dependencies. To start
+- need http://localhost:8080/zanata to run separately
+`npm start`
 
-```npm start```
+### Production Build
 
-## To build it just run
+`npm run build`
+
+### Run styleguide
+
+`npm run styleguide-build` follow by `npm run styleguide-server`
+
+
+## To generate a jar dependency
 
 ```mvn install```
 
@@ -37,3 +45,9 @@ If you activate profile ```-DnpmOffline``` the cache-min option will become 9999
 Currently this module has been "shrinkwrapped" which means its npm module dependencies has been fixed to certain version. If you want to add or upgrade an individual version, you will need to consult [npm shrinkwrap documentation](https://docs.npmjs.com/cli/shrinkwrap#building-shrinkwrapped-packages) for detail instruction.
 
 Since we use maven to copy our source to target/ then run npm from maven, you will need to run above commands under target/ then copy the new npm-shrinkwrap.json file back to src/.
+
+
+## Documentation
+
+For extensive details on each part of the front-end see the
+[documentation](./src/main/web/docs).

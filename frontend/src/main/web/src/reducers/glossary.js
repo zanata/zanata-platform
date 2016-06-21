@@ -239,15 +239,18 @@ const glossary = handleActions({
     }
   },
   [GLOSSARY_STATS_SUCCESS]: (state, action) => {
+    const transLocales = isEmpty(action.payload.transLocale)
+      ? []
+      : action.payload.transLocale.map(result => ({
+      value: result.locale.localeId,
+      label: result.locale.displayName,
+      count: result.numberOfTerms
+    }))
     return ({
       ...state,
       stats: {
         srcLocale: action.payload.srcLocale,
-        transLocales: action.payload.transLocale.map(result => ({
-          value: result.locale.localeId,
-          label: result.locale.displayName,
-          count: result.numberOfTerms
-        }))
+        transLocales: transLocales
       },
       statsLoading: false
     })
