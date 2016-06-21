@@ -29,6 +29,7 @@ import javax.enterprise.event.Observes;
 import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.deltaspike.core.util.ContextUtils;
 import org.zanata.events.AlreadyLoggedInEvent;
@@ -55,10 +56,12 @@ public class AuthenticationEvents implements Serializable {
     }
 
     public void loginInSuccessful(@Observes LoginSuccessfulEvent event) {
-        log.debug("Account logged in successfully");
-        if (ContextUtils.isContextActive(WindowScoped.class)) {
-            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_INFO,
-                    "authentication.loginSuccessful", event.getName());
+        if (StringUtils.isNotBlank(event.getName())) {
+            log.debug("Account logged in successfully");
+            if (ContextUtils.isContextActive(WindowScoped.class)) {
+                facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_INFO,
+                        "authentication.loginSuccessful", event.getName());
+            }
         }
     }
 
