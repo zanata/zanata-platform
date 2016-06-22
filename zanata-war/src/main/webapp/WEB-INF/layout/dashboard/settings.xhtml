@@ -241,6 +241,7 @@
                   styleClass="l--float-right txt--danger reveal__target"
                   action="#{userSettingsAction.leaveLanguageTeam(locale.localeId.id)}"
                   render="languageListForm"
+                  title="#{msgs['jsf.group.RemoveLanguage.title']}"
                   onclick="return confirm('#{interpolator.interpolate(msgs['jsf.dashboard.settings.leaveLanguageTeam.confirm.message'], locale.retrieveDisplayName())}')">
                   <i class="i--large i--remove"></i>
                 </a4j:commandLink>
