@@ -57,3 +57,7 @@ useful for starting a Zanata instance with the aim of running functional tests
 from an IDE.
 
 The `-h` argument prints the script's help.
+
+#### Development using docker (experimental)
+
+For a quick Zanata development environment with Docker, please visit the [docker README](docker/README.md).
