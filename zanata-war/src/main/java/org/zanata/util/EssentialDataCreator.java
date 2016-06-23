@@ -121,7 +121,7 @@ public class EssentialDataCreator {
             }
 
             if (!adminExists) {
-                log.warn("No admin users found. Admin users can be enabled in jndi bindings: java:global/zanata/security/admin-users");
+                log.warn("No admin users found. Admin users can be enabled via system property: zanata.security.adminusers");
             }
 
             // Enable en-US by default
