@@ -55,6 +55,8 @@ class ConnectionWrapper implements InvocationHandler {
     private final Connection originalConnection;
     private Set<Throwable> resultSetsOpened = Sets.newHashSet();
     private Throwable streamingResultSetOpened;
+    private boolean autoCommit;
+    private boolean transactionOpen;
 
     public static Connection wrap(Connection conn) {
         // avoid double-wrapping:
@@ -69,18 +71,35 @@ class ConnectionWrapper implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args)
             throws Throwable {
-        if (method.getName().equals("toString")) {
-            return "ConnectionWrapper->" + originalConnection.toString();
-        }
-        if (method.getName().equals("close")) {
-            if (streamingResultSetOpened != null) {
-                log.error("Connection.close: streaming ResultSet still open",
-                        streamingResultSetOpened);
-            }
-            if (!resultSetsOpened.isEmpty()) {
-                log.error("Connection.close: ResultSet still open",
-                        resultSetsOpened.iterator().next());
-            }
+        switch (method.getName()) {
+            case "toString":
+                if (args.length == 0) {
+                    return "ConnectionWrapper->" +
+                            originalConnection.toString();
+                }
+                break;
+            case "close":
+                if (args.length == 0) {
+                    beforeClose();
+                }
+                break;
+            case "commit":
+                if (args.length == 0) {
+                    transactionFinished();
+                }
+                break;
+            case "rollback":
+                if (args.length <= 1) {
+                    transactionFinished();
+                }
+                break;
+            case "setAutoCommit":
+                if (args.length == 1 && args[0] instanceof Boolean) {
+                    setAutoCommit((Boolean) args[0]);
+                }
+                break;
+            default:
+                break;
         }
         try {
             Object result = method.invoke(originalConnection, args);
@@ -94,11 +113,39 @@ class ConnectionWrapper implements InvocationHandler {
         }
     }
 
+    private void setAutoCommit(boolean autoCommit) {
+        if (this.autoCommit != autoCommit) {
+            this.autoCommit = autoCommit;
+            transactionOpen = false;
+        }
+    }
+
+    private void transactionFinished() {
+        transactionOpen = false;
+    }
+
+    private void beforeClose() {
+        if (streamingResultSetOpened != null) {
+            log.error("Connection.close: streaming ResultSet still open",
+                    streamingResultSetOpened);
+        }
+        if (!resultSetsOpened.isEmpty()) {
+            log.error("Connection.close: ResultSet still open",
+                    resultSetsOpened.iterator().next());
+        }
+//        if (transactionOpen) {
+//            throw new RuntimeException("Connection.close called without commit/rollback");
+//        }
+    }
+
     /**
      * Notify ConnectionWrapper that Statement.execute() has been called.
      * @throws StreamingResultSetSQLException
      */
     public void executed() throws StreamingResultSetSQLException {
+        if (!autoCommit) {
+            transactionOpen = true;
+        }
         if (streamingResultSetOpened != null) {
             throw new StreamingResultSetSQLException(CONCURRENT_RESULTSET,
                     streamingResultSetOpened);
@@ -111,6 +158,9 @@ class ConnectionWrapper implements InvocationHandler {
      * @throws StreamingResultSetSQLException
      */
     public void resultSetOpened(Throwable throwable) throws StreamingResultSetSQLException {
+        if (!autoCommit) {
+            transactionOpen = true;
+        }
         if (streamingResultSetOpened != null) {
             throw new StreamingResultSetSQLException(CONCURRENT_RESULTSET,
                     streamingResultSetOpened);
@@ -125,6 +175,9 @@ class ConnectionWrapper implements InvocationHandler {
      */
     public void streamingResultSetOpened(Throwable throwable)
             throws StreamingResultSetSQLException {
+        if (!autoCommit) {
+            transactionOpen = true;
+        }
         if (streamingResultSetOpened != null) {
             throw new StreamingResultSetSQLException(CONCURRENT_RESULTSET,
                     streamingResultSetOpened);
