@@ -46,6 +46,7 @@ import org.zanata.rest.RestUtil;
 @Named("zPathService")
 @javax.enterprise.context.Dependent
 
+// TODO this should probably be Transactional (and not Dependent)
 public class ZPathService {
     /*
      * Public ZPaths. Used for rest resource path declaration.

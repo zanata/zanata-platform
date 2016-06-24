@@ -30,6 +30,8 @@ import org.apache.commons.lang.StringUtils;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.DTDAdapter;
 import org.zanata.adapter.FileFormatAdapter;
@@ -91,6 +93,7 @@ import static org.zanata.common.DocumentType.XML_DOCUMENT_TYPE_DEFINITION;
 @Named("translationFileServiceImpl")
 @RequestScoped
 @Slf4j
+@Transactional
 public class TranslationFileServiceImpl implements TranslationFileService {
     private static Map<DocumentType, Class<? extends FileFormatAdapter>> DOCTYPEMAP =
             new MapMaker().makeMap();

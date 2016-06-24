@@ -27,6 +27,8 @@ import java.util.Map;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.ContentState;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TransMemoryUnitDAO;
@@ -66,6 +68,7 @@ import static org.zanata.service.SecurityService.TranslationAction.MODIFY;
 @Named("transMemoryMergeServiceImpl")
 @RequestScoped
 @Slf4j
+@Transactional
 public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
 
     @Inject

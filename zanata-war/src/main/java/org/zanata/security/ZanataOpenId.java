@@ -21,6 +21,7 @@
 package org.zanata.security;
 
 import com.google.common.base.Throwables;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.openid4java.OpenIDException;
 import org.openid4java.consumer.ConsumerManager;
 import org.openid4java.consumer.VerificationResult;
@@ -60,14 +61,12 @@ import javax.enterprise.event.Event;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
-@Named("zanataOpenId")
 @SessionScoped
 @Synchronized
 /*
@@ -184,6 +183,7 @@ public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
     }
 
     // returns a verified id (external username), or null
+    @Transactional
     public String verifyResponse(HttpServletRequest httpReq) {
         try {
             // extract the parameters from the authentication response
@@ -229,6 +229,8 @@ public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
 
             // invoke the callbacks
             if (callback != null) {
+                // CredentialsCreationCallback needs a transaction, but it isn't a CDI bean
+                // (so @Transactional won't work on it).
                 callback.afterOpenIdAuth(authResult);
                 if (callback.getRedirectToUrl() != null) {
                     userRedirect.setUrl(callback.getRedirectToUrl());

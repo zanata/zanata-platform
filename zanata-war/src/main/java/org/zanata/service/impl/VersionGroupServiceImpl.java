@@ -28,6 +28,8 @@ import java.util.Set;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.ProjectIterationDAO;
@@ -51,6 +53,7 @@ import com.google.common.collect.Maps;
  */
 @Named("versionGroupServiceImpl")
 @RequestScoped
+@Transactional
 public class VersionGroupServiceImpl implements VersionGroupService {
 
     @Inject
