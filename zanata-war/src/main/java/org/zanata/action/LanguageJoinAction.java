@@ -23,6 +23,8 @@ package org.zanata.action;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
 import javax.validation.constraints.Size;
 
 import com.google.common.base.Joiner;
@@ -34,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.annotations.Authenticated;
 import org.apache.commons.lang.StringUtils;
 import org.zanata.exception.RequestExistsException;
@@ -63,8 +66,9 @@ import org.zanata.ui.faces.FacesMessages;
 
 
 @Named("languageJoinAction")
-@javax.faces.bean.ViewScoped
-
+@ViewScoped
+@Model
+@Transactional
 @Slf4j
 public class LanguageJoinAction implements Serializable {
     private static final long serialVersionUID = 1L;

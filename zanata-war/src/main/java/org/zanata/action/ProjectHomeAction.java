@@ -31,15 +31,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
+import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Ordering;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+
+import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.LocaleMemberDAO;
@@ -92,7 +96,9 @@ import static org.zanata.model.ProjectRole.TranslationMaintainer;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Named("projectHomeAction")
-@javax.faces.bean.ViewScoped
+@ViewScoped
+@Model
+@Transactional
 @Slf4j
 public class ProjectHomeAction extends AbstractSortAction implements
         Serializable {

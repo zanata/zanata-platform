@@ -31,6 +31,9 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
+
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -59,8 +62,9 @@ import com.google.common.collect.Lists;
 
 
 @Named("versionGroupJoinAction")
-@javax.faces.bean.ViewScoped
-
+@ViewScoped
+@Model
+@Transactional
 @Slf4j
 public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
         implements Serializable {

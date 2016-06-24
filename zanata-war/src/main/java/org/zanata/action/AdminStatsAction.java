@@ -24,8 +24,13 @@ import java.io.Serializable;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
@@ -39,7 +44,9 @@ import org.zanata.dao.TextFlowTargetDAO;
  *
  **/
 @Named("adminStatsAction")
-@javax.faces.bean.ViewScoped
+@ViewScoped
+@Model
+@Transactional
 public class AdminStatsAction implements Serializable {
     /**
     *

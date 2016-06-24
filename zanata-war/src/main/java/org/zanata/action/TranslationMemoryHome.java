@@ -21,6 +21,7 @@
 package org.zanata.action;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Model;
 import javax.faces.event.ValueChangeEvent;
 
 import lombok.extern.slf4j.Slf4j;
@@ -43,10 +44,11 @@ import org.zanata.ui.faces.FacesMessages;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("translationMemoryHome")
-
+@RequestScoped
+@Model
+@Transactional
 @CheckRole("admin")
 @Slf4j
-@RequestScoped
 public class TranslationMemoryHome extends EntityHome<TransMemory> {
     private static final long serialVersionUID = -8557363011909155662L;
     @Inject

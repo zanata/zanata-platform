@@ -11,7 +11,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.lucene.queryParser.ParseException;
+
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.EntityStatus;
@@ -33,8 +37,9 @@ import org.zanata.util.ServiceLocator;
  * This will search both projects and people.
  */
 @Named("zanataSearch")
-@javax.faces.bean.ViewScoped
-
+@ViewScoped
+@Model
+@Transactional
 public class ZanataSearch implements Serializable {
 
     private static final long serialVersionUID = 1L;

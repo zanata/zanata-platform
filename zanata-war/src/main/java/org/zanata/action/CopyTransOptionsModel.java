@@ -22,10 +22,14 @@ package org.zanata.action;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
 import javax.persistence.EntityManager;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.service.impl.CopyTransOptionFactory;
@@ -45,8 +49,9 @@ import lombok.Setter;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("copyTransOptionsModel")
-@javax.faces.bean.ViewScoped
-
+@ViewScoped
+@Model
+@Transactional
 public class CopyTransOptionsModel implements Serializable {
     private static final long serialVersionUID = 1L;
 

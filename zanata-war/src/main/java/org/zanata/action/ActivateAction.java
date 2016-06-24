@@ -23,6 +23,7 @@ package org.zanata.action;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
 
 import org.apache.commons.lang.time.DateUtils;
@@ -46,6 +47,8 @@ import lombok.Setter;
 
 @Named("activate")
 @GroupedConversationScoped
+@Model
+@Transactional
 public class ActivateAction implements Serializable {
 
     private static final long serialVersionUID = -8079131168179421345L;

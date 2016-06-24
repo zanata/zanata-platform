@@ -28,8 +28,12 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.common.EntityStatus;
 import org.zanata.model.HAccount;
@@ -40,7 +44,9 @@ import org.zanata.service.VersionGroupService;
 import com.google.common.collect.Lists;
 
 @Named("versionGroupAction")
-@javax.faces.bean.ViewScoped
+@ViewScoped
+@Model
+@Transactional
 public class VersionGroupAction implements Serializable {
     private static final long serialVersionUID = 1L;
 

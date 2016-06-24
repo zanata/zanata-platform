@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Model;
 import javax.security.auth.login.LoginException;
 
 import lombok.Getter;
@@ -50,8 +51,9 @@ import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 @Named("validateEmail")
 @Slf4j
-
 @RequestScoped
+@Model
+@Transactional
 public class ValidateEmailAction implements Serializable {
     private static final long serialVersionUID = 1L;
 
