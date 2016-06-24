@@ -1,7 +1,5 @@
-import React from 'react'
+import React,  { PropTypes } from 'react'
 import { merge } from 'lodash'
-import PureRenderMixin from 'react-addons-pure-render-mixin'
-import Actions from '../../actions/userMatrix'
 import dateUtil from '../../utils/DateHelper'
 import {
   Base,
@@ -48,48 +46,27 @@ const classes = {
 /**
  * Clickable date and word count component for daily statistics
  */
-var DayMatrix = React.createClass({
-  mixins: [PureRenderMixin],
-  propTypes: {
-    dateLabel: React.PropTypes.string,
-    date: React.PropTypes.string,
-    wordCount: React.PropTypes.number,
-    selectedDay: React.PropTypes.string
-  },
 
-  handleDayClick: function (event) {
-    var dayChosen = this.props.date
-    if (this.props.selectedDay === dayChosen) {
-      // click the same day again will cancel selection
-      Actions.clearSelectedDay()
-    } else {
-      Actions.onDaySelected(dayChosen)
-    }
-  },
+const DayMatrix = ({
+  dateLabel,
+  date,
+  wordCount,
+  selectedDay,
+  handleSelectedDayChanged,
+  ...props
+}) => {
+  const dateIsInFuture = date ? dateUtil.isInFuture(date) : false
+  const buttonTheme = {
+    base: merge({},
+      classes.calButton.base,
+      date === selectedDay && classes.calButton.active
+    )
+  }
 
-  render: function () {
-    const {
-      date,
-      dateLabel,
-      selectedDay,
-      wordCount
-    } = this.props
-    // Note: this will make this component impure. But it will only become
-    // impure when you render it between midnight, e.g. two re-render attempt
-    // happen across two days with same props, which I think it's ok.
-    const dateIsInFuture = date ? dateUtil.isInFuture(date) : false
-
-    const buttonTheme = {
-      base: merge({},
-        classes.calButton.base,
-        date === selectedDay && classes.calButton.active
-      )
-    }
-
-    return (
-      <Base tagName='td' theme={classes.root}>
-        {date
-        ? (<Button onClick={this.handleDayClick}
+  return (
+    <Base tagName='td' theme={classes.root}>
+      {date
+        ? (<Button onClick={() => handleSelectedDayChanged(date)}
             disabled={dateIsInFuture || !date}
             theme={buttonTheme}
             title={wordCount + ' words'}>
@@ -101,9 +78,16 @@ var DayMatrix = React.createClass({
             </Base>
           </Button>)
         : <Base atomic={{bgc: 'Bgc(#fff.85)', stretchedBox: 'StretchedBox'}} />}
-      </Base>
-    )
-  }
-})
+    </Base>
+  )
+}
+
+DayMatrix.propTypes = {
+  dateLabel: PropTypes.string,
+    date: PropTypes.string,
+    wordCount: PropTypes.number,
+    selectedDay: PropTypes.string,
+    handleSelectedDayChanged: PropTypes.func.isRequired
+}
 
 export default DayMatrix

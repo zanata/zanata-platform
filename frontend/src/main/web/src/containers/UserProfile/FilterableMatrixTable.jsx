@@ -22,7 +22,9 @@ const FilterableMatrixTable = ({
   selectedDay,
   toDate,
   wordCountForEachDay,
-  wordCountForSelectedDay
+  wordCountForSelectedDay,
+  handleFilterChanged,
+  handleSelectedDayChanged
 }) => {
   const categoryTables = (wordCountForSelectedDay.length > 0)
     ? ([
@@ -42,14 +44,16 @@ const FilterableMatrixTable = ({
     : <Base atomic={{c: 'C(muted)'}}>No contributions</Base>
   return (
     <div>
-      <ContentStateFilter selectedContentState={selectedContentState} />
+      <ContentStateFilter selectedContentState={selectedContentState}
+        handleFilterChanged={handleFilterChanged} />
       <Flex atomic={{fld: 'Fld(c) Fld(r)--lg'}}>
         <div className='W(100%) W(1/2)--lg Mend(rh)--lg'>
           <CalendarMonthMatrix
             matrixData={wordCountForEachDay}
             selectedDay={selectedDay}
             selectedContentState={selectedContentState}
-            dateRangeOption={dateRangeOption} />
+            dateRangeOption={dateRangeOption}
+            handleSelectedDayChanged={handleSelectedDayChanged} />
         </div>
         <div className='W(100%) W(1/2)--lg Mstart(rh)--lg'>
           <CalendarPeriodHeading
@@ -89,7 +93,9 @@ FilterableMatrixTable.propTypes = {
   toDate: PropTypes.string.isRequired,
   dateRangeOption: PropTypes.oneOf(DateRanges).isRequired,
   selectedContentState: PropTypes.oneOf(ContentStates).isRequired,
-  selectedDay: PropTypes.string
+  selectedDay: PropTypes.string,
+  handleFilterChanged: PropTypes.func,
+  handleSelectedDayChanged: PropTypes.func
 }
 
 export default FilterableMatrixTable

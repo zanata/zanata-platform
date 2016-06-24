@@ -1,7 +1,6 @@
 import React from 'react'
 import ContributionChart from './ContributionChart'
 import FilterableMatrixTable from './FilterableMatrixTable'
-import Actions from '../../actions/userMatrix'
 import { DateRanges } from '../../constants/Options'
 import {
   Base,
@@ -41,7 +40,10 @@ const RecentContributions = ({
   wordCountsForSelectedDayFilteredByContentState,
   wordCountsForEachDayFilteredByContentState,
   contentStateOption,
-  selectedDay
+  selectedDay,
+  handleDateRangeChanged,
+  handleFilterChanged,
+  handleSelectedDayChanged
 }) => {
   return (
     <Base atomic={classes.root} id='profile-matrix'>
@@ -55,7 +57,7 @@ const RecentContributions = ({
             clearable={false}
             value={dateRangeOption}
             options={DateRanges}
-            onChange={Actions.changeDateRange} />
+            onChange={handleDateRangeChanged} />
         </Base>
       </Flex>
       <Flex dir='c' align='c' justify='c' atomic={classes.chartContainer}>
@@ -70,6 +72,8 @@ const RecentContributions = ({
         dateRangeOption={dateRangeOption}
         selectedContentState={contentStateOption}
         selectedDay={selectedDay}
+        handleFilterChanged={handleFilterChanged}
+        handleSelectedDayChanged={handleSelectedDayChanged}
       />
     </Base>
   )

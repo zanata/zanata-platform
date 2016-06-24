@@ -1,6 +1,6 @@
-var ContentStates = ['Total', 'Approved', 'Translated', 'Needs Work']
-var ContentStateStyles = ['plain', 'primary', 'success', 'unsure']
-var DateRanges = [
+export const ContentStates = ['Total', 'Approved', 'Translated', 'Needs Work']
+export const ContentStateStyles = ['plain', 'primary', 'success', 'unsure']
+export const DateRanges = [
   {
     value: 'thisWeek',
     label: 'This Week'
@@ -18,7 +18,3 @@ var DateRanges = [
     label: 'Last Month'
   }
 ]
-
-exports.ContentStates = ContentStates
-exports.ContentStateStyles = ContentStateStyles
-exports.DateRanges = DateRanges
