@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { isEmpty } from 'lodash'
+import { isEmpty, includes } from 'lodash'
 
 import {
   ButtonLink,
@@ -15,10 +15,9 @@ import {
   glossaryImportFile,
   glossaryUpdateImportFile,
   glossaryToggleImportFileDisplay,
-  glossaryUpdateImportFileLocale
+  glossaryUpdateImportFileLocale,
+  FILE_TYPES
 } from '../../actions/glossary'
-
-import StringUtils from '../../utils/StringUtils'
 
 class ImportModal extends Component {
   getUploadFileExtension (file) {
@@ -26,7 +25,7 @@ class ImportModal extends Component {
   }
 
   isSupportedFile (extension) {
-    return extension === 'po' || extension === 'csv'
+    return includes(FILE_TYPES, extension)
   }
 
   render () {
@@ -101,7 +100,7 @@ class ImportModal extends Component {
             CSV and PO files are supported. <strong>The source language should
             be in {locale}</strong>. For more details on how to prepare glossary
             files, see our <a href={uploadGlossaryUrl}
-            className="C(pri)" target="_blank">glossary import documentation</a>.
+            className='C(pri)' target='_blank'>glossary import documentation</a>.
           </p>
         </Modal.Body>
         <Modal.Footer>

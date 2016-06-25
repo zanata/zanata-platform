@@ -17,11 +17,13 @@ import {
   glossaryFilterTextChanged,
   glossarySortColumn,
   glossaryToggleImportFileDisplay,
+  glossaryToggleExportFileDisplay,
   glossaryToggleNewEntryModal,
   glossaryToggleDeleteAllEntriesModal,
   glossaryDeleteAll
 } from '../../actions/glossary'
 import ImportModal from './ImportModal'
+import ExportModal from './ExportModal'
 import NewEntryModal from './NewEntryModal'
 import DeleteAllEntriesModal from './DeleteAllEntriesModal'
 
@@ -72,6 +74,7 @@ class ViewHeader extends Component {
       handleTranslationLocaleChange,
       handleFilterFieldUpdate,
       handleImportFileDisplay,
+      handleExportFileDisplay,
       handleNewEntryDisplay,
       handleDeleteAllEntriesDisplay,
       handleDeleteAllEntries,
@@ -110,10 +113,22 @@ class ViewHeader extends Component {
                   onClick={() => handleImportFileDisplay(true)}>
                   <Row>
                     <Icon name='import' atomic={{m: 'Mend(re)'}} />
-                    <span className='Hidden--lesm'>Import Glossary</span>
+                    <span className='Hidden--lesm'>Import</span>
                   </Row>
                 </ButtonLink>
                 <ImportModal />
+              </div>)}
+
+            {permission.canDownload && (
+              <div className='Mstart(rh)--md Mstart(rq)'>
+                <ButtonLink type='default'
+                  onClick={() => handleExportFileDisplay(true)}>
+                  <Row>
+                    <Icon name='export' atomic={{m: 'Mend(re)'}} />
+                    <span className='Hidden--lesm'>Export</span>
+                  </Row>
+                </ButtonLink>
+                <ExportModal />
               </div>)}
 
              {permission.canAddNewEntry && (
@@ -121,7 +136,7 @@ class ViewHeader extends Component {
                  <ButtonLink onClick={() => handleNewEntryDisplay(true)}>
                    <Row>
                      <Icon name='plus' atomic={{m: 'Mend(re)'}} />
-                     <span className='Hidden--lesm'>New Term</span>
+                     <span className='Hidden--lesm'>New</span>
                    </Row>
                  </ButtonLink>
                  <NewEntryModal />
@@ -226,7 +241,8 @@ ViewHeader.propTypes = {
   permission: PropTypes.shape({
       canAddNewEntry: PropTypes.bool,
       canUpdateEntry: PropTypes.bool,
-      canDeleteEntry: PropTypes.bool
+      canDeleteEntry: PropTypes.bool,
+      canDownload: PropTypes.bool
   }).isRequired,
   sort: PropTypes.shape({
     src_content: PropTypes.bool,
@@ -275,6 +291,8 @@ const mapDispatchToProps = (dispatch) => {
     handleSortColumn: (col) => dispatch(glossarySortColumn(col)),
     handleImportFileDisplay: (display) =>
       dispatch(glossaryToggleImportFileDisplay(display)),
+    handleExportFileDisplay: (display) =>
+      dispatch(glossaryToggleExportFileDisplay(display)),
     handleNewEntryDisplay: (display) =>
       dispatch(glossaryToggleNewEntryModal(display)),
     handleDeleteAllEntriesDisplay: (display) =>

@@ -15,12 +15,18 @@ export const DEFAULT_LOCALE = {
   'displayName': 'English (United States)'
 }
 
-export const getJsonHeaders = () => {
-  let headers = {'Accept': 'application/json'}
+export const getHeaders = () => {
+  let headers = {}
   if (window.config.auth) {
     headers['x-auth-token'] = window.config.auth.token
     headers['x-auth-user'] = window.config.auth.user
   }
+  return headers
+}
+
+export const getJsonHeaders = () => {
+  let headers = getHeaders()
+  headers['Accept'] = 'application/json'
   return headers
 }
 

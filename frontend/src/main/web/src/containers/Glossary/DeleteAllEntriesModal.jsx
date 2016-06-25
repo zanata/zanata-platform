@@ -46,7 +46,7 @@ class DeleteAllEntriesModal extends Component {
                 onClick={() => handleDeleteAllEntries()}>
                 <LoaderText loading={isDeleting} size='n1'
                   loadingText='Deleting'>
-                  Delete all
+                  Delete
                 </LoaderText>
               </ButtonRound>
             </div>
@@ -57,7 +57,7 @@ class DeleteAllEntriesModal extends Component {
           disabled={isDeleting}>
           <Row>
             <Icon name='trash' atomic={{m: 'Mend(re)'}} />
-            <span className='Hidden--lesm'>Delete all</span>
+            <span className='Hidden--lesm'>Delete</span>
           </Row>
         </ButtonLink>
       </div>

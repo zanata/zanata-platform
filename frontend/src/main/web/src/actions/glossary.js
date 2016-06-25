@@ -1,6 +1,7 @@
 import { createAction } from 'redux-actions'
 import { CALL_API } from 'redux-api-middleware'
 import { isEmpty, cloneDeep, includes, clamp, debounce } from 'lodash'
+import { saveAs } from 'file-saver'
 import { normalize } from 'normalizr'
 import { GLOSSARY_TERM_ARRAY } from '../schemas.js'
 import { replaceRouteQuery } from '../utils/RoutingHelpers'
@@ -8,10 +9,13 @@ import GlossaryHelper from '../utils/GlossaryHelper'
 import {
   DEFAULT_LOCALE,
   getJsonHeaders,
+  getHeaders,
   buildAPIRequest
 } from './common'
 
 export const GLOSSARY_PAGE_SIZE = 500
+
+export const FILE_TYPES = ['csv', 'po']
 
 export const GLOSSARY_UPDATE_FILTER = 'GLOSSARY_UPDATE_FILTER'
 export const GLOSSARY_UPDATE_LOCALE = 'GLOSSARY_UPDATE_LOCALE'
@@ -39,6 +43,8 @@ export const GLOSSARY_UPDATE_IMPORT_FILE = 'GLOSSARY_UPDATE_IMPORT_FILE'
 export const GLOSSARY_UPDATE_IMPORT_FILE_LOCALE =
   'GLOSSARY_UPDATE_IMPORT_FILE_LOCALE'
 export const GLOSSARY_TOGGLE_IMPORT_DISPLAY = 'GLOSSARY_TOGGLE_IMPORT_DISPLAY'
+export const GLOSSARY_TOGGLE_EXPORT_DISPLAY = 'GLOSSARY_TOGGLE_EXPORT_DISPLAY'
+export const GLOSSARY_UPDATE_EXPORT_TYPE = 'GLOSSARY_UPDATE_EXPORT_TYPE'
 export const GLOSSARY_UPDATE_SORT = 'GLOSSARY_UPDATE_SORT'
 export const GLOSSARY_TOGGLE_NEW_ENTRY_DISPLAY =
   'GLOSSARY_TOGGLE_NEW_ENTRY_DISPLAY'
@@ -50,7 +56,9 @@ export const GLOSSARY_CREATE_FAILURE = 'GLOSSARY_CREATE_FAILURE'
 export const GLOSSARY_DELETE_ALL_REQUEST = 'GLOSSARY_DELETE_ALL_REQUEST'
 export const GLOSSARY_DELETE_ALL_SUCCESS = 'GLOSSARY_DELETE_ALL_SUCCESS'
 export const GLOSSARY_DELETE_ALL_FAILURE = 'GLOSSARY_DELETE_ALL_FAILURE'
-
+export const GLOSSARY_EXPORT_REQUEST = 'GLOSSARY_EXPORT_REQUEST'
+export const GLOSSARY_EXPORT_SUCCESS = 'GLOSSARY_EXPORT_SUCCESS'
+export const GLOSSARY_EXPORT_FAILURE = 'GLOSSARY_EXPORT_FAILURE'
 export const glossaryUpdateLocale = createAction(GLOSSARY_UPDATE_LOCALE)
 export const glossaryUpdateFilter = createAction(GLOSSARY_UPDATE_FILTER)
 export const glossaryUpdateField = createAction(GLOSSARY_UPDATE_FIELD)
@@ -60,6 +68,10 @@ export const glossaryUpdateImportFile =
   createAction(GLOSSARY_UPDATE_IMPORT_FILE)
 export const glossaryToggleImportFileDisplay =
   createAction(GLOSSARY_TOGGLE_IMPORT_DISPLAY)
+export const glossaryToggleExportFileDisplay =
+  createAction(GLOSSARY_TOGGLE_EXPORT_DISPLAY)
+export const glossaryUpdateExportType =
+  createAction(GLOSSARY_UPDATE_EXPORT_TYPE)
 export const glossaryUpdateImportFileLocale =
   createAction(GLOSSARY_UPDATE_IMPORT_FILE_LOCALE)
 export const glossaryUpdateSort = createAction(GLOSSARY_UPDATE_SORT)
@@ -269,6 +281,40 @@ const deleteAllGlossaryEntry = (dispatch) => {
   ]
   return {
     [CALL_API]: buildAPIRequest(endpoint, 'DELETE', getJsonHeaders(), apiTypes)
+  }
+}
+
+const glossaryExport = (type) => {
+  const endpoint = window.config.baseUrl + window.config.apiRoot + '/glossary/file?fileType=' + type
+  let headers = getJsonHeaders()
+  headers['Content-Type'] = 'application/octet-stream'
+  const apiTypes = [
+    {
+      type: GLOSSARY_EXPORT_REQUEST,
+      payload: (action, state) => {
+        return ''
+      }
+    },
+    {
+      type: GLOSSARY_EXPORT_SUCCESS,
+      payload: (action, state, res) => {
+        return res.blob().then((blob) => {
+          const selectedType = state.glossary.exportFile.type.value
+          const fileName = 'glossary.' + (selectedType === 'po' ? 'zip' : selectedType)
+          saveAs(blob, fileName)
+        })
+      }
+    },
+    GLOSSARY_EXPORT_FAILURE
+  ]
+  return {
+    [CALL_API]: buildAPIRequest(endpoint, 'GET', getHeaders(), apiTypes)
+  }
+}
+
+export const glossaryDownload = () => {
+  return (dispatch, getState) => {
+    dispatch(glossaryExport(getState().glossary.exportFile.type.value))
   }
 }
 
