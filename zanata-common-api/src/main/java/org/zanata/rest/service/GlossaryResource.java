@@ -54,7 +54,8 @@ import org.zanata.rest.dto.ResultList;
 @ExternallyManagedLifecycle
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
         MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML,
-        MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON })
+        MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON,
+        MediaType.APPLICATION_OCTET_STREAM })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
         MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML,
         MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON })
@@ -121,6 +122,19 @@ public interface GlossaryResource extends RestResource {
             @DefaultValue("1000") @QueryParam("sizePerPage") int sizePerPage,
             @QueryParam("filter") String filter,
             @QueryParam("sort") String fields);
+
+    /**
+     * Download all glossary entries as file
+     *
+     * @param fileType - po or cvs (case insensitive). Default - csv
+     * @param locales - optional comma separated list of languages required.
+     */
+    @GET
+    @Path("/file")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response downloadFile(
+        @DefaultValue("csv") @QueryParam("fileType") String fileType,
+        @QueryParam("locales") String locales);
 
     /**
      * Create or update glossary entry
