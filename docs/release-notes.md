@@ -104,6 +104,30 @@
  * [ZNTA-358](https://zanata.atlassian.net/browse/ZNTA-358) - Unable to sign up with user specified OpenID
  * [ZNTA-54](https://zanata.atlassian.net/browse/ZNTA-54) - Can't remove languages
  * [ZNTA-12](https://zanata.atlassian.net/browse/ZNTA-12) - User cannot send two messages to admin in a row
+<h5>New Features</h5>
+* [ZNTA-689](https://zanata.atlassian.net/browse/ZNTA-689) - Support Qt TS files
+
+<h5>Bug fixes</h5>
+* [ZNTA-804](https://zanata.atlassian.net/browse/ZNTA-804) - Coordinators' email addresses should be BCC in Contact Coordinator
+* [ZNTA-693](https://zanata.atlassian.net/browse/ZNTA-693) - Handle ClientAbortException exception and reduce severity.
+* [ZNTA-742](https://zanata.atlassian.net/browse/ZNTA-742) - Get a list of contributors for a Project version via the API
+* [ZNTA-744](https://zanata.atlassian.net/browse/ZNTA-744) - Add review data to the contribution statistics API
+* [ZNTA-879](https://zanata.atlassian.net/browse/ZNTA-879) - Allow admin to configure the visibility of user email
+* [ZNTA-412](https://zanata.atlassian.net/browse/ZNTA-412) - Profile link to project maintainers, language members, and version group maintainers
+* [ZNTA-905](https://zanata.atlassian.net/browse/ZNTA-905) - Remove 0% matching translation memory entry
+* [ZNTA-928](https://zanata.atlassian.net/browse/ZNTA-928) - Readonly project doesn't have "lock" icon in UI
+* [ZNTA-54](https://zanata.atlassian.net/browse/ZNTA-54) - Allow delete language
+* [ZNTA-1066](https://zanata.atlassian.net/browse/ZNTA-1066) - Delete project still indicates "Obsolete" in the notification
+* [ZNTA-1068](https://zanata.atlassian.net/browse/ZNTA-1068) - Refresh page after adding language in project page
+* [ZNTA-1074](https://zanata.atlassian.net/browse/ZNTA-1074) - Hide notification details section
+* [ZNTA-1065](https://zanata.atlassian.net/browse/ZNTA-1065) - Drop-down user menu does not obscure the Glossary buttons
+* [ZNTA-1086](https://zanata.atlassian.net/browse/ZNTA-1086) - NullPointerException when uploading from client (tested with cs-CZ)
+
+* [ZNTA-981](https://zanata.atlassian.net/browse/ZNTA-981) - Remove file extension for gettext project file type
+
+<h5>Infrastructure Changes</h5>
+* Recommended platform: JBoss EAP 6 (6.4.6.GA or later).
+* Alternative platform: WildFly version 10.x.
 
 -----------------------
 

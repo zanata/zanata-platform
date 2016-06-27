@@ -20,9 +20,7 @@
  */
 package org.zanata.util;
 
-import net.htmlparser.jericho.Renderer;
-import net.htmlparser.jericho.Segment;
-import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.*;
 import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
 
@@ -35,6 +33,12 @@ import static org.owasp.html.Sanitizers.LINKS;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 public class HtmlUtil {
+
+    // Override Jericho HTML Parser logger detection
+    static {
+        Config.LoggerProvider = LoggerProvider.SLF4J;
+    }
+
     // add em as workaround for https://code.google.com/p/owasp-java-html-sanitizer/issues/detail?id=31
     public static final PolicyFactory MORE_FORMATTING = new HtmlPolicyBuilder()
             .allowElements("em", "pre",

@@ -972,11 +972,15 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                         "Query results include null entity. You may need to re-index.");
                 return false;
             } else {
-                log.error(
-                        "Unexpected query result of type {}: {}. You may need to re-index.",
-                        entity.getClass().getName(), entity);
-                return false;
+                try {
+                    log.warn("Unexpected query result of type {}: {}. You may need to re-index.",
+                            entity.getClass().getName(), entity);
+                } catch (NullPointerException npe) {
+                    log.warn("Encountered entity with null attributes");
+                }
             }
+            return true;
+
         }
     }
 

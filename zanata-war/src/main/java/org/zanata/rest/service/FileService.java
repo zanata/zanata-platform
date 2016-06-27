@@ -43,8 +43,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.util.GenericType;
 
 import lombok.extern.slf4j.Slf4j;
@@ -314,12 +312,12 @@ public class FileService implements FileResource {
             StreamingOutput output =
                     new FormatAdapterStreamingOutput(uri, res, transRes,
                         locale, adapter, params);
-
+            String translationFilename = adapter.generateTranslationFilename(document, locale);
             response =
                     Response.ok()
                             .header("Content-Disposition",
                                     "attachment; filename=\""
-                                            + generateTranslationFileName(document) + "\"")
+                                            + translationFilename + "\"")
                             .entity(output).build();
          // TODO damason: remove more immediately, but make sure response has
             // finished with the file
@@ -329,25 +327,6 @@ public class FileService implements FileResource {
             response = Response.status(Status.UNSUPPORTED_MEDIA_TYPE).build();
         }
         return response;
-    }
-
-    /**
-     * Generate translation file with translation extension from DocumentType
-     *
-     * Source file name will be used if translation extension cannot be found
-     * in HRawDocument#DocumentType
-     *
-     * @param document
-     */
-    private String generateTranslationFileName(HDocument document) {
-        String srcExt = FilenameUtils.getExtension(document.getName());
-        DocumentType documentType = document.getRawDocument().getType();
-        String transExt = documentType.getExtensions().get(srcExt);
-        if (StringUtils.isEmpty(transExt)) {
-            return document.getName();
-        }
-        return FilenameUtils.removeExtension(document
-            .getName()) + "." + transExt;
     }
 
     @Override

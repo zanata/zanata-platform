@@ -1708,7 +1708,7 @@
     <dependency>
       <groupId>net.htmlparser.jericho</groupId>
       <artifactId>jericho-html</artifactId>
-      <version>3.3</version>
+      <version>3.4</version>
     </dependency>
 
     <!-- Okapi Filters -->
@@ -1716,31 +1716,86 @@
     <dependency>
       <groupId>net.sf.okapi.filters</groupId>
       <artifactId>okapi-filter-dtd</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>net.sf.okapi.filters</groupId>
       <artifactId>okapi-filter-html</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>net.sf.okapi.filters</groupId>
       <artifactId>okapi-filter-idml</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>net.sf.okapi.filters</groupId>
       <artifactId>okapi-filter-openoffice</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>net.sf.okapi.filters</groupId>
       <artifactId>okapi-filter-plaintext</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>net.sf.okapi.filters</groupId>
       <artifactId>okapi-filter-regex</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
-
+      <dependency>
+        <groupId>net.sf.okapi.filters</groupId>
+        <artifactId>okapi-filter-ts</artifactId>
+        <exclusions>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.codehaus.woodstox</groupId>
+            <artifactId>woodstox-core-lgpl</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
     <dependency>
       <groupId>net.sf.okapi</groupId>
       <artifactId>okapi-core</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
 

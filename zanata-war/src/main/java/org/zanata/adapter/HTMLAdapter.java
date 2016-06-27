@@ -23,6 +23,8 @@ package org.zanata.adapter;
 import java.io.IOException;
 import java.net.URL;
 
+import net.htmlparser.jericho.Config;
+import net.htmlparser.jericho.LoggerProvider;
 import net.sf.okapi.common.IParameters;
 import net.sf.okapi.filters.html.HtmlFilter;
 
@@ -40,6 +42,11 @@ import com.google.common.io.Resources;
 public class HTMLAdapter extends OkapiFilterAdapter {
 
     private static final String defaultConfig = loadDefaultConfig();
+
+    // Override Jericho HTML Parser logger detection
+    static {
+        Config.LoggerProvider = LoggerProvider.SLF4J;
+    }
 
     private static String loadDefaultConfig() {
         URL configURL =

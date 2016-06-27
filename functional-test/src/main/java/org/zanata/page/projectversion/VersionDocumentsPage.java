@@ -43,7 +43,7 @@ public class VersionDocumentsPage extends VersionBasePage {
     }
 
     public VersionDocumentsPage expectSourceDocsContains(final String document) {
-        log.info("Click Project link");
+        log.info("Expect Project documents contains {}", document);
         waitForPageSilence();
         assertThat(getSourceDocumentNames()).contains(document);
         return new VersionDocumentsPage(getDriver());
