@@ -305,7 +305,7 @@ public class LanguageAction implements Serializable {
     private void redirectToLanguageHome() {
         facesMessages.addGlobal(msgs.format(
                 "jsf.language.validation.NotSupport", language));
-        urlUtil.redirectTo(urlUtil.languageHome());
+        urlUtil.redirectToInternal(urlUtil.languageHome());
     }
 
 

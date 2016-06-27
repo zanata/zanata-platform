@@ -92,7 +92,7 @@ public class RegisterAction implements Serializable {
 
     public String redirectIfLoggedIn() {
         if (identity.isLoggedIn()) {
-            urlUtil.redirectTo(urlUtil.dashboardUrl());
+            urlUtil.redirectToInternal(urlUtil.dashboardUrl());
         }
         return null;
     }

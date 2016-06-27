@@ -114,7 +114,7 @@ public class ActivateAction implements Serializable {
         facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
                 "Your account was successfully activated. You can now sign in.");
 
-        urlUtil.redirectTo(urlUtil.signInPage());
+        urlUtil.redirectToInternal(urlUtil.signInPage());
         conversation.close();
     }
 }

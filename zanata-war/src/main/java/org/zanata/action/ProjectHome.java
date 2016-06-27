@@ -791,7 +791,7 @@ public class ProjectHome extends SlugHome<HProject> implements
 
         if (softDeleted) {
             String url = urlUtil.dashboardUrl();
-            urlUtil.redirectTo(url);
+            urlUtil.redirectToInternal(url);
             return result;
         }
         if (!getSlug().equals(getInstance().getSlug())) {
@@ -874,7 +874,7 @@ public class ProjectHome extends SlugHome<HProject> implements
                 msgs.format("jsf.project.MaintainerRemoved",
                     person.getName()));
             if (person.equals(authenticatedAccount.getPerson())) {
-                urlUtil.redirectTo(urlUtil.projectUrl(getSlug()));
+                urlUtil.redirectToInternal(urlUtil.projectUrl(getSlug()));
             }
         }
         return "";

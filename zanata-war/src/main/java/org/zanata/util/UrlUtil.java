@@ -254,7 +254,7 @@ public class UrlUtil implements Serializable {
     /**
      * Redirect to a Zanata url, adding dswid parameter if missing. Do not use for external URLs!
      */
-    public void redirectTo(String url) {
+    public void redirectToInternal(String url) {
         try {
             String urlWithWindowId = addWindowId(url);
             FacesContext.getCurrentInstance().getExternalContext().redirect(urlWithWindowId);
