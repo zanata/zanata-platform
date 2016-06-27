@@ -32,9 +32,8 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public class GlossaryDeleteMojo extends
-        ConfigurableProjectMojo<GlossaryDeleteOptions> implements
-        GlossaryDeleteOptions {
+public class GlossaryDeleteMojo extends GlossaryMojo<GlossaryDeleteOptions>
+        implements GlossaryDeleteOptions {
 
     /**
      * id of glossary to delete
@@ -71,5 +70,4 @@ public class GlossaryDeleteMojo extends
     public String getCommandName() {
         return "glossary-delete";
     }
-
 }

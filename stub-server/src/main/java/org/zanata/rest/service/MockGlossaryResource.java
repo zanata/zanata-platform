@@ -22,6 +22,7 @@
 package org.zanata.rest.service;
 
 import java.util.List;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
@@ -50,6 +51,12 @@ public class MockGlossaryResource implements GlossaryResource {
     public Response getEntries(LocaleId srcLocale,
         LocaleId transLocale, int page, int sizePerPage, String filter,
         String sort) {
+        return MockResourceUtil.notUsedByClient();
+    }
+
+    @Override
+    public Response downloadFile(@DefaultValue("csv") String fileType,
+            String locales) {
         return MockResourceUtil.notUsedByClient();
     }
 

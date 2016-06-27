@@ -64,30 +64,16 @@ public class GlossaryPushCommand extends
         client = getClientFactory().getGlossaryClient();
     }
 
-
     public GlossaryPushCommand(GlossaryPushOptions opts) {
         this(opts, OptionsUtil.createClientFactory(opts));
 
+        LocaleId srcLocaleId = new LocaleId(getOpts().getSourceLang());
+        LocaleId transLocaleId = new LocaleId(getOpts().getTransLang());
         glossaryReaders.put("po", new GlossaryPoReader(
-                getLocaleFromMap(getOpts().getSourceLang()),
-                getLocaleFromMap(getOpts().getTransLang()), getOpts()
-                        .getBatchSize()));
+                srcLocaleId, transLocaleId, getOpts().getBatchSize()));
         glossaryReaders
-                .put("csv", new GlossaryCSVReader(getLocaleFromMap(
-                        getOpts().getSourceLang()),
+                .put("csv", new GlossaryCSVReader(srcLocaleId,
                         getOpts().getBatchSize()));
-    }
-
-    private LocaleId getLocaleFromMap(String localLocale) {
-        if (getOpts() != null && getOpts().getLocaleMapList() != null
-                && !getOpts().getLocaleMapList().isEmpty()) {
-            for (LocaleMapping loc : getOpts().getLocaleMapList()) {
-                if (loc.getLocalLocale().equals(localLocale)) {
-                    return new LocaleId(loc.getLocale());
-                }
-            }
-        }
-        return new LocaleId(localLocale);
     }
 
     private AbstractGlossaryPushReader getReader(String fileExtension) {

@@ -20,87 +20,61 @@
  */
 package org.zanata.maven;
 
-import java.io.File;
+import org.zanata.client.commands.glossary.pull.GlossaryPullCommand;
+import org.zanata.client.commands.glossary.pull.GlossaryPullOptions;
 
-import org.zanata.client.commands.glossary.push.GlossaryPushCommand;
-import org.zanata.client.commands.glossary.push.GlossaryPushOptions;
-
+import com.google.common.collect.ImmutableList;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
- * Pushes glossary file into Zanata.
+ * Pull glossary file from Zanata.
  *
- * @goal glossary-push
+ * @goal glossary-pull
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
-public class GlossaryPushMojo extends GlossaryMojo<GlossaryPushOptions>
-        implements GlossaryPushOptions {
+public class GlossaryPullMojo extends GlossaryMojo<GlossaryPullOptions>
+        implements GlossaryPullOptions {
 
     /**
-     * Source language of document
+     * File type to be downloaded.
+     * csv - csv file format with comma separated
+     * po - a zip file of po files on available locales
      *
-     * @parameter expression="${zanata.sourceLang}" default-value="en-US"
+     * @parameter expression="${zanata.fileType}" default-value="csv"
      */
-    private String sourceLang = "en-US";
+    private String fileType = "csv";
 
     /**
-     * Translation language of document. Not required for csv file
+     * Optional translation languages to pull. Leave empty for all available locales
      *
      * @parameter expression="${zanata.transLang}"
      */
-    private String transLang;
+    private String[] transLang;
 
-    /**
-     * Location path for the glossary file
-     *
-     * @parameter expression="${zanata.glossaryFile}"
-     * @required
-     */
-    private File glossaryFile;
-
-    /**
-     * Batch size for large glossary file
-     *
-     * @parameter expression="${zanata.batchSize}" default-value=50
-     */
-    private int batchSize = 50;
-
-    public GlossaryPushMojo() throws Exception {
+    public GlossaryPullMojo() throws Exception {
         super();
     }
 
-    @SuppressFBWarnings(value = "UWF_UNWRITTEN_FIELD",
-            justification = "Injected by Maven")
     @Override
-    public File getGlossaryFile() {
-        return glossaryFile;
+    public String getFileType() {
+        return fileType;
     }
 
     @Override
-    public String getSourceLang() {
-        return sourceLang;
-    }
-
-    @Override
-    public GlossaryPushCommand initCommand() {
-        return new GlossaryPushCommand(this);
+    public GlossaryPullCommand initCommand() {
+        return new GlossaryPullCommand(this);
     }
 
     @SuppressFBWarnings(value = "UWF_UNWRITTEN_FIELD",
             justification = "Injected by Maven")
     @Override
-    public String getTransLang() {
-        return transLang;
-    }
-
-    @Override
-    public int getBatchSize() {
-        return batchSize;
+    public ImmutableList<String> getTransLang() {
+        return ImmutableList.copyOf(transLang);
     }
 
     @Override
     public String getCommandName() {
-        return "glossary-push";
+        return "glossary-pull";
     }
 }

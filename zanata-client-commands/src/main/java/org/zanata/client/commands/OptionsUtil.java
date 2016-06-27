@@ -81,6 +81,23 @@ public class OptionsUtil {
                             projectConfigFile);
                 }
             }
+        } else if (opts instanceof ConfigurableGlossaryOptions) {
+            ConfigurableGlossaryOptions glossaryOpts =
+                    (ConfigurableGlossaryOptions) opts;
+            File configFile = glossaryOpts.getConfig();
+            if (configFile != null) {
+                JAXBContext jc = JAXBContext.newInstance(ZanataConfig.class);
+                Unmarshaller unmarshaller = jc.createUnmarshaller();
+                if (configFile.exists()) {
+                    log.info("Loading config from {}", configFile);
+                    ZanataConfig projectConfig = (ZanataConfig) unmarshaller
+                            .unmarshal(configFile);
+                    applyBasicConfig(glossaryOpts, projectConfig);
+                } else {
+                    log.warn("Config file '{}' not found; ignoring.",
+                            configFile);
+                }
+            }
         }
         if (opts.getUserConfig() != null) {
             if (opts.getUserConfig().exists()) {
@@ -132,11 +149,9 @@ public class OptionsUtil {
      */
     private static void applyProjectConfig(ConfigurableProjectOptions opts,
             ZanataConfig config) {
+        applyBasicConfig(opts, config);
         if (opts.getProj() == null) {
             opts.setProj(config.getProject());
-        }
-        if (opts.getUrl() == null) {
-            opts.setUrl(config.getUrl());
         }
         if (opts.getProjectVersion() == null) {
             opts.setProjectVersion(config.getProjectVersion());
@@ -154,6 +169,13 @@ public class OptionsUtil {
         }
         opts.setFileMappingRules(config.getRules());
         checkPotentialMistakesInRules(opts, new ConsoleInteractorImpl(opts));
+    }
+
+    private static void applyBasicConfig(ConfigurableOptions opts,
+            ZanataConfig config) {
+        if (opts.getUrl() == null) {
+            opts.setUrl(config.getUrl());
+        }
     }
 
     /**

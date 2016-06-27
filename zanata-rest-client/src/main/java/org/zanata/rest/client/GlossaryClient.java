@@ -32,6 +32,9 @@ import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.service.GlossaryResource;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
 
@@ -58,6 +61,17 @@ public class GlossaryClient {
 
         webResource().path("entries").type(MediaType.APPLICATION_XML_TYPE)
                 .post(entity);
+    }
+
+    public ClientResponse downloadFile(String fileType,
+            ImmutableList<String> transLang) {
+        if (transLang != null && !transLang.isEmpty()) {
+            return webResource().path("file").queryParam("fileType", fileType)
+                    .queryParam("locales", Joiner.on(",").join(transLang))
+                    .get(ClientResponse.class);
+        }
+        return webResource().path("file").queryParam("fileType", fileType)
+                .get(ClientResponse.class);
     }
 
     public void delete(String id) {

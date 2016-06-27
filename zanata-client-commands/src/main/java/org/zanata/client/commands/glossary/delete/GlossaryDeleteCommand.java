@@ -25,9 +25,13 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.ConfigurableCommand;
+import org.zanata.client.commands.ConsoleInteractor;
+import org.zanata.client.commands.ConsoleInteractorImpl;
 import org.zanata.client.commands.OptionsUtil;
 import org.zanata.rest.client.GlossaryClient;
 import org.zanata.rest.client.RestClientFactory;
+
+import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
 
 /**
  *
@@ -54,10 +58,16 @@ public class GlossaryDeleteCommand extends
     public void run() throws Exception {
         log.info("Server: {}", getOpts().getUrl());
         log.info("Username: {}", getOpts().getUsername());
-        log.info("Entry id to delete: {}", getOpts().getId());
+        if (!StringUtils.isEmpty(getOpts().getId())) {
+            log.info("Entry id to delete: {}", getOpts().getId());
+        }
         log.info("Delete entire glossary?: {}", getOpts().getAllGlossary());
-
         if (getOpts().getAllGlossary()) {
+            if (getOpts().isInteractiveMode()) {
+                ConsoleInteractor console = new ConsoleInteractorImpl(getOpts());
+                console.printf(Question, "\nAre you sure (y/n)? ");
+                console.expectYes();
+            }
             glossaryClient.deleteAll();
         } else if (!StringUtils.isEmpty(getOpts().getId())) {
             glossaryClient.delete(getOpts().getId());

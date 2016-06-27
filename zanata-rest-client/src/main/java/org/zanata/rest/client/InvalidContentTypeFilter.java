@@ -50,7 +50,7 @@ public class InvalidContentTypeFilter extends ClientFilter {
                     "Please check the server URL is correct (in zanata.ini and in zanata.xml) and make sure you use the correct address.";
 
 
-    // we assume application/* are all the valid types (wildcard type is also considered compatible)
+    // allows content type of application/.*
     private static final Pattern VALID_TYPES_REGEX =
             Pattern.compile("application/.*");
 
