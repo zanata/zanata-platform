@@ -23,13 +23,8 @@ package org.zanata.dao;
 
 import javax.annotation.Nonnull;
 
-import lombok.NoArgsConstructor;
-
 import org.hibernate.Session;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
-import org.zanata.util.Zanata;
-
-import javax.inject.Inject;
 
 /**
  * This class uses Hibernate's StatelessSession to iterate over large query
@@ -38,10 +33,8 @@ import javax.inject.Inject;
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@NoArgsConstructor
 public abstract class StreamingDAO<T> {
 
-    @Inject @Zanata
     private HibernateEntityManagerFactory entityManagerFactory;
 
     public StreamingDAO(HibernateEntityManagerFactory emf) {

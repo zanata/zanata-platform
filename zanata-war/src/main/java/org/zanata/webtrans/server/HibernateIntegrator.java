@@ -1,20 +1,16 @@
 package org.zanata.webtrans.server;
 
-import org.apache.deltaspike.cdise.api.ContextControl;
-import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.spi.MetadataImplementor;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
 import org.hibernate.integrator.spi.Integrator;
-import org.hibernate.metamodel.source.MetadataImplementor;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
-import lombok.extern.slf4j.Slf4j;
 import org.zanata.service.impl.SlugEntityUpdatedListener;
-import org.zanata.util.Contexts;
-import org.zanata.util.ServiceLocator;
 
-import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Hibernate SPI. Register event listener for entity lifecycle events.
@@ -25,7 +21,7 @@ import java.util.Optional;
 @Slf4j
 public class HibernateIntegrator implements Integrator {
     @Override
-    public void integrate(Configuration configuration,
+    public void integrate(Metadata metadata,
             SessionFactoryImplementor sessionFactory,
             SessionFactoryServiceRegistry serviceRegistry) {
         final EventListenerRegistry eventListenerRegistry =
@@ -49,12 +45,6 @@ public class HibernateIntegrator implements Integrator {
         eventListenerRegistry.appendListeners(EventType.POST_COMMIT_UPDATE,
                 slugEntityUpdatedListener);
 
-    }
-
-    @Override
-    public void integrate(MetadataImplementor metadata,
-            SessionFactoryImplementor sessionFactory,
-            SessionFactoryServiceRegistry serviceRegistry) {
     }
 
     @Override

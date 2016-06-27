@@ -6,6 +6,8 @@ import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
 import javax.inject.Inject;
+
+import org.hibernate.persister.entity.EntityPersister;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.events.ProjectIterationUpdate;
@@ -65,6 +67,12 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
             String oldSlug = event.getOldState()[slugFieldIndexInIteration].toString();
             fireProjectIterationUpdateEvent(iteration, oldSlug);
         }
+    }
+
+    @Override
+    public boolean requiresPostCommitHanding(EntityPersister persister) {
+        // TODO um, no?
+        return false;
     }
 
     private void fireProjectIterationUpdateEvent(HProjectIteration iteration,

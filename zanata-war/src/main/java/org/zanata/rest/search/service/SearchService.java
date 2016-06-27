@@ -23,7 +23,7 @@ package org.zanata.rest.search.service;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.PersonDAO;

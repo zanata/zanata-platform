@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
-  version="2.0">
+  xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+             http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+  version="2.1">
 
   <persistence-unit name="zanataDatasourcePU" transaction-type="JTA">
-    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <jta-data-source>java:jboss/datasources/zanataDatasource</jta-data-source>
 
     <!--
@@ -81,10 +82,6 @@
       <property name="hibernate.hbm2ddl.auto"
         value="${env.hibernate.hbm2ddl.auto}" />
 
-      <!-- TODO this won't work with Hibernate 4.3 or later -->
-      <property name="hibernate.connection.provider_class"
-        value="org.zanata.database.WrappedDatasourceConnectionProvider" />
-
       <!-- Logging -->
       <property name="hibernate.show_sql" value="${env.hibernate.show_sql}" />
       <property name="hibernate.use_sql_comments" value="true" />
@@ -96,8 +93,8 @@
 
       <!-- Only relevant if Seam is loading the persistence unit (Java SE bootstrap) -->
       <!-- NB: Might have to be removed for Hibernate 4.3 -->
-      <property name="hibernate.transaction.manager_lookup_class"
-        value="org.hibernate.transaction.JBossTransactionManagerLookup" />
+      <!--<property name="hibernate.transaction.manager_lookup_class"-->
+        <!--value="org.hibernate.transaction.JBossTransactionManagerLookup" />-->
 
       <!-- for Hibernate 4.3 (but not 4.2):
       <property name="hibernate.transaction.jta.platform" value="JBossAS" />
@@ -122,12 +119,12 @@
       <property
         name="hibernate.search.infinispan.indexwriter.merge_max_size"
         value="21"/>-->
-      <property name="hibernate.search.lucene_version" value="LUCENE_36" />
+      <property name="hibernate.search.lucene_version" value="LUCENE_5_3_1" />
       <property name="hibernate.search.worker.batch_size" value="50" />
 
       <!-- Run the Hibernate bytecode instrumentation at deployment time, for lazy loading of @ToOne and byte[] properties -->
       <!-- TODO: That doesn't work for me, using the enhancer in build.xml manually -->
-      <property name="hibernate.ejb.use_class_enhancer" value="true" />
+      <!--<property name="hibernate.ejb.use_class_enhancer" value="true" />-->
       <property name="hibernate.max_fetch_depth" value="1" />
       <property name="hibernate.jdbc.batch_size" value="100" />
       <property name="hibernate.order_inserts" value="true" />

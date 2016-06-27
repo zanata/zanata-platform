@@ -33,6 +33,7 @@ import com.google.common.base.Strings;
 
 @RequestScoped
 public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
+    public static final String REGION = "Account";
     public AccountDAO() {
         super(HAccount.class);
     }
@@ -44,7 +45,7 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
     public HAccount getByUsername(String username) {
         Criteria cr = getSession().createCriteria(HAccount.class);
         cr.add(Restrictions.eq("username", username));
-        cr.setCacheable(true).setComment("AccountDAO.getByUsername");
+        cr.setCacheRegion(REGION).setCacheable(true).setComment("AccountDAO.getByUsername");
         return (HAccount) cr.uniqueResult();
     }
 

@@ -77,14 +77,19 @@
     <javamelody.storage-directory>${project.build.directory}/zanatastats</javamelody.storage-directory>
     <!-- This may be changed by the SMTP_PORT profile -->
     <smtp.port>2552</smtp.port>
-    <jndi-remote-client.groupId>org.jboss.as</jndi-remote-client.groupId>
-    <jndi-remote-client.artifactId>jboss-as-controller-client</jndi-remote-client.artifactId>
-    <jndi-remote-client.version>7.2.0.Final</jndi-remote-client.version>
+    <jndi-remote-client.groupId>org.wildfly.core</jndi-remote-client.groupId>
+    <jndi-remote-client.artifactId>wildfly-controller-client</jndi-remote-client.artifactId>
+    <jndi-remote-client.version>${wildfly.client.version}</jndi-remote-client.version>
     <standalone.xml.file>standalone.xml</standalone.xml.file>
   </properties>
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-core</artifactId>
+        <version>1.19</version>
+      </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
@@ -354,7 +359,7 @@
     <dependency>
       <groupId>org.jboss</groupId>
       <artifactId>jboss-remote-naming</artifactId>
-      <version>2.0.1.Final</version>
+      <version>2.0.4.Final</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -379,6 +384,14 @@
       <artifactId>awaitility</artifactId>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-client</artifactId>
+      <version>1.19</version>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
       <groupId>cglib</groupId>
       <artifactId>cglib-nodep</artifactId>
@@ -419,26 +432,7 @@
       </activation>
       <properties>
         <standalone.xml.file>standalone_wildfly.xml</standalone.xml.file>
-        <jndi-remote-client.groupId>org.wildfly</jndi-remote-client.groupId>
-        <jndi-remote-client.artifactId>wildfly-controller-client</jndi-remote-client.artifactId>
-        <jndi-remote-client.version>${wildfly.client.version}</jndi-remote-client.version>
       </properties>
-      <dependencyManagement>
-        <dependencies>
-          <dependency>
-            <groupId>org.jboss</groupId>
-            <artifactId>jboss-ejb-client</artifactId>
-            <version>2.0.1.Final</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss</groupId>
-            <artifactId>jboss-remote-naming</artifactId>
-            <version>2.0.1.Final</version>
-            <scope>test</scope>
-          </dependency>
-        </dependencies>
-      </dependencyManagement>
     </profile>
 
     <profile>
@@ -913,7 +907,7 @@
                 <echo />
                 <echo>Unless skipping tests, you must choose an appserver:</echo>
                 <echo>-Dappserver=jbosseap6 or -Dappserver=wildfly8</echo>
-                <echo>For jbosseap6, env var EAP6_URL should point to an EAP zip file.</echo>
+                <echo>For jbosseap6, env var EAP7_URL should point to an EAP zip file.</echo>
                 <echo />
                 <echo>-DallFuncTests to enable all functional tests (defaults to smoke tests)</echo>
                 <echo />
@@ -945,7 +939,7 @@
             <configuration>
               <target unless="skipFuncTests">
                 <fail message="'appserver' property must be set to run integration tests (or else use -DskipFuncTests)" unless="appserver" />
-                <fail message="'cargo.installation' property is null (set env var EAP6_URL or else use -DskipFuncTests)" unless="cargo.installation" />
+                <fail message="'cargo.installation' property is null (set env var EAP7_URL or else use -DskipFuncTests)" unless="cargo.installation" />
               </target>
             </configuration>
           </execution>
@@ -979,6 +973,10 @@
                 <!-- use xalan:xalan -->
                 <exclude>jakarta-regexp:jakarta-regexp</exclude>
               </excludes>
+              <includes>
+                <!-- zanata-rest-client currently uses jersey-client, so we use its preferred API classes -->
+                <include>javax.ws.rs:jsr311-api</include>
+              </includes>
               <searchTransitive>true</searchTransitive>
             </bannedDependencies>
           </rules>

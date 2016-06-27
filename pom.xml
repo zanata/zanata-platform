@@ -37,18 +37,18 @@
     <deltaspike.version>1.7.0</deltaspike.version>
     <cdi.runtime>runtime</cdi.runtime>
     <cdi.compile>compile</cdi.compile>
-    <picketlink.version>2.5.4.SP4</picketlink.version>
-    <!-- This is the EAP 6.4.8 version: -->
-    <infinispan.version>5.2.18.Final</infinispan.version>
+    <picketlink.version>2.5.5.SP1</picketlink.version>
+    <!-- This is the WildFly 10 version: -->
+    <infinispan.version>8.1.0.Final</infinispan.version>
     <lombok.version>1.16.6</lombok.version>
-    <weld.version>1.1.31.Final</weld.version>
+    <weld.version>2.3.2.Final</weld.version>
     <weld.se.version>${weld.version}</weld.se.version>
     <groovy.version>2.4.5</groovy.version>
     <guava.version>19.0</guava.version>
     <gwt.version>2.7.0</gwt.version>
     <icu4j.version>56.1</icu4j.version>
     <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
-    <lucene.version>3.6.2</lucene.version>
+    <lucene.version>5.3.1</lucene.version>
     <org.mock-server.version>3.9.17</org.mock-server.version>
     <rewrite.version>3.0.0.Alpha10</rewrite.version>
 
@@ -94,40 +94,37 @@
 
     <richfaces.version>4.5.11.Final</richfaces.version>
 
-    <arquillian.version>1.1.5.Final</arquillian.version>
-    <shrinkwrap.api.version>1.2.2</shrinkwrap.api.version>
+    <arquillian.version>1.1.11.Final</arquillian.version>
+    <shrinkwrap.api.version>1.2.3</shrinkwrap.api.version>
     <shrinkwrap.resolver.version>2.0.0</shrinkwrap.resolver.version>
-    <shrinkwrap.desc.version>2.0.0-alpha-5</shrinkwrap.desc.version>
+    <shrinkwrap.desc.version>2.0.0-alpha-8</shrinkwrap.desc.version>
 
     <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
     <!-- see also the jboss7 profile below -->
     <hibernate.scope>provided</hibernate.scope>
-    <!--
-         NB: JBoss EAP 6.4.0 has 4.2.18.Final-redhat-2
-    -->
-    <hibernate.version>4.2.19.Final</hibernate.version>
+    <hibernate.version>5.0.7.Final</hibernate.version>
+
+    <!-- TODO try provided -->
     <hibernate.search.scope>compile</hibernate.search.scope>
-    <!-- Hibernate Search 4.4.x is for Hibernate Core 4.2.x:
-     http://in.relation.to/Bloggers/HibernateSearchWeekendReleasesFromBothMaintenanceBranches
-     -->
-    <!-- 4.4.5.Final is not in Central -->
-    <hibernate.search.version>4.4.6.Final</hibernate.search.version>
+    <hibernate.search.version>5.5.1.Final</hibernate.search.version>
     <hibernate.entitymanager.version>${hibernate.version}</hibernate.entitymanager.version>
     <war_bundles_jsf_impl>false</war_bundles_jsf_impl>
-    <hibernate.validator.version>4.3.2.Final</hibernate.validator.version>
+    <hibernate.validator.version>5.2.3.Final</hibernate.validator.version>
 
     <!-- controls concordion output location-->
     <concordion.output.dir>${project.build.directory}/concordion</concordion.output.dir>
 
     <!-- JBoss version for Arquillian dependencies -->
+    <!-- TODO Update to WildFly 10 versions -->
     <jboss.as.version>7.2.0.Final</jboss.as.version>
 
     <jdbc.groupId>mysql</jdbc.groupId>
     <jdbc.artifactId>mysql-connector-java</jdbc.artifactId>
     <jdbc.version>5.1.26</jdbc.version>
 
+    <!-- TODO try provided -->
     <resteasy.scope>compile</resteasy.scope>
-    <resteasy.version>3.0.13.Final</resteasy.version>
+    <resteasy.version>3.0.14.Final</resteasy.version>
     <jaxrsapi.version>3.0.12.Final</jaxrsapi.version>
 
     <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
@@ -136,6 +133,11 @@
 
     <download.dir>${user.home}/Downloads</download.dir>
     <victims.updates>daily</victims.updates>
+
+    <!-- Version of the management api used by Cargo -->
+    <wildfly.client.version>2.0.10.Final</wildfly.client.version>
+    <!-- Version of the management api used by Arquillian -->
+    <wildfly.arquillian.version>2.0.0.Final</wildfly.arquillian.version>
   </properties>
 
   <dependencyManagement>
@@ -335,6 +337,18 @@
       </dependency>
 
       <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>5.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-commons</artifactId>
+        <version>5.1</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.richfaces</groupId>
         <artifactId>richfaces</artifactId>
         <version>${richfaces.version}</version>
@@ -355,8 +369,8 @@
 
       <dependency>
         <groupId>org.jboss.spec</groupId>
-        <artifactId>jboss-javaee-6.0</artifactId>
-        <version>3.0.2.Final</version>
+        <artifactId>jboss-javaee-7.0</artifactId>
+        <version>1.0.3.Final</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -376,7 +390,7 @@
       <dependency>
         <groupId>com.sun.faces</groupId>
         <artifactId>jsf-impl</artifactId>
-        <version>2.1.28</version>
+        <version>2.2.12</version>
         <scope>provided</scope>
       </dependency>
 
@@ -389,14 +403,7 @@
       <dependency>
         <groupId>org.jboss.security</groupId>
         <artifactId>jboss-negotiation-common</artifactId>
-        <version>2.3.6.Final</version>
-        <scope>provided</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.web</groupId>
-        <artifactId>jbossweb</artifactId>
-        <version>7.5.4.Final</version>
+        <version>3.0.0.Final</version>
         <scope>provided</scope>
       </dependency>
 
@@ -415,7 +422,7 @@
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
-        <version>4.4</version>
+        <version>4.4.1</version>
         <exclusions>
           <exclusion>
             <groupId>commons-logging</groupId>
@@ -427,7 +434,7 @@
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpcore</artifactId>
-        <version>4.4</version>
+        <version>4.4.1</version>
       </dependency>
 
       <dependency>
@@ -552,28 +559,35 @@
       </dependency>
 
       <dependency>
+        <groupId>org.jboss.spec.javax.transaction</groupId>
+        <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+        <version>1.0.0.Final</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
         <groupId>org.jboss.xnio</groupId>
         <artifactId>xnio-api</artifactId>
-        <version>3.2.3.Final</version>
+        <version>3.3.4.Final</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.xnio</groupId>
         <artifactId>xnio-nio</artifactId>
-        <version>3.2.3.Final</version>
+        <version>3.3.4.Final</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.marshalling</groupId>
         <artifactId>jboss-marshalling</artifactId>
-        <version>1.4.6.Final</version>
+        <version>1.4.10.Final</version>
         <scope>test</scope>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.marshalling</groupId>
         <artifactId>jboss-marshalling-river</artifactId>
-        <version>1.4.6.Final</version>
+        <version>1.4.10.Final</version>
         <scope>test</scope>
       </dependency>
 
@@ -603,6 +617,10 @@
           <exclusion>
             <groupId>javax.el</groupId>
             <artifactId>el-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+            <groupId>org.jboss.spec.javax.annotation</groupId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -642,6 +660,10 @@
         <artifactId>zanata-common-api</artifactId>
         <version>${zanata.api.version}</version>
         <exclusions>
+          <exclusion>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-core</artifactId>
+          </exclusion>
           <exclusion>
             <groupId>javax.annotation</groupId>
             <artifactId>jsr250-api</artifactId>
@@ -797,6 +819,30 @@
       </dependency>
 
       <dependency>
+        <groupId>com.github.huangp</groupId>
+        <artifactId>entityunit</artifactId>
+        <version>0.3</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt-dev</artifactId>
         <version>${gwt.version}</version>
@@ -835,7 +881,7 @@
       <dependency>
           <groupId>com.google.protobuf</groupId>
           <artifactId>protobuf-java</artifactId>
-          <version>2.4.1</version>
+          <version>2.5.0</version>
       </dependency>
       <dependency>
         <groupId>com.h2database</groupId>
@@ -1044,6 +1090,12 @@
         <artifactId>hibernate-search-orm</artifactId>
         <version>${hibernate.search.version}</version>
         <scope>${hibernate.search.scope}</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
@@ -1060,30 +1112,16 @@
       </dependency>
 
       <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-search-analyzers</artifactId>
-        <version>${hibernate.search.version}</version>
-        <scope>${hibernate.search.scope}</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-search-infinispan</artifactId>
-        <version>${hibernate.search.version}</version>
-        <scope>${hibernate.search.scope}</scope>
-        <exclusions>
-          <!-- Slightly older version provided by the app server -->
-          <exclusion>
-            <groupId>org.infinispan</groupId>
-            <artifactId>infinispan-core</artifactId>
-          </exclusion>
-        </exclusions>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-directory-provider</artifactId>
+        <version>${infinispan.version}</version>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
         <groupId>org.hibernate.common</groupId>
         <artifactId>hibernate-commons-annotations</artifactId>
-        <version>4.0.4.Final</version>
+        <version>5.0.1.Final</version>
         <exclusions>
           <exclusion>
             <groupId>org.jboss.logging</groupId>
@@ -1098,8 +1136,16 @@
         <version>${hibernate.version}</version>
         <exclusions>
           <exclusion>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jta_1.1_spec</artifactId>
+          </exclusion>
+          <exclusion>
             <groupId>org.jboss.logging</groupId>
             <artifactId>jboss-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
           </exclusion>
         </exclusions>
         <!--<version>${hibernate.version}</version>-->
@@ -1114,7 +1160,17 @@
             <groupId>javassist</groupId>
             <artifactId>javassist</artifactId>
           </exclusion>
+          <exclusion>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jta_1.1_spec</artifactId>
+          </exclusion>
         </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate.javax.persistence</groupId>
+        <artifactId>hibernate-jpa-2.1-api</artifactId>
+        <version>1.0.0.Final</version>
       </dependency>
 
       <dependency>
@@ -1143,6 +1199,12 @@
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-testing</artifactId>
         <version>${hibernate.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jta_1.1_spec</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>
@@ -1160,7 +1222,7 @@
         </exclusions>
         <groupId>org.jboss.logging</groupId>
         <artifactId>jboss-logging</artifactId>
-        <version>3.1.4.GA</version>
+        <version>3.3.0.Final</version>
       </dependency>
 
       <dependency>
@@ -1274,12 +1336,6 @@
 
       <dependency>
         <groupId>org.apache.lucene</groupId>
-        <artifactId>lucene-analyzers</artifactId>
-        <version>${lucene.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.apache.lucene</groupId>
         <artifactId>lucene-facet</artifactId>
         <version>${lucene.version}</version>
       </dependency>
@@ -1309,33 +1365,66 @@
         <version>${solr.version}</version>
         <exclusions>
           <exclusion>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.restlet.jee</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+          <exclusion>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
           </exclusion>
           <exclusion>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
           </exclusion>
           <exclusion>
-            <groupId>org.apache.solr</groupId>
-            <artifactId>solr-solrj</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>woodstox</groupId>
-            <artifactId>wstx-asl</artifactId>
-          </exclusion>
-          <exclusion>
             <groupId>net.java.dev.stax-utils</groupId>
             <artifactId>stax-utils</artifactId>
           </exclusion>
           <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-io</artifactId>
           </exclusion>
-          <!-- NB: https://hibernate.onjira.com/browse/HSEARCH-380 -->
+          <exclusion>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-stax-api_1.0_spec</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+
+          <exclusion>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-lucene-analyzers</artifactId>
+          </exclusion>
+          <!-- NB: https://hibernate.atlassian.net/browse/HSEARCH-380 -->
           <exclusion>
             <groupId>org.apache.solr</groupId>
             <artifactId>solr-lucene-core</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-solrj</artifactId>
+          </exclusion>
+          <exclusion>
+            <artifactId>servlet-api</artifactId>
+            <groupId>javax.servlet</groupId>
+          </exclusion>
+          <exclusion>
+            <groupId>woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -1457,7 +1546,135 @@
         </exclusions>
         <scope>test</scope>
       </dependency>
+
+      <dependency>
+        <groupId>javax.enterprise</groupId>
+        <artifactId>cdi-api</artifactId>
+        <version>1.2</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.el</groupId>
+            <artifactId>el-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.interceptor</groupId>
+            <artifactId>javax.interceptor-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <!--<dependency>-->
+        <!--<groupId>org.fusesource.jansi</groupId>-->
+        <!--<artifactId>jansi</artifactId>-->
+        <!--<version>1.11</version>-->
+        <!--<scope>test</scope>-->
+      <!--</dependency>-->
+      <dependency>
+        <groupId>org.jboss</groupId>
+        <artifactId>jandex</artifactId>
+        <version>2.0.1.Final</version>
+        <scope>test</scope>
+      </dependency>
+      <!--<dependency>-->
+        <!--<groupId>org.jboss</groupId>-->
+        <!--<artifactId>jboss-common-core</artifactId>-->
+        <!--<version>2.2.22.GA</version>-->
+        <!--<scope>test</scope>-->
+      <!--</dependency>-->
+      <!--<dependency>-->
+        <!--<groupId>org.jboss</groupId>-->
+        <!--<artifactId>jboss-dmr</artifactId>-->
+        <!--<version>1.3.0.Final</version>-->
+        <!--<scope>test</scope>-->
+      <!--</dependency>-->
+      <!--<dependency>-->
+        <!--<groupId>org.jboss</groupId>-->
+        <!--<artifactId>jboss-vfs</artifactId>-->
+        <!--<version>3.2.11.Final</version>-->
+        <!--<scope>test</scope>-->
+      <!--</dependency>-->
+      <!--<dependency>-->
+        <!--<groupId>org.jboss.aesh</groupId>-->
+        <!--<artifactId>aesh</artifactId>-->
+        <!--<version>0.66.4</version>-->
+        <!--<scope>test</scope>-->
+      <!--</dependency>-->
+      <!--<dependency>-->
+        <!--<groupId>org.jboss.arquillian.testenricher</groupId>-->
+        <!--<artifactId>arquillian-testenricher-osgi</artifactId>-->
+        <!--<version>2.1.0.CR2</version>-->
+        <!--<scope>test</scope>-->
+      <!--</dependency>-->
+      <!--<dependency>-->
+        <!--<groupId>org.jboss.invocation</groupId>-->
+        <!--<artifactId>jboss-invocation</artifactId>-->
+        <!--<version>1.4.1.Final</version>-->
+        <!--<scope>test</scope>-->
+      <!--</dependency>-->
+      <!--<dependency>-->
+        <!--<groupId>org.jboss.logmanager</groupId>-->
+        <!--<artifactId>jboss-logmanager</artifactId>-->
+        <!--<version>2.0.3.Final</version>-->
+        <!--<scope>test</scope>-->
+      <!--</dependency>-->
+      <!--<dependency>-->
+        <!--<groupId>org.jboss.modules</groupId>-->
+        <!--<artifactId>jboss-modules</artifactId>-->
+        <!--<version>1.5.1.Final</version>-->
+        <!--<scope>test</scope>-->
+      <!--</dependency>-->
+      <!--<dependency>-->
+        <!--<groupId>org.jboss.msc</groupId>-->
+        <!--<artifactId>jboss-msc</artifactId>-->
+        <!--<version>1.2.6.Final</version>-->
+        <!--<scope>test</scope>-->
+      <!--</dependency>-->
+      <!--<dependency>-->
+        <!--<groupId>org.jboss.osgi.metadata</groupId>-->
+        <!--<artifactId>jbosgi-metadata</artifactId>-->
+        <!--<version>3.0.1.Final</version>-->
+        <!--<scope>test</scope>-->
+      <!--</dependency>-->
+      <!--<dependency>-->
+        <!--<groupId>org.jboss.remotingjmx</groupId>-->
+        <!--<artifactId>remoting-jmx</artifactId>-->
+        <!--<version>2.0.1.Final</version>-->
+        <!--<scope>test</scope>-->
+      <!--</dependency>-->
+      <dependency>
+        <groupId>org.jboss.sasl</groupId>
+        <artifactId>jboss-sasl</artifactId>
+        <version>1.0.5.Final</version>
+        <scope>test</scope>
+      </dependency>
+      <!--<dependency>-->
+        <!--<groupId>org.jboss.stdio</groupId>-->
+        <!--<artifactId>jboss-stdio</artifactId>-->
+        <!--<version>1.0.2.GA</version>-->
+        <!--<scope>test</scope>-->
+      <!--</dependency>-->
+      <!--<dependency>-->
+        <!--<groupId>org.jboss.threads</groupId>-->
+        <!--<artifactId>jboss-threads</artifactId>-->
+        <!--<version>2.2.1.Final</version>-->
+        <!--<scope>test</scope>-->
+      <!--</dependency>-->
+      <!--<dependency>-->
+        <!--<groupId>org.osgi</groupId>-->
+        <!--<artifactId>org.osgi.core</artifactId>-->
+        <!--<version>5.0.0</version>-->
+        <!--<scope>test</scope>-->
+      <!--</dependency>-->
     </dependencies>
+
+
   </dependencyManagement>
 
   <!--
@@ -1609,8 +1826,13 @@
                 <!-- Use org.jboss.spec.javax.annotation:jboss-annotations-api_1.1_spec -->
                 <exclude>javax.annotation:jsr250-api</exclude>
 
-                <!-- Use org.jboss.spec.javax.el:jboss-el-api_2.2_spec -->
+                <!-- Use org.jboss.spec.javax.el:jboss-el-api_3.0_spec -->
                 <exclude>javax.el:el-api</exclude>
+                <exclude>javax.el:javax.el-api</exclude>
+                <exclude>org.jboss.spec.javax.el:jboss-el-api_2.2_spec</exclude>
+
+                <!-- Use org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.2_spec -->
+                <exclude>javax.interceptor:javax.interceptor-api</exclude>
 
                 <!-- Use org.jboss.spec.javax.xml.bind:jboss-jaxb-api_2.2_spec -->
                 <exclude>javax.xml.bind:jaxb-api</exclude>
@@ -1618,15 +1840,27 @@
                 <!-- use jdk and javax.xml.stream:stax-api -->
                 <exclude>javax.xml.bind:jsr173_api</exclude>
 
+                <!-- use org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec -->
+                <exclude>org.apache.geronimo.specs:geronimo-jta_1.1_spec</exclude>
+                <exclude>org.jboss.spec.javax.transaction:jboss-transaction-api_1.1_spec</exclude>
+
+                <!-- Use jpa 2.1 -->
+                <exclude>org.hibernate.javax.persistence:hibernate-jpa-2.0-api</exclude>
+
+                <!-- Use org.jboss.marshalling:jboss-marshalling and -river -->
+                <exclude>org.jboss.marshalling:jboss-marshalling-osgi</exclude>
+
+                <!-- TODO use org.jboss.spec when we change resteasy to provided -->
                 <!-- Use org.jboss.resteasy:jaxrs-api (since we package resteasy) -->
                 <exclude>org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_1.1_spec</exclude>
                 <exclude>org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.0_spec</exclude>
-
-                <!-- use org.jboss.spec.javax.servlet:jboss-servlet-api_3.0_spec -->
-                <exclude>org.jboss.spec.javax.servlet:jboss-servlet-api_3.1_spec</exclude>
-
-                <!-- use org.jboss.spec.javax.annotation:jboss-annotations-api_1.1_spec -->
                 <exclude>org.jboss.spec.javax.annotation:jboss-annotations-api_1.2_spec</exclude>
+
+                <!-- use org.jboss.spec.javax.servlet:jboss-servlet-api_3.1_spec -->
+                <exclude>org.jboss.spec.javax.servlet:jboss-servlet-api_3.0_spec</exclude>
+
+                <!-- use org.jboss.spec.javax.annotation:jboss-annotations-api_1.2_spec -->
+                <exclude>org.jboss.spec.javax.annotation:jboss-annotations-api_1.1_spec</exclude>
 
                 <!-- use org.quartz-scheduler:quartz -->
                 <exclude>org.opensymphony.quartz:quartz</exclude>
@@ -1664,7 +1898,7 @@
                 <echo message="appserver.home=${appserver.home}" />
                 <echo message="DISPLAY=${env.DISPLAY}" />
                 <echo message="WARNING: 'appserver' property must be set unless skipping integration tests" unless:set="appserver" />
-                <echo message="WARNING: 'cargo.installation' property is null. You might need to set the env var EAP6_URL" unless:set="cargo.installation" />
+                <echo message="WARNING: 'cargo.installation' property is null. You might need to set the env var EAP7_URL" unless:set="cargo.installation" />
               </target>
             </configuration>
           </execution>
@@ -1920,8 +2154,8 @@
         </property>
       </activation>
       <properties>
-        <cargo.container>jboss72x</cargo.container>
-        <cargo.installation>${env.EAP6_URL}</cargo.installation>
+        <cargo.container>wildfly8x</cargo.container>
+        <cargo.installation>${env.EAP7_URL}</cargo.installation>
       </properties>
     </profile>
 
@@ -1936,142 +2170,13 @@
       </activation>
       <properties>
         <cargo.container>wildfly8x</cargo.container>
-        <!-- Version of the management api used by Arquillian and Cargo -->
-        <wildfly.client.version>8.1.0.Final</wildfly.client.version>
         <!-- used in the wildfly8 profile in zanata-war -->
         <!-- This is the server version -->
         <wildfly.version>10.0.0.Final</wildfly.version>
         <!-- In case this profile was activated by default: -->
         <appserver>wildfly8</appserver>
         <cargo.installation>https://repository.jboss.org/nexus/content/groups/developer/org/wildfly/wildfly-dist/${wildfly.version}/wildfly-dist-${wildfly.version}.zip</cargo.installation>
-
-        <hibernate.module.version>4.2.20.Final</hibernate.module.version>
-        <hibernate.module.filename>wildfly-module-hibernate-main-${hibernate.module.version}.zip</hibernate.module.filename>
-        <hibernate.module.url>https://bintray.com/artifact/download/sflanigan/generic/${hibernate.module.filename}</hibernate.module.url>
       </properties>
-
-      <!-- These override the older versions forced by jboss-as-parent 7.2.0 -->
-      <dependencyManagement>
-        <dependencies>
-          <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
-            <version>1.0-SP4</version>
-            <exclusions>
-              <exclusion>
-                <groupId>javax.annotation</groupId>
-                <artifactId>jsr250-api</artifactId>
-              </exclusion>
-              <exclusion>
-                <groupId>javax.el</groupId>
-                <artifactId>el-api</artifactId>
-              </exclusion>
-            </exclusions>
-          </dependency>
-          <dependency>
-            <groupId>org.fusesource.jansi</groupId>
-            <artifactId>jansi</artifactId>
-            <version>1.9</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss</groupId>
-            <artifactId>jandex</artifactId>
-            <version>1.1.0.Final</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss</groupId>
-            <artifactId>jboss-common-core</artifactId>
-            <version>2.2.22.GA</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss</groupId>
-            <artifactId>jboss-dmr</artifactId>
-            <version>1.2.0.Final</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss</groupId>
-            <artifactId>jboss-vfs</artifactId>
-            <version>3.2.5.Final</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss.aesh</groupId>
-            <artifactId>aesh</artifactId>
-            <version>0.33.11</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss.arquillian.testenricher</groupId>
-            <artifactId>arquillian-testenricher-osgi</artifactId>
-            <version>2.1.0.CR2</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss.invocation</groupId>
-            <artifactId>jboss-invocation</artifactId>
-            <version>1.2.1.Final</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss.logmanager</groupId>
-            <artifactId>jboss-logmanager</artifactId>
-            <version>1.5.2.Final</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss.modules</groupId>
-            <artifactId>jboss-modules</artifactId>
-            <version>1.3.3.Final</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss.msc</groupId>
-            <artifactId>jboss-msc</artifactId>
-            <version>1.2.2.Final</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss.osgi.metadata</groupId>
-            <artifactId>jbosgi-metadata</artifactId>
-            <version>3.0.1.Final</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss.remotingjmx</groupId>
-            <artifactId>remoting-jmx</artifactId>
-            <version>2.0.0.Final</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss.sasl</groupId>
-            <artifactId>jboss-sasl</artifactId>
-            <version>1.0.4.Final</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss.stdio</groupId>
-            <artifactId>jboss-stdio</artifactId>
-            <version>1.0.2.GA</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss.threads</groupId>
-            <artifactId>jboss-threads</artifactId>
-            <version>2.1.1.Final</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>5.0.0</version>
-            <scope>test</scope>
-          </dependency>
-        </dependencies>
-      </dependencyManagement>
     </profile>
 
     <profile>

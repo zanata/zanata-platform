@@ -34,6 +34,8 @@ import org.hibernate.Session;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.hibernate.cache.internal.StandardQueryCacheFactory;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountResetPasswordKeyDAO;
 import org.zanata.dao.RoleAssignmentRuleDAO;
@@ -140,7 +142,7 @@ public class UserAccountServiceImpl implements UserAccountService {
                         .setParameter("currentUsername", currentUsername);
         updateQuery.setComment("UserAccountServiceImpl.editUsername");
         updateQuery.executeUpdate();
-        session.getSessionFactory().evictQueries(); // Because a Natural Id was
-                                                    // modified
+        // Because a Natural Id was modified:
+        session.getSessionFactory().getCache().evictQueryRegion(AccountDAO.REGION);
     }
 }

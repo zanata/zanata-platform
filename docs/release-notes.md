@@ -1,8 +1,26 @@
 ## 4.0
 
+##### Infrastructure Changes
+* Recommended platform: JBoss EAP 7 (7.0.1.GA or later).
+* Alternative platform: WildFly version 10.x.
+
+Zanata now requires EAP 7 or WildFly 10 with no extra modules.
+
+If using EAP 6, you must upgrade to EAP 7 and apply the various Zanata
+changes to JBOSS_HOME/standalone/configuration/standalone.xml.
+
+If using WildFly, you must remove any previously installed JSF or Hibernate
+modules from WILDFLY_HOME/modules/{com,javax,org}.
+
+##### Changes
+* [ZNTA-1207](https://zanata.atlassian.net/browse/ZNTA-1207) - Upgrade to JBoss EAP 7
+* [ZNTA-1203](https://zanata.atlassian.net/browse/ZNTA-1203) - Remove Hibernate 4.2 module for WildFly
+* [ZNTA-1222](https://zanata.atlassian.net/browse/ZNTA-1222) - Use appserver's Infinispan
+
 ##### Bug Fixes
 * [ZNTA-846](https://zanata.atlassian.net/browse/ZNTA-846) - Group "request add project version" needs field limit
 * [ZNTA-872](https://zanata.atlassian.net/browse/ZNTA-872) - Redirect to home from cancel button in create user page
+
 ## 3.9.3
 ##### Bug Fixes
  * [ZNTA-608](https://zanata.atlassian.net/browse/ZNTA-608) - Error (exception) on project page after removing an alias

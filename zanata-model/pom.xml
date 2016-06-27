@@ -218,41 +218,10 @@
       <artifactId>lucene-core</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-analyzers</artifactId>
-    </dependency>
-
     <!-- Solr -->
     <dependency>
       <groupId>org.apache.solr</groupId>
       <artifactId>solr-core</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>
-            geronimo-stax-api_1.0_spec
-          </artifactId>
-          <groupId>
-            org.apache.geronimo.specs
-          </groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>
-            commons-io
-          </artifactId>
-          <groupId>
-            org.apache.commons
-          </groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>
-            solr-lucene-analyzers
-          </artifactId>
-          <groupId>
-            org.apache.solr
-          </groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <dependency>
@@ -283,7 +252,7 @@
 
     <dependency>
       <groupId>org.hibernate.javax.persistence</groupId>
-      <artifactId>hibernate-jpa-2.0-api</artifactId>
+      <artifactId>hibernate-jpa-2.1-api</artifactId>
     </dependency>
 
     <dependency>

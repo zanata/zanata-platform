@@ -30,7 +30,7 @@ import groovy.util.AntBuilder
 
 String downloadDir = project.properties.get('download.dir') // ~/Downloads
 String cargoExtractDir = project.properties.get('cargo.extract.dir') // target/cargo/installs
-String url = project.properties.get('cargo.installation') // http://example.com/jbosseap6.zip
+String url = project.properties.get('cargo.installation') // http://example.com/jbosseap7.zip
 
 if (downloadDir == null || cargoExtractDir == null || url == null) {
     throw new Exception('Missing appserver properties.  Please invoke mvn with -Dappserver=jbosseap6 or -Dappserver=wildfly8')

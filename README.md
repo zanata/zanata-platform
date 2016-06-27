@@ -34,7 +34,7 @@ You will need:
 - Java SDK 8 (OpenJDK recommended)
 - npm
 - Mysql or MariaDB
-- JBoss EAP 6 or Wildfly
+- JBoss EAP 7 or WildFly 10
 
 ### Building
 
