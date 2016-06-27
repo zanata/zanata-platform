@@ -2,8 +2,9 @@ import React, { cloneElement, PropTypes } from 'react'
 import BaseOverlay from 'react-overlays/lib/Overlay'
 import { elementType } from 'react-prop-types'
 /**
- * Custom overlay component that based of http://react-bootstrap.github.io/react-overlays/
- * See http://react-bootstrap.github.io/react-overlays/examples/ for documentation.
+ * Custom overlay component that based of
+ * http://react-bootstrap.github.io/react-overlays/. See
+ * http://react-bootstrap.github.io/react-overlays/examples/ for documentation.
  */
 const Overlay = ({
   children,

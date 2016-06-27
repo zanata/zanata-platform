@@ -13,7 +13,8 @@ import {
   SELECT_DAY_UPDATE
 } from '../actions/profile'
 import {
-  SEVERITY
+  SEVERITY,
+  CLEAR_MESSAGE
 } from '../actions/common'
 
 /**
@@ -150,6 +151,12 @@ const processUserStatistics = (state, json) => {
 }
 
 export default handleActions({
+  [CLEAR_MESSAGE]: (state, action) => {
+    return {
+      ...state,
+      notification: null
+    }
+  },
   [LOAD_USER_REQUEST]: (state, action) => {
     return {
       ...state,

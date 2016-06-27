@@ -14,17 +14,21 @@ const classes = {
  */
 const View = ({
   name,
-  items,
   children,
   theme,
   ...props
 }) => (
   <div name={name}
     className={flattenThemeClasses(classes, theme)}
-    {...props}
-  >
-    { children }
+    {...props}>
+    {children}
   </div>
 )
+
+View.propTypes = {
+  name: PropTypes.string,
+  children: PropTypes.node,
+  theme: PropTypes.object
+}
 
 export default View

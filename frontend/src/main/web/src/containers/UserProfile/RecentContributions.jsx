@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import ContributionChart from './ContributionChart'
 import FilterableMatrixTable from './FilterableMatrixTable'
 import { DateRanges } from '../../constants/Options'
@@ -77,6 +77,19 @@ const RecentContributions = ({
       />
     </Base>
   )
+}
+
+RecentContributions.propTypes = {
+  dateRange: PropTypes.object,
+  matrixForAllDays: PropTypes.array,
+  dateRangeOption: PropTypes.object,
+  wordCountsForSelectedDayFilteredByContentState: PropTypes.array,
+  wordCountsForEachDayFilteredByContentState: PropTypes.array,
+  contentStateOption: PropTypes.string,
+  selectedDay: PropTypes.string,
+  handleDateRangeChanged: PropTypes.func,
+  handleFilterChanged: PropTypes.func,
+  handleSelectedDayChanged: PropTypes.func
 }
 
 export default RecentContributions

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import moment from 'moment'
-import { merge, range, map } from 'lodash'
+import { merge, range } from 'lodash'
 import DayMatrix from './DayMatrix'
 import { ContentStates } from '../../constants/Options'
 import {
@@ -91,6 +91,7 @@ const CalendarMonthMatrix = ({
     return <th key={weekDay}>{weekDay}</th>
   })
 
+  /* eslint-disable react/jsx-no-bind */
   return (
     <div>
       <Flex atomic={{m: 'Mb(rh)'}}>
@@ -109,21 +110,20 @@ const CalendarMonthMatrix = ({
       </Flex>
       <Base tagName='table' theme={calTheme}>
         <thead>
-        <tr>{weekDays}</tr>
+          <tr>{weekDays}</tr>
         </thead>
-        <tbody>
-        {result}
-        </tbody>
+        <tbody>{result}</tbody>
       </Base>
     </div>
   )
+  /* eslint-enable react/jsx-no-bind */
 }
 
 CalendarMonthMatrix.propTypes = {
   matrixData: PropTypes.arrayOf(
     PropTypes.shape({
-        date: PropTypes.string.isRequired,
-        wordCount: PropTypes.number.isRequired
+      date: PropTypes.string.isRequired,
+      wordCount: PropTypes.number.isRequired
     })
   ).isRequired,
   selectedDay: PropTypes.string,

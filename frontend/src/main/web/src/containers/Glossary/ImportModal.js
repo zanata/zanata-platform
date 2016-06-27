@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PropTypes, Component } from 'react'
 import { connect } from 'react-redux'
 import { isEmpty, includes } from 'lodash'
 
@@ -74,6 +74,7 @@ class ImportModal extends Component {
     }
     const uploadGlossaryUrl =
       'http://docs.zanata.org/en/release/user-guide/glossary/upload-glossaries/'
+    /* eslint-disable react/jsx-no-bind */
     return (
       <Modal
         show={show}
@@ -84,12 +85,12 @@ class ImportModal extends Component {
         </Modal.Header>
         <Modal.Body>
           <input
-            type="file"
+            type='file'
             onChange={handleImportFileChange}
-            ref="file"
+            ref='file'
             multiple={false}
             disabled={isUploading}
-            className="Mb(r1)"/>
+            className='Mb(r1)' />
           {messageSection}
           {isUploading
             ? transLocale && (<span className='Fz(ms2)'>
@@ -99,8 +100,8 @@ class ImportModal extends Component {
           <p>
             CSV and PO files are supported. <strong>The source language should
             be in {locale}</strong>. For more details on how to prepare glossary
-            files, see our <a href={uploadGlossaryUrl}
-            className='C(pri)' target='_blank'>glossary import documentation</a>.
+            files, see our <a href={uploadGlossaryUrl} className='C(pri)'
+              target='_blank'>glossary import documentation</a>.
           </p>
         </Modal.Body>
         <Modal.Footer>
@@ -122,7 +123,21 @@ class ImportModal extends Component {
           </Row>
         </Modal.Footer>
       </Modal>)
+    /* eslint-enable react/jsx-no-bind */
   }
+}
+
+ImportModal.propTypes = {
+  transLocales: PropTypes.array,
+  srcLocale: PropTypes.object,
+  file: PropTypes.object,
+  show: PropTypes.bool,
+  status: PropTypes.number,
+  transLocale: PropTypes.object,
+  handleImportFile: PropTypes.func,
+  handleImportFileChange: PropTypes.func,
+  handleImportFileDisplay: PropTypes.func,
+  handleImportFileLocaleChange: PropTypes.func
 }
 
 const mapStateToProps = (state) => {

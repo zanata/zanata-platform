@@ -12,7 +12,6 @@ import {
   GLOSSARY_STATS_SUCCESS,
   GLOSSARY_STATS_FAILURE,
   GLOSSARY_SELECT_TERM,
-  GLOSSARY_PAGE_SIZE,
   GLOSSARY_UPDATE_FIELD,
   GLOSSARY_RESET_TERM,
   GLOSSARY_UPDATE_REQUEST,
@@ -74,7 +73,7 @@ const glossary = handleActions({
   },
   [GLOSSARY_UPDATE_LOCALE]: (state, action) => ({
     ...state,
-    selectedTerm : {},
+    selectedTerm: {},
     locale: action.payload
   }),
   [GLOSSARY_UPDATE_FILTER]: (state, action) => ({
@@ -301,10 +300,10 @@ const glossary = handleActions({
     const transLocales = isEmpty(action.payload.transLocale)
       ? []
       : action.payload.transLocale.map(result => ({
-      value: result.locale.localeId,
-      label: result.locale.displayName,
-      count: result.numberOfTerms
-    }))
+        value: result.locale.localeId,
+        label: result.locale.displayName,
+        count: result.numberOfTerms
+      }))
     return ({
       ...state,
       stats: {
@@ -567,59 +566,59 @@ const glossary = handleActions({
   }
 },
 // default state
-{
-  src: DEFAULT_LOCALE.localeId,
-  locale: '',
-  filter: '',
-  sort: {
-    src_content: true
-  },
-  index: 0,
-  selectedTerm: {},
-  pagesLoaded: [],
-  permission: {
-    canAddNewEntry: false,
-    canUpdateEntry: false,
-    canDeleteEntry: false
-  },
-  terms: {},
-  termIds: [],
-  termCount: 0,
-  termsError: false,
-  termsLoading: true,
-  termsDidInvalidate: false,
-  stats: {
-    srcLocale: {},
-    transLocales: []
-  },
-  saving: {},
-  deleting: {},
-  importFile: {
-    show: false,
-    status: -1,
-    file: null,
-    transLocale: null
-  },
-  exportFile: {
-    show: false,
-    type: {value: FILE_TYPES[0], label: FILE_TYPES[0]},
-    status: -1,
-    types: [
-      {value: FILE_TYPES[0], label: FILE_TYPES[0]},
-      {value: FILE_TYPES[1], label: FILE_TYPES[1]}
-    ]
-  },
-  newEntry: {
-    show: false,
-    isSaving: false,
-    entry: GlossaryHelper.generateEmptyEntry(DEFAULT_LOCALE.localeId)
-  },
-  deleteAll: {
-    show: false,
-    isDeleting: false
-  },
-  statsError: false,
-  statsLoading: true
-})
+  {
+    src: DEFAULT_LOCALE.localeId,
+    locale: '',
+    filter: '',
+    sort: {
+      src_content: true
+    },
+    index: 0,
+    selectedTerm: {},
+    pagesLoaded: [],
+    permission: {
+      canAddNewEntry: false,
+      canUpdateEntry: false,
+      canDeleteEntry: false
+    },
+    terms: {},
+    termIds: [],
+    termCount: 0,
+    termsError: false,
+    termsLoading: true,
+    termsDidInvalidate: false,
+    stats: {
+      srcLocale: {},
+      transLocales: []
+    },
+    saving: {},
+    deleting: {},
+    importFile: {
+      show: false,
+      status: -1,
+      file: null,
+      transLocale: null
+    },
+    exportFile: {
+      show: false,
+      type: {value: FILE_TYPES[0], label: FILE_TYPES[0]},
+      status: -1,
+      types: [
+        {value: FILE_TYPES[0], label: FILE_TYPES[0]},
+        {value: FILE_TYPES[1], label: FILE_TYPES[1]}
+      ]
+    },
+    newEntry: {
+      show: false,
+      isSaving: false,
+      entry: GlossaryHelper.generateEmptyEntry(DEFAULT_LOCALE.localeId)
+    },
+    deleteAll: {
+      show: false,
+      isDeleting: false
+    },
+    statsError: false,
+    statsLoading: true
+  })
 
 export default glossary

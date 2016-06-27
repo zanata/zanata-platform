@@ -13,8 +13,8 @@ export default handleActions({
   }
 },
 // default state
-{
-  locales: [],
-  loading: false,
-  selectedLocale: DEFAULT_LOCALE.localeId
-})
+  {
+    locales: [],
+    loading: false,
+    selectedLocale: DEFAULT_LOCALE.localeId
+  })

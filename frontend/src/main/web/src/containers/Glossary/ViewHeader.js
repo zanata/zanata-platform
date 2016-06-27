@@ -84,10 +84,12 @@ class ViewHeader extends Component {
       deleteAll
       } = this.props
     const currentLocaleCount = this.currentLocaleCount()
-    const isReadOnly = !(permission.canAddNewEntry || permission.canUpdateEntry || permission.canDeleteEntry)
+    const isReadOnly = !(permission.canAddNewEntry ||
+      permission.canUpdateEntry || permission.canDeleteEntry)
     const icon = isReadOnly ? 'locked' : undefined
     const tooltip = isReadOnly ? 'read-only' : undefined
     const showDeleteAll = permission.canDeleteEntry && termCount > 0
+    /* eslint-disable react/jsx-no-bind, no-return-assign */
     return (
       <Header title='Glossary' icon={icon} tooltip={tooltip}
         extraElements={(
@@ -217,8 +219,7 @@ class ViewHeader extends Component {
                 </Row>
               </ButtonLink>
             </TableCell>
-            <TableCell size='2'>
-            </TableCell>
+            <TableCell size='2' />
           </TableRow>
         </View>
       </Header>
@@ -227,27 +228,37 @@ class ViewHeader extends Component {
 }
 
 ViewHeader.propTypes = {
+  results: PropTypes.object,
   termCount: PropTypes.number.isRequired,
   statsLoading: PropTypes.bool,
   transLocales: PropTypes.arrayOf(
     PropTypes.shape({
-        count: PropTypes.number.isRequired,
-        label: PropTypes.string.isRequired,
-        value: PropTypes.string.isRequired
+      count: PropTypes.number.isRequired,
+      label: PropTypes.string.isRequired,
+      value: PropTypes.string.isRequired
     })
   ).isRequired,
   filterText: PropTypes.string,
   selectedTransLocale: PropTypes.string,
   permission: PropTypes.shape({
-      canAddNewEntry: PropTypes.bool,
-      canUpdateEntry: PropTypes.bool,
-      canDeleteEntry: PropTypes.bool,
-      canDownload: PropTypes.bool
+    canAddNewEntry: PropTypes.bool,
+    canUpdateEntry: PropTypes.bool,
+    canDeleteEntry: PropTypes.bool
   }).isRequired,
   sort: PropTypes.shape({
     src_content: PropTypes.bool,
     part_of_speech: PropTypes.bool
   }).isRequired,
+  deleteAll: PropTypes.object,
+  handleTranslationLocaleChange: PropTypes.func,
+  handleFilterFieldUpdate: PropTypes.func,
+  handleImportFileDisplay: PropTypes.func,
+  handleNewEntryDisplay: PropTypes.func,
+  handleDeleteAllEntriesDisplay: PropTypes.func,
+  handleDeleteAllEntries: PropTypes.func,
+  handleSortColumn: PropTypes.func,
+  handleSearchCancelClick: PropTypes.func,
+  handleExportFileDisplay: PropTypes.func
 }
 
 const mapStateToProps = (state) => {

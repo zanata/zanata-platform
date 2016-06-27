@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PropTypes, Component } from 'react'
 /**
  * TODO: use react-ally to identify accessibility issue
  * import a11y from 'react-a11y'
@@ -31,9 +31,9 @@ class App extends Component {
     } = this.props
 
     const links = {
-      'context': config.baseUrl || '',
-      '/login': config.links.loginUrl,
-      '/signup': config.links.registerUrl
+      'context': window.config.baseUrl || '',
+      '/login': window.config.links.loginUrl,
+      '/signup': window.config.links.registerUrl
     }
 
     return (
@@ -48,6 +48,11 @@ class App extends Component {
       </View>
     )
   }
+}
+
+App.propTypes = {
+  children: PropTypes.node,
+  activePath: PropTypes.string
 }
 
 function mapStateToProps (state) {

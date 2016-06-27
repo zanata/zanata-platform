@@ -1,4 +1,4 @@
-import React,  { PropTypes } from 'react'
+import React, { PropTypes } from 'react'
 import { merge } from 'lodash'
 import dateUtil from '../../utils/DateHelper'
 import {
@@ -62,32 +62,31 @@ const DayMatrix = ({
       date === selectedDay && classes.calButton.active
     )
   }
-
+  /* eslint-disable react/jsx-no-bind */
   return (
     <Base tagName='td' theme={classes.root}>
       {date
-        ? (<Button onClick={() => handleSelectedDayChanged(date)}
-            disabled={dateIsInFuture || !date}
-            theme={buttonTheme}
-            title={wordCount + ' words'}>
-            <Base atomic={classes.calDate}>
-              {date ? dateLabel : '\u00a0'}
-            </Base>
-            <Base atomic={classes.calInfo}>
-              {dateIsInFuture ? '\u00a0' : wordCount}
-            </Base>
-          </Button>)
+        ? <Button onClick={() => handleSelectedDayChanged(date)}
+          disabled={dateIsInFuture || !date}
+          theme={buttonTheme}
+          title={wordCount + ' words'}>
+          <Base atomic={classes.calDate}>{date ? dateLabel : '\u00a0'}</Base>
+          <Base atomic={classes.calInfo}>
+            {dateIsInFuture ? '\u00a0' : wordCount}
+          </Base>
+        </Button>
         : <Base atomic={{bgc: 'Bgc(#fff.85)', stretchedBox: 'StretchedBox'}} />}
     </Base>
   )
+  /* eslint-enable react/jsx-no-bind */
 }
 
 DayMatrix.propTypes = {
   dateLabel: PropTypes.string,
-    date: PropTypes.string,
-    wordCount: PropTypes.number,
-    selectedDay: PropTypes.string,
-    handleSelectedDayChanged: PropTypes.func.isRequired
+  date: PropTypes.string,
+  wordCount: PropTypes.number,
+  selectedDay: PropTypes.string,
+  handleSelectedDayChanged: PropTypes.func.isRequired
 }
 
 export default DayMatrix

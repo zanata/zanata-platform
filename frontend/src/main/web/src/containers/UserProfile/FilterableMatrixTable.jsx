@@ -60,7 +60,7 @@ const FilterableMatrixTable = ({
             fromDate={fromDate}
             toDate={toDate}
             dateRange={dateRangeOption.label}
-            selectedDay={selectedDay}/>
+            selectedDay={selectedDay} />
           {categoryTables}
         </div>
       </Flex>

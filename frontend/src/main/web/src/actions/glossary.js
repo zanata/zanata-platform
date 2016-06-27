@@ -1,6 +1,6 @@
 import { createAction } from 'redux-actions'
 import { CALL_API } from 'redux-api-middleware'
-import { isEmpty, cloneDeep, includes, clamp, debounce } from 'lodash'
+import { cloneDeep, includes, debounce } from 'lodash'
 import { saveAs } from 'file-saver'
 import { normalize } from 'normalizr'
 import { GLOSSARY_TERM_ARRAY } from '../schemas.js'
@@ -201,7 +201,8 @@ const createGlossaryTerm = (dispatch, term) => {
     GLOSSARY_CREATE_FAILURE
   ]
   return {
-    [CALL_API]: buildAPIRequest(endpoint, 'POST', headers, apiTypes, JSON.stringify(entryDTO))
+    [CALL_API]: buildAPIRequest(endpoint, 'POST', headers, apiTypes,
+      JSON.stringify(entryDTO))
   }
 }
 
@@ -232,7 +233,8 @@ const updateGlossaryTerm = (dispatch, term, needRefresh) => {
     GLOSSARY_UPDATE_FAILURE
   ]
   return {
-    [CALL_API]: buildAPIRequest(endpoint, 'POST', headers, apiTypes, JSON.stringify(entryDTO))
+    [CALL_API]: buildAPIRequest(endpoint, 'POST', headers, apiTypes,
+      JSON.stringify(entryDTO))
   }
 }
 
@@ -285,7 +287,8 @@ const deleteAllGlossaryEntry = (dispatch) => {
 }
 
 const glossaryExport = (type) => {
-  const endpoint = window.config.baseUrl + window.config.apiRoot + '/glossary/file?fileType=' + type
+  const endpoint = window.config.baseUrl + window.config.apiRoot +
+    '/glossary/file?fileType=' + type
   let headers = getJsonHeaders()
   headers['Content-Type'] = 'application/octet-stream'
   const apiTypes = [
@@ -300,7 +303,8 @@ const glossaryExport = (type) => {
       payload: (action, state, res) => {
         return res.blob().then((blob) => {
           const selectedType = state.glossary.exportFile.type.value
-          const fileName = 'glossary.' + (selectedType === 'po' ? 'zip' : selectedType)
+          const fileName = 'glossary.' +
+            (selectedType === 'po' ? 'zip' : selectedType)
           saveAs(blob, fileName)
         })
       }
@@ -415,7 +419,6 @@ export const glossarySortColumn = (col) => {
 const delayGetGlossaryTerm = debounce((dispatch, state) =>
   dispatch(getGlossaryTerms(state)), 160)
 
-
 export const glossaryGoFirstPage = (currentPage, totalPage) => {
   return (dispatch, getState) => {
     if (currentPage !== 1) {
@@ -453,5 +456,4 @@ export const glossaryGoLastPage = (currentPage, totalPage) => {
     }
   }
 }
-
 

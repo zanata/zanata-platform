@@ -78,6 +78,7 @@ const ContentStateFilter = ({
     const states = {
       active: selectedContentState === option
     }
+    /* eslint-disable react/jsx-no-bind */
     return (
       <ButtonLink key={option}
         states={states}
@@ -87,6 +88,7 @@ const ContentStateFilter = ({
         {option}
       </ButtonLink>
     )
+    /* eslint-enable react/jsx-no-bind */
   })
   return (
     <Base atomic={classes.root}>

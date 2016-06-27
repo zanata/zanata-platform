@@ -36,8 +36,10 @@ const TeaserListHeader = ({
   const totalPage = Math.floor(totalCount / sizePerPage) +
     (totalCount % sizePerPage > 0 ? 1 : 0)
   const headerIcon = type
-    ? <Icon name={icons[type]} theme={{ base: { m: 'Mend(rq)' } }}/> : null
+    ? <Icon name={icons[type]} theme={{ base: { m: 'Mend(rq)' } }} /> : null
   const currentPage = page ? parseInt(page) : 1
+
+  /* eslint-disable react/jsx-no-bind */
   return (
     <View theme={viewTheme}>
       {headerIcon}
@@ -57,15 +59,16 @@ const TeaserListHeader = ({
           </ButtonLink>
           <span className='C(muted) Mx(re)'>{currentPage} of {totalPage}</span>
           <ButtonLink disabled={currentPage === totalPage}
-            onClick={() => { updatePage(type, currentPage, totalPage, true)}}>
+            onClick={() => { updatePage(type, currentPage, totalPage, true) }}>
             <Icon name='chevron-right' size='1' />
           </ButtonLink>
         </div>
       )}
       {loading && <Loader theme={{ base: { fz: 'Fz(ms1)', m: 'MStart(rh)' } }}
-        size='1' loading name='loader'/>}
+        size='1' loading name='loader' />}
     </View>
   )
+  /* eslint-enable react/jsx-no-bind */
 }
 
 TeaserListHeader.propTypes = {

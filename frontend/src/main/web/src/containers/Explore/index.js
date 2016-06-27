@@ -10,8 +10,7 @@ import {
   Heading,
   Icon,
   Button,
-  TextInput,
-  LoaderText
+  TextInput
 } from '../../components'
 import TeaserList from './TeaserList'
 import {
@@ -88,6 +87,10 @@ const contentViewContainerTheme = {
  * Root component for Explore page
  */
 class Explore extends Component {
+  componentDidMount () {
+    this.props.handleInitLoad()
+  }
+
   handleKeyDown (e) {
     if (e.key === 'Escape') {
       this.handleClearSearch()
@@ -112,13 +115,12 @@ class Explore extends Component {
       languageTeamPage,
       searchResults,
       searchError,
-      searchLoading,
-      ...props
+      searchLoading
     } = this.props
 
     let content
     if (searchError) {
-      content = (<p>Error searching for '{searchText}'.<br/>
+      content = (<p>Error searching for '{searchText}'.<br />
                     {searchResults.message}. Please try again.</p>)
     } else {
       const projectContent = (<TeaserList
@@ -132,7 +134,7 @@ class Explore extends Component {
         key='Project'
         sizePerPage={SIZE_PER_PAGE}
         updatePage={handleUpdateSearchPage}
-        page={projectPage}/>)
+        page={projectPage} />)
 
       const groupContent = (<TeaserList
         loading={isEmpty(searchResults) && searchLoading['Group']}
@@ -145,7 +147,7 @@ class Explore extends Component {
         key='Group'
         sizePerPage={SIZE_PER_PAGE}
         updatePage={handleUpdateSearchPage}
-        page={groupPage}/>)
+        page={groupPage} />)
 
       const personContent = searchText &&
         (<TeaserList
@@ -159,7 +161,7 @@ class Explore extends Component {
           key='Person'
           sizePerPage={SIZE_PER_PAGE}
           updatePage={handleUpdateSearchPage}
-          page={personPage}/>)
+          page={personPage} />)
 
       const languageTeamContent = searchText &&
         (<TeaserList
@@ -173,7 +175,7 @@ class Explore extends Component {
           key='LanguageTeam'
           sizePerPage={SIZE_PER_PAGE}
           updatePage={handleUpdateSearchPage}
-          page={languageTeamPage}/>)
+          page={languageTeamPage} />)
 
       content = (
         <div>
@@ -183,13 +185,14 @@ class Explore extends Component {
             {groupContent}
         </div>)
     }
+    /* eslint-disable react/jsx-no-bind, no-return-assign */
     return (
       <Page>
         <Helmet title='Search' />
         <Base tagName='header' theme={headerClasses}>
           <Heading level='1' theme={headingTheme}>Search</Heading>
           <View theme={searchViewTheme}>
-            <Icon name='search' atomic={iconClasses}/>
+            <Icon name='search' atomic={iconClasses} />
             <TextInput
               maxLength={100}
               ref={(ref) => this.searchInput = ref}
@@ -216,6 +219,7 @@ class Explore extends Component {
         </ScrollView>
       </Page>
     )
+    /* eslint-enable react/jsx-no-bind, no-return-assign */
   }
 }
 
@@ -234,6 +238,10 @@ Explore.propTypes = {
     Person: PropTypes.bool,
     Group: PropTypes.bool
   }),
+  handleInitLoad: PropTypes.func,
+  handleSearchCancelClick: PropTypes.func,
+  handleSearchTextChange: PropTypes.func,
+  handleUpdateSearchPage: PropTypes.func
 }
 
 const mapStateToProps = (state) => {
@@ -261,7 +269,7 @@ const mapDispatchToProps = (dispatch) => {
     handleSearchTextChange: (event) => {
       updateSearchQuery(event.target.value || '')
     },
-    handleSearchPageLoad: () => {
+    handleInitLoad: () => {
       dispatch(searchPageInitialLoad())
     },
     handleUpdateSearchPage: (type, currentPage, totalPage, next) => {

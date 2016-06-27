@@ -14,8 +14,7 @@ import {
  * Popup windows to display a glossary entry
  */
 class EntryModal extends Component {
-
-  generateTermInfo(term) {
+  generateTermInfo (term) {
     if (term) {
       const person = term.lastModifiedBy
       const date = term.lastModifiedDate
@@ -24,20 +23,19 @@ class EntryModal extends Component {
       const isDateEmpty = isEmpty(date)
 
       if (!isPersonEmpty || !isDateEmpty) {
-        let parts = ['Last updated'];
+        let parts = ['Last updated']
         if (!isPersonEmpty) {
-          parts.push('by:');
-          parts.push(person);
+          parts.push('by:')
+          parts.push(person)
         }
         if (!isDateEmpty) {
           parts.push(date)
         }
-        return parts.join(' ');
+        return parts.join(' ')
       }
     }
     return undefined
   }
-
 
   render () {
     const {
@@ -63,23 +61,24 @@ class EntryModal extends Component {
       ? this.generateTermInfo(entry.transTerm)
       : this.generateTermInfo(entry.srcTerm)
 
+    /* eslint-disable react/jsx-no-bind, react/jsx-boolean-value */
     return (
       <Modal show={show}
-             onHide={() => handleEntryModalDisplay(false)}>
+        onHide={() => handleEntryModalDisplay(false)}>
         <Modal.Header>
           <Modal.Title>
             Glossary Term
-            {transSelected ? (
-              <span>
+            {transSelected
+              ? (<span>
                 <Icon name='language'
-                  atomic={{m: 'Mstart(rq) Mend(re)', c: 'C(neutral)'}}/>
+                  atomic={{m: 'Mstart(rq) Mend(re)', c: 'C(neutral)'}} />
                 <span className='C(muted)'>{selectedTransLocale}</span>
               </span>)
               : (<span>
-                    <Icon name='translate'
-                      atomic={{m: 'Mstart(rq) Mend(re)', c: 'C(neutral)'}}/>
-                    <span className='C(muted)'>{entry.termsCount}</span>
-                  </span>)
+                <Icon name='translate'
+                  atomic={{m: 'Mstart(rq) Mend(re)', c: 'C(neutral)'}} />
+                <span className='C(muted)'>{entry.termsCount}</span>
+              </span>)
             }
           </Modal.Title>
         </Modal.Header>
@@ -129,7 +128,7 @@ class EntryModal extends Component {
                 {transContent}
               </EditableText>
             </div>
-            ) : '' }
+            ) : ''}
 
           {transSelected ? (
             <div className='Mb(rh)'>
@@ -145,7 +144,7 @@ class EntryModal extends Component {
                 {comment}
               </EditableText>
             </div>
-          ) : '' }
+          ) : ''}
           {!isEmpty(info) &&
             <div className='C(muted) Pt(rq)'>{info}</div>
           }
@@ -153,33 +152,33 @@ class EntryModal extends Component {
         <Modal.Footer>
           <Row theme={{ base: {j: 'Jc(c)'} }}>
             <ButtonLink atomic={{m: 'Mstart(rh)'}}
-                        onClick={() => {
-                          handleResetTerm(entry.id)
-                          handleEntryModalDisplay(false)
-                        }}>
+              onClick={
+                () => {
+                  handleResetTerm(entry.id); handleEntryModalDisplay(false)
+                }
+              }>
               Cancel
             </ButtonLink>
 
             {isSaving
               ? (<ButtonRound atomic={{m: 'Mstart(rh)'}}
-                             type='primary'
-                             disabled={true}>
-                  <LoaderText loading loadingText='Updating'>Update</LoaderText>
-                </ButtonRound>)
+                type='primary' disabled={true}>
+                <LoaderText loading loadingText='Updating'>Update</LoaderText>
+              </ButtonRound>)
               : (<ButtonRound atomic={{m: 'Mstart(rh)'}} type='primary'
-                           onClick={() => handleUpdateTerm(entry)}
-                           disabled={!canUpdate}>
-                    Update
-                </ButtonRound>)
+                onClick={() => handleUpdateTerm(entry)} disabled={!canUpdate}>
+                  Update
+              </ButtonRound>)
             }
           </Row>
         </Modal.Footer>
       </Modal>
     )
+    /* eslint-enable react/jsx-no-bind, react/jsx-boolean-value*/
   }
 }
 
-EntryModal.propType = {
+EntryModal.propTypes = {
   entry: PropTypes.object,
   show: PropTypes.bool,
   isSaving: PropTypes.bool,

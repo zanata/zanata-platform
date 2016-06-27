@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import { merge } from 'lodash'
 import { View } from './'
 
@@ -33,6 +33,11 @@ const ScrollView = ({
       </View>
     </View>
   )
+}
+
+ScrollView.propTypes = {
+  children: PropTypes.node,
+  theme: PropTypes.object
 }
 
 export default ScrollView

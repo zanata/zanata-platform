@@ -67,8 +67,7 @@ class UserProfile extends Component {
       dateRange,
       handleDateRangeChanged,
       handleFilterChanged,
-      handleSelectedDayChanged,
-      ...props
+      handleSelectedDayChanged
     } = this.props
 
     const username = user.username
@@ -78,6 +77,8 @@ class UserProfile extends Component {
       ? user.languageTeams.join() : undefined
     const isLoggedIn = window.config.permission.isLoggedIn
 
+    const divClass = 'D(f) Ai(fs) Ac(fs) Fld(c) Jc(fs) Flw(nw) ' +
+      'My(r3) Mx(a) Maw(20em) W(100%)'
     return (
       <Page>
         {notification &&
@@ -90,13 +91,10 @@ class UserProfile extends Component {
         <Helmet title='User Profile' />
         <ScrollView>
           {user.loading || loading
-            ? (
-            <div
-              className='D(f) Ai(fs) Ac(fs) Fld(c) Jc(fs) Flw(nw) My(r3) Mx(a) Maw(20em) W(100%)'>
+            ? (<div className={divClass}>
               <LoaderText size='8' loading atomic={{w: 'W(100%)'}} />
             </div>)
-            : (
-            <Flex dir='c' atomic={classes.wrapper}>
+            : (<Flex dir='c' atomic={classes.wrapper}>
               <Flex dir='rr' id='profile-overview' atomic={classes.details}>
                 <Base atomic={classes.detailsAvatar}>
                   <img src={user.imageUrl ? user.imageUrl : ''}
@@ -154,6 +152,7 @@ class UserProfile extends Component {
 }
 
 UserProfile.propTypes = {
+  params: PropTypes.object,
   user: PropTypes.object,
   notification: PropTypes.object,
   loading: PropTypes.bool,

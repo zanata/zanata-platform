@@ -22,6 +22,7 @@ class DeleteAllEntriesModal extends Component {
       handleDeleteAllEntries
       } = this.props
 
+    /* eslint-disable react/jsx-no-bind */
     return (
       <div className='D(ib)'>
         <Overlay
@@ -62,6 +63,7 @@ class DeleteAllEntriesModal extends Component {
         </ButtonLink>
       </div>
     )
+    /* eslint-enable react/jsx-no-bind */
   }
 }
 

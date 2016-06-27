@@ -15,10 +15,10 @@ const CalendarPeriodHeading = ({
 
   const period = selectedDay
     ? moment(selectedDay, stdFmt).format(dateDisplayFmt)
-    : moment(fromDate, stdFmt).format(dateRangeDisplayFmt)
-      + ' … '
-      + moment(toDate, stdFmt).format(dateRangeDisplayFmt)
-      + ' (' + dateRange + ')'
+    : moment(fromDate, stdFmt).format(dateRangeDisplayFmt) +
+      ' … ' +
+      moment(toDate, stdFmt).format(dateRangeDisplayFmt) +
+      ' (' + dateRange + ')'
 
   return (
     <div className='Mb(rh)'>
@@ -35,4 +35,4 @@ CalendarPeriodHeading.propTypes = {
   dateRange: PropTypes.string
 }
 
-export default CalendarPeriodHeading;
+export default CalendarPeriodHeading

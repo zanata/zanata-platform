@@ -140,15 +140,14 @@ const Nav = ({
       {items.map((item, itemId) => {
         if (((item.auth === 'public') || (item.auth === auth) ||
           (item.auth === 'loggedin' && admin)) && !item.more) {
-
           let link = null
           if (isJsfPage) {
-            //jsf pages
+            // jsf pages
             link = links[item.link]
               ? (links.context + links[item.link])
               : (links.context + item.link)
           } else {
-            //react pages, /a/index.xhtml
+            // react pages, /a/index.xhtml
             link = item.internalLink
               ? item.internalLink
               : (links[item.link]
@@ -165,7 +164,7 @@ const Nav = ({
             useHref={useHref}
             icon={item.icon}
             tooltip={item.tooltip}
-            title={item.title}/>
+            title={item.title} />
         }
         return null
       })}
@@ -193,6 +192,5 @@ Nav.propTypes = {
    */
   isJsfPage: PropTypes.bool
 }
-
 
 export default Nav

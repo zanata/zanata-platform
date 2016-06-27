@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react'
 import { merge } from 'lodash'
 import { flattenThemeClasses } from '../utils/styleUtils'
-import { Icon } from './'
-import { View, Heading, Link } from './'
+import { Icon, View, Heading, Link } from './'
 
 const wrapperTheme = {
   base: {
@@ -84,6 +83,7 @@ const Header = ({
 }
 
 Header.propTypes = {
+  children: PropTypes.node,
   theme: PropTypes.object,
   title: PropTypes.string,
   icon: PropTypes.string,

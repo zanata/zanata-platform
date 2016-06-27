@@ -23,6 +23,7 @@ import {
   glossaryGoLastPage,
   glossaryGoNextPage,
   glossaryGoPreviousPage,
+  glossaryInitialLoad,
   GLOSSARY_PAGE_SIZE
 } from '../../actions/glossary'
 import ViewHeader from './ViewHeader'
@@ -40,6 +41,9 @@ const loadingContainerTheme = {
  * Root component for Glossary page
  */
 class Glossary extends Component {
+  componentDidMount () {
+    this.props.handleInitLoad()
+  }
 
   renderItem (index, key) {
     const {
@@ -60,7 +64,7 @@ class Glossary extends Component {
     const entryId = termIds[index]
     const selected = entryId === selectedTerm.id
     const isSaving = !isUndefined(saving[entryId])
-    let entry = undefined
+    let entry
     if (isSaving && entryId) {
       entry = saving[entryId]
     } else if (selected) {
@@ -110,6 +114,7 @@ class Glossary extends Component {
     const displayPaging = totalPage > 1
     const listPadding = displayPaging ? 'Pb(r2)' : 'Pb(r2) Pt(r6)'
 
+    /* eslint-disable react/jsx-no-bind */
     return (
       <Page>
         {notification &&
@@ -155,21 +160,21 @@ class Glossary extends Component {
           <View theme={{ base: {p: listPadding} }}>
             {termsLoading && !termCount
               ? (<View theme={loadingContainerTheme}>
-                  <LoaderText theme={{ base: { fz: 'Fz(ms1)' } }}
-                    size='1' loading />
-                  </View>)
+                <LoaderText theme={{ base: { fz: 'Fz(ms1)' } }}
+                  size='1' loading />
+              </View>)
               : (<ReactList
-                  useTranslate3d
-                  itemRenderer={::this.renderItem}
-                  length={size(terms)}
-                  type='uniform'
-                  ref={(c) => { this.list = c }}
-                />)
+                useTranslate3d
+                itemRenderer={::this.renderItem}
+                length={size(terms)}
+                type='uniform'
+                ref={(c) => { this.list = c }} />)
             }
           </View>
         </ScrollView>
       </Page>
     )
+    /* eslint-enable react/jsx-no-bind */
   }
 }
 
@@ -195,7 +200,17 @@ Glossary.propTypes = {
   goFirstPage: PropTypes.func,
   goLastPage: PropTypes.func,
   goNextPage: PropTypes.func,
-  page: PropTypes.number
+  handleInitLoad: PropTypes.func,
+  handleSelectTerm: PropTypes.func,
+  handleTermFieldUpdate: PropTypes.func,
+  handleDeleteTerm: PropTypes.func,
+  handleResetTerm: PropTypes.func,
+  handleUpdateTerm: PropTypes.func,
+  page: PropTypes.number,
+  gotoPreviousPage: PropTypes.func,
+  gotoFirstPage: PropTypes.func,
+  gotoLastPage: PropTypes.func,
+  gotoNextPage: PropTypes.func
 }
 
 const mapStateToProps = (state) => {
@@ -234,6 +249,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    handleInitLoad: () => {
+      dispatch(glossaryInitialLoad())
+    },
     handleSelectTerm: (termId) => dispatch(glossarySelectTerm(termId)),
     handleTermFieldUpdate: (field, event) => {
       dispatch(glossaryUpdateField({ field, value: event.target.value || '' }))

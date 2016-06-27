@@ -1,6 +1,5 @@
-import { isUndefined, filter, forOwn } from 'lodash'
+import { isUndefined, filter, forOwn, isEmpty, toString } from 'lodash'
 import { trim } from './StringUtils'
-import { isEmpty, toString } from 'lodash'
 import DateHelpers from './DateHelper'
 import defined from 'defined'
 
@@ -130,19 +129,19 @@ var GlossaryHelper = {
       const desc = this.toEmptyString(entry.description)
       const pos = this.toEmptyString(entry.pos)
 
-      const ori_source = this.toEmptyString(
+      const oriSource = this.toEmptyString(
         originalEntry.srcTerm.content)
-      const ori_trans = originalEntry.transTerm
+      const oriTrans = originalEntry.transTerm
         ? this.toEmptyString(originalEntry.transTerm.content) : ''
-      const ori_comment = originalEntry.transTerm
+      const oriComment = originalEntry.transTerm
         ? this.toEmptyString(originalEntry.transTerm.comment) : ''
-      const ori_desc = this.toEmptyString(originalEntry.description)
-      const ori_pos = this.toEmptyString(originalEntry.pos)
+      const oriDesc = this.toEmptyString(originalEntry.description)
+      const oriPos = this.toEmptyString(originalEntry.pos)
 
-      let isSrcModified = (desc !== ori_desc) ||
-        (pos !== ori_pos) ||
-        (source !== ori_source)
-      let isTransModified = (trans !== ori_trans) || (comment !== ori_comment)
+      let isSrcModified = (desc !== oriDesc) ||
+        (pos !== oriPos) ||
+        (source !== oriSource)
+      let isTransModified = (trans !== oriTrans) || (comment !== oriComment)
 
       let isSrcValid = !isEmpty(trim(source))
 

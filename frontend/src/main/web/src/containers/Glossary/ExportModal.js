@@ -1,6 +1,5 @@
-import React, { Component } from 'react'
+import React, { PropTypes, Component } from 'react'
 import { connect } from 'react-redux'
-import { forEach } from 'lodash'
 
 import {
   ButtonLink,
@@ -32,13 +31,17 @@ class ExportModal extends Component {
 
     const isExporting = status !== -1
     let message
+    /* eslint-disable max-len */
     if (type.value === FILE_TYPES[0]) {
       message = <span>This will download glossary entries in <strong>all languages</strong> into <strong>csv</strong> format.</span>
     } else if (type.value === FILE_TYPES[1]) {
       message = <span>This will download a zip file of glossary entries in <strong>all languages</strong> in <strong>po</strong> format.</span>
     }
+    /* eslint-enable max-len */
     const exportGlossaryUrl =
       'http://docs.zanata.org/en/release/user-guide/glossary/export-glossaries/'
+
+    /* eslint-disable react/jsx-no-bind */
     return (
       <Modal
         show={show}
@@ -55,14 +58,13 @@ class ExportModal extends Component {
             placeholder='Select a file type…'
             value={type}
             options={types}
-            onChange={handleExportType}
-          />
+            onChange={handleExportType} />
           <p>
             {message}
             <br />
             For more details on how to export glossary
             files, see our <a href={exportGlossaryUrl} className='C(pri)'
-            target='_blank'>glossary export documentation</a>.
+              target='_blank'>glossary export documentation</a>.
           </p>
         </Modal.Body>
         <Modal.Footer>
@@ -84,7 +86,24 @@ class ExportModal extends Component {
           </Row>
         </Modal.Footer>
       </Modal>)
+    /* eslint-enable react/jsx-no-bind */
   }
+}
+
+ExportModal.propTypes = {
+  show: PropTypes.bool,
+  type: PropTypes.shape({
+    label: PropTypes.string,
+    value: PropTypes.string
+  }),
+  status: PropTypes.number,
+  types: PropTypes.arrayOf(PropTypes.shape({
+    label: PropTypes.string,
+    value: PropTypes.string
+  })),
+  handleExportType: PropTypes.func,
+  handleExportFileDisplay: PropTypes.func,
+  handleExport: PropTypes.func
 }
 
 const mapStateToProps = (state) => {

@@ -7,7 +7,8 @@ import LanguageTeamTeaser from './LanguageTeamTeaser'
 import UserTeaser from './UserTeaser'
 
 /**
- * A section of search results with TeaserListHeader and list of results (TeaserComponent)
+ * A section of search results with TeaserListHeader and
+ * list of results (TeaserComponent)
  */
 const TeaserList = ({
   children,
@@ -55,12 +56,12 @@ const TeaserList = ({
     <View theme={teaserListTheme}>
       <TeaserListHeader title={title} type={type}
         sizePerPage={sizePerPage} page={page}
-        totalCount={totalCount} updatePage={updatePage} loading={loading}/>
+        totalCount={totalCount} updatePage={updatePage} loading={loading} />
       <View theme={listTheme} id={'explore_' + type + '_result'}>
         {!items || items.length <= 0
           ? (<p className={'C(muted)'}>No Results</p>)
           : (items.map((item, key) => (
-            <TeaserComponent details={item} key={key} name='entry'/>
+            <TeaserComponent details={item} key={key} name='entry' />
         )))
         }
       </View>
@@ -81,7 +82,8 @@ TeaserList.propTypes = {
   sizePerPage: PropTypes.number,
   page: PropTypes.number,
   updatePage: PropTypes.func,
-  loading: PropTypes.bool
+  loading: PropTypes.bool,
+  children: PropTypes.node
 }
 
 export default TeaserList
