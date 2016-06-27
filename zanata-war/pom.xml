@@ -1205,11 +1205,6 @@
           <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
-              <execution>
-                <id>install-wildfly-modules</id>
-                <phase>package</phase>
-              </execution>
-
               <!-- Install arquillian-customised version of standalone.xml -->
               <execution>
                 <id>prepare-arquillian-container</id>
