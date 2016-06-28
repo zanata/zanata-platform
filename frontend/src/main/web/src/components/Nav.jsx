@@ -122,6 +122,7 @@ const Nav = ({
   active,
   links,
   isJsfPage,
+  loading,
   ...props
 }) => {
   let auth = 'loggedout'
@@ -157,6 +158,7 @@ const Nav = ({
 
           const useHref = isJsfPage || !item.internalLink
           return <NavItem key={itemId}
+            loading={loading}
             id={item.id}
             small={item.small}
             active={active.indexOf(link) >= 0}
@@ -190,7 +192,8 @@ Nav.propTypes = {
    * If true, all links will be using href
    * If false, RouterLink will be use
    */
-  isJsfPage: PropTypes.bool
+  isJsfPage: PropTypes.bool,
+  loading: PropTypes.bool
 }
 
 export default Nav

@@ -618,7 +618,7 @@ const glossary = handleActions({
       isDeleting: false
     },
     statsError: false,
-    statsLoading: true
+    statsLoading: false
   })
 
 export default glossary

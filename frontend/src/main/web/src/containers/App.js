@@ -27,6 +27,7 @@ class App extends Component {
     const {
       children,
       activePath,
+      loading,
       ...props
     } = this.props
 
@@ -43,7 +44,7 @@ class App extends Component {
           title='Zanata'
           titleTemplate='%s | Zanata'
         />
-        <Nav active={activePath} links={links} />
+        <Nav active={activePath} links={links} loading={loading} />
         {children}
       </View>
     )
@@ -52,12 +53,18 @@ class App extends Component {
 
 App.propTypes = {
   children: PropTypes.node,
-  activePath: PropTypes.string
+  activePath: PropTypes.string,
+  loading: PropTypes.bool
 }
 
 function mapStateToProps (state) {
+  const exploreLoading = state.explore.loading
+  const isExploreLoading = exploreLoading.Project ||
+    exploreLoading.LanguageTeam || exploreLoading.Person || exploreLoading.Group
   return {
-    activePath: state.routing.location.pathname
+    activePath: state.routing.location.pathname,
+    loading: state.common.loading || state.profile.loading ||
+      isExploreLoading || state.glossary.statsLoading
   }
 }
 
