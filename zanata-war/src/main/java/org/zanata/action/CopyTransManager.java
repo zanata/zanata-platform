@@ -31,6 +31,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import lombok.extern.slf4j.Slf4j;
+
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.async.AsyncTaskHandle;
@@ -50,8 +52,7 @@ import org.zanata.service.CopyTransService;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 
-@Named("copyTransManager")
-@javax.enterprise.context.Dependent
+@Dependent
 @Slf4j
 // TODO This class should be merged with the copy trans service (?)
 public class CopyTransManager implements Serializable {

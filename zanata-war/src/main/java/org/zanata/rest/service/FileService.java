@@ -80,6 +80,7 @@ import com.google.common.io.ByteStreams;
 @Named("fileService")
 @Path(FileResource.SERVICE_PATH)
 @Slf4j
+// TODO this should probably be Transactional
 public class FileService implements FileResource {
     private static final String FILE_TYPE_OFFLINE_PO = "offlinepo";
     private static final String FILE_TYPE_OFFLINE_PO_TEMPLATE = "offlinepot";

@@ -59,6 +59,7 @@ import com.google.common.base.Stopwatch;
 @Slf4j
 @AllArgsConstructor
 @NoArgsConstructor
+// Not @Transactional, because we use CopyTransWorkFactory.runCopyTransInNewTx
 public class CopyTransServiceImpl implements CopyTransService {
 
     private static final int COPY_TRANS_BATCH_SIZE = 20;

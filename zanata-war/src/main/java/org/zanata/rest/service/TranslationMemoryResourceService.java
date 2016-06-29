@@ -35,6 +35,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
@@ -67,7 +69,7 @@ import com.google.common.base.Optional;
 @Path(TranslationMemoryResource.SERVICE_PATH)
 @Slf4j
 @ParametersAreNonnullByDefault
-
+// TODO this should use transactions (probably too big for one though)
 // TODO options to export obsolete docs and textflows to TMX?
 public class TranslationMemoryResourceService implements
         TranslationMemoryResource {

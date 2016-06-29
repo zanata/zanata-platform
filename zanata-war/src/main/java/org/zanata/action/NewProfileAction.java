@@ -25,6 +25,8 @@ import java.util.regex.Pattern;
 
 import lombok.extern.slf4j.Slf4j;
 import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -48,7 +50,9 @@ import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
  *
  */
 @Named("newProfileAction")
-@javax.faces.bean.ViewScoped
+@ViewScoped
+@Model
+@Transactional
 @Slf4j
 public class NewProfileAction extends AbstractProfileAction implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -156,7 +160,7 @@ public class NewProfileAction extends AbstractProfileAction implements Serializa
 
     public void cancel() {
         identity.logout();
-        urlUtil.redirectTo(urlUtil.home());
+        urlUtil.redirectToInternal(urlUtil.home());
     }
 
 }

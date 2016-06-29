@@ -20,6 +20,7 @@
  */
 package org.zanata.service.impl;
 
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
@@ -39,6 +40,7 @@ import org.zanata.service.SlugEntityService;
  */
 @Named("slugEntityServiceImpl")
 @RequestScoped
+@Transactional
 public class SlugEntityServiceImpl implements SlugEntityService {
     @Inject
     private Session session;

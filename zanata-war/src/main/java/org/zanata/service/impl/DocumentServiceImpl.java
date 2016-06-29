@@ -87,6 +87,7 @@ import javax.enterprise.event.Observes;
 @Named("documentServiceImpl")
 @RequestScoped
 @Slf4j
+@Transactional
 public class DocumentServiceImpl implements DocumentService {
     @Inject
     private ZanataIdentity identity;

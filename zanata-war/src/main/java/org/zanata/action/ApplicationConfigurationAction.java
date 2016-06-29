@@ -21,8 +21,13 @@
 package org.zanata.action;
 
 import org.apache.commons.lang.StringUtils;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Model;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import javax.servlet.http.HttpServletRequest;
 
 import org.zanata.ApplicationConfiguration;
@@ -38,7 +43,9 @@ import org.zanata.util.UrlUtil;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("applicationConfigurationAction")
-@javax.enterprise.context.Dependent
+@Dependent
+@Model
+@Transactional
 public class ApplicationConfigurationAction {
     @Inject
     private ApplicationConfiguration applicationConfiguration;

@@ -23,6 +23,8 @@ package org.zanata.rest.service;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HLocale;
@@ -40,6 +42,7 @@ import java.util.Map;
 @RequestScoped
 @Named("projectIterationLocalesService")
 @Path(ProjectIterationLocalesService.SERVICE_PATH)
+@Transactional
 public class ProjectIterationLocalesService extends LocalesService implements ProjectIterationLocalesResource {
     @PathParam("projectSlug")
     String projectSlug;

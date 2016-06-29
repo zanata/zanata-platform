@@ -5,11 +5,13 @@ import java.text.DecimalFormat;
 
 import lombok.Getter;
 
+import javax.enterprise.inject.Model;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.deltaspike.core.api.scope.GroupedConversation;
 import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.dao.ProjectIterationDAO;
@@ -18,6 +20,8 @@ import org.zanata.service.TranslationArchiveService;
 
 @Named("projectIterationZipFileAction")
 @GroupedConversationScoped
+@Model
+@Transactional
 public class ProjectIterationZipFileAction implements Serializable {
 
     private static final long serialVersionUID = 1L;

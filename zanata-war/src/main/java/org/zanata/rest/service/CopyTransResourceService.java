@@ -42,6 +42,7 @@ import org.zanata.security.ZanataIdentity;
 @RequestScoped
 @Named("copyTransResourceService")
 @Path(CopyTransResource.SERVICE_PATH)
+// Not @Transactional, because we use CopyTransWorkFactory.runCopyTransInNewTx
 public class CopyTransResourceService implements CopyTransResource {
     @Inject
     private ZanataIdentity identity;

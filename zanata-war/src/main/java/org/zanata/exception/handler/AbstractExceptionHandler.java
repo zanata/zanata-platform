@@ -70,7 +70,7 @@ public abstract class AbstractExceptionHandler {
         if (ContextUtils.isContextActive(WindowScoped.class)) {
             messages.clear();
             messages.addFromResourceBundle(severity, messageKey, messageArgs);
-            urlUtil.redirectTo(redirectUrl);
+            urlUtil.redirectToInternal(redirectUrl);
 //            TODO urlUtil.forwardTo(redirectPath);
 
             // required - "stops" the JSF lifecycle

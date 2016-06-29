@@ -38,6 +38,7 @@ import javax.enterprise.event.TransactionPhase;
 @Named("translationUpdatedManager")
 @RequestScoped
 @Slf4j
+// not @Transactional (no DB modifications... yet)
 public class TranslationUpdatedManager {
 
     @Inject

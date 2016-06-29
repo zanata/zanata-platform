@@ -232,7 +232,7 @@ public class AuthenticationManager {
         volatileCreds.setUsername(openId);
         volatileCreds.setAuthType(AuthenticationType.OPENID);
         volatileCreds.setOpenIdProviderType(openIdProviderType);
-        zanataOpenId.login(volatileCreds, callback);
+        zanataOpenId.authenticate(volatileCreds, callback);
     }
 
     /**

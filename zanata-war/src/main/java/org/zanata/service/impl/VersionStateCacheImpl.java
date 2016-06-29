@@ -54,6 +54,7 @@ import javax.enterprise.event.TransactionPhase;
  */
 @Named("versionStateCacheImpl")
 @javax.enterprise.context.ApplicationScoped
+// TODO look at using @Transactional
 public class VersionStateCacheImpl implements VersionStateCache {
     private static final String BASE = VersionStateCacheImpl.class.getName();
 

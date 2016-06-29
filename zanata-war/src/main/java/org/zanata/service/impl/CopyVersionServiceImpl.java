@@ -20,7 +20,6 @@ import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
@@ -55,6 +54,7 @@ import com.google.common.collect.Maps;
 @Named("copyVersionServiceImpl")
 @RequestScoped
 @Slf4j
+// Not @Transactional, because we use runInTransaction
 public class CopyVersionServiceImpl implements CopyVersionService {
 
     // Document batch size
