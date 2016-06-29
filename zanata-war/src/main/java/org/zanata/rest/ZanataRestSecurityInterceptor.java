@@ -141,15 +141,11 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
                 token -> securityTokens.findUsernameByAccessToken(token));
 
         if (!usernameOpt.isPresent()) {
-            if (accessTokenOpt.isPresent() && securityTokens.isTokenExpired(accessTokenOpt.get())) {
-                log.info("access token [{}] expired", accessTokenOpt.get());
-                return Either.right(buildUnauthorizedResponse("access token expired"));
-            }
             log.info(
-                    "Bad OAuth request, invalid or missing tokens: access token: {}",
+                    "Bad OAuth request, invalid or expired tokens: access token: {}",
                     accessTokenOpt);
             return Either.right(buildUnauthorizedResponse(
-                    "Bad OAuth request, invalid or missing tokens: access token [" +
+                    "Bad OAuth request, invalid or expired tokens: access token [" +
                             accessTokenOpt + "]"));
         }
         String username = usernameOpt.get();

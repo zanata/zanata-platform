@@ -85,17 +85,9 @@ public class SecurityTokens implements Serializable, Introspectable {
     private Cache<String, String> usernameByAccessTokens;
 
 
-    /**
-     * access token -> true.
-     * stores the newly expired access token so that we can indicate to the user
-     * agent that the access token has expired.
-     */
-    private Cache<String, Boolean> expiredAccessTokens =
-            CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.SECONDS)
-                    .build();
-
     private long tokenExpiresInSeconds;
 
+    @SuppressWarnings("unused")
     protected SecurityTokens() {
     }
 
@@ -103,17 +95,8 @@ public class SecurityTokens implements Serializable, Introspectable {
     public SecurityTokens(@SysConfig(ApplicationConfiguration.ACCESS_TOKEN_EXPIRES_IN_SECONDS)
             long tokenExpiresInSeconds) {
         this.tokenExpiresInSeconds = tokenExpiresInSeconds;
-    }
-
-    @PostConstruct
-    public void setUp() {
-        // Once an access token expires, it will be put into expiredAccessTokens cache
-        // so that it can be recognized by next request.
         usernameByAccessTokens = CacheBuilder.newBuilder()
                 .expireAfterAccess(tokenExpiresInSeconds, TimeUnit.SECONDS)
-                .<String, String>removalListener(
-                        notification -> expiredAccessTokens
-                                .put(notification.getKey(), true))
                 .build();
     }
 
@@ -225,10 +208,6 @@ public class SecurityTokens implements Serializable, Introspectable {
      */
     public Optional<String> findUsernameByAccessToken(String accessToken) {
         return Optional.ofNullable(usernameByAccessTokens.getIfPresent(accessToken));
-    }
-
-    public boolean isTokenExpired(String accessToken) {
-        return expiredAccessTokens.getIfPresent(accessToken) != null;
     }
 
     public OAuthToken refreshAccessToken(HAccount account, String refreshToken)
