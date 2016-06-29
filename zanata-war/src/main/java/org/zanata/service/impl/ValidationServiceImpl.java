@@ -16,6 +16,8 @@ import org.apache.commons.lang.StringUtils;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectDAO;
@@ -45,6 +47,7 @@ import com.google.common.collect.Lists;
 @Named("validationServiceImpl")
 @RequestScoped
 @Slf4j
+@Transactional
 public class ValidationServiceImpl implements ValidationService {
     @Inject
     private ProjectDAO projectDAO;

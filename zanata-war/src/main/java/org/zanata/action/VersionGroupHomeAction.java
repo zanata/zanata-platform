@@ -28,8 +28,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.ProjectMemberDAO;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
@@ -61,7 +66,9 @@ import lombok.Setter;
  */
 
 @Named("versionGroupHomeAction")
-@javax.faces.bean.ViewScoped
+@ViewScoped
+@Model
+@Transactional
 public class VersionGroupHomeAction extends AbstractSortAction implements
         Serializable {
     private static final long serialVersionUID = 1L;

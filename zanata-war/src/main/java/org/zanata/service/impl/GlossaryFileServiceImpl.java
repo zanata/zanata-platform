@@ -224,6 +224,8 @@ public class GlossaryFileServiceImpl implements GlossaryFileService {
      * This force glossaryDAO to flush and commit on every
      * {@link BATCH_SIZE} records.
      */
+    // TODO does that mean the reads aren't in transactions?
+    // TODO use Transactional at class level?
     @Transactional
     private void executeCommit() {
         glossaryDAO.flush();

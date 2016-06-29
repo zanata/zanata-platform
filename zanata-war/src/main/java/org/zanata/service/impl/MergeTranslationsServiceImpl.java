@@ -77,6 +77,7 @@ import static org.zanata.transaction.TransactionUtil.runInTransaction;
 @Named("mergeTranslationsServiceImpl")
 @RequestScoped
 @Slf4j
+// Not @Transactional, because we use runInTransaction
 public class MergeTranslationsServiceImpl implements MergeTranslationsService {
 
     @Inject

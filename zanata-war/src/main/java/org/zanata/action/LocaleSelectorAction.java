@@ -29,6 +29,7 @@ import java.util.StringTokenizer;
 
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Model;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
@@ -52,6 +53,7 @@ import org.zanata.util.Synchronized;
  */
 @Named("localeSelectorAction")
 @SessionScoped
+@Model
 @Synchronized
 public class LocaleSelectorAction implements Serializable {
     private static final long serialVersionUID = -7116393807988405479L;

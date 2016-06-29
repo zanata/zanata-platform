@@ -26,6 +26,7 @@ import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Model;
 import javax.validation.constraints.NotNull;
 
 import javax.inject.Inject;
@@ -50,6 +51,8 @@ import org.zanata.security.AuthenticationType;
  */
 @Named("roleAssignmentRuleAction")
 @RequestScoped
+@Model
+@Transactional
 @CheckRole("admin")
 public class RoleAssignmentRuleAction extends EntityHome<HRoleAssignmentRule>
         implements Serializable {

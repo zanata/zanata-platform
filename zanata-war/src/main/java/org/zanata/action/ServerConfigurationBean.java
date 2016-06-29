@@ -26,6 +26,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
 import javax.validation.constraints.Pattern;
 
 import lombok.Data;
@@ -54,8 +56,9 @@ import org.zanata.ui.faces.FacesMessages;
 import static org.zanata.model.HApplicationConfiguration.*;
 
 @Named("serverConfigurationBean")
-@javax.faces.bean.ViewScoped
-
+@ViewScoped
+@Model
+@Transactional
 @CheckRole("admin")
 @Slf4j
 public class ServerConfigurationBean implements Serializable {

@@ -26,6 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
@@ -65,6 +67,7 @@ import static org.zanata.common.ProjectType.*;
 @Named("translationArchiveServiceImpl")
 @RequestScoped
 @Slf4j
+@Transactional
 public class TranslationArchiveServiceImpl implements
         TranslationArchiveService {
 

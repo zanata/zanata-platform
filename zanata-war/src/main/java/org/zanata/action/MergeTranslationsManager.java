@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.async.AsyncTaskHandleManager;
@@ -20,8 +21,7 @@ import org.zanata.service.MergeTranslationsService;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 
-@Named("mergeTranslationsManager")
-@javax.enterprise.context.Dependent
+@Dependent
 @Slf4j
 public class MergeTranslationsManager implements Serializable {
     private static final long serialVersionUID = -8717740654253262530L;

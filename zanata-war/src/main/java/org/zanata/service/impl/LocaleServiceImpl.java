@@ -34,6 +34,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.PersonDAO;
@@ -61,6 +62,7 @@ import lombok.extern.slf4j.Slf4j;
 @Named("localeServiceImpl")
 @RequestScoped
 @Slf4j
+@Transactional
 public class LocaleServiceImpl implements LocaleService {
     private LocaleDAO localeDAO;
 

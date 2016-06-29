@@ -30,6 +30,9 @@ import com.google.common.collect.Lists;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -66,7 +69,9 @@ import java.util.Map;
  * Template is person-permissions-modal.xhtml
  */
 @Named("projectPermissionDialog")
-@javax.faces.bean.ViewScoped
+@ViewScoped
+@Model
+@Transactional
 @Slf4j
 public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
         implements Serializable {

@@ -4,10 +4,13 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Model;
 import javax.inject.Inject;
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.util.Synchronized;
@@ -19,6 +22,8 @@ import org.zanata.util.Synchronized;
 @Named("userSearch")
 // TODO this should probably be ViewScoped or even RequestScoped (with changes in xhtml)
 @SessionScoped
+@Model
+@Transactional
 @Synchronized
 public class UserSearch implements Serializable {
     private static final long serialVersionUID = -4792732235757055958L;

@@ -55,6 +55,7 @@ import org.zanata.util.Zanata;
 @Named("indexingServiceImpl")
 @RequestScoped
 @Slf4j
+// Not @Transactional, because we manage EntityManager directly
 public class IndexingServiceImpl implements IndexingService {
 
     @Inject @Zanata

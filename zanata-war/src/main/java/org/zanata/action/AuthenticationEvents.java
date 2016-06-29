@@ -40,10 +40,16 @@ import org.zanata.events.UserCreatedEvent;
 import org.zanata.ui.faces.FacesMessages;
 
 /**
- * Some of the event observers are migrated from org.jboss.seam.security.FacesSecurityEvents
+ * Some of the event observers are migrated from org.jboss.seam.security.FacesSecurityEvents.
+ * Most of these events are fired by ZanataIdentity.
+ * @see org.zanata.security.ZanataIdentity
+ * @see org.zanata.security.SpNegoIdentity
+ * @see org.zanata.exception.handler.AccessDeniedExceptionHandler
+ * @see org.zanata.exception.handler.NotLoggedInExceptionHandler
  */
 @Dependent
 @Slf4j
+// TODO get these event observers working again
 public class AuthenticationEvents implements Serializable {
     private static final long serialVersionUID = 1L;
 

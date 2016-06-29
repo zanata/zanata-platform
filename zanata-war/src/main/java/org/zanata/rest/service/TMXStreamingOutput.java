@@ -47,7 +47,7 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.PeekingIterator;
 
 /**
- * Exports a series of tranlation units (T) to an OutputStream in TMX format.
+ * Exports a series of translation units (T) to an OutputStream in TMX format.
  *
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>

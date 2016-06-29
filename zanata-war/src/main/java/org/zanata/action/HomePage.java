@@ -22,6 +22,7 @@ package org.zanata.action;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
@@ -37,7 +38,7 @@ import org.zanata.util.CommonMarkRenderer;
  */
 
 @Named("homePage")
-@javax.enterprise.context.ApplicationScoped
+@ApplicationScoped
 @Slf4j
 public class HomePage {
 

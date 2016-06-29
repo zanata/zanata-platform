@@ -8,6 +8,8 @@ import java.util.concurrent.ExecutionException;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Model;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.security.annotations.CheckLoggedIn;
@@ -24,8 +26,8 @@ import com.google.common.base.Optional;
 
 @Named("reindexAction")
 @Slf4j
-@javax.enterprise.context.Dependent
-
+@Dependent
+@Model
 @CheckRole("admin")
 public class ReindexAction implements Serializable {
     private static final long serialVersionUID = 1L;

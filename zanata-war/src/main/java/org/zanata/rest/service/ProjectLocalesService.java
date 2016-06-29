@@ -20,33 +20,27 @@
  */
 package org.zanata.rest.service;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.jboss.resteasy.util.GenericType;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Response;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
-import org.zanata.rest.dto.LocaleDetails;
-import org.zanata.rest.service.ProjectLocalesResource;
 import org.zanata.service.LocaleService;
-
-import com.google.common.collect.Lists;
 
 @RequestScoped
 @Named("projectLocalesService")
 @Path(ProjectLocalesResource.SERVICE_PATH)
+@Transactional
 public class ProjectLocalesService extends LocalesService implements ProjectLocalesResource {
     @PathParam("projectSlug")
     String projectSlug;

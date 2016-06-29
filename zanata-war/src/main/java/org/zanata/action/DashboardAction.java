@@ -30,10 +30,14 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import lombok.NonNull;
 import org.apache.commons.lang.StringUtils;
+
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.zanata.dao.VersionGroupDAO;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.model.HIterationGroup;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.security.annotations.Authenticated;
@@ -61,9 +65,10 @@ import javax.annotation.Nullable;
 import lombok.Getter;
 
 @Named("dashboardAction")
-@javax.faces.bean.ViewScoped
-
+@ViewScoped
 @CheckLoggedIn
+@Model
+@Transactional
 public class DashboardAction implements Serializable {
     private static final long serialVersionUID = 1L;
 

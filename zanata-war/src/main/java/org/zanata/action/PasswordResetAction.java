@@ -2,6 +2,7 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
+import javax.enterprise.inject.Model;
 import javax.persistence.EntityManager;
 import javax.validation.constraints.Size;
 
@@ -27,6 +28,8 @@ import org.zanata.ui.faces.FacesMessages;
 
 @Named("passwordReset")
 @GroupedConversationScoped
+@Model
+@Transactional
 public class PasswordResetAction implements Serializable {
 
     private static final long serialVersionUID = -3966625589007754411L;

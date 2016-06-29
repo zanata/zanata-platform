@@ -8,6 +8,8 @@ import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.Email;
 import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -28,7 +30,9 @@ import org.zanata.service.EmailService;
 import org.zanata.ui.faces.FacesMessages;
 
 @Named("inactiveAccountAction")
-@javax.faces.bean.ViewScoped
+@ViewScoped
+@Model
+@Transactional
 public class InactiveAccountAction implements Serializable {
     @Inject
     private AccountDAO accountDAO;
