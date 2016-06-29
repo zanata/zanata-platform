@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react'
 import { Link, NavIcon } from './'
 import { merge } from 'lodash'
+import LogoLoader from './LogoLoader'
 
 /**
  * Item of side menu. See Nav.jsx for usage.
@@ -13,6 +14,7 @@ const NavItem = ({
   active,
   title,
   useHref,
+  loading,
   ...props
 }) => {
   const isLogo = (icon === 'zanata')
@@ -68,9 +70,15 @@ const NavItem = ({
     )
   }
   const text = isLogo ? (<span className='Hidden'>{title}</span>) : title
+  const inverted = false
+
+  const child = isLogo
+    ? <LogoLoader inverted={inverted} loading={loading} />
+    : <NavIcon name={icon} size='1' />
+
   return (
     <Link {...props} id={id} link={link} theme={themeClasses} useHref={useHref}>
-      <NavIcon name={icon} size={isLogo ? '6' : '1'} />
+      {child}
       {text}
     </Link>
   )
@@ -83,7 +91,8 @@ NavItem.propTypes = {
   icon: PropTypes.string,
   active: PropTypes.bool,
   title: PropTypes.string,
-  useHref: PropTypes.bool
+  useHref: PropTypes.bool,
+  loading: PropTypes.bool
 }
 
 export default NavItem

@@ -95,7 +95,7 @@ const Tooltip = ({
           ...tooltipArrowStyle
         }}
       >
-        <div className={tooltipArrowClasses} style={tooltipArrowInnerStyle}/>
+        <div className={tooltipArrowClasses} style={tooltipArrowInnerStyle} />
       </div>
 
       <div className={tooltipInnerClasses}>

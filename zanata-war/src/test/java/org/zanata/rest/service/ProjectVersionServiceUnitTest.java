@@ -23,13 +23,10 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.ReadOnlyEntityException;
+import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.dto.ProjectIteration;
 import org.zanata.rest.dto.resource.ResourceMeta;
-import org.zanata.rest.editor.dto.Locale;
 import org.zanata.rest.editor.service.UserService;
-import org.zanata.rest.service.ETagUtils;
-import org.zanata.rest.service.ProjectVersionService;
-import org.zanata.rest.service.ResourceUtils;
 import org.zanata.search.FilterConstraints;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.server.rpc.GetTransUnitsNavigationService;
@@ -38,10 +35,7 @@ import org.zanata.webtrans.shared.model.DocumentId;
 import com.google.common.collect.ImmutableMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
-import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -132,8 +126,8 @@ public class ProjectVersionServiceUnitTest {
         Response response = service.getLocales("about-fedora", "master");
 
         assertThat(response.getStatus()).isEqualTo(200);
-        List<Locale> iterationList =
-                (List<Locale>) response.getEntity();
+        List<LocaleDetails> iterationList =
+                (List<LocaleDetails>) response.getEntity();
         assertThat(iterationList).extracting("localeId")
                 .contains(LocaleId.DE, LocaleId.ES);
     }

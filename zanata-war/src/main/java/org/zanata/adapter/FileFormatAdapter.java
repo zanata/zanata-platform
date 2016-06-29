@@ -22,15 +22,17 @@ package org.zanata.adapter;
 
 import java.io.OutputStream;
 import java.net.URI;
-import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.ws.rs.core.StreamingOutput;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
+import org.zanata.common.DocumentType;
 import org.zanata.common.LocaleId;
 import org.zanata.exception.FileFormatAdapterException;
-import org.zanata.file.GlobalDocumentId;
+import org.zanata.model.HDocument;
 import org.zanata.rest.dto.resource.Resource;
-import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 import com.google.common.base.Optional;
@@ -114,4 +116,27 @@ public interface FileFormatAdapter {
             String locale, Optional<String> params)
             throws FileFormatAdapterException, IllegalArgumentException;
 
+
+    /**
+     * Generate translation file with locale and translation extension from DocumentType
+     *
+     * Source file name will be used if translation extension cannot be found
+     * in HRawDocument#DocumentType
+     *
+     * @param document
+     *             document to provide name and extension information
+     * @param locale
+     *             to provide for
+     */
+    default String generateTranslationFilename(@Nonnull HDocument document, @Nonnull String locale)
+        throws IllegalArgumentException {
+        String srcExt = FilenameUtils.getExtension(document.getName());
+        DocumentType documentType = document.getRawDocument().getType();
+        String transExt = documentType.getExtensions().get(srcExt);
+        if (StringUtils.isEmpty(transExt)) {
+            return document.getName();
+        }
+        return FilenameUtils.removeExtension(document
+                .getName()) + "." + transExt;
+    }
 }

@@ -17,11 +17,13 @@ import {
   glossaryFilterTextChanged,
   glossarySortColumn,
   glossaryToggleImportFileDisplay,
+  glossaryToggleExportFileDisplay,
   glossaryToggleNewEntryModal,
   glossaryToggleDeleteAllEntriesModal,
   glossaryDeleteAll
 } from '../../actions/glossary'
 import ImportModal from './ImportModal'
+import ExportModal from './ExportModal'
 import NewEntryModal from './NewEntryModal'
 import DeleteAllEntriesModal from './DeleteAllEntriesModal'
 
@@ -72,6 +74,7 @@ class ViewHeader extends Component {
       handleTranslationLocaleChange,
       handleFilterFieldUpdate,
       handleImportFileDisplay,
+      handleExportFileDisplay,
       handleNewEntryDisplay,
       handleDeleteAllEntriesDisplay,
       handleDeleteAllEntries,
@@ -81,10 +84,12 @@ class ViewHeader extends Component {
       deleteAll
       } = this.props
     const currentLocaleCount = this.currentLocaleCount()
-    const isReadOnly = !(permission.canAddNewEntry || permission.canUpdateEntry || permission.canDeleteEntry)
+    const isReadOnly = !(permission.canAddNewEntry ||
+      permission.canUpdateEntry || permission.canDeleteEntry)
     const icon = isReadOnly ? 'locked' : undefined
     const tooltip = isReadOnly ? 'read-only' : undefined
     const showDeleteAll = permission.canDeleteEntry && termCount > 0
+    /* eslint-disable react/jsx-no-bind, no-return-assign */
     return (
       <Header title='Glossary' icon={icon} tooltip={tooltip}
         extraElements={(
@@ -110,10 +115,22 @@ class ViewHeader extends Component {
                   onClick={() => handleImportFileDisplay(true)}>
                   <Row>
                     <Icon name='import' atomic={{m: 'Mend(re)'}} />
-                    <span className='Hidden--lesm'>Import Glossary</span>
+                    <span className='Hidden--lesm'>Import</span>
                   </Row>
                 </ButtonLink>
                 <ImportModal />
+              </div>)}
+
+            {permission.canDownload && (
+              <div className='Mstart(rh)--md Mstart(rq)'>
+                <ButtonLink type='default'
+                  onClick={() => handleExportFileDisplay(true)}>
+                  <Row>
+                    <Icon name='export' atomic={{m: 'Mend(re)'}} />
+                    <span className='Hidden--lesm'>Export</span>
+                  </Row>
+                </ButtonLink>
+                <ExportModal />
               </div>)}
 
              {permission.canAddNewEntry && (
@@ -121,7 +138,7 @@ class ViewHeader extends Component {
                  <ButtonLink onClick={() => handleNewEntryDisplay(true)}>
                    <Row>
                      <Icon name='plus' atomic={{m: 'Mend(re)'}} />
-                     <span className='Hidden--lesm'>New Term</span>
+                     <span className='Hidden--lesm'>New</span>
                    </Row>
                  </ButtonLink>
                  <NewEntryModal />
@@ -202,8 +219,7 @@ class ViewHeader extends Component {
                 </Row>
               </ButtonLink>
             </TableCell>
-            <TableCell size='2'>
-            </TableCell>
+            <TableCell size='2' />
           </TableRow>
         </View>
       </Header>
@@ -212,26 +228,37 @@ class ViewHeader extends Component {
 }
 
 ViewHeader.propTypes = {
+  results: PropTypes.object,
   termCount: PropTypes.number.isRequired,
   statsLoading: PropTypes.bool,
   transLocales: PropTypes.arrayOf(
     PropTypes.shape({
-        count: PropTypes.number.isRequired,
-        label: PropTypes.string.isRequired,
-        value: PropTypes.string.isRequired
+      count: PropTypes.number.isRequired,
+      label: PropTypes.string.isRequired,
+      value: PropTypes.string.isRequired
     })
   ).isRequired,
   filterText: PropTypes.string,
   selectedTransLocale: PropTypes.string,
   permission: PropTypes.shape({
-      canAddNewEntry: PropTypes.bool,
-      canUpdateEntry: PropTypes.bool,
-      canDeleteEntry: PropTypes.bool
+    canAddNewEntry: PropTypes.bool,
+    canUpdateEntry: PropTypes.bool,
+    canDeleteEntry: PropTypes.bool
   }).isRequired,
   sort: PropTypes.shape({
     src_content: PropTypes.bool,
     part_of_speech: PropTypes.bool
   }).isRequired,
+  deleteAll: PropTypes.object,
+  handleTranslationLocaleChange: PropTypes.func,
+  handleFilterFieldUpdate: PropTypes.func,
+  handleImportFileDisplay: PropTypes.func,
+  handleNewEntryDisplay: PropTypes.func,
+  handleDeleteAllEntriesDisplay: PropTypes.func,
+  handleDeleteAllEntries: PropTypes.func,
+  handleSortColumn: PropTypes.func,
+  handleSearchCancelClick: PropTypes.func,
+  handleExportFileDisplay: PropTypes.func
 }
 
 const mapStateToProps = (state) => {
@@ -275,6 +302,8 @@ const mapDispatchToProps = (dispatch) => {
     handleSortColumn: (col) => dispatch(glossarySortColumn(col)),
     handleImportFileDisplay: (display) =>
       dispatch(glossaryToggleImportFileDisplay(display)),
+    handleExportFileDisplay: (display) =>
+      dispatch(glossaryToggleExportFileDisplay(display)),
     handleNewEntryDisplay: (display) =>
       dispatch(glossaryToggleNewEntryModal(display)),
     handleDeleteAllEntriesDisplay: (display) =>

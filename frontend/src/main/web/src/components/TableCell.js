@@ -60,7 +60,7 @@ const TableCell = ({
   )
 }
 
-TableCell.propType = {
+TableCell.propTypes = {
   /**
    * The table cell content
    */
@@ -80,7 +80,8 @@ TableCell.propType = {
    * Except on small screens when 1 is hidden an 2 gets half width
    * e.g. 2 = 1/4 or 2/4 on small screens
    */
-  size: PropTypes.oneOf(['1', '2', '3'])
+  size: PropTypes.oneOf(['1', '2', '3']),
+  theme: PropTypes.object
 }
 
 export default TableCell

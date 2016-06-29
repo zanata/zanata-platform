@@ -4,9 +4,17 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
-  xmlns:a4j="http://richfaces.org/a4j">
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:rich="http://richfaces.org/rich">
 
   <div class="l--push-top-half form__item">
+    <script type="application/javascript">
+      jQuery(document).ready(function () {
+        var nameFieldId = "[id='#{rich:clientId('nameField')}']"
+        jQuery(nameFieldId).find('input').focus()
+      })
+    </script>
+
     <h:outputLabel for="name">#{msgs['jsf.GroupName']}
       <span class="txt--required">*</span>
     </h:outputLabel>

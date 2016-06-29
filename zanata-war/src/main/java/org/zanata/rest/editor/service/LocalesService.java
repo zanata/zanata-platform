@@ -34,7 +34,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.model.HLocale;
-import org.zanata.rest.editor.dto.Locale;
+import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.editor.service.resource.LocalesResource;
 import org.zanata.service.LocaleService;
 
@@ -56,17 +56,17 @@ public class LocalesService implements LocalesResource {
     public Response get() {
         List<HLocale> locales = localeServiceImpl.getAllLocales();
 
-        List<Locale> localesRefs =
+        List<LocaleDetails> localesRefs =
             Lists.newArrayListWithExpectedSize(locales.size());
 
         localesRefs.addAll(
-            locales.stream().map(hLocale -> new Locale(hLocale.getLocaleId(),
-                hLocale.retrieveDisplayName())).collect(Collectors.toList()));
+            locales.stream().map(hLocale -> new LocaleDetails(hLocale.getLocaleId(),
+                hLocale.retrieveDisplayName(), "")).collect(Collectors.toList()));
 
-        Type genericType = new GenericType<List<Locale>>() {
+        Type genericType = new GenericType<List<LocaleDetails>>() {
         }.getGenericType();
         Object entity =
-            new GenericEntity<List<Locale>>(localesRefs, genericType);
+            new GenericEntity<List<LocaleDetails>>(localesRefs, genericType);
         return Response.ok(entity).build();
     }
 }

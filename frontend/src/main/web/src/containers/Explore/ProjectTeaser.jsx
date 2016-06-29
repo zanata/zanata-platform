@@ -26,16 +26,13 @@ const ProjectTeaser = ({
   ...props
 }) => {
   const status = statusIcons[details.status]
-  const description = details.description ? (
-      <div className={'C(muted)'}>
+  const description = details.description
+    ? (<div className={'C(muted)'}>
         {details.description}
-      </div>
-    )
-    : (
-      <div className={'C(muted) Fs(i)'}>
+    </div>)
+    : (<div className={'C(muted) Fs(i)'}>
         No description available
-      </div>
-    )
+    </div>)
   const metaData = details.owner && (
     <View
       theme={{
@@ -49,7 +46,7 @@ const ProjectTeaser = ({
       <Icon
         name='user'
         size='n1'
-        theme={{ base: { c: 'C(muted)', m: 'Mend(rq)' } }}/>
+        theme={{ base: { c: 'C(muted)', m: 'Mend(rq)' } }} />
       <Link to={details.owner}>{details.owner}</Link>
       <Icon
         name='users'
@@ -81,7 +78,7 @@ const ProjectTeaser = ({
           <Link link={link} useHref theme={theme} title={tooltip}>
             {status !== statusIcons.ACTIVE &&
             (<Icon name={statusIcons[details.status]} size='1'
-              theme={{ base: { m: 'Mend(rq)' } }}/>)}
+              theme={{ base: { m: 'Mend(rq)' } }} />)}
             {details.title}
           </Link>
           {description}

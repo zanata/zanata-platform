@@ -2,7 +2,7 @@ site_name: Zanata Server
 docs_dir: docs
 repo_name: GitHub
 repo_url: http://www.github.com/zanata/zanata-server
-site_favicon: http://assets-zanata.rhcloud.com/master/favicon.ico
+site_favicon: favicon.ico
 theme: readthedocs
 extra_css:
   - css/extra.css

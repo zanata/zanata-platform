@@ -366,7 +366,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                 calculateSimilarityPercentage(transMemoryQuery,
                     textFlowContents);
             if (percent < MINIMUM_SIMILARITY) {
-                log.info("Ignoring TM - {} with less than {}% matching.",
+                log.debug("Ignoring TM - {} with less than {}% matching.",
                     textFlowContents, MINIMUM_SIMILARITY);
                 return;
             }
@@ -385,7 +385,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             double percent =
                 calculateSimilarityPercentage(transMemoryQuery, sourceContents);
             if (percent < MINIMUM_SIMILARITY) {
-                log.info("Ignoring TM - {} with less than {}% matching.",
+                log.debug("Ignoring TM - {} with less than {}% matching.",
                         sourceContents, MINIMUM_SIMILARITY);
                 return;
             }
@@ -615,9 +615,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                 generateQuery(query, sourceLocale, targetLocale, textFlowTargetId, queryText,
                         multiQueryText, IndexFieldLabels.TF_CONTENT_FIELDS);
 
-        log.info("Executing Lucene query: {}", textQuery.toString());
-
-        log.info("Executing Lucene query: {}", textQuery.toString());
+        log.debug("Executing Lucene query: {}", textQuery);
 
         FullTextQuery ftQuery =
                 entityManager.createFullTextQuery(textQuery, entities);
@@ -974,11 +972,15 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                         "Query results include null entity. You may need to re-index.");
                 return false;
             } else {
-                log.error(
-                        "Unexpected query result of type {}: {}. You may need to re-index.",
-                        entity.getClass().getName(), entity);
-                return false;
+                try {
+                    log.warn("Unexpected query result of type {}: {}. You may need to re-index.",
+                            entity.getClass().getName(), entity);
+                } catch (NullPointerException npe) {
+                    log.warn("Encountered entity with null attributes");
+                }
             }
+            return true;
+
         }
     }
 

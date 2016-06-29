@@ -1,6 +1,6 @@
 <!--
 NB: Any changes to this file must be reported in the release notes,
-in case changes are required for production deployment (eg cfengine).
+in case changes are required for production deployment (eg Ansible playbooks).
 -->
 
 <jboss-web xmlns="http://www.jboss.com/xml/ns/javaee"
@@ -9,11 +9,6 @@ in case changes are required for production deployment (eg cfengine).
   <resource-ref>
     <res-ref-name>jdbc/zanata</res-ref-name>
     <jndi-name>java:jboss/datasources/zanataDatasource</jndi-name>
-  </resource-ref>
-
-  <resource-ref>
-    <res-ref-name>infinispan/zanata</res-ref-name>
-    <jndi-name>java:jboss/infinispan/container/zanata</jndi-name>
   </resource-ref>
 
   <resource-ref>

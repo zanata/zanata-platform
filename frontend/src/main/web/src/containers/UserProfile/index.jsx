@@ -1,8 +1,14 @@
-import React, { PropTypes } from 'react'
+import React, { Component, PropTypes } from 'react'
+import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
 import { isEmpty } from 'lodash'
+import {
+  profileInitialLoad,
+  dateRangeChanged,
+  filterUpdate,
+  selectDayChanged
+} from '../../actions/profile'
 import RecentContributions from './RecentContributions'
-import UserMatrixStore from '../../stores/UserMatrixStore'
 import {
   Base,
   Flex,
@@ -10,8 +16,7 @@ import {
   LoaderText,
   Notification,
   Page,
-  ScrollView,
-  View
+  ScrollView
 } from '../../components'
 
 const classes = {
@@ -42,101 +47,101 @@ const classes = {
 /**
  * Root component for user profile page
  */
-var UserProfile = React.createClass({
-  getMatrixState: function () {
-    const username = this.props.params.username
-      ? this.props.params.username
-      : window.config.user.username
-    return UserMatrixStore.getMatrixState(username)
-  },
+class UserProfile extends Component {
 
-  getInitialState: function () {
-    return this.getMatrixState()
-  },
+  componentDidMount () {
+    this.props.handleInitLoad(this.props.params.username)
+  }
 
-  componentDidMount: function () {
-    UserMatrixStore.addChangeListener(this._onChange)
-  },
+  render () {
+    const {
+      user,
+      notification,
+      loading,
+      dateRangeOption,
+      matrixForAllDays,
+      wordCountsForSelectedDayFilteredByContentState,
+      wordCountsForEachDayFilteredByContentState,
+      contentStateOption,
+      selectedDay,
+      dateRange,
+      handleDateRangeChanged,
+      handleFilterChanged,
+      handleSelectedDayChanged
+    } = this.props
 
-  componentWillUnmount: function () {
-    UserMatrixStore.removeChangeListener(this._onChange)
-  },
+    const username = user.username
+    const name = user.name ? user.name : undefined
+    const email = user.email ? user.email : undefined
+    const languageTeams = !isEmpty(user.languageTeams)
+      ? user.languageTeams.join() : undefined
+    const isLoggedIn = window.config.permission.isLoggedIn
 
-  componentWillReceiveProps: function (nextProps) {
-    if (nextProps.params.username !== this.props.params.username) {
-      this.setState(UserMatrixStore.getMatrixState(nextProps.params.username))
-    }
-  },
-
-  _onChange: function () {
-    this.setState(this.getMatrixState())
-  },
-
-  render: function () {
-    const user = isEmpty(this.state.user) ? window.config.user : this.state.user
-    const username = user && user.username ? user.username : ''
-    const languageTeams = user && !isEmpty(user.languageTeams)
-      ? user.languageTeams.join() : ''
-    const notification = this.state.notification
+    const divClass = 'D(f) Ai(fs) Ac(fs) Fld(c) Jc(fs) Flw(nw) ' +
+      'My(r3) Mx(a) Maw(20em) W(100%)'
     return (
       <Page>
-        {notification && (<Notification
-          severity={notification.severity}
-          message={notification.message}
-          details={notification.details}
-          show={!!notification} />
+        {notification &&
+          (<Notification
+            severity={notification.severity}
+            message={notification.message}
+            details={notification.details}
+            show={!!notification} />
         )}
         <Helmet title='User Profile' />
         <ScrollView>
-          {user.loading || this.state.loading
-            ? (
-            <div
-              className='D(f) Ai(fs) Ac(fs) Fld(c) Jc(fs) Flw(nw) My(r3) Mx(a) Maw(20em) W(100%)'>
-              <LoaderText size='8' loading atomic={{w: 'W(100%)'}}/>
+          {user.loading || loading
+            ? (<div className={divClass}>
+              <LoaderText size='8' loading atomic={{w: 'W(100%)'}} />
             </div>)
-            : (
-            <Flex dir='c' atomic={classes.wrapper}>
+            : (<Flex dir='c' atomic={classes.wrapper}>
               <Flex dir='rr' id='profile-overview' atomic={classes.details}>
                 <Base atomic={classes.detailsAvatar}>
-                  <img src={user && user.imageUrl ? user.imageUrl : ''}
+                  <img src={user.imageUrl ? user.imageUrl : ''}
                     alt={username} />
                 </Base>
                 <Flex dir='c' atomic={classes.detailsText}>
-                  <Base atomic={classes.usersName} id='profile-displayname'>
-                    {user && user.name ? user.name : ''}
-                  </Base>
+                  {name &&
+                    <Base atomic={classes.usersName} id='profile-displayname'>
+                      {name}
+                    </Base>
+                  }
                   <ul className='Fz(msn1)'>
                     <Flex tagName='li' align='c' id='profile-username'>
                       <Icon name='user'
                         atomic={{m: 'Mend(re)'}}
-                        title='Username'/>
+                        title='Username' />
                       {username}
-                      {user && user.email &&
-                      (<span className='Mstart(rq) C(muted)'>{user.email}</span>)
+                      {email &&
+                        (<span className='Mstart(rq) C(muted)'>
+                          {email}
+                        </span>)
                       }
                     </Flex>
-                    {user && !isEmpty(user.languageTeams) &&
+                    {languageTeams &&
                     (<Flex tagName='li' align='c' id='profile-languages'>
                       <Icon name='language'
                         atomic={{m: 'Mend(re)'}}
-                        title='Spoken languages'/>
+                        title='Spoken languages' />
                       {languageTeams}
                     </Flex>)}
                   </ul>
                 </Flex>
               </Flex>
-              {window.config.permission.isLoggedIn &&
+              {isLoggedIn &&
               (<RecentContributions
-                dateRangeOption={this.state.dateRangeOption}
-                matrixForAllDays={this.state.matrixForAllDays}
+                dateRangeOption={dateRangeOption}
+                matrixForAllDays={matrixForAllDays}
                 wordCountsForSelectedDayFilteredByContentState={
-                    this.state.wordCountsForSelectedDayFilteredByContentState
-                  }
+                      wordCountsForSelectedDayFilteredByContentState}
                 wordCountsForEachDayFilteredByContentState={
-                    this.state.wordCountsForEachDayFilteredByContentState}
-                contentStateOption={this.state.contentStateOption}
-                selectedDay={this.state.selectedDay}
-                dateRange={this.state.dateRange} />)
+                      wordCountsForEachDayFilteredByContentState}
+                contentStateOption={contentStateOption}
+                selectedDay={selectedDay}
+                dateRange={dateRange}
+                handleDateRangeChanged={handleDateRangeChanged}
+                handleFilterChanged={handleFilterChanged}
+                handleSelectedDayChanged={handleSelectedDayChanged} />)
               }
             </Flex>)
           }
@@ -144,12 +149,59 @@ var UserProfile = React.createClass({
       </Page>
     )
   }
-})
-
-UserProfile.propTypes = {
-  params: PropTypes.shape({
-    username: PropTypes.string
-  })
 }
 
-export default UserProfile
+UserProfile.propTypes = {
+  params: PropTypes.object,
+  user: PropTypes.object,
+  notification: PropTypes.object,
+  loading: PropTypes.bool,
+  dateRangeOption: PropTypes.object,
+  matrixForAllDays: PropTypes.array,
+  wordCountsForSelectedDayFilteredByContentState: PropTypes.array,
+  wordCountsForEachDayFilteredByContentState: PropTypes.array,
+  contentStateOption: PropTypes.string,
+  selectedDay: PropTypes.string,
+  dateRange: PropTypes.object,
+  handleInitLoad: PropTypes.func,
+  handleDateRangeChanged: PropTypes.func,
+  handleFilterChanged: PropTypes.func,
+  handleSelectedDayChanged: PropTypes.func
+}
+
+const mapStateToProps = (state) => {
+  return {
+    location: state.routing.location,
+    user: state.profile.user,
+    notification: state.profile.notification,
+    loading: state.profile.loading,
+    dateRangeOption: state.profile.dateRangeOption,
+    matrixForAllDays: state.profile.matrixForAllDays,
+    wordCountsForSelectedDayFilteredByContentState:
+      state.profile.wordCountsForSelectedDayFilteredByContentState,
+    wordCountsForEachDayFilteredByContentState:
+      state.profile.wordCountsForEachDayFilteredByContentState,
+    contentStateOption: state.profile.contentStateOption,
+    selectedDay: state.profile.selectedDay,
+    dateRange: state.profile.dateRange
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    handleInitLoad: (username) => {
+      dispatch(profileInitialLoad(username))
+    },
+    handleDateRangeChanged: (dateRangeOption) => {
+      dispatch(dateRangeChanged(dateRangeOption))
+    },
+    handleFilterChanged: (contentState) => {
+      dispatch(filterUpdate(contentState))
+    },
+    handleSelectedDayChanged: (day) => {
+      dispatch(selectDayChanged(day))
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserProfile)

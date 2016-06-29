@@ -122,6 +122,7 @@ const Nav = ({
   active,
   links,
   isJsfPage,
+  loading,
   ...props
 }) => {
   let auth = 'loggedout'
@@ -140,15 +141,14 @@ const Nav = ({
       {items.map((item, itemId) => {
         if (((item.auth === 'public') || (item.auth === auth) ||
           (item.auth === 'loggedin' && admin)) && !item.more) {
-
           let link = null
           if (isJsfPage) {
-            //jsf pages
+            // jsf pages
             link = links[item.link]
               ? (links.context + links[item.link])
               : (links.context + item.link)
           } else {
-            //react pages, /a/index.xhtml
+            // react pages, /a/index.xhtml
             link = item.internalLink
               ? item.internalLink
               : (links[item.link]
@@ -158,6 +158,7 @@ const Nav = ({
 
           const useHref = isJsfPage || !item.internalLink
           return <NavItem key={itemId}
+            loading={loading}
             id={item.id}
             small={item.small}
             active={active.indexOf(link) >= 0}
@@ -165,7 +166,7 @@ const Nav = ({
             useHref={useHref}
             icon={item.icon}
             tooltip={item.tooltip}
-            title={item.title}/>
+            title={item.title} />
         }
         return null
       })}
@@ -191,8 +192,8 @@ Nav.propTypes = {
    * If true, all links will be using href
    * If false, RouterLink will be use
    */
-  isJsfPage: PropTypes.bool
+  isJsfPage: PropTypes.bool,
+  loading: PropTypes.bool
 }
-
 
 export default Nav

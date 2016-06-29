@@ -40,9 +40,10 @@ import org.zanata.adapter.OpenOfficeAdapter;
 import org.zanata.adapter.PlainTextAdapter;
 import org.zanata.adapter.PropertiesLatinOneAdapter;
 import org.zanata.adapter.PropertiesUTF8Adapter;
+import org.zanata.adapter.SubtitleAdapter;
+import org.zanata.adapter.TSAdapter;
 import org.zanata.adapter.XliffAdapter;
 import org.zanata.adapter.po.PoReader2;
-import org.zanata.adapter.SubtitleAdapter;
 import org.zanata.common.DocumentType;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
@@ -79,6 +80,7 @@ import static org.zanata.common.DocumentType.PLAIN_TEXT;
 import static org.zanata.common.DocumentType.PROPERTIES;
 import static org.zanata.common.DocumentType.PROPERTIES_UTF8;
 import static org.zanata.common.DocumentType.SUBTITLE;
+import static org.zanata.common.DocumentType.TS;
 import static org.zanata.common.DocumentType.XLIFF;
 import static org.zanata.common.DocumentType.XML_DOCUMENT_TYPE_DEFINITION;
 
@@ -111,6 +113,8 @@ public class TranslationFileServiceImpl implements TranslationFileService {
         DOCTYPEMAP.put(PROPERTIES_UTF8, PropertiesUTF8Adapter.class);
         DOCTYPEMAP.put(XLIFF, XliffAdapter.class);
         DOCTYPEMAP.put(GETTEXT, GettextAdapter.class);
+        DOCTYPEMAP.put(TS, TSAdapter.class);
+
     }
 
     private static Set<String> SUPPORTED_EXTENSIONS =

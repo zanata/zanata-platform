@@ -55,7 +55,8 @@ Link.propTypes = {
   id: PropTypes.string,
   theme: PropTypes.object,
   link: PropTypes.string,
-  useHref: PropTypes.bool
+  useHref: PropTypes.bool,
+  children: PropTypes.node
 }
 
 export default Link

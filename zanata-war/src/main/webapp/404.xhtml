@@ -4,13 +4,12 @@
   xmlns:s="http://jboss.org/schema/seam/taglib"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
-  template="WEB-INF/template/template_2x.xhtml">
+  template="WEB-INF/template/template.xhtml">
 
   <ui:define name="page_title">#{msgs['jsf.PageNotFound']}</ui:define>
   <ui:param name="showGlobalMessages" value="false"/>
   <ui:define name="center_content">
     <s:fragment>
-      <img alt="" src="insert funny-cool image here"/>
       <h2 class="alert__heading">#{msgs['jsf.PageNotFound']}</h2>
       <div class="alert__content">
         <p>#{msgs['jsf.PageNotFoundDetail']}</p>

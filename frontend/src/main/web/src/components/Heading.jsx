@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import { flattenThemeClasses } from '../utils/styleUtils'
 
 const classes = {
@@ -15,7 +15,6 @@ const classes = {
 */
 const Heading = ({
   children,
-  level,
   theme,
   ...props
 }) => {
@@ -23,6 +22,11 @@ const Heading = ({
   return <h1 {...props} className={headingClasses} >
       {children}
   </h1>
+}
+
+Heading.propTypes = {
+  children: PropTypes.node,
+  theme: PropTypes.object
 }
 
 export default Heading

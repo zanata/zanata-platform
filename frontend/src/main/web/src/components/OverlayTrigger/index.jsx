@@ -7,23 +7,26 @@ import callWithSameArgs from '../../utils/callWithSameArgs'
 import Overlay from '../Overlay'
 
 class OverlayTrigger extends Component {
-  state = {
-    isOverlayShown: this.props.defaultOverlayShown
+  constructor () {
+    super()
+    this.state = {
+      isOverlayShown: this.props.defaultOverlayShown
+    }
   }
 
-  show = () => {
+  show () {
     this.setState({
       isOverlayShown: true
     })
   }
 
-  hide = () => {
+  hide () {
     this.setState({
       isOverlayShown: false
     })
   }
 
-  toggle = () => {
+  toggle () {
     if (this.state.isOverlayShown) {
       this.hide()
     } else {
@@ -36,17 +39,17 @@ class OverlayTrigger extends Component {
    * without resetting up all context.
    * See https://github.com/react-component/dialog/issues/10
    */
-  renderOverlay = () => {
+  renderOverlay () {
     ReactDOM.unstable_renderSubtreeIntoContainer(
       this, this._overlay, this._mountNode
     )
   }
 
-  getOverlayTarget = () => {
+  getOverlayTarget () {
     return ReactDOM.findDOMNode(this)
   }
 
-  getOverlay = () => {
+  getOverlay () {
     const overlayProps = {
       ...pick(this.props, Object.keys(Overlay.propTypes)),
       show: this.state.isOverlayShown,
@@ -72,7 +75,7 @@ class OverlayTrigger extends Component {
       </Overlay>
     )
   }
-  handleDelayedShow = () => {
+  handleDelayedShow () {
     if (this.hoverHideTimeoutHandle !== undefined) {
       clearTimeout(this.hoverHideTimeoutHandle)
       this.hoverHideTimeoutHandle = undefined
@@ -97,7 +100,7 @@ class OverlayTrigger extends Component {
     }, delay)
   }
 
-  handleDelayedHide = () => {
+  handleDelayedHide () {
     if (this._hoverShowDelay !== undefined) {
       clearTimeout(this._hoverShowDelay)
       this._hoverShowDelay = undefined
@@ -126,7 +129,7 @@ class OverlayTrigger extends Component {
   // https://github.com/facebook/react/issues/4251
   // for cases when the trigger is disabled and mouseOut/Over can
   // cause flicker moving from one child element to another.
-  handleMouseOverOut = (handler, e) => {
+  handleMouseOverOut (handler, e) {
     let target = e.currentTarget
     let related = e.relatedTarget || e.nativeEvent.toElement
 

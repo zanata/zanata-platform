@@ -114,13 +114,13 @@ export default handleActions({
   }
 },
 // default state
-{
-  error: false,
-  loading: {
-    Project: false,
-    LanguageTeam: false,
-    Person: false,
-    Group: false
-  },
-  results: {}
-})
+  {
+    error: false,
+    loading: {
+      Project: false,
+      LanguageTeam: false,
+      Person: false,
+      Group: false
+    },
+    results: {}
+  })

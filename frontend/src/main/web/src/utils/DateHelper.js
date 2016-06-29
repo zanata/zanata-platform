@@ -1,5 +1,5 @@
 import moment from 'moment'
-//this import MUST come after import for moment
+// this import MUST come after import for moment
 import 'moment-range'
 import { isEmpty } from 'lodash'
 
@@ -69,16 +69,19 @@ var DateHelper = {
 
   getDate: function (milliseconds) {
     if (!isEmpty(milliseconds)) {
-      return new Date(milliseconds)
+      const intMiliseconds = parseInt(milliseconds)
+      return new Date(intMiliseconds)
+    } else {
+      return undefined
     }
-    return
   },
 
   shortDate: function (date) {
     if (date) {
-      return moment(date).format('MMM Do, YYYY')
+      return moment(date).format('DD/MM/YYYY')
+    } else {
+      return undefined
     }
-    return
   }
 }
 

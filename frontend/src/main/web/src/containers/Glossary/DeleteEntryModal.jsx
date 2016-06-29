@@ -34,7 +34,7 @@ class DeleteEntryModal extends Component {
         {entry.termsCount > 1 ? 'translations' : 'translation'} ?
       </p>
     ) : (<p>Are you sure you want to delete this term?</p>)
-
+    /* eslint-disable react/jsx-no-bind */
     return (
       <div className={className + ' D(ib)'}>
         <Overlay
@@ -53,7 +53,10 @@ class DeleteEntryModal extends Component {
               </ButtonLink>
               <ButtonRound type='danger' size='n1'
                 disabled={isDeleting}
-                onClick={() => handleDeleteEntry(entry.id)}>
+                onClick={() => {
+                  handleDeleteEntry(entry.id)
+                  handleDeleteEntryDisplay(false)
+                }}>
                 <LoaderText loading={isDeleting} size='n1'
                   loadingText='Deleting'>
                   Delete all
@@ -72,6 +75,7 @@ class DeleteEntryModal extends Component {
         </ButtonLink>
       </div>
     )
+    /* eslint-enable react/jsx-no-bind */
   }
 }
 

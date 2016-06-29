@@ -1,24 +1,30 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
-import { debounce, isUndefined } from 'lodash'
-import { replaceRouteQuery } from '../../utils/RoutingHelpers'
+import { isUndefined, size } from 'lodash'
 import ReactList from 'react-list'
 import {
   LoaderText,
   Page,
   ScrollView,
   View,
-  Notification
+  Notification,
+  Row,
+  ButtonLink,
+  Icon
 } from '../../components'
 import {
   glossaryDeleteTerm,
-  glossaryGetTermsIfNeeded,
   glossaryResetTerm,
   glossarySelectTerm,
   glossaryUpdateField,
-  glossaryUpdateIndex,
-  glossaryUpdateTerm
+  glossaryUpdateTerm,
+  glossaryGoFirstPage,
+  glossaryGoLastPage,
+  glossaryGoNextPage,
+  glossaryGoPreviousPage,
+  glossaryInitialLoad,
+  GLOSSARY_PAGE_SIZE
 } from '../../actions/glossary'
 import ViewHeader from './ViewHeader'
 import Entry from './Entry'
@@ -35,15 +41,8 @@ const loadingContainerTheme = {
  * Root component for Glossary page
  */
 class Glossary extends Component {
-  constructor () {
-    super()
-    // Need to add the debounce to onScroll here
-    // So it creates a new debounce for each instance
-    this.onScroll = debounce(this.onScroll, 100)
-  }
-
-  isTermLocaleSelected (term, selectedLocale) {
-    return term.transTerm && (term.transTerm.locale === selectedLocale)
+  componentDidMount () {
+    this.props.handleInitLoad()
   }
 
   renderItem (index, key) {
@@ -65,7 +64,7 @@ class Glossary extends Component {
     const entryId = termIds[index]
     const selected = entryId === selectedTerm.id
     const isSaving = !isUndefined(saving[entryId])
-    let entry = undefined
+    let entry
     if (isSaving && entryId) {
       entry = saving[entryId]
     } else if (selected) {
@@ -95,69 +94,87 @@ class Glossary extends Component {
     )
   }
 
-  onScroll () {
-    // Debounced by 100ms in super()
-    if (!this.list) return
-    const {
-      location,
-      handleUpdateIndex,
-      handleGetTermsIfNeeded
-    } = this.props
-    const loadingThreshold = 250
-    const indexRange = this.list.getVisibleRange()
-    const newIndex = indexRange[0]
-    const newIndexEnd = indexRange[1]
-    replaceRouteQuery(location, {
-      index: newIndex
-    })
-    handleUpdateIndex(newIndex)
-    handleGetTermsIfNeeded(newIndex)
-    // If close enough, load the prev/next page too
-    const preIndex = newIndex - loadingThreshold
-    const nextIndex = newIndexEnd + loadingThreshold
-    preIndex > 0 && handleGetTermsIfNeeded(preIndex)
-    handleGetTermsIfNeeded(nextIndex)
-  }
-
   render () {
     const {
+      terms,
       termsLoading,
       termCount,
-      scrollIndex,
-      notification
+      notification,
+      gotoPreviousPage,
+      gotoFirstPage,
+      gotoLastPage,
+      gotoNextPage,
+      page
     } = this.props
+
+    const totalPage = Math.floor(termCount / GLOSSARY_PAGE_SIZE) +
+      (termCount % GLOSSARY_PAGE_SIZE > 0 ? 1 : 0)
+
+    const currentPage = page ? parseInt(page) : 1
+    const displayPaging = totalPage > 1
+    const listPadding = displayPaging ? 'Pb(r2)' : 'Pb(r2) Pt(r6)'
+
+    /* eslint-disable react/jsx-no-bind */
     return (
       <Page>
-        {notification
-          ? (<Notification severity={notification.severity}
+        {notification &&
+          (<Notification severity={notification.severity}
             message={notification.message}
             details={notification.details}
             show={!!notification} />
           )
-          : undefined
         }
         <Helmet title='Glossary' />
-        <ScrollView onScroll={::this.onScroll}>
+        <ScrollView>
           <ViewHeader />
-          <View theme={{ base: {p: 'Pt(r6) Pb(r2)'} }}>
+          {displayPaging &&
+            <View theme={{ base: {p: 'Pt(r6)--sm Pt(r4)', fld: 'Fld(rr)'} }}>
+              <Row>
+                <ButtonLink disabled={currentPage <= 1}
+                  onClick={() => { gotoFirstPage(currentPage, totalPage) }}>
+                  <Icon name='previous' size='1' />
+                </ButtonLink>
+                <ButtonLink disabled={currentPage <= 1}
+                  onClick={() => { gotoPreviousPage(currentPage, totalPage) }}>
+                  <Icon name='chevron-left' size='1' />
+                </ButtonLink>
+                <span className='C(muted) Mx(re)'>
+                  {currentPage} of {totalPage}
+                </span>
+                <ButtonLink disabled={currentPage === totalPage}
+                  onClick={() => { gotoNextPage(currentPage, totalPage) }}>
+                  <Icon name='chevron-right' size='1' />
+                </ButtonLink>
+                <ButtonLink disabled={currentPage === totalPage}
+                  onClick={() => { gotoLastPage(currentPage, totalPage) }}>
+                  <Icon name='next' size='1' />
+                </ButtonLink>
+                <span className='Mx(rq) C(muted)'>
+                  <Row>
+                    <Icon name='glossary' size='1' /> {termCount}
+                  </Row>
+                </span>
+              </Row>
+            </View>
+          }
+          <View theme={{ base: {p: listPadding} }}>
             {termsLoading && !termCount
               ? (<View theme={loadingContainerTheme}>
-                  <LoaderText theme={{ base: { fz: 'Fz(ms1)' } }}
-                    size='1' loading />
-                  </View>)
+                <LoaderText theme={{ base: { fz: 'Fz(ms1)' } }}
+                  size='1' loading />
+              </View>)
               : (<ReactList
-                  useTranslate3d
-                  itemRenderer={::this.renderItem}
-                  length={termCount}
-                  type='uniform'
-                  initialIndex={scrollIndex || -5}
-                  ref={(c) => { this.list = c }}
-                />)
+                useTranslate3d
+                itemRenderer={::this.renderItem}
+                length={size(terms)}
+                type='uniform'
+                ref={(c) => { this.list = c }} />)
             }
           </View>
         </ScrollView>
       </Page>
     )
+    /* eslint-enable react/jsx-no-bind */
   }
 }
 
@@ -174,12 +191,26 @@ Glossary.propTypes = {
   filterText: PropTypes.string,
   selectedTerm: PropTypes.object,
   selectedTransLocale: PropTypes.string,
-  scrollIndex: PropTypes.number,
   permission: PropTypes.object,
   location: PropTypes.object,
   saving: PropTypes.object,
   deleting: PropTypes.object,
-  notification: PropTypes.object
+  notification: PropTypes.object,
+  goPreviousPage: PropTypes.func,
+  goFirstPage: PropTypes.func,
+  goLastPage: PropTypes.func,
+  goNextPage: PropTypes.func,
+  handleInitLoad: PropTypes.func,
+  handleSelectTerm: PropTypes.func,
+  handleTermFieldUpdate: PropTypes.func,
+  handleDeleteTerm: PropTypes.func,
+  handleResetTerm: PropTypes.func,
+  handleUpdateTerm: PropTypes.func,
+  page: PropTypes.number,
+  gotoPreviousPage: PropTypes.func,
+  gotoFirstPage: PropTypes.func,
+  gotoLastPage: PropTypes.func,
+  gotoNextPage: PropTypes.func
 }
 
 const mapStateToProps = (state) => {
@@ -207,17 +238,20 @@ const mapStateToProps = (state) => {
     filterText: filter,
     selectedTerm: selectedTerm,
     selectedTransLocale: query.locale,
-    scrollIndex: Number.parseInt(query.index, 10),
     permission,
     location: state.routing.location,
     saving,
     deleting,
-    notification
+    notification,
+    page: parseInt(state.routing.location.query.page)
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    handleInitLoad: () => {
+      dispatch(glossaryInitialLoad())
+    },
     handleSelectTerm: (termId) => dispatch(glossarySelectTerm(termId)),
     handleTermFieldUpdate: (field, event) => {
       dispatch(glossaryUpdateField({ field, value: event.target.value || '' }))
@@ -226,9 +260,14 @@ const mapDispatchToProps = (dispatch) => {
     handleResetTerm: (termId) => dispatch(glossaryResetTerm(termId)),
     handleUpdateTerm: (term, needRefresh) =>
       dispatch(glossaryUpdateTerm(term, needRefresh)),
-    handleUpdateIndex: (newIndex) => dispatch(glossaryUpdateIndex(newIndex)),
-    handleGetTermsIfNeeded: (newIndex) =>
-      dispatch(glossaryGetTermsIfNeeded(newIndex))
+    gotoFirstPage: (currentPage, totalPage) =>
+      dispatch(glossaryGoFirstPage(currentPage, totalPage)),
+    gotoPreviousPage: (currentPage, totalPage) =>
+      dispatch(glossaryGoPreviousPage(currentPage, totalPage)),
+    gotoNextPage: (currentPage, totalPage) =>
+      dispatch(glossaryGoNextPage(currentPage, totalPage)),
+    gotoLastPage: (currentPage, totalPage) =>
+      dispatch(glossaryGoLastPage(currentPage, totalPage))
   }
 }
 

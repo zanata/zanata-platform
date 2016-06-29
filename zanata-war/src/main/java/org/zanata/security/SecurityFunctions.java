@@ -381,6 +381,12 @@ public class SecurityFunctions extends PermissionProvider {
         return identity.hasRole("glossarist");
     }
 
+    /* Loggin user can download glossary */
+    @GrantsPermission(actions = { "glossary-download" })
+    public boolean canDownloadGlossary() {
+        return identity.isLoggedIn();
+    }
+
     /* 'glossarist-admin' can also delete */
     @GrantsPermission(actions = { "glossary-insert", "glossary-update",
             "glossary-delete" })

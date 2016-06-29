@@ -75,6 +75,7 @@ class EditableText extends Component {
         !children && classes.text.placeholder
       )
     }
+    /* eslint-disable react/jsx-no-bind */
     if (editable && editing) {
       return (
         <TextInput
@@ -88,10 +89,12 @@ class EditableText extends Component {
           />
       )
     }
+    /* eslint-enable react/jsx-no-bind */
     const emptyText = editable ? placeholder : emptyReadOnlyText
     const text = children || emptyText
     return (
-      <Row theme={textStateClasses} align='start' onClick={::this.handleClick} title={title}>
+      <Row theme={textStateClasses} align='start'
+        onClick={::this.handleClick} title={title}>
         {text}
       </Row>
     )
@@ -102,7 +105,10 @@ EditableText.propTypes = {
   children: PropTypes.string,
   editable: PropTypes.bool,
   editing: PropTypes.bool,
-  placeholder: PropTypes.string
+  placeholder: PropTypes.string,
+  emptyReadOnlyText: PropTypes.string,
+  theme: PropTypes.object,
+  title: PropTypes.string
 }
 
 export default EditableText

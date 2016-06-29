@@ -37,7 +37,7 @@ const LoaderText = ({
       {loading
         ? <Base theme={themed.root}>
             {loadingText} <Loader theme={themed.loader} size={size} />
-          </Base>
+        </Base>
         : children
       }
     </Base>

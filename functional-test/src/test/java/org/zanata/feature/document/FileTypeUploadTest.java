@@ -67,6 +67,9 @@ public class FileTypeUploadTest extends ZanataTestCase {
     private static String testString = "Test text 1";
     private static String htmlString = "<html><title>" + testString +
             "</title>" + "<body/> </html>";
+    private static String qtTsString = "<!DOCTYPE TS []><TS><context><name>Test</name>" +
+            "<message><source>" + testString + "</source><translation>Teststring1</translation>" +
+            "</message></context></TS>";
 
     @DataPoint
     public static File TXT_FILE = new TestFileGenerator()
@@ -113,6 +116,10 @@ public class FileTypeUploadTest extends ZanataTestCase {
     @DataPoint
     public static File HTML_FILE = new TestFileGenerator()
             .generateTestFileWithContent("testhtmlfile", ".html", htmlString);
+
+    @DataPoint
+    public static File QTTS_FILE = new TestFileGenerator()
+            .generateTestFileWithContent("testtsfile", ".ts", qtTsString);
 
     @DataPoint
     public static File IDML_FILE = new TestFileGenerator()

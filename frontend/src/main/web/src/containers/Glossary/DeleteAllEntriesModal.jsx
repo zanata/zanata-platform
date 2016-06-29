@@ -22,6 +22,7 @@ class DeleteAllEntriesModal extends Component {
       handleDeleteAllEntries
       } = this.props
 
+    /* eslint-disable react/jsx-no-bind */
     return (
       <div className='D(ib)'>
         <Overlay
@@ -46,7 +47,7 @@ class DeleteAllEntriesModal extends Component {
                 onClick={() => handleDeleteAllEntries()}>
                 <LoaderText loading={isDeleting} size='n1'
                   loadingText='Deleting'>
-                  Delete all
+                  Delete
                 </LoaderText>
               </ButtonRound>
             </div>
@@ -57,11 +58,12 @@ class DeleteAllEntriesModal extends Component {
           disabled={isDeleting}>
           <Row>
             <Icon name='trash' atomic={{m: 'Mend(re)'}} />
-            <span className='Hidden--lesm'>Delete all</span>
+            <span className='Hidden--lesm'>Delete</span>
           </Row>
         </ButtonLink>
       </div>
     )
+    /* eslint-enable react/jsx-no-bind */
   }
 }
 

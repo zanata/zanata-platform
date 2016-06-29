@@ -26,7 +26,8 @@ const classes = {
   }
 }
 /**
- * A flexbox component that align all elements (props.children) horizontally in a row.
+ * A flexbox component that align all elements (props.children)
+ * horizontally in a row.
  * Can be used as standalone or as children of an element.
  */
 const Row = ({
@@ -57,7 +58,7 @@ const Row = ({
   )
 }
 
-Row.propType = {
+Row.propTypes = {
   align: PropTypes.oneOf(['start', 'end', 'center', 'baseline', 'stretch']),
   children: PropTypes.node,
   className: PropTypes.string,

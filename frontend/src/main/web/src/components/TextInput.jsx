@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
 import TextareaAutosize from 'react-textarea-autosize'
 import { flattenThemeClasses } from '../utils/styleUtils'
-import { isEqual } from 'lodash'
 
 const classes = {
   base: {
@@ -31,10 +30,6 @@ const classes = {
  * TextInput component <input> or <textArea> depending on property 'multiline'.
  */
 class TextInput extends Component {
-  constructor () {
-    super()
-  }
-
   _onBlur (e) {
     const { onBlur } = this.props
     if (onBlur) {
@@ -153,18 +148,19 @@ class TextInput extends Component {
         maxRows: maxNumberOfLines || numberOfLines,
         minRows: numberOfLines
       }
-      return <TextareaAutosize  {...propsMultiline} />
+      return <TextareaAutosize {...propsMultiline} />
     } else {
       const propsSingleline = {
         ...propsCommon,
         type
       }
-      return <input {...propsSingleline}/>
+      return <input {...propsSingleline} />
     }
   }
 }
 
 TextInput.propTypes = {
+  id: PropTypes.string,
   accessibilityLabel: PropTypes.string,
   autoComplete: PropTypes.bool,
   autoFocus: PropTypes.bool,
@@ -187,7 +183,8 @@ TextInput.propTypes = {
   placeholderTextColor: PropTypes.string,
   secureTextEntry: PropTypes.bool,
   selectTextOnFocus: PropTypes.bool,
-  value: PropTypes.string
+  value: PropTypes.string,
+  theme: PropTypes.object
 }
 
 export default TextInput

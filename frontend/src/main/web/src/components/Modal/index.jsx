@@ -88,7 +88,7 @@ const Modal = ({
               theme={classes.closeButton}
               type='muted'
               onClick={onHide}>
-              <Icon name='cross' size='2' theme={classes.closeIcon}/>
+              <Icon name='cross' size='2' theme={classes.closeIcon} />
             </ButtonLink>
           ) : undefined}
           {children}

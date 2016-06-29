@@ -50,10 +50,12 @@ const TableRow = ({
   )
 }
 
-TableRow.propType = {
+TableRow.propTypes = {
   children: PropTypes.node,
   highlight: PropTypes.bool,
-  selected: PropTypes.bool
+  selected: PropTypes.bool,
+  className: PropTypes.string,
+  theme: PropTypes.object
 }
 
 export default TableRow

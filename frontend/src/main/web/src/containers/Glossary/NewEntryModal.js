@@ -78,6 +78,7 @@ class NewEntryModal extends Component {
       } = this.props
     const isAllowSave = !isEmpty(this.state.entry.srcTerm.content)
 
+    /* eslint-disable react/jsx-no-bind, react/jsx-boolean-value */
     return (
       <Modal
         show={show}
@@ -86,7 +87,7 @@ class NewEntryModal extends Component {
         <Modal.Header>
           <Modal.Title>New Term</Modal.Title>
         </Modal.Header>
-        <Modal.Body atomic={{t: 'Ta(start)'}} scrollable={false}>
+        <Modal.Body atomic={{t: 'Ta(start)'}}>
           <div className='Mb(rh)'>
             <label className='Fw(b)'>Term</label>
             <EditableText
@@ -133,7 +134,11 @@ class NewEntryModal extends Component {
             <ButtonRound
               type='primary'
               disabled={!isAllowSave || isSaving}
-              onClick={() => { handleNewEntryCreate(this.state.entry); this.resetFields() }}>
+              onClick={
+                () => {
+                  handleNewEntryCreate(this.state.entry); this.resetFields()
+                }
+              }>
               <LoaderText loading={isSaving} loadingText='Saving'>
                 Save
               </LoaderText>
@@ -141,13 +146,17 @@ class NewEntryModal extends Component {
           </Row>
         </Modal.Footer>
       </Modal>)
+    /* eslint-enable react/jsx-no-bind, react/jsx-boolean-value */
   }
 }
 
 NewEntryModal.propTypes = {
   entry: PropTypes.object,
   isSaving: PropTypes.bool,
-  show: PropTypes.bool
+  show: PropTypes.bool,
+  handleNewEntryDisplay: PropTypes.func,
+  handleNewEntryCreate: PropTypes.func
+
 }
 
 const mapStateToProps = (state) => {

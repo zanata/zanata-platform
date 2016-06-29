@@ -49,7 +49,7 @@ public class RegisterPage extends CorePage {
     public static final String USERNAME_LENGTH_ERROR =
             "size must be between 3 and 20";
 
-    private By nameField = By.id("loginForm:nameField:input:name");
+    private By nameField = By.id("loginForm:name:input:name");
     private By emailField = By.id("loginForm:email:input:email");
     public By usernameField = By.id("loginForm:username:input:username");
     private By passwordField = By.id("loginForm:passwordField:input:password");

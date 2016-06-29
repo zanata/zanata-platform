@@ -1,6 +1,4 @@
 import { CALL_API } from 'redux-api-middleware'
-import { normalize } from 'normalizr'
-import { SEARCH_RESULTS } from '../schemas'
 import { replaceRouteQuery } from '../utils/RoutingHelpers'
 import { getJsonHeaders, buildAPIRequest } from './common'
 import { isEmpty, includes, clamp } from 'lodash'
@@ -27,7 +25,7 @@ const getEndpoint = (type, page, searchText) => {
   return window.config.baseUrl + window.config.apiRoot + '/search/' +
     type + '?' +
     'sizePerPage=' + SIZE_PER_PAGE +
-    '&page=' + (page ? page : '1') +
+    '&page=' + (page || '1') +
     (searchText ? '&q=' + searchText : '')
 }
 
@@ -66,8 +64,10 @@ const getSearchProjectResults = (dispatch, searchText, pages, callbacks) => {
   }
 }
 
-const getSearchLanguageTeamResults = (dispatch, searchText, pages, callbacks) => {
-  const endpoint = getEndpoint('teams/language', pages.languageTeamPage, searchText)
+const getSearchLanguageTeamResults = (dispatch, searchText,
+                                      pages, callbacks) => {
+  const endpoint =
+    getEndpoint('teams/language', pages.languageTeamPage, searchText)
   const apiTypes = [
     SEARCH_LANG_TEAM_REQUEST,
     {

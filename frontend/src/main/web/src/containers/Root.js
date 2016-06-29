@@ -6,8 +6,6 @@ import Glossary from '../containers/Glossary'
 import Explore from '../containers/Explore'
 import UserProfile from '../containers/UserProfile'
 import View from '../components/View'
-import { glossaryInitialLoad } from '../actions/glossary.js'
-import { searchPageInitialLoad } from '../actions/explore.js'
 
 export default class Root extends Component {
   render () {
@@ -21,11 +19,9 @@ export default class Root extends Component {
         <View>
           <Router history={history}>
             <Route component={App} >
-              <Route path='glossary' component={Glossary}
-                onEnter={() => store.dispatch(glossaryInitialLoad())} />
+              <Route path='glossary' component={Glossary} />
               <Route path='profile/:username' component={UserProfile} />
-              <Route path='explore' component={Explore}
-                onEnter={() => store.dispatch(searchPageInitialLoad())}/>
+              <Route path='explore' component={Explore} />
               <Redirect from='profile' to={`profile/${username}`} />
               <Redirect from='/' to={`profile/${username}`} />
             </Route>

@@ -42,6 +42,11 @@
     function getCopyFromVersionFlagInput() {
       return "[id='#{rich:clientId('copyFromVersion')}']";
     }
+
+    jQuery(document).ready(function () {
+      var slugFieldId ="[id='#{rich:clientId('slugField')}']";
+      jQuery(slugFieldId).find('input').focus()
+    })
   </script>
 
   <a4j:jsFunction name="bindCopyFromVersionSlug">

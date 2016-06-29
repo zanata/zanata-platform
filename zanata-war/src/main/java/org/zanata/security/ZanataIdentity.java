@@ -615,12 +615,15 @@ public class ZanataIdentity implements Identity, Serializable {
         if (cachedPersonName == null) {
             HAccount account =
                     accountDAO.getByUsername(cachedUsername);
-            HPerson person = account.getPerson();
-            if (person != null) {
-                cachedPersonName = person.getName();
-                cachedPersonEmail = person.getEmail();
+            if (account != null) {
+                HPerson person = account.getPerson();
+                if (person != null) {
+                    cachedPersonName = person.getName();
+                    cachedPersonEmail = person.getEmail();
+                } else {
+                    cachedPersonEmail = null;
+                }
             } else {
-//                cachedPersonName = null;
                 cachedPersonEmail = null;
             }
         }

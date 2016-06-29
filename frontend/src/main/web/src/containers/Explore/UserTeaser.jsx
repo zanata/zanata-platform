@@ -20,32 +20,25 @@ const UserTeaser = ({
   details,
   ...props
 }) => {
-  const wordsTranslated = details.wordsTranslated
-    ? (
-      <View
-        theme={{ base: { ai: 'Ai(c)', fld: '', m: 'Mstart(a)' } }}
-         >
-        <Icon name='translate'
-          theme={{
-            base: {
-              c: 'C(muted)',
-              m: 'Mend(rq) Mstart(rh)'
-            }
-          }}
-        />
+  const wordsTranslated = details.wordsTranslated &&
+    (<View theme={{ base: { ai: 'Ai(c)', fld: '', m: 'Mstart(a)' } }}>
+      <Icon name='translate'
+        theme={{
+          base: {
+            c: 'C(muted)',
+            m: 'Mend(rq) Mstart(rh)'
+          }
+        }} />
         {details.wordsTranslated}
-      </View>
-    )
-    : undefined
+    </View>)
   return (
     <View theme={viewTheme} name={name}>
       <View theme={{ base: {ai: 'Ai(c)', fld: 'Fld(r)'} }}>
         <img
           src={details.avatarUrl}
           alt={details.id}
-          className='Bdrs(rnd) Mend(rq) W(r1h) H(r1h)'
-        />
-        <Link link={'/profile/' + details.id }
+          className='Bdrs(rnd) Mend(rq) W(r1h) H(r1h)' />
+        <Link link={'/profile/' + details.id}
           theme={{ base: { fw: 'Fw(600)' } }}>
           {details.description}
         </Link>

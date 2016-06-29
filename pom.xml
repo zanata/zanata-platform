@@ -34,18 +34,18 @@
     <!-- Applies to surefire and failsafe (if enabled) -->
     <failIfNoTests>true</failIfNoTests>
 
-    <deltaspike.version>1.5.4</deltaspike.version>
+    <deltaspike.version>1.7.0</deltaspike.version>
     <cdi.runtime>runtime</cdi.runtime>
     <cdi.compile>compile</cdi.compile>
     <picketlink.version>2.5.4.SP4</picketlink.version>
-    <infinispan.version>6.0.2.Final</infinispan.version>
+    <infinispan.version>7.2.5.Final</infinispan.version>
     <lombok.version>1.16.6</lombok.version>
     <weld.version>1.1.31.Final</weld.version>
     <weld.se.version>${weld.version}</weld.se.version>
     <groovy.version>2.4.5</groovy.version>
     <guava.version>19.0</guava.version>
     <gwt.version>2.7.0</gwt.version>
-    <icu4j.version>50.1.1</icu4j.version>
+    <icu4j.version>56.1</icu4j.version>
     <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
     <lucene.version>3.6.2</lucene.version>
     <org.mock-server.version>3.9.17</org.mock-server.version>
@@ -82,9 +82,10 @@
     -->
 
     <solr.version>${lucene.version}</solr.version>
+    <seam.version>2.3.1.Final</seam.version>
     <slf4j.version>1.7.18</slf4j.version>
     <gwteventservice.version>1.2.1</gwteventservice.version>
-    <okapi.version>0.22</okapi.version>
+    <okapi.version>0.29</okapi.version>
 
     <zanata.assets.version>9.0-SNAPSHOT</zanata.assets.version>
     <zanata.api.version>4.0.0-SNAPSHOT</zanata.api.version>
@@ -288,7 +289,7 @@
       <dependency>
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
-        <version>1.13</version>
+        <version>1.16</version>
       </dependency>
 
       <dependency>
@@ -555,14 +556,14 @@
       <dependency>
         <groupId>org.jboss.marshalling</groupId>
         <artifactId>jboss-marshalling</artifactId>
-        <version>1.4.6.Final</version>
+        <version>1.4.10.Final</version>
         <scope>test</scope>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.marshalling</groupId>
         <artifactId>jboss-marshalling-river</artifactId>
-        <version>1.4.6.Final</version>
+        <version>1.4.10.Final</version>
         <scope>test</scope>
       </dependency>
 
@@ -918,6 +919,10 @@
             <groupId>net.sf.okapi.logbind</groupId>
             <artifactId>build-log4j</artifactId>
           </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
 
@@ -942,12 +947,28 @@
             <groupId>net.sf.okapi.logbind</groupId>
             <artifactId>build-log4j</artifactId>
           </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
 
       <dependency>
         <groupId>net.sf.okapi.filters</groupId>
         <artifactId>okapi-filter-regex</artifactId>
+        <version>${okapi.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>net.sf.okapi.logbind</groupId>
+            <artifactId>build-log4j</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sf.okapi.filters</groupId>
+        <artifactId>okapi-filter-ts</artifactId>
         <version>${okapi.version}</version>
         <exclusions>
           <exclusion>
@@ -2002,12 +2023,6 @@
             <groupId>org.jboss.logmanager</groupId>
             <artifactId>jboss-logmanager</artifactId>
             <version>1.5.2.Final</version>
-            <scope>test</scope>
-          </dependency>
-          <dependency>
-            <groupId>org.jboss.marshalling</groupId>
-            <artifactId>jboss-marshalling</artifactId>
-            <version>1.4.6.Final</version>
             <scope>test</scope>
           </dependency>
           <dependency>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import { merge } from 'lodash'
 import { View } from './'
 
@@ -22,6 +22,11 @@ const Page = ({
       {children}
     </View>
   )
+}
+
+Page.propTypes = {
+  children: PropTypes.node,
+  theme: PropTypes.object
 }
 
 export default Page

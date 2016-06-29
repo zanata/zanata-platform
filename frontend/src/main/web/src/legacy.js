@@ -22,7 +22,7 @@
 import 'babel-polyfill'
 import React from 'react'
 import { render } from 'react-dom'
-import { isUndefined, forEach, mapValues } from 'lodash'
+import { mapValues } from 'lodash'
 import { Icons } from './components'
 import WebFont from 'webfontloader'
 import Nav from './components/Nav'
@@ -48,7 +48,7 @@ window.config = mapValues(window.config, (value) =>
   isJsonString(value) ? JSON.parse(value) : value)
 
 const links = {
-  'context': window.config.baseUrl,
+  'context': window.config.baseUrl || '',
   '/login': window.config.links.loginUrl,
   '/signup': window.config.links.registerUrl
 }

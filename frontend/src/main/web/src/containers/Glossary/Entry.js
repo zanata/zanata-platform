@@ -8,7 +8,8 @@ import {
   Icon,
   LoaderText,
   TableCell,
-  TableRow
+  TableRow,
+  Row
 } from '../../components'
 import EntryModal from './EntryModal'
 import DeleteEntryModal from './DeleteEntryModal'
@@ -77,6 +78,7 @@ class Entry extends Component {
       ((isTermModified && selected) || isSaving)
     const editable = permission.canUpdateEntry && !isSaving
 
+    /* eslint-disable react/jsx-no-bind */
     const updateButton = displayUpdateButton && (
       <ButtonRound atomic={{m: 'Mend(rh)'}}
         type='primary'
@@ -147,47 +149,51 @@ class Entry extends Component {
           }
         </TableCell>
         <TableCell size='2'>
-          <ButtonLink atomic={{m: 'Mend(rq)'}}
-            onClick={() => this.setShowingEntryModal(true)}>
-            <Icon name='info'/>
-          </ButtonLink>
-          <EntryModal entry={entry}
-            show={this.state.showEntryModal}
-            isSaving={isSaving}
-            selectedTransLocale={selectedTransLocale}
-            canUpdate={displayUpdateButton}
-            handleEntryModalDisplay={(display) =>
-              this.setShowingEntryModal(display)}
-            handleResetTerm={(entryId) => handleResetTerm(entryId)}
-            handleTermFieldUpdate={(field, e) =>
-              handleTermFieldUpdate(field, e)}
-            handleUpdateTerm={(entry) =>
-              handleUpdateTerm(entry, false)}
-          />
-
-          {updateButton}
-          <div className='Op(0) row--selected_Op(1) editable:h_Op(1) Trs(eo)'>
-            {displayUpdateButton && !isSaving ? (
-              <ButtonLink
-                onClick={() => handleResetTerm(entry.id)}>
-                Cancel
+          {termsLoading
+            ? loadingDiv
+            : (<Row>
+              <ButtonLink atomic={{m: 'Mend(rq)'}}
+                disabled={isDeleting}
+                onClick={() => this.setShowingEntryModal(true)}>
+                <Icon name='info' />
               </ButtonLink>
-            ) : ''
-            }
-
-            {!transSelected && permission.canDeleteEntry && !isSaving &&
-              !displayUpdateButton && (
-              <DeleteEntryModal entry={entry}
-                isDeleting={isDeleting}
-                show={this.state.showDeleteModal}
-                handleDeleteEntryDisplay={(display) =>
+              <EntryModal entry={entry}
+                show={this.state.showEntryModal}
+                isSaving={isSaving}
+                selectedTransLocale={selectedTransLocale}
+                canUpdate={displayUpdateButton}
+                handleEntryModalDisplay={(display) =>
+                  this.setShowingEntryModal(display)}
+                handleResetTerm={(entryId) => handleResetTerm(entryId)}
+                handleTermFieldUpdate={(field, e) =>
+                  handleTermFieldUpdate(field, e)}
+                handleUpdateTerm={(entry) =>
+                  handleUpdateTerm(entry, false)} />
+                {updateButton}
+              <div
+                className='Op(0) row--selected_Op(1) editable:h_Op(1) Trs(eo)'>
+                {displayUpdateButton && !isSaving ? (
+                  <ButtonLink
+                    onClick={() => handleResetTerm(entry.id)}>
+                    Cancel
+                  </ButtonLink>
+                ) : ''}
+                {!transSelected && permission.canDeleteEntry && !isSaving &&
+                !displayUpdateButton && (
+                  <DeleteEntryModal entry={entry}
+                    isDeleting={isDeleting}
+                    show={this.state.showDeleteModal}
+                    handleDeleteEntryDisplay={(display) =>
                   this.setShowingDeleteEntryModal(display)}
-                handleDeleteEntry={handleDeleteTerm}/>)
-            }
-          </div>
+                    handleDeleteEntry={handleDeleteTerm} />)
+                }
+              </div>
+            </Row>)
+          }
         </TableCell>
       </TableRow>
     )
+    /* eslint-enable react/jsx-no-bind */
   }
 }
 

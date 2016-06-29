@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { PropTypes, Component } from 'react'
 /**
  * TODO: use react-ally to identify accessibility issue
  * import a11y from 'react-a11y'
@@ -27,13 +27,14 @@ class App extends Component {
     const {
       children,
       activePath,
+      loading,
       ...props
     } = this.props
 
     const links = {
-      'context': config.baseUrl,
-      '/login': config.links.loginUrl,
-      '/signup': config.links.registerUrl
+      'context': window.config.baseUrl || '',
+      '/login': window.config.links.loginUrl,
+      '/signup': window.config.links.registerUrl
     }
 
     return (
@@ -43,16 +44,27 @@ class App extends Component {
           title='Zanata'
           titleTemplate='%s | Zanata'
         />
-        <Nav active={activePath} links={links} />
+        <Nav active={activePath} links={links} loading={loading} />
         {children}
       </View>
     )
   }
 }
 
+App.propTypes = {
+  children: PropTypes.node,
+  activePath: PropTypes.string,
+  loading: PropTypes.bool
+}
+
 function mapStateToProps (state) {
+  const exploreLoading = state.explore.loading
+  const isExploreLoading = exploreLoading.Project ||
+    exploreLoading.LanguageTeam || exploreLoading.Person || exploreLoading.Group
   return {
-    activePath: state.routing.location.pathname
+    activePath: state.routing.location.pathname,
+    loading: state.common.loading || state.profile.loading ||
+      isExploreLoading || state.glossary.statsLoading
   }
 }
 

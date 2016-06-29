@@ -1,5 +1,4 @@
-import React from 'react'
-import Actions from '../../actions/userMatrix'
+import React, { PropTypes } from 'react'
 import {
   ContentStates,
   ContentStateStyles
@@ -8,7 +7,6 @@ import {
   ButtonLink,
   Base
 } from '../../components'
-import PureRenderMixin from 'react-addons-pure-render-mixin'
 
 const classes = {
   root: {
@@ -71,40 +69,37 @@ const classes = {
  * Component to filter statistics on content state
  * (approved, translated, need work)
  */
-var ContentStateFilter = React.createClass({
-  mixins: [PureRenderMixin],
-  propTypes: {
-    selectedContentState: React.PropTypes.oneOf(ContentStates).isRequired
-  },
-  onFilterOptionClicked: function (option, event) {
-    if (this.props.selectedContentState !== option) {
-      Actions.changeContentState(option)
+const ContentStateFilter = ({
+  selectedContentState,
+  handleFilterChanged,
+  ...props
+}) => {
+  const optionItems = ContentStates.map(function (option, index) {
+    const states = {
+      active: selectedContentState === option
     }
-  },
-  render: function () {
-    const contentStateFilter = this
-    const selected = this.props.selectedContentState
-    const clickHandler = this.onFilterOptionClicked
-    const optionItems = ContentStates.map(function (option, index) {
-      const states = {
-        active: selected === option
-      }
-      return (
-        <ButtonLink key={option}
-          states={states}
-          theme={classes.button}
-          type={ContentStateStyles[index]}
-          onClick={clickHandler.bind(contentStateFilter, option)}>
-          {option}
-        </ButtonLink>
-      )
-    })
+    /* eslint-disable react/jsx-no-bind */
     return (
-      <Base atomic={classes.root}>
-        {optionItems}
-      </Base>
+      <ButtonLink key={option}
+        states={states}
+        theme={classes.button}
+        type={ContentStateStyles[index]}
+        onClick={() => handleFilterChanged(option)}>
+        {option}
+      </ButtonLink>
     )
-  }
-})
+    /* eslint-enable react/jsx-no-bind */
+  })
+  return (
+    <Base atomic={classes.root}>
+      {optionItems}
+    </Base>
+  )
+}
+
+ContentStateFilter.propTypes = {
+  selectedContentState: PropTypes.oneOf(ContentStates).isRequired,
+  handleFilterChanged: PropTypes.func
+}
 
 export default ContentStateFilter

@@ -120,7 +120,8 @@ var ContributionChart = React.createClass({
           totalTranslated: React.PropTypes.number.isRequired,
           totalNeedsWork: React.PropTypes.number.isRequired
         })
-    ).isRequired
+    ).isRequired,
+    chartOptions: React.PropTypes.object
   },
 
   getDefaultProps: function () {
@@ -146,7 +147,7 @@ var ContributionChart = React.createClass({
         data={chartData}
         options={chartOptions}
         width='800'
-        height='250'/>
+        height='250' />
     )
   }
 })
