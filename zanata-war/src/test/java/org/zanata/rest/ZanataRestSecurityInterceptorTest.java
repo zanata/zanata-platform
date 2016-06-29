@@ -67,6 +67,8 @@ public class ZanataRestSecurityInterceptorTest {
     private ZanataCredentials credential;
     @Mock
     private IServiceLocator serviceLocator;
+    @Mock
+    private UriInfo uriInfo;
 
     @Before
     public void setUp() throws Exception {
@@ -77,7 +79,6 @@ public class ZanataRestSecurityInterceptorTest {
         headers = new MultivaluedHashMap<>();
 
         // some common set up
-        UriInfo uriInfo = mock(UriInfo.class);
         when(context.getUriInfo()).thenReturn(uriInfo);
         when(uriInfo.getPath()).thenReturn("/rest/some/resource");
         when(context.getHeaders()).thenReturn(headers);
@@ -128,18 +129,10 @@ public class ZanataRestSecurityInterceptorTest {
     }
 
     @Test
-    public void canAuthenticateUsingAuthorizationCode() throws Exception {
-        when(request.getParameter(OAuth.OAUTH_CODE)).thenReturn("validAuthCode");
-        when(securityTokens.findUsernameForAuthorizationCode("validAuthCode")).thenReturn(
-                Optional.of("admin"));
-        when(identity.isLoggedIn()).thenReturn(true);
-
+    public void canAccessOAuthTokenAPIAnonymously() throws Exception {
+        when(uriInfo.getPath()).thenReturn("/oauth/token");
 
         securityInterceptor.filter(context);
-
-        verify(credential).setUsername("admin");
-        verify(identity).setRequestUsingOAuth(true);
-        verify(identity).tryLogin();
 
         verify(context, never()).abortWith(any(Response.class));
     }

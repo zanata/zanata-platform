@@ -134,18 +134,11 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
 
     private Either<String, Response> getAuthenticatedUsernameOrError() {
 
-        String authorizationCode = request.getParameter(OAuth.OAUTH_CODE);
-
         Optional<String> usernameOpt;
-        Optional<String> accessTokenOpt = Optional.empty();
-        if (StringUtils.isNotEmpty(authorizationCode)) {
-            usernameOpt =
-                    securityTokens.findUsernameForAuthorizationCode(authorizationCode);
-        } else {
-            accessTokenOpt = OAuthUtil.getAccessTokenFromHeader(request);
-            usernameOpt = accessTokenOpt.flatMap(
-                    token -> securityTokens.findUsernameByAccessToken(token));
-        }
+        Optional<String> accessTokenOpt =
+                OAuthUtil.getAccessTokenFromHeader(request);
+        usernameOpt = accessTokenOpt.flatMap(
+                token -> securityTokens.findUsernameByAccessToken(token));
 
         if (!usernameOpt.isPresent()) {
             if (accessTokenOpt.isPresent() && securityTokens.isTokenExpired(accessTokenOpt.get())) {
@@ -153,11 +146,10 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
                 return Either.right(buildUnauthorizedResponse("access token expired"));
             }
             log.info(
-                    "Bad OAuth request, invalid or missing tokens: authorization code: {}, access token: {}",
-                    authorizationCode, accessTokenOpt);
+                    "Bad OAuth request, invalid or missing tokens: access token: {}",
+                    accessTokenOpt);
             return Either.right(buildUnauthorizedResponse(
-                    "Bad OAuth request, invalid or missing tokens: authorization code [" +
-                            authorizationCode + "] or access token [" +
+                    "Bad OAuth request, invalid or missing tokens: access token [" +
                             accessTokenOpt + "]"));
         }
         String username = usernameOpt.get();
@@ -198,7 +190,6 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
         private final Optional<String> username;
         private final Optional<String> apiKey;
         private final Optional<String> accessToken;
-        private final Optional<String> authorizationCode;
 
         RestCredentials(ContainerRequestContext context, HttpServletRequest request,
                 boolean isOAuthSupported) {
@@ -208,10 +199,8 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
             this.apiKey = optionalNotEmptyString(apiKey);
             if (isOAuthSupported) {
                 accessToken = OAuthUtil.getAccessTokenFromHeader(request);
-                authorizationCode = OAuthUtil.getAuthCode(request);
             } else {
                 accessToken = Optional.empty();
-                authorizationCode = Optional.empty();
             }
         }
 
@@ -224,11 +213,7 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
         }
 
         boolean hasOAuthToken() {
-            return authorizationCode.isPresent() || accessToken.isPresent();
-        }
-
-        boolean canAuthenticate() {
-            return hasApiKey() || authorizationCode.isPresent() || accessToken.isPresent();
+            return accessToken.isPresent();
         }
 
         @Override
@@ -237,7 +222,6 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
                     .add("username", username)
                     .add("apiKey", apiKey)
                     .add("accessToken", accessToken)
-                    .add("authorizationCode", authorizationCode)
                     .toString();
         }
     }

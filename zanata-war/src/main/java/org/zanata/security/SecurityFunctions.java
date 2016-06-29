@@ -574,8 +574,9 @@ public class SecurityFunctions extends PermissionProvider {
     /**
      * Check if the REST api allow anonymous access
      * If request is from anonymous user,
-     * only 'Read' action are allowed. Additionally, role-based check will be
-     * performed in the REST service class.
+     * only 'Read' action and certain specific endpoints are allowed.
+     * Additionally, role-based check will be performed in the REST service
+     * class.
      * @param httpMethod {@link javax.ws.rs.HttpMethod}
      * @param servicePath service path of rest request.
      *                        See annotation @Path in REST service class.
@@ -584,7 +585,13 @@ public class SecurityFunctions extends PermissionProvider {
     public static boolean doesRestPathAllowAnonymousAccess(String httpMethod,
             String servicePath) {
         return HttpUtil.isReadMethod(httpMethod) ||
-                isTestServicePath(servicePath);
+                isTestServicePath(servicePath) ||
+                isRefreshingOAuthAccessToken(servicePath);
+    }
+
+    private static boolean isRefreshingOAuthAccessToken(String servicePath) {
+        return servicePath != null &&
+                servicePath.startsWith("/oauth/token");
     }
 
     /**
