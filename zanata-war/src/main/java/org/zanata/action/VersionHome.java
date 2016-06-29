@@ -43,6 +43,7 @@ import org.hibernate.criterion.Restrictions;
 
 import javax.annotation.Nullable;
 import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -84,6 +85,8 @@ import java.util.ResourceBundle;
 
 @Named("versionHome")
 @ViewScoped
+@Model
+@Transactional
 @Slf4j
 public class VersionHome extends SlugHome<HProjectIteration> implements
     HasLanguageSettings, Serializable {
@@ -506,7 +509,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
         if (softDeleted) {
             String url = urlUtil.projectUrl(getProjectSlug());
-            urlUtil.redirectTo(url);
+            urlUtil.redirectToInternal(url);
             return state;
         }
 

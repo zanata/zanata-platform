@@ -35,6 +35,9 @@ import lombok.Setter;
 public class OpenIdAuthenticationResult implements Serializable {
     @Getter
     @Setter
+    /**
+     * Represents an externally authenticated username (ie a username for the external system).
+     */
     private String authenticatedId;
 
     @Getter

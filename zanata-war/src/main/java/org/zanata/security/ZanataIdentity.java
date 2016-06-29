@@ -229,7 +229,7 @@ public class ZanataIdentity implements Identity, Serializable {
                             new AnnotationLiteral<DeltaSpike>() {
                             });
             session.invalidate();
-            urlUtil.redirectTo(urlUtil.home());
+            urlUtil.redirectToInternal(urlUtil.home());
         }
     }
 

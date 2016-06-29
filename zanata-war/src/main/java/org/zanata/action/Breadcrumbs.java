@@ -6,11 +6,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 
 @Named("breadcrumbs")
-
-@javax.faces.bean.ViewScoped
+@ViewScoped
+@Model
 public class Breadcrumbs implements Serializable {
     private static final long serialVersionUID = 1L;
 

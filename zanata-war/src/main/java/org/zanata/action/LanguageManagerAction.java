@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
 import javax.faces.model.SelectItem;
 
 import lombok.AllArgsConstructor;
@@ -60,8 +62,9 @@ import com.google.common.collect.Lists;
 import com.ibm.icu.util.ULocale;
 
 @Named("languageManagerAction")
-@javax.faces.bean.ViewScoped
-
+@ViewScoped
+@Model
+@Transactional
 public class LanguageManagerAction extends AbstractAutocomplete<HLocale>
         implements Serializable {
     private static final long serialVersionUID = 1L;

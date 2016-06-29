@@ -27,6 +27,8 @@ import org.apache.commons.lang.time.DateUtils;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.PersonEmailValidationKeyDAO;
 import org.zanata.model.HPerson;
 import org.zanata.model.HPersonEmailValidationKey;
@@ -34,6 +36,7 @@ import org.zanata.util.HashUtil;
 
 @Named("emailChangeService")
 @RequestScoped
+@Transactional
 public class EmailChangeService {
     @Inject
     PersonEmailValidationKeyDAO personEmailValidationKeyDAO;

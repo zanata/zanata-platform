@@ -24,6 +24,7 @@ import java.io.Serializable;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
 
 import javax.annotation.PostConstruct;
@@ -32,6 +33,7 @@ import javax.inject.Named;
 
 import org.apache.deltaspike.core.api.scope.ConversationGroup;
 import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.async.handle.CopyTransTaskHandle;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.i18n.Messages;
@@ -53,6 +55,8 @@ import com.google.common.base.Optional;
  */
 @Named("copyTransAction")
 @RequestScoped
+@Model
+@Transactional
 public class CopyTransAction extends CopyAction implements Serializable {
     private static final long serialVersionUID = 1L;
 

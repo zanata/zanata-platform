@@ -24,8 +24,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Model;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
@@ -37,8 +41,9 @@ import org.zanata.async.AsyncTaskHandleManager;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("processManagerAction")
-@javax.enterprise.context.RequestScoped
-
+@RequestScoped
+@Model
+@Transactional
 @CheckRole("admin")
 public class ProcessManagerAction {
     @Inject

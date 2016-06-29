@@ -92,6 +92,7 @@ import static org.apache.commons.lang.StringUtils.abbreviate;
 @Path(StatisticsResource.SERVICE_PATH)
 @javax.enterprise.context.Dependent
 @Slf4j
+// TODO this should probably be Transactional (and not Dependent)
 public class StatisticsServiceImpl implements StatisticsResource {
     @Inject
     private ProjectIterationDAO projectIterationDAO;

@@ -35,6 +35,7 @@ import static org.zanata.events.TextFlowTargetStateEvent.TextFlowTargetState;
 @Named("translationUpdatedManager")
 @RequestScoped
 @Slf4j
+// not @Transactional (no DB modifications... yet)
 public class TranslationUpdatedManager {
 
     @Inject

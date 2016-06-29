@@ -5,7 +5,6 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import javax.inject.Inject;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;

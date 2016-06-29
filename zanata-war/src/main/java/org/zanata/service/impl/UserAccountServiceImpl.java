@@ -27,6 +27,7 @@ import javax.annotation.Nonnull;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -50,6 +51,7 @@ import org.zanata.util.HashUtil;
 @Named("userAccountServiceImpl")
 @RequestScoped
 @Slf4j
+@Transactional
 public class UserAccountServiceImpl implements UserAccountService {
     @Inject
     private Session session;

@@ -61,7 +61,6 @@ import com.google.common.collect.Sets;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  *
@@ -188,6 +187,8 @@ public class GlossaryFileServiceImpl implements GlossaryFileService {
     /**
      * This force glossaryDAO to flush and commit every 50(BATCH_SIZE) records.
      */
+    // TODO does that mean the reads aren't in transactions?
+    // TODO use Transactional at class level?
     @Transactional
     private void executeCommit() {
         glossaryDAO.flush();

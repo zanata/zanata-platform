@@ -22,6 +22,8 @@ package org.zanata.action;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
 import javax.faces.event.ValueChangeEvent;
 
 import com.google.common.base.Joiner;
@@ -68,8 +70,9 @@ import lombok.extern.slf4j.Slf4j;
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 @Named("languageAction")
-@javax.faces.bean.ViewScoped
-
+@ViewScoped
+@Model
+@Transactional
 @Slf4j
 public class LanguageAction implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -302,7 +305,7 @@ public class LanguageAction implements Serializable {
     private void redirectToLanguageHome() {
         facesMessages.addGlobal(msgs.format(
                 "jsf.language.validation.NotSupport", language));
-        urlUtil.redirectTo(urlUtil.languageHome());
+        urlUtil.redirectToInternal(urlUtil.languageHome());
     }
 
 

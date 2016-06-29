@@ -21,41 +21,23 @@
 package org.zanata.service.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.MultiFieldQueryParser;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.BooleanClause.Occur;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.MultiPhraseQuery;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.util.Version;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.search.FullTextSession;
-import org.hibernate.search.jpa.FullTextEntityManager;
-import org.hibernate.search.jpa.FullTextQuery;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.exception.ZanataServiceException;
-import org.zanata.hibernate.search.IndexFieldLabels;
-import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
 import org.zanata.jpa.FullText;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
-import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.search.FilterConstraintToQuery;
@@ -76,6 +58,7 @@ import com.google.common.collect.Lists;
 @Named("textFlowSearchServiceImpl")
 @RequestScoped
 @Slf4j
+@Transactional
 public class TextFlowSearchServiceImpl implements TextFlowSearchService {
 
     @Inject

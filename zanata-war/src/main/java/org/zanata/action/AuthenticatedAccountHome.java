@@ -23,9 +23,11 @@ package org.zanata.action;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Model;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.seam.framework.EntityHome;
@@ -38,6 +40,8 @@ import java.io.Serializable;
  */
 @Named("authenticatedAccountHome")
 @RequestScoped
+@Model
+@Transactional
 @Slf4j
 public class AuthenticatedAccountHome extends EntityHome<HAccount>
         implements Serializable {

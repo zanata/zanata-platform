@@ -24,6 +24,8 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
@@ -81,7 +83,9 @@ import static javax.faces.application.FacesMessage.SEVERITY_INFO;
  * @see {@link org.zanata.action.ProfileAction}
  */
 @Named("userSettingsAction")
-@javax.faces.bean.ViewScoped
+@ViewScoped
+@Model
+@Transactional
 @Slf4j
 public class UserSettingsAction implements Serializable {
 

@@ -52,6 +52,7 @@ import org.zanata.util.HashUtil;
 
 @Named("registerServiceImpl")
 @RequestScoped
+@Transactional
 public class RegisterServiceImpl implements RegisterService {
     @Inject
     EntityManager entityManager;
@@ -118,7 +119,6 @@ public class RegisterServiceImpl implements RegisterService {
         return key.getKeyHash();
     }
 
-    @Transactional
     public String register(final String username, final String password,
             String name, String email) {
         new AbstractRunAsOperation() {
