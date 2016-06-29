@@ -75,4 +75,12 @@ public class OAuthUtil {
         String clientId = request.getParameter(OAuth.OAUTH_CLIENT_ID);
         return getNonEmptyString(clientId);
     }
+
+    public static Optional<String> getAuthCode(HttpServletRequest request) {
+        return getNonEmptyString(request.getParameter(OAuth.OAUTH_CODE));
+    }
+
+    public static Optional<String> getRefreshToken(HttpServletRequest request) {
+        return getNonEmptyString(request.getParameter(OAuth.OAUTH_REFRESH_TOKEN));
+    }
 }

@@ -1,7 +1,6 @@
 package org.zanata.rest;
 
 import java.io.IOException;
-import java.util.Optional;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -48,17 +47,13 @@ public class RestLimitingFilterTest extends ZanataTest {
     private HAccount authenticatedUser;
 
     private String clientIP = "255.255.0.1";
-    @Mock
-    private SecurityTokens securityTokens;
-    @Mock
-    private AccountDAO accountDAO;
 
     @Before
     public void beforeMethod() throws ServletException, IOException {
         MockitoAnnotations.initMocks(this);
         when(request.getMethod()).thenReturn("GET");
 
-        filter = spy(new RestLimitingFilter(processor, accountDAO, securityTokens));
+        filter = spy(new RestLimitingFilter(processor));
 
         // this way we can verify the task actually called super.invoke()
         doNothing().when(filterChain).doFilter(request, response);
@@ -67,16 +62,13 @@ public class RestLimitingFilterTest extends ZanataTest {
     }
 
     @Test
-    public void willUseAuthenticatedUserApiKeyIfPresent() throws Exception {
+    public void willUseApiKeyIfPresent() throws Exception {
         when(request.getHeader(HttpUtil.X_AUTH_TOKEN_HEADER)).thenReturn(
                 API_KEY);
-        authenticatedUser = new HAccount();
-        authenticatedUser.setApiKey("apiKeyInAuth");
-        doReturn(authenticatedUser).when(filter).getAuthenticatedUser();
 
         filter.doFilter(request, response, filterChain);
 
-        verify(processor).processForApiKey(same("apiKeyInAuth"), same(response),
+        verify(processor).processForApiKey(same(API_KEY), same(response),
             taskCaptor.capture());
 
         // verify task is calling filter chain
@@ -103,19 +95,15 @@ public class RestLimitingFilterTest extends ZanataTest {
     }
 
     @Test
-    public void willUseUsernameIfAuthorizationCodePresents()
+    public void willUseAuthorizationCodeIfItPresents()
             throws Exception {
-        authenticatedUser = new HAccount();
-        authenticatedUser.setUsername("admin");
+        String authCode = "abc123";
         when(request.getParameter(OAuth.OAUTH_CODE)).thenReturn(
-                "abc123");
-        when(securityTokens.findUsernameForAuthorizationCode("abc123"))
-                .thenReturn(Optional.of("admin"));
-        when(accountDAO.getByUsername("admin")).thenReturn(authenticatedUser);
+                authCode);
 
         filter.doFilter(request, response, filterChain);
 
-        verify(processor).processForUser(same("admin"), same(response),
+        verify(processor).processForToken(same(authCode), same(response),
                 taskCaptor.capture());
 
         // verify task is calling filter chain
@@ -125,19 +113,14 @@ public class RestLimitingFilterTest extends ZanataTest {
     }
 
     @Test
-    public void willUseUsernameIfAccessTokenPresents()
+    public void willUseAccessTokenIfItPresents()
             throws Exception {
-        authenticatedUser = new HAccount();
-        authenticatedUser.setUsername("admin");
         when(request.getHeader(OAuth.HeaderType.AUTHORIZATION)).thenReturn(
                 "Bearer abc123");
-        when(securityTokens.findUsernameByAccessToken("abc123"))
-                .thenReturn(Optional.of("admin"));
-        when(accountDAO.getByUsername("admin")).thenReturn(authenticatedUser);
 
         filter.doFilter(request, response, filterChain);
 
-        verify(processor).processForUser(same("admin"), same(response),
+        verify(processor).processForToken(eq("abc123"), same(response),
                 taskCaptor.capture());
 
         // verify task is calling filter chain

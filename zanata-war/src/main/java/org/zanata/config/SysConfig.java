@@ -32,10 +32,26 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * When a system configuration value that is keyed with a string (e.g. system
- * properties or HApplicationConfiguration entries), you can use produce the
- * configuration value using this qualifier with org.zanata.config.SysConfig#value()
- * set as the key.
+ * When you want to produce a system configuration value, you can use this
+ * qualifier with a unique {@link SysConfig#value()} across the system. At the
+ * injection point, using the same binding in {@link SysConfig#value()} so
+ * that you will get the produced configuration value.
+ * <p/>
+ * Example:
+ * <pre>
+ *     {@code @Produces @SysConfig("supportOAuth")
+ *         boolean getSupportOAuthConfig() {
+ *             // note the key can be different from what's in the binding.
+ *             // ideally we may want to use the same value in binding
+ *             return Boolean.parseBoolean(System.getProperties("support.oauth"));
+ *         }
+ *     }
+ * </pre>
+ * Then you can inject it by:
+ * <pre>
+ *     {@code @Inject @SysConfig("supportOAuth") boolean isOAuthSupported;}
+ * </pre>
+ *
  */
 @Qualifier
 @Retention(RUNTIME)

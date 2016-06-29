@@ -57,7 +57,6 @@ public class ZanataRestSecurityInterceptorTest {
     private HttpServletRequest request;
     @Mock
     private SecurityTokens securityTokens;
-    private HAccount authenticatedAccount = null;
     private ZanataRestSecurityInterceptor securityInterceptor;
     @Mock
     private ContainerRequestContext context;

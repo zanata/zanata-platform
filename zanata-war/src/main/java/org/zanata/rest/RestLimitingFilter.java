@@ -67,21 +67,15 @@ import org.zanata.util.ServiceLocator;
 public class RestLimitingFilter implements Filter {
     private final RateLimitingProcessor processor;
 
-    @Inject
-    private AccountDAO accountDAO;
 
-    @Inject
-    private SecurityTokens securityTokens;
-
+    @SuppressWarnings("unused")
     public RestLimitingFilter() {
         this.processor = new RateLimitingProcessor();
     }
 
     @VisibleForTesting
-    RestLimitingFilter(RateLimitingProcessor processor, AccountDAO accountDAO, SecurityTokens securityTokens) {
+    RestLimitingFilter(RateLimitingProcessor processor) {
         this.processor = processor;
-        this.accountDAO = accountDAO;
-        this.securityTokens = securityTokens;
     }
 
 
@@ -111,21 +105,25 @@ public class RestLimitingFilter implements Filter {
          * using OAuth.
          */
         String apiKey = request.getHeader(HttpUtil.X_AUTH_TOKEN_HEADER);
+        // other possible OAuth tokens
+        Optional<String> authCodeOpt = OAuthUtil.getAuthCode(request);
+        Optional<String> accessTokenOpt =
+                OAuthUtil.getAccessTokenFromHeader(request);
+        Optional<String> refreshTokenOpt = OAuthUtil.getRefreshToken(request);
 
-
-        // Get user account with apiKey if request is from client
-        if(authenticatedUser == null && StringUtils.isNotEmpty(apiKey)) {
-            authenticatedUser = getUser(apiKey);
-        } else if (authenticatedUser == null) {
-            authenticatedUser = tryGetAuthenticatedAccountUsingOAuthTokens(
-                    request);
-        }
+        boolean hasAuthenticationToken =
+                !Strings.isNullOrEmpty(apiKey) || authCodeOpt.isPresent() ||
+                        accessTokenOpt.isPresent() || refreshTokenOpt.isPresent();
 
         RunnableEx invokeChain = () -> chain.doFilter(req, resp);
 
         try {
             // authenticatedUser can be from browser or client request
-            if (authenticatedUser == null) {
+            if (authenticatedUser != null) {
+                // this request may come from logged-in browser
+                processor.processForUser(authenticatedUser.getUsername(),
+                        response, invokeChain);
+            } else if (!hasAuthenticationToken) {
                 /**
                  * Process anonymous request for rate limiting
                  * Note: clientIP might be a proxy server IP address, due to
@@ -135,14 +133,14 @@ public class RestLimitingFilter implements Filter {
                 String clientIP = HttpUtil.getClientIp(request);
                 processor.processForAnonymousIP(clientIP, response, invokeChain);
             } else {
-                if (!Strings.isNullOrEmpty(apiKey)) {
-                    processor.processForApiKey(authenticatedUser.getApiKey(),
-                            response, invokeChain);
+                // this request may come from REST using api key or OAuth
+                String token = authCodeOpt.orElse(
+                        accessTokenOpt.orElse(
+                                refreshTokenOpt.orElse(apiKey)));
+                if (Strings.isNullOrEmpty(apiKey)) {
+                    processor.processForToken(token, response, invokeChain);
                 } else {
-                    // this request may come from logged-in browser, or from
-                    // REST client using OAuth
-                    processor.processForUser(authenticatedUser.getUsername(),
-                            response, invokeChain);
+                    processor.processForApiKey(apiKey, response, invokeChain);
                 }
             }
         } catch (Exception e) {
@@ -150,36 +148,10 @@ public class RestLimitingFilter implements Filter {
         }
     }
 
-    private @Nullable HAccount tryGetAuthenticatedAccountUsingOAuthTokens(
-            HttpServletRequest request) {
-        String authCode = request.getParameter(OAuth.OAUTH_CODE);
-        Optional<String> accessTokenOpt = OAuthUtil.getAccessTokenFromHeader(request);
-        Optional<String> usernameOpt = Optional.empty();
-        if (StringUtils.isNotEmpty(authCode)) {
-            // Get user account with OAuth authorizationCode if it presents
-            usernameOpt = securityTokens
-                    .findUsernameForAuthorizationCode(authCode);
-        } else if (accessTokenOpt.isPresent()) {
-            // Get user account with OAuth accessToken if it presents
-            usernameOpt = securityTokens
-                    .findUsernameByAccessToken(accessTokenOpt.get());
-        }
-        if (usernameOpt.isPresent()) {
-            return accountDAO
-                    .getByUsername(usernameOpt.get());
-        }
-        return null;
-    }
-
     @VisibleForTesting
     protected HAccount getAuthenticatedUser() {
         return ServiceLocator.instance().getInstance(
                 HAccount.class, new AuthenticatedLiteral());
-    }
-
-    private @Nullable HAccount getUser(@Nonnull String apiKey) {
-        return accountDAO
-                .getByApiKey(apiKey);
     }
 
 }

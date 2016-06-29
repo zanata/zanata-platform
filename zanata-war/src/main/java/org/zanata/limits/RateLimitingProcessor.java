@@ -37,6 +37,11 @@ public class RateLimitingProcessor {
         process(RateLimiterToken.fromApiKey(apiKey), response, taskToRun);
     }
 
+    public void processForToken(String token, HttpServletResponse response,
+            RunnableEx taskToRun) throws Exception {
+        process(RateLimiterToken.fromToken(token), response, taskToRun);
+    }
+
     public void processForUser(String username, HttpServletResponse response,
             RunnableEx taskToRun) throws Exception {
         process(RateLimiterToken.fromUsername(username), response, taskToRun);

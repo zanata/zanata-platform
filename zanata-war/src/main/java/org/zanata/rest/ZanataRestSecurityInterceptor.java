@@ -92,15 +92,22 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
 
         RestCredentials restCredentials = new RestCredentials(context, request, isOAuthEnabled);
 
-        String unauthenticatedMessage = "User authentication required for REST request";
-        if (restCredentials.canAuthenticateUsingApiKey()) {
+        if (restCredentials.hasApiKey()) {
             // if apiKey presents, we use apiKey for security check
-            unauthenticatedMessage = InvalidApiKeyUtil
-                    .getMessage(restCredentials.username.get(), restCredentials.apiKey.get());
             zanataIdentity.getCredentials().setUsername(restCredentials.username.get());
             zanataIdentity.setApiKey(restCredentials.apiKey.get());
             zanataIdentity.tryLogin();
-        } else if (restCredentials.canAuthenticateUsingOAuth()) {
+            if (!SecurityFunctions.canAccessRestPath(zanataIdentity,
+                    context.getUriInfo().getPath())) {
+                String message = InvalidApiKeyUtil
+                        .getMessage(restCredentials.username.get(),
+                                restCredentials.apiKey.get());
+                log.info("can not authenticate REST request: {}", message);
+                context.abortWith(Response.status(Status.UNAUTHORIZED)
+                        .entity(message)
+                        .build());
+            }
+        } else if (restCredentials.hasOAuthToken()) {
             Either<String, Response> usernameOrError =
                 getAuthenticatedUsernameOrError();
             if (usernameOrError.isRight()) {
@@ -110,20 +117,17 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
             String username = usernameOrError.left();
             zanataIdentity.getCredentials().setUsername(username);
             zanataIdentity.setRequestUsingOAuth(true);
+            // login will always success since the check was done above
+            // here the tryLogin() will just set up the correct system state
             zanataIdentity.tryLogin();
-        } else if (SecurityFunctions
+        } else if (!SecurityFunctions
                 .doesRestPathAllowAnonymousAccess(context.getMethod(),
                         context.getUriInfo().getPath())){
-            // if we don't have any information to authenticate but the
-            // requesting API allows anonymous access, we let it go
-            return;
-        }
-
-        if (!SecurityFunctions.canAccessRestPath(zanataIdentity,
-                context.getUriInfo().getPath())) {
+            // if we don't have any information to authenticate and the
+            // requesting API does NOT allow anonymous access
             log.info("can not authenticate REST request: {}", restCredentials);
             context.abortWith(Response.status(Status.UNAUTHORIZED)
-                    .entity(unauthenticatedMessage)
+                    .entity("User authentication required for REST request")
                     .build());
         }
     }
@@ -204,8 +208,7 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
             this.apiKey = optionalNotEmptyString(apiKey);
             if (isOAuthSupported) {
                 accessToken = OAuthUtil.getAccessTokenFromHeader(request);
-                String authorizationCode = request.getParameter(OAuth.OAUTH_CODE);
-                this.authorizationCode = optionalNotEmptyString(authorizationCode);
+                authorizationCode = OAuthUtil.getAuthCode(request);
             } else {
                 accessToken = Optional.empty();
                 authorizationCode = Optional.empty();
@@ -216,16 +219,16 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
             return StringUtils.isNotEmpty(value) ? Optional.of(value) : Optional.empty();
         }
 
-        boolean canAuthenticateUsingApiKey() {
+        boolean hasApiKey() {
             return username.isPresent() && apiKey.isPresent();
         }
 
-        boolean canAuthenticateUsingOAuth() {
+        boolean hasOAuthToken() {
             return authorizationCode.isPresent() || accessToken.isPresent();
         }
 
         boolean canAuthenticate() {
-            return canAuthenticateUsingApiKey() || authorizationCode.isPresent() || accessToken.isPresent();
+            return hasApiKey() || authorizationCode.isPresent() || accessToken.isPresent();
         }
 
         @Override
