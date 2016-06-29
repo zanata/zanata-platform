@@ -160,7 +160,7 @@ public class NewProfileAction extends AbstractProfileAction implements Serializa
 
     public void cancel() {
         identity.logout();
-        urlUtil.redirectTo(urlUtil.home());
+        urlUtil.redirectToInternal(urlUtil.home());
     }
 
 }
