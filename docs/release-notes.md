@@ -3,9 +3,15 @@
 ##### Bug Fixes
 * [ZNTA-846](https://zanata.atlassian.net/browse/ZNTA-846) - Group "request add project version" needs field limit
 * [ZNTA-872](https://zanata.atlassian.net/browse/ZNTA-872) - Redirect to home from cancel button in create user page
+
 ##### Infrastructure Changes
 
 * Zanata's cache configuration (Infinispan) is now controlled by `zanata-infinispan.xml`, not `standalone.xml`. Please see the [Infinispan](user-guide/system-admin/configuration/infinispan) section for more information.
+
+The WildFly module for Hibernate 4.2 has been removed. Zanata will now use the version of Hibernate provided by
+WildFly. The Zanata installer no longer installs any modules for WildFly. If a previous version of the Zanata
+installer has put a Hibernate 4.2 module into your WildFly installation (in modules/org/hibernate/main) you should
+remove it.
 
 ## 3.9
 
