@@ -47,8 +47,11 @@ WebFont.load({
 window.config = mapValues(window.config, (value) =>
   isJsonString(value) ? JSON.parse(value) : value)
 
+// baseUrl should be /zanata or ''
+window.config.baseUrl = window.config.baseUrl || ''
+
 const links = {
-  'context': window.config.baseUrl || '',
+  'context': window.config.baseUrl,
   '/login': window.config.links.loginUrl,
   '/signup': window.config.links.registerUrl
 }

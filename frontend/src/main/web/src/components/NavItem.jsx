@@ -69,7 +69,7 @@ const NavItem = ({
       isSearchLink ? classes.search : {}
     )
   }
-  const text = isLogo ? (<span className='Hidden'>{title}</span>) : title
+  const text = isLogo ? (<span className='D(n)'>{title}</span>) : title
   const inverted = false
 
   const child = isLogo

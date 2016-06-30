@@ -58,6 +58,8 @@ const store = ((initialState) => {
 
 window.config = mapValues(window.config, (value) =>
   isJsonString(value) ? JSON.parse(value) : value)
+// baseUrl should be /zanata or ''
+window.config.baseUrl = window.config.baseUrl || ''
 
 render(
   <Root store={store} history={hashHistory} />,
