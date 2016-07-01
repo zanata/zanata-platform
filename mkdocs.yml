@@ -19,6 +19,9 @@ pages:
   - init: 'commands/init.md'
   - push: 'commands/push.md'
   - pull: 'commands/pull.md'
+  - glossary-push: 'commands/glossary-push.md'
+  - glossary-pull: 'commands/glossary-pull.md'
+  - glossary-delete: 'commands/glossary-delete.md'
 - Maven Plugin:
   - Installation: 'maven-plugin/installation.md'
   - Configuration: 'maven-plugin/configuration.md'

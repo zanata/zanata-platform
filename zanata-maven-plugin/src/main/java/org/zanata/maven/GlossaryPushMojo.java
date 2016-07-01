@@ -38,13 +38,6 @@ public class GlossaryPushMojo extends GlossaryMojo<GlossaryPushOptions>
         implements GlossaryPushOptions {
 
     /**
-     * Source language of document
-     *
-     * @parameter expression="${zanata.sourceLang}" default-value="en-US"
-     */
-    private String sourceLang = "en-US";
-
-    /**
      * Translation language of document. Not required for csv file
      *
      * @parameter expression="${zanata.transLang}"
@@ -54,17 +47,17 @@ public class GlossaryPushMojo extends GlossaryMojo<GlossaryPushOptions>
     /**
      * Location path for the glossary file
      *
-     * @parameter expression="${zanata.glossaryFile}"
+     * @parameter expression="${zanata.file}"
      * @required
      */
-    private File glossaryFile;
+    private File file;
 
     /**
      * Batch size for large glossary file
      *
      * @parameter expression="${zanata.batchSize}" default-value=50
      */
-    private int batchSize = 50;
+    private int batchSize = DEFAULT_BATCH_SIZE;
 
     public GlossaryPushMojo() throws Exception {
         super();
@@ -73,13 +66,8 @@ public class GlossaryPushMojo extends GlossaryMojo<GlossaryPushOptions>
     @SuppressFBWarnings(value = "UWF_UNWRITTEN_FIELD",
             justification = "Injected by Maven")
     @Override
-    public File getGlossaryFile() {
-        return glossaryFile;
-    }
-
-    @Override
-    public String getSourceLang() {
-        return sourceLang;
+    public File getFile() {
+        return file;
     }
 
     @Override

@@ -70,7 +70,10 @@ public class GlossaryPullMojo extends GlossaryMojo<GlossaryPullOptions>
             justification = "Injected by Maven")
     @Override
     public ImmutableList<String> getTransLang() {
-        return ImmutableList.copyOf(transLang);
+        if (transLang != null) {
+            return ImmutableList.copyOf(transLang);
+        }
+        return ImmutableList.of();
     }
 
     @Override

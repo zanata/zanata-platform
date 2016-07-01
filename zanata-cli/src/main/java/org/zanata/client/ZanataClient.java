@@ -23,6 +23,9 @@ import org.zanata.client.commands.PutUserOptionsImpl;
 import org.zanata.client.commands.PutVersionOptionsImpl;
 import org.zanata.client.commands.SystemExitStrategy;
 import org.zanata.client.commands.ZanataCommand;
+import org.zanata.client.commands.glossary.delete.GlossaryDeleteOptionsImpl;
+import org.zanata.client.commands.glossary.pull.GlossaryPullOptionsImpl;
+import org.zanata.client.commands.glossary.push.GlossaryPushOptionsImpl;
 import org.zanata.client.commands.init.InitOptionsImpl;
 import org.zanata.client.commands.pull.PullOptionsImpl;
 import org.zanata.client.commands.push.PushOptionsImpl;
@@ -64,7 +67,11 @@ public class ZanataClient extends BasicOptionsImpl {
             @SubCommand(name = "put-user", impl = PutUserOptionsImpl.class),
             @SubCommand(name = "put-version",
                     impl = PutVersionOptionsImpl.class),
-            @SubCommand(name = "stats", impl = GetStatisticsOptionsImpl.class) })
+            @SubCommand(name = "stats", impl = GetStatisticsOptionsImpl.class),
+            @SubCommand(name = "glossary-delete", impl = GlossaryDeleteOptionsImpl.class),
+            @SubCommand(name = "glossary-push", impl = GlossaryPushOptionsImpl.class),
+            @SubCommand(name = "glossary-pull", impl = GlossaryPullOptionsImpl.class)})
+
     // if this field name changes, change COMMAND_FIELD too
     private Object command;
     private static final String COMMAND_FIELD = "command";

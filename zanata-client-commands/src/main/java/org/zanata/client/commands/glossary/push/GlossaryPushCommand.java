@@ -38,11 +38,12 @@ import org.zanata.adapter.glossary.GlossaryCSVReader;
 import org.zanata.adapter.glossary.GlossaryPoReader;
 import org.zanata.client.commands.ConfigurableCommand;
 import org.zanata.client.commands.OptionsUtil;
-import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.client.GlossaryClient;
 import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.dto.GlossaryEntry;
+
+import static org.zanata.client.commands.glossary.push.GlossaryPushOptions.DEFAULT_SOURCE_LANG;
 
 /**
  *
@@ -54,8 +55,8 @@ public class GlossaryPushCommand extends
     private static final Logger log = LoggerFactory
             .getLogger(GlossaryPushCommand.class);
 
-    private static final Map<String, AbstractGlossaryPushReader> glossaryReaders =
-            new HashMap<String, AbstractGlossaryPushReader>();
+    private static final Map<String, AbstractGlossaryPushReader>
+        glossaryReaders = new HashMap<String, AbstractGlossaryPushReader>();
     private final GlossaryClient client;
 
     public GlossaryPushCommand(GlossaryPushOptions opts,
@@ -67,8 +68,10 @@ public class GlossaryPushCommand extends
     public GlossaryPushCommand(GlossaryPushOptions opts) {
         this(opts, OptionsUtil.createClientFactory(opts));
 
-        LocaleId srcLocaleId = new LocaleId(getOpts().getSourceLang());
-        LocaleId transLocaleId = new LocaleId(getOpts().getTransLang());
+        LocaleId srcLocaleId = new LocaleId(DEFAULT_SOURCE_LANG);
+        String transLang = getOpts().getTransLang();
+        LocaleId transLocaleId = StringUtils.isNotBlank(transLang)
+                ? new LocaleId(transLang) : null;
         glossaryReaders.put("po", new GlossaryPoReader(
                 srcLocaleId, transLocaleId, getOpts().getBatchSize()));
         glossaryReaders
@@ -86,40 +89,39 @@ public class GlossaryPushCommand extends
 
     private String validateFileExtensionWithTransLang() throws RuntimeException {
         String fileExtension =
-                FilenameUtils.getExtension(getOpts().getGlossaryFile()
-                        .getName());
+                FilenameUtils.getExtension(getOpts().getFile().getName());
 
-        if (StringUtils.isEmpty(getOpts().getTransLang())) {
-            if (fileExtension.equals("po")) {
-                throw new RuntimeException(
-                        "Option 'zanata.transLang' is required for this file type.");
-            }
+        if (fileExtension.equals("po")
+                && StringUtils.isBlank(getOpts().getTransLang())) {
+            throw new RuntimeException(
+                    "Option '--trans-lang' is required for this file type.");
         }
         return fileExtension;
     }
 
     @Override
     public void run() throws Exception {
+
         log.info("Server: {}", getOpts().getUrl());
         log.info("Username: {}", getOpts().getUsername());
-        log.info("Source language: {}", getOpts().getSourceLang());
+        log.info("Source language: {}", DEFAULT_SOURCE_LANG);
         log.info("Translation language: {}", getOpts().getTransLang());
-        log.info("Glossary file: {}", getOpts().getGlossaryFile());
+        log.info("Glossary file: {}", getOpts().getFile());
         log.info("Batch size: {}", getOpts().getBatchSize());
 
-        File glossaryFile = getOpts().getGlossaryFile();
+        File glossaryFile = getOpts().getFile();
 
+        if (glossaryFile == null) {
+            throw new RuntimeException(
+                    "Option '--file' is required.");
+        }
         if (!glossaryFile.exists()) {
             throw new RuntimeException("File '" + glossaryFile
-                    + "' does not exist - check glossaryFile option");
-        }
-
-        if (getOpts().getSourceLang() == null || getOpts().getSourceLang().length() < 0) {
-            throw new RuntimeException("Need to specify source language.");
+                    + "' does not exist. Check '--file' option");
         }
 
         if (getOpts().getBatchSize() <= 0) {
-            throw new RuntimeException("Batch size needs to be 1 or more.");
+            throw new RuntimeException("Option '--batch-size' needs to be 1 or more.");
         }
 
         String fileExtension = validateFileExtensionWithTransLang();
