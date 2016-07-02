@@ -41,6 +41,7 @@ import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
@@ -79,6 +80,7 @@ import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
 import org.zanata.service.ValidationService;
+import org.zanata.service.impl.WebHooksPublisher;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.autocomplete.MaintainerAutocomplete;
@@ -87,6 +89,7 @@ import org.zanata.util.CommonMarkRenderer;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.util.ServiceLocator;
 import org.zanata.util.UrlUtil;
+import org.zanata.webhook.events.TestEvent;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
@@ -1107,6 +1110,17 @@ public class ProjectHome extends SlugHome<HProject> implements
             webHookDAO.makeTransient(webHook);
             facesMessages.addGlobal(
                 msgs.format("jsf.project.RemoveWebhook", webHook.getUrl()));
+        }
+    }
+
+    public void testWebhook(String url, String secret, String strType) {
+        identity.checkPermission(getInstance(), "update");
+        WebhookType type = WebhookType.valueOf(strType);
+        if (isValidUrl(url, type)) {
+            TestEvent event =
+                new TestEvent(identity.getAccountUsername(), getSlug());
+            WebHooksPublisher
+                .publish(url, event, Optional.fromNullable(secret));
         }
     }
 

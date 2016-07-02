@@ -65,7 +65,7 @@ public class GlossaryAdminTest extends ZanataTestCase {
                 projectRootPath,
                 "mvn -U --batch-mode zanata:glossary-push " +
                         "-Dglossary.lang=hi " +
-                        "-Dzanata.glossaryFile=compendium.csv " +
+                        "-Dzanata.file=compendium.csv " +
                         "-Dzanata.userConfig=" + userConfigPath);
 
         assertThat(clientWorkFlow.isPushSuccessful(result),

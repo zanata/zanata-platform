@@ -52,11 +52,11 @@ public class GlossaryPushTest extends ZanataTestCase {
     private String basicUserConfigPath;
 
     private String pushCommand = "mvn -U --batch-mode zanata:glossary-push " +
-            "-Dglossary.lang=fr -Dzanata.glossaryFile=compendium_fr.po " +
+            "-Dglossary.lang=fr -Dzanata.file=compendium_fr.po " +
             "-Dzanata.userConfig=";
 
     private String pushCSVCommand = "mvn -U --batch-mode zanata:glossary-push " +
-            "-Dzanata.glossaryFile=compendium_invalid.csv -Dglossary.lang=hi " +
+            "-Dzanata.file=compendium_invalid.csv -Dglossary.lang=hi " +
             "-Dzanata.userConfig=";
 
     @Before
