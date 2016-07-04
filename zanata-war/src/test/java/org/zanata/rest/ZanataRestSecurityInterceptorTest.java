@@ -40,7 +40,6 @@ import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.security.oauth.SecurityTokens;
 import org.zanata.util.HttpUtil;
 import org.zanata.util.IServiceLocator;
-import org.zanata.util.ServiceLocator;
 
 import com.google.common.collect.Lists;
 
@@ -98,8 +97,8 @@ public class ZanataRestSecurityInterceptorTest {
 
     @Test
     public void canAuthenticateUsingValidApiKey() throws Exception {
-        headers.put(HttpUtil.X_AUTH_USER_HEADER, Lists.newArrayList("admin"));
-        headers.put(HttpUtil.X_AUTH_TOKEN_HEADER, Lists.newArrayList("validApi"));
+        headers.put(HttpUtil.USERNAME_HEADER_NAME, Lists.newArrayList("admin"));
+        headers.put(HttpUtil.APK_KEY_HEADER_NAME, Lists.newArrayList("validApi"));
 
         when(identity.isLoggedIn()).thenReturn(true);
 
@@ -114,8 +113,8 @@ public class ZanataRestSecurityInterceptorTest {
 
     @Test
     public void willAbortIfUsingInvalidApiKey() throws Exception {
-        headers.put(HttpUtil.X_AUTH_USER_HEADER, Lists.newArrayList("admin"));
-        headers.put(HttpUtil.X_AUTH_TOKEN_HEADER, Lists.newArrayList("invalidApi"));
+        headers.put(HttpUtil.USERNAME_HEADER_NAME, Lists.newArrayList("admin"));
+        headers.put(HttpUtil.APK_KEY_HEADER_NAME, Lists.newArrayList("invalidApi"));
 
         when(identity.isLoggedIn()).thenReturn(false);
 

@@ -27,7 +27,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -41,8 +40,7 @@ import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import org.apache.oltu.oauth2.common.token.BasicOAuthToken;
 import org.apache.oltu.oauth2.common.token.OAuthToken;
-import org.zanata.ApplicationConfiguration;
-import org.zanata.config.SysConfig;
+import org.zanata.config.OAuthTokenExpiryInSeconds;
 import org.zanata.events.LogoutEvent;
 import org.zanata.model.HAccount;
 import org.zanata.rest.dto.DTOUtil;
@@ -51,8 +49,6 @@ import org.zanata.util.Introspectable;
 import com.google.common.base.Throwables;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import lombok.Getter;
@@ -92,7 +88,7 @@ public class SecurityTokens implements Serializable, Introspectable {
     }
 
     @Inject
-    public SecurityTokens(@SysConfig(ApplicationConfiguration.ACCESS_TOKEN_EXPIRES_IN_SECONDS)
+    public SecurityTokens(@OAuthTokenExpiryInSeconds
             long tokenExpiresInSeconds) {
         this.tokenExpiresInSeconds = tokenExpiresInSeconds;
         usernameByAccessTokens = CacheBuilder.newBuilder()

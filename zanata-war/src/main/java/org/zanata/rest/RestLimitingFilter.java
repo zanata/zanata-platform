@@ -22,9 +22,6 @@ package org.zanata.rest;
 
 import java.io.IOException;
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -36,9 +33,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Throwables;
-import org.apache.commons.lang.StringUtils;
-import org.apache.oltu.oauth2.common.OAuth;
-import org.zanata.dao.AccountDAO;
 import org.zanata.limits.RateLimitingProcessor;
 import org.zanata.model.HAccount;
 import com.google.common.annotations.VisibleForTesting;
@@ -47,15 +41,16 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.zanata.rest.oauth.OAuthUtil;
 import org.zanata.security.annotations.AuthenticatedLiteral;
-import org.zanata.security.oauth.SecurityTokens;
 import org.zanata.util.HttpUtil;
 import org.zanata.util.RunnableEx;
 import org.zanata.util.ServiceLocator;
 
 /**
- * This class filters JAX-RS calls to limit API calls per
- * user if identifiable. Otherwise will limit API calls per IP address
- * (via RateLimitingProcessor and RateLimitManager).
+ * This class intercepts JAX-RS requests to limit API requests by session, by
+ * API key or by OAuth token/code (<strong>without</strong> actually checking
+ * their validity, for efficiency). Requests without any credentials will be
+ * limited by IP address. Excessive requests up to the hard limit will be
+ * queued. Any requests over the hard limit will be rejected.
  *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -104,14 +99,14 @@ public class RestLimitingFilter implements Filter {
          * If apiKey is empty, request is either coming from anonymous user or
          * using OAuth.
          */
-        String apiKey = request.getHeader(HttpUtil.X_AUTH_TOKEN_HEADER);
+        String apiKey = request.getHeader(HttpUtil.APK_KEY_HEADER_NAME);
         // other possible OAuth tokens
         Optional<String> authCodeOpt = OAuthUtil.getAuthCode(request);
         Optional<String> accessTokenOpt =
                 OAuthUtil.getAccessTokenFromHeader(request);
         Optional<String> refreshTokenOpt = OAuthUtil.getRefreshToken(request);
 
-        boolean hasAuthenticationToken =
+        boolean hasAuthenticationCredentials =
                 !Strings.isNullOrEmpty(apiKey) || authCodeOpt.isPresent() ||
                         accessTokenOpt.isPresent() || refreshTokenOpt.isPresent();
 
@@ -123,7 +118,7 @@ public class RestLimitingFilter implements Filter {
                 // this request may come from logged-in browser
                 processor.processForUser(authenticatedUser.getUsername(),
                         response, invokeChain);
-            } else if (!hasAuthenticationToken) {
+            } else if (!hasAuthenticationCredentials) {
                 /**
                  * Process anonymous request for rate limiting
                  * Note: clientIP might be a proxy server IP address, due to

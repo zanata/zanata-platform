@@ -15,10 +15,8 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataTest;
-import org.zanata.dao.AccountDAO;
 import org.zanata.limits.RateLimitingProcessor;
 import org.zanata.model.HAccount;
-import org.zanata.security.oauth.SecurityTokens;
 import org.zanata.util.HttpUtil;
 import org.zanata.util.RunnableEx;
 
@@ -63,7 +61,7 @@ public class RestLimitingFilterTest extends ZanataTest {
 
     @Test
     public void willUseApiKeyIfPresent() throws Exception {
-        when(request.getHeader(HttpUtil.X_AUTH_TOKEN_HEADER)).thenReturn(
+        when(request.getHeader(HttpUtil.APK_KEY_HEADER_NAME)).thenReturn(
                 API_KEY);
 
         filter.doFilter(request, response, filterChain);
@@ -131,7 +129,7 @@ public class RestLimitingFilterTest extends ZanataTest {
 
     @Test
     public void willProcessAnonymousWithGETAndNoApiKey() throws Exception {
-        when(request.getHeader(HttpUtil.X_AUTH_TOKEN_HEADER)).thenReturn(null);
+        when(request.getHeader(HttpUtil.APK_KEY_HEADER_NAME)).thenReturn(null);
         when(request.getRequestURI()).thenReturn("/rest/in/peace");
         when(request.getRemoteAddr()).thenReturn(clientIP);
         doReturn(null).when(filter).getAuthenticatedUser();

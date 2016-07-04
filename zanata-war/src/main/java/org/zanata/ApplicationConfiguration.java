@@ -46,7 +46,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
-import org.zanata.config.SysConfig;
+import org.zanata.config.OAuthTokenExpiryInSeconds;
+import org.zanata.config.SupportOAuth;
 import org.zanata.config.SystemPropertyConfigStore;
 import org.zanata.servlet.HttpRequestAndSessionHolder;
 import org.zanata.servlet.annotations.ServerPath;
@@ -469,13 +470,13 @@ public class ApplicationConfiguration implements Serializable {
     }
 
     @Produces
-    @SysConfig(ACCESS_TOKEN_EXPIRES_IN_SECONDS)
+    @OAuthTokenExpiryInSeconds
     protected long getTokenExpiresInSeconds() {
         return tokenExpiresInSeconds;
     }
 
     @Produces
-    @SysConfig(SystemPropertyConfigStore.KEY_SUPPORT_OAUTH)
+    @SupportOAuth
     protected boolean isOAuthSupported() {
         return sysPropConfigStore.isOAuthEnabled();
     }

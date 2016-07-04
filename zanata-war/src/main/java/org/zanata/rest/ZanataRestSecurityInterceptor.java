@@ -19,8 +19,7 @@ import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import org.apache.oltu.oauth2.rs.response.OAuthRSResponse;
 import org.jboss.resteasy.annotations.interception.SecurityPrecedence;
-import org.zanata.config.SysConfig;
-import org.zanata.config.SystemPropertyConfigStore;
+import org.zanata.config.SupportOAuth;
 import org.zanata.model.HAccount;
 import org.zanata.rest.oauth.OAuthUtil;
 import org.zanata.security.SecurityFunctions;
@@ -62,7 +61,7 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
     private ZanataIdentity zanataIdentity;
 
     @Inject
-    @SysConfig(SystemPropertyConfigStore.KEY_SUPPORT_OAUTH)
+    @SupportOAuth
     private boolean isOAuthEnabled;
     private IServiceLocator serviceLocator = ServiceLocator.instance();
 

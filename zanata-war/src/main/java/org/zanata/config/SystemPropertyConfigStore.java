@@ -53,7 +53,7 @@ public class SystemPropertyConfigStore implements ConfigStore {
     /**
      * Server-wide switch to enable/disable OAuth support
      */
-    public static final String KEY_SUPPORT_OAUTH = "zanata.support.oauth";
+    private static final String KEY_SUPPORT_OAUTH = "zanata.support.oauth";
     private static final Logger log =
             LoggerFactory.getLogger(SystemPropertyConfigStore.class);
 

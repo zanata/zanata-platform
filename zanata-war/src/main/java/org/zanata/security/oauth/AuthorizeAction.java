@@ -37,8 +37,7 @@ import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.config.SysConfig;
-import org.zanata.config.SystemPropertyConfigStore;
+import org.zanata.config.SupportOAuth;
 import org.zanata.dao.AllowedAppDAO;
 import org.zanata.model.AllowedApp;
 import org.zanata.model.HAccount;
@@ -87,7 +86,7 @@ public class AuthorizeAction {
     private ZanataIdentity identity;
 
     @Inject
-    @SysConfig(SystemPropertyConfigStore.KEY_SUPPORT_OAUTH)
+    @SupportOAuth
     private boolean serverEnabledOAuth;
 
     /**

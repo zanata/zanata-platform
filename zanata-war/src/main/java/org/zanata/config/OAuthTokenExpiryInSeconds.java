@@ -32,34 +32,12 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * When you want to produce a system configuration value, you can use this
- * qualifier with a unique {@link SysConfig#value()} across the system. At the
- * injection point, using the same binding in {@link SysConfig#value()} so
- * that you will get the produced configuration value.
- * <p/>
- * Example:
- * <pre>
- *     {@code @Produces @SysConfig("supportOAuth")
- *         boolean getSupportOAuthConfig() {
- *             // note the key can be different from what's in the binding.
- *             // ideally we may want to use the same value in binding
- *             return Boolean.parseBoolean(System.getProperties("support.oauth"));
- *         }
- *     }
- * </pre>
- * Then you can inject it by:
- * <pre>
- *     {@code @Inject @SysConfig("supportOAuth") boolean isOAuthSupported;}
- * </pre>
+ * The OAuth access token expiry time in seconds
  *
  */
 @Qualifier
 @Retention(RUNTIME)
 @Target({ TYPE, METHOD, FIELD, PARAMETER })
-public @interface SysConfig {
-    /**
-     * @return The name of the config
-     */
-    String value();
+public @interface OAuthTokenExpiryInSeconds {
 
 }
