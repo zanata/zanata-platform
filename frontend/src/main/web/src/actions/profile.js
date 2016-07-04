@@ -91,8 +91,15 @@ const getUserInfo = (dispatch, username, dateRangeOption) => {
 
 export const profileInitialLoad = (username) => {
   return (dispatch, getState) => {
-    dispatch(getUserInfo(dispatch, username || window.config.user.username,
-      getState().profile.dateRangeOption))
+    const config = window.config
+    if (isEmpty(username) && !config.permission.isLoggedIn) {
+      // redirect to login screen if no username is found url
+      // and user is not logged in
+      window.location = config.baseUrl + config.links.loginUrl + '#profile'
+    } else {
+      dispatch(getUserInfo(dispatch, username,
+        getState().profile.dateRangeOption))
+    }
   }
 }
 

@@ -20,6 +20,15 @@
         var usernameFieldId = "[id='#{rich:clientId('username')}']";
         jQuery(usernameFieldId).focus()
       })
+
+      /**
+       * enforce hash location by appending the hash lication to the current
+       * action so that it persists to the redirected URL.
+       */
+      function onLogin(form) {
+        form.action = form.action + window.location.hash;
+        return true;
+      }
     </script>
 
     <div class="header__logo-only">
@@ -62,7 +71,7 @@
               </ui:fragment>
 
               <h:form id="loginForm"
-                styleClass="l--push-top-half l--pad-all-1 bg--pop-higher">
+                styleClass="l--push-top-half l--pad-all-1 bg--pop-higher" onsubmit="return onLogin(this)">
                 <div class="l--clearfix">
                   <h:outputLabel for="username"
                     styleClass="l--float-left">#{msgs['jsf.Username']}</h:outputLabel>
