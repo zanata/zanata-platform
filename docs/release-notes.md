@@ -1,3 +1,15 @@
+## 3.9.1
+##### Changes
+ * [ZNTA-1192](https://zanata.atlassian.net/browse/ZNTA-1192) - RFE: Scripts to build the Docker development images
+
+##### Bug Fixes
+ * [ZNTA-1182](https://zanata.atlassian.net/browse/ZNTA-1182) - Cannot login via kerberos as a new user
+ * [ZNTA-1175](https://zanata.atlassian.net/browse/ZNTA-1175) - "Login" text not showing in single openid setup
+ * [ZNTA-1174](https://zanata.atlassian.net/browse/ZNTA-1174) - Regression: cannot connect Fedora / OpenID account (NPE), various changes not saved
+ * [ZNTA-1145](https://zanata.atlassian.net/browse/ZNTA-1145) - PO-Revision-Date is empty if all translations in document is by copyTrans
+
+-----------------------
+
 ## 3.9.0
 ##### Infrastructure Changes
 * Recommended platform: JBoss EAP 6 (6.4.6.GA or later).
@@ -66,7 +78,7 @@
  * [ZNTA-870](https://zanata.atlassian.net/browse/ZNTA-870) - Reset Password feature not inserting key into database
  * [ZNTA-850](https://zanata.atlassian.net/browse/ZNTA-850) - org.zanata.async.AsyncTaskManager:  Exception when executing an asynchronous task.
  * [ZNTA-804](https://zanata.atlassian.net/browse/ZNTA-804) - Coordinators' email addresses should be BCC in Contact Coordinator
- * [ZNTA-693](https://zanata.atlassian.net/browse/ZNTA-693) - ClientAbortException: java.net.SocketException: Connection reset 
+ * [ZNTA-693](https://zanata.atlassian.net/browse/ZNTA-693) - ClientAbortException: java.net.SocketException: Connection reset
  * [ZNTA-668](https://zanata.atlassian.net/browse/ZNTA-668) - ServerConfiguration tests unstable
  * [ZNTA-537](https://zanata.atlassian.net/browse/ZNTA-537) - Expired sessions have poor usability
  * [ZNTA-470](https://zanata.atlassian.net/browse/ZNTA-470) - RFE: Prevent user sending large text in 'contact admin' emails
