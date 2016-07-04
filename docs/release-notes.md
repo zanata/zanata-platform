@@ -15,6 +15,19 @@ remove it.
 
 ## 3.9
 
+## 3.9.1
+##### Changes
+ * [ZNTA-1192](https://zanata.atlassian.net/browse/ZNTA-1192) - RFE: Scripts to build the Docker development images
+
+##### Bug Fixes
+ * [ZNTA-1182](https://zanata.atlassian.net/browse/ZNTA-1182) - Cannot login via kerberos as a new user
+ * [ZNTA-1175](https://zanata.atlassian.net/browse/ZNTA-1175) - "Login" text not showing in single openid setup
+ * [ZNTA-1174](https://zanata.atlassian.net/browse/ZNTA-1174) - Regression: cannot connect Fedora / OpenID account (NPE), various changes not saved
+ * [ZNTA-1145](https://zanata.atlassian.net/browse/ZNTA-1145) - PO-Revision-Date is empty if all translations in document is by copyTrans
+
+-----------------------
+
+## 3.9.0
 ##### Infrastructure Changes
 * System admin can set system property `zanata.enforce.matchingusernames` to enforce matching username to be used for new user registration.
 * Zanata has eliminated all JNDI-based configuration and replaced it with system properties. Please see the following sections for how certain values are now configured:
