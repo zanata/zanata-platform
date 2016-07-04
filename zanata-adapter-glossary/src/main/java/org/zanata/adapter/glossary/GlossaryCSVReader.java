@@ -34,9 +34,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.GlossaryTerm;
+import org.zanata.rest.dto.QualifiedName;
 
 import com.google.common.collect.Lists;
-
+import com.google.common.collect.Maps;
 
 /**
  *
@@ -44,7 +45,6 @@ import com.google.common.collect.Lists;
  *
  **/
 public class GlossaryCSVReader extends AbstractGlossaryPushReader {
-    private final int batchSize;
     private final LocaleId srcLang;
     private final static String POS = "POS";
     private final static String DESC = "DESCRIPTION";
@@ -52,16 +52,13 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
     /**
      * This class will close the reader
      *
-     * @param batchSize
      */
-    public GlossaryCSVReader(LocaleId srcLang, int batchSize) {
+    public GlossaryCSVReader(LocaleId srcLang) {
         this.srcLang = srcLang;
-        this.batchSize = batchSize;
     }
 
-    public List<List<GlossaryEntry>> extractGlossary(Reader reader)
-        throws IOException {
-        int entryCount = 0;
+    public Map<LocaleId, List<GlossaryEntry>> extractGlossary(Reader reader,
+            String qualifiedName) throws IOException {
         try {
             Iterable<CSVRecord> rawRecords = CSVFormat.RFC4180.parse(reader);
             List<CSVRecord> records = Lists.newArrayList(rawRecords);
@@ -78,39 +75,42 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
                         + "' does not match source language in file '"
                         + srcLocale + "'");
             }
-
-            List<List<GlossaryEntry>> glossaries = Lists.newArrayList();
-            List<GlossaryEntry> glossaryEntries = Lists.newArrayList();
+            Map<LocaleId, List<GlossaryEntry>> results = Maps.newHashMap();
 
             for (int i = 1; i < records.size(); i++) {
                 CSVRecord row = records.get(i);
-                GlossaryEntry entry = new GlossaryEntry();
-                entry.setSrcLang(srcLocale);
-                entry.setPos(row.get(descriptionMap.get(POS)));
-                entry.setDescription(row.get(descriptionMap.get(DESC)));
-
-                for (int x = 0; x < row.size()
+                for (int x = 1; x < row.size()
                     && localeColMap.containsKey(x); x++) {
-                    LocaleId locale = localeColMap.get(x);
-                    String content = row.get(x);
 
-                    GlossaryTerm term = new GlossaryTerm();
+                    GlossaryEntry entry = new GlossaryEntry();
+                    entry.setSrcLang(srcLocale);
+                    entry.setPos(row.get(descriptionMap.get(POS)));
+                    entry.setDescription(row.get(descriptionMap.get(DESC)));
+                    entry.setQualifiedName(new QualifiedName(qualifiedName));
 
-                    term.setLocale(locale);
-                    term.setContent(content);
+                    GlossaryTerm srcTerm = new GlossaryTerm();
+                    srcTerm.setLocale(srcLocale);
+                    srcTerm.setContent(row.get(0));
 
-                    entry.getGlossaryTerms().add(term);
-                }
-                glossaryEntries.add(entry);
-                entryCount++;
+                    entry.getGlossaryTerms().add(srcTerm);
 
-                if (entryCount == batchSize || i == records.size() - 1) {
-                    glossaries.add(glossaryEntries);
-                    entryCount = 0;
-                    glossaryEntries = Lists.newArrayList();
+                    LocaleId transLocaleId = localeColMap.get(x);
+                    String transContent = row.get(x);
+
+                    GlossaryTerm transTerm = new GlossaryTerm();
+                    transTerm.setLocale(transLocaleId);
+                    transTerm.setContent(transContent);
+
+                    entry.getGlossaryTerms().add(transTerm);
+                    List<GlossaryEntry> list = results.get(transLocaleId);
+                    if (list == null) {
+                        list = Lists.newArrayList();
+                    }
+                    list.add(entry);
+                    results.put(transLocaleId, list);
                 }
             }
-            return glossaries;
+            return results;
         } finally {
             reader.close();
         }
@@ -147,7 +147,6 @@ public class GlossaryCSVReader extends AbstractGlossaryPushReader {
         CSVRecord headerRow = records.get(0);
         for (int row = 0; row <= headerRow.size()
                 && !descriptionMap.containsValue(row); row++) {
-
             LocaleId locale =
                     new LocaleId(StringUtils.trim(headerRow.get(row)));
             localeColMap.put(row, locale);
