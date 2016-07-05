@@ -50,7 +50,10 @@ const classes = {
 class UserProfile extends Component {
 
   componentDidMount () {
-    this.props.handleInitLoad(this.props.params.username)
+    const paramUsername = this.props.params.username
+    const username = (!paramUsername || paramUsername === 'undefined')
+      ? undefined : paramUsername
+    this.props.handleInitLoad(username)
   }
 
   render () {

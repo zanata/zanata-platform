@@ -38,6 +38,8 @@ import org.apache.commons.lang.StringUtils;
 import org.zanata.common.*;
 import org.zanata.exception.FileFormatAdapterException;
 import org.zanata.model.HDocument;
+import org.zanata.rest.dto.extensions.comment.SimpleComment;
+import org.zanata.rest.dto.extensions.gettext.PotEntryHeader;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
@@ -70,6 +72,8 @@ public class TSAdapter extends OkapiFilterAdapter {
     private static TsFilter prepareFilter() {
         return new TsFilter();
     }
+
+    private final String COMMENT_REXEG = "<comment>(.+)</comment>";
 
     @Override
     protected void updateParamsWithDefaults(IParameters params) {
@@ -127,6 +131,7 @@ public class TSAdapter extends OkapiFilterAdapter {
                             TextFlow tf = processTextFlow(tu, context, content,
                                     subDocName, sourceLocale);
                             if (!addedResources.containsKey(tf.getId())) {
+                                tf = addExtensions(tf, tu, context);
                                 addedResources.put(tf.getId(), tf);
                                 resources.add(tf);
                             }
@@ -140,6 +145,22 @@ public class TSAdapter extends OkapiFilterAdapter {
             filter.close();
         }
         return document;
+    }
+
+    private TextFlow addExtensions(TextFlow textFlow, TextUnit textUnit, String context) {
+        if (StringUtils.isNotBlank(context)) {
+            PotEntryHeader potEntryHeader = new PotEntryHeader();
+            potEntryHeader.setContext(context);
+            textFlow.getExtensions(true).add(potEntryHeader);
+        }
+
+        Pattern commentPattern = Pattern.compile(COMMENT_REXEG);
+        Matcher matcher = commentPattern.matcher(textUnit.getSkeleton().toString());
+        if (matcher.find() && StringUtils.isNotBlank(matcher.group(1))) {
+            textFlow.getExtensions(true).add(new SimpleComment(matcher.group(1)));
+        }
+
+        return textFlow;
     }
 
     @Override

@@ -40,5 +40,9 @@ module.exports = {
   },
   node: {
     __dirname: true
+  },
+  eslint: {
+    failOnWarning: false,
+    failOnError: true
   }
 }
