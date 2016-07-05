@@ -130,18 +130,6 @@
       <property name="hibernate.session_factory_name" value="SessionFactories/zanataSF"/>
       -->
 
-      <!-- NB: for Hibernate 4 / AS 7, we may need to use org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory.
-           See http://stackoverflow.com/a/8701914
-      -->
-      <property name="hibernate.cache.region.factory_class"
-        value="org.hibernate.cache.infinispan.JndiInfinispanRegionFactory" />
-      <property name="hibernate.cache.infinispan.cachemanager"
-        value="java:jboss/infinispan/container/hibernate" />
-      <property name="hibernate.cache.region_prefix" value="" />
-
-      <!-- Default EHcache config location -->
-      <!--<property name="net.sf.ehcache.configurationResourceName" value="/ehcache.xml"/>-->
-
       <property name="hibernate.cache.use_second_level_cache" value="true" />
       <!--       http://stackoverflow.com/questions/9060403/hibernate-query-cache-issue -->
       <property name="hibernate.cache.use_query_cache" value="true" />
