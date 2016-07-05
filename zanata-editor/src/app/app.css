@@ -1,0 +1,72 @@
+/**
+ * Utils
+ */
+
+@import './css/utils-layout/index.css';
+@import './css/utils-background/index.css';
+@import './css/utils-display/index.css';
+@import './css/utils-list/index.css';
+@import './css/utils-position/index.css';
+@import './css/utils-size/index.css';
+@import './css/utils-space/index.css';
+@import './css/utils-text/index.css';
+@import './css/resizer/index.css';
+
+/**
+ * Components
+ */
+
+@import 'suitcss-components-grid';
+@import './css/base/index.css';
+@import './components/SplitDropdown/index.css';
+@import './components/Button/index.css';
+@import './components/SuggestionSearchInput/index.css';
+@import './components/Dropdown/index.css';
+@import './containers/EditorHeader/index.css';
+@import './css/heading/index.css';
+@import './components/Icon/index.css';
+@import './css/links/index.css';
+@import './components/TextDiff/index.css';
+@import './components/LogoLoader/index.css';
+@import './components/ProgressBar/index.css';
+@import './containers/KeyShortcutCheatSheet/index.css';
+@import './components/FilterToggle/index.css';
+@import './components/ToggleSwitch/index.css';
+@import './components/TransUnit/index.css';
+
+
+/**
+ * Views
+ */
+
+@import './containers/Root/index.css';
+
+
+/**
+ * Theme
+ */
+
+@import './css/theme/index.css';
+
+
+/* Fix for hotkeys, remove this when reimplemented */
+
+.fade {
+  transition: opacity .25s easein;
+  opacity: 0;
+}
+
+.fade.in {
+  opacity: 1;
+}
+
+/* Angular specific classes */
+
+[ng\:cloak],
+[ng-cloak],
+[data-ng-cloak],
+[x-ng-cloak],
+.ng-cloak,
+.x-ng-cloak {
+  display: none !important;
+}

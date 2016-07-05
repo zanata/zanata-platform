@@ -1,14 +1,18 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <!-- Required by Maven, only 4.0.0 is valid -->
   <modelVersion>4.0.0</modelVersion>
+
+  <!-- Import dependencies etc. from parent pom -->
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
     <version>4.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>frontend</artifactId>
-  <name>frontend</name>
-  <url>http://maven.apache.org</url>
+  <artifactId>zanata-editor</artifactId>
+  <!-- Assumption: this will inherit version 4.0.0-SNAPSHOT -->
+  <name>Zanata Web Editor</name>
+  <url>https://github.com/zanata/zanata-server/tree/master/zanata-editor</url>
 
   <!-- Referenced later in the document with ${tagname}. -->
   <properties>
@@ -21,19 +25,24 @@
 
     <!-- Directory to run the build from. Source is copied here before installing
          dependencies to this location then running the build. -->
-    <web.target>${project.build.directory}/web</web.target>
+    <build.directory>${project.build.directory}/web</build.directory>
+
+    <!-- Directory that contains the actual built editor app (index, script and styles) -->
+    <built.artifact.directory>${build.directory}/app/build</built.artifact.directory>
 
     <!-- Path within the jar to put the built artifacts.
-         Note: META-INF/resources/* is served as static content, so this serves
-         the built files at the root of the website -->
-    <bundle.dest>${project.build.outputDirectory}/META-INF/resources</bundle.dest>
+         Note: META-INF/resources/* is served as static content, so this puts
+               the editor at http://<server>/app -->
+    <bundle.destination>${project.build.outputDirectory}/META-INF/resources/app</bundle.destination>
 
     <!-- The location to download the correct version of Node and NPM to.
-         ${download.dir} comes from zanata-server/pom.xml -->
+         ${download.dir} comes from zanata-server/pom.xml
+         I left this the same as frontend to avoid duplicate copies of Node being
+         downloaded. - damason -->
     <node.install.directory>${download.dir}/zanata-frontend/node-${node.version}-npm-${npm.version}</node.install.directory>
 
     <!-- NPM executable to use to run builds -->
-    <npm.cli.script>${node.install.directory}/node/node_modules/npm/bin/npm-cli.js</npm.cli.script>
+    <npm.executable>${node.install.directory}/node/node_modules/npm/bin/npm-cli.js</npm.executable>
 
     <!-- Keep cached npm modules for at least this many seconds before re-checking
          for an updated one. 10 is the default value (included so it can be overridden). -->
@@ -51,13 +60,13 @@
          This happens in phase process-resources. -->
     <resources>
       <resource>
+        <!-- Path from pom to the source files that will be used. -->
+        <directory>src</directory>
+        <!-- Location to copy source files to. -->
+        <targetPath>${build.directory}</targetPath>
         <!-- Do not substitute maven variables like ${variablename} in the
              contents of these files. -->
         <filtering>false</filtering>
-        <!-- Path from pom to the source files that will be used. -->
-        <directory>src/main/web</directory>
-        <!-- Location to copy source files to. -->
-        <targetPath>${web.target}</targetPath>
       </resource>
     </resources>
     <plugins>
@@ -65,7 +74,7 @@
         <!-- Installs correct version of node and npm locally. -->
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
-        <version>0.0.28</version>
+        <version>1.0</version>
         <configuration>
           <workingDirectory>${node.install.directory}</workingDirectory>
         </configuration>
@@ -73,7 +82,7 @@
         <executions>
           <execution>
             <id>install node and npm</id>
-            <phase>generate-resources</phase>
+            <phase>initialize</phase>
             <goals>
               <goal>install-node-and-npm</goal>
             </goals>
@@ -101,19 +110,19 @@
           <executable>${node.install.directory}/node/node</executable>
         </configuration>
 
-
         <executions>
           <!-- Download all dependency modules from npm (or mirror). -->
           <execution>
-            <id>execute npm install for: ${project.artifactId}</id>
+            <id>npm install (${project.artifactId})</id>
             <phase>process-resources</phase>
             <goals>
               <goal>exec</goal>
             </goals>
             <configuration>
-              <workingDirectory>${web.target}</workingDirectory>
+              <workingDirectory>${build.directory}</workingDirectory>
               <arguments>
-                <argument>${npm.cli.script}</argument>
+                <!-- Use the downloaded version of npm. -->
+                <argument>${npm.executable}</argument>
                 <argument>install</argument>
                 <argument>--cache-min</argument>
                 <argument>${npm.cache.min}</argument>
@@ -121,17 +130,34 @@
             </configuration>
           </execution>
 
+          <!-- Inject a spritesheet into index.html based on all the icon sprite files. -->
+          <execution>
+            <id>npm run spritesheet (${project.artifactId})</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <workingDirectory>${build.directory}</workingDirectory>
+              <arguments>
+                <argument>${npm.executable}</argument>
+                <argument>run</argument>
+                <argument>spritesheet</argument>
+              </arguments>
+            </configuration>
+          </execution>
+
           <!-- Transpile and bundle all the javascript and css. -->
           <execution>
-            <id>execute npm run build for: ${project.artifactId}</id>
+            <id>npm run build (${project.artifactId})</id>
             <phase>compile</phase>
             <goals>
               <goal>exec</goal>
             </goals>
             <configuration>
-              <workingDirectory>${web.target}</workingDirectory>
+              <workingDirectory>${build.directory}</workingDirectory>
               <arguments>
-                <argument>${npm.cli.script}</argument>
+                <argument>${npm.executable}</argument>
                 <argument>run</argument>
                 <argument>build</argument>
               </arguments>
@@ -148,7 +174,7 @@
         </configuration>
       </plugin>
 
-      <!-- Copy the built bundle files to the META-INF/resources directory. -->
+      <!-- Copy the built editor files to their position in the jar file. -->
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
@@ -158,12 +184,15 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${bundle.dest}</outputDirectory>
+              <outputDirectory>${bundle.destination}</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${web.target}</directory>
-                  <include>frontend.*.min.js</include>
+                  <directory>${built.artifact.directory}</directory>
+                  <include>index.html</include>
+                  <include>bundle.js</include>
+                  <include>bundle.js.map</include>
                   <include>bundle.css</include>
+                  <include>bundle.css.map</include>
                 </resource>
               </resources>
             </configuration>

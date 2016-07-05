@@ -1,0 +1,423 @@
+:root {
+  --u-space-rhythm: 1.5rem;
+}
+
+/**
+ * Utils - Space
+ *
+ * Margin and Padding
+ * Sizes: 1/4, 1/2, 3/4, 1, 1 1/2, 2
+ * Sides: all, top, right, bottom, left, vertical, horizontal;
+ */
+
+/**
+ * Margin
+ *
+ * u-sM
+ */
+
+ /* All */
+
+ .u-sM-1-8 {
+   margin: calc(var(--u-space-rhythm) * .125) !important;
+ }
+
+ .u-sM-1-4 {
+   margin: calc(var(--u-space-rhythm) * .25) !important;
+ }
+
+ .u-sM-1-2 {
+   margin: calc(var(--u-space-rhythm) * .5) !important;
+ }
+
+ .u-sM-3-4 {
+   margin: calc(var(--u-space-rhythm) * .75) !important;
+ }
+
+ .u-sM-1 {
+   margin: var(--u-space-rhythm) !important;
+ }
+
+ .u-sM-1_1-2 {
+   margin: calc(var(--u-space-rhythm) * 1.5) !important;
+ }
+
+ .u-sM-2 {
+   margin: calc(var(--u-space-rhythm) * 2) !important;
+ }
+
+/* Top */
+
+.u-sMT-1-8 {
+  margin-top: calc(var(--u-space-rhythm) * .125) !important;
+}
+
+.u-sMT-1-4 {
+  margin-top: calc(var(--u-space-rhythm) * .25) !important;
+}
+
+.u-sMT-1-2 {
+  margin-top: calc(var(--u-space-rhythm) * .5) !important;
+}
+
+.u-sMT-3-4 {
+  margin-top: calc(var(--u-space-rhythm) * .75) !important;
+}
+
+.u-sMT-1 {
+  margin-top: var(--u-space-rhythm) !important;
+}
+
+.u-sMT-1_1-2 {
+  margin-top: calc(var(--u-space-rhythm) * 1.5) !important;
+}
+
+.u-sMT-2 {
+  margin-top: calc(var(--u-space-rhythm) * 2) !important;
+}
+
+/* Right */
+
+.u-sMR-1-4 {
+  margin-right: calc(var(--u-space-rhythm) * .25) !important;
+}
+
+.u-sMR-1-2 {
+  margin-right: calc(var(--u-space-rhythm) * .5) !important;
+}
+
+.u-sMR-3-4 {
+  margin-right: calc(var(--u-space-rhythm) * .75) !important;
+}
+
+.u-sMR-1 {
+  margin-right: var(--u-space-rhythm) !important;
+}
+
+.u-sMR-1_1-2 {
+  margin-right: calc(var(--u-space-rhythm) * 1.5) !important;
+}
+
+.u-sMR-2 {
+  margin-right: calc(var(--u-space-rhythm) * 2) !important;
+}
+
+/* Bottom */
+
+.u-sMB-1-4 {
+  margin-bottom: calc(var(--u-space-rhythm) * .25) !important;
+}
+
+.u-sMB-1-2 {
+  margin-bottom: calc(var(--u-space-rhythm) * .5) !important;
+}
+
+.u-sMB-3-4 {
+  margin-bottom: calc(var(--u-space-rhythm) * .75) !important;
+}
+
+.u-sMB-1 {
+  margin-bottom: var(--u-space-rhythm) !important;
+}
+
+.u-sMB-1_1-2 {
+  margin-bottom: calc(var(--u-space-rhythm) * 1.5) !important;
+}
+
+.u-sMB-2 {
+  margin-bottom: calc(var(--u-space-rhythm) * 2) !important;
+}
+
+/* Left */
+
+.u-sML-1-8 {
+  margin-left: calc(var(--u-space-rhythm) * .125) !important;
+}
+
+.u-sML-1-4 {
+  margin-left: calc(var(--u-space-rhythm) * .25) !important;
+}
+
+.u-sML-1-2 {
+  margin-left: calc(var(--u-space-rhythm) * .5) !important;
+}
+
+.u-sML-3-4 {
+  margin-left: calc(var(--u-space-rhythm) * .75) !important;
+}
+
+.u-sML-1 {
+  margin-left: var(--u-space-rhythm) !important;
+}
+
+.u-sML-1_1-2 {
+  margin-left: calc(var(--u-space-rhythm) * 1.5) !important;
+}
+
+.u-sML-2 {
+  margin-left: calc(var(--u-space-rhythm) * 2) !important;
+}
+
+/* Vertical */
+
+.u-sMV-1-4 {
+  margin-top: calc(var(--u-space-rhythm) * .25) !important;
+  margin-bottom: calc(var(--u-space-rhythm) * .25) !important;
+}
+
+.u-sMV-1-2 {
+  margin-top: calc(var(--u-space-rhythm) * .5) !important;
+  margin-bottom: calc(var(--u-space-rhythm) * .5) !important;
+}
+
+.u-sMV-3-4 {
+  margin-top: calc(var(--u-space-rhythm) * .75) !important;
+  margin-bottom: calc(var(--u-space-rhythm) * .75) !important;
+}
+
+.u-sMV-1 {
+  margin-top: var(--u-space-rhythm) !important;
+  margin-bottom: var(--u-space-rhythm) !important;
+}
+
+.u-sMV-1_1-2 {
+  margin-top: calc(var(--u-space-rhythm) * 1.5) !important;
+  margin-bottom: calc(var(--u-space-rhythm) * 1.5) !important;
+}
+
+.u-sMV-2 {
+  margin-top: calc(var(--u-space-rhythm) * 2) !important;
+  margin-bottom: calc(var(--u-space-rhythm) * 2) !important;
+}
+
+/* Horizontal */
+
+.u-sMH-1-4 {
+  margin-left: calc(var(--u-space-rhythm) * .25) !important;
+  margin-right: calc(var(--u-space-rhythm) * .25) !important;
+}
+
+.u-sMH-1-2 {
+  margin-left: calc(var(--u-space-rhythm) * .5) !important;
+  margin-right: calc(var(--u-space-rhythm) * .5) !important;
+}
+
+.u-sMH-3-4 {
+  margin-left: calc(var(--u-space-rhythm) * .75) !important;
+  margin-right: calc(var(--u-space-rhythm) * .75) !important;
+}
+
+.u-sMH-1 {
+  margin-left: var(--u-space-rhythm) !important;
+  margin-right: var(--u-space-rhythm) !important;
+}
+
+.u-sMH-1_1-2 {
+  margin-left: calc(var(--u-space-rhythm) * 1.5) !important;
+  margin-right: calc(var(--u-space-rhythm) * 1.5) !important;
+}
+
+.u-sMH-2 {
+  margin-left: calc(var(--u-space-rhythm) * 2) !important;
+  margin-right: calc(var(--u-space-rhythm) * 2) !important;
+}
+
+/**
+ * Padding
+ *
+ * u-sP
+ */
+
+ /* All */
+
+ .u-sP-1-4 {
+   padding: calc(var(--u-space-rhythm) * .25) !important;
+ }
+
+ .u-sP-1-2 {
+   padding: calc(var(--u-space-rhythm) * .5) !important;
+ }
+
+ .u-sP-3-4 {
+   padding: calc(var(--u-space-rhythm) * .75) !important;
+ }
+
+ .u-sP-1 {
+   padding: var(--u-space-rhythm) !important;
+ }
+
+ .u-sP-1_1-2 {
+   padding: calc(var(--u-space-rhythm) * 1.5) !important;
+ }
+
+ .u-sP-2 {
+   padding: calc(var(--u-space-rhythm) * 2) !important;
+ }
+
+/* Top */
+
+.u-sPT-1-4 {
+  padding-top: calc(var(--u-space-rhythm) * .25) !important;
+}
+
+.u-sPT-1-2 {
+  padding-top: calc(var(--u-space-rhythm) * .5) !important;
+}
+
+.u-sPT-3-4 {
+  padding-top: calc(var(--u-space-rhythm) * .75) !important;
+}
+
+.u-sPT-1 {
+  padding-top: var(--u-space-rhythm) !important;
+}
+
+.u-sPT-1_1-2 {
+  padding-top: calc(var(--u-space-rhythm) * 1.5) !important;
+}
+
+.u-sPT-2 {
+  padding-top: calc(var(--u-space-rhythm) * 2) !important;
+}
+
+/* Right */
+
+.u-sPR-1-4 {
+  padding-right: calc(var(--u-space-rhythm) * .25) !important;
+}
+
+.u-sPR-1-2 {
+  padding-right: calc(var(--u-space-rhythm) * .5) !important;
+}
+
+.u-sPR-3-4 {
+  padding-right: calc(var(--u-space-rhythm) * .75) !important;
+}
+
+.u-sPR-1 {
+  padding-right: var(--u-space-rhythm) !important;
+}
+
+.u-sPR-1_1-2 {
+  padding-right: calc(var(--u-space-rhythm) * 1.5) !important;
+}
+
+.u-sPR-2 {
+  padding-right: calc(var(--u-space-rhythm) * 2) !important;
+}
+
+/* Bottom */
+
+.u-sPB-1-4 {
+  padding-bottom: calc(var(--u-space-rhythm) * .25) !important;
+}
+
+.u-sPB-1-2 {
+  padding-bottom: calc(var(--u-space-rhythm) * .5) !important;
+}
+
+.u-sPB-3-4 {
+  padding-bottom: calc(var(--u-space-rhythm) * .75) !important;
+}
+
+.u-sPB-1 {
+  padding-bottom: var(--u-space-rhythm) !important;
+}
+
+.u-sPB-1_1-2 {
+  padding-bottom: calc(var(--u-space-rhythm) * 1.5) !important;
+}
+
+.u-sPB-2 {
+  padding-bottom: calc(var(--u-space-rhythm) * 2) !important;
+}
+
+/* Left */
+
+.u-sPL-1-4 {
+  padding-left: calc(var(--u-space-rhythm) * .25) !important;
+}
+
+.u-sPL-1-2 {
+  padding-left: calc(var(--u-space-rhythm) * .5) !important;
+}
+
+.u-sPL-3-4 {
+  padding-left: calc(var(--u-space-rhythm) * .75) !important;
+}
+
+.u-sPL-1 {
+  padding-left: var(--u-space-rhythm) !important;
+}
+
+.u-sPL-1_1-2 {
+  padding-left: calc(var(--u-space-rhythm) * 1.5) !important;
+}
+
+.u-sPL-2 {
+  padding-left: calc(var(--u-space-rhythm) * 2) !important;
+}
+
+/* Vertical */
+
+.u-sPV-1-4 {
+  padding-top: calc(var(--u-space-rhythm) * .25) !important;
+  padding-bottom: calc(var(--u-space-rhythm) * .25) !important;
+}
+
+.u-sPV-1-2 {
+  padding-top: calc(var(--u-space-rhythm) * .5) !important;
+  padding-bottom: calc(var(--u-space-rhythm) * .5) !important;
+}
+
+.u-sPV-3-4 {
+  padding-top: calc(var(--u-space-rhythm) * .75) !important;
+  padding-bottom: calc(var(--u-space-rhythm) * .75) !important;
+}
+
+.u-sPV-1 {
+  padding-top: var(--u-space-rhythm) !important;
+  padding-bottom: var(--u-space-rhythm) !important;
+}
+
+.u-sPV-1_1-2 {
+  padding-top: calc(var(--u-space-rhythm) * 1.5) !important;
+  padding-bottom: calc(var(--u-space-rhythm) * 1.5) !important;
+}
+
+.u-sPV-2 {
+  padding-top: calc(var(--u-space-rhythm) * 2) !important;
+  padding-bottom: calc(var(--u-space-rhythm) * 2) !important;
+}
+
+/* Horizontal */
+
+.u-sPH-1-4 {
+  padding-left: calc(var(--u-space-rhythm) * .25) !important;
+  padding-right: calc(var(--u-space-rhythm) * .25) !important;
+}
+
+.u-sPH-1-2 {
+  padding-left: calc(var(--u-space-rhythm) * .5) !important;
+  padding-right: calc(var(--u-space-rhythm) * .5) !important;
+}
+
+.u-sPH-3-4 {
+  padding-left: calc(var(--u-space-rhythm) * .75) !important;
+  padding-right: calc(var(--u-space-rhythm) * .75) !important;
+}
+
+.u-sPH-1 {
+  padding-left: var(--u-space-rhythm) !important;
+  padding-right: var(--u-space-rhythm) !important;
+}
+
+.u-sPH-1_1-2 {
+  padding-left: calc(var(--u-space-rhythm) * 1.5) !important;
+  padding-right: calc(var(--u-space-rhythm) * 1.5) !important;
+}
+
+.u-sPH-2 {
+  padding-left: calc(var(--u-space-rhythm) * 2) !important;
+  padding-right: calc(var(--u-space-rhythm) * 2) !important;
+}

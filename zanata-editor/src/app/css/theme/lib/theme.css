@@ -1,0 +1,138 @@
+/**
+* Theme definition
+*
+* This defines the theme in fundamental terms, but not how it is applied to
+* the components. That is done in `theme-map.css`.
+*/
+
+/**
+* Breakpoints
+*/
+
+@custom-media --sm-viewport (min-width:0) and (max-width:740px);
+@custom-media --md-viewport (min-width:741px) and (max-width:960px);
+@custom-media --ltemd-viewport (max-width:960px);
+@custom-media --gtemd-viewport (min-width:741px);
+@custom-media --lg-viewport (min-width:961px) and (max-width:1270px);
+@custom-media --ltelg-viewport (max-width:1270px);
+@custom-media --gtelg-viewport (min-width:961px);
+@custom-media --xlg-viewport (min-width:1271px);
+
+
+/**
+ * Colors
+ */
+
+:root {
+
+  /* Primary greys */
+  --color-white         : #fff;
+  --color-black         : #000;
+  --color-lightest-grey : color(var(--color-black) tint(95%));
+  --color-lighter-grey  : color(var(--color-black) tint(90%));
+  --color-light-grey    : color(var(--color-black) tint(80%));
+  --color-lightish-grey : color(var(--color-black) tint(70%));
+  --color-grey          : color(var(--color-black) tint(50%));
+  --color-darkish-grey  : color(var(--color-black) tint(30%));
+  --color-dark-grey     : color(var(--color-black) tint(20%));
+  --color-darker-grey   : color(var(--color-black) tint(10%));
+  --color-darkest-grey  : color(var(--color-black) tint(5%));
+
+  /* Main colors */
+  --color-primary       : #03A6D7;
+  --color-secondary     : #20718A;
+
+  /* Background colors */
+  --color-bg            : #ECEFF0;
+  --color-bg-lightest   : var(--color-white);
+  --color-bg-lighter    : color(var(--color-bg) tint(80%));
+  --color-bg-light      : color(var(--color-bg) tint(46%));
+  --color-bg-dark       : color(var(--color-bg) shade(3%));
+  --color-bg-darker     : color(var(--color-bg) shade(6%));
+  --color-bg-darkest    : color(var(--color-bg) shade(9%));
+
+  /* State colors */
+  --color-highlight     : var(--color-primary);
+  --color-success       : #5CCA7B;
+  --color-unsure        : #E9DF1B;
+  --color-warning       : #FFA800;
+  --color-danger        : #FF3B3D;
+  --color-neutral       : color(var(--color-secondary) tint(70%));
+
+  /* Font colors */
+  --color-base-font     : #444c54;
+
+}
+
+
+/**
+ * Font
+ */
+
+:root {
+
+  --font-size-base        : 16px;
+  --font-family-base      : 'Source Sans Pro', "Helvetica Neue", HelveticaNeue, Helvetica, Arial, sans-serif;
+  --font-family-heading   : var(--font-family-base);
+  --font-family-monospace : Monaco, Courier, monospace;
+
+}
+
+
+/**
+ * Style Defaults
+ */
+
+:root {
+
+  --default-border-color     : color(var(--color-secondary) alpha(12%));
+  --default-border           : 1px solid var(--default-border-color);
+  --default-border-radius    : 2px;
+  --default-box-shadow       : 0 1px 2px rgba(var(--color-black), 0.1);
+  --default-box-shadow-inset : inset 0 1px 2px rgba(var(--color-black), 0.1);
+  --default-text-shadow      : 0 1px 2px rgba(var(--color-black), 0.1);
+  --default-transition       : 0.2s cubic-bezier(.26, .47, .36, .94);
+  --default-line-height      : 1.5;
+
+}
+
+
+/**
+ * Rhythm
+ */
+
+:root {
+
+  --rhythm: calc(var(--default-line-height) * 1rem);
+
+}
+
+/**
+ * Transitions
+ */
+
+:root {
+
+  --transition-ease-out-back: cubic-bezier(.175, .885, .320, 1.275);
+  --transition-ease-out-circ: cubic-bezier(.075, .820, .165, 1.000);
+
+}
+
+/**
+ * Z-Index Scale
+ */
+
+:root {
+  --z-scale-below : -1;
+  --z-scale-0     : 0;
+  --z-scale-1     : 100;
+  --z-scale-2     : 200;
+  --z-scale-3     : 300;
+  --z-scale-4     : 400;
+  --z-scale-5     : 500;
+  --z-scale-6     : 600;
+  --z-scale-7     : 700;
+  --z-scale-8     : 800;
+  --z-scale-9     : 900;
+  --z-scale-10    : 1000;
+}

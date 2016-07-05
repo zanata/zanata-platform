@@ -626,6 +626,12 @@
         <version>${project.version}</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-editor</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
       <!-- zanata api -->
       <dependency>
         <groupId>org.zanata</groupId>
@@ -2061,6 +2067,22 @@
       </properties>
       <modules>
         <module>frontend</module>
+      </modules>
+    </profile>
+
+    <!-- Make sure editor builds as part of the server build. -->
+    <profile>
+      <id>build zanata-editor module</id>
+      <activation>
+        <property>
+          <name>!excludeAlphaEditor</name>
+        </property>
+      </activation>
+      <properties>
+        <required.maven>3.1.0</required.maven>
+      </properties>
+      <modules>
+        <module>zanata-editor</module>
       </modules>
     </profile>
   </profiles>

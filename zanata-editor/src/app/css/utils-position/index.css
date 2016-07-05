@@ -1,0 +1,22 @@
+@import 'suitcss-utils-position';
+
+.u-posAbsoluteLeft {
+  bottom: 0 !important;
+  left: 0 !important;
+  position: absolute !important;
+  top: 0 !important;
+}
+
+.u-posAbsoluteRight {
+  bottom: 0 !important;
+  right: 0 !important;
+  position: absolute !important;
+  top: 0 !important;
+}
+
+.u-posCenterCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

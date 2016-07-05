@@ -1,0 +1,31 @@
+/** @define Header; use strict */
+
+:root {
+  --Header-background : #4e9fdd;
+  --Header-rhythm     : 1.5rem;
+  --Header-z-index    : 900;
+}
+
+.Header {
+  background-color: var(--Header-background);
+  position: fixed;
+  z-index: 100;
+  width: 100%;
+  top: 0;
+  box-shadow: 0 calc(var(--Header-rhythm) * .25) var(--Header-rhythm) rgba(0,0,0,0.1);
+}
+
+.Header-item {
+  height: calc(var(--Header-rhythm) * 2);
+  display: inline-block;
+  padding-top: calc(var(--Header-rhythm) * .5);
+  padding-bottom: calc(var(--Header-rhythm) * .5);
+}
+
+.Header-avatar {
+  margin-top: calc(var(--Header-rhythm) * .375);
+  margin-bottom: calc(var(--Header-rhythm) * .375);
+  width: calc(var(--Header-rhythm) * 1.25);
+  height: calc(var(--Header-rhythm) * 1.25);
+  display: inline-block;
+}

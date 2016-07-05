@@ -1,0 +1,19 @@
+:root {
+  --media-figure-color: #999;
+}
+
+img {
+  max-width: 100%;
+}
+
+svg:not(:root) {
+  overflow: hidden;
+}
+
+figure {
+  margin: 0;
+}
+
+figcaption {
+  color: var(--media-figure-color);
+}

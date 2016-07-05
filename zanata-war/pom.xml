@@ -1427,6 +1427,11 @@
 
     <dependency>
       <groupId>org.zanata</groupId>
+      <artifactId>zanata-editor</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.zanata</groupId>
       <artifactId>zanata-common-util</artifactId>
     </dependency>
 
