@@ -160,7 +160,6 @@
             <!-- Used for different content analyzers based on langugage for search. -->
             <usedDependency>org.apache.solr:solr-core</usedDependency>
             <usedDependency>org.apache.solr:solr-solrj</usedDependency>
-            <usedDependency>org.antlr:antlr</usedDependency>
             <!-- Used by hibernate -->
             <usedDependency>org.hibernate:hibernate-search-analyzers</usedDependency>
             <!-- used for arquillian deployment (org.zanata.Deployments) -->
@@ -1557,15 +1556,7 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- TODO remove this? -->
-    <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>antlr</artifactId>
-      <version>3.3</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- used for org.hibernate:hibernate-core, org.drools:drools-compiler, and Seam Text converter -->
+    <!-- used for Seam Text converter -->
     <dependency>
       <groupId>antlr</groupId>
       <artifactId>antlr</artifactId>
