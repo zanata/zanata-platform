@@ -61,7 +61,7 @@ public class RestLimitingFilterTest extends ZanataTest {
 
     @Test
     public void willUseApiKeyIfPresent() throws Exception {
-        when(request.getHeader(HttpUtil.APK_KEY_HEADER_NAME)).thenReturn(
+        when(request.getHeader(HttpUtil.API_KEY_HEADER_NAME)).thenReturn(
                 API_KEY);
 
         filter.doFilter(request, response, filterChain);
@@ -129,7 +129,7 @@ public class RestLimitingFilterTest extends ZanataTest {
 
     @Test
     public void willProcessAnonymousWithGETAndNoApiKey() throws Exception {
-        when(request.getHeader(HttpUtil.APK_KEY_HEADER_NAME)).thenReturn(null);
+        when(request.getHeader(HttpUtil.API_KEY_HEADER_NAME)).thenReturn(null);
         when(request.getRequestURI()).thenReturn("/rest/in/peace");
         when(request.getRemoteAddr()).thenReturn(clientIP);
         doReturn(null).when(filter).getAuthenticatedUser();

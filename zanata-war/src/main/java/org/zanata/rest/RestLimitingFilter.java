@@ -99,7 +99,7 @@ public class RestLimitingFilter implements Filter {
          * If apiKey is empty, request is either coming from anonymous user or
          * using OAuth.
          */
-        String apiKey = request.getHeader(HttpUtil.APK_KEY_HEADER_NAME);
+        String apiKey = request.getHeader(HttpUtil.API_KEY_HEADER_NAME);
         // other possible OAuth tokens
         Optional<String> authCodeOpt = OAuthUtil.getAuthCode(request);
         Optional<String> accessTokenOpt =

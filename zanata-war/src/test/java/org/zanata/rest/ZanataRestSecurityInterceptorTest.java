@@ -98,7 +98,7 @@ public class ZanataRestSecurityInterceptorTest {
     @Test
     public void canAuthenticateUsingValidApiKey() throws Exception {
         headers.put(HttpUtil.USERNAME_HEADER_NAME, Lists.newArrayList("admin"));
-        headers.put(HttpUtil.APK_KEY_HEADER_NAME, Lists.newArrayList("validApi"));
+        headers.put(HttpUtil.API_KEY_HEADER_NAME, Lists.newArrayList("validApi"));
 
         when(identity.isLoggedIn()).thenReturn(true);
 
@@ -114,7 +114,7 @@ public class ZanataRestSecurityInterceptorTest {
     @Test
     public void willAbortIfUsingInvalidApiKey() throws Exception {
         headers.put(HttpUtil.USERNAME_HEADER_NAME, Lists.newArrayList("admin"));
-        headers.put(HttpUtil.APK_KEY_HEADER_NAME, Lists.newArrayList("invalidApi"));
+        headers.put(HttpUtil.API_KEY_HEADER_NAME, Lists.newArrayList("invalidApi"));
 
         when(identity.isLoggedIn()).thenReturn(false);
 

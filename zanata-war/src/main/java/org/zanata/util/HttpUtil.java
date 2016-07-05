@@ -45,7 +45,7 @@ public final class HttpUtil {
     /**
      * header name for Zanata API key
      */
-    public static final String APK_KEY_HEADER_NAME = "X-Auth-Token";
+    public static final String API_KEY_HEADER_NAME = "X-Auth-Token";
     /**
      * header name for Zanata username used in API key authentication
      */
@@ -64,7 +64,7 @@ public final class HttpUtil {
     }
 
     public static String getApiKey(MultivaluedMap<String, String> headers) {
-        return headers.getFirst(APK_KEY_HEADER_NAME);
+        return headers.getFirst(API_KEY_HEADER_NAME);
     }
 
     @VisibleForTesting
