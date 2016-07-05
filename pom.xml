@@ -1931,6 +1931,34 @@
         <hibernate.module.url>https://bintray.com/artifact/download/sflanigan/generic/${hibernate.module.filename}</hibernate.module.url>
       </properties>
 
+      <build>
+        <plugins>
+          <!--
+          Download wildfly modules from sf.net and extract under appserver.home
+          -->
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>install-wildfly-modules</id>
+                <!-- submodules should use 'package' to activate this -->
+                <phase>none</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target unless="skipITs">
+                    <mkdir dir="${download.dir}" />
+                    <get src="${hibernate.module.url}" dest="${download.dir}/${hibernate.module.filename}" skipexisting="true" />
+                    <unzip src="${download.dir}/${hibernate.module.filename}" dest="${appserver.home}" />
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+
       <!-- These override the older versions forced by jboss-as-parent 7.2.0 -->
       <dependencyManagement>
         <dependencies>

@@ -423,6 +423,19 @@
         <jndi-remote-client.artifactId>wildfly-controller-client</jndi-remote-client.artifactId>
         <jndi-remote-client.version>${wildfly.client.version}</jndi-remote-client.version>
       </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>install-wildfly-modules</id>
+                <phase>package</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
       <dependencyManagement>
         <dependencies>
           <dependency>

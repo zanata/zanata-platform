@@ -27,25 +27,6 @@ import java.sql.SQLException;
 import org.hibernate.service.jdbc.connections.internal.DriverManagerConnectionProviderImpl;
 
 /**
- * Modified version of DriverManagerConnectionProviderImpl which adds support
- * for JBDC wrapping. This Hibernate ConnectionProvider is used, in unit
- * tests, to simulate MySQL's support for streaming ResultSets, by allowing
- * fetchSize=Integer.MIN_VALUE (which H2 rejects) and by detecting violations
- * of MySQL's streaming ResultSet limitations (ie attempts to perform other
- * queries while a streaming ResultSet is open).
- * <p>
- * NB: this class uses the internal Hibernate class DriverManagerConnectionProviderImpl.
- * When Hibernate is updated, this ConnectionProvider may need to be updated
- * (eg to use a new class name, to implement new interfaces) or removed.
- * </p>
- * <p>
- * The delegation approach used in WrappedDatasourceConnectionProvider would
- * allow support for multiple Hibernate versions, but we only use a single
- * version of Hibernate when running unit tests, so it's probably not worth it.
- * </p>
- * @see org.hibernate.service.jdbc.connections.internal.DatasourceConnectionProviderImpl
- * @see org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl
- * @see org.zanata.database.WrappedDatasourceConnectionProvider
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
