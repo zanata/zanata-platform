@@ -15,14 +15,32 @@
 
   <ui:define name="page_title">#{msgs['jsf.Authorize']}</ui:define>
   <ui:define name="center_content">
-    <rich:panel id="loggedIn" rendered="#{identity.loggedIn and authorizeAction.serverEnabledOAuth}">
+    <rich:panel id="loggedIn"
+      rendered="#{identity.loggedIn and authorizeAction.serverEnabledOAuth and authorizeAction.validOAuthRequest}">
       <h:form id="loginForm">
-        <h:outputText value="#{msgs.format('jsf.allowApp', authorizeAction.clientId)}"/>
-        <h:commandButton action="#{authorizeAction.authorize}" value="Allow" />
+        <div class="l--pad-all-1">
+          <h:outputText styleClass="txt--hero"
+            value="#{msgs.format('jsf.allowApp', authorizeAction.clientId)}"/>
+        </div>
+        <h:commandButton styleClass="button button--primary l--push-left-half txt--hero"
+          action="#{authorizeAction.authorize}" value="Allow" >
+          <f:param name="#{authorizeAction.redirectUriParam}" value="#{authorizeAction.redirectUri}" />
+          <f:param name="#{authorizeAction.clientIdParam}" value="#{authorizeAction.clientId}" />
+        </h:commandButton>
+        <h:commandButton styleClass="button Button--danger l--push-left-half txt--hero"
+          action="#{authorizeAction.cancel}" value="Cancel" >
+          <f:param name="#{authorizeAction.redirectUriParam}" value="#{authorizeAction.redirectUri}" />
+          <f:param name="#{authorizeAction.clientIdParam}" value="#{authorizeAction.clientId}" />
+        </h:commandButton>
       </h:form>
     </rich:panel>
-    <h:panelGroup rendered="#{not authorizeAction.serverEnabledOAuth}">
-      <h:outputText value="#{msgs.get('jsf.oauth.disabled')}" />
+    <rich:panel styleClass="message--danger"
+      rendered="#{not authorizeAction.validOAuthRequest}">
+      <h:outputText styleClass="txt--hero" value="#{msgs.get('jsf.oauth.invalidRequest')}" />
+    </rich:panel>
+    <h:panelGroup styleClass="message--danger"
+      rendered="#{not authorizeAction.serverEnabledOAuth}">
+      <h:outputText styleClass="txt--hero" value="#{msgs.get('jsf.oauth.disabled')}" />
     </h:panelGroup>
   </ui:define>
 

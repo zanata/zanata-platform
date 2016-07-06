@@ -45,6 +45,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.util.FacesNavigationUtil;
+import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import lombok.Getter;
 import lombok.Setter;
@@ -114,7 +115,7 @@ public class AuthorizeAction {
                     .setCode(code)
                     .location(redirectUri)
                     .buildQueryMessage();
-            log.info("redirect back to:{}", resp.getLocationUri());
+            log.info("User click Allow. Redirect back to:{}", resp.getLocationUri());
             FacesNavigationUtil
                     .redirectToExternal(resp.getLocationUri());
         } catch (OAuthSystemException | IOException e) {
@@ -142,5 +143,27 @@ public class AuthorizeAction {
 
     public String getClientIdParam() {
         return OAuth.OAUTH_CLIENT_ID;
+    }
+
+    public boolean isValidOAuthRequest() {
+        return !Strings.isNullOrEmpty(request.getParameter(getClientIdParam()))
+                && !Strings.isNullOrEmpty(
+                request.getParameter(getRedirectUriParam()));
+    }
+
+    public void cancel() {
+        try {
+            OAuthResponse resp =
+                    new OAuthASResponse.OAuthResponseBuilder(
+                            HttpServletResponse.SC_FORBIDDEN)
+                            .location(redirectUri)
+                            .buildBodyMessage();
+            log.info("User click cancel. Redirect back to:{}",
+                    resp.getLocationUri());
+            FacesNavigationUtil
+                    .redirectToExternal(resp.getLocationUri());
+        } catch (OAuthSystemException | IOException e) {
+            throw Throwables.propagate(e);
+        }
     }
 }

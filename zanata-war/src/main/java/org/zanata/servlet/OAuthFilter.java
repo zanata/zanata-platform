@@ -1,3 +1,23 @@
+/*
+ * Copyright 2016, Red Hat, Inc. and individual contributors
+ * as indicated by the @author tags. See the copyright.txt file in the
+ * distribution for a full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 package org.zanata.servlet;
 
 import org.slf4j.Logger;
@@ -42,24 +62,25 @@ public class OAuthFilter implements Filter {
         HttpServletResponse httpServletResponse =
                 (HttpServletResponse) response;
         Optional<String> oauthRedirect = OAuthUtil.getOAuthRedirectURI(httpServletRequest);
-        if (!oauthRedirect.isPresent()) {
-            // an OAuth request without an redirect uri means it's not coming
-            // from a third party app (possibly coming from a bot or
-            // the third party app is not doing a proper request).
-            // we will just present an error page
-            throw new IllegalArgumentException("Accessing authorization page without a redirect URI");
+        Optional<String> clientId = OAuthUtil.getOAuthClientId(httpServletRequest);
+
+        if (!clientId.isPresent() || !oauthRedirect.isPresent()) {
+            // an OAuth request without client_id or redirect_uri means it's not
+            // coming from a third party app. It's possible this request is from
+            // the oauth/home.xhtml form submission, or from a bot or invalid
+            // third-party request. We will just continue on with the filter
+            // chain.
+            chain.doFilter(request, response);
+            return;
         }
 
+        // we have both client_id and redirect_uri, so the request is from
+        // a third-party app trying to do OAuth authorization
         // injection to fields doesn't seem to work
         ZanataIdentity identity = ZanataIdentity.instance();
         SecurityTokens securityTokens = ServiceLocator.instance().getInstance(
                         SecurityTokens.class);
 
-        Optional<String> clientId = OAuthUtil.getOAuthClientId(httpServletRequest);
-
-        if (!clientId.isPresent()) {
-            throw new IllegalArgumentException("Accessing authorization page without a client id");
-        }
 
         String authorizationCode = null;
         if (identity.isLoggedIn()) {
@@ -78,6 +99,7 @@ public class OAuthFilter implements Filter {
             log.debug(
                     "authorization code already issued for this session. Username {}, client id: {}",
                     identity.getAccountUsername(), clientId);
+            // redirect back to the requesting app using redirect_uri
             httpServletResponse.sendRedirect(redirectLocationUrl);
             return;
         }
