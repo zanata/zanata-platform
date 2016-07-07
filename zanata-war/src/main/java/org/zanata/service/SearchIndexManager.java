@@ -28,6 +28,7 @@ import org.zanata.model.tm.TransMemoryUnit;
 @ApplicationScoped
 @Synchronized(timeout = ServerConstants.DEFAULT_TIMEOUT)
 @Slf4j
+// not @Transactional, because the DB work happens in other threads
 public class SearchIndexManager implements Serializable {
     private static final long serialVersionUID = 1L;
 

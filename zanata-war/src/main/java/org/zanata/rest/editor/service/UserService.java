@@ -34,7 +34,7 @@ import lombok.NoArgsConstructor;
 @RequestScoped
 @Named("editor.userService")
 @Path(UserResource.SERVICE_PATH)
-@Transactional
+@Transactional(readOnly = true)
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserService implements UserResource {

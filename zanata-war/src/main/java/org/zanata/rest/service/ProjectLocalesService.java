@@ -40,7 +40,7 @@ import org.zanata.service.LocaleService;
 @RequestScoped
 @Named("projectLocalesService")
 @Path(ProjectLocalesResource.SERVICE_PATH)
-@Transactional
+@Transactional(readOnly = true)
 public class ProjectLocalesService extends LocalesService implements ProjectLocalesResource {
     @PathParam("projectSlug")
     String projectSlug;

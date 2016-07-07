@@ -45,7 +45,7 @@ import org.zanata.service.LocaleService;
 @RequestScoped
 @Named("editor.transUnitService")
 @Path(TransUnitResource.SERVICE_PATH)
-@Transactional
+@Transactional(readOnly = true)
 public class TransUnitService implements TransUnitResource {
     @Inject
     private LocaleService localeServiceImpl;

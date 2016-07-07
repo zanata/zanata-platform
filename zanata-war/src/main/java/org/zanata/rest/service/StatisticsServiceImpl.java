@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -40,6 +41,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.transform.ResultTransformer;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -90,9 +92,9 @@ import static org.apache.commons.lang.StringUtils.abbreviate;
  */
 @Named("statisticsServiceImpl")
 @Path(StatisticsResource.SERVICE_PATH)
-@javax.enterprise.context.Dependent
+@RequestScoped
 @Slf4j
-// TODO this should probably be Transactional (and not Dependent)
+@Transactional(readOnly = true)
 public class StatisticsServiceImpl implements StatisticsResource {
     @Inject
     private ProjectIterationDAO projectIterationDAO;
@@ -119,7 +121,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
     private TranslationStateCache translationStateCacheImpl;
 
     // TODO Need to refactor this method to get Message statistic by default.
-    // This is to be consistance with UI which uses message stats, and for
+    // This is to be consistent with the UI which uses message stats, and for
     // calculating remaining hours.
     @Override
     public ContainerTranslationStatistics getStatistics(String projectSlug,

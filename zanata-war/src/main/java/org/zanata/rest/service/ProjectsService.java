@@ -56,7 +56,7 @@ import com.google.common.base.Objects;
 @RequestScoped
 @Named("projectsService")
 @Path(ProjectsResource.SERVICE_PATH)
-@Transactional
+@Transactional(readOnly = true)
 public class ProjectsService implements ProjectsResource {
 
     @Inject
