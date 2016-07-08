@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 // NB don't add state in subclasses, or you will break the equals method
 public abstract class ElemSet<T> implements Set<T> {

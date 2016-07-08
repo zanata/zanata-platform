@@ -306,6 +306,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.3.2</version>
+    </dependency>
+
+    <dependency>
       <!-- we still need this because the annotation must present in the
        interface/dto otherwise RESTEasy server implementation won't work-->
       <groupId>org.jboss.resteasy</groupId>
