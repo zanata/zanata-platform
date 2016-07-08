@@ -2,14 +2,12 @@ package org.zanata.adapter.glossary;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.lang.CharSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.GlossaryEntry;
 
 import org.zanata.rest.dto.GlossaryTerm;
-import org.zanata.rest.dto.resource.Resource;
 
 import java.io.IOException;
 import java.io.OutputStream;

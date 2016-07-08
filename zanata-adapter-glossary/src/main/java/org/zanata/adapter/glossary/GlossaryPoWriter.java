@@ -1,6 +1,6 @@
 package org.zanata.adapter.glossary;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.fedorahosted.tennera.jgettext.Message;
 import org.fedorahosted.tennera.jgettext.PoWriter;
 import org.slf4j.Logger;
