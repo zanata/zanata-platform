@@ -256,16 +256,15 @@
           <excludes>src/test/resources/**</excludes>
           <sourceDirectory>${project.basedir}</sourceDirectory>
         </configuration>
-        <!--
-                <executions>
-                  <execution>
-                    <goals>
-                      <goal>check</goal>
-                    </goals>
-                    <phase>verify</phase>
-                  </execution>
-                </executions>
-        -->
+        <executions>
+          <execution>
+            <id>check</id>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <phase>verify</phase>
+          </execution>
+        </executions>
         <dependencies>
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
@@ -305,6 +304,7 @@
           -->
           <execution>
             <id>analyze</id>
+            <phase>verify</phase>
             <goals>
               <goal>analyze-only</goal>
             </goals>
@@ -333,6 +333,7 @@
         </configuration>
         <executions>
           <execution>
+            <id>check</id>
             <phase>verify</phase>
             <goals>
               <goal>check</goal>
