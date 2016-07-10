@@ -1,0 +1,41 @@
+:root {
+  --base-font-size: 16px;
+  --base-font-family: 'Helvetica Neue', HelveticaNeue, Helvetica, Arial, sans-serif;
+  --base-color-font: #444c54;
+  --base-line-height: 1.5;
+  --base-bg-color: #eee;
+}
+
+@charset 'UTF-8';
+
+@-ms-viewport {
+  width: device-width;
+}
+
+@viewport {
+  width: device-width;
+}
+
+html {
+  font-family: var(--base-font-family);
+  font-size: var(--base-font-size);
+  line-height: var(--base-line-height);
+  box-sizing: border-box;
+  color: var(--base-color-font);
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body {
+  min-width: 320px;
+  background: var(--base-bg-color);
+}
+
+:active,
+:hover {
+  outline: none;
+}

@@ -1206,6 +1206,11 @@
           <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
+              <execution>
+                <id>install-wildfly-modules</id>
+                <phase>package</phase>
+              </execution>
+
               <!-- Install arquillian-customised version of standalone.xml -->
               <execution>
                 <id>prepare-arquillian-container</id>
@@ -1423,6 +1428,11 @@
     <dependency>
       <groupId>org.zanata</groupId>
       <artifactId>frontend</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-editor</artifactId>
     </dependency>
 
     <dependency>

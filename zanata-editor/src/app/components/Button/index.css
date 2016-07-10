@@ -1,0 +1,225 @@
+/** @define Button; use strict */
+
+@import 'suitcss-components-button';
+
+:root {
+  --Button-rhythm: 1.5rem;
+  --Button-border-color: currentcolor;
+  --Button-border-width: 0;
+  --Button-color: transparent;
+  --Button-disabled-opacity: 0.6;
+  --Button-font: inherit;
+  --Button-padding: .375rem .75rem;
+  --Button-padding-snug: .375rem;
+  --Button-padding-small: .1875rem .75rem;
+  --Button-color-text-invert: #fff;
+  --Button-color-default: color(#416988 tint(85%));
+  --Button-color-primary: #4e9fdd;
+  --Button-color-secondary: #416988;
+  --Button-color-highlight: #4e9fdd;
+  --Button-color-success: #70a98b;
+  --Button-color-unsure: #e0c350;
+  --Button-color-neutral: color(#416988 tint(50%));
+  --Button-color-warning: #e3824e;
+  --Button-color-danger: #e0575b;
+  --Button-transition: all .25s cubic-bezier(.075, .820, .165, 1.000);
+}
+
+.Button {
+  transition: var(--Button-transition);
+  min-height: calc(var(--Button-rhythm) * 1.25);
+  text-shadow: 1px 1px 0 rgba(0,0,0,0.15);
+}
+
+.Button:disabled,
+.Button.is-disabled {
+  pointer-events: none;
+}
+
+.Button:hover,
+.Button:active,
+.Button.is-active {
+  outline: inherit;
+}
+
+/* Default */
+
+.Button--default {
+  background-color: var(--Button-color-default);
+}
+
+.Button--default:hover {
+  background-color: color(var(--Button-color-default) shade(10%));
+}
+
+.Button--default:active,
+.Button--default.is-active {
+  background-color: color(var(--Button-color-default) shade(15%));
+}
+
+/**
+ * Color Modifiers
+ */
+
+/* Primary */
+
+.Button--primary {
+  color: var(--Button-color-text-invert);
+  background-color: var(--Button-color-primary);
+}
+
+.Button--primary:hover {
+  background-color: color(var(--Button-color-primary) shade(10%));
+}
+
+.Button--primary:active,
+.Button--primary.is-active {
+  background-color: color(var(--Button-color-primary) shade(15%));
+}
+
+/* Secondary */
+
+.Button--secondary {
+  color: var(--Button-color-text-invert);
+  background-color: var(--Button-color-secondary);
+}
+
+.Button--secondary:hover {
+  background-color: color(var(--Button-color-secondary) shade(10%));
+}
+
+.Button--secondary:active,
+.Button--secondary.is-active {
+  background-color: color(var(--Button-color-secondary) shade(15%));
+}
+
+/* Hightlight */
+
+.Button--highlight {
+  color: var(--Button-color-text-invert);
+  background-color: var(--Button-color-highlight);
+}
+
+.Button--highlight:hover {
+  background-color: color(var(--Button-color-highlight) shade(10%));
+}
+
+.Button--highlight:active,
+.Button--highlight.is-active {
+  background-color: color(var(--Button-color-highlight) shade(15%));
+}
+
+/* Success */
+
+.Button--success {
+  color: var(--Button-color-text-invert);
+  background-color: var(--Button-color-success);
+}
+
+.Button--success:hover {
+  background-color: color(var(--Button-color-success) shade(10%));
+}
+
+.Button--success:active,
+.Button--success.is-active {
+  background-color: color(var(--Button-color-success) shade(15%));
+}
+
+/* Unsure */
+
+.Button--unsure {
+  color: var(--Button-color-text-invert);
+  background-color: var(--Button-color-unsure);
+}
+
+.Button--unsure:hover {
+  background-color: color(var(--Button-color-unsure) shade(10%));
+}
+
+.Button--unsure:active,
+.Button--unsure.is-active {
+  background-color: color(var(--Button-color-unsure) shade(15%));
+}
+
+/* Neutral */
+
+.Button--neutral {
+  color: var(--Button-color-text-invert);
+  background-color: var(--Button-color-neutral);
+}
+
+.Button--neutral:hover {
+  background-color: color(var(--Button-color-neutral) shade(10%));
+}
+
+.Button--neutral:active,
+.Button--neutral.is-active {
+  background-color: color(var(--Button-color-neutral) shade(15%));
+}
+
+/* Warning */
+
+.Button--warning {
+  color: var(--Button-color-text-invert);
+  background-color: var(--Button-color-warning);
+}
+
+.Button--warning:hover {
+  background-color: color(var(--Button-color-warning) shade(10%));
+}
+
+.Button--warning:active,
+.Button--warning.is-active {
+  background-color: color(var(--Button-color-warning) shade(15%));
+}
+
+/* Danger */
+
+.Button--danger {
+  color: var(--Button-color-text-invert);
+  background-color: var(--Button-color-danger);
+}
+
+.Button--danger:hover {
+  background-color: color(var(--Button-color-danger) shade(10%));
+}
+
+.Button--danger:active,
+.Button--danger.is-active {
+  background-color: color(var(--Button-color-danger) shade(15%));
+}
+
+/* Invisible */
+
+.Button--invisible {
+  background-color: transparent;
+  color: color(var(--Button-color-secondary) tint(50%));
+}
+
+.Button--invisible:hover {
+  background-color: color(var(--Button-color-secondary) tint(92%));
+  color: color(var(--Button-color-secondary) tint(30%));
+}
+
+.Button--invisible:active,
+.Button--invisible.is-active {
+  color: var(--Button-color-secondary);
+  background-color: color(var(--Button-color-secondary) tint(88%));
+}
+
+/**
+ * Button Type Modifiers
+ */
+
+/* Snug */
+
+.Button--snug {
+  padding-left: var(--Button-padding-snug);
+  padding-right: var(--Button-padding-snug);
+}
+
+.Button--small {
+  min-height: calc(var(--Button-rhythm) * 1);
+  padding: var(--Button-padding-small);
+  font-size: calc(14/16)rem;
+}

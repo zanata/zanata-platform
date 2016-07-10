@@ -29,6 +29,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.jboss.resteasy.util.GenericType;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -55,6 +56,7 @@ import lombok.NoArgsConstructor;
 @Path(StatisticResource.SERVICE_PATH)
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Transactional(readOnly = true)
 public class StatisticsService implements StatisticResource {
     @Inject
     private DocumentDAO documentDAO;

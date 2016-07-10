@@ -48,7 +48,7 @@ import lombok.NoArgsConstructor;
 @RequestScoped
 @Named("editor.textFlowService")
 @Path(TextFlowResource.SERVICE_PATH)
-@Transactional
+@Transactional(readOnly = true)
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class TextFlowService implements TextFlowResource {

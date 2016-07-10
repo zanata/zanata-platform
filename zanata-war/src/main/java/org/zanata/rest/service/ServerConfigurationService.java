@@ -56,7 +56,6 @@ import org.zanata.util.ServiceLocator;
 @Produces({"application/xml", "application/json"})
 @Consumes({"application/xml", "application/json"})
 @Transactional
-
 @CheckRole("admin")
 @Slf4j
 @Beta

@@ -1,0 +1,117 @@
+:root {
+  --Modal-rhythm: 1.5rem;
+  --Modal-color-bg: color(#f0f2f4 alpha(.95));
+  --Modal-transition: all .15s linear;
+  --Modal-border: 1px solid color(#416988 alpha(12%));
+  --Modal-dialog-transition: all .25s cubic-bezier(.175, .885, .320, 1.1);
+  --Modal-dialog-border-bottom-width: 2px;
+  --Modal-dialog-color-bg: color(#f0f2f4 tint(60%));
+  --Modal-header-color-bg: #fff;
+  --Modal-title-font-size: calc(22/16 * 1rem);
+  --Modal-close-transition: all .25s ease-out;
+  --Modal-close-color-bg-hover: color(#416988 alpha(5%));
+  --Modal-close-color-bg-active: color(#416988 alpha(10%));
+  --Modal-z-index: 1000;
+  --Modal-header-z-index: 100;
+}
+
+.Modal {
+  position: fixed;
+  z-index: var(--Modal-z-index);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: block;
+  visibility: hidden;
+  overflow: auto;
+  overflow-y: scroll;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  padding:  calc(var(--Modal-rhythm) * 3) var(--Modal-rhythm) var(--Modal-rhythm);
+  transition: var(--Modal-transition);
+  opacity: 0;
+  background-color: var(--Modal-color-bg);
+
+  backface-visibility: hidden;
+  perspective: calc(var(--Modal-rhythm) * 50);
+  -webkit-overflow-scrolling: touch;
+}
+
+.Modal.is-active {
+  visibility: visible;
+  opacity: 1;
+}
+
+.Modal-dialog {
+  position: absolute;
+  position: relative;
+  width: 90%;
+  top: 50%;
+  left: 50%;
+  max-height: 100%;
+  min-width: 300px;
+  max-width: calc(var(--Modal-rhythm) * 30);
+  transition: var(--Modal-dialog-transition);
+  transform: translateX(-50%) translateY(100%);
+  transform-origin: 0;
+  background-color: var(--Modal-dialog-color-bg);
+}
+
+.Modal.is-active .Modal-dialog {
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.Modal-header {
+  position: fixed;
+  top: calc(var(--Modal-rhythm) * -2);
+  left: 0;
+  right: 0;
+  border: var(--Modal-border);
+  background-color: var(--Modal-header-color-bg);
+  z-index: var(--Modal-header-z-index);
+}
+
+.Modal-title {
+  font-size: var(--Modal-title-font-size);
+  font-weight: 300;
+  line-height: var(--Modal-rhythm);
+  margin: 0;
+  padding: calc(var(--Modal-rhythm) * .5) calc(var(--Modal-rhythm) * 1.5) calc(var(--Modal-rhythm) * .5) var(--Modal-rhythm);
+}
+
+.Modal-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: calc(var(--Modal-rhythm) * 2);
+  height: calc(var(--Modal-rhythm) * 2);
+  transition: var(--Modal-close-transition);
+  text-align: center;
+  border-left: var(--Modal-border);
+}
+
+.Modal-close:hover {
+  background-color: var(--Modal-close-color-bg-hover);
+}
+
+.Modal-close:active {
+  background-color: var(--Modal-close-color-bg-active);
+}
+
+.Modal-content {
+  position: relative;
+  max-height: 100%;
+  overflow: auto;
+  background-clip: padding-box;
+  border: var(--Modal-border);
+  border-top-color: transparent;
+  border-bottom-width: var(--Modal-dialog-border-bottom-width);
+}
+
+/* body */
+.Modal-container.is-modal {
+  overflow: hidden;
+  height: 100%;
+}

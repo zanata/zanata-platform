@@ -1,0 +1,88 @@
+# German translation of template.pot
+msgid ""
+msgstr ""
+"Project-Id-Version: Link (6.x-2.9)\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-12-31 23:39+0000\n"
+"PO-Revision-Date: 2013-12-17 14:59+0100\n"
+"Last-Translator: Alex Eng <aeng@redhat.com>\n"
+"Language: de\n"
+"Language-Team: de\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+
+
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: /home/aeng/src/workspace/zanata-spa/app/editor/editor.html
+msgid "Approved"
+msgstr "Genehmigt"
+
+#: /home/aeng/src/workspace/zanata-spa/app/editor/editor.html
+msgid "Details"
+msgstr "Details"
+
+#: /home/aeng/src/workspace/zanata-spa/app/editor/editor.html
+msgid "Editor Settings"
+msgstr "Editor -Einstellungen"
+
+#: /home/aeng/src/workspace/zanata-spa/app/editor/editor.html
+msgid "Filters"
+msgstr "Filter"
+
+#: /home/aeng/src/workspace/zanata-spa/app/editor/editor.html
+msgid "Fuzzy"
+msgstr "Unscharf"
+
+#: /home/aeng/src/workspace/zanata-spa/app/editor/editor.html
+msgid "Glossary"
+msgstr "Glossar"
+
+#: /home/aeng/src/workspace/zanata-spa/app/editor/editor.html
+msgid "Hide Menubar"
+msgstr "Menüleiste ausblenden"
+
+#: /home/aeng/src/workspace/zanata-spa/app/editor/editor.html
+msgid "More"
+msgstr "Mehr"
+
+#: /home/aeng/src/workspace/zanata-spa/app/editor/editor.html
+msgid "More filters"
+msgstr "Mehr Filter"
+
+#: /home/aeng/src/workspace/zanata-spa/app/editor/editor.html
+msgid "Notifications"
+msgstr "Benachrichtigungen"
+
+#: /home/aeng/src/workspace/zanata-spa/app/editor/editor.html
+msgid "Search"
+msgstr "Suche"
+
+#: /home/aeng/src/workspace/zanata-spa/app/editor/editor.html
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: /home/aeng/src/workspace/zanata-spa/app/editor/editor.html
+msgid "Total Phrases"
+msgstr "Gesamt Sätze"
+
+#: /home/aeng/src/workspace/zanata-spa/app/editor/editor.html
+msgid "Translated"
+msgstr "Traduit"
+
+#: /home/aeng/src/workspace/zanata-spa/app/editor/editor.html
+msgid "Translating"
+msgstr "übersetzt"
+
+#: /home/aeng/src/workspace/zanata-spa/app/editor/editor.html
+msgid "Translation Memory"
+msgstr "Translation Memory"
+
+#: /home/aeng/src/workspace/zanata-spa/app/editor/editor.html
+msgid "Untranslated"
+msgstr "Untranslatierten"

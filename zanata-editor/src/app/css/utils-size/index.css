@@ -1,0 +1,95 @@
+@import 'suitcss-utils-size';
+
+:root {
+  --u-size-rhythm: 1.5rem;
+}
+
+/* Width */
+
+.u-sizeWidth-1-4 {
+  width: calc(var(--u-size-rhythm) * .25) !important;
+}
+
+.u-sizeWidth-1-2 {
+  width: calc(var(--u-size-rhythm) * .5) !important;
+}
+
+.u-sizeWidth-3-4 {
+  width: calc(var(--u-size-rhythm) * .75) !important;
+}
+
+.u-sizeWidth-1 {
+  width: var(--u-size-rhythm) !important;
+}
+
+.u-sizeWidth-1_1-2 {
+  width: calc(var(--u-size-rhythm) * 1.5) !important;
+}
+
+.u-sizeWidth-2 {
+  width: calc(var(--u-size-rhythm) * 2) !important;
+}
+
+.u-sizeWidth-6 {
+  width: calc(var(--u-size-rhythm) * 6) !important;
+}
+
+/* Height */
+
+.u-sizeHeight-1-4 {
+  height: calc(var(--u-size-rhythm) * .25) !important;
+}
+
+.u-sizeHeight-1-2 {
+  height: calc(var(--u-size-rhythm) * .5) !important;
+}
+
+.u-sizeHeight-3-4 {
+  height: calc(var(--u-size-rhythm) * .75) !important;
+}
+
+.u-sizeHeight-1 {
+  height: var(--u-size-rhythm) !important;
+}
+
+.u-sizeHeight-1_1-4 {
+  height: calc(var(--u-size-rhythm) * 1.25) !important;
+}
+
+.u-sizeHeight-1_1-2 {
+  height: calc(var(--u-size-rhythm) * 1.5) !important;
+}
+
+.u-sizeHeight-2 {
+  height: calc(var(--u-size-rhythm) * 2) !important;
+}
+
+/* Line Height */
+
+.u-sizeLineHeight-1-4 {
+  line-height: calc(var(--u-size-rhythm) * .25) !important;
+}
+
+.u-sizeLineHeight-1-2 {
+  line-height: calc(var(--u-size-rhythm) * .5) !important;
+}
+
+.u-sizeLineHeight-3-4 {
+  line-height: calc(var(--u-size-rhythm) * .75) !important;
+}
+
+.u-sizeLineHeight-1 {
+  line-height: var(--u-size-rhythm) !important;
+}
+
+.u-sizeLineHeight-1_1-4 {
+  line-height: calc(var(--u-size-rhythm) * 1.25) !important;
+}
+
+.u-sizeLineHeight-1_1-2 {
+  line-height: calc(var(--u-size-rhythm) * 1.5) !important;
+}
+
+.u-sizeLineHeight-2 {
+  line-height: calc(var(--u-size-rhythm) * 2) !important;
+}

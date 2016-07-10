@@ -1,0 +1,85 @@
+:root {
+  --u-bg-transition: all .25s ease-out;
+  --u-bg-border: 1px solid #ccc;
+  --u-bg-border-bottom-width: 2px;
+  --u-bg-color: #f0f2f4;
+  --u-bg-color-lightest: color(var(--color-bg) tint(99%));
+  --u-bg-color-lighter: color(var(--color-bg) tint(93%));
+  --u-bg-color-light: color(var(--color-bg) tint(46%));
+  --u-bg-color-dark: color(var(--color-bg) shade(3%));
+  --u-bg-color-darker: color(var(--color-bg) shade(6%));
+  --u-bg-color-darkest: color(var(--color-bg) shade(9%));
+  --u-bg-color-primary: #dcecf7;
+  --u-bg-color-secondary: #d9e1e7;
+  --u-bg-color-neutral: var(--u-bg-color);
+  --u-bg-color-danger: color(#e0575b tint(80%));
+  --u-bg-color-warning: color(#e3824e tint(80%));
+  --u-bg-color-unsure: color(#e0c350 tint(90%));
+  --u-bg-color-success: color(#70a98b tint(80%));
+  --u-bg-color-highlight: color(#4e9fdd tint(80%));
+}
+
+.u-bgFaint {
+  opacity: .9;
+}
+
+.u-bgHigh {
+  background-color: var(--u-bg-color-light);
+}
+
+.u-bgHigher {
+  background-color: var(--u-bg-color-lighter);
+}
+
+.u-bgHighest {
+  background-color: var(--u-bg-color-lightest);
+}
+
+.u-bgLow {
+  background-color: var(--u-bg-color-dark);
+}
+
+.u-bgLower {
+  background-color: var(--u-bg-color-darker);
+}
+
+.u-bgLowest {
+  background-color: var(--u-bg-color-darkest);
+}
+
+.u-bgPop {
+  border: var(--u-bg-border);
+  border-bottom-width: var(--u-bg-border-bottom-width);
+}
+
+.u-bgNeutral {
+  background-color: var(--u-bg-color-neutral);
+}
+
+.u-bgPrimary {
+  background-color: var(--u-bg-color-primary);
+}
+
+.u-bgSecondary {
+  background-color: var(--u-bg-color-secondary);
+}
+
+.u-bgDanger {
+  background-color: var(--u-bg-color-danger);
+}
+
+.u-bgWarning {
+  background-color: var(--u-bg-color-warning);
+}
+
+.u-bgUnsure {
+  background-color: var(--u-bg-color-unsure);
+}
+
+.u-bgSuccess {
+  background-color: var(--u-bg-color-success);
+}
+
+.u-bgHighlight {
+  background-color: var(--u-bg-color-highlight);
+}

@@ -1,0 +1,76 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+
+#: app/components/Pager/index.js
+msgid "{{currentPage}} of {{totalPages}}"
+msgstr ""
+
+#: app/components/TransUnitFilter/index.js
+msgid "Approved"
+msgstr ""
+
+#: app/components/Pager/index.js
+msgid "First page"
+msgstr ""
+
+#: app/components/ControlsHeader/index.js
+msgid "Hide Menubar"
+msgstr ""
+
+#: app/components/ControlsHeader/index.js
+msgid "Hide suggestions panel"
+msgstr ""
+
+#: app/editor/editor.html
+#: app/components/ControlsHeader/index.js
+msgid "Keyboard Shortcuts"
+msgstr ""
+
+#: app/components/Pager/index.js
+msgid "Last page"
+msgstr ""
+
+#: app/components/TransUnitFilter/index.js
+msgid "Needs Work"
+msgstr ""
+
+#: app/components/Pager/index.js
+msgid "Next page"
+msgstr ""
+
+#: app/components/Pager/index.js
+msgid "Previous page"
+msgstr ""
+
+#: app/components/ControlsHeader/index.js
+msgid "Show Menubar"
+msgstr ""
+
+#: app/components/ControlsHeader/index.js
+msgid "Show suggestions panel"
+msgstr ""
+
+#: app/components/TransUnitFilter/index.js
+msgid "Total Phrases"
+msgstr ""
+
+#: app/components/TransUnitFilter/index.js
+msgid "Translated"
+msgstr ""
+
+#: app/components/TranslatingIndicator/index.js
+msgid "Translating"
+msgstr ""
+
+#: app/components/TransUnitFilter/index.js
+msgid "Untranslated"
+msgstr ""
+
+#: app/index.html
+msgid ""
+"We're sorry, this application needs Javascript to\n"
+"      run."
+msgstr ""

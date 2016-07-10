@@ -1,0 +1,27 @@
+/** @define ButtonGroup; use strict */
+
+@import 'suitcss-components-button-group';
+@import 'suitcss-components-button-group/button-group.plugin.css';
+
+:root {
+  /* Set our vars in correct format */
+  --ButtonGroup-font-size: 1rem;
+  --ButtonGroup-button-border-width: 0;
+  /* From suitcss-components-button-group */
+  --font-size-ButtonGroup: var(--ButtonGroup-font-size);
+  --border-width-Button: var(--ButtonGroup-button-border-width);
+}
+
+.ButtonGroup--hz > .ButtonGroup-item {
+  vertical-align: middle;
+}
+
+.ButtonGroup--round .ButtonGroup-item:first-child .Button {
+  border-top-left-radius: 100px;
+  border-bottom-left-radius: 100px;
+}
+
+.ButtonGroup--round .ButtonGroup-item:last-child .Button {
+  border-top-right-radius: 100px;
+  border-bottom-right-radius: 100px;
+}

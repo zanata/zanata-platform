@@ -42,7 +42,7 @@ import java.util.Map;
 @RequestScoped
 @Named("projectIterationLocalesService")
 @Path(ProjectIterationLocalesService.SERVICE_PATH)
-@Transactional
+@Transactional(readOnly = true)
 public class ProjectIterationLocalesService extends LocalesService implements ProjectIterationLocalesResource {
     @PathParam("projectSlug")
     String projectSlug;

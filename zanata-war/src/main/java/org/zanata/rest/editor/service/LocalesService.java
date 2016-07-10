@@ -46,7 +46,7 @@ import com.google.common.collect.Lists;
 @RequestScoped
 @Named("editor.localesService")
 @Path(LocalesResource.SERVICE_PATH)
-@Transactional
+@Transactional(readOnly = true)
 public class LocalesService implements LocalesResource {
 
     @Inject

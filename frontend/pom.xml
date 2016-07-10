@@ -9,33 +9,60 @@
   <artifactId>frontend</artifactId>
   <name>frontend</name>
   <url>http://maven.apache.org</url>
+
+  <!-- Referenced later in the document with ${tagname}. -->
   <properties>
+    <!-- Specified to ensure build is consistent cross-platform. -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!-- Node and NPM versions that will be downloaded and used for this build. -->
     <node.version>v5.6.0</node.version>
     <npm.version>3.6.0</npm.version>
+
+    <!-- Directory to run the build from. Source is copied here before installing
+         dependencies to this location then running the build. -->
     <web.target>${project.build.directory}/web</web.target>
+
+    <!-- Path within the jar to put the built artifacts.
+         Note: META-INF/resources/* is served as static content, so this serves
+         the built files at the root of the website -->
     <bundle.dest>${project.build.outputDirectory}/META-INF/resources</bundle.dest>
+
+    <!-- The location to download the correct version of Node and NPM to.
+         ${download.dir} comes from zanata-server/pom.xml -->
     <node.install.directory>${download.dir}/zanata-frontend/node-${node.version}-npm-${npm.version}</node.install.directory>
+
+    <!-- NPM executable to use to run builds -->
     <npm.cli.script>${node.install.directory}/node/node_modules/npm/bin/npm-cli.js</npm.cli.script>
-    <!-- in seconds. 10 is the default value -->
+
+    <!-- Keep cached npm modules for at least this many seconds before re-checking
+         for an updated one. 10 is the default value (included so it can be overridden). -->
     <npm.cache.min>10</npm.cache.min>
   </properties>
 
-
   <dependencies>
-
   </dependencies>
 
   <build>
+    <!-- Copy all the source files to the build directory.
+         This is done to keep the original source directory clean, because the
+         build will download dependencies and places built artifacts in the
+         same directory as the source files.
+         This happens in phase process-resources. -->
     <resources>
       <resource>
+        <!-- Do not substitute maven variables like ${variablename} in the
+             contents of these files. -->
         <filtering>false</filtering>
+        <!-- Path from pom to the source files that will be used. -->
         <directory>src/main/web</directory>
+        <!-- Location to copy source files to. -->
         <targetPath>${web.target}</targetPath>
       </resource>
     </resources>
     <plugins>
       <plugin>
+        <!-- Installs correct version of node and npm locally. -->
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
         <version>0.0.28</version>
@@ -64,13 +91,19 @@
         <version>1.4.0</version>
         <configuration>
           <environmentVariables>
+            <!-- Ensure that the locally installed (by frontend-maven-plugin) node
+                 and npm are at the start of PATH, so they will be used for any
+                 node/npm call. -->
             <PATH>${node.install.directory}/node:${node.install.directory}/node/node_modules/npm/bin:${env.PATH}</PATH>
           </environmentVariables>
+
+          <!-- Use the downloaded version of node to run all the commands. -->
           <executable>${node.install.directory}/node/node</executable>
         </configuration>
 
 
         <executions>
+          <!-- Download all dependency modules from npm (or mirror). -->
           <execution>
             <id>execute npm install for: ${project.artifactId}</id>
             <phase>process-resources</phase>
@@ -87,6 +120,8 @@
               </arguments>
             </configuration>
           </execution>
+
+          <!-- Transpile and bundle all the javascript and css. -->
           <execution>
             <id>execute npm run build for: ${project.artifactId}</id>
             <phase>compile</phase>
@@ -113,6 +148,7 @@
         </configuration>
       </plugin>
 
+      <!-- Copy the built bundle files to the META-INF/resources directory. -->
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
@@ -138,6 +174,7 @@
     </plugins>
   </build>
 
+  <!-- Attempts to avoid downloading anything from NPM. -->
   <profiles>
     <profile>
       <id>npmOffline</id>

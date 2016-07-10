@@ -27,12 +27,10 @@ import org.hibernate.Query;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
 
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.util.CloseableIterator;
-import org.zanata.util.Zanata;
 
 /**
  * This class uses Hibernate's StatelessSession to iterate over large queries
@@ -43,6 +41,7 @@ import org.zanata.util.Zanata;
  */
 @Named("transMemoryStreamingDAO")
 @RequestScoped
+@NoArgsConstructor
 /**
  * Note: unless the find* methods throw an exception, the caller is
  * responsible for closing the Iterator, or a database connection
@@ -50,12 +49,7 @@ import org.zanata.util.Zanata;
  */
 public class TransMemoryStreamingDAO extends StreamingDAO<TransMemoryUnit> {
 
-    public TransMemoryStreamingDAO() {
-        this(null);
-    }
-
-    @Inject
-    public TransMemoryStreamingDAO(@Zanata HibernateEntityManagerFactory emf) {
+    public TransMemoryStreamingDAO(HibernateEntityManagerFactory emf) {
         super(emf);
     }
 

@@ -1,6 +1,6 @@
 import { createAction } from 'redux-actions'
 import { CALL_API } from 'redux-api-middleware'
-import { cloneDeep, includes, debounce } from 'lodash'
+import { cloneDeep, includes, debounce, last } from 'lodash'
 import { saveAs } from 'file-saver'
 import { normalize } from 'normalizr'
 import { GLOSSARY_TERM_ARRAY } from '../schemas.js'
@@ -13,9 +13,10 @@ import {
   buildAPIRequest
 } from './common'
 
-export const GLOSSARY_PAGE_SIZE = 500
-
 export const FILE_TYPES = ['csv', 'po']
+export const PAGE_SIZE_SELECTION = [20, 50, 100, 300, 500]
+// 500 by default
+export const PAGE_SIZE_DEFAULT = last(PAGE_SIZE_SELECTION)
 
 export const GLOSSARY_UPDATE_FILTER = 'GLOSSARY_UPDATE_FILTER'
 export const GLOSSARY_UPDATE_LOCALE = 'GLOSSARY_UPDATE_LOCALE'
@@ -87,14 +88,18 @@ const getGlossaryTerms = (state) => {
     filter = '',
     sort = ''
   } = state.glossary
+  const query = state.routing.location.query
 
-  const queryPage = state.routing.location.query.page
-  const intPage = queryPage ? parseInt(queryPage) : 1
-  const page = intPage < 1 ? 1 : intPage
+  let page = query.page ? parseInt(query.page) : 1
+  page = page <= 1 ? 1 : page
+
+  let pageSize = query.size ? parseInt(query.size) : PAGE_SIZE_DEFAULT
+  pageSize = includes(PAGE_SIZE_SELECTION, pageSize)
+    ? pageSize : PAGE_SIZE_DEFAULT
 
   const srcQuery = '?srcLocale=' + (src || DEFAULT_LOCALE.localeId)
   const localeQuery = locale ? `&transLocale=${locale}` : ''
-  const pageQuery = `&page=${page}&sizePerPage=${GLOSSARY_PAGE_SIZE}`
+  const pageQuery = `&page=${page}&sizePerPage=${pageSize}`
   const filterQuery = filter ? `&filter=${filter}` : ''
   const sortQuery = sort
     ? `&sort=${GlossaryHelper.convertSortToParam(sort)}` : ''
@@ -457,3 +462,9 @@ export const glossaryGoLastPage = (currentPage, totalPage) => {
   }
 }
 
+export const glossaryUpdatePageSize = (size) => {
+  return (dispatch, getState) => {
+    replaceRouteQuery(getState().routing.location, {page: 1, size: size})
+    dispatch(getGlossaryTerms(getState()))
+  }
+}

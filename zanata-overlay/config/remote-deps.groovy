@@ -15,14 +15,13 @@
  * }
  *
  * The dependency name is not relevant, just an identifier.
- *
- * For example:
- *
- * 'wildfly' {
- *     hibernatemodule {
- *         url = "https://bintray.com/artifact/download/sflanigan/generic/wildfly-module-hibernate-main-4.2.20.Final.zip"
- *         toFile = "/hibernate-module.zip"
- *         extract = true
- *     }
- * }
  */
+
+'wildfly' {
+    hibernatemodule {
+        url = "https://bintray.com/artifact/download/sflanigan/generic/wildfly-module-hibernate-main-4.2.20.Final.zip"
+        toFile = "/hibernate-module.zip"
+        extract = true
+    }
+
+}

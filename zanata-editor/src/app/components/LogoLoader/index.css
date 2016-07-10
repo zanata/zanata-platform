@@ -1,0 +1,127 @@
+/** @define LogoLoader; use strict */
+
+:root {
+  --LogoLoader-color-logo: #fff;
+  --LogoLoader-color-logo-invert: #20718A;
+  --LogoLoader-rhythm: 1.5rem;
+  --LogoLoader-transition-ease: cubic-bezier(.175, .885, .320, 1.275);
+}
+
+.LogoLoader {
+  position: relative;
+  display: inline-block;
+  margin-top: calc(var(--rhythm) * -.0625);
+  width: calc(var(--LogoLoader-rhythm) * 1.625);
+  height: calc(var(--LogoLoader-rhythm) * 1.625);
+  color: var(--LogoLoader-color-logo);
+  border-radius: 100px;
+}
+
+.LogoLoader--inverted {
+  color: var(--LogoLoader-color-logo-invert);
+}
+
+.LogoLoader-logo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transition: all .25s var(--LogoLoader-transition-ease);
+  fill: currentColor;
+}
+
+
+.LogoLoader-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: visible;
+}
+
+.LogoLoader path {
+  transform-origin: 50% 50% 0;
+}
+
+.LogoLoader:hover .LogoLoader-z {
+  animation: pop .3s var(--LogoLoader-transition-ease);
+  animation-iteration-count: 2;
+  animation-direction: alternate;
+}
+
+.LogoLoader-z {
+  transform: scale(1,1);
+  transition: all .25s var(--LogoLoader-transition-ease);
+}
+
+.LogoLoader .LogoLoader-logo {
+  transform-origin: 50% 50% 0;
+  /*transform: scale(.8, .8);*/
+}
+
+.LogoLoader .LogoLoader-circle,
+.LogoLoader .LogoLoader-circlePulse {
+  transform: scale(1, 1);
+}
+
+.LogoLoader.is-loading .LogoLoader-z {
+  animation: pulseBegin 1s infinite linear;
+}
+
+.LogoLoader.is-loading .LogoLoader-circle {
+  animation: pulseBegin 1s infinite linear;
+  animation-delay: .1s;
+}
+
+.LogoLoader.is-loading .LogoLoader-circlePulse {
+  animation: pulse 1s infinite linear;
+  animation-delay: .1s;
+}
+
+@keyframes pulseBegin {
+  0% {
+     transform: scale(1);
+  }
+  20% {
+     transform: scale(.6);
+  }
+  40% {
+    transform: scale(1.2);
+  }
+  60% {
+     transform: scale(1);
+  }
+  100% {
+     transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0% {
+     transform: scale(.6);
+     opacity: 0;
+  }
+  20% {
+     transform: scale(.6);
+  }
+  40% {
+    transform: scale(1.2);
+    opacity: 0.5;
+  }
+  60% {
+     transform: scale(1.6);
+     opacity: 0.7;
+  }
+  100% {
+     transform: scale(2);
+     opacity: 0.0;
+  }
+}
+
+@keyframes pop {
+  to {
+    transform: rotate(15deg) scale(1.1, 1.1);
+  }
+}

@@ -43,6 +43,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.jboss.resteasy.util.GenericType;
 
 import lombok.extern.slf4j.Slf4j;
@@ -80,7 +81,7 @@ import com.google.common.io.ByteStreams;
 @Named("fileService")
 @Path(FileResource.SERVICE_PATH)
 @Slf4j
-// TODO this should probably be Transactional
+@Transactional
 public class FileService implements FileResource {
     private static final String FILE_TYPE_OFFLINE_PO = "offlinepo";
     private static final String FILE_TYPE_OFFLINE_PO_TEMPLATE = "offlinepot";

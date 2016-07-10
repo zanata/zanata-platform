@@ -23,107 +23,21 @@ package org.zanata.database;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Map;
 
-import com.google.common.base.Throwables;
-import org.hibernate.service.jdbc.connections.spi.ConnectionProvider;
-import org.hibernate.service.spi.Configurable;
-import org.hibernate.service.spi.Stoppable;
+import org.hibernate.service.jdbc.connections.internal.DatasourceConnectionProviderImpl;
 
 /**
- * Decorator for DatasourceConnectionProviderImpl which adds support for JBDC
- * wrapping. This Hibernate ConnectionProvider is used, in Arquillian
- * integration tests, to simulate MySQL's support for streaming ResultSets,
- * by allowing fetchSize=Integer.MIN_VALUE (which H2 rejects) and by
- * detecting violations of MySQL's streaming ResultSet limitations (ie
- * attempts to perform other queries while a streaming ResultSet is open).
- * <p>
- * NB: this class uses the internal Hibernate class DatasourceConnectionProviderImpl.
- * It tries a couple of different packages for it, corresponding to Hibernate
- * 4.2 and 4.3/5.x. If, in a new version of Hibernate, that class is changed
- * or removed, this ConnectionProvider may need to be updated (eg to use a new
- * class name, to implement new interfaces) or removed.
- * </p>
- * @see org.hibernate.service.jdbc.connections.internal.DatasourceConnectionProviderImpl
- * @see org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl
- * @see org.zanata.database.WrappedDriverManagerConnectionProvider
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public class WrappedDatasourceConnectionProvider
-        // NB: we should implement the same interfaces as Hibernate's DatasourceConnectionProviderImpl
-        implements ConnectionProvider, Configurable, Stoppable {
-
-    // These are the class names we try when looking for DatasourceConnectionProviderImpl:
-    private static final String IMPL_HIBERNATE_4_2 =
-            "org.hibernate.service.jdbc.connections.internal.DatasourceConnectionProviderImpl";
-    private static final String IMPL_HIBERNATE_5_0 =
-            "org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl";
-
-    private static Class<ConnectionProvider> delegateClass;
-
-    static {
-        try {
-            // Hibernate 4.2
-            delegateClass =
-                    (Class<ConnectionProvider>) Class.forName(IMPL_HIBERNATE_4_2);
-        } catch (ClassNotFoundException e) {
-            try {
-                // Hibernate 4.3, 5.x
-                delegateClass =
-                        (Class<ConnectionProvider>) Class.forName(IMPL_HIBERNATE_5_0);
-            } catch (ClassNotFoundException e1) {
-                throw new RuntimeException(
-                        "Unable to find Hibernate DatasourceConnectionProviderImpl. Please add its class name to " + WrappedDatasourceConnectionProvider.class.getSimpleName());
-            }
-        }
-    }
-
+public class WrappedDatasourceConnectionProvider extends
+        DatasourceConnectionProviderImpl {
     private static final long serialVersionUID = 1L;
     private final WrapperManager wrapperManager = new WrapperManager();
-    private final ConnectionProvider delegate;
-
-    public WrappedDatasourceConnectionProvider() {
-        try {
-            delegate = delegateClass.newInstance();
-        } catch (Exception e) {
-            throw Throwables.propagate(e);
-        }
-    }
 
     @Override
     public Connection getConnection() throws SQLException {
-        return wrapperManager.wrapIfNeeded(delegate.getConnection());
-    }
-
-    @Override
-    public void closeConnection(Connection conn) throws SQLException {
-        delegate.closeConnection(conn);
-    }
-
-    @Override
-    public boolean supportsAggressiveRelease() {
-        return delegate.supportsAggressiveRelease();
-    }
-
-    @Override
-    public boolean isUnwrappableAs(Class unwrapType) {
-        return delegate.isUnwrappableAs(unwrapType);
-    }
-
-    @Override
-    public <T> T unwrap(Class<T> unwrapType) {
-        return delegate.unwrap(unwrapType);
-    }
-
-    @Override
-    public void configure(Map configurationValues) {
-        ((Configurable) delegate).configure(configurationValues);
-    }
-
-    @Override
-    public void stop() {
-        ((Stoppable) delegate).stop();
+        return wrapperManager.wrapIfNeeded(super.getConnection());
     }
 
 }

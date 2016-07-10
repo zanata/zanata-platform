@@ -1,0 +1,4 @@
+{
+  "baseUrl": "http://localhost:7878/zanata/rest",
+  "appPath": "/app"
+}

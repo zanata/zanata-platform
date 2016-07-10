@@ -1,0 +1,20 @@
+:root {
+  --difference-color-addition: #E0F2E7;
+  --difference-color-deletion: #F4DEDF;
+}
+
+.Difference ins,
+.Difference del {
+  padding: 0 1px;
+  border-radius: 2px;
+}
+
+.Difference ins {
+  background-color: var(--difference-color-addition);
+  text-decoration: none;
+}
+
+.Difference del {
+  background-color: var(--difference-color-deletion);
+  text-decoration: none;
+}

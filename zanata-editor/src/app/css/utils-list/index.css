@@ -1,0 +1,74 @@
+:root {
+  --u-list-rhythm: 1.5rem;
+}
+
+/**
+ * Definition lists
+ *
+ * Remove default styling
+ */
+
+.u-dlUnstyled > dd {
+  margin-left: 0;
+}
+
+/**
+ * Display definition lists inline
+ */
+
+.u-dlInline dt,
+.u-dlInline dd {
+  display: inline-block;
+  margin-right: calc(var(--u-list-rhythm) * .125);
+  margin-left: 0;
+}
+
+/**
+ * Standard lists
+ *
+ * Remove default styling
+ */
+
+.u-listUnstyled {
+  margin-bottom: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.u-listUnstyled > li {
+  margin-left: 0;
+  list-style: none;
+}
+
+/**
+ * Display list items inline
+ */
+
+.u-listInline {
+  margin-left: calc(var(--u-list-rhythm) * -.125);
+  padding-left: 0;
+  list-style: none;
+}
+
+.u-listInline > li {
+  display: inline-block;
+  padding-right: calc(var(--u-list-rhythm) * .125);
+  padding-left: calc(var(--u-list-rhythm) * .125);
+}
+
+/**
+ * Display list items inline
+ */
+
+.u-listHorizontal {
+  /* Remove extra spacing inline-block adds */
+  font-size: 0;
+  list-style: none;
+}
+
+.u-listHorizontal > li {
+  /* Return font to normal size */
+  font-size: 1rem;
+  display: inline-block;
+  vertical-align: top;
+}

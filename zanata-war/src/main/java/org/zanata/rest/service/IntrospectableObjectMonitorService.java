@@ -38,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 @Path("/monitor")
 @Produces({ "application/json" })
 @Consumes({ "application/xml" })
-@Transactional
+@Transactional(readOnly = true)
 @CheckRole("admin")
 @Slf4j
 @Beta

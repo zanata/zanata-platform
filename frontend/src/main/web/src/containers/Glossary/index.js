@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
-import { isUndefined, size } from 'lodash'
+import { isUndefined, size, map } from 'lodash'
 import ReactList from 'react-list'
 import {
   LoaderText,
@@ -11,7 +11,8 @@ import {
   Notification,
   Row,
   ButtonLink,
-  Icon
+  Icon,
+  Select
 } from '../../components'
 import {
   glossaryDeleteTerm,
@@ -24,7 +25,9 @@ import {
   glossaryGoNextPage,
   glossaryGoPreviousPage,
   glossaryInitialLoad,
-  GLOSSARY_PAGE_SIZE
+  glossaryUpdatePageSize,
+  PAGE_SIZE_DEFAULT,
+  PAGE_SIZE_SELECTION
 } from '../../actions/glossary'
 import ViewHeader from './ViewHeader'
 import Entry from './Entry'
@@ -104,16 +107,19 @@ class Glossary extends Component {
       gotoFirstPage,
       gotoLastPage,
       gotoNextPage,
-      page
+      page,
+      pageSize,
+      handlePageSizeChange
     } = this.props
 
-    const totalPage = Math.floor(termCount / GLOSSARY_PAGE_SIZE) +
-      (termCount % GLOSSARY_PAGE_SIZE > 0 ? 1 : 0)
-
+    const intPageSize = pageSize ? parseInt(pageSize) : PAGE_SIZE_DEFAULT
+    const totalPage = Math.floor(termCount / intPageSize) +
+      (termCount % intPageSize > 0 ? 1 : 0)
     const currentPage = page ? parseInt(page) : 1
     const displayPaging = totalPage > 1
-    const listPadding = displayPaging ? 'Pb(r2)' : 'Pb(r2) Pt(r6)'
-
+    const pageSizeOption = map(PAGE_SIZE_SELECTION, (size) => {
+      return {label: size, value: size}
+    })
     /* eslint-disable react/jsx-no-bind */
     return (
       <Page>
@@ -127,37 +133,59 @@ class Glossary extends Component {
         <Helmet title='Glossary' />
         <ScrollView>
           <ViewHeader />
-          {displayPaging &&
-            <View theme={{ base: {p: 'Pt(r6)--sm Pt(r4)', fld: 'Fld(rr)'} }}>
-              <Row>
-                <ButtonLink disabled={currentPage <= 1}
-                  onClick={() => { gotoFirstPage(currentPage, totalPage) }}>
-                  <Icon name='previous' size='1' />
-                </ButtonLink>
-                <ButtonLink disabled={currentPage <= 1}
-                  onClick={() => { gotoPreviousPage(currentPage, totalPage) }}>
-                  <Icon name='chevron-left' size='1' />
-                </ButtonLink>
-                <span className='C(muted) Mx(re)'>
-                  {currentPage} of {totalPage}
-                </span>
-                <ButtonLink disabled={currentPage === totalPage}
-                  onClick={() => { gotoNextPage(currentPage, totalPage) }}>
-                  <Icon name='chevron-right' size='1' />
-                </ButtonLink>
-                <ButtonLink disabled={currentPage === totalPage}
-                  onClick={() => { gotoLastPage(currentPage, totalPage) }}>
-                  <Icon name='next' size='1' />
-                </ButtonLink>
-                <span className='Mx(rq) C(muted)'>
-                  <Row>
-                    <Icon name='glossary' size='1' /> {termCount}
-                  </Row>
-                </span>
-              </Row>
-            </View>
-          }
-          <View theme={{ base: {p: listPadding} }}>
+          <View theme={{ base: {p: 'Pt(r6)--sm Pt(r4)', fld: 'Fld(rr)'} }}>
+            <Row>
+              {termCount > 0 &&
+                <Row>
+                  <span className='Hidden--lesm Pend(rq)'>Show</span>
+                  <Select options={pageSizeOption}
+                    placeholder='Terms per page'
+                    value={intPageSize}
+                    name='glossary-page'
+                    className='Mend(re) W(ms8)'
+                    searchable={false}
+                    clearable={false}
+                    onChange={handlePageSizeChange} />
+                </Row>
+              }
+              {displayPaging &&
+                <div className='D(f)'>
+                  <ButtonLink disabled={currentPage <= 1}
+                    title='First page'
+                    onClick={() => { gotoFirstPage(currentPage, totalPage) }}>
+                    <Icon name='previous' size='1' />
+                  </ButtonLink>
+                  <ButtonLink disabled={currentPage <= 1}
+                    title='Previous page'
+                    onClick={
+                    () => { gotoPreviousPage(currentPage, totalPage) }}>
+                    <Icon name='chevron-left' size='1' />
+                  </ButtonLink>
+                  <span className='C(muted) Mx(re)'>
+                    {currentPage} of {totalPage}
+                  </span>
+                  <ButtonLink disabled={currentPage === totalPage}
+                    title='Next page'
+                    onClick={() => { gotoNextPage(currentPage, totalPage) }}>
+                    <Icon name='chevron-right' size='1' />
+                  </ButtonLink>
+                  <ButtonLink disabled={currentPage === totalPage}
+                    title='Last page'
+                    onClick={() => { gotoLastPage(currentPage, totalPage) }}>
+                    <Icon name='next' size='1' />
+                  </ButtonLink>
+                  <span className='Mx(rq) C(muted)'
+                    title='Total glossary terms'>
+                    <Row>
+                      <Icon name='glossary' size='1' /> {termCount}
+                    </Row>
+                  </span>
+                </div>
+                }
+            </Row>
+          </View>
+
+          <View theme={{ base: {p: 'Pb(r2)'} }}>
             {termsLoading && !termCount
               ? (<View theme={loadingContainerTheme}>
                 <LoaderText theme={{ base: { fz: 'Fz(ms1)' } }}
@@ -206,11 +234,13 @@ Glossary.propTypes = {
   handleDeleteTerm: PropTypes.func,
   handleResetTerm: PropTypes.func,
   handleUpdateTerm: PropTypes.func,
-  page: PropTypes.number,
+  handlePageSizeChange: PropTypes.func,
+  page: PropTypes.string,
   gotoPreviousPage: PropTypes.func,
   gotoFirstPage: PropTypes.func,
   gotoLastPage: PropTypes.func,
-  gotoNextPage: PropTypes.func
+  gotoNextPage: PropTypes.func,
+  pageSize: PropTypes.string
 }
 
 const mapStateToProps = (state) => {
@@ -243,7 +273,8 @@ const mapStateToProps = (state) => {
     saving,
     deleting,
     notification,
-    page: parseInt(state.routing.location.query.page)
+    page: query.page,
+    pageSize: query.size
   }
 }
 
@@ -260,6 +291,8 @@ const mapDispatchToProps = (dispatch) => {
     handleResetTerm: (termId) => dispatch(glossaryResetTerm(termId)),
     handleUpdateTerm: (term, needRefresh) =>
       dispatch(glossaryUpdateTerm(term, needRefresh)),
+    handlePageSizeChange: (size) =>
+      dispatch(glossaryUpdatePageSize(size.value)),
     gotoFirstPage: (currentPage, totalPage) =>
       dispatch(glossaryGoFirstPage(currentPage, totalPage)),
     gotoPreviousPage: (currentPage, totalPage) =>

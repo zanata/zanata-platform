@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions'
-import { union, isEmpty, cloneDeep, forEach, size } from 'lodash'
+import { isEmpty, cloneDeep, forEach, size } from 'lodash'
 import {
   GLOSSARY_UPDATE_LOCALE,
   GLOSSARY_UPDATE_FILTER,
@@ -495,9 +495,6 @@ const glossary = handleActions({
     }
   },
   [GLOSSARY_TERMS_SUCCESS]: (state, action) => {
-    const page = action.meta.page
-    const pagesLoaded = union(state.pagesLoaded, [page])
-
     let terms = {}
     forEach(action.payload.entities.glossaryTerms, (entry) => {
       terms[entry.id] = GlossaryHelper.generateEntry(entry, state.locale)
@@ -509,9 +506,7 @@ const glossary = handleActions({
       termsLastUpdated: action.meta.receivedAt,
       terms,
       termIds: action.payload.result.results,
-      termCount: action.payload.result.totalCount,
-      page,
-      pagesLoaded
+      termCount: action.payload.result.totalCount
     }
   },
   [GLOSSARY_TERMS_FAILURE]: (state, action) => ({
@@ -573,9 +568,7 @@ const glossary = handleActions({
     sort: {
       src_content: true
     },
-    index: 0,
     selectedTerm: {},
-    pagesLoaded: [],
     permission: {
       canAddNewEntry: false,
       canUpdateEntry: false,

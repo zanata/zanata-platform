@@ -1,0 +1,10 @@
+@import 'suitcss-utils-layout';
+
+@media (--sm-viewport) {
+
+  .u-sm-floatNone {
+    clear: both;
+    float: none !important;
+  }
+
+}

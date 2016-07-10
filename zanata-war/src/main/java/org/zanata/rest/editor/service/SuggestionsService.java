@@ -51,7 +51,7 @@ import static org.zanata.webtrans.shared.rpc.HasSearchType.*;
 @RequestScoped
 @Named("editor.suggestionsService")
 @Path(SuggestionsResource.SERVICE_PATH)
-@Transactional
+@Transactional(readOnly = true)
 public class SuggestionsService implements SuggestionsResource {
 
     public static final String SEARCH_TYPES = Joiner.on(", ").join(SearchType.values());

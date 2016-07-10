@@ -1,0 +1,75 @@
+/** @define Switch; use strict */
+
+/*
+
+<span class="Switch">
+  <input type="checkbox" class="Switch-checkbox" />
+  <label class="Switch-label">
+    <span class="Switch-labelText">Switch</span>
+  </label>
+</span>
+
+*/
+
+:root {
+  --Switch-color: #20718A;
+  --Switch-rhythm: 1.5rem;
+}
+
+.Switch {
+  padding-left: calc(var(--Switch-rhythm) * 1.5);
+  position: relative;
+}
+
+.Switch-checkbox {
+  position: absolute;
+  margin-left: -9999px;
+  visibility: hidden;
+}
+
+.Switch-label {
+  cursor: pointer;
+}
+
+.Switch-label:before,
+.Switch-label:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: calc(var(--Switch-rhythm) * .75);
+  transition: all .2s ease-out;
+}
+
+.Switch-label:before {
+  width: calc(var(--Switch-rhythm) * 1.25);
+  height: calc(var(--Switch-rhythm) * .75);
+  background-color: color(var(--Switch-color) tint(80));
+}
+
+.Switch-label:after {
+  width: calc(var(--Switch-rhythm) * .75);
+  height: calc(var(--Switch-rhythm) * .75);
+  background-color: color(var(--Switch-color) tint(40));
+  border: 1px solid transparent;
+  transform: translateY(-50%) scale(.8, .8);
+}
+
+.Switch-labelText {
+  color: color(var(--Switch-color) tint(40));
+  font-size: calc(14/16)rem;
+}
+
+.Switch-checkbox:checked ~ .Switch-label:before {
+  background-color: var(--Switch-color);
+}
+
+.Switch-checkbox:checked ~ .Switch-label:after {
+  background-color: #fff;
+  transform: translateY(-50%) translateX(66%) scale(.8, .8);
+}
+
+.Switch-checkbox:checked ~ .Switch-label .Switch-labelText {
+  color: var(--Switch-color);
+}

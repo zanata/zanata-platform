@@ -1,0 +1,72 @@
+:root {
+  --base-form-color-placeholder: #999;
+}
+
+::-webkit-input-placeholder {
+  /* WebKit browsers */
+  color: var(--base-form-color-placeholder);
+}
+:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: var(--base-form-color-placeholder);
+}
+::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: var(--base-form-color-placeholder);
+}
+:-ms-input-placeholder {
+  /* Internet Explorer 10+ */
+  color: var(--base-form-color-placeholder);
+}
+
+button,
+html input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+  -webkit-appearance: none;
+}
+
+/* Reset buttons so they can be used like links */
+button {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  text-align: inherit;
+}
+
+/**
+ * Work around a Firefox/IE bug where the transparent `button` background
+ * results in a loss of the default `button` focus styles.
+ */
+
+button:focus {
+  outline: 1px dotted;
+  outline: 5px auto -webkit-focus-ring-color;
+}
+
+button:hover,
+button:active {
+  outline: none;
+}
+
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="date"],
+input[type="datetime"],
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="time"],
+input[type="url"],
+textarea {
+  -webkit-appearance: none;
+  outline: none;
+  box-sizing: border-box;
+}
