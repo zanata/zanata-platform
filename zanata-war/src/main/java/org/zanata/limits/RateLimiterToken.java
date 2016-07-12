@@ -41,7 +41,7 @@ public class RateLimiterToken {
     private final TYPE type;
 
     public static enum TYPE {
-        USERNAME, API_KEY, IP_ADDRESS;
+        USERNAME, API_KEY, IP_ADDRESS, TOKEN;
     }
 
     public RateLimiterToken(TYPE type, String value) {
@@ -61,6 +61,14 @@ public class RateLimiterToken {
      */
     public static RateLimiterToken fromApiKey(String apiKey) {
         return new RateLimiterToken(TYPE.API_KEY, apiKey);
+    }
+
+    /**
+     * Generate key from either api key, OAuth authorizationCode or accessToken
+     * @param token the actual token value
+     */
+    public static RateLimiterToken fromToken(String token) {
+        return new RateLimiterToken(TYPE.TOKEN, token);
     }
 
     /**

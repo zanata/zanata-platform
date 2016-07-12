@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
-  Copyright 2015, Red Hat, Inc. and individual contributors
-  as indicated by the @author tags. See the copyright.txt file in the
-  distribution for a full listing of individual contributors.
-
-  This is free software; you can redistribute it and/or modify it
-  under the terms of the GNU Lesser General Public License as
-  published by the Free Software Foundation; either version 2.1 of
-  the License, or (at your option) any later version.
-
-  This software is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-  Lesser General Public License for more details.
-
-  You should have received a copy of the GNU Lesser General Public
-  License along with this software; if not, write to the Free
-  Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-  02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  ~ Copyright 2016, Red Hat, Inc. and individual contributors as indicated by the
+  ~ @author tags. See the copyright.txt file in the distribution for a full
+  ~ listing of individual contributors.
+  ~
+  ~ This is free software; you can redistribute it and/or modify it under the
+  ~ terms of the GNU Lesser General Public License as published by the Free
+  ~ Software Foundation; either version 2.1 of the License, or (at your option)
+  ~ any later version.
+  ~
+  ~ This software is distributed in the hope that it will be useful, but WITHOUT
+  ~ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+  ~ FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+  ~ details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with this software; if not, write to the Free Software Foundation,
+  ~ Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+  ~ site: http://www.fsf.org.
   -->
 
 <databaseChangeLog
@@ -39,6 +39,54 @@
     <sql>
       UPDATE WebHook set webhookType='DocumentMilestoneEvent'
     </sql>
+  </changeSet>
+
+  <changeSet id="1" author="pahuang@redhat.com">
+    <comment>Add table AllowedApp.</comment>
+    <createTable tableName="AllowedApp">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="accountId" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="clientId" type="varchar(32)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="refreshToken" type="varchar(128)" />
+      <column name="creationDate" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="lastChanged" type="datetime">
+        <constraints nullable="false"/>
+      </column>
+      <column name="versionNum" type="integer">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <addForeignKeyConstraint
+      baseTableName = "AllowedApp"
+      baseColumnNames = "accountId"
+      constraintName = "FK_ALLOWED_APP_HACCOUNT"
+      referencedTableName = "HAccount"
+      referencedColumnNames = "id"/>
+
+    <addUniqueConstraint tableName="AllowedApp"
+      columnNames="accountId,clientId" constraintName="UKAllowedApp_accountId_clientId" />
+
+    <addUniqueConstraint tableName="AllowedApp"
+      columnNames="refreshToken" constraintName="UKAllowedApp_refreshToken" />
+
+    <createIndex tableName="AllowedApp" indexName="Idx_account_clientId" unique="true">
+      <column name="accountId" type="bigint"/>
+      <column name="clientId" type="varchar(32)"/>
+    </createIndex>
+
+    <createIndex tableName="AllowedApp" indexName="Idx_clientId_refreshToken">
+      <column name="clientId" type="varchar(32)"/>
+      <column name="refreshToken" type="varchar(128)"/>
+    </createIndex>
   </changeSet>
 
 </databaseChangeLog>

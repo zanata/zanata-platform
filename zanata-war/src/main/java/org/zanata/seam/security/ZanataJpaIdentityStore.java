@@ -86,7 +86,7 @@ public class ZanataJpaIdentityStore implements Serializable {
     @Inject
     private EntityManager entityManager;
 
-    public boolean apiKeyAuthenticate(String username, String apiKey) {
+    private boolean apiKeyAuthenticate(String username, String apiKey) {
         HAccount user = lookupUser(username);
         if (user == null || !user.isEnabled()) {
             return false;
@@ -127,12 +127,19 @@ public class ZanataJpaIdentityStore implements Serializable {
         ZanataIdentity identity = ZanataIdentity.instance();
         if (identity.isApiRequest()) {
             return apiKeyAuthenticate(username, password);
-        } else {
-            HAccount user = lookupUser(username);
-            if (user == null || !user.isEnabled()) {
-                return false;
-            }
+        }
 
+        HAccount user = lookupUser(username);
+        if (user == null || !user.isEnabled()) {
+            return false;
+        }
+
+
+        if (identity.isRequestUsingOAuth()) {
+            // we've already validated accessToken in org.zanata.rest.ZanataRestSecurityInterceptor
+            getPostAuthenticateEvent().fire(new PostAuthenticateEvent(user));
+            return true;
+        } else {
             String passwordHash =
                     generatePasswordHash(password, user.getUsername());
 

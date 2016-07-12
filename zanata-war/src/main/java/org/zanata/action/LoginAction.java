@@ -90,16 +90,13 @@ public class LoginAction implements Serializable {
     @Inject
     private UserRedirectBean userRedirect;
 
+    @Inject
+    private AuthenticationType authenticationType;
+
     public String login() {
         credentials.setUsername(username);
         credentials.setPassword(password);
-        if (applicationConfiguration.isInternalAuth()) {
-            credentials.setAuthType(AuthenticationType.INTERNAL);
-        } else if (applicationConfiguration.isJaasAuth()) {
-            credentials.setAuthType(AuthenticationType.JAAS);
-        } else if (applicationConfiguration.isKerberosAuth()) {
-            credentials.setAuthType(AuthenticationType.KERBEROS);
-        }
+        credentials.setAuthType(authenticationType);
 
         String loginResult;
 

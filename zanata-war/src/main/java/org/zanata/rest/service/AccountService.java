@@ -21,8 +21,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
@@ -76,7 +74,7 @@ public class AccountService implements AccountResource {
                     .entity("Username not found").build();
         }
         Account result = new Account();
-        transfer(hAccount, result);
+        getAccountDetails(hAccount, result);
 
         log.debug("HTTP GET result :\n" + result);
         return Response.ok(result).build();
@@ -106,7 +104,7 @@ public class AccountService implements AccountResource {
             response = Response.ok();
         }
 
-        transfer(account, hAccount);
+        updateAccount(account, hAccount);
         // entity permission check
         identity.checkPermission(hAccount, operation);
         session.save(hAccount);
@@ -115,7 +113,7 @@ public class AccountService implements AccountResource {
         return response.build();
     }
 
-    private void transfer(Account from, HAccount to) {
+    private void updateAccount(Account from, HAccount to) {
         to.setApiKey(from.getApiKey());
         to.setEnabled(from.isEnabled());
         to.setPasswordHash(from.getPasswordHash());
@@ -151,7 +149,7 @@ public class AccountService implements AccountResource {
         to.setUsername(from.getUsername());
     }
 
-    private void transfer(HAccount from, Account to) {
+    public static void getAccountDetails(HAccount from, Account to) {
         to.setApiKey(from.getApiKey());
         to.setEnabled(from.isEnabled());
         to.setPasswordHash(from.getPasswordHash());

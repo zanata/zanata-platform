@@ -167,7 +167,7 @@ public class ProjectService implements ProjectResource {
             }
         }
 
-        transfer(project, hProject);
+        updateProject(project, hProject);
 
         if (identity != null && hProject.getMaintainers().isEmpty()) {
             HAccount hAccount =
@@ -185,7 +185,7 @@ public class ProjectService implements ProjectResource {
 
     }
 
-    private static void transfer(Project from, HProject to) {
+    private static void updateProject(Project from, HProject to) {
         to.setName(from.getName());
         to.setDescription(from.getDescription());
         if (from.getDefaultType() != null) {
@@ -212,7 +212,7 @@ public class ProjectService implements ProjectResource {
         }
     }
 
-    private static void transfer(HProject from, Project to) {
+    private static void getProjectDetails(HProject from, Project to) {
         to.setId(from.getSlug());
         to.setName(from.getName());
         to.setDescription(from.getDescription());
@@ -226,10 +226,10 @@ public class ProjectService implements ProjectResource {
 
     public static Project toResource(HProject hProject, MediaType mediaType) {
         Project project = new Project();
-        transfer(hProject, project);
+        getProjectDetails(hProject, project);
         for (HProjectIteration pIt : hProject.getProjectIterations()) {
             ProjectIteration iteration = new ProjectIteration();
-            ProjectVersionService.transfer(pIt, iteration);
+            ProjectVersionService.getProjectVersionDetails(pIt, iteration);
 
             iteration
                     .getLinks(true)

@@ -42,8 +42,14 @@ public final class HttpUtil {
     private final static List<String> HTTP_REQUEST_READ_METHODS = Lists.newArrayList(
         HttpMethod.GET, HttpMethod.HEAD, HttpMethod.OPTIONS);
 
-    public static final String X_AUTH_TOKEN_HEADER = "X-Auth-Token";
-    public static final String X_AUTH_USER_HEADER = "X-Auth-User";
+    /**
+     * header name for Zanata API key
+     */
+    public static final String API_KEY_HEADER_NAME = "X-Auth-Token";
+    /**
+     * header name for Zanata username used in API key authentication
+     */
+    public static final String USERNAME_HEADER_NAME = "X-Auth-User";
 
     /**
      * This should be set by admin.
@@ -58,7 +64,7 @@ public final class HttpUtil {
     }
 
     public static String getApiKey(MultivaluedMap<String, String> headers) {
-        return headers.getFirst(X_AUTH_TOKEN_HEADER);
+        return headers.getFirst(API_KEY_HEADER_NAME);
     }
 
     @VisibleForTesting
@@ -71,7 +77,7 @@ public final class HttpUtil {
     }
 
     public static String getUsername(MultivaluedMap<String, String> headers) {
-        return headers.getFirst(X_AUTH_USER_HEADER);
+        return headers.getFirst(USERNAME_HEADER_NAME);
     }
 
     /**

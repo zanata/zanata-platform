@@ -139,6 +139,18 @@ public class FacesNavigationUtil {
         context.responseComplete();
     }
 
+    public static void redirectToExternal(String url) throws IOException {
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = context.getExternalContext();
+        try {
+            externalContext.redirect(externalContext.encodeActionURL(url));
+        } catch (IOException | IllegalStateException e) {
+            log.warn("error redirecting to url:" + url, e);
+            throw e;
+        }
+        context.responseComplete();
+    }
+
     public static void redirect(String viewId, Map<String, Object> parameters)
             throws IOException {
         if (viewId == null) {

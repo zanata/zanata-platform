@@ -1,0 +1,50 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich"
+  template="../WEB-INF/template/template.xhtml">
+
+  <f:metadata>
+    <f:viewParam name="#{authorizeAction.redirectUriParam}" value="#{authorizeAction.redirectUri}" />
+    <f:viewParam name="#{authorizeAction.clientIdParam}" value="#{authorizeAction.clientId}" />
+    <f:event type="preRenderView" listener="#{authorizeAction.checkAuthorization}"/>
+  </f:metadata>
+
+  <ui:define name="page_title">#{msgs['jsf.Authorize']}</ui:define>
+  <ui:define name="center_content">
+    <rich:panel id="loggedIn"
+      rendered="#{identity.loggedIn and authorizeAction.serverEnabledOAuth and authorizeAction.validOAuthRequest}">
+      <h:form id="loginForm">
+        <div class="l--pad-all-1">
+          <h:outputText styleClass="txt--hero"
+            value="#{msgs.format('jsf.allowApp', authorizeAction.clientId)}"/>
+        </div>
+        <h:commandButton styleClass="button button--primary l--push-left-half txt--hero"
+          action="#{authorizeAction.authorize}" value="Allow" >
+          <f:param name="#{authorizeAction.redirectUriParam}" value="#{authorizeAction.redirectUri}" />
+          <f:param name="#{authorizeAction.clientIdParam}" value="#{authorizeAction.clientId}" />
+        </h:commandButton>
+        <h:commandButton styleClass="button Button--danger l--push-left-half txt--hero"
+          action="#{authorizeAction.cancel}" value="Cancel" >
+          <f:param name="#{authorizeAction.redirectUriParam}" value="#{authorizeAction.redirectUri}" />
+          <f:param name="#{authorizeAction.clientIdParam}" value="#{authorizeAction.clientId}" />
+        </h:commandButton>
+      </h:form>
+    </rich:panel>
+    <rich:panel styleClass="message--danger"
+      rendered="#{not authorizeAction.validOAuthRequest}">
+      <h:outputText styleClass="txt--hero" value="#{msgs.get('jsf.oauth.invalidRequest')}" />
+    </rich:panel>
+    <h:panelGroup styleClass="message--danger"
+      rendered="#{not authorizeAction.serverEnabledOAuth}">
+      <h:outputText styleClass="txt--hero" value="#{msgs.get('jsf.oauth.disabled')}" />
+    </h:panelGroup>
+  </ui:define>
+
+  <ui:define name="right_content">
+  </ui:define>
+
+</ui:composition>

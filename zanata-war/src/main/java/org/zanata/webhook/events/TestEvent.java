@@ -3,11 +3,7 @@ package org.zanata.webhook.events;
 import java.util.Date;
 
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
-import org.json.Test;
 import org.zanata.events.WebhookEventType;
-import org.zanata.model.type.WebhookType;
-
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;

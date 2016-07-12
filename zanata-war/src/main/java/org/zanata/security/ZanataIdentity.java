@@ -135,6 +135,7 @@ public class ZanataIdentity implements Identity, Serializable {
     private @Nullable String cachedPersonEmail;
     private @Nullable String cachedPersonName;
     private @Nullable String cachedUsername;
+    private boolean requestUsingOAuth;
 
     public static boolean isSecurityEnabled() {
         return securityEnabled;
@@ -516,7 +517,7 @@ public class ZanataIdentity implements Identity, Serializable {
     }
 
     public LoginContext getLoginContext() throws LoginException {
-        if (isApiRequest()) {
+        if (isApiRequest() || isRequestUsingOAuth()) {
             return new LoginContext(JAAS_DEFAULT, getSubject(),
                     getCredentials().createCallbackHandler(),
                     ZanataConfiguration.INSTANCE);
@@ -708,6 +709,16 @@ public class ZanataIdentity implements Identity, Serializable {
     @VisibleForTesting
     protected void setPermissionResolver(CustomPermissionResolver resolver) {
         this.permissionResolver = resolver;
+    }
+
+    public boolean isRequestUsingOAuth() {
+        return requestUsingOAuth;
+    }
+
+    public void setRequestUsingOAuth(boolean requestUsingOAuth) {
+        this.requestUsingOAuth = requestUsingOAuth;
+        // any not null value in password field will do
+        getCredentials().setPassword("");
     }
 
     static class ZanataConfiguration extends

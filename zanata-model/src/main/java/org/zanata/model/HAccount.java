@@ -46,7 +46,6 @@ import lombok.ToString;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
@@ -80,6 +79,8 @@ public class HAccount extends ModelEntityBase implements Serializable,
     private Set<HCredentials> credentials;
     private HAccount mergedInto;
     private Map<String, HAccountOption> editorOptions;
+
+    private Set<AllowedApp> allowedApps;
 
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY,
@@ -136,7 +137,7 @@ public class HAccount extends ModelEntityBase implements Serializable,
             name = "memberOf"))
     public Set<HAccountRole> getRoles() {
         if (roles == null) {
-            roles = new HashSet<HAccountRole>();
+            roles = new HashSet<>();
             setRoles(roles);
         }
         return roles;
@@ -145,7 +146,7 @@ public class HAccount extends ModelEntityBase implements Serializable,
     @OneToMany(mappedBy = "account", cascade = { CascadeType.ALL }, orphanRemoval = true)
     public Set<HCredentials> getCredentials() {
         if (credentials == null) {
-            credentials = new HashSet<HCredentials>();
+            credentials = new HashSet<>();
         }
         return credentials;
     }
@@ -160,6 +161,18 @@ public class HAccount extends ModelEntityBase implements Serializable,
     @MapKey(name = "name")
     public Map<String, HAccountOption> getEditorOptions() {
         return editorOptions;
+    }
+
+    /**
+     *
+     * @return all authorized third party apps that is allowed by this user
+     */
+    @OneToMany(mappedBy = "account", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    public Set<AllowedApp> getAllowedApps() {
+        if (allowedApps == null) {
+            allowedApps = new HashSet<>();
+        }
+        return allowedApps;
     }
 
     @Override
