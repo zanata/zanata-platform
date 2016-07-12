@@ -12,7 +12,7 @@ import java.util.TreeSet;
 
 import javax.ws.rs.core.HttpHeaders;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.client.commands.PushPullCommand;

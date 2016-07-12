@@ -34,7 +34,7 @@ import javax.ws.rs.core.Response;
 import com.google.common.base.Strings;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Patrick Huang <a

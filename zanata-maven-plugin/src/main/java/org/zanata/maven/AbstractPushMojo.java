@@ -23,7 +23,7 @@ package org.zanata.maven;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.commands.PushPullType;
 import org.zanata.client.commands.push.PushCommand;

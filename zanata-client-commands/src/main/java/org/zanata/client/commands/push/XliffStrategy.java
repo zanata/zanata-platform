@@ -9,7 +9,7 @@ import java.util.Set;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.zanata.adapter.xliff.XliffReader;
 import org.zanata.client.commands.TransFileResolver;
 import org.zanata.client.commands.DocNameWithoutExt;

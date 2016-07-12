@@ -24,7 +24,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.collections.keyvalue.MultiKey;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Provides a set of Etag cache entries and convenience methods for finding
@@ -34,8 +35,8 @@ import org.apache.commons.collections.keyvalue.MultiKey;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class ETagCache {
-    private Map<MultiKey, ETagCacheEntry> fileNameIndex =
-            new LinkedHashMap<MultiKey, ETagCacheEntry>();
+    private Map<Pair<String, String>, ETagCacheEntry> fileNameIndex =
+            new LinkedHashMap<>();
 
     public ETagCache() {
     }
@@ -52,12 +53,12 @@ public class ETagCache {
 
     public void addEntry(ETagCacheEntry entry) {
         fileNameIndex.put(
-                new MultiKey(entry.getLocalFileName(), entry.getLanguage()),
+                Pair.of(entry.getLocalFileName(), entry.getLanguage()),
                 entry);
     }
 
     public ETagCacheEntry findEntry(String localFileName, String language) {
-        return fileNameIndex.get(new MultiKey(localFileName, language));
+        return fileNameIndex.get(Pair.of(localFileName, language));
     }
 
     public void clear() {
