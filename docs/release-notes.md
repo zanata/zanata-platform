@@ -1,7 +1,4 @@
 ## 3.9.1
-##### Changes
- * [ZNTA-1023](https://zanata.atlassian.net/browse/ZNTA-1023) - Push all file-types by default
-
 ##### Bug Fixes
  * [ZNTA-1178](https://zanata.atlassian.net/browse/ZNTA-1178) - File type project can not be pulled using zanata cli
 
