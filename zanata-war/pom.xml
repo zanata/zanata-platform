@@ -1759,6 +1759,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.ocpsoft.logging</groupId>
+      <artifactId>logging-adapter-jboss</artifactId>
+      <version>1.0.3.Final</version>
+    </dependency>
+
+    <dependency>
       <groupId>com.ibm.icu</groupId>
       <artifactId>icu4j</artifactId>
     </dependency>
