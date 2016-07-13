@@ -179,7 +179,6 @@
     <mdep.analyze.skip>true</mdep.analyze.skip>
 
     <hamcrest.version>1.3</hamcrest.version>
-    <lombok.version>1.12.6</lombok.version>
     <findbugs.maven.version>3.0.1</findbugs.maven.version>
     <groovy.version>1.8.9</groovy.version>
     <guava.version>13.0.1</guava.version>
@@ -187,7 +186,6 @@
     <jaxb.api.version>2.2.12</jaxb.api.version>
     <maven.javadoc.version>2.9.1</maven.javadoc.version>
     <maven.jxr.version>2.5</maven.jxr.version>
-    <powermock.version>1.6.2</powermock.version>
     <resteasy.version>3.0.13.Final</resteasy.version>
     <surefire.version>2.18.1</surefire.version>
     <maven.source.version>2.2.1</maven.source.version>
@@ -200,13 +198,9 @@
     <checkstyle.suppressionsFileExpression />
     <checkstyle.version>2.13</checkstyle.version>
     <findbugs.excludeFilterFile>https://raw.github.com/zanata/zanata-parent/master/findbugs-filter.xml</findbugs.excludeFilterFile>
-
-    <enunciate.version>1.27</enunciate.version>
-
     <reports-plugin.dependencyDetailsEnabled>false</reports-plugin.dependencyDetailsEnabled>
     <reports-plugin.dependencyLocationsEnabled>false</reports-plugin.dependencyLocationsEnabled>
     <slf4j.version>1.7.12</slf4j.version>
-    <victims.updates>daily</victims.updates>
   </properties>
 
   <build>
@@ -744,11 +738,6 @@
             </lifecycleMappingMetadata>
           </configuration>
         </plugin>
-        <plugin>
-          <groupId>org.codehaus.enunciate</groupId>
-          <artifactId>maven-enunciate-plugin</artifactId>
-          <version>${enunciate.version}</version>
-        </plugin>
         <!-- Mandatory plugins for using Spock -->
         <plugin>
           <groupId>org.codehaus.gmaven</groupId>
@@ -909,75 +898,6 @@
     </profile>
 
     <profile>
-      <id>victims</id>
-      <activation>
-        <property>
-          <name>victims</name>
-        </property>
-      </activation>
-      <properties>
-        <enforcer.skip>false</enforcer.skip>
-      </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-enforcer-plugin</artifactId>
-            <configuration>
-              <rules>
-                <rule implementation="com.redhat.victims.VictimsRule">
-                  <!--
-                    Check the project's dependencies against the database using
-                    name and version. The default mode for this is 'warning'.
-
-                    Valid options are:
-
-                    disabled: Rule is still run but only INFO level messages and no errors.
-                    warning : Rule will spit out a warning message but doesn't result in a failure.
-                    fatal   : Rule will spit out an error message and fail the build.
-                  -->
-                  <metadata>warning</metadata>
-
-                  <!--
-                    Check the project's dependencies against the database using
-                    the SHA-512 checksum of the artifact. The default is fatal.
-
-                    Valid options are:
-
-                    disabled: Rule is still run but only INFO level messages and no errors.
-                    warning : Rule will spit out a warning message but doesn't result in a failure.
-                    fatal   : Rule will spit out an error message and fail the build.
-                  -->
-                  <!-- TODO change to fatal -->
-                  <fingerprint>warning</fingerprint>
-
-                  <!--
-                    Disables the synchronization mechansim. By default the rule will
-                    attempt to update the database for each build.
-
-                    Valid options are:
-
-                    auto  : Automatically update the database entries on each build.
-                    daily : Update the database entries once per day.
-                    off   : Disable the synchronization mechanism.
-                  -->
-                  <updates>${victims.updates}</updates>
-                </rule>
-              </rules>
-            </configuration>
-            <dependencies>
-              <dependency>
-                <groupId>com.redhat.victims</groupId>
-                <artifactId>enforce-victims-rule</artifactId>
-                <version>1.3.4</version>
-                <type>jar</type>
-              </dependency>
-            </dependencies>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
       <!-- This profile runs a single integration test with
         -Dit.test=<integration-test-name>, skipping unit tests. -->
       <id>it.test</id>
@@ -1092,36 +1012,6 @@
         <groupId>org.codehaus.groovy</groupId>
         <artifactId>groovy-all</artifactId>
         <version>${groovy.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.powermock</groupId>
-        <artifactId>powermock-api-mockito</artifactId>
-        <version>${powermock.version}</version>
-        <scope>test</scope>
-        <exclusions>
-          <exclusion>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.powermock</groupId>
-        <artifactId>powermock-core</artifactId>
-        <version>${powermock.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.powermock</groupId>
-        <artifactId>powermock-module-junit4</artifactId>
-        <version>${powermock.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <version>${lombok.version}</version>
-        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
@@ -1437,53 +1327,6 @@
           <exclusion>
             <groupId>xerces</groupId>
             <artifactId>xmlParserAPIs</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.enunciate</groupId>
-        <artifactId>enunciate-core</artifactId>
-        <version>${enunciate.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>jsr311-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-server</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.enunciate</groupId>
-        <artifactId>enunciate-core-annotations</artifactId>
-        <version>${enunciate.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.enunciate</groupId>
-        <artifactId>enunciate-jersey-rt</artifactId>
-        <version>${enunciate.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>jsr311-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-server</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-core</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
