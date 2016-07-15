@@ -45,7 +45,7 @@ mysql --protocol=tcp -h localhost --port=<PORT> -uzanata -pzanatapw zanata
 Alternatively, a docker container can be used to connect to the database using the mysql client like this:
 
 ```sh
-$ docker exec -i zanatadb mysql -uzanata -pzanatapw zanata
+$ docker exec -it zanatadb mysql -uzanata -pzanatapw zanata
 ```
 
 The username and password above are the default given by the `rundb.sh` script. If you wish to change them, edit the script file with your preferred credentials.
