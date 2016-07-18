@@ -213,8 +213,8 @@ public class DocumentServiceImpl implements DocumentService {
                         extensions, hLocale, nextDocRev);
         documentDAO.flush();
 
-        long actorId = authenticatedAccount.getPerson().getId();
         if (changed) {
+            long actorId = authenticatedAccount.getPerson().getId();
             documentUploadedEvent.fire(new DocumentUploadedEvent(
                     actorId, document.getId(), true, hLocale.getLocaleId()));
             clearStatsCacheForUpdatedDocument(document);

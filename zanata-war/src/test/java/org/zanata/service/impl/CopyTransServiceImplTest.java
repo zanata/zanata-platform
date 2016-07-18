@@ -20,6 +20,7 @@
  */
 package org.zanata.service.impl;
 
+import com.google.common.cache.CacheLoader;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -42,20 +43,27 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.events.DocumentLocaleKey;
 import org.zanata.jpa.FullText;
 import org.zanata.model.HAccount;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.annotations.Authenticated;
+import org.zanata.service.VersionLocaleKey;
 import org.zanata.test.CdiUnitRunner;
+import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.IServiceLocator;
 import org.zanata.util.Zanata;
+import org.zanata.webtrans.shared.model.DocumentStatus;
+import org.zanata.webtrans.shared.model.ValidationId;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+
+import java.util.Map;
 
 import static org.zanata.common.ContentState.Approved;
 import static org.zanata.common.ContentState.New;
@@ -86,6 +94,19 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
 
     @Produces @Mock IServiceLocator serviceLocator;
     @Produces @Mock @FullText FullTextEntityManager fullTextEntityManager;
+
+    @Produces @Mock
+    private CacheLoader<DocumentLocaleKey, WordStatistic>
+            documentStatisticLoader;
+
+    @Produces @Mock
+    private CacheLoader<DocumentLocaleKey, DocumentStatus> docStatusLoader;
+
+    @Produces @Mock
+    private CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
+
+    @Produces @Mock
+    private CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader;
 
     @Override
     @Produces

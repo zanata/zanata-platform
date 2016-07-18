@@ -41,7 +41,6 @@ import org.hibernate.search.jpa.FullTextQuery;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 import org.zanata.common.EntityStatus;
 import org.zanata.hibernate.search.CaseInsensitiveWhitespaceAnalyzer;
 import org.zanata.hibernate.search.IndexFieldLabels;
@@ -52,7 +51,6 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.ProjectRole;
 
-@Named("projectDAO")
 @RequestScoped
 public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     @Inject @FullText

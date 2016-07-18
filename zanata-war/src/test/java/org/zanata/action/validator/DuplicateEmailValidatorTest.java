@@ -1,37 +1,28 @@
 package org.zanata.action.validator;
 
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import javax.validation.ConstraintValidatorContext;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HPerson;
+import org.zanata.test.CdiUnitRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+@RunWith(CdiUnitRunner.class)
 public class DuplicateEmailValidatorTest {
+
+    @Inject
     private DuplicateEmailValidator validator;
-    @Mock
+    @Produces @Mock
     private PersonDAO personDAO;
     private ConstraintValidatorContext context = null;
-
-    @Before
-    public void beforeMethod() {
-        MockitoAnnotations.initMocks(this);
-        validator = new DuplicateEmailValidator() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            protected PersonDAO getPersonDAO() {
-                return personDAO;
-            }
-        };
-        validator.initialize(null);
-    }
 
     @Test
     public void nullOrEmptyStringIsValid() throws Exception {

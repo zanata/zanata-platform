@@ -20,6 +20,7 @@
  */
 package org.zanata.service.impl;
 
+import com.google.common.cache.CacheLoader;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,6 +41,7 @@ import org.junit.runners.Parameterized;
 import org.mockito.Mock;
 import org.zanata.SlowTest;
 import org.zanata.async.handle.CopyTransTaskHandle;
+import org.zanata.cache.CacheWrapper;
 import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.cdi.TestTransaction;
 import org.zanata.common.ContentState;
@@ -50,6 +52,7 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.events.DocumentLocaleKey;
 import org.zanata.jpa.FullText;
 import org.zanata.model.HAccount;
 import org.zanata.model.HCopyTransOptions;
@@ -59,14 +62,18 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.type.TranslationSourceType;
 import org.zanata.security.annotations.Authenticated;
+import org.zanata.service.VersionLocaleKey;
 import org.zanata.test.CdiUnitRunnerWithParameters;
 import org.zanata.test.DBUnitDataSetRunner;
 import org.zanata.test.ParamTestCdiExtension;
 import org.zanata.test.rule.DataSetOperation;
 import org.zanata.test.rule.JpaRule;
 import org.zanata.transaction.TransactionUtil;
+import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.IServiceLocator;
 import org.zanata.util.Zanata;
+import org.zanata.webtrans.shared.model.DocumentStatus;
+import org.zanata.webtrans.shared.model.ValidationId;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -75,6 +82,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.transaction.UserTransaction;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -127,6 +135,18 @@ public class CopyTransServiceImplParameterizedTest {
     IServiceLocator serviceLocator;
     @Produces @Mock @FullText
     FullTextEntityManager fullTextEntityManager;
+
+    @Produces @Mock
+    private CacheLoader<DocumentLocaleKey, WordStatistic> documentStatisticLoader;
+
+    @Produces @Mock
+    private CacheLoader<DocumentLocaleKey, DocumentStatus> docStatusLoader;
+
+    @Produces @Mock
+    private CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
+
+    @Produces @Mock
+    private CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader;
 
     @Parameterized.Parameter(0)
     CopyTransExecution copyTransExecution;

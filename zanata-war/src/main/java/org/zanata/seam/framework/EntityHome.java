@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.model.ModelEntityBase;
 import org.zanata.ui.faces.FacesMessages;
-import org.zanata.util.ServiceLocator;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
@@ -52,6 +51,9 @@ public abstract class EntityHome<E extends ModelEntityBase> implements
 
     @Inject
     private EntityManager entityManager;
+
+    @Inject
+    private FacesMessages facesMessages;
 
     /**
      * Run on {@link Home} instantiation to check the Home component is in a
@@ -245,7 +247,7 @@ public abstract class EntityHome<E extends ModelEntityBase> implements
     }
 
     private FacesMessages getFacesMessages() {
-        return ServiceLocator.instance().getInstance(FacesMessages.class);
+        return facesMessages;
     }
 
     /**

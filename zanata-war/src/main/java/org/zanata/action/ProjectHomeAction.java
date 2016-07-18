@@ -73,7 +73,6 @@ import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.util.DateUtil;
-import org.zanata.util.ServiceLocator;
 import org.zanata.util.StatisticsUtil;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -443,8 +442,6 @@ public class ProjectHomeAction extends AbstractSortAction implements
     public List<HProjectIteration> getProjectVersions() {
         // Local DAO reference as this method is used from a dependent object
         // that may be out of bean scope.
-        ProjectDAO projectDAO =
-                ServiceLocator.instance().getInstance(ProjectDAO.class);
         if (projectVersions == null) {
             projectVersions = projectDAO.getActiveIterations(slug);
             projectVersions.addAll(projectDAO.getReadOnlyIterations(slug));
@@ -457,8 +454,6 @@ public class ProjectHomeAction extends AbstractSortAction implements
 
     public HProject getProject() {
         if (project == null) {
-            ProjectDAO projectDAO =
-                    ServiceLocator.instance().getInstance(ProjectDAO.class);
             project = projectDAO.getBySlug(slug);
         }
         return project;

@@ -75,6 +75,9 @@ public class SecurityFunctions extends PermissionProvider {
     @Authenticated
     private Optional<HAccount> authenticatedAccount;
 
+    @Inject
+    private PersonDAO personDAO;
+
     /* admin can do anything */
     @GrantsPermission
     public boolean isAdmin() {
@@ -247,9 +250,6 @@ public class SecurityFunctions extends PermissionProvider {
     }
 
     public boolean isUserTranslatorOfLanguage(HLocale lang) {
-        PersonDAO personDAO =
-                ServiceLocator.instance().getInstance(PersonDAO.class);
-
         if (isLoggedIn()) {
             return personDAO.isUserInLanguageTeamWithRoles(
                     authenticatedAccount.get().getPerson(), lang, true, null, null);
@@ -297,9 +297,6 @@ public class SecurityFunctions extends PermissionProvider {
     }
 
     public boolean isUserReviewerOfLanguage(HLocale lang) {
-        PersonDAO personDAO =
-                ServiceLocator.instance().getInstance(PersonDAO.class);
-
         if (isLoggedIn()) {
             return personDAO.isUserInLanguageTeamWithRoles(
                     authenticatedAccount.get().getPerson(), lang, null, true, null);
@@ -359,9 +356,6 @@ public class SecurityFunctions extends PermissionProvider {
 
     /* Membership in global language teams. */
     public boolean isLanguageTeamMember(HLocale lang) {
-        PersonDAO personDAO =
-                ServiceLocator.instance().getInstance(PersonDAO.class);
-
         if (isLoggedIn()) {
             return personDAO.isUserInLanguageTeamWithRoles(
                     authenticatedAccount.get().getPerson(), lang, null, null, null);
@@ -407,9 +401,6 @@ public class SecurityFunctions extends PermissionProvider {
     /* 'team coordinator' can manage language teams */
     @GrantsPermission(actions = "manage-language-team")
     public boolean isUserCoordinatorOfLanguage(HLocale lang) {
-        PersonDAO personDAO =
-                ServiceLocator.instance().getInstance(PersonDAO.class);
-
         if (isLoggedIn()) {
             return personDAO.isUserInLanguageTeamWithRoles(
                     authenticatedAccount.get().getPerson(), lang, null, null, true);

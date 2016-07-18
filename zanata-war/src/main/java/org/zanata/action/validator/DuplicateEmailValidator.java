@@ -21,16 +21,18 @@
 package org.zanata.action.validator;
 
 import java.io.Serializable;
-
+import javax.inject.Inject;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-
 import org.zanata.dao.PersonDAO;
-import org.zanata.util.ServiceLocator;
 
 public class DuplicateEmailValidator implements
         ConstraintValidator<NotDuplicateEmail, String>, Serializable {
+
     private static final long serialVersionUID = 1L;
+
+    @Inject
+    private PersonDAO personDAO;
 
     @Override
     public boolean isValid(String string, ConstraintValidatorContext context) {
@@ -40,12 +42,7 @@ public class DuplicateEmailValidator implements
         if (string.length() == 0) {
             return true;
         }
-        PersonDAO personDAO = getPersonDAO();
         return personDAO.findByEmail(string) == null;
-    }
-
-    protected PersonDAO getPersonDAO() {
-        return ServiceLocator.instance().getInstance(PersonDAO.class);
     }
 
     @Override

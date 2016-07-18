@@ -32,7 +32,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import java.util.List;
 
-@Named("localeDAO")
 @RequestScoped
 public class LocaleDAO extends AbstractDAOImpl<HLocale, Long> {
 

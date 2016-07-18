@@ -7,7 +7,9 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import com.google.common.cache.CacheLoader;
 import lombok.extern.slf4j.Slf4j;
 
 import org.dbunit.operation.DatabaseOperation;
@@ -26,6 +28,7 @@ import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
+import org.zanata.events.DocumentLocaleKey;
 import org.zanata.jpa.FullText;
 import org.zanata.model.HLocale;
 import org.zanata.model.TestFixture;
@@ -36,12 +39,15 @@ import org.zanata.service.impl.TextFlowSearchServiceImpl;
 import org.zanata.service.impl.TranslationStateCacheImpl;
 import org.zanata.service.impl.ValidationServiceImpl;
 import org.zanata.test.CdiUnitRunner;
+import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.Zanata;
 import org.zanata.webtrans.client.service.GetTransUnitActionContext;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
+import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
@@ -80,6 +86,15 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
     FullTextSession fullTextSession;
     @Produces @FullText @Mock
     FullTextEntityManager fullTextEntityManager;
+    @Produces @Mock
+    private CacheLoader<DocumentLocaleKey, WordStatistic>
+            documentStatisticLoader;
+
+    @Produces @Mock
+    private CacheLoader<DocumentLocaleKey, DocumentStatus> docStatusLoader;
+
+    @Produces @Mock
+    private CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
 
     @Override
     @Produces

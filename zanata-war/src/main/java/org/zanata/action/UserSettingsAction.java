@@ -66,7 +66,6 @@ import org.zanata.service.LanguageTeamService;
 import org.zanata.service.impl.EmailChangeService;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ComparatorUtil;
-import org.zanata.util.ServiceLocator;
 
 import com.google.common.collect.Lists;
 
@@ -361,8 +360,21 @@ public class UserSettingsAction implements Serializable {
      */
     private static class CredentialsCreationCallback implements
             OpenIdAuthCallback, Serializable {
+
+        @Inject
+        private CredentialsDAO credentialsDAO;
+
+        @Inject
+        private FacesMessages facesMessages;
+
+        @Inject
+        private EntityManager em;
+
         private static final long serialVersionUID = 1L;
         private HCredentials newCredentials;
+
+        public CredentialsCreationCallback() {
+        }
 
         private CredentialsCreationCallback(HCredentials newCredentials) {
             this.newCredentials = newCredentials;
@@ -375,15 +387,6 @@ public class UserSettingsAction implements Serializable {
                 this.newCredentials.setUser(result.getAuthenticatedId());
                 this.newCredentials.setEmail(result.getEmail());
                 // NB: Seam component injection won't work on callbacks
-                EntityManager em =
-                        ServiceLocator.instance().getEntityManager();
-                CredentialsDAO credentialsDAO =
-                        ServiceLocator.instance().getInstance(
-                                CredentialsDAO.class);
-                FacesMessages facesMessages =
-                        ServiceLocator.instance().getInstance(
-                                FacesMessages.class);
-
                 // TODO [CDI] commented out programmatically starting conversation
 //                Conversation.instance().begin(true, false); // (To retain
                 // messages)

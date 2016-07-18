@@ -28,13 +28,11 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 
-@Named("personDAO")
 @RequestScoped
 public class PersonDAO extends AbstractDAOImpl<HPerson, Long> {
 

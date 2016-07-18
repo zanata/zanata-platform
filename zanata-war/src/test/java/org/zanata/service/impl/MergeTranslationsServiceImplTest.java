@@ -20,6 +20,7 @@
  */
 package org.zanata.service.impl;
 
+import com.google.common.cache.CacheLoader;
 import com.google.common.collect.Lists;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
@@ -38,9 +39,11 @@ import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.cdi.TestTransaction;
 import org.zanata.common.ContentState;
+import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
+import org.zanata.events.DocumentLocaleKey;
 import org.zanata.jpa.FullText;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
@@ -50,12 +53,16 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.type.TranslationSourceType;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
+import org.zanata.service.VersionLocaleKey;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.transaction.TransactionUtil;
+import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.IServiceLocator;
 import org.zanata.util.ServiceLocator;
 import org.zanata.util.TranslationUtil;
 import org.zanata.util.Zanata;
+import org.zanata.webtrans.shared.model.DocumentStatus;
+import org.zanata.webtrans.shared.model.ValidationId;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -65,6 +72,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Future;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -109,6 +117,22 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
 
     @Produces @Mock @FullText
     FullTextEntityManager fullTextEntityManager;
+
+    @Inject
+    DocumentDAO documentDAO;
+
+    @Produces @Mock
+    private CacheLoader<DocumentLocaleKey, WordStatistic>
+            documentStatisticLoader;
+
+    @Produces @Mock
+    private CacheLoader<DocumentLocaleKey, DocumentStatus> docStatusLoader;
+
+    @Produces @Mock
+    private CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
+
+    @Produces @Mock
+    private CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader;
 
     private UserTransaction tx;
 

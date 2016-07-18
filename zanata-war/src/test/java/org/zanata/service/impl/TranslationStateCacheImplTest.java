@@ -21,11 +21,9 @@
 package org.zanata.service.impl;
 
 import com.google.common.cache.CacheLoader;
-import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.hibernate.Session;
 import org.infinispan.manager.CacheContainer;
 import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -44,6 +42,7 @@ import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.model.ValidationId;
 
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -57,14 +56,14 @@ import static org.mockito.Mockito.when;
 @SupportDeltaspikeCore
 public class TranslationStateCacheImplTest {
 
+    @Inject
     TranslationStateCacheImpl tsCache;
 
-    @Mock
+    @Produces @Mock
     private CacheLoader<DocumentLocaleKey, WordStatistic> docStatisticLoader;
-    @Mock
+    @Produces @Mock
     private CacheLoader<DocumentLocaleKey, DocumentStatus> docStatusLoader;
-
-    @Mock
+    @Produces @Mock
     private CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
 
     @Produces @Mock Session session;
@@ -76,15 +75,6 @@ public class TranslationStateCacheImplTest {
     @Produces
     @Zanata
     CacheContainer cacheContainer = new InfinispanTestCacheContainer();
-
-    @Before
-    public void beforeMethod() {
-        tsCache =
-                new TranslationStateCacheImpl(docStatisticLoader,
-                        docStatusLoader, targetValidationLoader);
-        BeanProvider.injectFields(tsCache);
-        tsCache.create();
-    }
 
     @Test
     public void testGetLastModifiedTextFlowTarget() throws Exception {

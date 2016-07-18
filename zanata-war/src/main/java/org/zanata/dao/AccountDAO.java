@@ -27,12 +27,10 @@ import org.hibernate.criterion.Restrictions;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
 import org.zanata.model.HAccount;
 import org.zanata.util.PasswordUtil;
 import com.google.common.base.Strings;
 
-@Named("accountDAO")
 @RequestScoped
 public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
     public AccountDAO() {

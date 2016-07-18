@@ -35,7 +35,6 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 
-@Named("spNegoIdentity")
 @SessionScoped
 @Synchronized
 public class SpNegoIdentity implements Serializable {

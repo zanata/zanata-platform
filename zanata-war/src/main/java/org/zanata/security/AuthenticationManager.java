@@ -39,7 +39,6 @@ import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.service.UserAccountService;
 import org.zanata.ui.faces.FacesMessages;
-import org.zanata.util.ServiceLocator;
 
 import javax.enterprise.event.Observes;
 
@@ -91,6 +90,9 @@ public class AuthenticationManager {
 
     @Inject
     private Messages msgs;
+
+    @Inject
+    private SpNegoIdentity spNegoIdentity;
 
     /**
      * Logs in a user using a specified authentication type.
@@ -158,8 +160,6 @@ public class AuthenticationManager {
      */
     public void kerberosLogin() {
         if (applicationConfiguration.isKerberosAuth()) {
-            SpNegoIdentity spNegoIdentity =
-                    ServiceLocator.instance().getInstance(SpNegoIdentity.class);
             spNegoIdentity.authenticate();
             if (!isNewUser() && !isAuthenticatedAccountWaitingForActivation()
                     && isAccountEnabledAndActivated()) {

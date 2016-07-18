@@ -48,6 +48,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
 import org.zanata.service.VersionLocaleKey;
+import org.zanata.service.impl.VersionStateCacheImpl.VersionStatisticLoader;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.IServiceLocator;
@@ -64,7 +65,8 @@ import javax.inject.Inject;
 @SupportDeltaspikeCore
 @AdditionalClasses({
         VersionStateCacheImpl.class,
-        LocaleServiceImpl.class
+        LocaleServiceImpl.class,
+        VersionStatisticLoader.class
 })
 public class VersionGroupServiceImplTest extends ZanataDbunitJpaTest {
 

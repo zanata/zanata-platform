@@ -57,6 +57,8 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.inject.Inject;
+
 /**
  * Adapter to read and write {@link org.zanata.common.DocumentType#GETTEXT}
  *
@@ -67,6 +69,9 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class GettextAdapter implements FileFormatAdapter {
+
+    @Inject
+    private DocumentDAO documentDAO;
 
     @Override
     public Resource parseDocumentFile(URI fileUri, LocaleId sourceLocale,
@@ -158,7 +163,7 @@ public class GettextAdapter implements FileFormatAdapter {
     }
 
     private HDocument getDocument(GlobalDocumentId documentId) {
-        return getDocumentDAO().getByGlobalId(documentId);
+        return documentDAO.getByGlobalId(documentId);
     }
 
     private DocumentDAO getDocumentDAO() {

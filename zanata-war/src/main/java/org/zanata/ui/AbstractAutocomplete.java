@@ -24,10 +24,7 @@ package org.zanata.ui;
 
 import java.io.Serializable;
 import java.util.List;
-
-import org.zanata.i18n.Messages;
 import org.zanata.seam.scope.ConversationScopeMessages;
-import org.zanata.util.ServiceLocator;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -36,10 +33,6 @@ import lombok.Setter;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public abstract class AbstractAutocomplete<T> implements Serializable {
-
-    protected Messages msgs =
-            ServiceLocator.instance().getInstance(Messages.class);
-
     protected ConversationScopeMessages conversationScopeMessages =
             ConversationScopeMessages.instance();
 

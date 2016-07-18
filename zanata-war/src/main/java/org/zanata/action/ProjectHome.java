@@ -45,7 +45,6 @@ import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -87,7 +86,6 @@ import org.zanata.ui.autocomplete.MaintainerAutocomplete;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.CommonMarkRenderer;
 import org.zanata.util.ComparatorUtil;
-import org.zanata.util.ServiceLocator;
 import org.zanata.util.UrlUtil;
 import org.zanata.webhook.events.TestEvent;
 import org.zanata.webtrans.shared.model.ValidationAction;
@@ -1200,6 +1198,18 @@ public class ProjectHome extends SlugHome<HProject> implements
         @Inject
         private ProjectHome projectHome;
 
+        @Inject
+        private Messages msgs;
+
+        @Inject
+        private ZanataIdentity zanataIdentity;
+
+        @Inject
+        private PersonDAO personDAO;
+
+        @Inject
+        private FacesMessages facesMessages;
+
         private HProject getInstance() {
             return projectHome.getInstance();
         }
@@ -1221,25 +1231,16 @@ public class ProjectHome extends SlugHome<HProject> implements
             if (StringUtils.isEmpty(getSelectedItem())) {
                 return;
             }
-            ServiceLocator.instance().getInstance(ZanataIdentity.class)
-                    .checkPermission(getInstance(), "update");
-            HPerson maintainer =
-                    ServiceLocator.instance().getInstance(PersonDAO.class)
-                            .findByUsername(getSelectedItem());
+            zanataIdentity.checkPermission(getInstance(), "update");
+            HPerson maintainer = personDAO.findByUsername(getSelectedItem());
             getInstance().addMaintainer(maintainer);
-            ProjectHome projectHome = ServiceLocator.instance()
-                    .getInstance(ProjectHome.class);
             projectHome.update();
             reset();
             projectHome.getMaintainerFilter().reset();
 
-            getFacesMessages().addGlobal(FacesMessage.SEVERITY_INFO,
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
                     msgs.format("jsf.project.MaintainerAdded",
                             maintainer.getName()));
-        }
-
-        private FacesMessages getFacesMessages() {
-            return ServiceLocator.instance().getInstance(FacesMessages.class);
         }
     }
 

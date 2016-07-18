@@ -45,7 +45,6 @@ import javax.inject.Named;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.deltaspike.core.spi.scope.window.WindowContext;
 import org.zanata.i18n.Messages;
-import org.zanata.util.ServiceLocator;
 
 /**
  * Utility to allow for easy handling of JSF messages. Serves as a replacement
@@ -65,6 +64,9 @@ public class FacesMessages implements Serializable {
 
     @Inject
     private WindowContext windowContext;
+
+    @Inject
+    private Messages msgs;
 
     @PostConstruct
     void postConstruct() {
@@ -219,9 +221,7 @@ public class FacesMessages implements Serializable {
      */
     public void addFromResourceBundle(Severity severity, String key,
             final Object... params) {
-        Messages messages =
-                ServiceLocator.instance().getInstance(Messages.class);
-        String formatedMssg = messages.formatWithAnyArgs(key, params);
+        String formatedMssg = msgs.formatWithAnyArgs(key, params);
         addGlobal(severity, formatedMssg, params);
     }
 

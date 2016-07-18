@@ -103,8 +103,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -258,7 +256,8 @@ public class VersionHomeAction extends AbstractSortAction implements
             new DocumentFilter();
 
     @Getter
-    private CopyVersionHandler copyVersionHandler = new CopyVersionHandler();
+    @Inject
+    private CopyVersionHandler copyVersionHandler;
 
     @Getter
     private final AbstractListFilter<HIterationGroup> groupFilter =
@@ -327,8 +326,9 @@ public class VersionHomeAction extends AbstractSortAction implements
                 msgs.format("jsf.copyVersion.Cancelled", versionSlug));
     }
 
+    // TODO Serializable only because it's a dependent bean
     @NoArgsConstructor
-    public static class CopyVersionHandler extends CopyAction {
+    public static class CopyVersionHandler extends CopyAction implements Serializable {
 
         @Setter
         private String projectSlug;
@@ -336,23 +336,31 @@ public class VersionHomeAction extends AbstractSortAction implements
         @Setter
         private String versionSlug;
 
+        @Inject
+        private Messages messages;
+
+        @Inject
+        private CopyVersionManager copyVersionManager;
+
+        @Inject
+        private FacesMessages facesMessages;
+
         @Override
         public boolean isInProgress() {
-            return getCopyVersionManager().isCopyVersionRunning(projectSlug,
+            return copyVersionManager.isCopyVersionRunning(projectSlug,
                     versionSlug);
         }
 
         @Override
         public String getProgressMessage() {
-            return getMessages().format("jsf.copyVersion.processedDocuments",
+            return messages.format("jsf.copyVersion.processedDocuments",
                     getProcessedDocuments(), getTotalDocuments());
         }
 
         @Override
         public void onComplete() {
-            getFacesMessages().addGlobal(FacesMessage.SEVERITY_INFO,
-                    getMessages()
-                            .format("jsf.copyVersion.Completed", versionSlug));
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                messages.format("jsf.copyVersion.Completed", versionSlug));
         }
 
         public int getProcessedDocuments() {
@@ -371,23 +379,7 @@ public class VersionHomeAction extends AbstractSortAction implements
             return 0;
         }
 
-        private Messages getMessages() {
-            return ServiceLocator.instance().getInstance(Messages.class);
-        }
-
-        private CopyVersionManager getCopyVersionManager() {
-            return ServiceLocator.instance().getInstance(
-                    CopyVersionManager.class);
-        }
-
-        private FacesMessages getFacesMessages() {
-            return ServiceLocator.instance().getInstance(FacesMessages.class);
-        }
-
         protected CopyVersionTaskHandle getHandle() {
-            CopyVersionManager copyVersionManager = ServiceLocator
-                    .instance().getInstance(CopyVersionManager.class);
-
             return copyVersionManager.getCopyVersionProcessHandle(projectSlug,
                     versionSlug);
         }
@@ -1093,8 +1085,6 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     // TODO turn this into a CDI bean?
     private class DocumentFilter extends InMemoryListFilter<HDocument> {
-        private DocumentDAO documentDAO =
-                ServiceLocator.instance().getInstance(DocumentDAO.class);
 
         @Override
         protected List<HDocument> fetchAll() {

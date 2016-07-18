@@ -6,17 +6,20 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataTest;
+import org.zanata.dao.AccountDAO;
 import org.zanata.limits.RateLimitingProcessor;
 import org.zanata.model.HAccount;
+import org.zanata.test.CdiUnitRunner;
 import org.zanata.util.HttpUtil;
 import org.zanata.util.RunnableEx;
 
@@ -27,7 +30,12 @@ import static org.mockito.Mockito.doReturn;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
+@SupportDeltaspikeCore
 public class RestLimitingFilterTest extends ZanataTest {
+
+    // Using @Inject would be better, but some tests currently require
+    // authenticatedUser to be null, which is difficult without spy()
     private RestLimitingFilter filter;
 
     private static final String API_KEY = "apiKey123";
@@ -42,21 +50,24 @@ public class RestLimitingFilterTest extends ZanataTest {
     private ArgumentCaptor<RunnableEx> taskCaptor;
     @Mock
     private FilterChain filterChain;
+
     private HAccount authenticatedUser;
+
+    @Mock
+    private AccountDAO accountDAO;
 
     private String clientIP = "255.255.0.1";
 
     @Before
     public void beforeMethod() throws ServletException, IOException {
-        MockitoAnnotations.initMocks(this);
         when(request.getMethod()).thenReturn("GET");
 
-        filter = spy(new RestLimitingFilter(processor));
+        filter = spy(new RestLimitingFilter(processor, accountDAO,
+            authenticatedUser));
 
         // this way we can verify the task actually called super.invoke()
         doNothing().when(filterChain).doFilter(request, response);
         authenticatedUser = null;
-        doReturn(authenticatedUser).when(filter).getAuthenticatedUser();
     }
 
     @Test

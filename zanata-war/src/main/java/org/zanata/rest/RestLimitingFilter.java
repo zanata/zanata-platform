@@ -22,6 +22,7 @@ package org.zanata.rest;
 
 import java.io.IOException;
 import java.util.Optional;
+import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -33,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.base.Throwables;
+import org.zanata.dao.AccountDAO;
 import org.zanata.limits.RateLimitingProcessor;
 import org.zanata.model.HAccount;
 import com.google.common.annotations.VisibleForTesting;
@@ -40,10 +42,8 @@ import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 
 import org.zanata.rest.oauth.OAuthUtil;
-import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.util.HttpUtil;
 import org.zanata.util.RunnableEx;
-import org.zanata.util.ServiceLocator;
 
 /**
  * This class intercepts JAX-RS requests to limit API requests by session, by
@@ -61,18 +61,22 @@ import org.zanata.util.ServiceLocator;
 @WebFilter(filterName = "RestLimitingFilter")
 public class RestLimitingFilter implements Filter {
     private final RateLimitingProcessor processor;
+    private final AccountDAO accountDAO;
+    private final HAccount authenticatedUser;
 
+    @Inject
+    public RestLimitingFilter(
+        RateLimitingProcessor processor,
+        AccountDAO accountDAO, HAccount authenticatedUser) {
+        this.processor = processor;
+        this.accountDAO = accountDAO;
+        this.authenticatedUser = authenticatedUser;
+    }
 
     @SuppressWarnings("unused")
     public RestLimitingFilter() {
-        this.processor = new RateLimitingProcessor();
+        this(null, null, null);
     }
-
-    @VisibleForTesting
-    RestLimitingFilter(RateLimitingProcessor processor) {
-        this.processor = processor;
-    }
-
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -145,8 +149,7 @@ public class RestLimitingFilter implements Filter {
 
     @VisibleForTesting
     protected HAccount getAuthenticatedUser() {
-        return ServiceLocator.instance().getInstance(
-                HAccount.class, new AuthenticatedLiteral());
+        return authenticatedUser;
     }
 
 }

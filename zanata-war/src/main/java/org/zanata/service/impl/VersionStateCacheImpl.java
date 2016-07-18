@@ -27,8 +27,8 @@ import java.util.Map;
 import com.google.common.annotations.VisibleForTesting;
 import org.infinispan.manager.CacheContainer;
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 import org.zanata.cache.CacheWrapper;
 import org.zanata.cache.InfinispanCacheWrapper;
 import org.zanata.common.ContentState;
@@ -41,7 +41,6 @@ import org.zanata.service.VersionLocaleKey;
 import org.zanata.service.VersionStateCache;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.IServiceLocator;
-import org.zanata.util.ServiceLocator;
 
 import com.google.common.cache.CacheLoader;
 import org.zanata.util.Zanata;
@@ -52,8 +51,7 @@ import javax.enterprise.event.TransactionPhase;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Named("versionStateCacheImpl")
-@javax.enterprise.context.ApplicationScoped
+@ApplicationScoped
 // TODO look at using @Transactional
 public class VersionStateCacheImpl implements VersionStateCache {
     private static final String BASE = VersionStateCacheImpl.class.getName();
@@ -61,31 +59,34 @@ public class VersionStateCacheImpl implements VersionStateCache {
     private static final String VERSION_STATISTIC_CACHE_NAME = BASE
             + ".versionStatisticCache";
 
-    private CacheWrapper<VersionLocaleKey, WordStatistic> versionStatisticCache;
-    private CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader;
+    private  CacheWrapper<VersionLocaleKey, WordStatistic> versionStatisticCache;
+    private final CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader;
 
-    @Inject @Zanata
+    @Zanata
     private CacheContainer cacheContainer;
-
-    @Inject
-    private IServiceLocator serviceLocator;
+    private final IServiceLocator serviceLocator;
+    private final LocaleDAO localeDAO;
 
     // constructor for CDI
     public VersionStateCacheImpl() {
+        this(null, null, null, null);
     }
 
     // Constructor for testing
-    @VisibleForTesting
+    @Inject
     public VersionStateCacheImpl(
-            CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader) {
+            CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader,
+            @Zanata CacheContainer cacheContainer,
+            IServiceLocator serviceLocator,
+            LocaleDAO localeDAO) {
         this.versionStatisticLoader = versionStatisticLoader;
+        this.cacheContainer = cacheContainer;
+        this.serviceLocator = serviceLocator;
+        this.localeDAO = localeDAO;
     }
 
     @PostConstruct
     public void create() {
-        if (versionStatisticLoader == null) {
-            versionStatisticLoader = new VersionStatisticLoader();
-        }
         versionStatisticCache =
                 InfinispanCacheWrapper.create(VERSION_STATISTIC_CACHE_NAME,
                         cacheContainer, versionStatisticLoader);
@@ -118,7 +119,6 @@ public class VersionStateCacheImpl implements VersionStateCache {
 
     @Override
     public void clearVersionStatsCache(Long versionId) {
-        LocaleDAO localeDAO = serviceLocator.getInstance(LocaleDAO.class);
         for (HLocale locale : localeDAO.findAll()) {
             VersionLocaleKey key =
                     new VersionLocaleKey(versionId, locale.getLocaleId());
@@ -126,24 +126,17 @@ public class VersionStateCacheImpl implements VersionStateCache {
         }
     }
 
-    @VisibleForTesting
-    public void setCacheContainer(CacheContainer cacheContainer) {
-        this.cacheContainer = cacheContainer;
-    }
-
-    private static class VersionStatisticLoader extends
+    public static class VersionStatisticLoader extends
             CacheLoader<VersionLocaleKey, WordStatistic> {
 
-        ProjectIterationDAO getProjectIterationDAO() {
-            return ServiceLocator.instance().getInstance(
-                    ProjectIterationDAO.class);
-        }
+        @Inject
+        private ProjectIterationDAO projectIterationDAO;
 
         @Override
         public WordStatistic load(VersionLocaleKey key) throws Exception {
 
             WordStatistic wordStatistic =
-                    getProjectIterationDAO().getWordStatistics(
+                projectIterationDAO.getWordStatistics(
                         key.getProjectIterationId(), key.getLocaleId());
 
             return wordStatistic;

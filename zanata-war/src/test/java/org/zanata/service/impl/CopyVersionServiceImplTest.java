@@ -31,6 +31,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.cache.CacheLoader;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
 import org.infinispan.manager.CacheContainer;
@@ -52,6 +53,7 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.RawDocumentDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
+import org.zanata.events.DocumentLocaleKey;
 import org.zanata.file.FileSystemPersistService;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -67,12 +69,16 @@ import org.zanata.model.type.TranslationSourceType;
 import org.zanata.security.ZanataCredentials;
 import org.zanata.security.ZanataIdentity;
 import com.google.common.collect.Lists;
+import org.zanata.service.VersionLocaleKey;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.transaction.TransactionUtil;
+import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.IServiceLocator;
 import org.zanata.util.ServiceLocator;
 import org.zanata.util.TranslationUtil;
 import org.zanata.util.Zanata;
+import org.zanata.webtrans.shared.model.DocumentStatus;
+import org.zanata.webtrans.shared.model.ValidationId;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -113,6 +119,9 @@ public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
 
     @Produces @Mock
     private FileSystemPersistService fileSystemPersistService;
+
+    @Produces @Mock
+    private CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader;
 
     @Produces @Zanata
     CacheContainer cacheContainer = new InfinispanTestCacheContainer();

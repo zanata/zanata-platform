@@ -8,32 +8,40 @@ import static org.mockito.Mockito.when;
 import org.infinispan.manager.CacheContainer;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.LocaleId;
+import org.zanata.dao.LocaleDAO;
 import org.zanata.service.VersionLocaleKey;
+import org.zanata.test.CdiUnitRunner;
 import org.zanata.ui.model.statistic.WordStatistic;
 
 import com.google.common.cache.CacheLoader;
+import org.zanata.util.IServiceLocator;
+import org.zanata.util.Zanata;
+
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
 public class VersionStateCacheImplTest {
 
+    @Inject
     private VersionStateCacheImpl cache;
-
-    @Mock
+    @Produces @Mock
     private CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader;
 
-    @Before
-    public void beforeMethod() {
-        MockitoAnnotations.initMocks(this);
-        cache = new VersionStateCacheImpl(versionStatisticLoader);
-        cache.setCacheContainer(new InfinispanTestCacheContainer());
-        cache.create();
-    }
+    @Produces @Mock IServiceLocator serviceLocator;
+    @Produces @Mock LocaleDAO localeDAO;
+
+    @Produces
+    @Zanata
+    CacheContainer cacheContainer = new InfinispanTestCacheContainer();
 
     @Test
     public void getStatisticTest() throws Exception {

@@ -27,9 +27,11 @@ import static org.junit.Assert.assertNull;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
@@ -42,12 +44,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.PersonDAO;
+import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.exception.InvalidDateParamException;
 import org.zanata.jpa.FullText;
@@ -61,21 +63,23 @@ import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
 import org.zanata.rest.dto.stats.contribution.LocaleStatistics;
 import org.zanata.service.ValidationService;
 import org.zanata.service.impl.TranslationStateCacheImpl;
-
-import com.google.common.collect.Lists;
+import org.zanata.service.impl.TranslationStateCacheImpl.DocumentStatisticLoader;
+import org.zanata.service.impl.TranslationStateCacheImpl.HTextFlowTargetIdLoader;
+import org.zanata.service.impl.TranslationStateCacheImpl.HTextFlowTargetValidationLoader;
+import org.zanata.service.impl.VersionStateCacheImpl.VersionStatisticLoader;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.util.Zanata;
 
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
+import com.google.common.collect.Lists;
 
 /**
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @RunWith(CdiUnitRunner.class)
-@AdditionalClasses({ TranslationStateCacheImpl.class })
+@AdditionalClasses({ TranslationStateCacheImpl.class,
+        DocumentStatisticLoader.class, HTextFlowTargetIdLoader.class,
+        HTextFlowTargetValidationLoader.class, VersionStatisticLoader.class })
 @SupportDeltaspikeCore
 public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
 
@@ -110,6 +114,9 @@ public class StatisticsServiceImplTest extends ZanataDbunitJpaTest {
     CacheContainer getCacheContainer() {
         return new InfinispanTestCacheContainer();
     }
+
+    @Produces @Mock
+    private TextFlowDAO textFlowDAO;
 
     private final SimpleDateFormat formatter =
             new SimpleDateFormat(StatisticsResource.DATE_FORMAT);

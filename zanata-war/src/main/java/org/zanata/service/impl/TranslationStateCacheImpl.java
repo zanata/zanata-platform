@@ -32,7 +32,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.zanata.cache.CacheWrapper;
 import org.zanata.cache.InfinispanCacheWrapper;
@@ -50,7 +49,6 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.service.ValidationFactoryProvider;
 import org.zanata.ui.model.statistic.WordStatistic;
-import org.zanata.util.ServiceLocator;
 import org.zanata.util.Zanata;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentStatus;
@@ -65,7 +63,6 @@ import com.google.common.cache.CacheLoader;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Named("translationStateCacheImpl")
 // TODO split into APPLICATION and STATELESS beans
 @javax.enterprise.context.ApplicationScoped
 
@@ -82,55 +79,49 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
             + ".targetValidationCache";
 
     private CacheWrapper<DocumentLocaleKey, WordStatistic> documentStatisticCache;
-    private CacheLoader<DocumentLocaleKey, WordStatistic> documentStatisticLoader;
+    private final CacheLoader<DocumentLocaleKey, WordStatistic> documentStatisticLoader;
 
     private CacheWrapper<DocumentLocaleKey, DocumentStatus> docStatusCache;
-    private CacheLoader<DocumentLocaleKey, DocumentStatus> docStatusLoader;
+    private final CacheLoader<DocumentLocaleKey, DocumentStatus> docStatusLoader;
 
     private CacheWrapper<Long, Map<ValidationId, Boolean>> targetValidationCache;
-    private CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
+    private final CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
 
-    @Inject @Zanata
-    private CacheContainer cacheContainer;
-
-    @Inject
-    private TextFlowDAO textFlowDAO;
-
-    @Inject
-    private TextFlowTargetDAO textFlowTargetDAO;
-
-    @Inject
-    private DocumentDAO documentDAO;
-
-    @Inject
-    private LocaleDAO localeDAO;
+    @Zanata
+    private final CacheContainer cacheContainer;
+    private final TextFlowDAO textFlowDAO;
+    private final TextFlowTargetDAO textFlowTargetDAO;
+    private final DocumentDAO documentDAO;
+    private final LocaleDAO localeDAO;
 
     // constructor for CDI
     public TranslationStateCacheImpl() {
+        this(null, null, null, null, null, null, null, null);
     }
 
     // Constructor for testing
-    @VisibleForTesting
+    @Inject
     public TranslationStateCacheImpl(
         CacheLoader<DocumentLocaleKey, WordStatistic> documentStatisticLoader,
         CacheLoader<DocumentLocaleKey, DocumentStatus> docStatsLoader,
-        CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader) {
+        CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader,
+        @Zanata CacheContainer cacheContainer,
+        TextFlowDAO textFlowDAO,
+        TextFlowTargetDAO textFlowTargetDAO,
+        DocumentDAO documentDAO,
+        LocaleDAO localeDAO) {
         this.documentStatisticLoader = documentStatisticLoader;
         this.docStatusLoader = docStatsLoader;
         this.targetValidationLoader = targetValidationLoader;
+        this.cacheContainer = cacheContainer;
+        this.textFlowDAO = textFlowDAO;
+        this.textFlowTargetDAO = textFlowTargetDAO;
+        this.documentDAO = documentDAO;
+        this.localeDAO = localeDAO;
     }
 
     @PostConstruct
     public void create() {
-        if (documentStatisticLoader == null) {
-            documentStatisticLoader = new DocumentStatisticLoader();
-        }
-        if (docStatusLoader == null) {
-            docStatusLoader = new HTextFlowTargetIdLoader();
-        }
-        if (targetValidationLoader == null) {
-            targetValidationLoader = new HTextFlowTargetValidationLoader();
-        }
         documentStatisticCache =
                 InfinispanCacheWrapper.create(DOC_STATISTIC_CACHE_NAME,
                         cacheContainer, documentStatisticLoader);
@@ -241,30 +232,28 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
         return null;
     }
 
-    private static class DocumentStatisticLoader extends
+    public static class DocumentStatisticLoader extends
             CacheLoader<DocumentLocaleKey, WordStatistic> {
 
-        private DocumentDAO getDocumentDAO() {
-            return ServiceLocator.instance().getInstance(DocumentDAO.class);
-        }
+        @Inject
+        private DocumentDAO documentDAO;
 
         @Override
         public WordStatistic load(DocumentLocaleKey key) throws Exception {
-            WordStatistic wordStatistic = getDocumentDAO().getWordStatistics(
+            WordStatistic wordStatistic = documentDAO.getWordStatistics(
                     key.getDocumentId(), key.getLocaleId());
             return wordStatistic;
         }
     }
 
-    private static class HTextFlowTargetIdLoader extends
+    public static class HTextFlowTargetIdLoader extends
             CacheLoader<DocumentLocaleKey, DocumentStatus> {
-        DocumentDAO getDocumentDAO() {
-            return ServiceLocator.instance().getInstance(DocumentDAO.class);
-        }
+
+        @Inject
+        private DocumentDAO documentDAO;
 
         @Override
         public DocumentStatus load(DocumentLocaleKey key) throws Exception {
-            DocumentDAO documentDAO = getDocumentDAO();
             HTextFlowTarget target =
                     documentDAO.getLastTranslatedTarget(key.getDocumentId(),
                             key.getLocaleId());
@@ -275,7 +264,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
         }
     }
 
-    private static class HTextFlowTargetValidationLoader extends
+    public static class HTextFlowTargetValidationLoader extends
             CacheLoader<Long, Map<ValidationId, Boolean>> {
         @Override
         public Map<ValidationId, Boolean> load(Long key) throws Exception {

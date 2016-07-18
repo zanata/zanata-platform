@@ -26,7 +26,6 @@ import java.util.concurrent.Future;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Throwables;
@@ -49,12 +48,10 @@ import org.zanata.model.HTextFlow;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationStateCache;
-import org.zanata.util.ServiceLocator;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Stopwatch;
 
-@Named("copyTransServiceImpl")
 @RequestScoped
 @Slf4j
 @AllArgsConstructor
@@ -139,10 +136,9 @@ public class CopyTransServiceImpl implements CopyTransService {
                 documentDAO.clear();
             }
         } else if (taskHandleOpt.isPresent()) {
-            int totalActiveTextFlows =
-                    ServiceLocator.instance().getInstance(TextFlowDAO.class)
-                            .countActiveTextFlowsInDocument(
-                                    document.getId());
+            int totalActiveTextFlows = textFlowDAO
+                .countActiveTextFlowsInDocument(
+                    document.getId());
 
             taskHandleOpt.get().increaseProgress(totalActiveTextFlows);
         }

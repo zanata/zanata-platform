@@ -34,7 +34,6 @@ import javax.ws.rs.core.EntityTag;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import javax.inject.Named;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -53,7 +52,6 @@ import org.zanata.util.StatisticsUtil;
 
 import com.google.common.collect.Lists;
 
-@Named("projectIterationDAO")
 @RequestScoped
 public class ProjectIterationDAO extends
         AbstractDAOImpl<HProjectIteration, Long> {
