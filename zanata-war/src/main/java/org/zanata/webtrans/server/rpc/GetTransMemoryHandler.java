@@ -59,6 +59,7 @@ public class GetTransMemoryHandler extends
         TransMemoryQuery transMemoryQuery = action.getQuery();
         log.debug("Fetching matches for {}", transMemoryQuery);
 
+        // TODO if the client is requesting a TM for a textflow, it should just pass the text flow id not the text. And also some other context info like docId, version. project etc
         List<TransMemoryResultItem> results =
                 translationMemoryServiceImpl.searchTransMemory(
                         action.getLocaleId(), action.getSourceLocaleId(),

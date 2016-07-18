@@ -60,7 +60,6 @@ import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.tm.TransMemoryUnit;
-import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.rest.editor.dto.suggestion.Suggestion;
 import org.zanata.rest.editor.dto.suggestion.SuggestionDetail;
 import org.zanata.rest.editor.dto.suggestion.TextFlowSuggestionDetail;
@@ -74,6 +73,7 @@ import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
@@ -124,6 +124,8 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
 //            SysProperties.TM_BOOST_PROJITERSLUG, 1.5f);
 
     private static final double MINIMUM_SIMILARITY = 1.0;
+
+    private static final String LUCENE_KEY_WORDS = "(\\s*)(AND|OR|NOT)(\\s+)";
 
     @Inject @FullText
     private FullTextEntityManager entityManager;
@@ -192,10 +194,10 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
 
         Collection<Object[]> matches =
                 findMatchingTranslation(targetLocaleId, sourceLocaleId, query,
-                        0, Optional.<Long>absent(), HTextFlowTarget.class);
+                        0, Optional.absent(), HTextFlowTarget.class);
 
         if (matches.isEmpty()) {
-            return Optional.<HTextFlowTarget> absent();
+            return Optional.absent();
         }
 
         return Optional.of((HTextFlowTarget) matches.iterator().next()[1]);
@@ -232,9 +234,9 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                         thresholdPercent));
 
         if (aboveThreshold.isEmpty()) {
-            return Optional.<TransMemoryResultItem> absent();
+            return Optional.absent();
         }
-        return Optional.of((TransMemoryResultItem) aboveThreshold.iterator()
+        return Optional.of(aboveThreshold.iterator()
                 .next());
     }
 
@@ -572,7 +574,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
 
         // 'Fuzzy' in the editor
         case FUZZY:
-            queryText = QueryParser.escape(query.getQueries().get(0));
+            queryText = escape(query.getQueries().get(0));
             if (StringUtils.isBlank(queryText)) {
                 return Lists.newArrayList();
             }
@@ -581,7 +583,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         // 'Phrase' in the editor
         case EXACT:
             queryText =
-                    "\"" + QueryParser.escape(query.getQueries().get(0)) + "\"";
+                    "\"" + escape(query.getQueries().get(0)) + "\"";
             if (StringUtils.isBlank(queryText)) {
                 return Lists.newArrayList();
             }
@@ -592,7 +594,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             multiQueryText = new String[query.getQueries().size()];
             for (int i = 0; i < query.getQueries().size(); i++) {
                 multiQueryText[i] =
-                        QueryParser.escape(query.getQueries().get(i));
+                        escape(query.getQueries().get(i));
                 if (StringUtils.isBlank(multiQueryText[i])) {
                     return Lists.newArrayList();
                 }
@@ -638,6 +640,11 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             logQueryResults(resultList);
         }
         return resultList;
+    }
+
+    @VisibleForTesting
+    protected static String escape(String string) {
+        return QueryParser.escape(string).replaceAll(LUCENE_KEY_WORDS, "$1\"$2\"$3");
     }
 
     private void logQueryResults(List<Object[]> resultList) {

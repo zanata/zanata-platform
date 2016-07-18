@@ -45,6 +45,17 @@ public interface TranslationMemoryService extends TranslationFinder {
             LocaleId targetLocaleId, LocaleId sourceLocaleId,
             boolean checkContext, boolean checkDocument, boolean checkProject);
 
+    /**
+     * This is used by TM merge
+     * @param textFlow
+     * @param targetLocaleId
+     * @param sourceLocaleId
+     * @param checkContext
+     * @param checkDocument
+     * @param checkProject
+     * @param thresholdPercent
+     * @return
+     */
     Optional<TransMemoryResultItem> searchBestMatchTransMemory(
             HTextFlow textFlow, LocaleId targetLocaleId,
             LocaleId sourceLocaleId, boolean checkContext,
