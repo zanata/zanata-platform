@@ -48,23 +48,6 @@
     <rewrite.version>3.0.0.Alpha10</rewrite.version>
 
     <!--
-    Version of java compiler used for building. (Specified as major.minor,
-    as used by javac -source and -target).
-    -->
-    <required.java>1.8</required.java>
-    <!--
-      Version of Java used for runtime (major.minor) and for bytecode
-      generation. Should correspond with animal.sniffer.signature.
-    -->
-    <!-- NB: When changing this, be sure to update the rpm's spec file to match -->
-    <required.jvm>1.8</required.jvm>
-    <!--
-      Version of Java used for API compatibility checking. Should
-      correspond with required.jvm.
-    -->
-    <animal.sniffer.signature>org.codehaus.mojo.signature:java18:1.0</animal.sniffer.signature>
-
-    <!--
     Not used yet.
 
     When updating commonmark.js, please update the string jsf.project.about.markup in messages.properties.

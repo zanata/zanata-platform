@@ -155,11 +155,15 @@
     as used by javac -source and -target).
     -->
     <required.java>1.8</required.java>
+    <maven.compiler.source>${required.java}</maven.compiler.source>
     <!--
       Version of Java used for runtime (major.minor) and for bytecode
       generation. Should correspond with animal.sniffer.signature.
     -->
+    <!-- NB: When changing this, be sure to update the rpm's spec file to match -->
     <required.jvm>1.8</required.jvm>
+    <maven.compiler.target>${required.jvm}</maven.compiler.target>
+    <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
 
     <!--
       Version of Java used for API compatibility checking. Should
@@ -206,6 +210,15 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>io.takari.maven.plugins</groupId>
+        <artifactId>takari-lifecycle-plugin</artifactId>
+        <version>1.12.2</version>
+        <extensions>true</extensions>
+        <configuration>
+          <proc>proc</proc>
+        </configuration>
+      </plugin>
 
       <!--
         This plugin sorts and reformats the pom.xml.
@@ -268,17 +281,6 @@
         </dependencies>
       </plugin>
 
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <encoding>UTF-8</encoding>
-          <source>${required.java}</source>
-          <target>${required.java}</target>
-          <showDeprecation>true</showDeprecation>
-          <showWarnings>true</showWarnings>
-          <optimize>true</optimize>
-        </configuration>
-      </plugin>
       <plugin>
         <artifactId>maven-eclipse-plugin</artifactId>
         <configuration>
