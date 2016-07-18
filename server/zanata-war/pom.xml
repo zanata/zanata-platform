@@ -110,10 +110,6 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-      </plugin>
-      <plugin>
         <!-- if including source jars, use the no-fork goals
              otherwise both the Groovy sources and Java stub sources will get included in your jar -->
         <groupId>org.apache.maven.plugins</groupId>
@@ -361,6 +357,7 @@
           </execution>
         </executions>
         <configuration>
+          <sourceLevel>auto</sourceLevel>
           <runTarget>zanata/webtrans/Application.html</runTarget>
           <noServer>true</noServer>
           <!--below is needed if you want to use lombok on gwt code-->

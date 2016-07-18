@@ -9,7 +9,7 @@
     <version>4.0.0-SNAPSHOT</version>
 
   </parent>
-  <packaging>jar</packaging>
+  <packaging>takari-jar</packaging>
 
   <!-- Should be the same as zanata-client/pom.xml -->
   <scm>
