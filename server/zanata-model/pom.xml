@@ -8,7 +8,7 @@
   </parent>
   <artifactId>zanata-model</artifactId>
   <name>Zanata model</name>
-  <packaging>jar</packaging>
+  <packaging>takari-jar</packaging>
 
   <!-- Should be the same as zanata-server/pom.xml -->
   <scm>
