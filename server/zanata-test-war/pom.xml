@@ -7,6 +7,7 @@
     <version>4.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>zanata-test-war</artifactId>
+  <packaging>takari-jar</packaging>
   <name>zanata-test-war</name>
   <description>This module will use war overlay to add some extra REST api to zanata-war, which enables test data generation and a few extra functionalities</description>
 
