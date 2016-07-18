@@ -1,8 +1,0 @@
-frontend.bundle.min.js
-
-# The styleguide assumes all files will be in src/ so some generated files are output to src/ instead of build/
-# TODO fix styleguide so that generated files do not have to be in /src
-src/styles/atomic.css
-src/components/Select/index.css
-src/constants/styles.json
-src/components/Icon/list.js

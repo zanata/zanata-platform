@@ -21,7 +21,7 @@
 
     <!-- Directory to run the build from. Source is copied here before installing
          dependencies to this location then running the build. -->
-    <web.target>${project.build.directory}/web</web.target>
+    <build.directory>${project.build.directory}/src</build.directory>
 
     <!-- Path within the jar to put the built artifacts.
          Note: META-INF/resources/* is served as static content, so this serves
@@ -55,9 +55,9 @@
              contents of these files. -->
         <filtering>false</filtering>
         <!-- Path from pom to the source files that will be used. -->
-        <directory>src/main/web</directory>
+        <directory>src</directory>
         <!-- Location to copy source files to. -->
-        <targetPath>${web.target}</targetPath>
+        <targetPath>${build.directory}</targetPath>
       </resource>
     </resources>
     <plugins>
@@ -111,7 +111,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <workingDirectory>${web.target}</workingDirectory>
+              <workingDirectory>${build.directory}</workingDirectory>
               <arguments>
                 <argument>${npm.cli.script}</argument>
                 <argument>install</argument>
@@ -129,7 +129,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <workingDirectory>${web.target}</workingDirectory>
+              <workingDirectory>${build.directory}</workingDirectory>
               <arguments>
                 <argument>${npm.cli.script}</argument>
                 <argument>run</argument>
@@ -161,7 +161,7 @@
               <outputDirectory>${bundle.dest}</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${web.target}</directory>
+                  <directory>${build.directory}</directory>
                   <include>frontend.*.min.js</include>
                   <include>bundle.css</include>
                 </resource>

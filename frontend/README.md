@@ -4,7 +4,7 @@ This module contains: User profile page, Glossary page, and Zanata side menu bar
 
 ## To run/setup in nodeJS
 
-Navigate to `frontend/src/main/web`, run `npm install`
+Navigate to `frontend/src`, run `npm install`
 
 ### To run in dev mode http://localhost:8000 (a HTTP server to serve index.html with webpack produced bundle.js)
 
@@ -50,4 +50,4 @@ Since we use maven to copy our source to target/ then run npm from maven, you wi
 ## Documentation
 
 For extensive details on each part of the front-end see the
-[documentation](./src/main/web/docs).
+[documentation](./docs).
