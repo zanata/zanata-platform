@@ -14,7 +14,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @JsonPropertyOrder({ "results", "totalCount" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-public class ResultList<T extends Serializable> implements Serializable{
+public class ResultList<T extends Serializable> implements Serializable {
 
     private List<T> results;
 
