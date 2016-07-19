@@ -196,7 +196,8 @@
     <checkstyle.propertiesLocation />
     <checkstyle.suppressions.location>https://raw.github.com/zanata/zanata-parent/master/checkstyle-suppressions.xml</checkstyle.suppressions.location>
     <checkstyle.suppressionsFileExpression />
-    <checkstyle.version>2.13</checkstyle.version>
+    <checkstyle.maven.version>2.17</checkstyle.maven.version>
+    <checkstyle.version>7.0</checkstyle.version>
     <findbugs.excludeFilterFile>https://raw.github.com/zanata/zanata-parent/master/findbugs-filter.xml</findbugs.excludeFilterFile>
     <reports-plugin.dependencyDetailsEnabled>false</reports-plugin.dependencyDetailsEnabled>
     <reports-plugin.dependencyLocationsEnabled>false</reports-plugin.dependencyLocationsEnabled>
@@ -241,7 +242,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>${checkstyle.version}</version>
         <configuration>
           <configLocation>${checkstyle.config.location}</configLocation>
           <!-- report violations to stdout (not console!) -->
@@ -263,7 +263,7 @@
           <dependency>
             <groupId>com.puppycrawl.tools</groupId>
             <artifactId>checkstyle</artifactId>
-            <version>5.9</version>
+            <version>${checkstyle.version}</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -590,7 +590,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>${checkstyle.version}</version>
+          <version>${checkstyle.maven.version}</version>
         </plugin>
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
@@ -949,7 +949,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-checkstyle-plugin</artifactId>
-            <version>${checkstyle.version}</version>
+            <version>${checkstyle.maven.version}</version>
             <configuration>
               <configLocation>${checkstyle.config.location}</configLocation>
               <propertiesLocation>${checkstyle.propertiesLocation}</propertiesLocation>
