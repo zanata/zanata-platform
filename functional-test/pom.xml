@@ -28,9 +28,9 @@
     <context.path>zanata</context.path>
 
     <!--mysql-maven-plugin will use these setup-->
-    <ds.database>root</ds.database>
-    <ds.username>root</ds.username>
-    <ds.password>root</ds.password>
+    <ds.database>zanata</ds.database>
+    <ds.username>zanata</ds.username>
+    <ds.password>zanata</ds.password>
     <ds.connection.url>jdbc:mysql://localhost:${mysql.port}/${ds.database}?characterEncoding=UTF-8</ds.connection.url>
     <ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
     <!-- skipAfterFailureCount=0 due to https://issues.apache.org/jira/browse/SUREFIRE-1219 -->
@@ -538,7 +538,7 @@
               </execution>
             </executions>
           </plugin>
-          <plugin>
+          <!--<plugin>
             <artifactId>maven-dependency-plugin</artifactId>
             <executions>
               <execution>
@@ -589,7 +589,59 @@
                 <phase>package</phase>
               </execution>
             </executions>
+          </plugin>-->
+
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <version>0.15.9</version>
+            <configuration>
+              <images>
+                <image>
+                  <name>mariadb:10.1</name>
+                  <alias>mariadb</alias>
+                  <run>
+                    <env>
+                      <MYSQL_USER>${ds.username}</MYSQL_USER>
+                      <MYSQL_PASSWORD>${ds.password}</MYSQL_PASSWORD>
+                      <MYSQL_DATABASE>${ds.database}</MYSQL_DATABASE>
+                      <MYSQL_ROOT_PASSWORD>rootpw</MYSQL_ROOT_PASSWORD>
+                    </env>
+                    <ports>
+                      <port>${mysql.port}:3306</port>
+                    </ports>
+                    <wait>
+                      <log>socket: '/var/run/mysqld/mysqld.sock'  port: 3306</log>
+                      <time>20000</time>
+                    </wait>
+                    <!-- Enable this section to see the DB logs in the maven build -->
+                    <!--<log>-->
+                      <!--<prefix>DB</prefix>-->
+                      <!--<date>default</date>-->
+                      <!--<color>cyan</color>-->
+                    <!--</log>-->
+                  </run>
+                </image>
+              </images>
+            </configuration>
+            <executions>
+              <execution>
+                <id>start</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>stop</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
           </plugin>
+
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>sql-maven-plugin</artifactId>
