@@ -12,6 +12,11 @@ in case changes are required for production deployment (eg Ansible playbooks).
   </resource-ref>
 
   <resource-ref>
+    <res-ref-name>infinispan/zanata</res-ref-name>
+    <jndi-name>java:jboss/infinispan/container/zanata</jndi-name>
+  </resource-ref>
+
+  <resource-ref>
     <res-ref-name>queue/DLQ</res-ref-name>
     <jndi-name>java:/jms/queue/DLQ</jndi-name>
   </resource-ref>

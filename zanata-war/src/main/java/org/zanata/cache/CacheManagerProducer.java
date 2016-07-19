@@ -20,12 +20,10 @@
  */
 package org.zanata.cache;
 
-import java.io.IOException;
-
+import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 
-import org.infinispan.manager.DefaultCacheManager;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.zanata.util.Zanata;
 
@@ -37,13 +35,17 @@ import org.zanata.util.Zanata;
  */
 @ApplicationScoped
 public class CacheManagerProducer {
-    private static final String CONFIG_PATH = System.getProperty("zanata.infinispan.cfg", "zanata-infinispan.xml");
+
+    private static final String CACHE_MANAGER_NAME =
+            "java:jboss/infinispan/container/zanata";
+
+    @Resource(lookup = CACHE_MANAGER_NAME)
+    private EmbeddedCacheManager manager;
 
     @Produces
     @ApplicationScoped
     @Zanata
-    public EmbeddedCacheManager getCacheManager() throws IOException {
-        EmbeddedCacheManager manager = new DefaultCacheManager(CONFIG_PATH);
+    public EmbeddedCacheManager getCacheManager() {
         return manager;
     }
 }

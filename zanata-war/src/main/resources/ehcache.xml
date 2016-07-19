@@ -38,4 +38,53 @@
     statistics="true"
     />
 
+
+  <!-- TODO migrate custom ehcache config to infinispan in standalone.xml -->
+
+  <!--
+  <cache
+    name="org.zanata.service.impl.TranslationStateCacheImpl.docStatusCache"
+    maxElementsInMemory="400"
+    eternal="false"
+    timeToIdleSeconds="86400"
+    timeToLiveSeconds="0"
+    overflowToDisk="false"
+    memoryStoreEvictionPolicy="LRU"
+    statistics="true"
+    />
+
+  <cache
+    name="org.zanata.service.impl.TranslationStateCacheImpl.targetValidationCache"
+    maxElementsInMemory="10000"
+    eternal="false"
+    timeToIdleSeconds="86400"
+    timeToLiveSeconds="0"
+    overflowToDisk="false"
+    memoryStoreEvictionPolicy="LRU"
+    statistics="true"
+    />
+
+  <cache
+    name="org.zanata.service.impl.TranslationStateCacheImpl.documentStatisticCache"
+    maxElementsInMemory="10000"
+    eternal="true"
+    overflowToDisk="true"
+    diskPersistent="true"
+    maxBytesLocalDisk="50000000"
+    memoryStoreEvictionPolicy="LRU"
+    statistics="true"
+    />
+
+  <cache
+    name="org.zanata.service.impl.VersionStateCacheImpl.versionStatisticCache"
+    maxElementsInMemory="10000"
+    eternal="true"
+    overflowToDisk="true"
+    diskPersistent="true"
+    maxBytesLocalDisk="50000000"
+    memoryStoreEvictionPolicy="LRU"
+    statistics="true"
+    />
+    -->
+
 </ehcache>

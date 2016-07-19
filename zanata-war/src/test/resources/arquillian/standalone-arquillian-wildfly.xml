@@ -326,6 +326,16 @@
         </local-cache>
         <local-cache name="timestamps"/>
       </cache-container>
+      <!--
+      Zanata multi-purpose caches.
+      -->
+      <cache-container name="zanata" module="org.jboss.as.clustering.web.infinispan" default-cache="default" jndi-name="java:jboss/infinispan/container/zanata">
+        <local-cache name="default">
+          <transaction mode="NON_XA"/>
+          <eviction max-entries="10000" strategy="LRU"/>
+          <expiration max-idle="100000"/>
+        </local-cache>
+      </cache-container>
     </subsystem>
     <subsystem xmlns="urn:jboss:domain:jaxrs:1.0"/>
     <subsystem xmlns="urn:jboss:domain:jca:4.0">

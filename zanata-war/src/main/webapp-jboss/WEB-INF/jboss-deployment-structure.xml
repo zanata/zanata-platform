@@ -19,6 +19,7 @@
     <dependencies>
 
       <!-- start of unsupported modules -->
+      <module name="org.infinispan" />
       <!-- needed by arquillian test -->
       <module name="com.h2database.h2" />
       <!-- end of unsupported modules -->
@@ -33,6 +34,7 @@
       <!-- end of deprecated modules -->
 
       <!-- other modules -->
+      <module name="org.infinispan.commons" optional="true" />
       <module name="javax.annotation.api" />
       <!-- not needed for wildfly: -->
       <module name="javax.ejb.api" />

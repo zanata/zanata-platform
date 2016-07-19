@@ -38,7 +38,8 @@
     <cdi.runtime>runtime</cdi.runtime>
     <cdi.compile>compile</cdi.compile>
     <picketlink.version>2.5.4.SP4</picketlink.version>
-    <infinispan.version>7.2.5.Final</infinispan.version>
+    <!-- This is the EAP 6.4.8 version: -->
+    <infinispan.version>5.2.18.Final</infinispan.version>
     <lombok.version>1.16.6</lombok.version>
     <weld.version>1.1.31.Final</weld.version>
     <weld.se.version>${weld.version}</weld.se.version>
@@ -569,14 +570,14 @@
       <dependency>
         <groupId>org.jboss.marshalling</groupId>
         <artifactId>jboss-marshalling</artifactId>
-        <version>1.4.10.Final</version>
+        <version>1.4.6.Final</version>
         <scope>test</scope>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.marshalling</groupId>
         <artifactId>jboss-marshalling-river</artifactId>
-        <version>1.4.10.Final</version>
+        <version>1.4.6.Final</version>
         <scope>test</scope>
       </dependency>
 

@@ -1964,6 +1964,7 @@
       <groupId>org.infinispan</groupId>
       <artifactId>infinispan-core</artifactId>
       <version>${infinispan.version}</version>
+      <scope>provided</scope>
     </dependency>
 
     <!-- These two are being explicitly added as jboss-as-parent
