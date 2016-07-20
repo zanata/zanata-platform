@@ -1,41 +1,35 @@
 package org.zanata.maven;
 
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.zanata.client.commands.PutVersionCommand;
 import org.zanata.client.commands.PutVersionOptions;
 
 /**
  * Creates or updates a Zanata project version.
- *
- * @goal put-version
- * @requiresOnline true
- * @author Sean Flanigan <sflaniga@redhat.com>
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
+@Mojo(name = "put-version", requiresOnline = true, requiresProject = false)
 public class PutVersionMojo extends ConfigurableMojo<PutVersionOptions>
         implements PutVersionOptions {
 
     /**
      * ID of Zanata project
-     *
-     * @parameter expression="${zanata.versionProject}"
-     * @required
      */
+    @Parameter(property = "zanata.versionProject", required = true)
     private String versionProject;
 
     /**
      * Project version ID
-     *
-     * @parameter expression="${zanata.versionSlug}"
-     * @required
      */
+    @Parameter(property = "zanata.versionSlug", required = true)
     private String versionSlug;
 
     /**
      * Project type {utf8properties, properties, gettext, podir, xliff, xml,
      * file} Leave blank to inherit default project type from parent project
-     *
-     * @parameter expression="${zanata.projectType}"
-     *
      */
+    @Parameter(property = "zanata.projectType")
     private String projectType;
 
     public PutVersionMojo() throws Exception {

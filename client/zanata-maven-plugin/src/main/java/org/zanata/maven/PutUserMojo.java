@@ -1,80 +1,64 @@
 package org.zanata.maven;
 
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.zanata.client.commands.PutUserCommand;
 import org.zanata.client.commands.PutUserOptions;
 
 /**
  * Creates or updates a Zanata user.
- *
- * @goal put-user
- * @requiresOnline true
- * @author Sean Flanigan <sflaniga@redhat.com>
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
+@Mojo(name = "put-user", requiresOnline = true, requiresProject = false)
 public class PutUserMojo extends ConfigurableMojo<PutUserOptions> implements
         PutUserOptions {
 
     /**
      * Full name of the user
-     *
-     * @parameter expression="${zanata.userName}"
-     * @required
      */
+    @Parameter(property = "zanata.userName", required = true)
     private String userName;
 
     /**
      * Email address of the user
-     *
-     * @parameter expression="${zanata.userEmail}"
-     * @required
      */
+    @Parameter(property = "zanata.userEmail", required = true)
     private String userEmail;
 
     /**
      * Login/username of the user
-     *
-     * @parameter expression="${zanata.userUsername}"
-     * @required
      */
+    @Parameter(property = "zanata.userUsername", required = true)
     private String userUsername;
 
     /**
      * User password hash
-     *
-     * @parameter expression="${zanata.userPasswordHash}"
-     * @required
      */
+    @Parameter(property = "zanata.userPasswordHash", required = true)
     private String userPasswordHash;
 
     /**
      * User's api key (empty for none)
-     *
-     * @parameter expression="${zanata.userKey}"
-     * @required
      */
+    @Parameter(property = "zanata.userKey", required = true)
     private String userKey;
 
     /**
      * Security roles for the user
-     *
-     * @parameter expression="${zanata.userRoles}"
-     * @required
      */
+    @Parameter(property = "zanata.userRoles", required = true)
     private String userRoles;
 
     /**
      * Language teams for the user
-     *
-     * @parameter expression="${zanata.userLangs}"
-     * @required
      */
+    @Parameter(property = "zanata.userLangs", required = true)
     private String userLangs;
 
     /**
      * Whether the account should be disabled
-     *
-     * @parameter expression="${zanata.userDisabled}"
-     * @required
      */
+    @Parameter(property = "zanata.userDisabled", required = true)
     private boolean userDisabled;
 
     public PutUserMojo() throws Exception {
