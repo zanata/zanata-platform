@@ -489,7 +489,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-deploy-plugin</artifactId>
-        <!-- zanata war is too big to deploy, especially with five variants -->
+        <!-- zanata war is too big to deploy to Maven repos -->
         <configuration>
           <!-- MEAD builds must deploy all artifacts, so we run them with -Dallow.deploy.skip=false -->
           <skip>${allow.deploy.skip}</skip>

@@ -975,6 +975,15 @@
       </plugin>
 
       <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <!-- No point in deploying this without zanata-war -->
+        <configuration>
+          <!-- MEAD builds must deploy all artifacts, so we run them with -Dallow.deploy.skip=false -->
+          <skip>${allow.deploy.skip}</skip>
+        </configuration>
+      </plugin>
+
+      <plugin>
         <artifactId>maven-enforcer-plugin</artifactId>
         <configuration>
           <rules>
