@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import TransUnitSourceHeader from './TransUnitSourceHeader'
-import Icon from './Icon'
+import { Icon } from 'zanata-ui'
 import IconButton from './IconButton'
 
 /**
@@ -49,7 +49,7 @@ const TransUnitSourcePanel = React.createClass({
                   title={'Copy ' + this.props.sourceLocale.name +
                     ' (' + this.props.sourceLocale.id + ')'}
                   onClick={copySource}
-                  buttonClass="u-floatRight Link Link--neutral u-sizeHeight-1
+                  className="u-floatRight Link Link--neutral u-sizeHeight-1
                     u-sizeWidth-1 u-textCenter" />
               </li>
             </ul>

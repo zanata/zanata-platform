@@ -30,15 +30,15 @@ const TransUnitSourceHeader = React.createClass({
     const copyButtonItem = this.props.phrase.plural
       ? undefined
       : (
-      <li>
-        <IconButton
-          icon="copy"
-          title={'Copy ' + this.props.sourceLocale.name +
-                 ' (' + this.props.sourceLocale.id + ')'}
-          onClick={this.copyFromSource}
-          buttonClass={buttonClass} />
-      </li>
-      )
+          <li>
+            <IconButton
+              icon="copy"
+              title={'Copy ' + this.props.sourceLocale.name +
+                     ' (' + this.props.sourceLocale.id + ')'}
+              onClick={this.copyFromSource}
+              className={buttonClass} />
+          </li>
+        )
 
     const closeButtonItem = hasTranslationChanged(this.props.phrase)
       ? undefined
@@ -48,7 +48,7 @@ const TransUnitSourceHeader = React.createClass({
           icon="cross"
           title="Cancel edit"
           onClick={this.props.cancelEdit}
-          buttonClass={buttonClass} />
+          className={buttonClass} />
       </li>
       )
 

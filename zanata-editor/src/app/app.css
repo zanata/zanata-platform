@@ -24,10 +24,8 @@
 @import './components/Dropdown/index.css';
 @import './containers/EditorHeader/index.css';
 @import './css/heading/index.css';
-@import './components/Icon/index.css';
 @import './css/links/index.css';
 @import './components/TextDiff/index.css';
-@import './components/LogoLoader/index.css';
 @import './components/ProgressBar/index.css';
 @import './containers/KeyShortcutCheatSheet/index.css';
 @import './components/FilterToggle/index.css';

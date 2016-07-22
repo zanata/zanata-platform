@@ -11,12 +11,8 @@ var paths = {};
 paths.app = './app';
 paths.build = './build';
 paths.config = paths.app + '/config.json';
-paths.icons = {
-  app: paths.app + '/components/Icon/images/*.svg'
-};
 paths.images = {
   app: [
-    '!' + paths.icons.app,
     paths.app + '/**/*.svg',
     paths.app + '/**/*.jpg',
     paths.app + '/**/*.png',

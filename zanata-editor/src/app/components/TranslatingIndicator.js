@@ -1,4 +1,4 @@
-import Icon from './Icon'
+import { Icon } from 'zanata-ui'
 import React, { PropTypes } from 'react'
 
 /**
@@ -20,7 +20,7 @@ const TranslatingIndicator = React.createClass({
     return (
       <button className="Link--neutral u-sPV-1-4 u-floatLeft
                          u-sizeHeight-1_1-2 u-sMR-1-4">
-        <Icon name="translate" /> <span
+        <Icon name="translate" size="2"/> <span
           className="u-ltemd-hidden u-sMR-1-4">
           {this.props.gettextCatalog.getString('Translating')}
         </span>

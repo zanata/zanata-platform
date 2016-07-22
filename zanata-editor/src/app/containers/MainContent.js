@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import React, { PropTypes } from 'react'
-import Icon from '../components/Icon'
+import { Icon } from 'zanata-ui'
 import TransUnit from '../components/TransUnit'
 import { connect } from 'react-redux'
 import { getCurrentPagePhrasesFromState } from '../utils/filter-paging-util'
@@ -23,8 +23,9 @@ const MainContent = React.createClass({
       // TODO translate "No content"
       return (
         <div className="u-posCenterCenter u-textEmpty u-textCenter">
-          <Icon name="translate"
-            className="Icon--lg Icon--circle u-sMB-1-4" />
+          <span className="u-sMB-1-4">
+            <Icon name="translate" size="6" />
+          </span>
           <p>No content</p>
         </div>
       )

@@ -15,7 +15,7 @@ fakeserver:
 
 # Run the app on a local development server, automatically rebuild and refresh
 # when the code changes (sprites are only built at the beginning).
-watch: spritesheet
+watch: processhtml
 	npm run watch
 
 # Run a local development server backed by a fake Zanata server
@@ -25,8 +25,8 @@ watch-fakeserver:
 # Build and inject an icon spritesheet into index.html, which is placed in the
 # build folder. The spritesheet combines all the individual sprites in
 # app/components/icons/images
-spritesheet:
-	npm run spritesheet
+processhtml:
+	npm run processhtml
 
 # Like spritesheet, but makes a static file that can be used in the storybook
 # rather than injecting the spritesheet into the index file.
@@ -48,7 +48,7 @@ storybook-static: storybook-spritesheet
 
 # Build the css and javascript bundles using webpack.
 # Files end up as app.css and bundle.js in /app/build
-build: spritesheet
+build: processhtml
 	npm run build
 
 # Run the tests.

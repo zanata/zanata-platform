@@ -2,7 +2,7 @@ jest.disableAutomock()
 
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
-import Icon from '../../app/components/Icon'
+import { Icon }  from 'zanata-ui'
 import NoSuggestionsPanel from '../../app/components/NoSuggestionsPanel'
 
 describe('NoSuggestionsPanelTest', () => {
@@ -16,9 +16,9 @@ describe('NoSuggestionsPanelTest', () => {
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div
         className="u-posCenterCenter u-textEmpty u-textCenter">
-        <Icon
-          name="loader"
-          className="Icon--lg Icon--circle u-sMB-1-4"/>
+        <div className="u-sMB-1-4">
+          <Icon name="loader" size="5" />
+        </div>
         <p>You&apos;re on your own</p>
       </div>
     )

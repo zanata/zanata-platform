@@ -10,6 +10,7 @@ import { requestPhraseDetail } from '../../actions/phrases'
 import { fetchHeaderInfo, fetchUiLocales } from '../../actions/headerActions'
 import { saveSuggestionPanelHeight } from '../../actions/suggestions'
 import SplitPane from 'react-split-pane'
+import { Icons } from 'zanata-ui'
 
 /**
  * Top level of Zanata view hierarchy.
@@ -71,6 +72,7 @@ class Root extends Component {
     return (
       <ParamPropDispatcher {...this.props}>
         <KeyShortcutDispatcher className="Editor is-suggestions-active">
+          <Icons />
           <EditorHeader />
           <SplitPane ref="suggestionResizer"
             split="horizontal"

@@ -5,7 +5,7 @@ import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-addons-test-utils'
 import TransUnitFilter from '../../app/components/TransUnitFilter'
 import FilterToggle from '../../app/components/FilterToggle'
-import Icon from '../../app/components/Icon'
+import { Icon, Row } from 'zanata-ui'
 import mockGettextCatalog from '../mockAngularGettext'
 
 describe('TransUnitFilterTest', () => {
@@ -31,9 +31,11 @@ describe('TransUnitFilterTest', () => {
         <label className="Toggle-label"
                htmlFor="government-issued"
                title="titalic">
-          <Icon name="dot" className="Icon--xsm"/>
-          12
-          <span className="u-hiddenVisually">titalic</span>
+            <Row>
+              <Icon name="dot" size="n1"/>
+              12
+              <span className="u-hiddenVisually">titalic</span>
+            </Row>
         </label>
       </div>
     )
@@ -62,8 +64,10 @@ describe('TransUnitFilterTest', () => {
         <label className="Toggle-label"
                htmlFor="government-issued"
                title="titalic">
-          17
-          <span className="u-hiddenVisually">titalic</span>
+          <Row>
+            17
+            <span className="u-hiddenVisually">titalic</span>
+          </Row>
         </label>
       </div>
     )

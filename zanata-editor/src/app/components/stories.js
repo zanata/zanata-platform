@@ -6,5 +6,4 @@
 
 require('./Button/story.js')
 require('./Icon/story.js')
-require('./LogoLoader/story.js')
 require('./TextDiff/story.js')

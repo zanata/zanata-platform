@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import Icon from './Icon'
+import { Icon } from 'zanata-ui'
 
 /**
  * Generic panel showing an icon and message, to
@@ -16,9 +16,9 @@ const NoSuggestionsPanel = React.createClass({
     return (
       <div
         className="u-posCenterCenter u-textEmpty u-textCenter">
-        <Icon
-          name={this.props.icon}
-          className="Icon--lg Icon--circle u-sMB-1-4" />
+        <div className="u-sMB-1-4">
+          <Icon name={this.props.icon} size="5" />
+        </div>
         <p>{this.props.message}</p>
       </div>
     )

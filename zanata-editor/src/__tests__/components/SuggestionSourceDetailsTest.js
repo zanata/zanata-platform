@@ -2,7 +2,7 @@ jest.disableAutomock()
 
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
-import Icon from '../../app/components/Icon'
+import { Icon, Row } from 'zanata-ui'
 import SuggestionSourceDetails from '../../app/components/SuggestionSourceDetails'
 
 describe('SuggestionSourceDetailsTest', () => {
@@ -25,7 +25,9 @@ describe('SuggestionSourceDetailsTest', () => {
       <div className="TransUnit-details">
         <ul className="u-textMeta u-listInline u-sizeLineHeight-1">
           <li>
-            <Icon name="import" className="Icon--xsm"/> {'champagne'}
+            <Row>
+              <Icon name="import" size="n1"/> {'champagne'}
+            </Row>
           </li>
         </ul>
       </div>
@@ -54,13 +56,19 @@ describe('SuggestionSourceDetailsTest', () => {
       <div className="TransUnit-details">
         <ul className="u-textMeta u-listInline u-sizeLineHeight-1">
           <li title="sausages">
-            <Icon name="project" className="Icon--xsm"/> {'Sausages'}
+            <Row>
+              <Icon name="project" size="n1"/> {'Sausages'}
+            </Row>
           </li>
           <li>
-            <Icon name="version" className="Icon--xsm"/> {'the-wurst-version'}
+            <Row>
+              <Icon name="version" size="n1"/> {'the-wurst-version'}
+            </Row>
           </li>
           <li title="what-a-brat/i-rote-this.txt">
-            <Icon name="document" className="Icon--xsm"/> {'i-rote-this.txt'}
+            <Row>
+              <Icon name="document" size="n1"/> {'i-rote-this.txt'}
+            </Row>
           </li>
         </ul>
       </div>
@@ -103,11 +111,15 @@ describe('SuggestionSourceDetailsTest', () => {
       <div className="TransUnit-details">
         <ul className="u-textMeta u-listInline u-sizeLineHeight-1">
           <li>
-            <Icon name="import" className="Icon--xsm"/> {'champagne'}
+            <Row>
+              <Icon name="import" size="n1"/> {'champagne'}
+            </Row>
           </li>
           <li>
-            <Icon name="translate" class="Icon--xsm"
-            /> {3}{' more occurrences'}
+            <Row>
+              <Icon name="translate" size="n1"
+              /> {3}{' more occurrences'}
+            </Row>
           </li>
         </ul>
       </div>

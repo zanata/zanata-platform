@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import { FormattedDate } from 'react-intl'
-import Icon from './Icon'
+import { Icon, Row } from 'zanata-ui'
 
 /**
  * Show an appropriate message about the source and time of the most
@@ -47,8 +47,10 @@ const SuggestionUpdateMessage = React.createClass({
   render: function () {
     return (
       <span className="u-textMeta">
-        <Icon name="history" className="Icon--xsm u-sMR-1-4" />
-        {this.message()}
+        <Row>
+          <Icon name="history" size="0" />
+          <span className="u-sML-1-4">{this.message()}</span>
+        </Row>
       </span>
     )
   }

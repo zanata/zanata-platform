@@ -1,4 +1,4 @@
-import Icon from './Icon'
+import { Icon } from 'zanata-ui'
 import React, { PropTypes } from 'react'
 
 /**
@@ -20,8 +20,8 @@ const PagerButton = React.createClass({
   render: function () {
     const icon =
       <Icon name={this.props.icon}
-        title={this.props.title}
-        className="u-sizeWidth-1" />
+            size="2"
+            title={this.props.title} />
     return (
       <li>
         {this.props.disabled

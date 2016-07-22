@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import Textarea from 'react-textarea-autosize'
 import TransUnitTranslationHeader from './TransUnitTranslationHeader'
 import TransUnitTranslationFooter from './TransUnitTranslationFooter'
-import Icon from './Icon'
+import { Icon } from 'zanata-ui'
 import { pick } from 'lodash'
 
 /**

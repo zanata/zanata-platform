@@ -17,7 +17,7 @@
     "test": "jest",
     "storybook": "start-storybook -p 9001 -s ./app/build",
     "build-storybook": "build-storybook -s ./app/build",
-    "spritesheet": "gulp icons",
+    "processhtml": "gulp processhtml",
     "storybook-spritesheet": "gulp storybook-icons"
   },
   "repository": {
@@ -106,9 +106,13 @@
     "suitcss-utils-position": "0.2.1",
     "suitcss-utils-size": "0.7.1",
     "suitcss-utils-text": "0.4.1",
-    "text-diff": "1.0.1"
+    "text-diff": "1.0.1",
+    "zanata-ui": "3.0.3"
   },
   "jest": {
+    "moduleNameMapper": {
+      "^.+\\.(css)$": "./__tests__/mock/cssMock.js"
+    },
     "scriptPreprocessor": "./node_modules/babel-jest",
     "unmockedModulePathPatterns": [
       "/node_modules",

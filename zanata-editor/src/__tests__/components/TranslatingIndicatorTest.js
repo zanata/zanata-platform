@@ -3,7 +3,7 @@ jest.disableAutomock()
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import TranslatingIndicator from '../../app/components/TranslatingIndicator'
-import Icon from '../../app/components/Icon'
+import { Icon } from 'zanata-ui'
 
 describe('TranslatingIndicatorTest', () => {
   it('TranslatingIndicator markup', () => {
@@ -18,7 +18,7 @@ describe('TranslatingIndicatorTest', () => {
     const expected = ReactDOMServer.renderToStaticMarkup(
       <button className="Link--neutral u-sPV-1-4 u-floatLeft
                        u-sizeHeight-1_1-2 u-sMR-1-4">
-        <Icon name="translate"/> <span
+        <Icon name="translate" size="2"/> <span
         className="u-ltemd-hidden u-sMR-1-4">
         Translating
       </span>

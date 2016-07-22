@@ -132,7 +132,7 @@
 
           <!-- Inject a spritesheet into index.html based on all the icon sprite files. -->
           <execution>
-            <id>npm run spritesheet (${project.artifactId})</id>
+            <id>npm run processhtml (${project.artifactId})</id>
             <phase>process-resources</phase>
             <goals>
               <goal>exec</goal>
@@ -142,7 +142,7 @@
               <arguments>
                 <argument>${npm.executable}</argument>
                 <argument>run</argument>
-                <argument>spritesheet</argument>
+                <argument>processhtml</argument>
               </arguments>
             </configuration>
           </execution>

@@ -25,6 +25,10 @@
   overflow: hidden !important;
 }
 
+.u-vAlignMiddle {
+  vertical-align: middle
+}
+
 @media (--sm-viewport) {
   .u-sm-hidden {
     display: none !important;

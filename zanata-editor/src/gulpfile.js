@@ -30,27 +30,10 @@ function notifyError(err) {
 
 }
 
-// generate a new index.html that contains an icon spritesheet. The spritesheet
-// is built from all the icon svg files.
-gulp.task('icons', function () {
-  var svgs = gulp.src(paths.icons.app)
-    .pipe(plumber({errorHandler: notifyError}))
-    .pipe(svgSprite({
-      mode: {
-        symbol: {
-          inline: true
-        }
-      }
-    }))
-    .pipe(rename('icons.svg'));
-
-  function fileContents (filePath, file) {
-    return file.contents.toString('utf8');
-  }
+// Copy index.html into /build
+gulp.task('processhtml', function () {
 
   return gulp.src(paths.app + '/index.html')
-    .pipe(plumber({errorHandler: notifyError}))
-    .pipe(inject(svgs, {transform: fileContents}))
     .pipe(gulp.dest(paths.app + '/build'));
 });
 

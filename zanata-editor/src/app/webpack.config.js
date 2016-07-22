@@ -43,7 +43,6 @@ module.exports = {
        */
       {
         test: /\.css$/,
-        exclude: /node_modules/,
         loader: ExtractTextPlugin.extract('style', 'css!csso!postcss!rework')
       }
     ]

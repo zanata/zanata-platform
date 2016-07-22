@@ -13,8 +13,7 @@ describe('IconButtonToggleTest', () => {
       title="Mozart"
       onClick={clickFun}
       active={false}
-      disabled={true}
-      className="pop-icon"/>)
+      disabled={true} />)
 
     const expected = ReactDOMServer.renderToStaticMarkup(
       <IconButton
@@ -22,8 +21,7 @@ describe('IconButtonToggleTest', () => {
         title="Mozart"
         onClick={clickFun}
         disabled={true}
-        iconClass="pop-icon"
-        buttonClass="Button Button--snug u-roundish Button--invisible"/>
+        className="Button Button--snug u-roundish Button--invisible"/>
     )
     expect(actual).toEqual(expected)
   })
@@ -41,11 +39,10 @@ describe('IconButtonToggleTest', () => {
     const expected = ReactDOMServer.renderToStaticMarkup(
       <IconButton
         active={true}
-        buttonClass="Button Button--snug u-roundish Button--invisible is-active"
+        className="pop-icon Button Button--snug u-roundish Button--invisible is-active"
         icon="classical"
         title="Mozart"
-        onClick={clickFun}
-        iconClass="pop-icon"/>
+        onClick={clickFun} />
     )
     expect(actual).toEqual(expected)
   })

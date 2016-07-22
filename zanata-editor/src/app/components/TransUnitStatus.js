@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import Icon from './Icon'
+import Icon from 'zanata-ui'
 import cx from 'classnames'
 
 /**
@@ -46,9 +46,9 @@ const TransUnitStatus = React.createClass({
         <button tabIndex="-1"
           className="TransUnit-metaDataButton"
           title="1 Error">
-          <Icon name="dot"
-            title="Error"
-            className="Icon--xsm u-textDanger" />
+          <span className="u-textDanger">
+            <Icon name="dot" title="Error" size="n1" />
+          </span>
           <br />
           <span>{phrase.comments}</span>
         </button>

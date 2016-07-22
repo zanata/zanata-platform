@@ -28,7 +28,7 @@ const TransUnitTranslationHeader = React.createClass({
       <li className="u-sm-hidden">
         <IconButton
           icon="cross"
-          buttonClass={this.buttonClass}
+          className={this.buttonClass}
           title="Cancel edit"
           onClick={this.props.cancelEdit} />
       </li>
@@ -40,7 +40,7 @@ const TransUnitTranslationHeader = React.createClass({
       <li>
         <IconButton
           icon="undo"
-          buttonClass={this.buttonClass}
+          className={this.buttonClass}
           title="Undo edit"
           onClick={this.props.undoEdit} />
       </li>

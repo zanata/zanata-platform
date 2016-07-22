@@ -1,5 +1,5 @@
 import cx from 'classnames'
-import Icon from '../../components/Icon'
+import { Icon } from 'zanata-ui'
 import KeyCombinations from '../../components/KeyCombinations'
 import { chain, each, map } from 'lodash'
 import { connect } from 'react-redux'

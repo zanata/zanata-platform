@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import Icon from '../components/Icon'
+import { Icon } from 'zanata-ui'
 import IconButton from '../components/IconButton'
 import IconButtonToggle from '../components/IconButtonToggle'
 import SuggestionSearchInput from '../components/SuggestionSearchInput'
@@ -76,9 +76,10 @@ const SuggestionsHeader = React.createClass({
     return (
       <nav className="Editor-suggestionsHeader u-bgHighest u-sPH-3-4">
         <h2 className="Heading--panel u-sPV-1-4 u-floatLeft u-sizeHeight-1_1-2">
-          <Icon name="suggestions"
-            className="Icon--sm u-textMuted" />
-            Suggestions
+          <span className="u-textMuted">
+             <Icon name="suggestions" size="0" />
+          </span>
+          Suggestions
         </h2>
         <div className="u-floatRight">
           <ul className="u-listHorizontal u-textCenter">
@@ -112,7 +113,7 @@ const SuggestionsHeader = React.createClass({
                 icon="cross"
                 title="Close suggestions"
                 onClick={this.props.closeSuggestions}
-                buttonClass="Link--neutral u-sizeHeight-1_1-2 u-sizeWidth-1_1-2"
+                className="Link--neutral u-sizeHeight-1_1-2 u-sizeWidth-1_1-2"
               />
             </li>
           </ul>

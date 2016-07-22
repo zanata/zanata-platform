@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import cx from 'classnames'
 import Button from './Button'
 import SplitDropdown from './SplitDropdown'
-import Icon from './Icon'
+import { Icon, Row } from 'zanata-ui'
 import { defaultSaveStatus, nonDefaultValidSaveStatuses } from '../utils/status'
 import { hasTranslationChanged } from '../utils/phrase'
 
@@ -103,10 +103,12 @@ const TransUnitTranslationFooter = React.createClass({
             className={iconClasses}
             title="Suggestions available"
             onClick={toggleSuggestionPanel}>
-            <Icon name="suggestions" />
-            <span className="u-textMini">
-              {suggestionCount}
-            </span>
+            <Row>
+              <Icon name="suggestions"/>
+              <span className="u-textMini">
+                {suggestionCount}
+              </span>
+            </Row>
           </Button>
         </li>
       )
@@ -147,9 +149,10 @@ const TransUnitTranslationFooter = React.createClass({
                       'Dropdown-toggle',
                       this.buttonClassByStatus[selectedButtonStatus])}
         title="Save as…">
-        <Icon name="chevron-down"
-          title="Save as…"
-          className="Icon--sm Dropdown-toggleIcon" />
+        <div className="Dropdown-toggleIcon">
+            <Icon name="chevron-down" size="0"
+                  title="Save as…" />
+        </div>
       </Button>
       : undefined
 

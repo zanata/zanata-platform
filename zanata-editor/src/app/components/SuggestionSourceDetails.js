@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import Icon from './Icon'
+import { Icon, Row } from 'zanata-ui'
 
 /**
  * Display metadata for suggestion source.
@@ -25,39 +25,49 @@ const SuggestionSourceDetails = React.createClass({
     const topMatch = matchDetails[0]
     const isTextFlow = topMatch.type === 'LOCAL_PROJECT'
 
-    const projectIcon = isTextFlow ? (
+    const projectIcon = isTextFlow && (
       <li title={topMatch.projectId}>
-        <Icon name="project" className="Icon--xsm" /> {topMatch.projectName}
+        <Row>
+          <Icon name="project" size="n1"/> {topMatch.projectName}
+        </Row>
       </li>
-    ) : undefined
+    )
 
-    const versionIcon = isTextFlow ? (
+    const versionIcon = isTextFlow && (
       <li>
-        <Icon name="version" className="Icon--xsm" /> {topMatch.version}
+        <Row>
+          <Icon name="version" size="n1"/> {topMatch.version}
+        </Row>
       </li>
-    ) : undefined
+    )
 
     const documentPath = topMatch.documentPath
       ? topMatch.documentPath + '/'
       : ''
-    const documentIcon = isTextFlow ? (
+    const documentIcon = isTextFlow && (
       <li title={documentPath + topMatch.documentName}>
-        <Icon name="document" className="Icon--xsm" /> {topMatch.documentName}
-      </li>
-    ) : undefined
-
-    const importIcon = isTextFlow ? undefined : (
-      <li>
-        <Icon name="import" className="Icon--xsm" /> {topMatch.transMemorySlug}
+        <Row>
+          <Icon name="document" size="n1"/> {topMatch.documentName}
+        </Row>
       </li>
     )
 
-    const remainingIcon = matchDetails.length > 1 ? (
+    const importIcon = isTextFlow ? undefined : (
       <li>
-        <Icon name="translate" class="Icon--xsm"
-        /> {matchDetails.length - 1} more occurrences
+        <Row>
+          <Icon name="import" size="n1"/> {topMatch.transMemorySlug}
+        </Row>
       </li>
-    ) : undefined
+    )
+
+    const remainingIcon = matchDetails.length > 1 && (
+      <li>
+        <Row>
+          <Icon name="translate" size="n1"
+          /> {matchDetails.length - 1} more occurrences
+        </Row>
+      </li>
+    )
 
     return (
       <div className="TransUnit-details">

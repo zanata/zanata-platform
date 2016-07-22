@@ -4,7 +4,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-addons-test-utils'
-import Icon from '../../app/components/Icon'
+import { Icon } from 'zanata-ui'
 import IconButton from '../../app/components/IconButton'
 
 describe('IconButtonTest', () => {
@@ -15,8 +15,7 @@ describe('IconButtonTest', () => {
       icon="classical"
       title="Mozart"
       onClick={clickFun}
-      iconClass="pop-icon"
-      buttonClass="push-me"/>)
+      className="push-me"/>)
 
     const expected = ReactDOMServer.renderToStaticMarkup(
       <button
@@ -24,9 +23,8 @@ describe('IconButtonTest', () => {
         onClick={clickFun}
         title="Mozart">
         <Icon
-          name="classical"
-          title="Mozart"
-          className="Icon--sm pop-icon"/>
+          name="classical" size="1"
+          title="Mozart" />
       </button>
     )
     expect(actual).toEqual(expected)
@@ -38,8 +36,7 @@ describe('IconButtonTest', () => {
       icon="tea"
       title="Tea"
       onClick={clickFun}
-      iconClass="cultural-icon"
-      buttonClass="drink-me"
+      className="drink-me"
       disabled={true}/>)
 
     const expected = ReactDOMServer.renderToStaticMarkup(
@@ -51,7 +48,7 @@ describe('IconButtonTest', () => {
         <Icon
           name="tea"
           title="Tea"
-          className="Icon--sm cultural-icon"/>
+          size="1" />
       </button>
     )
     expect(actual).toEqual(expected)
