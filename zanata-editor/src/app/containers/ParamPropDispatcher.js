@@ -10,19 +10,16 @@
  * require context information.
  */
 
-import React from 'react'
+import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { routingParamsChanged } from '../actions'
 
 class ParamPropDispatcher extends React.Component {
   componentWillMount () {
     // always dispatch for initial render
-    // console.log('will mount')
     this.props.dispatchParams(this.props.params)
   }
   componentWillReceiveProps (newProps) {
-    // console.log('willReceiveProps')
-    // debugger
     const oldPathname = this.props.location && this.props.location.pathname
     const newPathname = newProps.location && newProps.location.pathname
     if (oldPathname !== newPathname) {
@@ -35,7 +32,15 @@ class ParamPropDispatcher extends React.Component {
   }
 }
 
-// this is where the action should be dispatched
+ParamPropDispatcher.propTypes = {
+  children: PropTypes.node,
+  dispatchParams: PropTypes.func.isRequired,
+  location: PropTypes.shape({
+    pathname: PropTypes.string
+  }),
+  params: PropTypes.object.isRequired
+}
+
 function mapDispatchToProps (dispatch) {
   return {
     dispatchParams: params => {

@@ -6,7 +6,7 @@ import {
   fetchDocuments,
   fetchVersionLocales
 } from '../api'
-import { any, curry, isEmpty } from 'lodash'
+import { some, curry, isEmpty } from 'lodash'
 import { equals } from '../utils/string-utils'
 
 export const TOGGLE_HEADER = Symbol('TOGGLE_HEADER')
@@ -68,11 +68,11 @@ export function changeUiLocale (locale) {
 export const FETCHING = 'FETCHING'
 
 const decodeDocId = (docId) => {
-  return docId ? docId.replace(/\,/g, '/') : docId
+  return docId ? docId.replace(/,/g, '/') : docId
 }
 
 const hasCaseInsensitiveMatchingProp = (list, prop, matchedValue) => {
-  return any(list, (item) => {
+  return some(list, (item) => {
     return equals(item[prop], matchedValue, true)
   })
 }

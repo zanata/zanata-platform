@@ -95,14 +95,14 @@ const ControlsHeader = React.createClass({
     const navHeaderHidden = !ui.panels.navHeader.visible
     return (
       <nav className="u-bgHighest u-sPH-1-2 l--cf-of u-sizeHeight-1_1-2">
-        <TranslatingIndicator gettextCatalog={gettextCatalog}/>
+        <TranslatingIndicator gettextCatalog={gettextCatalog} />
         <div className="u-floatLeft">
-          <TransUnitFilter {...transFilterProps}/>
+          <TransUnitFilter {...transFilterProps} />
         </div>
         <div className="u-floatRight">
           <ul className="u-listHorizontal u-textCenter">
             <li className="u-sMV-1-4">
-              <Pager {...pagerProps}/>
+              <Pager {...pagerProps} />
             </li>
             <li className="u-sM-1-8">
               <IconButtonToggle
@@ -111,7 +111,7 @@ const ControlsHeader = React.createClass({
                   ? gettextCatalog.getString('Hide suggestions panel')
                   : gettextCatalog.getString('Show suggestions panel')}
                 onClick={this.props.actions.toggleSuggestionPanel}
-                active={this.props.ui.panels.suggestions.visible}/>
+                active={this.props.ui.panels.suggestions.visible} />
 
             </li>
       {/* extra items from the angular template that were not being displayed
@@ -134,7 +134,7 @@ const ControlsHeader = React.createClass({
               <IconButtonToggle
                 icon="keyboard"
                 title={gettextCatalog.getString('Keyboard Shortcuts')}
-                onClick={this.props.actions.toggleKeyboardShortcutsModal}/>
+                onClick={this.props.actions.toggleKeyboardShortcutsModal} />
             </li>
             <li className="u-sM-1-8">
               <IconButtonToggle
@@ -144,7 +144,7 @@ const ControlsHeader = React.createClass({
                   : gettextCatalog.getString('Hide Menubar')}
                 onClick={this.props.actions.toggleMainNav}
                 active={navHeaderHidden}
-                className={cx({'is-rotated': navHeaderHidden})}/>
+                className={cx({'is-rotated': navHeaderHidden})} />
             </li>
           </ul>
         </div>

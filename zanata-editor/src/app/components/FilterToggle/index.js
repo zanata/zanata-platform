@@ -32,19 +32,19 @@ const FilterToggle = React.createClass({
   render: function () {
     const className = cx('Toggle u-round', this.props.className)
     const dot = this.props.withDot
-      ? <Icon name="dot" className="Icon--xsm"/> : undefined
+      ? <Icon name="dot" className="Icon--xsm" /> : undefined
 
     return (
       <div className={className}>
         <input className="Toggle-checkbox"
-               type="checkbox"
-               id={this.props.id}
-               checked={this.props.isChecked}
-               onChange={this.props.onChange}/>
-        <span className="Toggle-fakeCheckbox"/>
+          type="checkbox"
+          id={this.props.id}
+          checked={this.props.isChecked}
+          onChange={this.props.onChange} />
+        <span className="Toggle-fakeCheckbox" />
         <label className="Toggle-label"
-               htmlFor={this.props.id}
-               title={this.props.title}>
+          htmlFor={this.props.id}
+          title={this.props.title}>
           {dot}
           {this.props.count}
           <span className="u-hiddenVisually">{this.props.title}</span>

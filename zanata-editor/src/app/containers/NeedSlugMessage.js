@@ -16,10 +16,10 @@ class NeedSlugMessage extends React.Component {
         <p>Need a URL in the form <code>
           .../project-slug/version-slug/translate
         </code></p>
-      <p>If using <code>fake-zanata-server</code>, try using <Link
-        to="/tiny-project/1/translate/hello.txt/fr">
-            /tiny-project/1/translate/hello.txt/fr
-          </Link>
+        <p>If using <code>fake-zanata-server</code>, try using <Link
+          to="/tiny-project/1/translate/hello.txt/fr">
+              /tiny-project/1/translate/hello.txt/fr
+        </Link>
         </p>
       </div>
     )

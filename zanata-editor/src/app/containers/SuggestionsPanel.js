@@ -4,13 +4,13 @@ import SuggestionsHeader from './SuggestionsHeader'
 import SuggestionsBody from './SuggestionsBody'
 import { pick } from 'lodash'
 import { connect } from 'react-redux'
-import { toggleSuggestions } from '../actions/suggestions'
-import { copySuggestionN } from '../actions/suggestions'
 import {
+  copySuggestionN,
   clearSearch,
   changeSearchText,
   diffSettingChanged,
-  toggleSearchType
+  toggleSearchType,
+  toggleSuggestions
 } from '../actions/suggestions'
 
 const DO_NOT_RENDER = null
@@ -22,6 +22,9 @@ const SEARCH_TYPE_TEXT = 'text'
  */
 const SuggestionsPanel = React.createClass({
   propTypes: {
+    searchToggle: PropTypes.func.isRequired,
+    clearSearch: PropTypes.func.isRequired,
+    changeSearchText: PropTypes.func.isRequired,
     // likely want to move this switching to a higher level
     showPanel: PropTypes.bool.isRequired,
     searchType: PropTypes.oneOf(
@@ -52,8 +55,8 @@ const SuggestionsPanel = React.createClass({
       <aside
         id="editor-suggestions"
         className={className}>
-        <SuggestionsHeader {...headerProps}/>
-        <SuggestionsBody {...bodyProps}/>
+        <SuggestionsHeader {...headerProps} />
+        <SuggestionsBody {...bodyProps} />
       </aside>
     )
   }

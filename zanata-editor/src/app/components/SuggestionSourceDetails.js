@@ -27,13 +27,13 @@ const SuggestionSourceDetails = React.createClass({
 
     const projectIcon = isTextFlow ? (
       <li title={topMatch.projectId}>
-        <Icon name="project" className="Icon--xsm"/> {topMatch.projectName}
+        <Icon name="project" className="Icon--xsm" /> {topMatch.projectName}
       </li>
     ) : undefined
 
     const versionIcon = isTextFlow ? (
       <li>
-        <Icon name="version" className="Icon--xsm"/> {topMatch.version}
+        <Icon name="version" className="Icon--xsm" /> {topMatch.version}
       </li>
     ) : undefined
 
@@ -42,13 +42,13 @@ const SuggestionSourceDetails = React.createClass({
       : ''
     const documentIcon = isTextFlow ? (
       <li title={documentPath + topMatch.documentName}>
-        <Icon name="document" className="Icon--xsm"/> {topMatch.documentName}
+        <Icon name="document" className="Icon--xsm" /> {topMatch.documentName}
       </li>
     ) : undefined
 
     const importIcon = isTextFlow ? undefined : (
       <li>
-        <Icon name="import" className="Icon--xsm"/> {topMatch.transMemorySlug}
+        <Icon name="import" className="Icon--xsm" /> {topMatch.transMemorySlug}
       </li>
     )
 

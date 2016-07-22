@@ -27,7 +27,7 @@ const EditorHeader = React.createClass({
         { 'is-minimised': !this.props.navHeaderVisible })
     return (
       <div id="editor-header">
-        <ZanataLogoLoader/>
+        <ZanataLogoLoader />
         <header role="banner"
           className={className}
           focus-on="editor-header">
@@ -35,7 +35,7 @@ const EditorHeader = React.createClass({
           <ControlsHeader />
           <ProgressBar
             size="small"
-            counts={this.props.counts}/>
+            counts={this.props.counts} />
         </header>
       </div>
     )

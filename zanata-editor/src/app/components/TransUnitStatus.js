@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react'
+import Icon from './Icon'
 import cx from 'classnames'
 
 /**
@@ -27,32 +28,32 @@ const TransUnitStatus = React.createClass({
 
     const comments = phrase.comments
       ? (
-          <li className="TransUnit-metaDataItem TransUnit-metaDataComments">
-            <button tabindex="-1"
-              className="TransUnit-metaDataButton"
-              title={phrase.comments + ' comments'}>
-              <Icon name="comment" title="Comments"/>
-              <br/>
-              <span>{phrase.comments}</span>
-            </button>
-          </li>
-        )
+      <li className="TransUnit-metaDataItem TransUnit-metaDataComments">
+        <button tabIndex="-1"
+          className="TransUnit-metaDataButton"
+          title={phrase.comments + ' comments'}>
+          <Icon name="comment" title="Comments" />
+          <br />
+          <span>{phrase.comments}</span>
+        </button>
+      </li>
+      )
       : undefined
 
     const errors = phrase.errors
       ? (
-          <li className="TransUnit-metaDataItem TransUnit-metaDataErrors">
-            <button tabindex="-1"
-              className="TransUnit-metaDataButton"
-              title="1 Error">
-              <Icon name="dot"
-                title="Error"
-                className="Icon--xsm u-textDanger"/>
-              <br/>
-              <span>{phrase.comments}</span>
-            </button>
-          </li>
-        )
+      <li className="TransUnit-metaDataItem TransUnit-metaDataErrors">
+        <button tabIndex="-1"
+          className="TransUnit-metaDataButton"
+          title="1 Error">
+          <Icon name="dot"
+            title="Error"
+            className="Icon--xsm u-textDanger" />
+          <br />
+          <span>{phrase.comments}</span>
+        </button>
+      </li>
+      )
       : undefined
 
     return (

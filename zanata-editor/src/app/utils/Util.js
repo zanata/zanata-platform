@@ -12,7 +12,7 @@ export const prepareLocales = (locales) => {
           name: locale.displayName
         }
       })
-      .indexBy('id')
+      .keyBy('id')
       .value()
 }
 
@@ -30,5 +30,5 @@ export const prepareStats = (statistics) => {
 }
 
 export const prepareDocs = documents => {
-  return _.pluck(documents || [], 'name')
+  return _.map(documents || [], 'name')
 }

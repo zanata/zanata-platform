@@ -20,12 +20,12 @@ const DashboardLink = React.createClass({
 
   render: function () {
     return (
-        <a href={this.props.dashboardUrl}
-           className="u-sizeHeight-2 u-sizeWidth-1_1-2 u-inlineBlock"
-           title={this.props.name}>
-          <img className="u-round Header-avatar"
-            src={this.props.gravatarUrl}/>
-        </a>
+      <a href={this.props.dashboardUrl}
+        className="u-sizeHeight-2 u-sizeWidth-1_1-2 u-inlineBlock"
+        title={this.props.name}>
+        <img className="u-round Header-avatar"
+          src={this.props.gravatarUrl} />
+      </a>
     )
   }
 })

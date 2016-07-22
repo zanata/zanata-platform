@@ -1,8 +1,8 @@
 /* eslint-disable no-undef */
-var StringUtils = require('../StringUtils')
+jest.unmock('../StringUtils')
+import StringUtils from '../StringUtils'
 
 describe('StringUtilsTest', function () {
-
   it('test trim leading space', function () {
     var value = '   123'
     expect(StringUtils.trimLeadingSpace(value)).toEqual('123')

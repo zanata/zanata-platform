@@ -27,9 +27,9 @@ const SuggestionSources = React.createClass({
         <SuggestionContents
           plural={sourceContents.length > 1}
           contents={sourceContents}
-          compareTo={diffWith}/>
+          compareTo={diffWith} />
         <SuggestionSourceDetails
-          suggestion={this.props.suggestion}/>
+          suggestion={this.props.suggestion} />
       </div>
     )
   }

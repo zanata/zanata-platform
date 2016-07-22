@@ -2,12 +2,12 @@ import { fetchPhraseList, fetchPhraseDetail, savePhrase } from '../api'
 import { toggleDropdown } from '.'
 import { mapValues, slice } from 'lodash'
 import {
+  defaultSaveStatus,
   STATUS_NEW,
   STATUS_UNTRANSLATED,
   STATUS_NEEDS_WORK,
   STATUS_NEEDS_WORK_SERVER
 } from '../utils/status'
-import { defaultSaveStatus } from '../utils/status'
 import { hasTranslationChanged } from '../utils/phrase'
 
 export const FETCHING_PHRASE_LIST = Symbol('FETCHING_PHRASE_LIST')

@@ -16,7 +16,7 @@ const ZanataLogoLoader = ({ inverted, loading }) => {
   return (
     <a className={className}
       href={dashboardUrl}>
-      <LogoLoader {...{ inverted, loading }}/>
+      <LogoLoader {...{ inverted, loading }} />
     </a>
   )
 }

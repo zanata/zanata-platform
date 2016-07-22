@@ -71,16 +71,16 @@ class Root extends Component {
     return (
       <ParamPropDispatcher {...this.props}>
         <KeyShortcutDispatcher className="Editor is-suggestions-active">
-          <EditorHeader/>
+          <EditorHeader />
           <SplitPane ref="suggestionResizer"
             split="horizontal"
             defaultSize={pixelHeight}
             primary="second"
             onDragFinished={this.resizeFinished}>
-            <MainContent/>
+            <MainContent />
             {this.props.showSuggestion && <SuggestionsPanel />}
           </SplitPane>
-          <KeyShortcutCheatSheet/>
+          <KeyShortcutCheatSheet />
         </KeyShortcutDispatcher>
       </ParamPropDispatcher>
     )
@@ -89,7 +89,10 @@ class Root extends Component {
 
 Root.propTypes = {
   percentHeight: PropTypes.number.isRequired,
-  showSuggestion: PropTypes.bool
+  showSuggestion: PropTypes.bool,
+  requestUiLocales: PropTypes.func.isRequired,
+  requestHeaderInfo: PropTypes.func.isRequired,
+  saveSuggestionPanelHeight: PropTypes.func.isRequired
 }
 
 function mapStateToProps (state, ownProps) {

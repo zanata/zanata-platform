@@ -38,10 +38,10 @@ const SplitDropdown = React.createClass({
       toggleButtonItem = (
         <div className="ButtonGroup-item">
           <div ref="button"
-               className="Dropdown-toggle"
-               aria-haspopup={true}
-               aria-expanded={this.props.isOpen}
-               {...buttonClick}>
+            className="Dropdown-toggle"
+            aria-haspopup
+            aria-expanded={this.props.isOpen}
+            {...buttonClick}>
             {this.props.toggleButton}
           </div>
         </div>

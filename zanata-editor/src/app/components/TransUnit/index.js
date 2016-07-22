@@ -31,13 +31,14 @@ const TransUnit = React.createClass({
     translationLocale: PropTypes.shape({
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired
-    }).isRequired
+    }).isRequired,
     // savingStatusId: PropTypes.oneOf([
     //   'untranslated',
     //   'needswork',
     //   'translated',
     //   'approved'
     // ])
+    selected: PropTypes.bool.isRequired
   },
 
   getInitialState: () => {
@@ -51,6 +52,11 @@ const TransUnit = React.createClass({
     needswork: 'TransUnit--unsure',
     translated: 'TransUnit--success',
     approved: 'TransUnit--highlight'
+  },
+
+  selectPhrase () {
+    const { phrase, selectPhrase } = this.props
+    selectPhrase(phrase.id)
   },
 
   render: function () {
@@ -95,12 +101,11 @@ const TransUnit = React.createClass({
 
     return (
       <div className={className}
-           onClick={this.props.selectPhrase.bind(undefined,
-                      this.props.phrase.id)}>
-        <TransUnitStatus phrase={this.props.phrase}/>
-        <TransUnitSourcePanel {...phraseSourcePanelProps}/>
+        onClick={this.selectPhrase}>
+        <TransUnitStatus phrase={this.props.phrase} />
+        <TransUnitSourcePanel {...phraseSourcePanelProps} />
         <TransUnitTranslationPanel {...phraseTranslationPanelProps}
-          saveDropdownKey={this.props.phrase.id}/>
+          saveDropdownKey={this.props.phrase.id} />
       </div>
     )
   }

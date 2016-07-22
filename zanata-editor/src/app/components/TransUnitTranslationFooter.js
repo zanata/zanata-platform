@@ -43,6 +43,15 @@ const TransUnitTranslationFooter = React.createClass({
     translated: <kbd>t</kbd>
   },
 
+  componentWillMount: function () {
+    const { toggleDropdown, saveDropdownKey } = this.props
+    this.toggleDropdown = toggleDropdown.bind(undefined, saveDropdownKey)
+  },
+  componentWillReceiveProps: function (nextProps) {
+    const { toggleDropdown, saveDropdownKey } = nextProps
+    this.toggleDropdown = toggleDropdown.bind(undefined, saveDropdownKey)
+  },
+
   saveButtonElement: function (status) {
     const { phrase, saveAsMode, savePhraseWithStatus } = this.props
     const className = cx('Button u-sizeHeight-1_1-4',
@@ -67,7 +76,7 @@ const TransUnitTranslationFooter = React.createClass({
   render: function () {
     const { openDropdown, phrase, saveAsMode, saveDropdownKey,
       savePhraseWithStatus, showSuggestions, suggestionCount,
-      suggestionSearchType, toggleDropdown, toggleSuggestionPanel } = this.props
+      suggestionSearchType, toggleSuggestionPanel } = this.props
 
     const dropdownIsOpen = openDropdown === saveDropdownKey || saveAsMode
     const translationHasChanged = hasTranslationChanged(phrase)
@@ -94,7 +103,7 @@ const TransUnitTranslationFooter = React.createClass({
             className={iconClasses}
             title="Suggestions available"
             onClick={toggleSuggestionPanel}>
-            <Icon name="suggestions"/>
+            <Icon name="suggestions" />
             <span className="u-textMini">
               {suggestionCount}
             </span>
@@ -113,14 +122,14 @@ const TransUnitTranslationFooter = React.createClass({
     const actionButtonKeyShortcut =
       saveAsMode && this.statusShortcutKeys[selectedButtonStatus]
     const actionButton = (
-        <Button
-          className={cx('Button u-sizeHeight-1_1-4 u-textCapitalize',
-                        this.buttonClassByStatus[selectedButtonStatus])}
-          disabled={isSaving || !translationHasChanged}
-          title={selectedButtonTitle}
-          onClick={saveCallback}>
-          {selectedButtonTitle}{actionButtonKeyShortcut}
-        </Button>
+      <Button
+        className={cx('Button u-sizeHeight-1_1-4 u-textCapitalize',
+                      this.buttonClassByStatus[selectedButtonStatus])}
+        disabled={isSaving || !translationHasChanged}
+        title={selectedButtonTitle}
+        onClick={saveCallback}>
+        {selectedButtonTitle}{actionButtonKeyShortcut}
+      </Button>
     )
 
     const otherStatuses = nonDefaultValidSaveStatuses(phrase)
@@ -134,14 +143,14 @@ const TransUnitTranslationFooter = React.createClass({
 
     const dropdownToggleButton = otherStatuses.length > 0
       ? <Button
-          className={cx('Button Button--snug u-sizeHeight-1_1-4',
-                        'Dropdown-toggle',
-                        this.buttonClassByStatus[selectedButtonStatus])}
-          title="Save as…">
-          <Icon name="chevron-down"
-                title="Save as…"
-                className="Icon--sm Dropdown-toggleIcon"/>
-        </Button>
+        className={cx('Button Button--snug u-sizeHeight-1_1-4',
+                      'Dropdown-toggle',
+                      this.buttonClassByStatus[selectedButtonStatus])}
+        title="Save as…">
+        <Icon name="chevron-down"
+          title="Save as…"
+          className="Icon--sm Dropdown-toggleIcon" />
+      </Button>
       : undefined
 
     const otherActionButtonList = (
@@ -172,13 +181,11 @@ const TransUnitTranslationFooter = React.createClass({
         <div className="u-floatRight">
           {saveAsLabel}
           <SplitDropdown
-            onToggle={toggleDropdown.bind(undefined,
-                        saveDropdownKey)}
+            onToggle={this.toggleDropdown}
             isOpen={dropdownIsOpen}
             actionButton={actionButton}
             toggleButton={dropdownToggleButton}
-            content={otherActionButtonList}>
-          </SplitDropdown>
+            content={otherActionButtonList} />
         </div>
       </div>
     )

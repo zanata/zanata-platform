@@ -17,7 +17,10 @@ const IconButtonToggle = React.createClass({
     onClick: PropTypes.func.isRequired,
     active: PropTypes.bool.isRequired,
     disabled: PropTypes.bool,
-    className: PropTypes.string
+    // className to apply to the icon only
+    className: PropTypes.string,
+    // className to apply to the entire button
+    buttonClass: PropTypes.string
   },
 
   getDefaultProps: () => {
@@ -35,7 +38,7 @@ const IconButtonToggle = React.createClass({
       <IconButton
         {...this.props}
         iconClass={this.props.className}
-        buttonClass={buttonClass}/>
+        buttonClass={buttonClass} />
     )
   }
 })

@@ -18,10 +18,10 @@ const ToggleSwitch = React.createClass({
     return (
       <span className={cx('Switch', this.props.className)}>
         <input className="Switch-checkbox"
-               type="checkbox"
-               id={this.props.id}
-               checked={this.props.isChecked}
-               onChange={this.props.onChange}/>
+          type="checkbox"
+          id={this.props.id}
+          checked={this.props.isChecked}
+          onChange={this.props.onChange} />
         <label className="Switch-label" htmlFor={this.props.id}>
           <span className="Switch-labelText">{this.props.label}</span>
         </label>

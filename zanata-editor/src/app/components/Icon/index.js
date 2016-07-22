@@ -26,17 +26,17 @@ const Icon = React.createClass({
                     '"/>' + titleMarkup
 
     return <svg className="Icon-item"
-             dangerouslySetInnerHTML={{__html: innerHtml}} />
+      dangerouslySetInnerHTML={{__html: innerHtml}} />
   },
 
   /**
    * Render an animated loader
    */
   loaderIcon: function () {
-    const dot = <span className="Icon--loader-dot"/>
+    const dot = <span className="Icon--loader-dot" />
     return (
       <span className="Icon-item"
-            title={this.props.title}>
+        title={this.props.title}>
         {dot}{dot}{dot}
       </span>
     )

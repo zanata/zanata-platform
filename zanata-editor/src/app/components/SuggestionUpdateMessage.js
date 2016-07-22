@@ -16,8 +16,8 @@ const SuggestionUpdateMessage = React.createClass({
   },
 
   message: function () {
-    const date = <FormattedDate value={this.props.lastChanged}
-                              format="medium"/>
+    const date =
+      <FormattedDate value={this.props.lastChanged} format="medium" />
 
     switch (this.props.matchType) {
       case 'imported':
@@ -47,7 +47,7 @@ const SuggestionUpdateMessage = React.createClass({
   render: function () {
     return (
       <span className="u-textMeta">
-        <Icon name="history" className="Icon--xsm u-sMR-1-4"/>
+        <Icon name="history" className="Icon--xsm u-sMR-1-4" />
         {this.message()}
       </span>
     )

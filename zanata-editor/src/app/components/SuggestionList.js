@@ -7,6 +7,7 @@ import { pick } from 'lodash'
  */
 const SuggestionList = React.createClass({
   propTypes: {
+    copySuggestion: PropTypes.func.isRequired,
     search: PropTypes.arrayOf(PropTypes.string),
     showDiff: PropTypes.bool.isRequired,
 
@@ -29,16 +30,13 @@ const SuggestionList = React.createClass({
 
   render: function () {
     const sharedProps = pick(this.props,
-      ['search', 'showDiff'])
+      ['copySuggestion', 'search', 'showDiff'])
 
     const suggestions = this.props.suggestions.map((suggestion, index) => {
-      const suggestionWithCopy = {
-        ...suggestion,
-        copySuggestion: this.props.copySuggestion.bind(undefined, index)
-      }
       return <Suggestion key={index}
-               suggestion={suggestionWithCopy}
-               {...sharedProps}/>
+        index={index}
+        suggestion={suggestion}
+        {...sharedProps} />
     })
 
     return (

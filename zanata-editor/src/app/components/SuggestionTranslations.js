@@ -7,9 +7,9 @@ import SuggestionTranslationDetails from './SuggestionTranslationDetails'
  */
 const SuggestionTranslations = React.createClass({
   propTypes: {
+    copySuggestion: PropTypes.func.isRequired,
     suggestion: PropTypes.shape({
       copying: PropTypes.bool.isRequired,
-      copySuggestion: PropTypes.func.isRequired,
       matchType: PropTypes.string.isRequired,
       matchDetails: PropTypes.arrayOf(PropTypes.shape({
         type: PropTypes.string.isRequired,
@@ -27,8 +27,8 @@ const SuggestionTranslations = React.createClass({
       <div className="TransUnit-panel TransUnit-translation u-sPV-1-2">
         <SuggestionContents
           plural={this.props.suggestion.sourceContents.length > 1}
-          contents={this.props.suggestion.targetContents}/>
-        <SuggestionTranslationDetails {... this.props}/>
+          contents={this.props.suggestion.targetContents} />
+        <SuggestionTranslationDetails {... this.props} />
       </div>
     )
   }

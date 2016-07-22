@@ -19,5 +19,5 @@ export function encode (docId) {
  * @returns {*}
  */
 export function decode (docId) {
-  return docId ? docId.replace(/\,/g, '/') : docId
+  return docId ? docId.replace(/,/g, '/') : docId
 }

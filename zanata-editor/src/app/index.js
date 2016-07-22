@@ -96,8 +96,8 @@ ReactDOM.render(
       <Router history={history}>
         <Route
           path="/:projectSlug/:versionSlug/translate(/:docId/:lang)"
-          component={Root}/>
-        <Route path="/*" component={NeedSlugMessage}/>
+          component={Root} />
+        <Route path="/*" component={NeedSlugMessage} />
       </Router>
     </Provider>
   </IntlProvider>, rootElement)

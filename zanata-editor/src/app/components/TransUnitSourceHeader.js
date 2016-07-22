@@ -18,6 +18,10 @@ const TransUnitSourceHeader = React.createClass({
     }).isRequired
   },
 
+  componentWillMount: function () {
+    this.copyFromSource = this.props.copyFromSource.bind(undefined, 0)
+  },
+
   render: function () {
     // TODO remove duplication of this between source and translation headers
     const buttonClass =
@@ -26,31 +30,31 @@ const TransUnitSourceHeader = React.createClass({
     const copyButtonItem = this.props.phrase.plural
       ? undefined
       : (
-          <li>
-            <IconButton
-              icon="copy"
-              title={'Copy ' + this.props.sourceLocale.name +
-                     ' (' + this.props.sourceLocale.id + ')'}
-              onClick={this.props.copyFromSource.bind(undefined, 0)}
-              buttonClass={buttonClass}/>
-          </li>
-        )
+      <li>
+        <IconButton
+          icon="copy"
+          title={'Copy ' + this.props.sourceLocale.name +
+                 ' (' + this.props.sourceLocale.id + ')'}
+          onClick={this.copyFromSource}
+          buttonClass={buttonClass} />
+      </li>
+      )
 
     const closeButtonItem = hasTranslationChanged(this.props.phrase)
       ? undefined
       : (
-          <li className="u-gtemd-hidden">
-            <IconButton
-              icon="cross"
-              title="Cancel edit"
-              onClick={this.props.cancelEdit}
-              buttonClass={buttonClass}/>
-          </li>
-        )
+      <li className="u-gtemd-hidden">
+        <IconButton
+          icon="cross"
+          title="Cancel edit"
+          onClick={this.props.cancelEdit}
+          buttonClass={buttonClass} />
+      </li>
+      )
 
     return (
       <div className="TransUnit-panelHeader TransUnit-panelHeader--source">
-        <TransUnitLocaleHeading {...this.props.sourceLocale}/>
+        <TransUnitLocaleHeading {...this.props.sourceLocale} />
         <ul className="u-floatRight u-listHorizontal">
           {/* <li ng-show="appCtrl.PRODUCTION">
             <button class="Link Link--neutral u-sizeHeight-1_1-2

@@ -18,7 +18,7 @@ const NoSuggestionsPanel = React.createClass({
         className="u-posCenterCenter u-textEmpty u-textCenter">
         <Icon
           name={this.props.icon}
-          className="Icon--lg Icon--circle u-sMB-1-4"/>
+          className="Icon--lg Icon--circle u-sMB-1-4" />
         <p>{this.props.message}</p>
       </div>
     )

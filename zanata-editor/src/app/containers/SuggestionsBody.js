@@ -7,6 +7,7 @@ import SuggestionList from '../components/SuggestionList'
  */
 const SuggestionsBody = React.createClass({
   propTypes: {
+    copySuggestion: PropTypes.func.isRequired,
     searchType: PropTypes.oneOf(['phrase', 'text']).isRequired,
     search: PropTypes.shape({
       searchStrings: PropTypes.arrayOf(PropTypes.string),
@@ -44,7 +45,7 @@ const SuggestionsBody = React.createClass({
       return (
         <NoSuggestionsPanel
           icon="loader"
-          message="Loading suggestions"/>
+          message="Loading suggestions" />
       )
     }
 
@@ -52,7 +53,7 @@ const SuggestionsBody = React.createClass({
       return (
         <NoSuggestionsPanel
           icon="suggestions"
-          message="Select a phrase or enter a search term"/>
+          message="Select a phrase or enter a search term" />
       )
     }
 
@@ -60,7 +61,7 @@ const SuggestionsBody = React.createClass({
       return (
         <NoSuggestionsPanel
           icon="search"
-          message="Enter a search term"/>
+          message="Enter a search term" />
       )
     }
 
@@ -71,7 +72,7 @@ const SuggestionsBody = React.createClass({
       return (
         <NoSuggestionsPanel
           icon="suggestions"
-          message={noMatchingSuggestionMessage}/>
+          message={noMatchingSuggestionMessage} />
       )
     }
 
@@ -80,7 +81,7 @@ const SuggestionsBody = React.createClass({
         search={this.props.search.searchStrings}
         showDiff={this.props.showDiff}
         suggestions={this.props.search.suggestions}
-        copySuggestion={this.props.copySuggestion}/>
+        copySuggestion={this.props.copySuggestion} />
     )
   },
 

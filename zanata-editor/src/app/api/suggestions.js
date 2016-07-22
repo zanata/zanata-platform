@@ -114,7 +114,7 @@ function addBestMatchScores (suggestion) {
   }
 }
 
-// TODO use sortByAll when lodash version is increased
+// TODO use sortBy when lodash version is increased
 /**
  * Return a string that will naturally sort local project details before
  * imported TM details, approved state above translated state, and older

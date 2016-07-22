@@ -23,7 +23,7 @@ const ProgressItem = React.createClass({
       width: this.props.width + '%'
     }
     return (
-        <span className={className} style={style}/>
+      <span className={className} style={style} />
     )
   }
 })
@@ -86,19 +86,19 @@ const ProgressBar = React.createClass({
         <ProgressItem
           state="approved"
           start={starts.approved}
-          width={widths.approved}/>
+          width={widths.approved} />
         <ProgressItem
           state="translated"
           start={starts.translated}
-          width={widths.translated}/>
+          width={widths.translated} />
         <ProgressItem
           state="needswork"
           start={starts.needswork}
-          width={widths.needswork}/>
+          width={widths.needswork} />
         <ProgressItem
           state="untranslated"
           start={starts.untranslated}
-          width={widths.untranslated}/>
+          width={widths.untranslated} />
       </div>
     )
   }

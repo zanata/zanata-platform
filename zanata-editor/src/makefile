@@ -2,6 +2,12 @@
 setup:
 	npm install
 
+# Save the current dependency versions, including transitive dependencies
+# This is to ensure the build will use consistent dependency versions.
+# The --dev flag is needed or anything in devDependencies will be ignored.
+shrinkwrap:
+	npm shrinkwrap --dev
+
 # Run a server that implements some of the Zanata API with some dummy data.
 # The server runs on localhost:7878 and has 0.5 to 5s of random latency.
 fakeserver:

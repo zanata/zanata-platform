@@ -60,8 +60,17 @@ const TransUnitFilter = React.createClass({
     }
   },
 
+  componentWillMount: function () {
+    const { onFilterChange } = this.props.actions
+    this.filterApproved = onFilterChange.bind(undefined, STATUS_APPROVED)
+    this.filterTranslated = onFilterChange.bind(undefined, STATUS_TRANSLATED)
+    this.filterNeedsWork = onFilterChange.bind(undefined, STATUS_NEEDS_WORK)
+    this.filterUntranslated =
+      onFilterChange.bind(undefined, STATUS_UNTRANSLATED)
+  },
+
   render: function () {
-    const { onFilterChange, resetFilter } = this.props.actions
+    const { resetFilter } = this.props.actions
     const gettextCatalog = this.props.gettextCatalog
 
     return (
@@ -74,43 +83,43 @@ const TransUnitFilter = React.createClass({
             onChange={resetFilter}
             title={gettextCatalog.getString('Total Phrases')}
             count={this.props.counts.total}
-            withDot={false}/>
+            withDot={false} />
         </li>
         <li className="u-ltemd-hidden u-sMV-1-4">
           <FilterToggle
             id="filter-phrases-approved"
             className="u-textHighlight"
             isChecked={this.props.filter.approved}
-            onChange={onFilterChange.bind(undefined, STATUS_APPROVED)}
+            onChange={this.filterApproved}
             title={gettextCatalog.getString('Approved')}
-            count={this.props.counts.approved}/>
+            count={this.props.counts.approved} />
         </li>
         <li className="u-ltemd-hidden u-sMV-1-4">
           <FilterToggle
             id="filter-phrases-translated"
             className="u-textSuccess"
             isChecked={this.props.filter.translated}
-            onChange={onFilterChange.bind(undefined, STATUS_TRANSLATED)}
+            onChange={this.filterTranslated}
             title={gettextCatalog.getString('Translated')}
-            count={this.props.counts.translated}/>
+            count={this.props.counts.translated} />
         </li>
         <li className="u-ltemd-hidden u-sMV-1-4">
           <FilterToggle
             id="filter-phrases-needs-work"
             className="u-textUnsure"
             isChecked={this.props.filter.needswork}
-            onChange={onFilterChange.bind(undefined, STATUS_NEEDS_WORK)}
+            onChange={this.filterNeedsWork}
             title={gettextCatalog.getString('Needs Work')}
-            count={this.props.counts.needswork}/>
+            count={this.props.counts.needswork} />
         </li>
         <li className="u-ltemd-hidden u-sMV-1-4">
           <FilterToggle
             id="filter-phrases-untranslated"
             className="u-textNeutral"
             isChecked={this.props.filter.untranslated}
-            onChange={onFilterChange.bind(undefined, STATUS_UNTRANSLATED)}
+            onChange={this.filterUntranslated}
             title={gettextCatalog.getString('Untranslated')}
-            count={this.props.counts.untranslated}/>
+            count={this.props.counts.untranslated} />
         </li>
   {/* A couple of parts of the Angular template that were not being used yet
         <li ng-show="appCtrl.PRODUCTION" class="u-sML-1-4">

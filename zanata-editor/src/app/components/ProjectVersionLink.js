@@ -27,7 +27,7 @@ const ProjectVersionLink = React.createClass({
     // TODO use project slug if name is not defined
     return (
       <a href={this.props.url}
-         className="Link--invert Header-item u-inlineBlock">
+        className="Link--invert Header-item u-inlineBlock">
         <span className="u-sPH-1-4 u-sizeWidth1 u-gtemd-hidden">
           <i className="i i--arrow-left"></i>
         </span>

@@ -10,6 +10,7 @@ const Button = React.createClass({
     title: PropTypes.string,
     onClick: PropTypes.func,
     disabled: PropTypes.bool,
+    children: PropTypes.node,
     className: PropTypes.string
   },
 

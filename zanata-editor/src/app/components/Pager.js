@@ -6,25 +6,36 @@ import React, { PropTypes } from 'react'
  */
 
 const PagerButton = React.createClass({
+  propTypes: {
+    // name of the icon type to use
+    icon: PropTypes.string.isRequired,
+    // text to display on mouseover
+    title: PropTypes.string.isRequired,
+    // when true, appears faded and action is not bound
+    disabled: PropTypes.bool.isRequired,
+    // action to perform on click/tap
+    action: PropTypes.func.isRequired
+  },
+
   render: function () {
     const icon =
       <Icon name={this.props.icon}
-            title={this.props.title}
-            className="u-sizeWidth-1"/>
+        title={this.props.title}
+        className="u-sizeWidth-1" />
     return (
-        <li>
-          {this.props.disabled
-            ? <span className="u-textNeutral u-sizeHeight-1_1-2 u-textNoSelect"
-                  title={this.props.title}>
-                {icon}
-              </span>
-            : <a className="Link--neutral u-sizeHeight-1_1-2 u-textNoSelect"
-               title={this.props.title}
-               onClick={this.props.action}>
-                {icon}
-              </a>
-          }
-        </li>
+      <li>
+        {this.props.disabled
+          ? <span className="u-textNeutral u-sizeHeight-1_1-2 u-textNoSelect"
+            title={this.props.title}>
+            {icon}
+          </span>
+          : <a className="Link--neutral u-sizeHeight-1_1-2 u-textNoSelect"
+            title={this.props.title}
+            onClick={this.props.action}>
+            {icon}
+          </a>
+        }
+      </li>
     )
   }
 })
@@ -90,15 +101,15 @@ const Pager = React.createClass({
 
     return (
       <ul className="u-listHorizontal u-textCenter">
-        <PagerButton {...buttons.first}/>
-        <PagerButton {...buttons.prev}/>
+        <PagerButton {...buttons.first} />
+        <PagerButton {...buttons.prev} />
         <li className="u-sizeHeight-1 u-sPH-1-4">
           <span className="u-textNeutral">
             {pageXofY}
           </span>
         </li>
-        <PagerButton {...buttons.next}/>
-        <PagerButton {...buttons.last}/>
+        <PagerButton {...buttons.next} />
+        <PagerButton {...buttons.last} />
       </ul>
     )
   }
