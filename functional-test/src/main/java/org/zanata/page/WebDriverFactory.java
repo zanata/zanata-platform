@@ -343,20 +343,20 @@ public enum WebDriverFactory {
         enableLogging(capabilities);
 
         // start the proxy
-        BrowserMobProxy proxy = new BrowserMobProxyServer();
-        proxy.start(0);
-
-        proxy.addFirstHttpFilterFactory(new ResponseFilterAdapter.FilterSource(
-                (response, contents, messageInfo) -> {
-                    // TODO fail test if response >= 500?
-                    if (response.getStatus().code() >= 400) {
-                        log.warn("Response {} for URI {}", response.getStatus(), messageInfo.getOriginalRequest().getUri());
-                    } else {
-                        log.info("Response {} for URI {}", response.getStatus(), messageInfo.getOriginalRequest().getUri());
-                    }
-                }, 0));
-        Proxy seleniumProxy = ClientUtil.createSeleniumProxy(proxy);
-        capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
+//        BrowserMobProxy proxy = new BrowserMobProxyServer();
+//        proxy.start(0);
+//
+//        proxy.addFirstHttpFilterFactory(new ResponseFilterAdapter.FilterSource(
+//                (response, contents, messageInfo) -> {
+//                    // TODO fail test if response >= 500?
+//                    if (response.getStatus().code() >= 400) {
+//                        log.warn("Response {} for URI {}", response.getStatus(), messageInfo.getOriginalRequest().getUri());
+//                    } else {
+//                        log.info("Response {} for URI {}", response.getStatus(), messageInfo.getOriginalRequest().getUri());
+//                    }
+//                }, 0));
+//        Proxy seleniumProxy = ClientUtil.createSeleniumProxy(proxy);
+//        capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
         try {
             driverService.start();
         } catch (IOException e) {

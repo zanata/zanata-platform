@@ -25,7 +25,7 @@
     <cargo.jboss.management-native.port>10099</cargo.jboss.management-native.port>
     <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
     <cargo.container.home>${project.build.directory}/jboss/container</cargo.container.home>
-    <context.path>zanata</context.path>
+    <context.path></context.path>
 
     <!--mysql-maven-plugin will use these setup-->
     <ds.database>zanata</ds.database>
@@ -50,7 +50,7 @@
 
     <!-- target zanata instance will be built by war overlay -->
     <zanata.test.war.name>zanata-test-${project.version}</zanata.test.war.name>
-    <zanata.instance.url>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</zanata.instance.url>
+    <zanata.instance.url>http://${cargo.host}:${cargo.servlet.port}/</zanata.instance.url>
     <zanata.apikey>b6d7044e9ee3b2447c28fb7c50d86d98</zanata.apikey>
     <zanata.translatorkey>d83882201764f7d339e97c4b087f0806</zanata.translatorkey>
     <zanata.sample.projects.basedir>${project.build.testOutputDirectory}/sample-projects</zanata.sample.projects.basedir>
@@ -599,7 +599,7 @@
               <images>
                 <image>
                   <name>mariadb:10.1</name>
-                  <alias>mariadb</alias>
+                  <alias>zanatadb</alias>
                   <run>
                     <env>
                       <MYSQL_USER>${ds.username}</MYSQL_USER>
@@ -615,11 +615,48 @@
                       <time>20000</time>
                     </wait>
                     <!-- Enable this section to see the DB logs in the maven build -->
-                    <!--<log>-->
-                      <!--<prefix>DB</prefix>-->
-                      <!--<date>default</date>-->
-                      <!--<color>cyan</color>-->
-                    <!--</log>-->
+                    <!--<log>
+                      <prefix>DB</prefix>
+                      <date>default</date>
+                      <color>cyan</color>
+                    </log>-->
+                    <cmd>--character-set-server=utf8</cmd>
+                  </run>
+                </image>
+                <image>
+                  <name>zanata/server-functional-test</name>
+                  <alias>zanata-server</alias>
+                  <build>
+                    <dockerFileDir>${project.basedir}/../docker</dockerFileDir>
+                  </build>
+                  <run>
+                    <!--<env>
+                      <MYSQL_USER>${ds.username}</MYSQL_USER>
+                      <MYSQL_PASSWORD>${ds.password}</MYSQL_PASSWORD>
+                      <MYSQL_DATABASE>${ds.database}</MYSQL_DATABASE>
+                      <MYSQL_ROOT_PASSWORD>rootpw</MYSQL_ROOT_PASSWORD>
+                    </env>-->
+                    <ports>
+                      <port>${cargo.servlet.port}:8080</port>
+                    </ports>
+                    <links>
+                      <link>zanatadb:db</link>
+                    </links>
+                    <wait>
+                      <log>.*started in .*ms - Started .* of .* services.*</log>
+                      <time>480000</time>
+                    </wait>
+                    <!-- Enable this section to see the DB logs in the maven build -->
+                    <log>
+                      <prefix>JBOSS</prefix>
+                      <date>default</date>
+                      <color>green</color>
+                    </log>
+                    <volumes>
+                      <bind>
+                        <volume>${project.basedir}/../zanata-test-war/target/${zanata.test.war.name}.war:/opt/jboss/wildfly/standalone/deployments/ROOT.war</volume>
+                      </bind>
+                    </volumes>
                   </run>
                 </image>
               </images>
@@ -629,6 +666,7 @@
                 <id>start</id>
                 <phase>package</phase>
                 <goals>
+                  <goal>build</goal>
                   <goal>start</goal>
                 </goals>
               </execution>
@@ -678,7 +716,8 @@
               </execution>
             </executions>
           </plugin>
-          <plugin>
+
+          <!--<plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
             <configuration combine.self="append">
@@ -713,7 +752,7 @@
                   <configuration>
                     <properties>
                       <cargo.jvmargs>
-                        <!-- NB: JDom parser doesn't like comments starting with '-' -->
+                        &lt;!&ndash; NB: JDom parser doesn't like comments starting with '-' &ndash;&gt;
                         -XX:PermSize=512m -XX:MaxPermSize=1024
                         -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled
                         ${cargo.debug.jvm.args}
@@ -728,7 +767,7 @@
                   <configuration>
                     <properties>
                       <cargo.jvmargs>
-                        <!-- NB: JDom parser doesn't like comments starting with '-' -->
+                        &lt;!&ndash; NB: JDom parser doesn't like comments starting with '-' &ndash;&gt;
                         -XX:PermSize=512m -XX:MaxPermSize=1024
                         -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled
                         ${cargo.debug.jvm.args}
@@ -745,7 +784,7 @@
                 </goals>
               </execution>
             </executions>
-          </plugin>
+          </plugin>-->
 
           <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
@@ -1050,11 +1089,11 @@
         </configuration>
       </plugin>
 
-      <plugin>
+      <!--<plugin>
         <groupId>org.codehaus.cargo</groupId>
         <artifactId>cargo-maven2-plugin</artifactId>
         <version>1.4.5</version>
-        <!-- this plugin configuration is shared by two profiles: functional-test and wildfly -->
+        &lt;!&ndash; this plugin configuration is shared by two profiles: functional-test and wildfly &ndash;&gt;
         <configuration>
           <container>
             <type>installed</type>
@@ -1080,10 +1119,10 @@
                 <file>${project.build.testOutputDirectory}/datasource/zanata-ds.xml</file>
                 <todir>deployments</todir>
               </configfile>
-              <!-- see above zipUrlInstaller/extractDir-->
-              <!-- cargo will force todir and tofile to be relative to container home directory -->
+              &lt;!&ndash; see above zipUrlInstaller/extractDir&ndash;&gt;
+              &lt;!&ndash; cargo will force todir and tofile to be relative to container home directory &ndash;&gt;
 
-              <!-- security and jndi for properties -->
+              &lt;!&ndash; security and jndi for properties &ndash;&gt;
               <configfile>
                 <file>${project.build.testOutputDirectory}/conf/${standalone.xml.file}</file>
                 <tofile>configuration/standalone.xml</tofile>
@@ -1105,7 +1144,7 @@
             </properties>
           </configuration>
         </configuration>
-      </plugin>
+      </plugin>-->
     </plugins>
     <pluginManagement>
       <plugins>
