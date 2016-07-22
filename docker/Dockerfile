@@ -20,3 +20,6 @@ RUN wget --no-verbose https://dl.bintray.com/sflanigan/generic/wildfly-module-hi
 USER jboss
 
 ADD conf/standalone.xml /opt/jboss/wildfly/standalone/configuration/
+
+# Enable debugging of the appserver
+RUN echo "JAVA_OPTS=\"\$JAVA_OPTS -agentlib:jdwp=transport=dt_socket,address=8787,server=y,suspend=n\"" >> /opt/jboss/wildfly/bin/standalone.conf
