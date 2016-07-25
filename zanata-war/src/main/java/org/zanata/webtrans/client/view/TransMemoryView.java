@@ -47,6 +47,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+import org.zanata.webtrans.shared.rpc.LuceneQuery;
 
 public class TransMemoryView extends Composite implements
         TranslationMemoryDisplay {
@@ -163,6 +164,8 @@ public class TransMemoryView extends Composite implements
 
         diffModeDiff.setText(messages.diffModeAsDiff());
         diffModeHighlight.setText(messages.diffModeAsHighlight());
+
+        tmTextBox.setMaxLength(LuceneQuery.QUERY_MAX_LENGTH);
     }
 
     @UiHandler("tmTextBox")
