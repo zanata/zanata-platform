@@ -72,6 +72,7 @@ import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType;
+import org.zanata.webtrans.shared.rpc.LuceneQuery;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
@@ -336,12 +337,21 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                     new ValidTargetFilterPredicate(targetLocaleId));
 
         } catch (ParseException e) {
-            if (transMemoryQuery.getSearchType() == HasSearchType.SearchType.RAW) {
-                // TODO tell the user
-                log.info("Can't parse raw query {}", transMemoryQuery);
+            if (e.getCause() instanceof BooleanQuery.TooManyClauses) {
+                log.warn(
+                    "BooleanQuery.TooManyClauses, query too long to parse '" +
+                        StringUtils
+                            .left(transMemoryQuery.getQueries().get(0), 80) +
+                        "...'");
             } else {
-                // escaping failed!
-                log.error("Can't parse query " + transMemoryQuery, e);
+                if (transMemoryQuery.getSearchType() ==
+                    HasSearchType.SearchType.RAW) {
+                    // TODO tell the user
+                    log.info("Can't parse raw query {}", transMemoryQuery);
+                } else {
+                    // escaping failed!
+                    log.error("Can't parse query " + transMemoryQuery, e);
+                }
             }
         } catch (RuntimeException e) {
             log.error("Runtime exception:" + e.getMessage());
@@ -556,6 +566,14 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         }
     }
 
+    private void validateQueryLength(String query) {
+        if (StringUtils.length(query) > LuceneQuery.QUERY_MAX_LENGTH) {
+            throw new RuntimeException(
+                "Query string exceed max length: " + LuceneQuery.QUERY_MAX_LENGTH + "='" +
+                    StringUtils.left(query, 80) + "'");
+        }
+    }
+
     private List<Object[]> getSearchResult(TransMemoryQuery query,
             LocaleId sourceLocale, LocaleId targetLocale, int maxResult,
             Optional<Long> textFlowTargetId,
@@ -567,6 +585,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         // 'Lucene' in the editor
         case RAW:
             queryText = query.getQueries().get(0);
+            validateQueryLength(queryText);
             if (StringUtils.isBlank(queryText)) {
                 return Lists.newArrayList();
             }
@@ -574,6 +593,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
 
         // 'Fuzzy' in the editor
         case FUZZY:
+            validateQueryLength(query.getQueries().get(0));
             queryText = escape(query.getQueries().get(0));
             if (StringUtils.isBlank(queryText)) {
                 return Lists.newArrayList();
@@ -582,6 +602,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
 
         // 'Phrase' in the editor
         case EXACT:
+            validateQueryLength(query.getQueries().get(0));
             queryText =
                     "\"" + escape(query.getQueries().get(0)) + "\"";
             if (StringUtils.isBlank(queryText)) {
@@ -603,6 +624,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         // Used by copyTrans for 100% match with source string
         case CONTENT_HASH:
             queryText = query.getQueries().get(0);
+            validateQueryLength(queryText);
             if (StringUtils.isBlank(queryText)) {
                 return Lists.newArrayList();
             }
@@ -979,12 +1001,9 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                         "Query results include null entity. You may need to re-index.");
                 return false;
             } else {
-                try {
-                    log.warn("Unexpected query result of type {}: {}. You may need to re-index.",
-                            entity.getClass().getName(), entity);
-                } catch (NullPointerException npe) {
-                    log.warn("Encountered entity with null attributes");
-                }
+                String name = entity.getClass().getName();
+                log.warn("Unexpected query result of type {}: {}. You may need to re-index.",
+                    name, entity);
             }
             return true;
 

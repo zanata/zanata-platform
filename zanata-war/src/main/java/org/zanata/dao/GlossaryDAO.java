@@ -48,6 +48,7 @@ import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HLocale;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
+import org.zanata.webtrans.shared.rpc.LuceneQuery;
 
 /**
  *
@@ -230,7 +231,14 @@ public class GlossaryDAO extends AbstractDAOImpl<HGlossaryEntry, Long> {
     public List<Object[]> getSearchResult(String searchText,
             SearchType searchType, LocaleId srcLocale, final int maxResult)
             throws ParseException {
+        if (StringUtils.length(searchText) > LuceneQuery.QUERY_MAX_LENGTH) {
+            throw new RuntimeException(
+                "Query string exceed max length: " + LuceneQuery.QUERY_MAX_LENGTH + "='" +
+                    StringUtils.left(searchText, 80) + "'");
+        }
+
         String queryText;
+
         switch (searchType) {
         case RAW:
             queryText = searchText;

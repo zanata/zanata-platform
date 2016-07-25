@@ -26,12 +26,12 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ValueListBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+import org.zanata.webtrans.shared.rpc.LuceneQuery;
 
 public class GlossaryView extends Composite implements GlossaryDisplay {
     private static GlossaryViewUiBinder uiBinder = GWT
@@ -107,6 +107,8 @@ public class GlossaryView extends Composite implements GlossaryDisplay {
         clearButton.ensureDebugId("glossaryClearButton");
         resultTable.ensureDebugId("glossaryResultTable");
         noResultFoundLabel.ensureDebugId("glossaryNoResult");
+
+        glossaryTextBox.setMaxLength(LuceneQuery.QUERY_MAX_LENGTH);
     }
 
     @UiHandler("glossaryTextBox")
