@@ -4,11 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import lombok.Cleanup;
-
-import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Fail;
-import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.JDBCException;
 import org.hibernate.Query;
 import org.hibernate.ScrollMode;
@@ -17,28 +13,15 @@ import org.hibernate.Session;
 import org.hibernate.jdbc.Work;
 import org.junit.Before;
 import org.junit.Test;
-import org.zanata.ZanataDbunitJpaTest;
+import org.zanata.ZanataJpaTest;
+
+import lombok.Cleanup;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class WrappedConnectionProviderTest extends ZanataDbunitJpaTest {
+public class WrappedConnectionProviderTest extends ZanataJpaTest {
 
     private Session session;
-
-    @Override
-    protected void prepareDBUnitOperations() {
-        beforeTestOperations.add(new DataSetOperation(
-                "org/zanata/test/model/ProjectsData.dbunit.xml",
-                DatabaseOperation.CLEAN_INSERT));
-        beforeTestOperations.add(new DataSetOperation(
-                "org/zanata/test/model/TextFlowTestData.dbunit.xml",
-                DatabaseOperation.CLEAN_INSERT));
-        beforeTestOperations.add(new DataSetOperation(
-                "org/zanata/test/model/LocalesData.dbunit.xml",
-                DatabaseOperation.CLEAN_INSERT));
-        beforeTestOperations.add(new DataSetOperation(
-                "org/zanata/test/model/AccountData.dbunit.xml",
-                DatabaseOperation.CLEAN_INSERT));
-    }
 
     @Before
     public void setup() {

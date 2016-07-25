@@ -56,13 +56,12 @@ class StatementWrapper implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args)
             throws Throwable {
-        if (method.getName().equals("getConnection")) {
+        if (method.getName().equals("getConnection") && args == null) {
             return connectionProxy;
-        }
-        if (method.getName().equals("toString")) {
+        } else if (method.getName().equals("toString") && args == null) {
             return "StatementWrapper->" + statement.toString();
-        }
-        if (method.getName().equals("setFetchSize")
+        } else if (method.getName().equals("setFetchSize")
+                && args.length == 1
                 && args[0].equals(Integer.MIN_VALUE)) {
             // don't pass it to wrapped connection since it is probably not
             // going to understand it
@@ -74,30 +73,32 @@ class StatementWrapper implements InvocationHandler {
             if (result instanceof ResultSet) {
                 ResultSet resultSet = (ResultSet) result;
                 ConnectionWrapper connectionWrapper =
-                        (ConnectionWrapper) Proxy
-                                .getInvocationHandler(connectionProxy);
+                        ConnectionWrapper.getConnectionWrapper(connectionProxy);
                 ResultSet rsProxy =
                         ResultSetWrapper.wrap(resultSet, (Statement) proxy,
                                 connectionProxy, makeStreamingResultSet);
                 ResultSetWrapper rsWrap =
                         (ResultSetWrapper) Proxy.getInvocationHandler(rsProxy);
                 if (makeStreamingResultSet) {
-                    connectionWrapper.streamingResultSetOpened(rsWrap
+                    connectionWrapper.afterStreamingResultSetOpened(rsWrap
                             .getThrowable());
                 } else {
-                    connectionWrapper.resultSetOpened(rsWrap.getThrowable());
+                    connectionWrapper.afterResultSetOpened(rsWrap.getThrowable());
                 }
                 return rsProxy;
             } else if (method.getName().startsWith("execute")) {
-                ConnectionWrapper connectionWrapper =
-                        (ConnectionWrapper) Proxy
-                                .getInvocationHandler(connectionProxy);
-                connectionWrapper.executed();
+                afterExecute();
             }
             return result;
         } catch (InvocationTargetException e) {
             throw e.getTargetException();
         }
+    }
+
+    private void afterExecute() throws StreamingResultSetSQLException {
+        ConnectionWrapper connectionWrapper =
+                ConnectionWrapper.getConnectionWrapper(connectionProxy);
+        connectionWrapper.afterStatementExecute();
     }
 
 }

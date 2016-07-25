@@ -42,12 +42,18 @@ public abstract class ZanataJpaTest extends ZanataTest {
     public void shutdownEM() {
         log.debug("Shutting down EM");
         clearHibernateSecondLevelCache();
-        em.getTransaction().rollback();
+        if (rollbackBeforeClose()) {
+            em.getTransaction().rollback();
+        }
         if (em.isOpen()) {
             em.close();
         }
         em = null;
         emf.getCache().evictAll();
+    }
+
+    protected boolean rollbackBeforeClose() {
+        return true;
     }
 
     protected EntityManager getEm() {

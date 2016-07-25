@@ -62,27 +62,30 @@ class ResultSetWrapper implements InvocationHandler {
     @Override
     public Object invoke(Object proxy, Method method, Object[] args)
             throws Throwable {
-        if (method.getName().equals("getStatement")) {
+        if (method.getName().equals("getStatement") && args == null) {
             return statementProxy;
-        }
-        if (method.getName().equals("toString")) {
+        } else if (method.getName().equals("toString") && args == null) {
             return "ResultSetWrapper->" + resultSet.toString();
         }
         try {
             Object result = method.invoke(resultSet, args);
-            if (method.getName().equals("close")) {
-                ConnectionWrapper connectionWrapper =
-                        (ConnectionWrapper) Proxy
-                                .getInvocationHandler(connectionProxy);
-                if (streaming) {
-                    connectionWrapper.streamingResultSetClosed();
-                } else {
-                    connectionWrapper.resultSetClosed(throwable);
-                }
+            if (method.getName().equals("close") && args == null) {
+                afterClose();
             }
             return result;
         } catch (InvocationTargetException e) {
             throw e.getTargetException();
+        }
+    }
+
+    private void afterClose() {
+        ConnectionWrapper connectionWrapper =
+                (ConnectionWrapper) Proxy
+                        .getInvocationHandler(connectionProxy);
+        if (streaming) {
+            connectionWrapper.afterStreamingResultSetClosed();
+        } else {
+            connectionWrapper.afterResultSetClosed(throwable);
         }
     }
 
