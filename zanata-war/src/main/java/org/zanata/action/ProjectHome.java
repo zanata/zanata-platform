@@ -96,6 +96,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
+import static javax.faces.application.FacesMessage.SEVERITY_INFO;
 
 @Named("projectHome")
 @Slf4j
@@ -798,6 +799,10 @@ public class ProjectHome extends SlugHome<HProject> implements
             urlUtil.redirectToInternal(url);
             return result;
         }
+
+        facesMessages
+            .addGlobal(SEVERITY_INFO, msgs.get("jsf.project.settings.updated"));
+
         if (!getSlug().equals(getInstance().getSlug())) {
             projectSlug.setValue(getInstance().getSlug());
             return "project-slug-updated";

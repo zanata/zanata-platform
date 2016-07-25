@@ -22,6 +22,7 @@
 package org.zanata.action;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static javax.faces.application.FacesMessage.SEVERITY_INFO;
 
 import java.util.ArrayList;
 
@@ -526,6 +527,9 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
             urlUtil.redirectToInternal(url);
             return state;
         }
+
+        facesMessages
+            .addGlobal(SEVERITY_INFO, msgs.get("jsf.version.settings.updated"));
 
         if (!getSlug().equals(getInstance().getSlug())) {
             projectAndVersionSlug.setVersionSlug(getInstance().getSlug());
