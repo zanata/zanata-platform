@@ -143,7 +143,6 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
                 documentId, localeId));
     }
 
-    @Override
     public void clearDocumentStatistics(Long documentId) {
         for (HLocale locale : localeDAO.findAll()) {
             DocumentLocaleKey key =

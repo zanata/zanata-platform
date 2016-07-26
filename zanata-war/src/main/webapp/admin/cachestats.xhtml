@@ -1,0 +1,91 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  template="/WEB-INF/template/template.xhtml">
+
+  <f:metadata>
+    <f:event type="preRenderView" listener="#{identity.checkRole('admin')}"/>
+  </f:metadata>
+
+  <ui:define name="page_title">#{msgs['jsf.CacheStats']}</ui:define>
+  <ui:define name="center_content">
+
+    <div class="l--push-bottom-half">
+      <h1 class="l--push-all-0">
+        #{msgs['jsf.CacheStats']}
+      </h1>
+    </div>
+    <div class="g__item w--1-m w--1-h ">
+      <h:form id="form">
+        <h:panelGroup layout="block" id="actions">
+          <table id="cacheStatisticsTable"
+            class="bg--pop-highest l--push-bottom-1">
+            <thead>
+            <tr>
+              <th class="l--pad-v-half">
+                <h:outputText
+                  value="#{msgs['jsf.cacheStats.cacheName']}"/>
+              </th>
+              <th class="l--pad-v-half" title="#{msgs['jsf.cacheStats.tooltipForClear']}">
+                <h:outputText
+                  value="#{msgs['jsf.Clear']}"/>
+              </th>
+              <th class="l--pad-v-half" title="#{msgs['jsf.cacheStats.tooltipForReset']}">
+                <h:outputText
+                  value="#{msgs['jsf.Reset']}"/>
+              </th>
+              <ui:repeat
+                value="#{cacheAction.getCacheStatsProperties(cacheName).entrySet().toArray()}"
+                var="entry">
+                <th class="l--pad-v-half" title="#{cacheAction.getDescOfProperty(entry.key)}">
+                  <h:outputText value="#{cacheAction.getNameOfProperty(entry.key)}"/>
+                </th>
+              </ui:repeat>
+            </tr>
+            </thead>
+            <tbody class="bg--high">
+            <ui:repeat value="#{cacheAction.cacheList}" var="cacheName">
+              <tr class="bg--higher--hover">
+                <td class="l--pad-v-half">
+                  <h:outputText value="#{cacheAction.getDisplayName(cacheName)}" escape="false"/>
+                </td>
+                <td>
+                  <h:commandButton value="#{msgs['jsf.Clear']}" title="#{msgs['jsf.cacheStats.tooltipForClear']}"
+                    action="#{cacheAction.clearCache(cacheName)}"
+                    onclick="return confirm('#{msgs['jsf.cacheStats.confirmationClearingCache']}')"/>
+                </td>
+                <td>
+                  <h:commandButton value="#{msgs['jsf.Reset']}" title="#{msgs['jsf.cacheStats.tooltipForReset']}"
+                    action="#{cacheAction.resetCacheStats(cacheName)}"
+                    onclick="return confirm('#{msgs['jsf.cacheStats.confirmationResettingCache']}')"/>
+                </td>
+                <ui:repeat
+                  value="#{cacheAction.getCacheStatsProperties(cacheName).entrySet().toArray()}"
+                  var="entry">
+                  <td class="l--pad-v-half">
+                    <h:outputText value="#{entry.value}"/>
+                  </td>
+                </ui:repeat>
+              </tr>
+            </ui:repeat>
+            </tbody>
+            <tfoot class="g__item">
+            <tr>
+              <td>
+                <h:commandButton value="#{msgs['jsf.ClearAllCaches']}"
+                  action="#{cacheAction.clearAllCaches}"
+                  onclick="return confirm('#{msgs['jsf.cacheStats.confirmationClearingAllCache']}')"/>
+              </td>
+            </tr>
+            </tfoot>
+          </table>
+        </h:panelGroup>
+      </h:form>
+    </div>
+  </ui:define>
+</ui:composition>
+
+
