@@ -192,10 +192,19 @@ public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
             // clear any previous messages which might have been generated
             // before the openId authentication took place
             facesMessages.clear();
-            // extract the parameters from the authentication response
-            // (which comes in as a HTTP request from the OpenID providerType)
+            /**
+             * extract the parameters from the authentication response query string
+             * (which comes in as a HTTP request from the OpenID providerType)
+             * instead of from httpReq.getParameterMap() to make sure params
+             * is encoded correctly bypassing default servlets encoding.
+             *
+             * httpReq.getParameterMap() failed check in
+             * {@link org.openid4java.consumer.ConsumerManager#verifySignature}
+             * due to the unicode encoding in URI is different from signature.
+             * Reported issue: https://zanata.atlassian.net/browse/ZNTA-1275
+             */
             ParameterList respParams =
-                    new ParameterList(httpReq.getParameterMap());
+                ParameterList.createFromQueryString(httpReq.getQueryString());
             AuthSuccess authSuccess = AuthSuccess.createAuthSuccess(respParams);
 
             // strip existing params (eg dswid)
