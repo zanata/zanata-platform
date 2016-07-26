@@ -93,6 +93,11 @@ public class AbstractPage {
         return WebElementUtil.waitForAMoment(driver);
     }
 
+    /**
+     * TODO: need to replace javascript alert.
+     * chromedriver have issue with handling alert popup
+     */
+    @Deprecated
     public Alert switchToAlert() {
         return waitForAMoment().withMessage("alert").until(
                 (Function<WebDriver, Alert>) webDriver -> {
