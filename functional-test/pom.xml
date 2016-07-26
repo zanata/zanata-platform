@@ -111,8 +111,8 @@
   <dependencies>
     <dependency>
       <groupId>net.lightbody.bmp</groupId>
-      <artifactId>browsermob-core-littleproxy</artifactId>
-      <version>2.1.0-beta-4</version>
+      <artifactId>browsermob-core</artifactId>
+      <version>2.1.2</version>
       <exclusions>
         <exclusion>
           <groupId>com.google.code.findbugs</groupId>
@@ -612,14 +612,14 @@
                     </ports>
                     <wait>
                       <log>socket: '/var/run/mysqld/mysqld.sock'  port: 3306</log>
-                      <time>20000</time>
+                      <time>50000</time>
                     </wait>
                     <!-- Enable this section to see the DB logs in the maven build -->
-                    <!--<log>
+                    <log>
                       <prefix>DB</prefix>
                       <date>default</date>
                       <color>cyan</color>
-                    </log>-->
+                    </log>
                     <cmd>--character-set-server=utf8</cmd>
                   </run>
                 </image>
@@ -630,12 +630,6 @@
                     <dockerFileDir>${project.basedir}/../docker</dockerFileDir>
                   </build>
                   <run>
-                    <!--<env>
-                      <MYSQL_USER>${ds.username}</MYSQL_USER>
-                      <MYSQL_PASSWORD>${ds.password}</MYSQL_PASSWORD>
-                      <MYSQL_DATABASE>${ds.database}</MYSQL_DATABASE>
-                      <MYSQL_ROOT_PASSWORD>rootpw</MYSQL_ROOT_PASSWORD>
-                    </env>-->
                     <ports>
                       <port>${cargo.servlet.port}:8080</port>
                     </ports>
@@ -646,7 +640,6 @@
                       <log>.*started in .*ms - Started .* of .* services.*</log>
                       <time>480000</time>
                     </wait>
-                    <!-- Enable this section to see the DB logs in the maven build -->
                     <log>
                       <prefix>JBOSS</prefix>
                       <date>default</date>

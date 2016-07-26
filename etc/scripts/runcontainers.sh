@@ -10,7 +10,7 @@ while getopts "nhd:" opt; do
       clean=''
       ;;
     h)
-      echo ">> run this script to prepare a functional test war and start cargo in waiting mode" >&2
+      echo ">> run this script to prepare a functional test war and start the app and db containers" >&2
       echo ">>>> -n if you don't want to run maven clean goal. Useful when you have run functional-test-db.snapshot.sh." >&2
       echo ">>>> -d <extra maven arguments, e.g. '-Dwebdriver.type=firefox -Dsmtp.port=25'> if you want to pass in extra arguments when running functional test" >&2
       exit 0;
@@ -37,5 +37,5 @@ echo
 # this will build zanata war and prepare war overlay for functional test
 mvn ${clean} package -Dchromefirefox -DskipTests -Dappserver=wildfly8 -pl zanata-model,zanata-war,zanata-test-war;
 
-# this will start cargo container and deploy above generated overlay war and then pause
-mvn ${clean} package cargo:run -DskipTests -Dappserver=wildfly8 -Dmysql.port=13306 -pl functional-test ${extraArgs};
+# this will start the app and db containers and deploy above generated overlay war
+mvn ${clean} package -Dappserver=wildfly8 -Dmysql.port=13306 -pl functional-test ${extraArgs};

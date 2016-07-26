@@ -38,4 +38,4 @@ done
 
 DIR="$( cd -P "$( dirname "$0" )" && pwd )"
 cd $DIR/../..
-mvn -DskipArqTests -DskipUnitTests -Danimal.sniffer.skip $gwtMode -am -pl zanata-war package
+mvn -DskipArqTests -DskipUnitTests -Danimal.sniffer.skip $gwtMode -am -pl zanata-war package install
