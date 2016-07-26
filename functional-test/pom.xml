@@ -538,58 +538,6 @@
               </execution>
             </executions>
           </plugin>
-          <!--<plugin>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>unpack</goal>
-                </goals>
-                <configuration>
-                  <artifactItems>
-                    <artifactItem>
-                      <groupId>com.jcabi</groupId>
-                      <artifactId>mysql-dist</artifactId>
-                      <version>${mysql.dist.version}</version>
-                      <classifier>${mysql.classifier}</classifier>
-                      <type>zip</type>
-                      <overWrite>false</overWrite>
-                      <outputDirectory>${project.build.directory}/mysql-dist</outputDirectory>
-                    </artifactItem>
-                  </artifactItems>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>com.jcabi</groupId>
-            <artifactId>jcabi-mysql-maven-plugin</artifactId>
-            <configuration>
-              <classifier>mysql.classifier</classifier>
-              <port>${mysql.port}</port>
-              <socket>${mysql.socket}</socket>
-              <clearexistingdata>false</clearexistingdata>
-              <options>
-                <option>lower_case_table_names=${mysql.lower_case_table_names}</option>
-              </options>
-            </configuration>
-            <executions>
-              <execution>
-                <id>mysql-test</id>
-                <goals>
-                  <goal>classify</goal>
-                  <goal>stop</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>start-mysql</id>
-                <goals>
-                  <goal>start</goal>
-                </goals>
-                <phase>package</phase>
-              </execution>
-            </executions>
-          </plugin>-->
 
           <plugin>
             <groupId>io.fabric8</groupId>
@@ -709,75 +657,6 @@
               </execution>
             </executions>
           </plugin>
-
-          <!--<plugin>
-            <groupId>org.codehaus.cargo</groupId>
-            <artifactId>cargo-maven2-plugin</artifactId>
-            <configuration combine.self="append">
-              <configuration>
-                <properties>
-                  <cargo.servlet.port>${cargo.servlet.port}</cargo.servlet.port>
-                  <cargo.jboss.management-http.port>${cargo.jboss.management-http.port}</cargo.jboss.management-http.port>
-                  <cargo.jboss.management-native.port>${cargo.jboss.management-native.port}</cargo.jboss.management-native.port>
-                </properties>
-              </configuration>
-              <deployables>
-                <deployable>
-                  <type>war</type>
-                  <location>${project.basedir}/../zanata-test-war/target/${zanata.test.war.name}.war</location>
-                  <pingURL>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</pingURL>
-                  <pingTimeout>600000</pingTimeout>
-                  <properties>
-                    <context>${context.path}</context>
-                  </properties>
-                </deployable>
-
-              </deployables>
-            </configuration>
-            <executions>
-              <execution>
-                <id>cargo-start</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>start</goal>
-                </goals>
-                <configuration>
-                  <configuration>
-                    <properties>
-                      <cargo.jvmargs>
-                        &lt;!&ndash; NB: JDom parser doesn't like comments starting with '-' &ndash;&gt;
-                        -XX:PermSize=512m -XX:MaxPermSize=1024
-                        -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled
-                        ${cargo.debug.jvm.args}
-                      </cargo.jvmargs>
-                    </properties>
-                  </configuration>
-                </configuration>
-              </execution>
-              <execution>
-                <id>default-cli</id>
-                <configuration>
-                  <configuration>
-                    <properties>
-                      <cargo.jvmargs>
-                        &lt;!&ndash; NB: JDom parser doesn't like comments starting with '-' &ndash;&gt;
-                        -XX:PermSize=512m -XX:MaxPermSize=1024
-                        -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled
-                        ${cargo.debug.jvm.args}
-                      </cargo.jvmargs>
-                    </properties>
-                  </configuration>
-                </configuration>
-              </execution>
-              <execution>
-                <id>cargo-stop</id>
-                <phase>post-integration-test</phase>
-                <goals>
-                  <goal>stop</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>-->
 
           <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
