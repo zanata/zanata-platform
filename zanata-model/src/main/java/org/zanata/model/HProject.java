@@ -37,6 +37,7 @@ import java.util.Set;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -90,7 +91,7 @@ import com.google.common.collect.Sets;
  *
  */
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cacheable
 @Access(AccessType.FIELD)
 @TypeDefs({
     @TypeDef(name = "entityStatus", typeClass = EntityStatusType.class),

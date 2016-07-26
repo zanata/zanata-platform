@@ -22,11 +22,11 @@ package org.zanata.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -88,7 +88,7 @@ import com.google.common.collect.ImmutableList;
  */
 @Entity
 @EntityListeners({ HTextFlow.EntityListener.class })
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cacheable
 @Setter
 @NoArgsConstructor
 @ToString(of = { "resId", "revision", "comment", "obsolete" })

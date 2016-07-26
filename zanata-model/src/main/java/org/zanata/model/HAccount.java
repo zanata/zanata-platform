@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -57,7 +58,7 @@ import org.zanata.rest.dto.Account;
  *
  */
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cacheable
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "username"))
 @Indexed
 @Setter

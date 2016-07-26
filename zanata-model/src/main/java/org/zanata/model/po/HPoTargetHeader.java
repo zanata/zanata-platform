@@ -20,6 +20,7 @@
  */
 package org.zanata.model.po;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -27,8 +28,6 @@ import javax.persistence.ManyToOne;
 import lombok.Setter;
 import lombok.ToString;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -39,7 +38,7 @@ import org.zanata.model.HLocale;
  * @see org.zanata.rest.dto.extensions.gettext.PoTargetHeader
  */
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cacheable
 @Setter
 @ToString(callSuper = true, of = "targetLanguage")
 public class HPoTargetHeader extends PoHeaderBase {

@@ -31,6 +31,7 @@ import java.util.Set;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -54,8 +55,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -76,7 +75,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cacheable
 @TypeDef(name = "entityStatus", typeClass = EntityStatusType.class)
 @EntityRestrict({ INSERT, UPDATE, DELETE })
 @Indexed

@@ -22,13 +22,11 @@ package org.zanata.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cacheable
 public class HAccountResetPasswordKey extends AccountKeyBase implements
         Serializable {
 

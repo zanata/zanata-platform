@@ -23,6 +23,7 @@ package org.zanata.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -39,9 +40,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import lombok.ToString;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
@@ -56,7 +54,7 @@ import org.zanata.util.GlossaryUtil;
  **/
 @Entity
 @EntityListeners({ HGlossaryEntry.EntityListener.class })
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cacheable
 @Indexed
 @Setter
 @EqualsAndHashCode(callSuper = true, doNotUseGetters = true,

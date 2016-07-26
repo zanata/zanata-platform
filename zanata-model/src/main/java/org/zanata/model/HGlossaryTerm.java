@@ -20,6 +20,7 @@
  */
 package org.zanata.model;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -32,10 +33,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
@@ -52,7 +50,7 @@ import org.zanata.hibernate.search.LocaleIdBridge;
  *
  **/
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cacheable
 @Indexed
 @FullTextFilterDef(name = "glossaryLocaleFilter",
         impl = LocaleFilterFactory.class,

@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -47,11 +48,10 @@ import org.hibernate.annotations.TypeDef;
 import org.zanata.common.LocaleId;
 import org.zanata.model.type.LocaleIdType;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.ibm.icu.util.ULocale;
 
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Cacheable
 @TypeDef(name = "localeId", typeClass = LocaleIdType.class)
 @Setter
 @NoArgsConstructor
