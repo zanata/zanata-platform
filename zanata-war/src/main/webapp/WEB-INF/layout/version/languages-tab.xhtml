@@ -298,7 +298,7 @@
                       <ui:fragment rendered="#{identity.loggedIn}">
                         <li id="#{status.index}:link-translate-online">
                           <h:outputLink styleClass="i__item--right"
-                            value="#{versionHomeAction.getEditorUrl(locale.language, document.docId)}">
+                            value="#{versionHomeAction.getEditorUrl(facesContext.externalContext.requestLocale, document.docId)}">
                             <ui:fragment
                               rendered="#{versionHomeAction.isUserAllowedToTranslateOrReview(versionHomeAction.selectedLocale)}">
                               #{msgs['jsf.iteration.TranslateOnline']} <i
@@ -378,7 +378,7 @@
                     <!-- TODO add dswid -->
                   </ui:remove>
                   <a
-                    href="#{versionHomeAction.getEditorUrl(locale.language, document.docId)}">
+                    href="#{versionHomeAction.getEditorUrl(facesContext.externalContext.requestLocale, document.docId)}">
                     <div class="list__item__content">
                       <div class="list__item__info">
                         <h3 class="list__title">#{document.name}</h3>

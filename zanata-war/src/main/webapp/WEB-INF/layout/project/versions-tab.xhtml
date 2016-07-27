@@ -160,7 +160,7 @@
                           value="#{projectHomeAction.slug}"/>
                         <f:param name="iteration" value="#{version.slug}"/>
                         <f:param name="localeId" value="#{hLocale.localeId}"/>
-                        <f:param name="locale" value="#{locale.language}"/>
+                        <f:param name="locale" value="#{facesContext.externalContext.requestLocale}"/>
                         <span>
                           <h:outputFormat
                             value="#{msgs['jsf.project.TranslateIn']}">
