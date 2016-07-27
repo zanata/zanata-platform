@@ -1,3 +1,9 @@
+## 3.9.3
+##### Bug Fixes
+ * [ZNTA-608](https://zanata.atlassian.net/browse/ZNTA-608) - Error (exception) on project page after removing an alias
+
+-----------------------
+
 ## 3.9.2
 ##### Bug Fixes
  * [ZNTA-1275](https://zanata.atlassian.net/browse/ZNTA-1275) - Fedora: login failed if name contains non-ascii characters
