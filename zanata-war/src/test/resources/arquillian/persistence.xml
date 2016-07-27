@@ -65,8 +65,10 @@
     <class>org.zanata.model.WebHook</class>
     <class>org.zanata.model.AllowedApp</class>
 
-    <!-- TODO This may be removed once the class files are packaged in the zanata-model jar as intended
-     Otherwise, hibernate will scan the whole war file and dependency jars -->
+    <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+
+    <!-- TODO This may be removed once the class files are packaged in the zanata-model jar as intended.
+     Otherwise, Hibernate will scan the whole war file and dependency jars. -->
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     <properties>
