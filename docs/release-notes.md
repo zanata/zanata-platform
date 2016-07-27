@@ -3,6 +3,12 @@
 ##### Bug Fixes
 * [ZNTA-846](https://zanata.atlassian.net/browse/ZNTA-846) - Group "request add project version" needs field limit
 * [ZNTA-872](https://zanata.atlassian.net/browse/ZNTA-872) - Redirect to home from cancel button in create user page
+## 3.9.3
+##### Bug Fixes
+ * [ZNTA-608](https://zanata.atlassian.net/browse/ZNTA-608) - Error (exception) on project page after removing an alias
+
+-----------------------
+
 ## 3.9.2
 ##### Bug Fixes
  * [ZNTA-1275](https://zanata.atlassian.net/browse/ZNTA-1275) - Fedora: login failed if name contains non-ascii characters

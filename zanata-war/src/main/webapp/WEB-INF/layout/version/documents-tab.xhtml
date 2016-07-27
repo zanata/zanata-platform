@@ -333,7 +333,7 @@
 
                 <ui:fragment rendered="#{hLocale.active}">
                   <a
-                    href="#{request.contextPath}/webtrans/Application.xhtml?project=#{versionHomeAction.projectSlug}&amp;iteration=#{versionHomeAction.versionSlug}&amp;localeId=#{hLocale.localeId}&amp;locale=#{locale.language}#{dswidParam}#view:doc;doc:#{versionHomeAction.selectedDocument.docId}">
+                    href="#{request.contextPath}/webtrans/Application.xhtml?project=#{versionHomeAction.projectSlug}&amp;iteration=#{versionHomeAction.versionSlug}&amp;localeId=#{hLocale.localeId}&amp;locale=#{facesContext.externalContext.requestLocale}#{dswidParam}#view:doc;doc:#{versionHomeAction.selectedDocument.docId}">
                     <div class="list__item">
                       <div class="list__item__info">
                         <h3 class="list__title">

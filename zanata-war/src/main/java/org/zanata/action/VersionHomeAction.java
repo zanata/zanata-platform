@@ -984,7 +984,7 @@ public class VersionHomeAction extends AbstractSortAction implements
     public String getEditorUrl(String sourceLocale, String docId) {
         return urlUtil
                 .editorDocumentUrl(projectSlug, versionSlug,
-                        selectedLocale.getLocaleId(), new LocaleId(
+                        selectedLocale.getLocaleId(), LocaleId.fromJavaName(
                                 sourceLocale), TokenUtil.encode(docId));
     }
 
