@@ -2,7 +2,6 @@
 ##### Bug Fixes
  * [ZNTA-1275](https://zanata.atlassian.net/browse/ZNTA-1275) - Fedora: login failed if name contains non-ascii characters
  * [ZNTA-1112](https://zanata.atlassian.net/browse/ZNTA-1112) - Yahoo login indicates "Login failed" despite login success
- * [ZNTA-1083](https://zanata.atlassian.net/browse/ZNTA-1083) - Cannot upload translation .po file using the obvious "Upload translations" option
 
 -----------------------
 
