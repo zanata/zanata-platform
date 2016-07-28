@@ -100,7 +100,7 @@ public class ProjectTypeTest {
         assertThat(extensions,
             containsInAnyOrder("dtd", "txt", "idml", "htm", "html", "odt",
                 "odp", "ods", "odg", "srt", "sbt", "sub", "vtt",
-                "properties", "xlf", "pot", "ts"));
+                "properties", "xlf", "pot", "ts", "json"));
     }
 
     @Test
