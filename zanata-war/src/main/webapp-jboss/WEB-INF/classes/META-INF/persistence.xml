@@ -7,6 +7,15 @@
   <persistence-unit name="zanataDatasourcePU" transaction-type="JTA">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <jta-data-source>java:jboss/datasources/zanataDatasource</jta-data-source>
+
+    <!--
+      The list of classes seems to be necessary,
+      unfortunately. Please keep the list in sync between
+      zanata-war/src/main/webapp-jboss/WEB-INF/classes/META-INF/persistence.xml
+      zanata-war/src/test/resources/arquillian/persistence.xml
+      and zanata-war/src/test/resources/META-INF/persistence.xml.
+     -->
+
     <mapping-file>META-INF/orm.xml</mapping-file>
 
     <class>org.zanata.model.Activity</class>
@@ -76,9 +85,6 @@
       <property name="hibernate.connection.provider_class"
         value="org.zanata.database.WrappedDatasourceConnectionProvider" />
 
-      <!--<property name="hibernate.dialect"-->
-        <!--value="org.hibernate.dialect.MySQL5InnoDBDialect"/>-->
-
       <!-- Logging -->
       <property name="hibernate.show_sql" value="${env.hibernate.show_sql}" />
       <property name="hibernate.use_sql_comments" value="true" />
@@ -102,6 +108,7 @@
         value="org.hibernate.search.store.impl.FSDirectoryProvider" />
       <property name="hibernate.search.default.locking_strategy"
         value="simple" />
+
       <!-- to use an existing cache manager (Good for external configuration) -->
       <!--<property name="hibernate.search.infinispan.cachemanager_jndiname"
         value="java:jboss/infinispan/container/hibernate-search"/>-->

@@ -12,9 +12,9 @@
       NB non-jta-data-source is not compatible with JPA tests, but is
       needed by Seam tests.  The list of classes seems to be necessary,
       unfortunately. Please keep the list in sync between
-      zanata-war/src/test/jboss-embedded-bootstrap/META-INF/persistence.xml
+      zanata-war/src/main/webapp-jboss/WEB-INF/classes/META-INF/persistence.xml
+      zanata-war/src/test/resources/arquillian/persistence.xml
       and zanata-war/src/test/resources/META-INF/persistence.xml.
-      See also zanata-model/src/test/resources/META-INF/persistence.xml.
      -->
 
     <!-- <mapping-file>META-INF/orm.xml</mapping-file> -->
