@@ -28,10 +28,13 @@
       <property name="managementPort">${jboss.management.native.port,env.JBOSS_MANAGEMENT_NATIVE_PORT:10099}</property>
     </configuration>
   </container>
-  <container qualifier="wildfly81">
+  <container qualifier="wildfly" default="true">
     <configuration>
-      <!--<property name="jbossHome">${wildfly.home}</property>-->
+      <property name="jbossHome">${jboss.home}</property>
       <!-- <property name="javaVmArguments">-Dorg.jboss.as.logging.per-deployment=false</property> -->
+
+      <!-- From JBOSS_HOME/standalone/configuration -->
+      <property name="serverConfig">standalone-arquillian.xml</property>
       <!-- NB: don't put whitespace around the number -->
       <property name="managementPort">${jboss.management.http.port,env.JBOSS_MANAGEMENT_HTTP_PORT:10090}</property>
     </configuration>

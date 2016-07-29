@@ -1220,7 +1220,7 @@
                 </goals>
                 <configuration>
                   <target unless="skipArqTests">
-                    <copy overwrite="true" file="${project.basedir}/src/test/resources/arquillian/standalone-arquillian-wildfly.xml" tofile="${appserver.home}/standalone/configuration/standalone.xml" />
+                    <copy overwrite="true" file="${project.basedir}/src/test/resources/arquillian/standalone-arquillian-wildfly.xml" tofile="${appserver.home}/standalone/configuration/standalone-arquillian.xml" />
                   </target>
                 </configuration>
               </execution>
@@ -1232,7 +1232,7 @@
             <configuration>
               <systemPropertyVariables>
                 <!-- NB this is a container qualifier in arquillian.xml -->
-                <arquillian.launch>wildfly81</arquillian.launch>
+                <arquillian.launch>wildfly</arquillian.launch>
               </systemPropertyVariables>
             </configuration>
           </plugin>
