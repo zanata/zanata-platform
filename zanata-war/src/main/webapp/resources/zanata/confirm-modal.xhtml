@@ -1,0 +1,64 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:composite="http://java.sun.com/jsf/composite"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html">
+
+  <composite:interface>
+    <composite:attribute name="id" type="java.lang.String"
+      shortDescription="id of the modal" required="true"/>
+
+    <composite:attribute name="type" type="java.lang.String"
+      shortDescription="confirm (ok and cancel button) or alert (ok button). Default is confirm"
+      />
+
+    <composite:attribute name="title" type="java.lang.String"
+      shortDescription="title of the modal" required="true"/>
+
+    <composite:attribute name="message" type="java.lang.String"
+      shortDescription="message to display in modal" required="true"/>
+
+    <composite:attribute name="onresponse" type="java.lang.String"
+      shortDescription="javascript function (boolean) for cancel/ok is clicked. Return true/false"
+      required="true"/>
+  </composite:interface>
+
+  <composite:implementation>
+    <div class="modal" id="#{cc.attrs.id}" tabindex="-1" role="dialog"
+      aria-labelledby="confirmModal" aria-hidden="true">
+      <div class="modal__dialog l--constrain-small txt--mini">
+        <header class="modal__header">
+          <h2 class="modal__title">#{cc.attrs.title}</h2>
+          <ui:fragment rendered="#{cc.attrs.type ne 'alert'}">
+            <button type="button"
+              class="modal__close button--link"
+              data-dismiss="modal" onclick="#{cc.attrs.onresponse}(false)">
+              <i class="i i--huge i--cancel"></i>
+            </button>
+          </ui:fragment>
+        </header>
+
+        <div class="modal__content l--pad-all-1">
+          <div class="l--pad-v-quarter" id="confirm-message">
+            <h:outputFormat escape="false" value="#{cc.attrs.message}" />
+          </div>
+        </div>
+
+        <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
+          <div class="txt--align-right">
+            <ui:fragment rendered="#{cc.attrs.type ne 'alert'}">
+              <button id="confirm-cancel-button" onclick="#{cc.attrs.onresponse}(false)"
+                class="cancel button--link l--push-right-half"
+                data-dismiss="modal">
+                #{msgs['jsf.Cancel']}
+              </button>
+            </ui:fragment>
+            <button id="confirm-ok-button" class="button button--primary"
+              onclick="#{cc.attrs.onresponse}(true)">
+              #{msgs['jsf.confirmation.button.ok']}
+            </button>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </composite:implementation>
+</html>

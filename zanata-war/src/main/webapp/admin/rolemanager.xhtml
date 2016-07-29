@@ -4,10 +4,10 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:a4j="http://richfaces.org/a4j"
-  >
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  xmlns:a4j="http://richfaces.org/a4j">
 
-<ui:composition template="../WEB-INF/template/template.xhtml">
+<ui:composition template="/WEB-INF/template/template.xhtml">
   <f:metadata>
     <f:event type="preRenderView" listener="#{zanataRoleSearch.loadRoles}"/>
     <f:event type="preRenderView" listener="#{identity.checkRole('admin')}"/>
@@ -16,10 +16,27 @@
   <ui:define name="page_title">#{msgs['jsf.ManageRoles']}</ui:define>
 
   <ui:define name="center_content">
+    <zanata:confirm-modal id="deleteRoleModal"
+      title="#{msgs['jsf.role.delete.title']}"
+      message="#{msgs['jsf.AreYouSureYouWishToDeleteThisRoleThisActionCannotBeUndone']}"
+      onresponse="onDeleteRoleResponse" />
+
+    <a4j:jsFunction name="deleteRole" action="#{identityManager.deleteRole(role)}" render="roles-form">
+      <a4j:param name="val1" assignTo="#{role}"/>
+    </a4j:jsFunction>
 
     <script type="text/javascript">
-      function confirmDelete() {
-        return confirm("#{msgs['jsf.AreYouSureYouWishToDeleteThisRoleThisActionCannotBeUndone']}");
+      var selectedRole;
+      function setSelectedRole(role) {
+        selectedRole = role;
+      }
+      function onDeleteRoleResponse(del) {
+        if (del) {
+          deleteRole(selectedRole);
+        } else {
+          selectedRole = null;
+        }
+        zanata.modal.hide('#deleteRoleModal');
       }
     </script>
     <div class="g--centered">
@@ -56,7 +73,7 @@
             </div>
             <h2 class="panel__heading">#{msgs['jsf.admin.managerole.header']}</h2>
           </div>
-          <h:form styleClass="l--push-bottom-0">
+          <h:form styleClass="l--push-bottom-0" id="roles-form">
             <ul class="list--stats">
               <ui:repeat value="#{zanataRoleSearch.roles}" var="role">
                 <li class="list__item--actionable">
@@ -71,12 +88,11 @@
                         <ui:fragment
                           rendered="#{identity.hasPermission('seam.role', 'delete') and accountRoleDAO.findByName(role).roleType.toString() ne 'AUTO'}">
                           <li>
-                            <h:commandLink
-                              action="#{identityManager.deleteRole(role)}"
-                              onclick="return confirmDelete()"
-                              styleClass="i__item--right txt--danger">#{msgs['jsf.Delete']}
+                            <a href="#" class="i__item--right txt--danger" onclick="setSelectedRole('#{role}')"
+                              data-toggle="modal" data-target="#deleteRoleModal">
+                              #{msgs['jsf.Delete']}
                               <i class="i i--remove i__item__icon"></i>
-                            </h:commandLink>
+                            </a>
                           </li>
                         </ui:fragment>
                       </ul>

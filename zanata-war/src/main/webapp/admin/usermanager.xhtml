@@ -18,8 +18,33 @@
 
   <ui:define name="page_title">#{msgs['jsf.ManageUsers']}</ui:define>
   <ui:define name="center_content">
+    <zanata:confirm-modal id="deleteUserModal"
+      title="#{msgs['jsf.user.delete.title']}"
+      message="#{msgs['jsf.AreYouSureYouWishToDeleteThisUserThisActionCannotBeUndone']}"
+      onresponse="onDeleteUserResponse" />
 
+    <h:form>
+      <a4j:jsFunction name="deleteUser"
+        action="#{userAction.deleteUser(username)}" render="usermanagerForm,
+      userSearch-pager, userSearch-page-info, userSearchBottom-pager, userSearchBottom-page-info">
+        <a4j:param name="val1" assignTo="#{username}"/>
+      </a4j:jsFunction>
+    </h:form>
 
+    <script type="text/javascript">
+      var selectedUser;
+      function setSelectedUser(user) {
+        selectedUser = user;
+      }
+      function onDeleteUserResponse(del) {
+        if (del) {
+          deleteUser(selectedUser);
+        } else {
+          selectedUser = null;
+        }
+        zanata.modal.hide('#deleteUserModal');
+      }
+    </script>
 
     <div class="g--centered">
       <div class="g__item w--2-3 l--push-bottom-half">
@@ -51,19 +76,6 @@
           </a4j:status>
 
           <h:form id="usermanagerForm" styleClass="l--push-bottom-0">
-
-            <a4j:jsFunction name="deleteUser"
-              action="#{userAction.deleteUser(username)}" render="usermanagerForm,
-      userSearch-pager, userSearch-page-info, userSearchBottom-pager, userSearchBottom-page-info">
-              <a4j:param name="val1" assignTo="#{username}"/>
-            </a4j:jsFunction>
-
-            <script type="text/javascript">
-              function confirmDelete() {
-                return confirm("#{msgs['jsf.AreYouSureYouWishToDeleteThisUserThisActionCannotBeUndone']}");
-              }
-            </script>
-
             <ul class="list--stats">
               <ui:repeat value="#{userAction.userFilter.currentPage}"
                 var="user">
@@ -79,8 +91,8 @@
                         <ui:fragment
                           rendered="#{identity.hasPermission('seam.user', 'delete')}">
                           <li>
-                            <a onclick="if(confirmDelete()){deleteUser('#{user}')};return false;"
-                              class="i__item--right txt--danger">
+                            <a href="#" class="i__item--right txt--danger" onclick="setSelectedUser('#{user}')"
+                              data-toggle="modal" data-target="#deleteUserModal">
                               #{msgs['jsf.Delete']}
                               <i class="i i--remove i__item__icon"></i>
                             </a>
