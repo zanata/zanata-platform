@@ -5,7 +5,8 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:rich="http://richfaces.org/rich"
-  >
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  xmlns:a4j="http://richfaces.org/a4j">
 
 <ui:composition template="../WEB-INF/template/template.xhtml">
   <f:metadata>
@@ -16,9 +17,27 @@
     name="page_title">#{msgs['jsf.RoleAssignmentRules']}</ui:define>
 
   <ui:define name="center_content">
+    <zanata:confirm-modal id="deleteRuleModal"
+      title="#{msgs['jsf.rolerules.delele.title']}"
+      message="#{msgs['jsf.rolerules.ConfirmDelete']}"
+      onresponse="onDeleteRuleResponse" />
+
+    <a4j:jsFunction name="deleteRule" action="#{roleAssignmentRuleAction.remove(rule)}" render="rules-content">
+      <a4j:param name="val1" assignTo="#{rule}"/>
+    </a4j:jsFunction>
+
     <script type="text/javascript">
-      function confirmDelete() {
-        return confirm("#{msgs['jsf.rolerules.ConfirmDelete']}");
+      var selectedRule;
+      function setSelectedRule(rule) {
+        selectedRule = rule;
+      }
+      function onDeleteRuleResponse(del) {
+        if (del) {
+          deleteRule(selectedRule);
+        } else {
+          selectedRule = null;
+        }
+        zanata.modal.hide('#deleteRuleModal');
       }
     </script>
 
@@ -56,66 +75,66 @@
             <h2 class="panel__heading">#{msgs['jsf.rolerules.title']}</h2>
           </div>
 
-          <h:panelGroup layout="block"  styleClass="l--pad-all-half"
-            rendered="#{empty roleAssignmentRuleAction.allRules}">
-            <p class="txt--meta">#{msgs['jsf.rolerules.norules']}</p>
-            <p>
-              <h:link value="#{msgs['jsf.rolerules.CreateRule']}"
-                outcome="/admin/roleruledetails.xhtml" styleClass="button button--primary">
-                <i class="i i--plus i__item__icon"></i>
-              </h:link>
-            </p>
-          </h:panelGroup>
+          <h:panelGroup layout="block" id="rules-content">
+            <h:panelGroup layout="block"  styleClass="l--pad-all-half"
+              rendered="#{empty roleAssignmentRuleAction.allRules}">
+              <p class="txt--meta">#{msgs['jsf.rolerules.norules']}</p>
+              <p>
+                <h:link value="#{msgs['jsf.rolerules.CreateRule']}"
+                  outcome="/admin/roleruledetails.xhtml" styleClass="button button--primary">
+                  <i class="i i--plus i__item__icon"></i>
+                </h:link>
+              </p>
+            </h:panelGroup>
 
-
-          <h:form styleClass="l--push-bottom-0" id="roleRules"
-            rendered="#{not empty roleAssignmentRuleAction.allRules}">
-            <ul class="list--stats">
-              <ui:repeat value="#{roleAssignmentRuleAction.allRules}" var="rule">
-                <li class="list__item--actionable">
-                  <div class="list__item__action">
-                    <div
-                      class="dropdown dropdown--small dropdown--inline dropdown--single list__item__dropdown js-dropdown">
-                      <a href="#" title="Options"
-                        class="dropdown__toggle js-dropdown__toggle txt--meta">
-                        <span class="is-invisible">Options</span>
-                      </a>
-                      <ul class="dropdown__content js-dropdown__content">
-                        <li>
-                          <h:commandLink value="#{msgs['jsf.Delete']}"
-                            action="#{roleAssignmentRuleAction.remove(rule)}"
-                            onclick="return confirmDelete()"
-                            styleClass="i__item--right txt--danger">
-                            <i class="i i--remove i__item__icon"></i>
-                          </h:commandLink>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <h:link outcome="/admin/roleruledetails.xhtml">
-                    <f:param name="id" value="#{rule.id}" />
-                    <div class="list__item__content">
-                      <div class="list__item__info">
-                        <h3 class="list__title">
-                          #{rule.policyName}
-                          <span class="txt--meta l--push-left-quarter l--push-right-half">
-                            <h:outputFormat value="#{msgs['jsf.rolerules.Role']}">
-                              <f:param value="#{rule.roleToAssign.name}" />
-                            </h:outputFormat>
-                          </span>
-                        </h3>
-                        <span class="list__item__meta">
-                          <h:outputFormat value="#{msgs['jsf.rolerules.Pattern']}">
-                            <f:param value="#{rule.identityRegExp}" />
-                          </h:outputFormat>
-                        </span>
+            <h:form styleClass="l--push-bottom-0" id="roleRules"
+              rendered="#{not empty roleAssignmentRuleAction.allRules}">
+              <ul class="list--stats">
+                <ui:repeat value="#{roleAssignmentRuleAction.allRules}" var="rule">
+                  <li class="list__item--actionable">
+                    <div class="list__item__action">
+                      <div
+                        class="dropdown dropdown--small dropdown--inline dropdown--single list__item__dropdown js-dropdown">
+                        <a href="#" title="Options"
+                          class="dropdown__toggle js-dropdown__toggle txt--meta">
+                          <span class="is-invisible">Options</span>
+                        </a>
+                        <ul class="dropdown__content js-dropdown__content">
+                          <li>
+                            <a href="#" class="i__item--right txt--danger" onclick="setSelectedRule('#{rule.id}')"
+                              data-toggle="modal" data-target="#deleteRuleModal">
+                              #{msgs['jsf.Delete']}
+                              <i class="i i--remove i__item__icon"></i>
+                            </a>
+                          </li>
+                        </ul>
                       </div>
                     </div>
-                  </h:link>
-                </li>
-              </ui:repeat>
-            </ul>
-          </h:form>
+                    <h:link outcome="/admin/roleruledetails.xhtml">
+                      <f:param name="id" value="#{rule.id}" />
+                      <div class="list__item__content">
+                        <div class="list__item__info">
+                          <h3 class="list__title">
+                            #{rule.policyName}
+                            <span class="txt--meta l--push-left-quarter l--push-right-half">
+                              <h:outputFormat value="#{msgs['jsf.rolerules.Role']}">
+                                <f:param value="#{rule.roleToAssign.name}" />
+                              </h:outputFormat>
+                            </span>
+                          </h3>
+                          <span class="list__item__meta">
+                            <h:outputFormat value="#{msgs['jsf.rolerules.Pattern']}">
+                              <f:param value="#{rule.identityRegExp}" />
+                            </h:outputFormat>
+                          </span>
+                        </div>
+                      </div>
+                    </h:link>
+                  </li>
+                </ui:repeat>
+              </ul>
+            </h:form>
+          </h:panelGroup>
         </div>
       </div>
     </div>

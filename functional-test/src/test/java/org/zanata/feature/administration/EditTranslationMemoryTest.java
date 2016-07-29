@@ -156,9 +156,6 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
     @Feature(summary = "The administrator can delete a translation memory entry",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    // disable test due to chromedriver having issue handling alert popup in javascript
-    // TODO: replace javascript alert
-    @Ignore
     public void deleteTranslationMemory() throws Exception {
         String deleteTMId = "deletetmtest";
 
@@ -181,9 +178,6 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
             "translation memory entry",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    //disable test due to chromedriver having issue handling alert popup in javascript
-    // TODO: replace javascript alert
-    @Ignore
     public void dontDeleteTranslationMemory() throws Exception {
         String dontDeleteTMId = "dontdeletetmtest";
 
@@ -235,9 +229,6 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
             "of a translation memory entry",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    //disable test due to chromedriver having issue handling alert popup in javascript
-    // TODO: replace javascript alert
-    @Ignore
     public void dontClearTranslationMemory() throws Exception {
         String clearTMId = "dontcleartmtest";
         File importFile = testFileGenerator.openTestFile("test-tmx.xml");
