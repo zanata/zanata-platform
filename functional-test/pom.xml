@@ -27,11 +27,20 @@
     <cargo.container.home>${project.build.directory}/jboss/container</cargo.container.home>
     <context.path></context.path>
 
+    <!-- Image name for the docker image to use for the database -->
+    <!-- Right now this assumes the mysql and mariadb image are used exactly the same
+         (parameters, env variables, ports, etc), and only the name needs to change.
+
+         Other valid values for this variable:
+         mariadb:10.1
+    -->
+    <docker.db.image>mysql:5.5.49</docker.db.image>
+
     <!--mysql-maven-plugin will use these setup-->
     <ds.database>zanata</ds.database>
     <ds.username>zanata</ds.username>
     <ds.password>zanata</ds.password>
-    <ds.connection.url>jdbc:mysql://localhost:${mysql.port}/${ds.database}?characterEncoding=UTF-8</ds.connection.url>
+    <ds.connection.url>jdbc:mysql://${docker.host.address}:${dockerdb.port}/${ds.database}?characterEncoding=UTF-8</ds.connection.url>
     <ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
     <!-- skipAfterFailureCount=0 due to https://issues.apache.org/jira/browse/SUREFIRE-1219 -->
     <failsafe.skipAfterFailureCount>0</failsafe.skipAfterFailureCount>
@@ -546,7 +555,7 @@
             <configuration>
               <images>
                 <image>
-                  <name>mariadb:10.1</name>
+                  <name>${docker.db.image}</name>
                   <alias>zanatadb</alias>
                   <run>
                     <env>
@@ -556,10 +565,14 @@
                       <MYSQL_ROOT_PASSWORD>rootpw</MYSQL_ROOT_PASSWORD>
                     </env>
                     <ports>
-                      <port>${mysql.port}:3306</port>
+                      <port>dockerdb.port:3306</port>
                     </ports>
                     <wait>
-                      <log>socket: '/var/run/mysqld/mysqld.sock'  port: 3306</log>
+                      <tcp>
+                        <ports>
+                          <port>3306</port>
+                        </ports>
+                      </tcp>
                       <time>50000</time>
                     </wait>
                     <!-- Enable this section to see the DB logs in the maven build -->
