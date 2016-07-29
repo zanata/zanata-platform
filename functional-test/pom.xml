@@ -20,7 +20,7 @@
     <cargo.port.offset>0</cargo.port.offset>
     <!-- This may be changed by the JBOSS_HTTP_PORT profile -->
     <!-- This needs to agree with the http socket-binding in standalone.xml -->
-    <cargo.servlet.port>8180</cargo.servlet.port>
+    <!--<cargo.servlet.port>8180</cargo.servlet.port>-->
     <cargo.jboss.management-http.port>10090</cargo.jboss.management-http.port>
     <cargo.jboss.management-native.port>10099</cargo.jboss.management-native.port>
     <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
@@ -59,7 +59,7 @@
 
     <!-- target zanata instance will be built by war overlay -->
     <zanata.test.war.name>zanata-test-${project.version}</zanata.test.war.name>
-    <zanata.instance.url>http://${cargo.host}:${cargo.servlet.port}/</zanata.instance.url>
+    <zanata.instance.url>http://${cargo.host}:${zanata.server.port}/</zanata.instance.url>
     <zanata.apikey>b6d7044e9ee3b2447c28fb7c50d86d98</zanata.apikey>
     <zanata.translatorkey>d83882201764f7d339e97c4b087f0806</zanata.translatorkey>
     <zanata.sample.projects.basedir>${project.build.testOutputDirectory}/sample-projects</zanata.sample.projects.basedir>
@@ -592,7 +592,7 @@
                   </build>
                   <run>
                     <ports>
-                      <port>${cargo.servlet.port}:8080</port>
+                      <port>${zanata.server.port}:8080</port>
                     </ports>
                     <links>
                       <link>zanatadb:db</link>
@@ -909,7 +909,7 @@
                 <echo>-Dcargo.debug.jvm.args : If not set by default will listen to port 8787. Need to set to empty on jenkins</echo>
                 <echo />
                 <echo>-Dzanata.target.version=version of zanata to deploy. Default is: ${project.parent.version}</echo>
-                <echo>-Dzanata.instance.url=http://${cargo.host}:${cargo.servlet.port}/${context.path}</echo>
+                <echo>-Dzanata.instance.url=http://${cargo.host}:${zanata.server.port}/${context.path}</echo>
                 <echo>-Dzanata.apikey=b6d7044e9ee3b2447c28fb7c50d86d98</echo>
                 <!--<echo>-Dzanata.client.version=maven client version to use. Currently: ${zanata.client.version}</echo>-->
                 <echo>-Dzanata.sample.projects.basedir=${project.build.testOutputDirectory}/sample-projects</echo>
