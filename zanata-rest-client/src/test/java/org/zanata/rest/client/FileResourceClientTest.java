@@ -81,7 +81,7 @@ public class FileResourceClientTest {
         }
         assertThat(allExtension, Matchers.containsInAnyOrder("dtd", "pot",
                 "txt", "idml", "html", "htm", "odt", "odp", "odg", "ods",
-                "srt", "sbt", "sub", "vtt", "properties", "xlf", "ts"));
+                "srt", "sbt", "sub", "vtt", "properties", "xlf", "ts", "json"));
     }
 
     @Test
@@ -95,7 +95,7 @@ public class FileResourceClientTest {
         }
         assertThat(allExtension, Matchers.containsInAnyOrder("dtd", "pot",
                 "txt", "idml", "html", "htm", "odt", "odp", "odg", "ods",
-                "srt", "sbt", "sub", "vtt", "properties", "xlf", "ts"));
+                "srt", "sbt", "sub", "vtt", "properties", "xlf", "ts", "json"));
     }
 
     @Test
