@@ -92,9 +92,13 @@ public interface FileResource extends RestResource {
     @Path(ACCEPTED_TYPES_RESOURCE)
     @Produces(MediaType.TEXT_PLAIN)
     // /file/accepted_types
-            public
-            Response acceptedFileTypes();
+    public
+    Response acceptedFileTypes();
 
+    /**
+     * @return A list of Document types which include a description of the
+     * source and translation file extensions accepted by the server.
+     */
     @GET
     @Path(ACCEPTED_TYPE_LIST_RESOURCE)
     @Produces(MediaType.APPLICATION_JSON)
@@ -102,33 +106,66 @@ public interface FileResource extends RestResource {
     public
     Response acceptedFileTypeList();
 
+    /**
+     * Upload a source file (or file chunk) to Zanata. Allows breaking up files
+     * into smaller chunks for very large files. In this case, the first invocation
+     * of this service will return an 'upload id' which needs to be used in
+     * subsequent calls to tie all the uploaded chunks together.
+     * The file will only be processed when all chunks have been fully uploaded.
+     * With each uploaded chunk, the multipart message's 'last' parameter will
+     * indicate if it is the last expected chunk.
+     *
+     * @param projectSlug The project slug where to store the document.
+     * @param iterationSlug The project version slug where to store the document.
+     * @param docId The full Document identifier
+     * @param uploadForm The multi-part form body for the file or chunk.
+     * @return A message with information about the upload operation.
+     */
     @POST
     @Path(SOURCE_UPLOAD_TEMPLATE)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_XML)
     // /file/source/{projectSlug}/{iterationSlug}?docId={docId}
-            @TypeHint(ChunkUploadResponse.class)
-            public
-            Response uploadSourceFile(
-                    @PathParam("projectSlug") String projectSlug,
-                    @PathParam("iterationSlug") String iterationSlug,
-                    @QueryParam("docId") String docId,
-                    @MultipartForm DocumentFileUploadForm uploadForm);
+    @TypeHint(ChunkUploadResponse.class)
+    public
+    Response uploadSourceFile(
+            @PathParam("projectSlug") String projectSlug,
+            @PathParam("iterationSlug") String iterationSlug,
+            @QueryParam("docId") String docId,
+            @MultipartForm DocumentFileUploadForm uploadForm);
 
+    /**
+     * Upload a translation file (or file chunk) to Zanata. Allows breaking up files
+     * into smaller chunks for very large files. In this case, the first invocation
+     * of this service will return an 'upload id' which needs to be used in
+     * subsequent calls to tie all the uploaded chunks together.
+     * The file will only be processed when all chunks have been fully uploaded.
+     * With each uploaded chunk, the multipart message's 'last' parameter will
+     * indicate if it is the last expected chunk.
+     *
+     * @param projectSlug The project slug where to store the document.
+     * @param iterationSlug The project version slug where to store the document.
+     * @param localeId The locale (language) for the translation file.
+     * @param docId The full Document identifier.
+     * @param merge Indicates whether to merge translations or overwrite all
+     *              translations with the contents of the uploaded file.
+     * @param uploadForm The multi-part form body for the file or chunk.
+     * @return A message with information about the upload operation.
+     */
     @POST
     @Path(TRANSLATION_UPLOAD_TEMPLATE)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_XML)
     // /file/translation/{projectSlug}/{iterationSlug}/{locale}?docId={docId}&merge={merge}
-            @TypeHint(ChunkUploadResponse.class)
-            public
-            Response uploadTranslationFile(
-                    @PathParam("projectSlug") String projectSlug,
-                    @PathParam("iterationSlug") String iterationSlug,
-                    @PathParam("locale") String localeId,
-                    @QueryParam("docId") String docId,
-                    @QueryParam("merge") String merge,
-                    @MultipartForm DocumentFileUploadForm uploadForm);
+    @TypeHint(ChunkUploadResponse.class)
+    public
+    Response uploadTranslationFile(
+            @PathParam("projectSlug") String projectSlug,
+            @PathParam("iterationSlug") String iterationSlug,
+            @PathParam("locale") String localeId,
+            @QueryParam("docId") String docId,
+            @QueryParam("merge") String merge,
+            @MultipartForm DocumentFileUploadForm uploadForm);
 
     /**
      * Downloads a single source file.
