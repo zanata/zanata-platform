@@ -25,6 +25,9 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.core.Response;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +40,6 @@ import org.zanata.util.PathUtil;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
-import com.sun.jersey.api.client.ClientResponse;
 
 /**
  *
@@ -88,23 +90,22 @@ public class GlossaryPullCommand extends
                 : client.getProjectQualifiedName(project);
 
         log.info("Pulling glossary from server");
-        ClientResponse response =
-                client.downloadFile(fileType, transLang, qualifiedName);
-
-        if (response
-                .getClientResponseStatus() == ClientResponse.Status.NOT_FOUND) {
+        Response response;
+        try {
+            response =
+                    client.downloadFile(fileType, transLang, qualifiedName);
+        } catch (NotFoundException e) {
             log.info("No glossary file in server");
             return;
         }
 
-        ClientUtil.checkResult(response);
-        InputStream glossaryFile = response.getEntity(InputStream.class);
+        InputStream glossaryFile = response.readEntity(InputStream.class);
         if (glossaryFile == null) {
             log.info("No glossary file in server");
             return;
         }
         String fileName =
-            ClientUtil.getFileNameFromHeader(response.getHeaders());
+            ClientUtil.getFileNameFromHeader(response.getStringHeaders());
         File file = new File(fileName);
         PathUtil.makeDirs(file.getParentFile());
         try (OutputStream out = new FileOutputStream(file)) {

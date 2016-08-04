@@ -23,10 +23,12 @@ package org.zanata.rest.client;
 
 import java.net.URI;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.MediaType;
+
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Account;
-
-import com.sun.jersey.api.client.WebResource;
 
 /**
  * @author Patrick Huang <a
@@ -47,14 +49,14 @@ public class AccountClient {
     }
 
     public void put(String username, Account account) {
-        webResource(username).type(
-                MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML)
-                .put(account);
+        webResource(username)
+                .put(Entity.entity(account, MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML));
     }
 
-    private WebResource webResource(String username) {
-        return factory.getClient().resource(baseUri)
+    private Invocation.Builder webResource(String username) {
+        return factory.getClient().target(baseUri)
                 .path("accounts").path("u")
-                .path(username);
+                .path(username)
+                .request(MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML);
     }
 }

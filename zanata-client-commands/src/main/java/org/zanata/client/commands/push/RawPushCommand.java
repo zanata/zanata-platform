@@ -47,9 +47,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
+import javax.ws.rs.NotFoundException;
 
 import com.google.common.collect.ImmutableMap;
-import com.sun.jersey.api.client.UniformInterfaceException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -663,14 +663,10 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
     public List<FileTypeInfo> fileTypeInfoList(FileResourceClient client) {
         try {
             return client.fileTypeInfoList();
-        } catch (UniformInterfaceException e) {
-            if (e.getResponse().getStatus() == 404) {
-                log.info("Detected old Zanata Server; using hard-coded file types.");
-                // probably running against an old Zanata Server
-                return fileTypeInfoListWorkaround();
-            } else {
-                throw e;
-            }
+        } catch (NotFoundException e) {
+            log.info("Detected old Zanata Server; using hard-coded file types.");
+            // probably running against an old Zanata Server
+            return fileTypeInfoListWorkaround();
         }
     }
 

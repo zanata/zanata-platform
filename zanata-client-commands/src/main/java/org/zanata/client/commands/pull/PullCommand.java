@@ -10,7 +10,9 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -24,7 +26,6 @@ import org.zanata.client.exceptions.ConfigException;
 import org.zanata.common.LocaleId;
 import org.zanata.common.io.FileDetails;
 import org.zanata.rest.RestUtil;
-import org.zanata.rest.client.ClientUtil;
 import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -33,7 +34,6 @@ import org.zanata.util.HashUtil;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-import com.sun.jersey.api.client.ClientResponse;
 
 /**
  * @author Sean Flanigan <a
@@ -310,26 +310,30 @@ public class PullCommand extends PushPullCommand<PullOptions> {
             }
         }
 
-        ClientResponse transResponse =
-                transDocResourceClient.getTranslations(docUri,
-                        locale, strat.getExtensions(),
-                        createSkeletons, eTag);
-
-        // ignore 404 (no translation yet for specified
-        // document)
-        if (transResponse.getClientResponseStatus() == ClientResponse.Status.NOT_FOUND) {
+        Response transResponse;
+        try {
+            transResponse = transDocResourceClient.getTranslations(docUri,
+                    locale, strat.getExtensions(),
+                    createSkeletons, eTag);
+        } catch (NotFoundException e) {
+            // ignore 404 (no translation yet for specified
+            // document)
             if (!createSkeletons) {
                 log.info(
                         "No translations found in locale {} for document {}",
                         locale, localDocName);
             } else {
+                transResponse = e.getResponse();
                 // Write the skeleton
                 writeTargetDoc(strat, localDocName, locMapping,
-                    doc, null,
-                    transResponse.getHeaders()
-                        .getFirst(HttpHeaders.ETAG));
+                        doc, null,
+                        transResponse.getStringHeaders()
+                                .getFirst(HttpHeaders.ETAG));
             }
-        } else if (transResponse.getClientResponseStatus() == ClientResponse.Status.NOT_MODIFIED) {
+            return;
+        }
+
+        if (transResponse.getStatusInfo() == Response.Status.NOT_MODIFIED) {
             // 304 NOT MODIFIED (the document can stay the same)
             log.info(
                     "No changes in translations for locale {} and document {}",
@@ -347,22 +351,20 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                                 docUri, locale,
                                 strat.getExtensions(),
                                 createSkeletons, null);
-                ClientUtil.checkResult(transResponse);
                 // rewrite the target document
                 writeTargetDoc(strat, localDocName, locMapping,
-                    doc, transResponse.getEntity(TranslationsResource.class),
-                    transResponse.getHeaders()
+                    doc, transResponse.readEntity(TranslationsResource.class),
+                    transResponse.getStringHeaders()
                         .getFirst(HttpHeaders.ETAG));
             }
         } else {
-            ClientUtil.checkResult(transResponse);
             TranslationsResource targetDoc =
-                transResponse.getEntity(TranslationsResource.class);
+                transResponse.readEntity(TranslationsResource.class);
 
             // Write the target document
             writeTargetDoc(strat, localDocName, locMapping,
                     doc, targetDoc,
-                    transResponse.getHeaders()
+                    transResponse.getStringHeaders()
                             .getFirst(HttpHeaders.ETAG));
         }
     }

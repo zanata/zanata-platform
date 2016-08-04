@@ -21,9 +21,11 @@
 
 package org.zanata.rest.client;
 
-import org.zanata.rest.dto.Project;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.MediaType;
 
-import com.sun.jersey.api.client.WebResource;
+import org.zanata.rest.dto.Project;
 
 /**
  * @author Patrick Huang <a
@@ -43,14 +45,15 @@ public class ProjectClient {
                 .get(Project.class);
     }
 
-    private WebResource webResource() {
+    private Invocation.Builder webResource() {
         return factory.getClient()
-                .resource(factory.getBaseUri())
-                .path("projects").path("p").path(projectSlug);
+                .target(factory.getBaseUri())
+                .path("projects").path("p").path(projectSlug)
+                .request(MediaType.APPLICATION_XML_TYPE);
     }
 
     public void put(Project project) {
-        webResource().put(project);
+        webResource().put(Entity.xml(project));
     }
 }
 

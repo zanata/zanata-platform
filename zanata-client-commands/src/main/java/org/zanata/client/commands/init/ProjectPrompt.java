@@ -29,6 +29,9 @@ import static org.zanata.client.commands.Messages.get;
 import java.util.Collections;
 import java.util.List;
 
+import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.ServerErrorException;
+
 import org.zanata.client.commands.ConsoleInteractor;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
@@ -44,7 +47,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.sun.jersey.api.client.UniformInterfaceException;
 
 /**
  * @author Patrick Huang
@@ -201,11 +203,9 @@ class ProjectPrompt {
         Project project = new Project(projectId, projectName, projectType);
         try {
             projectClient.put(project);
-        } catch (UniformInterfaceException e) {
-            if (e.getResponse().getStatus() >= 399) {
-                InitCommand.offerRetryOnServerError(e, consoleInteractor);
-                createNewProject();
-            }
+        } catch (ClientErrorException | ServerErrorException e) {
+            InitCommand.offerRetryOnServerError(e, consoleInteractor);
+            createNewProject();
         }
         consoleInteractor.printfln(Confirmation, get("project.created"));
         opts.setProj(projectId);

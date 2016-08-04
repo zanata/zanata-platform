@@ -21,25 +21,21 @@
 
 package org.zanata.rest.client;
 
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.List;
-
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.GlossaryEntry;
-import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.QualifiedName;
 import org.zanata.rest.service.GlossaryResource;
-import org.zanata.rest.service.ProjectResource;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.GenericType;
-import com.sun.jersey.api.client.WebResource;
 
 /**
  * @author Patrick Huang <a
@@ -56,59 +52,63 @@ public class GlossaryClient {
 
     public void post(List<GlossaryEntry> glossaryEntries, LocaleId localeId,
             String qualifiedName) {
-        Type genericType = new GenericType<List<GlossaryEntry>>() {
-        }.getType();
 
-        Object entity =
-                new GenericEntity<List<GlossaryEntry>>(glossaryEntries,
-                        genericType);
+        Entity<List<GlossaryEntry>> entity = Entity.json(glossaryEntries);
 
         webResource().path("entries").queryParam("locale", localeId.getId())
                 .queryParam("qualifiedName", qualifiedName)
-                .type(MediaType.APPLICATION_XML_TYPE).post(entity);
+                .request(MediaType.APPLICATION_JSON_TYPE).post(entity);
     }
 
-    public ClientResponse downloadFile(String fileType,
+    public Response downloadFile(String fileType,
             ImmutableList<String> transLang, String qualifiedName) {
         if (transLang != null && !transLang.isEmpty()) {
             return webResource().path("file").queryParam("fileType", fileType)
                     .queryParam("locales", Joiner.on(",").join(transLang))
                     .queryParam("qualifiedName", qualifiedName)
-                    .get(ClientResponse.class);
+                    .request(MediaType.APPLICATION_OCTET_STREAM_TYPE)
+                    .get();
         }
         return webResource().path("file").queryParam("fileType", fileType)
                 .queryParam("qualifiedName", qualifiedName)
-                .get(ClientResponse.class);
+                .request(MediaType.APPLICATION_OCTET_STREAM_TYPE)
+                .get();
     }
 
     public void delete(String id, String qualifiedName) {
         webResource().path("entries/" + id)
-                .queryParam("qualifiedName", qualifiedName).delete();
+                .queryParam("qualifiedName", qualifiedName)
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .delete();
     }
 
     public int deleteAll(String qualifiedName) {
         return webResource().queryParam("qualifiedName", qualifiedName)
+                .request(MediaType.APPLICATION_JSON_TYPE)
                 .delete(Integer.class);
     }
 
     public String getProjectQualifiedName(String projectSlug) {
         return projectGlossaryWebResource(projectSlug).path("qualifiedName")
+                .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(QualifiedName.class).getName();
     }
 
     public String getGlobalQualifiedName() {
-        return webResource().path("qualifiedName").get(QualifiedName.class)
+        return webResource().path("qualifiedName")
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .get(QualifiedName.class)
                 .getName();
     }
 
-    private WebResource webResource() {
-        return factory.getClient().resource(baseUri)
+    private WebTarget webResource() {
+        return factory.getClient().target(baseUri)
                 .path(GlossaryResource.SERVICE_PATH);
     }
 
-    private WebResource projectGlossaryWebResource(String projectSlug) {
+    private WebTarget projectGlossaryWebResource(String projectSlug) {
         return factory.getClient()
-                .resource(factory.getBaseUri())
+                .target(factory.getBaseUri())
                 .path("projects").path("p").path(projectSlug).path("glossary");
     }
 

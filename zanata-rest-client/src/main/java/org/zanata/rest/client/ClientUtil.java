@@ -27,79 +27,16 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.Response;
 
-import com.google.common.base.Strings;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 import org.apache.commons.lang3.StringUtils;
+
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class ClientUtil {
-
-    static MultivaluedMap<String, String> asMultivaluedMap(
-            String paramKey, Iterable<String> values) {
-        MultivaluedMapImpl map = new MultivaluedMapImpl();
-        if (values == null) {
-            return map;
-        }
-        for (String extension : values) {
-            map.add(paramKey, extension);
-        }
-        return map;
-    }
-
-    public static void checkResult(ClientResponse response) {
-        ClientResponse.Status responseStatus =
-                response.getClientResponseStatus();
-        int statusCode = response.getStatus();
-
-        if (responseStatus == ClientResponse.Status.UNAUTHORIZED) {
-            throw new RuntimeException("Incorrect username/password");
-        } else if (responseStatus == ClientResponse.Status.SERVICE_UNAVAILABLE) {
-            throw new RuntimeException("Service is currently unavailable. " +
-                    "Please check outage notification or try again later.");
-        } else if (responseStatus == ClientResponse.Status.MOVED_PERMANENTLY
-                || statusCode == 302) {
-            // if server returns a redirect (most likely due to http to https
-            // redirect), we don't want to bury this information in a xml
-            // marshalling exception.
-            String movedTo = response.getHeaders().getFirst("Location");
-
-            String message;
-            if (!Strings.isNullOrEmpty(movedTo)) {
-                String baseUrl = getBaseURL(movedTo);
-                message = "Server returned a redirect to:" + baseUrl +
-                        ". You must change your url option or config file.";
-            } else {
-                message =
-                        "Server returned a redirect. You must change your url option or config file.";
-            }
-            throw new RuntimeException(message);
-        } else if (statusCode >= 399) {
-            String annotString = "";
-            String uriString = "";
-            String entity = "";
-            try {
-                entity = ": " + response.getEntity(String.class);
-            } finally {
-                // ignore
-            }
-            String msg =
-                    "operation returned "
-                            + statusCode
-                            + " ("
-                            + Response.Status.fromStatusCode(statusCode) + ")"
-                            + entity + uriString
-                            + annotString;
-            throw new RuntimeException(msg);
-        }
-    }
 
     public static String getBaseURL(String movedTo) {
         try {
@@ -131,4 +68,5 @@ public class ClientUtil {
         Matcher m = p.matcher(contentDisposition);
         return m.find() ? m.group(1) : null;
     }
+
 }

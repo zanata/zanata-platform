@@ -21,9 +21,14 @@
 package org.zanata.rest.client;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.client.ClientRequestContext;
+import javax.ws.rs.client.ClientRequestFilter;
+import javax.ws.rs.client.ClientResponseContext;
+import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.ext.Provider;
 
 import org.slf4j.Logger;
@@ -31,10 +36,6 @@ import org.slf4j.LoggerFactory;
 import org.zanata.rest.RestConstant;
 
 import com.google.common.base.Charsets;
-import com.sun.jersey.api.client.ClientHandlerException;
-import com.sun.jersey.api.client.ClientRequest;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.filter.ClientFilter;
 
 /**
  * Performs logging of Requests on the client side. This interceptor
@@ -46,59 +47,19 @@ import com.sun.jersey.api.client.filter.ClientFilter;
  *
  */
 @Provider
-public class TraceDebugFilter extends ClientFilter {
+public class TraceDebugFilter implements ClientRequestFilter,
+        ClientResponseFilter {
 
     private static final Logger log = LoggerFactory
             .getLogger(TraceDebugFilter.class);
 
     private boolean logHttp;
 
-    @Override
-    public ClientResponse handle(ClientRequest cr)
-            throws ClientHandlerException {
-        if (!logHttp && !log.isTraceEnabled()) {
-            return getNext().handle(cr);
-        }
-        log(">> REST Request: " + cr.getMethod() + " => "
-                + cr.getURI());
-
-        // Log before sending a request
-        for (String key : cr.getHeaders().keySet()) {
-            String headerVal =
-                    cr.getHeaders().get(key).toString();
-            if (key.equals(RestConstant.HEADER_API_KEY)) {
-                headerVal =
-                        this.maskHeaderValues(
-                                cr.getHeaders()
-                                        .get(key));
-            }
-
-            log(">> Header: " + key + " = " + headerVal);
-        }
-        log(">> body: " + cr.getEntity());
-
-
-
-        ClientResponse response = getNext().handle(cr);
-
-        // log after a response has been received
-        log("<< REST Response: " + response.getStatus()
-                + ":" + response.getClientResponseStatus());
-        for (String key : response.getHeaders().keySet()) {
-            log("<< Header: " + key + " = " +
-                    response.getHeaders().get(key));
-        }
-        response.bufferEntity();
-        log(">> Body: " + getPayloadAsString(response));
-        return response;
-    }
-
-    // this is jersey implementation specific
-    private String getPayloadAsString(ClientResponse response) {
+    private String getPayloadAsString(ClientResponseContext response) {
         ByteArrayInputStream entityInputStream = null;
         try {
             entityInputStream =
-                    (ByteArrayInputStream) response.getEntityInputStream();
+                    (ByteArrayInputStream) response.getEntityStream();
             int available = entityInputStream.available();
             byte[] data = new byte[available];
             entityInputStream.read(data);
@@ -139,5 +100,45 @@ public class TraceDebugFilter extends ClientFilter {
         }
 
         return maskedList.toString();
+    }
+
+    @Override
+    public void filter(ClientRequestContext requestContext) throws IOException {
+        if (!logHttp && !log.isTraceEnabled()) {
+            return;
+        }
+        log(">> REST Request: " + requestContext.getMethod() + " => "
+                + requestContext.getUri());
+
+        // Log before sending a request
+        for (String key : requestContext.getHeaders().keySet()) {
+            String headerVal =
+                    requestContext.getHeaders().get(key).toString();
+            if (key.equals(RestConstant.HEADER_API_KEY)) {
+                headerVal =
+                        this.maskHeaderValues(
+                                requestContext.getHeaders()
+                                        .get(key));
+            }
+
+            log(">> Header: " + key + " = " + headerVal);
+        }
+        log(">> body: " + requestContext.getEntity());
+    }
+
+    @Override
+    public void filter(ClientRequestContext requestContext,
+            ClientResponseContext responseContext) throws IOException {
+        if (!logHttp && !log.isTraceEnabled()) {
+            return;
+        }
+        // log after a response has been received
+        log("<< REST Response: " + responseContext.getStatus()
+                + ":" + responseContext.getStatusInfo());
+        for (String key : responseContext.getHeaders().keySet()) {
+            log("<< Header: " + key + " = " +
+                    responseContext.getHeaders().get(key));
+        }
+        log(">> Body: " + getPayloadAsString(responseContext));
     }
 }

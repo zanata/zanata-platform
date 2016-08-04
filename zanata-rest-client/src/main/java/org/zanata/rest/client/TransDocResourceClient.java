@@ -23,18 +23,13 @@ package org.zanata.rest.client;
 
 import java.net.URI;
 import java.util.Set;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.zanata.common.LocaleId;
-import org.zanata.rest.dto.resource.TranslationsResource;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-
-import static org.zanata.rest.client.ClientUtil.asMultivaluedMap;
 
 /**
  * This "implements" caller methods to endpoints in TranslatedDocResource.
@@ -56,24 +51,25 @@ public class TransDocResourceClient {
         baseUri = factory.getBaseUri();
     }
 
-    public ClientResponse getTranslations(
-            @PathParam("id") String idNoSlash,
-            @PathParam("locale") LocaleId locale,
-            @QueryParam("ext") Set<String> extensions,
-            @QueryParam("skeletons") boolean createSkeletons,
-            @HeaderParam(HttpHeaders.IF_NONE_MATCH) String eTag) {
+    public Response getTranslations(
+            String idNoSlash,
+            LocaleId locale,
+            Set<String> extensions,
+            boolean createSkeletons,
+            String eTag) {
         Client client = factory.getClient();
         return getBaseServiceResource(client)
                 .path(idNoSlash)
                 .path("translations").path(locale.getId())
-                .queryParams(asMultivaluedMap("ext", extensions))
+                .queryParam("ext", extensions.toArray())
                 .queryParam("skeletons", String.valueOf(createSkeletons))
+                .request(MediaType.APPLICATION_XML_TYPE)
                 .header(HttpHeaders.IF_NONE_MATCH, eTag)
-                .get(ClientResponse.class);
+                .get();
     }
 
-    private WebResource getBaseServiceResource(Client client) {
-        return client.resource(baseUri)
+    private WebTarget getBaseServiceResource(Client client) {
+        return client.target(baseUri)
                 .path("projects").path("p")
                 .path(project)
                 .path("iterations").path("i")

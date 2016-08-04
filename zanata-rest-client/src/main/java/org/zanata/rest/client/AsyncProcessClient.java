@@ -23,15 +23,19 @@ package org.zanata.rest.client;
 
 import java.net.URI;
 import java.util.Set;
+
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.AsynchronousProcessResource;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
 
 /**
  * @author Patrick Huang <a
@@ -59,19 +63,18 @@ public class AsyncProcessClient implements AsynchronousProcessResource {
             String projectSlug, String iterationSlug, Resource resource,
             Set<String> extensions, @DefaultValue("true") boolean copytrans) {
         Client client = factory.getClient();
-        CacheResponseFilter filter = new CacheResponseFilter();
-        client.addFilter(filter);
-        WebResource webResource = client.resource(baseUri)
+        WebTarget webResource = client.target(baseUri)
                 .path(AsynchronousProcessResource.SERVICE_PATH)
                 .path("projects").path("p").path(projectSlug)
                 .path("iterations").path("i").path(iterationSlug)
                 .path("r").path(idNoSlash);
-        webResource
-                .queryParams(ClientUtil.asMultivaluedMap("ext", extensions))
+        Response response = webResource
+                .queryParam("ext", extensions.toArray())
                 .queryParam("copyTrans", String.valueOf(copytrans))
-                .put(resource);
-        client.removeFilter(filter);
-        return filter.getEntity(ProcessStatus.class);
+                .request(MediaType.APPLICATION_XML_TYPE)
+                .put(Entity.xml(resource));
+        response.bufferEntity();
+        return response.readEntity(ProcessStatus.class);
     }
 
     @Override
@@ -80,27 +83,29 @@ public class AsyncProcessClient implements AsynchronousProcessResource {
             TranslationsResource translatedDoc, Set<String> extensions,
             String merge, @DefaultValue("false") boolean myTrans) {
         Client client = factory.getClient();
-        CacheResponseFilter filter = new CacheResponseFilter();
-        client.addFilter(filter);
-        WebResource webResource = client.resource(baseUri)
+        WebTarget webResource = client.target(baseUri)
                 .path(AsynchronousProcessResource.SERVICE_PATH)
                 .path("projects").path("p").path(projectSlug)
                 .path("iterations").path("i").path(iterationSlug)
                 .path("r").path(idNoSlash)
                 .path("translations").path(locale.toString());
-        webResource
-                .queryParams(ClientUtil.asMultivaluedMap("ext", extensions))
+        Response response = webResource
+                .queryParam("ext", extensions.toArray())
                 .queryParam("merge", merge)
                 .queryParam("assignCreditToUploader", String.valueOf(myTrans))
-                .put(translatedDoc);
-        client.removeFilter(filter);
-        return filter.getEntity(ProcessStatus.class);
+                .request(MediaType.APPLICATION_XML_TYPE)
+                .put(Entity
+                        .xml(translatedDoc));
+        response.bufferEntity();
+        return response.readEntity(ProcessStatus.class);
     }
 
     @Override
     public ProcessStatus getProcessStatus(String processId) {
-        return factory.getClient().resource(baseUri)
+        return factory.getClient().target(baseUri)
                 .path(AsynchronousProcessResource.SERVICE_PATH)
-                .path(processId).get(ProcessStatus.class);
+                .path(processId)
+                .request(MediaType.APPLICATION_XML_TYPE)
+                .get(ProcessStatus.class);
     }
 }

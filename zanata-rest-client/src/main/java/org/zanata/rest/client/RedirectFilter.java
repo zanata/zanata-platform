@@ -20,50 +20,37 @@
  */
 package org.zanata.rest.client;
 
+import java.io.IOException;
 import java.net.URI;
+import javax.ws.rs.client.ClientRequestContext;
+import javax.ws.rs.client.ClientResponseContext;
+import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.sun.jersey.api.client.ClientHandler;
-import com.sun.jersey.api.client.ClientHandlerException;
-import com.sun.jersey.api.client.ClientRequest;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.filter.ClientFilter;
 
 /**
+ * Resteasy does not support following redirect. https://issues.jboss.org/browse/RESTEASY-1075
+ * <p>
+ * However there is a workaround. https://github.com/teacurran/sonar-bitbucket/commit/fa978b3d7c0c98ee0bc60c908379fc42dbeae5f4
+ *
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class RedirectFilter extends ClientFilter {
+public class RedirectFilter implements ClientResponseFilter {
     private static final Logger log =
             LoggerFactory.getLogger(RedirectFilter.class);
 
     @Override
-    public ClientResponse handle(ClientRequest clientRequest)
-            throws ClientHandlerException {
-        ClientHandler ch = getNext();
-        ClientResponse resp = ch.handle(clientRequest);
-
-        if (resp.getClientResponseStatus().getFamily() !=
+    public void filter(ClientRequestContext requestContext,
+            ClientResponseContext responseContext) throws IOException {
+        if (responseContext.getStatusInfo().getFamily() ==
                 Response.Status.Family.REDIRECTION) {
-            return resp;
-        } else {
-            // try location only if for GET and HEAD
-            String method = clientRequest.getMethod();
-            if ("HEAD".equals(method) || "GET".equals(method)) {
-                log.debug(
-                        "Server returns redirection status: {}. Try to follow it",
-                        resp.getClientResponseStatus());
-                URI redirectTarget = resp.getLocation();
-                if (redirectTarget != null) {
-                    clientRequest.setURI(redirectTarget);
-                }
-                return ch.handle(clientRequest);
-            } else {
-                throw new IllegalStateException(
-                        "Received status " + resp.getClientResponseStatus() +
-                                ". Check your server URL (e.g. used http instead of https)");
-            }
+            URI redirectTarget = responseContext.getLocation();
+            throw new IllegalStateException(
+                    String.format(
+                            "Received status %s. Redirected to %s. Check your server URL (e.g. used http instead of https)",
+                            responseContext.getStatusInfo(), redirectTarget));
         }
     }
 }

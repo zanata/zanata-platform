@@ -41,7 +41,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.sun.jersey.api.client.UniformInterfaceException;
 
 /**
  * @author Patrick Huang <a
@@ -127,7 +126,7 @@ class ProjectIterationPrompt {
         try {
             clientFactory.getProjectIterationClient(opts.getProj(), versionId)
                     .put(iteration);
-        } catch (UniformInterfaceException ex) {
+        } catch (Exception ex) {
             InitCommand.offerRetryOnServerError(ex, consoleInteractor);
             createNewVersion();
         }

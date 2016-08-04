@@ -29,26 +29,22 @@ import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.core.MediaType;
 
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
-import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.rest.MediaTypes;
 import org.zanata.rest.RestConstant;
 import org.zanata.rest.dto.VersionInfo;
 
 import com.google.common.base.Throwables;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.config.ClientConfig;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
-import com.sun.jersey.client.urlconnection.HTTPSProperties;
-import com.sun.jersey.multipart.impl.MultiPartWriter;
 
 /**
  * @author Patrick Huang <a
@@ -74,25 +70,21 @@ public class RestClientFactory {
         baseURI = base;
         this.clientApiVersion = clientApiVersion;
         clientVersion = clientApiVersion.getVersionNo();
-        DefaultClientConfig clientConfig =
-                new DefaultClientConfig(MultiPartWriter.class);
 
-        sslConfiguration(sslCertDisabled, clientConfig);
-        clientConfig.getClasses().add(JacksonJsonProvider.class);
+        this.client = ResteasyClientBuilder.newBuilder()
+                .sslContext(sslConfiguration(sslCertDisabled))
+                .register(new RedirectFilter())
+                .register(new ResponseStatusFilter())
+                .register(new ApiKeyHeaderFilter(username, apiKey, clientVersion))
+                .register(new TraceDebugFilter(logHttp))
+                .register(new InvalidContentTypeFilter())
+                .build();
 
-        client = Client.create(clientConfig);
-        client.addFilter(new RedirectFilter());
-        client.addFilter(
-                new ApiKeyHeaderFilter(username, apiKey, clientVersion));
-        client.addFilter(new AcceptTypeFilter());
-        client.addFilter(new TraceDebugFilter(logHttp));
-        client.addFilter(new InvalidContentTypeFilter());
     }
 
-    private static void sslConfiguration(boolean sslCertDisabled,
-            ClientConfig clientConfig) {
+    private static SSLContext sslConfiguration(boolean sslCertDisabled) {
         if (!sslCertDisabled) {
-            return;
+            return null;
         }
         try {
             final SSLContext sslContext = SSLContext.getInstance("TLS");
@@ -106,26 +98,16 @@ public class RestClientFactory {
             HttpsURLConnection
                     .setDefaultSSLSocketFactory(sslContext
                             .getSocketFactory());
-            clientConfig.getProperties().put(
-                    HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
-                    new HTTPSProperties(
-                            new HostnameVerifier() {
-                                @Override
-                                public boolean verify(String s,
-                                        SSLSession sslSession) {
-                                    // whatever your matching policy states
-                                    return true;
-                                }
-                            }, sslContext
-                    ));
+            return sslContext;
         } catch (Exception e) {
             log.warn("error creating SSL client", e);
-            Throwables.propagate(e);
+            throw Throwables.propagate(e);
         }
     }
 
     public VersionInfo getServerVersionInfo() {
-        return client.resource(getBaseUri()).path("version")
+        return client.target(getBaseUri()).path("version")
+                .request(MediaTypes.APPLICATION_ZANATA_VERSION_XML)
                 .get(VersionInfo.class);
     }
 

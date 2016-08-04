@@ -21,19 +21,16 @@
 
 package org.zanata.rest.client;
 
+import java.io.IOException;
+import javax.ws.rs.client.ClientRequestContext;
+import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
 
 import org.zanata.rest.RestConstant;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.sun.jersey.api.client.ClientHandlerException;
-import com.sun.jersey.api.client.ClientRequest;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.filter.ClientFilter;
-
 @Provider
-public class ApiKeyHeaderFilter extends ClientFilter {
+public class ApiKeyHeaderFilter implements ClientRequestFilter {
     private String apiKey;
     private String username;
     private String ver;
@@ -44,27 +41,20 @@ public class ApiKeyHeaderFilter extends ClientFilter {
         this.ver = ver;
     }
 
-    @Override
-    public ClientResponse handle(ClientRequest cr)
-            throws ClientHandlerException {
-        MultivaluedMap<String, Object> headers = cr.getHeaders();
-        headers.add(RestConstant.HEADER_USERNAME, username);
-        headers.add(RestConstant.HEADER_API_KEY, apiKey);
-        headers.add(RestConstant.HEADER_VERSION_NO, ver);
-        return handleNext(cr);
-    }
-
-    @VisibleForTesting
-    protected ClientResponse handleNext(ClientRequest cr) {
-        return getNext().handle(cr);
-    }
-
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    @Override
+    public void filter(ClientRequestContext requestContext) throws IOException {
+        MultivaluedMap<String, Object> headers = requestContext.getHeaders();
+        headers.add(RestConstant.HEADER_USERNAME, username);
+        headers.add(RestConstant.HEADER_API_KEY, apiKey);
+        headers.add(RestConstant.HEADER_VERSION_NO, ver);
     }
 }
 

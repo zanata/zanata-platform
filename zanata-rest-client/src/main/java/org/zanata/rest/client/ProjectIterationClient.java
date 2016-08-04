@@ -23,9 +23,11 @@ package org.zanata.rest.client;
 
 import java.net.URI;
 
-import org.zanata.rest.dto.ProjectIteration;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 
-import com.sun.jersey.api.client.WebResource;
+import org.zanata.rest.dto.ProjectIteration;
 
 /**
  * @author Patrick Huang
@@ -37,7 +39,8 @@ public class ProjectIterationClient {
     private final String versionSlug;
     private URI baseUri;
 
-    ProjectIterationClient(RestClientFactory factory, String projectSlug, String versionSlug) {
+    ProjectIterationClient(RestClientFactory factory, String projectSlug,
+            String versionSlug) {
         this.factory = factory;
         this.projectSlug = projectSlug;
         this.versionSlug = versionSlug;
@@ -46,21 +49,25 @@ public class ProjectIterationClient {
 
     public ProjectIteration get() {
         return webResource()
+                .request(MediaType.APPLICATION_XML_TYPE)
                 .get(ProjectIteration.class);
     }
 
-    private WebResource webResource() {
-        return factory.getClient().resource(baseUri)
+    private WebTarget webResource() {
+        return factory.getClient().target(baseUri)
                 .path("projects").path("p").path(projectSlug)
                 .path("iterations").path("i").path(versionSlug);
     }
 
     public void put(ProjectIteration projectVersion) {
-        webResource().put(projectVersion);
+        webResource().request()
+                .put(Entity.xml(projectVersion));
     }
 
     public String sampleConfiguration() {
-        return webResource().path("config").get(String.class);
+        return webResource().path("config")
+                .request(MediaType.APPLICATION_XML_TYPE)
+                .get(String.class);
     }
 }
 

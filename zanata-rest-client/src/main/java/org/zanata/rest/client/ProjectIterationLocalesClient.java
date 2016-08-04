@@ -23,9 +23,10 @@ package org.zanata.rest.client;
 
 import java.util.List;
 
-import org.zanata.rest.dto.LocaleDetails;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
 
-import com.sun.jersey.api.client.GenericType;
+import org.zanata.rest.dto.LocaleDetails;
 
 /**
  * REST client for project iteration locales.
@@ -47,10 +48,11 @@ public class ProjectIterationLocalesClient {
 
     public List<LocaleDetails> getLocales() {
         return restClientFactory.getClient()
-                .resource(restClientFactory.getBaseUri())
+                .target(restClientFactory.getBaseUri())
                 .path("projects").path("p").path(projectSlug)
                 .path("iterations").path("i").path(versionSlug)
                 .path("locales")
+                .request(MediaType.APPLICATION_XML_TYPE)
                 .get(new GenericType<List<LocaleDetails>>() {
                 });
     }
