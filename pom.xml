@@ -181,7 +181,7 @@
     <hamcrest.version>1.3</hamcrest.version>
     <findbugs.maven.version>3.0.1</findbugs.maven.version>
     <groovy.version>1.8.9</groovy.version>
-    <guava.version>13.0.1</guava.version>
+    <guava.version>18.0</guava.version>
     <jackson.version>1.9.13</jackson.version>
     <jaxb.api.version>2.2.12</jaxb.api.version>
     <maven.javadoc.version>2.9.1</maven.javadoc.version>
