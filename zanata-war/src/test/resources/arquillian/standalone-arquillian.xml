@@ -4,7 +4,6 @@
     <extensions>
         <extension module="org.jboss.as.clustering.infinispan"/>
         <extension module="org.jboss.as.connector"/>
-        <extension module="org.jboss.as.deployment-scanner"/>
         <extension module="org.jboss.as.ee"/>
         <extension module="org.jboss.as.ejb3"/>
         <extension module="org.jboss.as.jaxrs"/>
@@ -35,16 +34,16 @@
     <system-properties>
       <property name="zanata.javaScriptTestHelper" value="true" />
       <property name="document.storage.directory"
-        value="./target/documents" />
+        value="./target/data/zanata/documents" />
       <property name="jboss.as.management.blocking.timeout" value="1000"/>
-      <property name="javamelody.storage-directory" value="${jboss.server.data.dir}/zanata/stats"/>
-      <property name="hibernate.search.default.indexBase" value="${jboss.server.data.dir}/zanata/indexes"/>
-      <property name="ehcache.disk.store.dir" value="${jboss.server.data.dir}/zanata/ehcache"/>
+      <property name="javamelody.storage-directory" value="./target/data/zanata/stats"/>
+      <property name="hibernate.search.default.indexBase" value="./target/data/zanata/indexes"/>
+      <property name="ehcache.disk.store.dir" value="./target/data/zanata/ehcache"/>
       <property name="zanata.security.authpolicy.internal" value="zanata.internal"/>
       <property name="zanata.security.authpolicy.openid" value="zanata.openid"/>
       <property name="zanata.security.adminusers" value="admin"/>
       <property name="zanata.email.defaultfromaddress" value="no-reply@zanata.org"/>
-      <property name="zanata.file.directory" value="${jboss.server.data.dir}/zanata/documents"/>
+      <property name="zanata.file.directory" value="./target/data/zanata/documents"/>
     </system-properties>
     <management>
         <security-realms>
@@ -209,9 +208,6 @@
                     </driver>
                 </drivers>
             </datasources>
-        </subsystem>
-        <subsystem xmlns="urn:jboss:domain:deployment-scanner:2.0">
-            <deployment-scanner path="deployments" relative-to="jboss.server.base.dir" scan-interval="5000" runtime-failure-causes-rollback="${jboss.deployment.scanner.rollback.on.failure:false}"/>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:ee:4.0">
             <spec-descriptor-property-replacement>false</spec-descriptor-property-replacement>
