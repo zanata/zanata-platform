@@ -35,8 +35,6 @@
     <failIfNoTests>true</failIfNoTests>
 
     <deltaspike.version>1.7.0</deltaspike.version>
-    <cdi.runtime>runtime</cdi.runtime>
-    <cdi.compile>compile</cdi.compile>
     <picketlink.version>2.5.5.SP1</picketlink.version>
     <!-- This is the WildFly 10 version: -->
     <infinispan.version>8.1.0.Final</infinispan.version>
@@ -156,86 +154,86 @@
         <groupId>org.apache.deltaspike.core</groupId>
         <artifactId>deltaspike-core-api</artifactId>
         <version>${deltaspike.version}</version>
-        <scope>${cdi.compile}</scope>
+        <scope>compile</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.deltaspike.core</groupId>
         <artifactId>deltaspike-core-impl</artifactId>
         <version>${deltaspike.version}</version>
-        <scope>${cdi.runtime}</scope>
+        <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.deltaspike.modules</groupId>
         <artifactId>deltaspike-servlet-module-api</artifactId>
         <version>${deltaspike.version}</version>
-        <scope>${cdi.compile}</scope>
+        <scope>compile</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.deltaspike.modules</groupId>
         <artifactId>deltaspike-servlet-module-impl</artifactId>
         <version>${deltaspike.version}</version>
-        <scope>${cdi.runtime}</scope>
+        <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.deltaspike.modules</groupId>
         <artifactId>deltaspike-jsf-module-api</artifactId>
         <version>${deltaspike.version}</version>
-        <scope>${cdi.compile}</scope>
+        <scope>compile</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.deltaspike.modules</groupId>
         <artifactId>deltaspike-jsf-module-impl</artifactId>
         <version>${deltaspike.version}</version>
-        <scope>${cdi.runtime}</scope>
+        <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.deltaspike.modules</groupId>
         <artifactId>deltaspike-security-module-api</artifactId>
         <version>${deltaspike.version}</version>
-        <scope>${cdi.compile}</scope>
+        <scope>compile</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.deltaspike.modules</groupId>
         <artifactId>deltaspike-security-module-impl</artifactId>
         <version>${deltaspike.version}</version>
-        <scope>${cdi.runtime}</scope>
+        <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.deltaspike.modules</groupId>
         <artifactId>deltaspike-jpa-module-api</artifactId>
         <version>${deltaspike.version}</version>
-        <scope>${cdi.compile}</scope>
+        <scope>compile</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.deltaspike.modules</groupId>
         <artifactId>deltaspike-jpa-module-impl</artifactId>
         <version>${deltaspike.version}</version>
-        <scope>${cdi.compile}</scope>
-        <!--<scope>${cdi.runtime}</scope>-->
+        <scope>compile</scope>
+        <!--<scope>runtime</scope>-->
       </dependency>
       <dependency>
         <groupId>org.apache.deltaspike.cdictrl</groupId>
         <artifactId>deltaspike-cdictrl-api</artifactId>
         <version>${deltaspike.version}</version>
-        <scope>${cdi.compile}</scope>
+        <scope>compile</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.deltaspike.cdictrl</groupId>
         <artifactId>deltaspike-cdictrl-weld</artifactId>
         <version>${deltaspike.version}</version>
-        <scope>${cdi.runtime}</scope>
+        <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.deltaspike.modules</groupId>
         <artifactId>deltaspike-scheduler-module-api</artifactId>
         <version>${deltaspike.version}</version>
-        <scope>${cdi.compile}</scope>
+        <scope>compile</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.deltaspike.modules</groupId>
         <artifactId>deltaspike-scheduler-module-impl</artifactId>
         <version>${deltaspike.version}</version>
-        <scope>${cdi.runtime}</scope>
+        <scope>runtime</scope>
       </dependency>
 
       <dependency>
@@ -308,19 +306,19 @@
         <groupId>org.picketlink</groupId>
         <artifactId>picketlink-idm-api</artifactId>
         <version>${picketlink.version}</version>
-        <scope>${cdi.compile}</scope>
+        <scope>compile</scope>
       </dependency>
       <!--<dependency>-->
       <!--<groupId>org.picketlink</groupId>-->
       <!--<artifactId>picketlink-deltaspike</artifactId>-->
       <!--<version>${picketlink.version}</version>-->
-      <!--<scope>${cdi.compile}</scope>-->
+      <!--<scope>compile</scope>-->
       <!--</dependency>-->
       <!--<dependency>-->
       <!--<groupId>org.picketlink</groupId>-->
       <!--<artifactId>picketlink-social</artifactId>-->
       <!--<version>${picketlink.version}</version>-->
-      <!--<scope>${cdi.compile}</scope>-->
+      <!--<scope>compile</scope>-->
       <!--</dependency>-->
       <!--<dependency>-->
       <!--<groupId>org.picketlink</groupId>-->
