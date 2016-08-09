@@ -177,10 +177,6 @@
         </configuration>
       </plugin>
 
-      <!--<plugin>-->
-        <!--<artifactId>maven-enforcer-plugin</artifactId>-->
-      <!--</plugin>-->
-
       <plugin>
         <groupId>org.basepom.maven</groupId>
         <artifactId>duplicate-finder-maven-plugin</artifactId>
@@ -1089,19 +1085,6 @@
             </executions>
           </plugin>
 
-          <!--<plugin>-->
-            <!--<artifactId>maven-dependency-plugin</artifactId>-->
-            <!--<configuration>-->
-              <!--<usedDependencies combine.children="append">-->
-                <!--&lt;!&ndash; used for arquillian tests &ndash;&gt;-->
-                <!--<usedDependency>org.jboss.as:jboss-as-controller</usedDependency>-->
-                <!--<usedDependency>org.jboss.as:jboss-as-arquillian-container-managed</usedDependency>-->
-                <!--&lt;!&ndash; NB: Don't add anything without a comment explaining how the-->
-                     <!--dependency is used &ndash;&gt;-->
-              <!--</usedDependencies>-->
-            <!--</configuration>-->
-          <!--</plugin>-->
-
           <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
@@ -1114,71 +1097,6 @@
 
         </plugins>
       </build>
-
-      <!--<dependencies>-->
-        <!--<dependency>-->
-          <!--<groupId>org.jboss.as</groupId>-->
-          <!--<artifactId>jboss-as-arquillian-common</artifactId>-->
-          <!--&lt;!&ndash; this brings in a bunch of out of date arquillian-testenricher-XXX as transitive dependencies &ndash;&gt;-->
-          <!--<version>${jboss.as.version}</version>-->
-          <!--<scope>test</scope>-->
-          <!--<exclusions>-->
-            <!--<exclusion>-->
-              <!--<groupId>org.jboss.logmanager</groupId>-->
-              <!--<artifactId>log4j-jboss-logmanager</artifactId>-->
-            <!--</exclusion>-->
-          <!--</exclusions>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-          <!--<groupId>org.jboss.arquillian.testenricher</groupId>-->
-          <!--<artifactId>arquillian-testenricher-cdi</artifactId>-->
-          <!--<version>${arquillian.version}</version>-->
-          <!--<scope>test</scope>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-          <!--<groupId>org.jboss.as</groupId>-->
-          <!--<artifactId>jboss-as-arquillian-container-managed</artifactId>-->
-          <!--<version>${jboss.as.version}</version>-->
-          <!--<scope>test</scope>-->
-          <!--<exclusions>-->
-            <!--<exclusion>-->
-              <!--<groupId>org.jboss.logmanager</groupId>-->
-              <!--<artifactId>jboss-logmanager</artifactId>-->
-            <!--</exclusion>-->
-            <!--<exclusion>-->
-              <!--<groupId>org.jboss.logmanager</groupId>-->
-              <!--<artifactId>log4j-jboss-logmanager</artifactId>-->
-            <!--</exclusion>-->
-          <!--</exclusions>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-          <!--<groupId>org.jboss.osgi.metadata</groupId>-->
-          <!--<artifactId>jbosgi-metadata</artifactId>-->
-          <!--<version>2.2.0.Final</version>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-          <!--<groupId>org.jboss.osgi.vfs</groupId>-->
-          <!--<artifactId>jbosgi-vfs30</artifactId>-->
-          <!--<version>1.2.1.Final</version>-->
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-          <!--<groupId>org.jboss.as</groupId>-->
-          <!--<artifactId>jboss-as-controller-client</artifactId>-->
-          <!--<version>${jboss.as.version}</version>-->
-          <!--<scope>test</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-          <!--<groupId>org.jboss.as</groupId>-->
-          <!--<artifactId>jboss-as-controller</artifactId>-->
-          <!--<version>${jboss.as.version}</version>-->
-          <!--<scope>test</scope>-->
-        <!--</dependency>-->
-
-      <!--</dependencies>-->
     </profile>
 
     <profile>
@@ -1191,18 +1109,6 @@
       </activation>
       <build>
         <plugins>
-          <!--<plugin>-->
-            <!--<artifactId>maven-dependency-plugin</artifactId>-->
-            <!--<configuration>-->
-              <!--<usedDependencies combine.children="append">-->
-                <!--&lt;!&ndash; used for arquillian tests &ndash;&gt;-->
-                <!--<usedDependency>org.wildfly.arquillian:wildfly-arquillian-container-managed</usedDependency>-->
-                <!--&lt;!&ndash; NB: Don't add anything without a comment explaining how the-->
-                     <!--dependency is used &ndash;&gt;-->
-              <!--</usedDependencies>-->
-            <!--</configuration>-->
-          <!--</plugin>-->
-
           <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
@@ -1471,12 +1377,6 @@
       <artifactId>wildfly-arquillian-container-managed</artifactId>
       <version>${wildfly.arquillian.version}</version>
       <scope>test</scope>
-      <!--<exclusions>-->
-      <!--<exclusion>-->
-      <!--<groupId>org.jboss.remoting3</groupId>-->
-      <!--<artifactId>jboss-remoting</artifactId>-->
-      <!--</exclusion>-->
-      <!--</exclusions>-->
     </dependency>
 
     <dependency>
@@ -1543,11 +1443,6 @@
       <artifactId>jboss-transaction-api_1.2_spec</artifactId>
       <scope>provided</scope>
     </dependency>
-    <!--<dependency>-->
-      <!--<groupId>org.jboss</groupId>-->
-      <!--<artifactId>jboss-dmr</artifactId>-->
-      <!--<scope>test</scope>-->
-    <!--</dependency>-->
 
     <!-- used for Seam Text converter -->
     <dependency>
@@ -1598,12 +1493,6 @@
       <artifactId>hibernate-validator</artifactId>
       <scope>compile</scope>
     </dependency>
-
-    <!--<dependency>-->
-      <!--<groupId>org.hibernate</groupId>-->
-      <!--<artifactId>hibernate-validator-cdi</artifactId>-->
-      <!--<scope>${hibernate.scope}</scope>-->
-    <!--</dependency>-->
 
     <dependency>
       <groupId>org.apache.deltaspike.modules</groupId>
