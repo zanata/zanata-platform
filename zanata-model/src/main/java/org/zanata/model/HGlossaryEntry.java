@@ -74,7 +74,7 @@ public class HGlossaryEntry extends ModelEntityBase {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "glossaryEntry",
             orphanRemoval = true, fetch = FetchType.EAGER)
-    @MapKeyJoinColumn(name = "localeId")
+    @MapKeyJoinColumn(name = "localeId", referencedColumnName = "id")
     public Map<HLocale, HGlossaryTerm> getGlossaryTerms() {
         if (glossaryTerms == null) {
             glossaryTerms = new HashMap<HLocale, HGlossaryTerm>();
