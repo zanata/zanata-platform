@@ -16,6 +16,9 @@
   <composite:attribute name="render" type="java.lang.String"
     shortDescription="List of component ids to render after completion"/>
 
+  <composite:attribute name="title" type="java.lang.String"
+    shortDescription="html title attribute"/>
+
   <composite:attribute name="styleClass" type="java.lang.String"
     shortDescription="css style for the generated button"/>
 
@@ -35,7 +38,8 @@
     onclick="event.stopPropagation();"
     onbegin="zanata.loader.activate($(this).find('.js-loader')); $(this).find('.js-default').addClass('is-hidden'); $(this).find('.js-in-progress').removeClass('is-hidden');"
     oncomplete="$(this).find('.js-in-progress').addClass('is-hidden'); $(this).find('.js-default').removeClass('is-hidden'); zanata.loader.deactivate($(this).find('.js-loader')); #{cc.attrs.oncomplete}"
-    render="#{cc.attrs.render}">
+    render="#{cc.attrs.render}"
+    title="#{cc.attrs.title}">
     <span
       class="loader--mini loader--inline loader--button js-loader">
     </span>

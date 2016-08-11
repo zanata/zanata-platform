@@ -7,6 +7,28 @@
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
 
   <h1>#{msgs['jsf.dashboard.settings.title']}</h1>
+
+  <script type="application/javascript">
+    function onGenerateApiKeyResponse(generate) {
+      if (generate) {
+        regenerateApiKey();
+      }
+      zanata.modal.hide('#generateAPIKeyModal')
+    }
+  </script>
+
+  <h:form>
+    <a4j:jsFunction name="regenerateApiKey"
+      action="#{userSettingsAction.regenerateApiKey}"
+      render="apiKeyForm" status="client-loader"
+      limitRender="true"/>
+  </h:form>
+
+  <zanata:confirm-modal id="generateAPIKeyModal"
+    title="#{msgs['jsf.apiKey.generate.title']}"
+    message="#{userSettingsAction.regenerateAPiKeyMsg}"
+    onresponse="onGenerateApiKeyResponse" />
+
   <div class="tabs--vertical js-tabs">
     <ul class="tabs__nav js-tabs-nav">
       <li>
@@ -127,17 +149,13 @@
                       <h:outputText
                         value="(#{cred.email != null ? cred.email : cred.user})" />
                     </span>
-                    <a4j:commandLink
-                      styleClass="l--float-right txt--danger reveal__target"
+
+                    <zanata:ajax-command-button styleClass="txt--danger button button--small reveal__target"
                       action="#{userSettingsAction.remove(cred)}"
-                      render="credentialsList"
-                      onclick="return confirm('#{msgs['jsf.dashboard.settings.removeIdentity.confirm.message']}')"
-                      title="">
-                      <i class="i--large i--remove"></i>
-                    </a4j:commandLink>
-                    <a href="#" class="l--float-right txt--danger reveal__target"
-                      title="#{msgs['jsf.dashboard.settings.removeAccount.label']}">
-                    </a>
+                      render="credentialsList">
+                      <i class="i i--remove"></i>
+                      <span class="is-hidden--m-l-down">#{msgs['jsf.dashboard.settings.removeIdentity.title']}</span>
+                    </zanata:ajax-command-button>
                   </li>
                 </ui:repeat>
               </ul>
@@ -237,14 +255,13 @@
                 <span class="txt--understated l--push-left-quarter">
                   [#{locale.localeId.id}]
                 </span>
-                <a4j:commandLink
-                  styleClass="l--float-right txt--danger reveal__target"
+                <zanata:ajax-command-button styleClass="txt--danger button button--small reveal__target"
+                  title="#{msgs['jsf.LeaveLanguageTeam']}"
                   action="#{userSettingsAction.leaveLanguageTeam(locale.localeId.id)}"
-                  render="languageListForm"
-                  title="#{msgs['jsf.group.RemoveLanguage.title']}"
-                  onclick="return confirm('#{interpolator.interpolate(msgs['jsf.dashboard.settings.leaveLanguageTeam.confirm.message'], locale.retrieveDisplayName())}')">
-                  <i class="i--large i--remove"></i>
-                </a4j:commandLink>
+                  render="languageListForm">
+                  <i class="i i--remove"></i>
+                  <span class="is-hidden--m-l-down">#{msgs['jsf.LeaveLanguageTeam']}</span>
+                </zanata:ajax-command-button>
               </li>
             </ui:repeat>
           </ul>
@@ -258,11 +275,6 @@
           #{msgs['jsf.dashboard.settings.clientSettings.label']}
         </h2>
         <h:form id="apiKeyForm">
-          <a4j:jsFunction name="regenerateApiKey"
-            action="#{userSettingsAction.regenerateApiKey}"
-            render="apiKeyForm" status="client-loader"
-            limitRender="true"/>
-
           <p class="txt--meta">
             <h:outputText value="#{msgs['jsf.dashboard.settings.apiKeyNeeded.message']}"/>
             <a href="http://zanata.org/help/cli/cli-configuration/"
@@ -291,17 +303,10 @@
               </p>
             </ui:fragment>
           </div>
-          <script>
-            function confirmGenerateApiKey() {
-              if (confirm("#{userSettingsAction.regenerateAPiKeyMsg}")) {
-                regenerateApiKey();
-              }
-            }
-          </script>
-          <button id="generateKeyButton" class="button"
-            onclick="confirmGenerateApiKey();return false;">
+          <a href="#" class="button"
+            data-toggle="modal" data-target="#generateAPIKeyModal">
             #{msgs['jsf.dashboard.settings.generateNewApiKey.label']}
-          </button>
+          </a>
           <div class="form__item l--push-top-1">
             <label for="client_settings_config">Configuration (zanata.ini)</label>
             <textarea id="client_settings_config" rows="4" readonly="" class="js-form__input--copyable">[servers]
