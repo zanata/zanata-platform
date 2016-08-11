@@ -7,11 +7,32 @@
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:rich="http://richfaces.org/rich"
-  template="../WEB-INF/template/template.xhtml">
+  template="/WEB-INF/template/template.xhtml">
 
   <ui:define name="page_title">#{msgs['jsf.Languages']}</ui:define>
 
   <ui:define name="center_content">
+
+    <ui:fragment rendered="#{identity.hasRole('admin')}">
+      <zanata:confirm-modal id="deleteLanguageModal"
+        title="#{msgs['jsf.language.delete.title']}"
+        message="#{msgs['jsf.language.delete.description']}"
+        onresponse="onDeleteLanguageResponse" />
+
+      <script type="text/javascript">
+        var selectedLocaleId;
+        function setSelectedLocaleId(id) {
+          selectedLocaleId = id
+        }
+        function onDeleteLanguageResponse(del) {
+          if (del) {
+            deleteLanguage(selectedLocaleId)
+          }
+          zanata.modal.hide('#deleteLanguageModal')
+        }
+      </script>
+    </ui:fragment>
+
     <div class="g--centered">
       <div class="g__item w--1-s w--1-2 l--push-bottom-half">
         <h1 class="l--push-all-0">#{msgs['jsf.Languages']}</h1>
@@ -69,12 +90,6 @@
               <a4j:param name="val1" assignTo="#{localeId}"/>
             </a4j:jsFunction>
 
-            <script type="text/javascript">
-              function confirmDelete() {
-                return confirm("#{msgs['jsf.language.delete.description']}");
-              }
-            </script>
-
             <ul class="list--stats">
               <ui:repeat value="#{languagesAction.currentPage}" var="language">
                 <li name="entry" class="l--pad-all-quarter #{not language.active ? 'is-disabled' : ''} #{identity.hasRole('admin') ? 'list__item--actionable' : ''}">
@@ -90,7 +105,8 @@
                         <ul class="dropdown__content js-dropdown__content">
                           <li>
                             <a href="#" class="i__item--right txt--danger"
-                              onclick="if(confirmDelete()){deleteLanguage('#{language.localeId}')};return false">
+                              onclick="setSelectedLocaleId('#{language.localeId}')"
+                              data-toggle="modal" data-target="#deleteLanguageModal">
                               #{msgs['jsf.Delete']}
                               <i class="i i--remove i__item__icon"></i>
                             </a>
