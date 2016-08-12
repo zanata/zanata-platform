@@ -67,10 +67,7 @@
       Version of Java used for API compatibility checking. Should
       correspond with required.jvm.
     -->
-    <animal.sniffer.signature>java18</animal.sniffer.signature>
-
-    <!-- Not currently working for Java 1.8: https://github.com/mojohaus/animal-sniffer/issues/1 -->
-    <animal.sniffer.skip>true</animal.sniffer.skip>
+    <animal.sniffer.signature>org.codehaus.mojo.signature:java18:1.0</animal.sniffer.signature>
 
     <!--
     Not used yet.
@@ -1705,6 +1702,28 @@
             </container>
           </configuration>
         </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+        <version>1.15</version>
+        <executions>
+          <execution>
+            <id>animal-sniffer</id>
+            <phase>test</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <ignores>
+            <!-- not part of java18 sig, but seems to be public API -->
+            <ignore>jdk.nashorn.api.*</ignore>
+          </ignores>
+        </configuration>
+      </plugin>
+
         <plugin>
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>${surefire.version}</version>
