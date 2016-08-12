@@ -194,6 +194,12 @@
           <security>
             <user-name>root</user-name>
           </security>
+          <validation>
+            <validate-on-match>false</validate-on-match>
+            <background-validation>false</background-validation>
+            <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.novendor.JDBC4ValidConnectionChecker"></valid-connection-checker>
+            <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.novendor.NullExceptionSorter"></exception-sorter>
+          </validation>
         </datasource>
         <datasource jndi-name="java:jboss/datasources/ExampleDS" pool-name="ExampleDS" enabled="true" use-java-context="true">
           <connection-url>jdbc:h2:mem:test;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE</connection-url>
