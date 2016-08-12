@@ -1,0 +1,312 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.zanata</groupId>
+    <artifactId>server</artifactId>
+    <version>4.0.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>zanata-frontend</artifactId>
+  <name>Zanata frontend</name>
+  <packaging>jar</packaging>
+  <url>https://github.com/zanata/zanata-server/tree/master/zanata-frontend</url>
+
+  <!-- Referenced later in the document with ${tagname}. -->
+  <properties>
+    <!-- Node and NPM versions that will be downloaded and used for zanata-frontend. -->
+    <node.version>v5.6.0</node.version>
+    <npm.version>3.6.0</npm.version>
+    <!-- Keep cached npm modules for 6 hours (21600 seconds) before re-checking for an updated one. -->
+    <!-- To avoid slow builds due to excessive network activity to npm -->
+    <npm.cache.min>21600</npm.cache.min>
+    <!-- The location to download the correct version of Node and NPM to.
+        ${download.dir} comes from zanata-server/pom.xml -->
+    <node.install.directory>${download.dir}/zanata/node-${node.version}-npm-${npm.version}</node.install.directory>
+    <!-- NPM executable to use to run builds -->
+    <npm.executable>${node.install.directory}/node/node_modules/npm/bin/npm-cli.js</npm.executable>
+
+    <!-- Specified to ensure build is consistent cross-platform. -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!-- Directory for frontend to run the build from. Source is copied here before installing
+     dependencies to this location then running the build. -->
+    <frontend.build.directory>${project.build.directory}/src/frontend</frontend.build.directory>
+
+    <!-- Directory for editor to run the build from. Source is copied here before installing
+     dependencies to this location then running the build. -->
+    <editor.build.directory>${project.build.directory}/src/editor</editor.build.directory>
+
+    <!-- Root path within the jar to put the built artifacts.
+         Note: META-INF/resources/* is served as static content, so this serves
+         the built files at the root of the website -->
+    <bundle.dest>${project.build.outputDirectory}/META-INF/resources</bundle.dest>
+
+    <!-- Editor path within the jar to put the built artifacts.
+        Note: META-INF/resources/* is served as static content, so this puts
+              the editor at http://<server>/app -->
+    <editor.bundle.destination>${bundle.dest}/app</editor.bundle.destination>
+
+    <!-- Directory that contains the actual built frontend app (index, script and styles) -->
+    <frontend.built.artifact.directory>${frontend.build.directory}/dist</frontend.built.artifact.directory>
+
+    <!-- Directory that contains the actual built editor app (index, script and styles) -->
+    <editor.built.artifact.directory>${editor.build.directory}/app/dist</editor.built.artifact.directory>
+  </properties>
+
+  <dependencies>
+  </dependencies>
+
+  <build>
+    <!-- Copy all the source files to the build directory.
+         This is done to keep the original source directory clean, because the
+         build will download dependencies and places built artifacts in the
+         same directory as the source files.
+         This happens in phase process-resources. -->
+    <resources>
+      <resource>
+        <!-- Do not substitute maven variables like ${variablename} in the
+             contents of these files. -->
+        <filtering>false</filtering>
+        <!-- Path from pom to the source files that will be used. -->
+        <directory>src</directory>
+        <!-- Location to copy source files to. -->
+        <targetPath>${project.build.directory}/src</targetPath>
+      </resource>
+    </resources>
+    <plugins>
+      <!-- Installs correct version of node and npm locally. -->
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>1.0</version>
+        <configuration>
+          <workingDirectory>${node.install.directory}</workingDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>install node and npm</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+            <configuration>
+              <nodeVersion>${node.version}</nodeVersion>
+              <npmVersion>${npm.version}</npmVersion>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.4.0</version>
+        <configuration>
+          <environmentVariables>
+            <!-- Ensure that the locally installed (by frontend-maven-plugin) node
+                 and npm are at the start of PATH, so they will be used for any
+                 node/npm call. -->
+            <PATH>${node.install.directory}/node:${node.install.directory}/node/node_modules/npm/bin:${env.PATH}</PATH>
+          </environmentVariables>
+          <!-- Use the downloaded version of node to run all the commands. -->
+          <executable>${node.install.directory}/node/node</executable>
+        </configuration>
+        <executions>
+          <!-- Download all dependency modules from npm (or mirror). -->
+          <execution>
+            <id>frontend: execute npm install</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <workingDirectory>${frontend.build.directory}</workingDirectory>
+              <arguments>
+                <argument>${npm.executable}</argument>
+                <argument>install</argument>
+                <argument>--cache-min</argument>
+                <argument>${npm.cache.min}</argument>
+              </arguments>
+            </configuration>
+          </execution>
+
+          <!-- Download all dependency modules from npm (or mirror). -->
+          <execution>
+            <id>editor: execute npm install</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <workingDirectory>${editor.build.directory}</workingDirectory>
+              <arguments>
+                <argument>${npm.executable}</argument>
+                <argument>install</argument>
+                <argument>--cache-min</argument>
+                <argument>${npm.cache.min}</argument>
+              </arguments>
+            </configuration>
+          </execution>
+
+          <!-- editor: copy index.html to build directory. -->
+          <execution>
+            <id>editor: npm run processhtml</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <workingDirectory>${editor.build.directory}</workingDirectory>
+              <arguments>
+                <argument>${npm.executable}</argument>
+                <argument>run</argument>
+                <argument>processhtml</argument>
+              </arguments>
+            </configuration>
+          </execution>
+
+          <!-- frontend: Transpile and bundle all the javascript and css -->
+          <execution>
+            <id>frontend: execute npm run build</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <workingDirectory>${frontend.build.directory}</workingDirectory>
+              <arguments>
+                <argument>${npm.executable}</argument>
+                <argument>run</argument>
+                <argument>build</argument>
+              </arguments>
+            </configuration>
+          </execution>
+
+          <!-- editor: Transpile and bundle all the javascript and css. -->
+          <execution>
+            <id>editor: execute npm run build</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <workingDirectory>${editor.build.directory}</workingDirectory>
+              <arguments>
+                <argument>${npm.executable}</argument>
+                <argument>run</argument>
+                <argument>build</argument>
+              </arguments>
+            </configuration>
+          </execution>
+
+          <!-- Run javascript tests for frontend -->
+          <execution>
+            <id>frontend: execute npm test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <skip>${skipTests}</skip>
+              <workingDirectory>${frontend.build.directory}</workingDirectory>
+              <arguments>
+                <argument>${npm.executable}</argument>
+                <argument>test</argument>
+              </arguments>
+            </configuration>
+          </execution>
+
+          <!-- Run javascript tests for editor -->
+          <execution>
+            <id>editor: execute npm test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <skip>${skipTests}</skip>
+              <workingDirectory>${editor.build.directory}</workingDirectory>
+              <arguments>
+                <argument>${npm.executable}</argument>
+                <argument>test</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+          <failIfNoTests>false</failIfNoTests>
+        </configuration>
+      </plugin>
+
+      <!-- Copy the built files into META-INF/resources (or nested directories).
+            Files in this location will be built in the JAR file and served relative to the root path of the web app.
+            e.g. META-INF/resources/app/index.html will be served at example.org/app/index.html -->
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <!-- Copy the built frontend files to their position in the jar file. -->
+          <execution>
+            <phase>prepare-package</phase>
+            <id>frontend copy-resources</id>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${bundle.dest}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${frontend.built.artifact.directory}</directory>
+                  <include>frontend.*.min.js</include>
+                  <include>frontend.css</include>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+
+          <!-- Copy the built editor files to their position in the jar file. -->
+          <execution>
+            <phase>prepare-package</phase>
+            <id>editor copy-resources</id>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${editor.bundle.destination}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${editor.built.artifact.directory}</directory>
+                  <include>index.html</include>
+                  <include>bundle.js</include>
+                  <include>bundle.js.map</include>
+                  <include>bundle.css</include>
+                  <include>bundle.css.map</include>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <!-- Attempts to avoid downloading anything from NPM. -->
+  <profiles>
+    <profile>
+      <id>npmOffline</id>
+      <activation>
+        <property>
+          <name>npmOffline</name>
+        </property>
+      </activation>
+      <properties>
+        <npm.cache.min>9999999</npm.cache.min>
+      </properties>
+    </profile>
+  </profiles>
+
+</project>

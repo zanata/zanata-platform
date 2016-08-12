@@ -1427,12 +1427,7 @@
 
     <dependency>
       <groupId>org.zanata</groupId>
-      <artifactId>frontend</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.zanata</groupId>
-      <artifactId>zanata-editor</artifactId>
+      <artifactId>zanata-frontend</artifactId>
     </dependency>
 
     <dependency>
