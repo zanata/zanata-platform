@@ -7,7 +7,7 @@
   xmlns:rich="http://richfaces.org/rich"
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
-  template="../WEB-INF/template/template_2x.xhtml">
+  template="/WEB-INF/template/template_2x.xhtml">
 
   <f:metadata>
     <f:event type="preRenderView" listener="#{breadcrumbs.clear}"/>
@@ -26,12 +26,28 @@
         value="#{msgs['jsf.NewProject.Label']}"
         outcome="/project/create_project.xhtml"
         />
-      <h:outputLink id="exportTMXAllLink" styleClass="action_link"
-        rendered="#{identity.hasRole('admin')}"
-        onclick="return confirm('#{msgs['jsf.ConfirmExportTMXAll']}')"
-        value="#{request.contextPath}/rest/tm/all">
-        <h:outputText value="#{msgs['jsf.ExportTMXAll']}"/>
-      </h:outputLink>
+      <ui:fragment rendered="#{identity.hasRole('admin')}">
+        <script type="application/javascript">
+          function onExportAllTMXResponse(exp) {
+            if (exp) {
+              window.open("#{request.contextPath}/rest/tm/all");
+            }
+            zanata.modal.hide('#exportAllTMXModal');
+          }
+        </script>
+        <div class="new-zanata">
+          <zanata:confirm-modal id="exportAllTMXModal"
+            title="#{msgs['jsf.ExportTMXAll']}"
+            message="#{msgs['jsf.ConfirmExportTMXAll']}"
+            onresponse="onExportAllTMXResponse" />
+        </div>
+
+        <a href="#" id="exportTMXAllLink" class="action_link"
+          title="#{msgs['jsf.transmemory.Delete.Title']}"
+          data-toggle="modal" data-target="#exportAllTMXModal">
+          #{msgs['jsf.ExportTMXAll']}
+        </a>
+      </ui:fragment>
     </rich:panel>
   </ui:define>
 

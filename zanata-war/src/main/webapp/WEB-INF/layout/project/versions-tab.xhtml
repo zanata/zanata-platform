@@ -6,14 +6,6 @@
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:rich="http://richfaces.org/rich">
 
-<script type="text/javascript">
-
-  function onCancelCopyVersion(projectSlug, versionSlug) {
-    if(confirm('#{msgs['jsf.copyVersion.cancel.confirm']}')) {
-      cancelCopyVersion(projectSlug, versionSlug);
-    }
-  }
-</script>
 <div class="panel">
 <div class="panel__header">
   <div class="panel__header__actions">
@@ -173,13 +165,12 @@
                     </li>
                   </ui:repeat>
                   <li>
-                    <h:outputLink id="exportTMXIterLink"
-                      onclick="return confirm('#{msgs['jsf.ConfirmExportTMXIter']}')"
-                      styleClass="i__item--right"
-                      value="#{request.contextPath}/rest/tm/projects/#{projectHomeAction.slug}/iterations/#{version.slug}">
+                    <a href="#" id="exportTMXIterLink" class="i__item--right"
+                      onclick="setSelectedVersion('#{version.slug}')"
+                      data-toggle="modal" data-target="#exportTMXVersionModal">
                       #{msgs['jsf.iteration.ExportTMXIter']}<i
                       class="i i--export i__item__icon"></i>
-                    </h:outputLink>
+                    </a>
                   </li>
                 </ul>
               </div>
@@ -210,7 +201,7 @@
                     rendered="#{identity.hasPermission(projectHome.instance, 'update') and projectHomeAction.isVersionCopying(version.project.slug, version.slug)}">
                     <button class="button--danger txt--mini l--push-left-half"
                       title="#{msgs['jsf.copyVersion.cancel.message']}"
-                      onclick="onCancelCopyVersion('#{version.project.slug}', '#{version.slug}');return false;">
+                      onclick="cancelCopyVersion('#{version.project.slug}', '#{version.slug}');return false;">
                       #{msgs['jsf.copyVersion.stop']}
                     </button>
                   </ui:fragment>
