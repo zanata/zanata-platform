@@ -50,6 +50,39 @@
 
 </script>
 
+  <ui:fragment
+    rendered="#{identity.hasPermission(projectHome.instance, 'update')}">
+    <zanata:confirm-modal id="exportTMXModal"
+      title="#{msgs['jsf.ExportTMXProject']}"
+      message="#{msgs['jsf.ConfirmExportTMXProject']}"
+      onresponse="onExportTMXResponse" />
+    <zanata:confirm-modal id="exportTMXVersionModal"
+      title="#{msgs['jsf.iteration.ExportTMXIter']}"
+      message="#{msgs['jsf.ConfirmExportTMXIter']}"
+      onresponse="onExportTMXVersionResponse" />
+
+    <script type="application/javascript">
+      var selectedVersion;
+      function setSelectedVersion(version) {
+        selectedVersion = version;
+      }
+      function onExportTMXVersionResponse(exp) {
+        if (exp) {
+          window.open("#{request.contextPath}/rest/tm/projects/#{projectHomeAction.slug}/iterations/" + selectedVersion);
+        }
+        zanata.modal.hide('#exportTMXVersionModal');
+      }
+      function onExportTMXResponse(exp) {
+        if (exp) {
+          window.open("#{request.contextPath}/rest/tm/projects/#{projectHome.slug}");
+        }
+        zanata.modal.hide('#exportTMXModal');
+      }
+    </script>
+
+
+  </ui:fragment>
+
   <h:form styleClass="l--push-bottom-0">
     <a4j:jsFunction name="refreshStatistics" status="statistic-loader"
       limitRender="true"
@@ -203,13 +236,12 @@
             <ul class="dropdown__content js-dropdown__content"
               role="content" aria-labelledby="dropdownContent">
               <li>
-                <h:outputLink id="exportTMXProjectLink"
-                  styleClass="i__item--right"
-                  onclick="return confirm('#{msgs['jsf.ConfirmExportTMXProject']}')"
-                  value="#{request.contextPath}/rest/tm/projects/#{projectHome.slug}">
+                <a href="#" id="exportTMXProjectLink" class="i__item--right"
+                  title="#{msgs['jsf.transmemory.Delete.Title']}"
+                  data-toggle="modal" data-target="#exportTMXModal">
                   #{msgs['jsf.ExportTMXProject']}<i
                   class="i i--export i__item__icon"></i>
-                </h:outputLink>
+                </a>
               </li>
             </ul>
           </div>
