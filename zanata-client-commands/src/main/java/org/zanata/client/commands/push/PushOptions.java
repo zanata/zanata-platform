@@ -52,6 +52,8 @@ public interface PushOptions extends PushPullOptions {
     // raw file push
     public int getChunkSize();
 
+    boolean getListFileTypes();
+
     public ImmutableList<String> getFileTypes();
 
     @Nonnull

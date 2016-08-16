@@ -30,9 +30,10 @@ import java.io.InputStream;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -43,9 +44,12 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import com.google.common.collect.ImmutableMap;
+import com.sun.jersey.api.client.UniformInterfaceException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -62,6 +66,9 @@ import org.zanata.client.exceptions.ConfigException;
 import org.zanata.client.exceptions.InvalidUserInputException;
 import org.zanata.client.util.ConsoleUtils;
 import org.zanata.common.DocumentType;
+import org.zanata.common.FileTypeInfo;
+import org.zanata.common.FileTypeName;
+import org.zanata.common.ProjectType;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.client.FileResourceClient;
 import org.zanata.rest.client.RestClientFactory;
@@ -72,6 +79,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode;
+import static org.zanata.client.commands.StringUtil.multiline;
 
 /**
  * Command to send files directly to the server without parsing on the client.
@@ -84,12 +92,18 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
     private static final Logger log = LoggerFactory
             .getLogger(PushCommand.class);
 
-    private static final Pattern fileNameExtensionsPattern = Pattern.compile(
-        "(?:([^\\[]*)?(?:\\[(.*?)\\])?)");
+    private static final Pattern fileTypeSpecPattern = Pattern.compile(multiline(
+            "(?x)        # enable regex comments",
+            "([^\\[]*)   # capture (1) everything before EOL or brackets (DocumentType)",
+            "(?:         # optional non-capture group for any bracketed text",
+            "\\[(.*)\\]  # capture (2) any filename extensions inside brackets (semicolon-separated)",
+            ")?"
+    ));
 
     private final ConsoleInteractor consoleInteractor;
 
-    private FileResourceClient client;
+    // TODO rename to fileResource or similar
+    private final FileResourceClient client;
 
     public RawPushCommand(PushOptions opts) {
         super(opts);
@@ -97,6 +111,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         consoleInteractor = new ConsoleInteractorImpl(opts);
     }
 
+    @VisibleForTesting
     public RawPushCommand(PushOptions opts, RestClientFactory clientFactory) {
         super(opts, clientFactory);
         client = getClientFactory().getFileResourceClient();
@@ -111,137 +126,164 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
     }
 
     /**
-     * Extract extensions from input string
+     * Extract extensions from input string as a Map (source, target). Note
+     * that source and target will be the same in the current implementation, since
+     * the command-line option doesn't yet allow target extensions to be specified.
      */
-    public List<String> extractExtensions(String typeWithExtension) {
-        Matcher matcher = fileNameExtensionsPattern.matcher(typeWithExtension);
+    @VisibleForTesting
+    ImmutableMap<String, String> extractExtensions(String fileTypeSpec) {
+        Matcher matcher = fileTypeSpecPattern.matcher(fileTypeSpec);
         if (matcher.find()) {
-            String rawExtensions = matcher.group(2);
-            if (!StringUtils.isEmpty(rawExtensions)) {
-                return Arrays.asList(rawExtensions.split(";"));
+            String extensions = matcher.group(2);
+            if (!StringUtils.isEmpty(extensions)) {
+                ImmutableMap.Builder<String, String> builder =
+                        ImmutableMap.builder();
+                Arrays.asList(extensions.split(";")).forEach(
+                        ext -> builder.put(ext, ext));
+                return builder.build();
             }
         }
-        return Collections.emptyList();
+        return ImmutableMap.of();
     }
 
     /**
      * Extract fileType from input string
-     * input pattern: fileType[extension;extension], [extension;extension]
+     * input pattern: fileType[extension;extension],fileType[extension;extension]
      *
-     * @param typeWithExtension
-     * @return result[0] - type, result[1] - extensions. e.g [txt,html]
+     * @param fileTypeMappingSpec
+     * @return an unvalidated FileTypeName if one was given, otherwise null
      */
-    public @Nullable String extractType(String typeWithExtension) {
-        Matcher matcher = fileNameExtensionsPattern.matcher(typeWithExtension);
+    @VisibleForTesting
+    @Nullable FileTypeName extractFileTypeName(String fileTypeMappingSpec) {
+        Matcher matcher = fileTypeSpecPattern.matcher(fileTypeMappingSpec);
         if (matcher.find()) {
-            return matcher.group(1);
+            String name = matcher.group(1);
+            if (StringUtils.isNotBlank(name)) {
+                return new FileTypeName(name.toUpperCase());
+            }
         }
         return null;
     }
 
     /**
-     * Validate inputFileType to make sure it's not empty
-     *
-     * @param inputFileType
-     * @param inputExtensions
+     * Validate file extensions
+     *  @param inputFileType
+     * @param userExtensions
      * @param acceptedTypes
      */
-    private void validateInputFileType(String inputFileType,
-            List<String> inputExtensions, List<DocumentType> acceptedTypes) {
-        if (StringUtils.isNotBlank(inputFileType)) {
+    private void validateFileExtensions(@Nullable FileTypeName inputFileType,
+            ImmutableMap<String, String> userExtensions, List<FileTypeInfo> acceptedTypes) {
+        if (inputFileType != null) {
             return;
         }
-        if (inputExtensions.isEmpty()) {
+        // if file type is missing but extensions are present, try to provide
+        // a helpful error message
+        if (userExtensions.isEmpty()) {
             //throw error if inputFileType and inputExtensions is empty
             throw new InvalidUserInputException(
                     "Invalid expression for '--file-types' option");
         } else {
             //suggest --file-types options for this extension
-            for (DocumentType docType: acceptedTypes) {
-                for (String extension: docType.getSourceExtensions()) {
-                    if (inputExtensions.contains(extension)) {
+            for (FileTypeInfo docType: acceptedTypes) {
+                for (String srcExt: docType.getSourceExtensions()) {
+                    if (userExtensions.containsKey(srcExt)) {
                         String msg =
                                 Messages.format(
                                         "file.type.suggestFromExtension",
                                         docType,
-                            extension, docType);
+                            srcExt, docType);
                         throw new InvalidUserInputException(msg);
                     }
                 }
             }
+            throw new InvalidUserInputException(
+                    "Invalid expression for '--file-types' option");
         }
     }
 
     /**
-     * Return map of validated type with set of extensions
+     * Return map of validated DocumentType to set of corresponding extensions, by applying the user's
+     * file type options to the server's accepted file types.
      *
      * Validate user input file types against server accepted file types
      *
      * Valid input - properties_utf8,properties[txt],plain_text[md;markdown]
      *
-     * - Each file type is only input once - e.g.
+     * - Each file type must appear only once - e.g.
      *    - valid: "html,properties,txt"
      *    - invalid: "html,properties,html"
-     * - Same file extension cannot be in multiple file type - e.g. plain_text[txt],properties[txt]
-     *
-     * @param acceptedTypes
-     * @param inputFileTypes
+     * - Same file extension must not appear in multiple file types - e.g. plain_text[txt],properties[txt]
+     * @param serverFileTypes
+     * @param fileTypesSpec
      */
-    public Map<DocumentType, Set<String>> validateFileTypes(
-            List<DocumentType> acceptedTypes, List<String> inputFileTypes) {
+    public ImmutableList<FileTypeInfo> getActualFileTypes(
+            List<FileTypeInfo> serverFileTypes, List<String> fileTypesSpec) {
 
-        Map<DocumentType, Set<String>> filteredFileTypes = new HashMap<>();
+        // cumulative list of activated types
+        ImmutableList.Builder<FileTypeInfo> docTypeMappings =
+                new ImmutableList.Builder<>();
+        // types which have been specified by the user so far
+        Set<FileTypeName> seenUserDocTypes = new HashSet<>();
+        // extensions which have been specified by the user so far
+        Set<String> seenUserExtensions = new HashSet<>();
 
-        for (String typeWithExtension : inputFileTypes) {
-            String fileType = extractType(typeWithExtension);
-            List<String> extensions = extractExtensions(typeWithExtension);
+        if (fileTypesSpec.isEmpty()) {
+            return ImmutableList.of();
+        }
 
-            validateInputFileType(fileType, extensions, acceptedTypes);
-
-            DocumentType inputFileType = DocumentType.getByName(fileType);
-
-            //skip file type if its not supported
-            if (inputFileType == null) {
-                String msg = Messages.format("file.type.typeNotSupported", fileType);
-                consoleInteractor.printfln(DisplayMode.Warning, msg);
-                continue;
+        for (String fileTypeSpec : fileTypesSpec) {
+            @Nullable FileTypeName userType = extractFileTypeName(fileTypeSpec);
+            ImmutableMap<String, String> userExtensions;
+            if (userType == null) {
+                // try parameter as a list of file extensions: ZNTA-1248
+                String[] exts = fileTypeSpec.split(",");
+                ImmutableMap.Builder<String, String> builder = new ImmutableMap.Builder<>();
+                for (String ext : exts) {
+                    builder.put(ext, ext);
+                }
+                userExtensions = builder.build();
+            } else {
+                userExtensions = extractExtensions(fileTypeSpec);
             }
 
-            //throw error if file type is input more than once
-            if (filteredFileTypes.containsKey(inputFileType)) {
-                String msg =
-                        Messages.format("file.type.duplicateFileType", fileType);
+            validateFileExtensions(userType, userExtensions, serverFileTypes);
+            assert userType != null;
+            @Nullable FileTypeInfo fileTypeInfo = serverFileTypes.stream()
+                    .filter((FileTypeInfo info) -> info.getType().equals(userType))
+                    .findAny().orElse(null);
+
+            // throw error if file type is not supported by server
+            if (fileTypeInfo == null) {
+                String msg = Messages.format(
+                        "file.type.typeNotSupported", userType);
+                throw new InvalidUserInputException(msg);
+            }
+
+            if (!seenUserDocTypes.add(userType)) {
+                //throw error if file type is listed more than once
+                String msg = Messages.format(
+                        "file.type.duplicateFileType", userType);
                 log.error(msg);
                 throw new RuntimeException(msg);
             }
-
-            Set<String> filteredExtensions = new HashSet<>(extensions);
-
-            /**
-             * Use the extensions from typeWithExtension input if exists,
-             * otherwise, use the extensions from server.
-             */
-            filteredExtensions =
-                filteredExtensions.isEmpty() ? inputFileType.getSourceExtensions()
-                            : filteredExtensions;
-
-            //throw error if same file extension found in multiple file type
-            for (Map.Entry<DocumentType, Set<String>> entry: filteredFileTypes.entrySet()) {
-                for (String filteredExtension: entry.getValue()) {
-                    if (filteredExtensions.contains(filteredExtension)) {
-                        String msg =
-                            Messages.format(
-                                "file.type.conflictExtension",
-                                fileType, entry.getKey().name(),
-                                filteredExtension);
-                        log.error(msg);
-                        throw new RuntimeException(msg);
-                    }
+            for (String srcExt : userExtensions.keySet()) {
+                //throw error if same file extension found in multiple file types
+                if (!seenUserExtensions.add(srcExt)) {
+                    String msg = Messages.format(
+                                    "file.type.conflictExtension", srcExt, userType);
+                    log.error(msg);
+                    throw new RuntimeException(msg);
                 }
             }
-            filteredFileTypes.put(inputFileType, filteredExtensions);
+
+            // Use the extensions from docTypeMappingSpec if specified,
+            // otherwise use the extensions from server.
+            Map<String, String> filteredExtensions =
+                userExtensions.isEmpty() ? fileTypeInfo.getExtensions()
+                            : userExtensions;
+            docTypeMappings.add(new FileTypeInfo(userType, filteredExtensions));
         }
-        return filteredFileTypes;
+        return docTypeMappings.build();
     }
 
     @Override
@@ -251,12 +293,19 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         consoleInteractor.printfln(DisplayMode.Warning,
             "Using EXPERIMENTAL project type 'file'.");
 
+        List<FileTypeInfo> serverAcceptedTypes = fileTypeInfoList(client);
+
+        if (getOpts().getListFileTypes()) {
+            printFileTypes(serverAcceptedTypes);
+            return;
+        }
+
         // only supporting single module for now
 
         File sourceDir = getOpts().getSrcDir();
         if (!sourceDir.exists()) {
             boolean enableModules = getOpts().getEnableModules();
-            // TODO remove when modules implemented
+            // TODO(files) remove warning when modules supported
             if (enableModules) {
                 consoleInteractor
                         .printfln(DisplayMode.Warning,
@@ -271,31 +320,28 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         RawPushStrategy strat = new RawPushStrategy();
         strat.setPushOptions(getOpts());
 
-        @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-        List<DocumentType> serverAcceptedTypes = client.acceptedFileTypes();
+        ImmutableList<FileTypeInfo> actualFileTypes =
+            getActualFileTypes(serverAcceptedTypes, getOpts().getFileTypes());
 
-        Map<DocumentType, Set<String>> filteredDocTypes =
-            validateFileTypes(serverAcceptedTypes, getOpts().getFileTypes());
-
-        if (filteredDocTypes.isEmpty()) {
+        if (actualFileTypes.isEmpty()) {
             log.info("no valid types specified; nothing to do");
             return;
         }
 
         ImmutableList.Builder<String> sourceFileExtensionsBuilder = ImmutableList.builder();
-        for (Set<String> filteredSourceExtensions : filteredDocTypes.values()) {
-            sourceFileExtensionsBuilder.addAll(filteredSourceExtensions);
-        }
+        actualFileTypes.forEach(fileTypeInfo ->
+            sourceFileExtensionsBuilder.addAll(fileTypeInfo.getSourceExtensions()));
+        ImmutableList<String> sourceFileExtensions = sourceFileExtensionsBuilder.build();
 
         String[] srcFiles =
                 strat.getSrcFiles(sourceDir, getOpts().getIncludes(), getOpts()
-                        .getExcludes(), sourceFileExtensionsBuilder.build(), true, getOpts()
+                        .getExcludes(), sourceFileExtensions, true, getOpts()
                         .getCaseSensitive());
 
         SortedSet<String> localDocNames =
                 new TreeSet<String>(Arrays.asList(srcFiles));
 
-        // TODO handle obsolete document deletion
+        // TODO(files) handle obsolete document deletion
         consoleInteractor
                 .printfln(DisplayMode.Warning,
                     "Obsolete document removal is not yet implemented, no documents will be removed from the server.");
@@ -324,11 +370,11 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
             consoleInteractor.printfln("Found source documents:");
             for (String docName : localDocNames) {
                 if (docsToPush.contains(docName)) {
-                    DocumentType fileType = getFileType(filteredDocTypes,
+                    FileTypeName fileType = getFileTypeNameBySourceExtension(actualFileTypes,
                         FilenameUtils.getExtension(docName));
                     consoleInteractor.printfln("           "
                             + Messages.format("push.info.documentToPush",
-                                    docName, fileType.name()));
+                                    docName, fileType.getName()));
                 } else {
                     consoleInteractor.printfln(
                         Messages.format("push.info.skipDocument", docName));
@@ -361,7 +407,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         for (final String localDocName : docsToPush) {
             try {
                 final String srcExtension = FilenameUtils.getExtension(localDocName);
-                final DocumentType fileType = getFileType(filteredDocTypes,
+                final FileTypeInfo fileType = getFileType(actualFileTypes,
                     srcExtension);
                 final String qualifiedDocName = qualifiedDocName(localDocName);
                 if (getOpts().getPushType() == PushPullType.Source
@@ -370,7 +416,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
                         boolean sourcePushed =
                                 pushSourceDocumentToServer(sourceDir,
                                         localDocName, qualifiedDocName,
-                                        fileType.name());
+                                        fileType.getType().getName());
                         // ClientUtility.checkResult(putResponse, uri);
                         if (!sourcePushed) {
                             hasErrors = true;
@@ -385,7 +431,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
                 if (getOpts().getPushType() == PushPullType.Trans
                         || getOpts().getPushType() == PushPullType.Both) {
 
-                    Optional translationFileExtension =
+                    Optional<String> translationFileExtension =
                             getTranslationFileExtension(fileType, srcExtension);
 
                     strat.visitTranslationFiles(localDocName,
@@ -398,7 +444,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
                                             locale.getLocale(),
                                             qualifiedDocName);
                                     pushDocumentToServer(qualifiedDocName,
-                                            fileType.name(), locale.getLocale(),
+                                            fileType.getType().getName(), locale.getLocale(),
                                             translatedDoc);
                                 }
                             }, translationFileExtension);
@@ -419,6 +465,20 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
 
     }
 
+    private void printFileTypes(List<FileTypeInfo> serverAcceptedTypes) {
+        consoleInteractor.printfln(DisplayMode.Information, "Listing supported file types [with default source extensions]:");
+        List<FileTypeInfo> types = new ArrayList<>(serverAcceptedTypes);
+        Collections.sort(types, (a, b) -> 0);
+        for (FileTypeInfo docType : types) {
+            String exts = docType.getSourceExtensions()
+                    .stream()
+                    .sorted()
+                    .collect(Collectors.joining(";"));
+            consoleInteractor.printfln(DisplayMode.Information, "  %s[%s]", docType.getType(), exts);
+        }
+        log.info("Listed file types: no files were pushed");
+    }
+
     /**
      * Get translation file extension in given docType with the srcExtension.
      * If no extension found, return source file extension.
@@ -426,7 +486,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
      * @param docType
      * @param srcExtension
      */
-    private Optional<String> getTranslationFileExtension(DocumentType docType,
+    private Optional<String> getTranslationFileExtension(FileTypeInfo docType,
             String srcExtension) {
         String transFileExtension = docType.getExtensions().get(srcExtension);
 
@@ -440,12 +500,23 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
      * @param fileTypes
      * @param srcExtension
      */
-    private @Nullable DocumentType getFileType(Map<DocumentType, Set<String>> fileTypes,
-            String srcExtension) {
-        for (Map.Entry<DocumentType, Set<String>> entry : fileTypes.entrySet()) {
+    private @Nullable FileTypeInfo getFileType(
+            ImmutableList<FileTypeInfo> fileTypes, String srcExtension) {
+        for (FileTypeInfo entry : fileTypes) {
+            Collection<String> extensions = entry.getSourceExtensions();
+            if (extensions.contains(srcExtension)) {
+                return entry;
+            }
+        }
+        return null;
+    }
 
-            if (entry.getValue().contains(srcExtension)) {
-                return entry.getKey();
+    private @Nullable FileTypeName getFileTypeNameBySourceExtension(
+            ImmutableList<FileTypeInfo> fileTypes, String srcExtension) {
+        for (FileTypeInfo entry : fileTypes) {
+            Collection<String> extensions = entry.getSourceExtensions();
+            if (extensions.contains(srcExtension)) {
+                return entry.getType();
             }
         }
         return null;
@@ -465,11 +536,8 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
             throws IOException {
         log.info("pushing source document [{}] to server", qualifiedDocName);
 
-        String locale = null;
-
         File srcFile = new File(sourceDir, localDocName);
-
-        pushDocumentToServer(qualifiedDocName, fileType, locale, srcFile);
+        pushDocumentToServer(qualifiedDocName, fileType, null /*locale*/, srcFile);
         return true;
     }
 
@@ -480,7 +548,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
      * @param docFile
      */
     private void pushDocumentToServer(String docId, String fileType,
-            String locale, File docFile) {
+            @Nullable String locale, File docFile) {
         try {
             String md5hash = calculateFileHash(docFile);
             if (docFile.length() <= getOpts().getChunkSize()) {
@@ -546,7 +614,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
     }
 
     private ChunkUploadResponse uploadDocumentPart(
-            String docName, String locale, DocumentFileUploadForm uploadForm) {
+            String docName, @Nullable String locale, DocumentFileUploadForm uploadForm) {
         ConsoleUtils.startProgressFeedback();
         ChunkUploadResponse response;
         if (locale == null) {
@@ -571,12 +639,14 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
             try {
                 fileStream = new DigestInputStream(fileStream, md);
                 byte[] buffer = new byte[256];
+                //noinspection StatementWithEmptyBody
                 while (fileStream.read(buffer) > 0) {
-                    // continue
+                    // just keep digesting the input
                 }
             } finally {
                 fileStream.close();
             }
+            @SuppressWarnings("UnnecessaryLocalVariable")
             String md5hash = new String(Hex.encodeHex(md.digest()));
             return md5hash;
         } catch (NoSuchAlgorithmException | IOException e) {
@@ -584,13 +654,40 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         }
     }
 
+    /**
+     * Try to get the file types from the server (if server is new enough), otherwise use
+     * compiled-in values (as older versions of the client did).
+     * @param client
+     * @return
+     */
+    public List<FileTypeInfo> fileTypeInfoList(FileResourceClient client) {
+        try {
+            return client.fileTypeInfoList();
+        } catch (UniformInterfaceException e) {
+            if (e.getResponse().getStatus() == 404) {
+                log.info("Detected old Zanata Server; using hard-coded file types.");
+                // probably running against an old Zanata Server
+                return fileTypeInfoListWorkaround();
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    private List<FileTypeInfo> fileTypeInfoListWorkaround() {
+        return ProjectType.fileProjectSourceDocTypes().stream()
+                .sorted((a, b) -> a.toString().compareTo(b.toString()))
+                .map(DocumentType::toFileTypeInfo)
+                .collect(Collectors.toList());
+    }
+
     private static class StreamChunker implements Iterable<InputStream>,
             Closeable {
-        private int totalChunkCount;
+        private final int totalChunkCount;
         private int chunksRetrieved;
 
-        private File file;
-        private byte[] buffer;
+        private final File file;
+        private final byte[] buffer;
         private InputStream fileStream;
         private int actualChunkSize;
 

@@ -1,17 +1,20 @@
 package org.zanata.client.commands.push;
 
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.zanata.client.commands.ConsoleInteractor;
+import org.zanata.common.FileTypeName;
 import org.zanata.rest.client.RestClientFactory;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -39,58 +42,63 @@ public class RawPushCommandTest {
     }
 
     @Test
-    public void extractFileTypeWithExtensionTest() {
+    public void extractDocTypeWithExtensionTest() {
         String fileNameAndExtension = "properties[xml]";
-        String type = command.extractType(fileNameAndExtension);
-        assertThat(type, equalTo("properties"));
+        String type = command.extractFileTypeName(fileNameAndExtension).getName();
+        assertThat(type, equalTo("PROPERTIES"));
     }
 
     @Test
-    public void extractFileTypeWithoutExtensionTest() {
+    public void extractDocTypeWithoutExtensionTest() {
         String fileNameAndExtension = "properties";
-        String type = command.extractType(fileNameAndExtension);
-        assertThat(type, equalTo("properties"));
+        String type = command.extractFileTypeName(fileNameAndExtension).getName();
+        assertThat(type, equalTo("PROPERTIES"));
     }
 
     @Test
-    public void extractFileTypeOnlyExtensionTest() {
+    public void extractDocTypeOnlyExtensionTest() {
         String fileNameAndExtension = "[xml]";
-        String type = command.extractType(fileNameAndExtension);
-        assertThat(type, equalTo(""));
+        FileTypeName type = command.extractFileTypeName(fileNameAndExtension);
+        assertThat(type, nullValue());
     }
 
     @Test
     public void extractExtensionWithTypeTest() {
         String fileNameAndExtension = "properties[xml]";
-        List<String> extensions = command.extractExtensions(fileNameAndExtension);
+        Set<String> extensions =
+                command.extractExtensions(fileNameAndExtension).keySet();
         assertThat(extensions, contains("xml"));
     }
 
     @Test
     public void extractExtensionWithTypeTest2() {
         String fileNameAndExtension = "properties[xml;html]";
-        List<String> extensions = command.extractExtensions(fileNameAndExtension);
+        Set<String> extensions =
+                command.extractExtensions(fileNameAndExtension).keySet();
         assertThat(extensions, containsInAnyOrder("xml", "html"));
     }
 
     @Test
     public void extractExtensionWithoutTypeTest() {
         String fileNameAndExtension = "[xml]";
-        List<String> extensions = command.extractExtensions(fileNameAndExtension);
+        Set<String> extensions =
+                command.extractExtensions(fileNameAndExtension).keySet();
         assertThat(extensions, contains("xml"));
     }
 
     @Test
     public void extractExtensionWithoutTypeTest2() {
         String fileNameAndExtension = "[xml;html]";
-        List<String> extensions = command.extractExtensions(fileNameAndExtension);
+        Set<String> extensions =
+                command.extractExtensions(fileNameAndExtension).keySet();
         assertThat(extensions, containsInAnyOrder("xml", "html"));
     }
 
     @Test
     public void extractExtensionOnlyTypeTest() {
         String fileNameAndExtension = "properties";
-        List<String> extensions = command.extractExtensions(fileNameAndExtension);
+        Set<String> extensions =
+                command.extractExtensions(fileNameAndExtension).keySet();
         assertThat(extensions.size(), equalTo(0));
     }
 }

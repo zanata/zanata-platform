@@ -57,8 +57,10 @@ public class MockServerTestUtil {
                 true);
     }
 
+    // FIXME this method doesn't verify anything!
+    @Deprecated
     static void verifyServerRespondSuccessStatus() {
-        assertThat("server return successfuly status code", true, Matchers
+        assertThat("server returns successful status code", true, Matchers
                 .is(true));
     }
 }

@@ -29,6 +29,7 @@ import java.util.Map;
 import javax.ws.rs.core.MediaType;
 
 import com.sun.jersey.api.client.GenericType;
+import org.zanata.common.FileTypeInfo;
 import org.zanata.common.DocumentType;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.StringSet;
@@ -55,6 +56,7 @@ public class FileResourceClient {
 
     }
 
+    @Deprecated
     public List<DocumentType> acceptedFileTypes() {
         List<DocumentType> types = factory.getClient()
                 .resource(baseUri)
@@ -62,6 +64,16 @@ public class FileResourceClient {
                     + FileResource.ACCEPTED_TYPE_LIST_RESOURCE)
                 .get(new GenericType<List<DocumentType>>() {
             });
+        return types;
+    }
+
+    public List<FileTypeInfo> fileTypeInfoList() {
+        List<FileTypeInfo> types = factory.getClient()
+                .resource(baseUri)
+                .path(FileResource.SERVICE_PATH
+                        + FileResource.FILE_TYPE_INFO_RESOURCE)
+                .get(new GenericType<List<FileTypeInfo>>() {
+                });
         return types;
     }
 

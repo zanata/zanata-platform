@@ -139,7 +139,8 @@ public class TransFileResolver {
             DocNameWithExt docNameWithExt, LocaleMapping localeMapping,
             Optional<String> translationFileExtension) {
         List<FileMappingRule> fileMappingRules = opts.getFileMappingRules();
-        // TODO may need to sort the rules. put rules without pattern to last
+        // Rules are applied in order. A rule with no pattern always matches,
+        // so such a rule should be the last.
         for (FileMappingRule rule : fileMappingRules) {
             FileMappingRuleHandler handler = new FileMappingRuleHandler(rule,
                     getProjectType(), opts);

@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.net.URI;
+import java.util.List;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -13,14 +14,12 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.zanata.client.commands.ConfigurableProjectOptions;
-import org.zanata.client.commands.ConfigurableProjectOptionsImpl;
 import org.zanata.client.commands.ConsoleInteractor;
 import org.zanata.client.commands.MockConsoleInteractor;
-import org.zanata.client.commands.ZanataCommand;
 import org.zanata.client.commands.push.PushOptions;
 import org.zanata.client.commands.push.PushOptionsImpl;
 import org.zanata.client.config.LocaleList;
+import org.zanata.common.FileTypeInfo;
 import org.zanata.common.DocumentType;
 import org.zanata.rest.client.FileResourceClient;
 import org.zanata.rest.client.RestClientFactory;
@@ -112,7 +111,8 @@ public class SourceConfigPromptTest {
 
     @Test
     public void canHandleFileProjectType() throws Exception {
-        when(fileClient.acceptedFileTypes()).thenReturn(ImmutableList.copyOf(DocumentType.values()));
+        List<FileTypeInfo> docTypeList = ImmutableList.of(DocumentType.PLAIN_TEXT.toFileTypeInfo(), DocumentType.HTML.toFileTypeInfo());
+        when(fileClient.fileTypeInfoList()).thenReturn(docTypeList);
         // here we use absolute path because we create temp files in there
         String expectedSrcDir = tempFolder.getRoot().getAbsolutePath() + "/resources";
         ConsoleInteractor console =

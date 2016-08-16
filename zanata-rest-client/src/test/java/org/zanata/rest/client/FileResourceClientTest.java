@@ -29,10 +29,8 @@ import java.net.URISyntaxException;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.codec.binary.Hex;
@@ -44,10 +42,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.po.PoReader2;
+import org.zanata.common.FileTypeInfo;
 import org.zanata.common.DocumentType;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.DocumentFileUploadForm;
-import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.ChunkUploadResponse;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -83,7 +81,21 @@ public class FileResourceClientTest {
         }
         assertThat(allExtension, Matchers.containsInAnyOrder("dtd", "pot",
                 "txt", "idml", "html", "htm", "odt", "odp", "odg", "ods",
-                "srt", "sbt", "sub", "vtt", "properties", "xml", "ts"));
+                "srt", "sbt", "sub", "vtt", "properties", "xlf", "ts"));
+    }
+
+    @Test
+    public void testFileTypeInfoList() {
+        List<FileTypeInfo> serverAcceptedTypes = client
+                .fileTypeInfoList();
+
+        Set<String> allExtension = new HashSet<String>();
+        for (FileTypeInfo docType : serverAcceptedTypes) {
+            allExtension.addAll(docType.getSourceExtensions());
+        }
+        assertThat(allExtension, Matchers.containsInAnyOrder("dtd", "pot",
+                "txt", "idml", "html", "htm", "odt", "odp", "odg", "ods",
+                "srt", "sbt", "sub", "vtt", "properties", "xlf", "ts"));
     }
 
     @Test

@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.kohsuke.args4j.Option;
@@ -40,7 +39,7 @@ import org.zanata.client.commands.push.PushOptions;
 import org.zanata.client.commands.push.PushOptionsImpl;
 import org.zanata.client.commands.push.RawPushCommand;
 import org.zanata.client.commands.push.RawPushStrategy;
-import org.zanata.common.DocumentType;
+import org.zanata.common.FileTypeInfo;
 import org.zanata.rest.client.FileResourceClient;
 import org.zanata.rest.client.RestClientFactory;
 
@@ -132,10 +131,11 @@ class SourceConfigPrompt {
             console.blankLine();
             console.printfln(Question, get("project.file.type.question"));
 
-            // this answer is not persisted in zanata.xml so user will still need to type it when they do the actual push
+            // FIXME invoke listFileTypes
             console.printfln(Hint, PushOptionsImpl.fileTypeHelp);
             console.printf(Question, get("file.type.prompt"));
             String answer = console.expectAnyNotBlankAnswer();
+            // TODO this answer is not persisted in zanata.xml so user will still need to type it when they do the actual push
             ((PushOptionsImpl) pushOptions).setFileTypes(answer);
         }
 
@@ -255,9 +255,9 @@ class SourceConfigPrompt {
                     new RawPushCommand(opts, clientFactory, console);
             FileResourceClient client =
                     clientFactory.getFileResourceClient();
-            List<DocumentType> rawDocumentTypes = client.acceptedFileTypes();
-            Map<DocumentType, Set<String>> filteredDocTypes =
-                    rawPushCommand.validateFileTypes(rawDocumentTypes,
+            List<FileTypeInfo> serverFileTypes = rawPushCommand.fileTypeInfoList(client);
+            ImmutableList<FileTypeInfo> filteredDocTypes =
+                    rawPushCommand.getActualFileTypes(serverFileTypes,
                             opts.getFileTypes());
 
             if (filteredDocTypes.isEmpty()) {
@@ -265,13 +265,11 @@ class SourceConfigPrompt {
                 return ImmutableList.of();
             }
 
-            ImmutableList.Builder<String> sourceFileExtensionsBuilder =
+            ImmutableList.Builder<String> sourceFileExtensions =
                     ImmutableList.builder();
-            for (Set<String> filteredSourceExtensions : filteredDocTypes
-                    .values()) {
-                sourceFileExtensionsBuilder.addAll(filteredSourceExtensions);
-            }
-            return sourceFileExtensionsBuilder.build();
+            filteredDocTypes.forEach(type ->
+                    sourceFileExtensions.addAll(type.getSourceExtensions()));
+            return sourceFileExtensions.build();
         }
     }
 

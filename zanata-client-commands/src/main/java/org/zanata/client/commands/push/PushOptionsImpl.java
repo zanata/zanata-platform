@@ -53,6 +53,7 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
     private ImmutableList<String> includes = ImmutableList.of();
     private ImmutableList<String> excludes = ImmutableList.of();
     private ImmutableList<String> fileTypes = ImmutableList.of();
+    private boolean listFileTypes = false;
     private boolean defaultExcludes = DEF_EXCLUDES;
     private String mergeType = DEF_MERGE_TYPE;
     private boolean caseSensitive = DEF_CASE_SENSITIVE;
@@ -194,30 +195,34 @@ public class PushOptionsImpl extends AbstractPushPullOptionsImpl<PushOptions>
         return fileTypes;
     }
 
-    public static final String fileTypeHelp = "File types to locate and transmit to the server. \n" +
-        "Default file extension will be used unless it is being specified. \n" +
-        "Pattern: TYPE[extension;extension],TYPE[extension] \n" +
-        "Supported types: \n" +
-        "\t XML_DOCUMENT_TYPE_DEFINITION[xml] \n" +
-        "\t PLAIN_TEXT[txt] \n" +
-        "\t IDML[idml] \n" +
-        "\t HTML[html;htm] \n" +
-        "\t OPEN_DOCUMENT_TEXT[odt] \n" +
-        "\t OPEN_DOCUMENT_PRESENTATION[odp] \n" +
-        "\t OPEN_DOCUMENT_GRAPHICS[odg] \n" +
-        "\t OPEN_DOCUMENT_SPREADSHEET[ods] \n" +
-        "\t SUBTITLE[srt;sbt;sub;vtt] \n" +
-        "\t TS[ts] \n" +
-        "\t GETTEXT[pot] \n" +
-        "\t PROPERTIES[properties] \n" +
-        "\t PROPERTIES_UTF8[properties] \n" +
-        "\t XLIFF[xml] \n" +
-        "Usage --file-types \"XML_DOCUMENT_TYPE_DEFINITION,PLAIN_TEXT[md;txt]\"";
+    public static final String fileTypeHelp = "File types to locate and transmit to the server\n" +
+            "when using project type \"file\".\n" +
+            "NOTE: No file types will be pushed unless listed here.\n" +
+            "Pattern: TYPE[extension;extension],TYPE[extension]\n" +
+            "The default file extension(s) for each TYPE will be used unless\n" +
+            "'extension' is specified in square brackets. If overriding extensions,\n" +
+            "please note that most shells require quotes around square brackets and \n" +
+            "semicolons unless they are escaped.\n" +
+            "Example: --file-types \"PROPERTIES,PLAIN_TEXT[md;txt]\"\n" +
+            "Use push with the option --list-file-types to see the server's\n" +
+            "supported types and their default extensions.";
 
     @Option(name = "--file-types", metaVar = "TYPES",
             usage = fileTypeHelp)
     public void setFileTypes(String fileTypes) {
         this.fileTypes = ImmutableList.copyOf(StringUtil.split(fileTypes, ","));
+    }
+
+    @Override
+    public boolean getListFileTypes() {
+        return this.listFileTypes;
+    }
+
+    @Option(name = "--list-file-types",
+            usage = "List file types supported by the configured server, " +
+                    "instead of pushing files.")
+    public void setListFileTypes(boolean listFileTypes) {
+        this.listFileTypes = listFileTypes;
     }
 
     @Override

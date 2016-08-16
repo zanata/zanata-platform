@@ -108,14 +108,36 @@ public abstract class AbstractPushMojo extends
     private int maxChunkSize = 1024 * 1024;
 
     /**
-     * File types to locate and transmit to the server when using project type
-     * "file".
-     *
+     * File types to locate and transmit to the server
+     * when using project type "file".
+     * NOTE: No file types will be pushed unless they are listed here.
+     * <p>
+     * Pattern: TYPE[extension;extension],TYPE[extension],TYPE
+     * </p>
+     * <p>
+     * The default file extension(s) for each TYPE will be used unless
+     * 'extension' is specified in square brackets. If overriding extensions
+     * from the command line, please note that most shells require quotes
+     * around square brackets and semicolons unless they are escaped.
+     * </p>
+     * <p>
+     * Example: -Dzanata.fileTypes="PROPERTIES,PLAIN_TEXT[md;txt]"
+     * </p>
+     * <p>
+     * Use push with the option -Dzanata.listFileTypes to see the server's
+     * supported types and their default extensions.
+     * </p>
      * @parameter expression="${zanata.fileTypes}"
-     *            default-value="txt,dtd,odt,fodt,odp,fodp,ods,fods,odg,fodg,odf,odb"
      */
-    private String[] fileTypes =
-            "txt,dtd,odt,fodt,odp,fodp,ods,fods,odg,fodg,odf,odb".split(",");
+    private String[] fileTypes = new String[0];
+
+    /**
+     * List file types supported by the configured server, instead
+     * of pushing files.
+     *
+     * @parameter expression="${zanata.listFileTypes}"
+     */
+    private boolean listFileTypes = false;
 
     /**
      * Case sensitive for includes and excludes options.
@@ -195,6 +217,11 @@ public abstract class AbstractPushMojo extends
     @Override
     public ImmutableList<String> getFileTypes() {
         return ImmutableList.copyOf(fileTypes);
+    }
+
+    @Override
+    public boolean getListFileTypes() {
+        return listFileTypes;
     }
 
     @Override

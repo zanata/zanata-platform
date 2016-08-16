@@ -31,9 +31,11 @@ import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.rules.ExternalResource;
 import org.mockito.ArgumentCaptor;
@@ -48,9 +50,9 @@ import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.push.PushOptionsImpl;
 import org.zanata.client.commands.push.RawPushCommand;
 import org.zanata.client.config.LocaleList;
+import org.zanata.common.FileTypeInfo;
 import org.zanata.common.DocumentType;
 import org.zanata.common.LocaleId;
-import org.zanata.common.ProjectType;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.client.AsyncProcessClient;
 import org.zanata.rest.client.CopyTransClient;
@@ -70,7 +72,7 @@ import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 /**
- * Test rule to set up push and/or pull command(s) which will interact with a
+ * Test rule to set up push and/or pull commands which will interact with
  * mockito mocked REST clients.
  *
  * @author Patrick Huang <a
@@ -288,11 +290,11 @@ public class MockServerRule extends ExternalResource {
         when(clientFactory.getFileResourceClient()).thenReturn(
                 fileResourceClient);
 
-        List<DocumentType> documentTypes =
-                ProjectType.fileProjectSourceDocTypes();
-
-        when(fileResourceClient.acceptedFileTypes()).thenReturn(
-            documentTypes);
+        // Use the compiled-in DocumentTypes for the mock FileTypeInfo list:
+        List<FileTypeInfo> docTypeList = Arrays.stream(DocumentType.values())
+                .map(DocumentType::toFileTypeInfo).collect(Collectors.toList());
+        when(fileResourceClient.fileTypeInfoList()).thenReturn(
+                docTypeList);
 
         ChunkUploadResponse uploadResponse =
                 new ChunkUploadResponse(1L, 1, false, "Upload successful");
@@ -362,6 +364,7 @@ public class MockServerRule extends ExternalResource {
                 eq(pullOpts.getProjectVersion()), anyString(), anyString(),
                 anyString())).thenReturn(downloadTransResponse);
         when(downloadTransResponse.getStatus()).thenReturn(200);
+        when(downloadTransResponse.getHeaders()).thenReturn(new MultivaluedMapImpl());
         when(downloadTransResponse.getClientResponseStatus()).thenReturn(
                 ClientResponse.Status.OK);
         when(downloadTransResponse.getEntity(InputStream.class))

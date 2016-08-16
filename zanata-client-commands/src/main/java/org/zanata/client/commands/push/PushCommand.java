@@ -111,6 +111,12 @@ public class PushCommand extends PushPullCommand<PushOptions> {
         return strat;
     }
 
+    private void checkOptions() {
+        if (getOpts().getListFileTypes()) {
+            throw new RuntimeException("\"List file types\" is only supported for project type FILE");
+        }
+    }
+
     public static void logOptions(Logger logger, PushOptions opts) {
         if (!logger.isInfoEnabled()) {
             return;
@@ -208,6 +214,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
 
     @Override
     public void run() throws Exception {
+        checkOptions();
         logOptions(log, getOpts());
         pushCurrentModule();
 

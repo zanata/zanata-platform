@@ -37,7 +37,6 @@ import org.slf4j.LoggerFactory;
 import org.zanata.client.config.FileMappingRule;
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.client.util.FileUtil;
-import org.zanata.common.DocumentType;
 import org.zanata.common.ProjectType;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -81,7 +80,7 @@ public class FileMappingRuleHandler {
      */
     public boolean isApplicable(DocNameWithExt docNameWithExt) {
         if (Strings.isNullOrEmpty(mappingRule.getPattern())) {
-            return matchFileExtensionWithProjectType(docNameWithExt);
+            return true;
         }
         PathMatcher matcher =
             FileSystems.getDefault().getPathMatcher("glob:" + mappingRule.getPattern());
@@ -93,18 +92,6 @@ public class FileMappingRuleHandler {
         log.debug("trying to match pattern: {} to file: {}",
                 mappingRule.getPattern(), srcFile.getPath());
         return matcher.matches(Paths.get(srcFile.getPath()));
-    }
-
-    private boolean matchFileExtensionWithProjectType(
-            DocNameWithExt docNameWithExt) {
-        List<DocumentType> documentTypes = projectType.getSourceFileTypes();
-        for (DocumentType docType: documentTypes) {
-            if (docType.getSourceExtensions().contains(
-                    docNameWithExt.getExtension())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
