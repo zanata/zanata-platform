@@ -49,6 +49,7 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
 
     private final WebDriver driver;
     private String testId = "";
+    private ThreadLocal<Boolean> takingScreenshot = new ThreadLocal<>();
 
     /**
      * A registered TestEventListener will perform actions on navigate,
@@ -69,8 +70,12 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
     }
 
     private void createScreenshot(String ofType) {
+        if (takingScreenshot.get() != null) {
+            return;
+        }
         File testIDDir = null;
         try {
+            takingScreenshot.set(true);
             testIDDir = ScreenshotDirForTest.screenshotForTest(testId);
             if (!testIDDir.exists()) {
                 log.info("Creating screenshot dir {}", testIDDir.getAbsolutePath());
@@ -115,6 +120,8 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
             throw new RuntimeException("[Screenshot]: Null Object: ", e);
         } catch (AWTException e) {
             throw new RuntimeException("[Screenshot]: ", e);
+        } finally {
+            takingScreenshot.remove();
         }
     }
 
