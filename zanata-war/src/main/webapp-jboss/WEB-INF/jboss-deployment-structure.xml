@@ -28,7 +28,6 @@
 
       <!-- start of deprecated modules -->
       <module name="org.jboss.security.negotiation" />
-      <!--<module name="org.picketbox" />-->
       <!-- end of deprecated modules -->
 
       <!-- other modules -->

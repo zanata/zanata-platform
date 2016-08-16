@@ -25,7 +25,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 
-import com.google.common.base.Throwables;
+import org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl;
 import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.hibernate.service.spi.Configurable;
 import org.hibernate.service.spi.Stoppable;
@@ -44,7 +44,7 @@ import org.hibernate.service.spi.Stoppable;
  * or removed, this ConnectionProvider may need to be updated (eg to use a new
  * class name, to implement new interfaces) or removed.
  * </p>
- * @see org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl
+ * @see DatasourceConnectionProviderImpl
  * @see org.zanata.database.WrappedDriverManagerConnectionProvider
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -53,42 +53,9 @@ public class WrappedDatasourceConnectionProvider
         // NB: we should implement the same interfaces as Hibernate's DatasourceConnectionProviderImpl
         implements ConnectionProvider, Configurable, Stoppable {
 
-    // These are the class names we try when looking for DatasourceConnectionProviderImpl:
-    private static final String IMPL_HIBERNATE_4_2 =
-            "org.hibernate.service.jdbc.connections.internal.DatasourceConnectionProviderImpl";
-    private static final String IMPL_HIBERNATE_5_0 =
-            "org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl";
-
-    private static Class<ConnectionProvider> delegateClass;
-
-    static {
-        try {
-            // Hibernate 4.2
-            delegateClass =
-                    (Class<ConnectionProvider>) Class.forName(IMPL_HIBERNATE_4_2);
-        } catch (ClassNotFoundException e) {
-            try {
-                // Hibernate 4.3, 5.x
-                delegateClass =
-                        (Class<ConnectionProvider>) Class.forName(IMPL_HIBERNATE_5_0);
-            } catch (ClassNotFoundException e1) {
-                throw new RuntimeException(
-                        "Unable to find Hibernate DatasourceConnectionProviderImpl. Please add its class name to " + WrappedDatasourceConnectionProvider.class.getSimpleName());
-            }
-        }
-    }
-
     private static final long serialVersionUID = 1L;
     private final WrapperManager wrapperManager = new WrapperManager();
-    private final ConnectionProvider delegate;
-
-    public WrappedDatasourceConnectionProvider() {
-        try {
-            delegate = delegateClass.newInstance();
-        } catch (Exception e) {
-            throw Throwables.propagate(e);
-        }
-    }
+    private final ConnectionProvider delegate = new DatasourceConnectionProviderImpl();
 
     @Override
     public Connection getConnection() throws SQLException {

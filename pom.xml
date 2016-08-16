@@ -1547,6 +1547,7 @@
         <groupId>javax.enterprise</groupId>
         <artifactId>cdi-api</artifactId>
         <version>1.2</version>
+        <scope>provided</scope>
         <exclusions>
           <exclusion>
             <groupId>javax.annotation</groupId>
