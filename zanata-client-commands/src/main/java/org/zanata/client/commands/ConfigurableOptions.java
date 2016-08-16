@@ -2,6 +2,7 @@ package org.zanata.client.commands;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Path;
 
 
 import org.kohsuke.args4j.Option;
@@ -32,9 +33,9 @@ public interface ConfigurableOptions extends BasicOptions {
     /**
      * Client configuration file.
      */
-    File getUserConfig();
+    Path getUserConfig();
 
-    void setUserConfig(File userConfig);
+    void setUserConfig(Path userConfig);
 
     /**
      * Username for accessing the REST API. Defaults to the value in zanata.ini.

@@ -23,6 +23,8 @@ package org.zanata.client.commands;
 
 import org.zanata.common.ProjectType;
 
+import java.nio.file.Path;
+
 /**
  * Represents a source document name without extension.
  */
@@ -48,7 +50,7 @@ public class DocNameWithoutExt {
             case Xliff:
             case Xml:
                 return DocNameWithExt.from(name, "xml");
-            case File:
+            case Path:
                 throw new IllegalArgumentException("You cannot use document name without extension with FILE project type");
         }
         throw new IllegalStateException("Cannot determine file extension for this project type: " + projectType);

@@ -21,6 +21,7 @@
 package org.zanata.client.commands.push;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,7 @@ public class RawPushStrategy extends AbstractCommonPushStrategy<PushOptions> {
             .getLogger(RawPushStrategy.class);
 
     public static interface TranslationFilesVisitor {
-        void visit(LocaleMapping locale, File translatedDoc);
+        void visit(LocaleMapping locale, Path translatedDoc);
     }
 
     /**
@@ -63,7 +64,7 @@ public class RawPushStrategy extends AbstractCommonPushStrategy<PushOptions> {
             return;
         }
         for (LocaleMapping localeMapping : getOpts().getLocaleMapList()) {
-            File translationFile = new TransFileResolver(getOpts())
+            Path translationFile = new TransFileResolver(getOpts())
                     .resolveTransFile(DocNameWithExt.from(
                             sourceDocument), localeMapping, translationExtension);
 

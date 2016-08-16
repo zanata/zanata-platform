@@ -3,6 +3,7 @@ package org.zanata.client.commands.push;
 import static org.apache.commons.io.FileUtils.listFiles;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -24,7 +25,7 @@ public class GettextPushStrategy extends AbstractGettextPushStrategy {
     @Override
     List<LocaleMapping> findLocales(String srcDocName) {
         // find all .po basenames in this dir and subdirs
-        Collection<File> transFilesOnDisk =
+        Collection<Path> transFilesOnDisk =
                 listFiles(getOpts().getTransDir(), new String[] { "po" }, true);
 
         final LocaleList localeListInConfig = getOpts().getLocaleMapList();
@@ -36,7 +37,7 @@ public class GettextPushStrategy extends AbstractGettextPushStrategy {
 
         final DocNameWithoutExt docNameWithoutExt =
                 DocNameWithoutExt.from(srcDocName);
-        List<File> transFilesDestinations =
+        List<Path> transFilesDestinations =
                 Lists.transform(localeListInConfig,
                         new LocaleMappingToTransFile(docNameWithoutExt,
                                 getOpts()));
@@ -44,7 +45,7 @@ public class GettextPushStrategy extends AbstractGettextPushStrategy {
         // translation files
         transFilesOnDisk.removeAll(transFilesDestinations);
         // for all remaining po files we give a warning
-        for (File transFile : transFilesOnDisk) {
+        for (Path transFile : transFilesOnDisk) {
             log.warn(
                     "Skipping file {}; no locale entry found from project config",
                     transFile);
@@ -53,7 +54,7 @@ public class GettextPushStrategy extends AbstractGettextPushStrategy {
     }
 
     private static class LocaleMappingToTransFile implements
-            Function<LocaleMapping, File> {
+            Function<LocaleMapping, Path> {
         private final DocNameWithoutExt docNameWithoutExt;
         private TransFileResolver transFileResolver;
 
@@ -64,7 +65,7 @@ public class GettextPushStrategy extends AbstractGettextPushStrategy {
         }
 
         @Override
-        public File apply(LocaleMapping localeMapping) {
+        public Path apply(LocaleMapping localeMapping) {
             return transFileResolver.getTransFile(docNameWithoutExt,
                     localeMapping);
         }

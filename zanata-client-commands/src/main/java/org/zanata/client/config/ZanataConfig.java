@@ -23,6 +23,7 @@ package org.zanata.client.config;
 import java.io.File;
 import java.io.Serializable;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -158,13 +159,13 @@ public class ZanataConfig implements Serializable {
     }
 
     @XmlTransient
-    public File getSrcDirAsFile() {
-        return new File(srcDir);
+    public Path getSrcDirAsFile() {
+        return new Path(srcDir);
     }
 
     @XmlTransient
-    public File getTransDirAsFile() {
-        return new File(transDir);
+    public Path getTransDirAsFile() {
+        return new Path(transDir);
     }
 
     @XmlTransient

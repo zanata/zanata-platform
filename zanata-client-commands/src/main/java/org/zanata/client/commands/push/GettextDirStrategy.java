@@ -22,6 +22,7 @@
 package org.zanata.client.commands.push;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -71,7 +72,7 @@ public class GettextDirStrategy extends AbstractGettextPushStrategy {
 
     private boolean hasTranslationFileForLocale(LocaleMapping loc,
             String srcDocName) {
-        File transFile = new TransFileResolver(getOpts()).getTransFile(
+        Path transFile = new TransFileResolver(getOpts()).getTransFile(
                 DocNameWithoutExt.from(srcDocName), loc);
         return transFile.exists();
     }
@@ -100,8 +101,8 @@ public class GettextDirStrategy extends AbstractGettextPushStrategy {
     private boolean checkForPotPrefix(String[] srcFiles) {
         for (String src : srcFiles) {
             boolean potentialProblem =
-                    new File(src).getPath()
-                            .startsWith("pot" + File.separator);
+                    new Path(src).getPath()
+                            .startsWith("pot" + opts.fileSeparator());
             if (potentialProblem) {
                 return true;
             }

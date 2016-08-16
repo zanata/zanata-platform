@@ -27,6 +27,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -253,7 +254,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
 
         // only supporting single module for now
 
-        File sourceDir = getOpts().getSrcDir();
+        Path sourceDir = getOpts().getSrcDir();
         if (!sourceDir.exists()) {
             boolean enableModules = getOpts().getEnableModules();
             // TODO remove when modules implemented
@@ -393,7 +394,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
 
                                 @Override
                                 public void visit(LocaleMapping locale,
-                                        File translatedDoc) {
+                                        Path translatedDoc) {
                                     log.info("pushing {} translation of {}",
                                             locale.getLocale(),
                                             qualifiedDocName);
@@ -460,14 +461,14 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
      * @return true if the push was successful
      * @throws IOException
      */
-    private boolean pushSourceDocumentToServer(File sourceDir,
-            String localDocName, String qualifiedDocName, String fileType)
+    private boolean pushSourceDocumentToServer(Path sourceDir,
+                                               String localDocName, String qualifiedDocName, String fileType)
             throws IOException {
         log.info("pushing source document [{}] to server", qualifiedDocName);
 
         String locale = null;
 
-        File srcFile = new File(sourceDir, localDocName);
+        Path srcFile = new Path(sourceDir, localDocName);
 
         pushDocumentToServer(qualifiedDocName, fileType, locale, srcFile);
         return true;
@@ -480,7 +481,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
      * @param docFile
      */
     private void pushDocumentToServer(String docId, String fileType,
-            String locale, File docFile) {
+            String locale, Path docFile) {
         try {
             String md5hash = calculateFileHash(docFile);
             if (docFile.length() <= getOpts().getChunkSize()) {
@@ -564,7 +565,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         return response;
     }
 
-    private String calculateFileHash(File srcFile) {
+    private String calculateFileHash(Path srcFile) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             InputStream fileStream = new FileInputStream(srcFile);
@@ -589,12 +590,12 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         private int totalChunkCount;
         private int chunksRetrieved;
 
-        private File file;
+        private Path file;
         private byte[] buffer;
         private InputStream fileStream;
         private int actualChunkSize;
 
-        public StreamChunker(File file, int chunkSize)
+        public StreamChunker(Path file, int chunkSize)
                 throws FileNotFoundException {
             this.file = file;
             buffer = new byte[chunkSize];

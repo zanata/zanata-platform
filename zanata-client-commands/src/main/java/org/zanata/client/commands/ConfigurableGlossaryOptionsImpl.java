@@ -1,6 +1,7 @@
 package org.zanata.client.commands;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import org.kohsuke.args4j.Option;
 
@@ -13,17 +14,17 @@ public abstract class ConfigurableGlossaryOptionsImpl extends ConfigurableOption
     /**
      * Configuration file for Zanata client.
      */
-    private File config = new File("zanata.xml");
+    private Path config = new Path("zanata.xml");
 
     @Override
-    public File getConfig() {
+    public Path getConfig() {
         return config;
     }
 
     @Option(name = "--config", metaVar = "FILENAME",
         usage = "Configuration file, eg zanata.xml",
         required = false)
-    public void setConfig(File config) {
+    public void setConfig(Path config) {
         this.config = config;
     }
 

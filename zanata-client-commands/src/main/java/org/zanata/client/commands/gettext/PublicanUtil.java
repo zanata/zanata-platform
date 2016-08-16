@@ -2,6 +2,7 @@ package org.zanata.client.commands.gettext;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,32 +24,32 @@ public class PublicanUtil {
     private PublicanUtil() {
     }
 
-    public static File[] findLocaleDirs(File srcDir) {
-        File[] localeDirs;
+    public static Path[] findLocaleDirs(Path srcDir) {
+        Path[] localeDirs;
         localeDirs = srcDir.listFiles(new FileFilter() {
             @Override
-            public boolean accept(File f) {
+            public boolean accept(Path f) {
                 return f.isDirectory() && !f.getName().equals("pot");
             }
         });
         return localeDirs;
     }
 
-    public static List<LocaleMapping> findLocales(File srcDir) {
-        File[] localeDirs = findLocaleDirs(srcDir);
+    public static List<LocaleMapping> findLocales(Path srcDir) {
+        Path[] localeDirs = findLocaleDirs(srcDir);
         List<LocaleMapping> locales = new ArrayList<LocaleMapping>();
-        for (File dir : localeDirs) {
+        for (Path dir : localeDirs) {
             locales.add(new LocaleMapping(dir.getName()));
         }
         return locales;
     }
 
-    public static List<LocaleMapping> findLocales(File srcDir,
-            LocaleList locales) {
+    public static List<LocaleMapping> findLocales(Path srcDir,
+                                                  LocaleList locales) {
         List<LocaleMapping> localeDirs = new ArrayList<LocaleMapping>();
 
         for (LocaleMapping loc : locales) {
-            File localeDir = new File(srcDir, loc.getLocalLocale());
+            Path localeDir = new Path(srcDir, loc.getLocalLocale());
             if (localeDir.isDirectory())
                 localeDirs.add(loc);
             else

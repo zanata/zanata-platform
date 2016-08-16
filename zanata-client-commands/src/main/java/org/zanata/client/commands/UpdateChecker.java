@@ -20,6 +20,7 @@
  */
 package org.zanata.client.commands;
 
+import static java.lang.System.getProperty;
 import static org.zanata.client.commands.ConsoleInteractorImpl.AnswerValidator;
 import static org.zanata.client.commands.Messages.get;
 import static org.zanata.util.VersionUtility.getVersionInfo;
@@ -29,6 +30,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -76,21 +78,21 @@ public class UpdateChecker {
     private final String sonatypeRestUrl;
     private final ConsoleInteractor console;
     private final String currentVersionNo;
-    private final File updateMarker;
+    private final Path updateMarker;
 
     public UpdateChecker(ConsoleInteractor console) {
         this(OSS_URL, defaultUpdateMarkerFile(), console,
                 getVersionInfo(UpdateChecker.class).getVersionNo());
     }
 
-    private static File defaultUpdateMarkerFile() {
-        return new File(new File(System.getProperty("user.home"), ".config"),
+    private static Path defaultUpdateMarkerFile() {
+        return new Path(new Path(getProperty("user.home"), ".config"),
                 "zanata-client-update.properties");
     }
 
     @VisibleForTesting
     protected UpdateChecker(String sonatypeRestUrl,
-            File updateMarker,
+            Path updateMarker,
             ConsoleInteractor console, String currentVersionNo) {
         this.sonatypeRestUrl = sonatypeRestUrl;
         this.console = console;
@@ -143,7 +145,7 @@ public class UpdateChecker {
         return props.getProperty(NO_ASKING, "false").equalsIgnoreCase("true");
     }
 
-    private static Properties loadFileToProperties(File updateMarker) {
+    private static Properties loadFileToProperties(Path updateMarker) {
         Properties props = new Properties();
         try (InputStreamReader reader =
                 new InputStreamReader(new FileInputStream(updateMarker),
@@ -156,7 +158,7 @@ public class UpdateChecker {
         return props;
     }
 
-    private static void createUpdateMarkerFile(File updateMarker)
+    private static void createUpdateMarkerFile(Path updateMarker)
             throws IOException {
         boolean created = updateMarker.createNewFile();
         Preconditions.checkState(created, get("create.file.failure"),

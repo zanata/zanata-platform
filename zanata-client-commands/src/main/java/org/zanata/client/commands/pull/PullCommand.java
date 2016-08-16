@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -241,7 +242,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                     List<LocaleId> skippedLocales = Lists.newArrayList();
                     for (LocaleMapping locMapping : locales) {
                         LocaleId locale = new LocaleId(locMapping.getLocale());
-                        File transFile =
+                        Path transFile =
                                 strat.getTransFileToWrite(localDocName,
                                         locMapping);
 
@@ -291,7 +292,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
     protected void pullDocForLocale(PullStrategy strat, Resource doc,
             String localDocName, String docUri, boolean createSkeletons,
             LocaleMapping locMapping,
-            File transFile) throws IOException {
+            Path transFile) throws IOException {
         LocaleId locale = new LocaleId(locMapping.getLocale());
         String eTag = null;
         ETagCacheEntry eTagCacheEntry =

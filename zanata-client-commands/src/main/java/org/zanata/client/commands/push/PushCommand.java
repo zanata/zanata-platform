@@ -2,6 +2,7 @@ package org.zanata.client.commands.push;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -268,7 +269,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
 
     private void pushCurrentModule() throws IOException, RuntimeException {
         AbstractPushStrategy strat = getStrategy(getOpts());
-        File sourceDir = getOpts().getSrcDir();
+        Path sourceDir = getOpts().getSrcDir();
 
         if (!sourceDir.exists() && !strat.isTransOnly()) {
             if (getOpts().getEnableModules()) {

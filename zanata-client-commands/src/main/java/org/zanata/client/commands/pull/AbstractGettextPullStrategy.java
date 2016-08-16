@@ -23,6 +23,7 @@ package org.zanata.client.commands.pull;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.rest.StringSet;
@@ -60,9 +61,9 @@ public abstract class AbstractGettextPullStrategy extends AbstractPullStrategy {
 
     @Override
     public void writeSrcFile(Resource doc) throws IOException {
-        File potDir = getOpts().getSrcDir();
+        Path potDir = getOpts().getSrcDir();
         // write the POT file to $potDir/$name.pot
-        File potFile = new File(potDir, doc.getName() + ".pot");
+        Path potFile = new Path(potDir, doc.getName() + ".pot");
         getPoWriter().writePotToFile(potFile, doc);
     }
 

@@ -8,6 +8,7 @@
   </parent>
   <artifactId>stub-server</artifactId>
   <name>stub-server</name>
+  <packaging>takari-jar</packaging>
 
   <!-- Should be the same as zanata-client/pom.xml -->
   <scm>

@@ -22,8 +22,11 @@ package org.zanata.client.commands;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Path;
 
 import org.kohsuke.args4j.Option;
+
+import static java.lang.System.getProperty;
 
 /**
  * Base options for commands which support configuration by the user's
@@ -37,7 +40,7 @@ public abstract class ConfigurableOptionsImpl extends BasicOptionsImpl
     /**
      * Client configuration file.
      */
-    private File userConfig = new File(System.getProperty("user.home"),
+    private Path userConfig = new Path(getProperty("user.home"),
             ".config/zanata.ini");
 
     /**
@@ -91,7 +94,7 @@ public abstract class ConfigurableOptionsImpl extends BasicOptionsImpl
     @Override
     @Option(name = "--user-config", metaVar = "FILE",
             usage = "User configuration, eg /home/user/.config/zanata.ini")
-    public void setUserConfig(File userConfig) {
+    public void setUserConfig(Path userConfig) {
         this.userConfig = userConfig;
     }
 
@@ -107,7 +110,7 @@ public abstract class ConfigurableOptionsImpl extends BasicOptionsImpl
     }
 
     @Override
-    public File getUserConfig() {
+    public Path getUserConfig() {
         return userConfig;
     }
 

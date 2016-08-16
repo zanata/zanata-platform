@@ -22,6 +22,7 @@ package org.zanata.client.commands.push;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -62,9 +63,9 @@ public class OfflinePoStrategy extends GettextDirStrategy {
      * parameters are ignored as there is no disk scanning.
      */
     @Override
-    public Set<String> findDocNames(File srcDir, ImmutableList<String> includes,
-            ImmutableList<String> excludes, boolean useDefaultExclude,
-            boolean caseSensitive, boolean excludeLocaleFilenames)
+    public Set<String> findDocNames(Path srcDir, ImmutableList<String> includes,
+                                    ImmutableList<String> excludes, boolean useDefaultExclude,
+                                    boolean caseSensitive, boolean excludeLocaleFilenames)
             throws IOException {
         List<ResourceMeta> remoteDocList = client.getResourceMeta(null);
         Set<String> localDocNames = new HashSet<String>();
@@ -75,23 +76,23 @@ public class OfflinePoStrategy extends GettextDirStrategy {
     }
 
     @Override
-    public String[] getSrcFiles(File srcDir, ImmutableList<String> includes,
-            ImmutableList<String> excludes, boolean excludeLocaleFilenames,
-            boolean useDefaultExclude, boolean isCaseSensitive) {
+    public String[] getSrcFiles(Path srcDir, ImmutableList<String> includes,
+                                ImmutableList<String> excludes, boolean excludeLocaleFilenames,
+                                boolean useDefaultExclude, boolean isCaseSensitive) {
         throw new RuntimeException(
                 "Source files should never be accessed in a trans-only strategy");
     }
 
     @Override
-    public String[] getSrcFiles(File srcDir, ImmutableList<String> includes,
-            ImmutableList<String> excludes, ImmutableList<String> fileExtensions,
-            boolean useDefaultExcludes, boolean isCaseSensitive) {
+    public String[] getSrcFiles(Path srcDir, ImmutableList<String> includes,
+                                ImmutableList<String> excludes, ImmutableList<String> fileExtensions,
+                                boolean useDefaultExcludes, boolean isCaseSensitive) {
         throw new RuntimeException(
                 "Source files should never be accessed in a trans-only strategy");
     }
 
     @Override
-    public Resource loadSrcDoc(File sourceDir, String docName)
+    public Resource loadSrcDoc(Path sourceDir, String docName)
             throws IOException {
         throw new RuntimeException(
                 "Source files should never be accessed in a trans-only strategy");

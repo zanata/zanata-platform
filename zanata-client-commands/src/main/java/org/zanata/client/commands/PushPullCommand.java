@@ -26,6 +26,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -220,9 +221,9 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
     protected void loadETagCache() {
         try {
             String location =
-                    ".zanata-cache" + File.separator + "etag-cache.xml";
+                    ".zanata-cache" + fileSeparator() + "etag-cache.xml";
             if (modulePrefix != null && !modulePrefix.trim().isEmpty()) {
-                location = modulePrefix + File.separator + location;
+                location = modulePrefix + fileSeparator() + location;
             }
             eTagCache =
                     ETagCacheReaderWriter.readCache(new FileInputStream(
@@ -236,12 +237,12 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
     protected void storeETagCache() {
         try {
             String location =
-                    ".zanata-cache" + File.separator + "etag-cache.xml";
+                    ".zanata-cache" + fileSeparator() + "etag-cache.xml";
             if (modulePrefix != null && !modulePrefix.trim().isEmpty()) {
-                location = modulePrefix + File.separator + location;
+                location = modulePrefix + fileSeparator() + location;
             }
 
-            File targetFile = new File(location);
+            Path targetFile = new Path(location);
             if (!targetFile.exists()) {
                 PathUtil.makeDirs(targetFile.getParentFile());
             }

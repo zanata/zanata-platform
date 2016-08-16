@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Path;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,8 +59,8 @@ public class RawPullStrategy {
             throw new RuntimeException("no data for downloaded file "
                     + localDocName);
         }
-        File srcDir = opts.getSrcDir();
-        File file = new File(srcDir, localDocName);
+        Path srcDir = opts.getSrcDir();
+        Path file = new Path(srcDir, localDocName);
         logAndStreamToFile(srcFile, file);
     }
 
@@ -70,7 +71,7 @@ public class RawPullStrategy {
             throw new RuntimeException("no data for downloaded file "
                     + localDocName);
         }
-        File file = new TransFileResolver(opts).resolveTransFile(
+        Path file = new TransFileResolver(opts).resolveTransFile(
             DocNameWithExt.from(localDocName),
             localeMapping, translationFileExtension);
         logAndStreamToFile(transFile, file);
@@ -84,7 +85,7 @@ public class RawPullStrategy {
      * @param file
      * @throws IOException
      */
-    private void logAndStreamToFile(InputStream stream, File file)
+    private void logAndStreamToFile(InputStream stream, Path file)
             throws IOException {
         if (file.exists()) {
             log.warn("overwriting existing document at [{}]",
@@ -96,7 +97,7 @@ public class RawPullStrategy {
         writeStreamToFile(stream, file);
     }
 
-    private void writeStreamToFile(InputStream stream, File file)
+    private void writeStreamToFile(InputStream stream, Path file)
             throws IOException {
         try (OutputStream out = new FileOutputStream(file)) {
             int read;

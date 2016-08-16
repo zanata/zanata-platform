@@ -21,6 +21,7 @@
 package org.zanata.client.commands.init;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
@@ -84,7 +85,7 @@ class TransConfigPrompt {
     TransConfigPrompt promptUser() throws Exception {
         console.printf(Question, get("trans.dir.prompt"));
         String localTransDir = console.expectAnyNotBlankAnswer();
-        File transDir = new File(localTransDir);
+        Path transDir = new Path(localTransDir);
         pullOptions.setTransDir(transDir);
 
         LocaleList localeMapList = pullOptions.getLocaleMapList();
@@ -111,7 +112,7 @@ class TransConfigPrompt {
     }
 
     private TransFilePathFinder makeTransFilePathFinder(PullOptions opts) {
-        if (ProjectType.File.name().equalsIgnoreCase(opts.getProjectType())) {
+        if (Path.name().equalsIgnoreCase(opts.getProjectType())) {
             return new RawTransFilePathFinder(opts);
         } else {
             return new OtherTransFilePathFinder(opts);
@@ -166,7 +167,7 @@ class TransConfigPrompt {
 
             Optional<String> translationFileExtension =
                     Optional.fromNullable(targetFileExt);
-            File file = transFileResolver.resolveTransFile(
+            Path file = transFileResolver.resolveTransFile(
                     DocNameWithExt.from(srcDoc),
                     localeMapping, translationFileExtension);
             return file.getPath();
@@ -183,7 +184,7 @@ class TransConfigPrompt {
         @Override
         public String getTransFileToWrite(String srcDoc,
                 LocaleMapping localeMapping) {
-            File transFile = transFileResolver.getTransFile(
+            Path transFile = transFileResolver.getTransFile(
                     DocNameWithoutExt.from(srcDoc), localeMapping);
             return transFile.getPath();
         }

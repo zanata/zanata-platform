@@ -1,5 +1,6 @@
 package org.zanata.client.commands;
 
+import java.nio.file.FileSystem;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -73,4 +74,10 @@ public interface BasicOptions {
     @Nonnull List<CommandHook> getCommandHooks();
 
     void setCommandHooks(@Nonnull List<CommandHook> commandHooks);
+
+    FileSystem getFileSystem();
+
+    default String fileSeparator() {
+        return getFileSystem().getSeparator();
+    }
 }

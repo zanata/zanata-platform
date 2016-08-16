@@ -22,6 +22,7 @@ package org.zanata.client.commands.init;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -41,7 +42,7 @@ import static org.zanata.client.commands.Messages.get;
 class ProjectConfigHandler {
     private final ConsoleInteractor consoleInteractor;
     private final InitOptions opts;
-    private File backup;
+    private Path backup;
 
     ProjectConfigHandler(ConsoleInteractor consoleInteractor, InitOptions opts) {
         this.consoleInteractor = consoleInteractor;
@@ -56,7 +57,7 @@ class ProjectConfigHandler {
      */
     @VisibleForTesting
     protected void handleExistingProjectConfig() throws IOException {
-        File projectConfig = getOpts().getProjectConfig();
+        Path projectConfig = getOpts().getProjectConfig();
         if (projectConfig.exists()) {
             consoleInteractor
                     .printfln(Warning, get("project.config.exists"))
@@ -65,7 +66,7 @@ class ProjectConfigHandler {
             // back up old zanata.xml
             String suffix = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss").format(
                     new Date());
-            backup = new File(projectConfig.getParent(),
+            backup = new Path(projectConfig.getParent(),
                     "zanata.xml." + suffix);
             FileUtils.moveFile(projectConfig, backup);
             consoleInteractor
@@ -98,7 +99,7 @@ class ProjectConfigHandler {
         return backup != null;
     }
 
-    public File getBackup() {
+    public Path getBackup() {
         return backup;
     }
 }

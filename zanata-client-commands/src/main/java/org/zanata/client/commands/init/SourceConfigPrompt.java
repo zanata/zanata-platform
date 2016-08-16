@@ -23,6 +23,7 @@ package org.zanata.client.commands.init;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -102,7 +103,7 @@ class SourceConfigPrompt {
     SourceConfigPrompt promptUser() throws Exception {
         console.printf(Question, get("src.dir.prompt"));
         String localSrcDir = console.expectAnyNotBlankAnswer();
-        File srcDir = new File(localSrcDir);
+        Path srcDir = new Path(localSrcDir);
         if (!srcDir.exists()) {
             console.printfln(Warning, get("src.dir.not.exist"),
                     localSrcDir);
@@ -127,7 +128,7 @@ class SourceConfigPrompt {
 
 
         // if project type is file, we need to ask file type in order to find source documents
-        if (File.name().equalsIgnoreCase(pushOptions.getProjectType())) {
+        if (Path.name().equalsIgnoreCase(pushOptions.getProjectType())) {
 
             console.blankLine();
             console.printfln(Question, get("project.file.type.question"));
@@ -217,7 +218,7 @@ class SourceConfigPrompt {
 
     private SrcDocsFinder makeSrcDocFinder() {
         String projectType = pushOptions.getProjectType();
-        if (projectType.equalsIgnoreCase(File.name())) {
+        if (projectType.equalsIgnoreCase(Path.name())) {
             return new RawSrcDocsFinder(pushOptions);
         } else {
             return new OtherSrcDocsFinder(pushOptions);

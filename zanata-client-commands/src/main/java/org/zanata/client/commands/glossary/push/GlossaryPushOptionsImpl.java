@@ -1,6 +1,7 @@
 package org.zanata.client.commands.glossary.push;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import org.kohsuke.args4j.Option;
 import org.zanata.client.commands.ConfigurableGlossaryOptionsImpl;
@@ -12,13 +13,13 @@ import org.zanata.client.commands.ZanataCommand;
 public class GlossaryPushOptionsImpl extends ConfigurableGlossaryOptionsImpl
         implements GlossaryPushOptions {
 
-    private File file;
+    private Path file;
     private String transLang;
     private int batchSize = DEFAULT_BATCH_SIZE;
 
     @Option(name = "--file",
             usage = "Location path for the glossary file.", required = true)
-    public void setFile(File file) {
+    public void setFile(Path file) {
         this.file = file;
     }
 
@@ -36,7 +37,7 @@ public class GlossaryPushOptionsImpl extends ConfigurableGlossaryOptionsImpl
     }
 
     @Override
-    public File getFile() {
+    public Path getFile() {
         return file;
     }
 

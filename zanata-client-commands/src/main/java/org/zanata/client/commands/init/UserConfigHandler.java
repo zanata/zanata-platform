@@ -22,6 +22,7 @@ package org.zanata.client.commands.init;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
 
@@ -62,7 +63,7 @@ class UserConfigHandler {
      */
     @VisibleForTesting
     protected void verifyUserConfig() throws Exception {
-        File userConfig = opts.getUserConfig();
+        Path userConfig = opts.getUserConfig();
         if (!userConfig.exists()) {
             String msg = get("missing.user.config");
             log.warn(msg);

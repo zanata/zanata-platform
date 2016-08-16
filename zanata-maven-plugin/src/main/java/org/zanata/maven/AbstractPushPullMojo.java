@@ -1,9 +1,6 @@
 package org.zanata.maven;
 
-import java.io.File;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
 import org.apache.maven.project.MavenProject;

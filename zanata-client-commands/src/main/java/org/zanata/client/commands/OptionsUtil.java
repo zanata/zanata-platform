@@ -2,6 +2,7 @@ package org.zanata.client.commands;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.nio.file.Path;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -55,7 +56,7 @@ public class OptionsUtil {
             if (projOpts.getProjectConfig() != null) {
                 JAXBContext jc = JAXBContext.newInstance(ZanataConfig.class);
                 Unmarshaller unmarshaller = jc.createUnmarshaller();
-                File projectConfigFile = projOpts.getProjectConfig();
+                Path projectConfigFile = projOpts.getProjectConfig();
                 if (projectConfigFile.exists()) {
                     log.info("Loading project config from {}",
                             projectConfigFile);
@@ -84,7 +85,7 @@ public class OptionsUtil {
         } else if (opts instanceof ConfigurableGlossaryOptions) {
             ConfigurableGlossaryOptions glossaryOpts =
                     (ConfigurableGlossaryOptions) opts;
-            File configFile = glossaryOpts.getConfig();
+            Path configFile = glossaryOpts.getConfig();
             if (configFile != null) {
                 JAXBContext jc = JAXBContext.newInstance(ZanataConfig.class);
                 Unmarshaller unmarshaller = jc.createUnmarshaller();
@@ -231,7 +232,7 @@ public class OptionsUtil {
     protected static void applySrcDirAndTransDirFromProjectConfig(
             ConfigurableProjectOptions opts, ZanataConfig config) {
         // apply srcDir configuration
-        OptionMismatchChecker<File> srcDirChecker =
+        OptionMismatchChecker<Path> srcDirChecker =
                 OptionMismatchChecker.from(opts.getSrcDir(),
                         config.getSrcDirAsFile(),
                         "Source directory");
@@ -244,7 +245,7 @@ public class OptionsUtil {
         srcDirChecker.logWarningIfValuesMismatch();
 
         // apply transDir configuration
-        OptionMismatchChecker<File> transDirChecker = OptionMismatchChecker
+        OptionMismatchChecker<Path> transDirChecker = OptionMismatchChecker
                 .from(opts.getTransDir(), config.getTransDirAsFile(),
                         "Translation directory");
         if (transDirChecker.hasValueInConfigOnly()) {

@@ -76,6 +76,10 @@ public abstract class ConfigurableCommand<O extends ConfigurableOptions>
         return opts;
     }
 
+    protected String fileSeparator() {
+        return getOpts().getFileSystem().getSeparator();
+    }
+
     public RestClientFactory getClientFactory() {
         return clientFactory;
     }

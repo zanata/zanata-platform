@@ -2,6 +2,7 @@ package org.zanata.client.commands.pull;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.io.FileDetails;
@@ -52,7 +53,7 @@ public interface PullStrategy {
      * @return A File reference (might not exist physically) to which a
      *         Translation Resource will be written.
      */
-    File getTransFileToWrite(String docName, LocaleMapping localeMapping);
+    Path getTransFileToWrite(String docName, LocaleMapping localeMapping);
 
     /**
      * @param docWithLocalName

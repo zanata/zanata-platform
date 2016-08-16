@@ -23,6 +23,7 @@ package org.zanata.client.commands.push;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -69,9 +70,9 @@ public class XmlStrategy extends AbstractPushStrategy {
     }
 
     @Override
-    public Set<String> findDocNames(File srcDir, ImmutableList<String> includes,
-            ImmutableList<String> excludes, boolean useDefaultExclude,
-            boolean caseSensitive, boolean excludeLocaleFilenames)
+    public Set<String> findDocNames(Path srcDir, ImmutableList<String> includes,
+                                    ImmutableList<String> excludes, boolean useDefaultExclude,
+                                    boolean caseSensitive, boolean excludeLocaleFilenames)
             throws IOException {
         Set<String> localDocNames = new HashSet<String>();
 
@@ -87,11 +88,11 @@ public class XmlStrategy extends AbstractPushStrategy {
     }
 
     @Override
-    public Resource loadSrcDoc(File sourceDir, String docName)
+    public Resource loadSrcDoc(Path sourceDir, String docName)
             throws IOException {
         try {
             String filename = docNameToFilename(docName);
-            File srcFile = new File(sourceDir, filename);
+            Path srcFile = new Path(sourceDir, filename);
             Resource resource = (Resource) unmarshaller.unmarshal(srcFile);
             return resource;
         } catch (JAXBException e) {
@@ -104,7 +105,7 @@ public class XmlStrategy extends AbstractPushStrategy {
             TranslationResourcesVisitor visitor) throws IOException {
         try {
             for (LocaleMapping locale : getOpts().getLocaleMapList()) {
-                File transFile = new TransFileResolver(getOpts()).getTransFile(
+                Path transFile = new TransFileResolver(getOpts()).getTransFile(
                         DocNameWithoutExt.from(docName),
                         locale);
                 if (transFile.exists()) {

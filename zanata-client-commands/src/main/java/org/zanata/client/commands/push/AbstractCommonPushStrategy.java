@@ -21,6 +21,7 @@
 package org.zanata.client.commands.push;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import com.google.common.collect.ImmutableList;
 import org.apache.tools.ant.DirectoryScanner;
@@ -50,9 +51,9 @@ public abstract class AbstractCommonPushStrategy<O extends PushOptions> {
      * excludes should already contain paths for translation files that are to
      * be excluded.
      */
-    public String[] getSrcFiles(File srcDir, ImmutableList<String> includes,
-            ImmutableList<String> excludes, ImmutableList<String> fileExtensions,
-            boolean useDefaultExcludes, boolean isCaseSensitive) {
+    public String[] getSrcFiles(Path srcDir, ImmutableList<String> includes,
+                                ImmutableList<String> excludes, ImmutableList<String> fileExtensions,
+                                boolean useDefaultExcludes, boolean isCaseSensitive) {
         if (includes.isEmpty()) {
             ImmutableList.Builder<String> builder = ImmutableList.builder();
             for (String fileExtension : fileExtensions) {
@@ -77,7 +78,7 @@ public abstract class AbstractCommonPushStrategy<O extends PushOptions> {
         String[] includedFiles = dirScanner.getIncludedFiles();
         for (int i = 0; i < includedFiles.length; i++) {
             // canonicalise file separator (to handle backslash on Windows)
-            includedFiles[i] = includedFiles[i].replace(File.separator, "/");
+            includedFiles[i] = includedFiles[i].replace(opts.fileSeparator(), "/");
         }
         return includedFiles;
     }

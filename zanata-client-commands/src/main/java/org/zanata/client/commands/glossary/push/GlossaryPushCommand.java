@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,7 +110,7 @@ public class GlossaryPushCommand extends
         log.info("Glossary file: {}", getOpts().getFile());
         log.info("Batch size: {}", getOpts().getBatchSize());
 
-        File glossaryFile = getOpts().getFile();
+        Path glossaryFile = getOpts().getFile();
 
         if (glossaryFile == null) {
             throw new RuntimeException(

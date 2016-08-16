@@ -24,6 +24,7 @@ package org.zanata.client.commands;
 import com.google.common.collect.ImmutableSet;
 
 import java.io.File;
+import java.nio.file.Path;
 
 /**
  * @author Sean Flanigan <a
@@ -49,11 +50,11 @@ public interface PushPullOptions extends ConfigurableProjectOptions {
 
     boolean isDryRun();
 
-    File getSrcDir();
+    Path getSrcDir();
 
     String getSrcDirParameterName();
 
-    File getTransDir();
+    Path getTransDir();
 
     String getFromDoc();
 

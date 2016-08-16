@@ -22,6 +22,7 @@ package org.zanata.client.commands.push;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -44,12 +45,12 @@ public abstract class AbstractPushStrategy extends
     private StringSet extensions;
     private String fileExtension;
 
-    public abstract Set<String> findDocNames(File srcDir,
-            ImmutableList<String> includes, ImmutableList<String> excludes,
-            boolean useDefaultExclude, boolean caseSensitive,
-            boolean excludeLocaleFilenames) throws IOException;
+    public abstract Set<String> findDocNames(Path srcDir,
+                                             ImmutableList<String> includes, ImmutableList<String> excludes,
+                                             boolean useDefaultExclude, boolean caseSensitive,
+                                             boolean excludeLocaleFilenames) throws IOException;
 
-    public abstract Resource loadSrcDoc(File sourceDir, String docName)
+    public abstract Resource loadSrcDoc(Path sourceDir, String docName)
             throws IOException;
 
     public abstract void visitTranslationResources(String docName,
@@ -93,9 +94,9 @@ public abstract class AbstractPushStrategy extends
      *            case sensitive search for includes and excludes options
      * @return document paths for source files found in srcDir
      */
-    public String[] getSrcFiles(File srcDir, ImmutableList<String> includes,
-            ImmutableList<String> excludes, boolean excludeLocaleFilenames,
-            boolean useDefaultExclude, boolean isCaseSensitive) {
+    public String[] getSrcFiles(Path srcDir, ImmutableList<String> includes,
+                                ImmutableList<String> excludes, boolean excludeLocaleFilenames,
+                                boolean useDefaultExclude, boolean isCaseSensitive) {
         ImmutableList<String> fullExcludes =
                 getFullExcludes(excludes, excludeLocaleFilenames);
         return getSrcFiles(srcDir, includes, fullExcludes,

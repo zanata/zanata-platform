@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Path;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -97,7 +98,7 @@ public class GlossaryPullCommand extends
         }
         String fileName =
             ClientUtil.getFileNameFromHeader(response.getHeaders());
-        File file = new File(fileName);
+        Path file = new Path(fileName);
         PathUtil.makeDirs(file.getParentFile());
         try (OutputStream out = new FileOutputStream(file)) {
             int read;

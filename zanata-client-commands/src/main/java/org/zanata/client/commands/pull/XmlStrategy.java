@@ -23,6 +23,7 @@ package org.zanata.client.commands.pull;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -71,7 +72,7 @@ public class XmlStrategy extends AbstractPullStrategy {
     public void writeSrcFile(Resource doc) throws IOException {
         try {
             String filename = docNameToFilename(doc.getName());
-            File srcFile = new File(getOpts().getSrcDir(), filename);
+            Path srcFile = new Path(getOpts().getSrcDir(), filename);
             PathUtil.makeParents(srcFile);
             marshaller.marshal(doc, srcFile);
         } catch (JAXBException e) {
@@ -84,7 +85,7 @@ public class XmlStrategy extends AbstractPullStrategy {
             LocaleMapping locale, TranslationsResource targetDoc)
             throws IOException {
         try {
-            File transFile = getTransFileToWrite(docName, locale);
+            Path transFile = getTransFileToWrite(docName, locale);
             PathUtil.makeParents(transFile);
             marshaller.marshal(targetDoc, transFile);
             return null;

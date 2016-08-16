@@ -27,6 +27,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -61,9 +62,9 @@ public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy {
             boolean isInteractive) {
     }
 
-    public Set<String> findDocNames(File srcDir, ImmutableList<String> includes,
-            ImmutableList<String> excludes, boolean useDefaultExclude,
-            boolean caseSensitive, boolean excludeLocaleFilenames)
+    public Set<String> findDocNames(Path srcDir, ImmutableList<String> includes,
+                                    ImmutableList<String> excludes, boolean useDefaultExclude,
+                                    boolean caseSensitive, boolean excludeLocaleFilenames)
             throws IOException {
         if (localSrcDocNames != null) {
             return localSrcDocNames;
@@ -108,16 +109,16 @@ public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy {
      */
     abstract Collection<LocaleMapping> findLocales(String srcDocName);
 
-    protected File getTransFile(LocaleMapping locale, String docName) {
-        File transFile = new TransFileResolver(getOpts()).getTransFile(
+    protected Path getTransFile(LocaleMapping locale, String docName) {
+        Path transFile = new TransFileResolver(getOpts()).getTransFile(
                 DocNameWithoutExt.from(docName), locale);
         return transFile;
     }
 
     @Override
-    public Resource loadSrcDoc(File sourceDir, String docName)
+    public Resource loadSrcDoc(Path sourceDir, String docName)
             throws IOException {
-        File srcFile = new File(sourceDir, docName + getFileExtension());
+        Path srcFile = new Path(sourceDir, docName + getFileExtension());
         try (FileInputStream fileInputStream = new FileInputStream(srcFile);
                 BufferedInputStream bis = new BufferedInputStream(
                 fileInputStream)) {
@@ -133,7 +134,7 @@ public abstract class AbstractGettextPushStrategy extends AbstractPushStrategy {
     public void visitTranslationResources(String srcDocName, Resource srcDoc,
             TranslationResourcesVisitor callback) throws IOException {
         for (LocaleMapping locale : findLocales(srcDocName)) {
-            File transFile = getTransFile(locale, srcDocName);
+            Path transFile = getTransFile(locale, srcDocName);
             if (transFile.canRead()) {
                 try (BufferedInputStream bis = new BufferedInputStream(
                         new FileInputStream(transFile))) {

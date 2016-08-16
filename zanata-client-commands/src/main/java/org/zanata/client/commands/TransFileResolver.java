@@ -31,6 +31,7 @@ import org.zanata.client.config.LocaleMapping;
 import org.zanata.common.ProjectType;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +54,7 @@ public class TransFileResolver {
             PROJECT_TYPE_FILE_MAPPING_RULES =
             ImmutableMap
                     .<ProjectType, FileMappingRule> builder()
-                    .put(ProjectType.File, new FileMappingRule(
+                    .put(Path, new FileMappingRule(
                             "{locale}/{path}/{filename}.{extension}"))
                     .put(ProjectType.Gettext, new FileMappingRule(
                             "{path}/{locale_with_underscore}.po"))
@@ -83,9 +84,9 @@ public class TransFileResolver {
      *            locale mapping
      * @return translation destination
      */
-    public File resolveTransFile(DocNameWithExt docNameWithExt,
+    public Path resolveTransFile(DocNameWithExt docNameWithExt,
             LocaleMapping localeMapping, Optional<String> translationFileExtension) {
-        Optional<File> fileOptional =
+        Optional<Path> fileOptional =
                 tryGetTransFileFromProjectMappingRules(docNameWithExt,
                         localeMapping, translationFileExtension);
         if (fileOptional.isPresent()) {
@@ -107,7 +108,7 @@ public class TransFileResolver {
      *            locale mapping
      * @return translation destination
      */
-    public File getTransFile(DocNameWithoutExt docNameWithoutExt,
+    public Path getTransFile(DocNameWithoutExt docNameWithoutExt,
             LocaleMapping localeMapping) {
         DocNameWithExt docNameWithExt =
                 docNameWithoutExt.toDocNameWithExt(getProjectType());
@@ -124,7 +125,7 @@ public class TransFileResolver {
         }
     }
 
-    private File getDefaultTransFileFromProjectType(
+    private Path getDefaultTransFileFromProjectType(
             DocNameWithExt docNameWithExt, LocaleMapping localeMapping,
             ProjectType projectType, Optional<String> translationFileExtension) {
         FileMappingRule rule = PROJECT_TYPE_FILE_MAPPING_RULES.get(projectType);
@@ -132,10 +133,10 @@ public class TransFileResolver {
         String relativePath = new FileMappingRuleHandler(rule, projectType, opts)
                 .getRelativeTransFilePathForSourceDoc(docNameWithExt,
                         localeMapping, translationFileExtension);
-        return new File(opts.getTransDir(), relativePath);
+        return new Path(opts.getTransDir(), relativePath);
     }
 
-    private Optional<File> tryGetTransFileFromProjectMappingRules(
+    private Optional<Path> tryGetTransFileFromProjectMappingRules(
             DocNameWithExt docNameWithExt, LocaleMapping localeMapping,
             Optional<String> translationFileExtension) {
         List<FileMappingRule> fileMappingRules = opts.getFileMappingRules();
@@ -148,7 +149,7 @@ public class TransFileResolver {
                         .getRelativeTransFilePathForSourceDoc(
                                 docNameWithExt,
                                 localeMapping, translationFileExtension);
-                return Optional.of(new File(opts.getTransDir(), relativePath));
+                return Optional.of(new Path(opts.getTransDir(), relativePath));
             }
         }
         if (fileMappingRules.size() > 0) {

@@ -30,6 +30,7 @@ import static org.zanata.client.commands.Messages.get;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -115,7 +116,7 @@ public class InitCommand extends ConfigurableCommand<InitOptions> {
         advancedSettingsReminder();
 
         downloadZanataXml(getOpts().getProj(), getOpts().getProjectVersion(),
-                new File("zanata.xml"));
+                new Path("zanata.xml"));
 
         applyConfigFileSilently();
 
@@ -227,7 +228,7 @@ public class InitCommand extends ConfigurableCommand<InitOptions> {
      */
     @VisibleForTesting
     protected void downloadZanataXml(String projectId, String iterationId,
-            File configFileDest) throws IOException {
+            Path configFileDest) throws IOException {
         ProjectIterationClient projectIterationClient = getClientFactory()
                 .getProjectIterationClient(projectId, iterationId);
 
@@ -252,8 +253,8 @@ public class InitCommand extends ConfigurableCommand<InitOptions> {
     }
 
     @VisibleForTesting
-    protected void writeToConfig(File srcDir, String includes, String excludes,
-            File transDir, File configFile)
+    protected void writeToConfig(Path srcDir, String includes, String excludes,
+                                 Path transDir, Path configFile)
             throws Exception {
         JAXBContext jc = JAXBContext.newInstance(ZanataConfig.class);
         Unmarshaller unmarshaller = jc.createUnmarshaller();

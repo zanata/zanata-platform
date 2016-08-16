@@ -1,6 +1,7 @@
 package org.zanata.client.commands;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 
 
@@ -30,7 +31,7 @@ public interface ConfigurableProjectOptions extends ConfigurableOptions {
     @Option(name = "--project-config", metaVar = "FILENAME",
             usage = "Project configuration file, eg zanata.xml",
             required = false)
-    public void setProjectConfig(File projectConfig);
+    public void setProjectConfig(Path projectConfig);
 
     public String getProjectVersion();
 
@@ -51,7 +52,7 @@ public interface ConfigurableProjectOptions extends ConfigurableOptions {
     public
             void setProjectType(String projectType);
 
-    public File getProjectConfig();
+    public Path getProjectConfig();
 
     public LocaleList getLocaleMapList();
 
@@ -63,9 +64,9 @@ public interface ConfigurableProjectOptions extends ConfigurableOptions {
             metaVar = "DIR",
             required = true,
             usage = "Base directory for source files (eg \".\", \"pot\", \"src/main/resources\")")
-    void setSrcDir(File srcDir);
+    void setSrcDir(Path srcDir);
 
-    File getSrcDir();
+    Path getSrcDir();
 
     @Option(
             aliases = { "-t" },
@@ -73,9 +74,9 @@ public interface ConfigurableProjectOptions extends ConfigurableOptions {
             metaVar = "DIR",
             required = true,
             usage = "Base directory for translated files (eg \".\", \"po\", \"src/main/resources\")")
-    void setTransDir(File transDir);
+    void setTransDir(Path transDir);
 
-    File getTransDir();
+    Path getTransDir();
 
     ImmutableList<String> getIncludes();
 

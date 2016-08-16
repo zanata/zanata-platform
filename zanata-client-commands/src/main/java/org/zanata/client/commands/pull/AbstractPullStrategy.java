@@ -4,6 +4,7 @@ import org.zanata.client.commands.TransFileResolver;
 import org.zanata.client.config.LocaleMapping;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import org.zanata.client.commands.DocNameWithoutExt;
 
@@ -24,7 +25,7 @@ public abstract class AbstractPullStrategy implements PullStrategy {
     }
 
     @Override
-    public File getTransFileToWrite(String docName,
+    public Path getTransFileToWrite(String docName,
         LocaleMapping localeMapping) {
         return new TransFileResolver(getOpts()).getTransFile(
             DocNameWithoutExt.from(docName), localeMapping);
