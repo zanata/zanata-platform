@@ -6,16 +6,16 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.zanata.rest.dto.DTOUtil;
 import org.zanata.rest.dto.ExtensionValue;
+
+import javax.annotation.Nonnull;
 
 public class ExtensionSet<T extends ExtensionValue> extends
         AbstractCollection<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private Map<Class<?>, T> extensions = new LinkedHashMap<Class<?>, T>();
+    private @Nonnull Map<Class<?>, T> extensions = new LinkedHashMap<>();
 
     @Override
     public Iterator<T> iterator() {
@@ -57,27 +57,20 @@ public class ExtensionSet<T extends ExtensionValue> extends
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        } else if (!(obj instanceof ExtensionSet)) {
-            return false;
-        } else {
-            @SuppressWarnings("rawtypes")
-            ExtensionSet other = (ExtensionSet) obj;
-
-            return new EqualsBuilder()
-                    .append(this.extensions, other.extensions).isEquals();
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
         }
+        if (o == null || !(o instanceof ExtensionSet)) {
+            return false;
+        }
+        ExtensionSet<?> that = (ExtensionSet<?>) o;
+        return extensions.equals(that.extensions);
     }
 
     @Override
     public int hashCode() {
-        HashCodeBuilder hcBuilder = new HashCodeBuilder(15, 67);
-        for (T t : this) {
-            hcBuilder.append(t);
-        }
-        return hcBuilder.toHashCode();
+        return extensions.hashCode();
     }
 
 }

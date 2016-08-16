@@ -1,13 +1,13 @@
 package org.zanata.rest.dto.extensions.gettext;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
-import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.zanata.rest.dto.DTOUtil;
 
@@ -68,8 +68,8 @@ public class HeaderEntry implements Serializable {
             return false;
 
         HeaderEntry other = (HeaderEntry) obj;
-        return StringUtils.equals(this.key, other.key)
-                && StringUtils.equals(this.value, other.value);
+        return Objects.equals(this.key, other.key)
+                && Objects.equals(this.value, other.value);
     }
 
     @Override

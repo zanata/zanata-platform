@@ -36,6 +36,7 @@ public class DocumentTypeTest {
     @Test
     public void typeForExtantType() {
         assertThat(fromSourceExtension("txt"), contains(PLAIN_TEXT));
+        assertThat(fromSourceExtension("srt"), contains(SUBTITLE));
     }
 
     @Test
@@ -68,7 +69,7 @@ public class DocumentTypeTest {
                 containsInAnyOrder("pot", "txt", "dtd", "idml", "html",
                         "htm", "odt", "fodt", "odp", "fodp", "ods", "fods",
                         "odg", "fodg", "odb", "odf", "srt", "sbt", "sub",
-                        "vtt", "properties", "xml", "ts"));
+                        "vtt", "properties", "xlf", "xml", "ts"));
     }
 
     @Test
@@ -80,7 +81,7 @@ public class DocumentTypeTest {
             containsInAnyOrder("po", "txt", "dtd", "idml", "html",
                 "htm", "odt", "fodt", "odp", "fodp", "ods", "fods",
                 "odg", "fodg", "odb", "odf", "srt", "sbt", "sub",
-                "vtt", "properties", "xml", "ts"));
+                "vtt", "properties", "xlf", "xml", "ts"));
     }
 
     @Test(expected = UnsupportedOperationException.class)

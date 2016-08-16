@@ -32,6 +32,19 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+/**
+ * NB: DocumentType should only be used by Zanata Server, not client code.
+ * Represents a file type supported by Zanata, with an associated list of file extensions.
+ * Note that the list of file types and default extensions, as supported by a
+ * given Zanata server, may be different from the list in this enum.
+ * <p>
+ *     Zanata's FileResource REST service has a function fileTypeInfoList(),
+ *     which returns information about which file types are actually supported
+ *     by the server.
+ * </p>
+ * @see FileTypeInfo
+ */
+// TODO move this to server, not api
 public enum DocumentType {
 
     GETTEXT(buildPotMap()),
@@ -47,7 +60,7 @@ public enum DocumentType {
 
     SUBTITLE("srt", "sbt", "sub", "vtt"),
     PROPERTIES("properties"), PROPERTIES_UTF8("properties"),
-    XML("xml"), XLIFF("xml"), TS("ts");
+    XML("xml"), XLIFF("xlf"), TS("ts");
 
     private static final Set<String> allSourceExtensions = buildExtensionsList(true);
 
@@ -57,6 +70,10 @@ public enum DocumentType {
         Map<String, String> potMap = new HashMap<>();
         potMap.put("pot", "po");
         return unmodifiableMap(potMap);
+    }
+
+    public FileTypeInfo toFileTypeInfo() {
+        return new FileTypeInfo(new FileTypeName(this.name()), this.extensions);
     }
 
     private static Set<String> buildExtensionsList(boolean source) {
@@ -71,10 +88,13 @@ public enum DocumentType {
         return unmodifiableSet(allExtensions);
     }
 
-    public static @Nullable DocumentType getByName(String name) {
+    public static @Nullable DocumentType getByName(@Nullable String name) {
+        if (name == null || name.isEmpty()) {
+            return null;
+        }
         try {
             return DocumentType.valueOf(name.toUpperCase());
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             return null;
         }
     }
@@ -121,17 +141,9 @@ public enum DocumentType {
     private final Map<String, String> extensions;
 
     /**
-     * Create a document type enum constant with the given list of extensions.
-     * At least one extension must be specified.
-     *
-     * @throws IllegalArgumentException
-     *             if no extensions are specified
+     * Create a document type enum constant with the given list of default extensions.
      */
     DocumentType(@Nonnull String... extensions) throws IllegalArgumentException {
-        if (extensions.length == 0) {
-            throw new IllegalArgumentException(
-                "DocumentType must be constructed with at least one extension.");
-        }
         Map<String, String> extensionsMap = new HashMap<>();
         for (String extension : extensions) {
             extensionsMap.put(extension, extension);
@@ -140,17 +152,9 @@ public enum DocumentType {
     }
 
     /**
-     * Create a document type enum constant with the given list of extensions.
-     * At least one extension must be specified.
-     *
-     * @throws IllegalArgumentException
-     *             if no extensions are specified
+     * Create a document type enum constant with the given list of default extensions.
      */
     DocumentType(@Nonnull Map<String, String> extensions) throws IllegalArgumentException {
-        if (extensions.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "DocumentType must be constructed with at least one extension.");
-        }
         this.extensions = unmodifiableMap(extensions);
     }
 

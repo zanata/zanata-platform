@@ -42,6 +42,21 @@
 
     <plugins>
 
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <configuration>
+          <rules>
+            <bannedDependencies>
+              <excludes combine.children="append">
+                <!-- For GWT compatibility, stick to guava -->
+                <exclude>commons-lang:commons-lang</exclude>
+                <exclude>org.apache.commons:commons-lang3</exclude>
+              </excludes>
+            </bannedDependencies>
+          </rules>
+        </configuration>
+      </plugin>
+
       <!--
          This config is used when running mvn enunciate:docs.
          Docs will be generated in target/enunciate/build/docs/rest-api-docs.
@@ -306,12 +321,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-      <version>3.3.2</version>
-    </dependency>
-
-    <dependency>
       <!-- we still need this because the annotation must present in the
        interface/dto otherwise RESTEasy server implementation won't work-->
       <groupId>org.jboss.resteasy</groupId>
@@ -362,14 +371,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <scope>test</scope>
     </dependency>
 
     <dependency>

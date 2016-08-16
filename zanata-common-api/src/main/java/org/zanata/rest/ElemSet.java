@@ -1,11 +1,12 @@
 package org.zanata.rest;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
 
 // NB don't add state in subclasses, or you will break the equals method
 public abstract class ElemSet<T> implements Set<T> {
@@ -17,7 +18,7 @@ public abstract class ElemSet<T> implements Set<T> {
     public ElemSet(String values) {
         impl = new HashSet<T>();
         if (values != null) {
-            String[] splitValues = StringUtils.split(values, ';');
+            Iterable<String> splitValues = Splitter.on(';').split(values);
             for (String val : splitValues) {
                 T elem = valueOfElem(val);
                 add(elem);
@@ -92,7 +93,7 @@ public abstract class ElemSet<T> implements Set<T> {
 
     @Override
     public String toString() {
-        return StringUtils.join(this, ";");
+        return Joiner.on(';').join(this);
     }
 
     // method is final because equals is final

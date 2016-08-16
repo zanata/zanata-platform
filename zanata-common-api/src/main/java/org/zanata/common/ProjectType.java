@@ -22,11 +22,8 @@ package org.zanata.common;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.zanata.common.DocumentType.*;
 
@@ -43,11 +40,13 @@ public enum ProjectType {
      * @throws Exception
      */
     public static ProjectType getValueOf(String projectType) throws Exception {
-        if (projectType != null && !projectType.isEmpty()) {
-            for (ProjectType pt : ProjectType.values()) {
-                if (pt.name().equalsIgnoreCase(projectType)) {
-                    return pt;
-                }
+        // TODO change all values to upper case and use ProjectType.valueOf(projectType)
+        if (projectType == null || projectType.isEmpty()) {
+            throw new Exception("No project type specified");
+        }
+        for (ProjectType pt : ProjectType.values()) {
+            if (pt.name().equalsIgnoreCase(projectType)) {
+                return pt;
             }
         }
         if (OBSOLETE_PROJECT_TYPE_RAW.equalsIgnoreCase(projectType)) {
@@ -66,6 +65,7 @@ public enum ProjectType {
      * @return a list of file types or empty list if it's not a supported
      *         project type
      */
+    @Deprecated
     public static List<DocumentType> getSupportedSourceFileTypes(ProjectType type) {
         if (type != null) {
             switch (type) {
@@ -84,6 +84,7 @@ public enum ProjectType {
     /**
      * @return source file types/extensions that this project type uses
      */
+    @Deprecated
     public List<DocumentType> getSourceFileTypes() {
         switch (this) {
             case Utf8Properties:
@@ -97,10 +98,27 @@ public enum ProjectType {
                 return Arrays.asList(XML);
             case File:
                 return fileProjectSourceDocTypes();
+            default:
+                throw new IllegalStateException("unexpected value");
         }
-        throw new IllegalStateException("impossible");
     }
 
+    /**
+     * I think this list is meant to be similar or identical to TranslationFileServiceImpl.DOCTYPEMAP.keySet()
+     * <p>
+     * For some reason, this method returns a partial, hard-coded list of the
+     * file types supported by the server, except these (as of 3.9):
+     * OPEN_DOCUMENT_TEXT_FLAT
+     * OPEN_DOCUMENT_PRESENTATION_FLAT
+     * OPEN_DOCUMENT_SPREADSHEET_FLAT
+     * OPEN_DOCUMENT_GRAPHICS_FLAT
+     * OPEN_DOCUMENT_DATABASE
+     * OPEN_DOCUMENT_FORMULA
+     * XML
+     * </p>
+     * @return
+     */
+    @Deprecated
     public static List<DocumentType> fileProjectSourceDocTypes() {
         return Arrays.asList(XML_DOCUMENT_TYPE_DEFINITION,
             PLAIN_TEXT, IDML, HTML, OPEN_DOCUMENT_TEXT, OPEN_DOCUMENT_PRESENTATION,

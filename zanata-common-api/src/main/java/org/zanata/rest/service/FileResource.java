@@ -21,7 +21,6 @@
 package org.zanata.rest.service;
 
 import java.util.List;
-import java.util.Map;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -36,6 +35,7 @@ import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.zanata.common.DocumentType;
+import org.zanata.common.FileTypeInfo;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.dto.ChunkUploadResponse;
 
@@ -52,6 +52,7 @@ public interface FileResource extends RestResource {
     public static final String FILE_RESOURCE = SERVICE_PATH;
     public static final String ACCEPTED_TYPES_RESOURCE = "/accepted_types";
     public static final String ACCEPTED_TYPE_LIST_RESOURCE = "/accepted_document_types";
+    public static final String FILE_TYPE_INFO_RESOURCE = "/file_type_info";
     public static final String DOWNLOAD_TEMPLATE = "/download/{downloadId}";
     public static final String FILE_DOWNLOAD_TEMPLATE =
             "/translation/{projectSlug}/{iterationSlug}/{locale}/{fileType}";
@@ -84,8 +85,10 @@ public interface FileResource extends RestResource {
     public static final String FILETYPE_TRANSLATED_APPROVED = "baked";
 
     /**
-     * Deprecated.
-     * @see #acceptedFileTypeList
+     * Deprecated. Returns the source file extensions supported by the server.
+     * @return a semicolon-separated list of file extensions
+     * @see DocumentType#getSourceExtensions()
+     * @see #fileTypeInfoList()
      */
     @Deprecated
     @GET
@@ -96,15 +99,34 @@ public interface FileResource extends RestResource {
     Response acceptedFileTypes();
 
     /**
-     * @return A list of Document types which include a description of the
-     * source and translation file extensions accepted by the server.
+     * Deprecated. A list of document types supported by the server. The result
+     * will not be deserializable if the server supports document types which
+     * the client does not know about (eg compiled against a newer version of
+     * zanata-api), also any changes to the list of supported file extensions
+     * for existing types will not be visible to the client.
+     * @return a List of DocumentType
+     * @see DocumentType
+     * @see #fileTypeInfoList()
      */
+    @Deprecated
     @GET
     @Path(ACCEPTED_TYPE_LIST_RESOURCE)
     @Produces(MediaType.APPLICATION_JSON)
     @TypeHint(List.class)
     public
     Response acceptedFileTypeList();
+
+    /**
+     * A list of document types supported by the server, along with their
+     * default file extensions.
+     * @return a List of FileTypeInfo
+     * @see FileTypeInfo
+     */
+    @GET
+    @Path(FILE_TYPE_INFO_RESOURCE)
+    @Produces(MediaType.APPLICATION_JSON)
+    @TypeHint(List.class)
+    Response fileTypeInfoList();
 
     /**
      * Upload a source file (or file chunk) to Zanata. Allows breaking up files
