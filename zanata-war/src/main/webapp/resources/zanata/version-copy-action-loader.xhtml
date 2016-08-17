@@ -5,9 +5,9 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:composite="http://java.sun.com/jsf/composite"
-  xmlns:rich="http://richfaces.org/rich"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
-  xmlns:h="http://java.sun.com/jsf/html">
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich">
 
 <composite:interface>
   <composite:attribute name="actionBean" type="org.zanata.ui.CopyAction"
@@ -24,9 +24,6 @@
   <composite:attribute name="header" type="java.lang.String"
     shortDescription="header for panel" required="true"/>
 
-  <composite:attribute name="cancelConfirmationMessage" type="java.lang.String"
-    shortDescription="confirmation message for cancel action"/>
-
   <composite:attribute name="oncomplete" required="true"
     shortDescription="The client-side script method to be called after complete"/>
 
@@ -37,16 +34,32 @@
 
 <composite:implementation>
   <div id="#{cc.clientId}">
-    <h:panelGroup layout="block"  id="#{cc.clientId}-content" styleClass="panel l--push-top-1 #{cc.attrs.actionBean.inProgress ? '' : 'is-hidden'}">
+    <h:panelGroup layout="block" id="#{cc.clientId}-content" styleClass="panel l--push-top-1 #{cc.attrs.actionBean.inProgress ? '' : 'is-hidden'}">
       <h:panelGroup layout="block"  styleClass="panel__header"
         rendered="#{cc.attrs.actionBean.inProgress}">
+
+        <zanata:confirm-modal id="#{cc.clientId}-cancelCopyModal"
+          title="#{cc.attrs.cancelTooltip}"
+          message="#{msgs['jsf.copyVersion.cancel.confirm']}"
+          onresponse="#{cc.clientId}OnCancelCopyResponse"/>
+
+        <script type="application/javascript">
+          function #{cc.clientId}OnCancelCopyResponse(cancel) {
+            if (cancel) {
+              #{cc.attrs.onCancel}
+            }
+            zanata.modal.hide('##{cc.clientId}-cancelCopyModal')
+          }
+        </script>
+
         <h:panelGroup layout="block"
           styleClass="panel__header__actions l--push-right-half l--push-bottom-0"
           rendered="#{cc.attrs.canCancelProcess}">
-          <a href="javascript:void(0)"
-            onclick="if(confirm('#{cc.attrs.cancelConfirmationMessage}')) {#{cc.attrs.onCancel}};"
-            title="#{cc.attrs.cancelTooltip}"
-            class="button--small button--link">#{msgs['jsf.Cancel']}</a>
+          <a href="javascript:void(0)" class="button--small button--link"
+            data-toggle="modal"
+            data-target="##{cc.clientId}-cancelCopyModal">
+            #{msgs['jsf.Cancel']}
+          </a>
         </h:panelGroup>
 
         <h2 class="panel__heading--small">#{cc.attrs.header}</h2>

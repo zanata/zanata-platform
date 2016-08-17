@@ -60,7 +60,7 @@
     }
 
     function updateAndShowUploadMessage(message) {
-      jQuery('#uploadTMNotification #confirm-message').html(message);
+      jQuery("#uploadTMNotification [name='confirm-message']").html(message)
       zanata.modal.show('#uploadTMNotification');
     }
 

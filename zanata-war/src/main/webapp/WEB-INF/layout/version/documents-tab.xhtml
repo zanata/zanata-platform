@@ -75,6 +75,7 @@
       <zanata:loader type="loader--large" layout="center"/>
     </f:facet>
   </a4j:status>
+
   <h:form id="documents-document_form" styleClass="panel__body js-panel__body">
     <h:panelGroup layout="block"  styleClass="l--pad-all-half"
       rendered="#{empty versionHomeAction.documents}">
@@ -178,14 +179,11 @@
                   <ui:fragment
                     rendered="#{versionHomeAction.documentRemovalAllowed}">
                     <li>
-                      <a4j:commandLink styleClass="i__item--right txt--danger"
-                        render="documentsDocumentSearchRange, documentsDocumentSearchTotal"
-                        action="#{versionHomeAction.deleteDocument(document.id)}"
-                        oncomplete="refreshStatistics()"
-                        onclick="return confirm('#{msgs['jsf.iteration.files.ConfirmDocDeletion']}')">
+                      <a href="#" class="i__item--right txt--danger" onclick="setSelectedDoc('#{document.id}')"
+                        data-toggle="modal" data-target="#deleteDocModal">
                         #{msgs['jsf.iteration.files.DeleteDocument']}
                         <i class="i i--remove i__item__icon"></i>
-                      </a4j:commandLink>
+                      </a>
                     </li>
                   </ui:fragment>
                 </ul>

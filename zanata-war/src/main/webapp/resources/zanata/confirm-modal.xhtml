@@ -1,7 +1,10 @@
+<!-- NB: xmlns:rich is needed as a workaround for ZNTA-674 -->
+
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:composite="http://java.sun.com/jsf/composite"
   xmlns:ui="http://java.sun.com/jsf/facelets"
-  xmlns:h="http://java.sun.com/jsf/html">
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:rich="http://richfaces.org/rich">
 
   <composite:interface>
     <composite:attribute name="id" type="java.lang.String"
@@ -27,7 +30,7 @@
       aria-labelledby="confirmModal" aria-hidden="true">
       <div class="modal__dialog l--constrain-small txt--mini">
         <header class="modal__header">
-          <h2 class="modal__title">#{cc.attrs.title}</h2>
+          <h2 class="modal__title" name="title">#{cc.attrs.title}</h2>
           <ui:fragment rendered="#{cc.attrs.type ne 'alert'}">
             <button type="button"
               class="modal__close button--link"
@@ -38,7 +41,7 @@
         </header>
 
         <div class="modal__content l--pad-all-1">
-          <div class="l--pad-v-quarter" id="confirm-message">
+          <div class="l--pad-v-quarter" name="confirm-message">
             <h:outputFormat escape="false" value="#{cc.attrs.message}" />
           </div>
         </div>
