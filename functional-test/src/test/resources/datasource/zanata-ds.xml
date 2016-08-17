@@ -18,5 +18,11 @@ See http://jaitechwriteups.blogspot.com/2012/02/jboss-as-710final-thunder-releas
       <user-name>${ds.username}</user-name>
       <password>${ds.password}</password>
     </security>
+    <validation>
+      <validate-on-match>true</validate-on-match>
+      <background-validation>false</background-validation>
+      <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker"></valid-connection-checker>
+      <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter"></exception-sorter>
+    </validation>
   </datasource>
 </datasources>

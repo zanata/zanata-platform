@@ -182,6 +182,12 @@
                     <statement>
                         <track-statements>NOWARN</track-statements>
                     </statement>
+                    <validation>
+                        <validate-on-match>true</validate-on-match>
+                        <background-validation>false</background-validation>
+                        <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker"></valid-connection-checker>
+                        <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter"></exception-sorter>
+                    </validation>
                 </datasource>
                 <drivers>
                     <driver name="h2" module="com.h2database.h2">

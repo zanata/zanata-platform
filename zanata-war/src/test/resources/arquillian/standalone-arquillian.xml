@@ -157,6 +157,12 @@
             <user-name>sa</user-name>
             <password>sa</password>
           </security>
+          <validation>
+            <validate-on-match>false</validate-on-match>
+            <background-validation>false</background-validation>
+            <valid-connection-checker class-name="org.jboss.jca.adapters.jdbc.extensions.novendor.JDBC4ValidConnectionChecker"></valid-connection-checker>
+            <exception-sorter class-name="org.jboss.jca.adapters.jdbc.extensions.novendor.NullExceptionSorter"></exception-sorter>
+          </validation>
         </datasource>
         <datasource jndi-name="java:jboss/datasources/ExampleDS"
           pool-name="ExampleDS" enabled="true" use-java-context="true">
