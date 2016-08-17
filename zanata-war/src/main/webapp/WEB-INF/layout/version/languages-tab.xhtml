@@ -68,6 +68,32 @@
   </div>
 
   <div style="position: relative">
+
+    <ui:fragment
+      rendered="#{versionHomeAction.zipFileDownloadAllowed}">
+      <zanata:confirm-modal id="exportTMXModal"
+        title="#{msgs['jsf.iteration.ExportTMXIter']}"
+        message="#{msgs['jsf.ConfirmExportTMXIter']}"
+        onresponse="onExportTMXResponse" />
+
+      <script type="application/javascript">
+        var localeId;
+        function setSelectedLanguage(id, message) {
+          localeId = id;
+          jQuery("#exportTMXModal [name='confirm-message']").html(message)
+        }
+
+        function onExportTMXResponse(exp) {
+          if(exp) {
+            window.open('#{request.contextPath}/rest/tm/projects/#{versionHomeAction.projectSlug}/iterations/#{versionHomeAction.versionSlug}?locale=' + localeId)
+          } else {
+            localeId = null
+          }
+          zanata.modal.hide('#exportTMXModal');
+        }
+      </script>
+    </ui:fragment>
+
     <a4j:status name="languageTab-languagesLoader">
       <f:facet name="start">
         <zanata:loader type="loader--large" layout="center"/>
@@ -193,16 +219,12 @@
             </ui:fragment>
 
             <li>
-              <h:outputLink styleClass="i__item--right"
-                onclick="return confirm('#{msgs['jsf.ConfirmExportTMXIter']}')"
-                value="#{request.contextPath}/rest/tm/projects/#{versionHomeAction.projectSlug}/iterations/#{versionHomeAction.versionSlug}?locale=#{versionHomeAction.selectedLocale.localeId.id}">
-                <h:outputFormat
-                  value="#{msgs['jsf.iteration.ExportTMX.Language']}">
-                  <f:param
-                    value="#{versionHomeAction.selectedLocale.retrieveDisplayName()}"/>
-                </h:outputFormat>
+              <ui:param name="message" value="#{msgs.format('jsf.ConfirmExportTMXIterLanguage', versionHomeAction.selectedLocale.retrieveDisplayName())}" />
+              <a href="#" class="i__item--right" onclick="setSelectedLanguage('#{versionHomeAction.selectedLocale.localeId.id}', '#{message}')"
+                data-toggle="modal" data-target="#exportTMXModal">
+                #{msgs.format('jsf.iteration.ExportTMX.Language', versionHomeAction.selectedLocale.retrieveDisplayName())}
                 <i class="i i--export i__item__icon"></i>
-              </h:outputLink>
+              </a>
             </li>
           </ul>
         </h:panelGroup>
