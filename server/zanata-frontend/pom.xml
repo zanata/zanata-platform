@@ -147,6 +147,7 @@
                 <argument>install</argument>
                 <argument>--cache-min</argument>
                 <argument>${npm.cache.min}</argument>
+                <argument>--ignore-scripts</argument>
               </arguments>
             </configuration>
           </execution>
