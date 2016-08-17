@@ -97,9 +97,12 @@ public class TransactionPhaseListener implements PhaseListener {
                 if (utx.getStatus() == Status.STATUS_ACTIVE) {
                     utx.commit();
                 } else {
-                    if (utx.getStatus() != Status.STATUS_ROLLEDBACK) {
-                        utx.rollback();
-                    }
+                    // status == STATUS_ROLLED_BACK could be caused by the
+                    // Transaction Reaper, in which case we still need to
+                    // roll back, in order to disassociate the transaction
+                    // from this thread.
+                    // https://zanata.atlassian.net/browse/ZNTA-1318
+                    utx.rollback();
                 }
 
                 facesContext.getAttributes().remove(STARTED_TX_KEY);
