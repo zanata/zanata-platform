@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
 import org.hibernate.Session;
+import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.InRequestScope;
-import org.junit.Before;
-import org.junit.Ignore;
+import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.zanata.ZanataDbunitJpaTest;
@@ -35,6 +35,7 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.security.HCredentials;
 import org.zanata.model.security.HOpenIdCredentials;
+import org.zanata.model.validator.UniqueValidator;
 import org.zanata.test.CdiUnitRunner;
 
 import javax.enterprise.inject.Produces;
@@ -50,6 +51,8 @@ import static org.hamcrest.Matchers.not;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @RunWith(CdiUnitRunner.class)
+@SupportDeltaspikeCore
+@AdditionalClasses(UniqueValidator.class)
 public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
 
     @Inject
@@ -115,8 +118,6 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
 
     @Test
     @InRequestScope
-    // TODO configure a CDI factory just for CDI-Unit
-    @Ignore("Requires CDIAwareValidatorFactory or InjectingConstraintValidatorFactory")
     public void assignedFedoraRule() {
         // Non Fedora account
         HAccount account = createFedoraAccount();

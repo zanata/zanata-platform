@@ -23,6 +23,7 @@ package org.zanata.validator;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.apache.deltaspike.beanvalidation.impl.CDIAwareConstraintValidatorFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +32,7 @@ import org.zanata.action.RegisterAction;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -105,10 +107,19 @@ public class UsernameValidationTest {
     @BeforeClass
     public static void initValidator() {
         try {
-            validator = Validation.buildDefaultValidatorFactory().getValidator();
+            validator = buildNonCDIValidatorFactory().getValidator();
         } catch (NullPointerException npe) {
-            throw new RuntimeException("Failed to build validator "+npe);
+            throw new RuntimeException("Failed to build validator", npe);
         }
+    }
+
+    /**
+     * The CDIAwareConstraintValidatorFactory configured in validation.xml
+     * requires DeltaSpike and CDI (and thus CdiUnitRunner).
+     * @return
+     */
+    private static ValidatorFactory buildNonCDIValidatorFactory() {
+        return Validation.byDefaultProvider().configure().ignoreXmlConfiguration().buildValidatorFactory();
     }
 
     @Test

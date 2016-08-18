@@ -31,8 +31,12 @@ public class DuplicateEmailValidator implements
 
     private static final long serialVersionUID = 1L;
 
+    private final PersonDAO personDAO;
+
     @Inject
-    private PersonDAO personDAO;
+    public DuplicateEmailValidator(PersonDAO personDAO) {
+        this.personDAO = personDAO;
+    }
 
     @Override
     public boolean isValid(String string, ConstraintValidatorContext context) {
