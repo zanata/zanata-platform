@@ -306,24 +306,6 @@
         <version>${picketlink.version}</version>
         <scope>compile</scope>
       </dependency>
-      <!--<dependency>-->
-      <!--<groupId>org.picketlink</groupId>-->
-      <!--<artifactId>picketlink-deltaspike</artifactId>-->
-      <!--<version>${picketlink.version}</version>-->
-      <!--<scope>compile</scope>-->
-      <!--</dependency>-->
-      <!--<dependency>-->
-      <!--<groupId>org.picketlink</groupId>-->
-      <!--<artifactId>picketlink-social</artifactId>-->
-      <!--<version>${picketlink.version}</version>-->
-      <!--<scope>compile</scope>-->
-      <!--</dependency>-->
-      <!--<dependency>-->
-      <!--<groupId>org.picketlink</groupId>-->
-      <!--<artifactId>picketlink-web</artifactId>-->
-      <!--<version>2.0.3.Final</version>-->
-      <!--<scope>provided</scope>-->
-      <!--</dependency>-->
 
       <dependency>
         <groupId>org.projectlombok</groupId>
