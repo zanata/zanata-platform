@@ -69,6 +69,9 @@
         <filtering>false</filtering>
         <!-- Path from pom to the source files that will be used. -->
         <directory>src</directory>
+        <excludes>
+          <exclude>**/node_modules/</exclude>
+        </excludes>
         <!-- Location to copy source files to. -->
         <targetPath>${project.build.directory}/src</targetPath>
       </resource>
