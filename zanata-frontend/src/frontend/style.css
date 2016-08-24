@@ -8,11 +8,12 @@
     color: #f00;
 }
 #admin-lang span.greentext.badge {
-  background-color: #fff;
+  background-color: #62C876;
+  color:#fff;
 }
 #admin-lang  span.dis.badge {
-  background-color: #fff;
-  color:#546675;
+  background-color: #aaa;
+  color:#fff;
 }
 #admin-lang span.caret {
   color:#546675;
@@ -254,9 +255,7 @@
 #admin-lang .btn-primary i {
     color: #fff
 }
-#admin-lang span.greentext {
-    color: #62C876;
-}
+
 #admin-lang span.transl-text {
     color: #62C876;
     font-size: 1.3em;
