@@ -22,21 +22,6 @@
 
       <!-- other modules -->
       <module name="org.infinispan.commons" optional="true" />
-      <module name="javax.annotation.api" />
-      <!-- not needed for wildfly: -->
-      <module name="javax.ejb.api" />
-      <module name="javax.inject.api" />
-      <module name="javax.el.api" />
-      <module name="javax.faces.api" />
-      <!-- not needed for wildfly: -->
-      <module name="javax.interceptor.api" />
-      <module name="javax.jms.api" />
-      <module name="javax.mail.api" />
-      <module name="javax.servlet.api" />
-      <module name="javax.transaction.api"/>
-      <module name="javax.validation.api" />
-      <!-- not needed for wildfly: -->
-      <module name="javax.xml.bind.api" />
       <module name="org.apache.commons.logging" />
       <module name="org.apache.log4j" />
       <!-- dom4j needed for wildfly (WFLY-5549)  -->
