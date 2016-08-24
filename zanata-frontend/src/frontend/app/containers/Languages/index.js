@@ -39,7 +39,7 @@ class Languages extends Component {
                                       <InputGroup>
                                         <FormControl type="text" />
                                         <InputGroup.Button>
-                                          <Button>Search</Button>
+                                          <Button><i className="fa fa-search"></i>&nbsp;</Button>
                                         </InputGroup.Button>
                                       </InputGroup>
                                     </FormGroup>
@@ -138,7 +138,7 @@ class Languages extends Component {
                                             </td>
                                             <td><span><i className="fa fa-user"></i>0</span>
                                             </td>
-                                            <td>   <Button bsSize="small">Delete</Button>
+                                            <td>   <Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
 
                                           </td>
                                         </tr>
@@ -148,7 +148,7 @@ class Languages extends Component {
                                             </td>
                                             <td><span><i className="fa fa-user"></i>2</span>
                                             </td>
-                                            <td>   <Button bsSize="small">Delete</Button>
+                                            <td>   <Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
 
                                           </td>
                                         </tr>
@@ -158,7 +158,7 @@ class Languages extends Component {
                                             </td>
                                             <td><span><i className="fa fa-user"></i>4</span>
                                             </td>
-                                            <td>   <Button bsSize="small">Delete</Button>
+                                            <td>   <Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
 
                                           </td>
                                         </tr>
@@ -168,7 +168,7 @@ class Languages extends Component {
                                             </td>
                                             <td><span><i className="fa fa-user"></i>1</span>
                                             </td>
-                                            <td>   <Button bsSize="small">Delete</Button>
+                                            <td>   <Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
 
                                           </td>
                                         </tr>
@@ -178,7 +178,7 @@ class Languages extends Component {
                                             </td>
                                             <td><span><i className="fa fa-user"></i>5</span>
                                             </td>
-                                            <td>   <Button bsSize="small">Delete</Button>
+                                            <td>   <Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
 
                                           </td>
                                         </tr>
@@ -189,7 +189,7 @@ class Languages extends Component {
                                             </td>
                                             <td><span><i className="fa fa-user"></i>0</span>
                                             </td>
-                                            <td>   <Button bsSize="small">Delete</Button>
+                                            <td>   <Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
 
                                           </td>
                                         </tr>
@@ -199,7 +199,7 @@ class Languages extends Component {
                                             </td>
                                             <td><span><i className="fa fa-user"></i>1</span>
                                             </td>
-                                            <td>   <Button bsSize="small">Delete</Button>
+                                            <td>   <Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
 
                                           </td>
                                         </tr>
@@ -209,7 +209,7 @@ class Languages extends Component {
                                             </td>
                                             <td><span><i className="fa fa-user"></i>8</span>
                                             </td>
-                                            <td>   <Button bsSize="small">Delete</Button>
+                                            <td>   <Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
 
                                           </td>
                                         </tr>
@@ -219,7 +219,7 @@ class Languages extends Component {
                                             </td>
                                             <td><span><i className="fa fa-user"></i>1</span>
                                             </td>
-                                            <td>   <Button bsSize="small">Delete</Button>
+                                            <td>   <Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
 
                                           </td>
                                         </tr>
@@ -229,7 +229,7 @@ class Languages extends Component {
                                             </td>
                                             <td><span><i className="fa fa-user"></i>5</span>
                                             </td>
-                                            <td>   <Button bsSize="small">Delete</Button>
+                                            <td>   <Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
 
                                           </td>
                                         </tr>
