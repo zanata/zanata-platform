@@ -43,6 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.SortableField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.hibernate.search.DateBridge;
@@ -102,6 +103,7 @@ public class ModelEntityBase implements Serializable, HashableState {
     @Column(nullable = false)
     @Field(analyze = Analyze.NO)
     @FieldBridge(impl = DateBridge.class)
+    @SortableField
     public Date getLastChanged() {
         return lastChanged;
     }
