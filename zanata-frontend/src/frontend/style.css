@@ -92,9 +92,6 @@
 #admin-lang table td {
     font-size: 16px;
 }
-#admin-lang h2 span {
-    color: #ddd;
-}
 #admin-lang h4 {
     color: #03A6D7;
     font-weight: bold;
@@ -219,6 +216,11 @@
 }
 #admin-lang .toolbar {
     padding-top: 20px;
+    font-size:0.9em;
+}
+
+#admin-lang .search-box .form-control {
+  height:auto;
 }
 #admin-lang tbody tr td:not(:first-child),
 #admin-lang thead tr th:not(:first-child) {

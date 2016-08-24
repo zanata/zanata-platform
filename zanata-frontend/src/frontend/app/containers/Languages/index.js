@@ -1,5 +1,10 @@
 import React, { Component, PropTypes } from 'react'
-import { Button } from 'react-bootstrap'
+import {
+  Button,
+  InputGroup,
+  FormGroup,
+  FormControl
+ } from 'react-bootstrap'
 import Helmet from 'react-helmet'
 import {
   Page,
@@ -23,18 +28,24 @@ class Languages extends Component {
           <View theme={contentViewContainerTheme}>
             <div className="row clearfix" id="admin-lang">
                 <div className="row-height">
-
-   <Button type='primary'>testing</Button>
-                    <div className="contentx clearfix">
+                    <div className="contentx clearfix col-xs-12">
                         <h2>Languages <span className="badge">135</span></h2>
-                        <div className="col-xs-12">
 
                             <div className="left-form toolbar col-xs-12" role="toolbar">
                                 <div className="search-box col-xs-6 col-sm-7 col-md-5 col-lg-2">
-                                    <div className="input-group">
-                                        <span className="input-group-btn">
-                                        </span>
-                                    </div>
+
+
+                                    <FormGroup>
+                                      <InputGroup>
+                                        <FormControl type="text" />
+                                        <InputGroup.Button>
+                                          <Button>Search</Button>
+                                        </InputGroup.Button>
+                                      </InputGroup>
+                                    </FormGroup>
+
+
+
                                 </div>
 
                                 <div className="sort-items col-xs-3-pull-right col-sm-3-pull-right col-md-2">
@@ -47,7 +58,7 @@ class Languages extends Component {
                                 </div>
 
                                 <div className="show-items col-xs-3 col-sm-3 col-md-2 col-lg-2">
-                                    <span>Show</span>
+                                    <span>Show  </span>
                                     <select id="ddlList2">
                                       <option value="1">10</option>
                                         <option value="2">20</option>
@@ -127,7 +138,8 @@ class Languages extends Component {
                                             </td>
                                             <td><span><i className="fa fa-user"></i>0</span>
                                             </td>
-                                            <td>
+                                            <td>   <Button bsSize="small">Delete</Button>
+
                                           </td>
                                         </tr>
                                         <tr>
@@ -136,7 +148,8 @@ class Languages extends Component {
                                             </td>
                                             <td><span><i className="fa fa-user"></i>2</span>
                                             </td>
-                                            <td>
+                                            <td>   <Button bsSize="small">Delete</Button>
+
                                           </td>
                                         </tr>
                                         <tr>
@@ -145,7 +158,8 @@ class Languages extends Component {
                                             </td>
                                             <td><span><i className="fa fa-user"></i>4</span>
                                             </td>
-                                            <td>
+                                            <td>   <Button bsSize="small">Delete</Button>
+
                                           </td>
                                         </tr>
                                         <tr>
@@ -154,7 +168,8 @@ class Languages extends Component {
                                             </td>
                                             <td><span><i className="fa fa-user"></i>1</span>
                                             </td>
-                                            <td>
+                                            <td>   <Button bsSize="small">Delete</Button>
+
                                           </td>
                                         </tr>
                                         <tr>
@@ -163,7 +178,8 @@ class Languages extends Component {
                                             </td>
                                             <td><span><i className="fa fa-user"></i>5</span>
                                             </td>
-                                            <td>
+                                            <td>   <Button bsSize="small">Delete</Button>
+
                                           </td>
                                         </tr>
 
@@ -173,7 +189,8 @@ class Languages extends Component {
                                             </td>
                                             <td><span><i className="fa fa-user"></i>0</span>
                                             </td>
-                                            <td>
+                                            <td>   <Button bsSize="small">Delete</Button>
+
                                           </td>
                                         </tr>
                                         <tr>
@@ -182,7 +199,8 @@ class Languages extends Component {
                                             </td>
                                             <td><span><i className="fa fa-user"></i>1</span>
                                             </td>
-                                            <td>
+                                            <td>   <Button bsSize="small">Delete</Button>
+
                                           </td>
                                         </tr>
                                         <tr>
@@ -191,7 +209,8 @@ class Languages extends Component {
                                             </td>
                                             <td><span><i className="fa fa-user"></i>8</span>
                                             </td>
-                                            <td>
+                                            <td>   <Button bsSize="small">Delete</Button>
+
                                           </td>
                                         </tr>
                                         <tr>
@@ -200,7 +219,8 @@ class Languages extends Component {
                                             </td>
                                             <td><span><i className="fa fa-user"></i>1</span>
                                             </td>
-                                            <td>
+                                            <td>   <Button bsSize="small">Delete</Button>
+
                                           </td>
                                         </tr>
                                         <tr>
@@ -209,7 +229,8 @@ class Languages extends Component {
                                             </td>
                                             <td><span><i className="fa fa-user"></i>5</span>
                                             </td>
-                                            <td>
+                                            <td>   <Button bsSize="small">Delete</Button>
+
                                           </td>
                                         </tr>
 
@@ -220,8 +241,6 @@ class Languages extends Component {
                             </div>
                         </div>
                     </div>
-
-                </div>
             </div>
           </View>
         </ScrollView>
