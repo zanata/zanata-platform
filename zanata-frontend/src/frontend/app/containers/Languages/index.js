@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { ButtonRound } from 'zanata-ui'
+import { Button } from 'react-bootstrap'
 import Helmet from 'react-helmet'
 import {
   Page,
@@ -24,7 +24,7 @@ class Languages extends Component {
             <div className="row clearfix" id="admin-lang">
                 <div className="row-height">
 
-
+   <Button type='primary'>testing</Button>
                     <div className="contentx clearfix">
                         <h2>Languages <span className="badge">135</span></h2>
                         <div className="col-xs-12">

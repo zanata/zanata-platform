@@ -6,7 +6,7 @@
   "scripts": {
     "js": "webpack",
     "build": "webpack --config webpack.config.js && npm run build:webpack && npm run build:webpackLegacy",
-    "build:webpack": "webpack -p --config webpack.prod.config.js --bail --display-error-details && npm run copycss" ,
+    "build:webpack": "webpack -p --config webpack.prod.config.js --bail --display-error-details && npm run copycss",
     "build:webpackLegacy": "webpack -p --config webpack.legacy.config.js --bail --display-error-details && npm run copycss",
     "hot-dev-server": "webpack-dev-server --config webpack.dev.config.js --progress --inline --hot --port 8000",
     "start": "npm run hot-dev-server",
@@ -57,6 +57,7 @@
     "moment-range": "2.2.0",
     "normalizr": "2.1.0",
     "react": "0.14.8",
+    "react-bootstrap": "^0.30.3",
     "react-chartjs": "0.4.0",
     "react-dom": "0.14.8",
     "react-helmet": "3.1.0",
