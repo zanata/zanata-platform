@@ -33,8 +33,9 @@
 #admin-lang .AutoTags h1:after {
     color: #546677;
 }
-#admin-lang .left-form.tablepadding {
-  padding-right: 0;
+#admin-lang .left-form.tablepadding, #admin-lang .toolbar {
+  padding-left: 0;
+  padding-right:0;
 }
 
 #admin-lang p.bg-info,
@@ -215,7 +216,7 @@
     margin: 0 0;
 }
 #admin-lang .toolbar {
-    padding-top: 20px;
+    padding-top: 40px;
     font-size:0.9em;
 }
 
