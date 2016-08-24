@@ -20,13 +20,12 @@ class Languages extends Component {
       <Page>
         <Helmet title='Languages' />
         <ScrollView>
-        <div id="admin-lang">
           <View theme={contentViewContainerTheme}>
-            <div className="row clearfix">
+            <div className="row clearfix" id="admin-lang">
                 <div className="row-height">
 
 
-                    <div className="contentx clearfix col-xs-12 col-sm-9 col-md-11 col-sm-push-2 col-md-push-1">
+                    <div className="contentx clearfix">
                         <h2>Languages <span className="badge">135</span></h2>
                         <div className="col-xs-12">
 
@@ -225,7 +224,6 @@ class Languages extends Component {
                 </div>
             </div>
           </View>
-          </div>
         </ScrollView>
       </Page>
     )
