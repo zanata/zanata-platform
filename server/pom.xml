@@ -27,7 +27,6 @@
     <surefire.version>2.19.1</surefire.version>
 
     <deltaspike.version>1.7.0</deltaspike.version>
-    <picketlink.version>2.5.5.SP1</picketlink.version>
     <!-- This is the WildFly 10 version: -->
     <infinispan.version>8.1.0.Final</infinispan.version>
     <weld.version>2.3.2.Final</weld.version>
@@ -290,13 +289,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.picketlink</groupId>
-        <artifactId>picketlink-idm-api</artifactId>
-        <version>${picketlink.version}</version>
-        <scope>compile</scope>
-      </dependency>
-
-      <dependency>
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm</artifactId>
         <version>5.1</version>
@@ -306,6 +298,12 @@
         <groupId>org.ow2.asm</groupId>
         <artifactId>asm-commons</artifactId>
         <version>5.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.picketbox</groupId>
+        <artifactId>picketbox</artifactId>
+        <version>4.9.4.Final</version>
       </dependency>
 
       <dependency>

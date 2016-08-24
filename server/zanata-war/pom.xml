@@ -1731,13 +1731,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.picketbox</groupId>
-      <artifactId>picketbox</artifactId>
-      <version>4.9.4.Final</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.webjars.bower</groupId>
       <artifactId>commonmark</artifactId>
       <version>0.20.0</version>
