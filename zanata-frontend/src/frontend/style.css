@@ -1,0 +1,301 @@
+
+#admin-lang  {
+    font-family: Source Sans Pro, Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    background-color: #fff;
+}
+#admin-lang button.close {
+    color: #f00;
+}
+#admin-lang span.greentext.badge {
+  background-color: #fff;
+}
+#admin-lang  span.dis.badge {
+  background-color: #fff;
+  color:#546675;
+}
+#admin-lang span.caret {
+  color:#546675;
+  margin-right:10px;
+}
+
+#admin-lang span.langcode {
+  font-size:0.9em;
+  color:#aaa;
+}
+#admin-lang .tablepadding i.fa.fa-user {
+  font-size:22px;
+  color:#ccc;
+  margin-right:10px;
+}
+#admin-lang form i,
+#admin-lang table i,
+#admin-lang .AutoTags h1:after {
+    color: #546677;
+}
+#admin-lang .left-form.tablepadding {
+  padding-right: 0;
+}
+
+#admin-lang p.bg-info,
+#admin-lang .form-group .bg-info {
+    padding: 10px;
+    color: #20718A;
+    margin-bottom: 10px;
+}
+#admin-lang p.bg-warning {
+    padding: 10px;
+    font-style: italic;
+}
+#admin-lang .bg-info label {
+    font-weight: 500;
+}
+#admin-lang span.infotxt {
+    color: #629BAC;
+    font-weight: 400;
+    margin-left: 10px;
+    font-size: 0.9em;
+    margin-right: 40px;
+}
+#admin-lang p span.infotxt {
+    margin-left: 0;
+}
+@media (min-width: 768px) {
+  #admin-lang .form-inline .form-control {
+        width: 100%;
+    }
+}
+#admin-lang a:link,
+#admin-lang a:visited {
+    color: #546677;
+}
+#admin-lang a:focus,
+#admin-lang a:hover {
+    color: #03A6D7;
+    text-decoration: none;
+}
+
+#admin-lang h2 span.badge {
+    background-color: #546677;
+    line-height: 0.9em;
+}
+#admin-lang td.inline {
+  display: inline-table;
+  width:80px;
+}
+#admin-lang .panel.panel-side {
+    background-color: #fff !important;
+    border: solid 1px #ddd !important;
+    padding: 8px;
+}
+
+#admin-lang table td {
+    font-size: 16px;
+}
+#admin-lang h2 span {
+    color: #ddd;
+}
+#admin-lang h4 {
+    color: #03A6D7;
+    font-weight: bold;
+    padding-bottom: 10px;
+}
+#admin-lang .icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    stroke-width: 0;
+    stroke: currentColor;
+    fill: currentColor;
+}
+
+#admin-lang .search-box,
+#admin-lang .show-items,
+#admin-lang .pagination {
+    padding: 0;
+}
+#admin-lang .panel {
+    background-color: #fcfcfc;
+}
+#admin-lang .btn-primary {
+    color: #fff;
+    background-color: #546677;
+    border-color: #ccc;
+}
+#admin-lang .getinvolved .btn-primary {
+    background-color: #03A6D7;
+}
+#admin-lang #ddlList1,
+#admin-lang #ddlList2 {
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+#admin-lang .getinvolved .btn-primary:hover,
+#admin-lang .getinvolved .btn-primary:active,
+#admin-lang .getinvolved .btn-primary:focus {
+    background-color: #546677;
+}
+#admin-lang td.prog {
+    border-top: none !important;
+    border-top: none !important;
+}
+#admin-lang td.prog:last-of-type {
+    border-bottom: solid 1px #ddd;
+}
+
+#admin-lang .btn-primary.active,
+#admin-lang .btn-primary:active {
+    background-color: #03A6D7;
+    border-color: #ccc;
+}
+#admin-lang .btn-primary.active:hover {
+    background-color: #546677;
+    border-color: #ccc;
+}
+#admin-lang a.btn-primary {
+    color: #fff!important;
+}
+#admin-lang .btn-primary:hover,
+#admin-lang .btn-primary:active,
+#admin-lang .btn-primary:focus {
+    background-color: #03A6D7;
+    border-color: #ccc;
+}
+#admin-lang .panel-heading {
+    background-color: #fff !important;
+    font-size: 1.1em !important;
+    color: #03A6D7 !important;
+    font-weight: 600;
+}
+#admin-lang .button-group {
+    margin: 10px 0;
+}
+#admin-lang .button-group .btn {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+#admin-lang h1,
+#admin-lang h2,
+#admin-lang h3 {
+    color: #03A6D7;
+}
+#admin-lang h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+#admin-lang .show-items {
+  clear:both;
+}
+#admin-lang .dropdown {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+#admin-lang p.nomarginbottom {
+    margin-bottom: 0;
+    margin-top: 10px;
+}
+#admin-lang .dropdown-menu>li>a {
+    color: #546677;
+}
+#admin-lang .dropdown-menu>li>a:focus,
+#admin-lang .dropdown-menu>li>a:hover {
+    color: #03A6D7;
+}
+#admin-lang .container:after {
+    clear: both;
+    content: "";
+    display: block;
+}
+
+#admin-lang .pagination {
+    margin: 0 0;
+}
+#admin-lang .toolbar {
+    padding-top: 20px;
+}
+#admin-lang tbody tr td:not(:first-child),
+#admin-lang thead tr th:not(:first-child) {
+    text-align: right;
+}
+#admin-lang .pagination>.active>a,
+#admin-lang .pagination>.active>a:focus,
+#admin-lang .pagination>.active>a:hover,
+#admin-lang .pagination>.active>span,
+#admin-lang .pagination>.active>span:focus,
+#admin-lang .pagination>.active>span:hover {
+    background-color: #546677;
+    border-color: #ddd;
+}
+#admin-lang .pagination>li>a,
+#admin-lang .pagination>li>span {
+    color: #546677;
+}
+#admin-lang .toolbar .search-box,
+#admin-lang .toolbar .sort-items {
+    padding-bottom: 10px;
+}
+#admin-lang .toolbar .page-count {
+    padding-bottom: 30px;
+}
+
+#admin-lang .pagination>li.active>span {
+  color:#fff;
+}
+#admin-lang .btn-primary i {
+    color: #fff
+}
+#admin-lang span.greentext {
+    color: #62C876;
+}
+#admin-lang span.transl-text {
+    color: #62C876;
+    font-size: 1.3em;
+}
+#admin-lang .table>tbody>tr>td {
+    vertical-align: middle;
+}
+#admin-lang .table thead tr {
+    border-bottom-color: transparent !important;
+}
+#admin-lang .well {
+    background-color: #fff;
+    margin-bottom: 10px;
+}
+
+#admin-lang .contentx {
+    background-color: white;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-size: 16px;
+}
+/***** MEDIA QUERIES *****/
+
+@media (max-width: 767px) {
+
+    #admin-lang .contentx {
+        min-height: 300px;
+    }
+
+    #admin-lang .collapsing {
+        transition: height 0.8s;
+    }
+
+}
+@media (min-width: 768px) {
+
+    #admin-lang h1 {
+        margin-top: 0;
+    }
+}
+@media (min-width: 992px) {
+  #admin-lang .show-items {
+      clear:none !important;
+    }
+}
