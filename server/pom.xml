@@ -70,8 +70,7 @@
     <hibernate.scope>provided</hibernate.scope>
     <hibernate.version>5.0.7.Final</hibernate.version>
 
-    <!-- TODO try provided -->
-    <hibernate.search.scope>compile</hibernate.search.scope>
+    <hibernate.search.scope>provided</hibernate.search.scope>
     <hibernate.search.version>5.5.1.Final</hibernate.search.version>
     <hibernate.entitymanager.version>${hibernate.version}</hibernate.entitymanager.version>
     <war_bundles_jsf_impl>false</war_bundles_jsf_impl>
@@ -80,16 +79,11 @@
     <!-- controls concordion output location-->
     <concordion.output.dir>${project.build.directory}/concordion</concordion.output.dir>
 
-    <!-- JBoss version for Arquillian dependencies -->
-    <!-- TODO Update to WildFly 10 versions -->
-    <jboss.as.version>7.2.0.Final</jboss.as.version>
-
     <jdbc.groupId>mysql</jdbc.groupId>
     <jdbc.artifactId>mysql-connector-java</jdbc.artifactId>
     <jdbc.version>5.1.26</jdbc.version>
 
-    <!-- TODO try provided -->
-    <resteasy.scope>compile</resteasy.scope>
+    <resteasy.scope>provided</resteasy.scope>
     <resteasy.version>3.0.19.Final</resteasy.version>
     <jaxrsapi.version>3.0.12.Final</jaxrsapi.version>
 
