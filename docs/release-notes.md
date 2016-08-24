@@ -17,6 +17,8 @@ Zanata 4.0 you will need to clear your index directory (as configured
 in the system property `hibernate.search.default.indexBase`) and then
 trigger a complete re-index from the admin pages once Zanata has loaded.
 
+Zanata's jboss-web.xml has been updated: if you maintain a custom version, you should remove the "valve" section.
+
 ##### Changes
 * [ZNTA-1207](https://zanata.atlassian.net/browse/ZNTA-1207) - Upgrade to JBoss EAP 7
 * [ZNTA-1203](https://zanata.atlassian.net/browse/ZNTA-1203) - Remove Hibernate 4.2 module for WildFly
