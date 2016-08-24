@@ -12,11 +12,9 @@
       <!-- end of unsupported modules -->
 
       <!-- start of private modules -->
-      <module name="org.antlr" />
       <!-- end of private modules -->
 
       <!-- start of deprecated modules -->
-      <module name="org.jboss.security.negotiation" />
       <!-- end of deprecated modules -->
 
       <!-- for java melody heap dump. Remove if https://github.com/javamelody/javamelody/issues/585 is resolved -->
