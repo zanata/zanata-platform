@@ -29,7 +29,7 @@ class Languages extends Component {
             <div className="row clearfix" id="admin-lang">
                 <div className="row-height">
                     <div className="contentx clearfix col-xs-12">
-                        <h2>Languages <span className="badge">135</span></h2>
+                        <h2>Languages <span className="badge">121</span></h2>
                         <Button className="btn-primary"><i className="fa fa-plus"></i> Add new language</Button>
                             <div className="left-form toolbar col-xs-12" role="toolbar">
                                 <div className="search-box col-xs-6 col-sm-7 col-md-5 col-lg-2">
@@ -105,10 +105,6 @@ class Languages extends Component {
                                             <li><a href="#">11 <span className="sr-only"></span></a>
                                             </li>
                                             <li><a href="#">12 <span className="sr-only"></span></a>
-                                            </li>
-                                            <li><a href="#">13 <span className="sr-only"></span></a>
-                                            </li>
-                                            <li><a href="#">14<span className="sr-only"></span></a>
                                             </li>
                                             <li>
                                                 <a href="#" aria-label="Next">
