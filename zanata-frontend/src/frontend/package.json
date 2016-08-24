@@ -6,13 +6,14 @@
   "scripts": {
     "js": "webpack",
     "build": "webpack --config webpack.config.js && npm run build:webpack && npm run build:webpackLegacy",
-    "build:webpack": "webpack -p --config webpack.prod.config.js --bail --display-error-details",
-    "build:webpackLegacy": "webpack -p --config webpack.legacy.config.js --bail --display-error-details",
+    "build:webpack": "webpack -p --config webpack.prod.config.js --bail --display-error-details && npm run copycss" ,
+    "build:webpackLegacy": "webpack -p --config webpack.legacy.config.js --bail --display-error-details && npm run copycss",
     "hot-dev-server": "webpack-dev-server --config webpack.dev.config.js --progress --inline --hot --port 8000",
     "start": "npm run hot-dev-server",
     "styleguide-server": "styleguidist server",
     "styleguide-build": "styleguidist build",
-    "test": "jest"
+    "test": "jest",
+    "copycss": "cp style.css ./dist && cp bootstrap.css ./dist"
   },
   "license": "LGPL",
   "devDependencies": {
