@@ -5,323 +5,323 @@
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 
-#admin-lang html {
+  html {
     font-family: sans-serif;
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%
 }
-#admin-lang body {
+  body {
     margin: 0
 }
-#admin-lang article,
-#admin-lang aside,
-#admin-lang details,
-#admin-lang figcaption,
-#admin-lang footer,
-#admin-lang header,
-#admin-lang hgroup,
-#admin-lang main,
-#admin-lang menu,
-#admin-lang nav,
-#admin-lang section,
-#admin-lang summary {
+  article,
+  aside,
+  details,
+  figcaption,
+  footer,
+  header,
+  hgroup,
+  main,
+  menu,
+  nav,
+  section,
+  summary {
     display: block
 }
-#admin-lang audio,
-#admin-lang canvas,
-#admin-lang progress,
-#admin-lang video {
+  audio,
+  canvas,
+  progress,
+  video {
     display: inline-block;
     vertical-align: baseline
 }
-#admin-lang audio:not([controls]) {
+  audio:not([controls]) {
     display: none;
     height: 0
 }
-#admin-lang [hidden],
-#admin-lang template {
+  [hidden],
+  template {
     display: none
 }
-#admin-lang a {
+  a {
     background-color: transparent
 }
-#admin-lang a:active,
-#admin-lang a:hover {
+  a:active,
+  a:hover {
     outline: 0
 }
-#admin-lang abbr[title] {
+  abbr[title] {
     border-bottom: 1px dotted
 }
-#admin-lang b,
-#admin-lang strong {
+  b,
+  strong {
     font-weight: 700
 }
-#admin-lang dfn {
+  dfn {
     font-style: italic
 }
-#admin-lang h1 {
+  h1 {
     margin: .67em 0;
     font-size: 2em
 }
-#admin-lang mark {
+  mark {
     color: #000;
     background: #ff0
 }
-#admin-lang small {
+  small {
     font-size: 80%
 }
-#admin-lang sub,
-#admin-lang sup {
+  sub,
+  sup {
     position: relative;
     font-size: 75%;
     line-height: 0;
     vertical-align: baseline
 }
-#admin-lang sup {
+  sup {
     top: -.5em
 }
-#admin-lang sub {
+  sub {
     bottom: -.25em
 }
-#admin-lang img {
+  img {
     border: 0
 }
-#admin-lang svg:not(:root) {
+  svg:not(:root) {
     overflow: hidden
 }
-#admin-lang figure {
+  figure {
     margin: 1em 40px
 }
-#admin-lang hr {
+  hr {
     height: 0;
     -webkit-box-sizing: content-box;
     -moz-box-sizing: content-box;
     box-sizing: content-box
 }
-#admin-lang pre {
+  pre {
     overflow: auto
 }
-#admin-lang code,
-#admin-lang kbd,
-#admin-lang pre,
-#admin-lang samp {
+  code,
+  kbd,
+  pre,
+  samp {
     font-family: monospace, monospace;
     font-size: 1em
 }
-#admin-lang button,
-#admin-lang input,
-#admin-lang optgroup,
-#admin-lang select,
-#admin-lang textarea {
+  button,
+  input,
+  optgroup,
+  select,
+  textarea {
     margin: 0;
     font: inherit;
     color: inherit
 }
-#admin-lang button {
+  button {
     overflow: visible
 }
-#admin-lang button,
-#admin-lang select {
+  button,
+  select {
     text-transform: none
 }
-#admin-lang button,
-#admin-lang html input[type=button],
-#admin-lang input[type=reset],
-#admin-lang input[type=submit] {
+  button,
+  html input[type=button],
+  input[type=reset],
+  input[type=submit] {
     -webkit-appearance: button;
     cursor: pointer
 }
-#admin-lang button[disabled],
-#admin-lang html input[disabled] {
+  button[disabled],
+  html input[disabled] {
     cursor: default
 }
-#admin-lang button::-moz-focus-inner,
-#admin-lang input::-moz-focus-inner {
+  button::-moz-focus-inner,
+  input::-moz-focus-inner {
     padding: 0;
     border: 0
 }
-#admin-lang input {
+  input {
     line-height: normal
 }
-#admin-lang input[type=checkbox],
-#admin-lang input[type=radio] {
+  input[type=checkbox],
+  input[type=radio] {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     padding: 0
 }
-#admin-lang input[type=number]::-webkit-inner-spin-button,
-#admin-lang input[type=number]::-webkit-outer-spin-button {
+  input[type=number]::-webkit-inner-spin-button,
+  input[type=number]::-webkit-outer-spin-button {
     height: auto
 }
-#admin-lang input[type=search] {
+  input[type=search] {
     -webkit-box-sizing: content-box;
     -moz-box-sizing: content-box;
     box-sizing: content-box;
     -webkit-appearance: textfield
 }
-#admin-lang input[type=search]::-webkit-search-cancel-button,
-#admin-lang input[type=search]::-webkit-search-decoration {
+  input[type=search]::-webkit-search-cancel-button,
+  input[type=search]::-webkit-search-decoration {
     -webkit-appearance: none
 }
-#admin-lang fieldset {
+  fieldset {
     padding: .35em .625em .75em;
     margin: 0 2px;
     border: 1px solid silver
 }
-#admin-lang legend {
+  legend {
     padding: 0;
     border: 0
 }
-#admin-lang textarea {
+  textarea {
     overflow: auto
 }
-#admin-lang optgroup {
+  optgroup {
     font-weight: 700
 }
-#admin-lang table {
+  table {
     border-spacing: 0;
     border-collapse: collapse
 }
-#admin-lang td,
-#admin-lang th {
+  td,
+  th {
     padding: 0
 }
 /*! Source: https://github.com/h5bp/html5-boilerplate/blob/master/src/css/main.css */
 
 @media print {
-    #admin-lang *,
-    #admin-lang:after,
-    #admin-lang:before {
+      *,
+     :after,
+     :before {
         color: #000!important;
         text-shadow: none!important;
         background: 0 0!important;
         -webkit-box-shadow: none!important;
         box-shadow: none!important
     }
-    #admin-lang a,
-    #admin-lang a:visited {
+      a,
+      a:visited {
         text-decoration: underline
     }
-    #admin-lang a[href]:after {
+      a[href]:after {
         content: " (" attr(href) ")"
     }
-    #admin-lang abbr[title]:after {
+      abbr[title]:after {
         content: " (" attr(title) ")"
     }
-    #admin-lang a[href^="javascript:"]:after,
-    #admin-lang a[href^="#"]:after {
+      a[href^="javascript:"]:after,
+      a[href^="#"]:after {
         content: ""
     }
-    #admin-lang blockquote,
-    #admin-lang pre {
+      blockquote,
+      pre {
         border: 1px solid #999;
         page-break-inside: avoid
     }
-    #admin-lang thead {
+      thead {
         display: table-header-group
     }
-    #admin-lang img,
-    #admin-lang tr {
+      img,
+      tr {
         page-break-inside: avoid
     }
-    #admin-lang img {
+      img {
         max-width: 100%!important
     }
-    #admin-lang h2,
-    #admin-lang h3,
-    #admin-lang p {
+      h2,
+      h3,
+      p {
         orphans: 3;
         widows: 3
     }
-    #admin-lang h2,
-    #admin-lang h3 {
+      h2,
+      h3 {
         page-break-after: avoid
     }
-    #admin-lang .navbar {
+      .navbar {
         display: none
     }
-    #admin-lang .btn>.caret,
-    #admin-lang .dropup>.btn>.caret {
+      .btn>.caret,
+      .dropup>.btn>.caret {
         border-top-color: #000!important
     }
-    #admin-lang .label {
+      .label {
         border: 1px solid #000
     }
-    #admin-lang .table {
+      .table {
         border-collapse: collapse!important
     }
-    #admin-lang .table td,
-    #admin-lang .table th {
+      .table td,
+      .table th {
         background-color: #fff!important
     }
-    #admin-lang .table-bordered td,
-    #admin-lang .table-bordered th {
+      .table-bordered td,
+      .table-bordered th {
         border: 1px solid #ddd!important
     }
 }
-#admin-lang * {
+  * {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box
 }
-#admin-lang:after,
-#admin-lang:before {
+ :after,
+ :before {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box
 }
-#admin-lang html {
+  html {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
 }
-#admin-lang body {
+  body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 14px;
     line-height: 1.42857143;
     color: #333;
     background-color: #fff
 }
-#admin-lang button,
-#admin-lang input,
-#admin-lang select,
-#admin-lang textarea {
+  button,
+  input,
+  select,
+  textarea {
     font-family: inherit;
     font-size: inherit;
     line-height: inherit
 }
-#admin-lang a {
+  a {
     color: #337ab7;
     text-decoration: none
 }
-#admin-lang a:focus,
-#admin-lang a:hover {
+  a:focus,
+  a:hover {
     color: #23527c;
     text-decoration: underline
 }
-#admin-lang a:focus {
+  a:focus {
     outline: thin dotted;
     outline: 5px auto -webkit-focus-ring-color;
     outline-offset: -2px
 }
-#admin-lang figure {
+  figure {
     margin: 0
 }
-#admin-lang img {
+  img {
     vertical-align: middle
 }
-#admin-lang .carousel-inner>.item>a>img,
-#admin-lang .carousel-inner>.item>img,
-#admin-lang .img-responsive,
-#admin-lang .thumbnail a>img,
-#admin-lang .thumbnail>img {
+  .carousel-inner>.item>a>img,
+  .carousel-inner>.item>img,
+  .img-responsive,
+  .thumbnail a>img,
+  .thumbnail>img {
     display: block;
     max-width: 100%;
     height: auto
 }
-#admin-lang .img-rounded {
+  .img-rounded {
     border-radius: 6px
 }
-#admin-lang .img-thumbnail {
+  .img-thumbnail {
     display: inline-block;
     max-width: 100%;
     height: auto;
@@ -334,16 +334,16 @@
     -o-transition: all .2s ease-in-out;
     transition: all .2s ease-in-out
 }
-#admin-lang .img-circle {
+  .img-circle {
     border-radius: 50%
 }
-#admin-lang hr {
+  hr {
     margin-top: 20px;
     margin-bottom: 20px;
     border: 0;
     border-top: 1px solid #eee
 }
-#admin-lang .sr-only {
+  .sr-only {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -353,8 +353,8 @@
     clip: rect(0, 0, 0, 0);
     border: 0
 }
-#admin-lang .sr-only-focusable:active,
-#admin-lang .sr-only-focusable:focus {
+  .sr-only-focusable:active,
+  .sr-only-focusable:focus {
     position: static;
     width: auto;
     height: auto;
@@ -362,230 +362,230 @@
     overflow: visible;
     clip: auto
 }
-#admin-lang [role=button] {
+  [role=button] {
     cursor: pointer
 }
-#admin-lang .h1,
-#admin-lang .h2,
-#admin-lang .h3,
-#admin-lang .h4,
-#admin-lang .h5,
-#admin-lang .h6,
-#admin-lang h1,
-#admin-lang h2,
-#admin-lang h3,
-#admin-lang h4,
-#admin-lang h5,
-#admin-lang h6 {
+  .h1,
+  .h2,
+  .h3,
+  .h4,
+  .h5,
+  .h6,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: inherit;
     font-weight: 500;
     line-height: 1.1;
     color: inherit
 }
-#admin-lang .h1 .small,
-#admin-lang .h1 small,
-#admin-lang .h2 .small,
-#admin-lang .h2 small,
-#admin-lang .h3 .small,
-#admin-lang .h3 small,
-#admin-lang .h4 .small,
-#admin-lang .h4 small,
-#admin-lang .h5 .small,
-#admin-lang .h5 small,
-#admin-lang .h6 .small,
-#admin-lang .h6 small,
-#admin-lang h1 .small,
-#admin-lang h1 small,
-#admin-lang h2 .small,
-#admin-lang h2 small,
-#admin-lang h3 .small,
-#admin-lang h3 small,
-#admin-lang h4 .small,
-#admin-lang h4 small,
-#admin-lang h5 .small,
-#admin-lang h5 small,
-#admin-lang h6 .small,
-#admin-lang h6 small {
+  .h1 .small,
+  .h1 small,
+  .h2 .small,
+  .h2 small,
+  .h3 .small,
+  .h3 small,
+  .h4 .small,
+  .h4 small,
+  .h5 .small,
+  .h5 small,
+  .h6 .small,
+  .h6 small,
+  h1 .small,
+  h1 small,
+  h2 .small,
+  h2 small,
+  h3 .small,
+  h3 small,
+  h4 .small,
+  h4 small,
+  h5 .small,
+  h5 small,
+  h6 .small,
+  h6 small {
     font-weight: 400;
     line-height: 1;
     color: #777
 }
-#admin-lang .h1,
-#admin-lang .h2,
-#admin-lang .h3,
-#admin-lang h1,
-#admin-lang h2,
-#admin-lang h3 {
+  .h1,
+  .h2,
+  .h3,
+  h1,
+  h2,
+  h3 {
     margin-top: 20px;
     margin-bottom: 10px
 }
-#admin-lang .h1 .small,
-#admin-lang .h1 small,
-#admin-lang .h2 .small,
-#admin-lang .h2 small,
-#admin-lang .h3 .small,
-#admin-lang .h3 small,
-#admin-lang h1 .small,
-#admin-lang h1 small,
-#admin-lang h2 .small,
-#admin-lang h2 small,
-#admin-lang h3 .small,
-#admin-lang h3 small {
+  .h1 .small,
+  .h1 small,
+  .h2 .small,
+  .h2 small,
+  .h3 .small,
+  .h3 small,
+  h1 .small,
+  h1 small,
+  h2 .small,
+  h2 small,
+  h3 .small,
+  h3 small {
     font-size: 65%
 }
-#admin-lang .h4,
-#admin-lang .h5,
-#admin-lang .h6,
-#admin-lang h4,
-#admin-lang h5,
-#admin-lang h6 {
+  .h4,
+  .h5,
+  .h6,
+  h4,
+  h5,
+  h6 {
     margin-top: 10px;
     margin-bottom: 10px
 }
-#admin-lang .h4 .small,
-#admin-lang .h4 small,
-#admin-lang .h5 .small,
-#admin-lang .h5 small,
-#admin-lang .h6 .small,
-#admin-lang .h6 small,
-#admin-lang h4 .small,
-#admin-lang h4 small,
-#admin-lang h5 .small,
-#admin-lang h5 small,
-#admin-lang h6 .small,
-#admin-lang h6 small {
+  .h4 .small,
+  .h4 small,
+  .h5 .small,
+  .h5 small,
+  .h6 .small,
+  .h6 small,
+  h4 .small,
+  h4 small,
+  h5 .small,
+  h5 small,
+  h6 .small,
+  h6 small {
     font-size: 75%
 }
-#admin-lang .h1,
-#admin-lang h1 {
+  .h1,
+  h1 {
     font-size: 36px
 }
-#admin-lang .h2,
-#admin-lang h2 {
+  .h2,
+  h2 {
     font-size: 30px
 }
-#admin-lang .h3,
-#admin-lang h3 {
+  .h3,
+  h3 {
     font-size: 24px
 }
-#admin-lang .h4,
-#admin-lang h4 {
+  .h4,
+  h4 {
     font-size: 18px
 }
-#admin-lang .h5,
-#admin-lang h5 {
+  .h5,
+  h5 {
     font-size: 14px
 }
-#admin-lang .h6,
-#admin-lang h6 {
+  .h6,
+  h6 {
     font-size: 12px
 }
-#admin-lang p {
+  p {
     margin: 0 0 10px
 }
-#admin-lang .lead {
+  .lead {
     margin-bottom: 20px;
     font-size: 16px;
     font-weight: 300;
     line-height: 1.4
 }
 @media (min-width: 768px) {
-    #admin-lang .lead {
+      .lead {
         font-size: 21px
     }
 }
-#admin-lang .small,
-#admin-lang small {
+  .small,
+  small {
     font-size: 85%
 }
-#admin-lang .mark,
-#admin-lang mark {
+  .mark,
+  mark {
     padding: .2em;
     background-color: #fcf8e3
 }
-#admin-langZ .text-left {
+ Z .text-left {
     text-align: left
 }
-#admin-lang .text-right {
+  .text-right {
     text-align: right
 }
-#admin-lang .text-center {
+  .text-center {
     text-align: center
 }
-#admin-lang .text-justify {
+  .text-justify {
     text-align: justify
 }
-#admin-lang .text-nowrap {
+  .text-nowrap {
     white-space: nowrap
 }
-#admin-lang .text-lowercase {
+  .text-lowercase {
     text-transform: lowercase
 }
-#admin-lang .text-uppercase {
+  .text-uppercase {
     text-transform: uppercase
 }
-#admin-lang .text-capitalize {
+  .text-capitalize {
     text-transform: capitalize
 }
-#admin-lang .text-muted {
+  .text-muted {
     color: #777
 }
-#admin-lang .text-primary {
+  .text-primary {
     color: #337ab7
 }
-#admin-lang a.text-primary:focus,
-#admin-lang a.text-primary:hover {
+  a.text-primary:focus,
+  a.text-primary:hover {
     color: #286090
 }
-#admin-lang .bg-primary {
+  .bg-primary {
     color: #fff;
     background-color: #337ab7
 }
-#admin-lang a.bg-primary:focus,
-#admin-lang a.bg-primary:hover {
+  a.bg-primary:focus,
+  a.bg-primary:hover {
     background-color: #286090
 }
-#admin-lang ol,
-#admin-lang ul {
+  ol,
+  ul {
     margin-top: 0;
     margin-bottom: 10px
 }
-#admin-lang ol ol,
-#admin-lang ol ul,
-#admin-lang ul ol,
-#admin-lang ul ul {
+  ol ol,
+  ol ul,
+  ul ol,
+  ul ul {
     margin-bottom: 0
 }
-#admin-lang .list-unstyled {
+  .list-unstyled {
     padding-left: 0;
     list-style: none
 }
-#admin-lang .list-inline {
+  .list-inline {
     padding-left: 0;
     margin-left: -5px;
     list-style: none
 }
-#admin-lang .list-inline>li {
+  .list-inline>li {
     display: inline-block;
     padding-right: 5px;
     padding-left: 5px
 }
-#admin-lang dl {
+  dl {
     margin-top: 0;
     margin-bottom: 20px
 }
-#admin-lang dd,
-#admin-lang dt {
+  dd,
+  dt {
     line-height: 1.42857143
 }
-#admin-lang dt {
+  dt {
     font-weight: 700
 }
-#admin-lang dd {
+  dd {
     margin-left: 0
 }
 @media (min-width: 768px) {
-    #admin-lang .dl-horizontal dt {
+      .dl-horizontal dt {
         float: left;
         width: 160px;
         overflow: hidden;
@@ -594,33 +594,33 @@
         text-overflow: ellipsis;
         white-space: nowrap
     }
-    #admin-lang .dl-horizontal dd {
+      .dl-horizontal dd {
         margin-left: 180px
     }
 }
-#admin-lang abbr[data-original-title],
-#admin-lang abbr[title] {
+  abbr[data-original-title],
+  abbr[title] {
     cursor: help;
     border-bottom: 1px dotted #777
 }
-#admin-lang .initialism {
+  .initialism {
     font-size: 90%;
     text-transform: uppercase
 }
-#admin-lang code,
-#admin-lang kbd,
-#admin-lang pre,
-#admin-lang samp {
+  code,
+  kbd,
+  pre,
+  samp {
     font-family: Menlo, Monaco, Consolas, "Courier New", monospace
 }
-#admin-lang code {
+  code {
     padding: 2px 4px;
     font-size: 90%;
     color: #c7254e;
     background-color: #f9f2f4;
     border-radius: 4px
 }
-#admin-lang kbd {
+  kbd {
     padding: 2px 4px;
     font-size: 90%;
     color: #fff;
@@ -629,14 +629,14 @@
     -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .25);
     box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .25)
 }
-#admin-lang kbd kbd {
+  kbd kbd {
     padding: 0;
     font-size: 100%;
     font-weight: 700;
     -webkit-box-shadow: none;
     box-shadow: none
 }
-#admin-lang pre {
+  pre {
     display: block;
     padding: 9.5px;
     margin: 0 0 10px;
@@ -649,7 +649,7 @@
     border: 1px solid #ccc;
     border-radius: 4px
 }
-#admin-lang pre code {
+  pre code {
     padding: 0;
     font-size: inherit;
     color: inherit;
@@ -657,38 +657,38 @@
     background-color: transparent;
     border-radius: 0
 }
-#admin-lang .pre-scrollable {
+  .pre-scrollable {
     max-height: 340px;
     overflow-y: scroll
 }
-#admin-lang .container {
+  .container {
     padding-right: 15px;
     padding-left: 15px;
     margin-right: auto;
     margin-left: auto
 }
 @media (min-width: 768px) {
-    #admin-lang .container {
+      .container {
         width: 750px
     }
 }
 @media (min-width: 992px) {
-    #admin-lang .container {
+      .container {
         width: 970px
     }
 }
 @media (min-width: 1200px) {
-    #admin-lang .container {
+      .container {
         width: 1170px
     }
 }
-#admin-lang .container-fluid {
+  .container-fluid {
     padding-right: 15px;
     padding-left: 15px;
     margin-right: auto;
     margin-left: auto
 }
-#admin-lang .row {
+  .row {
     margin-right: -15px;
     margin-left: -15px
 }
@@ -1419,218 +1419,218 @@
         margin-left: 0
     }
 }
-#admin-lang table {
+  table {
     background-color: transparent
 }
-#admin-lang caption {
+  caption {
     padding-top: 8px;
     padding-bottom: 8px;
     color: #777;
     text-align: left
 }
-#admin-lang th {
+  th {
     text-align: left
 }
-#admin-lang .table {
+  .table {
     width: 100%;
     max-width: 100%;
     margin-bottom: 20px
 }
-#admin-lang .table>tbody>tr>td,
-#admin-lang .table>tbody>tr>th,
-#admin-lang .table>tfoot>tr>td,
-#admin-lang .table>tfoot>tr>th,
-#admin-lang .table>thead>tr>td,
-#admin-lang .table>thead>tr>th {
+  .table>tbody>tr>td,
+  .table>tbody>tr>th,
+  .table>tfoot>tr>td,
+  .table>tfoot>tr>th,
+  .table>thead>tr>td,
+  .table>thead>tr>th {
     padding: 8px;
     line-height: 1.42857143;
     vertical-align: top;
     border-top: 1px solid #ddd
 }
-#admin-lang .table>thead>tr>th {
+  .table>thead>tr>th {
     vertical-align: bottom;
     border-bottom: 2px solid #ddd
 }
-#admin-lang .table>caption+thead>tr:first-child>td,
-#admin-lang .table>caption+thead>tr:first-child>th,
-#admin-lang .table>colgroup+thead>tr:first-child>td,
-#admin-lang .table>colgroup+thead>tr:first-child>th,
-#admin-lang .table>thead:first-child>tr:first-child>td,
-#admin-lang .table>thead:first-child>tr:first-child>th {
+  .table>caption+thead>tr:first-child>td,
+  .table>caption+thead>tr:first-child>th,
+  .table>colgroup+thead>tr:first-child>td,
+  .table>colgroup+thead>tr:first-child>th,
+  .table>thead:first-child>tr:first-child>td,
+  .table>thead:first-child>tr:first-child>th {
     border-top: 0
 }
-#admin-lang .table>tbody+tbody {
+  .table>tbody+tbody {
     border-top: 2px solid #ddd
 }
-#admin-lang .table .table {
+  .table .table {
     background-color: #fff
 }
-#admin-lang .table-condensed>tbody>tr>td,
-#admin-lang .table-condensed>tbody>tr>th,
-#admin-lang .table-condensed>tfoot>tr>td,
-#admin-lang .table-condensed>tfoot>tr>th,
-#admin-lang .table-condensed>thead>tr>td,
-#admin-lang .table-condensed>thead>tr>th {
+  .table-condensed>tbody>tr>td,
+  .table-condensed>tbody>tr>th,
+  .table-condensed>tfoot>tr>td,
+  .table-condensed>tfoot>tr>th,
+  .table-condensed>thead>tr>td,
+  .table-condensed>thead>tr>th {
     padding: 5px
 }
-#admin-lang .table-bordered {
+  .table-bordered {
     border: 1px solid #ddd
 }
-#admin-lang .table-bordered>tbody>tr>td,
-#admin-lang .table-bordered>tbody>tr>th,
-#admin-lang .table-bordered>tfoot>tr>td,
-#admin-lang .table-bordered>tfoot>tr>th,
-#admin-lang .table-bordered>thead>tr>td,
-#admin-lang .table-bordered>thead>tr>th {
+  .table-bordered>tbody>tr>td,
+  .table-bordered>tbody>tr>th,
+  .table-bordered>tfoot>tr>td,
+  .table-bordered>tfoot>tr>th,
+  .table-bordered>thead>tr>td,
+  .table-bordered>thead>tr>th {
     border: 1px solid #ddd
 }
-#admin-lang .table-bordered>thead>tr>td,
-#admin-lang .table-bordered>thead>tr>th {
+  .table-bordered>thead>tr>td,
+  .table-bordered>thead>tr>th {
     border-bottom-width: 2px
 }
-#admin-lang .table-striped>tbody>tr:nth-of-type(odd) {
+  .table-striped>tbody>tr:nth-of-type(odd) {
     background-color: #f9f9f9
 }
-#admin-lang .table-hover>tbody>tr:hover {
+  .table-hover>tbody>tr:hover {
     background-color: #f5f5f5
 }
-#admin-lang table col[class*=col-] {
+  table col[class*=col-] {
     position: static;
     display: table-column;
     float: none
 }
-#admin-lang table td[class*=col-],
-#admin-lang table th[class*=col-] {
+  table td[class*=col-],
+  table th[class*=col-] {
     position: static;
     display: table-cell;
     float: none
 }
-#admin-lang .table>tbody>tr.active>td,
-#admin-lang .table>tbody>tr.active>th,
-#admin-lang .table>tbody>tr>td.active,
-#admin-lang .table>tbody>tr>th.active,
-#admin-lang .table>tfoot>tr.active>td,
-#admin-lang .table>tfoot>tr.active>th,
-#admin-lang .table>tfoot>tr>td.active,
-#admin-lang .table>tfoot>tr>th.active,
-#admin-lang .table>thead>tr.active>td,
-#admin-lang .table>thead>tr.active>th,
-#admin-lang .table>thead>tr>td.active,
-#admin-lang .table>thead>tr>th.active {
+  .table>tbody>tr.active>td,
+  .table>tbody>tr.active>th,
+  .table>tbody>tr>td.active,
+  .table>tbody>tr>th.active,
+  .table>tfoot>tr.active>td,
+  .table>tfoot>tr.active>th,
+  .table>tfoot>tr>td.active,
+  .table>tfoot>tr>th.active,
+  .table>thead>tr.active>td,
+  .table>thead>tr.active>th,
+  .table>thead>tr>td.active,
+  .table>thead>tr>th.active {
     background-color: #f5f5f5
 }
-#admin-lang .table>tbody>tr.success>td,
-#admin-lang .table>tbody>tr.success>th,
-#admin-lang .table>tbody>tr>td.success,
-#admin-lang .table>tbody>tr>th.success,
-#admin-lang .table>tfoot>tr.success>td,
-#admin-lang .table>tfoot>tr.success>th,
-#admin-lang .table>tfoot>tr>td.success,
-#admin-lang .table>tfoot>tr>th.success,
-#admin-lang .table>thead>tr.success>td,
-#admin-lang .table>thead>tr.success>th,
-#admin-lang .table>thead>tr>td.success,
-#admin-lang .table>thead>tr>th.success {
+  .table>tbody>tr.success>td,
+  .table>tbody>tr.success>th,
+  .table>tbody>tr>td.success,
+  .table>tbody>tr>th.success,
+  .table>tfoot>tr.success>td,
+  .table>tfoot>tr.success>th,
+  .table>tfoot>tr>td.success,
+  .table>tfoot>tr>th.success,
+  .table>thead>tr.success>td,
+  .table>thead>tr.success>th,
+  .table>thead>tr>td.success,
+  .table>thead>tr>th.success {
     background-color: #dff0d8
 }
-#admin-lang .table>tbody>tr.info>td,
-#admin-lang .table>tbody>tr.info>th,
-#admin-lang .table>tbody>tr>td.info,
-#admin-lang .table>tbody>tr>th.info,
-#admin-lang .table>tfoot>tr.info>td,
-#admin-lang .table>tfoot>tr.info>th,
-#admin-lang .table>tfoot>tr>td.info,
-#admin-lang .table>tfoot>tr>th.info,
-#admin-lang .table>thead>tr.info>td,
-#admin-lang .table>thead>tr.info>th,
-#admin-lang .table>thead>tr>td.info,
-#admin-lang .table>thead>tr>th.info {
+  .table>tbody>tr.info>td,
+  .table>tbody>tr.info>th,
+  .table>tbody>tr>td.info,
+  .table>tbody>tr>th.info,
+  .table>tfoot>tr.info>td,
+  .table>tfoot>tr.info>th,
+  .table>tfoot>tr>td.info,
+  .table>tfoot>tr>th.info,
+  .table>thead>tr.info>td,
+  .table>thead>tr.info>th,
+  .table>thead>tr>td.info,
+  .table>thead>tr>th.info {
     background-color: #d9edf7
 }
-#admin-lang .table>tbody>tr.warning>td,
-#admin-lang .table>tbody>tr.warning>th,
-#admin-lang .table>tbody>tr>td.warning,
-#admin-lang .table>tbody>tr>th.warning,
-#admin-lang .table>tfoot>tr.warning>td,
-#admin-lang .table>tfoot>tr.warning>th,
-#admin-lang .table>tfoot>tr>td.warning,
-#admin-lang .table>tfoot>tr>th.warning,
-#admin-lang .table>thead>tr.warning>td,
-#admin-lang .table>thead>tr.warning>th,
-#admin-lang .table>thead>tr>td.warning,
-#admin-lang .table>thead>tr>th.warning {
+  .table>tbody>tr.warning>td,
+  .table>tbody>tr.warning>th,
+  .table>tbody>tr>td.warning,
+  .table>tbody>tr>th.warning,
+  .table>tfoot>tr.warning>td,
+  .table>tfoot>tr.warning>th,
+  .table>tfoot>tr>td.warning,
+  .table>tfoot>tr>th.warning,
+  .table>thead>tr.warning>td,
+  .table>thead>tr.warning>th,
+  .table>thead>tr>td.warning,
+  .table>thead>tr>th.warning {
     background-color: #fcf8e3
 }
-#admin-lang .table>tbody>tr.danger>td,
-#admin-lang .table>tbody>tr.danger>th,
-#admin-lang .table>tbody>tr>td.danger,
-#admin-lang .table>tbody>tr>th.danger,
-#admin-lang .table>tfoot>tr.danger>td,
-#admin-lang .table>tfoot>tr.danger>th,
-#admin-lang .table>tfoot>tr>td.danger,
-#admin-lang .table>tfoot>tr>th.danger,
-#admin-lang .table>thead>tr.danger>td,
-#admin-lang .table>thead>tr.danger>th,
-#admin-lang .table>thead>tr>td.danger,
-#admin-lang .table>thead>tr>th.danger {
+  .table>tbody>tr.danger>td,
+  .table>tbody>tr.danger>th,
+  .table>tbody>tr>td.danger,
+  .table>tbody>tr>th.danger,
+  .table>tfoot>tr.danger>td,
+  .table>tfoot>tr.danger>th,
+  .table>tfoot>tr>td.danger,
+  .table>tfoot>tr>th.danger,
+  .table>thead>tr.danger>td,
+  .table>thead>tr.danger>th,
+  .table>thead>tr>td.danger,
+  .table>thead>tr>th.danger {
     background-color: #f2dede
 }
-#admin-lang .table-responsive {
+  .table-responsive {
     min-height: .01%;
     overflow-x: auto
 }
 @media screen and (max-width: 767px) {
-    #admin-lang .table-responsive {
+      .table-responsive {
         width: 100%;
         margin-bottom: 15px;
         overflow-y: hidden;
         -ms-overflow-style: -ms-autohiding-scrollbar;
         border: 1px solid #ddd
     }
-    #admin-lang .table-responsive>.table {
+      .table-responsive>.table {
         margin-bottom: 0
     }
-    #admin-lang .table-responsive>.table>tbody>tr>td,
-    #admin-lang .table-responsive>.table>tbody>tr>th,
-    #admin-lang .table-responsive>.table>tfoot>tr>td,
-    #admin-lang .table-responsive>.table>tfoot>tr>th,
-    #admin-lang .table-responsive>.table>thead>tr>td,
-    #admin-lang .table-responsive>.table>thead>tr>th {
+      .table-responsive>.table>tbody>tr>td,
+      .table-responsive>.table>tbody>tr>th,
+      .table-responsive>.table>tfoot>tr>td,
+      .table-responsive>.table>tfoot>tr>th,
+      .table-responsive>.table>thead>tr>td,
+      .table-responsive>.table>thead>tr>th {
         white-space: nowrap
     }
-    #admin-lang .table-responsive>.table-bordered {
+      .table-responsive>.table-bordered {
         border: 0
     }
-    #admin-lang .table-responsive>.table-bordered>tbody>tr>td:first-child,
-    #admin-lang .table-responsive>.table-bordered>tbody>tr>th:first-child,
-    #admin-lang .table-responsive>.table-bordered>tfoot>tr>td:first-child,
-    #admin-lang .table-responsive>.table-bordered>tfoot>tr>th:first-child,
-    #admin-lang .table-responsive>.table-bordered>thead>tr>td:first-child,
-    #admin-lang .table-responsive>.table-bordered>thead>tr>th:first-child {
+      .table-responsive>.table-bordered>tbody>tr>td:first-child,
+      .table-responsive>.table-bordered>tbody>tr>th:first-child,
+      .table-responsive>.table-bordered>tfoot>tr>td:first-child,
+      .table-responsive>.table-bordered>tfoot>tr>th:first-child,
+      .table-responsive>.table-bordered>thead>tr>td:first-child,
+      .table-responsive>.table-bordered>thead>tr>th:first-child {
         border-left: 0
     }
-    #admin-lang .table-responsive>.table-bordered>tbody>tr>td:last-child,
-    #admin-lang .table-responsive>.table-bordered>tbody>tr>th:last-child,
-    #admin-lang .table-responsive>.table-bordered>tfoot>tr>td:last-child,
-    #admin-lang .table-responsive>.table-bordered>tfoot>tr>th:last-child,
-    #admin-lang .table-responsive>.table-bordered>thead>tr>td:last-child,
-    #admin-lang .table-responsive>.table-bordered>thead>tr>th:last-child {
+      .table-responsive>.table-bordered>tbody>tr>td:last-child,
+      .table-responsive>.table-bordered>tbody>tr>th:last-child,
+      .table-responsive>.table-bordered>tfoot>tr>td:last-child,
+      .table-responsive>.table-bordered>tfoot>tr>th:last-child,
+      .table-responsive>.table-bordered>thead>tr>td:last-child,
+      .table-responsive>.table-bordered>thead>tr>th:last-child {
         border-right: 0
     }
-    #admin-lang .table-responsive>.table-bordered>tbody>tr:last-child>td,
-    #admin-lang .table-responsive>.table-bordered>tbody>tr:last-child>th,
-    #admin-lang .table-responsive>.table-bordered>tfoot>tr:last-child>td,
-    #admin-lang .table-responsive>.table-bordered>tfoot>tr:last-child>th {
+      .table-responsive>.table-bordered>tbody>tr:last-child>td,
+      .table-responsive>.table-bordered>tbody>tr:last-child>th,
+      .table-responsive>.table-bordered>tfoot>tr:last-child>td,
+      .table-responsive>.table-bordered>tfoot>tr:last-child>th {
         border-bottom: 0
     }
 }
-#admin-lang fieldset {
+  fieldset {
     min-width: 0;
     padding: 0;
     margin: 0;
     border: 0
 }
-#admin-lang legend {
+  legend {
     display: block;
     width: 100%;
     padding: 0;
@@ -1641,49 +1641,49 @@
     border: 0;
     border-bottom: 1px solid #e5e5e5
 }
-#admin-lang label {
+  label {
     display: inline-block;
     max-width: 100%;
     margin-bottom: 5px;
     font-weight: 700
 }
-#admin-lang input[type=search] {
+  input[type=search] {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box
 }
-#admin-lang input[type=checkbox],
-#admin-lang input[type=radio] {
+  input[type=checkbox],
+  input[type=radio] {
     margin: 4px 0 0;
     margin-top: 1px\9;
     line-height: normal
 }
-#admin-lang input[type=file] {
+  input[type=file] {
     display: block
 }
-#admin-lang input[type=range] {
+  input[type=range] {
     display: block;
     width: 100%
 }
-#admin-lang select[multiple],
-#admin-lang select[size] {
+  select[multiple],
+  select[size] {
     height: auto
 }
-#admin-lang input[type=file]:focus,
-#admin-lang input[type=checkbox]:focus,
-#admin-lang input[type=radio]:focus {
+  input[type=file]:focus,
+  input[type=checkbox]:focus,
+  input[type=radio]:focus {
     outline: thin dotted;
     outline: 5px auto -webkit-focus-ring-color;
     outline-offset: -2px
 }
-#admin-lang output {
+  output {
     display: block;
     padding-top: 7px;
     font-size: 14px;
     line-height: 1.42857143;
     color: #555
 }
-#admin-lang .form-control {
+  .form-control {
     display: block;
     width: 100%;
     height: 34px;
@@ -1701,102 +1701,102 @@
     -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
     transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s
 }
-#admin-lang .form-control:focus {
+  .form-control:focus {
     border-color: #66afe9;
     outline: 0;
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6);
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(102, 175, 233, .6)
 }
-#admin-lang .form-control::-moz-placeholder {
+  .form-control::-moz-placeholder {
     color: #999;
     opacity: 1
 }
-#admin-lang .form-control:-ms-input-placeholder {
+  .form-control:-ms-input-placeholder {
     color: #999
 }
-#admin-lang .form-control::-webkit-input-placeholder {
+  .form-control::-webkit-input-placeholder {
     color: #999
 }
-#admin-lang .form-control::-ms-expand {
+  .form-control::-ms-expand {
     background-color: transparent;
     border: 0
 }
-#admin-lang .form-control[disabled],
-#admin-lang .form-control[readonly],
-#admin-lang fieldset[disabled] .form-control {
+  .form-control[disabled],
+  .form-control[readonly],
+  fieldset[disabled] .form-control {
     background-color: #eee;
     opacity: 1
 }
-#admin-lang .form-control[disabled],
-#admin-lang fieldset[disabled] .form-control {
+  .form-control[disabled],
+  fieldset[disabled] .form-control {
     cursor: not-allowed
 }
-#admin-lang textarea.form-control {
+  textarea.form-control {
     height: auto
 }
-#admin-lang input[type=search] {
+  input[type=search] {
     -webkit-appearance: none
 }
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
-    #admin-lang input[type=date].form-control,
-    #admin-lang input[type=time].form-control,
-    #admin-lang input[type=datetime-local].form-control,
-    #admin-lang input[type=month].form-control {
+      input[type=date].form-control,
+      input[type=time].form-control,
+      input[type=datetime-local].form-control,
+      input[type=month].form-control {
         line-height: 34px
     }
-    #admin-lang .input-group-sm input[type=date],
-    #admin-lang .input-group-sm input[type=time],
-    #admin-lang .input-group-sm input[type=datetime-local],
-    #admin-lang .input-group-sm input[type=month],
-    #admin-lang input[type=date].input-sm,
-    #admin-lang input[type=time].input-sm,
-    #admin-lang input[type=datetime-local].input-sm,
-    #admin-lang input[type=month].input-sm {
+      .input-group-sm input[type=date],
+      .input-group-sm input[type=time],
+      .input-group-sm input[type=datetime-local],
+      .input-group-sm input[type=month],
+      input[type=date].input-sm,
+      input[type=time].input-sm,
+      input[type=datetime-local].input-sm,
+      input[type=month].input-sm {
         line-height: 30px
     }
-    #admin-lang .input-group-lg input[type=date],
-    #admin-lang .input-group-lg input[type=time],
-    #admin-lang .input-group-lg input[type=datetime-local],
-    #admin-lang .input-group-lg input[type=month],
-    #admin-lang input[type=date].input-lg,
-    #admin-lang input[type=time].input-lg,
-    #admin-lang input[type=datetime-local].input-lg,
-    #admin-lang input[type=month].input-lg {
+      .input-group-lg input[type=date],
+      .input-group-lg input[type=time],
+      .input-group-lg input[type=datetime-local],
+      .input-group-lg input[type=month],
+      input[type=date].input-lg,
+      input[type=time].input-lg,
+      input[type=datetime-local].input-lg,
+      input[type=month].input-lg {
         line-height: 46px
     }
 }
-#admin-lang .form-group {
+  .form-group {
     margin-bottom: 15px
 }
-#admin-lang .checkbox,
-#admin-lang .radio {
+  .checkbox,
+  .radio {
     position: relative;
     display: block;
     margin-top: 10px;
     margin-bottom: 10px
 }
-#admin-lang .checkbox label,
-#admin-lang .radio label {
+  .checkbox label,
+  .radio label {
     min-height: 20px;
     padding-left: 20px;
     margin-bottom: 0;
     font-weight: 400;
     cursor: pointer
 }
-#admin-lang .checkbox input[type=checkbox],
-#admin-lang .checkbox-inline input[type=checkbox],
-#admin-lang .radio input[type=radio],
-#admin-lang .radio-inline input[type=radio] {
+  .checkbox input[type=checkbox],
+  .checkbox-inline input[type=checkbox],
+  .radio input[type=radio],
+  .radio-inline input[type=radio] {
     position: absolute;
     margin-top: 4px\9;
     margin-left: -20px
 }
-#admin-lang .checkbox+.checkbox,
-#admin-lang .radio+.radio {
+  .checkbox+.checkbox,
+  .radio+.radio {
     margin-top: -5px
 }
-#admin-lang .checkbox-inline,
-#admin-lang .radio-inline {
+  .checkbox-inline,
+  .radio-inline {
     position: relative;
     display: inline-block;
     padding-left: 20px;
@@ -1805,123 +1805,123 @@
     vertical-align: middle;
     cursor: pointer
 }
-#admin-lang .checkbox-inline+.checkbox-inline,
-#admin-lang .radio-inline+.radio-inline {
+  .checkbox-inline+.checkbox-inline,
+  .radio-inline+.radio-inline {
     margin-top: 0;
     margin-left: 10px
 }
-#admin-lang fieldset[disabled] input[type=checkbox],
-#admin-lang fieldset[disabled] input[type=radio],
-#admin-lang input[type=checkbox].disabled,
-#admin-lang input[type=checkbox][disabled],
-#admin-lang input[type=radio].disabled,
-#admin-lang input[type=radio][disabled] {
+  fieldset[disabled] input[type=checkbox],
+  fieldset[disabled] input[type=radio],
+  input[type=checkbox].disabled,
+  input[type=checkbox][disabled],
+  input[type=radio].disabled,
+  input[type=radio][disabled] {
     cursor: not-allowed
 }
-#admin-lang .checkbox-inline.disabled,
-#admin-lang .radio-inline.disabled,
-#admin-lang fieldset[disabled] .checkbox-inline,
-#admin-lang fieldset[disabled] .radio-inline {
+  .checkbox-inline.disabled,
+  .radio-inline.disabled,
+  fieldset[disabled] .checkbox-inline,
+  fieldset[disabled] .radio-inline {
     cursor: not-allowed
 }
-#admin-lang .checkbox.disabled label,
-#admin-lang .radio.disabled label,
-#admin-lang fieldset[disabled] .checkbox label,
-#admin-lang fieldset[disabled] .radio label {
+  .checkbox.disabled label,
+  .radio.disabled label,
+  fieldset[disabled] .checkbox label,
+  fieldset[disabled] .radio label {
     cursor: not-allowed
 }
-#admin-lang .form-control-static {
+  .form-control-static {
     min-height: 34px;
     padding-top: 7px;
     padding-bottom: 7px;
     margin-bottom: 0
 }
-#admin-lang .form-control-static.input-lg,
-#admin-lang .form-control-static.input-sm {
+  .form-control-static.input-lg,
+  .form-control-static.input-sm {
     padding-right: 0;
     padding-left: 0
 }
-#admin-lang .input-sm {
+  .input-sm {
     height: 30px;
     padding: 5px 10px;
     font-size: 12px;
     line-height: 1.5;
     border-radius: 3px
 }
-#admin-lang select.input-sm {
+  select.input-sm {
     height: 30px;
     line-height: 30px
 }
-#admin-lang select[multiple].input-sm,
-#admin-lang textarea.input-sm {
+  select[multiple].input-sm,
+  textarea.input-sm {
     height: auto
 }
-#admin-lang .form-group-sm .form-control {
+  .form-group-sm .form-control {
     height: 30px;
     padding: 5px 10px;
     font-size: 12px;
     line-height: 1.5;
     border-radius: 3px
 }
-#admin-lang .form-group-sm select.form-control {
+  .form-group-sm select.form-control {
     height: 30px;
     line-height: 30px
 }
-#admin-lang .form-group-sm select[multiple].form-control,
-#admin-lang .form-group-sm textarea.form-control {
+  .form-group-sm select[multiple].form-control,
+  .form-group-sm textarea.form-control {
     height: auto
 }
-#admin-lang .form-group-sm .form-control-static {
+  .form-group-sm .form-control-static {
     height: 30px;
     min-height: 32px;
     padding: 6px 10px;
     font-size: 12px;
     line-height: 1.5
 }
-#admin-lang .input-lg {
+  .input-lg {
     height: 46px;
     padding: 10px 16px;
     font-size: 18px;
     line-height: 1.3333333;
     border-radius: 6px
 }
-#admin-lang select.input-lg {
+  select.input-lg {
     height: 46px;
     line-height: 46px
 }
-#admin-lang select[multiple].input-lg,
-#admin-lang textarea.input-lg {
+  select[multiple].input-lg,
+  textarea.input-lg {
     height: auto
 }
-#admin-lang .form-group-lg .form-control {
+  .form-group-lg .form-control {
     height: 46px;
     padding: 10px 16px;
     font-size: 18px;
     line-height: 1.3333333;
     border-radius: 6px
 }
-#admin-lang .form-group-lg select.form-control {
+  .form-group-lg select.form-control {
     height: 46px;
     line-height: 46px
 }
-#admin-lang .form-group-lg select[multiple].form-control,
-#admin-lang .form-group-lg textarea.form-control {
+  .form-group-lg select[multiple].form-control,
+  .form-group-lg textarea.form-control {
     height: auto
 }
-#admin-lang .form-group-lg .form-control-static {
+  .form-group-lg .form-control-static {
     height: 46px;
     min-height: 38px;
     padding: 11px 16px;
     font-size: 18px;
     line-height: 1.3333333
 }
-#admin-lang .has-feedback {
+  .has-feedback {
     position: relative
 }
-#admin-lang .has-feedback .form-control {
+  .has-feedback .form-control {
     padding-right: 42.5px
 }
-#admin-lang .form-control-feedback {
+  .form-control-feedback {
     position: absolute;
     top: 0;
     right: 0;
@@ -1933,109 +1933,109 @@
     text-align: center;
     pointer-events: none
 }
-#admin-lang .form-group-lg .form-control+.form-control-feedback,
-#admin-lang .input-group-lg+.form-control-feedback,
-#admin-lang .input-lg+.form-control-feedback {
+  .form-group-lg .form-control+.form-control-feedback,
+  .input-group-lg+.form-control-feedback,
+  .input-lg+.form-control-feedback {
     width: 46px;
     height: 46px;
     line-height: 46px
 }
-#admin-lang .form-group-sm .form-control+.form-control-feedback,
-#admin-lang .input-group-sm+.form-control-feedback,
-#admin-lang .input-sm+.form-control-feedback {
+  .form-group-sm .form-control+.form-control-feedback,
+  .input-group-sm+.form-control-feedback,
+  .input-sm+.form-control-feedback {
     width: 30px;
     height: 30px;
     line-height: 30px
 }
 @media (min-width: 768px) {
-    #admin-lang .form-inline .form-group {
+      .form-inline .form-group {
         display: inline-block;
         margin-bottom: 0;
         vertical-align: middle
     }
-    #admin-lang .form-inline .form-control {
+      .form-inline .form-control {
         display: inline-block;
         width: auto;
         vertical-align: middle
     }
-    #admin-lang .form-inline .form-control-static {
+      .form-inline .form-control-static {
         display: inline-block
     }
-    #admin-lang .form-inline .input-group {
+      .form-inline .input-group {
         display: inline-table;
         vertical-align: middle
     }
-    #admin-lang .form-inline .input-group .form-control,
-    #admin-lang .form-inline .input-group .input-group-addon,
-    #admin-lang .form-inline .input-group .input-group-btn {
+      .form-inline .input-group .form-control,
+      .form-inline .input-group .input-group-addon,
+      .form-inline .input-group .input-group-btn {
         width: auto
     }
-    #admin-lang .form-inline .input-group>.form-control {
+      .form-inline .input-group>.form-control {
         width: 100%
     }
-    #admin-lang .form-inline .control-label {
+      .form-inline .control-label {
         margin-bottom: 0;
         vertical-align: middle
     }
-    #admin-lang .form-inline .checkbox,
-    #admin-lang .form-inline .radio {
+      .form-inline .checkbox,
+      .form-inline .radio {
         display: inline-block;
         margin-top: 0;
         margin-bottom: 0;
         vertical-align: middle
     }
-    #admin-lang .form-inline .checkbox label,
-    #admin-lang .form-inline .radio label {
+      .form-inline .checkbox label,
+      .form-inline .radio label {
         padding-left: 0
     }
-    #admin-lang .form-inline .checkbox input[type=checkbox],
-    #admin-lang .form-inline .radio input[type=radio] {
+      .form-inline .checkbox input[type=checkbox],
+      .form-inline .radio input[type=radio] {
         position: relative;
         margin-left: 0
     }
-    #admin-lang .form-inline .has-feedback .form-control-feedback {
+      .form-inline .has-feedback .form-control-feedback {
         top: 0
     }
 }
-#admin-lang .form-horizontal .checkbox,
-#admin-lang .form-horizontal .checkbox-inline,
-#admin-lang .form-horizontal .radio,
-#admin-lang .form-horizontal .radio-inline {
+  .form-horizontal .checkbox,
+  .form-horizontal .checkbox-inline,
+  .form-horizontal .radio,
+  .form-horizontal .radio-inline {
     padding-top: 7px;
     margin-top: 0;
     margin-bottom: 0
 }
-#admin-lang .form-horizontal .checkbox,
-#admin-lang .form-horizontal .radio {
+  .form-horizontal .checkbox,
+  .form-horizontal .radio {
     min-height: 27px
 }
-#admin-lang .form-horizontal .form-group {
+  .form-horizontal .form-group {
     margin-right: -15px;
     margin-left: -15px
 }
 @media (min-width: 768px) {
-    #admin-lang .form-horizontal .control-label {
+      .form-horizontal .control-label {
         padding-top: 7px;
         margin-bottom: 0;
         text-align: right
     }
 }
-#admin-lang .form-horizontal .has-feedback .form-control-feedback {
+  .form-horizontal .has-feedback .form-control-feedback {
     right: 15px
 }
 @media (min-width: 768px) {
-    #admin-lang .form-horizontal .form-group-lg .control-label {
+      .form-horizontal .form-group-lg .control-label {
         padding-top: 11px;
         font-size: 18px
     }
 }
 @media (min-width: 768px) {
-    #admin-lang .form-horizontal .form-group-sm .control-label {
+      .form-horizontal .form-group-sm .control-label {
         padding-top: 6px;
         font-size: 12px
     }
 }
-#admin-lang .btn {
+  .btn {
     display: inline-block;
     padding: 6px 12px;
     margin-bottom: 0;
@@ -2056,244 +2056,244 @@
     border: 1px solid transparent;
     border-radius: 4px
 }
-#admin-lang .btn.active.focus,
-#admin-lang .btn.active:focus,
-#admin-lang .btn.focus,
-#admin-lang .btn:active.focus,
-#admin-lang .btn:active:focus,
-#admin-lang .btn:focus {
+  .btn.active.focus,
+  .btn.active:focus,
+  .btn.focus,
+  .btn:active.focus,
+  .btn:active:focus,
+  .btn:focus {
     outline: thin dotted;
     outline: 5px auto -webkit-focus-ring-color;
     outline-offset: -2px
 }
-#admin-lang .btn.focus,
-#admin-lang .btn:focus,
-#admin-lang .btn:hover {
+  .btn.focus,
+  .btn:focus,
+  .btn:hover {
     color: #333;
     text-decoration: none
 }
-#admin-lang .btn.active,
-#admin-lang .btn:active {
+  .btn.active,
+  .btn:active {
     background-image: none;
     outline: 0;
     -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
     box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125)
 }
-#admin-lang .btn.disabled,
-#admin-lang .btn[disabled],
-#admin-lang fieldset[disabled] .btn {
+  .btn.disabled,
+  .btn[disabled],
+  fieldset[disabled] .btn {
     cursor: not-allowed;
     filter: alpha(opacity=65);
     -webkit-box-shadow: none;
     box-shadow: none;
     opacity: .65
 }
-#admin-lang a.btn.disabled,
-#admin-lang fieldset[disabled] a.btn {
+  a.btn.disabled,
+  fieldset[disabled] a.btn {
     pointer-events: none
 }
-#admin-lang .btn-default {
+  .btn-default {
     color: #333;
     background-color: #fff;
     border-color: #ccc
 }
-#admin-lang .btn-default.focus,
-#admin-lang .btn-default:focus {
+  .btn-default.focus,
+  .btn-default:focus {
     color: #333;
     background-color: #e6e6e6;
     border-color: #8c8c8c
 }
-#admin-lang .btn-default:hover {
+  .btn-default:hover {
     color: #333;
     background-color: #e6e6e6;
     border-color: #adadad
 }
-#admin-lang .btn-default.active,
-#admin-lang .btn-default:active,
-#admin-lang .open>.dropdown-toggle.btn-default {
+  .btn-default.active,
+  .btn-default:active,
+  .open>.dropdown-toggle.btn-default {
     color: #333;
     background-color: #e6e6e6;
     border-color: #adadad
 }
-#admin-lang .btn-default.active.focus,
-#admin-lang .btn-default.active:focus,
-#admin-lang .btn-default.active:hover,
-#admin-lang .btn-default:active.focus,
-#admin-lang .btn-default:active:focus,
-#admin-lang .btn-default:active:hover,
-#admin-lang .open>.dropdown-toggle.btn-default.focus,
-#admin-lang .open>.dropdown-toggle.btn-default:focus,
-#admin-lang .open>.dropdown-toggle.btn-default:hover {
+  .btn-default.active.focus,
+  .btn-default.active:focus,
+  .btn-default.active:hover,
+  .btn-default:active.focus,
+  .btn-default:active:focus,
+  .btn-default:active:hover,
+  .open>.dropdown-toggle.btn-default.focus,
+  .open>.dropdown-toggle.btn-default:focus,
+  .open>.dropdown-toggle.btn-default:hover {
     color: #333;
     background-color: #d4d4d4;
     border-color: #8c8c8c
 }
-#admin-lang .btn-default.active,
-#admin-lang .btn-default:active,
-#admin-lang .open>.dropdown-toggle.btn-default {
+  .btn-default.active,
+  .btn-default:active,
+  .open>.dropdown-toggle.btn-default {
     background-image: none
 }
-#admin-lang .btn-default.disabled.focus,
-#admin-lang .btn-default.disabled:focus,
-#admin-lang .btn-default.disabled:hover,
-#admin-lang .btn-default[disabled].focus,
-#admin-lang .btn-default[disabled]:focus,
-#admin-lang .btn-default[disabled]:hover,
-#admin-lang fieldset[disabled] .btn-default.focus,
-#admin-lang fieldset[disabled] .btn-default:focus,
-#admin-lang fieldset[disabled] .btn-default:hover {
+  .btn-default.disabled.focus,
+  .btn-default.disabled:focus,
+  .btn-default.disabled:hover,
+  .btn-default[disabled].focus,
+  .btn-default[disabled]:focus,
+  .btn-default[disabled]:hover,
+  fieldset[disabled] .btn-default.focus,
+  fieldset[disabled] .btn-default:focus,
+  fieldset[disabled] .btn-default:hover {
     background-color: #fff;
     border-color: #ccc
 }
-#admin-lang .btn-default .badge {
+  .btn-default .badge {
     color: #fff;
     background-color: #333
 }
-#admin-lang .btn-primary {
+  .btn-primary {
     color: #fff;
     background-color: #337ab7;
     border-color: #2e6da4
 }
-#admin-lang .btn-primary.focus,
-#admin-lang .btn-primary:focus {
+  .btn-primary.focus,
+  .btn-primary:focus {
     color: #fff;
     background-color: #286090;
     border-color: #122b40
 }
-#admin-lang .btn-primary:hover {
+  .btn-primary:hover {
     color: #fff;
     background-color: #286090;
     border-color: #204d74
 }
-#admin-lang .btn-primary.active,
-#admin-lang .btn-primary:active,
-#admin-lang .open>.dropdown-toggle.btn-primary {
+  .btn-primary.active,
+  .btn-primary:active,
+  .open>.dropdown-toggle.btn-primary {
     color: #fff;
     background-color: #286090;
     border-color: #204d74
 }
-#admin-lang .btn-primary.active.focus,
-#admin-lang .btn-primary.active:focus,
-#admin-lang .btn-primary.active:hover,
-#admin-lang .btn-primary:active.focus,
-#admin-lang .btn-primary:active:focus,
-#admin-lang .btn-primary:active:hover,
-#admin-lang .open>.dropdown-toggle.btn-primary.focus,
-#admin-lang .open>.dropdown-toggle.btn-primary:focus,
-#admin-lang .open>.dropdown-toggle.btn-primary:hover {
+  .btn-primary.active.focus,
+  .btn-primary.active:focus,
+  .btn-primary.active:hover,
+  .btn-primary:active.focus,
+  .btn-primary:active:focus,
+  .btn-primary:active:hover,
+  .open>.dropdown-toggle.btn-primary.focus,
+  .open>.dropdown-toggle.btn-primary:focus,
+  .open>.dropdown-toggle.btn-primary:hover {
     color: #fff;
     background-color: #204d74;
     border-color: #122b40
 }
-#admin-lang .btn-primary.active,
-#admin-lang .btn-primary:active,
-#admin-lang .open>.dropdown-toggle.btn-primary {
+  .btn-primary.active,
+  .btn-primary:active,
+  .open>.dropdown-toggle.btn-primary {
     background-image: none
 }
-#admin-lang .btn-primary.disabled.focus,
-#admin-lang .btn-primary.disabled:focus,
-#admin-lang .btn-primary.disabled:hover,
-#admin-lang .btn-primary[disabled].focus,
-#admin-lang .btn-primary[disabled]:focus,
-#admin-lang .btn-primary[disabled]:hover,
-#admin-lang fieldset[disabled] .btn-primary.focus,
-#admin-lang fieldset[disabled] .btn-primary:focus,
-#admin-lang fieldset[disabled] .btn-primary:hover {
+  .btn-primary.disabled.focus,
+  .btn-primary.disabled:focus,
+  .btn-primary.disabled:hover,
+  .btn-primary[disabled].focus,
+  .btn-primary[disabled]:focus,
+  .btn-primary[disabled]:hover,
+  fieldset[disabled] .btn-primary.focus,
+  fieldset[disabled] .btn-primary:focus,
+  fieldset[disabled] .btn-primary:hover {
     background-color: #337ab7;
     border-color: #2e6da4
 }
-#admin-lang .btn-primary .badge {
+  .btn-primary .badge {
     color: #337ab7;
     background-color: #fff
 }
-#admin-lang .btn-link {
+  .btn-link {
     font-weight: 400;
     color: #337ab7;
     border-radius: 0
 }
-#admin-lang .btn-link,
-#admin-lang .btn-link.active,
-#admin-lang .btn-link:active,
-#admin-lang .btn-link[disabled],
-#admin-lang fieldset[disabled] .btn-link {
+  .btn-link,
+  .btn-link.active,
+  .btn-link:active,
+  .btn-link[disabled],
+  fieldset[disabled] .btn-link {
     background-color: transparent;
     -webkit-box-shadow: none;
     box-shadow: none
 }
-#admin-lang .btn-link,
-#admin-lang .btn-link:active,
-#admin-lang .btn-link:focus,
-#admin-lang .btn-link:hover {
+  .btn-link,
+  .btn-link:active,
+  .btn-link:focus,
+  .btn-link:hover {
     border-color: transparent
 }
-#admin-lang .btn-link:focus,
-#admin-lang .btn-link:hover {
+  .btn-link:focus,
+  .btn-link:hover {
     color: #23527c;
     text-decoration: underline;
     background-color: transparent
 }
-#admin-lang .btn-link[disabled]:focus,
-#admin-lang .btn-link[disabled]:hover,
-#admin-lang fieldset[disabled] .btn-link:focus,
-#admin-lang fieldset[disabled] .btn-link:hover {
+  .btn-link[disabled]:focus,
+  .btn-link[disabled]:hover,
+  fieldset[disabled] .btn-link:focus,
+  fieldset[disabled] .btn-link:hover {
     color: #777;
     text-decoration: none
 }
-#admin-lang .btn-group-lg>.btn,
-#admin-lang .btn-lg {
+  .btn-group-lg>.btn,
+  .btn-lg {
     padding: 10px 16px;
     font-size: 18px;
     line-height: 1.3333333;
     border-radius: 6px
 }
-#admin-lang .btn-group-sm>.btn,
-#admin-lang .btn-sm {
+  .btn-group-sm>.btn,
+  .btn-sm {
     padding: 5px 10px;
     font-size: 12px;
     line-height: 1.5;
     border-radius: 3px
 }
-#admin-lang .btn-group-xs>.btn,
-#admin-lang .btn-xs {
+  .btn-group-xs>.btn,
+  .btn-xs {
     padding: 1px 5px;
     font-size: 12px;
     line-height: 1.5;
     border-radius: 3px
 }
-#admin-lang .btn-block {
+  .btn-block {
     display: block;
     width: 100%
 }
-#admin-lang .btn-block+.btn-block {
+  .btn-block+.btn-block {
     margin-top: 5px
 }
-#admin-lang input[type=button].btn-block,
-#admin-lang input[type=reset].btn-block,
-#admin-lang input[type=submit].btn-block {
+  input[type=button].btn-block,
+  input[type=reset].btn-block,
+  input[type=submit].btn-block {
     width: 100%
 }
-#admin-lang .fade {
+  .fade {
     opacity: 0;
     -webkit-transition: opacity .15s linear;
     -o-transition: opacity .15s linear;
     transition: opacity .15s linear
 }
-#admin-lang .fade.in {
+  .fade.in {
     opacity: 1
 }
-#admin-lang .collapse {
+  .collapse {
     display: none
 }
-#admin-lang .collapse.in {
+  .collapse.in {
     display: block
 }
-#admin-lang tr.collapse.in {
+  tr.collapse.in {
     display: table-row
 }
-#admin-lang tbody.collapse.in {
+  tbody.collapse.in {
     display: table-row-group
 }
-#admin-lang .collapsing {
+  .collapsing {
     position: relative;
     height: 0;
     overflow: hidden;
@@ -2307,7 +2307,7 @@
     -o-transition-property: height, visibility;
     transition-property: height, visibility
 }
-#admin-lang .caret {
+  .caret {
     display: inline-block;
     width: 0;
     height: 0;
@@ -2318,193 +2318,193 @@
     border-right: 4px solid transparent;
     border-left: 4px solid transparent
 }
-#admin-lang .btn-group,
+  .btn-group,
 .btn-group-vertical {
     position: relative;
     display: inline-block;
     vertical-align: middle
 }
-#admin-lang .btn-group-vertical>.btn,
-#admin-lang .btn-group>.btn {
+  .btn-group-vertical>.btn,
+  .btn-group>.btn {
     position: relative;
     float: left
 }
-#admin-lang .btn-group-vertical>.btn.active,
-#admin-lang .btn-group-vertical>.btn:active,
-#admin-lang .btn-group-vertical>.btn:focus,
-#admin-lang .btn-group-vertical>.btn:hover,
-#admin-lang .btn-group>.btn.active,
-#admin-lang .btn-group>.btn:active,
-#admin-lang .btn-group>.btn:focus,
-#admin-lang .btn-group>.btn:hover {
+  .btn-group-vertical>.btn.active,
+  .btn-group-vertical>.btn:active,
+  .btn-group-vertical>.btn:focus,
+  .btn-group-vertical>.btn:hover,
+  .btn-group>.btn.active,
+  .btn-group>.btn:active,
+  .btn-group>.btn:focus,
+  .btn-group>.btn:hover {
     z-index: 2
 }
-#admin-lang .btn-group .btn+.btn,
-#admin-lang .btn-group .btn+.btn-group,
-#admin-lang .btn-group .btn-group+.btn,
-#admin-lang .btn-group .btn-group+.btn-group {
+  .btn-group .btn+.btn,
+  .btn-group .btn+.btn-group,
+  .btn-group .btn-group+.btn,
+  .btn-group .btn-group+.btn-group {
     margin-left: -1px
 }
-#admin-lang .btn-toolbar {
+  .btn-toolbar {
     margin-left: -5px
 }
-#admin-lang .btn-toolbar .btn,
-#admin-lang .btn-toolbar .btn-group,
-#admin-lang .btn-toolbar .input-group {
+  .btn-toolbar .btn,
+  .btn-toolbar .btn-group,
+  .btn-toolbar .input-group {
     float: left
 }
-#admin-lang .btn-toolbar>.btn,
-#admin-lang .btn-toolbar>.btn-group,
-#admin-lang .btn-toolbar>.input-group {
+  .btn-toolbar>.btn,
+  .btn-toolbar>.btn-group,
+  .btn-toolbar>.input-group {
     margin-left: 5px
 }
-#admin-lang .btn-group>.btn:not(:first-child):not(:last-child):not(.dropdown-toggle) {
+  .btn-group>.btn:not(:first-child):not(:last-child):not(.dropdown-toggle) {
     border-radius: 0
 }
-#admin-lang .btn-group>.btn:first-child {
+  .btn-group>.btn:first-child {
     margin-left: 0
 }
-#admin-lang .btn-group>.btn:first-child:not(:last-child):not(.dropdown-toggle) {
+  .btn-group>.btn:first-child:not(:last-child):not(.dropdown-toggle) {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0
 }
-#admin-lang .btn-group>.btn:last-child:not(:first-child),
-#admin-lang .btn-group>.dropdown-toggle:not(:first-child) {
+  .btn-group>.btn:last-child:not(:first-child),
+  .btn-group>.dropdown-toggle:not(:first-child) {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0
 }
-#admin-lang .btn-group>.btn-group {
+  .btn-group>.btn-group {
     float: left
 }
-#admin-lang .btn-group>.btn-group:not(:first-child):not(:last-child)>.btn {
+  .btn-group>.btn-group:not(:first-child):not(:last-child)>.btn {
     border-radius: 0
 }
-#admin-lang .btn-group>.btn-group:first-child:not(:last-child)>.btn:last-child,
-#admin-lang .btn-group>.btn-group:first-child:not(:last-child)>.dropdown-toggle {
+  .btn-group>.btn-group:first-child:not(:last-child)>.btn:last-child,
+  .btn-group>.btn-group:first-child:not(:last-child)>.dropdown-toggle {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0
 }
-#admin-lang .btn-group>.btn-group:last-child:not(:first-child)>.btn:first-child {
+  .btn-group>.btn-group:last-child:not(:first-child)>.btn:first-child {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0
 }
-#admin-lang .btn-group .dropdown-toggle:active,
-#admin-lang .btn-group.open .dropdown-toggle {
+  .btn-group .dropdown-toggle:active,
+  .btn-group.open .dropdown-toggle {
     outline: 0
 }
-#admin-lang .btn-group>.btn+.dropdown-toggle {
+  .btn-group>.btn+.dropdown-toggle {
     padding-right: 8px;
     padding-left: 8px
 }
-#admin-lang .btn-group>.btn-lg+.dropdown-toggle {
+  .btn-group>.btn-lg+.dropdown-toggle {
     padding-right: 12px;
     padding-left: 12px
 }
-#admin-lang .btn-group.open .dropdown-toggle {
+  .btn-group.open .dropdown-toggle {
     -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
     box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125)
 }
-#admin-lang .btn-group.open .dropdown-toggle.btn-link {
+  .btn-group.open .dropdown-toggle.btn-link {
     -webkit-box-shadow: none;
     box-shadow: none
 }
-#admin-lang .btn .caret {
+  .btn .caret {
     margin-left: 0
 }
-#admin-lang .btn-lg .caret {
+  .btn-lg .caret {
     border-width: 5px 5px 0;
     border-bottom-width: 0
 }
-#admin-lang [data-toggle=buttons]>.btn input[type=checkbox],
-#admin-lang [data-toggle=buttons]>.btn input[type=radio],
-#admin-lang [data-toggle=buttons]>.btn-group>.btn input[type=checkbox],
-#admin-lang [data-toggle=buttons]>.btn-group>.btn input[type=radio] {
+  [data-toggle=buttons]>.btn input[type=checkbox],
+  [data-toggle=buttons]>.btn input[type=radio],
+  [data-toggle=buttons]>.btn-group>.btn input[type=checkbox],
+  [data-toggle=buttons]>.btn-group>.btn input[type=radio] {
     position: absolute;
     clip: rect(0, 0, 0, 0);
     pointer-events: none
 }
-#admin-lang .input-group {
+  .input-group {
     position: relative;
     display: table;
     border-collapse: separate
 }
-#admin-lang .input-group[class*=col-] {
+  .input-group[class*=col-] {
     float: none;
     padding-right: 0;
     padding-left: 0
 }
-#admin-lang .input-group .form-control {
+  .input-group .form-control {
     position: relative;
     z-index: 2;
     float: left;
     width: 100%;
     margin-bottom: 0
 }
-#admin-lang .input-group .form-control:focus {
+  .input-group .form-control:focus {
     z-index: 3
 }
-#admin-lang .input-group-lg>.form-control,
-#admin-lang .input-group-lg>.input-group-addon,
-#admin-lang .input-group-lg>.input-group-btn>.btn {
+  .input-group-lg>.form-control,
+  .input-group-lg>.input-group-addon,
+  .input-group-lg>.input-group-btn>.btn {
     height: 46px;
     padding: 10px 16px;
     font-size: 18px;
     line-height: 1.3333333;
     border-radius: 6px
 }
-#admin-lang select.input-group-lg>.form-control,
-#admin-lang select.input-group-lg>.input-group-addon,
-#admin-lang select.input-group-lg>.input-group-btn>.btn {
+  select.input-group-lg>.form-control,
+  select.input-group-lg>.input-group-addon,
+  select.input-group-lg>.input-group-btn>.btn {
     height: 46px;
     line-height: 46px
 }
-#admin-lang select[multiple].input-group-lg>.form-control,
-#admin-lang select[multiple].input-group-lg>.input-group-addon,
-#admin-lang select[multiple].input-group-lg>.input-group-btn>.btn,
-#admin-lang textarea.input-group-lg>.form-control,
-#admin-lang textarea.input-group-lg>.input-group-addon,
-#admin-lang textarea.input-group-lg>.input-group-btn>.btn {
+  select[multiple].input-group-lg>.form-control,
+  select[multiple].input-group-lg>.input-group-addon,
+  select[multiple].input-group-lg>.input-group-btn>.btn,
+  textarea.input-group-lg>.form-control,
+  textarea.input-group-lg>.input-group-addon,
+  textarea.input-group-lg>.input-group-btn>.btn {
     height: auto
 }
-#admin-lang .input-group-sm>.input-group-addon,
-#admin-lang .input-group-sm>.input-group-btn>.btn {
+  .input-group-sm>.input-group-addon,
+  .input-group-sm>.input-group-btn>.btn {
     height: 30px;
     padding: 5px 10px;
     font-size: 12px;
     line-height: 1.5;
     border-radius: 3px
 }
-#admin-lang select.input-group-sm>.form-control,
-#admin-lang select.input-group-sm>.input-group-addon,
-#admin-lang select.input-group-sm>.input-group-btn>.btn {
+  select.input-group-sm>.form-control,
+  select.input-group-sm>.input-group-addon,
+  select.input-group-sm>.input-group-btn>.btn {
     height: 30px;
     line-height: 30px
 }
-#admin-lang select[multiple].input-group-sm>.form-control,
-#admin-lang select[multiple].input-group-sm>.input-group-addon,
-#admin-lang select[multiple].input-group-sm>.input-group-btn>.btn,
-#admin-lang textarea.input-group-sm>.form-control,
-#admin-lang textarea.input-group-sm>.input-group-addon,
-#admin-lang textarea.input-group-sm>.input-group-btn>.btn {
+  select[multiple].input-group-sm>.form-control,
+  select[multiple].input-group-sm>.input-group-addon,
+  select[multiple].input-group-sm>.input-group-btn>.btn,
+  textarea.input-group-sm>.form-control,
+  textarea.input-group-sm>.input-group-addon,
+  textarea.input-group-sm>.input-group-btn>.btn {
     height: auto
 }
-#admin-lang .input-group .form-control,
-#admin-lang .input-group-addon,
-#admin-lang .input-group-btn {
+  .input-group .form-control,
+  .input-group-addon,
+  .input-group-btn {
     display: table-cell
 }
-#admin-lang .input-group .form-control:not(:first-child):not(:last-child),
-#admin-lang .input-group-addon:not(:first-child):not(:last-child),
-#admin-lang .input-group-btn:not(:first-child):not(:last-child) {
+  .input-group .form-control:not(:first-child):not(:last-child),
+  .input-group-addon:not(:first-child):not(:last-child),
+  .input-group-btn:not(:first-child):not(:last-child) {
     border-radius: 0
 }
-#admin-lang .input-group-addon,
-#admin-lang .input-group-btn {
+  .input-group-addon,
+  .input-group-btn {
     width: 1%;
     white-space: nowrap;
     vertical-align: middle
 }
-#admin-lang .input-group-addon {
+  .input-group-addon {
     padding: 6px 12px;
     font-size: 14px;
     font-weight: 400;
@@ -2515,100 +2515,100 @@
     border: 1px solid #ccc;
     border-radius: 4px
 }
-#admin-lang .input-group-addon.input-sm {
+  .input-group-addon.input-sm {
     padding: 5px 10px;
     font-size: 12px;
     border-radius: 3px
 }
-#admin-lang .input-group-addon.input-lg {
+  .input-group-addon.input-lg {
     padding: 10px 16px;
     font-size: 18px;
     border-radius: 6px
 }
-#admin-lang .input-group-addon input[type=checkbox],
-#admin-lang .input-group-addon input[type=radio] {
+  .input-group-addon input[type=checkbox],
+  .input-group-addon input[type=radio] {
     margin-top: 0
 }
-#admin-lang .input-group .form-control:first-child,
-#admin-lang .input-group-addon:first-child,
-#admin-lang .input-group-btn:first-child>.btn,
-#admin-lang .input-group-btn:first-child>.btn-group>.btn,
-#admin-lang .input-group-btn:first-child>.dropdown-toggle,
-#admin-lang .input-group-btn:last-child>.btn-group:not(:last-child)>.btn,
-#admin-lang .input-group-btn:last-child>.btn:not(:last-child):not(.dropdown-toggle) {
+  .input-group .form-control:first-child,
+  .input-group-addon:first-child,
+  .input-group-btn:first-child>.btn,
+  .input-group-btn:first-child>.btn-group>.btn,
+  .input-group-btn:first-child>.dropdown-toggle,
+  .input-group-btn:last-child>.btn-group:not(:last-child)>.btn,
+  .input-group-btn:last-child>.btn:not(:last-child):not(.dropdown-toggle) {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0
 }
-#admin-lang .input-group-addon:first-child {
+  .input-group-addon:first-child {
     border-right: 0
 }
-#admin-lang .input-group .form-control:last-child,
-#admin-lang .input-group-addon:last-child,
-#admin-lang .input-group-btn:first-child>.btn-group:not(:first-child)>.btn,
-#admin-lang .input-group-btn:first-child>.btn:not(:first-child),
-#admin-lang .input-group-btn:last-child>.btn,
-#admin-lang .input-group-btn:last-child>.btn-group>.btn,
-#admin-lang .input-group-btn:last-child>.dropdown-toggle {
+  .input-group .form-control:last-child,
+  .input-group-addon:last-child,
+  .input-group-btn:first-child>.btn-group:not(:first-child)>.btn,
+  .input-group-btn:first-child>.btn:not(:first-child),
+  .input-group-btn:last-child>.btn,
+  .input-group-btn:last-child>.btn-group>.btn,
+  .input-group-btn:last-child>.dropdown-toggle {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0
 }
-#admin-lang .input-group-addon:last-child {
+  .input-group-addon:last-child {
     border-left: 0
 }
-#admin-lang .input-group-btn {
+  .input-group-btn {
     position: relative;
     font-size: 0;
     white-space: nowrap
 }
-#admin-lang .input-group-btn>.btn {
+  .input-group-btn>.btn {
     position: relative
 }
-#admin-lang .input-group-btn>.btn+.btn {
+  .input-group-btn>.btn+.btn {
     margin-left: -1px
 }
-#admin-lang .input-group-btn>.btn:active,
-#admin-lang .input-group-btn>.btn:focus,
-#admin-lang .input-group-btn>.btn:hover {
+  .input-group-btn>.btn:active,
+  .input-group-btn>.btn:focus,
+  .input-group-btn>.btn:hover {
     z-index: 2
 }
-#admin-lang .input-group-btn:first-child>.btn,
-#admin-lang .input-group-btn:first-child>.btn-group {
+  .input-group-btn:first-child>.btn,
+  .input-group-btn:first-child>.btn-group {
     margin-right: -1px
 }
-#admin-lang .input-group-btn:last-child>.btn,
-#admin-lang .input-group-btn:last-child>.btn-group {
+  .input-group-btn:last-child>.btn,
+  .input-group-btn:last-child>.btn-group {
     z-index: 2;
     margin-left: -1px
 }
-#admin-lang .breadcrumb {
+  .breadcrumb {
     padding: 8px 15px;
     margin-bottom: 20px;
     list-style: none;
     background-color: #f5f5f5;
     border-radius: 4px
 }
-#admin-lang .breadcrumb>li {
+  .breadcrumb>li {
     display: inline-block
 }
-#admin-lang .breadcrumb>li+li:before {
+  .breadcrumb>li+li:before {
     padding: 0 5px;
     color: #ccc;
     content: "/\00a0"
 }
-#admin-lang .breadcrumb>.active {
+  .breadcrumb>.active {
     color: #777
 }
-#admin-lang .pagination {
+  .pagination {
     display: inline-block;
     padding-left: 0;
     margin: 20px 0;
     border-radius: 4px
 }
-#admin-lang .pagination>li {
+  .pagination>li {
     display: inline
 }
-#admin-lang .pagination>li>a,
-#admin-lang .pagination>li>span {
+  .pagination>li>a,
+  .pagination>li>span {
     position: relative;
     float: left;
     padding: 6px 12px;
@@ -2619,120 +2619,120 @@
     background-color: #fff;
     border: 1px solid #ddd
 }
-#admin-lang .pagination>li:first-child>a,
-#admin-lang .pagination>li:first-child>span {
+  .pagination>li:first-child>a,
+  .pagination>li:first-child>span {
     margin-left: 0;
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px
 }
-#admin-lang .pagination>li:last-child>a,
-#admin-lang .pagination>li:last-child>span {
+  .pagination>li:last-child>a,
+  .pagination>li:last-child>span {
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px
 }
-#admin-lang .pagination>li>a:focus,
-#admin-lang .pagination>li>a:hover,
-#admin-lang .pagination>li>span:focus,
-#admin-lang .pagination>li>span:hover {
+  .pagination>li>a:focus,
+  .pagination>li>a:hover,
+  .pagination>li>span:focus,
+  .pagination>li>span:hover {
     z-index: 2;
     color: #23527c;
     background-color: #eee;
     border-color: #ddd
 }
-#admin-lang .pagination>.active>a,
-#admin-lang .pagination>.active>a:focus,
-#admin-lang .pagination>.active>a:hover,
-#admin-lang .pagination>.active>span,
-#admin-lang .pagination>.active>span:focus,
-#admin-lang .pagination>.active>span:hover {
+  .pagination>.active>a,
+  .pagination>.active>a:focus,
+  .pagination>.active>a:hover,
+  .pagination>.active>span,
+  .pagination>.active>span:focus,
+  .pagination>.active>span:hover {
     z-index: 3;
     color: #fff;
     cursor: default;
     background-color: #337ab7;
     border-color: #337ab7
 }
-#admin-lang .pagination>.disabled>a,
-#admin-lang .pagination>.disabled>a:focus,
-#admin-lang .pagination>.disabled>a:hover,
-#admin-lang .pagination>.disabled>span,
-#admin-lang .pagination>.disabled>span:focus,
-#admin-lang .pagination>.disabled>span:hover {
+  .pagination>.disabled>a,
+  .pagination>.disabled>a:focus,
+  .pagination>.disabled>a:hover,
+  .pagination>.disabled>span,
+  .pagination>.disabled>span:focus,
+  .pagination>.disabled>span:hover {
     color: #777;
     cursor: not-allowed;
     background-color: #fff;
     border-color: #ddd
 }
-#admin-lang .pagination-lg>li>a,
-#admin-lang .pagination-lg>li>span {
+  .pagination-lg>li>a,
+  .pagination-lg>li>span {
     padding: 10px 16px;
     font-size: 18px;
     line-height: 1.3333333
 }
-#admin-lang .pagination-lg>li:first-child>a,
-#admin-lang .pagination-lg>li:first-child>span {
+  .pagination-lg>li:first-child>a,
+  .pagination-lg>li:first-child>span {
     border-top-left-radius: 6px;
     border-bottom-left-radius: 6px
 }
-#admin-lang .pagination-lg>li:last-child>a,
-#admin-lang .pagination-lg>li:last-child>span {
+  .pagination-lg>li:last-child>a,
+  .pagination-lg>li:last-child>span {
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px
 }
-#admin-lang .pagination-sm>li>a,
-#admin-lang .pagination-sm>li>span {
+  .pagination-sm>li>a,
+  .pagination-sm>li>span {
     padding: 5px 10px;
     font-size: 12px;
     line-height: 1.5
 }
-#admin-lang .pagination-sm>li:first-child>a,
-#admin-lang .pagination-sm>li:first-child>span {
+  .pagination-sm>li:first-child>a,
+  .pagination-sm>li:first-child>span {
     border-top-left-radius: 3px;
     border-bottom-left-radius: 3px
 }
-#admin-lang .pagination-sm>li:last-child>a,
-#admin-lang .pagination-sm>li:last-child>span {
+  .pagination-sm>li:last-child>a,
+  .pagination-sm>li:last-child>span {
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px
 }
-#admin-lang .pager {
+  .pager {
     padding-left: 0;
     margin: 20px 0;
     text-align: center;
     list-style: none
 }
-#admin-lang .pager li {
+  .pager li {
     display: inline
 }
-#admin-lang .pager li>a,
-#admin-lang .pager li>span {
+  .pager li>a,
+  .pager li>span {
     display: inline-block;
     padding: 5px 14px;
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 15px
 }
-#admin-lang .pager li>a:focus,
-#admin-lang .pager li>a:hover {
+  .pager li>a:focus,
+  .pager li>a:hover {
     text-decoration: none;
     background-color: #eee
 }
-#admin-lang .pager .next>a,
-#admin-lang .pager .next>span {
+  .pager .next>a,
+  .pager .next>span {
     float: right
 }
-#admin-lang .pager .previous>a,
-#admin-lang .pager .previous>span {
+  .pager .previous>a,
+  .pager .previous>span {
     float: left
 }
-#admin-lang .pager .disabled>a,
-#admin-lang .pager .disabled>a:focus,
-#admin-lang .pager .disabled>a:hover,
-#admin-lang .pager .disabled>span {
+  .pager .disabled>a,
+  .pager .disabled>a:focus,
+  .pager .disabled>a:hover,
+  .pager .disabled>span {
     color: #777;
     cursor: not-allowed;
     background-color: #fff
 }
-#admin-lang .label {
+  .label {
     display: inline;
     padding: .2em .6em .3em;
     font-size: 75%;
@@ -2744,34 +2744,34 @@
     vertical-align: baseline;
     border-radius: .25em
 }
-#admin-lang a.label:focus,
-#admin-lang a.label:hover {
+  a.label:focus,
+  a.label:hover {
     color: #fff;
     text-decoration: none;
     cursor: pointer
 }
-#admin-lang .label:empty {
+  .label:empty {
     display: none
 }
-#admin-lang .btn .label {
+  .btn .label {
     position: relative;
     top: -1px
 }
-#admin-lang .label-default {
+  .label-default {
     background-color: #777
 }
-#admin-lang .label-default[href]:focus,
-#admin-lang .label-default[href]:hover {
+  .label-default[href]:focus,
+  .label-default[href]:hover {
     background-color: #5e5e5e
 }
-#admin-lang .label-primary {
+  .label-primary {
     background-color: #337ab7
 }
-#admin-lang .label-primary[href]:focus,
-#admin-lang .label-primary[href]:hover {
+  .label-primary[href]:focus,
+  .label-primary[href]:hover {
     background-color: #286090
 }
-#admin-lang .badge {
+  .badge {
     display: inline-block;
     min-width: 10px;
     padding: 3px 7px;
@@ -2785,40 +2785,40 @@
     background-color: #777;
     border-radius: 10px
 }
-#admin-lang .badge:empty {
+  .badge:empty {
     display: none
 }
-#admin-lang .btn .badge {
+  .btn .badge {
     position: relative;
     top: -1px
 }
-#admin-lang .btn-group-xs>.btn .badge,
-#admin-lang .btn-xs .badge {
+  .btn-group-xs>.btn .badge,
+  .btn-xs .badge {
     top: 0;
     padding: 1px 5px
 }
-#admin-lang a.badge:focus,
-#admin-lang a.badge:hover {
+  a.badge:focus,
+  a.badge:hover {
     color: #fff;
     text-decoration: none;
     cursor: pointer
 }
-#admin-lang .list-group-item.active>.badge,
-#admin-lang .nav-pills>.active>a>.badge {
+  .list-group-item.active>.badge,
+  .nav-pills>.active>a>.badge {
     color: #337ab7;
     background-color: #fff
 }
-#admin-lang .list-group-item>.badge {
+  .list-group-item>.badge {
     float: right
 }
-#admin-lang .list-group-item>.badge+.badge {
+  .list-group-item>.badge+.badge {
     margin-right: 5px
 }
-#admin-lang .list-group {
+  .list-group {
     padding-left: 0;
     margin-bottom: 20px
 }
-#admin-lang .list-group-item {
+  .list-group-item {
     position: relative;
     display: block;
     padding: 10px 15px;
@@ -2826,92 +2826,92 @@
     background-color: #fff;
     border: 1px solid #ddd
 }
-#admin-lang .list-group-item:first-child {
+  .list-group-item:first-child {
     border-top-left-radius: 4px;
     border-top-right-radius: 4px
 }
-#admin-lang .list-group-item:last-child {
+  .list-group-item:last-child {
     margin-bottom: 0;
     border-bottom-right-radius: 4px;
     border-bottom-left-radius: 4px
 }
-#admin-lang a.list-group-item,
-#admin-lang button.list-group-item {
+  a.list-group-item,
+  button.list-group-item {
     color: #555
 }
-#admin-lang a.list-group-item .list-group-item-heading,
-#admin-lang button.list-group-item .list-group-item-heading {
+  a.list-group-item .list-group-item-heading,
+  button.list-group-item .list-group-item-heading {
     color: #333
 }
-#admin-lang a.list-group-item:focus,
-#admin-lang a.list-group-item:hover,
-#admin-lang button.list-group-item:focus,
-#admin-lang button.list-group-item:hover {
+  a.list-group-item:focus,
+  a.list-group-item:hover,
+  button.list-group-item:focus,
+  button.list-group-item:hover {
     color: #555;
     text-decoration: none;
     background-color: #f5f5f5
 }
-#admin-lang button.list-group-item {
+  button.list-group-item {
     width: 100%;
     text-align: left
 }
-#admin-lang .list-group-item.disabled,
-#admin-lang .list-group-item.disabled:focus,
-#admin-lang .list-group-item.disabled:hover {
+  .list-group-item.disabled,
+  .list-group-item.disabled:focus,
+  .list-group-item.disabled:hover {
     color: #777;
     cursor: not-allowed;
     background-color: #eee
 }
-#admin-lang .list-group-item.disabled .list-group-item-heading,
-#admin-lang .list-group-item.disabled:focus .list-group-item-heading,
-#admin-lang .list-group-item.disabled:hover .list-group-item-heading {
+  .list-group-item.disabled .list-group-item-heading,
+  .list-group-item.disabled:focus .list-group-item-heading,
+  .list-group-item.disabled:hover .list-group-item-heading {
     color: inherit
 }
-#admin-lang .list-group-item.disabled .list-group-item-text,
-#admin-lang .list-group-item.disabled:focus .list-group-item-text,
-#admin-lang .list-group-item.disabled:hover .list-group-item-text {
+  .list-group-item.disabled .list-group-item-text,
+  .list-group-item.disabled:focus .list-group-item-text,
+  .list-group-item.disabled:hover .list-group-item-text {
     color: #777
 }
-#admin-lang .list-group-item.active,
-#admin-lang .list-group-item.active:focus,
-#admin-lang .list-group-item.active:hover {
+  .list-group-item.active,
+  .list-group-item.active:focus,
+  .list-group-item.active:hover {
     z-index: 2;
     color: #fff;
     background-color: #337ab7;
     border-color: #337ab7
 }
-#admin-lang .list-group-item.active .list-group-item-heading,
-#admin-lang .list-group-item.active .list-group-item-heading>.small,
-#admin-lang .list-group-item.active .list-group-item-heading>small,
-#admin-lang .list-group-item.active:focus .list-group-item-heading,
-#admin-lang .list-group-item.active:focus .list-group-item-heading>.small,
-#admin-lang .list-group-item.active:focus .list-group-item-heading>small,
-#admin-lang .list-group-item.active:hover .list-group-item-heading,
-#admin-lang .list-group-item.active:hover .list-group-item-heading>.small,
-#admin-lang .list-group-item.active:hover .list-group-item-heading>small {
+  .list-group-item.active .list-group-item-heading,
+  .list-group-item.active .list-group-item-heading>.small,
+  .list-group-item.active .list-group-item-heading>small,
+  .list-group-item.active:focus .list-group-item-heading,
+  .list-group-item.active:focus .list-group-item-heading>.small,
+  .list-group-item.active:focus .list-group-item-heading>small,
+  .list-group-item.active:hover .list-group-item-heading,
+  .list-group-item.active:hover .list-group-item-heading>.small,
+  .list-group-item.active:hover .list-group-item-heading>small {
     color: inherit
 }
-#admin-lang .list-group-item.active .list-group-item-text,
-#admin-lang .list-group-item.active:focus .list-group-item-text,
-#admin-lang .list-group-item.active:hover .list-group-item-text {
+  .list-group-item.active .list-group-item-text,
+  .list-group-item.active:focus .list-group-item-text,
+  .list-group-item.active:hover .list-group-item-text {
     color: #c7ddef
 }
-#admin-lang .list-group-item-heading {
+  .list-group-item-heading {
     margin-top: 0;
     margin-bottom: 5px
 }
-#admin-lang .list-group-item-text {
+  .list-group-item-text {
     margin-bottom: 0;
     line-height: 1.3
 }
-#admin-lang .embed-responsive {
+  .embed-responsive {
     position: relative;
     display: block;
     height: 0;
     padding: 0;
     overflow: hidden
 }
-#admin-lang .close {
+  .close {
     float: right;
     font-size: 21px;
     font-weight: 700;
@@ -2921,313 +2921,313 @@
     filter: alpha(opacity=20);
     opacity: .2
 }
-#admin-lang .close:focus,
-#admin-lang .close:hover {
+  .close:focus,
+  .close:hover {
     color: #000;
     text-decoration: none;
     cursor: pointer;
     filter: alpha(opacity=50);
     opacity: .5
 }
-#admin-lang button.close {
+  button.close {
     -webkit-appearance: none;
     padding: 0;
     cursor: pointer;
     background: 0 0;
     border: 0
 }
-#admin-lang .btn-group:after,
-#admin-lang .btn-group-vertical>.btn-group:before,
-#admin-lang .btn-toolbar:after,
-#admin-lang .btn-toolbar:before,
-#admin-lang .clearfix:after,
-#admin-lang .clearfix:before,
-#admin-lang .container-fluid:after,
-#admin-lang .container-fluid:before,
-#admin-lang .container:after,
-#admin-lang .container:before,
-#admin-lang .dl-horizontal dd:after,
-#admin-lang .dl-horizontal dd:before,
-#admin-lang .form-horizontal .form-group:after,
-#admin-lang .form-horizontal .form-group:before,
-#admin-lang .modal-footer:after,
-#admin-lang .modal-footer:before,
-#admin-lang .modal-header:after,
-#admin-lang .modal-header:before,
-#admin-lang .nav:after,
-#admin-lang .nav:before,
-#admin-lang .navbar-collapse:after,
-#admin-lang .navbar-collapse:before,
-#admin-lang .navbar-header:after,
-#admin-lang .navbar-header:before,
-#admin-lang .navbar:after,
-#admin-lang .navbar:before,
-#admin-lang .pager:after,
-#admin-lang .pager:before,
-#admin-lang .panel-body:after,
-#admin-lang .panel-body:before,
-#admin-lang .row:after,
-#admin-lang .row:before {
+  .btn-group:after,
+  .btn-group-vertical>.btn-group:before,
+  .btn-toolbar:after,
+  .btn-toolbar:before,
+  .clearfix:after,
+  .clearfix:before,
+  .container-fluid:after,
+  .container-fluid:before,
+  .container:after,
+  .container:before,
+  .dl-horizontal dd:after,
+  .dl-horizontal dd:before,
+  .form-horizontal .form-group:after,
+  .form-horizontal .form-group:before,
+  .modal-footer:after,
+  .modal-footer:before,
+  .modal-header:after,
+  .modal-header:before,
+  .nav:after,
+  .nav:before,
+  .navbar-collapse:after,
+  .navbar-collapse:before,
+  .navbar-header:after,
+  .navbar-header:before,
+  .navbar:after,
+  .navbar:before,
+  .pager:after,
+  .pager:before,
+  .panel-body:after,
+  .panel-body:before,
+  .row:after,
+  .row:before {
     display: table;
     content: " "
 }
-#admin-lang .btn-group-vertical>.btn-group:after,
-#admin-lang .btn-toolbar:after,
-#admin-lang .clearfix:after,
-#admin-lang .container-fluid:after,
-#admin-lang .container:after,
-#admin-lang .dl-horizontal dd:after,
-#admin-lang .form-horizontal .form-group:after,
-#admin-lang .modal-footer:after,
-#admin-lang .modal-header:after,
-#admin-lang .nav:after,
-#admin-lang .navbar-collapse:after,
-#admin-lang .navbar-header:after,
-#admin-lang .navbar:after,
-#admin-lang .pager:after,
-#admin-lang .panel-body:after,
-#admin-lang .row:after {
+  .btn-group-vertical>.btn-group:after,
+  .btn-toolbar:after,
+  .clearfix:after,
+  .container-fluid:after,
+  .container:after,
+  .dl-horizontal dd:after,
+  .form-horizontal .form-group:after,
+  .modal-footer:after,
+  .modal-header:after,
+  .nav:after,
+  .navbar-collapse:after,
+  .navbar-header:after,
+  .navbar:after,
+  .pager:after,
+  .panel-body:after,
+  .row:after {
     clear: both
 }
-#admin-lang .center-block {
+  .center-block {
     display: block;
     margin-right: auto;
     margin-left: auto
 }
-#admin-lang .pull-right {
+  .pull-right {
     float: right!important
 }
-#admin-lang .pull-left {
+  .pull-left {
     float: left!important
 }
-#admin-lang .hide {
+  .hide {
     display: none!important
 }
-#admin-lang .show {
+  .show {
     display: block!important
 }
-#admin-lang .invisible {
+  .invisible {
     visibility: hidden
 }
-#admin-lang .text-hide {
+  .text-hide {
     font: 0/0 a;
     color: transparent;
     text-shadow: none;
     background-color: transparent;
     border: 0
 }
-#admin-lang .hidden {
+  .hidden {
     display: none!important
 }
-#admin-lang .affix {
+  .affix {
     position: fixed
 }
-#admin-lang @-ms-viewport {
+  @-ms-viewport {
     width: device-width
 }
-#admin-lang .visible-lg,
-#admin-lang .visible-md,
-#admin-lang .visible-sm,
-#admin-lang .visible-xs {
+  .visible-lg,
+  .visible-md,
+  .visible-sm,
+  .visible-xs {
     display: none!important
 }
-#admin-lang .visible-lg-block,
-#admin-lang .visible-lg-inline,
-#admin-lang .visible-lg-inline-block,
-#admin-lang .visible-md-block,
-#admin-lang .visible-md-inline,
-#admin-lang .visible-md-inline-block,
-#admin-lang .visible-sm-block,
-#admin-lang .visible-sm-inline-block,
-#admin-lang .visible-xs-block,
-#admin-lang .visible-xs-inline,
-#admin-lang .visible-xs-inline-block {
+  .visible-lg-block,
+  .visible-lg-inline,
+  .visible-lg-inline-block,
+  .visible-md-block,
+  .visible-md-inline,
+  .visible-md-inline-block,
+  .visible-sm-block,
+  .visible-sm-inline-block,
+  .visible-xs-block,
+  .visible-xs-inline,
+  .visible-xs-inline-block {
     display: none!important
 }
 @media (max-width: 767px) {
-    #admin-lang .visible-xs {
+      .visible-xs {
         display: block!important
     }
-    #admin-lang table.visible-xs {
+      table.visible-xs {
         display: table!important
     }
-    #admin-lang tr.visible-xs {
+      tr.visible-xs {
         display: table-row!important
     }
-    #admin-lang td.visible-xs,
-    #admin-lang th.visible-xs {
+      td.visible-xs,
+      th.visible-xs {
         display: table-cell!important
     }
 }
 @media (max-width: 767px) {
-    #admin-lang .visible-xs-block {
+      .visible-xs-block {
         display: block!important
     }
 }
 @media (max-width: 767px) {
-    #admin-lang .visible-xs-inline {
+      .visible-xs-inline {
         display: inline!important
     }
 }
 @media (max-width: 767px) {
-    #admin-lang .visible-xs-inline-block {
+      .visible-xs-inline-block {
         display: inline-block!important
     }
 }
 @media (min-width: 768px) and (max-width: 991px) {
-    #admin-lang .visible-sm {
+      .visible-sm {
         display: block!important
     }
-    #admin-lang table.visible-sm {
+      table.visible-sm {
         display: table!important
     }
-    #admin-lang tr.visible-sm {
+      tr.visible-sm {
         display: table-row!important
     }
-    #admin-lang td.visible-sm,
-    #admin-lang th.visible-sm {
+      td.visible-sm,
+      th.visible-sm {
         display: table-cell!important
     }
 }
 @media (min-width: 768px) and (max-width: 991px) {
-    #admin-lang .visible-sm-block {
+      .visible-sm-block {
         display: block!important
     }
 }
 @media (min-width: 768px) and (max-width: 991px) {
-    #admin-lang .visible-sm-inline {
+      .visible-sm-inline {
         display: inline!important
     }
 }
 @media (min-width: 768px) and (max-width: 991px) {
-    #admin-lang .visible-sm-inline-block {
+      .visible-sm-inline-block {
         display: inline-block!important
     }
 }
 @media (min-width: 992px) and (max-width: 1199px) {
-    #admin-lang .visible-md {
+      .visible-md {
         display: block!important
     }
-    #admin-lang table.visible-md {
+      table.visible-md {
         display: table!important
     }
-    #admin-lang tr.visible-md {
+      tr.visible-md {
         display: table-row!important
     }
-    #admin-lang td.visible-md,
-    #admin-lang th.visible-md {
+      td.visible-md,
+      th.visible-md {
         display: table-cell!important
     }
 }
 @media (min-width: 992px) and (max-width: 1199px) {
-    #admin-lang .visible-md-block {
+      .visible-md-block {
         display: block!important
     }
 }
 @media (min-width: 992px) and (max-width: 1199px) {
-    #admin-lang .visible-md-inline {
+      .visible-md-inline {
         display: inline!important
     }
 }
 @media (min-width: 992px) and (max-width: 1199px) {
-    #admin-lang .visible-md-inline-block {
+      .visible-md-inline-block {
         display: inline-block!important
     }
 }
 @media (min-width: 1200px) {
-    #admin-lang .visible-lg {
+      .visible-lg {
         display: block!important
     }
-    #admin-lang table.visible-lg {
+      table.visible-lg {
         display: table!important
     }
-    #admin-lang tr.visible-lg {
+      tr.visible-lg {
         display: table-row!important
     }
-    #admin-lang td.visible-lg,
-    #admin-lang th.visible-lg {
+      td.visible-lg,
+      th.visible-lg {
         display: table-cell!important
     }
 }
 @media (min-width: 1200px) {
-    #admin-lang .visible-lg-block {
+      .visible-lg-block {
         display: block!important
     }
 }
 @media (min-width: 1200px) {
-    #admin-lang .visible-lg-inline {
+      .visible-lg-inline {
         display: inline!important
     }
 }
 @media (min-width: 1200px) {
-    #admin-lang .visible-lg-inline-block {
+      .visible-lg-inline-block {
         display: inline-block!important
     }
 }
 @media (max-width: 767px) {
-    #admin-lang .hidden-xs {
+      .hidden-xs {
         display: none!important
     }
 }
 @media (min-width: 768px) and (max-width: 991px) {
-    #admin-lang .hidden-sm {
+      .hidden-sm {
         display: none!important
     }
 }
 @media (min-width: 992px) and (max-width: 1199px) {
-    #admin-lang .hidden-md {
+      .hidden-md {
         display: none!important
     }
 }
 @media (min-width: 1200px) {
-    #admin-lang .hidden-lg {
+      .hidden-lg {
         display: none!important
     }
 }
-#admin-lang .visible-print {
+  .visible-print {
     display: none!important
 }
 @media print {
-    #admin-lang .visible-print {
+      .visible-print {
         display: block!important
     }
-    #admin-lang table.visible-print {
+      table.visible-print {
         display: table!important
     }
-    #admin-lang tr.visible-print {
+      tr.visible-print {
         display: table-row!important
     }
-    #admin-lang td.visible-print,
-    #admin-lang th.visible-print {
+      td.visible-print,
+      th.visible-print {
         display: table-cell!important
     }
 }
-#admin-lang .visible-print-block {
+  .visible-print-block {
     display: none!important
 }
 @media print {
-    #admin-lang .visible-print-block {
+      .visible-print-block {
         display: block!important
     }
 }
-#admin-lang .visible-print-inline {
+  .visible-print-inline {
     display: none!important
 }
 @media print {
-    #admin-lang .visible-print-inline {
+      .visible-print-inline {
         display: inline!important
     }
 }
-#admin-lang .visible-print-inline-block {
+  .visible-print-inline-block {
     display: none!important
 }
 @media print {
-    #admin-lang .visible-print-inline-block {
+      .visible-print-inline-block {
         display: inline-block!important
     }
 }
 @media print {
-    #admin-lang .hidden-print {
+      .hidden-print {
         display: none!important
     }
 }
