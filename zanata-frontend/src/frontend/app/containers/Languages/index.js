@@ -9,8 +9,7 @@ import Helmet from 'react-helmet'
 import {
   Page,
   ScrollView,
-  View,
-  Select
+  View
 } from 'zanata-ui'
 
 const contentViewContainerTheme = {
@@ -33,8 +32,6 @@ class Languages extends Component {
                         <Button className="btn-primary"><i className="fa fa-plus"></i> Add new language</Button>
                             <div className="left-form toolbar col-xs-12" role="toolbar">
                                 <div className="search-box col-xs-6 col-sm-7 col-md-5 col-lg-2">
-
-
                                     <FormGroup>
                                       <InputGroup>
                                         <FormControl type="text" />
@@ -43,33 +40,24 @@ class Languages extends Component {
                                         </InputGroup.Button>
                                       </InputGroup>
                                     </FormGroup>
-
-
-
                                 </div>
 
                                 <div className="sort-items col-xs-3-pull-right col-sm-3-pull-right col-md-2">
-                                    <select className="pull-right" id="ddlList1">
+                                    <FormControl componentClass="select" className="pull-right" id="ddlList1">
                                         <option value="2">Alphabetical</option>
                                         <option value="1">Locale code</option>
                                         <option value="3">Members</option>
-                                    </select>
-
+                                    </FormControl>
                                 </div>
 
                                 <div className="show-items col-xs-3 col-sm-3 col-md-2 col-lg-2">
                                     <span>Show  </span>
-                                    <select id="ddlList2">
-                                      <option value="1">10</option>
+                                    <FormControl inline componentClass="select" id="ddlList2">
+                                        <option value="1">10</option>
                                         <option value="2">20</option>
                                         <option value="3">50</option>
                                         <option value="4">100</option>
-
-
-
-                                    </select>
-
-
+                                    </FormControl>
                                 </div>
                                 <div className="page-count pull-right col-xs-8 col-sm-8 col-md-3 col-lg-5">
                                     <nav>

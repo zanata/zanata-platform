@@ -11,7 +11,7 @@ module.exports = _.merge({}, defaultConfig, {
     filename: 'frontend.bundle.min.js'
   },
   module: {
-  /*  preLoaders: [
+    /* preLoaders: [
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
@@ -34,6 +34,14 @@ module.exports = _.merge({}, defaultConfig, {
         loader: ExtractTextPlugin.extract(
           'style',
           'css',
+          'autoprefixer?browsers=last 2 versions'
+        )
+      },
+      {
+        test: /\.less$/,
+        loader: ExtractTextPlugin.extract(
+          'style',
+          'css!less',
           'autoprefixer?browsers=last 2 versions'
         )
       }
