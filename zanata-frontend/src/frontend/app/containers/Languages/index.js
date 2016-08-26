@@ -3,7 +3,9 @@ import {
   Button,
   InputGroup,
   FormGroup,
-  FormControl
+  FormControl,
+  ButtonGroup,
+  ButtonToolbar
  } from 'react-bootstrap'
 import Helmet from 'react-helmet'
 import {
@@ -106,7 +108,7 @@ class Languages extends Component {
 
 
 
-                            <div className="left-form tablepadding col-xs-12">
+                            <div className="left-form col-xs-12">
                                 <table className="table">
                                     <thead>
                                         <tr>
