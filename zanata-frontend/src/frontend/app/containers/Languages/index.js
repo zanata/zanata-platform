@@ -51,7 +51,7 @@ class Languages extends Component {
                                     </FormControl>
                                 </div>
 
-                                <div className="show-items col-xs-4 col-sm-3 col-md-2 col-lg-2">
+                                <div className="show-items col-xs-5 col-sm-3 col-md-2 col-lg-2">
                                     <span>Show  </span>
                                     <FormControl inline componentClass="select" id="ddlList2">
                                         <option value="1">10</option>
@@ -60,7 +60,7 @@ class Languages extends Component {
                                         <option value="4">100</option>
                                     </FormControl>
                                 </div>
-                                <div className="page-count pull-right col-xs-8 col-sm-8 col-md-12 col-lg-4">
+                                <div className="page-count pull-right col-xs-7 col-sm-8 col-md-12 col-lg-4">
                                     <nav>
                                         <ul className="pagination pull-right">
                                             <li className="disabled">
