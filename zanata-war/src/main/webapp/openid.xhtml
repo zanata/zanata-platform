@@ -1,7 +1,20 @@
-<ui:remove xmlns:ui="http://java.sun.com/jsf/facelets">
-  <!--
-  This is a "virtual" view to accept openid authentication responses.
-  This is necessary in Seam 2.3 / JSF 2 because JSF actually checks for the existence of the physical view.
-  See: https://issues.jboss.org/browse/JBSEAM-4939
-  -->
-</ui:remove>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  template="/WEB-INF/template/template.xhtml">
+
+  <ui:remove xmlns:ui="http://java.sun.com/jsf/facelets">
+    <!--
+    This is a "virtual" view to accept openid authentication responses.
+    This is necessary in Seam 2.3 / JSF 2 because JSF actually checks for the existence of the physical view.
+    See: https://issues.jboss.org/browse/JBSEAM-4939
+    -->
+  </ui:remove>
+
+  <f:metadata>
+    <f:event type="preRenderView" listener="#{openIdAction.handleRedirect()}"/>
+  </f:metadata>
+</ui:composition>
+
