@@ -25,8 +25,6 @@ import java.io.Serializable;
 
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -46,7 +44,7 @@ import org.zanata.security.openid.FedoraOpenIdProvider;
 import org.zanata.security.openid.GoogleOpenIdProvider;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.security.openid.YahooOpenIdProvider;
-import org.zanata.util.FacesNavigationUtil;
+import org.zanata.util.UrlUtil;
 
 /**
  * This action takes care of logging a user into the system. It contains logic
@@ -90,6 +88,9 @@ public class LoginAction implements Serializable {
     @Inject
     private UserRedirectBean userRedirect;
 
+    @Inject
+    private UrlUtil urlUtil;
+
     public String login() {
         credentials.setUsername(username);
         credentials.setPassword(password);
@@ -129,7 +130,8 @@ public class LoginAction implements Serializable {
             }
             if (authenticationManager.isAuthenticated() && !authenticationManager.isNewUser() && userRedirect.isRedirect()) {
                 // TODO [CDI] seam will create a conversation when you return view id directly or redirect to external url
-                return continueToPreviousUrl();
+                urlUtil.redirectToInternal(userRedirect.getUrl());
+                return "continue";
             }
         } else if ("inactive".equals(loginResult)) {
             // TODO [CDI] commented out programmatically ending conversation
@@ -137,16 +139,6 @@ public class LoginAction implements Serializable {
             return "inactive";
         }
         return loginResult;
-    }
-
-    private String continueToPreviousUrl() {
-        try {
-            FacesNavigationUtil.redirect(FacesContext.getCurrentInstance(),
-                    userRedirect.getUrl());
-        } catch (IOException e) {
-            return "dashboard";
-        }
-        return "continue";
     }
 
     /**

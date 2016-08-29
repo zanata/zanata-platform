@@ -2,6 +2,7 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <f:view contentType="text/html" xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ds="http://deltaspike.apache.org/jsf"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"
@@ -69,21 +70,22 @@
   <!-- to create a completely dynamic UI.        -->
   <!--                                           -->
   <h:body styleClass="new-zanata-body">
-  <script type="text/javascript">
-    var zanataSessionId = '#{request.session.id}';
-  </script>
-  <div class="new-zanata-base">
-    <div class="new-zanata">
-      <ui:include src="../WEB-INF/template/banner.xhtml"/>
+    <ds:windowId/>
+    <script type="text/javascript">
+      var zanataSessionId = '#{request.session.id}';
+    </script>
+    <div class="new-zanata-base">
+      <div class="new-zanata">
+        <ui:include src="../WEB-INF/template/banner.xhtml"/>
+      </div>
     </div>
-  </div>
-  <div id="container"/>
+    <div id="container"/>
 
-  <!-- OPTIONAL: include this if you want history support -->
-  <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1'
-    style="position:absolute;width:0;height:0;border:0"></iframe>
+    <!-- OPTIONAL: include this if you want history support -->
+    <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1'
+      style="position:absolute;width:0;height:0;border:0"></iframe>
 
-  <ui:include src="../WEB-INF/template/scripts.xhtml"/>
+    <ui:include src="../WEB-INF/template/scripts.xhtml"/>
 
   </h:body>
   </html>
