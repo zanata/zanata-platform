@@ -1,3 +1,16 @@
+## 3.9.4
+##### Changes
+ * [ZNTA-1286](https://zanata.atlassian.net/browse/ZNTA-1286) - Language/Dashboard: migrate js alert and js confirm to modal
+ * [ZNTA-1285](https://zanata.atlassian.net/browse/ZNTA-1285) - Version pages: migrate js alert and js confirm to modal
+ * [ZNTA-1284](https://zanata.atlassian.net/browse/ZNTA-1284) - Project pages: migrate js alert and js confirm to modal
+ * [ZNTA-1283](https://zanata.atlassian.net/browse/ZNTA-1283) - Admin pages: Migrate js alert and js confirm to modal
+
+##### Bug Fixes
+ * [ZNTA-1323](https://zanata.atlassian.net/browse/ZNTA-1323) - Register with non ASCII full name, the name is messed
+ * [ZNTA-1318](https://zanata.atlassian.net/browse/ZNTA-1318) - Need better exception handling for transaction errors
+
+-----------------------
+
 ## 3.9.3
 ##### Bug Fixes
  * [ZNTA-608](https://zanata.atlassian.net/browse/ZNTA-608) - Error (exception) on project page after removing an alias
