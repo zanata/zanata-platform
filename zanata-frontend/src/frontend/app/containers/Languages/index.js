@@ -104,9 +104,6 @@ class Languages extends Component {
                                     </nav>
                                 </div>
                             </div>
-
-
-
                             <div className="left-form tablepadding col-xs-12">
                                 <table className="table">
                                     <thead>
@@ -218,9 +215,6 @@ class Languages extends Component {
 
                                           </td>
                                         </tr>
-
-
-
                                     </tbody>
                                 </table>
                             </div>
