@@ -52,7 +52,8 @@ class Languages extends Component {
                                 </div>
 
                                 <div className="show-items col-xs-5 col-sm-3 col-md-2 col-lg-2">
-                                    <span>Show  </span>
+                                    <span>Show
+                                    </span>
                                     <FormControl inline componentClass="select" id="ddlList2">
                                         <option value="1">10</option>
                                         <option value="2">20</option>
@@ -65,7 +66,7 @@ class Languages extends Component {
                                         <ul className="pagination pull-right">
                                             <li className="disabled">
                                                 <span>
-                                        <span aria-hidden="true">«</span>
+                                                  <span aria-hidden="true">«</span>
                                                 </span>
                                             </li>
                                             <li className="active">
@@ -97,7 +98,7 @@ class Languages extends Component {
                                             </li>
                                             <li>
                                                 <a href="#" aria-label="Next">
-                                                    <span aria-hidden="true">»</span>
+                                                  <span aria-hidden="true">»</span>
                                                 </a>
                                             </li>
                                         </ul>
@@ -110,117 +111,106 @@ class Languages extends Component {
                                         <tr>
                                             <th>Language</th>
                                             <th>&nbsp;</th>
-                                                    <th>&nbsp;</th>
+                                            <th>&nbsp;</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
                                             <td><a href="">Afrikaans <span className="greentext badge">DEFAULT</span></a>
-                                                <br /><span className="langcode"> af [Afrikaans]</span>
+                                            <br /><span className="langcode"> af [Afrikaans]</span>
                                             </td>
                                             <td><span><i className="fa fa-user"></i>0</span>
                                             </td>
-                                            <td>   <Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
-
-                                          </td>
+                                            <td><Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td><a href="">Albanian</a>
-                                                <br /><span className="langcode"> sq [shqip]</span>
+                                            <br /><span className="langcode"> sq [shqip]</span>
                                             </td>
                                             <td><span><i className="fa fa-user"></i>2</span>
                                             </td>
-                                            <td>   <Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
-
-                                          </td>
+                                            <td><Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td><a href="">Amharic</a>
-                                                <br /><span className="langcode"> am</span>
+                                              <br /><span className="langcode"> am</span>
                                             </td>
                                             <td><span><i className="fa fa-user"></i>4</span>
                                             </td>
-                                            <td>   <Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
-
-                                          </td>
+                                            <td><Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td><a href="">Angika</a>
-                                                <br /><span className="langcode"> anp [Angika]</span>
+                                            <br /><span className="langcode"> anp [Angika]</span>
                                             </td>
                                             <td><span><i className="fa fa-user"></i>1</span>
                                             </td>
-                                            <td>   <Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
-
-                                          </td>
+                                            <td><Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td><a href="">Arabic</a>
-                                                <br /><span className="langcode"> ar</span>
+                                            <br /><span className="langcode"> ar</span>
                                             </td>
                                             <td><span><i className="fa fa-user"></i>5</span>
                                             </td>
-                                            <td>   <Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
-
-                                          </td>
+                                            <td><Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
+                                            </td>
                                         </tr>
-
                                         <tr>
                                             <td><a href="">Arabic (Saudi Arabia) <span className="dis badge">DISABLED</span></a>
-                                                <br /><span className="langcode"> ar-SA</span>
+                                            <br /><span className="langcode"> ar-SA</span>
                                             </td>
                                             <td><span><i className="fa fa-user"></i>0</span>
                                             </td>
-                                            <td>   <Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
-
-                                          </td>
+                                            <td><Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td><a href="">Armenian</a>
-                                                <br /><span className="langcode"> hy</span>
+                                            <br /><span className="langcode"> hy</span>
                                             </td>
                                             <td><span><i className="fa fa-user"></i>1</span>
                                             </td>
-                                            <td>   <Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
-
-                                          </td>
+                                            <td><Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td><a href="">Assamese</a>
-                                                <br /><span className="langcode"> as</span>
+                                            <br /><span className="langcode"> as</span>
                                             </td>
                                             <td><span><i className="fa fa-user"></i>8</span>
                                             </td>
-                                            <td>   <Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
-
-                                          </td>
+                                            <td><Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td><a href="">Assamese (India) <span className="dis badge">DISABLED</span></a>
-                                                <br /><span className="langcode"> anp [Angika]</span>
+                                            <br /><span className="langcode"> anp [Angika]</span>
                                             </td>
                                             <td><span><i className="fa fa-user"></i>1</span>
                                             </td>
-                                            <td>   <Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
-
-                                          </td>
+                                            <td><Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td><a href="">Arabic</a>
-                                                <br /><span className="langcode"> ar</span>
+                                            <br /><span className="langcode"> ar</span>
                                             </td>
                                             <td><span><i className="fa fa-user"></i>5</span>
                                             </td>
-                                            <td>   <Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
-
-                                          </td>
+                                            <td><Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
-            </div>
+                </div>
           </View>
         </ScrollView>
       </Page>
