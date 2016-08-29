@@ -31,7 +31,7 @@ class Languages extends Component {
                     <div className="contentx clearfix col-xs-12">
                         <h2>Languages <span className="badge">121</span></h2>
                         <Button className="btn-primary"><i className="fa fa-plus"></i> Add new language</Button>
-                            <div className="left-form toolbar nolrpadding col-xs-12">
+                            <div className="left-form toolbar col-xs-12">
                                 <div className="search-box col-xs-6 col-sm-9 col-md-6 col-lg-3">
                                     <FormGroup>
                                       <InputGroup>
