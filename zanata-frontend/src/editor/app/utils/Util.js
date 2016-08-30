@@ -1,11 +1,10 @@
-import _ from 'lodash'
-import {getId} from './TransStatusService'
+import { chain, map } from 'lodash'
 
 /* convert from structure used in angular to structure used in react */
 // TODO we should change the server response to save us from doing this
 //      transformation
 export const prepareLocales = (locales) => {
-  return _.chain(locales || [])
+  return chain(locales || [])
       .map(function (locale) {
         return {
           id: locale.localeId,
@@ -16,19 +15,37 @@ export const prepareLocales = (locales) => {
       .value()
 }
 
+/**
+ * Massage stats data to fit what is expected in this app.
+ *
+ * - Transform some stat keys to match app expectations
+ * - Only include relevant stats
+ * - Parse values as integers
+ */
 export const prepareStats = (statistics) => {
-  _.forEach(statistics, statistic => {
-    statistic[getId('needswork')] = statistic['needReview'] || 0
-  })
-  // TODO pahuang first is word stats and second is message stats
-  const msgStatsStr = _.pick(statistics[1], [
-    'total', 'untranslated', 'rejected',
-    'needswork', 'translated', 'approved'])
-  return _.mapValues(msgStatsStr, (numStr) => {
-    return parseInt(numStr, 10)
-  })
+  const messageStats = statistics[1]
+
+  return chain(messageStats)
+    .mapKeys((value, key) => {
+      switch (key) {
+        case 'fuzzy':
+          return 'needswork'
+        case 'translatedOnly':
+          return 'translated'
+        default:
+          return key
+      }
+    })
+    .pick([
+      'total', 'untranslated', 'rejected',
+      'needswork', 'translated', 'approved'
+    ])
+    .mapValues((numStr) => {
+      return parseInt(numStr, 10)
+    })
+    .value()
 }
 
 export const prepareDocs = documents => {
-  return _.map(documents || [], 'name')
+  return map(documents || [], 'name')
 }
