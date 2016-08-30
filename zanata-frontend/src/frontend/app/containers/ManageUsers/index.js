@@ -218,4 +218,4 @@ class ManageUsers extends Component {
   }
 }
 
-export default Languages
+export default ManageUsers
