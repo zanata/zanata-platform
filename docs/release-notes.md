@@ -1,3 +1,9 @@
+## 3.9.5
+##### Bug Fixes
+ * [ZNTA-1293](https://zanata.atlassian.net/browse/ZNTA-1293) - Log files full of NonexistentConversationException
+
+-----------------------
+
 ## 3.9.4
 ##### Changes
  * [ZNTA-1286](https://zanata.atlassian.net/browse/ZNTA-1286) - Language/Dashboard: migrate js alert and js confirm to modal
