@@ -3,6 +3,12 @@
 ##### Bug Fixes
 * [ZNTA-846](https://zanata.atlassian.net/browse/ZNTA-846) - Group "request add project version" needs field limit
 * [ZNTA-872](https://zanata.atlassian.net/browse/ZNTA-872) - Redirect to home from cancel button in create user page
+## 3.9.5
+##### Bug Fixes
+ * [ZNTA-1293](https://zanata.atlassian.net/browse/ZNTA-1293) - Log files full of NonexistentConversationException
+
+-----------------------
+
 ## 3.9.4
 ##### Changes
  * [ZNTA-1286](https://zanata.atlassian.net/browse/ZNTA-1286) - Language/Dashboard: migrate js alert and js confirm to modal
