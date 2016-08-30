@@ -26,13 +26,13 @@ class ManageUsers extends Component {
         <Helmet title='ManageUsers' />
         <ScrollView>
           <View theme={contentViewContainerTheme}>
-            <div className="row clearfix" id="admin-lang">
+            <div className="row clearfix" id="manage-users">
                 <div className="row-height">
                     <div className="contentx clearfix col-xs-12">
-                        <h2>Languages <span className="badge">121</span></h2>
-                        <Button className="btn-primary"><i className="fa fa-plus"></i> Add new language</Button>
+                        <h2>Manage users <span className="badge">6</span></h2>
+                        <Button className="btn-primary"><i className="fa fa-plus"></i> Add new user</Button>
                             <div className="left-form toolbar col-xs-12">
-                                <div className="search-box col-xs-6 col-sm-9 col-md-6 col-lg-3">
+                                <div className="search-box col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <FormGroup>
                                       <InputGroup>
                                         <FormControl type="text" />
@@ -43,25 +43,8 @@ class ManageUsers extends Component {
                                     </FormGroup>
                                 </div>
 
-                                <div className="sort-items col-xs-6 col-sm-3 col-md-4 col-lg-2">
-                                    <FormControl componentClass="select" className="pull-right" id="ddlList1">
-                                        <option value="2">Alphabetical</option>
-                                        <option value="1">Locale code</option>
-                                        <option value="3">Members</option>
-                                    </FormControl>
-                                </div>
 
-                                <div className="show-items col-xs-5 col-sm-3 col-md-2 col-lg-2">
-                                    <span>Show
-                                    </span>
-                                    <FormControl inline componentClass="select" id="ddlList2">
-                                        <option value="1">10</option>
-                                        <option value="2">20</option>
-                                        <option value="3">50</option>
-                                        <option value="4">100</option>
-                                    </FormControl>
-                                </div>
-                                <div className="page-count pull-right col-xs-7 col-sm-8 col-md-12 col-lg-4">
+                                <div className="page-count pull-right col-xs-7 col-sm-6 col-md-6 col-lg-6">
                                     <nav>
                                         <ul className="pagination pull-right">
                                             <li className="disabled">
@@ -72,31 +55,8 @@ class ManageUsers extends Component {
                                             <li className="active">
                                                 <span>1 <span className="sr-only">(current)</span></span>
                                             </li>
-                                            <li><a href="#">2 <span className="sr-only"></span></a>
-                                            </li>
 
-                                            <li><a href="#">3 <span className="sr-only"></span></a>
-                                            </li>
-                                            <li><a href="#">4 <span className="sr-only"></span></a>
-                                            </li>
-                                            <li><a href="#">5 <span className="sr-only"></span></a>
-                                            </li>
-                                            <li><a href="#">6 <span className="sr-only"></span></a>
-                                            </li>
-                                            <li><a href="#">7 <span className="sr-only"></span></a>
-                                            </li>
-                                            <li><a href="#">8 <span className="sr-only"></span></a>
-                                            </li>
-
-                                            <li><a href="#">9 <span className="sr-only"></span></a>
-                                            </li>
-                                            <li><a href="#">10 <span className="sr-only"></span></a>
-                                            </li>
-                                            <li><a href="#">11 <span className="sr-only"></span></a>
-                                            </li>
-                                            <li><a href="#">12 <span className="sr-only"></span></a>
-                                            </li>
-                                            <li>
+                                            <li className="disabled">
                                                 <a href="#" aria-label="Next">
                                                   <span aria-hidden="true">»</span>
                                                 </a>
@@ -109,98 +69,49 @@ class ManageUsers extends Component {
                                 <table className="table">
                                     <thead>
                                         <tr>
-                                            <th>Language</th>
-                                            <th>&nbsp;</th>
+                                            <th>Username</th>
                                             <th>&nbsp;</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td><a href="">Afrikaans <span className="greentext badge">DEFAULT</span></a>
-                                            <br /><span className="langcode"> af [Afrikaans]</span>
-                                            </td>
-                                            <td><span><i className="fa fa-user"></i>0</span>
+                                            <td><a href="">admin</a> [admin]
+                                            <br />admin@zanata.org
                                             </td>
                                             <td><Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td><a href="">Albanian</a>
-                                            <br /><span className="langcode"> sq [shqip]</span>
-                                            </td>
-                                            <td><span><i className="fa fa-user"></i>2</span>
+                                            <td><a href="">glossarist</a> [glossarist, user]
+                                            <br />glossarist@no-email.com
                                             </td>
                                             <td><Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td><a href="">Amharic</a>
-                                              <br /><span className="langcode"> am</span>
-                                            </td>
-                                            <td><span><i className="fa fa-user"></i>4</span>
+                                            <td><a href="">glossaryadmin</a> [glossaryadmin, user]
+                                              <br />glossaryadmin@no-email.com
                                             </td>
                                             <td><Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td><a href="">Angika</a>
-                                            <br /><span className="langcode"> anp [Angika]</span>
-                                            </td>
-                                            <td><span><i className="fa fa-user"></i>1</span>
+                                            <td><a href="">langcoor</a> [translator, user]
+                                            <br />lang-coor@no-email.com
                                             </td>
                                             <td><Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td><a href="">Arabic</a>
-                                            <br /><span className="langcode"> ar</span>
-                                            </td>
-                                            <td><span><i className="fa fa-user"></i>5</span>
+                                            <td><a href="">pmaint</a> [translator, user]
+                                            <br />pmaint@no-email.com
                                             </td>
                                             <td><Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td><a href="">Arabic (Saudi Arabia) <span className="dis badge">DISABLED</span></a>
-                                            <br /><span className="langcode"> ar-SA</span>
-                                            </td>
-                                            <td><span><i className="fa fa-user"></i>0</span>
-                                            </td>
-                                            <td><Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><a href="">Armenian</a>
-                                            <br /><span className="langcode"> hy</span>
-                                            </td>
-                                            <td><span><i className="fa fa-user"></i>1</span>
-                                            </td>
-                                            <td><Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><a href="">Assamese</a>
-                                            <br /><span className="langcode"> as</span>
-                                            </td>
-                                            <td><span><i className="fa fa-user"></i>8</span>
-                                            </td>
-                                            <td><Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><a href="">Assamese (India) <span className="dis badge">DISABLED</span></a>
-                                            <br /><span className="langcode"> anp [Angika]</span>
-                                            </td>
-                                            <td><span><i className="fa fa-user"></i>1</span>
-                                            </td>
-                                            <td><Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><a href="">Arabic</a>
-                                            <br /><span className="langcode"> ar</span>
-                                            </td>
-                                            <td><span><i className="fa fa-user"></i>5</span>
+                                            <td><a href="">translator</a> [translator, user]
+                                            <br />translator@no-email.com
                                             </td>
                                             <td><Button bsSize="small"><i className="fa fa-times"></i>  Delete</Button>
                                             </td>
