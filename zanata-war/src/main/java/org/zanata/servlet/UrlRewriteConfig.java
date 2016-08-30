@@ -1,17 +1,28 @@
 package org.zanata.servlet;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.ocpsoft.rewrite.annotation.RewriteConfiguration;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.Direction;
+import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.servlet.config.Forward;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
+import org.ocpsoft.rewrite.servlet.config.HttpOperation;
 import org.ocpsoft.rewrite.servlet.config.Path;
+import org.ocpsoft.rewrite.servlet.config.Query;
 import org.ocpsoft.rewrite.servlet.config.Redirect;
-import org.ocpsoft.rewrite.servlet.config.bind.RequestBinding;
 import org.ocpsoft.rewrite.servlet.config.rule.Join;
+import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
+import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
+import org.ocpsoft.urlbuilder.Address;
+import org.ocpsoft.urlbuilder.AddressBuilder;
 
 import javax.servlet.ServletContext;
+import java.util.List;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /*
  * This class replaces urlrewrite.xml, with simpler bidirectional mappings for external/internal URLs.
@@ -24,6 +35,11 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
         String contextPath = context.getContextPath();
         // NB: inbound rules are processed in order, outbound rules in reverse order (as of Rewrite 3.0.0.Alpha1)
         return ConfigurationBuilder.begin()
+
+                // strip cid params to avoid NonexistentConversationException
+                .addRule()
+                .when(Query.parameterExists("cid"))
+                .perform(new RedirectWithoutParam("cid"))
 
                 .addRule()
                 .when(Direction.isInbound()
@@ -139,4 +155,32 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
     public int priority() {
         return 0;
     }
+
+    static class RedirectWithoutParam extends HttpOperation {
+        private final String paramName;
+
+        RedirectWithoutParam(String paramName) {
+            this.paramName = paramName;
+        }
+
+        @Override
+        public void performHttp(HttpServletRewrite event,
+                EvaluationContext context) {
+            // Remove param from address query
+            Address address = event.getAddress();
+            String query = address.getQuery();
+            List<NameValuePair> nameValuePairs =
+                    URLEncodedUtils.parse(query, UTF_8);
+            nameValuePairs.removeIf(nvp -> nvp.getName().equals(paramName));
+
+            String newAddress;
+            if (nameValuePairs.isEmpty()) {
+                newAddress = address.getPath();
+            } else {
+                newAddress = address.getPath() + "?" + URLEncodedUtils.format(nameValuePairs, UTF_8);
+            }
+            ((HttpInboundServletRewrite) event).redirectTemporary(AddressBuilder.create(newAddress).toString());
+        }
+    }
+
 }

@@ -157,6 +157,12 @@
     <!--<listener-class>net.bull.javamelody.SessionListener</listener-class>-->
   <!--</listener>-->
 
+  <!-- Needs to be first otherwise the character set might accidentally be locked to ISO-8859-1 -->
+  <filter-mapping>
+    <filter-name>CharacterEncodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
   <filter-mapping>
     <filter-name>RestLimitingFilter</filter-name>
     <url-pattern>/rest/*</url-pattern>

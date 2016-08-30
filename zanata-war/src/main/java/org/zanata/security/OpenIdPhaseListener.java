@@ -60,8 +60,6 @@ public class OpenIdPhaseListener implements PhaseListener {
         }
 
         openid.verify();
-
-        FacesNavigationUtil.handlePageNavigation("/openid.xhtml", null);
     }
 
     private void sendXRDS() throws IOException {

@@ -2,6 +2,7 @@
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <f:view contentType="text/html" xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ds="http://deltaspike.apache.org/jsf"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core">
@@ -51,7 +52,7 @@
   <!-- to create a completely dynamic UI.        -->
   <!--                                           -->
   <h:body styleClass="new-zanata-body">
-
+    <ds:windowId/>
     <div id="config"
       data-base-url="#{request.contextPath}"
       data-api-root="/rest"
