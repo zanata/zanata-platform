@@ -30,7 +30,6 @@ class ManageUsers extends Component {
                 <div className="row-height">
                     <div className="contentx clearfix col-xs-12">
                         <h2>Manage users <span className="badge">6</span></h2>
-                        <Button className="btn-primary"><i className="fa fa-plus"></i> Add new user</Button>
                             <div className="left-form toolbar col-xs-12">
                                 <div className="search-box col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <FormGroup>
@@ -43,33 +42,12 @@ class ManageUsers extends Component {
                                     </FormGroup>
                                 </div>
 
-
-                                <div className="page-count pull-right col-xs-7 col-sm-6 col-md-6 col-lg-6">
-                                    <nav>
-                                        <ul className="pagination pull-right">
-                                            <li className="disabled">
-                                                <span>
-                                                  <span aria-hidden="true">«</span>
-                                                </span>
-                                            </li>
-                                            <li className="active">
-                                                <span>1 <span className="sr-only">(current)</span></span>
-                                            </li>
-
-                                            <li className="disabled">
-                                                <a href="#" aria-label="Next">
-                                                  <span aria-hidden="true">»</span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </nav>
-                                </div>
                             </div>
                             <div className="left-form tablepadding col-xs-12">
                                 <table className="table">
                                     <thead>
                                         <tr>
-                                            <th>Username</th>
+                                            <th>&nbsp;</th>
                                             <th>&nbsp;</th>
                                         </tr>
                                     </thead>
