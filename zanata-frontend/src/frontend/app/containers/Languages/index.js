@@ -64,41 +64,34 @@ class Languages extends Component {
                                 <div className="page-count pull-right col-xs-7 col-sm-8 col-md-12">
                                     <nav>
                                         <ul className="pagination pull-right">
-                                            <li className="disabled">
+                                            <li>
                                                 <span>
-                                                  <span aria-hidden="true">«</span>
+                                                  <span aria-hidden="true">« prev</span>
                                                 </span>
                                             </li>
-                                            <li className="active">
+                                            <li>
                                                 <span>1 <span className="sr-only">(current)</span></span>
                                             </li>
-                                            <li><a href="#">2 <span className="sr-only"></span></a>
-                                            </li>
-
-                                            <li><a href="#">3 <span className="sr-only"></span></a>
-                                            </li>
-                                            <li><a href="#">4 <span className="sr-only"></span></a>
-                                            </li>
-                                            <li><a href="#">5 <span className="sr-only"></span></a>
-                                            </li>
-                                            <li><a href="#">6 <span className="sr-only"></span></a>
+                                            <li className="disabled"><a href="#">...<span className="sr-only"></span></a>
                                             </li>
                                             <li><a href="#">7 <span className="sr-only"></span></a>
                                             </li>
                                             <li><a href="#">8 <span className="sr-only"></span></a>
                                             </li>
 
-                                            <li><a href="#">9 <span className="sr-only"></span></a>
+                                            <li className="active"><a href="#">9 <span className="sr-only"></span></a>
                                             </li>
                                             <li><a href="#">10 <span className="sr-only"></span></a>
                                             </li>
                                             <li><a href="#">11 <span className="sr-only"></span></a>
                                             </li>
-                                            <li><a href="#">12 <span className="sr-only"></span></a>
+                                            <li className="disabled"><a href="#">...<span className="sr-only"></span></a>
+                                            </li>
+                                            <li><a href="#">36 <span className="sr-only"></span></a>
                                             </li>
                                             <li>
                                                 <a href="#" aria-label="Next">
-                                                  <span aria-hidden="true">»</span>
+                                                  <span aria-hidden="true">next »</span>
                                                 </a>
                                             </li>
                                         </ul>
