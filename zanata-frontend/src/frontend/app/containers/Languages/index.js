@@ -101,7 +101,7 @@ class Languages extends Component {
                             <div className="left-form tablepadding col-xs-12">
                                 <table className="table">
                                     <thead>
-                                        <tr>
+                                        <tr className="hidden">
                                             <th>Language</th>
                                             <th>&nbsp;</th>
                                             <th>&nbsp;</th>
