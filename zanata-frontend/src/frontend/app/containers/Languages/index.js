@@ -28,7 +28,7 @@ class Languages extends Component {
           <View theme={contentViewContainerTheme}>
             <div className="row clearfix" id="admin-lang">
                 <div className="row-height">
-                    <div className="contentx clearfix col-xs-12">
+                    <div className="contentx clearfix center-block">
                         <h2>Languages <span className="badge">121</span></h2>
                         <Button className="btn-primary"><i className="fa fa-plus"></i> Add new language</Button>
                             <div className="left-form toolbar col-xs-12">
