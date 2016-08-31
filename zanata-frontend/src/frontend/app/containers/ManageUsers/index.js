@@ -28,7 +28,7 @@ class ManageUsers extends Component {
           <View theme={contentViewContainerTheme}>
             <div className="row clearfix" id="manage-users">
                 <div className="row-height">
-                    <div className="contentx clearfix col-xs-12">
+                    <div className="contentx clearfix center-block">
                         <h2>Manage users <span className="badge">6</span></h2>
                             <div className="left-form toolbar col-xs-12">
                                 <div className="search-box col-xs-12 col-sm-6 col-md-6 col-lg-6">
