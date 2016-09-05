@@ -49,6 +49,7 @@ const TransUnitTranslationFooter = React.createClass({
     untranslated: 'Button--neutral',
     needswork: 'Button--unsure',
     translated: 'Button--success',
+    rejected: 'Button--warning',
     approved: 'Button--highlight'
   },
 
@@ -56,6 +57,7 @@ const TransUnitTranslationFooter = React.createClass({
     untranslated: 'Untranslated',
     needswork: 'Needs Work',
     translated: 'Translated',
+    rejected: 'Rejected',
     approved: 'Approved'
   },
 

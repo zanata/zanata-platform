@@ -24,6 +24,7 @@ export const DEFAULT_LOCALE = {
 const DEFAULT_FILTER_STATE = {
   all: true,
   approved: false,
+  rejected: false,
   translated: false,
   needswork: false,
   untranslated: false
@@ -183,7 +184,8 @@ const ui = (state = defaultState, action) => {
  * Check if statuses are either all true or all false
  */
 function allStatusesSame (statuses) {
-  return statuses.approved === statuses.translated &&
+  return statuses.approved === statuses.rejected &&
+    statuses.rejected === statuses.translated &&
     statuses.translated === statuses.needswork &&
     statuses.needswork === statuses.untranslated
 }

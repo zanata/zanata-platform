@@ -3,7 +3,7 @@ Zanata can be installed by downloading a web archive (war) file, and configuring
 ## What you need
 
 - JBoss Enterprise Application Platform 6 (EAP 7), version 7.0.1 or later. This is the recommended container for Zanata, and it can be [downloaded here](https://www.jboss.org/products/eap/download/).
-- ... OR WildFly (version 10.0.0.Final) which can be [downloaded here](http://wildfly.org/downloads/)
+- ... OR WildFly (version 10.1.0.Final) which can be [downloaded here](http://wildfly.org/downloads/)
 - A suitable MySQL database. This is NOT included in the Zanata archive. You can [download MySQL here](http://dev.mysql.com/downloads/mysql/).
 - An email (SMTP) server for email verification and notifications.
 - JDK version 1.8 or later. [OpenJDK](http://openjdk.java.net/install/) is recommended, but you can also download [Oracle's JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)

@@ -86,14 +86,16 @@ describe('TransUnitFilterTest', () => {
           approved: false,
           translated: true,
           needswork: false,
-          untranslated: true
+          rejected: true,
+          untranslated: false
         }}
         counts={{
           total: 1,
           approved: 2,
           translated: 3,
           needswork: 4,
-          untranslated: 5
+          rejected: 5,
+          untranslated: 6
         }}
         gettextCatalog={mockGettextCatalog}/>
     )
@@ -104,7 +106,7 @@ describe('TransUnitFilterTest', () => {
           <FilterToggle
             id="filter-phrases-total"
             className="u-textSecondary"
-            isChecked={true}
+            isChecked
             title="Total Phrases"
             count={1}
             onChange={() => {}}
@@ -123,7 +125,7 @@ describe('TransUnitFilterTest', () => {
           <FilterToggle
             id="filter-phrases-translated"
             className="u-textSuccess"
-            isChecked={true}
+            isChecked
             title="Translated"
             count={3}
             onChange={() => {}}/>
@@ -139,11 +141,20 @@ describe('TransUnitFilterTest', () => {
         </li>
         <li className="u-ltemd-hidden u-sMV-1-4">
           <FilterToggle
+            id="filter-phrases-rejected"
+            className="u-textWarning"
+            isChecked
+            title="Rejected"
+            count={5}
+            onChange={() => {}}/>
+        </li>
+        <li className="u-ltemd-hidden u-sMV-1-4">
+          <FilterToggle
             id="filter-phrases-untranslated"
             className="u-textNeutral"
-            isChecked={true}
+            isChecked={false}
             title="Untranslated"
-            count={5}
+            count={6}
             onChange={() => {}}/>
         </li>
       </ul>
@@ -173,6 +184,7 @@ describe('TransUnitFilterTest', () => {
           approved: false,
           translated: true,
           needswork: false,
+          rejected: false,
           untranslated: true
         }}
         counts={{
@@ -180,7 +192,8 @@ describe('TransUnitFilterTest', () => {
           approved: 2,
           translated: 3,
           needswork: 4,
-          untranslated: 5
+          rejected: 5,
+          untranslated: 6
         }}
         gettextCatalog={mockGettextCatalog}/>
     )

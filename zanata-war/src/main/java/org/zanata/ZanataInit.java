@@ -84,7 +84,7 @@ public class ZanataInit {
     private static final DefaultArtifactVersion MIN_EAP_VERSION =
             new DefaultArtifactVersion("7.0.1.GA");
     private static final DefaultArtifactVersion MIN_WILDFLY_VERSION =
-            new DefaultArtifactVersion("10.0.0.Final");
+            new DefaultArtifactVersion("10.1.0.Final");
 
 
     static {

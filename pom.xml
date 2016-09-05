@@ -681,6 +681,18 @@
           </exclusion>
         </exclusions>
       </dependency>
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-common-api</artifactId>
+        <classifier>sources</classifier>
+        <version>${zanata.api.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>*</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
 
       <dependency>
         <groupId>org.zanata</groupId>
@@ -2059,7 +2071,7 @@
         <cargo.container>wildfly10x</cargo.container>
         <!-- used in the wildfly8 profile in zanata-war -->
         <!-- This is the server version -->
-        <wildfly.version>10.0.0.Final</wildfly.version>
+        <wildfly.version>10.1.0.Final</wildfly.version>
         <!-- In case this profile was activated by default: -->
         <appserver>wildfly8</appserver>
         <cargo.installation>https://repository.jboss.org/nexus/content/groups/developer/org/wildfly/wildfly-dist/${wildfly.version}/wildfly-dist-${wildfly.version}.zip</cargo.installation>
