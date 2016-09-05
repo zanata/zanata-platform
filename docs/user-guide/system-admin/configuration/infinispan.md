@@ -18,7 +18,6 @@ Keep in mind that the module version may vary depending on your JBoss version.
 ...
 <cache-container name="zanata" default-cache="default"
     jndi-name="java:jboss/infinispan/container/zanata"
-    start="EAGER"
     module="org.jboss.as.clustering.web.infinispan">
     <local-cache name="default">
         <transaction mode="NON_XA"/>

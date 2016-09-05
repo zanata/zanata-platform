@@ -89,7 +89,7 @@ public class CacheAction implements Serializable {
     }
 
     public void resetCacheStats(String cacheName) {
-//        getStats(cacheName).reset();
+        getStats(cacheName).reset();
     }
 
     public void clearAllCaches(){

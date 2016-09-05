@@ -20,12 +20,10 @@
  */
 package org.zanata.model.po;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 
 import lombok.ToString;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
  *
@@ -33,7 +31,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  * @see org.zanata.rest.dto.extensions.gettext.PoHeader
  */
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cacheable
 @ToString(callSuper = true)
 public class HPoHeader extends PoHeaderBase {
     private static final long serialVersionUID = 1L;

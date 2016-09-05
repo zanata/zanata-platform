@@ -2,7 +2,7 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
 
-import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;

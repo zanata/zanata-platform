@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -41,9 +42,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
 
 /**
  * @see org.zanata.rest.dto.extensions.comment.SimpleComment
@@ -51,7 +49,7 @@ import org.hibernate.annotations.Type;
  */
 @Entity
 @EntityListeners({ HSimpleComment.EntityListener.class })
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cacheable
 @BatchSize(size = 20)
 @Setter
 @NoArgsConstructor

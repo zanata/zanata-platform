@@ -1,5 +1,29 @@
 ## 4.0
 
+##### Infrastructure Changes
+* Recommended platform: JBoss EAP 7 (7.0.1.GA or later).
+* Alternative platform: WildFly version 10.x.
+
+Zanata now requires EAP 7 or WildFly 10 with no extra modules.
+
+If using EAP, you must upgrade to EAP 7 and apply the various Zanata
+changes to JBOSS_HOME/standalone/configuration/standalone.xml.
+
+If using WildFly, you must remove any previously installed JSF or Hibernate
+modules from WILDFLY_HOME/modules/{com,javax,org}.
+
+Also, Hibernate Search and Lucene have been upgraded - before starting
+Zanata 4.0 you will need to clear your index directory (as configured
+in the system property `hibernate.search.default.indexBase`) and then
+trigger a complete re-index from the admin pages once Zanata has loaded.
+
+Zanata's jboss-web.xml has been updated: if you maintain a custom version, you should remove the "valve" section.
+
+##### Changes
+* [ZNTA-1207](https://zanata.atlassian.net/browse/ZNTA-1207) - Upgrade to JBoss EAP 7
+* [ZNTA-1203](https://zanata.atlassian.net/browse/ZNTA-1203) - Remove Hibernate 4.2 module for WildFly
+* [ZNTA-1222](https://zanata.atlassian.net/browse/ZNTA-1222) - Use appserver's Infinispan
+
 ##### Bug Fixes
 * [ZNTA-846](https://zanata.atlassian.net/browse/ZNTA-846) - Group "request add project version" needs field limit
 * [ZNTA-872](https://zanata.atlassian.net/browse/ZNTA-872) - Redirect to home from cancel button in create user page

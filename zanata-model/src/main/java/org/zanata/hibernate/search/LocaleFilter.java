@@ -22,15 +22,20 @@ package org.zanata.hibernate.search;
 
 import java.io.IOException;
 
-import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.LeafReader;
+import org.apache.lucene.index.LeafReaderContext;
+import org.apache.lucene.index.PostingsEnum;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.index.TermDocs;
 import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Filter;
-import org.apache.lucene.util.OpenBitSet;
+import org.apache.lucene.util.BitDocIdSet;
+import org.apache.lucene.util.Bits;
+import org.apache.lucene.util.FixedBitSet;
 import org.zanata.common.LocaleId;
 
 import lombok.extern.slf4j.Slf4j;
+
+import static org.apache.lucene.search.DocIdSetIterator.NO_MORE_DOCS;
 
 @Slf4j
 public class LocaleFilter extends Filter {
@@ -42,14 +47,36 @@ public class LocaleFilter extends Filter {
     }
 
     @Override
-    public DocIdSet getDocIdSet(IndexReader reader) throws IOException {
-        OpenBitSet bitSet = new OpenBitSet(reader.maxDoc());
-        log.debug("getDocIdSet for {}", locale);
-        Term term = new Term("locale", locale.toString());
-        TermDocs termDocs = reader.termDocs(term);
-        while (termDocs.next()) {
-            bitSet.set(termDocs.doc());
-        }
-        return bitSet;
+    public String toString(String field) {
+        return "LocaleFilter(" +
+                "locale=" + locale +
+                ")";
     }
+
+    @Override
+    public DocIdSet getDocIdSet(LeafReaderContext context, Bits acceptDocs)
+            throws IOException {
+        log.debug("getDocIdSet for {}", locale);
+        LeafReader reader = context.reader();
+        Term term = new Term("locale", locale.toString());
+        return liveDocsBitSet(reader, term);
+    }
+
+    private static DocIdSet liveDocsBitSet(LeafReader reader, Term term)
+            throws IOException {
+        FixedBitSet bitSet = new FixedBitSet(reader.maxDoc());
+        Bits liveDocs = reader.getLiveDocs();
+        PostingsEnum termDocs = reader.postings(term);
+        long setSize = 0;
+        while (termDocs.nextDoc() != NO_MORE_DOCS) {
+            int docID = termDocs.docID();
+            if (liveDocs == null || liveDocs.get(docID)) {
+                bitSet.set(docID);
+                ++setSize;
+                // else document is deleted...
+            }
+        }
+        return new BitDocIdSet(bitSet, setSize);
+    }
+
 }

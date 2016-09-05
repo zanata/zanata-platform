@@ -90,8 +90,13 @@ public class Deployments {
                 // google-collections gets pulled in by arquillian and
                 // conflict with guava.
                 new RejectDependenciesStrategy(false,
+                        "com.google.collections:google-collections",
                         "net.bull.javamelody:javamelody-core",
-                        "com.google.collections:google-collections"))
+                        // org.zanata dependencies should be on classpath, provided by Maven
+                        "org.zanata:zanata-liquibase",
+                        "org.zanata:zanata-model"
+                        // and any other org.zanata dependencies in future...
+                        ))
                 .asFile();
     }
 
@@ -99,17 +104,13 @@ public class Deployments {
     public static Archive<?> createDeployment() {
         WebArchive archive =
                 ShrinkWrap.create(WebArchive.class, DEPLOYMENT_NAME + ".war");
+        // TODO add org.zanata packages on classpath first, exclude any libraries with colliding classes
         archive.addAsLibraries(runtimeAndTestDependenciesFromPom());
 
         // Local packages
-        Filter<ArchivePath> archivePathFilter = object -> {
-            // Avoid the model package (for some reason it's being included
-            // as a class file)
-            return !object.get().startsWith("/org/zanata/model/") &&
-                    !object.get().startsWith("/org/zanata/util/RequestContextValueStore") &&
-                    notUnusedGwtClientCode(object) &&
-                    notUnitTest(object);
-        };
+        Filter<ArchivePath> archivePathFilter = object ->
+                notUnusedGwtClientCode(object) &&
+                notUnitTest(object);
         archive.addPackages(true, archivePathFilter, "org.zanata");
 
         // Resources (descriptors, etc)

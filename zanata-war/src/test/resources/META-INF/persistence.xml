@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
-  version="2.0">
+  xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+             http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+  version="2.1">
 
   <persistence-unit name="zanataDatasourcePU"
     transaction-type="RESOURCE_LOCAL">
-    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
     <!--
       NB non-jta-data-source is not compatible with JPA tests, but is
       needed by Seam tests.  The list of classes seems to be necessary,
       unfortunately. Please keep the list in sync between
-      zanata-war/src/test/jboss-embedded-bootstrap/META-INF/persistence.xml
+      zanata-war/src/main/webapp-jboss/WEB-INF/classes/META-INF/persistence.xml
+      zanata-war/src/test/resources/arquillian/persistence.xml
       and zanata-war/src/test/resources/META-INF/persistence.xml.
-      See also zanata-model/src/test/resources/META-INF/persistence.xml.
      -->
 
     <!-- <mapping-file>META-INF/orm.xml</mapping-file> -->
@@ -70,7 +71,7 @@
 
     <properties>
       <property name="hibernate.show_sql" value="false" />
-      <!-- Use test version of hibernate cache -->
+      <!-- Use test version of hibernate cache (in-memory) -->
       <property name="hibernate.cache.region.factory_class"
         value="org.hibernate.testing.cache.CachingRegionFactory" />
       <!--<property name="hibernate.cache.use_second_level_cache" value="false" />-->
@@ -115,9 +116,8 @@
         value="simple" />
       <property name="hibernate.search.default.indexBase"
         value="./target/zanatasearchindex" />
-      <property name="hibernate.search.lucene_version" value="LUCENE_36" />
+      <property name="hibernate.search.lucene_version" value="LUCENE_5_3_1" />
       <property name="hibernate.search.worker.batch_size" value="50" />
-      <property name="javax.persistence.validation.factory" value="org.apache.deltaspike.beanvalidation.impl.CDIAwareConstraintValidatorFactory"/>
     </properties>
   </persistence-unit>
 </persistence>

@@ -16,6 +16,8 @@ import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.hibernate.persister.entity.EntityPersister;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
@@ -113,6 +115,12 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
             log.error("fail to publish TransUnitUpdate event", e);
         }
 
+    }
+
+    @Override
+    public boolean requiresPostCommitHanding(EntityPersister persister) {
+        // TODO um, no?
+        return false;
     }
 
     private void prepareTransUnitUpdatedEvent(int previousVersionNum,

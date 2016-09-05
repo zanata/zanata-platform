@@ -22,6 +22,7 @@ package org.zanata.model.po;
 
 import java.io.Serializable;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,12 +35,7 @@ import javax.persistence.OneToOne;
 import lombok.Setter;
 
 import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
 import org.zanata.model.HSimpleComment;
-import org.zanata.model.HTextFlow;
 
 /**
  *
@@ -48,7 +44,7 @@ import org.zanata.model.HTextFlow;
  * @see org.zanata.rest.dto.extensions.gettext.PotEntryHeader
  */
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cacheable
 @BatchSize(size = 20)
 @Setter
 public class HPotEntryData implements Serializable {

@@ -160,9 +160,6 @@
             <!-- Used for different content analyzers based on langugage for search. -->
             <usedDependency>org.apache.solr:solr-core</usedDependency>
             <usedDependency>org.apache.solr:solr-solrj</usedDependency>
-            <usedDependency>org.antlr:antlr</usedDependency>
-            <!-- Used by hibernate -->
-            <usedDependency>org.hibernate:hibernate-search-analyzers</usedDependency>
             <!-- used for arquillian deployment (org.zanata.Deployments) -->
             <usedDependency>org.hibernate:hibernate-testing</usedDependency>
             <usedDependency>org.jboss.arquillian.junit:arquillian-junit-container</usedDependency>
@@ -172,15 +169,13 @@
             <usedDependency>org.jvnet.mock-javamail:mock-javamail</usedDependency>
             <!-- Need for test scope -->
             <usedDependency>${jdbc.groupId}:${jdbc.artifactId}</usedDependency>
+            <!-- used for arquillian tests -->
+            <usedDependency>org.wildfly.arquillian:wildfly-arquillian-container-managed</usedDependency>
             <!-- NB: Don't add anything without a comment explaining how the
                  dependency is used -->
           </usedDependencies>
         </configuration>
       </plugin>
-
-      <!--<plugin>-->
-        <!--<artifactId>maven-enforcer-plugin</artifactId>-->
-      <!--</plugin>-->
 
       <plugin>
         <groupId>org.basepom.maven</groupId>
@@ -195,14 +190,15 @@
           <ignoredResourcePatterns>
             <!-- many, many jars -->
             <ignoredResourcePattern>META-INF/.*</ignoredResourcePattern>
+            <ignoredResourcePattern>VERSION\.properties</ignoredResourcePattern>
             <!-- iText and JavaMelody -->
-            <ignoredResourcePattern>com/lowagie/text/pdf/fonts/cmap_info.txt</ignoredResourcePattern>
+            <ignoredResourcePattern>com/lowagie/text/pdf/fonts/cmap_info\.txt</ignoredResourcePattern>
             <!-- drools and quartz -->
-            <ignoredResourcePattern>build.properties</ignoredResourcePattern>
+            <ignoredResourcePattern>build\.properties</ignoredResourcePattern>
             <!-- jboss-metadata-common and zanata-adapter-xliff -->
-            <ignoredResourcePattern>schema/xml.xsd</ignoredResourcePattern>
+            <ignoredResourcePattern>schema/xml\.xsd</ignoredResourcePattern>
             <!-- infinispan-core/common -->
-            <ignoredResourcePattern>features.xml</ignoredResourcePattern>
+            <ignoredResourcePattern>features\.xml</ignoredResourcePattern>
           </ignoredResourcePatterns>
         </configuration>
       </plugin>
@@ -388,7 +384,7 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <argLine>-Dconcordion.output.dir=${concordion.output.dir} -XX:MaxPermSize=256m</argLine>
+          <argLine>-Dconcordion.output.dir=${concordion.output.dir}</argLine>
           <testNGArtifactName>none:none</testNGArtifactName>
           <!-- TODO ensure that stateful tests (eg using Hibernate Search)
                are isolated, or rename them to ITCase (Arquillian), and
@@ -1021,7 +1017,7 @@
                 <configuration>
                   <target unless="skipArqTests">
                     <fail message="'appserver' property must be set to run integration tests (or else use -DskipArqTests)" unless="appserver" />
-                    <fail message="'cargo.installation' property is null (set env var EAP6_URL or else use -DskipArqTests)" unless="cargo.installation" />
+                    <fail message="'cargo.installation' property is null (set env var EAP7_URL or else use -DskipArqTests)" unless="cargo.installation" />
                   </target>
                 </configuration>
               </execution>
@@ -1090,19 +1086,6 @@
           </plugin>
 
           <plugin>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <configuration>
-              <usedDependencies combine.children="append">
-                <!-- used for arquillian tests -->
-                <usedDependency>org.jboss.as:jboss-as-controller</usedDependency>
-                <usedDependency>org.jboss.as:jboss-as-arquillian-container-managed</usedDependency>
-                <!-- NB: Don't add anything without a comment explaining how the
-                     dependency is used -->
-              </usedDependencies>
-            </configuration>
-          </plugin>
-
-          <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
               <systemPropertyVariables>
@@ -1114,71 +1097,6 @@
 
         </plugins>
       </build>
-
-      <dependencies>
-        <dependency>
-          <groupId>org.jboss.as</groupId>
-          <artifactId>jboss-as-arquillian-common</artifactId>
-          <!-- this brings in a bunch of out of date arquillian-testenricher-XXX as transitive dependencies -->
-          <version>${jboss.as.version}</version>
-          <scope>test</scope>
-          <exclusions>
-            <exclusion>
-              <groupId>org.jboss.logmanager</groupId>
-              <artifactId>log4j-jboss-logmanager</artifactId>
-            </exclusion>
-          </exclusions>
-        </dependency>
-        <dependency>
-          <groupId>org.jboss.arquillian.testenricher</groupId>
-          <artifactId>arquillian-testenricher-cdi</artifactId>
-          <version>${arquillian.version}</version>
-          <scope>test</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.as</groupId>
-          <artifactId>jboss-as-arquillian-container-managed</artifactId>
-          <version>${jboss.as.version}</version>
-          <scope>test</scope>
-          <exclusions>
-            <exclusion>
-              <groupId>org.jboss.logmanager</groupId>
-              <artifactId>jboss-logmanager</artifactId>
-            </exclusion>
-            <exclusion>
-              <groupId>org.jboss.logmanager</groupId>
-              <artifactId>log4j-jboss-logmanager</artifactId>
-            </exclusion>
-          </exclusions>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.osgi.metadata</groupId>
-          <artifactId>jbosgi-metadata</artifactId>
-          <version>2.2.0.Final</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.osgi.vfs</groupId>
-          <artifactId>jbosgi-vfs30</artifactId>
-          <version>1.2.1.Final</version>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.as</groupId>
-          <artifactId>jboss-as-controller-client</artifactId>
-          <version>${jboss.as.version}</version>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.jboss.as</groupId>
-          <artifactId>jboss-as-controller</artifactId>
-          <version>${jboss.as.version}</version>
-          <scope>test</scope>
-        </dependency>
-
-      </dependencies>
     </profile>
 
     <profile>
@@ -1192,25 +1110,8 @@
       <build>
         <plugins>
           <plugin>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <configuration>
-              <usedDependencies combine.children="append">
-                <!-- used for arquillian tests -->
-                <usedDependency>org.wildfly:wildfly-arquillian-container-managed</usedDependency>
-                <!-- NB: Don't add anything without a comment explaining how the
-                     dependency is used -->
-              </usedDependencies>
-            </configuration>
-          </plugin>
-
-          <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
-              <execution>
-                <id>install-wildfly-modules</id>
-                <phase>package</phase>
-              </execution>
-
               <!-- Install arquillian-customised version of standalone.xml -->
               <execution>
                 <id>prepare-arquillian-container</id>
@@ -1238,21 +1139,6 @@
           </plugin>
         </plugins>
       </build>
-      <dependencies>
-        <dependency>
-          <!-- This might be org.wildfly.arquillian in future: -->
-          <groupId>org.wildfly</groupId>
-          <artifactId>wildfly-arquillian-container-managed</artifactId>
-          <version>${wildfly.client.version}</version>
-          <scope>test</scope>
-          <exclusions>
-            <exclusion>
-              <groupId>org.jboss.remoting3</groupId>
-              <artifactId>jboss-remoting</artifactId>
-            </exclusion>
-          </exclusions>
-        </dependency>
-      </dependencies>
     </profile>
 
     <profile>
@@ -1491,6 +1377,13 @@
     </dependency>
 
     <dependency>
+      <groupId>org.wildfly.arquillian</groupId>
+      <artifactId>wildfly-arquillian-container-managed</artifactId>
+      <version>${wildfly.arquillian.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
       <version>20140107</version>
@@ -1546,30 +1439,16 @@
 
     <dependency>
       <groupId>org.jboss.spec.javax.faces</groupId>
-      <artifactId>jboss-jsf-api_2.1_spec</artifactId>
+      <artifactId>jboss-jsf-api_2.2_spec</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.spec.javax.transaction</groupId>
-      <artifactId>jboss-transaction-api_1.1_spec</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss</groupId>
-      <artifactId>jboss-dmr</artifactId>
-      <version>1.2.1.Final</version>
-      <scope>test</scope>
-    </dependency>
-
-    <!-- TODO remove this? -->
-    <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>antlr</artifactId>
-      <version>3.3</version>
+      <artifactId>jboss-transaction-api_1.2_spec</artifactId>
       <scope>provided</scope>
     </dependency>
 
-    <!-- used for org.hibernate:hibernate-core, org.drools:drools-compiler, and Seam Text converter -->
+    <!-- used for Seam Text converter -->
     <dependency>
       <groupId>antlr</groupId>
       <artifactId>antlr</artifactId>
@@ -1616,14 +1495,14 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
-      <scope>compile</scope>
+      <scope>provided</scope>
     </dependency>
 
-    <!--<dependency>-->
-      <!--<groupId>org.hibernate</groupId>-->
-      <!--<artifactId>hibernate-validator-cdi</artifactId>-->
-      <!--<scope>${hibernate.scope}</scope>-->
-    <!--</dependency>-->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator-cdi</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.deltaspike.modules</groupId>
@@ -1651,11 +1530,6 @@
 
     <dependency>
       <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-ehcache</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.hibernate</groupId>
       <artifactId>hibernate-testing</artifactId>
       <scope>test</scope>
       <exclusions>
@@ -1667,22 +1541,16 @@
     </dependency>
 
     <dependency>
-      <groupId>net.sf.ehcache</groupId>
-      <artifactId>ehcache-core</artifactId>
-      <version>2.6.11</version>
-    </dependency>
-
-    <dependency>
       <groupId>io.undertow</groupId>
       <artifactId>undertow-core</artifactId>
-      <version>1.0.15.Final</version>
+      <version>1.3.15.Final</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>io.undertow</groupId>
       <artifactId>undertow-servlet</artifactId>
-      <version>1.0.15.Final</version>
+      <version>1.3.15.Final</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -1888,6 +1756,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.apache.lucene</groupId>
+      <artifactId>lucene-queryparser</artifactId>
+      <version>${lucene.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-artifact</artifactId>
       <version>3.2.1</version>
@@ -1904,16 +1778,6 @@
     <dependency>
       <groupId>org.apache.solr</groupId>
       <artifactId>solr-core</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.commons</groupId>
-          <artifactId>commons-io</artifactId>
-        </exclusion>
-        <exclusion>
-          <artifactId>servlet-api</artifactId>
-          <groupId>javax.servlet</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.solr</groupId>
@@ -1940,14 +1804,10 @@
       <artifactId>hibernate-commons-annotations</artifactId>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-search-analyzers</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.hibernate.javax.persistence</groupId>
-      <artifactId>hibernate-jpa-2.0-api</artifactId>
+      <artifactId>hibernate-jpa-2.1-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -1955,8 +1815,8 @@
       <artifactId>hibernate-search-engine</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-search-infinispan</artifactId>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-directory-provider</artifactId>
     </dependency>
 
     <dependency>
@@ -1964,6 +1824,16 @@
       <artifactId>infinispan-core</artifactId>
       <version>${infinispan.version}</version>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.marshalling</groupId>
+          <artifactId>jboss-marshalling-osgi</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.transaction</groupId>
+          <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- These two are being explicitly added as jboss-as-parent
@@ -1971,23 +1841,21 @@
     <dependency>
       <groupId>org.jboss.marshalling</groupId>
       <artifactId>jboss-marshalling</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.marshalling</groupId>
       <artifactId>jboss-marshalling-river</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.spec.javax.el</groupId>
-      <artifactId>jboss-el-api_2.2_spec</artifactId>
+      <artifactId>jboss-el-api_3.0_spec</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.spec.javax.servlet</groupId>
-      <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+      <artifactId>jboss-servlet-api_3.1_spec</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -2031,6 +1899,7 @@
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -2054,23 +1923,18 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.web</groupId>
-      <artifactId>jbossweb</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.jboss.security</groupId>
       <artifactId>jboss-negotiation-common</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.spec.javax.jms</groupId>
-      <artifactId>jboss-jms-api_1.1_spec</artifactId>
+      <artifactId>jboss-jms-api_2.0_spec</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.spec.javax.ejb</groupId>
-      <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+      <artifactId>jboss-ejb-api_3.2_spec</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -2078,7 +1942,7 @@
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <version>1.3.176</version>
+      <version>1.4.192</version>
       <scope>provided</scope>
     </dependency>
 
@@ -2180,7 +2044,7 @@
     <dependency>
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
-      <version>3.1.4.GA</version>
+      <version>3.3.0.Final</version>
       <scope>provided</scope>
     </dependency>
 
@@ -2252,7 +2116,7 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-exec</artifactId>
-      <version>1.1</version>
+      <version>1.3</version>
     </dependency>
 
     <!-- See https://issues.jboss.org/browse/WFK2-674
@@ -2370,7 +2234,7 @@
     <dependency>
       <groupId>org.picketbox</groupId>
       <artifactId>picketbox</artifactId>
-      <version>4.0.15.Final</version>
+      <version>4.9.4.Final</version>
       <scope>provided</scope>
     </dependency>
 

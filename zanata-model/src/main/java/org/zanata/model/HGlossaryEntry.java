@@ -23,12 +23,13 @@ package org.zanata.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.MapKey;
+import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
@@ -39,9 +40,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Setter;
 import lombok.ToString;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
@@ -56,7 +54,7 @@ import org.zanata.util.GlossaryUtil;
  **/
 @Entity
 @EntityListeners({ HGlossaryEntry.EntityListener.class })
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cacheable
 @Indexed
 @Setter
 @EqualsAndHashCode(callSuper = true, doNotUseGetters = true,
@@ -76,7 +74,7 @@ public class HGlossaryEntry extends ModelEntityBase {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "glossaryEntry",
             orphanRemoval = true, fetch = FetchType.EAGER)
-    @MapKey(name = "locale")
+    @MapKeyJoinColumn(name = "localeId", referencedColumnName = "id")
     public Map<HLocale, HGlossaryTerm> getGlossaryTerms() {
         if (glossaryTerms == null) {
             glossaryTerms = new HashMap<HLocale, HGlossaryTerm>();

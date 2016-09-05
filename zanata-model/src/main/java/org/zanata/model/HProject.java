@@ -37,6 +37,7 @@ import java.util.Set;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -90,7 +91,7 @@ import com.google.common.collect.Sets;
  *
  */
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cacheable
 @Access(AccessType.FIELD)
 @TypeDefs({
     @TypeDef(name = "entityStatus", typeClass = EntityStatusType.class),
@@ -177,10 +178,12 @@ public class HProject extends SlugEntityBase implements Serializable,
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project",
             orphanRemoval = true)
+    @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
     private Set<HProjectMember> members = Sets.newHashSet();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project",
             orphanRemoval = true)
+    @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
     private Set<HProjectLocaleMember> localeMembers = Sets.newHashSet();
 
     @ManyToMany
@@ -197,7 +200,7 @@ public class HProject extends SlugEntityBase implements Serializable,
     private Map<String, String> customizedValidations = Maps.newHashMap();
 
     @OneToMany(mappedBy = "project")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
     private List<HProjectIteration> projectIterations = Lists.newArrayList();
 
     @Type(type = "entityStatus")

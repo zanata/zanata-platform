@@ -31,11 +31,8 @@ in case changes are required for production deployment (eg Ansible playbooks).
     <jndi-name>java:/jms/queue/MailsQueue</jndi-name>
   </resource-ref>
 
+  <!-- TODO is this still needed? -->
   <security-domain>zanata</security-domain>
-  <valve>
-    <class-name>org.zanata.security.negotiation.CustomNegotiationAuthenticator</class-name>
-  </valve>
-
 
   <!-- This is where the webapp context root (eg /zanata or /) can be overridden: -->
   <!-- _context_root_ -->

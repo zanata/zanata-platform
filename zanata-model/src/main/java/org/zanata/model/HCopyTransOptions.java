@@ -20,6 +20,7 @@
  */
 package org.zanata.model;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
@@ -28,8 +29,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.zanata.model.type.ConditionRuleActionType;
@@ -43,7 +42,7 @@ import org.zanata.model.type.ConditionRuleActionType;
 @Entity
 @TypeDef(name = "conditionRuleAction",
         typeClass = ConditionRuleActionType.class)
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cacheable
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor

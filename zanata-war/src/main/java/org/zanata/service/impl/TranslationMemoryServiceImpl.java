@@ -29,9 +29,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.MultiFieldQueryParser;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
@@ -131,13 +131,11 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
     @Inject @FullText
     private FullTextEntityManager entityManager;
 
-    private static final Version LUCENE_VERSION = Version.LUCENE_29;
-
     // sort desc by lastChanged of HTextFlowTarget
     private final Sort lastChangedSort = new Sort(
             SortField.FIELD_SCORE,
             new SortField(IndexFieldLabels.LAST_CHANGED_FIELD,
-                    SortField.STRING, true));
+                    SortField.Type.STRING, true));
 
     private final TermQuery newStateQuery = new TermQuery(new Term(
             IndexFieldLabels.CONTENT_STATE_FIELD, ContentState.New.toString()));
@@ -870,11 +868,11 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                 String[] searchFields = new String[queriesSize];
                 System.arraycopy(srcContentFields, 0, searchFields, 0, queriesSize);
 
-                return MultiFieldQueryParser.parse(LUCENE_VERSION,
+                return MultiFieldQueryParser.parse(
                         multiQueryText, searchFields, sourceAnalyzer);
             } else {
                 MultiFieldQueryParser parser =
-                        new MultiFieldQueryParser(LUCENE_VERSION,
+                        new MultiFieldQueryParser(
                                 srcContentFields, sourceAnalyzer);
                 return parser.parse(queryText);
             }
@@ -900,7 +898,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                 entityManager.getSearchFactory().getAnalyzer(analyzerDefName);
 
         QueryParser parser =
-                new QueryParser(LUCENE_VERSION,
+                new QueryParser(
                         IndexFieldLabels.TRANS_UNIT_VARIANT_FIELD
                                 + sourceLocale.getId(), analyzer);
         Query sourceContentQuery = parser.parse(queryText);
