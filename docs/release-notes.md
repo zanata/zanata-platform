@@ -6,7 +6,7 @@
 
 Zanata now requires EAP 7 or WildFly 10 with no extra modules.
 
-If using EAP 6, you must upgrade to EAP 7 and apply the various Zanata
+If using EAP, you must upgrade to EAP 7 and apply the various Zanata
 changes to JBOSS_HOME/standalone/configuration/standalone.xml.
 
 If using WildFly, you must remove any previously installed JSF or Hibernate
