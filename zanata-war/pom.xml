@@ -1410,14 +1410,18 @@
       <artifactId>zanata-common-api</artifactId>
       <exclusions>
         <exclusion>
-          <artifactId>
-            servlet-api
-          </artifactId>
-          <groupId>
-            javax.servlet
-          </groupId>
+          <groupId>javax.servlet</groupId>
+          <artifactId>servlet-api</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+
+    <!-- For GWT compilation -->
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-common-api</artifactId>
+      <classifier>sources</classifier>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
