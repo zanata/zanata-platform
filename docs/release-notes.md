@@ -19,6 +19,7 @@
 ##### Bug Fixes
  * [ZNTA-1323](https://zanata.atlassian.net/browse/ZNTA-1323) - Register with non ASCII full name, the name is messed
  * [ZNTA-1318](https://zanata.atlassian.net/browse/ZNTA-1318) - Need better exception handling for transaction errors
+ * [ZNTA-1317](https://zanata.atlassian.net/browse/ZNTA-1317) - Sorting Projects list leads to "Transaction was rolled back in a different thread!" and many other errors
 
 -----------------------
 
