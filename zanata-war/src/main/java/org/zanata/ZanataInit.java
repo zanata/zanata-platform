@@ -82,9 +82,9 @@ import org.zanata.util.VersionUtility;
 @Slf4j
 public class ZanataInit {
     private static final DefaultArtifactVersion MIN_EAP_VERSION =
-            new DefaultArtifactVersion("6.4.6.GA");
+            new DefaultArtifactVersion("6.4.9.GA");
     private static final DefaultArtifactVersion MIN_WILDFLY_VERSION =
-            new DefaultArtifactVersion("10.0.0.Final");
+            new DefaultArtifactVersion("10.1.0.Final");
 
 
     static {
