@@ -51,6 +51,9 @@
 
     <!-- Directory that contains the actual built editor app (index, script and styles) -->
     <editor.built.artifact.directory>${editor.build.directory}/app/dist</editor.built.artifact.directory>
+
+    <!-- Do not run checkstyle (eslint is used instead for this module) -->
+    <checkstyle.skip>true</checkstyle.skip>
   </properties>
 
   <dependencies>

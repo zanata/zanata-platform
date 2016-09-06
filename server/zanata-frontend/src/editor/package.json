@@ -12,12 +12,11 @@
     "url": "http://zanata.org/issues/"
   },
   "scripts": {
-    "watch": "cd app && webpack-dev-server -d --progress --config webpack.dev.config.js --inline --hot --content-base dist/",
+    "watch": "cd app && mkdir -p dist && cp index.html dist &&  webpack-dev-server -d --progress --config webpack.dev.config.js --inline --hot --content-base dist/",
     "build": "cd app && webpack --progress --config webpack.prod.config.js",
     "test": "jest",
     "storybook": "start-storybook -p 9001 -s ./app/dist",
-    "build-storybook": "build-storybook -s ./app/dist",
-    "processhtml": "gulp processhtml"
+    "build-storybook": "build-storybook -s ./app/dist"
   },
   "repository": {
     "type": "git",
@@ -54,11 +53,6 @@
     "extract-text-webpack-plugin": "1.0.1",
     "fake-zanata-server": "3.0.5",
     "faucet": "0.0.1",
-    "gulp": "3.9.1",
-    "gulp-if": "1.2.5",
-    "gulp-notify": "1.8.0",
-    "gulp-replace-task": "0.0.6",
-    "gulp-webserver": "0.4.0",
     "isomorphic-fetch": "2.2.1",
     "jest-cli": "13.0.0",
     "lodash": "4.13.1",

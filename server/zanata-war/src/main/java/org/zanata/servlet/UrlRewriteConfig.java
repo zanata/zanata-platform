@@ -139,6 +139,11 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/project/view/{slug}/{section}").to("/project/project.xhtml"))
                 .where("section").matches(".*")
 
+                // FIXME this path is ambiguous with /project/view etc.
+                .addRule(Join.path("/project/{project}/v/{version}/translate/{document}")
+                        .to("/app/index.html"))
+                        .where("document").matches(".*")
+
                 // generate zanata.xml config
                 .addRule(Join.path("/project/view/{projectSlug}/iter/{iterationSlug}/config").
                         to("/project/project.xhtml?actionMethod=project%2Fproject.xhtml%3AconfigurationAction.getData"))
