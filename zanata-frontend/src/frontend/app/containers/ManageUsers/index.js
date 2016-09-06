@@ -19,8 +19,7 @@ class ManageUsers extends Component {
             <div className='row clearfix' id='admin-lang'>
               <div className='row-height'>
                 <div className='contentx clearfix center-block'>
-                  <h2>Manage Users
-                    <span className='badge'>6</span>
+                  <h2>Manage Users&nbsp;<span className='badge'>6</span>
                   </h2>
                   <div className='left-form toolbar col-xs-12'>
                     <div className='search-box col-xs-6 col-sm-8 col-md-6
@@ -47,11 +46,11 @@ class ManageUsers extends Component {
                       <tbody>
                         <tr>
                           <td>
-                            <a href=''>Afrikaans
+                            <a href=''>admin
                             </a>
                             <br />
                             <span className='langcode'>
-                            af [Afrikaans]</span>
+                            [user, glossary-admin]</span>
                           </td>
                           <td>
                             <Button bsSize='small'>
@@ -61,10 +60,20 @@ class ManageUsers extends Component {
                         </tr>
                         <tr>
                           <td>
-                            <a href=''>Albanian</a>
+                            <a href=''>glossarist</a>
+                          </td>
+                          <td>
+                            <Button bsSize='small'>
+                              <i className='fa fa-times'></i>
+                            Delete</Button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <a href=''>glossary-admin</a>
                             <br />
                             <span className='langcode'>
-                            sq [shqip]</span>
+                            [glossarist]</span>
                           </td>
                           <td>
                             <Button bsSize='small'>
@@ -74,10 +83,7 @@ class ManageUsers extends Component {
                         </tr>
                         <tr>
                           <td>
-                            <a href=''>Amharic</a>
-                            <br />
-                            <span className='langcode'>
-                            am</span>
+                            <a href=''>project-creator</a>
                           </td>
                           <td>
                             <Button bsSize='small'>
@@ -87,20 +93,7 @@ class ManageUsers extends Component {
                         </tr>
                         <tr>
                           <td>
-                            <a href=''>Angika</a>
-                            <br />
-                            <span className='langcode'>
-                            anp [Angika]</span>
-                          </td>
-                          <td>
-                            <Button bsSize='small'>
-                              <i className='fa fa-times'></i>
-                            Delete</Button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <a href=''>Arabic</a>
+                            <a href=''>translator</a>
                             <br />
                             <span className='langcode'>
                             ar</span>
@@ -113,12 +106,10 @@ class ManageUsers extends Component {
                         </tr>
                         <tr>
                           <td>
-                            <a href=''>Arabic (Saudi Arabia)
-                              <span className='dis badge'>DISABLED</span>
-                            </a>
+                            <a href=''>user</a>
                             <br />
                             <span className='langcode'>
-                            ar-SA</span>
+                            [project-creator]</span>
                           </td>
                           <td>
                             <Button bsSize='small'>
