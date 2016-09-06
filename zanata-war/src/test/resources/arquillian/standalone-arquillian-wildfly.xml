@@ -331,8 +331,8 @@
       <!--
       Zanata multi-purpose caches.
       -->
-      <cache-container name="zanata" module="org.jboss.as.clustering.web.infinispan" default-cache="default" jndi-name="java:jboss/infinispan/container/zanata">
-        <local-cache name="default">
+      <cache-container name="zanata" module="org.jboss.as.clustering.web.infinispan" default-cache="default" jndi-name="java:jboss/infinispan/container/zanata" statistics-enabled="true">
+        <local-cache name="default" statistics-enabled="true">
           <transaction mode="NON_XA"/>
           <eviction max-entries="10000" strategy="LRU"/>
           <expiration max-idle="100000"/>
