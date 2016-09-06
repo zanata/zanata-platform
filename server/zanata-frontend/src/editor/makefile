@@ -15,16 +15,12 @@ fakeserver:
 
 # Run the app on a local development server, automatically rebuild and refresh
 # when the code changes (sprites are only built at the beginning).
-watch: processhtml
+watch:
 	npm run watch
 
 # Run a local development server backed by a fake Zanata server
 watch-fakeserver:
 	${MAKE} -j2 watch fakeserver
-
-# Copy index.html into /dist
-processhtml:
-	npm run processhtml
 
 # Run react-storybook server for development and testing of React components.
 storybook:
@@ -41,7 +37,7 @@ storybook-static:
 
 # Build the css and javascript bundles using webpack.
 # Files end up as app.css and bundle.js in /app/dist
-build: processhtml
+build:
 	npm run build
 
 # Run the tests.
