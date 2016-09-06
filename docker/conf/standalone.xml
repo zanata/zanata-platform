@@ -615,9 +615,9 @@
 
     <socket-binding-group name="standard-sockets" default-interface="public"
       port-offset="${jboss.socket.binding.port-offset:0}">
-        <socket-binding name="management-http" interface="management"
+        <socket-binding name="management-http" interface="public"
           port="${jboss.management.http.port:9990}" />
-        <socket-binding name="management-https" interface="management"
+        <socket-binding name="management-https" interface="public"
           port="${jboss.management.https.port:9993}" />
         <socket-binding name="ajp"
           port="${jboss.ajp.port:8009}" />
