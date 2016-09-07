@@ -46,11 +46,10 @@ class ManageUsers extends Component {
                       <tbody>
                         <tr>
                           <td>
-                            <a href=''>admin
-                            </a>
+                            <a href=''>admin</a> <small>[admin]</small>
                             <br />
                             <span className='langcode'>
-                            [user, glossary-admin]</span>
+                            admin@zanata.org</span>
                           </td>
                           <td>
                             <Button bsSize='small'>
@@ -60,20 +59,11 @@ class ManageUsers extends Component {
                         </tr>
                         <tr>
                           <td>
-                            <a href=''>glossarist</a>
-                          </td>
-                          <td>
-                            <Button bsSize='small'>
-                              <i className='fa fa-times'></i>
-                            Delete</Button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <a href=''>glossary-admin</a>
+                            <a href=''>glossarist</a> <small>[glossarist, user]
+                            </small>
                             <br />
                             <span className='langcode'>
-                            [glossarist]</span>
+                            glossarist@no-email.com</span>
                           </td>
                           <td>
                             <Button bsSize='small'>
@@ -83,20 +73,11 @@ class ManageUsers extends Component {
                         </tr>
                         <tr>
                           <td>
-                            <a href=''>project-creator</a>
-                          </td>
-                          <td>
-                            <Button bsSize='small'>
-                              <i className='fa fa-times'></i>
-                            Delete</Button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <a href=''>translator</a>
+                            <a href=''>glossaryadmin</a> <small>
+                            [glossary-admin, user]</small>
                             <br />
                             <span className='langcode'>
-                            ar</span>
+                            glossary-admin@no-email.com</span>
                           </td>
                           <td>
                             <Button bsSize='small'>
@@ -106,10 +87,39 @@ class ManageUsers extends Component {
                         </tr>
                         <tr>
                           <td>
-                            <a href=''>user</a>
+                            <a href=''>langcoor</a> <small>[translator, user]
+                            </small>
                             <br />
                             <span className='langcode'>
-                            [project-creator]</span>
+                            lang-coor@no-email.com</span>
+                          </td>
+                          <td>
+                            <Button bsSize='small'>
+                              <i className='fa fa-times'></i>
+                            Delete</Button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <a href=''>pmaint</a> <small>[translator, user]
+                            </small>
+                            <br />
+                            <span className='langcode'>
+                            pmaint@no-email.com</span>
+                          </td>
+                          <td>
+                            <Button bsSize='small'>
+                              <i className='fa fa-times'></i>
+                            Delete</Button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <a href=''>translator</a> <small>[translator, user]
+                            </small>
+                            <br />
+                            <span className='langcode'>
+                            translator@no-email.com</span>
                           </td>
                           <td>
                             <Button bsSize='small'>
