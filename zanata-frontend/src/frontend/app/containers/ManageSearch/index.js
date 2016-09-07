@@ -1,13 +1,18 @@
 import React, {Component} from 'react'
-import {Button} from 'react-bootstrap'
+import {Button, Alert, OverlayTrigger} from 'react-bootstrap'
 import Helmet from 'react-helmet'
-import {Page, ScrollView, View} from 'zanata-ui'
+import {Page, ScrollView, View, Tooltip} from 'zanata-ui'
 
 const contentViewContainerTheme = {
   base: {
     w: 'W(100%)'
   }
 }
+
+const tooltip = (
+  <Tooltip id='tooltip'><strong>Tooltip ahoy!</strong> Check this info.
+  </Tooltip>
+)
 
 class ManageSearch extends Component {
 
@@ -28,6 +33,9 @@ class ManageSearch extends Component {
                     </div>
                     <div className='panel-body'>
                       No operations are running
+                      <Alert bsStyle='info'>
+                        This is a notification for something important
+                      </Alert>
                     </div>
                   </div>
                   <div className='left-form tablepadding col-xs-12'>
@@ -37,12 +45,29 @@ class ManageSearch extends Component {
                           <th><label className='checkbox-inline'><input
                             type='checkbox' value='' />Table</label></th>
                           <th><label className='checkbox-inline'><input
-                            type='checkbox' value='' />Purge index</label>
+                            type='checkbox' value='' />Purge index&nbsp;
+                            <OverlayTrigger placement='top'
+                              overlay={tooltip}>
+                              <span className='fa fa-info-circle'></span>
+                            </OverlayTrigger>
+                          </label>
                           </th>
                           <th><label className='checkbox-inline'><input
-                            type='checkbox' value='' />Reindex</label></th>
+                            type='checkbox' value='' />Reindex&nbsp;
+                            <OverlayTrigger placement='top'
+                              overlay={tooltip}>
+                              <span className='fa fa-info-circle'></span>
+                            </OverlayTrigger>
+                          </label>
+                          </th>
                           <th><label className='checkbox-inline'><input
-                            type='checkbox' value='' />Optimise</label></th>
+                            type='checkbox' value='' />Optimise&nbsp;
+                            <OverlayTrigger placement='top'
+                              overlay={tooltip}>
+                              <span className='fa fa-info-circle'></span>
+                            </OverlayTrigger>
+                          </label>
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -72,7 +97,8 @@ class ManageSearch extends Component {
                             type='checkbox' value='' />HGlossaryTerms</label>
                           </td>
                           <td><label className='checkbox-inline'><input
-                            type='checkbox' value='' />&nbsp;</label></td>
+                            type='checkbox' value='' />
+                          </label></td>
                           <td><label className='checkbox-inline'><input
                             type='checkbox' value='' />&nbsp;</label></td>
                           <td><label className='checkbox-inline'><input
