@@ -17,7 +17,7 @@ class ManageSearch extends Component {
         <Helmet title='ManageSearch' />
         <ScrollView>
           <View theme={contentViewContainerTheme}>
-            <div className='row clearfix' id='admin-lang'>
+            <div className='row clearfix' id='manage-users'>
               <div className='row-height'>
                 <div className='contentx clearfix center-block'>
                   <h2>Manage Search
@@ -32,7 +32,7 @@ class ManageSearch extends Component {
                   </div>
                   <div className='left-form tablepadding col-xs-12'>
                     <table className='searchtable table'>
-                      <thead>
+                      <thead className='highlight-th'>
                         <tr>
                           <th><label className='checkbox-inline'><input
                             type='checkbox' value='' />Table</label></th>
