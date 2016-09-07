@@ -1,5 +1,6 @@
 ## 3.9.5
 ##### Bug Fixes
+ * [ZNTA-1358](https://zanata.atlassian.net/browse/ZNTA-1358) - Memory leak causing OOM error in idle server
  * [ZNTA-1293](https://zanata.atlassian.net/browse/ZNTA-1293) - Log files full of NonexistentConversationException
 
 -----------------------
