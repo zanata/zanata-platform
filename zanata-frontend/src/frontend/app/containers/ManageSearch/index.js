@@ -31,59 +31,107 @@ class ManageSearch extends Component {
                     </div>
                   </div>
                   <div className='left-form tablepadding col-xs-12'>
-                    <table className='table'>
+                    <table className='searchtable table'>
                       <thead>
                         <tr>
-                          <th>Table</th>
-                          <th>Purge index</th>
-                          <th>Reindex</th>
-                          <th>Optimise</th>
+                          <th><label className='checkbox-inline'><input
+                            type='checkbox' value='' />Table</label></th>
+                          <th><label className='checkbox-inline'><input
+                            type='checkbox' value='' />Purge index</label>
+                          </th>
+                          <th><label className='checkbox-inline'><input
+                            type='checkbox' value='' />Reindex</label></th>
+                          <th><label className='checkbox-inline'><input
+                            type='checkbox' value='' />Optimise</label></th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />HAccount</label></td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />&nbsp;</label></td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />&nbsp;</label></td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />&nbsp;</label></td>
                         </tr>
                         <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />HGlossaryEntry</label>
+                          </td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />&nbsp;</label></td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />&nbsp;</label></td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />&nbsp;</label></td>
                         </tr>
                         <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />HGlossaryTerms</label>
+                          </td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />&nbsp;</label></td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />&nbsp;</label></td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />&nbsp;</label></td>
                         </tr>
                         <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />HProject</label></td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />&nbsp;</label></td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />&nbsp;</label></td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />&nbsp;</label></td>
                         </tr>
                         <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />HProjectIteration
+                          </label></td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />&nbsp;</label></td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />&nbsp;</label></td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />&nbsp;</label></td>
                         </tr>
                         <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />TransMemoryUnit
+                          </label></td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />&nbsp;</label></td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />&nbsp;</label></td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />&nbsp;</label></td>
+                        </tr>
+                        <tr>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />HTextFlowTarget</label>
+                          </td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />&nbsp;</label></td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />&nbsp;</label></td>
+                          <td><label className='checkbox-inline'><input
+                            type='checkbox' value='' />&nbsp;</label></td>
                         </tr>
                       </tbody>
                     </table>
+                    <div>
+                      <Button bsStyle='default'>
+                      Clear selected</Button>
+                      <div className='pull-right'><Button bsStyle='primary'>
+                      Perform selected actions</Button></div>
+                    </div>
                   </div>
                 </div>
               </div>
-              <Button bsStyle='primary'>
-              Perform selected actions</Button>
             </div>
           </View>
         </ScrollView>
