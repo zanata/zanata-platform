@@ -8,8 +8,19 @@ const contentViewContainerTheme = {
     w: 'W(100%)'
   }
 }
+const title = (
+  <h3>Panel title</h3>
+)
+const panelsInstance = (
+  <div>
+    <Panel header={title}>
+      <div className='panel-body'>Panel content</div>
+    </Panel>
+  </div>
+)
 
 class ManageSearch extends Component {
+
   render () {
     return (
       <Page>
@@ -21,17 +32,11 @@ class ManageSearch extends Component {
                 <div className='contentx clearfix center-block'>
                   <h2>Manage Search
                   </h2>
-                  <div className='left-form toolbar col-xs-12'>
-                    <div className='search-box col-xs-6 col-sm-8 col-md-6
-                       col-lg-7'>
-                      <div className='col-xs-12'>
-                        <Panel bsStyle='primary' header='Panel heading
-                          without title'>
-                         Panel content
-                        </Panel>
-                      </div>
-                    </div>
-                  </div>
+                  <panelsInstance>
+                    <Panel bsStyle='primary' header={title}>
+                        Panel content
+                    </Panel>
+                  </panelsInstance>
                   <div className='left-form tablepadding col-xs-12'>
                     <table className='table'>
                       <thead>
@@ -126,5 +131,4 @@ class ManageSearch extends Component {
     )
   }
 }
-
 export default ManageSearch
