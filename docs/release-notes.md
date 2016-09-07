@@ -27,6 +27,9 @@ Zanata's jboss-web.xml has been updated: if you maintain a custom version, you s
 ##### Bug Fixes
 * [ZNTA-846](https://zanata.atlassian.net/browse/ZNTA-846) - Group "request add project version" needs field limit
 * [ZNTA-872](https://zanata.atlassian.net/browse/ZNTA-872) - Redirect to home from cancel button in create user page
+
+-----------------------
+
 ## 3.9.5
 ##### Bug Fixes
  * [ZNTA-1358](https://zanata.atlassian.net/browse/ZNTA-1358) - Memory leak causing OOM error in idle server
