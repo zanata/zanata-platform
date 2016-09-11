@@ -53,7 +53,7 @@ Any user in Zanata can contact language coordinator by:
 1. Click on a language team.
 1. Click on `More Action` menu on top right panel, select `Contact Coordinators`.
 <figure>
-![Contact coordinator menu](/images/language-contact-menu.png)
+![Contact coordinator menu](/images/contact-coord.png)
 </figure>
 <br/>
 1. In the dialog, fill in the message in the input file and click `Send`.
