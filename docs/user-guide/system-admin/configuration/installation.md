@@ -1,9 +1,10 @@
-Zanata can be installed by downloading a web archive (war) file, and configuring Jboss EAP or Wildfly according to this guide, or by downloading a handy installer.
+Zanata can be installed by downloading a web archive (war) file, and configuring Jboss EAP or Wildfly according to this guide, by downloading a handy installer, or using Docker.
 
 ## What you need
 
 - JBoss Enterprise Application Platform 6 (EAP 6), version 6.4.9 or later. This is the recommended container for Zanata, and it can be [downloaded here](https://www.jboss.org/products/eap/download/).
 - ... OR WildFly (version 10.1.0.Final) which can be [downloaded here](http://wildfly.org/downloads/)
+- ... OR Docker (version 1.9 or later) which can be [downloaded here](https://www.docker.com/products/docker#/)
 - A suitable MySQL database. This is NOT included in the Zanata archive. You can [download MySQL here](http://dev.mysql.com/downloads/mysql/).
 - An email (SMTP) server for email verification and notifications.
 - JDK version 1.8 or later. [OpenJDK](http://openjdk.java.net/install/) is recommended, but you can also download [Oracle's JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
@@ -37,6 +38,9 @@ You can run Zanata on JBoss EAP 6 or Wildfly. Just download one of the installer
 You'll find zip files for each platform, for example: `zanata-<version>-eap-6.zip` or `zanata-<version>-wildfly.zip`
 
 You will also find `war` archives. Don't download these unless you wish to manually configure JBoss, or if you are upgrading an already set up Zanata server.
+
+To run Zanata with Docker, follow [these instructions](https://github.com/zanata/zanata-server/tree/master/docker). You will need this Docker image:
+- [Latest Zanata Docker image] (https://hub.docker.com/r/zanata/server/)
 
 ## Modify the configuration properties
 
