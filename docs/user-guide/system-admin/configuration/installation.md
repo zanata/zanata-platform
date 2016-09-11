@@ -40,7 +40,8 @@ You'll find zip files for each platform, for example: `zanata-<version>-eap-6.zi
 You will also find `war` archives. Don't download these unless you wish to manually configure JBoss, or if you are upgrading an already set up Zanata server.
 
 To run Zanata with Docker, follow [these instructions](https://github.com/zanata/zanata-server/tree/master/docker). You will need this Docker image:
-- [Latest Zanata Docker image] (https://hub.docker.com/r/zanata/server/)
+
+- [Latest Zanata Docker image](https://hub.docker.com/r/zanata/server/)
 
 ## Modify the configuration properties
 
