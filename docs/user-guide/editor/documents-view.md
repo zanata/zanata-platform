@@ -11,9 +11,21 @@
 
 ## Settings
 <figure>
-![Documents view settings](/images/editor-doc-list-settings.png)
+![Documents view settings](/images/editor-document-settings.png)
 </figure>
 <br/>
+
+* **Editor buttons** - Show buttons in the Editor
+
+* **Enter key saves immediately** - Saves any document changes immediately
+
+* **Use syntax highlighting Editor** - Highlights syntax. Warning: no spell check, long lines may have wrapping issues.
+
+* **Show Save as Approved warning** - Users are shown a warning to confirm that they wish to save the text as Approved.
+
+* **Navigation key/button** - Choose to navigate between all statuses or only the next fuzzy or rejected, or the next untranslated.
+
+* **Translation memory options** - Select whether to show Translation Memory options as a version diff or highlighted matches.
 
 * **Page size** - Allow user to customise documents to show per page.
 
