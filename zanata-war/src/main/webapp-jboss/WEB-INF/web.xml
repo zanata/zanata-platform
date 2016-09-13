@@ -148,6 +148,10 @@
   </listener>
 
   <listener>
+    <listener-class>org.zanata.servlet.ZanataDatabaseMetadataServletListener</listener-class>
+  </listener>
+
+  <listener>
     <listener-class>liquibase.integration.servlet.LiquibaseServletListener</listener-class>
   </listener>
 

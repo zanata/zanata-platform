@@ -67,6 +67,8 @@ import org.zanata.exception.ZanataInitializationException;
 import org.zanata.rest.dto.VersionInfo;
 import javax.enterprise.event.Event;
 import org.zanata.util.VersionUtility;
+import org.zanata.util.ZanataDatabaseDriverMetadata;
+import org.zanata.util.ZanataDatabaseMetaData;
 
 /**
  * This class handles various tasks at startup.  It disables warnings for a
@@ -103,6 +105,12 @@ public class ZanataInit {
     private ApplicationConfiguration applicationConfiguration;
 
     @Inject
+    private ZanataDatabaseDriverMetadata databaseDriverMetadata;
+
+    @Inject
+    private ZanataDatabaseMetaData databaseMetaData;
+
+    @Inject
     private Event<ServerStarted> startupEvent;
 
     public void onCreate(@Observes @Initialized ServletContext context) throws Exception {
@@ -119,11 +127,8 @@ public class ZanataInit {
         Attributes atts = null;
         if (manifestFile.canRead()) {
             Manifest mf = new Manifest();
-            final FileInputStream fis = new FileInputStream(manifestFile);
-            try {
+            try (FileInputStream fis = new FileInputStream(manifestFile)) {
                 mf.read(fis);
-            } finally {
-                fis.close();
             }
             atts = mf.getMainAttributes();
         }
@@ -442,6 +447,8 @@ public class ZanataInit {
         log.info("             #(((((((((((#     ((#     ");
         log.info("");
         log.info("  Zanata version: " + ver.getVersionNo());
+        log.info("  Database: {}", databaseMetaData);
+        log.info("  JDBC Driver: {}", databaseDriverMetadata);
         log.info("  SCM: " + ver.getScmDescribe());
         log.info("  Red Hat Inc 2008-{}",
                 Calendar.getInstance().get(Calendar.YEAR));
