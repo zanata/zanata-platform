@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>zanata-parent</artifactId>
-    <version>29</version>
+    <version>30-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -35,7 +35,7 @@
   </repositories>
 
   <properties>
-    <zanata.api.version>4.0.0-alpha-1</zanata.api.version>
+    <zanata.api.version>4.0.0-SNAPSHOT</zanata.api.version>
   </properties>
 
   <build>
