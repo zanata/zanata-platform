@@ -1,6 +1,6 @@
 You can view a user's profile page by typing the username in the top search field and click on the search result.
 <figure>
-   ![Project user search](/images/project-user-search.png)
+   ![Project user search](/images/search.png)
 </figure>
 
 On the user profile page, you can view this user's recent contribution statistics according to the selected date range option.

@@ -1,4 +1,4 @@
-Zanata can be installed by downloading a web archive (war) file, and configuring Jboss EAP or Wildfly according to this guide, or by downloading a handy installer.
+Zanata can be installed by downloading a web archive (war) file, and configuring Jboss EAP or Wildfly according to this guide or by downloading a handy installer.
 
 ## What you need
 

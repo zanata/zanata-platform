@@ -11,9 +11,21 @@
 
 ## Settings
 <figure>
-![Documents view settings](/images/editor-doc-list-settings.png)
+![Documents view settings](/images/editor-document-settings.png)
 </figure>
 <br/>
+
+* **Editor buttons** - Show buttons in the Editor
+
+* **Enter key saves immediately** - Saves any document changes when enter is pressed
+
+* **Use syntax highlighting Editor** - Highlights syntax. Warning: no spell check, long lines may have wrapping issues.
+
+* **Show Save as Approved warning** - Users are shown a warning to confirm that they wish to save the text as Approved.
+
+* **Navigation key/button** - Change the navigation keyboard shortcut to whichever you selected in the options.
+
+* **Translation memory options** - Select whether to show diff between source string and search string or just highlighting.
 
 * **Page size** - Allow user to customise documents to show per page.
 

@@ -9,7 +9,7 @@ See the [Version Creation Help](/user-guide/versions/create-version) for details
 
 ## General Settings
 <figure>
-![Version General Settings tab](/images/version-general-settings.png)
+![Version General Settings tab](/images/admin-version-settings.png)
 <figcaption>Version General Settings tab</figcaption>
 </figure>
 <br>
@@ -23,6 +23,10 @@ Project Type settings by default inherits from project's settings but maintainer
 This button is used to set a version to read-only, which prevents translations being entered. This may be useful in some cases, but should be used sparingly so that translators are able to work on your project.
 
 This can be toggled using the same button, as desired.
+
+### Delete this version
+
+This button is used to delete this version and remove it from the public projects list. This action cannot be undone, so use with caution.
 
 ------------
 
