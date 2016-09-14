@@ -11,7 +11,7 @@ The Settings tab contains fields that manage appearance and workflow of your pro
 
 ## General Settings
 <figure>
-![Project General Settings tab](/images/project-general-settings.png)
+![Project General Settings tab](/images/admin-project-settings.png)
 <figcaption>Project General Settings tab</figcaption>
 </figure>
 <br>
@@ -43,6 +43,10 @@ $ git clone git@github.com:zanata/zanata-server.git
 This button is used to set a project to read-only, which prevents translations being entered. This may be useful in some cases, but should be used sparingly so that translators are able to work on your project.
 
 This can be toggled using the same button, as desired.
+
+### Delete this project
+
+This button is used to delete a project and remove it from the public projects list. You will not be able to access it anymore. This action cannot be undone, so use with caution.
 
 ------------
 
@@ -142,7 +146,7 @@ The access restriction feature is intended for use with special roles that can b
 <figcaption>Project Webhooks Settings tab</figcaption>
 </figure>
 
-The Webhooks feature is HTTP callbacks which are triggered when a document in a language has reached a certain milestone. 
+The Webhooks feature is HTTP callbacks which are triggered when a document in a language has reached a certain milestone.
 Currently, webhooks events will be triggered when
 
 - A document has reached 100% Translated
@@ -164,7 +168,7 @@ Example webhook response:
 }
 ```
 
-If a secret key is provided for that payload URL, Zanata will sign the webhook request with HTTP header `X-Zanata-Webhook`. 
+If a secret key is provided for that payload URL, Zanata will sign the webhook request with HTTP header `X-Zanata-Webhook`.
 The header is a double hash of `HMAC-SHA1` in base64 digest. The double hash is generated from the full request body and the payload URL as provided.
 
 Here is some sample pseudocode for checking the validity of a request:
@@ -180,7 +184,7 @@ boolean verifyRequest(request, secret, callbackURL) {
 
 
 ### Adding a webhook
-1. Enter a valid URL and secret key (optional) into the provided text input. 
+1. Enter a valid URL and secret key (optional) into the provided text input.
 2. Click on 'Add webhook' button to add the URL.
 3. If secret key is provided, Zanata will include cryptographic signature in HTTP header `X-Zanata-Webhook`.
 
