@@ -33,6 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.sun.jersey.api.client.ClientResponse;
 import org.apache.commons.codec.binary.Hex;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -169,9 +170,12 @@ public class FileResourceClientTest {
 
     @Test
     public void testDownloadSourceFile() throws IOException {
-        InputStream inputStream =
+        ClientResponse response =
                 client.downloadSourceFile("about-fedora", "master", "pot",
-                        "About-Fedora").readEntity(InputStream.class);
+                        "About-Fedora");
+        assertEquals(200, response.getStatus());
+        InputStream inputStream =
+                response.getEntity(InputStream.class);
         PoReader2 reader = new PoReader2();
         Resource resource =
                 reader.extractTemplate(new InputSource(inputStream),
@@ -181,9 +185,12 @@ public class FileResourceClientTest {
 
     @Test
     public void testDownloadTranslationFile() {
-        InputStream inputStream =
+        ClientResponse response =
                 client.downloadTranslationFile("about-fedora", "master", "es",
-                        "po", "About-Fedora").readEntity(InputStream.class);
+                        "po", "About-Fedora");
+        assertEquals(200, response.getStatus());
+        InputStream inputStream =
+                response.getEntity(InputStream.class);
         PoReader2 reader = new PoReader2();
         TranslationsResource translationsResource =
                 reader.extractTarget(new InputSource(inputStream));

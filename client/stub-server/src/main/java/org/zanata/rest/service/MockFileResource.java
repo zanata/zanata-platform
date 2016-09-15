@@ -26,7 +26,6 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
@@ -54,7 +53,6 @@ import static org.zanata.common.ProjectType.fileProjectSourceDocTypes;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Path(FileResource.SERVICE_PATH)
 public class MockFileResource implements FileResource {
     @Override
     @Deprecated
@@ -129,7 +127,7 @@ public class MockFileResource implements FileResource {
                 .entity(output).build();
     }
 
-    private static Resource sampleResource(String docId) {
+    static Resource sampleResource(String docId) {
         Resource doc = new Resource(docId);
         doc.getTextFlows().add(new TextFlow("hello", LocaleId.EN_US,
                 "hello world"));
@@ -157,7 +155,7 @@ public class MockFileResource implements FileResource {
                 .entity(output).build();
     }
 
-    private static TranslationsResource sampleTransResource() {
+    static TranslationsResource sampleTransResource() {
         TranslationsResource resource = new TranslationsResource();
         resource.getExtensions(true);
         TextFlowTarget hello = new TextFlowTarget("hello");

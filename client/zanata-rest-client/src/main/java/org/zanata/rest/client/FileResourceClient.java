@@ -97,6 +97,10 @@ public class FileResourceClient {
         // with this fluent client. We have to provide the @MultipartForm
         // annotation to the method.
         // otherwise Resteasy can't find the writer for multipart form
+        // FIXME
+        // if (response.getStatus() == 404) {
+        //     throw new RuntimeException("Encountered 404 during post form");
+        // }
         Response response = builder.post(Entity.entity(documentFileUploadForm,
                 MediaType.MULTIPART_FORM_DATA_TYPE, multipartFormAnnotations));
         response.bufferEntity();
@@ -125,6 +129,10 @@ public class FileResourceClient {
         Response response = builder.post(Entity.entity(documentFileUploadForm,
                 MediaType.MULTIPART_FORM_DATA_TYPE, multipartFormAnnotations));
         response.bufferEntity();
+        // FIXME
+        // if (response.getStatus() == 404) {
+        //     throw new RuntimeException("Encountered 404 during post form");
+        // }
         return response.readEntity(ChunkUploadResponse.class);
     }
 

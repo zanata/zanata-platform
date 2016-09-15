@@ -51,6 +51,11 @@ public class DocumentFileUploadForm implements Serializable {
     @PartType("application/octet-stream")
     private transient InputStream fileStream;
 
+    /**
+     * This should correspond to a FileTypeName (or DocumentType on the server)
+     * @see org.zanata.common.FileTypeName
+     * @see org.zanata.common.DocumentType
+     */
     @FormParam("type")
     @PartType("text/plain")
     private String fileType;

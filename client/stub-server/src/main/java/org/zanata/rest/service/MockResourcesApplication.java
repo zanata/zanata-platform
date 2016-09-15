@@ -42,6 +42,8 @@ public class MockResourcesApplication extends Application {
                 MockTranslatedDocResource.class,
                 MockStatisticsResource.class,
                 MockFileResource.class,
+                MockSourceFileResource.class,
+                MockTranslatedFileResource.class,
                 MockProjectsResource.class,
                 MockProjectIterationResource.class,
                 MockProjectResource.class,
