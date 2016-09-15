@@ -30,12 +30,15 @@ import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.filter.ClientFilter;
 
 /**
- * This is a workaround that jersey client don't support put/post returning
+ * This was a workaround created because jersey client was erroneously
+ * believed not to support put/post returning
  * response.
  *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @deprecated use builder.put/post(ClientResponse.class, entity)
  */
+@Deprecated
 class CacheResponseFilter extends ClientFilter {
     private Optional<ClientResponse> cachedClientResponse = Optional.absent();
 
@@ -49,13 +52,16 @@ class CacheResponseFilter extends ClientFilter {
     }
 
     public <T> T getEntity(Class<T> type) {
-        checkState();
-        return cachedClientResponse.get().getEntity(type);
+        return getResponse().getEntity(type);
     }
 
     public <T> T getEntity(GenericType<T> genericType) {
+        return getResponse().getEntity(genericType);
+    }
+
+    public ClientResponse getResponse() {
         checkState();
-        return cachedClientResponse.get().getEntity(genericType);
+        return cachedClientResponse.get();
     }
 
     private void checkState() {

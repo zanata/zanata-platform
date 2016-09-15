@@ -81,9 +81,7 @@ public class FileResourceClient {
             String projectSlug,
             String iterationSlug, String docId,
             DocumentFileUploadForm documentFileUploadForm) {
-        CacheResponseFilter filter = new CacheResponseFilter();
         Client client = factory.getClient();
-        client.addFilter(filter);
         WebResource.Builder builder = client
                 .resource(baseUri)
                 .path("file").path("source").path(projectSlug)
@@ -93,10 +91,12 @@ public class FileResourceClient {
         FormDataMultiPart form =
                 prepareFormDataMultiPart(documentFileUploadForm);
 
-        builder.post(form);
+        ClientResponse response = builder.post(ClientResponse.class, form);
+        if (response.getStatus() == 404) {
+            throw new RuntimeException("Encountered 404 during post form");
+        }
         ChunkUploadResponse chunkUploadResponse =
-                filter.getEntity(ChunkUploadResponse.class);
-        client.removeFilter(filter);
+                response.getEntity(ChunkUploadResponse.class);
         return chunkUploadResponse;
     }
 
@@ -124,9 +124,7 @@ public class FileResourceClient {
             String iterationSlug, String locale, String docId,
             String mergeType,
             DocumentFileUploadForm documentFileUploadForm) {
-        CacheResponseFilter filter = new CacheResponseFilter();
         Client client = factory.getClient();
-        client.addFilter(filter);
         WebResource.Builder builder = client.resource(baseUri)
                 .path(FileResource.SERVICE_PATH)
                 .path("translation")
@@ -139,10 +137,12 @@ public class FileResourceClient {
         FormDataMultiPart form =
                 prepareFormDataMultiPart(documentFileUploadForm);
 
-        builder.post(form);
+        ClientResponse response = builder.post(ClientResponse.class, form);
+        if (response.getStatus() == 404) {
+            throw new RuntimeException("Encountered 404 during post form");
+        }
         ChunkUploadResponse chunkUploadResponse =
-                filter.getEntity(ChunkUploadResponse.class);
-        client.removeFilter(filter);
+                response.getEntity(ChunkUploadResponse.class);
         return chunkUploadResponse;
     }
 
