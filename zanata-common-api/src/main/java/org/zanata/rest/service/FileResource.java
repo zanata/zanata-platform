@@ -50,7 +50,9 @@ public interface FileResource extends RestResource {
     public static final String SERVICE_PATH = "/file";
     @Deprecated
     public static final String FILE_RESOURCE = SERVICE_PATH;
+    @Deprecated
     public static final String ACCEPTED_TYPES_RESOURCE = "/accepted_types";
+    @Deprecated
     public static final String ACCEPTED_TYPE_LIST_RESOURCE = "/accepted_document_types";
     public static final String FILE_TYPE_INFO_RESOURCE = "/file_type_info";
     public static final String DOWNLOAD_TEMPLATE = "/download/{downloadId}";
@@ -62,6 +64,9 @@ public interface FileResource extends RestResource {
             "/source/{projectSlug}/{iterationSlug}";
     public static final String SOURCE_DOWNLOAD_TEMPLATE =
             "/source/{projectSlug}/{iterationSlug}/{fileType}";
+
+    String FILETYPE_PO = "po";
+    String FILETYPE_POT = "pot";
 
     /**
      * Specifies to download the original source file that was uploaded,
@@ -88,7 +93,7 @@ public interface FileResource extends RestResource {
      * Deprecated. Returns the source file extensions supported by the server.
      * @return a semicolon-separated list of file extensions
      * @see DocumentType#getSourceExtensions()
-     * @see #fileTypeInfoList()
+     * @deprecated Use {@link #fileTypeInfoList()}
      */
     @Deprecated
     @GET
@@ -106,7 +111,7 @@ public interface FileResource extends RestResource {
      * for existing types will not be visible to the client.
      * @return a List of DocumentType
      * @see DocumentType
-     * @see #fileTypeInfoList()
+     * @deprecated Use {@link #fileTypeInfoList()}
      */
     @Deprecated
     @GET
@@ -136,7 +141,10 @@ public interface FileResource extends RestResource {
      * The file will only be processed when all chunks have been fully uploaded.
      * With each uploaded chunk, the multipart message's 'last' parameter will
      * indicate if it is the last expected chunk.
-     *
+     * <p>
+     *     Note: only for File projects, expected to be deprecated in future.
+     *     Use SourceDocFileService or TranslatedDocFileService for non-File projects.
+     * </p>
      * @param projectSlug The project slug where to store the document.
      * @param iterationSlug The project version slug where to store the document.
      * @param docId The full Document identifier
@@ -164,7 +172,10 @@ public interface FileResource extends RestResource {
      * The file will only be processed when all chunks have been fully uploaded.
      * With each uploaded chunk, the multipart message's 'last' parameter will
      * indicate if it is the last expected chunk.
-     *
+     * <p>
+     *     Note: only for File projects, expected to be deprecated in future.
+     *     Use SourceDocFileService or TranslatedDocFileService for non-File projects.
+     * </p>
      * @param projectSlug The project slug where to store the document.
      * @param iterationSlug The project version slug where to store the document.
      * @param localeId The locale (language) for the translation file.
@@ -191,7 +202,10 @@ public interface FileResource extends RestResource {
 
     /**
      * Downloads a single source file.
-     *
+     * <p>
+     *     Note: only for File projects, expected to be deprecated in future.
+     *     Use SourceDocFileService or TranslatedDocFileService for non-File projects.
+     * </p>
      * @param projectSlug
      * @param iterationSlug
      * @param fileType
@@ -218,7 +232,10 @@ public interface FileResource extends RestResource {
      * To download a preview-document or translated document where a raw source
      * document is available, use fileType 'half_baked' and 'baked'
      * respectively.
-     *
+     * <p>
+     *     Note: only for File projects, expected to be deprecated in future.
+     *     Use SourceDocFileService or TranslatedDocFileService for non-File projects.
+     * </p>
      * @param projectSlug
      *            Project identifier.
      * @param iterationSlug

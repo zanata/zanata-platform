@@ -26,6 +26,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @Path(ProjectIterationLocalesResource.SERVICE_PATH)
+@org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 interface ProjectIterationLocalesResource extends
         org.zanata.rest.service.ProjectIterationLocalesResource {
