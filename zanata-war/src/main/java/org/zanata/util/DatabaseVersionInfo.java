@@ -26,13 +26,13 @@ import com.google.common.base.MoreObjects;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class ZanataDatabaseMetaData {
+public class DatabaseVersionInfo {
     private final String name;
     private final int majorVersion;
     private final int minorVersion;
     private final String version;
 
-    public ZanataDatabaseMetaData(String name, int majorVersion,
+    public DatabaseVersionInfo(String name, int majorVersion,
             int minorVersion,
             String version) {
         this.name = name;

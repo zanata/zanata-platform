@@ -23,17 +23,20 @@ package org.zanata.servlet;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import javax.annotation.Resource;
-import javax.enterprise.inject.Produces;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.util.ZanataDatabaseDriverMetadata;
-import org.zanata.util.ZanataDatabaseMetaData;
+import org.zanata.util.DatabaseDriverVersionInfo;
+import org.zanata.util.DatabaseVersionInfo;
 
 /**
+ * Log database and database driver information at context start time.
+ * This listener should appear before liquibase listener so that if liquibase
+ * run into any error we can use this information for troubleshooting.
+ *
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class ZanataDatabaseMetadataServletListener implements
@@ -43,8 +46,6 @@ public class ZanataDatabaseMetadataServletListener implements
 
     @Resource(lookup = "java:jboss/datasources/zanataDatasource")
     private DataSource dataSource;
-    private static ZanataDatabaseMetaData databaseMetaData;
-    private static ZanataDatabaseDriverMetadata dbDriverMetaData;
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
@@ -58,24 +59,21 @@ public class ZanataDatabaseMetadataServletListener implements
             String dbVersion =
                     metaData.getDatabaseProductVersion();
 
-            databaseMetaData = new ZanataDatabaseMetaData(dbProductName,
-                    dbMajorVer, dbMinorVer, dbVersion); ;
-            dbDriverMetaData = new ZanataDatabaseDriverMetadata(
-                    metaData.getDriverName(), metaData.getDriverVersion());
+            DatabaseVersionInfo databaseMetaData =
+                    new DatabaseVersionInfo(dbProductName,
+                            dbMajorVer, dbMinorVer, dbVersion);
+            DatabaseDriverVersionInfo dbDriverMetaData =
+                    new DatabaseDriverVersionInfo(
+                            metaData.getDriverName(),
+                            metaData.getDriverVersion());
 
+            log.info("===================================");
+            log.info("  Database: {}", databaseMetaData);
+            log.info("  JDBC Driver: {}", dbDriverMetaData);
+            log.info("===================================");
         } catch (Exception e) {
             log.warn("fail on getting database metadata", e);
         }
-    }
-
-    @Produces
-    ZanataDatabaseMetaData databaseMetaData() {
-        return databaseMetaData;
-    }
-
-    @Produces
-    ZanataDatabaseDriverMetadata databaseDriverMetadata() {
-        return dbDriverMetaData;
     }
 
     @Override

@@ -26,11 +26,11 @@ import com.google.common.base.MoreObjects;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class ZanataDatabaseDriverMetadata {
+public class DatabaseDriverVersionInfo {
     private final String name;
     private final String version;
 
-    public ZanataDatabaseDriverMetadata(String name, String version) {
+    public DatabaseDriverVersionInfo(String name, String version) {
         this.name = name;
         this.version = version;
     }

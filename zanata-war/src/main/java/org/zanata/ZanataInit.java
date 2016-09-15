@@ -67,8 +67,6 @@ import org.zanata.exception.ZanataInitializationException;
 import org.zanata.rest.dto.VersionInfo;
 import javax.enterprise.event.Event;
 import org.zanata.util.VersionUtility;
-import org.zanata.util.ZanataDatabaseDriverMetadata;
-import org.zanata.util.ZanataDatabaseMetaData;
 
 /**
  * This class handles various tasks at startup.  It disables warnings for a
@@ -103,12 +101,6 @@ public class ZanataInit {
 
     @Inject
     private ApplicationConfiguration applicationConfiguration;
-
-    @Inject
-    private ZanataDatabaseDriverMetadata databaseDriverMetadata;
-
-    @Inject
-    private ZanataDatabaseMetaData databaseMetaData;
 
     @Inject
     private Event<ServerStarted> startupEvent;
@@ -447,8 +439,6 @@ public class ZanataInit {
         log.info("             #(((((((((((#     ((#     ");
         log.info("");
         log.info("  Zanata version: " + ver.getVersionNo());
-        log.info("  Database: {}", databaseMetaData);
-        log.info("  JDBC Driver: {}", databaseDriverMetadata);
         log.info("  SCM: " + ver.getScmDescribe());
         log.info("  Red Hat Inc 2008-{}",
                 Calendar.getInstance().get(Calendar.YEAR));
