@@ -51,6 +51,10 @@ public class GlossaryFileUploadForm implements Serializable {
     @PartType("text/plain")
     private String fileName;
 
+    @FormParam("qualifiedName")
+    @PartType("text/plain")
+    private String qualifiedName;
+
 
     public InputStream getFileStream() {
         return fileStream;
@@ -82,5 +86,13 @@ public class GlossaryFileUploadForm implements Serializable {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public String getQualifiedName() {
+        return qualifiedName;
+    }
+
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
 }

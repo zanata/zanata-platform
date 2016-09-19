@@ -34,6 +34,7 @@ import org.codehaus.enunciate.jaxrs.TypeHint;
 import org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Project;
+import org.zanata.rest.dto.QualifiedName;
 
 /**
  * projectSlug: Project Identifier.
@@ -110,4 +111,21 @@ public interface ProjectResource extends RestResource {
             MediaTypes.APPLICATION_ZANATA_PROJECT_JSON,
             MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     public Response put(Project project);
+
+    /**
+     * Return project glossary qualifiedName
+     *
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         OK(200) - Project glossary qualified name used in the system.
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+    @GET
+    @Path("/glossary/qualifiedName")
+    @Produces({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML,
+            MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON,
+            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @TypeHint(QualifiedName.class)
+    public Response getGlossaryQualifiedName();
 }

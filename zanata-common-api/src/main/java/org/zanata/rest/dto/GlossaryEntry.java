@@ -45,8 +45,8 @@ import org.zanata.rest.MediaTypes;
  **/
 @XmlRootElement(name = "glossaryEntry")
 @XmlType(name = "glossaryEntryType", propOrder = { "id", "pos",
-        "description", "sourceReference", "glossaryTerms", "termsCount" })
-@JsonPropertyOrder({ "id", "pos", "description", "srcLang", "sourceReference", "glossaryTerms", "termsCount" })
+        "description", "sourceReference", "glossaryTerms", "termsCount", "qualifiedName" })
+@JsonPropertyOrder({ "id", "pos", "description", "srcLang", "sourceReference", "glossaryTerms", "termsCount", "qualifiedName" })
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class GlossaryEntry implements Serializable, HasMediaType {
     /**
@@ -65,6 +65,8 @@ public class GlossaryEntry implements Serializable, HasMediaType {
     private LocaleId srcLang;
 
     private String sourceReference;
+
+    private QualifiedName qualifiedName;
 
     private int termsCount = 0;
 
@@ -151,6 +153,16 @@ public class GlossaryEntry implements Serializable, HasMediaType {
         this.sourceReference = ref;
     }
 
+    @XmlElement(name = "qualified-name", namespace = Namespaces.ZANATA_API)
+    @JsonProperty("qualifiedName")
+    public QualifiedName getQualifiedName() {
+        return qualifiedName;
+    }
+
+    public void setQualifiedName(QualifiedName qualifiedName) {
+        this.qualifiedName = qualifiedName;
+    }
+
     @Override
     public String toString() {
         return DTOUtil.toXML(this);
@@ -176,8 +188,10 @@ public class GlossaryEntry implements Serializable, HasMediaType {
         if (srcLang != null ? !srcLang.equals(that.srcLang) :
             that.srcLang != null)
             return false;
+        return qualifiedName != null ?
+            qualifiedName.equals(that.qualifiedName) :
+            that.qualifiedName == null;
 
-        return true;
     }
 
     @Override
@@ -192,6 +206,9 @@ public class GlossaryEntry implements Serializable, HasMediaType {
         result = 31 * result + (srcLang != null ? srcLang.hashCode() : 0);
         result = 31 * result +
             (sourceReference != null ? sourceReference.hashCode() : 0);
+        result =
+            31 * result +
+                (qualifiedName != null ? qualifiedName.hashCode() : 0);
         result = 31 * result + termsCount;
         return result;
     }
