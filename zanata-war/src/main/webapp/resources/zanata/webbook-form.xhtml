@@ -16,10 +16,10 @@
       shortDescription="Require if webhook is null. js handler for test webhook. Fn(url, secret, webhookTypes, formId)" />
 
     <composite:attribute name="onAddWebhook"
-      shortDescription="Require if webhook is null. js handler for add webhook. Fn(url, secret, webhookTypes, formId)"/>
+      shortDescription="Require if webhook is null. js handler for add webhook. Fn(url, secret, webhookTypes, formId, name)"/>
 
     <composite:attribute name="onUpdateWebhook"
-      shortDescription="Require if webhook is not null. js handler for update webhook. Fn(id, url, secret, webhookTypes, formId)"/>
+      shortDescription="Require if webhook is not null. js handler for update webhook. Fn(id, url, secret, webhookTypes, formId, name)"/>
 
     <composite:attribute name="onDeleteWebhook"
       shortDescription="Require if webhook is not null. js handler for delete webhook. Fn(formId, url)"/>
@@ -67,6 +67,14 @@
         <input type="text" name="payloadUrlInput" autocomplete="off" maxlength="255"
           placeholder="#{msgs['jsf.project.PayloadURL']}"
           class="form--inline__input" value="#{cc.attrs.webhook.url}"/>
+      </div>
+      <div class="form__item">
+        <label>
+          #{msgs['jsf.project.WebhookName']}
+        </label>
+        <input type="text" name="nameInput" autocomplete="off" maxlength="255"
+          placeholder="#{msgs['jsf.project.WebhookName']}"
+          class="form--inline__input" value="#{cc.attrs.webhook.name}"/>
       </div>
       <div class="form__item">
         <label>#{msgs['jsf.project.WebHooks.secret']}</label>

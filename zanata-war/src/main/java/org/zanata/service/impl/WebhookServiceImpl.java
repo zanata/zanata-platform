@@ -22,15 +22,18 @@ import org.zanata.common.LocaleId;
 import org.zanata.events.WebhookEvent;
 import org.zanata.events.WebhookEventType;
 import org.zanata.i18n.Messages;
+import org.zanata.model.HAccount;
 import org.zanata.model.ProjectRole;
 import org.zanata.model.WebHook;
 import org.zanata.model.type.WebhookType;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.util.UrlUtil;
 import org.zanata.webhook.events.DocumentMilestoneEvent;
 import org.zanata.webhook.events.DocumentStatsEvent;
 import org.zanata.webhook.events.ProjectMaintainerChangedEvent;
 import org.zanata.webhook.events.SourceDocumentChangedEvent;
 import org.zanata.webhook.events.TestEvent;
+import org.zanata.webhook.events.ManuallyTriggeredEvent;
 import org.zanata.webhook.events.VersionChangedEvent;
 
 import com.google.common.base.Function;
@@ -51,6 +54,10 @@ public class WebhookServiceImpl implements Serializable {
 
     @Inject
     private Event<WebhookEvent> webhookEventEvent;
+
+    @Inject
+    @Authenticated
+    private HAccount authenticatedUser;
 
     private static final int URL_MAX_LENGTH = 255;
 
@@ -152,6 +159,17 @@ public class WebhookServiceImpl implements Serializable {
         publishWebhooks(webHooks, statsEvent);
     }
 
+    /**
+     * Process TranslationChangedEvent
+     */
+    public void processTranslationUpdated(String projectSlug,
+            String versionSlug, LocaleId localeId, List<WebHook> webHooks) {
+        ManuallyTriggeredEvent event =
+                new ManuallyTriggeredEvent(authenticatedUser.getUsername(),
+                        projectSlug, versionSlug, localeId);
+        publishWebhooks(webHooks, event);
+    }
+
     public List<WebhookTypeItem> getAvailableWebhookTypes() {
         WebhookTypeItem docMilestone =
             new WebhookTypeItem(WebhookType.DocumentMilestoneEvent,
@@ -174,8 +192,12 @@ public class WebhookServiceImpl implements Serializable {
             new WebhookTypeItem(WebhookType.SourceDocumentChangedEvent,
                 msgs.get("jsf.webhookType.SourceDocumentChangedEvent.desc"));
 
+        WebhookTypeItem transUpdate =
+                new WebhookTypeItem(WebhookType.ManuallyTriggeredEvent,
+                        msgs.get(
+                                "jsf.webhookType.ManuallyTriggeredEvent.desc"));
         return Lists
-            .newArrayList(docMilestone, stats, version, maintainer, srcDoc);
+            .newArrayList(docMilestone, stats, version, maintainer, srcDoc, transUpdate);
     }
 
     public List<String> getDisplayNames(Set<WebhookType> types) {

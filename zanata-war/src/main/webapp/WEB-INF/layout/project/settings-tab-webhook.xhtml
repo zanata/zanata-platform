@@ -16,12 +16,13 @@
     <a4j:jsFunction name="a4jAddWebhook"
       onbegin="jQuery('##{formId} [name=addWebhookBtn]').removeClass('button--primary')"
       oncomplete="zanata.loader.deactivate('##{formId} [name=addWebhookBtn]');jQuery('##{formId} [name=addWebhookBtn]').addClass('button--primary');clearWebhookForm('#{formId}');toggleNewWebhookForm('new-webhook-form', 'toggle-new-webhook');zanata.form.appendCheckboxes(jQuery('#settings-webhooks-form').element);"
-      action="#{projectHome.addWebHook(url, secret, types)}"
+      action="#{projectHome.addWebHook(url, secret, types, name)}"
       render="settings-webhooks-list">
       <a4j:param name="val1" assignTo="#{url}"/>
       <a4j:param name="val2" assignTo="#{secret}"/>
       <a4j:param name="val3" assignTo="#{types}"/>
       <a4j:param name="val4" assignTo="#{formId}"/>
+      <a4j:param name="val5" assignTo="#{name}"/>
     </a4j:jsFunction>
 
     <a4j:jsFunction name="a4jDeleteWebhook"
@@ -33,13 +34,14 @@
 
     <a4j:jsFunction name="a4jUpdateWebhook"
       oncomplete="zanata.loader.deactivate('##{formId} [name=updateWebhookBtn]');zanata.form.appendCheckboxes(jQuery('##{formId}').element);"
-      action="#{projectHome.updateWebhook(id, url, secret, types)}"
+      action="#{projectHome.updateWebhook(id, url, secret, types, name)}"
       render="settings-webhooks-list">
       <a4j:param name="val1" assignTo="#{id}"/>
       <a4j:param name="val2" assignTo="#{url}"/>
       <a4j:param name="val3" assignTo="#{secret}"/>
       <a4j:param name="val4" assignTo="#{types}"/>
       <a4j:param name="val5" assignTo="#{formId}"/>
+      <a4j:param name="val6" assignTo="#{name}"/>
     </a4j:jsFunction>
 
     <a4j:jsFunction name="a4JReRenderWebhookForm" render="#{formId}"

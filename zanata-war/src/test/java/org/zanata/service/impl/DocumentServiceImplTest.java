@@ -129,11 +129,11 @@ public class DocumentServiceImplTest {
         Set<WebhookType> types =
             Sets.newHashSet(WebhookType.DocumentMilestoneEvent);
         webHooks.add(new WebHook(project, "http://test.example.com",
-            types, key));
+                "test", types, key));
         webHooks.add(new WebHook(project, "http://test1.example.com",
-            types, key));
+                "test1", types, key));
         webHooks.add(new WebHook(project, "http://test1.example.com",
-            Sets.newHashSet(WebhookType.DocumentStatsEvent), key));
+                "test1", Sets.newHashSet(WebhookType.DocumentStatsEvent), key));
 
         when(projectIterationDAO.findById(versionId)).thenReturn(version);
         when(version.getProject()).thenReturn(project);

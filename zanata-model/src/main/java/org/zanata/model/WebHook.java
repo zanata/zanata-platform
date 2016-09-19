@@ -77,10 +77,16 @@ public class WebHook implements Serializable {
     @Column(nullable = true)
     private String secret;
 
-    public WebHook(HProject project, String url, Set<WebhookType> types,
-        String secret) {
+    @Size(max = 255)
+    private String name;
+
+
+    public WebHook(HProject project, String url, String name,
+            Set<WebhookType> types,
+            String secret) {
         this.project = project;
         this.url = url;
+        this.name = name;
         this.types = types;
         this.secret = secret;
     }
@@ -109,14 +115,16 @@ public class WebHook implements Serializable {
 
     /**
      * This will replace all properties with given ones.
-     *
      * @param url - new url
+     * @param name - new name
      * @param newTypes - new types
      * @param secret - new secret key
      */
     @Transient
-    public void update(String url, Set<WebhookType> newTypes, String secret) {
+    public void update(String url, String name, Set<WebhookType> newTypes,
+            String secret) {
         this.url = url;
+        this.name = name;
         this.secret = secret;
 
         /**
