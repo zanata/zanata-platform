@@ -27,13 +27,24 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.GlossaryEntry;
+import org.zanata.rest.service.GlossaryResource;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.arrayContaining;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 /**
  *
@@ -44,7 +55,7 @@ public class GlossaryCSVReaderTest {
 
     @Test(expected = RuntimeException.class)
     public void testNotMatchingSource() throws IOException {
-        GlossaryCSVReader reader = new GlossaryCSVReader(LocaleId.DE, 300);
+        GlossaryCSVReader reader = new GlossaryCSVReader(LocaleId.DE);
         File sourceFile =
             new File("src/test/resources/glossary/translate1.csv");
 
@@ -52,13 +63,15 @@ public class GlossaryCSVReaderTest {
             new InputStreamReader(new FileInputStream(sourceFile), "UTF-8");
         BufferedReader br = new BufferedReader(inputStreamReader);
 
-        List<List<GlossaryEntry>> glossaries = reader.extractGlossary(br);
+        Map<LocaleId, List<GlossaryEntry>> glossaries = reader
+                .extractGlossary(br, GlossaryResource.GLOBAL_QUALIFIED_NAME);
     }
 
     @Test
     public void extractGlossaryTest1() throws IOException {
 
-        GlossaryCSVReader reader = new GlossaryCSVReader(LocaleId.EN_US, 300);
+        GlossaryCSVReader reader = new GlossaryCSVReader(LocaleId.EN_US);
+        int entryPerLocale = 2;
 
         File sourceFile =
                 new File("src/test/resources/glossary/translate1.csv");
@@ -67,20 +80,25 @@ public class GlossaryCSVReaderTest {
                 new InputStreamReader(new FileInputStream(sourceFile), "UTF-8");
         BufferedReader br = new BufferedReader(inputStreamReader);
 
-        List<List<GlossaryEntry>> glossaries = reader.extractGlossary(br);
-        assertThat(glossaries.size(), Matchers.equalTo(1));
+        Map<LocaleId, List<GlossaryEntry>> glossaries =
+                reader.extractGlossary(br,
+                        GlossaryResource.GLOBAL_QUALIFIED_NAME);
 
-        assertThat(glossaries.get(0).size(), Matchers.equalTo(2));
+        assertThat(glossaries.keySet().size(), equalTo(2));
+        assertThat(glossaries.keySet(),
+                contains(LocaleId.ES, new LocaleId("zh")));
 
-        for (GlossaryEntry entry : glossaries.get(0)) {
-            assertThat(entry.getGlossaryTerms().size(), Matchers.equalTo(3));
+        for (Map.Entry<LocaleId, List<GlossaryEntry>> entry : glossaries
+                .entrySet()) {
+            assertThat(entry.getValue().size(),
+                    Matchers.equalTo(entryPerLocale));
         }
-
     }
 
     @Test
     public void extractGlossaryTest2() throws IOException {
-        GlossaryCSVReader reader = new GlossaryCSVReader(LocaleId.EN_US, 300);
+        GlossaryCSVReader reader = new GlossaryCSVReader(LocaleId.EN_US);
+        int entryPerLocale = 2;
 
         File sourceFile =
                 new File("src/test/resources/glossary/translate2.csv");
@@ -89,16 +107,16 @@ public class GlossaryCSVReaderTest {
                 new InputStreamReader(new FileInputStream(sourceFile), "UTF-8");
         BufferedReader br = new BufferedReader(inputStreamReader);
 
-        List<List<GlossaryEntry>> glossaries = reader.extractGlossary(br);
-        // System.out.println(glossary);
-        assertThat(glossaries.size(), Matchers.equalTo(1));
+        Map<LocaleId, List<GlossaryEntry>> glossaries =
+                reader.extractGlossary(br, GlossaryResource.GLOBAL_QUALIFIED_NAME);
 
-        assertThat(glossaries.get(0).size(),
-                Matchers.equalTo(2));
-
-        for (GlossaryEntry entry : glossaries.get(0)) {
-            assertThat(entry.getGlossaryTerms().size(), Matchers.equalTo(3));
+        assertThat(glossaries.keySet().size(), equalTo(2));
+        assertThat(glossaries.keySet(),
+                contains(LocaleId.ES, new LocaleId("zh")));
+        for (Map.Entry<LocaleId, List<GlossaryEntry>> entry : glossaries
+            .entrySet()) {
+            assertThat(entry.getValue().size(),
+                Matchers.equalTo(entryPerLocale));
         }
-
     }
 }

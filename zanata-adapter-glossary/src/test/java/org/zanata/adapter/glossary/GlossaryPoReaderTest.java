@@ -27,13 +27,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.zanata.common.LocaleId;
-import org.zanata.rest.dto.Glossary;
 import org.zanata.rest.dto.GlossaryEntry;
+import org.zanata.rest.service.GlossaryResource;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 
 /**
@@ -52,47 +54,35 @@ public class GlossaryPoReaderTest {
     private static final int sourceSize1 = 578;
     private static final int sourceSize2 = 2645;
 
-    private static final int BATCH_SIZE = 50;
-
     @Test
     public void extractGlossaryTest() throws IOException {
+        LocaleId localeId = new LocaleId("hi");
         GlossaryPoReader reader =
-                new GlossaryPoReader(LocaleId.EN_US, new LocaleId("hi"),
-                        BATCH_SIZE);
+                new GlossaryPoReader(LocaleId.EN_US, localeId);
 
         Reader inputStreamReader =
                 new InputStreamReader(new FileInputStream(sourceFile), "UTF-8");
         BufferedReader br = new BufferedReader(inputStreamReader);
 
-        List<List<GlossaryEntry>> glossaries = reader.extractGlossary(br);
-        assertThat(glossaries.size(),
-                equalTo((int) Math.ceil(sourceSize1 * 1F / BATCH_SIZE)));
-        assertThat(glossaries.get(0).size(),
-                equalTo(BATCH_SIZE));
-        assertThat(glossaries.get(1).size(),
-                equalTo(BATCH_SIZE));
-
-        assertThat(glossaries.get(glossaries.size() - 1).size(),
-                equalTo(sourceSize1 % BATCH_SIZE));
+        Map<LocaleId, List<GlossaryEntry>> glossaries =
+                reader.extractGlossary(br, GlossaryResource.GLOBAL_QUALIFIED_NAME);
+        assertThat(glossaries.keySet(), contains(localeId));
+        assertThat(glossaries.get(localeId).size(), equalTo(sourceSize1));
     }
 
     @Test
     public void glossaryBatchTest() throws IOException {
+        LocaleId localeId = new LocaleId("zh-Hants");
         GlossaryPoReader reader =
-                new GlossaryPoReader(LocaleId.EN_US, new LocaleId("zh-Hants"),
-                        BATCH_SIZE);
+                new GlossaryPoReader(LocaleId.EN_US, localeId);
         Reader inputStreamReader =
-                new InputStreamReader(new FileInputStream(sourceFile2), "UTF-8");
+                new InputStreamReader(new FileInputStream(sourceFile2),
+                        "UTF-8");
         BufferedReader br = new BufferedReader(inputStreamReader);
 
-        List<List<GlossaryEntry>> glossaries = reader.extractGlossary(br);
-        assertThat(glossaries.size(),
-                equalTo((int) Math.ceil(sourceSize2 * 1F / BATCH_SIZE)));
-        assertThat(glossaries.get(0).size(),
-                equalTo(BATCH_SIZE));
-        assertThat(glossaries.get(1).size(),
-                equalTo(BATCH_SIZE));
-        assertThat(glossaries.get(glossaries.size() - 1).size(),
-                equalTo(sourceSize2 % BATCH_SIZE));
+        Map<LocaleId, List<GlossaryEntry>> glossaries = reader
+                .extractGlossary(br, GlossaryResource.GLOBAL_QUALIFIED_NAME);
+        assertThat(glossaries.keySet(), contains(localeId));
+        assertThat(glossaries.get(localeId).size(), equalTo(sourceSize2));
     }
 }

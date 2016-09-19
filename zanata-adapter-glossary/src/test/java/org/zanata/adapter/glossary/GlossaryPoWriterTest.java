@@ -4,6 +4,7 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.GlossaryEntry;
+import org.zanata.rest.service.GlossaryResource;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,6 +15,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -53,16 +55,18 @@ public class GlossaryPoWriterTest extends AbstractGlossaryWriterTest {
         writer.write(fileWriter, entries, srcLocale, transLocale);
 
         GlossaryPoReader reader =
-            new GlossaryPoReader(srcLocale, transLocale, 300);
+            new GlossaryPoReader(srcLocale, transLocale);
         File sourceFile = new File(filePath);
 
         Reader inputStreamReader =
             new InputStreamReader(new FileInputStream(sourceFile), "UTF-8");
         BufferedReader br = new BufferedReader(inputStreamReader);
 
-        List<List<GlossaryEntry>> glossaries = reader.extractGlossary(br);
+        Map<LocaleId, List<GlossaryEntry>> glossaries =
+                reader.extractGlossary(br, GlossaryResource.GLOBAL_QUALIFIED_NAME);
         br.close();
         assertThat(glossaries.size(), Matchers.equalTo(1));
-        assertThat(glossaries.get(0).size(), Matchers.equalTo(3));
+        assertThat(glossaries.get(LocaleId.DE).size(), Matchers.equalTo(3));
+        assertThat(glossaries.get(transLocale).size(), Matchers.equalTo(3));
     }
 }

@@ -26,8 +26,11 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.base.Joiner;
+import com.google.common.collect.Maps;
+
 import org.apache.commons.io.input.ReaderInputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.fedorahosted.tennera.jgettext.Message;
@@ -38,6 +41,7 @@ import org.xml.sax.InputSource;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.GlossaryTerm;
+import org.zanata.rest.dto.QualifiedName;
 
 /**
  *
@@ -51,42 +55,37 @@ public class GlossaryPoReader extends AbstractGlossaryPushReader {
 
     private final LocaleId srcLang;
     private final LocaleId transLang;
-    private final int batchSize;
 
     /**
      * This class will close the reader
      *
      * @param srcLang
      * @param transLang
-     * @param batchSize
      */
-    public GlossaryPoReader(LocaleId srcLang, LocaleId transLang,
-            int batchSize) {
+    public GlossaryPoReader(LocaleId srcLang, LocaleId transLang) {
         this.srcLang = srcLang;
         this.transLang = transLang;
-        this.batchSize = batchSize;
     }
 
     @Override
-    public List<List<GlossaryEntry>> extractGlossary(Reader reader) throws IOException {
+    public Map<LocaleId, List<GlossaryEntry>>
+            extractGlossary(Reader reader, String qualifiedName)
+                    throws IOException {
         ReaderInputStream ris = new ReaderInputStream(reader);
         try {
             InputSource potInputSource = new InputSource(ris);
             potInputSource.setEncoding("utf8");
-            return extractTemplate(potInputSource);
+            return extractTemplate(potInputSource, qualifiedName);
         } finally {
             ris.close();
         }
     }
 
-    private List<List<GlossaryEntry>>
-            extractTemplate(InputSource potInputSource) {
-        int entryCount = 0;
+    private Map<LocaleId, List<GlossaryEntry>>
+            extractTemplate(InputSource potInputSource, String qualifiedName) {
         MessageStreamParser messageParser = createParser(potInputSource);
-        List<List<GlossaryEntry>> glossaries =
-                new ArrayList<List<GlossaryEntry>>();
 
-        List<GlossaryEntry> glossaryEntries = new ArrayList<GlossaryEntry>();
+        List<GlossaryEntry> entries = new ArrayList<GlossaryEntry>();
 
         while (messageParser.hasNext()) {
             Message message = messageParser.next();
@@ -105,6 +104,7 @@ public class GlossaryPoReader extends AbstractGlossaryPushReader {
                         message.getMsgid());
             } else {
                 GlossaryEntry entry = new GlossaryEntry();
+                entry.setQualifiedName(new QualifiedName(qualifiedName));
                 entry.setSrcLang(srcLang);
 
                 GlossaryTerm srcTerm = new GlossaryTerm();
@@ -116,10 +116,10 @@ public class GlossaryPoReader extends AbstractGlossaryPushReader {
                 targetTerm.setContent(message.getMsgstr());
 
                 StringBuilder sb = new StringBuilder();
-                if (!StringUtils.isEmpty(entry.getSourceReference())) {
+                if (StringUtils.isNotBlank(entry.getSourceReference())) {
                     sb.append(entry.getSourceReference());
                 }
-                if (!StringUtils.isEmpty(StringUtils.join(
+                if (StringUtils.isNotBlank(StringUtils.join(
                         message.getSourceReferences(), "\n"))) {
                     sb.append(StringUtils.join(
                             message.getSourceReferences(), "\n"));
@@ -140,17 +140,12 @@ public class GlossaryPoReader extends AbstractGlossaryPushReader {
                 entry.getGlossaryTerms().add(srcTerm);
                 entry.getGlossaryTerms().add(targetTerm);
 
-                glossaryEntries.add(entry);
-                entryCount++;
-            }
-
-            if (entryCount == batchSize || !messageParser.hasNext()) {
-                glossaries.add(glossaryEntries);
-                entryCount = 0;
-                glossaryEntries = new ArrayList<GlossaryEntry>();
+                entries.add(entry);
             }
         }
-        return glossaries;
+        Map<LocaleId, List<GlossaryEntry>> results = Maps.newHashMap();
+        results.put(transLang, entries);
+        return results;
     }
 
     static MessageStreamParser createParser(InputSource inputSource) {

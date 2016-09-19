@@ -23,7 +23,9 @@ package org.zanata.adapter.glossary;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
+import java.util.Map;
 
+import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.GlossaryEntry;
 
 /**
@@ -32,6 +34,13 @@ import org.zanata.rest.dto.GlossaryEntry;
  *
  **/
 public abstract class AbstractGlossaryPushReader {
-    public abstract List<List<GlossaryEntry>> extractGlossary(Reader reader)
-            throws IOException;
+    /**
+     * Extract glossary entry using provided reader.
+     * @return
+     *      List of glossary entries group by localeId
+     * @throws IOException
+     */
+    public abstract Map<LocaleId, List<GlossaryEntry>>
+            extractGlossary(Reader reader, String qualifiedName)
+                    throws IOException;
 }
