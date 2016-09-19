@@ -32,6 +32,9 @@ import javax.ws.rs.core.UriInfo;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.GlossaryFileUploadForm;
 import org.zanata.rest.dto.GlossaryEntry;
+import org.zanata.rest.dto.GlossaryResults;
+
+import com.google.common.collect.Lists;
 
 /**
  * @author Patrick Huang
@@ -43,29 +46,37 @@ public class MockGlossaryResource implements GlossaryResource {
     UriInfo uriInfo;
 
     @Override
-    public Response getInfo() {
-        return null;
+    public Response getInfo(String qualifiedName) {
+        return Response.ok(GlossaryResource.GLOBAL_QUALIFIED_NAME).build();
     }
 
     @Override
     public Response getEntries(LocaleId srcLocale,
         LocaleId transLocale, int page, int sizePerPage, String filter,
-        String sort) {
+        String sort, String qualifiedName) {
         return MockResourceUtil.notUsedByClient();
     }
 
     @Override
     public Response downloadFile(@DefaultValue("csv") String fileType,
-            String locales) {
+            String locales, String qualifiedName) {
         return MockResourceUtil.notUsedByClient();
     }
 
     @Override
-    public Response post(List<GlossaryEntry> glossaryEntries) {
-        GenericEntity<List<GlossaryEntry>> genericEntity =
-            new GenericEntity<List<GlossaryEntry>>(glossaryEntries) {
-            };
+    public Response post(List<GlossaryEntry> glossaryEntries, String locale,
+            String qualifiedName) {
+        GlossaryResults results = new GlossaryResults();
+        results.setGlossaryEntries(glossaryEntries);
+        GenericEntity<GlossaryResults> genericEntity =
+                new GenericEntity<GlossaryResults>(results) {
+                };
         return Response.ok(genericEntity).build();
+    }
+
+    @Override
+    public Response getQualifiedName() {
+        return null;
     }
 
     @Override
@@ -79,7 +90,7 @@ public class MockGlossaryResource implements GlossaryResource {
     }
 
     @Override
-    public Response deleteAllEntries() {
+    public Response deleteAllEntries(String qualifiedName) {
         return null;
     }
 }

@@ -28,9 +28,12 @@ import java.util.List;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 
+import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.Project;
+import org.zanata.rest.dto.QualifiedName;
 import org.zanata.rest.service.GlossaryResource;
+import org.zanata.rest.service.ProjectResource;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
@@ -51,7 +54,8 @@ public class GlossaryClient {
         baseUri = factory.getBaseUri();
     }
 
-    public void post(List<GlossaryEntry> glossaryEntries) {
+    public void post(List<GlossaryEntry> glossaryEntries, LocaleId localeId,
+            String qualifiedName) {
         Type genericType = new GenericType<List<GlossaryEntry>>() {
         }.getType();
 
@@ -59,32 +63,53 @@ public class GlossaryClient {
                 new GenericEntity<List<GlossaryEntry>>(glossaryEntries,
                         genericType);
 
-        webResource().path("entries").type(MediaType.APPLICATION_XML_TYPE)
-                .post(entity);
+        webResource().path("entries").queryParam("locale", localeId.getId())
+                .queryParam("qualifiedName", qualifiedName)
+                .type(MediaType.APPLICATION_XML_TYPE).post(entity);
     }
 
     public ClientResponse downloadFile(String fileType,
-            ImmutableList<String> transLang) {
+            ImmutableList<String> transLang, String qualifiedName) {
         if (transLang != null && !transLang.isEmpty()) {
             return webResource().path("file").queryParam("fileType", fileType)
                     .queryParam("locales", Joiner.on(",").join(transLang))
+                    .queryParam("qualifiedName", qualifiedName)
                     .get(ClientResponse.class);
         }
         return webResource().path("file").queryParam("fileType", fileType)
+                .queryParam("qualifiedName", qualifiedName)
                 .get(ClientResponse.class);
     }
 
-    public void delete(String id) {
+    public void delete(String id, String qualifiedName) {
         webResource().path("entries/" + id)
-                .delete();
+                .queryParam("qualifiedName", qualifiedName).delete();
     }
 
-    public void deleteAll() {
-        webResource().delete();
+    public int deleteAll(String qualifiedName) {
+        return webResource().queryParam("qualifiedName", qualifiedName)
+                .delete(Integer.class);
+    }
+
+    public String getProjectQualifiedName(String projectSlug) {
+        return projectGlossaryWebResource(projectSlug).path("qualifiedName")
+                .get(QualifiedName.class).getName();
+    }
+
+    public String getGlobalQualifiedName() {
+        return webResource().path("qualifiedName").get(QualifiedName.class)
+                .getName();
     }
 
     private WebResource webResource() {
         return factory.getClient().resource(baseUri)
                 .path(GlossaryResource.SERVICE_PATH);
     }
+
+    private WebResource projectGlossaryWebResource(String projectSlug) {
+        return factory.getClient()
+                .resource(factory.getBaseUri())
+                .path("projects").path("p").path(projectSlug).path("glossary");
+    }
+
 }

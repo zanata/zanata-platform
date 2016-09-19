@@ -68,20 +68,28 @@ public class GlossaryPullCommand extends
         if (!fileType.equalsIgnoreCase("po")
             && !fileType.equalsIgnoreCase("csv")) {
             throw new RuntimeException(
-                "Option 'zanata.fileType' is not valid. Please use 'csv' or 'po'");
+                "Option '--file-type' is not valid. Please use 'csv' or 'po'");
         }
 
         log.info("Server: {}", getOpts().getUrl());
         log.info("Username: {}", getOpts().getUsername());
         log.info("File type: {}", fileType);
+        if (StringUtils.isNotBlank(getOpts().getProject())) {
+            log.info("Project: {}", getOpts().getProject());
+        }
         ImmutableList<String> transLang =  getOpts().getTransLang();
         if (transLang != null && !transLang.isEmpty()) {
             log.info("Translation language: {}", Joiner.on(",").join(transLang));
         }
 
-        log.info("pulling glossary from server");
+        String project = getOpts().getProject();
+        String qualifiedName =
+            StringUtils.isBlank(project) ? client.getGlobalQualifiedName()
+                : client.getProjectQualifiedName(project);
+
+        log.info("Pulling glossary from server");
         ClientResponse response =
-                client.downloadFile(fileType, transLang);
+                client.downloadFile(fileType, transLang, qualifiedName);
 
         if (response
                 .getClientResponseStatus() == ClientResponse.Status.NOT_FOUND) {

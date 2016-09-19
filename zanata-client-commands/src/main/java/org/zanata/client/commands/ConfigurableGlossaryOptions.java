@@ -15,4 +15,10 @@ public interface ConfigurableGlossaryOptions extends ConfigurableOptions {
         usage = "Configuration file, eg zanata.xml",
         required = false)
     public void setConfig(File config);
+
+    public String getProject();
+
+    @Option(name = "--project", metaVar = "PROJ",
+        usage = "Project slug (id) within Zanata server. Required for project glossary")
+    public void setProject(String project);
 }

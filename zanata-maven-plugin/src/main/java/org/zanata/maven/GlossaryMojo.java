@@ -20,6 +20,13 @@ public abstract class GlossaryMojo<O extends ConfigurableOptions>
      */
     private File config;
 
+    /**
+     * Project slug (id) within Zanata server. Required for project glossary.
+     *
+     * @parameter expression="${zanata.project}"
+     */
+    private String project;
+
     @Override
     public File getConfig() {
         return config;
@@ -28,5 +35,15 @@ public abstract class GlossaryMojo<O extends ConfigurableOptions>
     @Override
     public void setConfig(File config) {
         this.config = config;
+    }
+
+    @Override
+    public String getProject() {
+        return project;
+    }
+
+    @Override
+    public void setProject(String project) {
+        this.project = project;
     }
 }

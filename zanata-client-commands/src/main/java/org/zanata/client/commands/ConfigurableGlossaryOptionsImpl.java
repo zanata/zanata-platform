@@ -15,9 +15,16 @@ public abstract class ConfigurableGlossaryOptionsImpl extends ConfigurableOption
      */
     private File config = new File("zanata.xml");
 
+    private String project;
+
     @Override
     public File getConfig() {
         return config;
+    }
+
+    @Override
+    public String getProject() {
+        return project;
     }
 
     @Option(name = "--config", metaVar = "FILENAME",
@@ -27,4 +34,9 @@ public abstract class ConfigurableGlossaryOptionsImpl extends ConfigurableOption
         this.config = config;
     }
 
+    @Option(name = "--project", metaVar = "PROJ",
+        usage = "Required for project glossary")
+    public void setProject(String project) {
+        this.project = project;
+    }
 }

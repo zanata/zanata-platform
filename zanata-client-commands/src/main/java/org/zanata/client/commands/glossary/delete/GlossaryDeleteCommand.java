@@ -42,12 +42,12 @@ public class GlossaryDeleteCommand extends
         ConfigurableCommand<GlossaryDeleteOptions> {
     private static final Logger log = LoggerFactory
             .getLogger(GlossaryDeleteCommand.class);
-    private final GlossaryClient glossaryClient;
+    private final GlossaryClient client;
 
     public GlossaryDeleteCommand(GlossaryDeleteOptions opts,
             RestClientFactory clientFactory) {
         super(opts, clientFactory);
-        glossaryClient = getClientFactory().getGlossaryClient();
+        client = getClientFactory().getGlossaryClient();
     }
 
     public GlossaryDeleteCommand(GlossaryDeleteOptions opts) {
@@ -61,18 +61,30 @@ public class GlossaryDeleteCommand extends
         if (!StringUtils.isEmpty(getOpts().getId())) {
             log.info("Entry id to delete: {}", getOpts().getId());
         }
+        if (StringUtils.isNotBlank(getOpts().getProject())) {
+            log.info("Project: {}", getOpts().getProject());
+        }
         log.info("Delete entire glossary?: {}", getOpts().getAllGlossary());
+
+        if (!getOpts().getAllGlossary() && StringUtils.isBlank(getOpts().getId())) {
+            throw new RuntimeException("Option '--id' is required.");
+        }
+
+        String project = getOpts().getProject();
+        String qualifiedName =
+            StringUtils.isBlank(project) ? client.getGlobalQualifiedName()
+                : client.getProjectQualifiedName(project);
+
         if (getOpts().getAllGlossary()) {
             if (getOpts().isInteractiveMode()) {
                 ConsoleInteractor console = new ConsoleInteractorImpl(getOpts());
                 console.printf(Question, "\nAre you sure (y/n)? ");
                 console.expectYes();
             }
-            glossaryClient.deleteAll();
-        } else if (!StringUtils.isEmpty(getOpts().getId())) {
-            glossaryClient.delete(getOpts().getId());
-        } else {
-            throw new RuntimeException("Option 'zanata.resId' is required.");
+            Integer deletedCount = client.deleteAll(qualifiedName);
+            log.info("Deleted glossary entry: " + deletedCount.intValue());
+        } else  {
+            client.delete(getOpts().getId(), qualifiedName);
         }
     }
 }

@@ -22,6 +22,7 @@
 package org.zanata.rest.service;
 
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -38,6 +39,9 @@ public class MockProjectResource implements ProjectResource {
     @Context
     UriInfo uriInfo;
 
+    @PathParam("projectSlug")
+    String projectSlug;
+
     @Override
     public Response head() {
         return MockResourceUtil.notUsedByClient();
@@ -52,6 +56,12 @@ public class MockProjectResource implements ProjectResource {
     @Override
     public Response put(Project project) {
         return Response.created(uriInfo.getRequestUri()).build();
+    }
+
+    @Override
+    public Response getGlossaryQualifiedName() {
+        String qualifiedName = "project/" + projectSlug;
+        return Response.ok(qualifiedName).build();
     }
 }
 

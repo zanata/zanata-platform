@@ -43,6 +43,8 @@ import org.zanata.rest.client.GlossaryClient;
 import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.dto.GlossaryEntry;
 
+import com.google.common.collect.Lists;
+
 import static org.zanata.client.commands.glossary.push.GlossaryPushOptions.DEFAULT_SOURCE_LANG;
 
 /**
@@ -73,10 +75,8 @@ public class GlossaryPushCommand extends
         LocaleId transLocaleId = StringUtils.isNotBlank(transLang)
                 ? new LocaleId(transLang) : null;
         glossaryReaders.put("po", new GlossaryPoReader(
-                srcLocaleId, transLocaleId, getOpts().getBatchSize()));
-        glossaryReaders
-                .put("csv", new GlossaryCSVReader(srcLocaleId,
-                        getOpts().getBatchSize()));
+                srcLocaleId, transLocaleId));
+        glossaryReaders.put("csv", new GlossaryCSVReader(srcLocaleId));
     }
 
     private AbstractGlossaryPushReader getReader(String fileExtension) {
@@ -106,6 +106,9 @@ public class GlossaryPushCommand extends
         log.info("Username: {}", getOpts().getUsername());
         log.info("Source language: {}", DEFAULT_SOURCE_LANG);
         log.info("Translation language: {}", getOpts().getTransLang());
+        if (StringUtils.isNotBlank(getOpts().getProject())) {
+            log.info("Project: {}", getOpts().getProject());
+        }
         log.info("Glossary file: {}", getOpts().getFile());
         log.info("Batch size: {}", getOpts().getBatchSize());
 
@@ -126,9 +129,14 @@ public class GlossaryPushCommand extends
 
         String fileExtension = validateFileExtensionWithTransLang();
 
+        String project = getOpts().getProject();
+        String qualifiedName =
+                StringUtils.isBlank(project) ? client.getGlobalQualifiedName()
+                        : client.getProjectQualifiedName(project);
+
         AbstractGlossaryPushReader reader = getReader(fileExtension);
 
-        log.info("pushing glossary document [{}] to server",
+        log.info("Pushing glossary document [{}] to server",
                 glossaryFile.getName());
 
         Reader inputStreamReader =
@@ -136,19 +144,27 @@ public class GlossaryPushCommand extends
                         "UTF-8");
         BufferedReader br = new BufferedReader(inputStreamReader);
 
-        List<List<GlossaryEntry>> glossaries = reader.extractGlossary(br);
+        Map<LocaleId, List<GlossaryEntry>> glossaries =
+                reader.extractGlossary(br, qualifiedName);
 
         int totalEntries = 0;
-        for (List<GlossaryEntry> entries : glossaries) {
-            totalEntries = totalEntries + entries.size();
-            log.debug("total entries:" + totalEntries);
+        for (Map.Entry<LocaleId, List<GlossaryEntry>> entries : glossaries
+                .entrySet()) {
+            totalEntries = totalEntries + entries.getValue().size();
+            log.info("Total entries:" + totalEntries);
         }
 
         int totalDone = 0;
-        for (List<GlossaryEntry> entries : glossaries) {
-            client.post(entries);
-            totalDone = totalDone + entries.size();
-            log.info("Pushed " + totalDone + " of " + totalEntries + " entries");
+        for (Map.Entry<LocaleId, List<GlossaryEntry>> entry : glossaries
+                .entrySet()) {
+            List<List<GlossaryEntry>> batches =
+                    Lists.partition(entry.getValue(), getOpts().getBatchSize());
+            for (List<GlossaryEntry> batch : batches) {
+                client.post(batch, entry.getKey(), qualifiedName);
+                totalDone = totalDone + batch.size();
+                log.info("Pushed " + totalDone + " of " + totalEntries
+                        + " entries");
+            }
         }
     }
 }
