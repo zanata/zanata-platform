@@ -123,8 +123,8 @@ public class Highlighting {
     return html.join('');
     }-*/;
 
-    public static String diffAsHighlight(String originalContents, String diffContents) {
-        JavaScriptObject diffs = diff(originalContents, diffContents, false);
+    public static String diffAsHighlight(String oldText, String newText) {
+        JavaScriptObject diffs = diff(oldText, newText, false);
         return diffsHighlight(diffs);
     }
 
