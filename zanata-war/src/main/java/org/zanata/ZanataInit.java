@@ -119,11 +119,8 @@ public class ZanataInit {
         Attributes atts = null;
         if (manifestFile.canRead()) {
             Manifest mf = new Manifest();
-            final FileInputStream fis = new FileInputStream(manifestFile);
-            try {
+            try (FileInputStream fis = new FileInputStream(manifestFile)) {
                 mf.read(fis);
-            } finally {
-                fis.close();
             }
             atts = mf.getMainAttributes();
         }

@@ -148,6 +148,12 @@
   </listener>
 
   <listener>
+    <!-- this listener needs to appear before liquibase listener to log useful
+    database metadata for troubleshooting potential errors-->
+    <listener-class>org.zanata.database.DatabaseMetadataListener</listener-class>
+  </listener>
+
+  <listener>
     <listener-class>liquibase.integration.servlet.LiquibaseServletListener</listener-class>
   </listener>
 

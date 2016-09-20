@@ -288,10 +288,10 @@ public class ApplicationConfiguration implements Serializable {
     public List<String> getAdminEmail() {
         String s = databaseBackedConfig.getAdminEmailAddress();
         if (s == null || s.trim().length() == 0) {
-            return new ArrayList<String>();
+            return new ArrayList<>();
         }
         String[] ss = s.trim().split("\\s*,\\s*");
-        return new ArrayList<String>(Arrays.asList(ss));
+        return new ArrayList<>(Arrays.asList(ss));
     }
 
     public String getFromEmailAddr() {
@@ -382,11 +382,7 @@ public class ApplicationConfiguration implements Serializable {
     public boolean isEmailLogAppenderEnabled() {
         String strVal = databaseBackedConfig.getShouldLogEvents();
 
-        if (strVal == null) {
-            return false;
-        } else {
-            return Boolean.parseBoolean(strVal);
-        }
+        return strVal != null && Boolean.parseBoolean(strVal);
     }
 
     public List<String> getLogDestinationEmails() {
