@@ -80,7 +80,7 @@ public class Highlighting {
     }
 
     @CoverageIgnore("JSNI")
-    private static native JavaScriptObject diff(String text1, String text2,
+    private static native JavaScriptObject diff(String originalContents, String diffContents,
             boolean cleanupSemantic)/*-{
     if (!$wnd.diffMatchPatch) {
       $wnd.diffMatchPatch = new $wnd.diff_match_patch();
@@ -88,7 +88,7 @@ public class Highlighting {
     }
 
     var dmp = $wnd.diffMatchPatch;
-    var diffs = dmp.diff_main(text1, text2);
+    var diffs = dmp.diff_main(originalContents, diffContents);
     if (cleanupSemantic) {
       dmp.diff_cleanupSemantic(diffs);
     }
@@ -123,8 +123,8 @@ public class Highlighting {
     return html.join('');
     }-*/;
 
-    public static String diffAsHighlight(String text1, String text2) {
-        JavaScriptObject diffs = diff(text1, text2, false);
+    public static String diffAsHighlight(String originalContents, String diffContents) {
+        JavaScriptObject diffs = diff(originalContents, diffContents, false);
         return diffsHighlight(diffs);
     }
 
