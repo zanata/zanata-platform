@@ -44,7 +44,12 @@ public enum LocaleRole {
     /**
      * Can perform all translation operations for the locale.
      */
-    Translator('T');
+    Translator('T'),
+
+    /**
+     * Can perform all translation operations for glossary term  for the locale.
+     */
+    Glossarist('G');
 
     private char initial;
 

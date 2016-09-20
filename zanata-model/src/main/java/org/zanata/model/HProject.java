@@ -20,6 +20,7 @@
  */
 package org.zanata.model;
 
+import static org.zanata.model.LocaleRole.Glossarist;
 import static org.zanata.security.EntityAction.DELETE;
 import static org.zanata.security.EntityAction.INSERT;
 import static org.zanata.security.EntityAction.UPDATE;
@@ -271,6 +272,7 @@ public class HProject extends SlugEntityBase implements Serializable,
             ensureMembership(localeRoles.isTranslator(), asMember(locale, person, Translator));
             ensureMembership(localeRoles.isReviewer(), asMember(locale, person, Reviewer));
             ensureMembership(localeRoles.isCoordinator(), asMember(locale, person, Coordinator));
+            ensureMembership(localeRoles.isGlossarist(), asMember(locale, person, Glossarist));
         }
     }
 

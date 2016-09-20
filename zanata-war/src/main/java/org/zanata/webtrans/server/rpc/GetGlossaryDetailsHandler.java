@@ -14,6 +14,7 @@ import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HLocale;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
+import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
@@ -40,6 +41,9 @@ public class GetGlossaryDetailsHandler
     @Inject
     private LocaleService localeServiceImpl;
 
+    @Inject
+    private UrlUtil urlUtil;
+
     @Override
     public GetGlossaryDetailsResult execute(GetGlossaryDetailsAction action,
             ExecutionContext context) throws ActionException {
@@ -60,7 +64,7 @@ public class GetGlossaryDetailsHandler
 
         log.info("Fetching glossary details for entry{} in locale {}",
                 sourceIds, hLocale);
-        List<HGlossaryTerm> srcTerms = glossaryDAO.findByIdList(sourceIds);
+        List<HGlossaryTerm> srcTerms = glossaryDAO.findTermByIdList(sourceIds);
         ArrayList<GlossaryDetails> items =
                 new ArrayList<GlossaryDetails>(srcTerms.size());
 
@@ -68,12 +72,17 @@ public class GetGlossaryDetailsHandler
             HGlossaryEntry entry = srcTerm.getGlossaryEntry();
             HGlossaryTerm hGlossaryTerm = entry.getGlossaryTerms().get(hLocale);
 
+            String srcContent = srcTerm.getContent();
+            String qualifiedName = entry.getGlossary().getQualifiedName();
+            String url = urlUtil.glossaryUrl(qualifiedName, srcContent);
+
             items.add(new GlossaryDetails(entry.getId(),
-                    srcTerm.getContent(), hGlossaryTerm.getContent(),
+                    srcContent, hGlossaryTerm.getContent(),
                     entry.getDescription(), entry.getPos(),
                     hGlossaryTerm.getComment(), entry.getSourceRef(),
                     entry.getSrcLocale().getLocaleId(),
-                    hLocale.getLocaleId(), hGlossaryTerm.getVersionNum(),
+                    hLocale.getLocaleId(), url,
+                    hGlossaryTerm.getVersionNum(),
                     hGlossaryTerm.getLastChanged()));
         }
 

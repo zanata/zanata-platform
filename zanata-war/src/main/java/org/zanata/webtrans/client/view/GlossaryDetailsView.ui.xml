@@ -8,20 +8,9 @@
     type="org.zanata.webtrans.client.resources.Resources" />
 
   <ui:style>
-    .textArea[readonly] {
-      background: lightgray;
+    .readonly {
+      color: #888;
     }
-
-    .newTargetCommentTextArea {
-      width: 260px;
-      height: 40px;
-      resize: none;
-    }
-
-    .newTargetCommentTextArea[readonly] {
-      background: lightgray;
-    }
-
     .container {
       height: 30em;
     }
@@ -29,48 +18,36 @@
 
   <g:HTMLPanel styleName="new-zanata">
     <fui:DialogBoxCloseButton ui:field="dismissButton" />
-    <div class="l__wrapper {style.container} l--scroll-auto">
+    <div class="l__wrapper l--limit-medium {style.container} l--scroll-auto">
       <span class="epsilon">Entries</span>
       <g:ListBox ui:field='entryListBox' />
 
       <div class="l--push-top-half">
         <g:InlineLabel ui:field="srcRef" styleName="txt--understated"/>
-        <div>
-          <label class="epsilon">Part of speech</label>
-          <g:TextBox ui:field="pos"/>
-        </div>
-      </div>
 
-      <div class="g l--push-top-half">
-        <div class="g__item w--1-2">
+        <div class="bg--higher l--pad-all-quarter">
           <g:Label ui:field="sourceLabel" styleName="epsilon" />
-          <g:InlineLabel ui:field='sourceText'/>
-        </div>
-        <div class="g__item w--1-2">
-          <label class="epsilon">Description</label>
-          <g:TextArea ui:field='description'/>
-        </div>
-      </div>
+          <g:TextArea ui:field='sourceText' readOnly="true" styleName="{style.readonly}"/>
 
-      <div class="g l--push-top-half">
-        <div class="g__item w--1-2">
+          <div class="zeta">Description</div>
+          <g:InlineHTML ui:field="description" styleName="txt--understated bx--block" />
+
+          <div class="zeta l--push-top-quarter">Part of speech</div>
+          <g:InlineHTML ui:field="pos" styleName="txt--understated bx--block" />
+        </div>
+
+        <div class="bg--higher l--pad-all-quarter l--push-top-half">
           <g:Label ui:field="targetLabel" styleName="epsilon" />
-          <g:TextArea ui:field='targetText'/>
-        </div>
-        <div class="g__item w--1-2">
-          <label class="epsilon">Target comment</label>
-          <g:TextArea ui:field="targetComment"
-            styleName="{style.newTargetCommentTextArea}" />
+          <g:TextArea ui:field='targetText' readOnly="true" styleName="{style.readonly}"/>
+
+          <label class="zeta">Comment</label>
+          <g:InlineHTML ui:field='targetComment' styleName="txt--understated bx--block" />
         </div>
       </div>
 
-      <div class="l--push-top-half txt--align-right">
+      <div class="l--push-top-quarter txt--align-right">
         <g:InlineLabel ui:field='lastModified' styleName="txt--understated" />
-
-        <g:HTMLPanel>
-          <g:Image ui:field="loadingIcon" />
-          <g:Button ui:field='saveButton' styleName="button--primary"/>
-        </g:HTMLPanel>
+        <g:Anchor styleName="button button--primary l--push-left-quarter" ui:field="link" target="_blank" text="Edit"/>
       </div>
     </div>
   </g:HTMLPanel>

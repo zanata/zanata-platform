@@ -23,7 +23,6 @@ package org.zanata.webtrans.server.rpc;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,15 +37,19 @@ import org.apache.lucene.search.BooleanQuery;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.model.HGlossaryTerm;
+import org.zanata.rest.service.ProjectService;
 import org.zanata.search.LevenshteinUtil;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.util.GlossaryUtil;
 import org.zanata.util.ShortString;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.rpc.GetGlossary;
 import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
-import com.google.common.base.Objects;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
@@ -59,6 +62,7 @@ import net.customware.gwt.dispatch.shared.ActionException;
 public class GetGlossaryHandler extends
         AbstractActionHandler<GetGlossary, GetGlossaryResult> {
 
+    // X2 in total: Global glossary and Project glossary
     private static final int MAX_RESULTS = 20;
 
     private static final Comparator<GlossaryResultItem> COMPARATOR =
@@ -81,36 +85,32 @@ public class GetGlossaryHandler extends
         log.debug("Fetching Glossary matches({}) for \"{}\"", searchType,
                 abbrev);
 
-        LocaleId localeID = action.getLocaleId();
+        LocaleId localeId = action.getLocaleId();
         ArrayList<GlossaryResultItem> results;
 
+        String projQualifiedName = ProjectService.getGlossaryQualifiedName(
+                action.getProjectIterationId().getProjectSlug());
         try {
-            List<Object[]> matches =
+            List<Object[]> projMatches =
                     glossaryDAO.getSearchResult(searchText, searchType,
-                            action.getSrcLocaleId(), MAX_RESULTS);
+                            action.getSrcLocaleId(), MAX_RESULTS,
+                            projQualifiedName);
+
+            List<Object[]> globalMatches =
+                glossaryDAO.getSearchResult(searchText, searchType,
+                    action.getSrcLocaleId(), MAX_RESULTS,
+                    GlossaryUtil.GLOBAL_QUALIFIED_NAME);
 
             Map<GlossaryKey, GlossaryResultItem> matchesMap =
-                    new LinkedHashMap<GlossaryKey, GlossaryResultItem>();
-            for (Object[] match : matches) {
-                HGlossaryTerm sourceTerm = (HGlossaryTerm) match[1];
-                HGlossaryTerm targetTerm = null;
-                if (sourceTerm != null) {
-                    targetTerm =
-                            glossaryDAO.getTermByEntryAndLocale(sourceTerm
-                                    .getGlossaryEntry().getId(), localeID);
-                }
-                if (targetTerm == null) {
-                    continue;
-                }
-                String srcTermContent = sourceTerm.getContent();
-                String targetTermContent = targetTerm.getContent();
-                GlossaryResultItem item =
-                        getOrCreateGlossaryResultItem(matchesMap,
-                                srcTermContent, targetTermContent,
-                                (Float) match[0], searchText);
-                item.addSourceId(sourceTerm.getId());
-            }
-            results = new ArrayList<GlossaryResultItem>(matchesMap.values());
+                Maps.newLinkedHashMap();
+
+            processMatches(globalMatches, matchesMap, searchText, localeId,
+                    GlossaryUtil.GLOBAL_QUALIFIED_NAME);
+
+            processMatches(projMatches, matchesMap, searchText, localeId,
+                projQualifiedName);
+
+            results = Lists.newArrayList(matchesMap.values());
         } catch (ParseException e) {
             if (e.getCause() instanceof BooleanQuery.TooManyClauses) {
                 log.warn(
@@ -126,27 +126,51 @@ public class GetGlossaryHandler extends
             }
             results = new ArrayList<>(0);
         }
-
         Collections.sort(results, COMPARATOR);
-
         log.debug("Returning {} Glossary matches for \"{}\"", results.size(),
                 abbrev);
         return new GetGlossaryResult(action, results);
     }
 
+    private void processMatches(List<Object[]> matches,
+            Map<GlossaryKey, GlossaryResultItem> matchesMap, String searchText,
+            LocaleId localeId, String qualifiedName) {
+        for (Object[] match : matches) {
+            HGlossaryTerm sourceTerm = (HGlossaryTerm) match[1];
+            HGlossaryTerm targetTerm = null;
+            if (sourceTerm != null) {
+                targetTerm =
+                        glossaryDAO.getTermByEntryAndLocale(sourceTerm
+                                .getGlossaryEntry().getId(), localeId,
+                                qualifiedName);
+            }
+            if (targetTerm == null) {
+                continue;
+            }
+            String srcTermContent = sourceTerm.getContent();
+            String targetTermContent = targetTerm.getContent();
+            GlossaryResultItem item =
+                    getOrCreateGlossaryResultItem(matchesMap, qualifiedName,
+                            srcTermContent, targetTermContent,
+                            (Float) match[0], searchText);
+            item.addSourceId(sourceTerm.getId());
+        }
+    }
+
     private static GlossaryResultItem getOrCreateGlossaryResultItem(
             Map<GlossaryKey, GlossaryResultItem> matchesMap,
-            String srcTermContent, String targetTermContent, float score,
-            String searchText) {
-        GlossaryKey key = new GlossaryKey(targetTermContent, srcTermContent);
+            String qualifiedName, String srcTermContent,
+            String targetTermContent, float score, String searchText) {
+        GlossaryKey key = new GlossaryKey(qualifiedName, targetTermContent,
+                srcTermContent);
         GlossaryResultItem item = matchesMap.get(key);
         if (item == null) {
             double percent =
                     100 * LevenshteinUtil.getSimilarity(searchText,
                             srcTermContent);
             item =
-                    new GlossaryResultItem(srcTermContent, targetTermContent,
-                            score, percent);
+                    new GlossaryResultItem(qualifiedName, srcTermContent,
+                            targetTermContent, score, percent);
             matchesMap.put(key, item);
         }
         return item;
@@ -161,26 +185,43 @@ public class GetGlossaryHandler extends
 
         private final String srcTermContent;
         private final String targetTermContent;
+        private final String qualifiedName;
 
-        public GlossaryKey(String srcTermContent, String targetTermContent) {
+        public GlossaryKey(String qualifiedName, String srcTermContent,
+                String targetTermContent) {
+            this.qualifiedName = qualifiedName;
             this.srcTermContent = srcTermContent;
             this.targetTermContent = targetTermContent;
         }
 
         @Override
-        public boolean equals(Object obj) {
-            if (obj instanceof GlossaryKey) {
-                GlossaryKey o = (GlossaryKey) obj;
-                return Objects.equal(srcTermContent, o.srcTermContent)
-                        && Objects
-                                .equal(targetTermContent, o.targetTermContent);
-            }
-            return false;
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof GlossaryKey)) return false;
+
+            GlossaryKey that = (GlossaryKey) o;
+
+            if (srcTermContent != null ?
+                !srcTermContent.equals(that.srcTermContent) :
+                that.srcTermContent != null) return false;
+            if (targetTermContent != null ?
+                !targetTermContent.equals(that.targetTermContent) :
+                that.targetTermContent != null) return false;
+            return qualifiedName != null ?
+                qualifiedName.equals(that.qualifiedName) :
+                that.qualifiedName == null;
+
         }
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(srcTermContent, targetTermContent);
+            int result = srcTermContent != null ? srcTermContent.hashCode() : 0;
+            result = 31 * result +
+                (targetTermContent != null ? targetTermContent.hashCode() : 0);
+            result =
+                31 * result +
+                    (qualifiedName != null ? qualifiedName.hashCode() : 0);
+            return result;
         }
     }
 

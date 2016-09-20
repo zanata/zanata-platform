@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react'
 import NavItem from './NavItem'
 import { flattenThemeClasses } from 'zanata-ui'
+// import { startsWith } from 'lodash'
+import { getDswid } from '../../utils/UrlHelper'
 
-const dswid = window.dswh && window.dswh.windowId
-  ? '?dswid=' + window.dswh.windowId
-  : ''
+const dswid = getDswid()
 
 /**
  * URL path for frontend
@@ -146,8 +146,8 @@ const Nav = ({
       className={flattenThemeClasses(classes)}>
       {items.map((item, itemId) => {
         if (((item.auth === 'public') || (item.auth === auth) ||
-          (item.auth === 'loggedin' && admin)) && !item.more) {
-          let link = null
+          (item.auth === 'loggedin' && admin))) {
+          let link
           if (isJsfPage) {
             // jsf pages
             link = links[item.link]
@@ -163,11 +163,13 @@ const Nav = ({
           }
 
           const useHref = isJsfPage || !item.internalLink
+          const isActive = active === link
+
           return <NavItem key={itemId}
             loading={loading}
             id={item.id}
             small={item.small}
-            active={active.indexOf(link) >= 0}
+            active={isActive}
             link={link}
             useHref={useHref}
             icon={item.icon}

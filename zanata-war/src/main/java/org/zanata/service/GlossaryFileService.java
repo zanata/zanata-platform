@@ -21,17 +21,15 @@
 package org.zanata.service;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
 import org.zanata.common.LocaleId;
 import org.zanata.exception.ZanataServiceException;
-import org.zanata.model.HGlossaryEntry;
 import org.zanata.rest.dto.GlossaryEntry;
-import org.zanata.rest.dto.GlossaryResults;
 import org.zanata.service.impl.GlossaryFileServiceImpl;
 
 /**
@@ -46,10 +44,11 @@ public interface GlossaryFileService {
      * @param glossaryEntries
      */
     GlossaryFileServiceImpl.GlossaryProcessed saveOrUpdateGlossary(
-            List<GlossaryEntry> glossaryEntries);
+            List<GlossaryEntry> glossaryEntries,
+            Optional<LocaleId> transLocaleId);
 
-    List<List<GlossaryEntry>> parseGlossaryFile(InputStream inputStream,
-            String fileName,
-            LocaleId sourceLang, @Nullable LocaleId transLang) throws
-            ZanataServiceException;
+    Map<LocaleId, List<GlossaryEntry>> parseGlossaryFile(
+            InputStream inputStream, String fileName,
+            LocaleId sourceLang, @Nullable LocaleId transLang,
+            String qualifiedName) throws ZanataServiceException;
 }

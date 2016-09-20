@@ -20,18 +20,10 @@
  */
 package org.zanata.rest.service.raw;
 
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
-import org.apache.commons.io.IOUtils;
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.ClientRequest;
@@ -39,24 +31,17 @@ import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.common.LocaleId;
-import org.zanata.rest.GlossaryFileUploadForm;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.ResourceRequest;
-import org.zanata.rest.dto.Glossary;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.GlossaryInfo;
-import org.zanata.rest.dto.GlossaryResults;
 import org.zanata.rest.dto.GlossaryTerm;
-import org.zanata.rest.dto.ResultList;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
-import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
 import static org.zanata.util.RawRestTestUtils.jaxbUnmarshal;
 
 public class GlossaryRawRestITCase extends RestTest {
@@ -78,11 +63,12 @@ public class GlossaryRawRestITCase extends RestTest {
     @RunAsClient
     public void getInfo() throws Exception {
         String url = "/glossary/info";
-        new ResourceRequest(getRestEndpointUrl(url), "GET") {
+        new ResourceRequest(getRestEndpointUrl(url), "GET",
+                getAuthorizedEnvironment()) {
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT,
-                    MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML);
+                        MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML);
             }
 
             @Override
@@ -95,10 +81,10 @@ public class GlossaryRawRestITCase extends RestTest {
 
                 assertThat(
                         glossaryInfo.getSrcLocale().getLocale().getLocaleId())
-                        .isEqualTo(LocaleId.EN_US);
+                                .isEqualTo(LocaleId.EN_US);
                 assertThat(
-                    glossaryInfo.getSrcLocale().getNumberOfTerms())
-                    .isEqualTo(3);
+                        glossaryInfo.getSrcLocale().getNumberOfTerms())
+                                .isEqualTo(3);
             }
         }.run();
     }
@@ -112,7 +98,8 @@ public class GlossaryRawRestITCase extends RestTest {
                 "/glossary/entries?srcLocale=" + srcLocale.toString()
                         + "&transLocale=" + transLocale.toString();
 
-        new ResourceRequest(getRestEndpointUrl(url), "GET") {
+        new ResourceRequest(getRestEndpointUrl(url), "GET",
+                getAuthorizedEnvironment()) {
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT,
@@ -132,11 +119,12 @@ public class GlossaryRawRestITCase extends RestTest {
         LocaleId srcLocale = LocaleId.EN_US;
         String url = "/glossary/entries?srcLocale=" + srcLocale.toString();
 
-        new ResourceRequest(getRestEndpointUrl(url), "GET") {
+        new ResourceRequest(getRestEndpointUrl(url), "GET",
+                getAuthorizedEnvironment()) {
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT,
-                    MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON);
+                        MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON);
             }
 
             @Override
@@ -152,11 +140,12 @@ public class GlossaryRawRestITCase extends RestTest {
         LocaleId srcLocale = LocaleId.FR;
         String url = "/glossary/entries?srcLocale=" + srcLocale.toString();
 
-        new ResourceRequest(getRestEndpointUrl(url), "GET") {
+        new ResourceRequest(getRestEndpointUrl(url), "GET",
+                getAuthorizedEnvironment()) {
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT,
-                    MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON);
+                        MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON);
             }
 
             @Override

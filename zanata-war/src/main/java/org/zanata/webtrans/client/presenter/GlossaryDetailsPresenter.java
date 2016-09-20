@@ -3,8 +3,6 @@ package org.zanata.webtrans.client.presenter;
 import net.customware.gwt.presenter.client.EventBus;
 import net.customware.gwt.presenter.client.widget.WidgetPresenter;
 
-import org.zanata.webtrans.client.events.NotificationEvent;
-import org.zanata.webtrans.client.events.NotificationEvent.Severity;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.view.GlossaryDetailsDisplay;
@@ -14,8 +12,6 @@ import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsAction;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsResult;
-import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermAction;
-import org.zanata.webtrans.shared.rpc.UpdateGlossaryTermResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.shared.GWT;
@@ -51,53 +47,6 @@ public class GlossaryDetailsPresenter extends
     @Override
     protected void onBind() {
         display.setListener(this);
-        display.setHasUpdateAccess(userWorkspaceContext
-                .getWorkspaceRestrictions().isHasGlossaryUpdateAccess());
-    }
-
-    @Override
-    public void onSaveClick() {
-        if (selectedDetailEntry != null
-                && userWorkspaceContext.getWorkspaceRestrictions()
-                        .isHasGlossaryUpdateAccess()) {
-            // check if there's any changes on the target term or the target
-            // comments and save
-            if (!display.getTargetText().getText()
-                    .equals(selectedDetailEntry.getTarget()) ||
-                    !display.getTargetComment().getText().equals(
-                            selectedDetailEntry.getTargetComment())) {
-                display.showLoading(true);
-                UpdateGlossaryTermAction action =
-                        new UpdateGlossaryTermAction(selectedDetailEntry,
-                                display.getTargetText().getText(),
-                                display.getTargetComment().getText(),
-                                display.getPos().getText(),
-                                display.getDescription().getText());
-
-                dispatcher.execute(action,
-                        new AsyncCallback<UpdateGlossaryTermResult>() {
-                            @Override
-                            public void onFailure(Throwable caught) {
-                                Log.error(caught.getMessage(), caught);
-                                eventBus.fireEvent(new NotificationEvent(
-                                        Severity.Error, messages
-                                                .saveGlossaryFailed()));
-                                display.showLoading(false);
-                            }
-
-                            @Override
-                            public void onSuccess(
-                                    UpdateGlossaryTermResult result) {
-                                Log.info("Glossary term updated:"
-                                        + result.getDetail().getTarget());
-                                glossaryListener.fireSearchEvent();
-                                selectedDetailEntry = result.getDetail();
-                                populateDisplayData();
-                                display.showLoading(false);
-                            }
-                        });
-            }
-        }
     }
 
     public void show(final GlossaryResultItem item) {
@@ -120,12 +69,10 @@ public class GlossaryDetailsPresenter extends
                         int i = 1;
                         for (GlossaryDetails detailsItem : result
                                 .getGlossaryDetails()) {
-                            display.getSourceLabel()
-                                    .setText(
+                            display.setSourceLabel(
                                             messages.glossarySourceTermLabel(detailsItem
                                                     .getSrcLocale().toString()));
-                            display.getTargetLabel()
-                                    .setText(
+                            display.setTargetLabel(
                                             messages.glossaryTargetTermLabel(detailsItem
                                                     .getTargetLocale()
                                                     .toString()));
@@ -139,11 +86,12 @@ public class GlossaryDetailsPresenter extends
     }
 
     private void populateDisplayData() {
-        display.getSrcRef().setText(selectedDetailEntry.getSourceRef());
+        display.setSrcRef(selectedDetailEntry.getSourceRef());
         display.setDescription(selectedDetailEntry.getDescription());
         display.setPos(selectedDetailEntry.getPos());
         display.setTargetComment(selectedDetailEntry.getTargetComment());
         display.setLastModifiedDate(selectedDetailEntry.getLastModifiedDate());
+        display.setUrl(selectedDetailEntry.getUrl());
     }
 
     @Override

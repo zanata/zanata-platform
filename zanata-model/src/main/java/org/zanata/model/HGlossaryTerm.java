@@ -41,6 +41,7 @@ import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.FilterCacheModeType;
 import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.zanata.hibernate.search.LocaleFilterFactory;
 import org.zanata.hibernate.search.LocaleIdBridge;
 
@@ -89,6 +90,7 @@ public class HGlossaryTerm extends ModelEntityBase {
     @NaturalId
     @ManyToOne
     @JoinColumn(name = "glossaryEntryId", nullable = false)
+    @IndexedEmbedded
     public HGlossaryEntry getGlossaryEntry() {
         return glossaryEntry;
     }

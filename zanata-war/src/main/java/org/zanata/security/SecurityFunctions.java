@@ -282,6 +282,27 @@ public class SecurityFunctions extends PermissionProvider {
                 userHasProjectLanguageRole(project, lang, LocaleRole.Translator);
     }
 
+    /**
+     * Project language translators can translate glossary term for their
+     * language regardless of global translation setting.
+     */
+    @GrantsPermission(actions = { "glossary-update" })
+    public boolean projectTranslatorCanTranslateGlossary(HProject project,
+            HLocale lang) {
+        return isLoggedIn() && (canManageProjectTranslationMembers(project) ||
+            userHasProjectLanguageRole(project, lang, LocaleRole.Glossarist));
+    }
+
+    @GrantsPermission(actions = { "glossary-insert", "glossary-delete" })
+    public boolean projectTranslatorCanAddDeleteGlossary(HProject project) {
+        return isLoggedIn() && canManageProjectTranslationMembers(project);
+    }
+
+    @GrantsPermission(actions = { "glossary-download" })
+    public boolean userCanDownloadProjectGlossary(HProject project) {
+        return isLoggedIn();
+    }
+
     /***************************************************************************
      * Review translation rules
      **************************************************************************/
@@ -375,7 +396,7 @@ public class SecurityFunctions extends PermissionProvider {
         return identity.hasRole("glossarist");
     }
 
-    /* Loggin user can download glossary */
+    /* 'glossarist' can download glossary */
     @GrantsPermission(actions = { "glossary-download" })
     public boolean canDownloadGlossary() {
         return identity.isLoggedIn();

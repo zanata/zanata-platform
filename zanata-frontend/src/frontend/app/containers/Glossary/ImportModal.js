@@ -144,7 +144,7 @@ const mapStateToProps = (state) => {
   const {
     stats,
     importFile
-    } = state.glossary
+  } = state.glossary
   return {
     srcLocale: stats.srcLocale,
     transLocales: stats.transLocales,

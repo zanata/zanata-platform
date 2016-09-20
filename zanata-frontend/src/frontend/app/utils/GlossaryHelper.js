@@ -26,7 +26,7 @@ var GlossaryHelper = {
    * Generate org.zanata.rest.dto.GlossaryEntry object
    * @param data
    */
-  convertToDTO: function (data) {
+  convertToDTO: function (data, qualifiedName) {
     var entry = {}
 
     entry.id = data.id
@@ -35,6 +35,7 @@ var GlossaryHelper = {
     entry.srcLang = data.srcTerm.locale
     entry.sourceReference = data.srcTerm.reference
     entry.glossaryTerms = []
+    entry.qualifiedName = {name: qualifiedName}
 
     var srcTerm = this.generateTermDTO(data.srcTerm, false)
     if (!isUndefined(srcTerm)) {

@@ -45,7 +45,21 @@ const loadingContainerTheme = {
  */
 class Glossary extends Component {
   componentDidMount () {
-    this.props.handleInitLoad()
+    const paramProjectSlug = this.props.params.projectSlug
+    const projectSlug = (!paramProjectSlug || paramProjectSlug === 'undefined')
+      ? undefined : paramProjectSlug
+
+    this.props.handleInitLoad(projectSlug)
+  }
+
+  /**
+   * Force component to update when changes between project glossary to glossary
+   */
+  componentDidUpdate (prevProps, prevState) {
+    const projectSlug = this.props.params.projectSlug
+    if (prevProps.params.projectSlug !== projectSlug) {
+      this.props.handleInitLoad(projectSlug)
+    }
   }
 
   renderItem (index, key) {
@@ -109,7 +123,8 @@ class Glossary extends Component {
       gotoNextPage,
       page,
       pageSize,
-      handlePageSizeChange
+      handlePageSizeChange,
+      projectSlug
     } = this.props
 
     const intPageSize = pageSize ? parseInt(pageSize) : PAGE_SIZE_DEFAULT
@@ -120,7 +135,31 @@ class Glossary extends Component {
     const pageSizeOption = map(PAGE_SIZE_SELECTION, (size) => {
       return {label: size, value: size}
     })
+    const headerTitle = projectSlug ? 'Project Glossary' : 'Glossary'
+    let list
+
     /* eslint-disable react/jsx-no-bind */
+    if (termsLoading) {
+      list = (<View theme={loadingContainerTheme}>
+        <LoaderText theme={{ base: { fz: 'Fz(ms1)' } }}
+          size='2' loading />
+      </View>)
+    } else if (!termsLoading && termCount) {
+      list = (<ReactList
+        useTranslate3d
+        itemRenderer={::this.renderItem}
+        length={size(terms)}
+        type='uniform'
+        ref={(c) => { this.list = c }} />)
+    } else {
+      list = (<View theme={loadingContainerTheme}>
+        <span className='Mb(rq) C(muted)'>
+          <Icon name='glossary' size='6' />
+        </span>
+        <p className='C(muted)'>No content</p>
+      </View>)
+    }
+
     return (
       <Page>
         {notification &&
@@ -130,9 +169,9 @@ class Glossary extends Component {
             show={!!notification} />
           )
         }
-        <Helmet title='Glossary' />
+        <Helmet title={headerTitle} />
         <ScrollView>
-          <ViewHeader />
+          <ViewHeader title={headerTitle} />
           <View theme={{ base: {p: 'Pt(r6)--sm Pt(r4)', fld: 'Fld(rr)'} }}>
             <Row>
               {termCount > 0 &&
@@ -186,18 +225,7 @@ class Glossary extends Component {
           </View>
 
           <View theme={{ base: {p: 'Pb(r2)'} }}>
-            {termsLoading && !termCount
-              ? (<View theme={loadingContainerTheme}>
-                <LoaderText theme={{ base: { fz: 'Fz(ms1)' } }}
-                  size='1' loading />
-              </View>)
-              : (<ReactList
-                useTranslate3d
-                itemRenderer={::this.renderItem}
-                length={size(terms)}
-                type='uniform'
-                ref={(c) => { this.list = c }} />)
-            }
+            {list}
           </View>
         </ScrollView>
       </Page>
@@ -211,6 +239,8 @@ Glossary.propTypes = {
    * Object of glossary id with term
    */
   terms: PropTypes.object,
+  projectSlug: PropTypes.string,
+  params: PropTypes.object,
   termIds: PropTypes.array,
   termCount: PropTypes.number,
   termsLoading: PropTypes.bool,
@@ -255,7 +285,8 @@ const mapStateToProps = (state) => {
     termCount,
     saving,
     deleting,
-    notification
+    notification,
+    projectSlug
   } = state.glossary
   const query = state.routing.location.query
   return {
@@ -274,14 +305,15 @@ const mapStateToProps = (state) => {
     deleting,
     notification,
     page: query.page,
-    pageSize: query.size
+    pageSize: query.size,
+    projectSlug
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    handleInitLoad: () => {
-      dispatch(glossaryInitialLoad())
+    handleInitLoad: (projectSlug) => {
+      dispatch(glossaryInitialLoad(projectSlug))
     },
     handleSelectTerm: (termId) => dispatch(glossarySelectTerm(termId)),
     handleTermFieldUpdate: (field, event) => {

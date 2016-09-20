@@ -14,13 +14,17 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.jpa.FullText;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HLocale;
+import org.zanata.rest.service.ProjectService;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.test.CdiUnitRunner;
+import org.zanata.util.GlossaryUtil;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.rpc.GetGlossary;
 import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType;
@@ -95,17 +99,31 @@ public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
         // Given:
         when(localeService.getByLocaleId(TARGET_LOCALE_ID)).thenReturn(
                 targetHLocale);
+        ProjectIterationId id = new ProjectIterationId("progSlug", "versionSlug",
+            ProjectType.File);
         GetGlossary action =
-                new GetGlossary("fedora", TARGET_LOCALE_ID, LocaleId.EN_US,
+                new GetGlossary("fedora", id, TARGET_LOCALE_ID, LocaleId.EN_US,
                         HasSearchType.SearchType.FUZZY);
-        // hibernate search result
+        // hibernate search result - global
         HGlossaryTerm srcGlossaryTerm1 = getEm().find(HGlossaryTerm.class, 42L);
+        // hibernate search result - project
         HGlossaryTerm srcGlossaryTerm2 = getEm().find(HGlossaryTerm.class, 46L);
-        List<Object[]> matches =
-                Lists.newArrayList(new Object[] { 1.0F, srcGlossaryTerm1 },
-                        new Object[] { 1.1F, srcGlossaryTerm2 });
-        doReturn(matches).when(glossaryDAO).getSearchResult("fedora",
-                HasSearchType.SearchType.FUZZY, LocaleId.EN_US, 20);
+
+        Object[] projMatches = new Object[] { 1.1F, srcGlossaryTerm2 };
+        List<Object[]> projResults = Lists.newArrayList();
+        projResults.add(projMatches);
+        String projQualifiedName = ProjectService.getGlossaryQualifiedName(
+            action.getProjectIterationId().getProjectSlug());
+        doReturn(projResults).when(glossaryDAO)
+                .getSearchResult("fedora", HasSearchType.SearchType.FUZZY,
+                        LocaleId.EN_US, 20, projQualifiedName);
+
+        Object[] matches = new Object[] { 1.0F, srcGlossaryTerm1 };
+        List<Object[]> results = Lists.newArrayList();
+        results.add(matches);
+        doReturn(results).when(glossaryDAO).getSearchResult("fedora",
+            HasSearchType.SearchType.FUZZY, LocaleId.EN_US, 20,
+            GlossaryUtil.GLOBAL_QUALIFIED_NAME);
 
         // When:
         long start = System.nanoTime();

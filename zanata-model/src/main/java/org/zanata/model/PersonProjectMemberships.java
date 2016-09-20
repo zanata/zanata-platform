@@ -175,7 +175,8 @@ public class PersonProjectMemberships {
      */
     private boolean hasAnyLocalePermissions() {
         for (LocaleRoles roles : localeRoles) {
-            if (roles.isTranslator() || roles.isReviewer() || roles.isCoordinator()) {
+            if (roles.isTranslator() || roles.isReviewer()
+                    || roles.isCoordinator() || roles.isGlossarist()) {
                 return true;
             }
         }
@@ -198,11 +199,14 @@ public class PersonProjectMemberships {
 
         private boolean coordinator;
 
+        private boolean glossarist;
+
         public LocaleRoles(HLocale locale, Collection<LocaleRole> roles) {
             this.locale = locale;
             translator = roles.contains(LocaleRole.Translator);
             reviewer = roles.contains(LocaleRole.Reviewer);
             coordinator = roles.contains(LocaleRole.Coordinator);
+            glossarist = roles.contains(LocaleRole.Glossarist);
         }
 
         /**

@@ -35,7 +35,8 @@ public class DummyGetGlossaryDetailsCommand implements Command {
                             "target content:" + (i + 1), description, "pos",
                             targetComment, "Dummy source ref " + (i + 1),
                             new LocaleId("en-us"), action.getWorkspaceId()
-                                    .getLocaleId(), i, new Date());
+                                    .getLocaleId(),
+                            "url", i, new Date());
             items.add(details);
         }
 

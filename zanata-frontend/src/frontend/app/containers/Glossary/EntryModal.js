@@ -183,7 +183,7 @@ EntryModal.propTypes = {
   show: PropTypes.bool,
   isSaving: PropTypes.bool,
   canUpdate: PropTypes.bool,
-  selectedTransLocale: PropTypes.object,
+  selectedTransLocale: PropTypes.string,
   handleResetTerm: PropTypes.func,
   handleEntryModalDisplay: PropTypes.func,
   handleUpdateTerm: PropTypes.func,

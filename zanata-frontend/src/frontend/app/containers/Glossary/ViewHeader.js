@@ -9,7 +9,8 @@ import {
   TableCell,
   TableRow,
   TextInput,
-  View
+  View,
+  Link
 } from 'zanata-ui'
 import Header from './Header'
 import {
@@ -26,6 +27,7 @@ import ImportModal from './ImportModal'
 import ExportModal from './ExportModal'
 import NewEntryModal from './NewEntryModal'
 import DeleteAllEntriesModal from './DeleteAllEntriesModal'
+import { getProjectUrl } from '../../utils/UrlHelper'
 
 /**
  * Header for glossary page
@@ -66,6 +68,8 @@ class ViewHeader extends Component {
   }
   render () {
     const {
+      title,
+      projectSlug,
       filterText = '',
       termCount,
       statsLoading,
@@ -82,16 +86,34 @@ class ViewHeader extends Component {
       permission,
       sort,
       deleteAll
-      } = this.props
+    } = this.props
+    const isEmptyTerms = termCount <= 0
     const currentLocaleCount = this.currentLocaleCount()
     const isReadOnly = !(permission.canAddNewEntry ||
       permission.canUpdateEntry || permission.canDeleteEntry)
-    const icon = isReadOnly ? 'locked' : undefined
-    const tooltip = isReadOnly ? 'read-only' : undefined
-    const showDeleteAll = permission.canDeleteEntry && termCount > 0
+    const icon = isReadOnly && (
+      <span title='read-only'>
+        <Icon name='locked' atomic={{m: 'Mend(re)', c: 'C(warning)'}} />
+      </span>)
+    const showDeleteAll = permission.canDeleteEntry && !isEmptyTerms
+
+    const projectUrl = projectSlug && getProjectUrl(projectSlug)
+
+    const projectLink = projectSlug && (
+      <div className='D(ib) Mstart(rh)'>
+        <Link icon='project' link={projectUrl} useHref>
+          <Row>
+            <Icon name='project' atomic={{m: 'Mend(re)'}} />
+            <span className='Hidden--lesm'>{projectSlug}</span>
+          </Row>
+        </Link>
+      </div>
+    )
+
     /* eslint-disable react/jsx-no-bind, no-return-assign */
     return (
-      <Header title='Glossary' icon={icon} tooltip={tooltip}
+      <Header title={title} icon={icon}
+        extraHeadingElements={projectLink}
         extraElements={(
           <View theme={{base: { ai: 'Ai(c)', fld: '' }}}>
             <TextInput
@@ -121,7 +143,7 @@ class ViewHeader extends Component {
                 <ImportModal />
               </div>)}
 
-            {permission.canDownload && (
+            {permission.canDownload && !isEmptyTerms && (
               <div className='Mstart(rh)--md Mstart(rq)'>
                 <ButtonLink type='default'
                   onClick={() => handleExportFileDisplay(true)}>
@@ -158,8 +180,7 @@ class ViewHeader extends Component {
           base: {
             w: 'W(100%)',
             m: 'Mt(rq) Mt(rh)--sm'
-          }}}
-        >
+          }}}>
           <TableRow
             theme={{ base: { bd: '' } }}
             className='Flxg(1)'>
@@ -169,8 +190,8 @@ class ViewHeader extends Component {
                 <Row>
                   {'src_content' in sort
                     ? (sort.src_content === true)
-                      ? <Icon name='chevron-down' />
-                      : <Icon name='chevron-up' />
+                    ? <Icon name='chevron-down' />
+                    : <Icon name='chevron-up' />
                     : ''}
                   <Icon name='glossary'
                     atomic={{c: 'C(neutral)', m: 'Mend(re) MStart(rq)'}} />
@@ -210,8 +231,8 @@ class ViewHeader extends Component {
                 <Row>
                   {'part_of_speech' in sort
                     ? (sort.part_of_speech === true)
-                      ? <Icon name='chevron-down' />
-                      : <Icon name='chevron-up' />
+                    ? <Icon name='chevron-down' />
+                    : <Icon name='chevron-up' />
                     : ''}
                   <span className='LineClamp(1,24px) MStart(rq)'>
                     Part of Speech
@@ -228,6 +249,8 @@ class ViewHeader extends Component {
 }
 
 ViewHeader.propTypes = {
+  title: PropTypes.string,
+  projectSlug: PropTypes.string,
   results: PropTypes.object,
   termCount: PropTypes.number.isRequired,
   statsLoading: PropTypes.bool,
@@ -269,8 +292,9 @@ const mapStateToProps = (state) => {
     filter,
     permission,
     sort,
-    deleteAll
-    } = state.glossary
+    deleteAll,
+    projectSlug
+  } = state.glossary
   const query = state.routing.location.query
   return {
     termCount,
@@ -280,7 +304,8 @@ const mapStateToProps = (state) => {
     selectedTransLocale: query.locale,
     permission,
     sort,
-    deleteAll
+    deleteAll,
+    projectSlug
   }
 }
 

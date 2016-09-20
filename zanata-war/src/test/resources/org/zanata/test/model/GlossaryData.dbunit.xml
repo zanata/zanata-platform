@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <dataset>
+  <Glossary id="1" qualifiedName="global/default" />
+
   <HGlossaryEntry id="1"
     contentHash="hash"
     versionNum="1"
@@ -8,6 +10,7 @@
     sourceRef="source reference"
     srcLocaleId="4"
     pos="pos 1"
+    glossaryId="1"
     description="description 1"
     />
 
@@ -19,6 +22,7 @@
     sourceRef="source reference"
     srcLocaleId="4"
     pos="pos 2"
+    glossaryId="1"
     description="description 2"
     />
 
@@ -30,6 +34,7 @@
     sourceRef="source reference"
     srcLocaleId="4"
     pos="pos 3"
+    glossaryId="1"
     description="description 3"
     />
 

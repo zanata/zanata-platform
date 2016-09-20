@@ -202,7 +202,7 @@
                         <ul class="list--horizontal">
                           <li>
                             <z:checkbox
-                                label="#{msgs['jsf.Translate']}"
+                                label="#{msgs['jsf.translate.content']}"
                                 labelStyle="form__checkbox__label js-form__checkbox__label"
                                 onValueChanged="bindTranslationPermissionRole"
                                 value="#{roles.locale.localeId}:Translator"
@@ -215,6 +215,14 @@
                                 onValueChanged="bindTranslationPermissionRole"
                                 value="#{roles.locale.localeId}:Reviewer"
                                 checked="#{roles.reviewer}"/>
+                          </li>
+                          <li>
+                            <z:checkbox
+                              label="#{msgs['jsf.label.glossary.modify']}"
+                              labelStyle="form__checkbox__label js-form__checkbox__label"
+                              onValueChanged="bindTranslationPermissionRole"
+                              value="#{roles.locale.localeId}:Glossarist"
+                              checked="#{roles.glossarist}"/>
                           </li>
                         </ul>
                       </div>

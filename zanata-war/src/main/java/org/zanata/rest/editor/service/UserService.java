@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
@@ -13,18 +14,22 @@ import org.apache.commons.lang.StringUtils;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
+import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
+import org.zanata.model.HProject;
 import org.zanata.rest.dto.Account;
 import org.zanata.rest.dto.User;
 import org.zanata.rest.editor.dto.Permission;
 import org.zanata.rest.editor.service.resource.UserResource;
 import org.zanata.rest.service.AccountService;
+import org.zanata.rest.service.GlossaryService;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.service.GravatarService;
+import org.zanata.util.GlossaryUtil;
 
 import com.google.common.base.Strings;
 import lombok.AccessLevel;
@@ -54,6 +59,9 @@ public class UserService implements UserResource {
 
     @Inject
     private PersonDAO personDAO;
+
+    @Inject
+    private ProjectDAO projectDAO;
 
     @Inject
     private ZanataIdentity identity;
@@ -94,6 +102,42 @@ public class UserService implements UserResource {
         Account dto = new Account();
         AccountService.getAccountDetails(account, dto);
         return Response.ok(dto).build();
+    }
+
+    @Override
+    public Response getGlossaryPermission(
+        @DefaultValue(GlossaryService.GLOBAL_QUALIFIED_NAME)
+            String qualifiedName) {
+        if(authenticatedAccount == null) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        Permission permission = new Permission();
+        boolean canUpdate = false;
+        boolean canInsert = false;
+        boolean canDelete = false;
+        boolean canDownload = false;
+
+        if(authenticatedAccount != null) {
+            if(GlossaryService.isProjectGlossary(qualifiedName)) {
+                HProject project = projectDAO.getBySlug(
+                        GlossaryService.getProjectSlug(qualifiedName));
+                canUpdate = identity.hasPermission(project, "glossary-update");
+                canInsert = identity.hasPermission(project, "glossary-insert");
+                canDelete = identity.hasPermission(project, "glossary-delete");
+                canDownload = identity.hasPermission(project, "glossary-download");
+            } else {
+                canUpdate = identity.hasPermission("", "glossary-update");
+                canInsert = identity.hasPermission("", "glossary-insert");
+                canDelete = identity.hasPermission("", "glossary-delete");
+                canDownload = identity.hasPermission("", "glossary-download");
+            }
+        }
+        permission.put("updateGlossary", canUpdate);
+        permission.put("insertGlossary", canInsert);
+        permission.put("deleteGlossary", canDelete);
+        permission.put("downloadGlossary", canDownload);
+
+        return Response.ok(permission).build();
     }
 
     /**
@@ -149,27 +193,12 @@ public class UserService implements UserResource {
      */
     public Permission getUserPermission() {
         Permission permission = new Permission();
-        boolean canUpdate = false;
-        boolean canInsert = false;
-        boolean canDelete = false;
-        boolean canDownload = false;
         boolean isAdmin = false;
-        boolean isLoggedIn = authenticatedAccount != null;
-
         if(authenticatedAccount != null) {
-            canUpdate = identity.hasPermission("", "glossary-update");
-            canInsert = identity.hasPermission("", "glossary-insert");
-            canDelete = identity.hasPermission("", "glossary-delete");
-            canDownload = identity.hasPermission("", "glossary-download");
             isAdmin = identity.hasRole("admin");
         }
-
-        permission.put("updateGlossary", canUpdate);
-        permission.put("insertGlossary", canInsert);
-        permission.put("deleteGlossary", canDelete);
-        permission.put("downloadGlossary", canDownload);
         permission.put("isAdmin", isAdmin);
-        permission.put("isLoggedIn", isLoggedIn);
+        permission.put("isLoggedIn", authenticatedAccount != null);
 
         return permission;
     }

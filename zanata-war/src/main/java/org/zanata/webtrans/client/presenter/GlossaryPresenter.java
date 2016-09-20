@@ -38,6 +38,7 @@ import org.zanata.webtrans.client.view.GlossaryDisplay;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetGlossary;
 import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
@@ -117,9 +118,13 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryDisplay>
         if (userWorkspaceContext.getSelectedDoc().getSourceLocale() != null) {
             srcLocale = userWorkspaceContext.getSelectedDoc().getSourceLocale();
         }
+        WorkspaceId workspaceId =
+                userWorkspaceContext.getWorkspaceContext().getWorkspaceId();
+
         final GetGlossary action =
-                new GetGlossary(query, userWorkspaceContext
-                        .getWorkspaceContext().getWorkspaceId().getLocaleId(),
+                new GetGlossary(query,
+                        workspaceId.getProjectIterationId(),
+                        workspaceId.getLocaleId(),
                         srcLocale, searchType);
         scheduleGlossaryRequest(action);
     }

@@ -28,6 +28,7 @@ import { Icons } from 'zanata-ui'
 import WebFont from 'webfontloader'
 import './styles/atomic.css'
 import { isJsonString } from './utils/StringUtils'
+import { getContextPath } from './utils/UrlHelper'
 /**
  * Root component that display only side menu bar.
  * Used jsf page that only needs side menu bar from frontend.
@@ -45,8 +46,7 @@ WebFont.load({
 window.config = mapValues(window.config, (value) =>
   isJsonString(value) ? JSON.parse(value) : value)
 
-// baseUrl should be /zanata or ''
-window.config.baseUrl = window.config.baseUrl || ''
+window.config.baseUrl = getContextPath()
 
 const links = {
   'context': window.config.baseUrl,

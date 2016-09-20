@@ -49,7 +49,6 @@ public class GlossaryPushTest extends ZanataTestCase {
     private ClientWorkFlow clientWorkFlow;
     private File projectRootPath;
     private String userConfigPath;
-    private String basicUserConfigPath;
 
     private String pushCommand = "mvn -U --batch-mode zanata:glossary-push " +
             "-Dglossary.lang=fr -Dzanata.file=compendium_fr.po " +
@@ -64,7 +63,6 @@ public class GlossaryPushTest extends ZanataTestCase {
         clientWorkFlow = new ClientWorkFlow();
         projectRootPath = clientWorkFlow.getProjectRootPath("glossary");
         userConfigPath = ClientWorkFlow.getUserConfigPath("glossarist");
-        basicUserConfigPath = ClientWorkFlow.getUserConfigPath("translator");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -85,7 +83,7 @@ public class GlossaryPushTest extends ZanataTestCase {
 
         editorPage.searchGlossary("filesystem");
 
-        assertThat(editorPage.getGlossaryResultTable().get(1).get(1))
+        assertThat(editorPage.getGlossaryResultTable().get(1).get(2))
                 .isEqualTo("système de fichiers")
                 .as("The first glossary result is correct");
     }

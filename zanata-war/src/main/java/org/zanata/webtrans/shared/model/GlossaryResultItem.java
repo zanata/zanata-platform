@@ -32,6 +32,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class GlossaryResultItem extends SearchResultItem implements
         IsSerializable {
+    private String qualifiedName;
     private String source;
     private String target;
     private ArrayList<Long> sourceIdList = new ArrayList<Long>();
@@ -47,9 +48,10 @@ public class GlossaryResultItem extends SearchResultItem implements
      * @param relevanceScore
      * @param similarityPercent
      */
-    public GlossaryResultItem(String source, String target,
-            double relevanceScore, double similarityPercent) {
+    public GlossaryResultItem(String qualifiedName, String source,
+            String target, double relevanceScore, double similarityPercent) {
         super(relevanceScore, similarityPercent);
+        this.qualifiedName = qualifiedName;
         this.source = source;
         this.target = target;
     }
@@ -78,4 +80,11 @@ public class GlossaryResultItem extends SearchResultItem implements
         this.sourceIdList.add(sourceId);
     }
 
+    public String getQualifiedName() {
+        return qualifiedName;
+    }
+
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+    }
 }
