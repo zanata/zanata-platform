@@ -49,7 +49,7 @@ public class Highlighting {
     var newText = "";
     var i = -1;
     var lcSearchTerm = searchTerm.toLowerCase();
-    var lcBodyText = bodyText.toLowerCase();
+    var lcBodyTextcd  = bodyText.toLowerCase();
 
     while (bodyText.length > 0) {
       i = lcBodyText.indexOf(lcSearchTerm, i + 1);
@@ -74,8 +74,8 @@ public class Highlighting {
     }
     }-*/;
 
-    public static String diffAsHtml(String text1, String text2) {
-        JavaScriptObject diffs = diff(text1, text2, true);
+    public static String diffAsHtml(String oldText, String newText) {
+        JavaScriptObject diffs = diff(oldText, newText, true);
         return diffsToHtml(diffs);
     }
 

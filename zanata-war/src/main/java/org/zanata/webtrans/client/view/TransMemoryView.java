@@ -251,13 +251,12 @@ public class TransMemoryView extends Composite implements
         }
         if (determineDiffMode() == DiffMode.NORMAL) {
             SafeHtml safeHtml =
-                    TextContentsDisplay.asDiff(queriesPadded, sourceContents)
+                    TextContentsDisplay.asDiff(sourceContents, queriesPadded)
                             .toSafeHtml();
             panel.setWidget(new InlineHTML(safeHtml));
         } else {
             SafeHtml safeHtmlHighlight =
-                    TextContentsDisplay.asDiffHighlight(queriesPadded,
-                            sourceContents).toSafeHtml();
+                    TextContentsDisplay.asDiffHighlight(sourceContents, queriesPadded).toSafeHtml();
             panel.setWidget(new InlineHTML(safeHtmlHighlight));
         }
         return panel;
