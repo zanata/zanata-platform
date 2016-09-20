@@ -39,7 +39,7 @@ docker build -t zanata/server-dev docker/
 docker run \
     -e JAVA_OPTS="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/jboss/zanata" \
     --rm --name zanata --link zanatadb:db \
-    -p 8080:8080 -p 8787:8787 -it \
+    -p 8080:8080 -p 8787:8787 -p 9990:9990 -it \
     -v $ZANATA_WAR:/opt/jboss/wildfly/standalone/deployments/ROOT.war \
     -v $ZANATA_DIR:/opt/jboss/zanata \
     zanata/server-dev
