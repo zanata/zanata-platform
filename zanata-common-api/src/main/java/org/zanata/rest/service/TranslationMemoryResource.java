@@ -36,7 +36,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle;
 import org.zanata.common.LocaleId;
 
 /**
@@ -46,7 +45,6 @@ import org.zanata.common.LocaleId;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Path(TranslationMemoryResource.SERVICE_PATH)
-@ExternallyManagedLifecycle
 @Produces({ MediaType.APPLICATION_XML /* , "application/x-tmx" */})
 @Consumes({ MediaType.APPLICATION_XML /* , "application/x-tmx" */})
 public interface TranslationMemoryResource extends RestResource {

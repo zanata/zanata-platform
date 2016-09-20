@@ -20,12 +20,7 @@
  */
 package org.zanata.rest.service;
 
-import org.codehaus.enunciate.jaxrs.TypeHint;
-import org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle;
-import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
-import org.zanata.common.Namespaces;
-import org.zanata.rest.dto.resource.Resource;
-import org.zanata.rest.dto.resource.ResourceMeta;
+import java.util.Set;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -41,7 +36,10 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import java.util.Set;
+import org.zanata.rest.dto.resource.Resource;
+import org.zanata.rest.dto.resource.ResourceMeta;
+
+import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
 /**
  * projectSlug: Project Identifier. iterationSlug: Project Iteration identifier.
@@ -50,7 +48,6 @@ import java.util.Set;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Path(SourceDocResource.SERVICE_PATH)
-@ExternallyManagedLifecycle
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public interface SourceDocResource extends RestResource {

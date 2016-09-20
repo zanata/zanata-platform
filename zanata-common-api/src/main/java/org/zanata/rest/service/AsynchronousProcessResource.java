@@ -33,12 +33,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import org.codehaus.enunciate.jaxrs.TypeHint;
-import org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
+
+import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
 /**
  * Represents a resource for an asynchronous process. Only certain processes are
@@ -48,7 +48,6 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Path(AsynchronousProcessResource.SERVICE_PATH)
-@ExternallyManagedLifecycle
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public interface AsynchronousProcessResource extends RestResource {

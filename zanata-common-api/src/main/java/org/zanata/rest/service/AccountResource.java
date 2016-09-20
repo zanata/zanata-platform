@@ -28,10 +28,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.enunciate.jaxrs.TypeHint;
-import org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Account;
+
+import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
 /**
  * username: User name that identifies an account
@@ -41,7 +41,6 @@ import org.zanata.rest.dto.Account;
  *
  */
 @Path(AccountResource.SERVICE_PATH)
-@ExternallyManagedLifecycle
 public interface AccountResource extends RestResource {
     public static final String SERVICE_PATH =
             "/accounts/u/{username:[a-z\\d_]{3,20}}";

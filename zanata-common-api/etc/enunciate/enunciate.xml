@@ -1,21 +1,40 @@
-<enunciate xsi:noNamespaceSchemaLocation=
-  "http://enunciate.codehaus.org/schemas/enunciate-1.24.xsd">
+<enunciate
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://enunciate.webcohesion.com/schemas/enunciate-2.6.0.xsd">
   <namespaces>
     <namespace id="zanata" uri="http://www.zanata.org" />
   </namespaces>
   <api-classes>
-    <include pattern="org.zanata.rest.enunciate.*" />
+    <include pattern="org.zanata.rest.*" />
   </api-classes>
-  <modules>
-    <docs docsDir="rest-api-docs" title="Zanata REST API"
-      splashPackage="org.zanata.rest.service"
-      copyright="Copyright 2008-2016 Red Hat, Inc and others." />
-    <c disabled="true" />
-    <csharp disabled="true" />
-    <gwt disabled="true" />
-    <java-client disabled="true" />
-    <obj-c disabled="true" />
-    <php disabled="true" />
-    <ruby disabled="true" />
-  </modules>
+  <title>Zanata REST API</title>
+  <copyright>Red Hat, Inc and others</copyright>
+  <description>
+    <![CDATA[
+      <h1>Introduction</h1>
+
+      <p>
+        This is the documentation for the Zanata REST API. It includes detailed
+        information about the resources, content, response codes, etc available
+        to external users.
+
+        <h3>Authentication</h3>
+
+        Some of the available resources require authentication and will respond with
+        an UNAUTHORIZED (401) code if not available. To prevent this, you must supply
+        credentials in the form of the "X-Auth-User" header, which should contain a
+        valid Zanata user name, and "X-Auth-Token", which should contain the
+        corresponding API key for the user. Additionally, the service might continue
+        to respond with the same code if the authenticated user does not have
+        the right permissions to access the resource.
+      </p>
+    ]]>
+  </description>
+  <!-- https://github.com/stoicflame/enunciate/wiki/Modules -->
+  <!--<modules>-->
+    <!--<jaxb />-->
+    <!--<jackson1 />-->
+    <!--<jaxrs />-->
+    <!--<docs />-->
+  <!--</modules>-->
 </enunciate>

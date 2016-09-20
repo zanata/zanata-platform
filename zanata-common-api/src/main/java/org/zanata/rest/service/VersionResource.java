@@ -27,13 +27,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.enunciate.jaxrs.TypeHint;
-import org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle;
+import com.webcohesion.enunciate.metadata.rs.TypeHint;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.VersionInfo;
 
 @Path(VersionResource.SERVICE_PATH)
-@ExternallyManagedLifecycle
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public interface VersionResource extends RestResource {

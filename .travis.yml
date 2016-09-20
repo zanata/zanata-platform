@@ -19,7 +19,8 @@ before_install:
 install: /bin/true
 
 script: |
-  mvn test site \
+  mvn test \
+    com.webcohesion.enunciate:enunciate-maven-plugin:docs -pl zanata-common-api \
     --batch-mode \
     --settings .travis-settings.xml \
     -DstaticAnalysis
@@ -27,9 +28,9 @@ script: |
 jdk:
   - openjdk7
   - oraclejdk7
-# Enunciate 1.x doesn't support javac 1.8:
-# see https://github.com/zanata/zanata-api/pull/46
-#  - oraclejdk8
+# Java 1.8 *is* supported by Enunciate 2.x:
+# https://github.com/stoicflame/enunciate/issues/68
+  - oraclejdk8
 
 matrix:
   fast_finish: true

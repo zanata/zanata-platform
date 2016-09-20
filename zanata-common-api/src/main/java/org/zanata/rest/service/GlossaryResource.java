@@ -22,6 +22,7 @@
 package org.zanata.rest.service;
 
 import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -34,8 +35,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.enunciate.jaxrs.TypeHint;
-import org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.GlossaryFileUploadForm;
@@ -46,13 +45,14 @@ import org.zanata.rest.dto.GlossaryResults;
 import org.zanata.rest.dto.QualifiedName;
 import org.zanata.rest.dto.ResultList;
 
+import com.webcohesion.enunciate.metadata.rs.TypeHint;
+
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
 @Path(GlossaryResource.SERVICE_PATH)
-@ExternallyManagedLifecycle
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
         MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML,
         MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON,

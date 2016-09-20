@@ -21,6 +21,7 @@
 package org.zanata.rest.service;
 
 import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -31,19 +32,17 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.enunciate.jaxrs.TypeHint;
-import org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
-import org.zanata.common.DocumentType;
 import org.zanata.common.FileTypeInfo;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.dto.ChunkUploadResponse;
+
+import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
 /**
  * Interface for file upload and download REST methods.
  */
 @Path(FileResource.SERVICE_PATH)
-@ExternallyManagedLifecycle
 @Produces({ MediaType.APPLICATION_OCTET_STREAM })
 @Consumes({ MediaType.APPLICATION_OCTET_STREAM })
 public interface FileResource extends RestResource {

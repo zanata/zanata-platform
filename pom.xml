@@ -4,6 +4,7 @@
   <artifactId>api</artifactId>
   <version>4.0.0-SNAPSHOT</version>
   <name>Zanata API modules</name>
+  <description>Parent pom for Zanata API</description>
   <packaging>pom</packaging>
   <parent>
     <groupId>org.zanata</groupId>
@@ -35,10 +36,6 @@
   </repositories>
 
   <properties>
-    <!--
-    Stick to 1.7 for Enunciate compatibility.
-    See https://github.com/zanata/zanata-api/pull/46
-    -->
     <required.java>1.7</required.java>
     <required.jvm>1.7</required.jvm>
   </properties>
@@ -58,6 +55,16 @@
       </plugin>
     </plugins>
   </build>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.webcohesion.enunciate</groupId>
+        <artifactId>enunciate-core-annotations</artifactId>
+        <version>${enunciate.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <modules>
     <module>zanata-common-api</module>

@@ -21,6 +21,8 @@
 
 package org.zanata.rest.service;
 
+import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;
+
 import java.util.Set;
 
 import javax.ws.rs.Consumes;
@@ -36,13 +38,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.enunciate.jaxrs.TypeHint;
-import org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
-import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;
+import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
 /**
  * projectSlug: Project Identifier. iterationSlug: Project Iteration identifier.
@@ -52,7 +52,6 @@ import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;
  *
  */
 @Path(TranslatedDocResource.SERVICE_PATH)
-@ExternallyManagedLifecycle
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public interface TranslatedDocResource extends RestResource {
