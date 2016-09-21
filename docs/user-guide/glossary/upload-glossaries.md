@@ -1,5 +1,4 @@
 ### Prerequisite
-
 See [glossary roles and permission](/user-guide/glossary/glossary-roles-permissions) for permission setup.
 
 ### Supported file format
@@ -28,7 +27,8 @@ See [glossary roles and permission](/user-guide/glossary/glossary-roles-permissi
 ### Upload via Web UI
 
 1. Login into Zanata
-1. Click `Glossary` menu.
+1. To upload to the **system glossary**, click `Glossary` menu. 
+1. To upload to a **project glossary**, navigate to the project page, click on "Glossary" in the project page.
 1. Click on `Import Glossary` on top right corner of the page.
 <figure>
 ![More action in glossary page](/images/glossary-upload.png)
@@ -51,8 +51,14 @@ See [glossary roles and permission](/user-guide/glossary/glossary-roles-permissi
 
 The following instructions assume that you have installed and configured the Zanata Client. Instructions for installation and configuration are available at [Zanata Client Installation](http://docs.zanata.org/projects/zanata-client/en/latest/#installation).
 
-Command
+**System glossary**
 
 ```
-mvn zanata:glossary-push -Dzanata.glossaryFile={filename} -Dzanata.sourceLang={source locale} -Dzanata.transLang={translation locale}
+zanata-cli glossary-push --file {filename} --trans-lang {translation locale}
+```
+
+**Project glossary**
+
+```
+zanata-cli glossary-push --file {filename} --trans-lang {translation locale} --project {projectSlug}
 ```
