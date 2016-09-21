@@ -238,8 +238,11 @@
                     </span>
                     </div>
                   </div>
-                  <zanata:statistic
+
+                  <zanata:statistic rendered="#{versionGroupHomeAction.pageRendered}"
                     value="#{versionGroupHomeAction.getSelectedVersionStatistic(hLocale.localeId)}"/>
+
+                  <zanata:loader rendered="#{!versionGroupHomeAction.pageRendered}"/>
                 </a>
               </li>
             </ui:repeat>

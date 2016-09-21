@@ -64,6 +64,7 @@
         zanata.tabs.activate(jQuery('#' + section + "_tab"))
       });
 
+    updateStateFromUrl();
     renderStatistics();
   });
   //]]>
@@ -101,7 +102,7 @@
 
     <a4j:jsFunction name="renderStatistics" status="statistic-loader"
       limitRender="true"
-      render="overall_statistic, languages-language_form, projects-project_form"
+      render="overall_statistic, languages-language_form, languages-project_list, projects-project_form, projects-language_list"
       action="#{versionGroupHomeAction.setPageRendered(true)}"
       oncomplete="updateStateFromUrl(); zanata.panel.init()"/>
   </h:form>
@@ -109,9 +110,7 @@
 <div class="g">
   <div class="g__item w--1-m w--3-8-l w--1-3 l--push-bottom-half">
     <p class="txt--meta l--push-all-0">
-      <h:link outcome="/version-group/home.xhtml">
-        #{msgs['jsf.Groups']}
-      </h:link>
+      #{msgs['jsf.Groups']}
     </p>
 
     <h:panelGroup layout="block"  styleClass="media l--push-bottom-half" id="group-info">
@@ -126,40 +125,53 @@
       </div>
     </h:panelGroup>
     <h:panelGroup layout="block"  id="overall_statistic" styleClass="progress-bar__expander">
-      <ui:fragment rendered="#{versionGroupHomeAction.pageRendered}">
-        <p class="d--top l--pad-top-half txt--mini">
-          #{msgs['jsf.TotalSourceContains']}
-          <strong>#{versionGroupHomeAction.overallStatistic.total}
-            words</strong>
-        </p>
-        <ul class="g g--fit">
-          <li class="g__item">
-            <span class="stats--large txt--state-success">
-              <span class="stats__figure">
-                #{statisticBar.formatPercentage(versionGroupHomeAction.overallStatistic.percentTranslated)}%
-              </span>
-              <span class="stats__unit txt--lowercase">
-                #{msgs['jsf.stats.Translated']}
-              </span>
+      <p class="d--top l--pad-top-half txt--mini">
+        <ui:fragment rendered="#{versionHomeAction.pageRendered}">
+          <h:outputFormat escape="false"
+            value="#{msgs.format('jsf.TotalSourceContains', versionGroupHomeAction.overallStatistic.total)}"/>
+        </ui:fragment>
+      </p>
+      <ul class="g g--fit">
+        <ui:param name="showApproved" value="#{versionGroupHomeAction.overallStatistic.percentApproved ne 0}"/>
+        <ui:fragment rendered="#{showApproved}">
+          <li class="g__item l--push-bottom-half">
+          <span class="stats txt--state-highlight">
+            <zanata:loader type="loader--small" rendered="#{!versionGroupHomeAction.pageRendered}"/>
+            <h:panelGroup styleClass="stats__figure" rendered="#{versionGroupHomeAction.pageRendered}">
+              #{statisticBar.formatPercentage(versionGroupHomeAction.overallStatistic.percentApproved)}%
+            </h:panelGroup>
+            <span class="stats__unit txt--lowercase">
+              #{msgs['jsf.stats.Approved']}
             </span>
+          </span>
           </li>
-          <li class="g__item">
-            <span class="stats--large">
-              <span class="stats__figure">
-                #{statisticBar.formatHours(versionGroupHomeAction.overallStatistic.remainingHours)}
-              </span>
-              <span class="stats__unit">
-                #{msgs['jsf.stats.TotalHoursRemaining']}
-              </span>
+        </ui:fragment>
+
+        <li class="g__item l--push-bottom-half">
+          <span class="txt--state-success #{showApproved ? 'stats' : 'stats--large'}">
+            <zanata:loader type="loader--small" rendered="#{!versionGroupHomeAction.pageRendered}"/>
+            <h:panelGroup styleClass="stats__figure" rendered="#{versionGroupHomeAction.pageRendered}">
+              #{statisticBar.formatPercentage(versionGroupHomeAction.overallStatistic.percentTranslated)}%
+            </h:panelGroup>
+            <span class="stats__unit txt--lowercase">
+              #{msgs['jsf.stats.Translated']}
             </span>
-          </li>
-        </ul>
-        <div class="l--push-v-1">
-          <zanata:statistic
-            value="#{versionGroupHomeAction.overallStatistic}"
-            type="large"/>
-        </div>
-      </ui:fragment>
+          </span>
+        </li>
+        <li class="g__item l--push-bottom-half">
+          <span class="#{showApproved ? 'stats' : 'stats--large'}">
+            <zanata:loader type="loader--small" rendered="#{!versionGroupHomeAction.pageRendered}"/>
+            <h:panelGroup styleClass="stats__figure" rendered="#{versionGroupHomeAction.pageRendered}">
+              #{statisticBar.formatPercentage(versionGroupHomeAction.overallStatistic.remainingHours)}%
+            </h:panelGroup>
+            <span class="stats__unit">
+              #{msgs['jsf.stats.TotalHoursRemaining']}
+            </span>
+          </span>
+        </li>
+      </ul>
+      <zanata:statistic type="large" value="#{versionGroupHomeAction.overallStatistic}"
+        rendered="#{versionGroupHomeAction.pageRendered}"/>
 
       <a4j:status name="statistic-loader">
         <f:facet name="start">
@@ -168,7 +180,6 @@
       </a4j:status>
     </h:panelGroup>
   </div>
-
 
   <div class="g__item w--1-m w--5-8-l w--2-3">
     <div class="tabs--lined js-tabs">

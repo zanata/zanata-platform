@@ -115,7 +115,7 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
 
     private List<HProjectIteration> projectIterations;
 
-    private Map<VersionLocaleKey, WordStatistic> statisticMap;
+    private Map<VersionLocaleKey, WordStatistic> statisticMap = Maps.newHashMap();
 
     private Map<LocaleId, List<HProjectIteration>> missingLocaleVersionMap;
 
@@ -381,8 +381,8 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
             SortingType.SortOption sortOption, LocaleId localeId,
             Long projectIterationId) {
         WordStatistic statistic =
-                statisticMap.get(new VersionLocaleKey(projectIterationId,
-                        localeId));
+                statisticMap.getOrDefault(new VersionLocaleKey(projectIterationId,
+                        localeId), new WordStatistic());
         return getDisplayUnit(sortOption, statistic, null);
     }
 
