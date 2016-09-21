@@ -332,12 +332,12 @@ public class ProjectVersionService implements ProjectVersionResource {
     public Response getTransUnitStatus(
             @PathParam("projectSlug") String projectSlug,
             @PathParam("versionSlug") String versionSlug,
-            @PathParam("docId") String docId,
+            @PathParam("docId") String noSlashDocId,
             @DefaultValue("en-US") @PathParam("localeId") String localeId) {
-        if(StringUtils.isEmpty(docId)) {
+        if(StringUtils.isEmpty(noSlashDocId)) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-
+        String docId = URIHelper.convertFromDocumentURIId(noSlashDocId);
         HDocument document =
                 documentDAO.getByProjectIterationAndDocId(projectSlug,
                         versionSlug, docId);
