@@ -49,6 +49,7 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
 
     private final WebDriver driver;
     private String testId = "";
+    private boolean handlingException;
 
     /**
      * A registered TestEventListener will perform actions on navigate,
@@ -160,6 +161,11 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
 
     @Override
     public void onException(Throwable throwable, WebDriver driver) {
+        if (handlingException) {
+            log.error("skipping screenshot for exception in exception handler", throwable);
+            return;
+        }
+        handlingException = true;
         try {
             createScreenshot("_exc");
             // try to let the browser recover for the next test
@@ -168,8 +174,10 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
                 log.error("dismissing unexpected alert with text: ", alert.get().getText());
                 alert.get().dismiss();
             }
-        } catch (Throwable all) {
-            log.error("error creating screenshot on exception", all);
+        } catch (Throwable screenshotThrowable) {
+            log.error("unable to create exception screenshot", screenshotThrowable);
+        } finally {
+            handlingException = false;
         }
     }
 
