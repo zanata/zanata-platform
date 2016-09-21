@@ -49,7 +49,7 @@ public class Highlighting {
     var newText = "";
     var i = -1;
     var lcSearchTerm = searchTerm.toLowerCase();
-    var lcBodyText  = bodyText.toLowerCase();
+    var lcBodyText = bodyText.toLowerCase();
 
     while (bodyText.length > 0) {
       i = lcBodyText.indexOf(lcSearchTerm, i + 1);
