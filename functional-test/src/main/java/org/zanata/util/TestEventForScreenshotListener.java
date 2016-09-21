@@ -49,7 +49,7 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
 
     private final WebDriver driver;
     private String testId = "";
-    private ThreadLocal<Boolean> takingScreenshot = new ThreadLocal<>();
+    private boolean handlingException;
 
     /**
      * A registered TestEventListener will perform actions on navigate,
@@ -70,12 +70,8 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
     }
 
     private void createScreenshot(String ofType) {
-        if (takingScreenshot.get() != null) {
-            return;
-        }
         File testIDDir = null;
         try {
-            takingScreenshot.set(true);
             testIDDir = ScreenshotDirForTest.screenshotForTest(testId);
             if (!testIDDir.exists()) {
                 log.info("Creating screenshot dir {}", testIDDir.getAbsolutePath());
@@ -120,8 +116,6 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
             throw new RuntimeException("[Screenshot]: Null Object: ", e);
         } catch (AWTException e) {
             throw new RuntimeException("[Screenshot]: ", e);
-        } finally {
-            takingScreenshot.remove();
         }
     }
 
@@ -167,6 +161,11 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
 
     @Override
     public void onException(Throwable throwable, WebDriver driver) {
+        if (handlingException) {
+            log.error("skipping screenshot for exception in exception handler", throwable);
+            return;
+        }
+        handlingException = true;
         try {
             createScreenshot("_exc");
             // try to let the browser recover for the next test
@@ -175,8 +174,10 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
                 log.error("dismissing unexpected alert with text: ", alert.get().getText());
                 alert.get().dismiss();
             }
-        } catch (Throwable all) {
-            log.error("error creating screenshot on exception", all);
+        } catch (Throwable screenshotThrowable) {
+            log.error("unable to create exception screenshot", screenshotThrowable);
+        } finally {
+            handlingException = false;
         }
     }
 
