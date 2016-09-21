@@ -49,7 +49,7 @@ public class Highlighting {
     var newText = "";
     var i = -1;
     var lcSearchTerm = searchTerm.toLowerCase();
-    var lcBodyTextcd  = bodyText.toLowerCase();
+    var lcBodyText  = bodyText.toLowerCase();
 
     while (bodyText.length > 0) {
       i = lcBodyText.indexOf(lcSearchTerm, i + 1);
@@ -80,7 +80,7 @@ public class Highlighting {
     }
 
     @CoverageIgnore("JSNI")
-    private static native JavaScriptObject diff(String originalContents, String diffContents,
+    private static native JavaScriptObject diff(String oldText, String newText,
             boolean cleanupSemantic)/*-{
     if (!$wnd.diffMatchPatch) {
       $wnd.diffMatchPatch = new $wnd.diff_match_patch();
@@ -88,7 +88,7 @@ public class Highlighting {
     }
 
     var dmp = $wnd.diffMatchPatch;
-    var diffs = dmp.diff_main(originalContents, diffContents);
+    var diffs = dmp.diff_main(oldText, newText);
     if (cleanupSemantic) {
       dmp.diff_cleanupSemantic(diffs);
     }

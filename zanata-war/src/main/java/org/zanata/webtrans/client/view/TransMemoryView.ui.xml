@@ -60,8 +60,8 @@
     </ul>
     <ul class="list--horizontal l--push-all-quarter legend">
       <li class="bx--inline zeta">TM Diff Highlighting</li>
-      <li class="bx--inline diff-delete">TM MATCH</li>
-      <li class="bx--inline diff-insert">SEARCH TEXT</li>
+      <li class="bx--inline diff-delete">TM Match</li>
+      <li class="bx--inline diff-insert">Search text</li>
     </ul>
     <g:HTMLPanel ui:field="container" styleName="txt--align-center" />
   </g:HTMLPanel>
