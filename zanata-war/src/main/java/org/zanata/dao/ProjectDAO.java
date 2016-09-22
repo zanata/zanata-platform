@@ -28,8 +28,8 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TermQuery;
@@ -311,9 +311,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
         searchQuery = QueryParser.escape(searchQuery);
 
         for(String searchString: searchQuery.split("\\s+")) {
-            QueryParser parser = new QueryParser(Version.LUCENE_29, field,
-                    new CaseInsensitiveWhitespaceAnalyzer(Version.LUCENE_29));
-
+            QueryParser parser = new QueryParser(field,
+                    new CaseInsensitiveWhitespaceAnalyzer());
             query.add(parser.parse(searchString + "*"), BooleanClause.Occur.MUST);
         }
         return query;

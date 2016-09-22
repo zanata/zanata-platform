@@ -12,6 +12,7 @@ export const STATUS_NEEDS_WORK = 'needswork'
 export const STATUS_NEEDS_WORK_SERVER = 'needreview'
 export const STATUS_TRANSLATED = 'translated'
 export const STATUS_APPROVED = 'approved'
+export const STATUS_REJECTED = 'rejected'
 
 /**
  * Get a string representing the status that should be
@@ -27,8 +28,8 @@ export function defaultSaveStatus (phrase) {
   } else if (hasEmptyTranslation(phrase)) {
     return STATUS_NEEDS_WORK
   } else if (hasTranslationChanged(phrase)) {
-    // TODO also need to handle 'approved' and 'rejected'
-    //      when user is a reviewer and in review mode
+    // TODO may also need to handle 'approved' and 'rejected'
+    //      when user is a reviewer and in review mode.
     return STATUS_TRANSLATED
   } else {
     // TODO when phrase status is a simple value,
@@ -53,6 +54,11 @@ function allValidSaveStatuses (phrase) {
     return [STATUS_UNTRANSLATED]
   } else if (hasEmptyTranslation(phrase)) {
     return [STATUS_NEEDS_WORK]
+  } else if
+    (phrase.status === STATUS_REJECTED && !hasTranslationChanged(phrase)) {
+    // rejected state cannot be saved in this editor yet, but should display
+    // as a disabled button until the text is changed.
+    return [STATUS_REJECTED, STATUS_TRANSLATED, STATUS_NEEDS_WORK]
   } else {
     // TODO also need to handle 'approved' and 'rejected'
     //      when user is a reviewer and in review mode

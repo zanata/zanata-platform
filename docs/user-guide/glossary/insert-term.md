@@ -1,8 +1,9 @@
 ### Prerequisite
-Requires **Glossary-admin** role. See [glossary roles and permission](/user-guide/glossary/glossary-roles-permissions) for permission setup.
+See [glossary roles and permission](/user-guide/glossary/glossary-roles-permissions) for permission setup.
 
 1. Login into Zanata
-1. Click `Glossary` menu.
+1. To insert a term into the **system glossary**, click `Glossary` menu. 
+1. To insert a term into the **project glossary**, navigate to the project page, click on "Glossary" in the project page.
 1. Click on `New Term` on top right page.
 <figure>
 ![new term](/images/glossary-new-term.png)

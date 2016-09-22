@@ -26,7 +26,6 @@ import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.service.jdbc.connections.internal.DriverManagerConnectionProviderImpl;
 
 /**
  * This class wraps JDBC Connections/Statements/ResultSets to detect attempts to

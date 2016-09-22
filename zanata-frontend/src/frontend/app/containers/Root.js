@@ -20,10 +20,12 @@ export default class Root extends Component {
         <View>
           <Router history={history}>
             <Route component={App} >
+              <Route path='explore' component={Explore} />
               <Route path='glossary' component={Glossary} />
               <Route path='languages' component={Languages} />
               <Route path='profile/:username' component={UserProfile} />
-              <Route path='explore' component={Explore} />
+              <Route path='project/:projectSlug/glossary'
+                component={Glossary} />
               <Redirect from='profile' to={`profile/${username}`} />
               <Redirect from='/' to={`profile/${username}`} />
             </Route>

@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
-  version="2.0">
+  xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+             http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+  version="2.1">
 
-  <persistence-unit name="zanataDatasourcePU"
-    transaction-type="JTA">
-    <provider>org.hibernate.ejb.HibernatePersistence</provider>
-
+  <persistence-unit name="zanataDatasourcePU" transaction-type="JTA">
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <jta-data-source>java:jboss/datasources/zanataDatasource</jta-data-source>
 
     <!--
-      NB non-jta-data-source is not compatible with JPA tests, but is
-      needed by Seam tests.  The list of classes seems to be necessary,
+      The list of classes seems to be necessary,
       unfortunately. Please keep the list in sync between
-      zanata-war/src/test/jboss-embedded-bootstrap/META-INF/persistence.xml
+      zanata-war/src/main/webapp-jboss/WEB-INF/classes/META-INF/persistence.xml
+      zanata-war/src/test/resources/arquillian/persistence.xml
       and zanata-war/src/test/resources/META-INF/persistence.xml.
-      See also zanata-model/src/test/resources/META-INF/persistence.xml.
      -->
 
     <mapping-file>META-INF/orm.xml</mapping-file>
+
     <class>org.zanata.model.Activity</class>
+    <class>org.zanata.model.Glossary</class>
     <class>org.zanata.model.HAccount</class>
     <class>org.zanata.model.HAccountActivationKey</class>
     <class>org.zanata.model.HAccountOption</class>
@@ -41,6 +41,7 @@
     <class>org.zanata.model.HPerson</class>
     <class>org.zanata.model.HPersonEmailValidationKey</class>
     <class>org.zanata.model.HProject</class>
+    <class>org.zanata.model.HProjectGlossary</class>
     <class>org.zanata.model.HProjectIteration</class>
     <class>org.zanata.model.HProjectLocaleMember</class>
     <class>org.zanata.model.HProjectMember</class>
@@ -65,36 +66,44 @@
     <class>org.zanata.model.WebHook</class>
     <class>org.zanata.model.AllowedApp</class>
 
-    <!-- TODO This may be removed once the class files are packaged in the zanata-model jar as intended
-     Otherwise, hibernate will scan the whole war file and dependency jars -->
+    <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+
+    <!-- TODO This may be removed once the class files are packaged in the zanata-model jar as intended.
+     Otherwise, Hibernate will scan the whole war file and dependency jars. -->
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     <properties>
+      <!--
+          Binds the EntityManagerFactory to JNDI where Seam can look it up. This is only relevant when
+          the container automatically loads the persistence unit, as is the case in JBoss AS 5.
+      -->
       <property name="jboss.entity.manager.factory.jndi.name"
         value="java:/zanataEntityManagerFactory" />
+
+      <!-- Automatic schema export and drop -->
+      <property name="hibernate.hbm2ddl.auto"
+        value="create-drop" />
+
+      <!-- TODO this won't work with Hibernate 4.3 or later -->
+      <property name="hibernate.connection.provider_class"
+        value="org.zanata.database.WrappedDatasourceConnectionProvider" />
+
+      <!-- Logging -->
+      <property name="hibernate.show_sql" value="false" />
+      <property name="hibernate.use_sql_comments" value="true" />
+      <property name="hibernate.format_sql"
+        value="true" />
+
+      <property name="hibernate.connection.useUnicode" value="true" />
+      <property name="hibernate.connection.characterEncoding" value="UTF-8" />
+
       <!-- Only relevant if Seam is loading the persistence unit (Java SE bootstrap) -->
       <!-- NB: Might have to be removed for Hibernate 4.3 -->
       <property name="hibernate.transaction.manager_lookup_class"
         value="org.hibernate.transaction.JBossTransactionManagerLookup" />
 
-      <property name="hibernate.cache.use_second_level_cache" value="true" />
-      <property name="jboss.entity.manager.factory.jndi.name"
-        value="java:/zanataEntityManagerFactory" />
-
-      <property name="hibernate.show_sql" value="false" />
-      <property name="hibernate.cache.region.factory_class"
-        value="org.hibernate.testing.cache.CachingRegionFactory" />
-      <property name="hibernate.hbm2ddl.auto" value="create-drop" />
-
-      <property name="hibernate.connection.provider_class"
-        value="org.zanata.database.WrappedDatasourceConnectionProvider" />
-
-      <!--<property name="hibernate.connection.driver_class" value="org.h2.Driver" />
-      &lt;!&ndash; Configure the in-memory database to be shared, and so that it
-         doesn't disappear after it has been set up by Hibernate: &ndash;&gt;
-      <property name="hibernate.connection.url" value="jdbc:h2:mem:zanata;DB_CLOSE_DELAY=-1" />
-      <property name="hibernate.connection.username" value="sa" />
-      <property name="hibernate.connection.password" value="sa" />
+      <!-- for Hibernate 4.3 (but not 4.2):
+      <property name="hibernate.transaction.jta.platform" value="JBossAS" />
       -->
 
       <!-- Search engine -->
@@ -102,11 +111,46 @@
         value="org.hibernate.search.store.impl.FSDirectoryProvider" />
       <property name="hibernate.search.default.locking_strategy"
         value="simple" />
-      <property name="hibernate.search.default.indexBase"
-        value="./target/zanatasearchindex" />
-      <property name="hibernate.search.lucene_version" value="LUCENE_36" />
+
+      <!-- to use an existing cache manager (Good for external configuration) -->
+      <!--<property name="hibernate.search.infinispan.cachemanager_jndiname"
+        value="java:jboss/infinispan/container/hibernate-search"/>-->
+      <!-- 50 Meg chunk size by default -->
+      <!--<property name="hibernate.search.infinispan.chunk_size" value="52428800"/>
+      <property name="hibernate.search.infinispan.indexwriter.ram_buffer_size"
+        value="30"/>
+      <property
+        name="hibernate.search.infinispan.indexwriter.merge_max_optimize_size"
+        value="21"/>
+      <property
+        name="hibernate.search.infinispan.indexwriter.merge_max_size"
+        value="21"/>-->
+      <property name="hibernate.search.lucene_version" value="LUCENE_5_3_1" />
       <property name="hibernate.search.worker.batch_size" value="50" />
-      <property name="javax.persistence.validation.factory" value="org.apache.deltaspike.beanvalidation.impl.CDIAwareConstraintValidatorFactory"/>
+
+      <!-- Run the Hibernate bytecode instrumentation at deployment time, for lazy loading of @ToOne and byte[] properties -->
+      <!-- TODO: That doesn't work for me, using the enhancer in build.xml manually -->
+      <!--<property name="hibernate.ejb.use_class_enhancer" value="true" />-->
+      <property name="hibernate.max_fetch_depth" value="1" />
+      <property name="hibernate.jdbc.batch_size" value="100" />
+      <property name="hibernate.order_inserts" value="true" />
+
+      <!-- Enable Hibernate statistics, needs SessionFactory in JNDI for JMX monitoring
+      <property name="hibernate.generate_statistics" value="true"/>
+      <property name="hibernate.session_factory_name" value="SessionFactories/zanataSF"/>
+      -->
+
+      <!-- Use test version of hibernate cache (in-memory) -->
+      <property name="hibernate.cache.region.factory_class"
+        value="org.hibernate.testing.cache.CachingRegionFactory" />
+
+      <property name="hibernate.cache.use_second_level_cache" value="true" />
+      <!--       http://stackoverflow.com/questions/9060403/hibernate-query-cache-issue -->
+      <!--<property name="hibernate.cache.use_query_cache" value="true" />-->
+
+      <!-- https://docs.jboss.org/author/display/AS71/JPA+Reference+Guide#JPAReferenceGuide-Persistenceunitproperties -->
+      <property name="jboss.as.jpa.managed" value="true" />
     </properties>
   </persistence-unit>
+
 </persistence>

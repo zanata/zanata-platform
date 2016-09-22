@@ -82,9 +82,9 @@ import org.zanata.util.VersionUtility;
 @Slf4j
 public class ZanataInit {
     private static final DefaultArtifactVersion MIN_EAP_VERSION =
-            new DefaultArtifactVersion("6.4.6.GA");
+            new DefaultArtifactVersion("7.0.1.GA");
     private static final DefaultArtifactVersion MIN_WILDFLY_VERSION =
-            new DefaultArtifactVersion("10.0.0.Final");
+            new DefaultArtifactVersion("10.1.0.Final");
 
 
     static {
@@ -119,11 +119,8 @@ public class ZanataInit {
         Attributes atts = null;
         if (manifestFile.canRead()) {
             Manifest mf = new Manifest();
-            final FileInputStream fis = new FileInputStream(manifestFile);
-            try {
+            try (FileInputStream fis = new FileInputStream(manifestFile)) {
                 mf.read(fis);
-            } finally {
-                fis.close();
             }
             atts = mf.getMainAttributes();
         }

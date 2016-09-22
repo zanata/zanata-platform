@@ -20,6 +20,7 @@
  */
 package org.zanata.model;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -28,9 +29,6 @@ import javax.persistence.ManyToOne;
 import lombok.Setter;
 import lombok.ToString;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 /**
  * Represents a dynamic assignment of a role for HAccounts.
  *
@@ -38,7 +36,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cacheable
 @Setter
 @ToString(callSuper = true)
 public class HRoleAssignmentRule extends ModelEntityBase {

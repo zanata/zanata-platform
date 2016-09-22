@@ -268,8 +268,11 @@ public class Application implements EntryPoint {
                 + workspaceId.getProjectIterationId().getProjectSlug() + "/"
                 + workspaceId.getProjectIterationId().getIterationSlug()
                 + "/translate/" + docId + "/"
-                + workspaceId.getLocaleId().getId()
-                + "?dswid=" + injector.getLocation().getParameter("dswid");
+                + workspaceId.getLocaleId().getId() + getDswidQuery();
+    }
+
+    private static String getDswidQuery() {
+        return "?dswid=" + injector.getLocation().getParameter("dswid");
     }
 
     public static String getFileDownloadURL(WorkspaceId workspaceId,
@@ -282,6 +285,10 @@ public class Application implements EntryPoint {
 
     public static String getAllFilesDownloadURL(String downloadId) {
         return getModuleParentBaseUrl() + "rest/file/download/" + downloadId;
+    }
+
+    public static boolean isProjectGlossary(String qualifiedName) {
+        return qualifiedName.startsWith("project");
     }
 
     @CoverageIgnore("JSNI")

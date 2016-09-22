@@ -168,7 +168,7 @@ public class GlossaryPresenterTest {
 
     @Test
     public void showGlossaryDetail() {
-        GlossaryResultItem object = new GlossaryResultItem("", "", 0, 0);
+        GlossaryResultItem object = new GlossaryResultItem("qualifiedName", "", "", 0, 0);
 
         when(messages.searchGlossary()).thenReturn("Search glossary");
 
@@ -179,7 +179,7 @@ public class GlossaryPresenterTest {
 
     @Test
     public void fireCopyEvent() {
-        GlossaryResultItem object = new GlossaryResultItem("", "", 0, 0);
+        GlossaryResultItem object = new GlossaryResultItem("qualifiedName", "", "", 0, 0);
         ArgumentCaptor<InsertStringInEditorEvent> eventCaptor =
                 ArgumentCaptor.forClass(InsertStringInEditorEvent.class);
 
@@ -279,8 +279,8 @@ public class GlossaryPresenterTest {
                 callbackCaptor.capture());
         AsyncCallback<GetGlossaryResult> callback = callbackCaptor.getValue();
         ArrayList<GlossaryResultItem> glossaries =
-                Lists.newArrayList(new GlossaryResultItem("source", "target",
-                        100, 100));
+                Lists.newArrayList(new GlossaryResultItem("qualifiedName",
+                        "source", "target", 100, 100));
 
         // on rpc callback success and result contains glossaries
         callback.onSuccess(new GetGlossaryResult(getGlossaryCaptor.getValue(),

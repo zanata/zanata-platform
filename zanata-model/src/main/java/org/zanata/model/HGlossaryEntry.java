@@ -23,12 +23,15 @@ package org.zanata.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
+import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
@@ -46,6 +49,7 @@ import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.zanata.hibernate.search.LocaleIdBridge;
 import org.zanata.util.GlossaryUtil;
 
@@ -56,7 +60,7 @@ import org.zanata.util.GlossaryUtil;
  **/
 @Entity
 @EntityListeners({ HGlossaryEntry.EntityListener.class })
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cacheable
 @Indexed
 @Setter
 @EqualsAndHashCode(callSuper = true, doNotUseGetters = true,
@@ -74,9 +78,11 @@ public class HGlossaryEntry extends ModelEntityBase {
 
     private HLocale srcLocale;
 
+    private Glossary glossary;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "glossaryEntry",
             orphanRemoval = true, fetch = FetchType.EAGER)
-    @MapKey(name = "locale")
+    @MapKeyJoinColumn(name = "localeId", referencedColumnName = "id")
     public Map<HLocale, HGlossaryTerm> getGlossaryTerms() {
         if (glossaryTerms == null) {
             glossaryTerms = new HashMap<HLocale, HGlossaryTerm>();
@@ -87,6 +93,14 @@ public class HGlossaryEntry extends ModelEntityBase {
     @javax.persistence.Lob
     public String getSourceRef() {
         return sourceRef;
+    }
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "glossaryId", nullable = false)
+    @IndexedEmbedded
+    public Glossary getGlossary() {
+        return glossary;
     }
 
     //TODO: this should be many to one

@@ -25,6 +25,7 @@ import com.google.common.base.Throwables;
 import com.google.common.html.HtmlEscapers;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
+import org.infinispan.Cache;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.stats.Stats;
 import org.zanata.i18n.Messages;
@@ -66,7 +67,22 @@ public class CacheAction implements Serializable {
     }
 
     public Stats getStats(String cacheName) {
-        return cacheManager.getCache(cacheName).getAdvancedCache().getStats();
+        log.debug("getting stats for cache '{}'", cacheName);
+        try {
+            Cache<Object, Object> cache = cacheManager.getCache(cacheName);
+            if (cache.getCacheConfiguration().jmxStatistics().enabled()) {
+                return cache.getAdvancedCache().getStats();
+            } else {
+                log.debug("Statistics are not enabled for cache '{}'", cacheName);
+                // -1 just means no stats (same as Infinispan)
+                return new UnavailableStats(-1);
+            }
+            // eg getStats() throws IndexOutOfBoundsException if stats not enabled
+        } catch (Exception e) {
+            log.warn("Error getting Stats object - are statistics enabled for cache '{}'?", cacheName, e);
+            // -2 also means no stats, but serves as a hint that something might be wrong
+            return new UnavailableStats(-2);
+        }
     }
 
     /**
@@ -89,7 +105,7 @@ public class CacheAction implements Serializable {
     }
 
     public void resetCacheStats(String cacheName) {
-//        getStats(cacheName).reset();
+        getStats(cacheName).reset();
     }
 
     public void clearAllCaches(){
@@ -121,5 +137,95 @@ public class CacheAction implements Serializable {
 
     public String getDescOfProperty(String key) {
         return msgs.get("jsf.cacheStats." + key + ".description");
+    }
+
+    /**
+     * Dummy Stats implementation returned when Stats are disabled or
+     * otherwise unavailable.
+     */
+    private static class UnavailableStats implements Stats {
+        private final int val;
+
+        private UnavailableStats(int val) {
+            this.val = val;
+        }
+
+        @Override
+        public long getTimeSinceStart() {
+            return val;
+        }
+
+        @Override
+        public long getTimeSinceReset() {
+            return val;
+        }
+
+        @Override
+        public int getCurrentNumberOfEntries() {
+            return val;
+        }
+
+        @Override
+        public long getTotalNumberOfEntries() {
+            return val;
+        }
+
+        @Override
+        public long getStores() {
+            return val;
+        }
+
+        @Override
+        public long getRetrievals() {
+            return val;
+        }
+
+        @Override
+        public long getHits() {
+            return val;
+        }
+
+        @Override
+        public long getMisses() {
+            return val;
+        }
+
+        @Override
+        public long getRemoveHits() {
+            return val;
+        }
+
+        @Override
+        public long getRemoveMisses() {
+            return val;
+        }
+
+        @Override
+        public long getEvictions() {
+            return val;
+        }
+
+        @Override
+        public long getAverageReadTime() {
+            return val;
+        }
+
+        @Override
+        public long getAverageWriteTime() {
+            return val;
+        }
+
+        @Override
+        public long getAverageRemoveTime() {
+            return val;
+        }
+
+        @Override
+        public void reset() {
+        }
+
+        @Override
+        public void setStatisticsEnabled(boolean enabled) {
+        }
     }
 }

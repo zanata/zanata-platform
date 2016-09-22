@@ -5,7 +5,8 @@ import {
   STATUS_UNTRANSLATED,
   STATUS_NEEDS_WORK,
   STATUS_TRANSLATED,
-  STATUS_APPROVED
+  STATUS_APPROVED,
+  STATUS_REJECTED
 } from '../../utils/status'
 
 const ProgressItem = React.createClass({
@@ -41,6 +42,7 @@ const ProgressBar = React.createClass({
       approved: PropTypes.number,
       translated: PropTypes.number,
       needswork: PropTypes.number,
+      rejected: PropTypes.number,
       untranslated: PropTypes.number
     }).isRequired
   },
@@ -52,6 +54,7 @@ const ProgressBar = React.createClass({
         approved: 0,
         translated: 0,
         needswork: 0,
+        rejected: 0,
         untranslated: 0
       }
     }
@@ -68,7 +71,7 @@ const ProgressBar = React.createClass({
     const total = parseFloat(counts.total)
     const widths = chain(counts)
       .pick([STATUS_APPROVED, STATUS_TRANSLATED, STATUS_NEEDS_WORK,
-        STATUS_UNTRANSLATED])
+        STATUS_REJECTED, STATUS_UNTRANSLATED])
       .mapValues((count) => {
         return count ? 100 * parseFloat(count) / total : 0
       })
@@ -79,7 +82,8 @@ const ProgressBar = React.createClass({
       translated: widths.approved
     }
     starts.needswork = starts.translated + widths.translated
-    starts.untranslated = starts.needswork + widths.needswork
+    starts.rejected = starts.needswork + widths.needswork
+    starts.untranslated = starts.rejected + widths.rejected
 
     return (
       <div className={className}>
@@ -95,6 +99,10 @@ const ProgressBar = React.createClass({
           state="needswork"
           start={starts.needswork}
           width={widths.needswork} />
+        <ProgressItem
+          state="rejected"
+          start={starts.rejected}
+          width={widths.rejected} />
         <ProgressItem
           state="untranslated"
           start={starts.untranslated}

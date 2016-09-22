@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import { merge } from 'lodash'
 import {
-  Icon, View, Heading, Link, flattenThemeClasses
+  Icon, View, Heading, Link, flattenThemeClasses, Row
 } from 'zanata-ui'
 
 const wrapperTheme = {
@@ -55,8 +55,8 @@ const Header = ({
   theme,
   title,
   icon,
-  tooltip,
   extraElements,
+  extraHeadingElements,
   ...props
 }) => {
   return (
@@ -66,8 +66,11 @@ const Header = ({
           <Link link='/' theme={logoLinkTheme}>
             <Icon name='zanata' size='3' />
           </Link>
-          <Heading level='1' theme={headingTheme} title={tooltip}>
-            {icon && <Icon name={icon} />} {title || 'Title'}
+          <Heading level='1' theme={headingTheme}>
+            <Row>
+              {icon}{title || 'Title'}
+              {extraHeadingElements}
+            </Row>
           </Heading>
           <View theme={headerActionsTheme}>
             {extraElements}
@@ -87,7 +90,7 @@ Header.propTypes = {
   children: PropTypes.node,
   theme: PropTypes.object,
   title: PropTypes.string,
-  icon: PropTypes.string,
+  icon: PropTypes.node,
   tooltip: PropTypes.string,
   /**
    * Extra react node (html element) which will be display in the header
@@ -95,7 +98,8 @@ Header.propTypes = {
   extraElements: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node]
-  )
+  ),
+  extraHeadingElements: PropTypes.object
 }
 
 export default Header

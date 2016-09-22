@@ -4,7 +4,8 @@ import {
   STATUS_UNTRANSLATED,
   STATUS_NEEDS_WORK,
   STATUS_TRANSLATED,
-  STATUS_APPROVED
+  STATUS_APPROVED,
+  STATUS_REJECTED
 } from '../utils/status'
 
 /**
@@ -20,25 +21,20 @@ const TransUnitFilter = React.createClass({
     filter: PropTypes.shape({
       all: PropTypes.bool.isRequired,
       approved: PropTypes.bool.isRequired,
+      rejected: PropTypes.bool.isRequired,
       translated: PropTypes.bool.isRequired,
       needswork: PropTypes.bool.isRequired,
       untranslated: PropTypes.bool.isRequired
     }).isRequired,
 
-    // FIXME stats API gives strings, change those to numbers
-    //       and remove the string option.
     counts: PropTypes.shape({
       // TODO better to derive total from the others rather than duplicate
-      total: PropTypes.oneOfType(
-        [PropTypes.number, PropTypes.string]),
-      approved: PropTypes.oneOfType(
-        [PropTypes.number, PropTypes.string]),
-      translated: PropTypes.oneOfType(
-        [PropTypes.number, PropTypes.string]),
-      needswork: PropTypes.oneOfType(
-        [PropTypes.number, PropTypes.string]),
-      untranslated: PropTypes.oneOfType(
-        [PropTypes.number, PropTypes.string])
+      total: PropTypes.number,
+      approved: PropTypes.number,
+      rejected: PropTypes.number,
+      translated: PropTypes.number,
+      needswork: PropTypes.number,
+      untranslated: PropTypes.number
     }).isRequired,
 
     // DO NOT RENAME, the translation string extractor looks specifically
@@ -53,6 +49,7 @@ const TransUnitFilter = React.createClass({
       counts: {
         total: 0,
         approved: 0,
+        rejected: 0,
         translated: 0,
         needswork: 0,
         untranslated: 0
@@ -63,6 +60,7 @@ const TransUnitFilter = React.createClass({
   componentWillMount: function () {
     const { onFilterChange } = this.props.actions
     this.filterApproved = onFilterChange.bind(undefined, STATUS_APPROVED)
+    this.filterRejected = onFilterChange.bind(undefined, STATUS_REJECTED)
     this.filterTranslated = onFilterChange.bind(undefined, STATUS_TRANSLATED)
     this.filterNeedsWork = onFilterChange.bind(undefined, STATUS_NEEDS_WORK)
     this.filterUntranslated =
@@ -111,6 +109,15 @@ const TransUnitFilter = React.createClass({
             onChange={this.filterNeedsWork}
             title={gettextCatalog.getString('Needs Work')}
             count={this.props.counts.needswork} />
+        </li>
+        <li className="u-ltemd-hidden u-sMV-1-4">
+          <FilterToggle
+            id="filter-phrases-rejected"
+            className="u-textWarning"
+            isChecked={this.props.filter.rejected}
+            onChange={this.filterRejected}
+            title={gettextCatalog.getString('Rejected')}
+            count={this.props.counts.rejected} />
         </li>
         <li className="u-ltemd-hidden u-sMV-1-4">
           <FilterToggle

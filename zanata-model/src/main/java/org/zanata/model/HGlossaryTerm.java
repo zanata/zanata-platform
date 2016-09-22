@@ -20,6 +20,7 @@
  */
 package org.zanata.model;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -32,10 +33,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
@@ -43,6 +41,7 @@ import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.FilterCacheModeType;
 import org.hibernate.search.annotations.FullTextFilterDef;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.zanata.hibernate.search.LocaleFilterFactory;
 import org.zanata.hibernate.search.LocaleIdBridge;
 
@@ -52,7 +51,7 @@ import org.zanata.hibernate.search.LocaleIdBridge;
  *
  **/
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cacheable
 @Indexed
 @FullTextFilterDef(name = "glossaryLocaleFilter",
         impl = LocaleFilterFactory.class,
@@ -91,6 +90,7 @@ public class HGlossaryTerm extends ModelEntityBase {
     @NaturalId
     @ManyToOne
     @JoinColumn(name = "glossaryEntryId", nullable = false)
+    @IndexedEmbedded
     public HGlossaryEntry getGlossaryEntry() {
         return glossaryEntry;
     }

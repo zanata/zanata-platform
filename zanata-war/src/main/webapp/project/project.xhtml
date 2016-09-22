@@ -101,8 +101,7 @@
 <div class="g">
   <div class="g__item w--1-m w--3-8-l w--1-3 l--push-bottom-half">
     <p class="txt--meta l--push-all-0">
-      <h:link outcome="/project/home.xhtml"
-        value="#{msgs['jsf.Projects']}"/>
+      #{msgs['jsf.Projects']}
     </p>
 
     <h:panelGroup layout="block"  styleClass="media l--push-bottom-half" id="project-info">
@@ -214,6 +213,21 @@
               </span>
         </a>
       </li>
+      <ui:fragment rendered="#{identity.loggedIn}">
+        <li>
+          <div class="link zeta">
+            <a id="glossary_tab" href="#{request.contextPath}/a/#project/#{projectHomeAction.slug}/glossary">
+             <i class="i i--glossary"></i>
+             <span class="is-hidden--s i__text--right">
+                #{msgs['jsf.Glossary']}
+                <span class="txt--neutral" id="glossary-size">
+                  #{projectHomeAction.getGlossarySize()}
+                </span>
+             </span>
+            </a>
+          </div>
+        </li>
+      </ui:fragment>
       <li>
         <a id="about_tab"
           href="#{request.contextPath}/project/view/#{projectHomeAction.slug}/about"

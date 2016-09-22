@@ -11,8 +11,11 @@ When a project is selected, you will be taken to an overall view of the project.
 
 The different views for a project offer more information about it.
 
+- **Versions** shows all versions for the project
 - **People** shows the project Maintainers, Translators and Reviewers.
+- **Glossary** shows glossary entries for the project.
 - **About** shows more information about the project.
 - **Settings** _(This is only available to Project Maintainers)_ allows the user to change project settings.
+
 
 To [view the information about a specific version](/user-guide/versions/version-view), you can click on the version's name from the list.

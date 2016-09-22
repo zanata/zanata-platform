@@ -2,6 +2,7 @@
 
 <dataset>
   <Activity />
+  <Glossary />
   <HAccount />
   <HAccountActivationKey />
   <HAccountMembership />
@@ -26,6 +27,7 @@
   <HProject />
   <HProject_Locale />
   <HProjectIteration_Locale />
+  <HProject_Glossary />
   <HProject_Member />
   <HProject_LocaleMember />
   <HProject_Validation />

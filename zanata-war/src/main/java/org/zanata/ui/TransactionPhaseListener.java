@@ -94,6 +94,8 @@ public class TransactionPhaseListener implements PhaseListener {
             UserTransaction utx = getUserTransaction();
 
             if (facesContext.getAttributes().containsKey(STARTED_TX_KEY)) {
+                // remove key even if commit/rollback fails
+                facesContext.getAttributes().remove(STARTED_TX_KEY);
                 if (utx.getStatus() == Status.STATUS_ACTIVE) {
                     utx.commit();
                 } else {
@@ -104,8 +106,6 @@ public class TransactionPhaseListener implements PhaseListener {
                     // https://zanata.atlassian.net/browse/ZNTA-1318
                     utx.rollback();
                 }
-
-                facesContext.getAttributes().remove(STARTED_TX_KEY);
             }
         } catch (RuntimeException e) {
             throw e;

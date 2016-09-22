@@ -10,6 +10,7 @@ import {
   Icons
 } from 'zanata-ui'
 import { Nav } from '../components'
+import { getContextPath } from '../utils/UrlHelper'
 
 /**
  * TODO: use react-ally to identify accessibility issue in dev mode
@@ -32,7 +33,7 @@ class App extends Component {
     } = this.props
 
     const links = {
-      'context': window.config.baseUrl || '',
+      'context': getContextPath(),
       '/login': window.config.links.loginUrl,
       '/signup': window.config.links.registerUrl
     }

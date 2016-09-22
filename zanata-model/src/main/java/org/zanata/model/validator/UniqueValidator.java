@@ -45,8 +45,12 @@ import org.hibernate.metadata.ClassMetadata;
 public class UniqueValidator implements ConstraintValidator<Unique, Object> {
     private Unique parameters;
 
+    private final EntityManager entityManager;
+
     @Inject
-    private EntityManager entityManager;
+    public UniqueValidator(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {

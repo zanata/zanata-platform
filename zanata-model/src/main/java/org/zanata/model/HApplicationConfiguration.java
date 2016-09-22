@@ -42,6 +42,7 @@ import com.google.common.collect.Lists;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+// FIXME Cacheable
 public class HApplicationConfiguration extends ModelEntityBase {
 
     /**

@@ -8,7 +8,7 @@ You should see an entry like this:
 
 Once you have management socket binding open, download the [messaging config file](https://raw.githubusercontent.com/zanata/zanata-server/master/etc/scripts/standalone.cli.messaging.config).
 
-> This config file has been tested with EAP6 and WildFly 10.0.0.Final.
+> This config file has been tested with EAP 7 and WildFly 10.0.0.Final.
 
 Run
 

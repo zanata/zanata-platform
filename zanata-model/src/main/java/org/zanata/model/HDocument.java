@@ -29,6 +29,7 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.util.AnnotationLiteral;
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -51,9 +52,6 @@ import lombok.ToString;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -84,7 +82,7 @@ import org.zanata.util.Contexts;
  */
 @Entity
 @EntityListeners({HDocument.EntityListener.class})
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cacheable
 @TypeDef(name = "contentType", typeClass = ContentTypeType.class)
 @Setter
 @NoArgsConstructor

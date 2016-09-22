@@ -18,6 +18,7 @@ const EditorHeader = React.createClass({
       approved: PropTypes.number,
       translated: PropTypes.number,
       needswork: PropTypes.number,
+      rejected: PropTypes.number,
       untranslated: PropTypes.number
     })
   },

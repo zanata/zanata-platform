@@ -343,7 +343,8 @@ public class CopyTransWorkFactory {
      */
     private boolean shouldFindMatch(HTextFlow textFlow, HLocale locale,
             boolean requireTranslationReview) {
-        // TODO getTargets will fill up ehcache for large textflows and locales. Check which one is more efficient
+        // TODO getTargets will fill up Hibernate cache for large textflows
+        // and locales. Check which one is more efficient
         HTextFlowTarget targetForLocale =
                 textFlow.getTargets().get(locale.getId());
 //        HTextFlowTarget targetForLocale = textFlowTargetDAO.getTextFlowTarget(

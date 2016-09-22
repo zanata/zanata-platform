@@ -3,6 +3,8 @@ package org.zanata.webtrans.client.view;
 import java.util.ArrayList;
 
 import com.google.gwt.user.client.ui.Anchor;
+
+import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.EnumListBox;
 import org.zanata.webtrans.client.ui.HighlightingLabel;
@@ -26,6 +28,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ValueListBox;
@@ -61,10 +64,11 @@ public class GlossaryView extends Composite implements GlossaryDisplay {
 
     private GlossaryDisplay.Listener listener;
 
-    private final static int SOURCE_COL = 0;
-    private final static int TARGET_COL = 1;
-    private final static int ACTION_COL = 2;
-    private final static int DETAILS_COL = 3;
+    private final static int TYPE_COL = 0;
+    private final static int SOURCE_COL = 1;
+    private final static int TARGET_COL = 2;
+    private final static int ACTION_COL = 3;
+    private final static int DETAILS_COL = 4;
 
     @Inject
     public GlossaryView(SearchTypeRenderer searchTypeRenderer) {
@@ -80,6 +84,7 @@ public class GlossaryView extends Composite implements GlossaryDisplay {
         resultTable.setCellPadding(3);
 
         FlexCellFormatter formatter = resultTable.getFlexCellFormatter();
+        formatter.setStyleName(0, TYPE_COL, "zeta w--1-12");
         formatter.setStyleName(0, SOURCE_COL, "zeta");
         formatter.setStyleName(0, TARGET_COL, "zeta");
         formatter.setStyleName(0, ACTION_COL, "zeta txt--align-center smallCol");
@@ -181,6 +186,13 @@ public class GlossaryView extends Composite implements GlossaryDisplay {
     public void renderTable(ArrayList<GlossaryResultItem> glossaries) {
         for (int i = 0; i < glossaries.size(); i++) {
             final GlossaryResultItem item = glossaries.get(i);
+            FlexCellFormatter cellFormatter = resultTable.getFlexCellFormatter();
+
+            resultTable.setWidget(i + 1, TYPE_COL,
+                    getTypePanel(item.getQualifiedName()));
+            cellFormatter.setStyleName(i + 1, TYPE_COL, "txt--align-center");
+            cellFormatter.setVerticalAlignment(i + 1,
+                    TYPE_COL, HasVerticalAlignment.ALIGN_MIDDLE);
 
             resultTable.setWidget(i + 1, SOURCE_COL,
                     new HighlightingLabel(item.getSource()));
@@ -189,7 +201,7 @@ public class GlossaryView extends Composite implements GlossaryDisplay {
 
             Button copyButton = new Button(messages.copy());
             copyButton.setTitle(messages.copyTooltip());
-
+            copyButton.addStyleName("button--small");
             copyButton.addClickHandler(new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
@@ -198,8 +210,10 @@ public class GlossaryView extends Composite implements GlossaryDisplay {
             });
 
             resultTable.setWidget(i + 1, ACTION_COL, copyButton);
-            resultTable.getFlexCellFormatter().setStyleName(i + 1, ACTION_COL,
+            cellFormatter.setStyleName(i + 1, ACTION_COL,
                     "txt--align-center smallCol");
+            cellFormatter.setVerticalAlignment(i + 1,
+                ACTION_COL, HasVerticalAlignment.ALIGN_MIDDLE);
 
             Anchor infoCell = new Anchor();
             infoCell.setStyleName("i i--info txt--lead");
@@ -211,9 +225,33 @@ public class GlossaryView extends Composite implements GlossaryDisplay {
             });
 
             resultTable.setWidget(i + 1, DETAILS_COL, infoCell);
-            resultTable.getFlexCellFormatter().setStyleName(i + 1, DETAILS_COL,
+            cellFormatter.setStyleName(i + 1, DETAILS_COL,
                     "txt--align-center smallCol");
+            cellFormatter.setVerticalAlignment(i + 1,
+                    DETAILS_COL, HasVerticalAlignment.ALIGN_MIDDLE);
         }
+    }
+
+    private HTMLPanel getTypePanel(String qualifiedName) {
+        String typeHTML = "<i class='i "
+            + getTypeIconClass(qualifiedName) + "' />";
+        HTMLPanel panel = new HTMLPanel(typeHTML);
+        panel.setTitle(getTypeTitle(qualifiedName));
+        return panel;
+    }
+
+    private String getTypeIconClass(String qualifiedName) {
+        if(Application.isProjectGlossary(qualifiedName)) {
+            return "i--project";
+        }
+        return "i--translate";
+    }
+
+    private String getTypeTitle(String qualifiedName) {
+        if(Application.isProjectGlossary(qualifiedName)) {
+            return messages.glossaryProjectTypeTitle();
+        }
+        return messages.glossaryGlobalTypeTitle();
     }
 
     @Override

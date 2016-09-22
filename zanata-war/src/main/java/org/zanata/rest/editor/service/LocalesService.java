@@ -60,13 +60,20 @@ public class LocalesService implements LocalesResource {
             Lists.newArrayListWithExpectedSize(locales.size());
 
         localesRefs.addAll(
-            locales.stream().map(hLocale -> new LocaleDetails(hLocale.getLocaleId(),
-                hLocale.retrieveDisplayName(), "")).collect(Collectors.toList()));
+            locales.stream().map(hLocale -> convertToDTO(hLocale, ""))
+                .collect(Collectors.toList()));
 
         Type genericType = new GenericType<List<LocaleDetails>>() {
         }.getGenericType();
         Object entity =
             new GenericEntity<List<LocaleDetails>>(localesRefs, genericType);
         return Response.ok(entity).build();
+    }
+
+    public static LocaleDetails convertToDTO(HLocale hLocale, String alias) {
+        return new LocaleDetails(hLocale.getLocaleId(),
+            hLocale.retrieveDisplayName(), alias, hLocale.retrieveNativeName(),
+            hLocale.isActive(), hLocale.isEnabledByDefault(),
+            hLocale.getMembers().size());
     }
 }

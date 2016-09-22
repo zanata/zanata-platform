@@ -82,43 +82,6 @@
     </navigation-case>
   </navigation-rule>
 
-  <!-- Landing page for open id authentication -->
-  <navigation-rule>
-    <from-view-id>/openid.xhtml</from-view-id>
-    <navigation-case>
-      <if>#{authenticationManager.authenticated and authenticationManager.newUser}</if>
-      <to-view-id>/profile/create_user.xhtml</to-view-id>
-      <redirect/>
-    </navigation-case>
-    <navigation-case>
-      <if>#{!identity.isLoggedIn() and authenticationManager.authenticatedAccountWaitingForActivation}</if>
-      <to-view-id>/account/inactive_account.xhtml</to-view-id>
-      <redirect/>
-    </navigation-case>
-    <navigation-case>
-      <if>#{!identity.loggedIn and applicationConfiguration.singleOpenIdProvider}</if>
-      <to-view-id>/home.xhtml</to-view-id>
-      <redirect/>
-    </navigation-case>
-    <navigation-case>
-      <if>#{identity.loggedIn and userRedirect.shouldRedirectToDashboard()}</if>
-      <to-view-id>/dashboard/home.xhtml</to-view-id>
-      <redirect/>
-    </navigation-case>
-    <navigation-case>
-      <if>#{!identity.loggedIn}</if>
-      <to-view-id>/account/login.xhtml</to-view-id>
-      <redirect/>
-    </navigation-case>
-
-    <navigation-case>
-      <!-- Default redirection after a log in is to the dashboard -->
-      <if>#{identity.loggedIn}</if>
-      <to-view-id>/dashboard/home.xhtml</to-view-id>
-      <redirect/>
-    </navigation-case>
-  </navigation-rule>
-
   <!-- Landing page for Internal, JAAS and Kerberos form-based
        authentication -->
   <navigation-rule>

@@ -1,8 +1,56 @@
 ## 4.0
 
+##### Infrastructure Changes
+* Recommended platform: JBoss EAP 7 (7.0.1.GA or later).
+* Alternative platform: WildFly version 10.x.
+
+Zanata now requires EAP 7 or WildFly 10 with no extra modules.
+
+If using EAP, you must upgrade to EAP 7 and apply the various Zanata
+changes to JBOSS_HOME/standalone/configuration/standalone.xml.
+
+If using WildFly, you must remove any previously installed JSF or Hibernate
+modules from WILDFLY_HOME/modules/{com,javax,org}.
+
+Also, Hibernate Search and Lucene have been upgraded - before starting
+Zanata 4.0 you will need to clear your index directory (as configured
+in the system property `hibernate.search.default.indexBase`) and then
+trigger a complete re-index from the admin pages once Zanata has loaded.
+
+Zanata's jboss-web.xml has been updated: if you maintain a custom version, you should remove the "valve" section.
+
+##### Changes
+* [ZNTA-1207](https://zanata.atlassian.net/browse/ZNTA-1207) - Upgrade to JBoss EAP 7
+* [ZNTA-1203](https://zanata.atlassian.net/browse/ZNTA-1203) - Remove Hibernate 4.2 module for WildFly
+* [ZNTA-1222](https://zanata.atlassian.net/browse/ZNTA-1222) - Use appserver's Infinispan
+
 ##### Bug Fixes
 * [ZNTA-846](https://zanata.atlassian.net/browse/ZNTA-846) - Group "request add project version" needs field limit
 * [ZNTA-872](https://zanata.atlassian.net/browse/ZNTA-872) - Redirect to home from cancel button in create user page
+
+-----------------------
+
+## 3.9.5
+##### Bug Fixes
+ * [ZNTA-1358](https://zanata.atlassian.net/browse/ZNTA-1358) - Memory leak causing OOM error in idle server
+ * [ZNTA-1293](https://zanata.atlassian.net/browse/ZNTA-1293) - Log files full of NonexistentConversationException
+
+-----------------------
+
+## 3.9.4
+##### Changes
+ * [ZNTA-1286](https://zanata.atlassian.net/browse/ZNTA-1286) - Language/Dashboard: migrate js alert and js confirm to modal
+ * [ZNTA-1285](https://zanata.atlassian.net/browse/ZNTA-1285) - Version pages: migrate js alert and js confirm to modal
+ * [ZNTA-1284](https://zanata.atlassian.net/browse/ZNTA-1284) - Project pages: migrate js alert and js confirm to modal
+ * [ZNTA-1283](https://zanata.atlassian.net/browse/ZNTA-1283) - Admin pages: Migrate js alert and js confirm to modal
+
+##### Bug Fixes
+ * [ZNTA-1323](https://zanata.atlassian.net/browse/ZNTA-1323) - Register with non ASCII full name, the name is messed
+ * [ZNTA-1318](https://zanata.atlassian.net/browse/ZNTA-1318) - Need better exception handling for transaction errors
+ * [ZNTA-1317](https://zanata.atlassian.net/browse/ZNTA-1317) - Sorting Projects list leads to "Transaction was rolled back in a different thread!" and many other errors
+
+-----------------------
+
 ## 3.9.3
 ##### Bug Fixes
  * [ZNTA-608](https://zanata.atlassian.net/browse/ZNTA-608) - Error (exception) on project page after removing an alias

@@ -29,12 +29,14 @@ import org.hibernate.Query;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.EntityStatus;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.util.CloseableIterator;
+import org.zanata.util.Zanata;
 
 /**
  * This class uses Hibernate's StatelessSession to iterate over large queries
@@ -49,15 +51,18 @@ import org.zanata.util.CloseableIterator;
 @RequestScoped
 // TODO queries should only return Translated/Approved TFTs
 // TODO build related queries using querydsl
-@NoArgsConstructor
 /**
  * Note: unless the find* methods throw an exception, the caller is
  * responsible for closing the Iterator, or a database connection
  * may leak.
  */
 public class TextFlowStreamingDAO extends StreamingDAO<HTextFlow> {
+    public TextFlowStreamingDAO() {
+        this(null);
+    }
 
-    public TextFlowStreamingDAO(HibernateEntityManagerFactory emf) {
+    @Inject
+    public TextFlowStreamingDAO(@Zanata HibernateEntityManagerFactory emf) {
         super(emf);
     }
 

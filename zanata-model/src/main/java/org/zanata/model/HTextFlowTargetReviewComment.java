@@ -23,6 +23,7 @@ package org.zanata.model;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -36,10 +37,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Immutable;
-import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -49,7 +47,7 @@ import org.hibernate.validator.constraints.NotEmpty;
  */
 @Entity
 @Immutable
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cacheable
 @BatchSize(size = 20)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Access(AccessType.FIELD)

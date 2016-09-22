@@ -22,11 +22,11 @@ package org.zanata.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -88,7 +88,7 @@ import com.google.common.collect.ImmutableList;
  */
 @Entity
 @EntityListeners({ HTextFlow.EntityListener.class })
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cacheable
 @Setter
 @NoArgsConstructor
 @ToString(of = { "resId", "revision", "comment", "obsolete" })
@@ -383,7 +383,7 @@ public class HTextFlow extends HTextContainer implements Serializable,
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "textFlow")
     @MapKeyColumn(name = "locale")
     @BatchSize(size = 10)
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
     public Map<Long, HTextFlowTarget> getTargets() {
         if (targets == null) {
             targets = new HashMap<Long, HTextFlowTarget>();

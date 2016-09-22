@@ -28,10 +28,10 @@ import java.util.List;
 
 import javax.persistence.Transient;
 
-import org.apache.solr.analysis.LowerCaseFilterFactory;
-import org.apache.solr.analysis.NGramTokenizerFactory;
-import org.apache.solr.analysis.StandardFilterFactory;
-import org.apache.solr.analysis.StandardTokenizerFactory;
+import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
+import org.apache.lucene.analysis.ngram.NGramTokenizerFactory;
+import org.apache.lucene.analysis.standard.StandardFilterFactory;
+import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
 import org.hibernate.search.annotations.AnalyzerDef;
 import org.hibernate.search.annotations.AnalyzerDefs;
 import org.hibernate.search.annotations.AnalyzerDiscriminator;

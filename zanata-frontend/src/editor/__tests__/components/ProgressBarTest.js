@@ -10,7 +10,8 @@ describe('ProgressBarTest', () => {
       total: 100,
       approved: 10,
       translated: 20,
-      needswork: 30,
+      needswork: 25,
+      rejected: 5,
       untranslated: 40
     }
 
@@ -27,7 +28,10 @@ describe('ProgressBarTest', () => {
           style={{ marginLeft: '10%', width: '20%' }}/>
         <span
           className="Progressbar-item Progressbar-needswork"
-          style={{ marginLeft: '30%', width: '30%' }}/>
+          style={{ marginLeft: '30%', width: '25%' }}/>
+        <span
+          className="Progressbar-item Progressbar-rejected"
+          style={{ marginLeft: '55%', width: '5%' }}/>
         <span
           className="Progressbar-item Progressbar-untranslated"
           style={{ marginLeft: '60%', width: '40%' }}/>

@@ -43,6 +43,7 @@ import javax.inject.Named;
 import org.apache.deltaspike.core.spi.scope.window.WindowContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.zanata.common.LocaleId;
+import org.zanata.rest.service.GlossaryService;
 import org.zanata.servlet.annotations.ContextPath;
 import com.google.common.base.Throwables;
 import org.zanata.servlet.annotations.ServerPath;
@@ -78,6 +79,11 @@ public class UrlUtil implements Serializable {
     @Inject
     @Named("dswidParam")
     private String dswidParam;
+
+    /**
+     * URL prefix for zanata-frontend/frontend module
+     */
+    public static final String FRONT_END_PREFIX = "/a";
 
     /**
      * Get the local url part, including context path, for the given page
@@ -259,7 +265,6 @@ public class UrlUtil implements Serializable {
             String urlWithWindowId = addWindowId(url);
             FacesContext.getCurrentInstance().getExternalContext().redirect(urlWithWindowId);
         } catch (IOException e) {
-            log.error("failed to redirect to {}", url, e);
             throw Throwables.propagate(e);
         }
     }
@@ -323,4 +328,28 @@ public class UrlUtil implements Serializable {
         return contextPath + "/" + dswidQuery;
     }
 
+    public String createUserPage() {
+        return contextPath + "/profile/create" + dswidQuery;
+    }
+
+    public String inactiveAccountPage() {
+        return contextPath + "/account/inactive" + dswidQuery;
+    }
+
+    /**
+     * Get glossary url with dswid parameter
+     */
+    public String glossaryUrl(String qualifiedName, String filter) {
+        String url = contextPath + FRONT_END_PREFIX;
+        if (GlossaryService.isProjectGlossary(qualifiedName)) {
+            String projectSlug = GlossaryService.getProjectSlug(qualifiedName);
+            url = url + "/#project/" + projectSlug + "/glossary";
+        } else {
+            url = url + "/#glossary";
+        }
+        if (StringUtils.isNotBlank(filter)) {
+            url = url + "&filter=" + filter;
+        }
+        return url + "/" + dswidQuery;
+    }
 }

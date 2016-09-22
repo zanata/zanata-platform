@@ -6,78 +6,82 @@
   <HLocale id="5" creationDate="2012-04-03 15:26:34.0"
     lastChanged="2012-04-03 15:26:34.0" versionNum="0" active="true"
     localeId="en-US" enabledByDefault="true" />
+  <Glossary id="1" qualifiedName="global/default" />
+
+  <Glossary id="2" qualifiedName="project/progSlug" />
+
   <HGlossaryEntry id="1" creationDate="2012-09-19 08:49:36.0" contentHash="resId1"
     lastChanged="2012-09-19 08:49:36.0" versionNum="0" srcLocaleId="5"
-    sourceRef="" />
+    sourceRef="" glossaryId="1" />
   <HGlossaryEntry id="2" creationDate="2012-09-19 08:49:36.0" contentHash="resId2"
     lastChanged="2012-09-19 08:49:36.0" versionNum="0" srcLocaleId="5"
-    sourceRef="" />
+    sourceRef="" glossaryId="1" />
   <HGlossaryEntry id="3" creationDate="2012-09-19 08:49:36.0" contentHash="resId3"
     lastChanged="2012-09-19 08:49:36.0" versionNum="0" srcLocaleId="5"
-    sourceRef="" />
+    sourceRef="" glossaryId="1" />
   <HGlossaryEntry id="4" creationDate="2012-09-19 08:49:36.0" contentHash="resId4"
     lastChanged="2012-09-19 08:49:36.0" versionNum="0" srcLocaleId="5"
-    sourceRef="" />
+    sourceRef="" glossaryId="1" />
   <HGlossaryEntry id="5" creationDate="2012-09-19 08:49:36.0" contentHash="resId5"
     lastChanged="2012-09-19 08:49:36.0" versionNum="0" srcLocaleId="5"
-    sourceRef="" />
+    sourceRef="" glossaryId="1" />
   <HGlossaryEntry id="6" creationDate="2012-09-19 08:49:36.0" contentHash="resId6"
     lastChanged="2012-09-19 08:49:36.0" versionNum="0" srcLocaleId="5"
-    sourceRef="" />
+    sourceRef="" glossaryId="1" />
   <HGlossaryEntry id="7" creationDate="2012-09-19 08:49:36.0" contentHash="resId7"
     lastChanged="2012-09-19 08:49:36.0" versionNum="0" srcLocaleId="5"
-    sourceRef="" />
+    sourceRef="" glossaryId="1" />
   <HGlossaryEntry id="8" creationDate="2012-09-19 08:49:36.0" contentHash="resId8"
     lastChanged="2012-09-19 08:49:36.0" versionNum="0" srcLocaleId="5"
-    sourceRef="" />
+    sourceRef="" glossaryId="1" />
   <HGlossaryEntry id="9" creationDate="2012-09-19 08:49:36.0" contentHash="resId9"
     lastChanged="2012-09-19 08:49:36.0" versionNum="0" srcLocaleId="5"
-    sourceRef="" />
+    sourceRef="" glossaryId="1" />
   <HGlossaryEntry id="10" creationDate="2012-09-19 08:49:36.0" contentHash="resId10"
     lastChanged="2012-09-19 08:49:36.0" versionNum="0" srcLocaleId="5"
-    sourceRef="" />
+    sourceRef="" glossaryId="1" />
   <HGlossaryEntry id="11" creationDate="2012-09-19 08:49:36.0" contentHash="resId11"
     lastChanged="2012-09-19 08:49:36.0" versionNum="0" srcLocaleId="5"
-    sourceRef="" />
+    sourceRef="" glossaryId="1" />
   <HGlossaryEntry id="12" creationDate="2012-09-19 08:49:36.0" contentHash="resId12"
     lastChanged="2012-09-19 08:49:36.0" versionNum="0" srcLocaleId="5"
-    sourceRef="" />
+    sourceRef="" glossaryId="1" />
   <HGlossaryEntry id="13" creationDate="2012-09-19 08:49:36.0" contentHash="resId13"
     lastChanged="2012-09-19 08:49:36.0" versionNum="0" srcLocaleId="5"
-    sourceRef="" />
+    sourceRef="" glossaryId="1" />
   <HGlossaryEntry id="14" creationDate="2012-09-19 08:49:36.0" contentHash="resId14"
     lastChanged="2012-09-19 08:49:36.0" versionNum="0" srcLocaleId="5"
-    sourceRef="" />
+    sourceRef="" glossaryId="1" />
   <HGlossaryEntry id="15" creationDate="2012-09-19 08:49:36.0" contentHash="resId15"
     lastChanged="2012-09-19 08:49:36.0" versionNum="0" srcLocaleId="5"
-    sourceRef="" />
+    sourceRef="" glossaryId="1" />
   <HGlossaryEntry id="16" creationDate="2012-09-19 08:49:37.0" contentHash="resId16"
     lastChanged="2012-09-19 08:49:37.0" versionNum="0" srcLocaleId="5"
-    sourceRef="" />
+    sourceRef="" glossaryId="1" />
   <HGlossaryEntry id="17" creationDate="2012-09-19 08:49:37.0" contentHash="resId17"
     lastChanged="2012-09-19 08:49:37.0" versionNum="0" srcLocaleId="5"
-    sourceRef="" />
+    sourceRef="" glossaryId="1" />
   <HGlossaryEntry id="18" creationDate="2012-09-19 08:49:37.0" contentHash="resId18"
     lastChanged="2012-09-19 08:49:37.0" versionNum="0" srcLocaleId="5"
-    sourceRef="" />
+    sourceRef="" glossaryId="1" />
   <HGlossaryEntry id="19" creationDate="2012-09-19 08:49:37.0" contentHash="resId19"
     lastChanged="2012-09-19 08:49:37.0" versionNum="0" srcLocaleId="5"
-    sourceRef="" />
+    sourceRef="" glossaryId="1" />
   <HGlossaryEntry id="20" creationDate="2012-09-19 08:49:37.0" contentHash="resId20"
     lastChanged="2012-09-19 08:49:37.0" versionNum="0" srcLocaleId="5"
-    sourceRef="" />
+    sourceRef="" glossaryId="1" />
   <HGlossaryEntry id="21" creationDate="2012-09-19 08:49:37.0" contentHash="resId21"
     lastChanged="2012-09-19 08:49:37.0" versionNum="0" srcLocaleId="5"
-    sourceRef="" />
+    sourceRef="" glossaryId="1" />
   <HGlossaryEntry id="22" creationDate="2012-09-19 08:49:37.0" contentHash="resId22"
     lastChanged="2012-09-19 08:49:37.0" versionNum="0" srcLocaleId="5"
-    sourceRef="" />
+    sourceRef="" glossaryId="1" />
   <HGlossaryEntry id="23" creationDate="2012-09-19 08:49:37.0" contentHash="resId24"
     lastChanged="2012-09-19 08:49:37.0" versionNum="0" srcLocaleId="5"
-    sourceRef="" />
+    sourceRef="" glossaryId="2" />
   <HGlossaryEntry id="24" creationDate="2012-09-19 08:49:37.0" contentHash="resId25"
     lastChanged="2012-09-19 08:49:37.0" versionNum="0" srcLocaleId="5"
-    sourceRef="" />
+    sourceRef="" glossaryId="1" />
   <HGlossaryTerm id="1" glossaryEntryId="1" localeId="2"
     content="Fedora 是一个开放的、创新的、前瞻性的操作系统和平台，基于 Linux，允许任何人自由地使用、修改和重发布，无论现在还是将来。它由一个庞大的社群开发，这个社群的成员以自己的不懈努力，提供并维护自由、开放源码的软件和开放的标准。Fedora 是 Fedora Project 的一部分，得到了 Red Hat, Inc. 的支持。"
     creationDate="2012-09-19 08:49:36.0" lastChanged="2012-09-19 08:49:36.0"

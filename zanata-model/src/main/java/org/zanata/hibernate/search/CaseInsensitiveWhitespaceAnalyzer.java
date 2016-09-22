@@ -21,36 +21,27 @@
 
 package org.zanata.hibernate.search;
 
-import java.io.Reader;
-
-import org.apache.lucene.analysis.LowerCaseFilter;
-import org.apache.lucene.analysis.ReusableAnalyzerBase;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.WhitespaceTokenizer;
+import org.apache.lucene.analysis.core.LowerCaseFilter;
+import org.apache.lucene.analysis.core.WhitespaceTokenizer;
 import org.apache.lucene.util.Version;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-public class CaseInsensitiveWhitespaceAnalyzer extends ReusableAnalyzerBase {
-
-    private final Version matchVersion;
+public class CaseInsensitiveWhitespaceAnalyzer extends Analyzer {
 
     /**
      * Creates a new {@link CaseInsensitiveWhitespaceAnalyzer}
-     * @param matchVersion Lucene version to match See {@link <a href="#version">above</a>}
      */
-    public CaseInsensitiveWhitespaceAnalyzer(Version matchVersion) {
-        this.matchVersion = matchVersion;
+    public CaseInsensitiveWhitespaceAnalyzer() {
     }
 
     @Override
-    protected TokenStreamComponents createComponents(
-        String fieldName, Reader reader) {
-
-        final WhitespaceTokenizer src = new WhitespaceTokenizer(matchVersion, reader);
-        TokenStream tok = new LowerCaseFilter(matchVersion, src);
-
+    protected TokenStreamComponents createComponents(String fieldName) {
+        WhitespaceTokenizer src = new WhitespaceTokenizer();
+        TokenStream tok = new LowerCaseFilter(src);
         return new TokenStreamComponents(src, tok);
     }
 }

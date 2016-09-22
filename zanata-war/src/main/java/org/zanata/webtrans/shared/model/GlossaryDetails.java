@@ -17,17 +17,18 @@ public class GlossaryDetails implements IsSerializable {
     private Integer targetVersionNum;
     private String source;
     private String target;
+    private String url;
     private Date lastModifiedDate;
 
     @SuppressWarnings("unused")
     private GlossaryDetails() {
-        this(null, null, null, null, null, null, null, null, null, null, null);
+        this(null, null, null, null, null, null, null, null, null, null, null, null);
     }
 
     public GlossaryDetails(Long id, String source, String target,
             String description, String pos, String targetComment,
             String sourceRef, LocaleId srcLocale, LocaleId targetLocale,
-            Integer targetVersionNum, Date lastModifiedDate) {
+            String url, Integer targetVersionNum, Date lastModifiedDate) {
         this.id = id;
         this.source = source;
         this.target = target;
@@ -37,6 +38,7 @@ public class GlossaryDetails implements IsSerializable {
         this.sourceRef = sourceRef;
         this.srcLocale = srcLocale;
         this.targetLocale = targetLocale;
+        this.url = url;
         this.targetVersionNum = targetVersionNum;
         this.lastModifiedDate = lastModifiedDate;
     }
@@ -83,5 +85,9 @@ public class GlossaryDetails implements IsSerializable {
 
     public Date getLastModifiedDate() {
         return lastModifiedDate;
+    }
+
+    public String getUrl() {
+        return url;
     }
 }

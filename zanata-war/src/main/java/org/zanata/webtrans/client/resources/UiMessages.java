@@ -63,6 +63,12 @@ public interface UiMessages extends Messages {
     @DefaultMessage("Target Term")
     String targetTermLabel();
 
+    @DefaultMessage("Project glossary")
+    String glossaryProjectTypeTitle();
+
+    @DefaultMessage("Glossary")
+    String glossaryGlobalTypeTitle();
+
     @DefaultMessage("Translation Memory")
     String translationMemoryHeading();
 
@@ -153,9 +159,6 @@ public interface UiMessages extends Messages {
     @DefaultMessage("Dismiss")
     String dismiss();
 
-    @DefaultMessage("Save")
-    String save();
-
     @DefaultMessage("Last modified on {0}")
     String lastModifiedOn(String date);
 
@@ -203,4 +206,7 @@ public interface UiMessages extends Messages {
 
     @DefaultMessage("None")
     String chooseRefLang();
+
+    @DefaultMessage("No content")
+    String noContent();
 }

@@ -21,21 +21,46 @@
 
 package org.zanata.util;
 
+import org.apache.commons.lang.StringUtils;
 import org.zanata.common.LocaleId;
+import org.zanata.rest.service.GlossaryResource;
 
 /**
- * Generate contentHash for HGlossaryEntry
- *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public class GlossaryUtil {
 
     private final static String SEPARATOR = "\u0000";
 
+    private final static String QUALIFIED_NAME_SEPARATOR = "/";
+
+    public static String GLOBAL_QUALIFIED_NAME =
+            GlossaryResource.GLOBAL_QUALIFIED_NAME;
+
+    /**
+     * Generate contentHash for HGlossaryEntry from
+     *
+     * {@link org.zanata.model.HGlossaryEntry#srcLocale}
+     * {@link org.zanata.model.HGlossaryEntry} source content
+     * {@link org.zanata.model.HGlossaryEntry#pos}
+     * {@link org.zanata.model.HGlossaryEntry#description}
+     */
     public static String generateHash(LocaleId locale, String content, String pos,
         String description) {
         String hashBase = locale + SEPARATOR + content + SEPARATOR + pos +
             SEPARATOR + description;
         return HashUtil.generateHash(hashBase);
+    }
+
+    /**
+     * Generate qualifiedName from namespace and name.
+     * e.g project/zanata, global/default
+     *
+     * {@link QUALIFIED_NAME_SEPARATOR} at the end of namespace will be removed.
+     */
+    public static String generateQualifiedName(String namespace, String name) {
+        String processedNamespace =
+                StringUtils.removeEnd(namespace, QUALIFIED_NAME_SEPARATOR);
+        return processedNamespace + QUALIFIED_NAME_SEPARATOR + name;
     }
 }

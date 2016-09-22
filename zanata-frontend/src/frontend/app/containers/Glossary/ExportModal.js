@@ -79,7 +79,7 @@ class ExportModal extends Component {
               type='primary'
               disabled={isExporting}
               onClick={handleExport}>
-              <LoaderText loading={isExporting} loadingText='downloading'>
+              <LoaderText loading={isExporting} loadingText='Exporting'>
                 Export
               </LoaderText>
             </ButtonRound>

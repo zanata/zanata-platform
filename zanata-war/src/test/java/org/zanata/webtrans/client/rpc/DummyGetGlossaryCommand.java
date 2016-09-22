@@ -25,13 +25,13 @@ public class DummyGetGlossaryCommand implements Command {
         Log.info("ENTER DummyGetGlossaryCommand.execute()");
         ArrayList<GlossaryResultItem> matches =
                 new ArrayList<GlossaryResultItem>();
-        matches.add(new GlossaryResultItem("<s>source1</s>",
+        matches.add(new GlossaryResultItem("qualifiedName", "<s>source1</s>",
                 "<tr> &lt;suggestion 3</tr>", 3, 100));
-        matches.add(new GlossaryResultItem("<s>source1</s>",
+        matches.add(new GlossaryResultItem("qualifiedName", "<s>source1</s>",
                 "<tr> &lt;suggestion 3</tr>", 3, 100));
-        matches.add(new GlossaryResultItem("<s>source1</s>",
+        matches.add(new GlossaryResultItem("qualifiedName", "<s>source1</s>",
                 "<tr> &lt;suggestion 3</tr>", 3, 100));
-        matches.add(new GlossaryResultItem("<s>source1</s>",
+        matches.add(new GlossaryResultItem("qualifiedName", "<s>source1</s>",
                 "<tr> &lt;suggestion 3</tr>", 3, 100));
         callback.onSuccess(new GetGlossaryResult(action, matches));
         Log.info("EXIT DummyGetGlossaryCommand.execute()");

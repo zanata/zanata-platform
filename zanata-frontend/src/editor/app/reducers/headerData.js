@@ -29,6 +29,7 @@ const defaultState = {
       counts: {
         total: 0,
         approved: 0,
+        rejected: 0,
         translated: 0,
         needswork: 0,
         untranslated: 0

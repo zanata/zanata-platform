@@ -13,6 +13,7 @@ import org.mockito.MockitoAnnotations;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
+import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.rest.dto.User;
@@ -25,6 +26,8 @@ public class UserServiceTest {
     private AccountDAO accountDAO;
     @Mock
     private PersonDAO personDAO;
+    @Mock
+    private ProjectDAO projectDAO;
     private HAccount authenticatedAccount;
     @Mock
     private GravatarService gravatarService;
@@ -46,12 +49,14 @@ public class UserServiceTest {
         authenticatedAccount.setPerson(person);
         service =
                 new UserService(authenticatedAccount, gravatarService,
-                        accountDAO, personDAO, identity, applicationConfiguration);
+                        accountDAO, personDAO, projectDAO, identity,
+                        applicationConfiguration);
     }
 
     @Test
     public void getMyInfoWillReturnNotFoundIfNotAuthenticated() {
-        service = new UserService(null, gravatarService, accountDAO, personDAO, identity, applicationConfiguration);
+        service = new UserService(null, gravatarService, accountDAO, personDAO,
+                projectDAO, identity, applicationConfiguration);
         Response response = service.getMyInfo();
         assertThat(response.getStatus()).isEqualTo(404);
     }

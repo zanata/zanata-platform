@@ -1,8 +1,9 @@
-<?xml version="1.0" ?>
-<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app
+  xmlns="http://xmlns.jcp.org/xml/ns/javaee"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-  version="3.0">
+  xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+  version="3.1">
 
   <absolute-ordering>
     <name>com_ocpsoft_rewrite</name>
@@ -29,7 +30,7 @@
     </auth-constraint>
   </security-constraint>
   <login-config>
-    <auth-method>SPNEGO</auth-method>
+    <auth-method>SPNEGO,FORM</auth-method>
     <form-login-config>
       <form-login-page>/account/kloginform.jsp</form-login-page>
       <!-- Error page not needed since the login form takes over -->
@@ -147,6 +148,12 @@
   </listener>
 
   <listener>
+    <!-- this listener needs to appear before liquibase listener to log useful
+    database metadata for troubleshooting potential errors-->
+    <listener-class>org.zanata.database.DatabaseMetadataListener</listener-class>
+  </listener>
+
+  <listener>
     <listener-class>liquibase.integration.servlet.LiquibaseServletListener</listener-class>
   </listener>
 
@@ -155,6 +162,12 @@
   <!--<listener>-->
     <!--<listener-class>net.bull.javamelody.SessionListener</listener-class>-->
   <!--</listener>-->
+
+  <!-- Needs to be first otherwise the character set might accidentally be locked to ISO-8859-1 -->
+  <filter-mapping>
+    <filter-name>CharacterEncodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
 
   <filter-mapping>
     <filter-name>RestLimitingFilter</filter-name>

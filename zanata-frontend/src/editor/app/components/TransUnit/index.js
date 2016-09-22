@@ -51,7 +51,8 @@ const TransUnit = React.createClass({
     untranslated: 'TransUnit--neutral',
     needswork: 'TransUnit--unsure',
     translated: 'TransUnit--success',
-    approved: 'TransUnit--highlight'
+    approved: 'TransUnit--highlight',
+    rejected: 'TransUnit--warning'
   },
 
   selectPhrase () {

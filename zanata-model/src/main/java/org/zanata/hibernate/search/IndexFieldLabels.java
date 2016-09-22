@@ -33,4 +33,6 @@ public interface IndexFieldLabels {
 
     public static final String TRANS_UNIT_VARIANT_FIELD = "tuv.";
 
+    public static final String GLOSSARY_QUALIFIED_NAME = "glossaryEntry.glossary.qualifiedName";
+
 }

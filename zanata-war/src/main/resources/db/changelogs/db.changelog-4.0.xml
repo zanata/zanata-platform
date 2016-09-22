@@ -89,4 +89,67 @@
     </createIndex>
   </changeSet>
 
+  <changeSet id="3" author="aeng@redhat.com">
+    <comment>Add table Glossary</comment>
+    <createTable tableName="Glossary">
+      <column name="id" type="bigint" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="qualifiedName" type="varchar(50)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createIndex tableName="Glossary" indexName="Idx_qualifiedName" unique="true">
+      <column name="qualifiedName" type="varchar(50)"/>
+    </createIndex>
+  </changeSet>
+
+  <changeSet id="4" author="aeng@redhat.com">
+    <comment>Insert global glossary entry in Glossary</comment>
+    <sql>INSERT INTO Glossary values (1, 'global/default')</sql>
+  </changeSet>
+
+  <changeSet id="5" author="aeng@redhat.com">
+    <comment>All glossaryId to HGlossaryEntry</comment>
+    <addColumn tableName="HGlossaryEntry">
+      <column name="glossaryId" type="bigint" defaultValue="1">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+
+    <addForeignKeyConstraint baseTableName = "HGlossaryEntry"
+      baseColumnNames = "glossaryId" constraintName = "FK_HGlossaryEntry_Glossary"
+      referencedTableName="Glossary" referencedColumnNames="id"/>
+
+    <dropUniqueConstraint tableName="HGlossaryEntry" constraintName="UK_glossaryEntry"/>
+
+    <addUniqueConstraint constraintName="UK_glossaryEntry"
+      tableName="HGlossaryEntry" columnNames="contentHash,glossaryId" />
+  </changeSet>
+
+  <changeSet id="6" author="aeng@redhat.com">
+    <comment>Add table HProject_Glossary</comment>
+    <createTable tableName="HProject_Glossary">
+      <column name="glossaryId" type="bigint">
+        <constraints nullable="false" />
+      </column>
+      <column name="projectId" type="bigint">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+
+    <addForeignKeyConstraint baseTableName = "HProject_Glossary"
+      baseColumnNames = "glossaryId" constraintName = "FK_HProject_Glossary_Glossary"
+      referencedTableName="Glossary" referencedColumnNames="id"/>
+
+    <addForeignKeyConstraint baseTableName = "HProject_Glossary"
+      baseColumnNames = "projectId" constraintName = "FK_HProject_Glossary_HProject"
+      referencedTableName="HProject" referencedColumnNames="id"/>
+
+    <addUniqueConstraint tableName="HProject_Glossary"
+      columnNames="glossaryId,projectId"
+      constraintName="UKHProject_Glossary"/>
+  </changeSet>
+
 </databaseChangeLog>

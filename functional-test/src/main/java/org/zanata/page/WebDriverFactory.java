@@ -259,7 +259,7 @@ public enum WebDriverFactory {
         // missing/wrong. However, the server code currently preserves dswid
         // whenever possible, and DswidParamChecker aims to make sure it
         // continues to, so we can treat JS warnings/errors as failures.
-        logLogs(true);
+        logLogs(false);
     }
 
     /**
