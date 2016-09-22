@@ -29,16 +29,24 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.resteasy.util.GenericType;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.editor.service.resource.LocalesResource;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 
 import com.google.common.collect.Lists;
+import org.zanata.service.impl.LocaleServiceImpl;
+import org.zanata.webtrans.shared.model.Locale;
+
+import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -46,21 +54,29 @@ import com.google.common.collect.Lists;
 @RequestScoped
 @Named("editor.localesService")
 @Path(LocalesResource.SERVICE_PATH)
-@Transactional(readOnly = true)
 public class LocalesService implements LocalesResource {
 
     @Inject
     private LocaleService localeServiceImpl;
 
+    @Inject
+    private ZanataIdentity identity;
+
+    @Transactional(readOnly = true)
     @Override
     public Response get() {
-        List<HLocale> locales = localeServiceImpl.getAllLocales();
-
+        List<HLocale> locales;
+        if(identity != null && identity.hasRole("admin")) {
+            locales = localeServiceImpl.getAllLocales();
+        } else {
+            locales = localeServiceImpl.getSupportedLocales();
+        }
         List<LocaleDetails> localesRefs =
             Lists.newArrayListWithExpectedSize(locales.size());
 
         localesRefs.addAll(
-            locales.stream().map(hLocale -> convertToDTO(hLocale, ""))
+            locales.stream()
+                .map(hLocale -> LocaleServiceImpl.convertToDTO(hLocale, ""))
                 .collect(Collectors.toList()));
 
         Type genericType = new GenericType<List<LocaleDetails>>() {
@@ -70,10 +86,21 @@ public class LocalesService implements LocalesResource {
         return Response.ok(entity).build();
     }
 
-    public static LocaleDetails convertToDTO(HLocale hLocale, String alias) {
-        return new LocaleDetails(hLocale.getLocaleId(),
-            hLocale.retrieveDisplayName(), alias, hLocale.retrieveNativeName(),
-            hLocale.isActive(), hLocale.isEnabledByDefault(),
-            hLocale.getMembers().size());
+    @Transactional
+    @Override
+    public Response delete(String localeId) {
+        if (StringUtils.isBlank(localeId)) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                .entity("Locale '" + localeId + "' is required.").build();
+        }
+        LocaleId locale = new LocaleId(localeId);
+        identity.checkPermission("delete-language");
+
+        try {
+            localeServiceImpl.delete(locale);
+            return Response.ok().build();
+        } catch (ConstraintViolationException e) {
+            return Response.status(Response.Status.METHOD_NOT_ALLOWED).build();
+        }
     }
 }

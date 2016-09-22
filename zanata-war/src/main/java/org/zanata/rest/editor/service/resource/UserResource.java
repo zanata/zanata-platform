@@ -88,5 +88,20 @@ public interface UserResource {
     @GET
     Response getGlossaryPermission(
             @QueryParam("qualifiedName") @DefaultValue(GlossaryService.GLOBAL_QUALIFIED_NAME) String qualifiedName);
+
+    /**
+     * Get permission for Locales interaction of current authenticated user.
+     *
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         OK(200) - Response containing permission information {@link org.zanata.rest.editor.dto.org.zanata.rest.editor.dto.Permission}<br>
+     *         FORBIDDEN(403) - If no authenticated user found. <br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+    @Produces({ MediaType.APPLICATION_JSON })
+    @Path("/permission/locales")
+    @GET
+    Response getLocalesPermission();
 }
 

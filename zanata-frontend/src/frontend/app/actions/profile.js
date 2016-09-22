@@ -5,16 +5,15 @@ import utilsDate from '../utils/DateHelper'
 
 import {
   getJsonHeaders,
-  buildAPIRequest
+  buildAPIRequest,
+  LOAD_USER_REQUEST,
+  LOAD_USER_SUCCESS,
+  LOAD_USER_FAILURE
 } from './common'
 
 export const FILTER_UPDATE = 'FILTER_UPDATE'
 export const DATE_RANGE_UPDATE = 'DATE_RANGE_UPDATE'
 export const SELECT_DAY_UPDATE = 'SELECT_DAY_UPDATE'
-
-export const LOAD_USER_REQUEST = 'LOAD_USER_REQUEST'
-export const LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS'
-export const LOAD_USER_FAILURE = 'LOAD_USER_FAILURE'
 
 export const USER_STATS_REQUEST = 'USER_STATS_REQUEST'
 export const USER_STATS_SUCCESS = 'USER_STATS_SUCCESS'

@@ -438,6 +438,12 @@ public class SecurityFunctions extends PermissionProvider {
         return isUserCoordinatorOfLanguage(localeMember.getSupportedLanguage());
     }
 
+    /* Only admin can delete language in the server */
+    @GrantsPermission(actions = { "delete-language", "insert-language" })
+    public boolean canDeleteLanguage() {
+        return identity.hasRole("admin");
+    }
+
     /***************************************************************************
      * View Obsolete Project and Project Iteration rules
      **************************************************************************/

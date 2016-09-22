@@ -47,6 +47,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.service.LocaleService;
 import org.zanata.util.ComparatorUtil;
 
@@ -408,5 +409,12 @@ public class LocaleServiceImpl implements LocaleService {
             String iterationSlug, LocaleId localeId) {
         return textFlowTargetDAO.getLastTranslated(projectSlug, iterationSlug,
                 localeId);
+    }
+
+    public static LocaleDetails convertToDTO(HLocale hLocale, String alias) {
+        return new LocaleDetails(hLocale.getLocaleId(),
+            hLocale.retrieveDisplayName(), alias, hLocale.retrieveNativeName(),
+            hLocale.isActive(), hLocale.isEnabledByDefault(),
+            hLocale.getMembers().size());
     }
 }

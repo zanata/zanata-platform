@@ -4,13 +4,15 @@ import glossary from './glossary'
 import explore from './explore'
 import profile from './profile'
 import common from './common'
+import languages from './languages'
 
 const rootReducer = combineReducers({
   routing,
   explore,
   glossary,
   common,
-  profile
+  profile,
+  languages
 })
 
 export default rootReducer

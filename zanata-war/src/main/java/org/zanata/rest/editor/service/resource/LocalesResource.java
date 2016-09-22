@@ -1,6 +1,7 @@
 package org.zanata.rest.editor.service.resource;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -33,4 +34,18 @@ public interface LocalesResource {
     @Produces({ MediaTypes.APPLICATION_ZANATA_LOCALES_JSON,
             MediaType.APPLICATION_JSON })
     public Response get();
+
+    /**
+     * Delete a locale in Zanata
+     *
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         OK(200) - Locale is deleted. <br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+    @DELETE
+    @Produces({ MediaTypes.APPLICATION_ZANATA_LOCALES_JSON,
+        MediaType.APPLICATION_JSON })
+    public Response delete(@PathParam("localeId") String localeId);
 }

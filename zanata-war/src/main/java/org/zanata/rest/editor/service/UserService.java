@@ -32,12 +32,12 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.service.GravatarService;
-import org.zanata.util.GlossaryUtil;
 
 import com.google.common.base.Strings;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.zanata.service.impl.LocaleServiceImpl;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -143,6 +143,19 @@ public class UserService implements UserResource {
         return Response.ok(permission).build();
     }
 
+    @Override
+    public Response getLocalesPermission() {
+        if(authenticatedAccount == null) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+        Permission permission = new Permission();
+        boolean canDelete = identity.hasPermission("", "delete-language");
+        boolean canAdd = identity.hasPermission("", "insert-language");
+        permission.put("canDeleteLocale", canDelete);
+        permission.put("canAddLocale", canAdd);
+        return Response.ok(permission).build();
+    }
+
     /**
      * Generate {@link org.zanata.rest.dto.User} object from username
      *
@@ -178,16 +191,13 @@ public class UserService implements UserResource {
         String userImageUrl = gravatarServiceImpl
             .getUserImageUrl(GravatarService.USER_IMAGE_SIZE, email);
 
-        List<LocaleDetails> userLanguageTeams = Lists.newArrayList();
-        userLanguageTeams.addAll(person.getLanguageMemberships().stream()
-            .map(hLocale -> LocalesService.convertToDTO(hLocale, ""))
-            .collect(Collectors.toList()));
+        List<LocaleDetails> userLanguageTeams =
+            person.getLanguageMemberships().stream()
+                .map(hLocale -> LocaleServiceImpl.convertToDTO(hLocale, ""))
+                .collect(Collectors.toList());
 
-        if(!includeEmail) {
-            email = null;
-        }
-        return new User(account.getUsername(), email, person.getName(),
-            userImageUrl, userLanguageTeams);
+        return new User(account.getUsername(), includeEmail ? email : null,
+            person.getName(), userImageUrl, userLanguageTeams);
     }
 
     /**
