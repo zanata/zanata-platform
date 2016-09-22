@@ -9,10 +9,15 @@ This command will:
 1. Look up the server config from `zanata.xml`.
 2. Delete glossary entry with id `1005`
 
-To delete all glossary in Zanata
+To delete all system glossary entries
 
 ```bash
 zanata-cli glossary-delete --all
+```
+
+To delete all project glossary entries
+```
+zanata-cli glossary-delete --all --project project1
 ```
 
 To see all options available for `glossary-delete` option:
