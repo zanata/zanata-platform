@@ -23,10 +23,14 @@ package org.zanata.rest.client;
 
 import java.net.URI;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.zanata.rest.dto.CopyTransStatus;
 import org.zanata.rest.service.CopyTransResource;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
 
 /**
  * @author Patrick Huang <a
@@ -45,22 +49,21 @@ public class CopyTransClient implements CopyTransResource {
     public CopyTransStatus startCopyTrans(String projectSlug,
             String iterationSlug, String docId) {
         Client client = factory.getClient();
-        CacheResponseFilter filter = new CacheResponseFilter();
-        client.addFilter(filter);
-        webResource(client, projectSlug, iterationSlug, docId)
-                .post();
-        client.removeFilter(filter);
-        return filter.getEntity(CopyTransStatus.class);
+        Response response = webResource(client, projectSlug, iterationSlug, docId)
+                .post(Entity.json(""));
+        response.bufferEntity();
+        return response.readEntity(CopyTransStatus.class);
     }
 
-    private WebResource webResource(Client client, String projectSlug,
+    private Invocation.Builder webResource(Client client, String projectSlug,
             String iterationSlug,
             String docId) {
-        return client.resource(baseUri)
+        return client.target(baseUri)
                 .path(CopyTransResource.SERVICE_PATH)
                 .path("/proj").path(projectSlug)
                 .path("iter").path(iterationSlug)
-                .path("doc").path(docId);
+                .path("doc").path(docId)
+                .request(MediaType.APPLICATION_XML_TYPE);
     }
 
     @Override

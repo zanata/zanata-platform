@@ -27,6 +27,9 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.core.Response;
+
 import com.google.common.collect.Lists;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -44,7 +47,6 @@ import org.zanata.rest.service.FileResource;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
-import com.sun.jersey.api.client.ClientResponse;
 
 /**
  *
@@ -160,20 +162,15 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
                 String localDocName = unqualifiedDocName(qualifiedDocName);
 
                 if (pullSrc) {
-                    ClientResponse response =
-                            fileResourceClient.downloadSourceFile(
-                                    getOpts().getProj(), getOpts()
-                                            .getProjectVersion(),
-                                    FileResource.FILETYPE_RAW_SOURCE_DOCUMENT,
-                                    qualifiedDocName);
-                    if (response.getClientResponseStatus() == ClientResponse.Status.NOT_FOUND) {
-                        log.warn(
-                                "No source document file is available for [{}]. Skipping.",
+                    Response response;
+                    try {
+                        response = fileResourceClient.downloadSourceFile(
+                                getOpts().getProj(), getOpts()
+                                        .getProjectVersion(),
+                                FileResource.FILETYPE_RAW_SOURCE_DOCUMENT,
                                 qualifiedDocName);
-                    } else {
-                        ClientUtil.checkResult(response);
                         InputStream srcDoc = response
-                                .getEntity(InputStream.class);
+                                .readEntity(InputStream.class);
                         if (srcDoc != null) {
                             try {
                                 strat.writeSrcFile(localDocName, srcDoc);
@@ -181,6 +178,10 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
                                 srcDoc.close();
                             }
                         }
+                    } catch (NotFoundException e) {
+                        log.warn(
+                                "No source document file is available for [{}]. Skipping.",
+                                qualifiedDocName);
                     }
                 }
 
@@ -226,23 +227,18 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
     private void pullDocForLocale(RawPullStrategy strat,
             String qualifiedDocName, String localDocName, String fileExtension,
             LocaleMapping locMapping, LocaleId locale) throws IOException {
-        ClientResponse response =
-                fileResourceClient.downloadTranslationFile(getOpts()
-                                .getProj(), getOpts()
-                                .getProjectVersion(), locale.getId(),
-                        fileExtension, qualifiedDocName);
-        if (response.getClientResponseStatus() == ClientResponse.Status.NOT_FOUND) {
-            log.info(
-                    "No translation document file found in locale {} for document [{}]",
-                    locale, qualifiedDocName);
-        } else {
-            ClientUtil.checkResult(response);
-            InputStream transDoc = response.getEntity(InputStream.class);
+        try {
+            Response response =
+                    fileResourceClient.downloadTranslationFile(getOpts()
+                                    .getProj(), getOpts()
+                                    .getProjectVersion(), locale.getId(),
+                            fileExtension, qualifiedDocName);
+            InputStream transDoc = response.readEntity(InputStream.class);
             if (transDoc != null) {
                 try {
                     String fileName =
                             ClientUtil.getFileNameFromHeader(
-                                    response.getHeaders());
+                                    response.getStringHeaders());
                     String targetFileExt = FilenameUtils
                             .getExtension(fileName);
 
@@ -250,11 +246,15 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
                             Optional.fromNullable(targetFileExt);
 
                     strat.writeTransFile(localDocName,
-                        locMapping, transDoc, translationFileExtension);
+                            locMapping, transDoc, translationFileExtension);
                 } finally {
                     transDoc.close();
                 }
             }
+        } catch (NotFoundException e) {
+            log.info(
+                    "No translation document file found in locale {} for document [{}]",
+                    locale, qualifiedDocName);
         }
     }
 }

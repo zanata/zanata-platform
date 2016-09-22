@@ -20,28 +20,23 @@
  */
 package org.zanata.rest.client;
 
-import java.util.Set;
+import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.ws.rs.client.ClientRequestContext;
+import javax.ws.rs.client.ClientResponseContext;
+import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
-import com.sun.jersey.api.client.ClientHandler;
-import com.sun.jersey.api.client.ClientHandlerException;
-import com.sun.jersey.api.client.ClientRequest;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.filter.ClientFilter;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class InvalidContentTypeFilter extends ClientFilter {
+public class InvalidContentTypeFilter implements ClientResponseFilter {
     private static final Logger log =
             LoggerFactory.getLogger(InvalidContentTypeFilter.class);
     private static final String ERROR_MSG =
@@ -53,28 +48,6 @@ public class InvalidContentTypeFilter extends ClientFilter {
     // allows content type of application/.*
     private static final Pattern VALID_TYPES_REGEX =
             Pattern.compile("application/.*");
-
-    @Override
-    public ClientResponse handle(ClientRequest clientRequest)
-            throws ClientHandlerException {
-        ClientHandler ch = getNext();
-        ClientResponse resp = ch.handle(clientRequest);
-
-        if (resp.getClientResponseStatus().getFamily().equals(
-                Response.Status.Family.SUCCESSFUL) &&
-                !isContentTypeCompatible(resp.getType())) {
-            log.error(ERROR_MSG);
-            String title = findPageTitle(resp);
-            String snippet = String.format(
-                    "Wrong content type received: [%s]. Content page title: [%s]",
-                    resp.getType(), title);
-
-            log.error(snippet);
-            throw new IllegalStateException(snippet);
-        } else {
-            return resp;
-        }
-    }
 
     @VisibleForTesting
     protected static boolean isContentTypeCompatible(
@@ -93,13 +66,19 @@ public class InvalidContentTypeFilter extends ClientFilter {
         return matcher.matches();
     }
 
-    private String findPageTitle(ClientResponse resp) {
-        String body = resp.getEntity(String.class).replaceAll("\\n", " ");
-        Pattern pattern = Pattern.compile(".*<title>(.*)</title>.*");
-        Matcher matcher = pattern.matcher(body);
-        if (matcher.matches()) {
-            return matcher.group(1);
+    @Override
+    public void filter(ClientRequestContext requestContext,
+            ClientResponseContext responseContext) throws IOException {
+        if (responseContext.getStatusInfo().getFamily().equals(
+                Response.Status.Family.SUCCESSFUL) &&
+                !isContentTypeCompatible(responseContext.getMediaType())) {
+            log.error(ERROR_MSG);
+            String snippet = String.format(
+                    "Wrong content type received: [%s]",
+                    responseContext.getMediaType());
+
+            log.error(snippet);
+            throw new IllegalStateException(snippet);
         }
-        return "";
     }
 }

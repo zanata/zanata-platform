@@ -21,25 +21,25 @@
 
 package org.zanata.rest.client;
 
+import java.lang.annotation.Annotation;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-import com.sun.jersey.api.client.GenericType;
 import org.zanata.common.FileTypeInfo;
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.zanata.common.DocumentType;
 import org.zanata.rest.DocumentFileUploadForm;
-import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.ChunkUploadResponse;
 import org.zanata.rest.service.FileResource;
+import com.google.common.base.Throwables;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.multipart.FormDataMultiPart;
 
 /**
  * @author Patrick Huang <a
@@ -49,6 +49,8 @@ public class FileResourceClient {
     private final RestClientFactory factory;
 
     private final URI baseUri;
+    private final Annotation[] multipartFormAnnotations =
+            { new MultipartFormLiteral() };
 
     FileResourceClient(RestClientFactory restClientFactory) {
         this.factory = restClientFactory;
@@ -59,9 +61,10 @@ public class FileResourceClient {
     @Deprecated
     public List<DocumentType> acceptedFileTypes() {
         List<DocumentType> types = factory.getClient()
-                .resource(baseUri)
+                .target(baseUri)
                 .path(FileResource.SERVICE_PATH
                     + FileResource.ACCEPTED_TYPE_LIST_RESOURCE)
+                .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(new GenericType<List<DocumentType>>() {
             });
         return types;
@@ -69,9 +72,10 @@ public class FileResourceClient {
 
     public List<FileTypeInfo> fileTypeInfoList() {
         List<FileTypeInfo> types = factory.getClient()
-                .resource(baseUri)
+                .target(baseUri)
                 .path(FileResource.SERVICE_PATH
                         + FileResource.FILE_TYPE_INFO_RESOURCE)
+                .request(MediaType.APPLICATION_JSON_TYPE)
                 .get(new GenericType<List<FileTypeInfo>>() {
                 });
         return types;
@@ -81,53 +85,33 @@ public class FileResourceClient {
             String projectSlug,
             String iterationSlug, String docId,
             DocumentFileUploadForm documentFileUploadForm) {
-        CacheResponseFilter filter = new CacheResponseFilter();
         Client client = factory.getClient();
-        client.addFilter(filter);
-        WebResource.Builder builder = client
-                .resource(baseUri)
+        Invocation.Builder builder = client
+                .target(baseUri)
                 .path("file").path("source").path(projectSlug)
                 .path(iterationSlug)
                 .queryParam("docId", docId)
-                .type(MediaType.MULTIPART_FORM_DATA_TYPE);
-        FormDataMultiPart form =
-                prepareFormDataMultiPart(documentFileUploadForm);
+                .request(MediaType.APPLICATION_XML_TYPE);
 
-        builder.post(form);
-        ChunkUploadResponse chunkUploadResponse =
-                filter.getEntity(ChunkUploadResponse.class);
-        client.removeFilter(filter);
-        return chunkUploadResponse;
+        // there seems to be a gap in the resteasy api to support multipart form
+        // with this fluent client. We have to provide the @MultipartForm
+        // annotation to the method.
+        // otherwise Resteasy can't find the writer for multipart form
+        Response response = builder.post(Entity.entity(documentFileUploadForm,
+                MediaType.MULTIPART_FORM_DATA_TYPE, multipartFormAnnotations));
+        response.bufferEntity();
+
+        return response.readEntity(ChunkUploadResponse.class);
     }
 
-    private FormDataMultiPart prepareFormDataMultiPart(
-            DocumentFileUploadForm documentFileUploadForm) {
-        FormDataMultiPart form =
-                new FormDataMultiPart()
-                        .field("file", documentFileUploadForm
-                                .getFileStream(),
-                                MediaType.APPLICATION_OCTET_STREAM_TYPE);
-        addBodyPartIfPresent(form, "adapterParams",
-                documentFileUploadForm.getAdapterParams());
-        addBodyPartIfPresent(form, "type", documentFileUploadForm.getFileType());
-        addBodyPartIfPresent(form, "first", documentFileUploadForm.getFirst());
-        addBodyPartIfPresent(form, "hash", documentFileUploadForm.getHash());
-        addBodyPartIfPresent(form, "last", documentFileUploadForm.getLast());
-        addBodyPartIfPresent(form, "size", documentFileUploadForm.getSize());
-        addBodyPartIfPresent(form, "uploadId",
-                documentFileUploadForm.getUploadId());
-        return form;
-    }
 
     public ChunkUploadResponse uploadTranslationFile(
             String projectSlug,
             String iterationSlug, String locale, String docId,
             String mergeType,
             DocumentFileUploadForm documentFileUploadForm) {
-        CacheResponseFilter filter = new CacheResponseFilter();
         Client client = factory.getClient();
-        client.addFilter(filter);
-        WebResource.Builder builder = client.resource(baseUri)
+        Invocation.Builder builder = client.target(baseUri)
                 .path(FileResource.SERVICE_PATH)
                 .path("translation")
                 .path(projectSlug)
@@ -135,41 +119,42 @@ public class FileResourceClient {
                 .path(locale)
                 .queryParam("docId", docId)
                 .queryParam("merge", mergeType)
-                .type(MediaType.MULTIPART_FORM_DATA_TYPE);
-        FormDataMultiPart form =
-                prepareFormDataMultiPart(documentFileUploadForm);
+                .request(MediaType.APPLICATION_XML_TYPE);
 
-        builder.post(form);
-        ChunkUploadResponse chunkUploadResponse =
-                filter.getEntity(ChunkUploadResponse.class);
-        client.removeFilter(filter);
-        return chunkUploadResponse;
+
+        Response response = builder.post(Entity.entity(documentFileUploadForm,
+                MediaType.MULTIPART_FORM_DATA_TYPE, multipartFormAnnotations));
+        response.bufferEntity();
+        return response.readEntity(ChunkUploadResponse.class);
     }
 
-    public ClientResponse downloadSourceFile(String projectSlug,
+    public Response downloadSourceFile(String projectSlug,
             String iterationSlug,
             String fileType, String docId) {
-        WebResource webResource = factory.getClient().resource(baseUri)
+        WebTarget webResource = factory.getClient().target(baseUri)
                 .path(FileResource.SERVICE_PATH).path("source")
                 .path(projectSlug).path(iterationSlug).path(fileType);
-        return webResource.queryParam("docId", docId).get(ClientResponse.class);
+        return webResource.queryParam("docId", docId)
+                .request(MediaType.APPLICATION_OCTET_STREAM_TYPE)
+                .get();
     }
 
-    public ClientResponse downloadTranslationFile(String projectSlug,
+    public Response downloadTranslationFile(String projectSlug,
             String iterationSlug, String locale, String fileExtension,
             String docId) {
-        WebResource webResource = factory.getClient().resource(baseUri)
+        WebTarget webResource = factory.getClient().target(baseUri)
                 .path(FileResource.SERVICE_PATH).path("translation")
                 .path(projectSlug).path(iterationSlug).path(locale)
                 .path(fileExtension);
-        return webResource.queryParam("docId", docId).get(ClientResponse.class);
+        return webResource.queryParam("docId", docId)
+                .request(MediaType.APPLICATION_OCTET_STREAM_TYPE).get();
     }
 
-    private static <T> FormDataMultiPart addBodyPartIfPresent(
-            FormDataMultiPart form, String field, T value) {
-        if (value != null) {
-            return form.field(field, value.toString());
+    private static class MultipartFormLiteral implements MultipartForm {
+
+        @Override
+        public java.lang.Class<? extends Annotation> annotationType() {
+            return MultipartForm.class;
         }
-        return form;
     }
 }

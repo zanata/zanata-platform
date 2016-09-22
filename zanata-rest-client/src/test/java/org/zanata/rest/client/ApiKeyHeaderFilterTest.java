@@ -24,7 +24,10 @@ package org.zanata.rest.client;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
+import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.core.MultivaluedHashMap;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -32,8 +35,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.zanata.rest.RestConstant;
-import com.sun.jersey.api.client.ClientRequest;
-import com.sun.jersey.api.client.ClientResponse;
 
 /**
  * @author Sean Flanigan <a
@@ -42,9 +43,7 @@ import com.sun.jersey.api.client.ClientResponse;
  */
 public class ApiKeyHeaderFilterTest {
     @Mock
-    private ClientRequest mockRequest;
-    @Mock
-    private ClientResponse response;
+    private ClientRequestContext mockRequest;
 
     @Before
     public void setUp() {
@@ -57,20 +56,14 @@ public class ApiKeyHeaderFilterTest {
         String apiKey = "apiKey";
         String ver = "ver";
         ApiKeyHeaderFilter filter =
-                new ApiKeyHeaderFilter(username, apiKey, ver) {
-                    @Override
-                    protected ClientResponse handleNext(
-                            ClientRequest cr) {
-                        return response;
-                    }
-                };
+                new ApiKeyHeaderFilter(username, apiKey, ver);
 
         MultivaluedHashMap<String, Object> headerMap =
                 new MultivaluedHashMap<>();
         when(mockRequest.getHeaders()).thenReturn(headerMap);
         //
 
-        filter.handle(mockRequest);
+        filter.filter(mockRequest);
 
         assertThat(headerMap.getFirst(RestConstant.HEADER_USERNAME).toString(),
                 Matchers.equalTo(username));

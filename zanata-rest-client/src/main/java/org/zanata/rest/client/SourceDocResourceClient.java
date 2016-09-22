@@ -25,12 +25,15 @@ import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.GenericType;
-
-import com.sun.jersey.api.client.WebResource;
 
 /**
  * This "implements" caller methods to endpoints in SourceDocResource.
@@ -58,16 +61,16 @@ public class SourceDocResourceClient {
 
     public List<ResourceMeta> getResourceMeta(Set<String> extensions) {
         Client client = factory.getClient();
-        WebResource webResource = getBaseServiceResource(client)
-                .queryParams(ClientUtil.asMultivaluedMap(
-                        "ext", extensions));
-        return webResource
-                .get(new GenericType<List<ResourceMeta>>() {
-                });
+        WebTarget webResource = getBaseServiceResource(client);
+        if (extensions != null) {
+            webResource.queryParam("ext", extensions.toArray());
+        }
+        return webResource.request(MediaType.APPLICATION_XML_TYPE)
+                .get(new GenericType<List<ResourceMeta>>() {});
     }
 
-    private WebResource getBaseServiceResource(Client client) {
-        return client.resource(baseUri)
+    private WebTarget getBaseServiceResource(Client client) {
+        return client.target(baseUri)
                 .path("projects").path("p")
                 .path(project)
                 .path("iterations").path("i")
@@ -77,34 +80,32 @@ public class SourceDocResourceClient {
 
     public Resource getResource(String idNoSlash, Set<String> extensions) {
         Client client = factory.getClient();
-        WebResource webResource =
+        WebTarget webResource =
                 getBaseServiceResource(client)
                         .path(idNoSlash)
-                        .queryParams(ClientUtil.asMultivaluedMap(
-                                "ext", extensions));
-        return webResource.get(Resource.class);
+                        .queryParam("ext", extensions.toArray());
+        return webResource.request(MediaType.APPLICATION_XML_TYPE)
+                .get(Resource.class);
     }
 
     public String putResource(String idNoSlash, Resource resource,
             Set<String> extensions, boolean copyTrans) {
         Client client = factory.getClient();
-        CacheResponseFilter filter = new CacheResponseFilter();
-        client.addFilter(filter);
-        WebResource webResource = getBaseServiceResource(client)
+        WebTarget webResource = getBaseServiceResource(client)
                 .path(idNoSlash)
-                .queryParams(ClientUtil.asMultivaluedMap(
-                        "ext", extensions))
+                .queryParam("ext", extensions.toArray())
                 .queryParam("copyTrans", String.valueOf(copyTrans));
 
-        webResource.put(resource);
-        client.removeFilter(filter);
-        return filter.getEntity(String.class);
+        Response response = webResource.request(MediaType.APPLICATION_XML_TYPE)
+                .put(Entity.entity(resource, MediaType.APPLICATION_XML_TYPE));
+        response.bufferEntity();
+        return response.readEntity(String.class);
     }
 
     public String deleteResource(String idNoSlash) {
         Client client = factory.getClient();
-        WebResource webResource = getBaseServiceResource(client);
-        return webResource.path(idNoSlash).delete(String.class);
+        WebTarget webResource = getBaseServiceResource(client);
+        return webResource.path(idNoSlash).request().delete(String.class);
     }
 
 }

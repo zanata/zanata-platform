@@ -15,6 +15,8 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.ws.rs.NotFoundException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,8 +43,6 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.UniformInterfaceException;
 
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Iterables.all;
@@ -453,15 +453,6 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                                 qualifiedDocName(localDocName))
                                 + "\n\n.";
                 log.error(message);
-                if (e instanceof UniformInterfaceException) {
-                    String entity =
-                            ((UniformInterfaceException) e).getResponse()
-                                    .getEntity(String.class);
-
-                    throw new RuntimeException(String.format(
-                            "%n * Error Message: %s;%n * Response From Server: %s]",
-                            e.getMessage(), entity));
-                }
                 throw new RuntimeException(e.getMessage(), e);
             }
         }
@@ -784,25 +775,22 @@ public class PushCommand extends PushPullCommand<PushOptions> {
             copyTransStatus =
                     this.copyTransClient.getCopyTransStatus(getOpts()
                             .getProj(), getOpts().getProjectVersion(), docName);
-        } catch (UniformInterfaceException failure) {
+        } catch (NotFoundException nfe) {
             // 404 - Probably because of an old server
-            if (failure.getResponse().getClientResponseStatus() == ClientResponse.Status.NOT_FOUND) {
-                if (getClientFactory()
-                        .compareToServerVersion("1.8.0-SNAPSHOT") < 0) {
-                    log.warn("Copy Trans not started (Incompatible server version.)");
-                    return;
-                } else {
-                    throw new RuntimeException(
-                            "Could not invoke copy trans. The service was not available (404)");
-                }
-            } else if (failure.getCause() != null) {
-                throw new RuntimeException("Problem invoking copy trans.",
-                        failure.getCause());
+            if (getClientFactory()
+                    .compareToServerVersion("1.8.0-SNAPSHOT") < 0) {
+                log.warn("Copy Trans not started (Incompatible server version.)");
+                return;
             } else {
                 throw new RuntimeException(
-                        "Problem invoking copy trans: [Server response code:"
-                                + failure.getResponse().getStatus() + "]");
+                        "Could not invoke copy trans. The service was not available (404)");
             }
+        } catch (Exception failure) {
+            if (failure.getCause() != null) {
+                throw new RuntimeException("Problem invoking copy trans.",
+                        failure.getCause());
+            }
+            throw failure;
         }
         ConsoleUtils.startProgressFeedback();
 

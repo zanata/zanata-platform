@@ -37,6 +37,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.ws.rs.core.Response;
+
+import org.jboss.resteasy.specimpl.MultivaluedMapImpl;
 import org.junit.rules.ExternalResource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -68,8 +71,6 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.FileResource;
 
 import com.google.common.base.Throwables;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 /**
  * Test rule to set up push and/or pull commands which will interact with
@@ -97,13 +98,13 @@ public class MockServerRule extends ExternalResource {
     @Captor
     private ArgumentCaptor<TranslationsResource> transResourceCaptor;
     @Mock
-    private ClientResponse transResourceResponse;
+    private Response transResourceResponse;
     @Captor
     private ArgumentCaptor<DocumentFileUploadForm> uploadFormCaptor;
     @Mock
-    private ClientResponse downloadSourceResponse;
+    private Response downloadSourceResponse;
     @Mock
-    private ClientResponse downloadTransResponse;
+    private Response downloadTransResponse;
     @Mock
     private RestClientFactory clientFactory;
     @Mock
@@ -271,9 +272,9 @@ public class MockServerRule extends ExternalResource {
                         eq(getPullOpts().getCreateSkeletons()), anyString()))
                 .thenReturn(transResourceResponse);
         when(transResourceResponse.getStatus()).thenReturn(200);
-        when(transResourceResponse.getHeaders()).thenReturn(
+        when(transResourceResponse.getStringHeaders()).thenReturn(
                 new MultivaluedMapImpl());
-        when(transResourceResponse.getEntity(TranslationsResource.class))
+        when(transResourceResponse.readEntity(TranslationsResource.class))
                 .thenReturn(transResourceOnServer);
         return new PullCommand(pullOpts, clientFactory);
     }
@@ -354,10 +355,10 @@ public class MockServerRule extends ExternalResource {
                 eq(pullOpts.getProj()), eq(pullOpts.getProjectVersion()),
                 eq(FileResource.FILETYPE_RAW_SOURCE_DOCUMENT),
                 anyString())).thenReturn(downloadSourceResponse);
-        when(downloadSourceResponse.getClientResponseStatus()).thenReturn(
-                ClientResponse.Status.OK);
+        when(downloadSourceResponse.getStatusInfo()).thenReturn(
+                Response.Status.OK);
         when(downloadSourceResponse.getStatus()).thenReturn(200);
-        when(downloadSourceResponse.getEntity(InputStream.class))
+        when(downloadSourceResponse.readEntity(InputStream.class))
                 .thenReturn(sourceFileStream);
         // return provide translation stream
         when(fileResourceClient.downloadTranslationFile(eq(pullOpts.getProj()),
@@ -365,9 +366,9 @@ public class MockServerRule extends ExternalResource {
                 anyString())).thenReturn(downloadTransResponse);
         when(downloadTransResponse.getStatus()).thenReturn(200);
         when(downloadTransResponse.getHeaders()).thenReturn(new MultivaluedMapImpl());
-        when(downloadTransResponse.getClientResponseStatus()).thenReturn(
-                ClientResponse.Status.OK);
-        when(downloadTransResponse.getEntity(InputStream.class))
+        when(downloadTransResponse.getStatusInfo()).thenReturn(
+                Response.Status.OK);
+        when(downloadTransResponse.readEntity(InputStream.class))
                 .thenReturn(transFileStream);
         return new RawPullCommand(pullOpts, fileResourceClient, clientFactory);
     }

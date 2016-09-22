@@ -21,9 +21,11 @@
 
 package org.zanata.rest.client;
 
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.service.ProjectsResource;
-import com.sun.jersey.api.client.GenericType;
 
 /**
  * @author Patrick Huang <a
@@ -37,8 +39,9 @@ public class ProjectsClient {
     }
 
     public Project[] getProjects() {
-        return factory.getClient().resource(factory.getBaseUri())
+        return factory.getClient().target(factory.getBaseUri())
                 .path(ProjectsResource.SERVICE_PATH)
+                .request(MediaType.APPLICATION_XML_TYPE)
                 .get(new GenericType<Project[]>() {
                 });
     }

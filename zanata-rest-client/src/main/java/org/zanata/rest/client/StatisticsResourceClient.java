@@ -22,17 +22,13 @@
 package org.zanata.rest.client;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
 import org.zanata.rest.service.StatisticsResource;
-import com.google.common.collect.Lists;
-import com.sun.jersey.api.client.WebResource;
-
-import static org.zanata.rest.client.ClientUtil.asMultivaluedMap;
 
 /**
  * @author Patrick Huang <a
@@ -52,35 +48,25 @@ public class StatisticsResourceClient implements StatisticsResource {
             String iterationSlug,
             @DefaultValue("false") boolean includeDetails,
             @DefaultValue("false") boolean includeWordStats, String[] locales) {
-        WebResource webResource =
-                factory.getClient().resource(baseUri).path("stats")
+        WebTarget webResource =
+                factory.getClient().target(baseUri).path("stats")
                         .path("proj")
                         .path(projectSlug)
                         .path("iter")
                         .path(iterationSlug)
-                        .queryParam("detail", String.valueOf(includeDetails))
-                        .queryParam("word", String.valueOf(includeWordStats))
-                        .queryParams(asMultivaluedMap("locale",
-                                toLocaleList(locales)));
-        return webResource.get(ContainerTranslationStatistics.class);
-    }
-
-    private static List<String> toLocaleList(String[] locales) {
-        List<String> localesList;
-        if (locales == null) {
-            localesList = Lists.newArrayList();
-        } else {
-            localesList = Lists.newArrayList(locales);
-        }
-        return localesList;
+                        .queryParam("detail", includeDetails)
+                        .queryParam("word", includeWordStats)
+                        .queryParam("locale", (Object[]) locales);
+        return webResource.request(MediaType.APPLICATION_XML_TYPE)
+                .get(ContainerTranslationStatistics.class);
     }
 
     @Override
     public ContainerTranslationStatistics getStatistics(String projectSlug,
             String iterationSlug, String docId,
             @DefaultValue("false") boolean includeWordStats, String[] locales) {
-        WebResource webResource =
-                factory.getClient().resource(baseUri).path("stats")
+        WebTarget webResource =
+                factory.getClient().target(baseUri).path("stats")
                         .path("proj")
                         .path(projectSlug)
                         .path("iter")
@@ -88,16 +74,16 @@ public class StatisticsResourceClient implements StatisticsResource {
                         .path("doc")
                         .path(docId)
                         .queryParam("word", String.valueOf(includeWordStats))
-                        .queryParams(asMultivaluedMap("locale",
-                                toLocaleList(locales)));
-        return webResource.get(ContainerTranslationStatistics.class);
+                        .queryParam("locale", (Object[]) locales);
+        return webResource.request(MediaType.APPLICATION_XML_TYPE)
+                .get(ContainerTranslationStatistics.class);
     }
 
     @Override
     public ContributionStatistics getContributionStatistics(String projectSlug,
             String versionSlug, String username, String dateRange, boolean includeAutomatedEntry) {
-        WebResource webResource =
-                factory.getClient().resource(baseUri).path("stats")
+        WebTarget webResource =
+                factory.getClient().target(baseUri).path("stats")
                         .path("project")
                         .path(projectSlug)
                         .path("version")
@@ -105,7 +91,8 @@ public class StatisticsResourceClient implements StatisticsResource {
                         .path("contributor")
                         .path(username)
                         .path(dateRange)
-                        .queryParam("includeAutomatedEntry", String.valueOf(includeAutomatedEntry));
-        return webResource.get(ContributionStatistics.class);
+                        .queryParam("includeAutomatedEntry", includeAutomatedEntry);
+        return webResource.request(MediaType.APPLICATION_JSON_TYPE)
+                .get(ContributionStatistics.class);
     }
 }

@@ -75,7 +75,7 @@ public class ClientToServerTest {
             Mockito.verify(mockAbortStrategy).abort(throwableCapture.capture());
             assertThat("Client will display meaningful message for 503",
                     throwableCapture.getValue().getMessage()
-                            .contains("503 Service Unavailable"));
+                            .contains("unavailable"));
         }
     }
 }
