@@ -115,7 +115,7 @@ public class LanguagesAction extends InMemoryListFilter<HLocale> implements
         if (allLanguages == null) {
             if(identity != null
                     && identity.hasRole("admin")) {
-                allLanguages = localeServiceImpl.getAllLocales();
+                allLanguages = localeServiceImpl.getSupportedLocales();
             } else {
                 allLanguages = localeServiceImpl.getSupportedLocales();
             }

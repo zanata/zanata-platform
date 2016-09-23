@@ -14,6 +14,7 @@ import com.google.common.collect.Lists;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.commons.lang.StringUtils;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
@@ -191,9 +192,9 @@ public class UserService implements UserResource {
         String userImageUrl = gravatarServiceImpl
             .getUserImageUrl(GravatarService.USER_IMAGE_SIZE, email);
 
-        List<LocaleDetails> userLanguageTeams =
+        List<LocaleId> userLanguageTeams =
             person.getLanguageMemberships().stream()
-                .map(hLocale -> LocaleServiceImpl.convertToDTO(hLocale, ""))
+                .map(hLocale -> hLocale.getLocaleId())
                 .collect(Collectors.toList());
 
         return new User(account.getUsername(), includeEmail ? email : null,

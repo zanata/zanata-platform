@@ -96,7 +96,7 @@ export function fetchStatistics (_projectSlug, _versionSlug,
 
 export function fetchLocales () {
   // TODO pahuang this was using $location to build up the ui locales
-  const uiTranslationsURL = `${baseRestUrl}/locales`
+  const uiTranslationsURL = `${baseRestUrl}/locales/ui`
 
   return fetch(uiTranslationsURL, {
     credentials: 'include',

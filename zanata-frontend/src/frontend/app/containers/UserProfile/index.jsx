@@ -77,8 +77,11 @@ class UserProfile extends Component {
     const username = user.username
     const name = user.name ? user.name : undefined
     const email = user.email ? user.email : undefined
+
+    // TODO: fire ajax to get locale details
     const languageTeams = !isEmpty(user.languageTeams)
       ? map(user.languageTeams, 'displayName').join() : undefined
+
     const isLoggedIn = window.config.permission.isLoggedIn
 
     const divClass = 'D(f) Ai(fs) Ac(fs) Fld(c) Jc(fs) Flw(nw) ' +

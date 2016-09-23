@@ -20,17 +20,23 @@
  */
 package org.zanata.dao;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.zanata.common.GlossarySortField;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
+import org.zanata.rest.editor.dto.LocaleSortField;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import java.util.List;
+
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 
 @RequestScoped
 public class LocaleDAO extends AbstractDAOImpl<HLocale, Long> {
@@ -70,23 +76,52 @@ public class LocaleDAO extends AbstractDAOImpl<HLocale, Long> {
         return findByCriteria(); // Return all of them
     }
 
-    public List<HLocale> searchByName(String query, int maxResult,
-        int firstResult) {
-        Query q = getSession().createQuery(
-            "from HLocale l where " +
-                "lower(l.localeId) like :query " +
-                "or lower(l.displayName) like :query " +
-                "or lower(l.nativeName) like :query")
-            .setString("query", "%" + query.toLowerCase() + "%")
-            .setFirstResult(firstResult);
-        if (maxResult != -1) {
-            q.setMaxResults(maxResult);
+    public List<HLocale> find(int offset, int maxResults, String filter,
+        List<LocaleSortField> sortFields, boolean onlyActive) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("from HLocale l");
+
+        boolean hasCondition = StringUtils.isNotBlank(filter) || onlyActive;
+        if (hasCondition) {
+            queryBuilder.append(" where");
         }
-        q.setComment("LocaleDAO.searchByName");
-        return q.list();
+
+        boolean joinQuery = false;
+        if (StringUtils.isNotBlank(filter)) {
+            joinQuery = true;
+            queryBuilder.append(" lower(l.localeId) like :query")
+                .append(" or lower(l.displayName) like :query")
+                .append(" or lower(l.nativeName) like :query");
+        }
+        if (onlyActive) {
+            if (joinQuery) {
+                queryBuilder.append(" and");
+            }
+            queryBuilder.append(" l.active = true");
+        }
+
+        if (sortFields != null && !sortFields.isEmpty()) {
+            queryBuilder.append(" ORDER BY ");
+            List<String> sortQuery = Lists.newArrayList();
+            for (LocaleSortField sortField : sortFields) {
+                String order = sortField.isAscending() ? " ASC" : " DESC";
+                sortQuery.add(sortField.getEntityField() + order);
+            }
+            queryBuilder.append(Joiner.on(", ").join(sortQuery));
+        }
+        Query query = getSession().createQuery(queryBuilder.toString());
+        if (StringUtils.isNotBlank(filter)) {
+            query.setString("query", "%" + filter.toLowerCase() + "%");
+        }
+        query.setFirstResult(offset).setComment("LocaleDAO.find");
+
+        if (maxResults != -1) {
+            query.setMaxResults(maxResults);
+        }
+        return query.list();
     }
 
-    public int countByNameLike(String query) {
-        return searchByName(query, -1, 0).size();
+    public int countByFind(String filter, boolean onlyActive) {
+        return find(0, -1, filter, null, onlyActive).size();
     }
 }

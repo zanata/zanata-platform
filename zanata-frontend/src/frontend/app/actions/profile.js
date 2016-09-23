@@ -1,6 +1,6 @@
 import { createAction } from 'redux-actions'
 import { CALL_API } from 'redux-api-middleware'
-import { isEmpty, includes } from 'lodash'
+import { isEmpty, includes, forEach } from 'lodash'
 import utilsDate from '../utils/DateHelper'
 
 import {
@@ -18,6 +18,10 @@ export const SELECT_DAY_UPDATE = 'SELECT_DAY_UPDATE'
 export const USER_STATS_REQUEST = 'USER_STATS_REQUEST'
 export const USER_STATS_SUCCESS = 'USER_STATS_SUCCESS'
 export const USER_STATS_FAILURE = 'USER_STATS_FAILURE'
+
+export const GET_LOCALE_REQUEST = 'GET_LOCALE_REQUEST'
+export const GET_LOCALE_SUCCESS = 'GET_LOCALE_SUCCESS'
+export const GET_LOCALE_FAILURE = 'GET_LOCALE_FAILURE'
 
 export const updateDateRange = createAction(DATE_RANGE_UPDATE)
 export const updateFilter = createAction(FILTER_UPDATE)
@@ -60,6 +64,33 @@ const loadUserStats = (username, dateRangeOption) => {
   }
 }
 
+const getLocaleDetail = (localeId) => {
+  const endpoint = window.config.baseUrl + window.config.apiRoot +
+    '/locales/locale/' + localeId
+
+  const apiTypes = [
+    GET_LOCALE_REQUEST,
+    {
+      type: GET_LOCALE_SUCCESS,
+      payload: (action, state, res) => {
+        const contentType = res.headers.get('Content-Type')
+        if (contentType && includes(contentType, 'json')) {
+          return res.json().then((json) => {
+            return json
+          })
+        }
+      },
+      meta: {
+        receivedAt: Date.now()
+      }
+    },
+    GET_LOCALE_FAILURE
+  ]
+  return {
+    [CALL_API]: buildAPIRequest(endpoint, 'GET', getJsonHeaders(), apiTypes)
+  }
+}
+
 const getUserInfo = (dispatch, username, dateRangeOption) => {
   const endpoint = window.config.baseUrl + window.config.apiRoot + '/user' +
     (isEmpty(username) ? '' : '/' + username)
@@ -72,6 +103,9 @@ const getUserInfo = (dispatch, username, dateRangeOption) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
+            forEach(json.languageTeams, function (localeId) {
+              dispatch(getLocaleDetail(localeId))
+            })
             dispatch(loadUserStats(username, dateRangeOption))
             return json
           })

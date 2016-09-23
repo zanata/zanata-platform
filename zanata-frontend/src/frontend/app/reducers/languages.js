@@ -1,7 +1,11 @@
 import { handleActions } from 'redux-actions'
+import { keyBy } from 'lodash'
 import {
   CLEAR_MESSAGE,
-  SEVERITY
+  SEVERITY,
+  LOAD_USER_REQUEST,
+  LOAD_USER_SUCCESS,
+  LOAD_USER_FAILURE
 } from '../actions/common'
 import {
   LOAD_LANGUAGES_REQUEST,
@@ -9,7 +13,10 @@ import {
   LOAD_LANGUAGES_FAILURE,
   LANGUAGE_PERMISSION_REQUEST,
   LANGUAGE_PERMISSION_SUCCESS,
-  LANGUAGE_PERMISSION_FAILURE
+  LANGUAGE_PERMISSION_FAILURE,
+  LANGUAGE_DELETE_REQUEST,
+  LANGUAGE_DELETE_SUCCESS,
+  LANGUAGE_DELETE_FAILURE
 } from '../actions/languages'
 
 const ERROR_MSG = 'We were unable load languages from server. ' +
@@ -19,6 +26,57 @@ export default handleActions({
     return {
       ...state,
       notification: null
+    }
+  },
+  [LOAD_USER_REQUEST]: (state, action) => {
+    return {
+      ...state,
+      user: {
+        ...state.user,
+        loading: true
+      }
+    }
+  },
+  [LOAD_USER_SUCCESS]: (state, action) => {
+    if (action.error) {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          loading: true
+        },
+        loading: false,
+        notification: {
+          severity: SEVERITY.ERROR,
+          message: ERROR_MSG
+        }
+      }
+    } else {
+      const languageTeams =
+        keyBy(action.payload.languageTeams, function (localeId) {
+          return localeId
+        })
+      return {
+        ...state,
+        user: {
+          ...action.payload,
+          languageTeams: languageTeams
+        }
+      }
+    }
+  },
+  [LOAD_USER_FAILURE]: (state, action) => {
+    return {
+      ...state,
+      user: {
+        ...state.user,
+        loading: false
+      },
+      loading: false,
+      notification: {
+        severity: SEVERITY.ERROR,
+        message: ERROR_MSG
+      }
     }
   },
   [LANGUAGE_PERMISSION_REQUEST]: (state, action) => {
@@ -99,13 +157,41 @@ export default handleActions({
         message: ERROR_MSG
       }
     }
+  },
+  [LANGUAGE_DELETE_REQUEST]: (state, action) => {
+    return {
+      ...state,
+      deleting: true
+    }
+  },
+  [LANGUAGE_DELETE_SUCCESS]: (state, action) => {
+    return {
+      ...state,
+      deleting: false
+    }
+  },
+  [LANGUAGE_DELETE_FAILURE]: (state, action) => {
+    return {
+      ...state,
+      deleting: false,
+      notification: {
+        severity: SEVERITY.ERROR,
+        message: 'We were unable delete this language. ' +
+        'Please refresh this page and try again.'
+      }
+    }
   }
 },
   {
-    loading: false,
-    locales: [],
+    user: {},
+    loading: true,
+    locales: {
+      results: [],
+      totalCount: 0
+    },
     permission: {
       canDeleteLocale: false,
       canAddLocale: false
-    }
+    },
+    deleting: false
   })

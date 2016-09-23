@@ -48,6 +48,7 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.dto.LocaleDetails;
+import org.zanata.rest.editor.dto.LocaleSortField;
 import org.zanata.service.LocaleService;
 import org.zanata.util.ComparatorUtil;
 
@@ -138,6 +139,28 @@ public class LocaleServiceImpl implements LocaleService {
         }
         Collections.sort(hSupportedLanguages, ComparatorUtil.LOCALE_COMPARATOR);
         return hSupportedLanguages;
+    }
+
+    @Override
+    public List<HLocale> getAllLocales(int offset, int maxResults,
+        String filter, List<LocaleSortField> sortFields) {
+       return localeDAO.find(offset, maxResults, filter, sortFields, false);
+    }
+
+    @Override
+    public List<HLocale> getSupportedLocales(int offset, int maxResults,
+        String filter, List<LocaleSortField> sortFields) {
+        return localeDAO.find(offset, maxResults, filter, sortFields, true);
+    }
+
+    @Override
+    public int getSupportedLocalesTotalCount(String filter) {
+        return localeDAO.countByFind(filter, true);
+    }
+
+    @Override
+    public int getLocalesTotalCount(String filter) {
+        return localeDAO.countByFind(filter, false);
     }
 
     @Override
@@ -415,6 +438,6 @@ public class LocaleServiceImpl implements LocaleService {
         return new LocaleDetails(hLocale.getLocaleId(),
             hLocale.retrieveDisplayName(), alias, hLocale.retrieveNativeName(),
             hLocale.isActive(), hLocale.isEnabledByDefault(),
-            hLocale.getMembers().size());
+            hLocale.getPluralForms());
     }
 }

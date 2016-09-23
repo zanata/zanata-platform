@@ -31,9 +31,18 @@ import org.zanata.common.LocaleId;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.rest.editor.dto.LocaleSortField;
 
 public interface LocaleService {
-    List<HLocale> getAllLocales();
+    List<HLocale> getAllLocales(int offset, int maxResults, String filter,
+            List<LocaleSortField> sortFields);
+
+    List<HLocale> getSupportedLocales(int offset, int maxResults, String filter,
+            List<LocaleSortField> sortFields);
+
+    int getSupportedLocalesTotalCount(String filter);
+
+    int getLocalesTotalCount(String filter);
 
     void save(@Nonnull LocaleId localeId, boolean enabledByDefault);
 
