@@ -26,6 +26,7 @@ import java.net.URI;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Account;
@@ -49,8 +50,10 @@ public class AccountClient {
     }
 
     public void put(String username, Account account) {
-        webResource(username)
-                .put(Entity.entity(account, MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML));
+        Response response = webResource(username)
+                .put(Entity.entity(account,
+                        MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML));
+        response.close();
     }
 
     private Invocation.Builder webResource(String username) {

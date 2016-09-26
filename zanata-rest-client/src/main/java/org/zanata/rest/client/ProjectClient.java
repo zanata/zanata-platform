@@ -24,6 +24,7 @@ package org.zanata.rest.client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.zanata.rest.dto.Project;
 
@@ -53,7 +54,8 @@ public class ProjectClient {
     }
 
     public void put(Project project) {
-        webResource().put(Entity.xml(project));
+        Response response = webResource().put(Entity.xml(project));
+        response.close();
     }
 }
 

@@ -26,6 +26,7 @@ import java.net.URI;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.zanata.rest.dto.ProjectIteration;
 
@@ -60,8 +61,9 @@ public class ProjectIterationClient {
     }
 
     public void put(ProjectIteration projectVersion) {
-        webResource().request()
+        Response response = webResource().request()
                 .put(Entity.xml(projectVersion));
+        response.close();
     }
 
     public String sampleConfiguration() {

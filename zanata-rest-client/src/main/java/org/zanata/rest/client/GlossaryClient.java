@@ -76,10 +76,11 @@ public class GlossaryClient {
     }
 
     public void delete(String id, String qualifiedName) {
-        webResource().path("entries/" + id)
+        Response response = webResource().path("entries/" + id)
                 .queryParam("qualifiedName", qualifiedName)
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .delete();
+        response.close();
     }
 
     public int deleteAll(String qualifiedName) {
