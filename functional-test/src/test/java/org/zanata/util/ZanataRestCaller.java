@@ -24,13 +24,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.concurrent.Callable;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.client.AsyncProcessClient;
@@ -54,6 +52,9 @@ import com.google.common.collect.Sets;
 import com.jayway.awaitility.Awaitility;
 import com.jayway.awaitility.Duration;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
 /**
@@ -149,7 +150,7 @@ public class ZanataRestCaller {
             String idNoSlash, Resource resource, boolean copytrans) {
         restClientFactory.getSourceDocResourceClient(projectSlug,
                 iterationSlug).putResource(idNoSlash, resource,
-                Collections.<String>emptySet(), copytrans);
+                Collections.emptySet(), copytrans);
     }
 
     public static Resource buildSourceResource(String name,
@@ -218,7 +219,7 @@ public class ZanataRestCaller {
                 asyncProcessClient.startSourceDocCreationOrUpdate(
                         sourceResource.getName(), projectSlug, iterationSlug,
                         sourceResource,
-                        Sets.<String> newHashSet(), false);
+                        Sets.newHashSet(), false);
         processStatus = waitUntilFinished(asyncProcessClient, processStatus);
         log.info("finished async source push ({}-{}): {}", projectSlug,
                 iterationSlug, processStatus.getStatusCode());
@@ -233,11 +234,9 @@ public class ZanataRestCaller {
         final String processId = processStatus.getUrl();
         Awaitility.await()
                 .pollInterval(Duration.ONE_SECOND)
-                .until(() -> {
-                    return DONE_STATUS.contains(
-                            asyncProcessClient.getProcessStatus(processId)
-                                    .getStatusCode());
-                });
+                .until(() -> DONE_STATUS.contains(
+                        asyncProcessClient.getProcessStatus(processId)
+                                .getStatusCode()));
 
         if (processStatus.getStatusCode().equals(
                 ProcessStatus.ProcessStatusCode.Failed)) {
@@ -262,24 +261,24 @@ public class ZanataRestCaller {
                 iterationSlug, processStatus.getStatusCode());
     }
 
-    private WebResource.Builder createRequest(URI uri) {
-        WebResource.Builder resource =
-                Client.create()
-                        .resource(uri)
-                        // having null username will bypass
-                        // ZanataRestSecurityInterceptor
-                        // clientRequest.header("X-Auth-User", null);
-                        .header("X-Auth-Token", apiKey)
-                        .header("Content-Type", "application/xml");
-        return resource;
+    private Invocation.Builder createRequest(URI uri) {
+
+        Invocation.Builder builder = new ResteasyClientBuilder().build()
+                .target(uri)
+                .request()
+                // having null username will bypass
+                // ZanataRestSecurityInterceptor
+                // clientRequest.header("X-Auth-User", null);
+                .header("X-Auth-Token", apiKey);
+        return builder;
     }
 
     private void postTest(String path, String testClass, String methodName) {
         UriBuilder uri = UriBuilder.fromUri(baseUrl + path);
         uri.queryParam("testClass", testClass);
         uri.queryParam("method", methodName);
-        WebResource.Builder request = createRequest(uri.build());
-        request.post();
+        Invocation.Builder request = createRequest(uri.build());
+        request.post(Entity.text(""));
     }
 
     public void signalBeforeTest(String testClass, String methodName) {
