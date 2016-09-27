@@ -105,6 +105,10 @@
         <artifactId>xercesImpl</artifactId>
         <version>2.11.0</version>
       </dependency>
+      <!--<dependency>-->
+        <!--<groupId>org.zanata</groupId>-->
+        <!--<artifactId>zanata-rest-client</artifactId>-->
+      <!--</dependency>-->
     </dependencies>
   </dependencyManagement>
 
@@ -285,11 +289,19 @@
     <dependency>
       <groupId>org.zanata</groupId>
       <artifactId>zanata-rest-client</artifactId>
-      <scope>compile</scope>
+      <scope>test</scope>
       <exclusions>
         <exclusion>
           <groupId>org.apache.httpcomponents</groupId>
           <artifactId>httpclient</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.ws.rs</groupId>
+          <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.annotation</groupId>
+          <artifactId>jboss-annotations-api_1.2_spec</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -972,6 +984,9 @@
                 <!-- use xalan:xalan -->
                 <exclude>jakarta-regexp:jakarta-regexp</exclude>
               </excludes>
+              <includes>
+                <include>org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.0_spec</include>
+              </includes>
               <searchTransitive>true</searchTransitive>
             </bannedDependencies>
           </rules>
