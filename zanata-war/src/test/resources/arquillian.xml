@@ -18,7 +18,7 @@
       <!--
                   <property name="javaVmArguments">-Xms1536m -Xmx1536m -XX:MaxPermSize=256m -Dorg.jboss.as.logging.per-deployment=false -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8787</property>
       -->
-      <property name="javaVmArguments">-Dorg.jboss.as.logging.per-deployment=false</property>
+      <property name="javaVmArguments">-Dorg.jboss.as.logging.per-deployment=false -XX:-OmitStackTraceInFastThrow -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=target</property>
       <!-- From JBOSS_HOME/standalone/configuration -->
       <property name="serverConfig">standalone-arquillian.xml</property>
       <!--<property name="allowConnectingToRunningServer">true</property>-->
@@ -33,6 +33,8 @@
     <configuration>
       <property name="jbossHome">${jboss.home}</property>
       <!-- <property name="javaVmArguments">-Dorg.jboss.as.logging.per-deployment=false</property> -->
+
+      <property name="javaVmArguments">-XX:-OmitStackTraceInFastThrow -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=target</property>
 
       <!-- From JBOSS_HOME/standalone/configuration -->
       <property name="serverConfig">standalone-arquillian.xml</property>
