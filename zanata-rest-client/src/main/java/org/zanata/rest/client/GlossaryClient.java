@@ -57,7 +57,7 @@ public class GlossaryClient {
 
         webResource().path("entries").queryParam("locale", localeId.getId())
                 .queryParam("qualifiedName", qualifiedName)
-                .request(MediaType.APPLICATION_JSON_TYPE).post(entity);
+                .request(MediaType.APPLICATION_JSON_TYPE).post(entity).close();
     }
 
     public Response downloadFile(String fileType,
@@ -76,11 +76,10 @@ public class GlossaryClient {
     }
 
     public void delete(String id, String qualifiedName) {
-        Response response = webResource().path("entries/" + id)
+        webResource().path("entries/" + id)
                 .queryParam("qualifiedName", qualifiedName)
                 .request(MediaType.APPLICATION_JSON_TYPE)
-                .delete();
-        response.close();
+                .delete().close();
     }
 
     public int deleteAll(String qualifiedName) {
