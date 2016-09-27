@@ -92,7 +92,7 @@ public class GettextPluralSupportTest extends ZanataTestCase {
         restCaller.createProjectAndVersion("plurals", "master", "podir");
         List<String> output =
                 client.callWithTimeout(tempDir,
-                        "mvn -B zanata:push -Dzanata.pushType=both -Dzanata.userConfig="
+                        "mvn -e -B zanata:push -Dzanata.pushType=both -Dzanata.userConfig="
                                 + userConfigPath);
 
         assertThat(client.isPushSuccessful(output)).isTrue();
@@ -102,7 +102,7 @@ public class GettextPluralSupportTest extends ZanataTestCase {
         File pullDir = Files.createTempDir();
         String pullDirPath = pullDir.getAbsolutePath();
         String command =
-                "mvn -B zanata:pull -Dzanata.pullType=both -Dzanata.srcDir="
+                "mvn -e -B zanata:pull -Dzanata.pullType=both -Dzanata.srcDir="
                         + pullDirPath + " -Dzanata.transDir=" + pullDirPath
                         + " -Dzanata.userConfig=" + userConfigPath;
         output = client.callWithTimeout(tempDir, command);

@@ -244,16 +244,16 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
         Invocation.Builder configRequest =
                 clientRequestAsAdmin("rest/configurations/"
                         + maxActivePathParam);
-        configRequest.put(Entity.json("1"));
+        configRequest.put(Entity.json("1")).close();
 
         // When: multiple requests that will result in a mapped exception
         Invocation.Builder clientRequest =
                 clientRequestAsAdmin(
                 "rest/test/data/sample/dummy?exception=org.zanata.rest.NoSuchEntityException");
-        clientRequest.get();
-        clientRequest.get();
-        clientRequest.get();
-        clientRequest.get();
+        clientRequest.get().close();
+        clientRequest.get().close();
+        clientRequest.get().close();
+        clientRequest.get().close();
 
         // Then: request that result in exception should still release
         // semaphore. i.e. no permit leak
@@ -266,16 +266,16 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
         Invocation.Builder configRequest =
                 clientRequestAsAdmin("rest/configurations/"
                         + maxActivePathParam);
-        configRequest.put(Entity.json("1"));
+        configRequest.put(Entity.json("1")).close();
 
         // When: multiple requests that will result in an unmapped exception
         Invocation.Builder clientRequest =
                 clientRequestAsAdmin(
                 "rest/test/data/sample/dummy?exception=java.lang.RuntimeException");
-        clientRequest.get();
-        clientRequest.get();
-        clientRequest.get();
-        clientRequest.get();
+        clientRequest.get().close();
+        clientRequest.get().close();
+        clientRequest.get().close();
+        clientRequest.get().close();
 
         // Then: request that result in exception should still release
         // semaphore. i.e. no permit leak
