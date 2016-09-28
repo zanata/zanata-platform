@@ -20,10 +20,12 @@
  */
 package org.zanata.util;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-
 import javax.annotation.Nullable;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.MediaType;
+
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 
 /**
  * @author Patrick Huang <a
@@ -31,22 +33,25 @@ import javax.annotation.Nullable;
  */
 public class SampleDataResourceClient {
 
-    private static WebResource.Builder createRequest(String path) {
-        WebResource.Builder resource =
-                Client.create()
-                        .resource(
+    private static final Entity<String> EMPTY_ENTITY =
+            Entity.text("");
+
+    private static Invocation.Builder createRequest(String path) {
+        Invocation.Builder resource =
+                new ResteasyClientBuilder().build()
+                        .target(
                                 PropertiesHolder
                                         .getProperty(Constants.zanataInstance
                                                 .value())
                                         + "rest/test/data/sample" + path)
+                        .request(MediaType.APPLICATION_XML_TYPE)
                         // having null username will bypass
                         // ZanataRestSecurityInterceptor
                         // clientRequest.header("X-Auth-User", null);
                         .header("X-Auth-Token",
                                 PropertiesHolder
                                         .getProperty(Constants.zanataApiKey
-                                                .value()))
-                        .header("Content-Type", "application/xml");
+                                                .value()));
         return resource;
     }
 
@@ -55,7 +60,8 @@ public class SampleDataResourceClient {
     }
 
     public static void makeSampleUsers() throws Exception {
-        createRequest("/users").put();
+        createRequest("/users").put(
+                EMPTY_ENTITY);
     }
 
     /**
@@ -66,29 +72,30 @@ public class SampleDataResourceClient {
      */
     public static void userJoinsLanguageTeam(String username,
             String localesCSV) throws Exception {
-        Client.create()
-                .resource(
+        new ResteasyClientBuilder().build()
+                .target(
                         PropertiesHolder.getProperty(Constants.zanataInstance
                                 .value()) + "rest/test/data/sample/accounts/u/"
                                 + username + "/languages")
                 .queryParam("locales", localesCSV)
+                .request(MediaType.APPLICATION_XML_TYPE)
                 .header("X-Auth-Token",
                         PropertiesHolder.getProperty(Constants.zanataApiKey
                                 .value()))
-                .header("Content-Type", "application/xml").put();
+                .put(EMPTY_ENTITY);
     }
 
     public static void makeSampleProject() throws Exception {
-        createRequest("/project").put();
+        createRequest("/project").put(EMPTY_ENTITY);
     }
 
     public static void makeSampleLanguages() throws Exception {
-        createRequest("/languages").put();
+        createRequest("/languages").put(EMPTY_ENTITY);
     }
 
     public static void addLanguage(String localeId, @Nullable String pluralForms) throws Exception {
         String path = "/languages/l/" + localeId + (pluralForms != null ? "?pluralForms=" + pluralForms : "");
-        createRequest(path).put();
+        createRequest(path).put(EMPTY_ENTITY);
     }
 
 }
