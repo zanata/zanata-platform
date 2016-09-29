@@ -39,12 +39,6 @@
   <a4j:param name="val2" assignTo="#{checked}"/>
 </a4j:jsFunction>
 
-<a4j:jsFunction name="bindCopyTransValue" limitRender="true"
-  action="#{copyTransAction.updateCopyTrans(action, value)}">
-  <a4j:param name="val1" assignTo="#{action}"/>
-  <a4j:param name="val2" assignTo="#{value}"/>
-</a4j:jsFunction>
-
 <a4j:jsFunction name="runDelete" action="#{versionHome.deleteSelf()}" />
 
 <h1>#{msgs['jsf.iteration.VersionSettings']}</h1>
