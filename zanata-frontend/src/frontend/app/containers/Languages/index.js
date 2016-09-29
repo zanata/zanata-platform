@@ -1,6 +1,7 @@
 import React, {PropTypes, Component} from 'react'
 import { connect } from 'react-redux'
-import {Button, InputGroup, FormGroup, FormControl} from 'react-bootstrap'
+import {Button, InputGroup, FormGroup, FormControl}
+    from 'react-bootstrap'
 import Helmet from 'react-helmet'
 import {Page, ScrollView, View, LoaderText} from 'zanata-ui'
 import { debounce, find } from 'lodash'
@@ -41,9 +42,9 @@ class Languages extends Component {
   render () {
     const {
       searchText,
-      page,
       size,
       sort,
+      page,
       results,
       totalCount,
       permission,
@@ -54,14 +55,13 @@ class Languages extends Component {
       handleDelete,
       handleOnUpdatePageSize,
       handleOnUpdateSort,
-      handleOnUpdateSearch,
-      handlePageChanged
+      handleOnUpdateSearch
     } = this.props
 
     // TODO: tweak for testing
-    // const totalPage = Math.floor(totalCount / size) +
-    //   (totalCount % size > 0 ? 1 : 0)
-    const totalPage = 1
+    const totalPage = Math.floor(totalCount / size) +
+   (totalCount % size > 0 ? 1 : 0)
+  // const totalPage = 1
 
     return (
       <Page>
@@ -133,8 +133,7 @@ class Languages extends Component {
                         </div>
                         <div className='page-count pull-right col-xs-7 col-sm-8
                           col-md-12'>
-                          <Pager currentPage={page} totalPage={totalPage}
-                            handlePageChanged={handlePageChanged} />
+                          <Pager activePage={page} totalPage={totalPage} />
                         </div>
                       </div>)
                   }
@@ -170,11 +169,11 @@ class Languages extends Component {
 }
 
 Languages.propTypes = {
+  page: PropTypes.number,
   notification: PropTypes.object,
   permission: PropTypes.object,
   user: PropTypes.object,
   searchText: PropTypes.string,
-  page: PropTypes.number,
   size: PropTypes.number,
   sort: PropTypes.object,
   results: PropTypes.array,
@@ -185,8 +184,7 @@ Languages.propTypes = {
   handleDelete: PropTypes.func,
   handleOnUpdatePageSize: PropTypes.func,
   handleOnUpdateSort: PropTypes.func,
-  handleOnUpdateSearch: PropTypes.func,
-  handlePageChanged: PropTypes.func
+  handleOnUpdateSearch: PropTypes.func
 }
 
 const mapStateToProps = (state) => {
