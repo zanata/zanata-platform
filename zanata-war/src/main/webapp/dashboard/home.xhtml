@@ -84,6 +84,25 @@
                 </ul>
               </div>
             </div>
+            <h:panelGroup layout="block" styleClass="g__item w--1-2-m l--push-top-1"
+              rendered="#{dashboardAction.canCreateProject() or dashboardAction.canCreateGroup()}">
+              <ui:fragment rendered="#{dashboardAction.canCreateProject()}">
+                <a href="#" jsfc="h:link" class="button button--primary l--push-right-quarter"
+                  outcome="/project/create_project.xhtml"
+                  title="#{msgs['jsf.dashboard.projects.createNewProject.label']}">
+                  <i aria-hidden="true" class="i i--plus i--large"></i>
+                  <span>#{msgs['jsf.dashboard.projects.newProject.label']}</span>
+                </a>
+              </ui:fragment>
+              <ui:fragment rendered="#{dashboardAction.canCreateGroup()}">
+                <a href="#" jsfc="h:link" class="button button--primary"
+                  outcome="/version-group/create_version_group.xhtml"
+                  title="#{msgs['jsf.dashboard.groups.createNewGroup.label']}">
+                  <i aria-hidden="true" class="i i--plus i i--large"></i>
+                  <span>#{msgs['jsf.NewGroup.Label']}</span>
+                </a>
+              </ui:fragment>
+            </h:panelGroup>
           </div>
         </div>
         <div class="g__item w--1-m w--5-8-l w--2-3">
