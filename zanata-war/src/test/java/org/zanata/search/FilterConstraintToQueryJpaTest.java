@@ -31,6 +31,7 @@ import com.github.huangp.entityunit.entity.EntityMakerBuilder;
 import com.github.huangp.entityunit.maker.FixedValueMaker;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * @author Patrick Huang <a
@@ -75,7 +76,7 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
         HProject hProject = hDocument.getProjectIteration().getProject();
         hProject.getWebHooks()
                 .add(new WebHook(hProject, "http://www.test.example.com",
-                        WebhookType.DocumentMilestoneEvent, "key"));
+                    Sets.newHashSet(WebhookType.DocumentMilestoneEvent), "key"));
         documentId = new DocumentId(hDocument.getId(), hDocument.getDocId());
 
         HTextFlowBuilder baseBuilder =

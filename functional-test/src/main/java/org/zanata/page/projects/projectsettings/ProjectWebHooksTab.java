@@ -24,6 +24,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.projects.ProjectBasePage;
@@ -42,18 +43,33 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ProjectWebHooksTab extends ProjectBasePage {
 
     private By webHooksForm = By.id("settings-webhooks-form");
-    private By saveWebhookButton = By.id("add-webhook-button");
-    private By urlInputField = By.id("payloadUrlInput");
-    private By secretInputField = By.id("secretInput");
+    private By newWebHooksForm = By.id("newWebhook");
+    private By deleteBtn = By.name("deleteWebhookBtn");
+    private By editBtn = By.name("editBtn");
+
+    private final JavascriptExecutor jsExecutor =
+        (JavascriptExecutor) getDriver();
 
     public ProjectWebHooksTab(WebDriver driver) {
         super(driver);
     }
 
-    public ProjectWebHooksTab enterUrl(String url, String key) {
-        enterText(readyElement(urlInputField), url);
-        enterText(readyElement(secretInputField), key);
-        readyElement(saveWebhookButton).click();
+    public WebElement getParentElement(WebElement child) {
+        return (WebElement) jsExecutor
+            .executeScript("return arguments[0].parentNode;", child);
+    }
+
+    public ProjectWebHooksTab enterUrl(String url, String key, List<String> types) {
+        enterText(getUrlInputField(newWebHooksForm), url);
+        enterText(getSecretInputField(newWebHooksForm), key);
+
+        for (String type : types) {
+            WebElement checkbox = readyElement(newWebHooksForm)
+                .findElement(By.cssSelector("input[value=" + type + "]"));
+            getParentElement(checkbox).click();
+        }
+
+        getSaveWebhookButton(newWebHooksForm).click();
         return new ProjectWebHooksTab(getDriver());
     }
 
@@ -65,7 +81,14 @@ public class ProjectWebHooksTab extends ProjectBasePage {
 
         return list.stream().map(element -> new WebhookItem(
             element.findElement(By.name("url")).getText(),
-            element.findElement(By.name("type")).getText()))
+            getSelectedTypes(element)))
+            .collect(Collectors.toList());
+    }
+
+    private List<String> getSelectedTypes(WebElement parentForm) {
+        return parentForm.findElement(By.name("types"))
+            .findElements(By.cssSelector("input[checked=checked]")).stream()
+            .map(input -> input.getAttribute("value"))
             .collect(Collectors.toList());
     }
 
@@ -85,7 +108,12 @@ public class ProjectWebHooksTab extends ProjectBasePage {
         boolean clicked = false;
         for (WebElement listItem : listItems) {
             if (listItem.getText().contains(url)) {
-                listItem.findElement(By.tagName("button")).click();
+                listItem.findElement(editBtn).click();
+                WebElement deleteButton = listItem.findElement(deleteBtn);
+                if (!deleteButton.isDisplayed()) {
+                    listItem.findElement(editBtn).click();
+                }
+                deleteButton.click();
                 clicked = true;
                 break;
             }
@@ -109,6 +137,18 @@ public class ProjectWebHooksTab extends ProjectBasePage {
     @AllArgsConstructor
     public class WebhookItem {
         private String url;
-        private String type;
+        private List<String> types;
+    }
+
+    private WebElement getSaveWebhookButton(By parentId) {
+        return readyElement(parentId).findElement(By.name("addWebhookBtn"));
+    }
+
+    private WebElement getUrlInputField(By parentId) {
+        return readyElement(parentId).findElement(By.name("payloadUrlInput"));
+    }
+
+    private WebElement getSecretInputField(By parentId) {
+        return readyElement(parentId).findElement(By.name("secretInput"));
     }
 }

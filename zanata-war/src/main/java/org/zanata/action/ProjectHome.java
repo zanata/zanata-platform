@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -41,7 +42,6 @@ import javax.faces.event.ValueChangeEvent;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
@@ -77,9 +77,10 @@ import org.zanata.model.validator.SlugValidator;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
+import org.zanata.service.ProjectService;
 import org.zanata.service.SlugEntityService;
 import org.zanata.service.ValidationService;
-import org.zanata.service.impl.WebHooksPublisher;
+import org.zanata.service.impl.WebhookServiceImpl;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.autocomplete.MaintainerAutocomplete;
@@ -87,7 +88,7 @@ import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.CommonMarkRenderer;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.util.UrlUtil;
-import org.zanata.webhook.events.TestEvent;
+import org.zanata.webhook.events.ProjectMaintainerChangedEvent;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
@@ -97,6 +98,8 @@ import com.google.common.collect.Maps;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 import static javax.faces.application.FacesMessage.SEVERITY_INFO;
+import static org.zanata.service.impl.WebhookServiceImpl.getTypesFromString;
+import static org.zanata.model.ProjectRole.Maintainer;
 
 @Named("projectHome")
 @Slf4j
@@ -173,6 +176,12 @@ public class ProjectHome extends SlugHome<HProject> implements
 
     @Inject
     private CopyTransOptionsModel copyTransOptionsModel;
+
+    @Inject
+    private WebhookServiceImpl webhookServiceImpl;
+
+    @Inject
+    private ProjectService projectServiceImpl;
 
     @Inject
     private UrlUtil urlUtil;
@@ -848,6 +857,12 @@ public class ProjectHome extends SlugHome<HProject> implements
                         validationAction.getState().name());
             }
             retValue = super.persist();
+
+            webhookServiceImpl.processWebhookMaintainerChanged(
+                    getInstance().getSlug(),
+                    creator.getAccount().getUsername(), Maintainer,
+                    getInstance().getWebHooks(),
+                    ProjectMaintainerChangedEvent.ChangeType.ADD);
         }
         return retValue;
     }
@@ -878,10 +893,13 @@ public class ProjectHome extends SlugHome<HProject> implements
             getInstance().removeMaintainer(person);
             maintainerFilter.reset();
             update();
-
             facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
                 msgs.format("jsf.project.MaintainerRemoved",
                     person.getName()));
+            webhookServiceImpl.processWebhookMaintainerChanged(getSlug(),
+                    person.getAccount().getUsername(), Maintainer,
+                    getInstance().getWebHooks(),
+                    ProjectMaintainerChangedEvent.ChangeType.REMOVE);
             if (person.equals(authenticatedAccount.getPerson())) {
                 urlUtil.redirectToInternal(urlUtil.projectUrl(getSlug()));
             }
@@ -1068,81 +1086,92 @@ public class ProjectHome extends SlugHome<HProject> implements
         return sortedList;
     }
 
-    @Getter
-    public class WebhookTypeItem {
-        private String name;
-        private String description;
-
-        public WebhookTypeItem(WebhookType type, String desc) {
-            this.name = type.name();
-            this.description = desc;
-        }
-    }
-
-    public List<WebhookTypeItem> getWebhookTypes() {
-        List<WebhookTypeItem> results = Lists.newArrayList();
-        results.add(new WebhookTypeItem(WebhookType.DocumentMilestoneEvent,
-                msgs.get("jsf.webhookType.DocumentMilestoneEvent.desc")));
-        results.add(new WebhookTypeItem(WebhookType.DocumentStatsEvent,
-                msgs.get("jsf.webhookType.DocumentStatsEvent.desc")));
-        return results;
-    }
-
     @Transactional
-    public void addWebHook(String url, String secret, String strType) {
+    public void addWebHook(String url, String secret, String strTypes) {
         identity.checkPermission(getInstance(), "update");
-
-        WebhookType type = WebhookType.valueOf(strType);
-        if (isValidUrl(url, type)) {
-            secret = StringUtils.isBlank(secret) ? null : secret;
-            WebHook webHook =
-                    new WebHook(this.getInstance(), url, type, secret);
-            getInstance().getWebHooks().add(webHook);
-            update();
+        Set<WebhookType> types = getTypesFromString(strTypes);
+        if(types.isEmpty()) {
+            facesMessages.addGlobal(msgs.get("jsf.project.webhookType.empty"));
+            return;
+        }
+        if (!isValidUrl(url)) {
+            return;
+        }
+        if (projectServiceImpl.isDuplicateWebhookUrl(getInstance(), url)) {
+            facesMessages.addGlobal(SEVERITY_ERROR,
+                    msgs.format("jsf.project.DuplicateUrl", url));
+            return;
+        }
+        boolean isAdded = projectServiceImpl.addWebhook(getInstance(), url,
+                secret, types);
+        if (isAdded) {
             facesMessages.addGlobal(
-                msgs.format("jsf.project.AddNewWebhook", webHook.getUrl()));
+                    msgs.format("jsf.project.AddNewWebhook", url));
         }
     }
 
     @Transactional
-    public void removeWebHook(Long webhookId) {
+    public void removeWebHook(String id) {
         identity.checkPermission(getInstance(), "update");
-        WebHook webHook = webHookDAO.findById(webhookId);
+        WebHook webHook = webHookDAO.findById(new Long(id));
+        String url = webHook.getUrl();
         if (webHook != null) {
             getInstance().getWebHooks().remove(webHook);
             webHookDAO.makeTransient(webHook);
             facesMessages.addGlobal(
-                msgs.format("jsf.project.RemoveWebhook", webHook.getUrl()));
+                msgs.format("jsf.project.RemoveWebhook", url));
         }
     }
 
-    public void testWebhook(String url, String secret, String strType) {
+    @Transactional
+    public void updateWebhook(String id, String url, String secret,
+        String strTypes) {
         identity.checkPermission(getInstance(), "update");
-        WebhookType type = WebhookType.valueOf(strType);
-        if (isValidUrl(url, type)) {
-            TestEvent event =
-                new TestEvent(identity.getAccountUsername(), getSlug());
-            WebHooksPublisher
-                .publish(url, event, Optional.fromNullable(secret));
+        Set<WebhookType> types = getTypesFromString(strTypes);
+        if(types.isEmpty()) {
+            facesMessages.addGlobal(msgs.get("jsf.project.webhookType.empty"));
+            return;
         }
+        if (!isValidUrl(url)) {
+            return;
+        }
+        Long webhookId = new Long(id);
+        if (projectServiceImpl.isDuplicateWebhookUrl(getInstance(), url,
+                webhookId)) {
+            facesMessages.addGlobal(SEVERITY_ERROR,
+                    msgs.format("jsf.project.DuplicateUrl", url));
+            return;
+        }
+        boolean updated = projectServiceImpl.updateWebhook(getInstance(),
+                webhookId, url, secret, types);
+        if (updated) {
+            facesMessages.addGlobal(
+                    msgs.format("jsf.project.UpdateWebhook", url));
+        }
+    }
+
+    public void testWebhook(String url, String secret) {
+        identity.checkPermission(getInstance(), "update");
+        if (projectServiceImpl.isDuplicateWebhookUrl(getInstance(), url)) {
+            facesMessages.addGlobal(SEVERITY_ERROR,
+                    msgs.format("jsf.project.DuplicateUrl", url));
+            return;
+        }
+        if (!isValidUrl(url)) {
+            return;
+        }
+        webhookServiceImpl.processTestEvent(identity.getAccountUsername(),
+                getSlug(), url, secret);
     }
 
     /**
      * Check if url is valid and there is no duplication of url+type
      */
-    private boolean isValidUrl(String url, WebhookType type) {
-        if (!UrlUtil.isValidUrl(url)) {
+    private boolean isValidUrl(String url) {
+        if (!webhookServiceImpl.isValidUrl(url)) {
             facesMessages.addGlobal(SEVERITY_ERROR,
-                    msgs.format("jsf.project.InvalidUrl", url));
+                msgs.format("jsf.project.InvalidUrl", url));
             return false;
-        }
-        for(WebHook webHook: getInstance().getWebHooks()) {
-            if (StringUtils.equalsIgnoreCase(webHook.getUrl(), url)
-                    && type.equals(webHook.getWebhookType())) {
-                facesMessages.addGlobal(SEVERITY_ERROR,
-                        msgs.get("jsf.project.DuplicateUrl"));
-                return false;
-            }
         }
         return true;
     }
@@ -1204,6 +1233,9 @@ public class ProjectHome extends SlugHome<HProject> implements
         private ProjectHome projectHome;
 
         @Inject
+        private WebhookServiceImpl webhookServiceImpl;
+
+        @Inject
         private Messages msgs;
 
         @Inject
@@ -1246,6 +1278,12 @@ public class ProjectHome extends SlugHome<HProject> implements
             facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
                     msgs.format("jsf.project.MaintainerAdded",
                             maintainer.getName()));
+
+            webhookServiceImpl.processWebhookMaintainerChanged(
+                getInstance().getSlug(),
+                maintainer.getAccount().getUsername(), Maintainer,
+                getInstance().getWebHooks(),
+                ProjectMaintainerChangedEvent.ChangeType.ADD);
         }
     }
 

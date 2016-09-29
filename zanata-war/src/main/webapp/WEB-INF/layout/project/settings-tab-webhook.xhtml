@@ -1,0 +1,118 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
+  <h:form>
+    <a4j:jsFunction name="a4jTestWebhook"
+      oncomplete="zanata.loader.deactivate('##{formId} [name=testWebhookBtn]')"
+      action="#{projectHome.testWebhook(url, secret)}">
+      <a4j:param name="val1" assignTo="#{url}"/>
+      <a4j:param name="val2" assignTo="#{secret}"/>
+      <a4j:param name="val3" assignTo="#{formId}"/>
+    </a4j:jsFunction>
+
+    <a4j:jsFunction name="a4jAddWebhook"
+      onbegin="jQuery('##{formId} [name=addWebhookBtn]').removeClass('button--primary')"
+      oncomplete="zanata.loader.deactivate('##{formId} [name=addWebhookBtn]');jQuery('##{formId} [name=addWebhookBtn]').addClass('button--primary');clearWebhookForm('#{formId}');toggleNewWebhookForm('new-webhook-form', 'toggle-new-webhook');zanata.form.appendCheckboxes(jQuery('#settings-webhooks-form').element);"
+      action="#{projectHome.addWebHook(url, secret, types)}"
+      render="settings-webhooks-list">
+      <a4j:param name="val1" assignTo="#{url}"/>
+      <a4j:param name="val2" assignTo="#{secret}"/>
+      <a4j:param name="val3" assignTo="#{types}"/>
+      <a4j:param name="val4" assignTo="#{formId}"/>
+    </a4j:jsFunction>
+
+    <a4j:jsFunction name="a4jDeleteWebhook"
+      action="#{projectHome.removeWebHook(id)}"
+      render="settings-webhooks-list"
+      oncomplete="zanata.form.appendCheckboxes(jQuery('#settings-webhooks-form').element);">
+      <a4j:param name="val1" assignTo="#{id}"/>
+    </a4j:jsFunction>
+
+    <a4j:jsFunction name="a4jUpdateWebhook"
+      oncomplete="zanata.loader.deactivate('##{formId} [name=updateWebhookBtn]');zanata.form.appendCheckboxes(jQuery('##{formId}').element);"
+      action="#{projectHome.updateWebhook(id, url, secret, types)}"
+      render="settings-webhooks-list">
+      <a4j:param name="val1" assignTo="#{id}"/>
+      <a4j:param name="val2" assignTo="#{url}"/>
+      <a4j:param name="val3" assignTo="#{secret}"/>
+      <a4j:param name="val4" assignTo="#{types}"/>
+      <a4j:param name="val5" assignTo="#{formId}"/>
+    </a4j:jsFunction>
+
+    <a4j:jsFunction name="a4JReRenderWebhookForm" render="#{formId}"
+      oncomplete="zanata.form.appendCheckboxes(jQuery('##{componentId}').element);">
+      <a4j:param name="val1" assignTo="#{formId}"/>
+      <a4j:param name="val2" assignTo="#{componentId}"/>
+    </a4j:jsFunction>
+  </h:form>
+
+  <script type="application/javascript">
+    function clearWebhookForm(formId) {
+      var form = jQuery('#' + formId)
+      form.find('[name="payloadUrlInput"]').val('');
+      form.find('[name="secretInput"]').val('');
+      form.find('.js-form__checkbox .is-checked').click();
+      form.find('[name="webhookTypes"]').val('');
+    }
+
+    function toggleNewWebhookForm(formId, buttonId) {
+      jQuery('#' + formId).toggle(50)
+      if (buttonId) {
+        jQuery('#' + buttonId + ' > i').toggleClass('i--arrow-down')
+        jQuery('#' + buttonId + ' > i').toggleClass('i--arrow-up')
+      }
+    }
+  </script>
+
+  <h2 class="l--push-all-0 gamma bx--inline-block">
+    #{msgs['jsf.project.WebHooks']}
+    <span class="txt--meta">
+      <a href="http://docs.zanata.org/en/release/user-guide/projects/project-settings/#webhooks"
+        title="#{msgs['jsf.project.Webhooks.help.message']}">
+        <i class="i i--help"></i>
+      </a>
+    </span>
+  </h2>
+  <button id="toggle-new-webhook" class="button--primary l--float-right" onclick="toggleNewWebhookForm('new-webhook-form', 'toggle-new-webhook')">
+    <i class="i i--large #{projectHome.instance.webHooks.isEmpty() ? 'i--arrow-up' : 'i--arrow-down'}" /> #{msgs['jsf.project.NewWebhook']}
+  </button>
+  <h:form id="settings-webhooks-form" onclick="return false">
+    <div id="new-webhook-form" class="panel l--pad-all-half l--push-bottom-half" style="#{projectHome.instance.webHooks.isEmpty() ? '' : 'display: none'}">
+      <h3 class="heading--secondary">#{msgs['jsf.project.NewWebhook']}</h3>
+      <zanata:webbook-form name="newWebhook"
+        onAddWebhook="a4jAddWebhook"
+        onTestWebhook="a4jTestWebhook"/>
+    </div>
+
+    <h:panelGroup layout="block" id="settings-webhooks-list">
+      <ui:fragment rendered="#{not projectHome.instance.webHooks.isEmpty()}">
+        <ul class="list--slat list--highlight l--push-top-half">
+          <ui:repeat value="#{projectHome.instance.webHooks}" var="webhook">
+            <li class="list-item l--pad-h-quarter">
+              <span name="url">#{webhook.url}</span>
+              <span class="txt--meta l--push-left-quarter" name="type">#{webhookServiceImpl.getDisplayNames(webhook.types)}</span>
+              <button class="button button--small l--float-right" name="editBtn" onclick="jQuery('##{webhook.id}').toggle(50)">
+                #{msgs['jsf.Edit']}
+              </button>
+              <div id="#{webhook.id}" class="panel l--pad-all-half l--push-top-quarter" style="display:none">
+                <h:panelGroup layout="block" id="webhookForm">
+                  <zanata:webbook-form name="webhook#{webhook.id}"
+                    webhook="#{webhook}"
+                    onDeleteWebhook="a4jDeleteWebhook('#{webhook.id}')"
+                    onUpdateWebhook="a4jUpdateWebhook"
+                    onCancelEditWebhook="jQuery('##{webhook.id}').hide(50);a4jReRenderWebhookForm('#{rich:clientId('webhookForm')}', '#{webhook.id}')" />
+                </h:panelGroup>
+              </div>
+            </li>
+          </ui:repeat>
+        </ul>
+        <hr class="l--push-all-0"/>
+      </ui:fragment>
+    </h:panelGroup>
+
+  </h:form>
+
+</ui:composition>

@@ -473,3 +473,37 @@ function onCheckboxValueChanged(checkbox, jsFunction) {
   var key = jQuery(checkbox).children("input").first().val();
   jsFunction(key, isChecked);
 }
+
+
+/* ---------------------------------------------------------- */
+/*------------------ webhook-form component ------------------*/
+/* ---------------------------------------------------------- */
+
+function toggleButtons(form, disable) {
+  form.find('[name="addWebhookBtn"]').attr('disabled', disable);
+  form.find('[name="testWebhookBtn"]').attr('disabled', disable);
+  form.find('[name="updateWebhookBtn"]').attr('disabled', disable);
+}
+
+function onTestWebhook(formId, callback) {
+  var form = jQuery('#' + formId);
+  var url = form.find('[name="payloadUrlInput"]').val();
+  var secret = form.find('[name="secretInput"]').val();
+  callback(url, secret, formId);
+}
+
+function onAddWebhook(formId, callback) {
+  var form = jQuery('#' + formId);
+  var url = form.find('[name="payloadUrlInput"]').val();
+  var secret = form.find('[name="secretInput"]').val();
+  var types = form.find('[name="webhookTypes"]').val();
+  callback(url, secret, types, formId);
+}
+
+function onUpdateWebhook(id, formId, callback) {
+  var form = jQuery('#' + formId);
+  var url = form.find('[name="payloadUrlInput"]').val();
+  var secret = form.find('[name="secretInput"]').val();
+  var types = form.find('[name="webhookTypes"]').val();
+  callback(id, url, secret, types, formId);
+}

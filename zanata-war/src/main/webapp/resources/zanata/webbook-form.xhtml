@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:composite="http://java.sun.com/jsf/composite"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
+
+  <composite:interface>
+    <composite:attribute name="name" required="true"
+      shortDescription="Camelcase identifier for this form."/>
+
+    <composite:attribute name="webhook"
+      shortDescription="Webhook object. org.zanata.service.impl.WebhookServiceImpl.WebhookItem" />
+
+    <composite:attribute name="onTestWebhook"
+      shortDescription="Require if webhook is null. js handler for test webhook. Fn(url, secret, webhookTypes, formId)" />
+
+    <composite:attribute name="onAddWebhook"
+      shortDescription="Require if webhook is null. js handler for add webhook. Fn(url, secret, webhookTypes, formId)"/>
+
+    <composite:attribute name="onUpdateWebhook"
+      shortDescription="Require if webhook is not null. js handler for update webhook. Fn(id, url, secret, webhookTypes, formId)"/>
+
+    <composite:attribute name="onDeleteWebhook"
+      shortDescription="Require if webhook is not null. js handler for delete webhook. Fn(formId, url)"/>
+
+    <composite:attribute name="onCancelEditWebhook"
+      shortDescription="Require if webhook is not null. js handler for cancel edit webhook. Fn(url, secret, webhookTypes, formId)"/>
+
+  </composite:interface>
+
+  <composite:implementation>
+    <div id="#{cc.attrs.name}">
+      <script type="application/javascript">
+        jQuery(document).ready(function() {
+          var form = jQuery('##{cc.attrs.name}');
+          form.find('[name="payloadUrlInput"]').on('input', function (e) {
+            var isNotEmpty = e.target.value.trim()
+            var disableButton = !form.find('[name="webhookTypes"]').val() || !isNotEmpty
+            toggleButtons(form, disableButton);
+          })
+        })
+
+        function updateType#{cc.attrs.name}(key, checked) {
+          var form = jQuery('##{cc.attrs.name}');
+          var webhookTypes = form.find('[name="webhookTypes"]');
+          var currentTypes = webhookTypes.val() ? webhookTypes.val().split(",") : []
+          if (checked) {
+            currentTypes.push(key)
+          } else {
+            var index = currentTypes.indexOf(key);
+            if (index > -1) {
+              currentTypes.splice(index, 1);
+            }
+          }
+          webhookTypes.val(currentTypes.join())
+
+          var disableButton = !webhookTypes.val() || !form.find('[name="payloadUrlInput"]').val()
+          toggleButtons(form, disableButton);
+        }
+      </script>
+
+      <div class="form__item">
+        <label>
+          #{msgs['jsf.project.PayloadURL']} <span class="txt--required">*</span>
+        </label>
+        <input type="text" name="payloadUrlInput" autocomplete="off" maxlength="255"
+          placeholder="#{msgs['jsf.project.PayloadURL']}"
+          class="form--inline__input" value="#{cc.attrs.webhook.url}"/>
+      </div>
+      <div class="form__item">
+        <label>#{msgs['jsf.project.WebHooks.secret']}</label>
+        <input type="password" name="secretInput" autocomplete="off" maxlength="255"
+          placeholder="#{msgs['jsf.project.WebHooks.secret.placeholder']}"
+          value="#{cc.attrs.webhook.secret}"/>
+      </div>
+
+      <div name="types" class="form__item">
+        <label>#{msgs['jsf.project.WebhookType.label']}</label>
+        <ui:repeat value="#{webhookServiceImpl.availableWebhookTypes}" var="webhookType">
+          <div class="l--push-bottom-half">
+            <zanata:checkbox onValueChanged="updateType#{cc.attrs.name}" value="#{webhookType.type.name()}"
+              label="#{webhookType.type.displayName}" checked="#{cc.attrs.webhook ne null and cc.attrs.webhook.types.contains(webhookType.type)}">
+              <span class="txt--meta">#{webhookType.description}</span>
+            </zanata:checkbox>
+          </div>
+        </ui:repeat>
+        <input type="hidden" name="webhookTypes" value="#{webhookServiceImpl.getTypesAsString(cc.attrs.webhook)}"/>
+      </div>
+
+      <div class="l--push-top-1">
+        <ui:fragment rendered="#{cc.attrs.webhook eq null}">
+          <button name="testWebhookBtn" disabled="disabled"
+            title="#{msgs['jsf.webhook.test.tooltip']}" class="button loader l--push-right-half"
+            onclick="onTestWebhook('#{cc.attrs.name}', #{cc.attrs.onTestWebhook})">
+            <span class="loader__label">
+              #{msgs['jsf.webhook.test.label']}
+            </span>
+          </button>
+
+          <button name="addWebhookBtn" class="button--primary button loader"
+            disabled="disabled"
+            onclick="onAddWebhook('#{cc.attrs.name}', #{cc.attrs.onAddWebhook})">
+            <span class="loader__label">#{msgs['jsf.project.AddWebhook']}</span>
+          </button>
+        </ui:fragment>
+
+        <ui:fragment rendered="#{cc.attrs.webhook ne null}">
+          <button name="deleteWebhookBtn" class="loader button button--danger"
+            onclick="#{cc.attrs.onDeleteWebhook}">
+            <span class="loader__label">#{msgs['jsf.Delete']}</span>
+          </button>
+
+          <div class="l--float-right">
+            <button class="button" onclick="#{cc.attrs.onCancelEditWebhook}">
+              #{msgs['jsf.Cancel']}
+            </button>
+            <button name="updateWebhookBtn" class="button--primary button loader"
+              onclick="onUpdateWebhook('#{cc.attrs.webhook.id}', '#{cc.attrs.name}', #{cc.attrs.onUpdateWebhook})">
+              #{msgs['jsf.Update']}
+            </button>
+          </div>
+        </ui:fragment>
+
+      </div>
+    </div>
+  </composite:implementation>
+</html>

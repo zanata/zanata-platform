@@ -25,22 +25,6 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd">
 
-  <changeSet id="1" author="aeng@redhat.com">
-    <comment>Add webhookType to WebHook</comment>
-    <addColumn tableName="WebHook">
-      <column name="webhookType" type="varchar(50)">
-        <constraints nullable="false" />
-      </column>
-    </addColumn>
-  </changeSet>
-
-  <changeSet id="2" author="aeng@redhat.com">
-    <comment>Migrate all WebHook to type DocumentMilestoneEvent</comment>
-    <sql>
-      UPDATE WebHook set webhookType='DocumentMilestoneEvent'
-    </sql>
-  </changeSet>
-
   <changeSet id="1" author="pahuang@redhat.com">
     <comment>Add table AllowedApp.</comment>
     <createTable tableName="AllowedApp">
@@ -150,6 +134,61 @@
     <addUniqueConstraint tableName="HProject_Glossary"
       columnNames="glossaryId,projectId"
       constraintName="UKHProject_Glossary"/>
+  </changeSet>
+
+  <changeSet id="7" author="aeng@redhat.com">
+    <comment>Add table WebHook_WebHookType</comment>
+    <createTable tableName="WebHook_WebHookType">
+      <column name="webhookId" type="bigint">
+        <constraints nullable="false"/>
+      </column>
+      <column name="type" type="varchar(50)">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+
+    <addForeignKeyConstraint
+      baseTableName = "WebHook_WebHookType"
+      baseColumnNames = "webhookId"
+      constraintName = "FK_WebHookType_WebHook"
+      referencedTableName = "WebHook"
+      referencedColumnNames = "id"/>
+    <addPrimaryKey tableName="WebHook_WebHookType" columnNames="webhookId,type" />
+  </changeSet>
+
+  <!-- This will only execute if 1 and 2 is not executed before -->
+  <changeSet id="1-2-updated" author="aeng@redhat.com">
+    <preConditions onFail="MARK_RAN">
+      <not>
+        <changeSetExecuted id="1" author="aeng@redhat.com" changeLogFile="db/changelogs/db.changelog-4.0.xml"/>
+        <changeSetExecuted id="2" author="aeng@redhat.com" changeLogFile="db/changelogs/db.changelog-4.0.xml"/>
+      </not>
+    </preConditions>
+    <comment>Insert DocumentMilestoneEvent to WebHook_WebHookType for existing webhook</comment>
+    <sql>
+      INSERT INTO WebHook_WebHookType (webhookId, type) SELECT id, 'DocumentMilestoneEvent' FROM WebHook
+    </sql>
+  </changeSet>
+
+  <!-- This will only execute if 1 and 2 is already executed -->
+  <changeSet id="8" author="aeng@redhat.com">
+    <preConditions onFail="MARK_RAN">
+        <changeSetExecuted id="1" author="aeng@redhat.com" changeLogFile="db/changelogs/db.changelog-4.0.xml"/>
+        <changeSetExecuted id="2" author="aeng@redhat.com" changeLogFile="db/changelogs/db.changelog-4.0.xml"/>
+    </preConditions>
+    <comment>Migrate all WebHookType from WebHook to WebHook_WebHookType, and drop webhookType column from WebHook</comment>
+    <sql>
+      INSERT INTO WebHook_WebHookType (webhookId, type) SELECT id, webhookType FROM WebHook
+    </sql>
+    <dropColumn tableName="WebHook" columnName="webhookType" />
+  </changeSet>
+
+  <changeSet id="9" author="aeng@redhat.com">
+    <comment>Change url column to text, Add unique constrains of url and project</comment>
+    <modifyDataType tableName="WebHook" columnName="url"
+      newDataType="varchar(255)"/>
+    <addUniqueConstraint tableName="WebHook" columnNames="url, projectId"
+      constraintName="UKWebHookUrl_projectId" />
   </changeSet>
 
 </databaseChangeLog>
