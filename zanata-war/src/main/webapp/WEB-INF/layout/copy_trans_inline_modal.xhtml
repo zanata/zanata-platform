@@ -3,7 +3,6 @@
   xmlns:a4j="http://richfaces.org/a4j"
   xmlns:h="http://java.sun.com/jsf/html">
 
-
   <div class="modal" id="copy-trans-modal" tabindex="-1"
     role="dialog" aria-hidden="true">
     <div class="modal__dialog l--constrain-medium">
@@ -18,6 +17,12 @@
           #{msgs['jsf.Copytrans.message2']}
         </div>
         <h:form class="l--push-h-1 l--push-v-half">
+          <a4j:jsFunction name="bindCopyTransValue" limitRender="true"
+            action="#{copyTransAction.updateCopyTrans(action, value)}">
+            <a4j:param name="val1" assignTo="#{action}"/>
+            <a4j:param name="val2" assignTo="#{value}"/>
+          </a4j:jsFunction>
+
           <ui:include src="/WEB-INF/layout/copy_trans_inline.xhtml"/>
         </h:form>
       </div>
