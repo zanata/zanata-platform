@@ -55,7 +55,8 @@ class Languages extends Component {
       handleDelete,
       handleOnUpdatePageSize,
       handleOnUpdateSort,
-      handleOnUpdateSearch
+      handleOnUpdateSearch,
+      handlePageChanged
     } = this.props
 
     // TODO: tweak for testing
@@ -133,7 +134,8 @@ class Languages extends Component {
                         </div>
                         <div className='page-count pull-right col-xs-7 col-sm-8
                           col-md-12'>
-                          <Pager activePage={page} totalPage={totalPage} />
+                          <Pager activePage={page} totalPage={totalPage}
+                            handlePageChanged={handlePageChanged} />
                         </div>
                       </div>)
                   }
@@ -184,7 +186,8 @@ Languages.propTypes = {
   handleDelete: PropTypes.func,
   handleOnUpdatePageSize: PropTypes.func,
   handleOnUpdateSort: PropTypes.func,
-  handleOnUpdateSearch: PropTypes.func
+  handleOnUpdateSearch: PropTypes.func,
+  handlePageChanged: PropTypes.func
 }
 
 const mapStateToProps = (state) => {
