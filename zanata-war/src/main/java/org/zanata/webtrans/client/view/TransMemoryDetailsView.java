@@ -18,6 +18,7 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineHTML;
@@ -47,6 +48,9 @@ public class TransMemoryDetailsView extends DialogBox implements
 
     @UiField(provided = true)
     DialogBoxCloseButton closeButton;
+
+    @UiField
+    Anchor urlLink;
 
     @UiField
     ListBox documentListBox;
@@ -114,6 +118,16 @@ public class TransMemoryDetailsView extends DialogBox implements
         } else {
             lastModified.setText(messages.lastModifiedOn(DateUtil
                     .formatShortDate(lastModifiedDate)));
+        }
+    }
+
+    @Override
+    public void setUrl(String url) {
+        urlLink.setHref(url);
+        if (Strings.isNullOrEmpty(url)) {
+            urlLink.addStyleName("is-hidden");
+        } else {
+            urlLink.removeStyleName("is-hidden");
         }
     }
 

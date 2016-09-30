@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.mockito.Mock;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.TextFlowDAO;
@@ -38,6 +39,7 @@ import org.zanata.test.DBUnitDataSetRunner;
 import org.zanata.test.ParamTestCdiExtension;
 import org.zanata.test.rule.DataSetOperation;
 import org.zanata.test.rule.JpaRule;
+import org.zanata.util.UrlUtil;
 import org.zanata.util.Zanata;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
@@ -83,6 +85,9 @@ public class TranslationMemoryServiceImplTest {
 
         @Inject
         LocaleDAO localeDAO;
+
+        @Produces @Mock
+        private UrlUtil urlUtil;
 
         @Produces @Zanata
         EntityManagerFactory getEntityManagerFactory() {
@@ -265,6 +270,9 @@ public class TranslationMemoryServiceImplTest {
 
         @Inject
         LocaleDAO localeDAO;
+
+        @Produces @Mock
+        private UrlUtil urlUtil;
 
         @Produces @Zanata
         EntityManagerFactory getEntityManagerFactory() {

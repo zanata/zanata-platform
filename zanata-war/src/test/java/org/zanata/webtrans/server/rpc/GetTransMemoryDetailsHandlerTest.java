@@ -27,6 +27,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.impl.TranslationMemoryServiceImpl;
 import org.zanata.test.CdiUnitRunner;
+import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetTransMemoryDetailsAction;
@@ -60,6 +61,8 @@ public class GetTransMemoryDetailsHandlerTest extends ZanataTest {
     private TextFlowDAO textFlowDAO;
     @Produces @Mock
     private LocaleService localeServiceImpl;
+    @Produces @Mock
+    private UrlUtil urlUtil;
     @Produces @Mock @FullText
     private FullTextEntityManager fullTextEntityManager;
 

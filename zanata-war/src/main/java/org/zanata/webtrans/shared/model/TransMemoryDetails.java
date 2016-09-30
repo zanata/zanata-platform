@@ -19,6 +19,7 @@ public class TransMemoryDetails implements IsSerializable {
     private ContentState state;
     private String lastModifiedBy;
     private Date lastModifiedDate;
+    private String url;
 
     @SuppressWarnings("unused")
     private TransMemoryDetails() {
@@ -27,7 +28,7 @@ public class TransMemoryDetails implements IsSerializable {
     public TransMemoryDetails(String sourceComment, String targetComment,
             String projectName, String iterationName, String docId,
             String resId, String msgContext, ContentState state,
-            String lastModifiedBy, Date lastModifiedDate) {
+            String lastModifiedBy, Date lastModifiedDate, String url) {
         this.sourceComment = sourceComment;
         this.targetComment = targetComment;
         this.projectName = projectName;
@@ -38,6 +39,7 @@ public class TransMemoryDetails implements IsSerializable {
         this.state = state;
         this.lastModifiedBy = lastModifiedBy;
         this.lastModifiedDate = lastModifiedDate;
+        this.url = url;
     }
 
     public String getSourceComment() {
@@ -80,6 +82,10 @@ public class TransMemoryDetails implements IsSerializable {
         return lastModifiedDate;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
     @Override
     public String toString() {
         // @formatter:off
@@ -94,6 +100,7 @@ public class TransMemoryDetails implements IsSerializable {
             add("state", state).
             add("lastModifiedBy", lastModifiedBy).
             add("lastModifiedDate", lastModifiedDate).
+            add("url", url).
             toString();
       // @formatter:on
     }

@@ -47,7 +47,12 @@
         </div>
       </div>
 
-      <g:InlineLabel ui:field='lastModified' styleName="txt--understated" />
+      <g:Anchor ui:field='urlLink' target="_blank" styleName="l--push-all-quarter">
+        Link to translation
+      </g:Anchor>
+
+      <g:InlineLabel ui:field='lastModified'
+        styleName="l--float-right  txt--understated" />
     </div>
   </g:HTMLPanel>
 </ui:UiBinder>

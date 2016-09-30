@@ -71,6 +71,7 @@ import org.zanata.test.rule.JpaRule;
 import org.zanata.transaction.TransactionUtil;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.IServiceLocator;
+import org.zanata.util.UrlUtil;
 import org.zanata.util.Zanata;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.model.ValidationId;
@@ -112,7 +113,8 @@ import static org.zanata.test.rule.FunctionalTestRule.reentrant;
         VersionStateCacheImpl.class,
         TranslationStateCacheImpl.class,
         ValidationServiceImpl.class,
-        TransactionUtil.class
+        TransactionUtil.class,
+        UrlUtil.class
 })
 public class CopyTransServiceImplParameterizedTest {
 
@@ -135,6 +137,9 @@ public class CopyTransServiceImplParameterizedTest {
     IServiceLocator serviceLocator;
     @Produces @Mock @FullText
     FullTextEntityManager fullTextEntityManager;
+
+    @Produces @Mock
+    private UrlUtil urlUtil;
 
     @Produces @Mock
     private CacheLoader<DocumentLocaleKey, WordStatistic> documentStatisticLoader;

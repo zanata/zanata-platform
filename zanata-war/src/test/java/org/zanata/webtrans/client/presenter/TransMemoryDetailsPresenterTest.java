@@ -73,12 +73,13 @@ public class TransMemoryDetailsPresenterTest {
         AbstractAsyncCallback<TransMemoryDetailsList> callback =
                 resultCaptor.getValue();
 
+        String url = "http://localhost:8080";
         Date lastModifiedDate = new Date();
         // testing on callback success
         TransMemoryDetails details =
                 new TransMemoryDetails("source comment", "target comment",
                         "project", "iteration", "docId", "resId", "msgContext",
-                        ContentState.Approved, "admin", lastModifiedDate);
+                        ContentState.Approved, "admin", lastModifiedDate, url);
         callback.onSuccess(new TransMemoryDetailsList(Lists
                 .newArrayList(details)));
 
@@ -97,6 +98,7 @@ public class TransMemoryDetailsPresenterTest {
         verify(display).setVersionName("iteration");
         verify(display).setDocumentName("docId");
         verify(display).setLastModified("admin", lastModifiedDate);
+        verify(display).setUrl(url);
 
         inOrder.verify(display).center();
     }
@@ -111,15 +113,17 @@ public class TransMemoryDetailsPresenterTest {
     @Test
     public void testOnDocumentListBoxChanged() throws Exception {
         Date lastModifiedDate = new Date();
+        String url = "http://localhost:8080/zanta";
+
         // Given: two details
         TransMemoryDetails details1 =
                 new TransMemoryDetails("source comment1", "target comment1",
                         "project", "1", "docId1", "resId", "msgContext",
-                        ContentState.Approved, "admin", lastModifiedDate);
+                        ContentState.Approved, "admin", lastModifiedDate, url);
         TransMemoryDetails details2 =
                 new TransMemoryDetails("source comment2", "target comment2",
                         "project", "2", "docId2", "resId", "msgContext",
-                        ContentState.Approved, null, lastModifiedDate);
+                        ContentState.Approved, null, lastModifiedDate, url);
         presenter.setStatForTesting(new TransMemoryDetailsList(Lists
                 .newArrayList(details1, details2)));
 
@@ -134,5 +138,6 @@ public class TransMemoryDetailsPresenterTest {
         verify(display).setVersionName("2");
         verify(display).setDocumentName("docId2");
         verify(display).setLastModified(null, lastModifiedDate);
+        verify(display).setUrl(url);
     }
 }
