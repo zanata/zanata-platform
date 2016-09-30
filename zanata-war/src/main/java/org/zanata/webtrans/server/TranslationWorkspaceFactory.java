@@ -38,11 +38,21 @@ import javax.inject.Inject;
  */
 public class TranslationWorkspaceFactory {
 
-    @Inject
-    private ProjectIterationDAO projectIterationDAO;
+    private final ProjectIterationDAO projectIterationDAO;
+    private final LocaleService localeServiceImpl;
 
     @Inject
-    private LocaleService localeServiceImpl;
+    public TranslationWorkspaceFactory(
+            ProjectIterationDAO projectIterationDAO,
+            LocaleService localeServiceImpl) {
+        this.projectIterationDAO = projectIterationDAO;
+        this.localeServiceImpl = localeServiceImpl;
+    }
+
+    @SuppressWarnings("unused")
+    private TranslationWorkspaceFactory() {
+        this(null, null);
+    }
 
     private WorkspaceContext validateAndGetWorkspaceContext(
             WorkspaceId workspaceId) throws NoSuchWorkspaceException {
