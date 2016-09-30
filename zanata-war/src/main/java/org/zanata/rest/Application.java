@@ -3,6 +3,7 @@ package org.zanata.rest;
 import com.google.common.collect.ImmutableSet;
 import lombok.extern.slf4j.Slf4j;
 import org.atteo.classindex.ClassIndex;
+import org.zanata.rest.service.RestResource;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.ApplicationPath;
@@ -33,23 +34,26 @@ public class Application extends javax.ws.rs.core.Application {
      * Collect all classes annotated with {@code @Path} or
      * {@code @Provider}, except in the packages
      * {@code org.zanata.rest.client} and {@code org.zanata.rest.enunciate}.
-     * @return
+     * @return resource and provider classes
      */
     private static Set<Class<?>> buildClassesSet() {
+        Iterable<Class<? extends RestResource>> resourceClasses =
+                ClassIndex.getSubclasses(RestResource.class);
+        log.debug("Indexed RestResource classes: {}", resourceClasses);
         Iterable<Class<?>> pathClasses = ClassIndex.getAnnotated(Path.class);
         log.debug("Indexed @Path classes: {}", pathClasses);
-        assert pathClasses.iterator().hasNext();
         Iterable<Class<?>> providerClasses = ClassIndex.getAnnotated(Provider.class);
         log.debug("Indexed @Provider classes: {}", providerClasses);
-        assert providerClasses.iterator().hasNext();
-        return concat(
+        ImmutableSet<Class<?>> classes = concat(stream(resourceClasses), concat(
                 stream(pathClasses),
-                stream(providerClasses))
+                stream(providerClasses)))
                 .filter(clazz ->
                         !clazz.getName().startsWith("org.zanata.rest.client.") &&
                         !clazz.getName().startsWith("org.zanata.rest.enunciate."))
                 .collect(Collectors.collectingAndThen(Collectors.toSet(),
                         ImmutableSet::copyOf));
+        log.info("Found {} JAX-RS classes in total", classes.size());
+        return classes;
     }
 
     private static <T> Stream<T> stream(Iterable<T> iterable) {
