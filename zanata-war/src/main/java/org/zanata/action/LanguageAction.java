@@ -412,11 +412,11 @@ public class LanguageAction implements Serializable {
                 member.setCoordinator(isPermissionGranted);
             }
         }
-        savePermission(member, permissionDesc, isPermissionGranted);
+        savePermission(member, permissionDesc, role, isPermissionGranted);
     }
 
     private void savePermission(HLocaleMember member, String permissionDesc,
-            boolean isPermissionGranted) {
+            LocaleRole role, boolean isPermissionGranted) {
         languageTeamServiceImpl.joinOrUpdateRoleInLanguageTeam(
             language, member.getPerson().getId(),
             member.isTranslator(), member.isReviewer(), member.isCoordinator());
@@ -436,7 +436,18 @@ public class LanguageAction implements Serializable {
         LanguageTeamPermissionChangedEvent changedEvent =
             new LanguageTeamPermissionChangedEvent(
                 member.getPerson(), getLocale().getLocaleId(),
-                doneByPerson).changedTranslatorPermission(member);
+                doneByPerson);
+        switch (role){
+            case Translator:
+                changedEvent = changedEvent.changedTranslatorPermission(member);
+                break;
+            case Reviewer:
+                changedEvent = changedEvent.changedReviewerPermission(member);
+                break;
+            case Coordinator:
+                changedEvent = changedEvent.changedCoordinatorPermission(member);
+                break;
+        }
         languageTeamPermissionChangedEvent.fire(changedEvent);
     }
 
