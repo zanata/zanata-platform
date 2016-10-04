@@ -1,12 +1,11 @@
 import React, {PropTypes, Component} from 'react'
 import { connect } from 'react-redux'
-import {Button, InputGroup, FormGroup, FormControl}
+import {Button, InputGroup, FormGroup, FormControl, Pagination}
     from 'react-bootstrap'
 import Helmet from 'react-helmet'
 import {Page, ScrollView, View, LoaderText} from 'zanata-ui'
 import { debounce, find } from 'lodash'
 import Entry from './Entry'
-import Pager from './Pager'
 import { Notification } from '../../components'
 
 import {
@@ -134,8 +133,11 @@ class Languages extends Component {
                         </div>
                         <div className='page-count pull-right col-xs-7 col-sm-8
                           col-md-12'>
-                          <Pager activePage={page} totalPage={totalPage}
-                            handlePageChanged={handlePageChanged} />
+                          <Pagination
+                            bsSize='medium'
+                            items={totalPage}
+                            activePage={page}
+                            onSelect={handlePageChanged} />
                         </div>
                       </div>)
                   }
