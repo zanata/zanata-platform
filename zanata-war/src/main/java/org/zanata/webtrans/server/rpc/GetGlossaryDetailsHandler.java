@@ -74,7 +74,8 @@ public class GetGlossaryDetailsHandler
 
             String srcContent = srcTerm.getContent();
             String qualifiedName = entry.getGlossary().getQualifiedName();
-            String url = urlUtil.glossaryUrl(qualifiedName, srcContent);
+            String url = urlUtil.glossaryUrl(qualifiedName, srcContent,
+                    hLocale.getLocaleId());
 
             items.add(new GlossaryDetails(entry.getId(),
                     srcContent, hGlossaryTerm.getContent(),

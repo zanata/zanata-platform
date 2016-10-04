@@ -6,7 +6,8 @@
 
   <ui:style>
     .container {
-      height: 30em;
+      height: 100%;
+      min-height: 30em;
     }
   </ui:style>
 

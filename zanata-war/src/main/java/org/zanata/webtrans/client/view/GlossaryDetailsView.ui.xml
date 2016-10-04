@@ -12,7 +12,8 @@
       color: #888;
     }
     .container {
-      height: 30em;
+      height: 100%;
+      min-height: 30em;
     }
   </ui:style>
 
@@ -47,7 +48,7 @@
 
       <div class="l--push-top-quarter txt--align-right">
         <g:InlineLabel ui:field='lastModified' styleName="txt--understated" />
-        <g:Anchor styleName="button button--primary l--push-left-quarter" ui:field="link" target="_blank" text="Edit"/>
+        <g:Anchor styleName="button button--primary l--push-left-quarter" ui:field="link" target="_blank" text="Edit term"/>
       </div>
     </div>
   </g:HTMLPanel>

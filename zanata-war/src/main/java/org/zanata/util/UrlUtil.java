@@ -34,6 +34,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.common.annotations.VisibleForTesting;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
@@ -339,7 +340,8 @@ public class UrlUtil implements Serializable {
     /**
      * Get glossary url with dswid parameter
      */
-    public String glossaryUrl(String qualifiedName, String filter) {
+    public String glossaryUrl(String qualifiedName, String filter,
+            LocaleId localeId) {
         String url = contextPath + FRONT_END_PREFIX;
         if (GlossaryService.isProjectGlossary(qualifiedName)) {
             String projectSlug = GlossaryService.getProjectSlug(qualifiedName);
@@ -347,9 +349,14 @@ public class UrlUtil implements Serializable {
         } else {
             url = url + "/#glossary";
         }
-        if (StringUtils.isNotBlank(filter)) {
-            url = url + "&filter=" + filter;
+        boolean hasFilter = StringUtils.isNotBlank(filter);
+        if (hasFilter) {
+            url += "?filter=" + encodeString(filter);
         }
-        return url + "/" + dswidQuery;
+        if (localeId != null) {
+            String prefix = hasFilter ? "&" : "?";
+            url += prefix + "locale=" + localeId;
+        }
+        return url;
     }
 }
