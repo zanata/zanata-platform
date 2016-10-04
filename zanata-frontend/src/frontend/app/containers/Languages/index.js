@@ -14,6 +14,7 @@ import {
   handleUpdatePageSize,
   handleUpdateSort,
   handleUpdateSearch,
+  handlePageUpdate,
   pageSizeOption,
   sortOption
 } from '../../actions/languages'
@@ -248,8 +249,8 @@ const mapDispatchToProps = (dispatch) => {
     handleOnUpdateSearch: (event) => {
       updateSearch(event.target.value || '')
     },
-    handlePageChanged: (pageNum) => {
-      console.info('update page here', pageNum)
+    handlePageChanged: (page) => {
+      dispatch(handlePageUpdate(page))
     }
   }
 }

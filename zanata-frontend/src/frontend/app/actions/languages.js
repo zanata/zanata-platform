@@ -189,3 +189,12 @@ export const handleDelete = (localeId) => {
     dispatch(deleteLanguage(dispatch, localeId))
   }
 }
+
+export const handlePageUpdate = (page) => {
+  return (dispatch, getState) => {
+    replaceRouteQuery(getState().routing.location, {
+      page: page
+    })
+    dispatch(getLocalesList(getState()))
+  }
+}

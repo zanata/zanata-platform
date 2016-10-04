@@ -33,7 +33,7 @@ class Entry extends Component {
       <tr>
         <td>
           <a href=''>
-            <span>{localeDetails.displayName}</span>
+            <span>{localeDetails.localeId} [{localeDetails.nativeName}]</span>
             {localeDetails.enabledByDefault &&
               <span className='greentext badge Mstart(rq)'>
                 DEFAULT
@@ -52,7 +52,7 @@ class Entry extends Component {
           </a>
           <br />
           <span className='langcode'>
-            {localeDetails.localeId} [{localeDetails.nativeName}]
+            {localeDetails.displayName}
           </span>
         </td>
         <td>
