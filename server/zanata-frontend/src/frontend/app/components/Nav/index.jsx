@@ -12,6 +12,8 @@ const dswid = getDswid()
  */
 const prefixPath = '/a/'
 
+const basePath = window.config.baseUrl || ''
+
 const items = [
   {
     icon: 'zanata',
@@ -56,7 +58,9 @@ const items = [
   {
     small: true,
     icon: 'user',
-    link: prefixPath + dswid + '#profile',
+    // FIXME should use react-router <Link> for these
+    //       as long as it will work for the jsf pages properly
+    link: basePath + '/profile' + dswid,
     internalLink: '/profile',
     title: 'Profile',
     auth: 'loggedin',

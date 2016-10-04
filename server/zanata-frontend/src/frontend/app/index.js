@@ -5,7 +5,8 @@ import { mapValues } from 'lodash'
 import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
-import { browserHistory } from 'react-router'
+import { useRouterHistory } from 'react-router'
+import { createHistory } from 'history'
 import { syncHistory } from 'react-router-redux'
 import WebFont from 'webfontloader'
 import { apiMiddleware } from 'redux-api-middleware'
@@ -26,17 +27,19 @@ WebFont.load({
 })
 
 // DONE change to browserHistory
-// TODO set basename for the history to the serving location
-//      (this should just be the / or /zanata/ distinction, since this app will
-//       be served under paths like /glossary/* and /profile/* etc.)
-// TODO make sure /profile/view/{username} routes to the right place
-// TODO make sure Profile link on left points to /profile/view/{username}
-// TODO change the default route to go to /profile/view/{username} instead of
+// DONEset basename for the history to the serving location
+// DONE make sure /profile/view/{username} routes to the right place
+// DONE make sure Profile link on left points to /profile/view/{username}
+// DONE change the default route to go to /profile/view/{username} instead of
 // /profile/{username}
 // TODO make all the other hash history links go to the non-hash places
 //      this includes rewriting to the app URL, and the client-side part
 
-const routerMiddleware = syncHistory(browserHistory)
+const history = useRouterHistory(createHistory)({
+  basename: window.config.baseUrl
+})
+
+const routerMiddleware = syncHistory(history)
 
 const logger = createLogger({
   predicate: (getState, action) =>
@@ -71,6 +74,6 @@ window.config = mapValues(window.config, (value) =>
 window.config.baseUrl = window.config.baseUrl || ''
 
 render(
-  <Root store={store} history={browserHistory} />,
+  <Root store={store} history={history} />,
   document.getElementById('root')
 )
