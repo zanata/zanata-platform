@@ -23,7 +23,7 @@ export default class Root extends Component {
               <Route path='explore' component={Explore} />
               <Route path='glossary' component={Glossary} />
               <Route path='languages' component={Languages} />
-              <Route path='profile/:username' component={UserProfile} />
+              <Route path='profile/view/:username' component={UserProfile} />
               <Route path='project/:projectSlug/glossary'
                 component={Glossary} />
               <Redirect from='profile' to={`profile/${username}`} />
