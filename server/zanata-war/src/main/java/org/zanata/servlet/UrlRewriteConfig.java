@@ -116,7 +116,10 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/profile/create").to("/profile/create_user.xhtml"))
                 .addRule(Join.path("/profile/edit").to("/profile/edit.xhtml"))
                 .addRule(Join.path("/profile/merge_account").to("/profile/merge_account.xhtml"))
-                .addRule(Join.path("/profile/view/{username}").to("/profile/home.xhtml"))
+
+                // do not simplify this to /a/, doing so causes a 403 (Forbidden)
+                .addRule(Join.path("/profile/view/{username}").to("/a/index.xhtml"))
+
                 .addRule(Join.path("/project/add_iteration/{projectSlug}").to("/project/add_iteration.xhtml"))
                 .addRule(Join.path("/project/add_iteration/{projectSlug}/{copyFromVersionSlug}").to("/project/add_iteration.xhtml"))
                 .addRule(Join.path("/project/create").to("/project/create_project.xhtml"))
