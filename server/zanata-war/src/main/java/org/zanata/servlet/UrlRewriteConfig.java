@@ -111,6 +111,8 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/language/view/{id}/{section}").to("/language/language.xhtml"))
                 .where("section").matches(".*")
 
+                .addRule(Join.path("/explore").to("/a/index.xhtml"))
+
                 .addRule(Join.path("/profile/").to("/a/index.xhtml"))
                 // FIXME no longer exists: /profile/add_identity.xhtml
                 .addRule(Join.path("/profile/add_identity").to("/profile/add_identity.xhtml"))

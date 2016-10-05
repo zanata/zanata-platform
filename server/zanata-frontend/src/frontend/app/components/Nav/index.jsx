@@ -25,7 +25,7 @@ const items = [
   },
   {
     icon: 'search',
-    link: prefixPath + dswid + '#explore',
+    link: basePath + '/explore' + dswid,
     internalLink: '/explore',
     title: 'Explore',
     auth: 'public',
