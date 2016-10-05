@@ -1,9 +1,9 @@
 import React, {PropTypes, Component} from 'react'
 import { connect } from 'react-redux'
-import {Button, InputGroup, FormGroup, FormControl, Pagination,
-  Glyphicon} from 'react-bootstrap'
+import {Button, InputGroup, FormGroup, FormControl, Pagination}
+    from 'react-bootstrap'
 import Helmet from 'react-helmet'
-import {Page, ScrollView, View, LoaderText} from 'zanata-ui'
+import {Page, ScrollView, View, LoaderText, Icon} from 'zanata-ui'
 import { debounce, find } from 'lodash'
 import Entry from './Entry'
 import { Notification } from '../../components'
@@ -85,7 +85,9 @@ class Languages extends Component {
                   </h2>
                   {permission.canAddLocale &&
                     <Button className='btn-primary'>
-                      <Glyphicon glyph='plus' /> Add new language
+                      <Icon name='plus'
+                        atomic={{m: 'Mend(re) Va(sub)'}}
+                        title='plus' /> Add new language
                     </Button>
                   }
                   {loading
@@ -103,7 +105,9 @@ class Languages extends Component {
                                 onChange={handleOnUpdateSearch} />
                               <InputGroup.Button>
                                 <Button>
-                                  <Glyphicon glyph='search' />&nbsp;
+                                  <Icon name='search'
+                                    atomic={{m: 'Va(sub)'}}
+                                    title='search' />&nbsp;
                                 </Button>
                               </InputGroup.Button>
                             </InputGroup>
