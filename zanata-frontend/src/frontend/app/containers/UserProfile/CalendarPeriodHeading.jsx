@@ -1,24 +1,16 @@
 import React, { PropTypes } from 'react'
-import moment from 'moment'
 import dateUtils from '../../utils/DateHelper'
 
 const CalendarPeriodHeading = ({
   selectedDay,
-  fromDate,
-  toDate,
   dateRange,
   ...props
 }) => {
-  const stdFmt = dateUtils['dateFormat']
-  const dateDisplayFmt = 'DD MMM, YYYY (dddd)'
-  const dateRangeDisplayFmt = 'DD MMM, YYYY'
-
   const period = selectedDay
-    ? moment(selectedDay, stdFmt).format(dateDisplayFmt)
-    : moment(fromDate, stdFmt).format(dateRangeDisplayFmt) +
+    ? dateUtils.formatDate(selectedDay, dateUtils.dateSingleDisplayFmt)
+    : dateUtils.formatDate(dateRange.startDate, dateUtils.dateRangeDisplayFmt) +
       ' … ' +
-      moment(toDate, stdFmt).format(dateRangeDisplayFmt) +
-      ' (' + dateRange + ')'
+      dateUtils.formatDate(dateRange.endDate, dateUtils.dateRangeDisplayFmt)
 
   return (
     <div className='Mb(rh)'>
@@ -30,9 +22,7 @@ const CalendarPeriodHeading = ({
 
 CalendarPeriodHeading.propTypes = {
   selectedDay: PropTypes.string,
-  fromDate: PropTypes.string,
-  toDate: PropTypes.string,
-  dateRange: PropTypes.string
+  dateRange: PropTypes.object
 }
 
 export default CalendarPeriodHeading

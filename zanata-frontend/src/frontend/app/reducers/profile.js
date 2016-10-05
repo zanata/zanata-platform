@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions'
-import {ContentStates, DateRanges} from '../constants/Options'
+import {ContentStates} from '../constants/Options'
 import utilsDate from '../utils/DateHelper'
 import {
   LOAD_USER_REQUEST,
@@ -134,9 +134,8 @@ const filterByContentStateAndDay = (listOfMatrices, selectedContentState,
 }
 
 const processUserStatistics = (state, json) => {
-  const dateRange = state.dateRange
   const wordCountsForEachDay =
-    transformToTotalWordCountsForEachDay(json, dateRange)
+    transformToTotalWordCountsForEachDay(json, state.dailyDateRange)
   const contentState = state.contentStateOption
   const selectedDay = state.selectedDay
   return {
@@ -191,7 +190,7 @@ export default handleActions({
     return {
       ...state,
       loading: true,
-      dateRange: utilsDate.getDateRangeFromOption(state.dateRangeOption)
+      dailyDateRange: utilsDate.getDateRangeFromOption(state.dateRange)
     }
   },
   [USER_STATS_SUCCESS]: (state, action) => {
@@ -216,7 +215,7 @@ export default handleActions({
   [DATE_RANGE_UPDATE]: (state, action) => {
     return {
       ...state,
-      dateRangeOption: action.payload
+      dateRange: action.payload
     }
   },
   [FILTER_UPDATE]: (state, action) => {
@@ -248,11 +247,12 @@ export default handleActions({
     matrixForAllDays: [],
     wordCountsForEachDayFilteredByContentState: [],
     wordCountsForSelectedDayFilteredByContentState: [],
-    dateRangeOption: DateRanges[0],
     selectedDay: null,
     contentStateOption: ContentStates[0],
     loading: false,
-    dateRange: utilsDate.getDateRangeFromOption(DateRanges[0]),
+    dateRange: utilsDate.getDateRange('This week'),
+    dailyDateRange:
+      utilsDate.getDateRangeFromOption(utilsDate.getDateRange('This week')), // eslint-disable-line max-len
     user: {
       username: '',
       loading: false

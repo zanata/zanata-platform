@@ -54,14 +54,14 @@ const getUserStatistics = (username, fromDate, toDate) => {
   }
 }
 
-const loadUserStats = (username, dateRangeOption) => {
+const loadUserStats = (username, dateRange) => {
   return (dispatch, getState) => {
-    const dateRange = utilsDate.getDateRangeFromOption(dateRangeOption)
-    dispatch(getUserStatistics(username, dateRange.fromDate, dateRange.toDate))
+    const dates = utilsDate.getDateRangeFromOption(dateRange)
+    dispatch(getUserStatistics(username, dates.fromDate, dates.toDate))
   }
 }
 
-const getUserInfo = (dispatch, username, dateRangeOption) => {
+const getUserInfo = (dispatch, username, dateRange) => {
   const endpoint = window.config.baseUrl + window.config.apiRoot + '/user' +
     (isEmpty(username) ? '' : '/' + username)
 
@@ -73,7 +73,7 @@ const getUserInfo = (dispatch, username, dateRangeOption) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
-            dispatch(loadUserStats(username, dateRangeOption))
+            dispatch(loadUserStats(username, dateRange))
             return json
           })
         }
@@ -98,16 +98,16 @@ export const profileInitialLoad = (username) => {
       window.location = config.baseUrl + config.links.loginUrl + '#profile'
     } else {
       dispatch(getUserInfo(dispatch, username,
-        getState().profile.dateRangeOption))
+        getState().profile.dateRange))
     }
   }
 }
 
-export const dateRangeChanged = (dataRangeOption) => {
+export const dateRangeChanged = (dateRange) => {
   return (dispatch, getState) => {
     const username = getState().profile.user.username
-    dispatch(updateDateRange(dataRangeOption))
-    dispatch(loadUserStats(username, dataRangeOption))
+    dispatch(updateDateRange(dateRange))
+    dispatch(loadUserStats(username, dateRange))
   }
 }
 

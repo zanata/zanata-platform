@@ -57,6 +57,7 @@
     "normalizr": "2.1.0",
     "react": "0.14.8",
     "react-chartjs": "0.4.0",
+    "react-date-range": "0.2.4",
     "react-dom": "0.14.8",
     "react-helmet": "3.1.0",
     "react-list": "0.7.19",

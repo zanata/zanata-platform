@@ -3508,6 +3508,11 @@
       "from": "react-codemirror@0.2.6",
       "resolved": "https://registry.npmjs.org/react-codemirror/-/react-codemirror-0.2.6.tgz"
     },
+    "react-date-range": {
+      "version": "0.2.4",
+      "from": "react-date-range@0.2.4",
+      "resolved": "https://registry.npmjs.org/react-date-range/-/react-date-range-0.2.4.tgz"
+    },
     "react-deep-force-update": {
       "version": "1.0.1",
       "from": "react-deep-force-update@>=1.0.0 <2.0.0",

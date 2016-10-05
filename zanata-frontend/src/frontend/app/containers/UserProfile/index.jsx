@@ -62,7 +62,6 @@ class UserProfile extends Component {
       user,
       notification,
       loading,
-      dateRangeOption,
       matrixForAllDays,
       wordCountsForSelectedDayFilteredByContentState,
       wordCountsForEachDayFilteredByContentState,
@@ -134,7 +133,6 @@ class UserProfile extends Component {
               </Flex>
               {isLoggedIn &&
               (<RecentContributions
-                dateRangeOption={dateRangeOption}
                 matrixForAllDays={matrixForAllDays}
                 wordCountsForSelectedDayFilteredByContentState={
                       wordCountsForSelectedDayFilteredByContentState}
@@ -160,7 +158,6 @@ UserProfile.propTypes = {
   user: PropTypes.object,
   notification: PropTypes.object,
   loading: PropTypes.bool,
-  dateRangeOption: PropTypes.object,
   matrixForAllDays: PropTypes.array,
   wordCountsForSelectedDayFilteredByContentState: PropTypes.array,
   wordCountsForEachDayFilteredByContentState: PropTypes.array,
@@ -179,7 +176,6 @@ const mapStateToProps = (state) => {
     user: state.profile.user,
     notification: state.profile.notification,
     loading: state.profile.loading,
-    dateRangeOption: state.profile.dateRangeOption,
     matrixForAllDays: state.profile.matrixForAllDays,
     wordCountsForSelectedDayFilteredByContentState:
       state.profile.wordCountsForSelectedDayFilteredByContentState,
@@ -196,8 +192,8 @@ const mapDispatchToProps = (dispatch) => {
     handleInitLoad: (username) => {
       dispatch(profileInitialLoad(username))
     },
-    handleDateRangeChanged: (dateRangeOption) => {
-      dispatch(dateRangeChanged(dateRangeOption))
+    handleDateRangeChanged: (dateRange) => {
+      dispatch(dateRangeChanged(dateRange))
     },
     handleFilterChanged: (contentState) => {
       dispatch(filterUpdate(contentState))

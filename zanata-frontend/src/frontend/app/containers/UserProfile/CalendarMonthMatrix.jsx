@@ -8,6 +8,7 @@ import {
   ButtonLink,
   Flex
 } from 'zanata-ui'
+import utilsDate from '../../utils/DateHelper'
 
 const classes = {
   calendar: {
@@ -36,7 +37,7 @@ const CalendarMonthMatrix = ({
   matrixData,
   selectedDay,
   selectedContentState,
-  dateRangeOption,
+  dateRange,
   handleSelectedDayChanged,
   ...props
 }) => {
@@ -75,9 +76,10 @@ const CalendarMonthMatrix = ({
 
   while (days.length) {
     const dayColumns = days.splice(0, 7)
+    const key = utilsDate.shortDate(dateRange.startDate) + '-' +
+      utilsDate.shortDate(dateRange.endDate) + '-week' + result.length
     result.push(
-      <tr
-        key={dateRangeOption.value + '-week' + result.length}>
+      <tr key={key}>
         {dayColumns}
       </tr>
     )
@@ -91,13 +93,18 @@ const CalendarMonthMatrix = ({
     return <th key={weekDay}>{weekDay}</th>
   })
 
+  let header = utilsDate.getDateRangeLabel(dateRange)
+  header = header ? header + '\'s Activity'
+    : utilsDate.formatDate(dateRange.startDate, utilsDate.dateRangeDisplayFmt) +
+      ' … ' +
+      utilsDate.formatDate(dateRange.endDate, utilsDate.dateRangeDisplayFmt)
   /* eslint-disable react/jsx-no-bind */
   return (
     <div>
       <Flex atomic={{m: 'Mb(rh)'}}>
         <div>
           <h3 className='Fw(600) Tt(u)'>
-            {dateRangeOption.label}'s Activity
+            {header}
           </h3>
         </div>
         {selectedDay &&
@@ -128,8 +135,8 @@ CalendarMonthMatrix.propTypes = {
   ).isRequired,
   selectedDay: PropTypes.string,
   selectedContentState: PropTypes.oneOf(ContentStates).isRequired,
-  dateRangeOption: PropTypes.object.isRequired,
-  handleSelectedDayChanged: PropTypes.func
+  dateRange: PropTypes.object.isRequired,
+  handleSelectedDayChanged: PropTypes.func.isRequired
 }
 
 export default CalendarMonthMatrix
