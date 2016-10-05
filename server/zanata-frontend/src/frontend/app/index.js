@@ -5,8 +5,7 @@ import { mapValues } from 'lodash'
 import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
-import { useRouterHistory } from 'react-router'
-import { createHistory } from 'history'
+import { history } from './history'
 import { syncHistory } from 'react-router-redux'
 import WebFont from 'webfontloader'
 import { apiMiddleware } from 'redux-api-middleware'
@@ -24,24 +23,6 @@ WebFont.load({
     ]
   },
   timeout: 2000
-})
-
-// DONE change to browserHistory
-// DONEset basename for the history to the serving location
-// DONE make sure /profile/view/{username} routes to the right place
-// DONE make sure Profile link on left points to /profile/view/{username}
-// DONE change the default route to go to /profile/view/{username} instead of
-// /profile/{username}
-// TODO fix the explore link/page to work with non-hash history
-// TODO fix the explore components that use hash
-//      (could build master to confirm it works)
-// TODO fix the profile link in UserTeaser component and make sure it works
-//      (on explore page)
-// TODO make all the other hash history links go to the non-hash places
-//      this includes rewriting to the app URL, and the client-side part
-
-const history = useRouterHistory(createHistory)({
-  basename: window.config.baseUrl
 })
 
 const routerMiddleware = syncHistory(history)
