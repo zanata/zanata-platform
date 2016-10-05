@@ -1,4 +1,5 @@
 import { CALL_API } from 'redux-api-middleware'
+import { createAction } from 'redux-actions'
 import { includes, isEmpty } from 'lodash'
 import { replaceRouteQuery } from '../utils/RoutingHelpers'
 import {
@@ -149,6 +150,21 @@ const deleteLanguage = (dispatch, localeId) => {
 
 export const initialLoad = () => {
   return (dispatch, getState) => {
+    // validate page number from query
+    const page = parseInt(getState().routing.location.query.page)
+    if (page && page <= 1) {
+      replaceRouteQuery(getState().routing.location, {
+        page: 1
+      })
+    }
+
+    // validate page size from query
+    const pageSize = parseInt(getState().routing.location.query.size)
+    if (pageSize && !includes(pageSizeOption, pageSize)) {
+      replaceRouteQuery(getState().routing.location, {
+        size: pageSizeOption[0]
+      })
+    }
     if (!window.config.permission.isLoggedIn) {
       dispatch(getLocalesList(getState()))
     } else {
@@ -198,3 +214,9 @@ export const handlePageUpdate = (page) => {
     dispatch(getLocalesList(getState()))
   }
 }
+
+export const TOGGLE_NEW_LANGUAGE_DISPLAY = 'TOGGLE_NEW_LANGUAGE_DISPLAY'
+
+export const handleNewLanguageDisplay =
+  createAction(TOGGLE_NEW_LANGUAGE_DISPLAY)
+
