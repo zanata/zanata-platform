@@ -32,6 +32,11 @@ WebFont.load({
 // DONE make sure Profile link on left points to /profile/view/{username}
 // DONE change the default route to go to /profile/view/{username} instead of
 // /profile/{username}
+// TODO fix the explore link/page to work with non-hash history
+// TODO fix the explore components that use hash
+//      (could build master to confirm it works)
+// TODO fix the profile link in UserTeaser component and make sure it works
+//      (on explore page)
 // TODO make all the other hash history links go to the non-hash places
 //      this includes rewriting to the app URL, and the client-side part
 
