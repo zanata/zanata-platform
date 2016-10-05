@@ -9,7 +9,11 @@ module.exports = {
   },
   module: {
     preLoaders: [
+<<<<<<< HEAD
       {
+=======
+     {
+>>>>>>> 850f6a7fb1b3920d9700b935aebbe14337b215be
         test: /\.jsx?$/,
         exclude: /node_modules/,
         loader: 'eslint'
