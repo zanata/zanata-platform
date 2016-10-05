@@ -16,12 +16,22 @@ import {
   LANGUAGE_PERMISSION_FAILURE,
   LANGUAGE_DELETE_REQUEST,
   LANGUAGE_DELETE_SUCCESS,
-  LANGUAGE_DELETE_FAILURE
+  LANGUAGE_DELETE_FAILURE,
+  TOGGLE_NEW_LANGUAGE_DISPLAY
 } from '../actions/languages'
 
 const ERROR_MSG = 'We were unable load languages from server. ' +
   'Please refresh this page and try again.'
 export default handleActions({
+  [TOGGLE_NEW_LANGUAGE_DISPLAY]: (state, action) => {
+    return {
+      ...state,
+      newLanguage: {
+        ...state.newLanguage,
+        show: action.payload
+      }
+    }
+  },
   [CLEAR_MESSAGE]: (state, action) => {
     return {
       ...state,
@@ -188,6 +198,10 @@ export default handleActions({
     locales: {
       results: [],
       totalCount: 0
+    },
+    newLanguage: {
+      saving: false,
+      show: false
     },
     permission: {
       canDeleteLocale: false,

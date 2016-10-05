@@ -6,6 +6,7 @@ import Helmet from 'react-helmet'
 import {Page, ScrollView, View, LoaderText, Icon} from 'zanata-ui'
 import { debounce, find } from 'lodash'
 import Entry from './Entry'
+import NewLanguageModal from './NewLanguageModal'
 import { Notification } from '../../components'
 
 import {
@@ -15,6 +16,7 @@ import {
   handleUpdateSort,
   handleUpdateSearch,
   handlePageUpdate,
+  handleNewLanguageDisplay,
   pageSizeOption,
   sortOption
 } from '../../actions/languages'
@@ -56,13 +58,12 @@ class Languages extends Component {
       handleOnUpdatePageSize,
       handleOnUpdateSort,
       handleOnUpdateSearch,
-      handlePageChanged
+      handlePageChanged,
+      handleOnDisplayNewLanguage
     } = this.props
 
-    // TODO: tweak for testing
     const totalPage = Math.floor(totalCount / size) +
-   (totalCount % size > 0 ? 1 : 0)
-  // const totalPage = 1
+      (totalCount % size > 0 ? 1 : 0)
 
     return (
       <Page>
@@ -84,11 +85,15 @@ class Languages extends Component {
                       <span className='badge'>{totalCount}</span>}
                   </h2>
                   {permission.canAddLocale &&
-                    <Button className='btn-primary'>
-                      <Icon name='plus'
-                        atomic={{m: 'Mend(re) Va(sub)'}}
-                        title='plus' /> Add new language
-                    </Button>
+                    <div>
+                      <Button className='btn-primary'
+                        onClick={handleOnDisplayNewLanguage}>
+                        <Icon name='plus'
+                          atomic={{m: 'Mend(re) Va(sub)'}}
+                          title='plus' /> Add new language
+                      </Button>
+                      <NewLanguageModal />
+                    </div>
                   }
                   {loading
                       ? <View theme={loadingContainerTheme}>
@@ -196,7 +201,8 @@ Languages.propTypes = {
   handleOnUpdatePageSize: PropTypes.func,
   handleOnUpdateSort: PropTypes.func,
   handleOnUpdateSearch: PropTypes.func,
-  handlePageChanged: PropTypes.func
+  handlePageChanged: PropTypes.func,
+  handleOnDisplayNewLanguage: PropTypes.func
 }
 
 const mapStateToProps = (state) => {
@@ -257,6 +263,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     handlePageChanged: (page) => {
       dispatch(handlePageUpdate(page))
+    },
+    handleOnDisplayNewLanguage: () => {
+      dispatch(handleNewLanguageDisplay(true))
     }
   }
 }
