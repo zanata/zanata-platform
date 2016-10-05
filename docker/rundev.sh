@@ -13,12 +13,17 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 cd $DIR/../
 ZANATA_WAR=$(echo $PWD/zanata-war/target/zanata-*.war)
 
+# volume mapping for JBoss deployment folder (put exploded war or war file here to deploy)
+ZANATA_DEPLOYMENTS_DIR=$HOME/docker-volumes/zanata-deployments
+mkdir -p ${ZANATA_DEPLOYMENTS_DIR} && chcon -Rt svirt_sandbox_file_t ${ZANATA_DEPLOYMENTS_DIR}
+
 if [ -f "$ZANATA_WAR" ]
 then
-    chcon -Rt svirt_sandbox_file_t "$ZANATA_WAR"
+    echo "===== Please copy or hard link your $ZANATA_WAR file to $ZANATA_DEPLOYMENTS_DIR"
+#    we can not use symlink as JBoss inside docker can't properly read the symlink file
+    echo "- linux : ln $ZANATA_WAR $ZANATA_DEPLOYMENTS_DIR/ROOT.war"
 else
-    echo "===== NO war file found. Please build Zanata war first ====="
-    exit 1
+    echo "===== NO war file found. Please build Zanata war first then hard link it to $ZANATA_DEPLOYMENTS_DIR/ROOT.war ====="
 fi
 
 # JBoss ports
@@ -60,7 +65,6 @@ done
 ZANATA_DIR=$HOME/docker-volumes/zanata
 # create the data directory and set permissions (SELinux)
 mkdir -p $ZANATA_DIR && chcon -Rt svirt_sandbox_file_t "$ZANATA_DIR"
-# make zanata directory and standalone.xml file accessible to docker containers (SELinux)
 
 # build the docker dev image
 docker build -t zanata/server-dev docker/
@@ -70,11 +74,13 @@ docker build -t zanata/server-dev docker/
 #  By default, we will keep the JVM running, so that a debugger can be attached.
 #  Alternative option: -XX:OnOutOfMemoryError='kill -9 %p'
 
+JBOSS_DEPLOYMENT_VOLUME=/opt/jboss/wildfly/standalone/deployments/
+
 # runs zanata/server-dev:latest docker image
 docker run \
     -e JAVA_OPTS="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/jboss/zanata" \
     --rm --name zanata --link zanatadb:db \
     -p ${HTTP_PORT}:8080 -p ${DEBUG_PORT}:8787 -p ${MGMT_PORT}:9990 -it \
-    -v $ZANATA_WAR:/opt/jboss/wildfly/standalone/deployments/ROOT.war \
+    -v ${ZANATA_DEPLOYMENTS_DIR}:${JBOSS_DEPLOYMENT_VOLUME} \
     -v $ZANATA_DIR:/opt/jboss/zanata \
     zanata/server-dev

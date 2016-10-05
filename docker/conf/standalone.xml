@@ -200,7 +200,7 @@
                 <datasource jndi-name="java:jboss/datasources/zanataDatasource" pool-name="zanataDatasource" enabled="true" use-ccm="true">
                     <connection-url>jdbc:mysql://${env.DB_PORT_3306_TCP_ADDR}:3306/${env.DB_ENV_MYSQL_DATABASE}?characterEncoding=UTF-8</connection-url>
                     <driver-class>com.mysql.jdbc.Driver</driver-class>
-                    <driver>mysql-connector-java.jar</driver>
+                    <driver>mysql</driver>
                     <pool>
                         <min-pool-size>0</min-pool-size>
                         <max-pool-size>20</max-pool-size>
@@ -232,6 +232,10 @@
                 <drivers>
                     <driver name="h2" module="com.h2database.h2">
                         <xa-datasource-class>org.h2.jdbcx.JdbcDataSource</xa-datasource-class>
+                    </driver>
+                    <driver name="mysql" module="com.mysql">
+                        <xa-datasource-class>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource
+                        </xa-datasource-class>
                     </driver>
                 </drivers>
             </datasources>
@@ -459,18 +463,6 @@
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:naming:2.0">
             <bindings>
-              <simple name="java:global/zanata/security/auth-policy-names/internal"
-                value="${zanata.security.authpolicy.internal}"/>
-              <simple name="java:global/zanata/security/auth-policy-names/openid"
-                value="${zanata.security.authpolicy.openid}" />
-              <simple name="java:global/zanata/security/admin-users"
-                value="${zanata.security.adminusers}"/>
-              <simple name="java:global/zanata/email/default-from-address"
-                value="${zanata.email.defaultfromaddress}" />
-              <simple name="java:global/zanata/files/document-storage-directory"
-                value="${zanata.file.directory}"/>
-              <lookup name="java:jboss/exported/zanata/files/document-storage-directory"
-                lookup="java:global/zanata/files/document-storage-directory"/>
             </bindings>
             <remote-naming />
         </subsystem>
