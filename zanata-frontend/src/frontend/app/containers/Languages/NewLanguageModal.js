@@ -5,6 +5,8 @@ import {
   Modal
 } from 'zanata-ui'
 
+import { Autosuggest } from 'react-autosuggest'
+
 import {
   FormGroup,
   FormControl,
@@ -18,13 +20,36 @@ import {
   handleLoadSuggestion
 } from '../../actions/languages'
 
+const getSuggestions = value => {
+  const inputValue = value.trim().toLowerCase()
+  const query = value
+  const inputLength = inputValue.length
+
+  return inputLength === 0 ? [] : query.filter(lang =>
+      lang.name.toLowerCase().slice(0, inputLength) === inputValue
+  )
+}
+
+const {
+    show,
+    details,
+    saving,
+    validFields,
+    suggestions,
+    getSuggestionValue,
+    renderSuggestion,
+    inputProps
+} = this.props
+
 class NewLanguageModal extends Component {
   constructor (props) {
     super(props)
     this.state = {
       details: cloneDeep(props.details),
       query: '',
-      validFields: true
+      validFields: true,
+      value: '',
+      suggestions: []
     }
   }
 
@@ -50,15 +75,6 @@ class NewLanguageModal extends Component {
     })
   }
 
-  updateQuery (e) {
-    const query = e.target.value
-    this.setState({
-      ...this.state,
-      query: query
-    })
-    this.props.loadSuggestion(query)
-  }
-
   updateCheckbox (field) {
     this.setState({
       details: {
@@ -79,22 +95,31 @@ class NewLanguageModal extends Component {
     }
   }
 
+  onChange (event, {newValue}) {
+    this.setState({
+      value: newValue
+    })
+  }
+
+  onSuggestionsFetchRequested ({value}) {
+    this.setState({
+      suggestions: getSuggestions(value)
+    })
+  }
+
+  onSuggestionsClearRequested () {
+    this.setState({
+      suggestions: []
+    })
+  }
+
   /* eslint-disable react/jsx-no-bind, react/jsx-boolean-value */
   render () {
-    const {
-      show,
-      saving,
-      searchResults
-    } = this.props
-    const { details, validFields, query } = this.state
-
     // TODO: search results from autocomplete
-    console.info(searchResults)
-
     return (
       <Modal
         show={show}
-        onHide={() => this.handleCancel()} rootClose >
+        onHide={() => this.handleCancel()} rootClose>
         <Modal.Header closeButton>
           <Modal.Title>Add a new language</Modal.Title>
         </Modal.Header>
@@ -102,10 +127,14 @@ class NewLanguageModal extends Component {
           <div className='bootstrap'>
             <FormGroup validationState={!validFields ? 'error' : ''}>
               <ControlLabel>Language</ControlLabel>
-              <FormControl type='text'
-                onChange={(e) => this.updateQuery(e)}
-                defaultValue={query}
-                placeholder='Search languages' />
+              <Autosuggest
+                suggestions={suggestions}
+                onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                getSuggestionValue={getSuggestionValue}
+                renderSuggestion={renderSuggestion}
+                inputProps={inputProps}
+                />
             </FormGroup>
             <FormGroup validationState={!validFields ? 'error' : ''}>
               <ControlLabel>Name</ControlLabel>
@@ -174,8 +203,8 @@ class NewLanguageModal extends Component {
         </Modal.Footer>
       </Modal>
     )
+    /* eslint-enable react/jsx-no-bind, react/jsx-boolean-value */
   }
-  /* eslint-enable react/jsx-no-bind, react/jsx-boolean-value */
 }
 
 NewLanguageModal.propTypes = {
