@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Button, InputGroup, FormGroup, FormControl} from 'react-bootstrap'
 import Helmet from 'react-helmet'
-import {Page, ScrollView, View} from 'zanata-ui'
+import {Page, ScrollView, View, Icon} from 'zanata-ui'
 
 const contentViewContainerTheme = {
   base: {
@@ -22,7 +22,9 @@ class ManageRoles extends Component {
                   <h2>Manage Roles&nbsp;<span className='badge'>6</span>
                   </h2>
                   <Button bsStyle='primary'>
-                    <i className='fa fa-plus'></i>&nbsp;Create role
+                    <Icon name='plus'
+                      atomic={{m: 'Va(sub)'}}
+                      title='plus' />&nbsp;Create role
                   </Button>
                   <div className='left-form toolbar col-xs-12'>
                     <div className='search-box col-xs-6 col-sm-8 col-md-6
@@ -32,7 +34,10 @@ class ManageRoles extends Component {
                           <FormControl type='text' />
                           <InputGroup.Button>
                             <Button>
-                              <i className='fa fa-search'></i>&nbsp;</Button>
+                              <Icon name='search'
+                                atomic={{m: 'Va(sub)'}}
+                                title='search' />
+                            </Button>
                           </InputGroup.Button>
                         </InputGroup>
                       </FormGroup>
@@ -56,8 +61,10 @@ class ManageRoles extends Component {
                             [user, glossary-admin]</span>
                           </td>
                           <td>
-                            <Button bsSize='small'>
-                              <i className='fa fa-times'></i>
+                            <Button>
+                              <Icon name='cross'
+                                atomic={{ m: 'H(ms0) Va(sub)' }}
+                                title='cross' />
                             Delete</Button>
                           </td>
                         </tr>
@@ -66,8 +73,10 @@ class ManageRoles extends Component {
                             <a href=''>glossarist</a>
                           </td>
                           <td>
-                            <Button bsSize='small'>
-                              <i className='fa fa-times'></i>
+                            <Button>
+                              <Icon name='cross'
+                                atomic={{ m: 'H(ms0) Va(sub)' }}
+                                title='cross' />
                             Delete</Button>
                           </td>
                         </tr>
@@ -79,8 +88,10 @@ class ManageRoles extends Component {
                             [glossarist]</span>
                           </td>
                           <td>
-                            <Button bsSize='small'>
-                              <i className='fa fa-times'></i>
+                            <Button>
+                              <Icon name='cross'
+                                atomic={{ m: 'H(ms0) Va(sub)' }}
+                                title='cross' />
                             Delete</Button>
                           </td>
                         </tr>
@@ -89,8 +100,10 @@ class ManageRoles extends Component {
                             <a href=''>project-creator</a>
                           </td>
                           <td>
-                            <Button bsSize='small'>
-                              <i className='fa fa-times'></i>
+                            <Button>
+                              <Icon name='cross'
+                                atomic={{ m: 'H(ms0) Va(sub)' }}
+                                title='cross' />
                             Delete</Button>
                           </td>
                         </tr>
@@ -102,8 +115,10 @@ class ManageRoles extends Component {
                             ar</span>
                           </td>
                           <td>
-                            <Button bsSize='small'>
-                              <i className='fa fa-times'></i>
+                            <Button>
+                              <Icon name='cross'
+                                atomic={{ m: 'H(ms0) Va(sub)' }}
+                                title='cross' />
                             Delete</Button>
                           </td>
                         </tr>
@@ -115,8 +130,10 @@ class ManageRoles extends Component {
                             [project-creator]</span>
                           </td>
                           <td>
-                            <Button bsSize='small'>
-                              <i className='fa fa-times'></i>
+                            <Button>
+                              <Icon name='cross'
+                                atomic={{ m: 'H(ms0) Va(sub)' }}
+                                title='cross' />
                             Delete</Button>
                           </td>
                         </tr>

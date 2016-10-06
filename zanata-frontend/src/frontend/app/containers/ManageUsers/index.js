@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Button, InputGroup, FormGroup, FormControl} from 'react-bootstrap'
 import Helmet from 'react-helmet'
-import {Page, ScrollView, View} from 'zanata-ui'
+import {Page, ScrollView, View, Icon} from 'zanata-ui'
 
 const contentViewContainerTheme = {
   base: {
@@ -29,7 +29,10 @@ class ManageUsers extends Component {
                           <FormControl type='text' />
                           <InputGroup.Button>
                             <Button>
-                              <i className='fa fa-search'></i>&nbsp;</Button>
+                              <Icon name='search'
+                                atomic={{m: 'Va(sub)'}}
+                                title='search' />
+                            </Button>
                           </InputGroup.Button>
                         </InputGroup>
                       </FormGroup>
@@ -52,8 +55,10 @@ class ManageUsers extends Component {
                             admin@zanata.org</span>
                           </td>
                           <td>
-                            <Button bsSize='small'>
-                              <i className='fa fa-times'></i>
+                            <Button>
+                              <Icon name='cross'
+                                atomic={{ m: 'H(ms0) Va(sub)' }}
+                                title='cross' />
                             Delete</Button>
                           </td>
                         </tr>
@@ -66,8 +71,10 @@ class ManageUsers extends Component {
                             glossarist@no-email.com</span>
                           </td>
                           <td>
-                            <Button bsSize='small'>
-                              <i className='fa fa-times'></i>
+                            <Button>
+                              <Icon name='cross'
+                                atomic={{ m: 'H(ms0) Va(sub)' }}
+                                title='cross' />
                             Delete</Button>
                           </td>
                         </tr>
@@ -80,8 +87,10 @@ class ManageUsers extends Component {
                             glossary-admin@no-email.com</span>
                           </td>
                           <td>
-                            <Button bsSize='small'>
-                              <i className='fa fa-times'></i>
+                            <Button>
+                              <Icon name='cross'
+                                atomic={{ m: 'H(ms0) Va(sub)' }}
+                                title='cross' />
                             Delete</Button>
                           </td>
                         </tr>
@@ -94,8 +103,10 @@ class ManageUsers extends Component {
                             lang-coor@no-email.com</span>
                           </td>
                           <td>
-                            <Button bsSize='small'>
-                              <i className='fa fa-times'></i>
+                            <Button>
+                              <Icon name='cross'
+                                atomic={{ m: 'H(ms0) Va(sub)' }}
+                                title='cross' />
                             Delete</Button>
                           </td>
                         </tr>
@@ -108,8 +119,10 @@ class ManageUsers extends Component {
                             pmaint@no-email.com</span>
                           </td>
                           <td>
-                            <Button bsSize='small'>
-                              <i className='fa fa-times'></i>
+                            <Button>
+                              <Icon name='cross'
+                                atomic={{ m: 'H(ms0) Va(sub)' }}
+                                title='cross' />
                             Delete</Button>
                           </td>
                         </tr>
@@ -122,8 +135,10 @@ class ManageUsers extends Component {
                             translator@no-email.com</span>
                           </td>
                           <td>
-                            <Button bsSize='small'>
-                              <i className='fa fa-times'></i>
+                            <Button>
+                              <Icon name='cross'
+                                atomic={{ m: 'H(ms0) Va(sub)' }}
+                                title='cross' />
                             Delete</Button>
                           </td>
                         </tr>
