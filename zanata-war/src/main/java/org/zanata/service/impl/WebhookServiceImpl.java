@@ -160,9 +160,9 @@ public class WebhookServiceImpl implements Serializable {
     }
 
     /**
-     * Process TranslationChangedEvent
+     * Process ManuallyTriggeredEvent
      */
-    public void processTranslationUpdated(String projectSlug,
+    public void processManualEvent(String projectSlug,
             String versionSlug, LocaleId localeId, List<WebHook> webHooks) {
         ManuallyTriggeredEvent event =
                 new ManuallyTriggeredEvent(authenticatedUser.getUsername(),

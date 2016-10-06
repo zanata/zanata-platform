@@ -322,6 +322,7 @@ public class VersionHomeAction extends AbstractSortAction implements
                                     elem.retrieveDisplayName(), filter);
                 }
             };
+    private List<WebHook> manualWebhooks;
 
     public void setVersionSlug(String versionSlug) {
         this.versionSlug = versionSlug;
@@ -339,29 +340,31 @@ public class VersionHomeAction extends AbstractSortAction implements
                 msgs.format("jsf.copyVersion.Cancelled", versionSlug));
     }
 
+    private List<WebHook> getManualWebhooks() {
+        if (manualWebhooks == null) {
+            manualWebhooks = webHookDAO.getWebHooksForType(projectSlug,
+                    WebhookType.ManuallyTriggeredEvent);
+        }
+        return manualWebhooks;
+    }
+
     public boolean canTriggerManualWebhook() {
         boolean hasLocalePermission =
                 isUserAllowedToTranslateOrReview(selectedLocale);
-        List<WebHook> webHooks = webHookDAO.getWebHooksForType(projectSlug,
-                WebhookType.ManuallyTriggeredEvent);
-        return hasLocalePermission && !webHooks.isEmpty();
+        return hasLocalePermission && !getManualWebhooks().isEmpty();
     }
 
     public void triggerManualWebhookEvent() {
-        List<WebHook> webHooks = webHookDAO.getWebHooksForType(projectSlug,
-                WebhookType.ManuallyTriggeredEvent);
-
-        if (selectedLocale != null && !webHooks.isEmpty()) {
-            webhookService.processTranslationUpdated(projectSlug, versionSlug,
-                    selectedLocale.getLocaleId(), webHooks);
+        List<WebHook> manualWebhooks = getManualWebhooks();
+        if (selectedLocale != null && !manualWebhooks.isEmpty()) {
+            webhookService.processManualEvent(projectSlug, versionSlug,
+                    selectedLocale.getLocaleId(), manualWebhooks);
         }
     }
 
     public String getManualWebhookNames() {
-        List<WebHook> webHooks = webHookDAO.getWebHooksForType(projectSlug,
-                WebhookType.ManuallyTriggeredEvent);
-        Set<String> webhookNames = webHooks.stream().map(WebHook::getName).collect(
-                Collectors.toSet());
+        Set<String> webhookNames = getManualWebhooks().stream()
+                .map(WebHook::getName).collect(Collectors.toSet());
         return Joiner.on(", ").skipNulls().join(webhookNames);
     }
 
@@ -474,6 +477,7 @@ public class VersionHomeAction extends AbstractSortAction implements
         documents = null;
         version = null;
         supportedLocale = null;
+        manualWebhooks = null;
         loadStatistics();
     }
 

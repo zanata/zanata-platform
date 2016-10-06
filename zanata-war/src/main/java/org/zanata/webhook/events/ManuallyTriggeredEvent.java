@@ -28,7 +28,10 @@ import org.zanata.events.WebhookEventType;
 import org.zanata.model.type.WebhookType;
 
 /**
- * Indicates an event triggered by a user.
+ * Indicates an webhook event is triggered manually by a user. The fields will
+ * contain information about the triggering context. e.g. which project, version
+ * and language the user wants to trigger the event for, as well as the
+ * triggering user's username.
  *
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
@@ -41,15 +44,21 @@ public class ManuallyTriggeredEvent extends WebhookEventType {
     private String version;
     private LocaleId locale;
 
-    public @Nullable String getProject() {
+    public
+    @Nullable
+    String getProject() {
         return project;
     }
 
-    public @Nullable String getVersion() {
+    public
+    @Nullable
+    String getVersion() {
         return version;
     }
 
-    public @Nullable LocaleId getLocale() {
+    public
+    @Nullable
+    LocaleId getLocale() {
         return locale;
     }
 
@@ -57,7 +66,8 @@ public class ManuallyTriggeredEvent extends WebhookEventType {
         return username;
     }
 
-    public ManuallyTriggeredEvent(String triggeredBy, String project, String version,
+    public ManuallyTriggeredEvent(String triggeredBy, String project,
+            String version,
             LocaleId locale) {
         this.username = triggeredBy;
         this.project = project;
