@@ -14,6 +14,13 @@ export const LOAD_LANGUAGES_REQUEST = 'LOAD_LANGUAGES_REQUEST'
 export const LOAD_LANGUAGES_SUCCESS = 'LOAD_LANGUAGES_SUCCESS'
 export const LOAD_LANGUAGES_FAILURE = 'LOAD_LANGUAGES_FAILURE'
 
+export const LOAD_LANGUAGES_SUGGESTION_REQUEST =
+  'LOAD_LANGUAGES_SUGGESTION_REQUEST'
+export const LOAD_LANGUAGES_SUGGESTION_SUCCESS =
+  'LOAD_LANGUAGES_SUGGESTION_SUCCESS'
+export const LOAD_LANGUAGES_SUGGESTION_FAILURE =
+  'LOAD_LANGUAGES_SUGGESTION_FAILURE'
+
 export const LANGUAGE_PERMISSION_REQUEST = 'LANGUAGE_PERMISSION_REQUEST'
 export const LANGUAGE_PERMISSION_SUCCESS = 'LANGUAGE_PERMISSION_SUCCESS'
 export const LANGUAGE_PERMISSION_FAILURE = 'LANGUAGE_PERMISSION_FAILURE'
@@ -64,6 +71,38 @@ const getLocalesList = (state) => {
       }
     },
     LOAD_LANGUAGES_FAILURE
+  ]
+  return {
+    [CALL_API]: buildAPIRequest(endpoint, 'GET', getJsonHeaders(), apiTypes)
+  }
+}
+
+const searchLocales = (query) => {
+  let queries = []
+  queries.push('filter=' + query)
+  queries.push('page=1')
+  queries.push('sizePerPage=10')
+
+  const endpoint = window.config.baseUrl + window.config.apiRoot + '/locales?' +
+    queries.join('&')
+
+  const apiTypes = [
+    LOAD_LANGUAGES_SUGGESTION_REQUEST,
+    {
+      type: LOAD_LANGUAGES_SUGGESTION_SUCCESS,
+      payload: (action, state, res) => {
+        const contentType = res.headers.get('Content-Type')
+        if (contentType && includes(contentType, 'json')) {
+          return res.json().then((json) => {
+            return json
+          })
+        }
+      },
+      meta: {
+        receivedAt: Date.now()
+      }
+    },
+    LOAD_LANGUAGES_SUGGESTION_FAILURE
   ]
   return {
     [CALL_API]: buildAPIRequest(endpoint, 'GET', getJsonHeaders(), apiTypes)
@@ -216,7 +255,13 @@ export const handlePageUpdate = (page) => {
 }
 
 export const TOGGLE_NEW_LANGUAGE_DISPLAY = 'TOGGLE_NEW_LANGUAGE_DISPLAY'
-
 export const handleNewLanguageDisplay =
   createAction(TOGGLE_NEW_LANGUAGE_DISPLAY)
 
+export const handleLoadSuggestion = (query) => {
+  return (dispatch, getState) => {
+    if (!isEmpty(query)) {
+      dispatch(searchLocales(query))
+    }
+  }
+}
