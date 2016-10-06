@@ -17,7 +17,10 @@ import {
   LANGUAGE_DELETE_REQUEST,
   LANGUAGE_DELETE_SUCCESS,
   LANGUAGE_DELETE_FAILURE,
-  TOGGLE_NEW_LANGUAGE_DISPLAY
+  TOGGLE_NEW_LANGUAGE_DISPLAY,
+  LOAD_LANGUAGES_SUGGESTION_REQUEST,
+  LOAD_LANGUAGES_SUGGESTION_SUCCESS,
+  LOAD_LANGUAGES_SUGGESTION_FAILURE
 } from '../actions/languages'
 
 const ERROR_MSG = 'We were unable load languages from server. ' +
@@ -190,6 +193,45 @@ export default handleActions({
         'Please refresh this page and try again.'
       }
     }
+  },
+  [LOAD_LANGUAGES_SUGGESTION_REQUEST]: (state, action) => {
+    return {
+      ...state,
+      searchResults: []
+    }
+  },
+  [LOAD_LANGUAGES_SUGGESTION_SUCCESS]: (state, action) => {
+    if (action.error) {
+      return {
+        ...state,
+        loading: false,
+        notification: {
+          severity: SEVERITY.ERROR,
+          message: ERROR_MSG
+        }
+      }
+    } else {
+      return {
+        ...state,
+        newLanguage: {
+          ...state.newLanguage,
+          searchResults: action.payload.results
+        }
+      }
+    }
+  },
+  [LOAD_LANGUAGES_SUGGESTION_FAILURE]: (state, action) => {
+    return {
+      ...state,
+      newLanguage: {
+        ...state.newLanguage,
+        searchResults: []
+      },
+      notification: {
+        severity: SEVERITY.ERROR,
+        message: ERROR_MSG
+      }
+    }
   }
 },
   {
@@ -201,7 +243,9 @@ export default handleActions({
     },
     newLanguage: {
       saving: false,
-      show: false
+      show: false,
+      details: {},
+      searchResults: []
     },
     permission: {
       canDeleteLocale: false,
