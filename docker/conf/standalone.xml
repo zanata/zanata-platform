@@ -463,6 +463,18 @@
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:naming:2.0">
             <bindings>
+              <simple name="java:global/zanata/security/auth-policy-names/internal"
+                value="${zanata.security.authpolicy.internal}"/>
+              <simple name="java:global/zanata/security/auth-policy-names/openid"
+                value="${zanata.security.authpolicy.openid}" />
+              <simple name="java:global/zanata/security/admin-users"
+                value="${zanata.security.adminusers:  }"/>
+              <simple name="java:global/zanata/email/default-from-address"
+                value="${zanata.email.defaultfromaddress}" />
+              <simple name="java:global/zanata/files/document-storage-directory"
+                value="${zanata.file.directory}"/>
+              <lookup name="java:jboss/exported/zanata/files/document-storage-directory"
+                lookup="java:global/zanata/files/document-storage-directory"/>
             </bindings>
             <remote-naming />
         </subsystem>
