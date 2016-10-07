@@ -35,7 +35,10 @@ HTTP_PORT=8080
 DEBUG_PORT=8787
 MGMT_PORT=9090
 
-while getopts ":p:H" opt; do
+# default docker network to join
+DOCKER_NETWORK=docker-network
+
+while getopts ":p:n:H" opt; do
   case ${opt} in
     p)
       echo "===== set JBoss port offset to $OPTARG ====="
@@ -52,9 +55,14 @@ while getopts ":p:H" opt; do
         exit 1
       fi
       ;;
+    n)
+      echo "===== set docker network to $OPTARG ====="
+      DOCKER_NETWORK=$OPTARG
+      ;;
     H)
       echo "========   HELP   ========="
       echo "-p <offset number> : set JBoss port offset"
+      echo "-n <docker network>: will connect container to given docker network (default is $DOCKER_NETWORK)"
       echo "-H                 : display help"
       exit
       ;;
@@ -64,6 +72,15 @@ while getopts ":p:H" opt; do
       ;;
   esac
 done
+
+# check if the docker network is already created
+if docker network ls | grep -w ${DOCKER_NETWORK}
+then
+    echo "will use docker network $DOCKER_NETWORK"
+else
+    echo "creating docker network $DOCKER_NETWORK"
+    docker network create ${DOCKER_NETWORK}
+fi
 
 # volume mapping for zanata server files
 ZANATA_DIR=$HOME/docker-volumes/zanata
@@ -83,7 +100,7 @@ JBOSS_DEPLOYMENT_VOLUME=/opt/jboss/wildfly/standalone/deployments/
 # runs zanata/server-dev:latest docker image
 docker run \
     -e JAVA_OPTS="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/jboss/zanata" \
-    --rm --name zanata --link zanatadb:db \
+    --rm --name zanata --net=${DOCKER_NETWORK} \
     -p ${HTTP_PORT}:8080 -p ${DEBUG_PORT}:8787 -p ${MGMT_PORT}:9990 -it \
     -v ${ZANATA_DEPLOYMENTS_DIR}:${JBOSS_DEPLOYMENT_VOLUME} \
     -v $ZANATA_DIR:/opt/jboss/zanata \

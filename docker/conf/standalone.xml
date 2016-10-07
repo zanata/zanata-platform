@@ -198,7 +198,7 @@
         <subsystem xmlns="urn:jboss:domain:datasources:4.0">
             <datasources>
                 <datasource jndi-name="java:jboss/datasources/zanataDatasource" pool-name="zanataDatasource" enabled="true" use-ccm="true">
-                    <connection-url>jdbc:mysql://${env.DB_PORT_3306_TCP_ADDR}:3306/${env.DB_ENV_MYSQL_DATABASE}?characterEncoding=UTF-8</connection-url>
+                    <connection-url>jdbc:mysql://${env.DB_HOSTNAME:zanatadb}:3306/${env.DB_NAME:zanata}?characterEncoding=UTF-8</connection-url>
                     <driver-class>com.mysql.jdbc.Driver</driver-class>
                     <driver>mysql</driver>
                     <pool>
@@ -207,8 +207,8 @@
                         <flush-strategy>FailingConnectionOnly</flush-strategy>
                     </pool>
                     <security>
-                        <user-name>${env.DB_ENV_MYSQL_USER}</user-name>
-                        <password>${env.DB_ENV_MYSQL_PASSWORD}</password>
+                        <user-name>${env.DB_USERNAME:zanata}</user-name>
+                        <password>${env.DB_PASSWORD:zanatapw}</password>
                     </security>
                     <statement>
                         <track-statements>NOWARN</track-statements>
