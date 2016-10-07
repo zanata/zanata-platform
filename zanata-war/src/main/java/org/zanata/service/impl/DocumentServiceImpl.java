@@ -27,11 +27,9 @@ import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -48,7 +46,6 @@ import org.zanata.events.DocStatsEvent;
 import org.zanata.events.DocumentLocaleKey;
 import org.zanata.events.DocumentUploadedEvent;
 import org.zanata.model.type.WebhookType;
-import org.zanata.webhook.events.DocumentMilestoneEvent;
 import org.zanata.i18n.Messages;
 import org.zanata.lock.Lock;
 import org.zanata.model.HAccount;
@@ -74,6 +71,7 @@ import com.google.common.annotations.VisibleForTesting;
 import lombok.extern.slf4j.Slf4j;
 import javax.enterprise.event.Event;
 import org.zanata.util.UrlUtil;
+import org.zanata.webhook.events.SourceDocumentChangedEvent;
 
 import javax.enterprise.event.Observes;
 
@@ -124,6 +122,9 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Inject @Authenticated
     private HAccount authenticatedAccount;
+
+    @Inject
+    private WebhookServiceImpl webhookServiceImpl;
 
     @Inject
     private Messages msgs;
@@ -187,6 +188,7 @@ public class DocumentServiceImpl implements DocumentService {
                         .validateSourceLocale(sourceDoc.getLang());
 
         boolean changed = false;
+        boolean isCreateOperation = false;
         int nextDocRev;
         if (document == null) { // must be a create operation
             nextDocRev = 1;
@@ -198,12 +200,14 @@ public class DocumentServiceImpl implements DocumentService {
             document.setProjectIteration(hProjectIteration);
             hProjectIteration.getDocuments().put(docId, document);
             document = documentDAO.makePersistent(document);
+            isCreateOperation = true;
         } else if (document.isObsolete()) { // must also be a create operation
             nextDocRev = document.getRevision() + 1;
             changed = true;
             document.setObsolete(false);
             // not sure if this is needed
             hProjectIteration.getDocuments().put(docId, document);
+            isCreateOperation = true;
         } else { // must be an update operation
             nextDocRev = document.getRevision() + 1;
         }
@@ -218,6 +222,13 @@ public class DocumentServiceImpl implements DocumentService {
             documentUploadedEvent.fire(new DocumentUploadedEvent(
                     actorId, document.getId(), true, hLocale.getLocaleId()));
             clearStatsCacheForUpdatedDocument(document);
+
+            if (isCreateOperation) {
+                webhookServiceImpl.processWebhookSourceDocumentChanged(
+                        projectSlug, iterationSlug, document.getDocId(),
+                        hProjectIteration.getProject().getWebHooks(),
+                        SourceDocumentChangedEvent.ChangeType.ADD);
+            }
         }
 
         if (copyTrans && nextDocRev == 1) {
@@ -236,6 +247,13 @@ public class DocumentServiceImpl implements DocumentService {
         documentDAO.makePersistent(document);
         documentDAO.flush();
         clearStatsCacheForUpdatedDocument(document);
+
+        HProjectIteration version = document.getProjectIteration();
+        HProject proj = version.getProject();
+        webhookServiceImpl.processWebhookSourceDocumentChanged(
+                proj.getSlug(), version.getSlug(), document.getDocId(),
+                proj.getWebHooks(),
+                SourceDocumentChangedEvent.ChangeType.REMOVE);
     }
 
     // TODO [CDI] simulate async event (e.g. this event was fired asyncly in seam)
@@ -249,10 +267,10 @@ public class DocumentServiceImpl implements DocumentService {
         }
 
         List<WebHook> docMilestoneWebHooks =
-                project.getWebHooks().stream().filter(
-                        webHook -> webHook.getWebhookType()
-                                .equals(WebhookType.DocumentMilestoneEvent))
-                        .collect(Collectors.toList());
+            project.getWebHooks().stream().filter(
+                webHook -> webHook.getTypes()
+                    .contains(WebhookType.DocumentMilestoneEvent))
+                .collect(Collectors.toList());
 
         if (docMilestoneWebHooks.isEmpty()) {
             return;
@@ -313,20 +331,9 @@ public class DocumentServiceImpl implements DocumentService {
                             versionSlug, localeId,
                             LocaleId.EN_US, document.getDocId());
 
-            DocumentMilestoneEvent milestoneEvent =
-                    new DocumentMilestoneEvent(projectSlug,
-                            versionSlug, document.getDocId(),
-                            localeId, message, editorUrl);
-            publishDocumentMilestoneEvent(docMilestoneWebHooks,
-                    milestoneEvent);
-        }
-    }
-
-    public void publishDocumentMilestoneEvent(List<WebHook> webHooks,
-            DocumentMilestoneEvent event) {
-        for (WebHook webHook : webHooks) {
-            WebHooksPublisher.publish(webHook.getUrl(), event,
-                    Optional.fromNullable(webHook.getSecret()));
+            webhookServiceImpl.processDocumentMilestone(projectSlug,
+                    versionSlug, document.getDocId(), localeId, message,
+                    editorUrl, docMilestoneWebHooks);
         }
     }
 
@@ -379,12 +386,14 @@ public class DocumentServiceImpl implements DocumentService {
     public void init(ProjectIterationDAO projectIterationDAO,
             DocumentDAO documentDAO,
             TranslationStateCache translationStateCacheImpl, UrlUtil urlUtil,
-            ApplicationConfiguration applicationConfiguration, Messages msgs) {
+            ApplicationConfiguration applicationConfiguration, Messages msgs,
+            WebhookServiceImpl webhookService) {
         this.projectIterationDAO = projectIterationDAO;
         this.documentDAO = documentDAO;
         this.translationStateCacheImpl = translationStateCacheImpl;
         this.urlUtil = urlUtil;
         this.applicationConfiguration = applicationConfiguration;
         this.msgs = msgs;
+        this.webhookServiceImpl = webhookService;
     }
 }

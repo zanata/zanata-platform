@@ -21,6 +21,41 @@ else
     exit 1
 fi
 
+# JBoss ports
+HTTP_PORT=8080
+DEBUG_PORT=8787
+MGMT_PORT=9090
+
+while getopts ":p:H" opt; do
+  case ${opt} in
+    p)
+      echo "===== set JBoss port offset to $OPTARG ====="
+      if [ "$OPTARG" -eq "$OPTARG" ] 2>/dev/null
+      then
+        HTTP_PORT=$(($OPTARG + 8080))
+        DEBUG_PORT=$(($OPTARG + 8787))
+        MGMT_PORT=$(($OPTARG + 9090))
+        echo "===== http port       : $HTTP_PORT"
+        echo "===== debug port      : $DEBUG_PORT"
+        echo "===== management port : $MGMT_PORT"
+      else
+        echo "===== MUST provide an integer as argument ====="
+        exit 1
+      fi
+      ;;
+    H)
+      echo "========   HELP   ========="
+      echo "-p <offset number> : set JBoss port offset"
+      echo "-H                 : display help"
+      exit
+      ;;
+    \?)
+      echo "Invalid option: -${OPTARG}. Use -H for help" >&2
+      exit 1
+      ;;
+  esac
+done
+
 # volume mapping for zanata server files
 ZANATA_DIR=$HOME/docker-volumes/zanata
 # create the data directory and set permissions (SELinux)
@@ -39,7 +74,7 @@ docker build -t zanata/server-dev docker/
 docker run \
     -e JAVA_OPTS="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/jboss/zanata" \
     --rm --name zanata --link zanatadb:db \
-    -p 8080:8080 -p 8787:8787 -p 9990:9990 -it \
+    -p ${HTTP_PORT}:8080 -p ${DEBUG_PORT}:8787 -p ${MGMT_PORT}:9990 -it \
     -v $ZANATA_WAR:/opt/jboss/wildfly/standalone/deployments/ROOT.war \
     -v $ZANATA_DIR:/opt/jboss/zanata \
     zanata/server-dev

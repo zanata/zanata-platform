@@ -6,18 +6,17 @@
 
   <ui:style field="style"
     type="org.zanata.webtrans.client.ui.TransUnitDetailsPanel.Styles">
-    .headerLabel {
-      text-overflow: ellipsis;
-      overflow: hidden;
+    .table {
+      display: table!important;
+    }
+
+    .table a {
+      box-shadow: none!important;
     }
   </ui:style>
 
-  <g:DisclosurePanel animationEnabled="true"
-    addStyleNames="fadeElement" ui:field="disclosurePanel">
-    <g:customHeader>
-      <g:Label ui:field="headerLabel" styleName="{style.headerLabel}" />
-    </g:customHeader>
-    <g:HTMLPanel tag="ul" styleName="list--no-bullets bg--pop-highest l--pad-all-quarter">
+  <g:DisclosurePanel animationEnabled="true" ui:field="disclosurePanel" styleName="{style.table} txt--meta">
+    <g:HTMLPanel tag="ul">
       <li class="txt--meta">
         <span>Resource ID:</span>
         <g:InlineLabel ui:field="resId" styleName="l--push-left-quarter"/>

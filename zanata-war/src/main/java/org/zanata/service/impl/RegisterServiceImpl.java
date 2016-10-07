@@ -49,6 +49,9 @@ import org.zanata.security.AuthenticationType;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.service.RegisterService;
 import org.zanata.util.HashUtil;
+import org.zanata.webhook.events.ProjectMaintainerChangedEvent;
+
+import static org.zanata.model.ProjectRole.Maintainer;
 
 @Named("registerServiceImpl")
 @RequestScoped
@@ -65,6 +68,9 @@ public class RegisterServiceImpl implements RegisterService {
 
     @Inject
     PersonDAO personDAO;
+
+    @Inject
+    WebhookServiceImpl webhookServiceImpl;
 
     @Inject
     AccountRoleDAO accountRoleDAO;
@@ -232,7 +238,16 @@ public class RegisterServiceImpl implements RegisterService {
                             obsoletePerson.getMaintainerProjects());
             for (HProject proj : maintainedProjects) {
                 proj.addMaintainer(activePerson);
+                webhookServiceImpl.processWebhookMaintainerChanged(proj.getSlug(),
+                    activePerson.getAccount().getUsername(), Maintainer,
+                    proj.getWebHooks(),
+                    ProjectMaintainerChangedEvent.ChangeType.ADD);
+
                 proj.removeMaintainer(obsoletePerson);
+                webhookServiceImpl.processWebhookMaintainerChanged(proj.getSlug(),
+                    obsoletePerson.getAccount().getUsername(), Maintainer,
+                    proj.getWebHooks(),
+                    ProjectMaintainerChangedEvent.ChangeType.REMOVE);
             }
 
             // Merge all maintained Version Groups

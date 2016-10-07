@@ -54,6 +54,7 @@ import org.zanata.service.VersionLocaleKey;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.IServiceLocator;
+import org.zanata.util.UrlUtil;
 import org.zanata.util.Zanata;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.model.ValidationId;
@@ -91,6 +92,9 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
     @Inject ProjectDAO projectDAO;
     @Inject DocumentDAO documentDAO;
     @Inject CopyTransServiceImpl copyTransService;
+
+    @Produces @Mock
+    private UrlUtil urlUtil;
 
     @Produces @Mock IServiceLocator serviceLocator;
     @Produces @Mock @FullText FullTextEntityManager fullTextEntityManager;

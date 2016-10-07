@@ -12,8 +12,8 @@ const CategoryItemMatrix = ({
         {itemTitle} <span className='txt--understated'>({itemName})</span>
       </td>
       <td className='txt--align-right l--pad-right-0 l--pad-v-0 txt--nowrap'>
-        {wordCount}
-        <span className='l--pad-left-quarter txt--understated'>words</span>
+        {wordCount} <span className='l--pad-left-quarter txt--understated'>
+        words</span>
       </td>
     </tr>
   )

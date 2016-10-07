@@ -146,29 +146,57 @@ The access restriction feature is intended for use with special roles that can b
 <figcaption>Project Webhooks Settings tab</figcaption>
 </figure>
 
-The Webhooks feature is HTTP callbacks which are triggered when a document in a language has reached a certain milestone.
-Currently, webhooks events will be triggered when
-
-- A document has reached 100% Translated
-- A document has reached 100% Approved (by reviewer)
-
+The Webhooks feature is HTTP callbacks which are triggered when a selected event happens.
 When an event occurs, Zanata will make a HTTP POST to the provided payload URL in the project.
+Types of events available:
 
-Example webhook response:
-
+#### Translation Milestone
+Trigger when document has reached 100% Translated or Approved
 ```
 {
-    "eventType": "org.zanata.events.DocumentMilestoneEvent",
-    "milestone": "100% Translated",
-    "locale": "de",
-    "docId": "zanata-war/src/main/resources/messages",
-    "version": "master",
-    "project": "zanata-server",
-    "editorDocumentUrl": "https://translate.zanata.org/zanata/webtrans/Application.xhtml?project=zanata-server&iteration=master&localeId=de&locale=en#view:doc;doc:zanata-war/src/main/resources/messages"
+  "type": "org.zanata.events.DocumentMilestoneEvent",
+  "milestone": "100% Translated",
+  "locale": "de",
+  "docId": "zanata-war/src/main/resources/messages",
+  "version": "master",
+  "project": "zanata-server",
+  "editorDocumentUrl": "https://translate.zanata.org/zanata/webtrans/Application.xhtml?project=zanata-server&iteration=master&localeId=de&locale=en#view:doc;doc:zanata-war/src/main/resources/messages"
+}
+```
+  
+#### Translation update
+Trigger when translation is updated
+```
+{
+    "username":"aeng",
+    "project":"Zanata",
+    "version":"master",
+    "docId":"doc1id",
+    "locale":"zh-CN",
+    "wordDeltasByState":{"New":-16,"Translated":16},
+    "type":"DocumentStatsEvent"
 }
 ```
 
-If a secret key is provided for that payload URL, Zanata will sign the webhook request with HTTP header `X-Zanata-Webhook`.
+#### Project version
+Trigger when a version is added to removed from a project
+```
+{"project":"zanata","version":"new-version","changeType":"CREATE","type":"VersionChangedEvent"}
+```
+  
+#### Project maintainer
+Trigger when a project maintainer is added or removed from project
+```
+{"project":"zanata","username":"aeng","changeType":"REMOVE","role":"Maintainer","type":"ProjectMaintainerChangedEvent"}
+```
+  
+#### Document
+Trigger when a source document is added or removed from project version
+```
+{"project":"zanata","version":"new-version"","changeType":"ADD","type":"SourceDocumentChangedEvent"}
+```
+
+If a secret key is provided for that payload URL, Zanata will sign the webhook request with HTTP header `X-Zanata-Webhook`. 
 The header is a double hash of `HMAC-SHA1` in base64 digest. The double hash is generated from the full request body and the payload URL as provided.
 
 Here is some sample pseudocode for checking the validity of a request:
@@ -181,15 +209,24 @@ boolean verifyRequest(request, secret, callbackURL) {
 }
 ```
 
+### Adding a new webhook
+<figure>
+![Project Webhooks New](/images/project-webhooks-new.png)
+</figure>
 
+1. Click on 'New webhook' button.
+2. Enter a valid URL and secret key (optional) into the provided text input. 
+3. Select webhook types for this URL.
+4. Click on 'Add webhook' button to add the URL.
 
-### Adding a webhook
-1. Enter a valid URL and secret key (optional) into the provided text input.
-2. Click on 'Add webhook' button to add the URL.
-3. If secret key is provided, Zanata will include cryptographic signature in HTTP header `X-Zanata-Webhook`.
-
-### Remove a webhook
-- Click on the `X` sign on right side of the webhook to remove the entry.
+### Update a webhook
+<figure>
+![Project Webhooks Edit](/images/project-webhooks-edit.png)
+</figure>
+1. Click on 'Edit' button on the right of the webhook entry
+2. Update any value in the form
+3. Click on 'Update' to save the changes
+4. To remove webhook, click on button 'Delete'
 
 ------------
 

@@ -21,6 +21,7 @@
 package org.zanata.rest.editor.service.resource;
 
 import org.zanata.rest.editor.MediaTypes;
+import org.zanata.rest.service.RestResource;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -32,7 +33,7 @@ import java.util.List;
  */
 @Produces({ MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_JSON })
-public interface SuggestionsResource {
+public interface SuggestionsResource extends RestResource {
 
     public static final String SERVICE_PATH = "/suggestions";
 

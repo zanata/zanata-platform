@@ -169,7 +169,7 @@ public class TransMemoryMergeServiceImplTest {
 
     private static TransMemoryDetails tmDetail() {
         return new TransMemoryDetails("", "", "project a", "master",
-                "pot/msg.pot", "resId", null, null, null, null);
+                "pot/msg.pot", "resId", null, null, null, null, null);
     }
 
     private TransMemoryQuery

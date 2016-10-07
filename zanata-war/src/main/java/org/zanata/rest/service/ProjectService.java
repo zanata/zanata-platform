@@ -2,6 +2,7 @@ package org.zanata.rest.service;
 
 import static org.zanata.common.EntityStatus.OBSOLETE;
 import static org.zanata.common.EntityStatus.READONLY;
+import static org.zanata.model.ProjectRole.Maintainer;
 import static org.zanata.rest.service.GlossaryService.PROJECT_QUALIFIER_PREFIX;
 
 import java.net.URI;
@@ -39,7 +40,9 @@ import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
 import org.zanata.rest.dto.QualifiedName;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.service.impl.WebhookServiceImpl;
 import org.zanata.util.GlossaryUtil;
+import org.zanata.webhook.events.ProjectMaintainerChangedEvent;
 
 import com.google.common.base.Objects;
 
@@ -70,6 +73,9 @@ public class ProjectService implements ProjectResource {
 
     @Inject
     ZanataIdentity identity;
+
+    @Inject
+    WebhookServiceImpl webhookServiceImpl;
 
     @Inject
     ETagUtils eTagUtils;
@@ -184,6 +190,12 @@ public class ProjectService implements ProjectResource {
         projectDAO.makePersistent(hProject);
         projectDAO.flush();
         etag = eTagUtils.generateTagForProject(projectSlug);
+
+        webhookServiceImpl.processWebhookMaintainerChanged(
+                hProject.getSlug(),
+                identity.getCredentials().getUsername(),
+                Maintainer, hProject.getWebHooks(),
+                ProjectMaintainerChangedEvent.ChangeType.ADD);
         return response.tag(etag).build();
 
     }

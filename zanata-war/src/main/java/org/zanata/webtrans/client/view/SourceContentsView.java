@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
@@ -34,18 +35,25 @@ import org.zanata.webtrans.client.ui.TransUnitDetailsPanel;
 import org.zanata.webtrans.shared.model.TextFlowTarget;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
 import com.google.common.base.Preconditions;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -54,8 +62,6 @@ public class SourceContentsView extends Composite implements
         SourceContentsDisplay {
     private static Binder binder = GWT.create(Binder.class);
 
-    public static final int COLUMNS = 1;
-
     @UiField
     HTMLPanel sourcePanelContainer;
 
@@ -63,53 +69,68 @@ public class SourceContentsView extends Composite implements
     Styles style;
 
     @UiField(provided = true)
-    Anchor bookmarkIcon;
-
-    @UiField(provided = true)
     ReferencePanel referencePanel;
 
     @UiField(provided = true)
     TransUnitDetailsPanel transUnitDetailsPanel;
 
+    @UiField(provided = true)
+    DisclosurePanel tuLink;
+
     private List<HasSelectableSource> sourcePanelList;
     private TransUnit transUnit;
     private final UserConfigHolder configHolder;
     private final History history;
+    private final UserWorkspaceContext userWorkspaceContext;
+
     private UiMessages messages;
 
     private HTMLPanel rootPanel;
+
+    private TextBox urlTextField;
 
     @Inject
     public SourceContentsView(
             Provider<TransUnitDetailsPanel> transUnitDetailsPanelProvider,
             UserConfigHolder configHolder, History history,
-            final UiMessages messages) {
+            final UiMessages messages,
+            UserWorkspaceContext userWorkspaceContext) {
         this.configHolder = configHolder;
         this.history = history;
         this.messages = messages;
+        this.userWorkspaceContext = userWorkspaceContext;
+
         sourcePanelList = new ArrayList<HasSelectableSource>();
         referencePanel = new ReferencePanel();
         referencePanel.setReferenceText(messages.noReferenceFoundText());
         referencePanel.setVisible(false); // Reference is hidden by default
 
-        bookmarkIcon = createBookmarkIcon();
-
+        tuLink = getUrlWidget();
         transUnitDetailsPanel = transUnitDetailsPanelProvider.get();
-
         rootPanel = binder.createAndBindUi(this);
+        tuLink.setStyleName(style.table() + " txt--meta l--push-top-quarter");
     }
 
-    private Anchor createBookmarkIcon() {
-        Anchor bookmarkIcon = new Anchor();
-        bookmarkIcon.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                HistoryToken historyToken = history.getHistoryToken();
-                historyToken.setTextFlowId(transUnit.getId().toString());
-                history.newItem(historyToken);
-            }
-        });
-        return bookmarkIcon;
+    private DisclosurePanel getUrlWidget() {
+        DisclosurePanel widget = new DisclosurePanel();
+        widget.setAnimationEnabled(true);
+
+        HTMLPanel header = new HTMLPanel("div", "");
+        header.setStyleName("button button--small");
+        header.add(new InlineHTML("<i class='i i--star l--push-right-quarter'/>"));
+        header.add(new InlineLabel("Link"));
+        widget.setHeader(header);
+
+        urlTextField = new TextBox();
+        urlTextField.setReadOnly(true);
+
+        HTMLPanel content = new HTMLPanel("div", "");
+        content.setStyleName("bg--pop-highest txt--meta");
+        content.add(urlTextField);
+        widget.setContent(content);
+
+        widget.getHeader().getParent().setStyleName("");
+        return widget;
     }
 
     @Override
@@ -143,6 +164,23 @@ public class SourceContentsView extends Composite implements
             sourcePanelList.add(sourcePanel);
             rowIndex++;
         }
+
+        final HistoryToken historyToken = history.getHistoryToken();
+        historyToken.setTextFlowId(transUnit.getId().toString());
+        urlTextField.setStyleName(
+                "txt--meta form__input--copyable " + style.ellipsis());
+        urlTextField.setText(Application.getEditorUrl(
+                userWorkspaceContext.getWorkspaceContext().getWorkspaceId(),
+                historyToken.toTokenString()));
+
+        tuLink.addOpenHandler(new OpenHandler<DisclosurePanel>() {
+            @Override
+            public void onOpen(OpenEvent<DisclosurePanel> openEvent) {
+                history.newItem(historyToken);
+                urlTextField.selectAll();
+            }
+        });
+
         toggleTransUnitDetails(configHolder.getState()
                 .isShowOptionalTransUnitDetails());
     }
@@ -174,7 +212,7 @@ public class SourceContentsView extends Composite implements
     @Override
     public void toggleTransUnitDetails(boolean showTransUnitDetails) {
         if (transUnitDetailsPanel.hasNoMetaInfo() && !showTransUnitDetails) {
-            transUnitDetailsPanel.setVisible(false);
+            transUnitDetailsPanel.setVisible(showTransUnitDetails);
         } else {
             transUnitDetailsPanel.setVisible(true);
         }
@@ -216,6 +254,8 @@ public class SourceContentsView extends Composite implements
     }
 
     interface Styles extends CssResource {
+        String table();
+        String ellipsis();
     }
 
 }

@@ -86,11 +86,6 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>com.sun.jersey</groupId>
-        <artifactId>jersey-core</artifactId>
-        <version>1.19</version>
-      </dependency>
-      <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
         <version>4.3.6</version>
@@ -110,6 +105,10 @@
         <artifactId>xercesImpl</artifactId>
         <version>2.11.0</version>
       </dependency>
+      <!--<dependency>-->
+        <!--<groupId>org.zanata</groupId>-->
+        <!--<artifactId>zanata-rest-client</artifactId>-->
+      <!--</dependency>-->
     </dependencies>
   </dependencyManagement>
 
@@ -290,11 +289,19 @@
     <dependency>
       <groupId>org.zanata</groupId>
       <artifactId>zanata-rest-client</artifactId>
-      <scope>compile</scope>
+      <scope>test</scope>
       <exclusions>
         <exclusion>
           <groupId>org.apache.httpcomponents</groupId>
           <artifactId>httpclient</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.ws.rs</groupId>
+          <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.annotation</groupId>
+          <artifactId>jboss-annotations-api_1.2_spec</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -386,9 +393,13 @@
     </dependency>
 
     <dependency>
-      <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-client</artifactId>
-      <version>1.19</version>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>jaxrs-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-client</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -643,6 +654,8 @@
                     <properties>
                       <cargo.jvmargs>
                         <!-- NB: JDom parser doesn't like comments starting with '-' -->
+                        -XX:-OmitStackTraceInFastThrow
+                        -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=target
                         -XX:PermSize=512m -XX:MaxPermSize=1024
                         -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled
                         ${cargo.debug.jvm.args}
@@ -658,6 +671,8 @@
                     <properties>
                       <cargo.jvmargs>
                         <!-- NB: JDom parser doesn't like comments starting with '-' -->
+                        -XX:-OmitStackTraceInFastThrow
+                        -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=target
                         -XX:PermSize=512m -XX:MaxPermSize=1024
                         -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled
                         ${cargo.debug.jvm.args}
@@ -974,8 +989,7 @@
                 <exclude>jakarta-regexp:jakarta-regexp</exclude>
               </excludes>
               <includes>
-                <!-- zanata-rest-client currently uses jersey-client, so we use its preferred API classes -->
-                <include>javax.ws.rs:jsr311-api</include>
+                <include>org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.0_spec</include>
               </includes>
               <searchTransitive>true</searchTransitive>
             </bannedDependencies>

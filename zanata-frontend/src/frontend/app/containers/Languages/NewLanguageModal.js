@@ -1,11 +1,8 @@
 import React, {PropTypes, Component} from 'react'
 import { connect } from 'react-redux'
 import { cloneDeep, isEmpty, debounce } from 'lodash'
-import {
-  Modal
-} from 'zanata-ui'
-
-import { Autosuggest } from 'react-autosuggest'
+import { Modal } from 'zanata-ui'
+import Autosuggest from 'react-autosuggest'
 
 import {
   FormGroup,
@@ -20,27 +17,6 @@ import {
   handleLoadSuggestion
 } from '../../actions/languages'
 
-const getSuggestions = value => {
-  const inputValue = value.trim().toLowerCase()
-  const query = value
-  const inputLength = inputValue.length
-
-  return inputLength === 0 ? [] : query.filter(lang =>
-      lang.name.toLowerCase().slice(0, inputLength) === inputValue
-  )
-}
-
-const {
-    show,
-    details,
-    saving,
-    validFields,
-    suggestions,
-    getSuggestionValue,
-    renderSuggestion,
-    inputProps
-} = this.props
-
 class NewLanguageModal extends Component {
   constructor (props) {
     super(props)
@@ -48,8 +24,7 @@ class NewLanguageModal extends Component {
       details: cloneDeep(props.details),
       query: '',
       validFields: true,
-      value: '',
-      suggestions: []
+      suggestions: props.searchResults
     }
   }
 
@@ -95,26 +70,40 @@ class NewLanguageModal extends Component {
     }
   }
 
-  onChange (event, {newValue}) {
+  onSearchChange (event, { newValue }) {
     this.setState({
-      value: newValue
-    })
-  }
-
-  onSuggestionsFetchRequested ({value}) {
-    this.setState({
-      suggestions: getSuggestions(value)
+      query: newValue
     })
   }
 
   onSuggestionsClearRequested () {
     this.setState({
-      suggestions: []
+      suggestions: [],
+      query: ''
     })
+  }
+
+  getSuggestionValue (selectedLocale) {
+    selectedLocale.localeId
+  }
+
+  renderSuggestion (suggestion) {
+    return (
+      <span>{suggestion.localeId}</span>
+    )
   }
 
   /* eslint-disable react/jsx-no-bind, react/jsx-boolean-value */
   render () {
+    const {show, saving, loadSuggestion} = this.props
+    const { details, query, validFields, suggestions } = this.state
+
+    const inputProps = {
+      placeholder: 'Search for languages',
+      onChange: this.onSearchChange,
+      value: query
+    }
+
     // TODO: search results from autocomplete
     return (
       <Modal
@@ -125,18 +114,18 @@ class NewLanguageModal extends Component {
         </Modal.Header>
         <Modal.Body>
           <div className='bootstrap'>
-            <FormGroup validationState={!validFields ? 'error' : ''}>
+            <FormGroup validationState={!validFields ? 'error' : undefined}>
               <ControlLabel>Language</ControlLabel>
               <Autosuggest
                 suggestions={suggestions}
-                onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                getSuggestionValue={this.getSuggestionValue}
+                onSuggestionsFetchRequested={loadSuggestion}
                 onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                getSuggestionValue={getSuggestionValue}
-                renderSuggestion={renderSuggestion}
+                renderSuggestion={this.renderSuggestion}
                 inputProps={inputProps}
                 />
             </FormGroup>
-            <FormGroup validationState={!validFields ? 'error' : ''}>
+            <FormGroup validationState={!validFields ? 'error' : undefined}>
               <ControlLabel>Name</ControlLabel>
               <FormControl type='text'
                 onChange={(e) => this.updateField('displayName', e)}
@@ -244,7 +233,7 @@ const mapDispatchToProps = (dispatch) => {
       console.info(details)
     },
     loadSuggestion: (query) => {
-      updateSuggestion(query || '')
+      updateSuggestion(query.value)
     }
   }
 }

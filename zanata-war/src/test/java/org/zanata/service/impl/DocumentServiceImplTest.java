@@ -22,6 +22,7 @@
 package org.zanata.service.impl;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -34,6 +35,7 @@ import static org.mockito.Mockito.when;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +51,6 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.events.DocStatsEvent;
 import org.zanata.events.DocumentLocaleKey;
 import org.zanata.model.type.WebhookType;
-import org.zanata.webhook.events.DocumentMilestoneEvent;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
@@ -60,6 +61,8 @@ import org.zanata.service.TranslationStateCache;
 import org.zanata.ui.model.statistic.WordStatistic;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+
 import org.zanata.util.UrlUtil;
 
 /**
@@ -85,10 +88,12 @@ public class DocumentServiceImplTest {
     @Mock
     private ApplicationConfiguration applicationConfiguration;
 
-    private DocumentServiceImpl documentService;
-    private DocumentServiceImpl spyService;
+    @Mock
+    private WebhookServiceImpl webhookService;
 
-    private Long docId = 1L, versionId = 1L, tfId = 1L;
+    private DocumentServiceImpl documentService;
+
+    private Long docId = 1L, versionId = 1L;
     private LocaleId localeId = LocaleId.DE;
     private String docIdString = "documentId";
     private String projectSlug = "project-slug";
@@ -107,24 +112,28 @@ public class DocumentServiceImplTest {
         MockitoAnnotations.initMocks(this);
         documentService = new DocumentServiceImpl();
         documentService.init(projectIterationDAO, documentDAO,
-            translationStateCacheImpl, urlUtil, applicationConfiguration, msgs);
+                translationStateCacheImpl, urlUtil, applicationConfiguration,
+                msgs, webhookService);
         // TODO spy should only be needed for legacy code
-        spyService = Mockito.spy(documentService);
         // avoid triggering HTTP requests in a unit test:
-        doNothing().when(spyService).publishDocumentMilestoneEvent(
-                any(List.class), any(DocumentMilestoneEvent.class));
+        doNothing().when(webhookService).processDocumentMilestone(
+                any(String.class), any(String.class), any(String.class),
+                any(LocaleId.class), any(String.class), any(String.class),
+                any(List.class));
 
         HProjectIteration version = Mockito.mock(HProjectIteration.class);
         HProject project = Mockito.mock(HProject.class);
         HDocument document = Mockito.mock(HDocument.class);
 
         webHooks = Lists.newArrayList();
+        Set<WebhookType> types =
+            Sets.newHashSet(WebhookType.DocumentMilestoneEvent);
         webHooks.add(new WebHook(project, "http://test.example.com",
-                WebhookType.DocumentMilestoneEvent, key));
+            types, key));
         webHooks.add(new WebHook(project, "http://test1.example.com",
-                WebhookType.DocumentMilestoneEvent, key));
+            types, key));
         webHooks.add(new WebHook(project, "http://test1.example.com",
-            WebhookType.DocumentStatsEvent, key));
+            Sets.newHashSet(WebhookType.DocumentStatsEvent), key));
 
         when(projectIterationDAO.findById(versionId)).thenReturn(version);
         when(version.getProject()).thenReturn(project);
@@ -141,28 +150,26 @@ public class DocumentServiceImplTest {
 
     @Test
     public void documentMilestoneEventTranslatedTest() {
-        doNothing().when(spyService).publishDocumentMilestoneEvent(
-                any(List.class), any(DocumentMilestoneEvent.class));
         WordStatistic stats = new WordStatistic(0, 0, 0, 10, 0);
         when(translationStateCacheImpl.getDocumentStatistics(docId, localeId))
             .thenReturn(stats);
-        runDocumentStatisticUpdatedTest(spyService, ContentState.New,
+        runDocumentStatisticUpdatedTest(documentService, ContentState.New,
                 ContentState.Translated);
 
-        DocumentMilestoneEvent milestoneEvent =
-                new DocumentMilestoneEvent(projectSlug, versionSlug,
-                        docIdString, localeId,
-                        msgs.format("jsf.webhook.response.state", milestone,
-                                ContentState.Translated), testUrl);
+        String message = msgs.format("jsf.webhook.response.state", milestone,
+                ContentState.Translated);
 
         ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
-        verify(spyService).publishDocumentMilestoneEvent(captor.capture(),
-                eq(milestoneEvent));
+
+        verify(webhookService).processDocumentMilestone(
+            eq(projectSlug), eq(versionSlug), eq(docIdString),
+            eq(localeId), eq(message), eq(testUrl), captor.capture());
+
         assertThat(captor.getValue().size(), is(2));
-        assertThat(((WebHook) captor.getValue().get(0)).getWebhookType(),
-            is(WebhookType.DocumentMilestoneEvent));
-        assertThat(((WebHook) captor.getValue().get(1)).getWebhookType(),
-            is(WebhookType.DocumentMilestoneEvent));
+        assertThat(((WebHook) captor.getValue().get(0)).getTypes(),
+            contains(WebhookType.DocumentMilestoneEvent));
+        assertThat(((WebHook) captor.getValue().get(1)).getTypes(),
+            contains(WebhookType.DocumentMilestoneEvent));
     }
 
     @Test
@@ -170,43 +177,38 @@ public class DocumentServiceImplTest {
         WordStatistic stats = new WordStatistic(0, 1, 0, 9, 0);
         when(translationStateCacheImpl.getDocumentStatistics(docId, localeId))
             .thenReturn(stats);
-        runDocumentStatisticUpdatedTest(spyService, ContentState.New,
+        runDocumentStatisticUpdatedTest(documentService, ContentState.New,
                 ContentState.Translated);
 
-        DocumentMilestoneEvent milestoneEvent =
-                new DocumentMilestoneEvent(projectSlug, versionSlug,
-                        docIdString, localeId, testUrl,
-                        msgs.format("jsf.webhook.response.state", milestone,
-                                ContentState.Translated));
+        String message =  msgs.format("jsf.webhook.response.state", milestone,
+            ContentState.Translated);
 
-        verify(spyService, never()).publishDocumentMilestoneEvent(
-                webHooks, milestoneEvent);
+        verify(webhookService, never()).processDocumentMilestone(
+            eq(projectSlug), eq(versionSlug), eq(docIdString),
+            eq(localeId), eq(message), eq(testUrl), Mockito.anyList());
     }
 
     @Test
     public void documentMilestoneEventApprovedTest() {
-        doNothing().when(spyService).publishDocumentMilestoneEvent(
-            any(List.class), any(DocumentMilestoneEvent.class));
         WordStatistic stats = new WordStatistic(10, 0, 0, 0, 0);
         when(translationStateCacheImpl.getDocumentStatistics(docId, localeId))
             .thenReturn(stats);
-        runDocumentStatisticUpdatedTest(spyService, ContentState.Translated,
+        runDocumentStatisticUpdatedTest(documentService, ContentState.Translated,
                 ContentState.Approved);
-
-        DocumentMilestoneEvent milestoneEvent =
-                new DocumentMilestoneEvent(projectSlug,
-                        versionSlug, docIdString,
-                        localeId, msgs.format("jsf.webhook.response.state",
-                                milestone, ContentState.Approved), testUrl);
+        String message = msgs.format("jsf.webhook.response.state",
+            milestone, ContentState.Approved);
 
         ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
-        verify(spyService).publishDocumentMilestoneEvent(captor.capture(),
-                eq(milestoneEvent));
+
+        verify(webhookService).processDocumentMilestone(
+            eq(projectSlug), eq(versionSlug), eq(docIdString),
+            eq(localeId), eq(message), eq(testUrl), captor.capture());
+
         assertThat(captor.getValue().size(), is(2));
-        assertThat(((WebHook) captor.getValue().get(0)).getWebhookType(),
-            is(WebhookType.DocumentMilestoneEvent));
-        assertThat(((WebHook) captor.getValue().get(1)).getWebhookType(),
-            is(WebhookType.DocumentMilestoneEvent));
+        assertThat(((WebHook) captor.getValue().get(0)).getTypes(),
+            contains(WebhookType.DocumentMilestoneEvent));
+        assertThat(((WebHook) captor.getValue().get(1)).getTypes(),
+            contains(WebhookType.DocumentMilestoneEvent));
     }
 
     @Test
@@ -214,17 +216,13 @@ public class DocumentServiceImplTest {
         WordStatistic stats = new WordStatistic(9, 0, 0, 1, 0);
         when(translationStateCacheImpl.getDocumentStatistics(docId, localeId))
             .thenReturn(stats);
-        runDocumentStatisticUpdatedTest(spyService, ContentState.Translated,
+        runDocumentStatisticUpdatedTest(documentService, ContentState.Translated,
                 ContentState.Approved);
-
-        DocumentMilestoneEvent milestoneEvent =
-                new DocumentMilestoneEvent(projectSlug, versionSlug,
-                        docIdString, localeId, msgs.format(
-                                "jsf.webhook.response.state", milestone,
-                                ContentState.Approved), testUrl);
-
-        verify(spyService, never()).publishDocumentMilestoneEvent(
-                webHooks, milestoneEvent);
+        String message = msgs.format(
+            "jsf.webhook.response.state", milestone, ContentState.Approved);
+        verify(webhookService, never()).processDocumentMilestone(
+            eq(projectSlug), eq(versionSlug), eq(docIdString),
+            eq(localeId), eq(message), eq(testUrl), Mockito.anyList());
     }
 
     @Test
@@ -233,16 +231,13 @@ public class DocumentServiceImplTest {
         when(translationStateCacheImpl.getDocumentStatistics(docId, localeId))
             .thenReturn(stats);
 
-        runDocumentStatisticUpdatedTest(spyService, ContentState.Approved,
+        runDocumentStatisticUpdatedTest(documentService, ContentState.Approved,
                 ContentState.Approved);
-
-        DocumentMilestoneEvent milestoneEvent =
-                new DocumentMilestoneEvent(projectSlug, versionSlug,
-                        docIdString, localeId, msgs.format(
-                                "jsf.webhook.response.state", milestone,
-                                ContentState.Approved), testUrl);
-        verify(spyService, never()).publishDocumentMilestoneEvent(
-                webHooks, milestoneEvent);
+        String message = msgs.format(
+            "jsf.webhook.response.state", milestone, ContentState.Approved);
+        verify(webhookService, never()).processDocumentMilestone(
+                eq(projectSlug), eq(versionSlug), eq(docIdString),
+                eq(localeId), eq(message), eq(testUrl), Mockito.anyList());
     }
 
     @Test
@@ -252,16 +247,14 @@ public class DocumentServiceImplTest {
         when(translationStateCacheImpl.getDocumentStatistics(docId, localeId))
             .thenReturn(stats);
 
-        runDocumentStatisticUpdatedTest(spyService, ContentState.Translated,
+        runDocumentStatisticUpdatedTest(documentService, ContentState.Translated,
             ContentState.Translated);
 
-        DocumentMilestoneEvent milestoneEvent =
-                new DocumentMilestoneEvent(projectSlug, versionSlug,
-                        docIdString, localeId, msgs.format(
-                                "jsf.webhook.response.state", milestone,
-                                ContentState.Translated), testUrl);
-        verify(spyService, never()).publishDocumentMilestoneEvent(
-                webHooks, milestoneEvent);
+        String message = msgs.format(
+            "jsf.webhook.response.state", milestone, ContentState.Translated);
+        verify(webhookService, never()).processDocumentMilestone(
+            eq(projectSlug), eq(versionSlug), eq(docIdString),
+            eq(localeId), eq(message), eq(testUrl), Mockito.anyList());
     }
 
     private void runDocumentStatisticUpdatedTest(
