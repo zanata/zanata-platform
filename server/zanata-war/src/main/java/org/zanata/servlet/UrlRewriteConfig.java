@@ -1,5 +1,6 @@
 package org.zanata.servlet;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.ocpsoft.logging.Logger;
@@ -17,12 +18,12 @@ import org.ocpsoft.rewrite.servlet.config.Query;
 import org.ocpsoft.rewrite.servlet.config.Redirect;
 import org.ocpsoft.rewrite.servlet.config.rule.Join;
 import org.ocpsoft.rewrite.servlet.http.event.HttpInboundServletRewrite;
-import org.ocpsoft.rewrite.servlet.http.event.HttpOutboundServletRewrite;
 import org.ocpsoft.rewrite.servlet.http.event.HttpServletRewrite;
 import org.ocpsoft.urlbuilder.Address;
 import org.ocpsoft.urlbuilder.AddressBuilder;
 
 import javax.servlet.ServletContext;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -38,17 +39,6 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
         String contextPath = context.getContextPath();
         // NB: inbound rules are processed in order, outbound rules in reverse order (as of Rewrite 3.0.0.Alpha1)
         return ConfigurationBuilder.begin()
-
-                .addRule()
-                .when(Direction.isInbound().and(Path.matches("/{path}")))
-                .perform(Log.message(Logger.Level.INFO, "in --->  : {path}"))
-                .where("path").matches(".*")
-
-                .addRule()
-                .when(Direction.isOutbound().and(Path.matches("/{path}")))
-                .perform(Log.message(Logger.Level.INFO, "---> out : {path}"))
-                .where("path").matches(".*")
-
 
                 // strip cid params to avoid NonexistentConversationException
                 .addRule()
@@ -80,10 +70,17 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .perform(Redirect.permanent(contextPath +
                     "/iteration/view/{projectSlug}/{iterationSlug}/documents"))
 
+                .addRule(Join.path("/{path}").to("/a/index.xhtml"))
+                .where("path").matches(anyOf(
+                        "explore",
+                        // There is a 302 redirect from profile to profile/
+                        // I don't know why it does it, but it causes 403 Forbidden
+                        // unless there is also a rewrite for profile/ here
+                        "profile",
+                        "profile/",
+                        "profile/view/[^/]*"))
 
                 .addRule(Join.path("/").to("/home.xhtml"))
-//                .addRule(Join.path("/a/").to("/a/index.xhtml"))
-//                .when(Direction.isInbound())
                 .addRule(Join.path("/a/more").to("/a/more.xhtml"))
                 .addRule(Join.path("/account/activate/{key}").to("/account/activate.xhtml"))
                 .addRule(Join.path("/account/google_password_reset_request").to("/account/google_password_reset_request.xhtml"))
@@ -126,55 +123,6 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/language/view/{id}/{section}").to("/language/language.xhtml"))
                 .where("section").matches(".*")
 
-                // FIXME stop using Join for one-way things since it is two-way
-                //       pretty sure it will map to /a/index.xhtml on the way in,
-                //       then hit the lowest path that is joined to that on the
-                //       way back out.
-                //       That means it works fine with the .to() is only used
-                //       once, but it goes haywire when the same .to() is used
-                //       more than once.
-                // Can't have a / on the end, it fails
-                .addRule(Join.path("/explore").to("/a/index.xhtml"))
-//                .when(Direction.isInbound())
-//                .addRule(JoinMultiple.path("/explore").to("/a/index.xhtml"))
-
-                // According to docs, Forward should not change the URL in the
-                // browser, but for me it is changing it.
-//                .addRule()
-//                .when(Path.matches("/explore"))
-//                .perform(Forward.to("/a/index.xhtml"))
-
-                // Loading /explore with this rule causes browser to show /a/index.xhtml
-//                .addRule()
-//                .when(Direction.isInbound().and(Path.matches("/explore")))
-//                .perform(Forward.to("/a/index.xhtml"))
-
-//                .addRule()
-//                .when(Direction.isOutbound().and(Path.matches("/a/index.xhtml")))
-//                // all requests that map to the frontend app should keep their
-//                // same URL.
-//                .perform(new HttpOperation() {
-//                    @Override
-//                    public void performHttp(HttpServletRewrite event, EvaluationContext context) {
-//                        // TODO how to just tell it redirect it to somewhere?
-//                        String requestURL = event.getRequest().getRequestURL().toString();
-//
-//                        // copied then modified from below
-//                        ((HttpOutboundServletRewrite) event).setOutboundAddress(AddressBuilder.create(requestURL));
-//                    }
-//                })
-
-
-
-//                .addRule(Join.path("/profile/").to("/a/index.xhtml"))
-//                .when(Direction.isInbound())
-//                .addRule(JoinMultiple.path("/profile").to("/a/index.xhtml"))
-
-                // FIXME forward is doing a 302 instead of 200
-//                .addRule()
-//                .when(Direction.isInbound().and(Path.matches("/profile")))
-//                .perform(Forward.to("/a/index.xhtml"))
-
 
 
                 // FIXME no longer exists: /profile/add_identity.xhtml
@@ -183,15 +131,6 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 // FIXME no longer exists: /profile/edit.xhtml
                 .addRule(Join.path("/profile/edit").to("/profile/edit.xhtml"))
                 .addRule(Join.path("/profile/merge_account").to("/profile/merge_account.xhtml"))
-
-                // do not simplify this to /a/, doing so causes a 403 (Forbidden)
-//                .addRule(Join.path("/profile/view/{username}").to("/a/index.xhtml"))
-//                .when(Direction.isInbound())
-//                .addRule(JoinMultiple.path("/profile/view/{username}").to("/a/index.xhtml"))
-                // FIXME forward is doing a 302 instead of 200
-//                .addRule()
-//                .when(Direction.isInbound().and(Path.matches("/profile/view/{username}")))
-//                .perform(Forward.to("/a/index.xhtml"))
 
                 .addRule(Join.path("/project/add_iteration/{projectSlug}").to("/project/add_iteration.xhtml"))
                 .addRule(Join.path("/project/add_iteration/{projectSlug}/{copyFromVersionSlug}").to("/project/add_iteration.xhtml"))
@@ -259,4 +198,20 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
         }
     }
 
+    /**
+     * Return a regex string that will match any of the given paths.
+     *
+     * Paths may include regular expression parts, or just be simple strings.
+     * All paths are just joined with the pipe character ("|").
+     *
+     * @param paths one or more path regular expressions to match against
+     * @return a regular expression that will match any of the given path expressions
+     */
+    private static String anyOf(@NotNull String... paths) {
+        if (paths.length == 0) {
+            throw new RuntimeException("anyOf() called with no paths. Specify at least one path.");
+        }
+
+        return StringUtils.join(paths, "|");
+    }
 }
