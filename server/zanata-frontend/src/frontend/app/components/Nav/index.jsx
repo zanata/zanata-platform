@@ -68,7 +68,7 @@ const items = [
   },
   {
     icon: 'glossary',
-    link: prefixPath + dswid + '#glossary',
+    link: basePath + '/glossary' + dswid,
     internalLink: '/glossary',
     title: 'Glossary',
     auth: 'loggedin',

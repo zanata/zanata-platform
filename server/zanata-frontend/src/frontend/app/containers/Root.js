@@ -27,7 +27,6 @@ export default class Root extends Component {
               <Route path='project/:projectSlug/glossary'
                 component={Glossary} />
               <Redirect from='profile' to={`profile/view/${username}`} />
-              <Redirect from='/' to={`profile/view/${username}`} />
             </Route>
           </Router>
         </View>
