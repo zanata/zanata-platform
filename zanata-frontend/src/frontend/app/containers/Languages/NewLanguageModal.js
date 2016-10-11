@@ -14,7 +14,8 @@ import {
 
 import {
   handleNewLanguageDisplay,
-  handleLoadSuggestion
+  handleLoadSuggestion,
+  handleSaveNewLanguage
 } from '../../actions/languages'
 
 class NewLanguageModal extends Component {
@@ -140,7 +141,7 @@ class NewLanguageModal extends Component {
               <FormControl type='text'
                 onChange={(e) => this.updateField('displayName', e)}
                 placeholder='Default display name'
-                defaultValue={details.displayName} />
+                value={details.displayName} />
               <FormControl.Feedback />
             </FormGroup>
             <FormGroup>
@@ -148,7 +149,7 @@ class NewLanguageModal extends Component {
               <FormControl type='text'
                 onChange={(e) => this.updateField('nativeName', e)}
                 placeholder='Default native name'
-                defaultValue={details.nativeName} />
+                value={details.nativeName} />
             </FormGroup>
             <FormGroup>
               <strong className='Mend(eq)'>Language Code</strong>
@@ -161,7 +162,7 @@ class NewLanguageModal extends Component {
               <FormControl type='text'
                 onChange={(e) => this.updateField('alias', e)}
                 placeholder='eg. en-US'
-                defaultValue={details.alias} />
+                value={details.alias} />
             </FormGroup>
             <FormGroup>
               <ControlLabel>Plural forms</ControlLabel>
@@ -170,7 +171,7 @@ class NewLanguageModal extends Component {
                 onChange={(e) => this.updateField('pluralForms', e)}
                 placeholder='Default plural forms (if empty):
                 nplurals=2;plural=(n>1)'
-                defaultValue={details.pluralForms} />
+                value={details.pluralForms} />
             </FormGroup>
             <FormGroup>
               <Checkbox
@@ -240,7 +241,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(handleNewLanguageDisplay(false))
     },
     handleOnSave: (details) => {
-      console.info(details)
+      dispatch(handleSaveNewLanguage(details))
     },
     loadSuggestion: (query) => {
       updateSuggestion(query.value)
