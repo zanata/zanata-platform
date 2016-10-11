@@ -48,6 +48,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import org.zanata.model.type.WebhookType;
+import org.zanata.model.validator.Slug;
 import org.zanata.model.validator.Url;
 
 /**
@@ -77,7 +78,8 @@ public class WebHook implements Serializable {
     @Column(nullable = true)
     private String secret;
 
-    @Size(max = 255)
+    @Size(max = 20)
+    @Slug
     private String name;
 
 

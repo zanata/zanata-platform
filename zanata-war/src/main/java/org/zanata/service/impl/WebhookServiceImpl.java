@@ -27,6 +27,7 @@ import org.zanata.model.ProjectRole;
 import org.zanata.model.WebHook;
 import org.zanata.model.type.WebhookType;
 import org.zanata.security.annotations.Authenticated;
+import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.util.UrlUtil;
 import org.zanata.webhook.events.DocumentMilestoneEvent;
 import org.zanata.webhook.events.DocumentStatsEvent;
@@ -60,6 +61,10 @@ public class WebhookServiceImpl implements Serializable {
     private HAccount authenticatedUser;
 
     private static final int URL_MAX_LENGTH = 255;
+
+    @Inject
+    @ServerPath
+    private String serverUrl;
 
     /**
      * Need @Async annotation for TransactionPhase.AFTER_SUCCESS event
@@ -165,7 +170,7 @@ public class WebhookServiceImpl implements Serializable {
     public void processManualEvent(String projectSlug,
             String versionSlug, LocaleId localeId, List<WebHook> webHooks) {
         ManuallyTriggeredEvent event =
-                new ManuallyTriggeredEvent(authenticatedUser.getUsername(),
+                new ManuallyTriggeredEvent(serverUrl, authenticatedUser.getUsername(),
                         projectSlug, versionSlug, localeId);
         publishWebhooks(webHooks, event);
     }
@@ -192,12 +197,12 @@ public class WebhookServiceImpl implements Serializable {
             new WebhookTypeItem(WebhookType.SourceDocumentChangedEvent,
                 msgs.get("jsf.webhookType.SourceDocumentChangedEvent.desc"));
 
-        WebhookTypeItem transUpdate =
+        WebhookTypeItem manualEvent =
                 new WebhookTypeItem(WebhookType.ManuallyTriggeredEvent,
                         msgs.get(
                                 "jsf.webhookType.ManuallyTriggeredEvent.desc"));
         return Lists
-            .newArrayList(docMilestone, stats, version, maintainer, srcDoc, transUpdate);
+            .newArrayList(docMilestone, stats, version, maintainer, srcDoc, manualEvent);
     }
 
     public List<String> getDisplayNames(Set<WebhookType> types) {

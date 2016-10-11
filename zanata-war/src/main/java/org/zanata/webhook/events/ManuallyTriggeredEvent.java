@@ -39,6 +39,7 @@ public class ManuallyTriggeredEvent extends WebhookEventType {
     private static final String EVENT_TYPE =
             WebhookType.ManuallyTriggeredEvent.name();
 
+    private String zanataServer;
     private String username;
     private String project;
     private String version;
@@ -66,9 +67,15 @@ public class ManuallyTriggeredEvent extends WebhookEventType {
         return username;
     }
 
-    public ManuallyTriggeredEvent(String triggeredBy, String project,
+    public String getZanataServer() {
+        return zanataServer;
+    }
+
+    public ManuallyTriggeredEvent(String zanataServer, String triggeredBy,
+            String project,
             String version,
             LocaleId locale) {
+        this.zanataServer = zanataServer;
         this.username = triggeredBy;
         this.project = project;
         this.version = version;
