@@ -70,33 +70,35 @@ class NewLanguageModal extends Component {
     }
   }
 
-  onSearchChange (event, { newValue }) {
+  onSearchChange = (event, { newValue }) => {
     this.setState({
       query: newValue
     })
   }
 
-  onSuggestionsClearRequested () {
+  onSuggestionsClearRequested = () => {
     this.setState({
-      suggestions: [],
       query: ''
     })
   }
 
   getSuggestionValue (selectedLocale) {
-    selectedLocale.localeId
+    return selectedLocale.localeDetails
   }
 
   renderSuggestion (suggestion) {
     return (
-      <span>{suggestion.localeId}</span>
+      <span>
+        {suggestion.localeDetails.displayName}
+        <span className='C(Muted)'> {suggestion.localeDetails.localeId}</span>
+      </span>
     )
   }
 
   /* eslint-disable react/jsx-no-bind, react/jsx-boolean-value */
   render () {
-    const {show, saving, loadSuggestion} = this.props
-    const { details, query, validFields, suggestions } = this.state
+    const {show, saving, loadSuggestion, searchResults} = this.props
+    const { details, query, validFields } = this.state
 
     const inputProps = {
       placeholder: 'Search for languages',
@@ -117,7 +119,7 @@ class NewLanguageModal extends Component {
             <FormGroup validationState={!validFields ? 'error' : undefined}>
               <ControlLabel>Language</ControlLabel>
               <Autosuggest
-                suggestions={suggestions}
+                suggestions={searchResults}
                 getSuggestionValue={this.getSuggestionValue}
                 onSuggestionsFetchRequested={loadSuggestion}
                 onSuggestionsClearRequested={this.onSuggestionsClearRequested}
