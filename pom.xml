@@ -88,7 +88,7 @@
     <zanata.client.version>4.0.0-SNAPSHOT</zanata.client.version>
     <zanata.common.version>4.0.0-SNAPSHOT</zanata.common.version>
 
-    <richfaces.version>4.5.11.Final</richfaces.version>
+    <richfaces.version>4.5.17.Final</richfaces.version>
 
     <arquillian.version>1.1.11.Final</arquillian.version>
     <shrinkwrap.api.version>1.2.3</shrinkwrap.api.version>
