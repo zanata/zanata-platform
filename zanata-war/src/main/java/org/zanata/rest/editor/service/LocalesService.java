@@ -147,11 +147,18 @@ public class LocalesService implements LocalesResource {
         identity.checkPermission("delete-language");
 
         try {
-//            localeServiceImpl.delete(locale);
+            localeServiceImpl.delete(locale);
             return Response.ok().build();
         } catch (ConstraintViolationException e) {
             return Response.status(Response.Status.METHOD_NOT_ALLOWED).build();
         }
+    }
+
+    @Override
+    public Response createLanguage(LocaleDetails localeDetails) {
+        identity.checkPermission("insert-language");
+        // todo: add new language
+        return Response.status(Response.Status.CREATED).build();
     }
 
     private int validatePage(int page) {
