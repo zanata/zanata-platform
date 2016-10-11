@@ -20,12 +20,11 @@ mkdir -p ${ZANATA_DEPLOYMENTS_DIR} && chcon -Rt svirt_sandbox_file_t ${ZANATA_DE
 
 if [ -f "$ZANATA_WAR" ]
 then
-    echo "===== Please copy or hard link your $ZANATA_WAR file to $ZANATA_DEPLOYMENTS_DIR"
 #    we can not use symlink as JBoss inside docker can't properly read the symlink file
     # try to link or copy the war file to deployments directory
     ln ${ZANATA_WAR} ${ZANATA_DEPLOYMENTS_DIR}/ROOT.war || cp ${ZANATA_WAR} ${ZANATA_DEPLOYMENTS_DIR}/ROOT.war
 else
-    echo "===== NO war file found. Please build Zanata war first then hard link/copy it to $ZANATA_DEPLOYMENTS_DIR/ROOT.war ====="
+    echo "===== NO war file found. Please build Zanata war first ====="
     exit 1
 fi
 
