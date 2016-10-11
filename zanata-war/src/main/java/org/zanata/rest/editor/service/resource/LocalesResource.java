@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.editor.MediaTypes;
 
 /**
@@ -79,4 +80,18 @@ public interface LocalesResource {
     @Produces({ MediaTypes.APPLICATION_ZANATA_LOCALES_JSON,
         MediaType.APPLICATION_JSON })
     public Response delete(@PathParam("localeId") String localeId);
+
+    /**
+     * Create new language in Zanata
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         OK(201) - Locale is added. <br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+    @POST
+    @Path("/locale")
+    @Produces({ MediaTypes.APPLICATION_ZANATA_LOCALES_JSON,
+        MediaType.APPLICATION_JSON })
+    public Response createLanguage(LocaleDetails localeDetails);
 }

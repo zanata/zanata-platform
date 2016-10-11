@@ -56,12 +56,12 @@ export default handleActions({
         ...state,
         user: {
           ...state.user,
-          loading: true
+          loading: false
         },
         loading: false,
-        notification: {
-          severity: SEVERITY.ERROR,
-          message: ERROR_MSG
+        permission: {
+          canDeleteLocale: false,
+          canAddLocale: false
         }
       }
     } else {
@@ -86,9 +86,9 @@ export default handleActions({
         loading: false
       },
       loading: false,
-      notification: {
-        severity: SEVERITY.ERROR,
-        message: ERROR_MSG
+      permission: {
+        canDeleteLocale: false,
+        canAddLocale: false
       }
     }
   },

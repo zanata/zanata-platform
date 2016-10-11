@@ -25,6 +25,10 @@ export const LANGUAGE_PERMISSION_REQUEST = 'LANGUAGE_PERMISSION_REQUEST'
 export const LANGUAGE_PERMISSION_SUCCESS = 'LANGUAGE_PERMISSION_SUCCESS'
 export const LANGUAGE_PERMISSION_FAILURE = 'LANGUAGE_PERMISSION_FAILURE'
 
+export const CREATE_LANGUAGE_REQUEST = 'CREATE_LANGUAGE_REQUEST'
+export const CREATE_LANGUAGE_SUCCESS = 'CREATE_LANGUAGE_SUCCESS'
+export const CREATE_LANGUAGE_FAILURE = 'CREATE_LANGUAGE_FAILURE'
+
 export const LANGUAGE_DELETE_REQUEST = 'LANGUAGE_DELETE_REQUEST'
 export const LANGUAGE_DELETE_SUCCESS = 'LANGUAGE_DELETE_SUCCESS'
 export const LANGUAGE_DELETE_FAILURE = 'LANGUAGE_DELETE_FAILURE'
@@ -187,6 +191,32 @@ const deleteLanguage = (dispatch, localeId) => {
   }
 }
 
+const createNewLanguage = (details) => {
+  const endpoint = window.config.baseUrl + window.config.apiRoot +
+    '/locales/locale/'
+
+  let headers = getJsonHeaders()
+  headers['Content-Type'] = 'application/json'
+
+  const apiTypes = [
+    CREATE_LANGUAGE_REQUEST,
+    {
+      type: CREATE_LANGUAGE_SUCCESS,
+      payload: (action, state, res) => {
+        return res
+      },
+      meta: {
+        receivedAt: Date.now()
+      }
+    },
+    CREATE_LANGUAGE_FAILURE
+  ]
+  return {
+    [CALL_API]: buildAPIRequest(endpoint, 'POST', headers, apiTypes,
+      JSON.stringify(details))
+  }
+}
+
 export const initialLoad = () => {
   return (dispatch, getState) => {
     // validate page number from query
@@ -263,5 +293,11 @@ export const handleLoadSuggestion = (query) => {
     if (!isEmpty(query)) {
       dispatch(searchLocales(query))
     }
+  }
+}
+
+export const handleSaveNewLanguage = (details) => {
+  return (dispatch, getState) => {
+    dispatch(createNewLanguage(details))
   }
 }
