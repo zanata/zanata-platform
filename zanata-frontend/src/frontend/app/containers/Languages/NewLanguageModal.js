@@ -90,9 +90,16 @@ class NewLanguageModal extends Component {
     return (
       <span>
         {suggestion.localeDetails.displayName}
-        <span className='C(Muted)'> {suggestion.localeDetails.localeId}</span>
+        <span className=''> {suggestion.localeDetails.localeId}</span>
       </span>
     )
+  }
+
+  onSuggestionSelected = (event,
+    { suggestion, suggestionValue, sectionIndex, method }) => {
+    this.setState({
+      details: suggestionValue
+    })
   }
 
   /* eslint-disable react/jsx-no-bind, react/jsx-boolean-value */
@@ -120,6 +127,7 @@ class NewLanguageModal extends Component {
               <ControlLabel>Language</ControlLabel>
               <Autosuggest
                 suggestions={searchResults}
+                onSuggestionSelected={this.onSuggestionSelected}
                 getSuggestionValue={this.getSuggestionValue}
                 onSuggestionsFetchRequested={loadSuggestion}
                 onSuggestionsClearRequested={this.onSuggestionsClearRequested}
