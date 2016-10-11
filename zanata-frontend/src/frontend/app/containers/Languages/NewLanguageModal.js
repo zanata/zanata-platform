@@ -190,7 +190,7 @@ class NewLanguageModal extends Component {
         </Modal.Body>
         <Modal.Footer>
           <div className='bootstrap Ta(end)'>
-            <Button
+            <Button className='btn-left'
               disabled={saving}
               onClick={() => this.handleCancel()}>
               Close
