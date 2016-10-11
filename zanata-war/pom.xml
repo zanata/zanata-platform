@@ -1588,6 +1588,12 @@
       <artifactId>mock-javamail</artifactId>
       <version>1.9</version>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.mail</groupId>
+          <artifactId>mail</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- Richfaces -->
@@ -1947,8 +1953,8 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.mail</groupId>
-      <artifactId>mail</artifactId>
+      <groupId>com.sun.mail</groupId>
+      <artifactId>javax.mail</artifactId>
       <scope>provided</scope>
     </dependency>
 

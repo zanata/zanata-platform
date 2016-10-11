@@ -128,7 +128,7 @@
     <jdbc.version>5.1.26</jdbc.version>
 
     <resteasy.scope>compile</resteasy.scope>
-    <resteasy.version>3.0.13.Final</resteasy.version>
+    <resteasy.version>3.0.19.Final</resteasy.version>
     <jaxrsapi.version>3.0.12.Final</jaxrsapi.version>
 
     <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
@@ -141,6 +141,11 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>com.sun.mail</groupId>
+        <artifactId>javax.mail</artifactId>
+        <version>1.5.5</version>
+      </dependency>
 
       <!-- See https://issues.jboss.org/browse/WFK2-674
  For some warnings in the console. It happens when deltaspike-jsf
@@ -1582,6 +1587,9 @@
 
                 <!-- Use org.jboss.spec.javax.el:jboss-el-api_2.2_spec -->
                 <exclude>javax.el:el-api</exclude>
+
+                <!-- Use com.sun.mail:javax.mail -->
+                <exclude>javax.mail:mail</exclude>
 
                 <!-- Use org.jboss.spec.javax.xml.bind:jboss-jaxb-api_2.2_spec -->
                 <exclude>javax.xml.bind:jaxb-api</exclude>
