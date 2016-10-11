@@ -120,7 +120,7 @@
 
     <!-- TODO try provided -->
     <resteasy.scope>compile</resteasy.scope>
-    <resteasy.version>3.0.14.Final</resteasy.version>
+    <resteasy.version>3.0.19.Final</resteasy.version>
     <jaxrsapi.version>3.0.12.Final</jaxrsapi.version>
 
     <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
@@ -138,6 +138,11 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>com.sun.mail</groupId>
+        <artifactId>javax.mail</artifactId>
+        <version>1.5.5</version>
+      </dependency>
 
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -1725,6 +1730,9 @@
                 <exclude>javax.el:javax.el-api</exclude>
                 <exclude>org.jboss.spec.javax.el:jboss-el-api_2.2_spec</exclude>
 
+
+                <!-- Use com.sun.mail:javax.mail -->
+                <exclude>javax.mail:mail</exclude>
                 <!-- Use org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.2_spec -->
                 <exclude>javax.interceptor:javax.interceptor-api</exclude>
 
