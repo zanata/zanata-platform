@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash -xe
 
 # determine directory containing this script
 SOURCE="${BASH_SOURCE[0]}"
@@ -20,7 +20,9 @@ mkdir -p ${ZANATA_DEPLOYMENTS_DIR} && chcon -Rt svirt_sandbox_file_t ${ZANATA_DE
 
 if [ -f "$ZANATA_WAR" ]
 then
-#    we can not use symlink as JBoss inside docker can't properly read the symlink file
+    # remove old file (hardlink) first
+    rm ${ZANATA_DEPLOYMENTS_DIR}/ROOT.war
+    # we can not use symlink as JBoss inside docker can't properly read the symlink file
     # try to link or copy the war file to deployments directory
     ln ${ZANATA_WAR} ${ZANATA_DEPLOYMENTS_DIR}/ROOT.war || cp ${ZANATA_WAR} ${ZANATA_DEPLOYMENTS_DIR}/ROOT.war
 else
