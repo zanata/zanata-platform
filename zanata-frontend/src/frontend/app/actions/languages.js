@@ -34,7 +34,6 @@ export const LANGUAGE_DELETE_SUCCESS = 'LANGUAGE_DELETE_SUCCESS'
 export const LANGUAGE_DELETE_FAILURE = 'LANGUAGE_DELETE_FAILURE'
 
 export const pageSizeOption = [10, 20, 50, 100]
-// export const sortOption = ['Locale', 'Members']
 export const sortOption = [
   {display: 'Locale', value: 'localeId'},
   {display: 'Members', value: 'member'}
@@ -82,13 +81,8 @@ const getLocalesList = (state) => {
 }
 
 const searchLocales = (query) => {
-  let queries = []
-  queries.push('filter=' + query)
-  queries.push('page=1')
-  queries.push('sizePerPage=10')
-
-  const endpoint = window.config.baseUrl + window.config.apiRoot + '/locales?' +
-    queries.join('&')
+  const endpoint = window.config.baseUrl + window.config.apiRoot +
+    '/locales/new?filter=' + query
 
   const apiTypes = [
     LOAD_LANGUAGES_SUGGESTION_REQUEST,
@@ -203,7 +197,12 @@ const createNewLanguage = (details) => {
     {
       type: CREATE_LANGUAGE_SUCCESS,
       payload: (action, state, res) => {
-        return res
+        const contentType = res.headers.get('Content-Type')
+        if (contentType && includes(contentType, 'json')) {
+          return res.json().then((json) => {
+            return json
+          })
+        }
       },
       meta: {
         receivedAt: Date.now()

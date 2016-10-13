@@ -290,7 +290,7 @@ public class ProjectVersionService implements ProjectVersionResource {
 
         localesRefs.addAll(
             locales.stream()
-                .map(hLocale -> LocaleServiceImpl.convertToDTO(hLocale, ""))
+                .map(hLocale -> LocaleServiceImpl.convertToDTO(hLocale))
                 .collect(Collectors.toList()));
 
         Type genericType = new GenericType<List<LocaleDetails>>() {

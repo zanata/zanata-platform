@@ -440,4 +440,19 @@ public class LocaleServiceImpl implements LocaleService {
             hLocale.isActive(), hLocale.isEnabledByDefault(),
             hLocale.getPluralForms());
     }
+
+    public static LocaleDetails convertToDTO(HLocale hLocale) {
+        return convertToDTO(hLocale, null);
+    }
+
+    public static HLocale convertToHLocale(LocaleDetails localeDetails) {
+        HLocale entity = new HLocale();
+        entity.setLocaleId(localeDetails.getLocaleId());
+        entity.setActive(localeDetails.isEnabled());
+        entity.setEnabledByDefault(localeDetails.isEnabledByDefault());
+        entity.setPluralForms(localeDetails.getPluralForms());
+        entity.setDisplayName(localeDetails.getDisplayName());
+        entity.setNativeName(localeDetails.getNativeName());
+        return entity;
+    }
 }
