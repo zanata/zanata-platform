@@ -1,47 +1,41 @@
 #!/bin/bash
 
-# Change these for different settings
-DB_USERNAME=zanata
-DB_PASSWORD=zanatapw
-DB_SCHEMA=zanata
-DB_ROOT_PASSWORD=rootpw
-# default docker network to join
-DOCKER_NETWORK=docker-network
+# determine directory containing this script
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+
+source ${DIR}/common
 
 VOLUME_DIR=$HOME/docker-volumes/zanata-mariadb
 
 mkdir -p $VOLUME_DIR
 chcon -Rt svirt_sandbox_file_t $VOLUME_DIR
 
-# docker network option
-
-while getopts ":n:H" opt; do
+while getopts ":n:h" opt; do
   case ${opt} in
     n)
       echo "===== set docker network to $OPTARG ====="
       DOCKER_NETWORK="$OPTARG"
       ;;
-    H)
+    h)
       echo "========   HELP   ========="
       echo "-n <docker network>: will connect container to given docker network (default is $DOCKER_NETWORK)"
-      echo "-H                 : display help"
+      echo "-h                 : display help"
       exit
       ;;
     \?)
-      echo "Invalid option: -${OPTARG}. Use -H for help" >&2
+      echo "Invalid option: -${OPTARG}. Use -h for help" >&2
       exit 1
       ;;
   esac
 done
 
-# check if the docker network is already created
-if docker network ls | grep -w ${DOCKER_NETWORK}
-then
-    echo "will use docker network $DOCKER_NETWORK"
-else
-    echo "creating docker network $DOCKER_NETWORK"
-    docker network create ${DOCKER_NETWORK}
-fi
+ensure_docker_network
 
 docker run --name zanatadb \
   -e MYSQL_USER=$DB_USERNAME -e MYSQL_PASSWORD=$DB_PASSWORD \
