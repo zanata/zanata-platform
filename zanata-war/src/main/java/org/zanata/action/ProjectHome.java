@@ -29,7 +29,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -760,7 +759,8 @@ public class ProjectHome extends SlugHome<HProject> implements
             String validationMessages =
                     ResourceBundle.getBundle("ValidationMessages").getString(
                             "javax.validation.constraints.Slug.message");
-            facesMessages.addToControl(componentId, validationMessages);
+            facesMessages.addToControl(componentId,
+                    validationMessages);
             return false;
         }
         return true;

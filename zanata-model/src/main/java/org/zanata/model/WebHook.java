@@ -23,7 +23,6 @@ package org.zanata.model;
 
 import java.io.Serializable;
 import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -41,15 +40,13 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
 
+import org.zanata.model.type.WebhookType;
+import org.zanata.model.validator.Url;
 import com.google.common.collect.Sets;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import org.zanata.model.type.WebhookType;
-import org.zanata.model.validator.Slug;
-import org.zanata.model.validator.Url;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -79,7 +76,6 @@ public class WebHook implements Serializable {
     private String secret;
 
     @Size(max = 20)
-    @Slug
     private String name;
 
 
