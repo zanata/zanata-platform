@@ -74,9 +74,18 @@ This script will start another docker container with the Zanata server, and will
 
 You can offset the standard ports if you want to avoid port conflicts on your host machine. e.g. you have other container/instance running and listening to port 8080. Give option `-p 100` will offset standard JBoss port by 100. e.g. server will be running on http://localhost:8180/ and debug port will be 8887.
 
-The server will connect to the db server which was started in the previous step. It will also take the zanata.war from any war file in the `zanata-war/target` directory. This means a war file must be built beforehand (See `etc/scripts/quickbuild.sh`). You must make sure there is only one `zanata-*.war` file in this directory, otherwise this step will fail.
+The server will connect to the db server which was started in the previous step.
 
-This container will have a mapped volume to your `$HOME/zanata` directory to store files, stats, caches, etc. This will allow for backups if you wish to switch between different versions of zanata for instance.
+This container will have a mapped volume to your `$HOME/docker-volumes/zanata` directory to store files, stats, caches, etc. This will allow for backups if you wish to switch between different versions of zanata for instance.
+
+This container will also map `$HOME/docker-volumes/zanata-deployments` directory to the container's JBoss deployments directory.
+
+You will need to hard link or copy your war or exploded war to that folder to get it deployed. If you use hard link, once you rebuild the war and if the file name stays the same (e.g. same snapshot version), it will also get automatically detected.
+E.g under linux:
+```sh
+$ln zanata-war/target/zanata-<versuin>.war ~/docker-volumes/zanata-deployments/ROOT.war
+```
+
 
 ## Create an admin user
 
