@@ -57,7 +57,7 @@ class DeleteEntry extends Component {
 
         <Button bsSize='small'
           onClick={() => handleDeleteEntryDisplay(true)}>
-          <i className='fa fa-times'></i> Delete
+          <i className='fa fa-times Mend(ee)'></i>Delete
         </Button>
       </div>
     )

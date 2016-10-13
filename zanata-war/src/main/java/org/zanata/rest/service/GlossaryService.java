@@ -99,7 +99,7 @@ public class GlossaryService implements GlossaryResource {
 
         GlossaryLocaleInfo srcGlossaryLocale =
             new GlossaryLocaleInfo(
-                LocaleServiceImpl.convertToDTO(srcLocale, ""), entryCount);
+                LocaleServiceImpl.convertToDTO(srcLocale), entryCount);
 
         Map<LocaleId, Integer> transMap =
             glossaryDAO
@@ -115,7 +115,7 @@ public class GlossaryService implements GlossaryResource {
                 locale -> !locale.getLocaleId().equals(srcLocale.getLocaleId()))
             .forEach(locale -> {
                 LocaleDetails localeDetails =
-                    LocaleServiceImpl.convertToDTO(locale, "");
+                    LocaleServiceImpl.convertToDTO(locale);
                 int count = transMap.containsKey(locale.getLocaleId()) ?
                     transMap.get(locale.getLocaleId()) : 0;
 

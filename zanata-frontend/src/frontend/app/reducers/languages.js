@@ -20,11 +20,18 @@ import {
   TOGGLE_NEW_LANGUAGE_DISPLAY,
   LOAD_LANGUAGES_SUGGESTION_REQUEST,
   LOAD_LANGUAGES_SUGGESTION_SUCCESS,
-  LOAD_LANGUAGES_SUGGESTION_FAILURE
+  LOAD_LANGUAGES_SUGGESTION_FAILURE,
+  CREATE_LANGUAGE_REQUEST,
+  CREATE_LANGUAGE_SUCCESS,
+  CREATE_LANGUAGE_FAILURE
 } from '../actions/languages'
 
 const ERROR_MSG = 'We were unable load languages from server. ' +
   'Please refresh this page and try again.'
+
+const CREATE_LANGUAGE_ERROR_MSG = 'We were unable add new language. ' +
+  'Please refresh this page and try again.'
+
 export default handleActions({
   [TOGGLE_NEW_LANGUAGE_DISPLAY]: (state, action) => {
     return {
@@ -189,8 +196,8 @@ export default handleActions({
       deleting: false,
       notification: {
         severity: SEVERITY.ERROR,
-        message: 'We were unable delete this language. ' +
-        'Please refresh this page and try again.'
+        message: 'We were unable delete this language as it might ' +
+        'referenced by translations. Please disable it instead.'
       }
     }
   },
@@ -215,7 +222,7 @@ export default handleActions({
         ...state,
         newLanguage: {
           ...state.newLanguage,
-          searchResults: action.payload.results
+          searchResults: action.payload
         }
       }
     }
@@ -232,6 +239,62 @@ export default handleActions({
         message: ERROR_MSG
       }
     }
+  },
+  [CREATE_LANGUAGE_REQUEST]: (state, action) => {
+    return {
+      ...state,
+      newLanguage: {
+        ...state.newLanguage,
+        saving: true
+      }
+    }
+  },
+  [CREATE_LANGUAGE_SUCCESS]: (state, action) => {
+    if (action.error) {
+      return {
+        ...state,
+        newLanguage: {
+          ...state.newLanguage,
+          saving: false,
+          show: false,
+          searchResults: []
+        },
+        notification: {
+          severity: SEVERITY.ERROR,
+          message: CREATE_LANGUAGE_ERROR_MSG
+        }
+      }
+    } else {
+      return {
+        ...state,
+        newLanguage: {
+          ...state.newLanguage,
+          saving: false,
+          show: false,
+          searchResults: []
+        },
+        notification: {
+          severity: SEVERITY.INFO,
+          message: 'Language ' + action.payload.displayName +
+            ' has been created.'
+        }
+      }
+    }
+  },
+  [CREATE_LANGUAGE_FAILURE]: (state, action) => {
+    return {
+      ...state,
+      newLanguage: {
+        ...state.newLanguage,
+        saving: false,
+        show: false,
+        searchResults: []
+      },
+      notification: {
+        severity: SEVERITY.ERROR,
+        message: CREATE_LANGUAGE_ERROR_MSG
+      }
+    }
   }
 },
   {
@@ -244,7 +307,6 @@ export default handleActions({
     newLanguage: {
       saving: false,
       show: false,
-      details: {},
       searchResults: []
     },
     permission: {

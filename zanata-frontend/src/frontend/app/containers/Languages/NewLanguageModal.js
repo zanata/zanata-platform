@@ -1,6 +1,6 @@
 import React, {PropTypes, Component} from 'react'
 import { connect } from 'react-redux'
-import { cloneDeep, isEmpty, debounce } from 'lodash'
+import { isEmpty, debounce } from 'lodash'
 import { Modal } from 'zanata-ui'
 import Autosuggest from 'react-autosuggest'
 
@@ -22,7 +22,10 @@ class NewLanguageModal extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      details: cloneDeep(props.details),
+      details: {
+        enabledByDefault: true,
+        enabled: true
+      },
       query: '',
       validFields: true,
       suggestions: props.searchResults
@@ -36,8 +39,12 @@ class NewLanguageModal extends Component {
 
   resetFields () {
     this.setState({
-      details: cloneDeep(this.props.details),
+      details: {
+        enabledByDefault: true,
+        enabled: true
+      },
       validFields: true,
+      suggestions: [],
       query: ''
     })
   }
@@ -84,14 +91,16 @@ class NewLanguageModal extends Component {
   }
 
   getSuggestionValue (selectedLocale) {
-    return selectedLocale.localeDetails
+    return selectedLocale
   }
 
   renderSuggestion (suggestion) {
     return (
       <span>
-        {suggestion.localeDetails.displayName}
-        <span className=''> {suggestion.localeDetails.localeId}</span>
+        <span className='Fw(400)'>{suggestion.displayName}</span>
+        <span className='C(muted) Fz(msn1) Mstart(eq)'>
+          {suggestion.localeId}
+        </span>
       </span>
     )
   }
@@ -99,7 +108,11 @@ class NewLanguageModal extends Component {
   onSuggestionSelected = (event,
     { suggestion, suggestionValue, sectionIndex, method }) => {
     this.setState({
-      details: suggestionValue
+      details: {
+        ...suggestionValue,
+        enabledByDefault: true,
+        enabled: true
+      }
     })
   }
 
@@ -114,7 +127,6 @@ class NewLanguageModal extends Component {
       value: query
     }
 
-    // TODO: search results from autocomplete
     return (
       <Modal
         show={show}
@@ -140,7 +152,7 @@ class NewLanguageModal extends Component {
               <ControlLabel>Name</ControlLabel>
               <FormControl type='text'
                 onChange={(e) => this.updateField('displayName', e)}
-                placeholder='Default display name'
+                placeholder='Display name'
                 value={details.displayName} />
               <FormControl.Feedback />
             </FormGroup>
@@ -148,29 +160,27 @@ class NewLanguageModal extends Component {
               <ControlLabel>Native Name</ControlLabel>
               <FormControl type='text'
                 onChange={(e) => this.updateField('nativeName', e)}
-                placeholder='Default native name'
+                placeholder='Native name'
                 value={details.nativeName} />
             </FormGroup>
             <FormGroup>
               <strong className='Mend(eq)'>Language Code</strong>
-              <span className={details.localeId ? '' : 'C(muted)'}>
+              <span className='C(muted)'>
                 {details.localeId || 'None'}
               </span>
             </FormGroup>
             <FormGroup>
-              <ControlLabel>Alias</ControlLabel>
-              <FormControl type='text'
-                onChange={(e) => this.updateField('alias', e)}
-                placeholder='eg. en-US'
-                value={details.alias} />
-            </FormGroup>
-            <FormGroup>
               <ControlLabel>Plural forms</ControlLabel>
+              <a href='http://docs.translatehouse.org/projects/localization-guide/en/latest/l10n/pluralforms.html?id=l10n/pluralforms' // eslint-disable-line max-len
+                target='_blank'>
+                <Icon name='plus'
+                  atomic={{m: 'Mend(re) Va(sub)'}}
+                  title='plus' />
+              </a>
               <FormControl
                 type='text'
                 onChange={(e) => this.updateField('pluralForms', e)}
-                placeholder='Default plural forms (if empty):
-                nplurals=2;plural=(n>1)'
+                placeholder='Plural forms'
                 value={details.pluralForms} />
             </FormGroup>
             <FormGroup>
@@ -195,7 +205,9 @@ class NewLanguageModal extends Component {
               Close
             </Button>
             <Button
-              disabled={saving} bsStyle='primary'
+              title={isEmpty(details.localeId)
+                ? 'Please search for a language' : ''}
+              disabled={saving || isEmpty(details.localeId)} bsStyle='primary'
               onClick={() => this.validateDetails()}>
               Save
             </Button>
@@ -210,7 +222,6 @@ class NewLanguageModal extends Component {
 NewLanguageModal.propTypes = {
   show: PropTypes.bool,
   saving: PropTypes.bool,
-  details: PropTypes.object,
   searchResults: PropTypes.array,
   handleOnClose: PropTypes.func,
   handleOnSave: PropTypes.func,
@@ -221,13 +232,11 @@ const mapStateToProps = (state) => {
   const {
     show,
     saving,
-    details,
     searchResults
   } = state.languages.newLanguage
   return {
     show,
     saving,
-    details,
     searchResults
   }
 }

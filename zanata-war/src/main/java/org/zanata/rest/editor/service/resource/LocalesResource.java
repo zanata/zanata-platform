@@ -67,6 +67,23 @@ public interface LocalesResource extends RestResource {
         MediaType.APPLICATION_JSON })
     Response getUITranslations();
 
+
+    /**
+     * Retrieves a list of locales that is not added yet in the server. The result is
+     *
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         OK(200) - Response containing a list of locales. <br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+    @GET
+    @Path("/new")
+    @Produces({ MediaTypes.APPLICATION_ZANATA_LOCALES_JSON,
+            MediaType.APPLICATION_JSON })
+    Response getNewLocales(@QueryParam("filter") String filter,
+            @QueryParam("size") @DefaultValue("10") int size);
+
     /**
      * Delete a locale in Zanata
      *
